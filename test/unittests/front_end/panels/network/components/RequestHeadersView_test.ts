@@ -84,6 +84,36 @@ async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest
   return component;
 }
 
+const getTextFromRow = (row: HTMLElement): string[] => {
+  assertShadowRoot(row.shadowRoot);
+  const headerNameElement = row.shadowRoot.querySelector('.header-name');
+  const headerName = headerNameElement?.textContent?.trim() || '';
+  const headerValueElement = row.shadowRoot.querySelector('.header-value');
+  const headerValue = headerValueElement?.textContent?.trim() || '';
+  return [headerName, headerValue];
+};
+
+const getRowsFromCategory = (category: HTMLElement): NetworkComponents.HeaderSectionRow.HeaderSectionRow[] => {
+  const slot = getElementWithinComponent(category, 'slot', HTMLSlotElement);
+  const section = slot.assignedElements()[0];
+  assertElement(section, HTMLElement);
+  assertShadowRoot(section.shadowRoot);
+  const rows = section.shadowRoot.querySelectorAll('devtools-header-section-row');
+  return Array.from(rows);
+};
+
+const getRowsTextFromCategory = (category: HTMLElement): string[][] => {
+  return getRowsFromCategory(category).map(row => getTextFromRow(row));
+};
+
+const getRowHighlightStatus = (container: HTMLElement): boolean[] => {
+  const rows = getRowsFromCategory(container);
+  return rows.map(row => {
+    const element = row.shadowRoot?.querySelector('.row');
+    return element?.classList.contains('header-highlight') || false;
+  });
+};
+
 describeWithMockConnection('RequestHeadersView', () => {
   beforeEach(async () => {
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
@@ -121,50 +151,32 @@ describeWithMockConnection('RequestHeadersView', () => {
     ]);
   });
 
-  // Test will be refactored in follow-up CL
-  it.skip('[crbug.com/1297533]: renders request and response headers', async () => {
+  it('renders request and response headers', async () => {
     const component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
     assertElement(responseHeadersCategory, HTMLElement);
-    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-name'), [
-      'age:',
-      'cache-control:',
-      'content-encoding:',
-      'content-length:',
-    ]);
-    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-value'), [
-      '0',
-      'max-age=600',
-      'gzip',
-      '661',
-    ]);
+    assert.deepStrictEqual(
+        getRowsTextFromCategory(responseHeadersCategory),
+        [['age:', '0'], ['cache-control:', 'max-age=600'], ['content-encoding:', 'gzip'], ['content-length:', '661']]);
 
     const requestHeadersCategory = component.shadowRoot.querySelector('[aria-label="Request Headers"]');
     assertElement(requestHeadersCategory, HTMLElement);
-    assert.deepEqual(getCleanTextContentFromElements(requestHeadersCategory, '.header-name'), [
-      ':method:',
-      'accept-encoding:',
-      'cache-control:',
-    ]);
-    assert.deepEqual(getCleanTextContentFromElements(requestHeadersCategory, '.header-value'), [
-      'GET',
-      'gzip, deflate, br',
-      'no-cache',
-    ]);
+    assert.deepStrictEqual(
+        getRowsTextFromCategory(requestHeadersCategory),
+        [[':method:', 'GET'], ['accept-encoding:', 'gzip, deflate, br'], ['cache-control:', 'no-cache']]);
   });
 
-  // Test will be refactored in follow-up CL
-  it.skip('[crbug.com/1297533]: emits UMA event when a header value is being copied', async () => {
+  it('emits UMA event when a header value is being copied', async () => {
     const component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
-    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
-    assertElement(responseHeadersCategory, HTMLElement);
+    const generalCategory = component.shadowRoot.querySelector('[aria-label="General"]');
+    assertElement(generalCategory, HTMLElement);
 
     const spy = sinon.spy(Host.userMetrics, 'actionTaken');
-    const headerValue = responseHeadersCategory.querySelector('.header-value');
+    const headerValue = generalCategory.querySelector('.header-value');
     assertElement(headerValue, HTMLElement);
 
     assert.isTrue(spy.notCalled);
@@ -172,8 +184,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.isTrue(spy.calledWith(Host.UserMetrics.Action.NetworkPanelCopyValue));
   });
 
-  // Test will be refactored in follow-up CL
-  it.skip('[crbug.com/1297533]: can switch between source and parsed view', async () => {
+  it('can switch between source and parsed view', async () => {
     const component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
@@ -193,18 +204,9 @@ describeWithMockConnection('RequestHeadersView', () => {
     // Switch to viewing parsed view
     responseHeadersCategory.dispatchEvent(new NetworkComponents.RequestHeadersView.ToggleRawHeadersEvent());
 
-    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-name'), [
-      'age:',
-      'cache-control:',
-      'content-encoding:',
-      'content-length:',
-    ]);
-    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-value'), [
-      '0',
-      'max-age=600',
-      'gzip',
-      '661',
-    ]);
+    assert.deepStrictEqual(
+        getRowsTextFromCategory(responseHeadersCategory),
+        [['age:', '0'], ['cache-control:', 'max-age=600'], ['content-encoding:', 'gzip'], ['content-length:', '661']]);
   });
 
   it('cuts off long raw headers and shows full content on button click', async () => {
@@ -242,8 +244,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.strictEqual(fullRawTextContent?.length, 4450);
   });
 
-  // Test will be refactored in follow-up CL
-  it.skip('[crbug.com/1297533]: re-renders on request headers update', async () => {
+  it('re-renders on request headers update', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId,
         'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
@@ -264,19 +265,16 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     const spy = sinon.spy(component, 'data', ['set']);
     assert.isTrue(spy.set.notCalled);
-    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-name'), ['originalName:']);
-    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-value'), ['originalValue']);
+    assert.deepStrictEqual(getRowsTextFromCategory(responseHeadersCategory), [['originalName:', 'originalValue']]);
 
     request.responseHeaders = [{name: 'updatedName', value: 'updatedValue'}];
     assert.isTrue(spy.set.calledOnce);
-    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-name'), ['updatedName:']);
-    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-value'), ['updatedValue']);
+    assert.deepStrictEqual(getRowsTextFromCategory(responseHeadersCategory), [['updatedName:', 'updatedValue']]);
 
     view.detach();
   });
 
-  // Test will be refactored in follow-up CL
-  it.skip('[crbug.com/1297533]: can highlight individual headers', async () => {
+  it('can highlight individual response headers', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId,
         'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
@@ -296,18 +294,50 @@ describeWithMockConnection('RequestHeadersView', () => {
     const component = view.element.querySelector('devtools-request-headers');
     assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
     assertShadowRoot(component.shadowRoot);
-    const responseHeaderRows = component.shadowRoot.querySelectorAll('[aria-label="Response Headers"] .row');
-    assertElement(responseHeaderRows[0], HTMLElement);
-    assertElement(responseHeaderRows[1], HTMLElement);
-    assertElement(responseHeaderRows[2], HTMLElement);
 
-    assert.isFalse(responseHeaderRows[0].classList.contains('header-highlight'));
-    assert.isFalse(responseHeaderRows[1].classList.contains('header-highlight'));
-    assert.isFalse(responseHeaderRows[2].classList.contains('header-highlight'));
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    assertElement(responseHeadersCategory, HTMLElement);
+    assert.deepStrictEqual(
+        getRowsTextFromCategory(responseHeadersCategory),
+        [['DevTools:', 'rock'], ['foo:', 'bar'], ['highlightMe:', 'some value']]);
+
+    assert.deepStrictEqual(getRowHighlightStatus(responseHeadersCategory), [false, false, false]);
     view.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.Response, 'HiGhLiGhTmE');
-    assert.isFalse(responseHeaderRows[0].classList.contains('header-highlight'));
-    assert.isFalse(responseHeaderRows[1].classList.contains('header-highlight'));
-    assert.isTrue(responseHeaderRows[2].classList.contains('header-highlight'));
+    assert.deepStrictEqual(getRowHighlightStatus(responseHeadersCategory), [false, false, true]);
+
+    view.detach();
+  });
+
+  it('can highlight individual request headers', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
+        null, null, null);
+    request.setRequestHeaders([
+      {name: 'foo', value: 'bar'},
+      {name: 'highlightMe', value: 'some value'},
+      {name: 'DevTools', value: 'rock'},
+    ]);
+
+    const view = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
+    const div = document.createElement('div');
+    renderElementIntoDOM(div);
+    view.markAsRoot();
+    view.show(div);
+
+    const component = view.element.querySelector('devtools-request-headers');
+    assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
+    assertShadowRoot(component.shadowRoot);
+
+    const requestHeadersCategory = component.shadowRoot.querySelector('[aria-label="Request Headers"]');
+    assertElement(requestHeadersCategory, HTMLElement);
+    assert.deepStrictEqual(
+        getRowsTextFromCategory(requestHeadersCategory),
+        [['DevTools:', 'rock'], ['foo:', 'bar'], ['highlightMe:', 'some value']]);
+
+    assert.deepStrictEqual(getRowHighlightStatus(requestHeadersCategory), [false, false, false]);
+    view.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.Request, 'HiGhLiGhTmE');
+    assert.deepStrictEqual(getRowHighlightStatus(requestHeadersCategory), [false, false, true]);
 
     view.detach();
   });

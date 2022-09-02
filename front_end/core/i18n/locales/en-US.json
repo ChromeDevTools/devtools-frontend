@@ -6881,9 +6881,6 @@
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Provisional headers are shown. Disable cache to see full headers."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Choose this option if the resource and the document are served from the same site."
-  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(from disk cache)"
   },
@@ -6907,9 +6904,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Header overrides"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raw"
@@ -6937,21 +6931,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Status Code"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "This document was blocked from loading in an iframe with a sandbox attribute because this document specified a cross-origin opener policy."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "To use this resource from a different origin, the server may relax the cross-origin resource policy response header:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "To use this resource from a different site, the server may relax the cross-origin resource policy response header:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "A client-provided argument was malformed or otherwise invalid."
@@ -7003,6 +6982,27 @@
   },
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Type"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Choose this option if the resource and the document are served from the same site."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "This document was blocked from loading in an iframe with a sandbox attribute because this document specified a cross-origin opener policy."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "To use this resource from a different origin, the server may relax the cross-origin resource policy response header:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "To use this resource from a different site, the server may relax the cross-origin resource policy response header:"
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Bundled resource"

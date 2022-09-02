@@ -115,49 +115,6 @@ div.raw-headers-row {
   word-break: break-all;
 }
 
-.header-badge-text {
-  font-variant: small-caps;
-  font-weight: 500;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-
-.header-badge {
-  display: inline;
-  margin-right: 0.75em;
-  background-color: var(--color-accent-red);
-  color: var(--color-background);
-  border-radius: 100vh;
-  padding-left: 6px;
-  padding-right: 6px;
-}
-
-.call-to-action {
-  background-color: var(--color-background-elevation-1);
-  padding: 8px;
-  border-radius: 2px;
-}
-
-.call-to-action-body {
-  padding: 6px 0;
-  margin-left: 9.5px;
-  border-left: 2px solid var(--issue-color-yellow);
-  padding-left: 18px;
-  line-height: 20px;
-}
-
-.call-to-action .explanation {
-  font-weight: bold;
-}
-
-.call-to-action code {
-  font-size: 90%;
-}
-
-.call-to-action .example .comment::before {
-  content: " — ";
-}
-
 .link,
 .devtools-link {
   color: var(--color-link);
@@ -166,19 +123,8 @@ div.raw-headers-row {
   padding: 2px 0; /* adjust focus ring size */
 }
 
-.explanation .link {
-  font-weight: normal;
-}
-
 .inline-icon {
   vertical-align: middle;
-}
-
-.header-value code {
-  display: block;
-  white-space: pre-wrap;
-  font-size: 90%;
-  color: var(--color-text-secondary);
 }
 
 .header-grid-container {
@@ -216,8 +162,4 @@ summary label {
 
 summary label:hover {
   color: var(--color-text-primary);
-}
-
-.header-highlight {
-  background-color: var(--override-header-highlight-background-color);
 }

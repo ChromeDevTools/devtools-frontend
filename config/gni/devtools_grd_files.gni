@@ -1146,6 +1146,8 @@ grd_files_debug_sources = [
   "front_end/panels/network/components/RequestHeadersView.js",
   "front_end/panels/network/components/RequestTrustTokensView.css.js",
   "front_end/panels/network/components/RequestTrustTokensView.js",
+  "front_end/panels/network/components/ResponseHeaderSection.css.js",
+  "front_end/panels/network/components/ResponseHeaderSection.js",
   "front_end/panels/network/components/WebBundleInfoView.css.js",
   "front_end/panels/network/components/WebBundleInfoView.js",
   "front_end/panels/network/eventSourceMessagesView.css.js",

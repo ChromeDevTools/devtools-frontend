@@ -13,6 +13,7 @@ generate_css("css_files") {
     "RequestHeaderSection.css",
     "RequestHeadersView.css",
     "RequestTrustTokensView.css",
+    "ResponseHeaderSection.css",
     "WebBundleInfoView.css",
   ]
 }
@@ -23,6 +24,7 @@ devtools_module("components") {
     "RequestHeaderSection.ts",
     "RequestHeadersView.ts",
     "RequestTrustTokensView.ts",
+    "ResponseHeaderSection.ts",
     "WebBundleInfoView.ts",
   ]
 

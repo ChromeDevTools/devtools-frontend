@@ -28,7 +28,7 @@ const UIStrings = {
     *@example {align-content} AFFECTED_PROPERTY_DECLARATION_CODE
     */
   ruleViolatedBySameElementRuleReason:
-      'The {REASON_PROPERTY_DECLARATION_CODE} property on the same element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}.',
+      'The {REASON_PROPERTY_DECLARATION_CODE} property on this element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}.',
   /**
     *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to some other property.
     *@example {flex-wrap: nowrap} REASON_PROPERTY_DECLARATION_CODE
@@ -428,12 +428,12 @@ export class PaddingValidator extends CSSRuleValidator {
 
   #isRuleValid(computedStyles?: Map<string, string>): boolean {
     const display = computedStyles?.get('display');
-    if (display === null || display === undefined) {
+    if (!display) {
       return true;
     }
     return !['table-row-group', 'table-header-group', 'table-footer-group', 'table-row', 'table-column-group',
              'table-column']
-                .includes(display as string);
+                .includes(display);
   }
 
   getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
@@ -513,7 +513,7 @@ export class ZIndexValidator extends CSSRuleValidator {
 
   #isRuleValid(computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): boolean {
     const position = computedStyles?.get('position');
-    if (position === null || position === undefined) {
+    if (!position) {
       return true;
     }
     return ['absolute', 'relative', 'fixed', 'sticky'].includes(position) || isFlexContainer(parentComputedStyles);

@@ -4875,7 +4875,7 @@
     "message": "T̂ŕŷ ŕêḿôv́îńĝ {REASON_PROPERTY_DECLARATION_CODE} ór̂ ćĥán̂ǵîńĝ ít̂ś v̂ál̂úê."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "T̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ ón̂ t́ĥé ŝám̂é êĺêḿêńt̂ b́ŷṕâśŝéŝ t́ĥé êf́f̂éĉt́ ôf́ {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "T̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ ón̂ t́ĥíŝ él̂ém̂én̂t́ b̂ýp̂áŝśêś t̂h́ê éf̂f́êćt̂ óf̂ {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<n̂ód̂é>"

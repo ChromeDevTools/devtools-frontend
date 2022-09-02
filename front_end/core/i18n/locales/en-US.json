@@ -4875,7 +4875,7 @@
     "message": "Try removing {REASON_PROPERTY_DECLARATION_CODE} or changing its value."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "The {REASON_PROPERTY_DECLARATION_CODE} property on the same element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "The {REASON_PROPERTY_DECLARATION_CODE} property on this element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"

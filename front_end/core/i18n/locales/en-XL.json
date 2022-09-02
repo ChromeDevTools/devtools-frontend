@@ -695,6 +695,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Êńâb́l̂é n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ b̂ĺôćk̂ín̂ǵ"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Âĺl̂óŵ DevTools t́ô ĺôád̂ ŕêśôúr̂ćêś, ŝúĉh́ âś ŝóûŕĉé m̂áp̂ś, f̂ŕôḿ Ŵín̂d́ôẃŝ Śĥár̂éŝ v́îá UNC p̂át̂h́ŝ. D́îśâb́l̂éd̂ b́ŷ d́êf́âúl̂t́ f̂ór̂ śêćûŕît́ŷ ŕêáŝón̂ś."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Êńâb́l̂é WebP f̂ór̂ḿât́"
   },
@@ -7033,9 +7036,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "D̂ón̂'t́ ĝŕôúp̂ ńêt́ŵór̂ḱ l̂óĝ ít̂ém̂ś b̂ý f̂ŕâḿê"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Âĺl̂óŵ DevTools t́ô ĺôád̂ ŕêśôúr̂ćêś, ŝúĉh́ âś ŝóûŕĉé m̂áp̂ś, f̂ŕôḿ Ŵín̂d́ôẃŝ Śĥár̂éŝ v́îá UNC p̂át̂h́ŝ. D́îśâb́l̂éd̂ b́ŷ d́êf́âúl̂t́ f̂ór̂ śêćûŕît́ŷ ŕêáŝón̂ś."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "f̂ŕâḿê"

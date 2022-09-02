@@ -298,9 +298,8 @@ const flexContainerIcons = new Map([
   ['align-content: space-evenly', flexAlignContentIcon('align-content-space-evenly-icon')],
   ['align-content: flex-end', flexAlignContentIcon('align-content-end-icon')],
   ['align-content: flex-start', flexAlignContentIcon('align-content-start-icon')],
-  // TODO(crbug.com/1139945): Start & end should be enabled once Chromium supports them for flexbox.
-  // ['align-content: start', flexAlignContentIcon('align-content-start-icon')],
-  // ['align-content: end', flexAlignContentIcon('align-content-end-icon')],
+  ['align-content: start', flexAlignContentIcon('align-content-start-icon')],
+  ['align-content: end', flexAlignContentIcon('align-content-end-icon')],
   ['align-content: normal', flexAlignContentIcon('align-content-stretch-icon')],
   ['align-content: revert', flexAlignContentIcon('align-content-stretch-icon')],
   ['align-content: unset', flexAlignContentIcon('align-content-stretch-icon')],

@@ -13,7 +13,6 @@ import * as IssuesManager from '../../../models/issues_manager/issues_manager.js
 import * as Persistence from '../../../models/persistence/persistence.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
-import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -21,6 +20,7 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Sources from '../../sources/sources.js';
+import {type HeaderSectionRowData, HeaderSectionRow, type HeaderDescriptor} from './HeaderSectionRow.js';
 
 import requestHeadersViewStyles from './RequestHeadersView.css.js';
 
@@ -29,22 +29,10 @@ const {render, html} = LitHtml;
 
 const UIStrings = {
   /**
-  *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
-  */
-  activeClientExperimentVariation: 'Active `client experiment variation IDs`.',
-  /**
-  *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
-  */
-  activeClientExperimentVariationIds: 'Active `client experiment variation IDs` that trigger server-side behavior.',
-  /**
   *@description Text in Headers View of the Network panel
   */
   chooseThisOptionIfTheResourceAnd:
       'Choose this option if the resource and the document are served from the same site.',
-  /**
-  *@description Text in Headers View of the Network panel for X-Client-Data HTTP headers
-  */
-  decoded: 'Decoded:',
   /**
   *@description Text in Request Headers View of the Network panel
   */
@@ -82,10 +70,6 @@ const UIStrings = {
   *@description Text that is usually a hyperlink to more documentation
   */
   learnMore: 'Learn more',
-  /**
-  *@description Text for a link to the issues panel
-  */
-  learnMoreInTheIssuesTab: 'Learn more in the issues tab',
   /**
   *@description Label for a checkbox to switch between raw and parsed headers
   */
@@ -277,6 +261,19 @@ export class RequestHeadersComponent extends HTMLElement {
       const headerWithIssues =
           BlockedReasonDetails.get((this.#request.blockedReason() as Protocol.Network.BlockedReason));
       if (headerWithIssues) {
+        if (IssuesManager.RelatedIssue.hasIssueOfCategory(
+                this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
+          const followLink = (): void => {
+            Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LearnMoreLinkCOEP);
+            if (this.#request) {
+              void IssuesManager.RelatedIssue.reveal(
+                  this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy);
+            }
+          };
+          if (headerWithIssues.blockedDetails) {
+            headerWithIssues.blockedDetails.reveal = followLink;
+          }
+        }
         headersWithIssues.push(headerWithIssues);
       }
     }
@@ -317,6 +314,13 @@ export class RequestHeadersComponent extends HTMLElement {
       }
     }
 
+    if (this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response) {
+      mergedHeaders.filter(header => header.name.toUpperCase() === this.#toReveal?.header?.toUpperCase())
+          .forEach(header => {
+            header.highlight = true;
+          });
+    }
+
     const toggleShowRaw = (): void => {
       this.#showResponseHeadersText = !this.#showResponseHeadersText;
       this.#render();
@@ -343,7 +347,11 @@ export class RequestHeadersComponent extends HTMLElement {
       >
         ${this.#showResponseHeadersText ?
             this.#renderRawHeaders(this.#request.responseHeadersText, true) : html`
-          ${mergedHeaders.map(header => this.#renderHeader(header, NetworkForward.UIRequestLocation.UIHeaderSection.Response))}
+          ${mergedHeaders.map(header => html`
+            <${HeaderSectionRow.litTagName} .data=${{
+              header: header,
+            } as HeaderSectionRowData}></${HeaderSectionRow.litTagName}>
+          `)}
         `}
       </${Category.litTagName}>
     `;
@@ -406,10 +414,18 @@ export class RequestHeadersComponent extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    const headers = this.#request.requestHeaders().slice();
+    const headers: HeaderDescriptor[] =
+        this.#request.requestHeaders().map(header => ({...header, headerNotSet: false}));
     headers.sort(function(a, b) {
       return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
     });
+
+    if (this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Request) {
+      headers.filter(header => header.name.toUpperCase() === this.#toReveal?.header?.toUpperCase()).forEach(header => {
+        header.highlight = true;
+      });
+    }
+
     const requestHeadersText = this.#request.requestHeadersText();
     if (!headers.length && requestHeadersText !== undefined) {
       return LitHtml.nothing;
@@ -437,7 +453,11 @@ export class RequestHeadersComponent extends HTMLElement {
         ${(this.#showRequestHeadersText && requestHeadersText) ?
             this.#renderRawHeaders(requestHeadersText, false) : html`
           ${this.#maybeRenderProvisionalHeadersWarning()}
-          ${headers.map(header => this.#renderHeader({...header, headerNotSet: false}, NetworkForward.UIRequestLocation.UIHeaderSection.Request))}
+          ${headers.map(header => html`
+            <${HeaderSectionRow.litTagName} .data=${{
+              header: header,
+            } as HeaderSectionRowData}></${HeaderSectionRow.litTagName}>
+          `)}
         `}
       </${Category.litTagName}>
     `;
@@ -475,133 +495,6 @@ export class RequestHeadersComponent extends HTMLElement {
       </div>
     `;
     // clang-format on
-  }
-
-  #renderHeader(header: HeaderDescriptor, section: NetworkForward.UIRequestLocation.UIHeaderSection):
-      LitHtml.TemplateResult {
-    const isHighlighted =
-        section === this.#toReveal?.section && header.name.toUpperCase() === this.#toReveal?.header?.toUpperCase();
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <div class="row ${isHighlighted ? 'header-highlight' : ''}">
-        <div class="header-name">
-          ${header.headerNotSet ?
-            html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div>` :
-            LitHtml.nothing
-          }${header.name}:
-        </div>
-        <div
-          class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}"
-          @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
-        >
-          ${header.value?.toString() || ''}
-          ${this.#maybeRenderHeaderValueSuffix(header)}
-        </div>
-      </div>
-      ${this.#maybeRenderBlockedDetails(header.blockedDetails)}
-    `;
-    // clang-format on
-  }
-
-  #maybeRenderHeaderValueSuffix(header: HeaderDescriptor): LitHtml.LitTemplate {
-    const headerId = header.name.toLowerCase();
-
-    if (headerId === 'set-cookie' && header.setCookieBlockedReasons) {
-      const titleText =
-          header.setCookieBlockedReasons.map(SDK.NetworkRequest.setCookieBlockedReasonToUiString).join('\n');
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      return html`
-        <${IconButton.Icon.Icon.litTagName} class="inline-icon" title=${titleText} .data=${{
-            iconName: 'clear-warning_icon',
-            width: '12px',
-            height: '12px',
-          } as IconButton.Icon.IconData}>
-        </${IconButton.Icon.Icon.litTagName}>
-      `;
-      // clang-format on
-    }
-
-    if (headerId === 'x-client-data') {
-      const data = ClientVariations.parseClientVariations(header.value?.toString() || '');
-      const output = ClientVariations.formatClientVariations(
-          data, i18nString(UIStrings.activeClientExperimentVariation),
-          i18nString(UIStrings.activeClientExperimentVariationIds));
-      return html`
-        <div>${i18nString(UIStrings.decoded)}</div>
-        <code>${output}</code>
-      `;
-    }
-
-    return LitHtml.nothing;
-  }
-
-  #maybeRenderBlockedDetails(blockedDetails?: BlockedDetailsDescriptor): LitHtml.LitTemplate {
-    if (!blockedDetails) {
-      return LitHtml.nothing;
-    }
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <div class="call-to-action">
-        <div class="call-to-action-body">
-          <div class="explanation">${blockedDetails.explanation()}</div>
-          ${blockedDetails.examples.map(example => html`
-            <div class="example">
-              <code>${example.codeSnippet}</code>
-              ${example.comment ? html`
-                <span class="comment">${example.comment()}</span>
-              ` : ''}
-            </div>
-          `)}
-          ${this.#maybeRenderBlockedDetailsLink(blockedDetails)}
-        </div>
-      </div>
-    `;
-    // clang-format on
-  }
-
-  #maybeRenderBlockedDetailsLink(blockedDetails?: BlockedDetailsDescriptor): LitHtml.LitTemplate {
-    if (this.#request && IssuesManager.RelatedIssue.hasIssueOfCategory(this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
-      const followLink = (): void => {
-        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LearnMoreLinkCOEP);
-        if (this.#request) {
-          void IssuesManager.RelatedIssue.reveal(
-              this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy);
-        }
-      };
-      return html`
-        <div class="devtools-link" @click=${followLink}>
-          <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-            iconName: 'issue-exclamation-icon',
-            color: 'var(--issue-color-yellow)',
-            width: '16px',
-            height: '16px',
-            } as IconButton.Icon.IconData}>
-          </${IconButton.Icon.Icon.litTagName}>
-          ${i18nString(UIStrings.learnMoreInTheIssuesTab)}
-        </div>
-      `;
-    }
-    if (blockedDetails?.link) {
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      return html`
-        <x-link href=${blockedDetails.link.url} class="link">
-          <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-            iconName: 'link_icon',
-            color: 'var(--color-link)',
-            width: '16px',
-            height: '16px',
-          } as IconButton.Icon.IconData}>
-          </${IconButton.Icon.Icon.litTagName}
-          >${i18nString(UIStrings.learnMore)}
-        </x-link>
-      `;
-      // clang-format on
-    }
-    return LitHtml.nothing;
   }
 
   #renderRawHeaders(rawHeadersText: string, forResponseHeaders: boolean): LitHtml.TemplateResult {
@@ -774,7 +667,7 @@ export class Category extends HTMLElement {
         <summary class="header" @keydown=${this.#onSummaryKeyDown}>
           <div class="header-grid-container">
             <div>
-              ${this.#title}${this.#headerCount ?
+              ${this.#title}${this.#headerCount !== undefined ?
                 html`<span class="header-count"> (${this.#headerCount})</span>` :
                 LitHtml.nothing
               }
@@ -825,26 +718,6 @@ declare global {
     'devtools-request-headers': RequestHeadersComponent;
     'devtools-request-headers-category': Category;
   }
-}
-
-interface BlockedDetailsDescriptor {
-  explanation: () => string;
-  examples: Array<{
-    codeSnippet: string,
-    comment?: (() => string),
-  }>;
-  link: {
-    url: string,
-  }|null;
-}
-
-interface HeaderDescriptor {
-  name: string;
-  value: Object|null;
-  headerValueIncorrect?: boolean|null;
-  blockedDetails?: BlockedDetailsDescriptor;
-  headerNotSet: boolean|null;
-  setCookieBlockedReasons?: Protocol.Network.SetCookieBlockedReason[];
 }
 
 const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescriptor>([

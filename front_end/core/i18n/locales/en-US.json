@@ -6854,17 +6854,23 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Text pattern to block matching requests; use * for wildcard"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Active client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Active client experiment variation IDs that trigger server-side behavior."
+  },
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
+    "message": "Decoded:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Learn more in the issues tab"
   },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Choose this option if the resource and the document are served from the same site."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
-    "message": "Decoded:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(from disk cache)"
@@ -6892,9 +6898,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Learn more"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Learn more in the issues tab"
   },
   "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
     "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."

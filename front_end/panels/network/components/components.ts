@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as HeaderSectionRow from './HeaderSectionRow.js';
 import * as RequestHeadersView from './RequestHeadersView.js';
 import * as RequestTrustTokensView from './RequestTrustTokensView.js';
 
 export {
+  HeaderSectionRow,
   RequestHeadersView,
   RequestTrustTokensView,
 };

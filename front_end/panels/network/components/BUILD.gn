@@ -9,6 +9,7 @@ import("../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "HeaderSectionRow.css",
     "RequestHeadersView.css",
     "RequestTrustTokensView.css",
     "WebBundleInfoView.css",
@@ -17,6 +18,7 @@ generate_css("css_files") {
 
 devtools_module("components") {
   sources = [
+    "HeaderSectionRow.ts",
     "RequestHeadersView.ts",
     "RequestTrustTokensView.ts",
     "WebBundleInfoView.ts",

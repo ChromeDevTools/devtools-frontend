@@ -3,11 +3,13 @@
 // found in the LICENSE file.
 
 import * as HeaderSectionRow from './HeaderSectionRow.js';
+import * as RequestHeaderSection from './RequestHeaderSection.js';
 import * as RequestHeadersView from './RequestHeadersView.js';
 import * as RequestTrustTokensView from './RequestTrustTokensView.js';
 
 export {
   HeaderSectionRow,
+  RequestHeaderSection,
   RequestHeadersView,
   RequestTrustTokensView,
 };

@@ -6869,6 +6869,18 @@
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Learn more in the issues tab"
   },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Provisional headers are shown."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Provisional headers are shown. Disable cache to see full headers."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Choose this option if the resource and the document are served from the same site."
   },
@@ -6896,20 +6908,8 @@
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Header overrides"
   },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Learn more"
-  },
   "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
     "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Provisional headers are shown."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Provisional headers are shown. Disable cache to see full headers."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raw"

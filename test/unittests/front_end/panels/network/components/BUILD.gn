@@ -8,6 +8,7 @@ ts_library("components") {
   testonly = true
   sources = [
     "HeaderSectionRow_test.ts",
+    "RequestHeaderSection_test.ts",
     "RequestHeadersView_test.ts",
     "RequestTrustTokensView_test.ts",
   ]

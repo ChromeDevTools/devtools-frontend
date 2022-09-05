@@ -1,0 +1,59 @@
+/*
+ * Copyright 2022 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  display: block;
+}
+
+devtools-header-section-row:last-of-type {
+  margin-bottom: 10px;
+}
+
+devtools-header-section-row:first-of-type {
+  margin-top: 2px;
+}
+
+.call-to-action {
+  background-color: var(--color-background-elevation-1);
+  padding: 8px;
+  border-radius: 2px;
+}
+
+.call-to-action-body {
+  padding: 6px 0;
+  margin-left: 9.5px;
+  border-left: 2px solid var(--issue-color-yellow);
+  padding-left: 18px;
+  line-height: 20px;
+}
+
+.call-to-action .explanation {
+  font-weight: bold;
+}
+
+.call-to-action code {
+  font-size: 90%;
+}
+
+.call-to-action .example .comment::before {
+  content: " — ";
+}
+
+.link,
+.devtools-link {
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 2px 0; /* adjust focus ring size */
+}
+
+.explanation .link {
+  font-weight: normal;
+}
+
+.inline-icon {
+  vertical-align: middle;
+}

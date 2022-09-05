@@ -21,6 +21,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Sources from '../../sources/sources.js';
 import {type HeaderSectionRowData, HeaderSectionRow, type HeaderDescriptor} from './HeaderSectionRow.js';
+import {type RequestHeaderSectionData, RequestHeaderSection} from './RequestHeaderSection.js';
 
 import requestHeadersViewStyles from './RequestHeadersView.css.js';
 
@@ -67,10 +68,6 @@ const UIStrings = {
   */
   headerOverrides: 'Header overrides',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
-  learnMore: 'Learn more',
-  /**
   *@description Label for a checkbox to switch between raw and parsed headers
   */
   raw: 'Raw',
@@ -79,19 +76,6 @@ const UIStrings = {
   */
   onlyChooseThisOptionIfAn:
       'Only choose this option if an arbitrary website including this resource does not impose a security risk.',
-  /**
-  *@description Message to explain lack of raw headers for a particular network request
-  */
-  provisionalHeadersAreShownDisableCache: 'Provisional headers are shown. Disable cache to see full headers.',
-  /**
-  *@description Tooltip to explain lack of raw headers for a particular network request
-  */
-  onlyProvisionalHeadersAre:
-      'Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers.',
-  /**
-  *@description Message to explain lack of raw headers for a particular network request
-  */
-  provisionalHeadersAreShown: 'Provisional headers are shown.',
   /**
   *@description Text in Request Headers View of the Network panel
   */
@@ -413,23 +397,7 @@ export class RequestHeadersComponent extends HTMLElement {
     if (!this.#request) {
       return LitHtml.nothing;
     }
-
-    const headers: HeaderDescriptor[] =
-        this.#request.requestHeaders().map(header => ({...header, headerNotSet: false}));
-    headers.sort(function(a, b) {
-      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
-    });
-
-    if (this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Request) {
-      headers.filter(header => header.name.toUpperCase() === this.#toReveal?.header?.toUpperCase()).forEach(header => {
-        header.highlight = true;
-      });
-    }
-
     const requestHeadersText = this.#request.requestHeadersText();
-    if (!headers.length && requestHeadersText !== undefined) {
-      return LitHtml.nothing;
-    }
 
     const toggleShowRaw = (): void => {
       this.#showRequestHeadersText = !this.#showRequestHeadersText;
@@ -452,47 +420,12 @@ export class RequestHeadersComponent extends HTMLElement {
       >
         ${(this.#showRequestHeadersText && requestHeadersText) ?
             this.#renderRawHeaders(requestHeadersText, false) : html`
-          ${this.#maybeRenderProvisionalHeadersWarning()}
-          ${headers.map(header => html`
-            <${HeaderSectionRow.litTagName} .data=${{
-              header: header,
-            } as HeaderSectionRowData}></${HeaderSectionRow.litTagName}>
-          `)}
+          <${RequestHeaderSection.litTagName} .data=${{
+            request: this.#request,
+            toReveal: this.#toReveal,
+          } as RequestHeaderSectionData}></${RequestHeaderSection.litTagName}>
         `}
       </${Category.litTagName}>
-    `;
-    // clang-format on
-  }
-
-  #maybeRenderProvisionalHeadersWarning(): LitHtml.LitTemplate {
-    if (!this.#request || this.#request.requestHeadersText() !== undefined) {
-      return LitHtml.nothing;
-    }
-
-    let cautionText;
-    let cautionTitle = '';
-    if (this.#request.cachedInMemory() || this.#request.cached()) {
-      cautionText = i18nString(UIStrings.provisionalHeadersAreShownDisableCache);
-      cautionTitle = i18nString(UIStrings.onlyProvisionalHeadersAre);
-    } else {
-      cautionText = i18nString(UIStrings.provisionalHeadersAreShown);
-    }
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <div class="call-to-action">
-        <div class="call-to-action-body">
-          <div class="explanation" title=${cautionTitle}>
-            <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-                iconName: 'clear-warning_icon',
-                width: '12px',
-                height: '12px',
-              } as IconButton.Icon.IconData}>
-            </${IconButton.Icon.Icon.litTagName}>
-            ${cautionText} <x-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString(UIStrings.learnMore)}</x-link>
-          </div>
-        </div>
-      </div>
     `;
     // clang-format on
   }

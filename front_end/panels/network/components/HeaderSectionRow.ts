@@ -11,6 +11,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Host from '../../../core/host/host.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
+import type * as Platform from '../../../core/platform/platform.js';
 
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 
@@ -204,7 +205,7 @@ interface BlockedDetailsDescriptor {
 }
 
 export interface HeaderDescriptor {
-  name: string;  // Headername should always be lower case.
+  name: Platform.StringUtilities.LowerCaseString;
   value: string|null;
   headerValueIncorrect?: boolean|null;
   blockedDetails?: BlockedDetailsDescriptor;

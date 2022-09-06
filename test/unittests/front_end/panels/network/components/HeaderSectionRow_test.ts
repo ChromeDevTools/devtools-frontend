@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../../../../front_end/core/host/host.js';
+import * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as NetworkComponents from '../../../../../../front_end/panels/network/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
@@ -31,7 +32,7 @@ async function renderHeaderSectionRow(header: NetworkComponents.HeaderSectionRow
 describeWithEnvironment('HeaderSectionRow', () => {
   it('emits UMA event when a header value is being copied', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
-      name: 'someHeaderName',
+      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
       value: 'someHeaderValue',
       headerNotSet: false,
     };
@@ -49,7 +50,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
   it('renders detailed reason for blocked requests', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
-      name: 'cross-origin-resource-policy',
+      name: Platform.StringUtilities.toLowerCaseString('cross-origin-resource-policy'),
       value: null,
       headerNotSet: true,
       blockedDetails: {
@@ -92,7 +93,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
   it('displays decoded "x-client-data"-header', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
-      name: 'x-client-data',
+      name: Platform.StringUtilities.toLowerCaseString('x-client-data'),
       value: 'CJa2yQEIpLbJAQiTocsB',
       headerNotSet: false,
     };
@@ -114,7 +115,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
   it('displays info about blocked "Set-Cookie"-headers', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
-      name: 'set-cookie',
+      name: Platform.StringUtilities.toLowerCaseString('set-cookie'),
       value: 'secure=only; Secure',
       headerNotSet: false,
       setCookieBlockedReasons:
@@ -144,7 +145,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
   it('can be highlighted', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
-      name: 'someHeaderName',
+      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
       value: 'someHeaderValue',
       headerNotSet: false,
       highlight: true,

@@ -57,8 +57,11 @@ export class RequestHeaderSection extends HTMLElement {
   set data(data: RequestHeaderSectionData) {
     this.#request = data.request;
 
-    this.#headers = this.#request.requestHeaders().map(
-        header => ({name: header.name.toLowerCase(), value: header.value, headerNotSet: false}));
+    this.#headers = this.#request.requestHeaders().map(header => ({
+                                                         name: Platform.StringUtilities.toLowerCaseString(header.name),
+                                                         value: header.value,
+                                                         headerNotSet: false,
+                                                       }));
     this.#headers.sort((a, b) => Platform.StringUtilities.compare(a.name, b.name));
 
     if (data.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Request) {

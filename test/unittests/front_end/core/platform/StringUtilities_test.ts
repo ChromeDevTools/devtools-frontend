@@ -531,4 +531,16 @@ describe('StringUtilities', () => {
       assert.throws(() => Platform.StringUtilities.sprintf('%s %d', 'World'));
     });
   });
+
+  describe('LowerCaseString', () => {
+    function fnExpectingLowerCaseString(lowerCaseString: Platform.StringUtilities.LowerCaseString): void {
+      lowerCaseString;
+    }
+
+    // @ts-expect-error Passing a plain string when LowerCaseString is expected
+    fnExpectingLowerCaseString('Foo');
+
+    const lower = Platform.StringUtilities.toLowerCaseString('lower case string');
+    fnExpectingLowerCaseString(lower);
+  });
 });

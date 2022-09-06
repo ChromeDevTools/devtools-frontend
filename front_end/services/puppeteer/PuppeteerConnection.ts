@@ -6,7 +6,7 @@ import * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 
-export class Transport implements puppeteer.ConnectionTransport {
+class Transport implements puppeteer.ConnectionTransport {
   #connection: SDK.Connections.ParallelConnectionInterface;
   #knownIds = new Set<number>();
 
@@ -56,7 +56,7 @@ export class Transport implements puppeteer.ConnectionTransport {
   }
 }
 
-export class PuppeteerConnection extends puppeteer.Connection {
+class PuppeteerConnection extends puppeteer.Connection {
   override async onMessage(message: string): Promise<void> {
     const msgObj = JSON.parse(message) as {id: number, method: string, params: unknown, sessionId?: string};
     if (msgObj.sessionId && !this._sessions.has(msgObj.sessionId)) {
@@ -70,15 +70,15 @@ export class PuppeteerConnectionHelper {
   static async connectPuppeteerToConnection(options: {
     connection: SDK.Connections.ParallelConnectionInterface,
     mainFrameId: string,
-    mainTargetId: string,
     targetInfos: Protocol.Target.TargetInfo[],
     targetFilterCallback: (targetInfo: Protocol.Target.TargetInfo) => boolean,
     isPageTargetCallback: (targetInfo: Protocol.Target.TargetInfo) => boolean,
   }): Promise<{
     page: puppeteer.Page | null,
     browser: puppeteer.Browser,
+    puppeteerConnection: puppeteer.Connection,
   }> {
-    const {connection, mainFrameId, mainTargetId, targetInfos, targetFilterCallback, isPageTargetCallback} = options;
+    const {connection, mainFrameId, targetInfos, targetFilterCallback, isPageTargetCallback} = options;
     // Pass an empty message handler because it will be overwritten by puppeteer anyways.
     const transport = new Transport(connection);
 
@@ -105,22 +105,6 @@ export class PuppeteerConnectionHelper {
       browserPromise,
     ]);
 
-    browser.on('targetdiscovered', (targetInfo: Protocol.Target.TargetInfo) => {
-      // Pop-ups opened by the main target won't be auto-attached. Therefore,
-      // we need to create a session for them explicitly. We use openedId
-      // and type to classify a target as requiring a session.
-      if (targetInfo.type !== 'page') {
-        return;
-      }
-      if (targetInfo.targetId === mainTargetId) {
-        return;
-      }
-      if (targetInfo.openerId !== mainTargetId) {
-        return;
-      }
-      void puppeteerConnection._createSession(targetInfo, /* emulateAutoAttach= */ true);
-    });
-
     // TODO: replace this with browser.pages() once the Puppeteer version is rolled.
     const pages =
         await Promise.all(browser.browserContexts()
@@ -131,6 +115,6 @@ export class PuppeteerConnectionHelper {
     const page =
         pages.filter((p): p is puppeteer.Page => p !== null).find(p => p.mainFrame()._id === mainFrameId) || null;
 
-    return {page, browser};
+    return {page, browser, puppeteerConnection};
   }
 }

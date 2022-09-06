@@ -56,11 +56,8 @@ export interface LighthouseRun {
  * ProtocolService manages a connection between the frontend (Lighthouse panel) and the Lighthouse worker.
  */
 export class ProtocolService {
-  private mainTargetArgs?: {
-    mainSessionId: string,
-    mainTargetId: string,
-    mainFrameId: string,
-  };
+  private mainSessionId?: string;
+  private mainFrameId?: string;
   private targetInfos?: Protocol.Target.TargetInfo[];
   private parallelConnection?: ProtocolClient.InspectorBackend.Connection;
   private lighthouseWorkerPromise?: Promise<Worker>;
@@ -95,11 +92,8 @@ export class ProtocolService {
 
     this.parallelConnection = connection;
     this.targetInfos = childTargetManager.targetInfos();
-    this.mainTargetArgs = {
-      mainTargetId: await childTargetManager.getParentTargetId(),
-      mainFrameId: mainFrame.id,
-      mainSessionId: sessionId,
-    };
+    this.mainFrameId = mainFrame.id;
+    this.mainSessionId = sessionId;
   }
 
   getLocales(): readonly string[] {
@@ -109,7 +103,7 @@ export class ProtocolService {
   async startTimespan(currentLighthouseRun: LighthouseRun): Promise<void> {
     const {inspectedURL, categoryIDs, flags} = currentLighthouseRun;
 
-    if (!this.mainTargetArgs || !this.targetInfos) {
+    if (!this.mainFrameId || !this.mainSessionId || !this.targetInfos) {
       throw new Error('Unable to get target info required for Lighthouse');
     }
 
@@ -119,7 +113,8 @@ export class ProtocolService {
       flags,
       config: this.configForTesting,
       locales: this.getLocales(),
-      mainTarget: this.mainTargetArgs,
+      mainSessionId: this.mainSessionId,
+      mainFrameId: this.mainFrameId,
       targetInfos: this.targetInfos,
     });
   }
@@ -127,7 +122,7 @@ export class ProtocolService {
   async collectLighthouseResults(currentLighthouseRun: LighthouseRun): Promise<ReportRenderer.RunnerResult> {
     const {inspectedURL, categoryIDs, flags} = currentLighthouseRun;
 
-    if (!this.mainTargetArgs || !this.targetInfos) {
+    if (!this.mainFrameId || !this.mainSessionId || !this.targetInfos) {
       throw new Error('Unable to get target info required for Lighthouse');
     }
 
@@ -142,7 +137,8 @@ export class ProtocolService {
       flags,
       config: this.configForTesting,
       locales: this.getLocales(),
-      target: this.mainTargetArgs,
+      mainSessionId: this.mainSessionId,
+      mainFrameId: this.mainFrameId,
       targetInfos: this.targetInfos,
     });
   }

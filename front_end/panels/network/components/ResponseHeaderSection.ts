@@ -99,7 +99,7 @@ export class ResponseHeaderSection extends HTMLElement {
     }
 
     function mergeHeadersWithIssues(
-        headers: SDK.NetworkRequest.NameValue[], headersWithIssues: HeaderDescriptor[]): HeaderDescriptor[] {
+        headers: HeaderDescriptor[], headersWithIssues: HeaderDescriptor[]): HeaderDescriptor[] {
       let i = 0, j = 0;
       const result: HeaderDescriptor[] = [];
       while (i < headers.length && j < headersWithIssues.length) {
@@ -120,14 +120,16 @@ export class ResponseHeaderSection extends HTMLElement {
       return result;
     }
 
-    this.#headers = mergeHeadersWithIssues(this.#request.sortedResponseHeaders.slice(), headersWithIssues);
+    this.#headers = this.#request.sortedResponseHeaders.map(
+        header => ({name: header.name.toLowerCase(), value: header.value, headerNotSet: false}));
+    this.#headers = mergeHeadersWithIssues(this.#headers, headersWithIssues);
 
     const blockedResponseCookies = this.#request.blockedResponseCookies();
     const blockedCookieLineToReasons = new Map<string, Protocol.Network.SetCookieBlockedReason[]>(
         blockedResponseCookies?.map(c => [c.cookieLine, c.blockedReasons]));
     for (const header of this.#headers) {
-      if (header.name.toLowerCase() === 'set-cookie' && header.value) {
-        const matchingBlockedReasons = blockedCookieLineToReasons.get(header.value.toString());
+      if (header.name === 'set-cookie' && header.value) {
+        const matchingBlockedReasons = blockedCookieLineToReasons.get(header.value);
         if (matchingBlockedReasons) {
           header.setCookieBlockedReasons = matchingBlockedReasons;
         }
@@ -135,10 +137,9 @@ export class ResponseHeaderSection extends HTMLElement {
     }
 
     if (data.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response) {
-      this.#headers.filter(header => header.name.toUpperCase() === data.toReveal?.header?.toUpperCase())
-          .forEach(header => {
-            header.highlight = true;
-          });
+      this.#headers.filter(header => header.name === data.toReveal?.header?.toLowerCase()).forEach(header => {
+        header.highlight = true;
+      });
     }
 
     this.#render();

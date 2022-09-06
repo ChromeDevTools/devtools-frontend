@@ -265,11 +265,11 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     const spy = sinon.spy(component, 'data', ['set']);
     assert.isTrue(spy.set.notCalled);
-    assert.deepStrictEqual(getRowsTextFromCategory(responseHeadersCategory), [['originalName:', 'originalValue']]);
+    assert.deepStrictEqual(getRowsTextFromCategory(responseHeadersCategory), [['originalname:', 'originalValue']]);
 
     request.responseHeaders = [{name: 'updatedName', value: 'updatedValue'}];
     assert.isTrue(spy.set.calledOnce);
-    assert.deepStrictEqual(getRowsTextFromCategory(responseHeadersCategory), [['updatedName:', 'updatedValue']]);
+    assert.deepStrictEqual(getRowsTextFromCategory(responseHeadersCategory), [['updatedname:', 'updatedValue']]);
 
     view.detach();
   });
@@ -299,7 +299,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assertElement(responseHeadersCategory, HTMLElement);
     assert.deepStrictEqual(
         getRowsTextFromCategory(responseHeadersCategory),
-        [['DevTools:', 'rock'], ['foo:', 'bar'], ['highlightMe:', 'some value']]);
+        [['devtools:', 'rock'], ['foo:', 'bar'], ['highlightme:', 'some value']]);
 
     assert.deepStrictEqual(getRowHighlightStatus(responseHeadersCategory), [false, false, false]);
     view.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.Response, 'HiGhLiGhTmE');
@@ -333,7 +333,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assertElement(requestHeadersCategory, HTMLElement);
     assert.deepStrictEqual(
         getRowsTextFromCategory(requestHeadersCategory),
-        [['DevTools:', 'rock'], ['foo:', 'bar'], ['highlightMe:', 'some value']]);
+        [['devtools:', 'rock'], ['foo:', 'bar'], ['highlightme:', 'some value']]);
 
     assert.deepStrictEqual(getRowHighlightStatus(requestHeadersCategory), [false, false, false]);
     view.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.Request, 'HiGhLiGhTmE');

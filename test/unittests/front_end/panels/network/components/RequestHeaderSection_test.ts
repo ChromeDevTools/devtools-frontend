@@ -76,7 +76,7 @@ describeWithEnvironment('RequestHeaderSection', () => {
     });
     assert.deepStrictEqual(sorted, [
       ['aa:', 'first'],
-      ['Ab:', 'second'],
+      ['ab:', 'second'],
       ['abc:', 'third'],
       ['name:', 'fourth'],
       ['test:', 'fifth'],

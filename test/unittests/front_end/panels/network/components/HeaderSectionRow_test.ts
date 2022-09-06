@@ -114,7 +114,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
   it('displays info about blocked "Set-Cookie"-headers', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
-      name: 'Set-Cookie',
+      name: 'set-cookie',
       value: 'secure=only; Secure',
       headerNotSet: false,
       setCookieBlockedReasons:
@@ -125,7 +125,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
     const headerName = component.shadowRoot.querySelector('.header-name');
     assertElement(headerName, HTMLDivElement);
-    assert.strictEqual(headerName.textContent?.trim(), 'Set-Cookie:');
+    assert.strictEqual(headerName.textContent?.trim(), 'set-cookie:');
 
     const headerValue = component.shadowRoot.querySelector('.header-value');
     assertElement(headerValue, HTMLDivElement);

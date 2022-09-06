@@ -79,7 +79,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assertElement(row, HTMLElement);
     assertShadowRoot(row.shadowRoot);
 
-    assert.strictEqual(row.shadowRoot.querySelector('.header-name')?.textContent?.trim(), 'Set-Cookie:');
+    assert.strictEqual(row.shadowRoot.querySelector('.header-name')?.textContent?.trim(), 'set-cookie:');
     assert.strictEqual(row.shadowRoot.querySelector('.header-value')?.textContent?.trim(), 'secure=only; Secure');
 
     const icon = row.shadowRoot.querySelector('devtools-icon');

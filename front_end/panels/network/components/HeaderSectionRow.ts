@@ -79,7 +79,7 @@ export class HeaderSectionRow extends HTMLElement {
           class="header-value ${this.#header.headerValueIncorrect ? 'header-warning' : ''}"
           @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
         >
-          ${this.#header.value?.toString() || ''}
+          ${this.#header.value || ''}
           ${this.#maybeRenderHeaderValueSuffix(this.#header)}
         </div>
       </div>
@@ -89,9 +89,7 @@ export class HeaderSectionRow extends HTMLElement {
   }
 
   #maybeRenderHeaderValueSuffix(header: HeaderDescriptor): LitHtml.LitTemplate {
-    const headerId = header.name.toLowerCase();
-
-    if (headerId === 'set-cookie' && header.setCookieBlockedReasons) {
+    if (header.name === 'set-cookie' && header.setCookieBlockedReasons) {
       const titleText =
           header.setCookieBlockedReasons.map(SDK.NetworkRequest.setCookieBlockedReasonToUiString).join('\n');
       // Disabled until https://crbug.com/1079231 is fixed.
@@ -107,8 +105,8 @@ export class HeaderSectionRow extends HTMLElement {
       // clang-format on
     }
 
-    if (headerId === 'x-client-data') {
-      const data = ClientVariations.parseClientVariations(header.value?.toString() || '');
+    if (header.name === 'x-client-data') {
+      const data = ClientVariations.parseClientVariations(header.value || '');
       const output = ClientVariations.formatClientVariations(
           data, i18nString(UIStrings.activeClientExperimentVariation),
           i18nString(UIStrings.activeClientExperimentVariationIds));
@@ -206,8 +204,8 @@ interface BlockedDetailsDescriptor {
 }
 
 export interface HeaderDescriptor {
-  name: string;
-  value: Object|null;
+  name: string;  // Headername should always be lower case.
+  value: string|null;
   headerValueIncorrect?: boolean|null;
   blockedDetails?: BlockedDetailsDescriptor;
   headerNotSet: boolean|null;

@@ -425,7 +425,7 @@ export class RequestHeadersComponent extends HTMLElement {
 
   #renderGeneralRow(name: Common.UIString.LocalizedString, value: string, classNames?: string[]): LitHtml.LitTemplate {
     const isHighlighted = this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.General &&
-        name.toUpperCase() === this.#toReveal?.header?.toUpperCase();
+        name.toLowerCase() === this.#toReveal?.header?.toLowerCase();
     return html`
       <div class="row ${isHighlighted ? 'header-highlight' : ''}">
         <div class="header-name">${name}:</div>

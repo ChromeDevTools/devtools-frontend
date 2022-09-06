@@ -8,6 +8,7 @@ import {
   reloadDevTools,
   waitFor,
   waitForFunction,
+  waitForMany,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -78,11 +79,11 @@ describe('A user can navigate across', async function() {
     await navigateToPerformanceSidebarTab('Bottom-Up');
 
     // Find the link pointing to default.html.
-    let link;
-    await waitForFunction(async () => {
-      link = await waitFor('.devtools-link');
-      const linkText = await link.evaluate(x => x.textContent);
-      return linkText?.startsWith('default.html');
+    const link = await waitForFunction(async () => {
+      const allLinks = await waitForMany('.devtools-link', 1);
+      const linkText = await Promise.all(allLinks.map(link => link.evaluate(x => x.textContent)));
+      const linkIdx = linkText.findIndex(text => text?.startsWith('default.html'));
+      return linkIdx < 0 ? undefined : allLinks[linkIdx];
     });
 
     assertNotNullOrUndefined(link);

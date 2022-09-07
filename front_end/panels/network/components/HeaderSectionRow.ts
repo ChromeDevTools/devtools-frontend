@@ -66,10 +66,16 @@ export class HeaderSectionRow extends HTMLElement {
       return;
     }
 
+    const rowClasses = LitHtml.Directives.classMap({
+      row: true,
+      'header-highlight': Boolean(this.#header.highlight),
+      'header-overridden': Boolean(this.#header.isOverride),
+    });
+
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="row ${this.#header.highlight ? 'header-highlight' : ''}">
+      <div class=${rowClasses}>
         <div class="header-name">
           ${this.#header.headerNotSet ?
             html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div> ` :
@@ -209,7 +215,8 @@ export interface HeaderDescriptor {
   value: string|null;
   headerValueIncorrect?: boolean|null;
   blockedDetails?: BlockedDetailsDescriptor;
-  headerNotSet: boolean|null;
+  headerNotSet?: boolean|null;
   setCookieBlockedReasons?: Protocol.Network.SetCookieBlockedReason[];
   highlight?: boolean;
+  isOverride?: boolean;
 }

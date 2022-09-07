@@ -76,6 +76,12 @@ export class ResponseHeaderSection extends HTMLElement {
 
   set data(data: ResponseHeaderSectionData) {
     this.#request = data.request;
+    this.#headers =
+        this.#request.sortedResponseHeaders.map(header => ({
+                                                  name: Platform.StringUtilities.toLowerCaseString(header.name),
+                                                  value: header.value,
+                                                }));
+    this.#markOverrides();
 
     const headersWithIssues = [];
     if (this.#request.wasBlocked()) {
@@ -121,12 +127,6 @@ export class ResponseHeaderSection extends HTMLElement {
       return result;
     }
 
-    this.#headers =
-        this.#request.sortedResponseHeaders.map(header => ({
-                                                  name: Platform.StringUtilities.toLowerCaseString(header.name),
-                                                  value: header.value,
-                                                  headerNotSet: false,
-                                                }));
     this.#headers = mergeHeadersWithIssues(this.#headers, headersWithIssues);
 
     const blockedResponseCookies = this.#request.blockedResponseCookies();
@@ -148,6 +148,69 @@ export class ResponseHeaderSection extends HTMLElement {
     }
 
     this.#render();
+  }
+
+  #markOverrides(): void {
+    if (!this.#request || this.#request.originalResponseHeaders.length === 0) {
+      return;
+    }
+
+    // To compare original headers and actual headers we use a map from header
+    // name to an array of header values. This allows us to handle the cases
+    // in which we have multiple headers with the same name (and corresponding
+    // header values which may or may not occur multiple times as well). We are
+    // not using MultiMaps, because a Set would not able to distinguish between
+    // header values [a, a, b] and [a, b, b].
+    const originalHeaders = new Map<Platform.StringUtilities.LowerCaseString, string[]>();
+    for (const header of this.#request?.originalResponseHeaders || []) {
+      const headerName = Platform.StringUtilities.toLowerCaseString(header.name);
+      const headerValues = originalHeaders.get(headerName);
+      if (headerValues) {
+        headerValues.push(header.value);
+      } else {
+        originalHeaders.set(headerName, [header.value]);
+      }
+    }
+
+    const actualHeaders = new Map<Platform.StringUtilities.LowerCaseString, string[]>();
+    for (const header of this.#headers) {
+      const headerName = Platform.StringUtilities.toLowerCaseString(header.name);
+      const headerValues = actualHeaders.get(headerName);
+      if (headerValues) {
+        headerValues.push(header.value || '');
+      } else {
+        actualHeaders.set(headerName, [header.value || '']);
+      }
+    }
+
+    const isDifferent =
+        (headerName: Platform.StringUtilities.LowerCaseString,
+         actualHeaders: Map<Platform.StringUtilities.LowerCaseString, string[]>,
+         originalHeaders: Map<Platform.StringUtilities.LowerCaseString, string[]>): boolean => {
+          const actual = actualHeaders.get(headerName);
+          const original = originalHeaders.get(headerName);
+          if (!actual || !original || actual.length !== original.length) {
+            return true;
+          }
+          actual.sort();
+          original.sort();
+          for (let i = 0; i < actual.length; i++) {
+            if (actual[i] !== original[i]) {
+              return true;
+            }
+          }
+          return false;
+        };
+
+    for (const headerName of actualHeaders.keys()) {
+      // If the array of actual headers and the array of original headers do not
+      // exactly match, mark all headers with 'headerName' as being overridden.
+      if (isDifferent(headerName, actualHeaders, originalHeaders)) {
+        this.#headers.filter(header => header.name === headerName).forEach(header => {
+          header.isOverride = true;
+        });
+      }
+    }
   }
 
   #render(): void {

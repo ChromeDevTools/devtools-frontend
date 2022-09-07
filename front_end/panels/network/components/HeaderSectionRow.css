@@ -107,3 +107,9 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
 .header-warning {
   color: var(--override-error-background-color);
 }
+
+.header-overridden {
+  background-color: var(--color-accent-green-background);
+  border-left: 3px solid var(--color-accent-green);
+  padding-left: 5px;
+}

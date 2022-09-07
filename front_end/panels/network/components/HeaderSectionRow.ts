@@ -213,9 +213,9 @@ interface BlockedDetailsDescriptor {
 export interface HeaderDescriptor {
   name: Platform.StringUtilities.LowerCaseString;
   value: string|null;
-  headerValueIncorrect?: boolean|null;
+  headerValueIncorrect?: boolean;
   blockedDetails?: BlockedDetailsDescriptor;
-  headerNotSet?: boolean|null;
+  headerNotSet?: boolean;
   setCookieBlockedReasons?: Protocol.Network.SetCookieBlockedReason[];
   highlight?: boolean;
   isOverride?: boolean;

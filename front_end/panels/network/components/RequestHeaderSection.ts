@@ -60,7 +60,6 @@ export class RequestHeaderSection extends HTMLElement {
     this.#headers = this.#request.requestHeaders().map(header => ({
                                                          name: Platform.StringUtilities.toLowerCaseString(header.name),
                                                          value: header.value,
-                                                         headerNotSet: false,
                                                        }));
     this.#headers.sort((a, b) => Platform.StringUtilities.compare(a.name, b.name));
 

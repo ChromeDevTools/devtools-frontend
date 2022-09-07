@@ -245,13 +245,11 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
     {
       name: Platform.StringUtilities.toLowerCaseString('cross-origin-embedder-policy'),
       value: null,
-      headerValueIncorrect: null,
       blockedDetails: {
         explanation: i18nLazyString(UIStrings.toEmbedThisFrameInYourDocument),
         examples: [{codeSnippet: 'Cross-Origin-Embedder-Policy: require-corp', comment: undefined}],
         link: {url: 'https://web.dev/coop-coep/'},
       },
-      headerNotSet: null,
     },
   ],
   [
@@ -259,7 +257,6 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
     {
       name: Platform.StringUtilities.toLowerCaseString('cross-origin-resource-policy'),
       value: null,
-      headerValueIncorrect: null,
       blockedDetails: {
         explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferent),
         examples: [
@@ -274,7 +271,6 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
         ],
         link: {url: 'https://web.dev/coop-coep/'},
       },
-      headerNotSet: null,
     },
   ],
   [
@@ -288,7 +284,6 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
         examples: [],
         link: {url: 'https://web.dev/coop-coep/'},
       },
-      headerNotSet: null,
     },
   ],
   [
@@ -307,7 +302,6 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
         ],
         link: null,
       },
-      headerNotSet: null,
     },
   ],
   [
@@ -330,7 +324,6 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
         ],
         link: null,
       },
-      headerNotSet: null,
     },
   ],
 ]);

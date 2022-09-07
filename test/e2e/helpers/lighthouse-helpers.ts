@@ -105,6 +105,11 @@ export async function isGenerateReportButtonDisabled() {
   return button.evaluate(element => (element as HTMLButtonElement).disabled);
 }
 
+export async function getHelpText() {
+  const helpTextHandle = await waitFor('.lighthouse-start-view-fr .lighthouse-help-text');
+  return helpTextHandle.evaluate(helpTextEl => helpTextEl.textContent);
+}
+
 export async function openStorageView() {
   await click('#tab-resources');
   const STORAGE_SELECTOR = '[aria-label="Storage"]';

@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
+import {setDevToolsSettings} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickStartButton,
@@ -12,9 +13,9 @@ import {
   navigateToLighthouseTab,
   selectCategories,
   selectMode,
-  setClearStorage,
   setLegacyNavigation,
   setThrottlingMethod,
+  setToolbarCheckboxWithText,
   waitForResult,
 } from '../helpers/lighthouse-helpers.js';
 
@@ -133,16 +134,17 @@ describe('Navigation', async function() {
       });
 
       it('successfully returns a Lighthouse report when settings changed', async () => {
+        await setDevToolsSettings({language: 'en-XL'});
         await navigateToLighthouseTab('lighthouse/hello.html');
 
-        await setLegacyNavigation(mode === 'legacy');
-        await setClearStorage(false);
+        await setToolbarCheckboxWithText(mode === 'legacy', 'L̂éĝáĉý n̂áv̂íĝát̂íôń');
+        await setToolbarCheckboxWithText(false, 'Ĉĺêár̂ śt̂ór̂áĝé');
         await selectCategories(['performance', 'best-practices']);
         await selectMode('desktop');
 
         await clickStartButton();
 
-        const {lhr, artifacts} = await waitForResult();
+        const {reportEl, lhr, artifacts} = await waitForResult();
 
         const {innerWidth, innerHeight, devicePixelRatio} = artifacts.ViewportDimensions;
         // TODO: Figure out why outerHeight can be different depending on OS
@@ -156,6 +158,13 @@ describe('Navigation', async function() {
         assert.deepStrictEqual(Object.keys(lhr.categories), ['performance', 'best-practices']);
         assert.strictEqual(lhr.configSettings.disableStorageReset, true);
         assert.strictEqual(lhr.configSettings.formFactor, 'desktop');
+
+        const viewTraceText = await reportEl.$eval('.lh-button--trace', viewTraceEl => {
+          return viewTraceEl.textContent;
+        });
+        assert.strictEqual(viewTraceText, 'V̂íêẃ Ôŕîǵîńâĺ T̂ŕâćê');
+
+        assert.strictEqual(lhr.i18n.rendererFormattedStrings.footerIssue, 'F̂íl̂é âń îśŝúê');
       });
     });
   }

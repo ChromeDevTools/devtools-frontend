@@ -8,13 +8,9 @@ import {waitForQuotaUsage} from './application-helpers.js';
 
 import {type ElementHandle} from 'puppeteer';
 
-export async function waitForLighthousePanelContentLoaded() {
-  await waitFor('.view-container[aria-label="Lighthouse panel"]');
-}
-
 export async function navigateToLighthouseTab(path?: string): Promise<ElementHandle<Element>> {
   await click('#tab-lighthouse');
-  await waitForLighthousePanelContentLoaded();
+  await waitFor('.view-container > .lighthouse');
   if (path) {
     await goToResource(path);
   }
@@ -72,9 +68,9 @@ export async function selectMode(device: 'mobile'|'desktop') {
   });
 }
 
-export async function setClearStorage(enabled: boolean) {
+export async function setToolbarCheckboxWithText(enabled: boolean, textContext: string) {
   const toolbarHandle = await waitFor('.lighthouse-settings-pane .toolbar');
-  const label = await waitForElementWithTextContent('Clear storage', toolbarHandle);
+  const label = await waitForElementWithTextContent(textContext, toolbarHandle);
   await label.evaluate((label, enabled: boolean) => {
     const rootNode = label.getRootNode() as ShadowRoot;
     const checkboxId = label.getAttribute('for') as string;
@@ -85,15 +81,7 @@ export async function setClearStorage(enabled: boolean) {
 }
 
 export async function setLegacyNavigation(enabled: boolean) {
-  const toolbarHandle = await waitFor('.lighthouse-settings-pane .toolbar');
-  const label = await waitForElementWithTextContent('Legacy navigation', toolbarHandle);
-  await label.evaluate((label, enabled: boolean) => {
-    const rootNode = label.getRootNode() as ShadowRoot;
-    const checkboxId = label.getAttribute('for') as string;
-    const checkboxElem = rootNode.getElementById(checkboxId) as HTMLInputElement;
-    checkboxElem.checked = enabled;
-    checkboxElem.dispatchEvent(new Event('change'));  // Need change event to update the backing setting.
-  }, enabled);
+  return setToolbarCheckboxWithText(enabled, 'Legacy navigation');
 }
 
 export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools') {

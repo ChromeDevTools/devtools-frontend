@@ -25,6 +25,7 @@
     "auto-e2etest": "npm run build && npm run e2etest --",
     "auto-interactionstest": "npm run build && npm run interactionstest --",
     "auto-unittest": "scripts/test/run_auto_unittests.py --no-text-coverage",
+    "auto-unittest-coverage": "scripts/test/run_auto_unittests.py --no-text-coverage --coverage",
     "prebuild": "gn gen out/Default",
     "build": "autoninja -C out/Default",
     "build-release": "autoninja -C out/Release",

@@ -449,6 +449,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     const runtimeModel = this.target().model(SDK.RuntimeModel.RuntimeModel);
     let response: Protocol.IndexedDB.RequestDataResponse|null = null;
 
+    // TODO(crbug.com/1347831) Prioritize storageKey once everything is ready
     if (databaseId.securityOrigin) {
       response = await this.indexedDBAgent.invoke_requestData({
         securityOrigin: databaseId.securityOrigin,
@@ -462,8 +463,20 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
       if (!runtimeModel || !this.databaseNamesBySecurityOrigin.has(databaseId.securityOrigin)) {
         return;
       }
+    } else if (databaseId.storageKey) {
+      response = await this.indexedDBAgent.invoke_requestData({
+        storageKey: databaseId.storageKey,
+        databaseName,
+        objectStoreName,
+        indexName,
+        skipCount,
+        pageSize,
+        keyRange,
+      });
+      if (!runtimeModel || !this.databaseNamesByStorageKey.has(databaseId.storageKey)) {
+        return;
+      }
     }
-
     if (!response) {
       return;
     }
@@ -490,9 +503,12 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     const databaseName = databaseId.name;
     const objectStoreName = objectStore.name;
     let response: Protocol.IndexedDB.GetMetadataResponse|null = null;
+    // TODO(crbug.com/1347831) Prioritize storageKey once everything is ready
     if (databaseId.securityOrigin) {
       response = await this.indexedDBAgent.invoke_getMetadata(
           {securityOrigin: databaseId.securityOrigin, databaseName, objectStoreName});
+    } else if (databaseId.storageKey) {
+      await this.indexedDBAgent.invoke_getMetadata({storageKey: databaseId.storageKey, databaseName, objectStoreName});
     }
 
     if (!response) {

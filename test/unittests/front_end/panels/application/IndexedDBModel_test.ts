@@ -141,4 +141,31 @@ describeWithMockConnection('IndexedDBModel', () => {
 
     assert.isTrue(requestDatabaseSpy.calledOnceWithExactly({storageKey: testKey, databaseName: 'test-database'}));
   });
+
+  it('requests data with storage key on loadObjectStoreData', () => {
+    const requestDataSpy = sinon.spy(indexedDBAgent, 'invoke_requestData');
+    indexedDBModel.enable();
+
+    indexedDBModel.loadObjectStoreData(testDBId, 'test-store', null, 0, 50, () => {});
+
+    assert.isTrue(requestDataSpy.calledOnceWithExactly({
+      storageKey: testKey,
+      databaseName: 'test-database',
+      objectStoreName: 'test-store',
+      indexName: '',
+      skipCount: 0,
+      pageSize: 50,
+      keyRange: undefined,
+    }));
+  });
+
+  it('calls protocol method on getMetadata', () => {
+    const getMetadataSpy = sinon.spy(indexedDBAgent, 'invoke_getMetadata');
+    indexedDBModel.enable();
+
+    void indexedDBModel.getMetadata(testDBId, new Resources.IndexedDBModel.ObjectStore('test-store', null, false));
+
+    assert.isTrue(getMetadataSpy.calledOnceWithExactly(
+        {storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store'}));
+  });
 });

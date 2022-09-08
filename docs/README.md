@@ -57,6 +57,9 @@ used when committed.
 
 ## Document Index
 
+### Design Documents
+*   See the shared [Design Documents](https://drive.google.com/drive/folders/1JbUthATfybvMQR3yAHC4J0P7n6oftYNq) folder in the Chromium drive.
+
 ### General Development
 *   [Workflows](workflows.md)
 *   [Chrome DevTools Design Review Guidelines](design_guidelines.md)

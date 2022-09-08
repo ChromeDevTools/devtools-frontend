@@ -31,6 +31,11 @@ describeWithMockConnection('IndexedDBModel', () => {
   describe('StorageKeyAdded', () => {
     it('registers database only when the model is enabled', async () => {
       const databaseAdeddSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');
+      const dbNamePromise = new Promise<string>(resolve => {
+        indexedDBModel.addEventListener(Resources.IndexedDBModel.Events.DatabaseAdded, event => {
+          resolve(event.data.databaseId.name);
+        });
+      });
       setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
 
       manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
@@ -40,13 +45,7 @@ describeWithMockConnection('IndexedDBModel', () => {
 
       indexedDBModel.enable();
       manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
-
-      const dbName = await new Promise<string>(resolve => {
-        indexedDBModel.addEventListener(Resources.IndexedDBModel.Events.DatabaseAdded, event => {
-          resolve(event.data.databaseId.name);
-        });
-      });
-      assert.strictEqual(dbName, 'test-database');
+      assert.strictEqual(await dbNamePromise, 'test-database');
     });
 
     it('starts tracking database', () => {
@@ -92,6 +91,11 @@ describeWithMockConnection('IndexedDBModel', () => {
 
   it('calls protocol method on refreshDatabaseNames and dispatches event', async () => {
     const requestDBNamesSpy = sinon.spy(indexedDBAgent, 'invoke_requestDatabaseNames');
+    const dbRefreshedPromise = new Promise<void>(resolve => {
+      indexedDBModel.addEventListener(Resources.IndexedDBModel.Events.DatabaseNamesRefreshed, () => {
+        resolve();
+      });
+    });
     setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
     indexedDBModel.enable();
     manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
@@ -99,11 +103,7 @@ describeWithMockConnection('IndexedDBModel', () => {
     void indexedDBModel.refreshDatabaseNames();
 
     assert.isTrue(requestDBNamesSpy.calledWithExactly({storageKey: testKey}));
-    await new Promise<void>(resolve => {
-      indexedDBModel.addEventListener(Resources.IndexedDBModel.Events.DatabaseNamesRefreshed, () => {
-        resolve();
-      });
-    });
+    await dbRefreshedPromise;
   });
 
   it('doesn\'t add duplicate database for storage key if one already exists for security origin', async () => {
@@ -133,4 +133,12 @@ describeWithMockConnection('IndexedDBModel', () => {
         {model: indexedDBModel, databaseId: testDBId}));
   });
 
+  it('requests database with storage key on refreshDatabase', async () => {
+    const requestDatabaseSpy = sinon.spy(indexedDBAgent, 'invoke_requestDatabase');
+    indexedDBModel.enable();
+
+    void indexedDBModel.refreshDatabase(testDBId);
+
+    assert.isTrue(requestDatabaseSpy.calledOnceWithExactly({storageKey: testKey, databaseName: 'test-database'}));
+  });
 });

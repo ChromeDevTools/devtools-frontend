@@ -65,6 +65,7 @@ used when committed.
 *   [Chrome DevTools Design Review Guidelines](design_guidelines.md)
 *   [Release Management](release_management.md)
 *   [Third-party Guidelines](third_party_guidelines.md)
+*   [Localization](l10n.md)
 
 ### Testing
 *   [E2E test guide](../test/e2e/README.md)

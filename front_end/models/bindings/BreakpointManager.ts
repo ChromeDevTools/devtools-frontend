@@ -793,7 +793,6 @@ export class ModelBreakpoint {
           const script = loc.script() as SDK.Script.Script;
           return {
             url: script.sourceURL,
-            scriptId: script.scriptId,
             scriptHash: script.hash,
             lineNumber: loc.lineNumber,
             columnNumber: loc.columnNumber,
@@ -811,7 +810,6 @@ export class ModelBreakpoint {
           // really resolved.
           const position = {
             url: this.#breakpoint.url(),
-            scriptId: '' as Protocol.Runtime.ScriptId,
             scriptHash: '',
             lineNumber,
             columnNumber,
@@ -894,7 +892,7 @@ export class ModelBreakpoint {
         return this.#debuggerModel.setBreakpointByURL(pos.url, pos.lineNumber, pos.columnNumber, condition);
       }
       return this.#debuggerModel.setBreakpointInAnonymousScript(
-          pos.scriptId, pos.scriptHash as string, pos.lineNumber, pos.columnNumber, condition);
+          pos.scriptHash as string, pos.lineNumber, pos.columnNumber, condition);
     }));
     const breakpointIds: Protocol.Debugger.BreakpointId[] = [];
     let locations: SDK.DebuggerModel.Location[] = [];
@@ -983,7 +981,6 @@ export class ModelBreakpoint {
 
 interface Position {
   url: Platform.DevToolsPath.UrlString;
-  scriptId: Protocol.Runtime.ScriptId;
   scriptHash: string;
   lineNumber: number;
   columnNumber?: number;
@@ -1013,9 +1010,6 @@ export namespace Breakpoint {
         const positionA = stateA.positions[i];
         const positionB = stateB.positions[i];
         if (positionA.url !== positionB.url) {
-          return false;
-        }
-        if (positionA.scriptId !== positionB.scriptId) {
           return false;
         }
         if (positionA.scriptHash !== positionB.scriptHash) {

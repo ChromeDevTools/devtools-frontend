@@ -471,39 +471,17 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   async setBreakpointInAnonymousScript(
-      scriptId: Protocol.Runtime.ScriptId, scriptHash: string, lineNumber: number, columnNumber?: number,
-      condition?: string): Promise<SetBreakpointResult> {
+      scriptHash: string, lineNumber: number, columnNumber?: number, condition?: string): Promise<SetBreakpointResult> {
     const response = await this.agent.invoke_setBreakpointByUrl(
         {lineNumber: lineNumber, scriptHash: scriptHash, columnNumber: columnNumber, condition: condition});
-    const error = response.getError();
-    if (error) {
-      // Old V8 backend doesn't support scriptHash argument.
-      if (error !== 'Either url or urlRegex must be specified.') {
-        return {locations: [], breakpointId: null};
-      }
-      return this.setBreakpointBySourceId(scriptId, lineNumber, columnNumber, condition);
+    if (response.getError()) {
+      return {locations: [], breakpointId: null};
     }
     let locations: Location[] = [];
     if (response.locations) {
       locations = response.locations.map(payload => Location.fromPayload(this, payload));
     }
     return {locations, breakpointId: response.breakpointId};
-  }
-
-  private async setBreakpointBySourceId(
-      scriptId: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber?: number,
-      condition?: string): Promise<SetBreakpointResult> {
-    // This method is required for backward compatibility with V8 before 6.3.275.
-    const response = await this.agent.invoke_setBreakpoint(
-        {location: {scriptId: scriptId, lineNumber: lineNumber, columnNumber: columnNumber}, condition: condition});
-    if (response.getError()) {
-      return {breakpointId: null, locations: []};
-    }
-    let actualLocation: Location[] = [];
-    if (response.actualLocation) {
-      actualLocation = [Location.fromPayload(this, response.actualLocation)];
-    }
-    return {locations: actualLocation, breakpointId: response.breakpointId};
   }
 
   async removeBreakpoint(breakpointId: Protocol.Debugger.BreakpointId): Promise<void> {

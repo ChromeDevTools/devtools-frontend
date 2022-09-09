@@ -158,7 +158,7 @@ describeWithRealConnection('BreakpointManager', () => {
     await breakpointManager.restoreBreakpointsForScript(script);
     assertNotNullOrUndefined(modelBreakpoint.currentState);
     assert.lengthOf(modelBreakpoint.currentState.positions, 1);
-    assert.strictEqual(modelBreakpoint.currentState.positions[0].scriptId, SCRIPT_ID);
+    assert.strictEqual(modelBreakpoint.currentState.positions[0].url, URL);
 
     // Clean up.
     await breakpoint.remove(false);
@@ -228,7 +228,7 @@ describeWithRealConnection('BreakpointManager', () => {
     await breakpointManager.restoreBreakpointsForScript(script);
     assertNotNullOrUndefined(modelBreakpoint.currentState);
     assert.lengthOf(modelBreakpoint.currentState.positions, 1);
-    assert.strictEqual(modelBreakpoint.currentState.positions[0].scriptId, SCRIPT_ID);
+    assert.strictEqual(modelBreakpoint.currentState.positions[0].url, URL);
 
     // Clean up.
     await breakpoint.remove(false);

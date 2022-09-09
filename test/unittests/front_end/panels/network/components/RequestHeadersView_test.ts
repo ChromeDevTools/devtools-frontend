@@ -22,13 +22,12 @@ import {
 } from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import * as Root from '../../../../../../front_end/core/root/root.js';
-import {createTarget, deinitializeGlobalVars} from '../../../helpers/EnvironmentHelpers.js';
-import * as Workspace from '../../../../../../front_end/models/workspace/workspace.js';
+import {deinitializeGlobalVars} from '../../../helpers/EnvironmentHelpers.js';
 import * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
-import * as Bindings from '../../../../../../front_end/models/bindings/bindings.js';
 import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import {createFileSystemUISourceCode} from '../../../helpers/UISourceCodeHelpers.js';
+import {setUpEnvironment} from '../../../helpers/OverridesHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -62,18 +61,6 @@ const defaultRequest = {
   blockedResponseCookies: () => [],
   originalResponseHeaders: [],
 } as unknown as SDK.NetworkRequest.NetworkRequest;
-
-function setUpEnvironment() {
-  createTarget();
-  const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-  const targetManager = SDK.TargetManager.TargetManager.instance();
-  const debuggerWorkspaceBinding =
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({forceNew: true, targetManager, workspace});
-  const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
-      {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
-  Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-  Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
-}
 
 async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest) {
   const component = new NetworkComponents.RequestHeadersView.RequestHeadersComponent();
@@ -115,10 +102,10 @@ const getRowHighlightStatus = (container: HTMLElement): boolean[] => {
 };
 
 describeWithMockConnection('RequestHeadersView', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
-    await setUpEnvironment();
+    setUpEnvironment();
   });
 
   afterEach(async () => {

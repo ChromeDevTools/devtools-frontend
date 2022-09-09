@@ -554,7 +554,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 
   it('updates active state when target detach and attach', async () => {
-    const {networkPersistenceManager} = await setUpEnvironment();
+    const {networkPersistenceManager} = setUpEnvironment();
     const {project} =
         createFileSystemUISourceCode({url: 'file:///tmp' as Platform.DevToolsPath.UrlString, mimeType: 'text/plain'});
     await networkPersistenceManager.setProject(project);
@@ -616,8 +616,8 @@ describe('NetworkPersistenceManager', () => {
     assert.deepEqual(Persistence.NetworkPersistenceManager.extractDirectoryIndex('a/*'), {head: 'a/', tail: '*'});
   });
 
-  it('merges headers which do not overlap', async () => {
-    const {networkPersistenceManager} = await setUpEnvironment();
+  it('merges headers which do not overlap', () => {
+    const {networkPersistenceManager} = setUpEnvironment();
     const baseHeaders = [{
       name: 'age',
       value: '0',
@@ -633,8 +633,8 @@ describe('NetworkPersistenceManager', () => {
     assert.deepEqual(networkPersistenceManager.mergeHeaders(baseHeaders, overrideHeaders), merged);
   });
 
-  it('merges headers which overlap', async () => {
-    const {networkPersistenceManager} = await setUpEnvironment();
+  it('merges headers which overlap', () => {
+    const {networkPersistenceManager} = setUpEnvironment();
     const baseHeaders = [{
       name: 'age',
       value: '0',
@@ -651,7 +651,7 @@ describe('NetworkPersistenceManager', () => {
   });
 
   it('generates header patterns', async () => {
-    const {networkPersistenceManager} = await setUpEnvironment();
+    const {networkPersistenceManager} = setUpEnvironment();
     const headers = `[
       {
         "applyTo": "*",

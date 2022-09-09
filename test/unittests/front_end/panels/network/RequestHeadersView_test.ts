@@ -14,20 +14,9 @@ import * as Bindings from '../../../../../front_end/models/bindings/bindings.js'
 import {assertElement, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {setUpEnvironment} from '../../helpers/OverridesHelpers.js';
 
 const {assert} = chai;
-
-function setUpEnvironment() {
-  createTarget();
-  const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-  const targetManager = SDK.TargetManager.TargetManager.instance();
-  const debuggerWorkspaceBinding =
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({forceNew: true, targetManager, workspace});
-  const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
-      {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
-  Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-  Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
-}
 
 function renderHeadersView(request: SDK.NetworkRequest.NetworkRequest): Network.RequestHeadersView.RequestHeadersView {
   const component = new Network.RequestHeadersView.RequestHeadersView(request);
@@ -39,7 +28,7 @@ function renderHeadersView(request: SDK.NetworkRequest.NetworkRequest): Network.
 }
 
 describeWithMockConnection('RequestHeadersView', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
   });
@@ -47,7 +36,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     await deinitializeGlobalVars();
   });
 
-  it('does not render a link to \'.headers\' if that file does not exist', async () => {
+  it('does not render a link to \'.headers\' if that file does not exist', () => {
     setUpEnvironment();
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId,
@@ -88,7 +77,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     component.detach();
   });
 
-  it('renders without error when no overrides folder specified (i.e. there is no project)', async () => {
+  it('renders without error when no overrides folder specified (i.e. there is no project)', () => {
     createTarget();
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();

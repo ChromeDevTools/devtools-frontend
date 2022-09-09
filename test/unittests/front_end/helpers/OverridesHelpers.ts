@@ -9,7 +9,7 @@ import * as Workspace from '../../../../front_end/models/workspace/workspace.js'
 import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import * as Common from '../../../../front_end/core/common/common.js';
 
-export async function setUpEnvironment() {
+export function setUpEnvironment() {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
   const targetManager = SDK.TargetManager.TargetManager.instance();
   const debuggerWorkspaceBinding =
@@ -24,7 +24,7 @@ export async function setUpEnvironment() {
 
 export async function createWorkspaceProject(
     baseUrl: Platform.DevToolsPath.UrlString, files: Array<{path: string, content: string, name: string}>) {
-  const {networkPersistenceManager} = await setUpEnvironment();
+  const {networkPersistenceManager} = setUpEnvironment();
   const fileSystem = {
     fileSystemPath: () => baseUrl,
     fileSystemBaseURL: baseUrl + '/',

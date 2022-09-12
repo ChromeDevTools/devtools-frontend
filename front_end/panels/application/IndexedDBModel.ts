@@ -185,6 +185,15 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     this.addOrigin(origin);
   }
 
+  clearForStorageKey(storageKey: string): void {
+    if (!this.enabled || !this.databaseNamesByStorageKey.has(storageKey)) {
+      return;
+    }
+
+    this.removeStorageKey(storageKey);
+    this.addStorageKey(storageKey);
+  }
+
   async deleteDatabase(databaseId: DatabaseId): Promise<void> {
     if (!this.enabled) {
       return;
@@ -575,9 +584,6 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     // TODO(crbug.com/1347831) Prioritize storageKey once everything is ready
     const databaseId = securityOrigin ? new DatabaseId(securityOrigin, undefined, databaseName) :
                                         new DatabaseId(undefined, storageKey, databaseName);
-    if (!databaseId) {
-      return;
-    }
     this.dispatchEventToListeners(
         Events.IndexedDBContentUpdated, {databaseId: databaseId, objectStoreName: objectStoreName, model: this});
   }

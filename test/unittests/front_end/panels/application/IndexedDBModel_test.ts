@@ -8,6 +8,7 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Resources from '../../../../../front_end/panels/application/application.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {
+  clearMockConnectionResponseHandler,
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../helpers/MockConnection.js';
@@ -221,6 +222,19 @@ describeWithMockConnection('IndexedDBModel', () => {
     void indexedDBModel.deleteDatabase(testDBId);
 
     assert.isTrue(deleteDBSpy.calledOnceWithExactly({storageKey: testKey, databaseName: 'test-database'}));
+  });
+
+  it('removes databases for storage key on clearForStorageKey', async () => {
+    const dbNames = ['test-database1', 'test-database-2'];
+    setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: dbNames}));
+    indexedDBModel.enable();
+    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+    await indexedDBModel.refreshDatabaseNames();
+    clearMockConnectionResponseHandler('IndexedDB.requestDatabaseNames');
+
+    indexedDBModel.clearForStorageKey(testKey);
+
+    assert.isEmpty(indexedDBModel.databases());
   });
 
 });

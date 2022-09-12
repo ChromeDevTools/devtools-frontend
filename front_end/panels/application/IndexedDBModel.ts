@@ -335,10 +335,14 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
 
   databases(): DatabaseId[] {
     const result = [];
-    for (const securityOrigin of this.databaseNamesBySecurityOrigin.keys()) {
-      const databaseNames = this.databaseNamesBySecurityOrigin.get(securityOrigin);
-      for (const databaseName of databaseNames || []) {
+    for (const [securityOrigin, databaseNames] of this.databaseNamesBySecurityOrigin) {
+      for (const databaseName of databaseNames) {
         result.push(new DatabaseId(securityOrigin, undefined, databaseName));
+      }
+    }
+    for (const [storageKey, databaseNames] of this.databaseNamesByStorageKey) {
+      for (const name of databaseNames) {
+        result.push(new DatabaseId(undefined, storageKey, name));
       }
     }
     return result;

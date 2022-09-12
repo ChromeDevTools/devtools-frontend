@@ -199,4 +199,16 @@ describeWithMockConnection('IndexedDBModel', () => {
     assert.isTrue(requestDBNamesSpy.calledWithExactly({storageKey: testKey}));
     await databaseLoadedPromise;
   });
+
+  it('gets databases added for storage key', async () => {
+    const dbNames = ['test-database1', 'test-database2'];
+    setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: dbNames}));
+    indexedDBModel.enable();
+    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+    await indexedDBModel.refreshDatabaseNames();
+
+    const databases = indexedDBModel.databases();
+
+    assert.deepEqual(databases.map(db => db.name), dbNames);
+  });
 });

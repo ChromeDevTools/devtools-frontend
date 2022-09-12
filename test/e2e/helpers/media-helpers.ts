@@ -9,21 +9,18 @@ export async function playMediaFile(media: string) {
   await goToResource(`media/${media}`);
 
   // Need to click play manually - autoplay policy prevents it otherwise.
-  return new Promise<void>(async resolve => {
-    await target.exposeFunction('resolve', resolve);
-    await target.evaluate(() => {
-      const videoElement = document.getElementsByName('media')[0] as HTMLVideoElement;
-      videoElement.addEventListener('play', () => {
-        resolve();
-      });
-      // Just in case autoplay started before we could attach an event listener.
-      if (!videoElement.paused || videoElement.readyState > 2) {
-        resolve();
-      } else {
-        void videoElement.play();
-      }
-    });
-  });
+  await target.evaluate(() => new Promise<void>(resolve => {
+                          const videoElement = document.getElementsByName('media')[0] as HTMLVideoElement;
+                          videoElement.addEventListener('play', () => {
+                            resolve();
+                          }, {once: true});
+                          // Just in case autoplay started before we could attach an event listener.
+                          if (!videoElement.paused || videoElement.readyState > 2) {
+                            resolve();
+                          } else {
+                            void videoElement.play();
+                          }
+                        }));
 }
 
 export async function getPlayerButton() {

@@ -189,10 +189,15 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     if (!this.enabled) {
       return;
     }
+    // TODO(crbug.com/1347831) Prioritize storageKey once everything is ready
     if (databaseId.securityOrigin) {
       await this.indexedDBAgent.invoke_deleteDatabase(
           {securityOrigin: databaseId.securityOrigin, databaseName: databaseId.name});
       void this.loadDatabaseNames(databaseId.securityOrigin);
+    } else if (databaseId.storageKey) {
+      await this.indexedDBAgent.invoke_deleteDatabase(
+          {storageKey: databaseId.storageKey, databaseName: databaseId.name});
+      void this.loadDatabaseNamesByStorageKey(databaseId.storageKey);
     }
   }
 

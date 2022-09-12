@@ -211,4 +211,16 @@ describeWithMockConnection('IndexedDBModel', () => {
 
     assert.deepEqual(databases.map(db => db.name), dbNames);
   });
+
+  it('calls protocol method on deleteDatabase', () => {
+    const deleteDBSpy = sinon.spy(indexedDBAgent, 'invoke_deleteDatabase');
+    setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
+    indexedDBModel.enable();
+    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+
+    void indexedDBModel.deleteDatabase(testDBId);
+
+    assert.isTrue(deleteDBSpy.calledOnceWithExactly({storageKey: testKey, databaseName: 'test-database'}));
+  });
+
 });

@@ -168,4 +168,35 @@ describeWithMockConnection('IndexedDBModel', () => {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly(
         {storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store'}));
   });
+
+  it('dispatches event on indexedDBContentUpdated', () => {
+    const dispatcherSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');
+
+    indexedDBModel.indexedDBContentUpdated(
+        {origin: '', storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store'});
+
+    assert.isTrue(dispatcherSpy.calledOnceWithExactly(
+        Resources.IndexedDBModel.Events.IndexedDBContentUpdated as unknown as sinon.SinonMatcher,
+        {databaseId: testDBId, objectStoreName: 'test-store', model: indexedDBModel}));
+  });
+
+  it('requests database names and loads db on indexedDBListUpdated', async () => {
+    const requestDBNamesSpy = sinon.spy(indexedDBAgent, 'invoke_requestDatabaseNames');
+    const databaseLoadedPromise = new Promise<void>(resolve => {
+      indexedDBModel.addEventListener(Resources.IndexedDBModel.Events.DatabaseLoaded, () => {
+        resolve();
+      });
+    });
+    setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
+    setMockConnectionResponseHandler(
+        'IndexedDB.requestDatabase',
+        () => ({databaseWithObjectStores: {name: 'test-database', version: '1', objectStores: []}}));
+    indexedDBModel.enable();
+    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+
+    indexedDBModel.indexedDBListUpdated({origin: '', storageKey: testKey});
+
+    assert.isTrue(requestDBNamesSpy.calledWithExactly({storageKey: testKey}));
+    await databaseLoadedPromise;
+  });
 });

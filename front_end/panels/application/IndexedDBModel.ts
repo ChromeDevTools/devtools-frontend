@@ -42,6 +42,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   private databaseNamesBySecurityOrigin: Map<string, Set<string>>;
   private databaseNamesByStorageKey: Map<string, Set<string>>;
   private readonly originsUpdated: Set<string>;
+  private readonly updatedStorageKeys: Set<string>;
   private readonly throttler: Common.Throttler.Throttler;
   private enabled?: boolean;
 
@@ -58,6 +59,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     this.databaseNamesByStorageKey = new Map();
 
     this.originsUpdated = new Set();
+    this.updatedStorageKeys = new Set();
     this.throttler = new Common.Throttler.Throttler(1000);
   }
 
@@ -528,21 +530,45 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     }
   }
 
-  indexedDBListUpdated({origin: securityOrigin}: Protocol.Storage.IndexedDBListUpdatedEvent): void {
-    this.originsUpdated.add(securityOrigin);
-
-    void this.throttler.schedule(() => {
-      const promises = Array.from(this.originsUpdated, securityOrigin => {
-        void this.refreshDatabaseList(securityOrigin);
-      });
-      this.originsUpdated.clear();
-      return Promise.all(promises);
-    });
+  private async refreshDatabaseListForStorageKey(storageKey: string): Promise<void> {
+    const databaseNames = await this.loadDatabaseNamesByStorageKey(storageKey);
+    for (const databaseName of databaseNames) {
+      void this.loadDatabase(new DatabaseId(undefined, storageKey, databaseName), false);
+    }
   }
 
-  indexedDBContentUpdated({origin: securityOrigin, databaseName, objectStoreName}:
+  indexedDBListUpdated({origin: securityOrigin, storageKey: storageKey}: Protocol.Storage.IndexedDBListUpdatedEvent):
+      void {
+    // TODO(crbug.com/1347831) Prioritize storageKey once everything is ready
+    if (securityOrigin) {
+      this.originsUpdated.add(securityOrigin);
+      void this.throttler.schedule(() => {
+        const promises = Array.from(this.originsUpdated, securityOrigin => {
+          void this.refreshDatabaseList(securityOrigin);
+        });
+        this.originsUpdated.clear();
+        return Promise.all(promises);
+      });
+    } else if (storageKey) {
+      this.updatedStorageKeys.add(storageKey);
+      void this.throttler.schedule(() => {
+        const promises = Array.from(this.updatedStorageKeys, storageKey => {
+          void this.refreshDatabaseListForStorageKey(storageKey);
+        });
+        this.updatedStorageKeys.clear();
+        return Promise.all(promises);
+      });
+    }
+  }
+
+  indexedDBContentUpdated({origin: securityOrigin, storageKey, databaseName, objectStoreName}:
                               Protocol.Storage.IndexedDBContentUpdatedEvent): void {
-    const databaseId = new DatabaseId(securityOrigin, undefined, databaseName);
+    // TODO(crbug.com/1347831) Prioritize storageKey once everything is ready
+    const databaseId = securityOrigin ? new DatabaseId(securityOrigin, undefined, databaseName) :
+                                        new DatabaseId(undefined, storageKey, databaseName);
+    if (!databaseId) {
+      return;
+    }
     this.dispatchEventToListeners(
         Events.IndexedDBContentUpdated, {databaseId: databaseId, objectStoreName: objectStoreName, model: this});
   }
@@ -596,6 +622,9 @@ export class DatabaseId {
   readonly storageKey?: string;
   name: string;
   constructor(securityOrigin: string|undefined, storageKey: string|undefined, name: string) {
+    if (Boolean(securityOrigin) === Boolean(storageKey)) {
+      throw new Error('At least and at most one of security origin or storage key must be defined');
+    }
     this.securityOrigin = securityOrigin;
     this.storageKey = securityOrigin ? undefined : storageKey;
     this.name = name;

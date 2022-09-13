@@ -8,6 +8,7 @@ node_ts_library("lighthouse") {
   sources = [
     "navigation_test.ts",
     "request_blocking_test.ts",
+    "snapshot_test.ts",
     "start-view_test.ts",
   ]
 

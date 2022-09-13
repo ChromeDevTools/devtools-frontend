@@ -4,5 +4,16 @@
   <link rel="stylesheet" href="basic.css">
 </head>
 <body>
-  hello
+  <h1>Hello</h1>
+  <button>Add a11y violation</button>
+  <script>
+    const button = document.querySelector('button');
+
+    // Add an input with an a11y violation (no label) on click
+    button.onclick = () => {
+      const input = document.createElement('input');
+      input.type = 'text';
+      document.body.append(input);
+    }
+  </script>
 </body>

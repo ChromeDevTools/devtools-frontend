@@ -64,7 +64,8 @@ describe('Scope View', async () => {
     });
   });
 
-  it('opens one linear memory inspector per ArrayBuffer', async () => {
+  // Times out
+  it.skip('[crbug.com/1169143] opens one linear memory inspector per ArrayBuffer', async () => {
     const {frontend} = getBrowserAndPages();
 
     await step('navigate to a page', async () => {

@@ -2249,6 +2249,9 @@
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Application"
   },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Application panel sidebar"
+  },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Background Services"
   },

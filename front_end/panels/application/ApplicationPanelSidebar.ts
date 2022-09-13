@@ -190,6 +190,10 @@ const UIStrings = {
    * @example {"Identity"} PH1
    */
   onInvokeAlert: 'Scrolled to {PH1}',
+  /**
+   * @description Application sidebar panel
+   */
+  applicationSidebarPanel: 'Application panel sidebar',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -251,6 +255,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     const applicationSectionTitle = i18nString(UIStrings.application);
     this.applicationTreeElement = this.addSidebarSection(applicationSectionTitle);
+    const applicationPanelSidebar = this.applicationTreeElement.treeOutline?.contentElement;
+    if (applicationPanelSidebar) {
+      applicationPanelSidebar.ariaLabel = i18nString(UIStrings.applicationSidebarPanel);
+    }
     const manifestTreeElement = new AppManifestTreeElement(panel);
     this.applicationTreeElement.appendChild(manifestTreeElement);
     manifestTreeElement.generateChildren();

@@ -2249,6 +2249,9 @@
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Âṕp̂ĺîćât́îón̂"
   },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Âṕp̂ĺîćât́îón̂ ṕâńêĺ ŝíd̂éb̂ár̂"
+  },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "B̂áĉḱĝŕôún̂d́ Ŝér̂v́îćêś"
   },

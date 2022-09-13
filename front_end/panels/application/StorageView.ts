@@ -485,6 +485,15 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         storageModel.clearForStorageKey(storageKey);
       }
     }
+
+    if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
+      for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+        const indexedDBModel = target.model(IndexedDBModel);
+        if (indexedDBModel) {
+          indexedDBModel.clearForStorageKey(storageKey);
+        }
+      }
+    }
   }
 
   async doUpdate(): Promise<void> {

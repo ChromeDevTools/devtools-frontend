@@ -468,6 +468,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.descriptionField = this.identitySection.appendFlexedField(i18nString(UIStrings.description));
 
     this.startURLField = this.presentationSection.appendField(i18nString(UIStrings.startUrl));
+    UI.ARIAUtils.setAccessibleName(this.startURLField, i18nString(UIStrings.startUrl));
 
     const themeColorField = this.presentationSection.appendField(i18nString(UIStrings.themeColor));
     this.themeColorSwatch = new InlineEditor.ColorSwatch.ColorSwatch();

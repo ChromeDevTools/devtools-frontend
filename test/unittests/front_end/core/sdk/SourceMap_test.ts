@@ -8,6 +8,7 @@ import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
 
 const fakeInitiator = {
@@ -881,6 +882,23 @@ describe('TextSourceMap', () => {
           'endColumn': 6,
         },
       ]);
+    });
+  });
+
+  describeWithEnvironment('SourceMap', () => {
+    it('can parse sourcemap with BOM at the beginning of the file', async () => {
+      const pageResourceLoader = SDK.PageResourceLoader.PageResourceLoader.instance(
+          {forceNew: false, loadOverride: null, maxConcurrentLoads: 1, loadTimeout: 10});
+      sinon.stub(pageResourceLoader, 'loadResource').returns(Promise.resolve({
+        content: '\uFEFF{"version":3,"names":[],"sources":["test.js"],"mappings":""}',
+      }));
+      const pageResourceLoadInitiator = {} as SDK.PageResourceLoader.PageResourceLoadInitiator;
+      const url = 'test.js.map' as Platform.DevToolsPath.UrlString;
+      try {
+        await SDK.SourceMap.TextSourceMap.load(url, url, pageResourceLoadInitiator);
+      } catch (e) {
+        assert.fail(`Expected sourcemap with BOM to be parsed correctly. Failed with: ${e}.`);
+      }
     });
   });
 });

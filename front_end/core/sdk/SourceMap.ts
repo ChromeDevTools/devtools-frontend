@@ -195,6 +195,10 @@ export class TextSourceMap implements SourceMap {
       if (content.slice(0, 3) === ')]}') {
         updatedContent = content.substring(content.indexOf('\n'));
       }
+      if (updatedContent.charCodeAt(0) === 0xFEFF) {
+        // Strip BOM at the beginning before parsing the JSON.
+        updatedContent = updatedContent.slice(1);
+      }
     } catch (error) {
       throw new Error(i18nString(UIStrings.couldNotLoadContentForSS, {PH1: sourceMapURL, PH2: error.message}));
     }

@@ -10,6 +10,7 @@ node_ts_library("lighthouse") {
     "request_blocking_test.ts",
     "snapshot_test.ts",
     "start-view_test.ts",
+    "timespan_test.ts",
   ]
 
   deps = [

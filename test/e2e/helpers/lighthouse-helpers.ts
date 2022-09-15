@@ -139,6 +139,15 @@ export async function waitForStorageUsage(p: (quota: number) => boolean) {
   await click('#tab-lighthouse');
 }
 
+export async function waitForTimespanStarted() {
+  await waitForElementWithTextContent('Timespan started, interact with the page');
+}
+
+export async function endTimespan() {
+  const endTimespanBtn = await waitForElementWithTextContent('End timespan');
+  await endTimespanBtn.click();
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getAuditsBreakdown(lhr: any, flakyAudits: string[] = []) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

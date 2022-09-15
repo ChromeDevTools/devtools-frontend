@@ -1882,7 +1882,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
       let rowSubProperties: Protocol.Runtime.PropertyPreview[];
       if (rowProperty.valuePreview && rowProperty.valuePreview.properties.length) {
         rowSubProperties = rowProperty.valuePreview.properties;
-      } else if (rowProperty.value) {
+      } else if (rowProperty.value || rowProperty.value === '') {
         rowSubProperties =
             [{name: rawValueColumnSymbol as unknown as string, type: rowProperty.type, value: rowProperty.value}];
       } else {

@@ -270,6 +270,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let timelinePanelInstance: TimelinePanel;
+let isNode: boolean;
 
 export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineModeViewDelegate {
   private readonly dropTarget: UI.DropTarget.DropTarget;
@@ -314,6 +315,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private showSettingsPaneSetting!: Common.Settings.Setting<boolean>;
   private settingsPane!: UI.Widget.Widget;
   private controller!: TimelineController|null;
+  private cpuProfilers!: SDK.CPUProfilerModel.CPUProfilerModel[]|null;
   private clearButton!: UI.Toolbar.ToolbarButton;
   private loadButton!: UI.Toolbar.ToolbarButton;
   private saveButton!: UI.Toolbar.ToolbarButton;
@@ -358,7 +360,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         Common.Settings.Settings.instance().createSetting('timelineCaptureLayersAndPictures', false);
     this.captureLayersAndPicturesSetting.setTitle(i18nString(UIStrings.enableAdvancedPaint));
 
-    this.showScreenshotsSetting = Common.Settings.Settings.instance().createSetting('timelineShowScreenshots', true);
+    this.showScreenshotsSetting =
+        Common.Settings.Settings.instance().createSetting('timelineShowScreenshots', isNode ? false : true);
     this.showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
     this.showScreenshotsSetting.addChangeListener(this.updateOverviewControls, this);
 
@@ -381,9 +384,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.panelToolbar = new UI.Toolbar.Toolbar('timeline-main-toolbar', timelineToolbarContainer);
     this.panelToolbar.makeWrappable(true);
     this.panelRightToolbar = new UI.Toolbar.Toolbar('', timelineToolbarContainer);
-    this.createSettingsPane();
-    this.updateShowSettingsToolbarButton();
-
+    if (!isNode) {
+      this.createSettingsPane();
+      this.updateShowSettingsToolbarButton();
+    }
     this.timelinePane = new UI.Widget.VBox();
     this.timelinePane.show(this.element);
     const topPaneElement = this.timelinePane.element.createChild('div', 'hbox');
@@ -426,8 +430,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   static instance(opts: {
     forceNew: boolean|null,
-  }|undefined = {forceNew: null}): TimelinePanel {
-    const {forceNew} = opts;
+    isNode: boolean,
+  }|undefined = {forceNew: null, isNode: false}): TimelinePanel {
+    const {forceNew, isNode: isNodeMode} = opts;
+    isNode = isNodeMode;
+
     if (!timelinePanelInstance || forceNew) {
       timelinePanelInstance = new TimelinePanel();
     }
@@ -519,17 +526,21 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // View
     this.panelToolbar.appendSeparator();
-    this.showScreenshotsToolbarCheckbox =
-        this.createSettingCheckbox(this.showScreenshotsSetting, i18nString(UIStrings.captureScreenshots));
-    this.panelToolbar.appendToolbarItem(this.showScreenshotsToolbarCheckbox);
+    if (!isNode) {
+      this.showScreenshotsToolbarCheckbox =
+          this.createSettingCheckbox(this.showScreenshotsSetting, i18nString(UIStrings.captureScreenshots));
+      this.panelToolbar.appendToolbarItem(this.showScreenshotsToolbarCheckbox);
+    }
 
     this.showMemoryToolbarCheckbox =
         this.createSettingCheckbox(this.showMemorySetting, i18nString(UIStrings.showMemoryTimeline));
     this.panelToolbar.appendToolbarItem(this.showMemoryToolbarCheckbox);
 
-    this.showWebVitalsToolbarCheckbox =
-        this.createSettingCheckbox(this.showWebVitalsSetting, i18nString(UIStrings.showWebVitals));
-    this.panelToolbar.appendToolbarItem(this.showWebVitalsToolbarCheckbox);
+    if (!isNode) {
+      this.showWebVitalsToolbarCheckbox =
+          this.createSettingCheckbox(this.showWebVitalsSetting, i18nString(UIStrings.showWebVitals));
+      this.panelToolbar.appendToolbarItem(this.showWebVitalsToolbarCheckbox);
+    }
 
     if (Root.Runtime.experiments.isEnabled('recordCoverageWithPerformanceTracing')) {
       this.startCoverageCheckbox =
@@ -541,8 +552,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
 
     // Settings
-    this.panelRightToolbar.appendSeparator();
-    this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
+    if (!isNode) {
+      this.panelRightToolbar.appendSeparator();
+      this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
+    }
   }
 
   private createSettingsPane(): void {
@@ -810,42 +823,55 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     console.assert(!this.statusPane, 'Status pane is already opened.');
     this.setState(State.StartPending);
 
-    const recordingOptions = {
-      enableJSSampling: !this.disableCaptureJSProfileSetting.get(),
-      capturePictures: this.captureLayersAndPicturesSetting.get(),
-      captureFilmStrip: this.showScreenshotsSetting.get(),
-      startCoverage: this.startCoverage.get(),
-    };
+    if (!isNode) {
+      const recordingOptions = {
+        enableJSSampling: !this.disableCaptureJSProfileSetting.get(),
+        capturePictures: this.captureLayersAndPicturesSetting.get(),
+        captureFilmStrip: this.showScreenshotsSetting.get(),
+        startCoverage: this.startCoverage.get(),
+      };
 
-    if (recordingOptions.startCoverage) {
-      await UI.ViewManager.ViewManager.instance()
-          .showView('coverage')
-          .then(() => this.getCoverageViewWidget())
-          .then(widget => widget.ensureRecordingStarted());
-    }
-
-    this.showRecordingStarted();
-
-    const enabledTraceProviders = Extensions.ExtensionServer.ExtensionServer.instance().traceProviders().filter(
-        provider => TimelinePanel.settingForTraceProvider(provider).get());
-
-    const mainTarget = (SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target);
-    if (UIDevtoolsUtils.isUiDevTools()) {
-      this.controller = new UIDevtoolsController(mainTarget, this);
-    } else {
-      this.controller = new TimelineController(mainTarget, this);
-    }
-    this.setUIControlsEnabled(false);
-    this.hideLandingPage();
-    try {
-      const response = await this.controller.startRecording(recordingOptions, enabledTraceProviders);
-      if (response.getError()) {
-        throw new Error(response.getError());
-      } else {
-        this.recordingStarted();
+      if (recordingOptions.startCoverage) {
+        await UI.ViewManager.ViewManager.instance()
+            .showView('coverage')
+            .then(() => this.getCoverageViewWidget())
+            .then(widget => widget.ensureRecordingStarted());
       }
-    } catch (e) {
-      this.recordingFailed(e.message);
+
+      this.showRecordingStarted();
+
+      const enabledTraceProviders = Extensions.ExtensionServer.ExtensionServer.instance().traceProviders().filter(
+          provider => TimelinePanel.settingForTraceProvider(provider).get());
+
+      const mainTarget = (SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target);
+      if (UIDevtoolsUtils.isUiDevTools()) {
+        this.controller = new UIDevtoolsController(mainTarget, this);
+      } else {
+        this.controller = new TimelineController(mainTarget, this);
+      }
+      this.setUIControlsEnabled(false);
+      this.hideLandingPage();
+      try {
+        const response = await this.controller.startRecording(recordingOptions, enabledTraceProviders);
+        if (response.getError()) {
+          throw new Error(response.getError());
+        } else {
+          this.recordingStarted();
+        }
+      } catch (e) {
+        this.recordingFailed(e.message);
+      }
+    } else {
+      this.showRecordingStarted();
+
+      this.cpuProfilers = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel);
+      this.setUIControlsEnabled(false);
+      this.hideLandingPage();
+
+      await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
+      await Promise.all(this.cpuProfilers.map(model => model.startRecording()));
+
+      this.recordingStarted();
     }
   }
 
@@ -868,6 +894,29 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.setUIControlsEnabled(true);
       this.controller.dispose();
       this.controller = null;
+      return;
+    }
+    if (this.cpuProfilers) {
+      const profiles = await Promise.all(this.cpuProfilers.map(model => model.stopRecording()));
+      let traceEvents: SDK.TracingManager.EventPayload[] = [];
+      try {
+        for (const profile of profiles) {
+          const traceEvent = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
+              profile, /* tid */ 1, /* injectPageEvent */ true);
+          traceEvents = traceEvents.concat(traceEvent);
+        }
+      } catch (e) {
+        console.error(e.stack);
+        return;
+      }
+      this.setState(State.Idle);
+      this.loadFromEvents(traceEvents);
+
+      this.setUIControlsEnabled(true);
+      this.cpuProfilers.map(model => model.dispose());
+      this.cpuProfilers = null;
+
+      await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     }
   }
 
@@ -904,7 +953,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const state = State;
     this.toggleRecordAction.setToggled(this.state === state.Recording);
     this.toggleRecordAction.setEnabled(this.state === state.Recording || this.state === state.Idle);
-    this.recordReloadAction.setEnabled(this.state === state.Idle);
+    this.recordReloadAction.setEnabled(isNode ? false : this.state === state.Idle);
     this.historyManager.setEnabled(this.state === state.Idle);
     this.clearButton.setEnabled(this.state === state.Idle);
     this.panelToolbar.setEnabled(this.state !== state.Loading);

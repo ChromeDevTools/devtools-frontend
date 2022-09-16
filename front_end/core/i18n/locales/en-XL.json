@@ -5969,14 +5969,32 @@
   "panels/issues/IssueView.ts | warned": {
     "message": "Ŵár̂ńêd́"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "P̂ér̂f́ôŕm̂án̂ćê"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "P̂ŕôf́îĺêŕ"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "R̂éĉór̂d́"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Ŝh́ôẃ P̂ér̂f́ôŕm̂án̂ćê"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Ŝh́ôẃ P̂ŕôf́îĺêŕ"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Ŝh́ôẃ r̂éĉén̂t́ t̂ím̂él̂ín̂é ŝéŝśîón̂ś"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Ŝt́âŕt̂ ṕr̂óf̂íl̂ín̂ǵ âńd̂ ŕêĺôád̂ ṕâǵê"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Ŝt́âŕt̂/śt̂óp̂ ŕêćôŕd̂ín̂ǵ"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Ŝt́ôṕ"
   },
   "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
     "message": "P̂án̂ ór̂ ŕôt́ât́ê d́ôẃn̂"

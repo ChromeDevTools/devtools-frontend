@@ -27,6 +27,7 @@ devtools_entrypoint("meta") {
     ":bundle",
     "../../core/i18n:bundle",
     "../../panels/profiler:bundle",
+    "../../panels/timeline:bundle",
   ]
 
   visibility = [ "../../entrypoints/*" ]

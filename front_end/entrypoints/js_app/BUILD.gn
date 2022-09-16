@@ -14,6 +14,7 @@ devtools_entrypoint("entrypoint") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../panels/js_profiler:meta",
+    "../../panels/mobile_throttling:meta",
     "../../ui/legacy/components/utils:bundle",
     "../main:bundle",
     "../shell",

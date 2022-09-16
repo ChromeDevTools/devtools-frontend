@@ -5969,14 +5969,32 @@
   "panels/issues/IssueView.ts | warned": {
     "message": "Warned"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Performance"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profiler"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Record"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Show Performance"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Show Profiler"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Show recent timeline sessions"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Start profiling and reload page"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Start/stop recording"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Stop"
   },
   "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
     "message": "Pan or rotate down"

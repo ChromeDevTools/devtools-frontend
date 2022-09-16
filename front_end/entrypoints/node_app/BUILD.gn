@@ -37,6 +37,7 @@ devtools_entrypoint("entrypoint") {
     "../../core/i18n:bundle",
     "../../core/root:bundle",
     "../../panels/js_profiler:meta",
+    "../../panels/mobile_throttling:meta",
     "../../panels/sources:bundle",
     "../../ui/legacy:bundle",
     "../shell",

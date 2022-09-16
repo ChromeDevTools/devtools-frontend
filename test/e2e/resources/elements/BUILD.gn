@@ -33,6 +33,7 @@ copy_to_gen("elements") {
     "element-reveal-inline-issue.html",
     "elements-panel-styles.css",
     "elements-panel-styles.html",
+    "elements-search-test.html",
     "flexbox-editor.html",
     "focus.html",
     "grid-editor.html",

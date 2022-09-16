@@ -801,6 +801,8 @@ export const summonAndWaitForSearchBox = async () => {
   await waitFor(SEARCH_BOX_SELECTOR);
 };
 
-export const getSearchResultMatchesText = async () => {
-  return await getTextContent(SEARCH_RESULTS_MATCHES);
+export const assertSearchResultMatchesText = async (text: string) => {
+  await waitForFunction(async () => {
+    return await getTextContent(SEARCH_RESULTS_MATCHES) === text;
+  });
 };

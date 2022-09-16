@@ -232,7 +232,8 @@ describe('data grid', async () => {
         assertNumberBetween(columnWidths[1], 395, 400);  // 44.12% of 900 = 397
       });
 
-  it('persists the column resizes when new data is added', async () => {
+  // Flaky
+  it.skip('[crbug.com/1364578] persists the column resizes when new data is added', async () => {
     await loadComponentDocExample('data_grid/adding-data.html');
 
     const dataGrid = await getDataGrid();
@@ -295,7 +296,8 @@ describe('data grid', async () => {
       await waitForScrollTopOfDataGrid(dataGrid, 89);
     });
 
-    it('does not auto-scroll if the user has clicked on a cell', async () => {
+    // Flaky
+    it.skip('[crbug.com/1364578] does not auto-scroll if the user has clicked on a cell', async () => {
       const dataGrid = await getDataGrid();
       await assertDataGridNotScrolled(dataGrid);
 
@@ -311,7 +313,8 @@ describe('data grid', async () => {
       await waitForScrollTopOfDataGrid(dataGrid, 0);
     });
 
-    it('does not auto-scroll if the user has scrolled in the data-grid', async () => {
+    // Flaky
+    it.skip('[crbug.com/1364578] does not auto-scroll if the user has scrolled in the data-grid', async () => {
       const dataGrid = await getDataGrid();
       await assertDataGridNotScrolled(dataGrid);
       await scrollDataGridDown(dataGrid, 20);
@@ -338,29 +341,32 @@ describe('data grid', async () => {
          await waitForScrollTopOfDataGrid(dataGrid, 89);
        });
 
-    it('will resume autoscroll if the user clicks a cell but then scrolls to the bottom', async () => {
-      const {frontend} = getBrowserAndPages();
-      const dataGrid = await getDataGrid();
-      await assertDataGridNotScrolled(dataGrid);
+    // Flaky
+    it.skip(
+        '[crbug.com/1364578] will resume autoscroll if the user clicks a cell but then scrolls to the bottom',
+        async () => {
+          const {frontend} = getBrowserAndPages();
+          const dataGrid = await getDataGrid();
+          await assertDataGridNotScrolled(dataGrid);
 
-      const firstBodyCell = await $('tr[aria-rowindex="1"] > td[aria-colindex="1"]', dataGrid);
-      if (!firstBodyCell) {
-        throw new Error('Could not find first body cell to click.');
-      }
-      await click(firstBodyCell);
-      await waitFor('tr.selected', dataGrid);
-      // And new row and ensure we have not auto scrolled as we have a cell selected.
-      await frontend.evaluate('window.addNewRow()');
-      await getDataGridRows(11, dataGrid);
-      await waitForScrollTopOfDataGrid(dataGrid, 0);
+          const firstBodyCell = await $('tr[aria-rowindex="1"] > td[aria-colindex="1"]', dataGrid);
+          if (!firstBodyCell) {
+            throw new Error('Could not find first body cell to click.');
+          }
+          await click(firstBodyCell);
+          await waitFor('tr.selected', dataGrid);
+          // And new row and ensure we have not auto scrolled as we have a cell selected.
+          await frontend.evaluate('window.addNewRow()');
+          await getDataGridRows(11, dataGrid);
+          await waitForScrollTopOfDataGrid(dataGrid, 0);
 
-      // Now scroll down to the very bottom of the grid
-      await scrollDataGridDown(dataGrid, 89);
-      await frontend.evaluate('window.addNewRow()');
-      await getDataGridRows(12, dataGrid);
-      // Ensure the scrollTop has changed: we are auto-scrolling again as the
-      // user scrolled to the bottom
-      await waitForScrollTopOfDataGrid(dataGrid, 109);
-    });
+          // Now scroll down to the very bottom of the grid
+          await scrollDataGridDown(dataGrid, 89);
+          await frontend.evaluate('window.addNewRow()');
+          await getDataGridRows(12, dataGrid);
+          // Ensure the scrollTop has changed: we are auto-scrolling again as the
+          // user scrolled to the bottom
+          await waitForScrollTopOfDataGrid(dataGrid, 109);
+        });
   });
 });

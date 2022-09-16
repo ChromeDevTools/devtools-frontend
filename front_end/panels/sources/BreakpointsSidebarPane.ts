@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -16,6 +18,7 @@ let breakpointsViewControllerInstance: BreakpointsSidebarController;
 
 export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   readonly #breakpointsView: SourcesComponents.BreakpointsView.BreakpointsView;
+  readonly #controller: BreakpointsSidebarController;
 
   static instance(): BreakpointsSidebarPane {
     if (!breakpointsSidebarPaneInstance) {
@@ -26,22 +29,46 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor() {
     super(true);
-
+    this.#controller = BreakpointsSidebarController.instance();
     this.#breakpointsView = new SourcesComponents.BreakpointsView.BreakpointsView();
+    this.#breakpointsView.addEventListener(
+        SourcesComponents.BreakpointsView.CheckboxToggledEvent.eventName, (event: Event) => {
+          this.#onCheckBoxToggledEvent(event);
+        });
+    this.#breakpointsView.addEventListener(
+        SourcesComponents.BreakpointsView.BreakpointSelectedEvent.eventName, (event: Event) => {
+          this.#onBreakpointSelectedEvent(event);
+        });
     this.contentElement.appendChild(this.#breakpointsView);
     this.update();
   }
 
   async doUpdate(): Promise<void> {
-    await BreakpointsSidebarController.instance().update();
+    await this.#controller.update();
   }
 
   set data(data: SourcesComponents.BreakpointsView.BreakpointsViewData) {
     this.#breakpointsView.data = data;
   }
+
+  #onCheckBoxToggledEvent(event: Event): void {
+    const checkboxToggledEvent = event as SourcesComponents.BreakpointsView.CheckboxToggledEvent;
+    const {breakpointItem, checked} = checkboxToggledEvent.data;
+
+    this.#controller.breakpointStateChanged(breakpointItem, checked);
+  }
+
+  #onBreakpointSelectedEvent(event: Event): void {
+    const breakpointSelectedEvent = event as SourcesComponents.BreakpointsView.BreakpointSelectedEvent;
+    const breakpointItem = breakpointSelectedEvent.data.breakpointItem;
+
+    void this.#controller.jumpToSource(breakpointItem);
+  }
 }
 export class BreakpointsSidebarController implements UI.ContextFlavorListener.ContextFlavorListener {
   readonly #breakpointManager: Bindings.BreakpointManager.BreakpointManager;
+  readonly #breakpointItemToLocationMap =
+      new WeakMap<SourcesComponents.BreakpointsView.BreakpointItem, Bindings.BreakpointManager.BreakpointLocation[]>();
 
   constructor() {
     this.#breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
@@ -58,6 +85,27 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
   flavorChanged(_object: Object|null): void {
     void this.update();
+  }
+
+  breakpointStateChanged(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem, checked: boolean): void {
+    const locations = this.#getLocationsForBreakpointItem(breakpointItem);
+    locations.forEach((value: Bindings.BreakpointManager.BreakpointLocation) => {
+      const breakpoint = value.breakpoint;
+      breakpoint.setEnabled(checked);
+    });
+  }
+
+  async jumpToSource(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem): Promise<void> {
+    const uiLocations = this.#getLocationsForBreakpointItem(breakpointItem).map(location => location.uiLocation);
+    let uiLocation: Workspace.UISourceCode.UILocation|undefined;
+    for (const uiLocationCandidate of uiLocations) {
+      if (!uiLocation || uiLocationCandidate.compareTo(uiLocation) < 0) {
+        uiLocation = uiLocationCandidate;
+      }
+    }
+    if (uiLocation) {
+      await Common.Revealer.reveal(uiLocation);
+    }
   }
 
   async update(): Promise<void> {
@@ -98,6 +146,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       const status: SourcesComponents.BreakpointsView.BreakpointStatus = this.#getBreakpointState(locations);
       const item = {location: locationText, codeSnippet, isHit, status} as
           SourcesComponents.BreakpointsView.BreakpointItem;
+      this.#breakpointItemToLocationMap.set(item, locations);
 
       let group = urlToGroup.get(sourceURL);
       if (group) {
@@ -110,6 +159,13 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       }
     }
     return {groups: Array.from(urlToGroup.values())};
+  }
+
+  #getLocationsForBreakpointItem(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem):
+      Bindings.BreakpointManager.BreakpointLocation[] {
+    const locations = this.#breakpointItemToLocationMap.get(breakpointItem);
+    assertNotNullOrUndefined(locations);
+    return locations;
   }
 
   async #getHitUILocation(): Promise<Workspace.UISourceCode.UILocation|null> {

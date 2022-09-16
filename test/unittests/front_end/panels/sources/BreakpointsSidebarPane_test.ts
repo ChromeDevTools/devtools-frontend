@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as SourcesComponents from '../../../../../front_end/panels/sources/components/components.js';
@@ -48,6 +49,56 @@ function createBreakpointLocations(testData: LocationTestData[]): Bindings.Break
 }
 
 describeWithEnvironment('BreakpointsSidebarController', () => {
+  it('changes breakpoint state', async () => {
+    const testData = [
+      createLocationTestData(HELLO_JS_FILE, 3, 10),
+    ];
+    initializeBreakpointManagerWithMockdata(testData);
+
+    const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+    const data = await controller.getUpdatedBreakpointViewData();
+    assert.lengthOf(data.groups, 1);
+    assert.lengthOf(data.groups[0].breakpointItems, 1);
+    const breakpointItem = data.groups[0].breakpointItems[0];
+    assert.strictEqual(breakpointItem.status, SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED);
+
+    const locations = Bindings.BreakpointManager.BreakpointManager.instance().allBreakpointLocations();
+    assert.lengthOf(locations, 1);
+
+    const breakpoint = locations[0].breakpoint as sinon.SinonStubbedInstance<Bindings.BreakpointManager.Breakpoint>;
+    controller.breakpointStateChanged(breakpointItem, false);
+    assert.isTrue(breakpoint.setEnabled.calledWith(false));
+  });
+
+  it('triggers a jump to source', async () => {
+    const testData = [
+      createLocationTestData(HELLO_JS_FILE, 3, 10),
+    ];
+    initializeBreakpointManagerWithMockdata(testData);
+
+    const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+    const data = await controller.getUpdatedBreakpointViewData();
+    assert.lengthOf(data.groups, 1);
+    assert.lengthOf(data.groups[0].breakpointItems, 1);
+    const breakpointItem = data.groups[0].breakpointItems[0];
+
+    Common.Revealer.registerRevealer({
+      contextTypes() {
+        return [
+          Workspace.UISourceCode.UILocation,
+        ];
+      },
+      destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+      async loadRevealer() {
+        return Sources.SourcesPanel.UILocationRevealer.instance();
+      },
+    });
+
+    const revealStub = sinon.stub(Sources.SourcesPanel.UILocationRevealer.instance(), 'reveal');
+    await controller.jumpToSource(breakpointItem);
+    assert.isTrue(revealStub.called);
+  });
+
   describe('getUpdatedBreakpointViewData', () => {
     it('extracts breakpoint data', async () => {
       const testData = [

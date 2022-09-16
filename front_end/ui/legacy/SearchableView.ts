@@ -475,24 +475,6 @@ export class SearchableView extends VBox {
     this.searchInputElement.focus();
   }
 
-  private onFindClick(_event: Event): void {
-    if (!this.currentQuery) {
-      this.performSearch(true, true);
-    } else {
-      this.jumpToNextSearchResult();
-    }
-    this.searchInputElement.focus();
-  }
-
-  private onPreviousClick(_event: Event): void {
-    if (!this.currentQuery) {
-      this.performSearch(true, true, true);
-    } else {
-      this.jumpToNextSearchResult(true);
-    }
-    this.searchInputElement.focus();
-  }
-
   private clearSearch(): void {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -562,6 +544,7 @@ export class SearchableView extends VBox {
 
   private onInput(_event: Event): void {
     if (!Common.Settings.Settings.instance().moduleSetting('searchAsYouType').get()) {
+      this.clearSearch();
       return;
     }
 

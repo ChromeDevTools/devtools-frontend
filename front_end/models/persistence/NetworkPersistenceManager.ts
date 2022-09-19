@@ -275,8 +275,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         (this.projectInternal as FileSystem).fileSystemPath(), '/', this.encodedPathFromUrl(url, ignoreInactive));
   }
 
-  private getHeadersUISourceCodeFromUrl(url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCode
-      |null {
+  getHeadersUISourceCodeFromUrl(url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCode|null {
     const fileUrlFromRequest = this.fileUrlFromNetworkUrl(url, /* ignoreNoActive */ true);
     const folderUrlFromRequest =
         Common.ParsedURL.ParsedURL.substring(fileUrlFromRequest, 0, fileUrlFromRequest.lastIndexOf('/'));
@@ -790,7 +789,7 @@ export function isHeaderOverride(arg: any): arg is HeaderOverride {
   }
   return arg.headers.every(
       (header: Protocol.Fetch.HeaderEntry) =>
-          header.name && typeof header.name === 'string' && header.value && typeof header.value === 'string');
+          header.name && typeof header.name === 'string' && typeof header.value === 'string');
 }
 
 export function escapeRegex(pattern: string): string {

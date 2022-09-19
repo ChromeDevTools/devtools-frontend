@@ -28,6 +28,10 @@ export async function createWorkspaceProject(
   const fileSystem = {
     fileSystemPath: () => baseUrl,
     fileSystemBaseURL: baseUrl + '/',
+    type: () => Workspace.Workspace.projectTypes.FileSystem,
+    fileSystemInternal: {
+      supportsAutomapping: () => false,
+    },
   } as unknown as Persistence.FileSystemWorkspaceBinding.FileSystem;
 
   const uiSourceCodes = new Map<string, Workspace.UISourceCode.UISourceCode>();
@@ -40,6 +44,8 @@ export async function createWorkspaceProject(
         return {...fileSystem, requestFileBlob: () => new Blob([file.content])};
       },
       name: () => file.name,
+      setWorkingCopy: () => {},
+      commitWorkingCopy: () => {},
     } as unknown as Workspace.UISourceCode.UISourceCode);
   }
 
@@ -50,8 +56,15 @@ export async function createWorkspaceProject(
     uiSourceCodeForURL: (url: string) => {
       return uiSourceCodes.get(url) || null;
     },
+    type: () => Workspace.Workspace.projectTypes.FileSystem,
+    initialGitFolders: () => [],
+    fileSystemInternal: {
+      type: () => 'filesystem',
+    },
   } as unknown as Workspace.Workspace.Project;
 
   await networkPersistenceManager.setProject(mockProject);
+  const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+  workspace.addProject(mockProject);
   return networkPersistenceManager;
 }

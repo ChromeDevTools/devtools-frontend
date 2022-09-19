@@ -264,7 +264,7 @@ async function checkRequestOverride(
       fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, networkRequest, responseStatusCode,
       responseHeaders);
   interceptedRequest.responseBody = async () => {
-    return {error: null, content: responseBody, encoded: true};
+    return {error: null, content: responseBody, encoded: false};
   };
 
   assert.isTrue(spy.notCalled);

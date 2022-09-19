@@ -11,6 +11,8 @@ import {
   assertElement,
   assertShadowRoot,
   dispatchCopyEvent,
+  dispatchKeyDownEvent,
+  dispatchPasteEvent,
   getCleanTextContentFromElements,
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
@@ -150,5 +152,111 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assertShadowRoot(component.shadowRoot);
     const headerRowElement = component.shadowRoot.querySelector('.row.header-highlight');
     assertElement(headerRowElement, HTMLDivElement);
+  });
+
+  it('emits "headervaluechanged" event on blur after being edited', async () => {
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
+      value: 'someHeaderValue',
+      editable: true,
+    };
+    const editedHeaderValue = 'new value for header';
+
+    const component = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+
+    let headerValueFromEvent = '';
+    component.addEventListener('headervaluechanged', event => {
+      headerValueFromEvent = event.headerValue;
+    });
+
+    const editable = component.shadowRoot.querySelector('.editable');
+    assertElement(editable, HTMLSpanElement);
+    editable.focus();
+    editable.innerText = editedHeaderValue;
+    editable.blur();
+
+    assert.strictEqual(headerValueFromEvent, editedHeaderValue);
+  });
+
+  it('resets edited value on escape key', async () => {
+    const originalHeaderValue = 'someHeaderValue';
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
+      value: originalHeaderValue,
+      editable: true,
+    };
+
+    const component = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+
+    let eventCount = 0;
+    component.addEventListener('headervaluechanged', () => {
+      eventCount++;
+    });
+
+    const editable = component.shadowRoot.querySelector('.editable');
+    assertElement(editable, HTMLSpanElement);
+    editable.focus();
+    editable.innerText = 'new value for header';
+    dispatchKeyDownEvent(editable, {key: 'Escape', bubbles: true});
+
+    assert.strictEqual(eventCount, 0);
+    assert.strictEqual(editable.innerText, originalHeaderValue);
+  });
+
+  it('confirms edited value and exits editing mode on "Enter"-key', async () => {
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
+      value: 'someHeaderValue',
+      editable: true,
+    };
+    const editedHeaderValue = 'new value for header';
+
+    const component = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+
+    let headerValueFromEvent = '';
+    let eventCount = 0;
+    component.addEventListener('headervaluechanged', event => {
+      headerValueFromEvent = event.headerValue;
+      eventCount++;
+    });
+
+    const editable = component.shadowRoot.querySelector('.editable');
+    assertElement(editable, HTMLSpanElement);
+    editable.focus();
+    editable.innerText = editedHeaderValue;
+    dispatchKeyDownEvent(editable, {key: 'Enter', bubbles: true});
+
+    assert.strictEqual(headerValueFromEvent, editedHeaderValue);
+    assert.strictEqual(eventCount, 1);
+  });
+
+  it('removes formatting for pasted content', async () => {
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
+      value: 'someHeaderValue',
+      editable: true,
+    };
+
+    const component = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+
+    let headerValueFromEvent = '';
+    component.addEventListener('headervaluechanged', event => {
+      headerValueFromEvent = event.headerValue;
+    });
+
+    const editable = component.shadowRoot.querySelector('.editable');
+    assertElement(editable, HTMLSpanElement);
+    editable.focus();
+    const dt = new DataTransfer();
+    dt.setData('text/plain', 'foo\nbar');
+    dt.setData('text/html', 'This is <b>bold</b>');
+    dispatchPasteEvent(editable, {clipboardData: dt, bubbles: true});
+    editable.blur();
+
+    assert.strictEqual(headerValueFromEvent, 'foo bar');
   });
 });

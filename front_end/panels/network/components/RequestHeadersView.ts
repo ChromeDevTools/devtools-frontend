@@ -90,6 +90,10 @@ const UIStrings = {
   */
   responseHeaders: 'Response Headers',
   /**
+  *@description Title text for a link to the Sources panel to the file containing the header override definitions
+  */
+  revealHeaderOverrides: 'Reveal header override definitions',
+  /**
   *@description Text to show more content
   */
   showMore: 'Show more',
@@ -270,7 +274,7 @@ export class RequestHeadersComponent extends HTMLElement {
     };
 
     return html`
-      <x-link @click=${revealHeadersFile} class="link devtools-link">
+      <x-link @click=${revealHeadersFile} class="link devtools-link" title=${UIStrings.revealHeaderOverrides}>
         ${fileIcon}${i18nString(UIStrings.headerOverrides)}
       </x-link>
     `;

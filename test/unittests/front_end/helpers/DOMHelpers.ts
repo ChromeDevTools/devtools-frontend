@@ -196,6 +196,14 @@ export function dispatchCopyEvent<T extends Element>(element: T, options: Clipbo
 }
 
 /**
+ * Dispatches a clipboard paste event.
+ */
+export function dispatchPasteEvent<T extends Element>(element: T, options: ClipboardEventInit = {}) {
+  const pasteEvent = new ClipboardEvent('paste', options);
+  element.dispatchEvent(pasteEvent);
+}
+
+/**
  * Listens to an event of an element and returns a Promise that resolves to the
  * specified event type.
  */

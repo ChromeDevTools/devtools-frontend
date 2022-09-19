@@ -6947,6 +6947,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Response Headers"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Reveal header override definitions"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Show more"
   },

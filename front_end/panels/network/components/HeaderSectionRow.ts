@@ -43,6 +43,16 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/HeaderSectionRow.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export class HeaderValueChangedEvent extends Event {
+  static readonly eventName = 'headervaluechanged';
+  headerValue: string;
+
+  constructor(headerValue: string) {
+    super(HeaderValueChangedEvent.eventName, {});
+    this.headerValue = headerValue;
+  }
+}
+
 export interface HeaderSectionRowData {
   header: HeaderDescriptor;
 }
@@ -54,6 +64,10 @@ export class HeaderSectionRow extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [headerSectionRowStyles];
+    this.#shadow.addEventListener('focusin', this.#onFocusIn.bind(this));
+    this.#shadow.addEventListener('focusout', this.#onFocusOut.bind(this));
+    this.#shadow.addEventListener('keydown', this.#onKeyDown.bind(this));
+    this.#shadow.addEventListener('paste', this.#onPaste.bind(this));
   }
 
   set data(data: HeaderSectionRowData) {
@@ -86,12 +100,22 @@ export class HeaderSectionRow extends HTMLElement {
           class="header-value ${this.#header.headerValueIncorrect ? 'header-warning' : ''}"
           @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
         >
-          ${this.#header.value || ''}
+          ${this.#header.editable ? this.#renderEditable(this.#header.value || '') : this.#header.value || ''}
           ${this.#maybeRenderHeaderValueSuffix(this.#header)}
         </div>
       </div>
       ${this.#maybeRenderBlockedDetails(this.#header.blockedDetails)}
     `, this.#shadow, {host: this});
+    // clang-format on
+  }
+
+  #renderEditable(value: string): LitHtml.TemplateResult {
+    // This uses LitHtml's `live`-directive, so that when checking whether to
+    // update during re-render, `value` is compared against the actual live DOM
+    // value of the contenteditable element and not the potentially outdated
+    // value from the previous render.
+    // clang-format off
+    return LitHtml.html`<span contenteditable="true" class="editable" tabindex="0" .innerText=${LitHtml.Directives.live(value)}></span>`;
     // clang-format on
   }
 
@@ -188,6 +212,61 @@ export class HeaderSectionRow extends HTMLElement {
     }
     return LitHtml.nothing;
   }
+
+  #selectAllText(target: HTMLElement): void {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(target);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }
+
+  #onFocusIn(e: Event): void {
+    const target = e.target as HTMLElement;
+    if (target.matches('.editable')) {
+      this.#selectAllText(target);
+    }
+  }
+
+  #onFocusOut(e: Event): void {
+    const target = e.target as HTMLElement;
+    if (this.#header?.value !== target.innerText) {
+      this.dispatchEvent(new HeaderValueChangedEvent(target.innerText));
+    }
+
+    // clear selection
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+  }
+
+  #onKeyDown(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent;
+    const target = event.target as HTMLElement;
+    if (keyboardEvent.key === 'Escape') {
+      event.consume();
+      target.innerText = this.#header?.value || '';
+      target.blur();
+    }
+    if (keyboardEvent.key === 'Enter') {
+      event.preventDefault();
+      target.blur();
+    }
+  }
+
+  #onPaste(event: Event): void {
+    const clipboardEvent = event as ClipboardEvent;
+    event.preventDefault();
+    if (clipboardEvent.clipboardData) {
+      const text = clipboardEvent.clipboardData.getData('text/plain');
+
+      const selection = this.#shadow.getSelection();
+      if (!selection) {
+        return;
+      }
+      selection.deleteFromDocument();
+      selection.getRangeAt(0).insertNode(document.createTextNode(text));
+    }
+  }
 }
 
 ComponentHelpers.CustomElements.defineComponent('devtools-header-section-row', HeaderSectionRow);
@@ -195,6 +274,10 @@ ComponentHelpers.CustomElements.defineComponent('devtools-header-section-row', H
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-header-section-row': HeaderSectionRow;
+  }
+
+  interface HTMLElementEventMap {
+    [HeaderValueChangedEvent.eventName]: HeaderValueChangedEvent;
   }
 }
 
@@ -213,10 +296,12 @@ interface BlockedDetailsDescriptor {
 export interface HeaderDescriptor {
   name: Platform.StringUtilities.LowerCaseString;
   value: string|null;
+  originalValue?: string|null;
   headerValueIncorrect?: boolean;
   blockedDetails?: BlockedDetailsDescriptor;
   headerNotSet?: boolean;
   setCookieBlockedReasons?: Protocol.Network.SetCookieBlockedReason[];
   highlight?: boolean;
   isOverride?: boolean;
+  editable?: boolean;
 }

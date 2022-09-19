@@ -1713,23 +1713,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   async #handleCreateResponseHeaderOverrideClick(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
-    if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project()) {
-      await this.#revealHeaderOverrideEditor(request);
+    const networkPersistanceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
+    if (networkPersistanceManager.project()) {
+      await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
     } else {  // If folder for local overrides has not been provided yet
       UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async(): Promise<void> => {
         await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
-        await this.#revealHeaderOverrideEditor(request);
+        await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
       });
-    }
-  }
-
-  async #revealHeaderOverrideEditor(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
-    const networkPersistanceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
-    const uiSourceCode = await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
-    if (uiSourceCode) {
-      const sourcesPanel = Sources.SourcesPanel.SourcesPanel.instance();
-      sourcesPanel.showUISourceCode(uiSourceCode);
-      sourcesPanel.revealInNavigator(uiSourceCode);
     }
   }
 

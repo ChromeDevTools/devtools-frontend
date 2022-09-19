@@ -11,8 +11,16 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Host from '../../../core/host/host.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
-import {type HeaderDescriptor, HeaderSectionRow, type HeaderSectionRowData} from './HeaderSectionRow.js';
+import {
+  type HeaderDescriptor,
+  HeaderSectionRow,
+  type HeaderSectionRowData,
+  type HeaderValueChangedEvent,
+} from './HeaderSectionRow.js';
+import * as Persistence from '../../../models/persistence/persistence.js';
+import type * as Workspace from '../../../models/workspace/workspace.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as Common from '../../../core/common/common.js';
 
 import responseHeaderSectionStyles from './ResponseHeaderSection.css.js';
 
@@ -69,6 +77,8 @@ export class ResponseHeaderSection extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #request?: Readonly<SDK.NetworkRequest.NetworkRequest>;
   #headers: HeaderDescriptor[] = [];
+  #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
+  #overrides: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [responseHeaderSectionStyles];
@@ -80,6 +90,7 @@ export class ResponseHeaderSection extends HTMLElement {
         this.#request.sortedResponseHeaders.map(header => ({
                                                   name: Platform.StringUtilities.toLowerCaseString(header.name),
                                                   value: header.value,
+                                                  originalValue: header.value,
                                                 }));
     this.#markOverrides();
 
@@ -147,7 +158,35 @@ export class ResponseHeaderSection extends HTMLElement {
       });
     }
 
+    void this.#loadOverridesInfo();
     this.#render();
+  }
+
+  async #loadOverridesInfo(): Promise<void> {
+    if (!this.#request) {
+      return;
+    }
+    this.#uiSourceCode =
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().getHeadersUISourceCodeFromUrl(
+            this.#request.url());
+    if (!this.#uiSourceCode) {
+      return;
+    }
+    try {
+      const deferredContent = await this.#uiSourceCode.requestContent();
+      this.#overrides =
+          JSON.parse(deferredContent.content || '[]') as Persistence.NetworkPersistenceManager.HeaderOverride[];
+      if (!this.#overrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
+        throw 'Type mismatch after parsing';
+      }
+      for (const header of this.#headers) {
+        header.editable = true;
+      }
+      this.#render();
+    } catch (error) {
+      console.error(
+          'Failed to parse', this.#uiSourceCode?.url() || 'source code file', 'for locally overriding headers.');
+    }
   }
 
   #markOverrides(): void {
@@ -213,6 +252,56 @@ export class ResponseHeaderSection extends HTMLElement {
     }
   }
 
+  #onHeaderValueChanged(event: HeaderValueChangedEvent): void {
+    const target = event.target as HTMLElement;
+    if (!this.#request || target.dataset.index === undefined) {
+      return;
+    }
+
+    const index = Number(target.dataset.index);
+    this.#headers[index].value = event.headerValue;
+
+    // If multiple headers have the same name 'foo', we treat them as a unit.
+    // If there are overrides for 'foo', all original 'foo' headers are removed
+    // and replaced with the override(s) for 'foo'.
+    const headerName = this.#headers[index].name;
+    const headersToUpdate = this.#headers.filter(
+        header => header.name === headerName && (header.value !== header.originalValue || header.isOverride));
+
+    const rawPath = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().rawPathFromUrl(
+        this.#request.url(), true);
+    const lastIndexOfSlash = rawPath.lastIndexOf('/');
+    const rawFileName = Common.ParsedURL.ParsedURL.substring(rawPath, lastIndexOfSlash + 1);
+
+    // If the last override-block matches 'rawFileName', use this last block.
+    // Otherwise just append a new block at the end. We are not using earlier
+    // blocks, because they could be overruled by later blocks, which contain
+    // wildcards in the filenames they apply to.
+    let block: Persistence.NetworkPersistenceManager.HeaderOverride|null = null;
+    const [lastOverride] = this.#overrides.slice(-1);
+    if (lastOverride?.applyTo === rawFileName) {
+      block = lastOverride;
+    } else {
+      block = {
+        applyTo: rawFileName,
+        headers: [],
+      };
+      this.#overrides.push(block);
+    }
+
+    // Keep header overrides for headers with a different name.
+    block.headers = block.headers.filter(header => header.name !== headerName);
+
+    // Append freshly edited header overrides.
+    for (const header of headersToUpdate) {
+      block.headers.push({name: header.name, value: header.value || ''});
+    }
+
+    this.#uiSourceCode?.setWorkingCopy(JSON.stringify(this.#overrides, null, 2));
+    this.#uiSourceCode?.commitWorkingCopy();
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().updateInterceptionPatterns();
+  }
+
   #render(): void {
     if (!this.#request) {
       return;
@@ -221,10 +310,10 @@ export class ResponseHeaderSection extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      ${this.#headers.map(header => html`
+      ${this.#headers.map((header, index) => html`
         <${HeaderSectionRow.litTagName} .data=${{
           header: header,
-        } as HeaderSectionRowData}></${HeaderSectionRow.litTagName}>
+        } as HeaderSectionRowData} @headervaluechanged=${this.#onHeaderValueChanged} data-index=${index}></${HeaderSectionRow.litTagName}>
       `)}
     `, this.#shadow, {host: this});
     // clang-format on

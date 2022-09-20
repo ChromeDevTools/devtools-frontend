@@ -17,7 +17,7 @@ import { debugError } from './util.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
-import { Browser, } from './Browser.js';
+import { CDPBrowser } from './Browser.js';
 import { Connection } from './Connection.js';
 import { getFetch } from './fetch.js';
 const getWebSocketTransportClass = async () => {
@@ -32,7 +32,7 @@ const getWebSocketTransportClass = async () => {
  *
  * @internal
  */
-export async function _connectToBrowser(options) {
+export async function _connectToCDPBrowser(options) {
     const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, targetFilter, _isPageTarget: isPageTarget, } = options;
     assert(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
         1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
@@ -56,10 +56,9 @@ export async function _connectToBrowser(options) {
         ? 'firefox'
         : 'chrome';
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
-    const browser = await Browser._create(product || 'chrome', connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, undefined, () => {
+    const browser = await CDPBrowser._create(product || 'chrome', connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, undefined, () => {
         return connection.send('Browser.close').catch(debugError);
     }, targetFilter, isPageTarget);
-    await browser.pages();
     return browser;
 }
 async function getWSEndpoint(browserURL) {

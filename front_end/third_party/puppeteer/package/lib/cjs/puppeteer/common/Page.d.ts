@@ -18,19 +18,19 @@
 import { Protocol } from 'devtools-protocol';
 import type { Readable } from 'stream';
 import { Accessibility } from './Accessibility.js';
-import { Browser, BrowserContext } from './Browser.js';
+import type { Browser, BrowserContext } from '../api/Browser.js';
 import { CDPSession } from './Connection.js';
 import { ConsoleMessage } from './ConsoleMessage.js';
 import { Coverage } from './Coverage.js';
 import { Dialog } from './Dialog.js';
-import { WaitForSelectorOptions } from './IsolatedWorld.js';
 import { ElementHandle } from './ElementHandle.js';
 import { EventEmitter } from './EventEmitter.js';
 import { FileChooser } from './FileChooser.js';
-import { Frame } from './Frame.js';
+import { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions, FrameWaitForFunctionOptions } from './Frame.js';
 import { HTTPRequest } from './HTTPRequest.js';
 import { HTTPResponse } from './HTTPResponse.js';
 import { Keyboard, Mouse, MouseButton, Touchscreen } from './Input.js';
+import { WaitForSelectorOptions } from './IsolatedWorld.js';
 import { JSHandle } from './JSHandle.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
 import { Credentials, NetworkConditions } from './NetworkManager.js';
@@ -121,6 +121,10 @@ export interface ScreenshotClip {
     y: number;
     width: number;
     height: number;
+    /**
+     * @defaultValue 1
+     */
+    scale?: number;
 }
 /**
  * @public
@@ -623,6 +627,10 @@ export declare class Page extends EventEmitter {
      */
     setDefaultTimeout(timeout: number): void;
     /**
+     * @returns Maximum time in milliseconds.
+     */
+    getDefaultTimeout(): number;
+    /**
      * Runs `document.querySelector` within the page. If no element matches the
      * selector, the return value resolves to `null`.
      *
@@ -700,11 +708,6 @@ export declare class Page extends EventEmitter {
     /**
      * This method iterates the JavaScript heap and finds all objects with the
      * given prototype.
-     *
-     * @remarks
-     * Shortcut for
-     * {@link ExecutionContext.queryObjects |
-     * page.mainFrame().executionContext().queryObjects(prototypeHandle)}.
      *
      * @example
      *
@@ -890,27 +893,23 @@ export declare class Page extends EventEmitter {
      * Shortcut for
      * {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options)}.
      *
-     * @returns Promise which resolves to the added tag when the script's onload
-     * fires or when the script content was injected into frame.
+     * @param options - Options for the script.
+     * @returns An {@link ElementHandle | element handle} to the injected
+     * `<script>` element.
      */
-    addScriptTag(options: {
-        url?: string;
-        path?: string;
-        content?: string;
-        type?: string;
-        id?: string;
-    }): Promise<ElementHandle<HTMLScriptElement>>;
+    addScriptTag(options: FrameAddScriptTagOptions): Promise<ElementHandle<HTMLScriptElement>>;
     /**
-     * Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
-     * `<style type="text/css">` tag with the content.
-     * @returns Promise which resolves to the added tag when the stylesheet's
-     * onload fires or when the CSS content was injected into frame.
+     * Adds a `<link rel="stylesheet">` tag into the page with the desired URL or
+     * a `<style type="text/css">` tag with the content.
+     *
+     * Shortcut for
+     * {@link Frame.addStyleTag | page.mainFrame().addStyleTag(options)}.
+     *
+     * @returns An {@link ElementHandle | element handle} to the injected `<link>`
+     * or `<style>` element.
      */
-    addStyleTag(options: {
-        url?: string;
-        path?: string;
-        content?: string;
-    }): Promise<ElementHandle<Node>>;
+    addStyleTag(options: Omit<FrameAddStyleTagOptions, 'url'>): Promise<ElementHandle<HTMLStyleElement>>;
+    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLLinkElement>>;
     /**
      * The method adds a function called `name` on the page's `window` object.
      * When called, the function executes `puppeteerFunction` in node.js and
@@ -1678,13 +1677,13 @@ export declare class Page extends EventEmitter {
      *
      * // overwrite the `languages` property to use a custom getter
      * Object.defineProperty(navigator, 'languages', {
-     * get: function () {
-     * return ['en-US', 'en', 'bn'];
-     * },
+     *   get: function () {
+     *     return ['en-US', 'en', 'bn'];
+     *   },
      * });
      *
      * // In your puppeteer script, assuming the preload.js file is
-     * in same folder of our script
+     * // in same folder of our script.
      * const preloadFile = fs.readFileSync('./preload.js', 'utf8');
      * await page.evaluateOnNewDocument(preloadFile);
      * ```
@@ -1978,7 +1977,7 @@ export declare class Page extends EventEmitter {
      *   (30 seconds). Pass `0` to disable timeout. The default value can be changed
      *   by using the {@link Page.setDefaultTimeout} method.
      */
-    waitForSelector<Selector extends string>(selector: Selector, options?: Exclude<WaitForSelectorOptions, 'root'>): Promise<ElementHandle<NodeFor<Selector>> | null>;
+    waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
      * Wait for the `xpath` to appear in page. If at the moment of calling the
      * method the `xpath` already exists, the method will return immediately. If
@@ -2089,26 +2088,8 @@ export declare class Page extends EventEmitter {
      * ```
      *
      * @param pageFunction - Function to be evaluated in browser context
-     * @param options - Optional waiting parameters
-     *
-     * - `polling` - An interval at which the `pageFunction` is executed, defaults
-     *   to `raf`. If `polling` is a number, then it is treated as an interval in
-     *   milliseconds at which the function would be executed. If polling is a
-     *   string, then it can be one of the following values:
-     *   - `raf` - to constantly execute `pageFunction` in
-     *     `requestAnimationFrame` callback. This is the tightest polling mode
-     *     which is suitable to observe styling changes.
-     *   - `mutation`- to execute pageFunction on every DOM mutation.
-     * - `timeout` - maximum time to wait for in milliseconds. Defaults to `30000`
-     *   (30 seconds). Pass `0` to disable timeout. The default value can be
-     *   changed by using the {@link Page.setDefaultTimeout} method.
-     *   @param args - Arguments to pass to `pageFunction`
-     *   @returns A `Promise` which resolves to a JSHandle/ElementHandle of the the
-     *   `pageFunction`'s return value.
+     * @param options - Options for configuring waiting behavior.
      */
-    waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: {
-        timeout?: number;
-        polling?: string | number;
-    }, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: FrameWaitForFunctionOptions, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
 }
 //# sourceMappingURL=Page.d.ts.map

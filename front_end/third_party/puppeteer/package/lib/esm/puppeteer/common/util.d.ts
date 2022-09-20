@@ -97,10 +97,6 @@ export declare function pageBindingDeliverErrorValueString(name: string, seq: nu
 /**
  * @internal
  */
-export declare function makePredicateString(predicate: Function, predicateQueryHandler: Function): string;
-/**
- * @internal
- */
 export declare function waitWithTimeout<T>(promise: Promise<T>, taskName: string, timeout: number): Promise<T>;
 /**
  * @internal

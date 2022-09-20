@@ -1,4 +1,4 @@
-import { Browser } from '../common/Browser.js';
+import { CDPBrowser } from '../common/Browser.js';
 import { Product } from '../common/Product.js';
 import { BrowserLaunchArgumentOptions, ChromeReleaseChannel, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
 import { ProductLauncher } from './ProductLauncher.js';
@@ -19,7 +19,7 @@ export declare class ChromeLauncher implements ProductLauncher {
      */
     _isPuppeteerCore: boolean;
     constructor(projectRoot: string | undefined, preferredRevision: string, isPuppeteerCore: boolean);
-    launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
+    launch(options?: PuppeteerNodeLaunchOptions): Promise<CDPBrowser>;
     defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
     executablePath(channel?: ChromeReleaseChannel): string;
     get product(): Product;

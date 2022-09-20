@@ -1,4 +1,19 @@
 "use strict";
+/**
+ * Copyright 2019 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -33,11 +48,10 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _ElementHandle_instances, _ElementHandle_frame, _ElementHandle_page, _ElementHandle_frameManager, _ElementHandle_scrollIntoViewIfNeeded, _ElementHandle_getOOPIFOffsets, _ElementHandle_getBoxModel, _ElementHandle_fromProtocolQuad, _ElementHandle_intersectQuadWithViewport;
+var _ElementHandle_instances, _ElementHandle_frame, _ElementHandle_frameManager_get, _ElementHandle_page_get, _ElementHandle_scrollIntoViewIfNeeded, _ElementHandle_getOOPIFOffsets, _ElementHandle_getBoxModel, _ElementHandle_fromProtocolQuad, _ElementHandle_intersectQuadWithViewport;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ElementHandle = void 0;
 const assert_js_1 = require("../util/assert.js");
-const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 const QueryHandler_js_1 = require("./QueryHandler.js");
 const util_js_1 = require("./util.js");
@@ -83,15 +97,14 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     /**
      * @internal
      */
-    constructor(context, client, remoteObject, frame, page, frameManager) {
-        super(context, client, remoteObject);
+    constructor(context, remoteObject, frame) {
+        super(context, remoteObject);
         _ElementHandle_instances.add(this);
         _ElementHandle_frame.set(this, void 0);
-        _ElementHandle_page.set(this, void 0);
-        _ElementHandle_frameManager.set(this, void 0);
         __classPrivateFieldSet(this, _ElementHandle_frame, frame, "f");
-        __classPrivateFieldSet(this, _ElementHandle_page, page, "f");
-        __classPrivateFieldSet(this, _ElementHandle_frameManager, frameManager, "f");
+    }
+    get frame() {
+        return __classPrivateFieldGet(this, _ElementHandle_frame, "f");
     }
     /**
      * Queries the current element for an element matching the given selector.
@@ -187,10 +200,18 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
      */
     async $$eval(selector, pageFunction, ...args) {
         const { updatedSelector, queryHandler } = (0, QueryHandler_js_1.getQueryHandlerAndSelector)(selector);
-        (0, assert_js_1.assert)(queryHandler.queryAllArray);
-        const arrayHandle = (await queryHandler.queryAllArray(this, updatedSelector));
-        const result = await arrayHandle.evaluate(pageFunction, ...args);
-        await arrayHandle.dispose();
+        (0, assert_js_1.assert)(queryHandler.queryAll, 'Cannot handle queries for a multiple element with the given selector');
+        const handles = (await queryHandler.queryAll(this, updatedSelector));
+        const elements = await this.evaluateHandle((_, ...elements) => {
+            return elements;
+        }, ...handles);
+        const [result] = await Promise.all([
+            elements.evaluate(pageFunction, ...args),
+            ...handles.map(handle => {
+                return handle.dispose();
+            }),
+        ]);
+        await elements.dispose();
         return result;
     }
     /**
@@ -244,20 +265,9 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
      * @throws Throws if an element matching the given selector doesn't appear.
      */
     async waitForSelector(selector, options = {}) {
-        const frame = this.executionContext().frame();
-        (0, assert_js_1.assert)(frame);
-        const adoptedRoot = await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].adoptHandle(this);
-        const handle = await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].waitForSelector(selector, {
-            ...options,
-            root: adoptedRoot,
-        });
-        await adoptedRoot.dispose();
-        if (!handle) {
-            return null;
-        }
-        const result = (await frame.worlds[IsolatedWorld_js_1.MAIN_WORLD].adoptHandle(handle));
-        await handle.dispose();
-        return result;
+        const { updatedSelector, queryHandler } = (0, QueryHandler_js_1.getQueryHandlerAndSelector)(selector);
+        (0, assert_js_1.assert)(queryHandler.waitFor, 'Query handler does not support waiting');
+        return (await queryHandler.waitFor(this, updatedSelector, options));
     }
     /**
      * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
@@ -336,7 +346,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
         if (typeof nodeInfo.node.frameId !== 'string') {
             return null;
         }
-        return __classPrivateFieldGet(this, _ElementHandle_frameManager, "f").frame(nodeInfo.node.frameId);
+        return __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_frameManager_get).frame(nodeInfo.node.frameId);
     }
     /**
      * Returns the middle point within an element unless a specific offset is provided.
@@ -348,7 +358,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
                 objectId: this.remoteObject().objectId,
             })
                 .catch(util_js_1.debugError),
-            __classPrivateFieldGet(this, _ElementHandle_page, "f")._client().send('Page.getLayoutMetrics'),
+            __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get)._client().send('Page.getLayoutMetrics'),
         ]);
         if (!result || !result.quads.length) {
             throw new Error('Node is either not clickable or not an HTMLElement');
@@ -414,7 +424,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     async hover() {
         await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_scrollIntoViewIfNeeded).call(this);
         const { x, y } = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _ElementHandle_page, "f").mouse.move(x, y);
+        await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).mouse.move(x, y);
     }
     /**
      * This method scrolls element into view if needed, and then
@@ -424,16 +434,16 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     async click(options = {}) {
         await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_scrollIntoViewIfNeeded).call(this);
         const { x, y } = await this.clickablePoint(options.offset);
-        await __classPrivateFieldGet(this, _ElementHandle_page, "f").mouse.click(x, y, options);
+        await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).mouse.click(x, y, options);
     }
     /**
      * This method creates and captures a dragevent from the element.
      */
     async drag(target) {
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _ElementHandle_page, "f").isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
+        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
         await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_scrollIntoViewIfNeeded).call(this);
         const start = await this.clickablePoint();
-        return await __classPrivateFieldGet(this, _ElementHandle_page, "f").mouse.drag(start, target);
+        return await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).mouse.drag(start, target);
     }
     /**
      * This method creates a `dragenter` event on the element.
@@ -441,7 +451,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     async dragEnter(data = { items: [], dragOperationsMask: 1 }) {
         await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_scrollIntoViewIfNeeded).call(this);
         const target = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _ElementHandle_page, "f").mouse.dragEnter(target, data);
+        await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).mouse.dragEnter(target, data);
     }
     /**
      * This method creates a `dragover` event on the element.
@@ -449,7 +459,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     async dragOver(data = { items: [], dragOperationsMask: 1 }) {
         await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_scrollIntoViewIfNeeded).call(this);
         const target = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _ElementHandle_page, "f").mouse.dragOver(target, data);
+        await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).mouse.dragOver(target, data);
     }
     /**
      * This method triggers a drop on the element.
@@ -457,7 +467,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     async drop(data = { items: [], dragOperationsMask: 1 }) {
         await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_scrollIntoViewIfNeeded).call(this);
         const destination = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _ElementHandle_page, "f").mouse.drop(destination, data);
+        await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).mouse.drop(destination, data);
     }
     /**
      * This method triggers a dragenter, dragover, and drop on the element.
@@ -466,7 +476,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
         await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_scrollIntoViewIfNeeded).call(this);
         const startPoint = await this.clickablePoint();
         const targetPoint = await target.clickablePoint();
-        await __classPrivateFieldGet(this, _ElementHandle_page, "f").mouse.dragAndDrop(startPoint, targetPoint, options);
+        await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).mouse.dragAndDrop(startPoint, targetPoint, options);
     }
     /**
      * Triggers a `change` and `input` event once all the provided options have been
@@ -588,7 +598,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     async tap() {
         await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_scrollIntoViewIfNeeded).call(this);
         const { x, y } = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _ElementHandle_page, "f").touchscreen.tap(x, y);
+        await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).touchscreen.tap(x, y);
     }
     /**
      * Calls {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus | focus} on the element.
@@ -626,7 +636,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
      */
     async type(text, options) {
         await this.focus();
-        await __classPrivateFieldGet(this, _ElementHandle_page, "f").keyboard.type(text, options);
+        await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).keyboard.type(text, options);
     }
     /**
      * Focuses the element, and then uses {@link Keyboard.down} and {@link Keyboard.up}.
@@ -644,7 +654,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
      */
     async press(key, options) {
         await this.focus();
-        await __classPrivateFieldGet(this, _ElementHandle_page, "f").keyboard.press(key, options);
+        await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).keyboard.press(key, options);
     }
     /**
      * This method returns the bounding box of the element (relative to the main frame),
@@ -696,7 +706,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
         let needsViewportReset = false;
         let boundingBox = await this.boundingBox();
         (0, assert_js_1.assert)(boundingBox, 'Node is either not visible or not an HTMLElement');
-        const viewport = __classPrivateFieldGet(this, _ElementHandle_page, "f").viewport();
+        const viewport = __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).viewport();
         if (viewport &&
             (boundingBox.width > viewport.width ||
                 boundingBox.height > viewport.height)) {
@@ -704,7 +714,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
                 width: Math.max(viewport.width, Math.ceil(boundingBox.width)),
                 height: Math.max(viewport.height, Math.ceil(boundingBox.height)),
             };
-            await __classPrivateFieldGet(this, _ElementHandle_page, "f").setViewport(Object.assign({}, viewport, newViewport));
+            await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).setViewport(Object.assign({}, viewport, newViewport));
             needsViewportReset = true;
         }
         await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_scrollIntoViewIfNeeded).call(this);
@@ -718,11 +728,11 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
         const clip = Object.assign({}, boundingBox);
         clip.x += pageX;
         clip.y += pageY;
-        const imageData = await __classPrivateFieldGet(this, _ElementHandle_page, "f").screenshot(Object.assign({}, {
+        const imageData = await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).screenshot(Object.assign({}, {
             clip,
         }, options));
         if (needsViewportReset && viewport) {
-            await __classPrivateFieldGet(this, _ElementHandle_page, "f").setViewport(viewport);
+            await __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).setViewport(viewport);
         }
         return imageData;
     }
@@ -744,7 +754,11 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     }
 }
 exports.ElementHandle = ElementHandle;
-_ElementHandle_frame = new WeakMap(), _ElementHandle_page = new WeakMap(), _ElementHandle_frameManager = new WeakMap(), _ElementHandle_instances = new WeakSet(), _ElementHandle_scrollIntoViewIfNeeded = async function _ElementHandle_scrollIntoViewIfNeeded() {
+_ElementHandle_frame = new WeakMap(), _ElementHandle_instances = new WeakSet(), _ElementHandle_frameManager_get = function _ElementHandle_frameManager_get() {
+    return __classPrivateFieldGet(this, _ElementHandle_frame, "f")._frameManager;
+}, _ElementHandle_page_get = function _ElementHandle_page_get() {
+    return __classPrivateFieldGet(this, _ElementHandle_frame, "f").page();
+}, _ElementHandle_scrollIntoViewIfNeeded = async function _ElementHandle_scrollIntoViewIfNeeded() {
     const error = await this.evaluate(async (element) => {
         if (!element.isConnected) {
             return 'Node is detached from document';
@@ -784,7 +798,7 @@ _ElementHandle_frame = new WeakMap(), _ElementHandle_page = new WeakMap(), _Elem
                     behavior: 'instant',
                 });
             }
-        }, __classPrivateFieldGet(this, _ElementHandle_page, "f").isJavaScriptEnabled());
+        }, __classPrivateFieldGet(this, _ElementHandle_instances, "a", _ElementHandle_page_get).isJavaScriptEnabled());
     }
 }, _ElementHandle_getOOPIFOffsets = async function _ElementHandle_getOOPIFOffsets(frame) {
     let offsetX = 0;

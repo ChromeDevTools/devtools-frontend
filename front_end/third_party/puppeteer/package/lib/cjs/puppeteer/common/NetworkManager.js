@@ -34,7 +34,7 @@ const HTTPRequest_js_1 = require("./HTTPRequest.js");
 const HTTPResponse_js_1 = require("./HTTPResponse.js");
 const NetworkEventManager_js_1 = require("./NetworkEventManager.js");
 const util_js_1 = require("./util.js");
-const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
+const DebuggableDeferredPromise_js_1 = require("../util/DebuggableDeferredPromise.js");
 /**
  * We use symbols to prevent any external parties listening to these events.
  * They are internal to Puppeteer.
@@ -92,7 +92,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         if (__classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f")) {
             return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
         }
-        __classPrivateFieldSet(this, _NetworkManager_deferredInitPromise, (0, DeferredPromise_js_1.createDeferredPromiseWithTimer)('NetworkManager initialization timed out', 30000), "f");
+        __classPrivateFieldSet(this, _NetworkManager_deferredInitPromise, (0, DebuggableDeferredPromise_js_1.createDebuggableDeferredPromise)('NetworkManager initialization timed out'), "f");
         const init = Promise.all([
             __classPrivateFieldGet(this, _NetworkManager_ignoreHTTPSErrors, "f")
                 ? __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Security.setIgnoreCertificateErrors', {

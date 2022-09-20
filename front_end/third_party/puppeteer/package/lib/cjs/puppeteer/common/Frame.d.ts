@@ -1,3 +1,18 @@
+/**
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Protocol } from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
 import { ElementHandle } from './ElementHandle.js';
@@ -25,7 +40,7 @@ export interface FrameWaitForFunctionOptions {
      *
      * - `mutation` - to execute `pageFunction` on every DOM mutation.
      */
-    polling?: string | number;
+    polling?: 'raf' | 'mutation' | number;
     /**
      * Maximum time to wait in milliseconds. Defaults to `30000` (30 seconds).
      * Pass `0` to disable the timeout. Puppeteer's default timeout can be changed
@@ -38,24 +53,29 @@ export interface FrameWaitForFunctionOptions {
  */
 export interface FrameAddScriptTagOptions {
     /**
-     * the URL of the script to be added.
+     * URL of the script to be added.
      */
     url?: string;
     /**
-     * The path to a JavaScript file to be injected into the frame.
+     * Path to a JavaScript file to be injected into the frame.
+     *
      * @remarks
      * If `path` is a relative path, it is resolved relative to the current
      * working directory (`process.cwd()` in Node.js).
      */
     path?: string;
     /**
-     * Raw JavaScript content to be injected into the frame.
+     * JavaScript to be injected into the frame.
      */
     content?: string;
     /**
-     * Set the script's `type`. Use `module` in order to load an ES2015 module.
+     * Sets the `type` of the script. Use `module` in order to load an ES2015 module.
      */
     type?: string;
+    /**
+     * Sets the `id` of the script.
+     */
+    id?: string;
 }
 /**
  * @public
@@ -163,11 +183,11 @@ export declare class Frame {
     /**
      * @internal
      */
-    _childFrames: Set<Frame>;
+    _parentId?: string;
     /**
      * @internal
      */
-    constructor(frameManager: FrameManager, parentFrame: Frame | null, frameId: string, client: CDPSession);
+    constructor(frameManager: FrameManager, frameId: string, parentFrameId: string | undefined, client: CDPSession);
     /**
      * @internal
      */
@@ -255,9 +275,7 @@ export declare class Frame {
      */
     _client(): CDPSession;
     /**
-     * @deprecated Do not use the execution context directly.
-     *
-     * @returns a promise that resolves to the frame's default execution context.
+     * @internal
      */
     executionContext(): Promise<ExecutionContext>;
     /**
@@ -478,21 +496,19 @@ export declare class Frame {
      * Adds a `<script>` tag into the page with the desired url or content.
      *
      * @param options - Options for the script.
-     * @returns a promise that resolves to the added tag when the script's
-     * `onload` event fires or when the script content was injected into the
-     * frame.
+     * @returns An {@link ElementHandle | element handle} to the injected
+     * `<script>` element.
      */
     addScriptTag(options: FrameAddScriptTagOptions): Promise<ElementHandle<HTMLScriptElement>>;
     /**
-     * Adds a `<link rel="stylesheet">` tag into the page with the desired url or
+     * Adds a `<link rel="stylesheet">` tag into the page with the desired URL or
      * a `<style type="text/css">` tag with the content.
      *
-     * @param options - Options for the style link.
-     * @returns a promise that resolves to the added tag when the stylesheets's
-     * `onload` event fires or when the CSS content was injected into the
-     * frame.
+     * @returns An {@link ElementHandle | element handle} to the loaded `<link>`
+     * or `<style>` element.
      */
-    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>>;
+    addStyleTag(options: Omit<FrameAddStyleTagOptions, 'url'>): Promise<ElementHandle<HTMLStyleElement>>;
+    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLLinkElement>>;
     /**
      * Clicks the first element found that matches `selector`.
      *

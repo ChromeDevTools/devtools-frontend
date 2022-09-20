@@ -2,7 +2,8 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { assert } from '../util/assert.js';
-import { Browser } from '../common/Browser.js';
+import { CDPBrowser as CDPBrowser } from '../common/Browser.js';
+import { Browser as BiDiBrowser } from '../common/bidi/Browser.js';
 import { BrowserFetcher } from './BrowserFetcher.js';
 import { BrowserRunner } from './BrowserRunner.js';
 import { resolveExecutablePath } from './ProductLauncher.js';
@@ -17,7 +18,7 @@ export class FirefoxLauncher {
         this._isPuppeteerCore = isPuppeteerCore;
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, waitForInitialPage = true, debuggingPort = null, } = options;
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, waitForInitialPage = true, debuggingPort = null, protocol = 'cdp', } = options;
         const firefoxArguments = [];
         if (!ignoreDefaultArgs) {
             firefoxArguments.push(...this.defaultArgs(options));
@@ -61,7 +62,9 @@ export class FirefoxLauncher {
             firefoxArguments.push('--profile');
             firefoxArguments.push(userDataDir);
         }
-        await this._updateRevision();
+        if (!this._isPuppeteerCore) {
+            await this._updateRevision();
+        }
         let firefoxExecutable = executablePath;
         if (!executablePath) {
             const { missingText, executablePath } = resolveExecutablePath(this);
@@ -82,6 +85,26 @@ export class FirefoxLauncher {
             env,
             pipe,
         });
+        if (protocol === 'webDriverBiDi') {
+            let browser;
+            try {
+                const connection = await runner.setupWebDriverBiDiConnection({
+                    timeout,
+                    slowMo,
+                    preferredRevision: this._preferredRevision,
+                });
+                browser = await BiDiBrowser.create({
+                    connection,
+                    closeCallback: runner.close.bind(runner),
+                    process: runner.proc,
+                });
+            }
+            catch (error) {
+                runner.kill();
+                throw error;
+            }
+            return browser;
+        }
         let browser;
         try {
             const connection = await runner.setupConnection({
@@ -90,7 +113,7 @@ export class FirefoxLauncher {
                 slowMo,
                 preferredRevision: this._preferredRevision,
             });
-            browser = await Browser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
+            browser = await CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
         catch (error) {
             runner.kill();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Browser } from './Browser.js';
+import { Browser } from '../api/Browser.js';
 import { BrowserConnectOptions } from './BrowserConnector.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
 import { devices } from './DeviceDescriptors.js';
@@ -46,7 +46,13 @@ export interface ConnectOptions extends BrowserConnectOptions {
  * @public
  */
 export declare class Puppeteer {
+    /**
+     * @internal
+     */
     protected _isPuppeteerCore: boolean;
+    /**
+     * @internal
+     */
     protected _changedProduct: boolean;
     /**
      * @internal

@@ -9,11 +9,12 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _WebWorker_client, _WebWorker_url, _WebWorker_executionContextPromise, _WebWorker_executionContextCallback;
+var _WebWorker_executionContext, _WebWorker_client, _WebWorker_url;
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { JSHandle } from './JSHandle.js';
 import { debugError } from './util.js';
+import { createDeferredPromise } from '../util/DeferredPromise.js';
 /**
  * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
@@ -46,45 +47,38 @@ export class WebWorker extends EventEmitter {
      */
     constructor(client, url, consoleAPICalled, exceptionThrown) {
         super();
+        _WebWorker_executionContext.set(this, createDeferredPromise());
         _WebWorker_client.set(this, void 0);
         _WebWorker_url.set(this, void 0);
-        _WebWorker_executionContextPromise.set(this, void 0);
-        _WebWorker_executionContextCallback.set(this, void 0);
         __classPrivateFieldSet(this, _WebWorker_client, client, "f");
         __classPrivateFieldSet(this, _WebWorker_url, url, "f");
-        __classPrivateFieldSet(this, _WebWorker_executionContextPromise, new Promise(x => {
-            return (__classPrivateFieldSet(this, _WebWorker_executionContextCallback, x, "f"));
-        }), "f");
-        let jsHandleFactory;
         __classPrivateFieldGet(this, _WebWorker_client, "f").once('Runtime.executionContextCreated', async (event) => {
-            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            jsHandleFactory = remoteObject => {
-                return new JSHandle(executionContext, client, remoteObject);
-            };
-            const executionContext = new ExecutionContext(client, event.context);
-            __classPrivateFieldGet(this, _WebWorker_executionContextCallback, "f").call(this, executionContext);
+            const context = new ExecutionContext(client, event.context);
+            __classPrivateFieldGet(this, _WebWorker_executionContext, "f").resolve(context);
         });
-        // This might fail if the target is closed before we receive all execution contexts.
-        __classPrivateFieldGet(this, _WebWorker_client, "f").send('Runtime.enable').catch(debugError);
-        __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.consoleAPICalled', event => {
-            return consoleAPICalled(event.type, event.args.map(jsHandleFactory), event.stackTrace);
+        __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.consoleAPICalled', async (event) => {
+            const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
+            return consoleAPICalled(event.type, event.args.map((object) => {
+                return new JSHandle(context, object);
+            }), event.stackTrace);
         });
         __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.exceptionThrown', exception => {
             return exceptionThrown(exception.exceptionDetails);
         });
+        // This might fail if the target is closed before we receive all execution contexts.
+        __classPrivateFieldGet(this, _WebWorker_client, "f").send('Runtime.enable').catch(debugError);
+    }
+    /**
+     * @internal
+     */
+    async executionContext() {
+        return __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
     }
     /**
      * @returns The URL of this web worker.
      */
     url() {
         return __classPrivateFieldGet(this, _WebWorker_url, "f");
-    }
-    /**
-     * Returns the ExecutionContext the WebWorker runs in
-     * @returns The ExecutionContext the web worker runs in.
-     */
-    async executionContext() {
-        return __classPrivateFieldGet(this, _WebWorker_executionContextPromise, "f");
     }
     /**
      * If the function passed to the `worker.evaluate` returns a Promise, then
@@ -101,7 +95,8 @@ export class WebWorker extends EventEmitter {
      * @returns Promise which resolves to the return value of `pageFunction`.
      */
     async evaluate(pageFunction, ...args) {
-        return (await __classPrivateFieldGet(this, _WebWorker_executionContextPromise, "f")).evaluate(pageFunction, ...args);
+        const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
+        return context.evaluate(pageFunction, ...args);
     }
     /**
      * The only difference between `worker.evaluate` and `worker.evaluateHandle`
@@ -116,8 +111,9 @@ export class WebWorker extends EventEmitter {
      * @returns Promise which resolves to the return value of `pageFunction`.
      */
     async evaluateHandle(pageFunction, ...args) {
-        return (await __classPrivateFieldGet(this, _WebWorker_executionContextPromise, "f")).evaluateHandle(pageFunction, ...args);
+        const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
+        return context.evaluateHandle(pageFunction, ...args);
     }
 }
-_WebWorker_client = new WeakMap(), _WebWorker_url = new WeakMap(), _WebWorker_executionContextPromise = new WeakMap(), _WebWorker_executionContextCallback = new WeakMap();
+_WebWorker_executionContext = new WeakMap(), _WebWorker_client = new WeakMap(), _WebWorker_url = new WeakMap();
 //# sourceMappingURL=WebWorker.js.map

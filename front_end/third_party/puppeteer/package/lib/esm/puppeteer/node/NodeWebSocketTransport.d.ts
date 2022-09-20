@@ -20,7 +20,7 @@ import { ConnectionTransport } from '../common/ConnectionTransport.js';
  */
 export declare class NodeWebSocketTransport implements ConnectionTransport {
     #private;
-    static create(urlString: string): Promise<NodeWebSocketTransport>;
+    static create(url: string): Promise<NodeWebSocketTransport>;
     onmessage?: (message: NodeWebSocket.Data) => void;
     onclose?: () => void;
     constructor(ws: NodeWebSocket);

@@ -15,7 +15,7 @@
  */
 import { CDPSession, Connection } from './Connection.js';
 import { Target } from './Target.js';
-import { TargetFilterCallback } from './Browser.js';
+import { TargetFilterCallback } from '../api/Browser.js';
 import { TargetFactory, TargetInterceptor, TargetManager } from './TargetManager.js';
 import { EventEmitter } from './EventEmitter.js';
 /**

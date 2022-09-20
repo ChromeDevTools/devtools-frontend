@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InternalQueryHandler } from './QueryHandler.js';
+import { PuppeteerQueryHandler } from './QueryHandler.js';
 /**
  * @internal
  */
-export declare const ariaHandler: InternalQueryHandler;
+export declare const ariaHandler: PuppeteerQueryHandler;
 //# sourceMappingURL=AriaQueryHandler.d.ts.map

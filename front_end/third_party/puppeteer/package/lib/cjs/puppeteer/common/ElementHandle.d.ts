@@ -1,12 +1,25 @@
+/**
+ * Copyright 2019 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /// <reference types="node" />
 import { Protocol } from 'devtools-protocol';
-import { CDPSession } from './Connection.js';
 import { ExecutionContext } from './ExecutionContext.js';
-import { FrameManager } from './FrameManager.js';
 import { Frame } from './Frame.js';
 import { WaitForSelectorOptions } from './IsolatedWorld.js';
 import { BoundingBox, BoxModel, ClickOptions, JSHandle, Offset, Point, PressOptions } from './JSHandle.js';
-import { Page, ScreenshotOptions } from './Page.js';
+import { ScreenshotOptions } from './Page.js';
 import { EvaluateFunc, NodeFor } from './types.js';
 import { KeyInput } from './USKeyboardLayout.js';
 /**
@@ -47,7 +60,8 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
     /**
      * @internal
      */
-    constructor(context: ExecutionContext, client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject, frame: Frame, page: Page, frameManager: FrameManager);
+    constructor(context: ExecutionContext, remoteObject: Protocol.Runtime.RemoteObject, frame: Frame);
+    get frame(): Frame;
     /**
      * Queries the current element for an element matching the given selector.
      *
@@ -176,7 +190,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @returns An element matching the given selector.
      * @throws Throws if an element matching the given selector doesn't appear.
      */
-    waitForSelector<Selector extends string>(selector: Selector, options?: Exclude<WaitForSelectorOptions, 'root'>): Promise<ElementHandle<NodeFor<Selector>> | null>;
+    waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
      * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
      * prefix.

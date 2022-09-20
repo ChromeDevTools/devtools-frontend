@@ -120,6 +120,26 @@ export declare const CDPSessionEmittedEvents: {
  * @public
  */
 export declare class CDPSession extends EventEmitter {
+    /**
+     * @internal
+     */
+    constructor();
+    connection(): Connection | undefined;
+    send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
+    /**
+     * Detaches the cdpSession from the target. Once detached, the cdpSession object
+     * won't emit any events and can't be used to send messages.
+     */
+    detach(): Promise<void>;
+    /**
+     * Returns the session's id.
+     */
+    id(): string;
+}
+/**
+ * @internal
+ */
+export declare class CDPSessionImpl extends CDPSession {
     #private;
     /**
      * @internal
@@ -145,4 +165,8 @@ export declare class CDPSession extends EventEmitter {
      */
     id(): string;
 }
+/**
+ * @internal
+ */
+export declare function isTargetClosedError(err: Error): boolean;
 //# sourceMappingURL=Connection.d.ts.map

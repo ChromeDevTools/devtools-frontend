@@ -1,4 +1,4 @@
-import { Browser } from '../common/Browser.js';
+import { Browser } from '../api/Browser.js';
 import { BrowserLaunchArgumentOptions, ChromeReleaseChannel, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
 import { Product } from '../common/Product.js';
 import { ChromeLauncher } from './ChromeLauncher.js';

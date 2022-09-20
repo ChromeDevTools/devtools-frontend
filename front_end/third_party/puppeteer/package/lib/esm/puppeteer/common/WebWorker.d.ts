@@ -61,14 +61,13 @@ export declare class WebWorker extends EventEmitter {
      */
     constructor(client: CDPSession, url: string, consoleAPICalled: ConsoleAPICalledCallback, exceptionThrown: ExceptionThrownCallback);
     /**
+     * @internal
+     */
+    executionContext(): Promise<ExecutionContext>;
+    /**
      * @returns The URL of this web worker.
      */
     url(): string;
-    /**
-     * Returns the ExecutionContext the WebWorker runs in
-     * @returns The ExecutionContext the web worker runs in.
-     */
-    executionContext(): Promise<ExecutionContext>;
     /**
      * If the function passed to the `worker.evaluate` returns a Promise, then
      * `worker.evaluate` would wait for the promise to resolve and return its

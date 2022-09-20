@@ -9,6 +9,7 @@ const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
 const assert_js_1 = require("../util/assert.js");
 const Browser_js_1 = require("../common/Browser.js");
+const Browser_js_2 = require("../common/bidi/Browser.js");
 const BrowserFetcher_js_1 = require("./BrowserFetcher.js");
 const BrowserRunner_js_1 = require("./BrowserRunner.js");
 const ProductLauncher_js_1 = require("./ProductLauncher.js");
@@ -23,7 +24,7 @@ class FirefoxLauncher {
         this._isPuppeteerCore = isPuppeteerCore;
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, waitForInitialPage = true, debuggingPort = null, } = options;
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, waitForInitialPage = true, debuggingPort = null, protocol = 'cdp', } = options;
         const firefoxArguments = [];
         if (!ignoreDefaultArgs) {
             firefoxArguments.push(...this.defaultArgs(options));
@@ -67,7 +68,9 @@ class FirefoxLauncher {
             firefoxArguments.push('--profile');
             firefoxArguments.push(userDataDir);
         }
-        await this._updateRevision();
+        if (!this._isPuppeteerCore) {
+            await this._updateRevision();
+        }
         let firefoxExecutable = executablePath;
         if (!executablePath) {
             const { missingText, executablePath } = (0, ProductLauncher_js_1.resolveExecutablePath)(this);
@@ -88,6 +91,26 @@ class FirefoxLauncher {
             env,
             pipe,
         });
+        if (protocol === 'webDriverBiDi') {
+            let browser;
+            try {
+                const connection = await runner.setupWebDriverBiDiConnection({
+                    timeout,
+                    slowMo,
+                    preferredRevision: this._preferredRevision,
+                });
+                browser = await Browser_js_2.Browser.create({
+                    connection,
+                    closeCallback: runner.close.bind(runner),
+                    process: runner.proc,
+                });
+            }
+            catch (error) {
+                runner.kill();
+                throw error;
+            }
+            return browser;
+        }
         let browser;
         try {
             const connection = await runner.setupConnection({
@@ -96,7 +119,7 @@ class FirefoxLauncher {
                 slowMo,
                 preferredRevision: this._preferredRevision,
             });
-            browser = await Browser_js_1.Browser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
+            browser = await Browser_js_1.CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
         catch (error) {
             runner.kill();

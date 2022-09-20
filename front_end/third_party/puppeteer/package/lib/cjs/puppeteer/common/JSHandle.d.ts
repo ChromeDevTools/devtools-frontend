@@ -82,9 +82,9 @@ export declare class JSHandle<T = unknown> {
     /**
      * @internal
      */
-    constructor(context: ExecutionContext, client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject);
+    constructor(context: ExecutionContext, remoteObject: Protocol.Runtime.RemoteObject);
     /**
-     * @returns The execution context the handle belongs to.
+     * @internal
      */
     executionContext(): ExecutionContext;
     /**
@@ -166,11 +166,11 @@ export declare class JSHandle<T = unknown> {
  */
 export interface Offset {
     /**
-     * x-offset for the clickable point relative to the top-left corder of the border box.
+     * x-offset for the clickable point relative to the top-left corner of the border box.
      */
     x: number;
     /**
-     * y-offset for the clickable point relative to the top-left corder of the border box.
+     * y-offset for the clickable point relative to the top-left corner of the border box.
      */
     y: number;
 }
@@ -193,7 +193,7 @@ export interface ClickOptions {
      */
     clickCount?: number;
     /**
-     * Offset for the clickable point relative to the top-left corder of the border box.
+     * Offset for the clickable point relative to the top-left corner of the border box.
      */
     offset?: Offset;
 }

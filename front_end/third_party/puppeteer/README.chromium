@@ -9,8 +9,16 @@ Security Critical: no
 Description:
 Puppeteer is a Node library which provides a high-level API to control Chrome or Chromium over the DevTools Protocol.
 
-To update this package, run the following command (replace version number with updated version number):
+To update this package, run:
 
 ```bash
-curl --output - $(npm view puppeteer dist.tarball) | tar xzf -
+scripts/deps/roll_front_end_third_party.py -u -cb
 ```
+
+This will:
+- check out a new branch (-cb),
+- download the package,
+- make the necessary commits (-cb), and
+- upload a CL (-u).
+
+Use the `-h` flag for more information on the flags.

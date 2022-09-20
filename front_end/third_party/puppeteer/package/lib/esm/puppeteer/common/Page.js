@@ -25,25 +25,25 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Page_instances, _Page_closed, _Page_client, _Page_target, _Page_keyboard, _Page_mouse, _Page_timeoutSettings, _Page_touchscreen, _Page_accessibility, _Page_frameManager, _Page_emulationManager, _Page_tracing, _Page_pageBindings, _Page_coverage, _Page_javascriptEnabled, _Page_viewport, _Page_screenshotTaskQueue, _Page_workers, _Page_fileChooserPromises, _Page_disconnectPromise, _Page_userDragInterceptionEnabled, _Page_handlerMap, _Page_onDetachedFromTarget, _Page_onAttachedToTarget, _Page_initialize, _Page_onFileChooser, _Page_onTargetCrashed, _Page_onLogEntryAdded, _Page_emitMetrics, _Page_buildMetricsObject, _Page_handleException, _Page_onConsoleAPI, _Page_onBindingCalled, _Page_addConsoleMessage, _Page_onDialog, _Page_resetDefaultBackgroundColor, _Page_setTransparentBackgroundColor, _Page_sessionClosePromise, _Page_go, _Page_screenshotTask;
-import { Accessibility } from './Accessibility.js';
 import { assert } from '../util/assert.js';
-import { CDPSessionEmittedEvents } from './Connection.js';
+import { createDeferredPromise, } from '../util/DeferredPromise.js';
+import { isErrorLike } from '../util/ErrorLike.js';
+import { Accessibility } from './Accessibility.js';
+import { CDPSessionEmittedEvents, isTargetClosedError, } from './Connection.js';
 import { ConsoleMessage } from './ConsoleMessage.js';
 import { Coverage } from './Coverage.js';
 import { Dialog } from './Dialog.js';
-import { MAIN_WORLD } from './IsolatedWorld.js';
 import { EmulationManager } from './EmulationManager.js';
 import { EventEmitter } from './EventEmitter.js';
 import { FileChooser } from './FileChooser.js';
 import { FrameManager, FrameManagerEmittedEvents } from './FrameManager.js';
 import { Keyboard, Mouse, Touchscreen } from './Input.js';
+import { MAIN_WORLD } from './IsolatedWorld.js';
 import { NetworkManagerEmittedEvents, } from './NetworkManager.js';
 import { _paperFormats } from './PDFOptions.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
 import { Tracing } from './Tracing.js';
-import { createJSHandle, debugError, evaluationString, getExceptionMessage, importFS, getReadableAsBuffer, getReadableFromProtocolStream, isNumber, isString, pageBindingDeliverErrorString, pageBindingDeliverErrorValueString, pageBindingDeliverResultString, pageBindingInitString, releaseObject, valueFromRemoteObject, waitForEvent, waitWithTimeout, } from './util.js';
-import { isErrorLike } from '../util/ErrorLike.js';
-import { createDeferredPromiseWithTimer, } from '../util/DeferredPromise.js';
+import { createJSHandle, debugError, evaluationString, getExceptionMessage, getReadableAsBuffer, getReadableFromProtocolStream, importFS, isNumber, isString, pageBindingDeliverErrorString, pageBindingDeliverErrorValueString, pageBindingDeliverResultString, pageBindingInitString, releaseObject, valueFromRemoteObject, waitForEvent, waitWithTimeout, } from './util.js';
 import { WebWorker } from './WebWorker.js';
 /**
  * Page provides methods to interact with a single tab or
@@ -239,7 +239,17 @@ export class Page extends EventEmitter {
         const page = new Page(client, target, ignoreHTTPSErrors, screenshotTaskQueue);
         await __classPrivateFieldGet(page, _Page_instances, "m", _Page_initialize).call(page);
         if (defaultViewport) {
-            await page.setViewport(defaultViewport);
+            try {
+                await page.setViewport(defaultViewport);
+            }
+            catch (err) {
+                if (isErrorLike(err) && isTargetClosedError(err)) {
+                    debugError(err);
+                }
+                else {
+                    throw err;
+                }
+            }
         }
         return page;
     }
@@ -318,16 +328,25 @@ export class Page extends EventEmitter {
      * await fileChooser.accept(['/tmp/myfile.pdf']);
      * ```
      */
-    async waitForFileChooser(options = {}) {
-        if (!__classPrivateFieldGet(this, _Page_fileChooserPromises, "f").size) {
-            await __classPrivateFieldGet(this, _Page_client, "f").send('Page.setInterceptFileChooserDialog', {
+    waitForFileChooser(options = {}) {
+        const needsEnable = __classPrivateFieldGet(this, _Page_fileChooserPromises, "f").size === 0;
+        const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
+        const promise = createDeferredPromise({
+            message: `Waiting for \`FileChooser\` failed: ${timeout}ms exceeded`,
+            timeout,
+        });
+        __classPrivateFieldGet(this, _Page_fileChooserPromises, "f").add(promise);
+        let enablePromise;
+        if (needsEnable) {
+            enablePromise = __classPrivateFieldGet(this, _Page_client, "f").send('Page.setInterceptFileChooserDialog', {
                 enabled: true,
             });
         }
-        const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
-        const promise = createDeferredPromiseWithTimer(`Waiting for \`FileChooser\` failed: ${timeout}ms exceeded`);
-        __classPrivateFieldGet(this, _Page_fileChooserPromises, "f").add(promise);
-        return promise.catch(error => {
+        return Promise.all([promise, enablePromise])
+            .then(([result]) => {
+            return result;
+        })
+            .catch(error => {
             __classPrivateFieldGet(this, _Page_fileChooserPromises, "f").delete(promise);
             throw error;
         });
@@ -543,6 +562,12 @@ export class Page extends EventEmitter {
         __classPrivateFieldGet(this, _Page_timeoutSettings, "f").setDefaultTimeout(timeout);
     }
     /**
+     * @returns Maximum time in milliseconds.
+     */
+    getDefaultTimeout() {
+        return __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout();
+    }
+    /**
      * Runs `document.querySelector` within the page. If no element matches the
      * selector, the return value resolves to `null`.
      *
@@ -628,11 +653,6 @@ export class Page extends EventEmitter {
      * This method iterates the JavaScript heap and finds all objects with the
      * given prototype.
      *
-     * @remarks
-     * Shortcut for
-     * {@link ExecutionContext.queryObjects |
-     * page.mainFrame().executionContext().queryObjects(prototypeHandle)}.
-     *
      * @example
      *
      * ```ts
@@ -654,7 +674,13 @@ export class Page extends EventEmitter {
      */
     async queryObjects(prototypeHandle) {
         const context = await this.mainFrame().executionContext();
-        return context.queryObjects(prototypeHandle);
+        assert(!prototypeHandle.disposed, 'Prototype JSHandle is disposed!');
+        const remoteObject = prototypeHandle.remoteObject();
+        assert(remoteObject.objectId, 'Prototype JSHandle must not be referencing primitive value');
+        const response = await context._client.send('Runtime.queryObjects', {
+            prototypeObjectId: remoteObject.objectId,
+        });
+        return createJSHandle(context, response.objects);
     }
     /**
      * This method runs `document.querySelector` within the page and passes the
@@ -857,18 +883,13 @@ export class Page extends EventEmitter {
      * Shortcut for
      * {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options)}.
      *
-     * @returns Promise which resolves to the added tag when the script's onload
-     * fires or when the script content was injected into frame.
+     * @param options - Options for the script.
+     * @returns An {@link ElementHandle | element handle} to the injected
+     * `<script>` element.
      */
     async addScriptTag(options) {
         return this.mainFrame().addScriptTag(options);
     }
-    /**
-     * Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
-     * `<style type="text/css">` tag with the content.
-     * @returns Promise which resolves to the added tag when the stylesheet's
-     * onload fires or when the CSS content was injected into frame.
-     */
     async addStyleTag(options) {
         return this.mainFrame().addStyleTag(options);
     }
@@ -1861,13 +1882,13 @@ export class Page extends EventEmitter {
      *
      * // overwrite the `languages` property to use a custom getter
      * Object.defineProperty(navigator, 'languages', {
-     * get: function () {
-     * return ['en-US', 'en', 'bn'];
-     * },
+     *   get: function () {
+     *     return ['en-US', 'en', 'bn'];
+     *   },
      * });
      *
      * // In your puppeteer script, assuming the preload.js file is
-     * in same folder of our script
+     * // in same folder of our script.
      * const preloadFile = fs.readFileSync('./preload.js', 'utf8');
      * await page.evaluateOnNewDocument(preloadFile);
      * ```
@@ -2411,33 +2432,28 @@ export class Page extends EventEmitter {
      * ```
      *
      * @param pageFunction - Function to be evaluated in browser context
-     * @param options - Optional waiting parameters
-     *
-     * - `polling` - An interval at which the `pageFunction` is executed, defaults
-     *   to `raf`. If `polling` is a number, then it is treated as an interval in
-     *   milliseconds at which the function would be executed. If polling is a
-     *   string, then it can be one of the following values:
-     *   - `raf` - to constantly execute `pageFunction` in
-     *     `requestAnimationFrame` callback. This is the tightest polling mode
-     *     which is suitable to observe styling changes.
-     *   - `mutation`- to execute pageFunction on every DOM mutation.
-     * - `timeout` - maximum time to wait for in milliseconds. Defaults to `30000`
-     *   (30 seconds). Pass `0` to disable timeout. The default value can be
-     *   changed by using the {@link Page.setDefaultTimeout} method.
-     *   @param args - Arguments to pass to `pageFunction`
-     *   @returns A `Promise` which resolves to a JSHandle/ElementHandle of the the
-     *   `pageFunction`'s return value.
+     * @param options - Options for configuring waiting behavior.
      */
     waitForFunction(pageFunction, options = {}, ...args) {
         return this.mainFrame().waitForFunction(pageFunction, options, ...args);
     }
 }
 _Page_closed = new WeakMap(), _Page_client = new WeakMap(), _Page_target = new WeakMap(), _Page_keyboard = new WeakMap(), _Page_mouse = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Page_touchscreen = new WeakMap(), _Page_accessibility = new WeakMap(), _Page_frameManager = new WeakMap(), _Page_emulationManager = new WeakMap(), _Page_tracing = new WeakMap(), _Page_pageBindings = new WeakMap(), _Page_coverage = new WeakMap(), _Page_javascriptEnabled = new WeakMap(), _Page_viewport = new WeakMap(), _Page_screenshotTaskQueue = new WeakMap(), _Page_workers = new WeakMap(), _Page_fileChooserPromises = new WeakMap(), _Page_disconnectPromise = new WeakMap(), _Page_userDragInterceptionEnabled = new WeakMap(), _Page_handlerMap = new WeakMap(), _Page_onDetachedFromTarget = new WeakMap(), _Page_onAttachedToTarget = new WeakMap(), _Page_instances = new WeakSet(), _Page_initialize = async function _Page_initialize() {
-    await Promise.all([
-        __classPrivateFieldGet(this, _Page_frameManager, "f").initialize(__classPrivateFieldGet(this, _Page_target, "f")._targetId),
-        __classPrivateFieldGet(this, _Page_client, "f").send('Performance.enable'),
-        __classPrivateFieldGet(this, _Page_client, "f").send('Log.enable'),
-    ]);
+    try {
+        await Promise.all([
+            __classPrivateFieldGet(this, _Page_frameManager, "f").initialize(),
+            __classPrivateFieldGet(this, _Page_client, "f").send('Performance.enable'),
+            __classPrivateFieldGet(this, _Page_client, "f").send('Log.enable'),
+        ]);
+    }
+    catch (err) {
+        if (isErrorLike(err) && isTargetClosedError(err)) {
+            debugError(err);
+        }
+        else {
+            throw err;
+        }
+    }
 }, _Page_onFileChooser = async function _Page_onFileChooser(event) {
     if (!__classPrivateFieldGet(this, _Page_fileChooserPromises, "f").size) {
         return;
@@ -2653,7 +2669,12 @@ async function _Page_setTransparentBackgroundColor() {
     const result = await __classPrivateFieldGet(this, _Page_client, "f").send('Page.captureScreenshot', {
         format,
         quality: options.quality,
-        clip,
+        clip: clip
+            ? {
+                ...clip,
+                scale: clip.scale === undefined ? 1 : clip.scale,
+            }
+            : undefined,
         captureBeyondViewport,
         fromSurface,
     });
@@ -2684,7 +2705,7 @@ async function _Page_setTransparentBackgroundColor() {
         const y = Math.round(clip.y);
         const width = Math.round(clip.width + clip.x - x);
         const height = Math.round(clip.height + clip.y - y);
-        return { x, y, width, height, scale: 1 };
+        return { x, y, width, height, scale: clip.scale };
     }
 };
 const supportedMetrics = new Set([

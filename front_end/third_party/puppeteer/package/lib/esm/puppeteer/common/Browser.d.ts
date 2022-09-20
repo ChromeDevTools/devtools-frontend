@@ -15,151 +15,21 @@
  */
 /// <reference types="node" />
 import { ChildProcess } from 'child_process';
-import { Protocol } from 'devtools-protocol';
 import { Connection } from './Connection.js';
-import { EventEmitter } from './EventEmitter.js';
 import { Page } from './Page.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
 import { TargetManager } from './TargetManager.js';
-/**
- * BrowserContext options.
- *
- * @public
- */
-export interface BrowserContextOptions {
-    /**
-     * Proxy server with optional port to use for all requests.
-     * Username and password can be set in `Page.authenticate`.
-     */
-    proxyServer?: string;
-    /**
-     * Bypass the proxy for the given semi-colon-separated list of hosts.
-     */
-    proxyBypassList?: string[];
-}
+import { Browser as BrowserBase, BrowserContext, BrowserCloseCallback, TargetFilterCallback, IsPageTargetCallback, BrowserContextOptions, WaitForTargetOptions, Permission } from '../api/Browser.js';
 /**
  * @internal
  */
-export declare type BrowserCloseCallback = () => Promise<void> | void;
-/**
- * @public
- */
-export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => boolean;
-/**
- * @internal
- */
-export declare type IsPageTargetCallback = (target: Protocol.Target.TargetInfo) => boolean;
-/**
- * @public
- */
-export declare type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'payment-handler' | 'persistent-storage' | 'idle-detection' | 'midi-sysex';
-/**
- * @public
- */
-export interface WaitForTargetOptions {
-    /**
-     * Maximum wait time in milliseconds. Pass `0` to disable the timeout.
-     * @defaultValue 30 seconds.
-     */
-    timeout?: number;
-}
-/**
- * All the events a {@link Browser | browser instance} may emit.
- *
- * @public
- */
-export declare const enum BrowserEmittedEvents {
-    /**
-     * Emitted when Puppeteer gets disconnected from the Chromium instance. This
-     * might happen because of one of the following:
-     *
-     * - Chromium is closed or crashed
-     *
-     * - The {@link Browser.disconnect | browser.disconnect } method was called.
-     */
-    Disconnected = "disconnected",
-    /**
-     * Emitted when the url of a target changes. Contains a {@link Target} instance.
-     *
-     * @remarks
-     *
-     * Note that this includes target changes in incognito browser contexts.
-     */
-    TargetChanged = "targetchanged",
-    /**
-     * Emitted when a target is created, for example when a new page is opened by
-     * {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/open | window.open}
-     * or by {@link Browser.newPage | browser.newPage}
-     *
-     * Contains a {@link Target} instance.
-     *
-     * @remarks
-     *
-     * Note that this includes target creations in incognito browser contexts.
-     */
-    TargetCreated = "targetcreated",
-    /**
-     * Emitted when a target is destroyed, for example when a page is closed.
-     * Contains a {@link Target} instance.
-     *
-     * @remarks
-     *
-     * Note that this includes target destructions in incognito browser contexts.
-     */
-    TargetDestroyed = "targetdestroyed"
-}
-/**
- * A Browser is created when Puppeteer connects to a Chromium instance, either through
- * {@link PuppeteerNode.launch} or {@link Puppeteer.connect}.
- *
- * @remarks
- *
- * The Browser class extends from Puppeteer's {@link EventEmitter} class and will
- * emit various events which are documented in the {@link BrowserEmittedEvents} enum.
- *
- * @example
- * An example of using a {@link Browser} to create a {@link Page}:
- *
- * ```ts
- * const puppeteer = require('puppeteer');
- *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.goto('https://example.com');
- *   await browser.close();
- * })();
- * ```
- *
- * @example
- * An example of disconnecting from and reconnecting to a {@link Browser}:
- *
- * ```ts
- * const puppeteer = require('puppeteer');
- *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   // Store the endpoint to be able to reconnect to Chromium
- *   const browserWSEndpoint = browser.wsEndpoint();
- *   // Disconnect puppeteer from Chromium
- *   browser.disconnect();
- *
- *   // Use the endpoint to reestablish a connection
- *   const browser2 = await puppeteer.connect({browserWSEndpoint});
- *   // Close Chromium
- *   await browser2.close();
- * })();
- * ```
- *
- * @public
- */
-export declare class Browser extends EventEmitter {
+export declare class CDPBrowser extends BrowserBase {
     #private;
     /**
      * @internal
      */
-    static _create(product: 'firefox' | 'chrome' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback): Promise<Browser>;
+    static _create(product: 'firefox' | 'chrome' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback): Promise<CDPBrowser>;
     /**
      * @internal
      */
@@ -207,16 +77,16 @@ export declare class Browser extends EventEmitter {
      * })();
      * ```
      */
-    createIncognitoBrowserContext(options?: BrowserContextOptions): Promise<BrowserContext>;
+    createIncognitoBrowserContext(options?: BrowserContextOptions): Promise<CDPBrowserContext>;
     /**
      * Returns an array of all open browser contexts. In a newly created browser, this will
      * return a single instance of {@link BrowserContext}.
      */
-    browserContexts(): BrowserContext[];
+    browserContexts(): CDPBrowserContext[];
     /**
      * Returns the default browser context. The default browser context cannot be closed.
      */
-    defaultBrowserContext(): BrowserContext;
+    defaultBrowserContext(): CDPBrowserContext;
     /**
      * @internal
      */
@@ -302,13 +172,14 @@ export declare class Browser extends EventEmitter {
      */
     userAgent(): Promise<string>;
     /**
-     * Closes Chromium and all of its pages (if any were opened). The {@link Browser} object
-     * itself is considered to be disposed and cannot be used anymore.
+     * Closes Chromium and all of its pages (if any were opened). The
+     * {@link CDPBrowser} object itself is considered to be disposed and cannot be
+     * used anymore.
      */
     close(): Promise<void>;
     /**
      * Disconnects Puppeteer from the browser, but leaves the Chromium process running.
-     * After calling `disconnect`, the {@link Browser} object is considered disposed and
+     * After calling `disconnect`, the {@link CDPBrowser} object is considered disposed and
      * cannot be used anymore.
      */
     disconnect(): void;
@@ -318,69 +189,14 @@ export declare class Browser extends EventEmitter {
     isConnected(): boolean;
 }
 /**
- * @public
+ * @internal
  */
-export declare const enum BrowserContextEmittedEvents {
-    /**
-     * Emitted when the url of a target inside the browser context changes.
-     * Contains a {@link Target} instance.
-     */
-    TargetChanged = "targetchanged",
-    /**
-     * Emitted when a target is created within the browser context, for example
-     * when a new page is opened by
-     * {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/open | window.open}
-     * or by {@link BrowserContext.newPage | browserContext.newPage}
-     *
-     * Contains a {@link Target} instance.
-     */
-    TargetCreated = "targetcreated",
-    /**
-     * Emitted when a target is destroyed within the browser context, for example
-     * when a page is closed. Contains a {@link Target} instance.
-     */
-    TargetDestroyed = "targetdestroyed"
-}
-/**
- * BrowserContexts provide a way to operate multiple independent browser
- * sessions. When a browser is launched, it has a single BrowserContext used by
- * default. The method {@link Browser.newPage | Browser.newPage} creates a page
- * in the default browser context.
- *
- * @remarks
- *
- * The Browser class extends from Puppeteer's {@link EventEmitter} class and
- * will emit various events which are documented in the
- * {@link BrowserContextEmittedEvents} enum.
- *
- * If a page opens another page, e.g. with a `window.open` call, the popup will
- * belong to the parent page's browser context.
- *
- * Puppeteer allows creation of "incognito" browser contexts with
- * {@link Browser.createIncognitoBrowserContext | Browser.createIncognitoBrowserContext}
- * method. "Incognito" browser contexts don't write any browsing data to disk.
- *
- * @example
- *
- * ```ts
- * // Create a new incognito browser context
- * const context = await browser.createIncognitoBrowserContext();
- * // Create a new page inside context.
- * const page = await context.newPage();
- * // ... do stuff with page ...
- * await page.goto('https://example.com');
- * // Dispose context once it's no longer needed.
- * await context.close();
- * ```
- *
- * @public
- */
-export declare class BrowserContext extends EventEmitter {
+export declare class CDPBrowserContext extends BrowserContext {
     #private;
     /**
      * @internal
      */
-    constructor(connection: Connection, browser: Browser, contextId?: string);
+    constructor(connection: Connection, browser: CDPBrowser, contextId?: string);
     /**
      * An array of all active targets inside the browser context.
      */
@@ -459,7 +275,7 @@ export declare class BrowserContext extends EventEmitter {
     /**
      * The browser this browser context belongs to.
      */
-    browser(): Browser;
+    browser(): CDPBrowser;
     /**
      * Closes the browser context. All the targets that belong to the browser context
      * will be closed.

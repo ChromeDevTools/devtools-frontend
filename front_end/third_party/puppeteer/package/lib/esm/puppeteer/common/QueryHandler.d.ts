@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IsolatedWorld, WaitForSelectorOptions } from './IsolatedWorld.js';
+import PuppeteerUtil from '../injected/injected.js';
 import { ElementHandle } from './ElementHandle.js';
-import { JSHandle } from './JSHandle.js';
+import { Frame } from './Frame.js';
+import { WaitForSelectorOptions } from './IsolatedWorld.js';
 /**
  * @public
  */
@@ -34,6 +35,19 @@ export interface CustomQueryHandler {
  */
 export interface InternalQueryHandler {
     /**
+     * @returns A {@link Node} matching the given `selector` from {@link node}.
+     */
+    queryOne?: (node: Node, selector: string, PuppeteerUtil: PuppeteerUtil) => Node | null;
+    /**
+     * @returns Some {@link Node}s matching the given `selector` from {@link node}.
+     */
+    queryAll?: (node: Node, selector: string, PuppeteerUtil: PuppeteerUtil) => Node[];
+}
+/**
+ * @internal
+ */
+export interface PuppeteerQueryHandler {
+    /**
      * Queries for a single node given a selector and {@link ElementHandle}.
      *
      * Akin to {@link Window.prototype.querySelector}.
@@ -46,19 +60,10 @@ export interface InternalQueryHandler {
      */
     queryAll?: (element: ElementHandle<Node>, selector: string) => Promise<Array<ElementHandle<Node>>>;
     /**
-     * Queries for multiple nodes given a selector and {@link ElementHandle}.
-     * Unlike {@link queryAll}, this returns a handle to a node array.
-     *
-     * Akin to {@link Window.prototype.querySelectorAll}.
-     */
-    queryAllArray?: (element: ElementHandle<Node>, selector: string) => Promise<JSHandle<Node[]>>;
-    /**
      * Waits until a single node appears for a given selector and
      * {@link ElementHandle}.
-     *
-     * Akin to {@link Window.prototype.querySelectorAll}.
      */
-    waitFor?: (isolatedWorld: IsolatedWorld, selector: string, options: WaitForSelectorOptions) => Promise<ElementHandle<Node> | null>;
+    waitFor?: (elementOrFrame: ElementHandle<Node> | Frame, selector: string, options: WaitForSelectorOptions) => Promise<ElementHandle<Node> | null>;
 }
 /**
  * Registers a {@link CustomQueryHandler | custom query handler}.
@@ -106,6 +111,6 @@ export declare function clearCustomQueryHandlers(): void;
  */
 export declare function getQueryHandlerAndSelector(selector: string): {
     updatedSelector: string;
-    queryHandler: InternalQueryHandler;
+    queryHandler: PuppeteerQueryHandler;
 };
 //# sourceMappingURL=QueryHandler.d.ts.map

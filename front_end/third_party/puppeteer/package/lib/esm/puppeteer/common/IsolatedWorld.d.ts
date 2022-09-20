@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 import { Protocol } from 'devtools-protocol';
-import { CDPSession } from './Connection.js';
+import type PuppeteerUtil from '../injected/injected.js';
 import { ElementHandle } from './ElementHandle.js';
 import { ExecutionContext } from './ExecutionContext.js';
-import { FrameManager } from './FrameManager.js';
 import { Frame } from './Frame.js';
 import { MouseButton } from './Input.js';
 import { JSHandle } from './JSHandle.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
-import { TimeoutSettings } from './TimeoutSettings.js';
-import { EvaluateFunc, HandleFor, NodeFor } from './types.js';
+import { EvaluateFunc, HandleFor, InnerLazyParams, NodeFor } from './types.js';
+import { TaskManager } from './WaitTask.js';
 /**
  * @public
  */
@@ -50,10 +49,6 @@ export interface WaitForSelectorOptions {
      * @defaultValue `30000` (30 seconds)
      */
     timeout?: number;
-    /**
-     * @deprecated Do not use. Use the {@link ElementHandle.waitForSelector}
-     */
-    root?: ElementHandle<Node>;
 }
 /**
  * @internal
@@ -89,9 +84,10 @@ export interface IsolatedWorldChart {
  */
 export declare class IsolatedWorld {
     #private;
-    get _waitTasks(): Set<WaitTask>;
+    get puppeteerUtil(): Promise<JSHandle<PuppeteerUtil>>;
+    get taskManager(): TaskManager;
     get _boundFunctions(): Map<string, Function>;
-    constructor(client: CDPSession, frameManager: FrameManager, frame: Frame, timeoutSettings: TimeoutSettings);
+    constructor(frame: Frame);
     frame(): Frame;
     clearContext(): void;
     setContext(context: ExecutionContext): void;
@@ -112,40 +108,11 @@ export declare class IsolatedWorld {
         Array<NodeFor<Selector>>,
         ...Params
     ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    waitForSelector<Selector extends string>(selector: Selector, options: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     content(): Promise<string>;
     setContent(html: string, options?: {
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<void>;
-    /**
-     * Adds a script tag into the current context.
-     *
-     * @remarks
-     * You can pass a URL, filepath or string of contents. Note that when running Puppeteer
-     * in a browser environment you cannot pass a filepath and should use either
-     * `url` or `content`.
-     */
-    addScriptTag(options: {
-        url?: string;
-        path?: string;
-        content?: string;
-        id?: string;
-        type?: string;
-    }): Promise<ElementHandle<HTMLScriptElement>>;
-    /**
-     * Adds a style tag into the current context.
-     *
-     * @remarks
-     * You can pass a URL, filepath or string of contents. Note that when running Puppeteer
-     * in a browser environment you cannot pass a filepath and should use either
-     * `url` or `content`.
-     */
-    addStyleTag(options: {
-        url?: string;
-        path?: string;
-        content?: string;
-    }): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>>;
     click(selector: string, options: {
         delay?: number;
         button?: MouseButton;
@@ -159,37 +126,16 @@ export declare class IsolatedWorld {
         delay: number;
     }): Promise<void>;
     _addBindingToContext(context: ExecutionContext, name: string): Promise<void>;
-    _waitForSelectorInPage(queryOne: Function, selector: string, options: WaitForSelectorOptions, binding?: PageBinding): Promise<ElementHandle<Node> | null>;
-    waitForFunction(pageFunction: Function | string, options?: {
-        polling?: string | number;
+    _waitForSelectorInPage(queryOne: Function, root: ElementHandle<Node> | undefined, selector: string, options: WaitForSelectorOptions, bindings?: Set<(...args: never[]) => unknown>): Promise<JSHandle<unknown> | null>;
+    waitForFunction<Params extends unknown[], Func extends EvaluateFunc<InnerLazyParams<Params>> = EvaluateFunc<InnerLazyParams<Params>>>(pageFunction: Func | string, options?: {
+        polling?: 'raf' | 'mutation' | number;
         timeout?: number;
-    }, ...args: unknown[]): Promise<JSHandle>;
+        root?: ElementHandle<Node>;
+        bindings?: Set<(...args: never[]) => unknown>;
+    }, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     title(): Promise<string>;
     adoptBackendNode(backendNodeId?: Protocol.DOM.BackendNodeId): Promise<JSHandle<Node>>;
     adoptHandle<T extends JSHandle<Node>>(handle: T): Promise<T>;
-}
-/**
- * @internal
- */
-export interface WaitTaskOptions {
-    isolatedWorld: IsolatedWorld;
-    predicateBody: Function | string;
-    predicateAcceptsContextElement: boolean;
-    title: string;
-    polling: string | number;
-    timeout: number;
-    binding?: PageBinding;
-    args: unknown[];
-    root?: ElementHandle<Node>;
-}
-/**
- * @internal
- */
-export declare class WaitTask {
-    #private;
-    promise: Promise<JSHandle>;
-    constructor(options: WaitTaskOptions);
-    terminate(error: Error): void;
-    rerun(): Promise<void>;
+    transferHandle<T extends JSHandle<Node>>(handle: T): Promise<T>;
 }
 //# sourceMappingURL=IsolatedWorld.d.ts.map

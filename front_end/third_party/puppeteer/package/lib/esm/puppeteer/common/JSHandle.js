@@ -24,7 +24,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _JSHandle_client, _JSHandle_disposed, _JSHandle_context, _JSHandle_remoteObject;
+var _JSHandle_disposed, _JSHandle_context, _JSHandle_remoteObject;
 import { assert } from '../util/assert.js';
 import { createJSHandle, releaseObject, valueFromRemoteObject } from './util.js';
 /**
@@ -52,20 +52,18 @@ export class JSHandle {
     /**
      * @internal
      */
-    constructor(context, client, remoteObject) {
-        _JSHandle_client.set(this, void 0);
+    constructor(context, remoteObject) {
         _JSHandle_disposed.set(this, false);
         _JSHandle_context.set(this, void 0);
         _JSHandle_remoteObject.set(this, void 0);
         __classPrivateFieldSet(this, _JSHandle_context, context, "f");
-        __classPrivateFieldSet(this, _JSHandle_client, client, "f");
         __classPrivateFieldSet(this, _JSHandle_remoteObject, remoteObject, "f");
     }
     /**
      * @internal
      */
     get client() {
-        return __classPrivateFieldGet(this, _JSHandle_client, "f");
+        return __classPrivateFieldGet(this, _JSHandle_context, "f")._client;
     }
     /**
      * @internal
@@ -74,7 +72,7 @@ export class JSHandle {
         return __classPrivateFieldGet(this, _JSHandle_disposed, "f");
     }
     /**
-     * @returns The execution context the handle belongs to.
+     * @internal
      */
     executionContext() {
         return __classPrivateFieldGet(this, _JSHandle_context, "f");
@@ -122,7 +120,7 @@ export class JSHandle {
         assert(__classPrivateFieldGet(this, _JSHandle_remoteObject, "f").objectId);
         // We use Runtime.getProperties rather than iterative building because the
         // iterative approach might create a distorted snapshot.
-        const response = await __classPrivateFieldGet(this, _JSHandle_client, "f").send('Runtime.getProperties', {
+        const response = await this.client.send('Runtime.getProperties', {
             objectId: __classPrivateFieldGet(this, _JSHandle_remoteObject, "f").objectId,
             ownProperties: true,
         });
@@ -170,7 +168,7 @@ export class JSHandle {
             return;
         }
         __classPrivateFieldSet(this, _JSHandle_disposed, true, "f");
-        await releaseObject(__classPrivateFieldGet(this, _JSHandle_client, "f"), __classPrivateFieldGet(this, _JSHandle_remoteObject, "f"));
+        await releaseObject(this.client, __classPrivateFieldGet(this, _JSHandle_remoteObject, "f"));
     }
     /**
      * Returns a string representation of the JSHandle.
@@ -194,5 +192,5 @@ export class JSHandle {
         return __classPrivateFieldGet(this, _JSHandle_remoteObject, "f");
     }
 }
-_JSHandle_client = new WeakMap(), _JSHandle_disposed = new WeakMap(), _JSHandle_context = new WeakMap(), _JSHandle_remoteObject = new WeakMap();
+_JSHandle_disposed = new WeakMap(), _JSHandle_context = new WeakMap(), _JSHandle_remoteObject = new WeakMap();
 //# sourceMappingURL=JSHandle.js.map

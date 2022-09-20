@@ -62,6 +62,7 @@ const rimraf_1 = __importDefault(require("rimraf"));
 const util_1 = require("util");
 const assert_js_1 = require("../util/assert.js");
 const Connection_js_1 = require("../common/Connection.js");
+const Connection_js_2 = require("../common/bidi/Connection.js");
 const Debug_js_1 = require("../common/Debug.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
@@ -247,6 +248,14 @@ class BrowserRunner {
         // perform this earlier, then the previous function calls would not happen.
         (0, util_js_1.removeEventListeners)(__classPrivateFieldGet(this, _BrowserRunner_listeners, "f"));
     }
+    async setupWebDriverBiDiConnection(options) {
+        (0, assert_js_1.assert)(this.proc, 'BrowserRunner not started.');
+        const { timeout, slowMo, preferredRevision } = options;
+        let browserWSEndpoint = await waitForWSEndpoint(this.proc, timeout, preferredRevision, /^WebDriver BiDi listening on (ws:\/\/.*)$/);
+        browserWSEndpoint += '/session';
+        const transport = await NodeWebSocketTransport_js_1.NodeWebSocketTransport.create(browserWSEndpoint);
+        return new Connection_js_2.Connection(transport, slowMo);
+    }
     async setupConnection(options) {
         (0, assert_js_1.assert)(this.proc, 'BrowserRunner not started.');
         const { usePipe, timeout, slowMo, preferredRevision } = options;
@@ -267,7 +276,7 @@ class BrowserRunner {
 }
 exports.BrowserRunner = BrowserRunner;
 _BrowserRunner_product = new WeakMap(), _BrowserRunner_executablePath = new WeakMap(), _BrowserRunner_processArguments = new WeakMap(), _BrowserRunner_userDataDir = new WeakMap(), _BrowserRunner_isTempUserDataDir = new WeakMap(), _BrowserRunner_closed = new WeakMap(), _BrowserRunner_listeners = new WeakMap(), _BrowserRunner_processClosing = new WeakMap();
-function waitForWSEndpoint(browserProcess, timeout, preferredRevision) {
+function waitForWSEndpoint(browserProcess, timeout, preferredRevision, regex = /^DevTools listening on (ws:\/\/.*)$/) {
     (0, assert_js_1.assert)(browserProcess.stderr, '`browserProcess` does not have stderr.');
     const rl = readline.createInterface(browserProcess.stderr);
     let stderr = '';
@@ -302,7 +311,7 @@ function waitForWSEndpoint(browserProcess, timeout, preferredRevision) {
         }
         function onLine(line) {
             stderr += line + '\n';
-            const match = line.match(/^DevTools listening on (ws:\/\/.*)$/);
+            const match = line.match(regex);
             if (!match) {
                 return;
             }

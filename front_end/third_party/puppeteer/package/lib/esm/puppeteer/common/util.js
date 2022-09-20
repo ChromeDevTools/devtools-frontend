@@ -15,9 +15,9 @@
  */
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
+import { isErrorLike } from '../util/ErrorLike.js';
 import { debug } from './Debug.js';
 import { ElementHandle } from './ElementHandle.js';
-import { isErrorLike } from '../util/ErrorLike.js';
 import { TimeoutError } from './Errors.js';
 import { JSHandle } from './JSHandle.js';
 /**
@@ -155,12 +155,10 @@ export async function waitForEvent(emitter, eventName, predicate, timeout, abort
  * @internal
  */
 export function createJSHandle(context, remoteObject) {
-    const frame = context.frame();
-    if (remoteObject.subtype === 'node' && frame) {
-        const frameManager = frame._frameManager;
-        return new ElementHandle(context, context._client, remoteObject, frame, frameManager.page(), frameManager);
+    if (remoteObject.subtype === 'node' && context._world) {
+        return new ElementHandle(context, remoteObject, context._world.frame());
     }
-    return new JSHandle(context, context._client, remoteObject);
+    return new JSHandle(context, remoteObject);
 }
 /**
  * @internal
@@ -182,27 +180,26 @@ export function evaluationString(fun, ...args) {
  * @internal
  */
 export function pageBindingInitString(type, name) {
-    function addPageBinding(type, bindingName) {
-        /* Cast window to any here as we're about to add properties to it
-         * via win[bindingName] which TypeScript doesn't like.
-         */
-        const win = window;
-        const binding = win[bindingName];
-        win[bindingName] = (...args) => {
-            const me = window[bindingName];
-            let callbacks = me.callbacks;
-            if (!callbacks) {
-                callbacks = new Map();
-                me.callbacks = callbacks;
-            }
-            const seq = (me.lastSeq || 0) + 1;
-            me.lastSeq = seq;
-            const promise = new Promise((resolve, reject) => {
-                return callbacks.set(seq, { resolve, reject });
-            });
-            binding(JSON.stringify({ type, name: bindingName, seq, args }));
-            return promise;
-        };
+    function addPageBinding(type, name) {
+        // This is the CDP binding.
+        // @ts-expect-error: In a different context.
+        const callCDP = self[name];
+        // We replace the CDP binding with a Puppeteer binding.
+        Object.assign(self, {
+            [name](...args) {
+                var _a, _b;
+                // This is the Puppeteer binding.
+                // @ts-expect-error: In a different context.
+                const callPuppeteer = self[name];
+                (_a = callPuppeteer.callbacks) !== null && _a !== void 0 ? _a : (callPuppeteer.callbacks = new Map());
+                const seq = ((_b = callPuppeteer.lastSeq) !== null && _b !== void 0 ? _b : 0) + 1;
+                callPuppeteer.lastSeq = seq;
+                callCDP(JSON.stringify({ type, name, seq, args }));
+                return new Promise((resolve, reject) => {
+                    callPuppeteer.callbacks.set(seq, { resolve, reject });
+                });
+            },
+        });
     }
     return evaluationString(addPageBinding, type, name);
 }
@@ -237,36 +234,6 @@ export function pageBindingDeliverErrorValueString(name, seq, value) {
         window[name].callbacks.delete(seq);
     }
     return evaluationString(deliverErrorValue, name, seq, value);
-}
-/**
- * @internal
- */
-export function makePredicateString(predicate, predicateQueryHandler) {
-    function checkWaitForOptions(node, waitForVisible, waitForHidden) {
-        if (!node) {
-            return waitForHidden;
-        }
-        if (!waitForVisible && !waitForHidden) {
-            return node;
-        }
-        const element = node.nodeType === Node.TEXT_NODE
-            ? node.parentElement
-            : node;
-        const style = window.getComputedStyle(element);
-        const isVisible = style && style.visibility !== 'hidden' && hasVisibleBoundingBox();
-        const success = waitForVisible === isVisible || waitForHidden === !isVisible;
-        return success ? node : null;
-        function hasVisibleBoundingBox() {
-            const rect = element.getBoundingClientRect();
-            return !!(rect.top || rect.bottom || rect.width || rect.height);
-        }
-    }
-    return `
-    (() => {
-      const predicateQueryHandler = ${predicateQueryHandler};
-      const checkWaitForOptions = ${checkWaitForOptions};
-      return (${predicate})(...args)
-    })() `;
 }
 /**
  * @internal

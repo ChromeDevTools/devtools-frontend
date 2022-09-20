@@ -1,4 +1,4 @@
-import { _connectToBrowser } from './BrowserConnector.js';
+import { _connectToCDPBrowser, } from './BrowserConnector.js';
 import { devices } from './DeviceDescriptors.js';
 import { errors } from './Errors.js';
 import { networkConditions } from './NetworkConditions.js';
@@ -17,6 +17,9 @@ export class Puppeteer {
      * @internal
      */
     constructor(settings) {
+        /**
+         * @internal
+         */
         this._changedProduct = false;
         this._isPuppeteerCore = settings.isPuppeteerCore;
         this.connect = this.connect.bind(this);
@@ -30,7 +33,7 @@ export class Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        return _connectToBrowser(options);
+        return _connectToCDPBrowser(options);
     }
     /**
      * @deprecated Import directly puppeteer.

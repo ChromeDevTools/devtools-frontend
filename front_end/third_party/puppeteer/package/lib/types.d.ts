@@ -85,6 +85,8 @@ export declare type ActionResult = 'continue' | 'abort' | 'respond';
 
 /* Excluded from this release type: ariaHandler */
 
+/* Excluded from this release type: assert */
+
 /**
  * @public
  */
@@ -162,18 +164,15 @@ export declare interface BoxModel {
  * @public
  */
 export declare class Browser extends EventEmitter {
-    #private;
-    /* Excluded from this release type: _create */
-    /* Excluded from this release type: _targets */
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: _attach */
     /* Excluded from this release type: _detach */
+    /* Excluded from this release type: _targets */
     /**
      * The spawned browser process. Returns `null` if the browser instance was created with
      * {@link Puppeteer.connect}.
      */
     process(): ChildProcess | null;
-    /* Excluded from this release type: _targetManager */
     /* Excluded from this release type: _getIsPageTargetCallback */
     /**
      * Creates a new incognito browser context. This won't share cookies/cache with other
@@ -325,6 +324,7 @@ export declare interface BrowserConnectOptions {
      */
     targetFilter?: TargetFilterCallback;
     /* Excluded from this release type: _isPageTarget */
+    /* Excluded from this release type: protocol */
 }
 
 /**
@@ -362,7 +362,6 @@ export declare interface BrowserConnectOptions {
  * @public
  */
 export declare class BrowserContext extends EventEmitter {
-    #private;
     /* Excluded from this release type: __constructor */
     /**
      * An array of all active targets inside the browser context.
@@ -490,7 +489,7 @@ export declare interface BrowserContextOptions {
      */
     proxyServer?: string;
     /**
-     * Bypass the proxy for the given semi-colon-separated list of hosts.
+     * Bypass the proxy for the given list of hosts.
      */
     proxyBypassList?: string[];
 }
@@ -684,6 +683,10 @@ export declare interface BrowserLaunchArgumentOptions {
 
 /* Excluded from this release type: BrowserWebSocketTransport */
 
+/* Excluded from this release type: CDPBrowser */
+
+/* Excluded from this release type: CDPBrowserContext */
+
 /**
  * The `CDPSession` instances are used to talk raw Chrome Devtools Protocol.
  *
@@ -713,17 +716,14 @@ export declare interface BrowserLaunchArgumentOptions {
  * @public
  */
 export declare class CDPSession extends EventEmitter {
-    #private;
     /* Excluded from this release type: __constructor */
     connection(): Connection | undefined;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
-    /* Excluded from this release type: _onMessage */
     /**
      * Detaches the cdpSession from the target. Once detached, the cdpSession object
      * won't emit any events and can't be used to send messages.
      */
     detach(): Promise<void>;
-    /* Excluded from this release type: _onClosed */
     /**
      * Returns the session's id.
      */
@@ -738,11 +738,9 @@ declare interface CDPSession_3 extends EventEmitter {
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
 }
 
-declare interface CDPSession_4 extends EventEmitter {
-    send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
-}
-
 /* Excluded from this release type: CDPSessionEmittedEvents */
+
+/* Excluded from this release type: CDPSessionImpl */
 
 /**
  * @public
@@ -794,7 +792,7 @@ export declare interface ClickOptions {
      */
     clickCount?: number;
     /**
-     * Offset for the clickable point relative to the top-left corder of the border box.
+     * Offset for the clickable point relative to the top-left corner of the border box.
      */
     offset?: Offset;
 }
@@ -845,6 +843,8 @@ export declare class Connection extends EventEmitter {
     createSession(targetInfo: Protocol.Target.TargetInfo): Promise<CDPSession>;
 }
 
+/* Excluded from this release type: Connection_2 */
+
 /**
  * @public
  */
@@ -891,7 +891,7 @@ export declare interface ConnectOptions extends BrowserConnectOptions {
     transport?: ConnectionTransport;
 }
 
-/* Excluded from this release type: _connectToBrowser */
+/* Excluded from this release type: _connectToCDPBrowser */
 
 /* Excluded from this release type: ConsoleAPICalledCallback */
 
@@ -1013,7 +1013,8 @@ export declare class Coverage {
      * Anonymous scripts are ones that don't have an associated url. These are
      * scripts that are dynamically created on the page using `eval` or
      * `new Function`. If `reportAnonymousScripts` is set to `true`, anonymous
-     * scripts will have `pptr://__puppeteer_evaluation_script__` as their URL.
+     * scripts URL will start with `debugger://VM` (unless a magic //# sourceURL
+     * comment is present, in which case that will the be URL).
      */
     startJSCoverage(options?: JSCoverageOptions): Promise<void>;
     /**
@@ -1064,6 +1065,10 @@ export declare interface CoverageEntry {
 }
 
 export declare const createBrowserFetcher: (options: BrowserFetcherOptions) => BrowserFetcher;
+
+/* Excluded from this release type: createDebuggableDeferredPromise */
+
+/* Excluded from this release type: createDeferredPromise */
 
 /* Excluded from this release type: createJSHandle */
 
@@ -1155,6 +1160,12 @@ export declare function customQueryHandlerNames(): string[];
 export declare const DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
 
 export declare const defaultArgs: (options?: BrowserLaunchArgumentOptions) => string[];
+
+/* Excluded from this release type: DEFERRED_PROMISE_DEBUG_TIMEOUT */
+
+/* Excluded from this release type: DeferredPromise */
+
+/* Excluded from this release type: DeferredPromiseOptions */
 
 /**
  * Copyright 2017 Google Inc. All rights reserved.
@@ -1308,6 +1319,7 @@ export declare class Dialog {
 export declare class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
     #private;
     /* Excluded from this release type: __constructor */
+    get frame(): Frame;
     /**
      * Queries the current element for an element matching the given selector.
      *
@@ -1436,7 +1448,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @returns An element matching the given selector.
      * @throws Throws if an element matching the given selector doesn't appear.
      */
-    waitForSelector<Selector extends string>(selector: Selector, options?: Exclude<WaitForSelectorOptions, 'root'>): Promise<ElementHandle<NodeFor<Selector>> | null>;
+    waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
      * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
      * prefix.
@@ -1657,6 +1669,8 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
  */
 export declare type ErrorCode = 'aborted' | 'accessdenied' | 'addressunreachable' | 'blockedbyclient' | 'blockedbyresponse' | 'connectionaborted' | 'connectionclosed' | 'connectionfailed' | 'connectionrefused' | 'connectionreset' | 'internetdisconnected' | 'namenotresolved' | 'timedout' | 'failed';
 
+/* Excluded from this release type: ErrorLike */
+
 /**
  * Puppeteer methods might throw errors if they are unable to fulfill a request.
  * For example, `page.waitForSelector(selector[, options])` might fail if the
@@ -1777,159 +1791,7 @@ export declare const executablePath: (channel?: string | undefined) => string;
 
 /* Excluded from this release type: executablePathForChannel */
 
-/**
- * @deprecated Do not use directly.
- *
- * Represents a context for JavaScript execution.
- *
- * @example
- * A {@link Page} can have several execution contexts:
- *
- * - Each {@link Frame} of a {@link Page | page} has a "default" execution
- *   context that is always created after frame is attached to DOM. This context
- *   is returned by the {@link Frame.executionContext} method.
- * - Each {@link https://developer.chrome.com/extensions | Chrome extensions}
- *   creates additional execution contexts to isolate their code.
- *
- * @remarks
- * By definition, each context is isolated from one another, however they are
- * all able to manipulate non-JavaScript resources (such as DOM).
- *
- * @remarks
- * Besides pages, execution contexts can be found in
- * {@link WebWorker | workers}.
- */
-export declare class ExecutionContext {
-    #private;
-    /* Excluded from this release type: _client */
-    /* Excluded from this release type: _world */
-    /* Excluded from this release type: _contextId */
-    /* Excluded from this release type: _contextName */
-    /* Excluded from this release type: __constructor */
-    /**
-     * @returns The frame associated with this execution context.
-     *
-     * @remarks
-     * Not every execution context is associated with a frame. For example,
-     * {@link WebWorker | workers} have execution contexts that are not associated
-     * with frames.
-     */
-    frame(): Frame | null;
-    /**
-     * Evaluates the given function.
-     *
-     * @example
-     *
-     * ```ts
-     * const executionContext = await page.mainFrame().executionContext();
-     * const result = await executionContext.evaluate(() => Promise.resolve(8 * 7))* ;
-     * console.log(result); // prints "56"
-     * ```
-     *
-     * @example
-     * A string can also be passed in instead of a function:
-     *
-     * ```ts
-     * console.log(await executionContext.evaluate('1 + 2')); // prints "3"
-     * ```
-     *
-     * @example
-     * Handles can also be passed as `args`. They resolve to their referenced object:
-     *
-     * ```ts
-     * const oneHandle = await executionContext.evaluateHandle(() => 1);
-     * const twoHandle = await executionContext.evaluateHandle(() => 2);
-     * const result = await executionContext.evaluate(
-     *   (a, b) => a + b,
-     *   oneHandle,
-     *   twoHandle
-     * );
-     * await oneHandle.dispose();
-     * await twoHandle.dispose();
-     * console.log(result); // prints '3'.
-     * ```
-     *
-     * @param pageFunction - The function to evaluate.
-     * @param args - Additional arguments to pass into the function.
-     * @returns The result of evaluating the function. If the result is an object,
-     * a vanilla object containing the serializable properties of the result is
-     * returned.
-     */
-    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    /**
-     * Evaluates the given function.
-     *
-     * Unlike {@link ExecutionContext.evaluate | evaluate}, this method returns a
-     * handle to the result of the function.
-     *
-     * This method may be better suited if the object cannot be serialized (e.g.
-     * `Map`) and requires further manipulation.
-     *
-     * @example
-     *
-     * ```ts
-     * const context = await page.mainFrame().executionContext();
-     * const handle: JSHandle<typeof globalThis> = await context.evaluateHandle(
-     *   () => Promise.resolve(self)
-     * );
-     * ```
-     *
-     * @example
-     * A string can also be passed in instead of a function.
-     *
-     * ```ts
-     * const handle: JSHandle<number> = await context.evaluateHandle('1 + 2');
-     * ```
-     *
-     * @example
-     * Handles can also be passed as `args`. They resolve to their referenced object:
-     *
-     * ```ts
-     * const bodyHandle: ElementHandle<HTMLBodyElement> =
-     *   await context.evaluateHandle(() => {
-     *     return document.body;
-     *   });
-     * const stringHandle: JSHandle<string> = await context.evaluateHandle(
-     *   body => body.innerHTML,
-     *   body
-     * );
-     * console.log(await stringHandle.jsonValue()); // prints body's innerHTML
-     * // Always dispose your garbage! :)
-     * await bodyHandle.dispose();
-     * await stringHandle.dispose();
-     * ```
-     *
-     * @param pageFunction - The function to evaluate.
-     * @param args - Additional arguments to pass into the function.
-     * @returns A {@link JSHandle | handle} to the result of evaluating the
-     * function. If the result is a `Node`, then this will return an
-     * {@link ElementHandle | element handle}.
-     */
-    evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
-    /**
-     * Iterates through the JavaScript heap and finds all the objects with the
-     * given prototype.
-     *
-     * @example
-     *
-     * ```ts
-     * // Create a Map object
-     * await page.evaluate(() => (window.map = new Map()));
-     * // Get a handle to the Map object prototype
-     * const mapPrototype = await page.evaluateHandle(() => Map.prototype);
-     * // Query all map instances into an array
-     * const mapInstances = await page.queryObjects(mapPrototype);
-     * // Count amount of map objects in heap
-     * const count = await page.evaluate(maps => maps.length, mapInstances);
-     * await mapInstances.dispose();
-     * await mapPrototype.dispose();
-     * ```
-     *
-     * @param prototypeHandle - a handle to the object prototype
-     * @returns A handle to an array of objects with the given prototype.
-     */
-    queryObjects<Prototype>(prototypeHandle: JSHandle<Prototype>): Promise<HandleFor<Prototype[]>>;
-}
+/* Excluded from this release type: ExecutionContext */
 
 /* Excluded from this release type: FetchRequestId */
 
@@ -1986,6 +1848,8 @@ export declare class FileChooser {
  * @public
  */
 export declare type FlattenHandle<T> = T extends HandleOr<infer U> ? U : never;
+
+/* Excluded from this release type: FlattenLazyArg */
 
 /**
  * Represents a DOM frame.
@@ -2049,7 +1913,7 @@ export declare class Frame {
     /* Excluded from this release type: _name */
     /* Excluded from this release type: _hasStartedLoading */
     /* Excluded from this release type: _lifecycleEvents */
-    /* Excluded from this release type: _childFrames */
+    /* Excluded from this release type: _parentId */
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: updateClient */
     /**
@@ -2131,12 +1995,7 @@ export declare class Frame {
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<HTTPResponse | null>;
     /* Excluded from this release type: _client */
-    /**
-     * @deprecated Do not use the execution context directly.
-     *
-     * @returns a promise that resolves to the frame's default execution context.
-     */
-    executionContext(): Promise<ExecutionContext>;
+    /* Excluded from this release type: executionContext */
     /**
      * Behaves identically to {@link Page.evaluateHandle} except it's run within
      * the context of this frame.
@@ -2355,21 +2214,19 @@ export declare class Frame {
      * Adds a `<script>` tag into the page with the desired url or content.
      *
      * @param options - Options for the script.
-     * @returns a promise that resolves to the added tag when the script's
-     * `onload` event fires or when the script content was injected into the
-     * frame.
+     * @returns An {@link ElementHandle | element handle} to the injected
+     * `<script>` element.
      */
     addScriptTag(options: FrameAddScriptTagOptions): Promise<ElementHandle<HTMLScriptElement>>;
     /**
-     * Adds a `<link rel="stylesheet">` tag into the page with the desired url or
+     * Adds a `<link rel="stylesheet">` tag into the page with the desired URL or
      * a `<style type="text/css">` tag with the content.
      *
-     * @param options - Options for the style link.
-     * @returns a promise that resolves to the added tag when the stylesheets's
-     * `onload` event fires or when the CSS content was injected into the
-     * frame.
+     * @returns An {@link ElementHandle | element handle} to the loaded `<link>`
+     * or `<style>` element.
      */
-    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>>;
+    addStyleTag(options: Omit<FrameAddStyleTagOptions, 'url'>): Promise<ElementHandle<HTMLStyleElement>>;
+    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLLinkElement>>;
     /**
      * Clicks the first element found that matches `selector`.
      *
@@ -2496,24 +2353,29 @@ export declare class Frame {
  */
 export declare interface FrameAddScriptTagOptions {
     /**
-     * the URL of the script to be added.
+     * URL of the script to be added.
      */
     url?: string;
     /**
-     * The path to a JavaScript file to be injected into the frame.
+     * Path to a JavaScript file to be injected into the frame.
+     *
      * @remarks
      * If `path` is a relative path, it is resolved relative to the current
      * working directory (`process.cwd()` in Node.js).
      */
     path?: string;
     /**
-     * Raw JavaScript content to be injected into the frame.
+     * JavaScript to be injected into the frame.
      */
     content?: string;
     /**
-     * Set the script's `type`. Use `module` in order to load an ES2015 module.
+     * Sets the `type` of the script. Use `module` in order to load an ES2015 module.
      */
     type?: string;
+    /**
+     * Sets the `id` of the script.
+     */
+    id?: string;
 }
 
 /**
@@ -2545,6 +2407,8 @@ declare interface FrameManager_2 {
 
 /* Excluded from this release type: FrameManagerEmittedEvents */
 
+/* Excluded from this release type: FrameTree */
+
 /**
  * @public
  */
@@ -2561,7 +2425,7 @@ export declare interface FrameWaitForFunctionOptions {
      *
      * - `mutation` - to execute `pageFunction` on every DOM mutation.
      */
-    polling?: string | number;
+    polling?: 'raf' | 'mutation' | number;
     /**
      * Maximum time to wait in milliseconds. Defaults to `30000` (30 seconds).
      * Pass `0` to disable the timeout. Puppeteer's default timeout can be changed
@@ -2591,6 +2455,8 @@ export declare interface GeolocationOptions {
 /* Excluded from this release type: getExceptionMessage */
 
 /* Excluded from this release type: getFetch */
+
+/* Excluded from this release type: getPackageDirectory */
 
 /* Excluded from this release type: getQueryHandlerAndSelector */
 
@@ -2657,7 +2523,7 @@ export declare class HTTPRequest {
      *
      * @experimental
      */
-    get client(): CDPSession_4;
+    get client(): CDPSession_3;
     /* Excluded from this release type: __constructor */
     /**
      * @returns the URL of the request
@@ -2963,6 +2829,8 @@ export declare class HTTPResponse {
 
     /* Excluded from this release type: initializePuppeteer */
 
+    /* Excluded from this release type: InnerLazyParams */
+
     /**
      * @public
      */
@@ -3006,6 +2874,12 @@ export declare class HTTPResponse {
 
     /* Excluded from this release type: InternalQueryHandler */
 
+    /* Excluded from this release type: IntervalPoller */
+
+    /* Excluded from this release type: isErrnoException */
+
+    /* Excluded from this release type: isErrorLike */
+
     /* Excluded from this release type: isNode */
 
     /* Excluded from this release type: isNumber */
@@ -3017,6 +2891,8 @@ export declare class HTTPResponse {
     /* Excluded from this release type: IsPageTargetCallback */
 
     /* Excluded from this release type: isString */
+
+    /* Excluded from this release type: isTargetClosedError */
 
     /**
      * @public
@@ -3092,10 +2968,7 @@ export declare class HTTPResponse {
         /* Excluded from this release type: client */
         /* Excluded from this release type: disposed */
         /* Excluded from this release type: __constructor */
-        /**
-         * @returns The execution context the handle belongs to.
-         */
-        executionContext(): ExecutionContext;
+        /* Excluded from this release type: executionContext */
         /**
          * Evaluates the given function with the current handle as its first argument.
          *
@@ -3412,6 +3285,8 @@ export declare class HTTPResponse {
         waitForInitialPage?: boolean;
     }
 
+    /* Excluded from this release type: LazyArg */
+
     /* Excluded from this release type: LifecycleWatcher */
 
     /* Excluded from this release type: logPolitely */
@@ -3422,8 +3297,6 @@ export declare class HTTPResponse {
     export declare type LowerCasePaperFormat = 'letter' | 'legal' | 'tabloid' | 'ledger' | 'a0' | 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6';
 
     /* Excluded from this release type: MAIN_WORLD */
-
-    /* Excluded from this release type: makePredicateString */
 
     /**
      * @public
@@ -3636,6 +3509,8 @@ export declare class HTTPResponse {
         deltaY?: number;
     }
 
+    /* Excluded from this release type: MutationPoller */
+
     /**
      * @public
      */
@@ -3694,11 +3569,11 @@ export declare class HTTPResponse {
      */
     export declare interface Offset {
         /**
-         * x-offset for the clickable point relative to the top-left corder of the border box.
+         * x-offset for the clickable point relative to the top-left corner of the border box.
          */
         x: number;
         /**
-         * y-offset for the clickable point relative to the top-left corder of the border box.
+         * y-offset for the clickable point relative to the top-left corner of the border box.
          */
         y: number;
     }
@@ -3964,6 +3839,10 @@ export declare class HTTPResponse {
          */
         setDefaultTimeout(timeout: number): void;
         /**
+         * @returns Maximum time in milliseconds.
+         */
+        getDefaultTimeout(): number;
+        /**
          * Runs `document.querySelector` within the page. If no element matches the
          * selector, the return value resolves to `null`.
          *
@@ -4041,11 +3920,6 @@ export declare class HTTPResponse {
         /**
          * This method iterates the JavaScript heap and finds all objects with the
          * given prototype.
-         *
-         * @remarks
-         * Shortcut for
-         * {@link ExecutionContext.queryObjects |
-         * page.mainFrame().executionContext().queryObjects(prototypeHandle)}.
          *
          * @example
          *
@@ -4231,27 +4105,23 @@ export declare class HTTPResponse {
          * Shortcut for
          * {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options)}.
          *
-         * @returns Promise which resolves to the added tag when the script's onload
-         * fires or when the script content was injected into frame.
+         * @param options - Options for the script.
+         * @returns An {@link ElementHandle | element handle} to the injected
+         * `<script>` element.
          */
-        addScriptTag(options: {
-            url?: string;
-            path?: string;
-            content?: string;
-            type?: string;
-            id?: string;
-        }): Promise<ElementHandle<HTMLScriptElement>>;
+        addScriptTag(options: FrameAddScriptTagOptions): Promise<ElementHandle<HTMLScriptElement>>;
         /**
-         * Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
-         * `<style type="text/css">` tag with the content.
-         * @returns Promise which resolves to the added tag when the stylesheet's
-         * onload fires or when the CSS content was injected into frame.
+         * Adds a `<link rel="stylesheet">` tag into the page with the desired URL or
+         * a `<style type="text/css">` tag with the content.
+         *
+         * Shortcut for
+         * {@link Frame.addStyleTag | page.mainFrame().addStyleTag(options)}.
+         *
+         * @returns An {@link ElementHandle | element handle} to the injected `<link>`
+         * or `<style>` element.
          */
-        addStyleTag(options: {
-            url?: string;
-            path?: string;
-            content?: string;
-        }): Promise<ElementHandle<Node>>;
+        addStyleTag(options: Omit<FrameAddStyleTagOptions, 'url'>): Promise<ElementHandle<HTMLStyleElement>>;
+        addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLLinkElement>>;
         /**
          * The method adds a function called `name` on the page's `window` object.
          * When called, the function executes `puppeteerFunction` in node.js and
@@ -5019,13 +4889,13 @@ export declare class HTTPResponse {
          *
          * // overwrite the `languages` property to use a custom getter
          * Object.defineProperty(navigator, 'languages', {
-         * get: function () {
-         * return ['en-US', 'en', 'bn'];
-         * },
+         *   get: function () {
+         *     return ['en-US', 'en', 'bn'];
+         *   },
          * });
          *
          * // In your puppeteer script, assuming the preload.js file is
-         * in same folder of our script
+         * // in same folder of our script.
          * const preloadFile = fs.readFileSync('./preload.js', 'utf8');
          * await page.evaluateOnNewDocument(preloadFile);
          * ```
@@ -5319,7 +5189,7 @@ export declare class HTTPResponse {
          *   (30 seconds). Pass `0` to disable timeout. The default value can be changed
          *   by using the {@link Page.setDefaultTimeout} method.
          */
-        waitForSelector<Selector extends string>(selector: Selector, options?: Exclude<WaitForSelectorOptions, 'root'>): Promise<ElementHandle<NodeFor<Selector>> | null>;
+        waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
         /**
          * Wait for the `xpath` to appear in page. If at the moment of calling the
          * method the `xpath` already exists, the method will return immediately. If
@@ -5430,27 +5300,9 @@ export declare class HTTPResponse {
          * ```
          *
          * @param pageFunction - Function to be evaluated in browser context
-         * @param options - Optional waiting parameters
-         *
-         * - `polling` - An interval at which the `pageFunction` is executed, defaults
-         *   to `raf`. If `polling` is a number, then it is treated as an interval in
-         *   milliseconds at which the function would be executed. If polling is a
-         *   string, then it can be one of the following values:
-         *   - `raf` - to constantly execute `pageFunction` in
-         *     `requestAnimationFrame` callback. This is the tightest polling mode
-         *     which is suitable to observe styling changes.
-         *   - `mutation`- to execute pageFunction on every DOM mutation.
-         * - `timeout` - maximum time to wait for in milliseconds. Defaults to `30000`
-         *   (30 seconds). Pass `0` to disable timeout. The default value can be
-         *   changed by using the {@link Page.setDefaultTimeout} method.
-         *   @param args - Arguments to pass to `pageFunction`
-         *   @returns A `Promise` which resolves to a JSHandle/ElementHandle of the the
-         *   `pageFunction`'s return value.
+         * @param options - Options for configuring waiting behavior.
          */
-        waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: {
-            timeout?: number;
-            polling?: string | number;
-        }, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+        waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: FrameWaitForFunctionOptions, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     }
 
     /* Excluded from this release type: PageBinding */
@@ -5830,6 +5682,8 @@ export declare class HTTPResponse {
         y: number;
     }
 
+    /* Excluded from this release type: Poller */
+
     /**
      * @public
      */
@@ -5905,8 +5759,8 @@ export declare class HTTPResponse {
      * @public
      */
     export declare class Puppeteer {
-        protected _isPuppeteerCore: boolean;
-        protected _changedProduct: boolean;
+        /* Excluded from this release type: _isPuppeteerCore */
+        /* Excluded from this release type: _changedProduct */
         /* Excluded from this release type: __constructor */
         /**
          * This method attaches Puppeteer to an existing browser instance.
@@ -6048,7 +5902,7 @@ export declare class HTTPResponse {
      */
     export declare class PuppeteerNode extends Puppeteer {
         #private;
-        _preferredRevision: string;
+        /* Excluded from this release type: _preferredRevision */
         /* Excluded from this release type: __constructor */
         /**
          * This method attaches Puppeteer to an existing browser instance.
@@ -6133,7 +5987,13 @@ export declare class HTTPResponse {
      */
     export declare type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & LaunchOptions & BrowserConnectOptions;
 
+    /* Excluded from this release type: PuppeteerQueryHandler */
+
+    /* Excluded from this release type: PuppeteerUtil */
+
     /* Excluded from this release type: QueuedEventGroup */
+
+    /* Excluded from this release type: RAFPoller */
 
     /* Excluded from this release type: RedirectInfo */
 
@@ -6207,6 +6067,10 @@ export declare class HTTPResponse {
         y: number;
         width: number;
         height: number;
+        /**
+         * @defaultValue 1
+         */
+        scale?: number;
     }
 
     /**
@@ -6452,7 +6316,11 @@ export declare class HTTPResponse {
 
          /* Excluded from this release type: TargetManagerEmittedEvents */
 
+         /* Excluded from this release type: TaskManager */
+
          /* Excluded from this release type: TaskQueue */
+
+         /* Excluded from this release type: TextContent */
 
          /**
           * TimeoutError is emitted whenever certain operations are terminated due to
@@ -6635,10 +6503,6 @@ export declare class HTTPResponse {
               * @defaultValue `30000` (30 seconds)
               */
              timeout?: number;
-             /**
-              * @deprecated Do not use. Use the {@link ElementHandle.waitForSelector}
-              */
-             root?: ElementHandle<Node>;
          }
 
          /**
@@ -6673,6 +6537,8 @@ export declare class HTTPResponse {
 
          /* Excluded from this release type: waitWithTimeout */
 
+         /* Excluded from this release type: WEB_PERMISSION_TO_PROTOCOL_PERMISSION */
+
          /**
           * This class represents a
           * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
@@ -6702,15 +6568,11 @@ export declare class HTTPResponse {
          export declare class WebWorker extends EventEmitter {
              #private;
              /* Excluded from this release type: __constructor */
+             /* Excluded from this release type: executionContext */
              /**
               * @returns The URL of this web worker.
               */
              url(): string;
-             /**
-              * Returns the ExecutionContext the WebWorker runs in
-              * @returns The ExecutionContext the web worker runs in.
-              */
-             executionContext(): Promise<ExecutionContext>;
              /**
               * If the function passed to the `worker.evaluate` returns a Promise, then
               * `worker.evaluate` would wait for the promise to resolve and return its

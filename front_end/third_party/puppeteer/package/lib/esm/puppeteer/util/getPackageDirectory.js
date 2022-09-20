@@ -1,5 +1,8 @@
 import { existsSync } from 'fs';
 import { dirname, join, parse } from 'path';
+/**
+ * @internal
+ */
 export const getPackageDirectory = (from) => {
     let found = existsSync(join(from, 'package.json'));
     const root = parse(from).root;

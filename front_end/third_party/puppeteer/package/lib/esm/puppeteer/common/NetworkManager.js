@@ -31,7 +31,7 @@ import { HTTPRequest } from './HTTPRequest.js';
 import { HTTPResponse } from './HTTPResponse.js';
 import { NetworkEventManager } from './NetworkEventManager.js';
 import { debugError, isString } from './util.js';
-import { createDeferredPromiseWithTimer, } from '../util/DeferredPromise.js';
+import { createDebuggableDeferredPromise } from '../util/DebuggableDeferredPromise.js';
 /**
  * We use symbols to prevent any external parties listening to these events.
  * They are internal to Puppeteer.
@@ -89,7 +89,7 @@ export class NetworkManager extends EventEmitter {
         if (__classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f")) {
             return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
         }
-        __classPrivateFieldSet(this, _NetworkManager_deferredInitPromise, createDeferredPromiseWithTimer('NetworkManager initialization timed out', 30000), "f");
+        __classPrivateFieldSet(this, _NetworkManager_deferredInitPromise, createDebuggableDeferredPromise('NetworkManager initialization timed out'), "f");
         const init = Promise.all([
             __classPrivateFieldGet(this, _NetworkManager_ignoreHTTPSErrors, "f")
                 ? __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Security.setIgnoreCertificateErrors', {

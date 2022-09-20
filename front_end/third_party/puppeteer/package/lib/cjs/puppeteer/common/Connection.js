@@ -10,9 +10,9 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Connection_instances, _Connection_url, _Connection_transport, _Connection_delay, _Connection_lastId, _Connection_sessions, _Connection_closed, _Connection_callbacks, _Connection_manuallyAttached, _Connection_onClose, _CDPSession_sessionId, _CDPSession_targetType, _CDPSession_callbacks, _CDPSession_connection;
+var _Connection_instances, _Connection_url, _Connection_transport, _Connection_delay, _Connection_lastId, _Connection_sessions, _Connection_closed, _Connection_callbacks, _Connection_manuallyAttached, _Connection_onClose, _CDPSessionImpl_sessionId, _CDPSessionImpl_targetType, _CDPSessionImpl_callbacks, _CDPSessionImpl_connection;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CDPSession = exports.CDPSessionEmittedEvents = exports.Connection = exports.ConnectionEmittedEvents = void 0;
+exports.isTargetClosedError = exports.CDPSessionImpl = exports.CDPSession = exports.CDPSessionEmittedEvents = exports.Connection = exports.ConnectionEmittedEvents = void 0;
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  *
@@ -130,7 +130,7 @@ class Connection extends EventEmitter_js_1.EventEmitter {
         const object = JSON.parse(message);
         if (object.method === 'Target.attachedToTarget') {
             const sessionId = object.params.sessionId;
-            const session = new CDPSession(this, object.params.targetInfo.type, sessionId);
+            const session = new CDPSessionImpl(this, object.params.targetInfo.type, sessionId);
             __classPrivateFieldGet(this, _Connection_sessions, "f").set(sessionId, session);
             this.emit('sessionattached', session);
             const parentSession = __classPrivateFieldGet(this, _Connection_sessions, "f").get(object.sessionId);
@@ -267,32 +267,63 @@ class CDPSession extends EventEmitter_js_1.EventEmitter {
     /**
      * @internal
      */
-    constructor(connection, targetType, sessionId) {
+    constructor() {
         super();
-        _CDPSession_sessionId.set(this, void 0);
-        _CDPSession_targetType.set(this, void 0);
-        _CDPSession_callbacks.set(this, new Map());
-        _CDPSession_connection.set(this, void 0);
-        __classPrivateFieldSet(this, _CDPSession_connection, connection, "f");
-        __classPrivateFieldSet(this, _CDPSession_targetType, targetType, "f");
-        __classPrivateFieldSet(this, _CDPSession_sessionId, sessionId, "f");
     }
     connection() {
-        return __classPrivateFieldGet(this, _CDPSession_connection, "f");
+        throw new Error('Not implemented');
+    }
+    send() {
+        throw new Error('Not implemented');
+    }
+    /**
+     * Detaches the cdpSession from the target. Once detached, the cdpSession object
+     * won't emit any events and can't be used to send messages.
+     */
+    async detach() {
+        throw new Error('Not implemented');
+    }
+    /**
+     * Returns the session's id.
+     */
+    id() {
+        throw new Error('Not implemented');
+    }
+}
+exports.CDPSession = CDPSession;
+/**
+ * @internal
+ */
+class CDPSessionImpl extends CDPSession {
+    /**
+     * @internal
+     */
+    constructor(connection, targetType, sessionId) {
+        super();
+        _CDPSessionImpl_sessionId.set(this, void 0);
+        _CDPSessionImpl_targetType.set(this, void 0);
+        _CDPSessionImpl_callbacks.set(this, new Map());
+        _CDPSessionImpl_connection.set(this, void 0);
+        __classPrivateFieldSet(this, _CDPSessionImpl_connection, connection, "f");
+        __classPrivateFieldSet(this, _CDPSessionImpl_targetType, targetType, "f");
+        __classPrivateFieldSet(this, _CDPSessionImpl_sessionId, sessionId, "f");
+    }
+    connection() {
+        return __classPrivateFieldGet(this, _CDPSessionImpl_connection, "f");
     }
     send(method, ...paramArgs) {
-        if (!__classPrivateFieldGet(this, _CDPSession_connection, "f")) {
-            return Promise.reject(new Error(`Protocol error (${method}): Session closed. Most likely the ${__classPrivateFieldGet(this, _CDPSession_targetType, "f")} has been closed.`));
+        if (!__classPrivateFieldGet(this, _CDPSessionImpl_connection, "f")) {
+            return Promise.reject(new Error(`Protocol error (${method}): Session closed. Most likely the ${__classPrivateFieldGet(this, _CDPSessionImpl_targetType, "f")} has been closed.`));
         }
         // See the comment in Connection#send explaining why we do this.
         const params = paramArgs.length ? paramArgs[0] : undefined;
-        const id = __classPrivateFieldGet(this, _CDPSession_connection, "f")._rawSend({
-            sessionId: __classPrivateFieldGet(this, _CDPSession_sessionId, "f"),
+        const id = __classPrivateFieldGet(this, _CDPSessionImpl_connection, "f")._rawSend({
+            sessionId: __classPrivateFieldGet(this, _CDPSessionImpl_sessionId, "f"),
             method,
             params,
         });
         return new Promise((resolve, reject) => {
-            __classPrivateFieldGet(this, _CDPSession_callbacks, "f").set(id, {
+            __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").set(id, {
                 resolve,
                 reject,
                 error: new Errors_js_1.ProtocolError(),
@@ -304,9 +335,9 @@ class CDPSession extends EventEmitter_js_1.EventEmitter {
      * @internal
      */
     _onMessage(object) {
-        const callback = object.id ? __classPrivateFieldGet(this, _CDPSession_callbacks, "f").get(object.id) : undefined;
+        const callback = object.id ? __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").get(object.id) : undefined;
         if (object.id && callback) {
-            __classPrivateFieldGet(this, _CDPSession_callbacks, "f").delete(object.id);
+            __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").delete(object.id);
             if (object.error) {
                 callback.reject(createProtocolError(callback.error, callback.method, object));
             }
@@ -324,33 +355,33 @@ class CDPSession extends EventEmitter_js_1.EventEmitter {
      * won't emit any events and can't be used to send messages.
      */
     async detach() {
-        if (!__classPrivateFieldGet(this, _CDPSession_connection, "f")) {
-            throw new Error(`Session already detached. Most likely the ${__classPrivateFieldGet(this, _CDPSession_targetType, "f")} has been closed.`);
+        if (!__classPrivateFieldGet(this, _CDPSessionImpl_connection, "f")) {
+            throw new Error(`Session already detached. Most likely the ${__classPrivateFieldGet(this, _CDPSessionImpl_targetType, "f")} has been closed.`);
         }
-        await __classPrivateFieldGet(this, _CDPSession_connection, "f").send('Target.detachFromTarget', {
-            sessionId: __classPrivateFieldGet(this, _CDPSession_sessionId, "f"),
+        await __classPrivateFieldGet(this, _CDPSessionImpl_connection, "f").send('Target.detachFromTarget', {
+            sessionId: __classPrivateFieldGet(this, _CDPSessionImpl_sessionId, "f"),
         });
     }
     /**
      * @internal
      */
     _onClosed() {
-        for (const callback of __classPrivateFieldGet(this, _CDPSession_callbacks, "f").values()) {
+        for (const callback of __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").values()) {
             callback.reject(rewriteError(callback.error, `Protocol error (${callback.method}): Target closed.`));
         }
-        __classPrivateFieldGet(this, _CDPSession_callbacks, "f").clear();
-        __classPrivateFieldSet(this, _CDPSession_connection, undefined, "f");
+        __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").clear();
+        __classPrivateFieldSet(this, _CDPSessionImpl_connection, undefined, "f");
         this.emit(exports.CDPSessionEmittedEvents.Disconnected);
     }
     /**
      * Returns the session's id.
      */
     id() {
-        return __classPrivateFieldGet(this, _CDPSession_sessionId, "f");
+        return __classPrivateFieldGet(this, _CDPSessionImpl_sessionId, "f");
     }
 }
-exports.CDPSession = CDPSession;
-_CDPSession_sessionId = new WeakMap(), _CDPSession_targetType = new WeakMap(), _CDPSession_callbacks = new WeakMap(), _CDPSession_connection = new WeakMap();
+exports.CDPSessionImpl = CDPSessionImpl;
+_CDPSessionImpl_sessionId = new WeakMap(), _CDPSessionImpl_targetType = new WeakMap(), _CDPSessionImpl_callbacks = new WeakMap(), _CDPSessionImpl_connection = new WeakMap();
 function createProtocolError(error, method, object) {
     let message = `Protocol error (${method}): ${object.error.message}`;
     if ('data' in object.error) {
@@ -363,4 +394,12 @@ function rewriteError(error, message, originalMessage) {
     error.originalMessage = originalMessage !== null && originalMessage !== void 0 ? originalMessage : error.originalMessage;
     return error;
 }
+/**
+ * @internal
+ */
+function isTargetClosedError(err) {
+    return (err.message.includes('Target closed') ||
+        err.message.includes('Session closed'));
+}
+exports.isTargetClosedError = isTargetClosedError;
 //# sourceMappingURL=Connection.js.map

@@ -17,6 +17,7 @@ import { CDPSession } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { Frame } from './Frame.js';
+import { FrameTree } from './FrameTree.js';
 import { NetworkManager } from './NetworkManager.js';
 import { Page } from './Page.js';
 import { Target } from './Target.js';
@@ -44,12 +45,16 @@ export declare const FrameManagerEmittedEvents: {
  */
 export declare class FrameManager extends EventEmitter {
     #private;
+    /**
+     * @internal
+     */
+    _frameTree: FrameTree;
     get timeoutSettings(): TimeoutSettings;
     get networkManager(): NetworkManager;
     get client(): CDPSession;
     constructor(client: CDPSession, page: Page, ignoreHTTPSErrors: boolean, timeoutSettings: TimeoutSettings);
     private setupEventListeners;
-    initialize(targetId: string, client?: CDPSession): Promise<void>;
+    initialize(client?: CDPSession): Promise<void>;
     executionContextById(contextId: number, session?: CDPSession): ExecutionContext;
     page(): Page;
     mainFrame(): Frame;

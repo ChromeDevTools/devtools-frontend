@@ -85,7 +85,8 @@ class Coverage {
      * Anonymous scripts are ones that don't have an associated url. These are
      * scripts that are dynamically created on the page using `eval` or
      * `new Function`. If `reportAnonymousScripts` is set to `true`, anonymous
-     * scripts will have `pptr://__puppeteer_evaluation_script__` as their URL.
+     * scripts URL will start with `debugger://VM` (unless a magic //# sourceURL
+     * comment is present, in which case that will the be URL).
      */
     async startJSCoverage(options = {}) {
         return await __classPrivateFieldGet(this, _Coverage_jsCoverage, "f").start(options);
@@ -367,7 +368,7 @@ function convertToDisjointRanges(nestedRanges) {
     }
     // Filter out empty ranges.
     return results.filter(range => {
-        return range.end - range.start > 1;
+        return range.end - range.start > 0;
     });
 }
 //# sourceMappingURL=Coverage.js.map

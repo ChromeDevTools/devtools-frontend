@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import { Protocol } from 'devtools-protocol';
-import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import { EventEmitter } from './EventEmitter.js';
 import { Frame } from './Frame.js';
+import { CDPSession } from './Connection.js';
 /**
  * @public
  */
@@ -51,9 +51,6 @@ export declare const NetworkManagerEmittedEvents: {
     readonly RequestFailed: symbol;
     readonly RequestFinished: symbol;
 };
-interface CDPSession extends EventEmitter {
-    send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
-}
 interface FrameManager {
     frame(frameId: string): Frame | null;
 }

@@ -22,8 +22,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _ExecutionContext_instances, _ExecutionContext_evaluate;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExecutionContext = exports.EVALUATION_SCRIPT_URL = void 0;
-const assert_js_1 = require("../util/assert.js");
 const JSHandle_js_1 = require("./JSHandle.js");
+const LazyArg_js_1 = require("./LazyArg.js");
 const util_js_1 = require("./util.js");
 /**
  * @public
@@ -31,8 +31,6 @@ const util_js_1 = require("./util.js");
 exports.EVALUATION_SCRIPT_URL = 'pptr://__puppeteer_evaluation_script__';
 const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
 /**
- * @deprecated Do not use directly.
- *
  * Represents a context for JavaScript execution.
  *
  * @example
@@ -51,6 +49,8 @@ const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
  * @remarks
  * Besides pages, execution contexts can be found in
  * {@link WebWorker | workers}.
+ *
+ * @internal
  */
 class ExecutionContext {
     /**
@@ -62,17 +62,6 @@ class ExecutionContext {
         this._world = world;
         this._contextId = contextPayload.id;
         this._contextName = contextPayload.name;
-    }
-    /**
-     * @returns The frame associated with this execution context.
-     *
-     * @remarks
-     * Not every execution context is associated with a frame. For example,
-     * {@link WebWorker | workers} have execution contexts that are not associated
-     * with frames.
-     */
-    frame() {
-        return this._world ? this._world.frame() : null;
     }
     /**
      * Evaluates the given function.
@@ -169,37 +158,6 @@ class ExecutionContext {
     async evaluateHandle(pageFunction, ...args) {
         return __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_evaluate).call(this, false, pageFunction, ...args);
     }
-    /**
-     * Iterates through the JavaScript heap and finds all the objects with the
-     * given prototype.
-     *
-     * @example
-     *
-     * ```ts
-     * // Create a Map object
-     * await page.evaluate(() => (window.map = new Map()));
-     * // Get a handle to the Map object prototype
-     * const mapPrototype = await page.evaluateHandle(() => Map.prototype);
-     * // Query all map instances into an array
-     * const mapInstances = await page.queryObjects(mapPrototype);
-     * // Count amount of map objects in heap
-     * const count = await page.evaluate(maps => maps.length, mapInstances);
-     * await mapInstances.dispose();
-     * await mapPrototype.dispose();
-     * ```
-     *
-     * @param prototypeHandle - a handle to the object prototype
-     * @returns A handle to an array of objects with the given prototype.
-     */
-    async queryObjects(prototypeHandle) {
-        (0, assert_js_1.assert)(!prototypeHandle.disposed, 'Prototype JSHandle is disposed!');
-        const remoteObject = prototypeHandle.remoteObject();
-        (0, assert_js_1.assert)(remoteObject.objectId, 'Prototype JSHandle must not be referencing primitive value');
-        const response = await this._client.send('Runtime.queryObjects', {
-            prototypeObjectId: remoteObject.objectId,
-        });
-        return (0, util_js_1.createJSHandle)(this, response.objects);
-    }
 }
 exports.ExecutionContext = ExecutionContext;
 _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async function _ExecutionContext_evaluate(returnByValue, pageFunction, ...args) {
@@ -253,7 +211,7 @@ _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async 
         callFunctionOnPromise = this._client.send('Runtime.callFunctionOn', {
             functionDeclaration: functionText + '\n' + suffix + '\n',
             executionContextId: this._contextId,
-            arguments: args.map(convertArgument.bind(this)),
+            arguments: await Promise.all(args.map(convertArgument.bind(this))),
             returnByValue,
             awaitPromise: true,
             userGesture: true,
@@ -273,7 +231,10 @@ _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async 
     return returnByValue
         ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
         : (0, util_js_1.createJSHandle)(this, remoteObject);
-    function convertArgument(arg) {
+    async function convertArgument(arg) {
+        if (arg instanceof LazyArg_js_1.LazyArg) {
+            arg = await arg.get();
+        }
         if (typeof arg === 'bigint') {
             // eslint-disable-line valid-typeof
             return { unserializableValue: `${arg.toString()}n` };
@@ -310,18 +271,18 @@ _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async 
         }
         return { value: arg };
     }
-    function rewriteError(error) {
-        if (error.message.includes('Object reference chain is too long')) {
-            return { result: { type: 'undefined' } };
-        }
-        if (error.message.includes("Object couldn't be returned by value")) {
-            return { result: { type: 'undefined' } };
-        }
-        if (error.message.endsWith('Cannot find context with specified id') ||
-            error.message.endsWith('Inspected target navigated or closed')) {
-            throw new Error('Execution context was destroyed, most likely because of a navigation.');
-        }
-        throw error;
+};
+const rewriteError = (error) => {
+    if (error.message.includes('Object reference chain is too long')) {
+        return { result: { type: 'undefined' } };
     }
+    if (error.message.includes("Object couldn't be returned by value")) {
+        return { result: { type: 'undefined' } };
+    }
+    if (error.message.endsWith('Cannot find context with specified id') ||
+        error.message.endsWith('Inspected target navigated or closed')) {
+        throw new Error('Execution context was destroyed, most likely because of a navigation.');
+    }
+    throw error;
 };
 //# sourceMappingURL=ExecutionContext.js.map

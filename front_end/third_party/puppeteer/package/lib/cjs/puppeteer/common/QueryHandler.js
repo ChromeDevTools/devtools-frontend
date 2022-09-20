@@ -17,12 +17,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getQueryHandlerAndSelector = exports.clearCustomQueryHandlers = exports.customQueryHandlerNames = exports.unregisterCustomQueryHandler = exports.registerCustomQueryHandler = void 0;
 const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
-function internalizeCustomQueryHandler(handler) {
+const ElementHandle_js_1 = require("./ElementHandle.js");
+const Frame_js_1 = require("./Frame.js");
+const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
+function createPuppeteerQueryHandler(handler) {
     const internalHandler = {};
     if (handler.queryOne) {
         const queryOne = handler.queryOne;
         internalHandler.queryOne = async (element, selector) => {
-            const jsHandle = await element.evaluateHandle(queryOne, selector);
+            const jsHandle = await element.evaluateHandle(queryOne, selector, await element.executionContext()._world.puppeteerUtil);
             const elementHandle = jsHandle.asElement();
             if (elementHandle) {
                 return elementHandle;
@@ -30,14 +33,34 @@ function internalizeCustomQueryHandler(handler) {
             await jsHandle.dispose();
             return null;
         };
-        internalHandler.waitFor = (domWorld, selector, options) => {
-            return domWorld._waitForSelectorInPage(queryOne, selector, options);
+        internalHandler.waitFor = async (elementOrFrame, selector, options) => {
+            let frame;
+            let element;
+            if (elementOrFrame instanceof Frame_js_1.Frame) {
+                frame = elementOrFrame;
+            }
+            else {
+                frame = elementOrFrame.frame;
+                element = await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].adoptHandle(elementOrFrame);
+            }
+            const result = await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD]._waitForSelectorInPage(queryOne, element, selector, options);
+            if (element) {
+                await element.dispose();
+            }
+            if (!result) {
+                return null;
+            }
+            if (!(result instanceof ElementHandle_js_1.ElementHandle)) {
+                await result.dispose();
+                return null;
+            }
+            return frame.worlds[IsolatedWorld_js_1.MAIN_WORLD].transferHandle(result);
         };
     }
     if (handler.queryAll) {
         const queryAll = handler.queryAll;
         internalHandler.queryAll = async (element, selector) => {
-            const jsHandle = await element.evaluateHandle(queryAll, selector);
+            const jsHandle = await element.evaluateHandle(queryAll, selector, await element.executionContext()._world.puppeteerUtil);
             const properties = await jsHandle.getProperties();
             await jsHandle.dispose();
             const result = [];
@@ -49,17 +72,10 @@ function internalizeCustomQueryHandler(handler) {
             }
             return result;
         };
-        internalHandler.queryAllArray = async (element, selector) => {
-            const resultHandle = (await element.evaluateHandle(queryAll, selector));
-            const arrayHandle = await resultHandle.evaluateHandle(res => {
-                return Array.from(res);
-            });
-            return arrayHandle;
-        };
     }
     return internalHandler;
 }
-const defaultHandler = internalizeCustomQueryHandler({
+const defaultHandler = createPuppeteerQueryHandler({
     queryOne: (element, selector) => {
         if (!('querySelector' in element)) {
             throw new Error(`Could not invoke \`querySelector\` on node of type ${element.nodeName}.`);
@@ -75,75 +91,35 @@ const defaultHandler = internalizeCustomQueryHandler({
         ];
     },
 });
-const pierceHandler = internalizeCustomQueryHandler({
-    queryOne: (element, selector) => {
-        let found = null;
-        const search = (root) => {
-            const iter = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
-            do {
-                const currentNode = iter.currentNode;
-                if (currentNode.shadowRoot) {
-                    search(currentNode.shadowRoot);
-                }
-                if (currentNode instanceof ShadowRoot) {
-                    continue;
-                }
-                if (currentNode !== root && !found && currentNode.matches(selector)) {
-                    found = currentNode;
-                }
-            } while (!found && iter.nextNode());
-        };
-        if (element instanceof Document) {
-            element = element.documentElement;
-        }
-        search(element);
-        return found;
+const pierceHandler = createPuppeteerQueryHandler({
+    queryOne: (element, selector, { pierceQuerySelector }) => {
+        return pierceQuerySelector(element, selector);
     },
-    queryAll: (element, selector) => {
-        const result = [];
-        const collect = (root) => {
-            const iter = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
-            do {
-                const currentNode = iter.currentNode;
-                if (currentNode.shadowRoot) {
-                    collect(currentNode.shadowRoot);
-                }
-                if (currentNode instanceof ShadowRoot) {
-                    continue;
-                }
-                if (currentNode !== root && currentNode.matches(selector)) {
-                    result.push(currentNode);
-                }
-            } while (iter.nextNode());
-        };
-        if (element instanceof Document) {
-            element = element.documentElement;
-        }
-        collect(element);
-        return result;
+    queryAll: (element, selector, { pierceQuerySelectorAll }) => {
+        return pierceQuerySelectorAll(element, selector);
     },
 });
-const xpathHandler = internalizeCustomQueryHandler({
-    queryOne: (element, selector) => {
-        const doc = element.ownerDocument || document;
-        const result = doc.evaluate(selector, element, null, XPathResult.FIRST_ORDERED_NODE_TYPE);
-        return result.singleNodeValue;
+const xpathHandler = createPuppeteerQueryHandler({
+    queryOne: (element, selector, { xpathQuerySelector }) => {
+        return xpathQuerySelector(element, selector);
     },
-    queryAll: (element, selector) => {
-        const doc = element.ownerDocument || document;
-        const iterator = doc.evaluate(selector, element, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE);
-        const array = [];
-        let item;
-        while ((item = iterator.iterateNext())) {
-            array.push(item);
-        }
-        return array;
+    queryAll: (element, selector, { xpathQuerySelectorAll }) => {
+        return xpathQuerySelectorAll(element, selector);
+    },
+});
+const textQueryHandler = createPuppeteerQueryHandler({
+    queryOne: (element, selector, { textQuerySelector }) => {
+        return textQuerySelector(element, selector);
+    },
+    queryAll: (element, selector, { textQuerySelectorAll }) => {
+        return textQuerySelectorAll(element, selector);
     },
 });
 const INTERNAL_QUERY_HANDLERS = new Map([
     ['aria', { handler: AriaQueryHandler_js_1.ariaHandler }],
     ['pierce', { handler: pierceHandler }],
     ['xpath', { handler: xpathHandler }],
+    ['text', { handler: textQueryHandler }],
 ]);
 const QUERY_HANDLERS = new Map();
 /**
@@ -179,7 +155,7 @@ function registerCustomQueryHandler(name, handler) {
     if (!isValidName) {
         throw new Error(`Custom query handler names may only contain [a-zA-Z]`);
     }
-    QUERY_HANDLERS.set(name, { handler: internalizeCustomQueryHandler(handler) });
+    QUERY_HANDLERS.set(name, { handler: createPuppeteerQueryHandler(handler) });
 }
 exports.registerCustomQueryHandler = registerCustomQueryHandler;
 /**

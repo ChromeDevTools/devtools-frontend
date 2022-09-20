@@ -25,7 +25,6 @@ const getPackageDirectory_js_1 = require("./util/getPackageDirectory.js");
  */
 const initializePuppeteer = (packageName) => {
     const isPuppeteerCore = packageName === 'puppeteer-core';
-    const puppeteerRootDirectory = (0, getPackageDirectory_js_1.getPackageDirectory)(constants_js_1.rootDirname);
     let preferredRevision = revisions_js_1.PUPPETEER_REVISIONS.chromium;
     // puppeteer-core ignores environment variables
     const productName = !isPuppeteerCore
@@ -37,7 +36,7 @@ const initializePuppeteer = (packageName) => {
         preferredRevision = revisions_js_1.PUPPETEER_REVISIONS.firefox;
     }
     return new Puppeteer_js_1.PuppeteerNode({
-        projectRoot: puppeteerRootDirectory,
+        projectRoot: isPuppeteerCore ? undefined : (0, getPackageDirectory_js_1.getPackageDirectory)(constants_js_1.rootDirname),
         preferredRevision,
         isPuppeteerCore,
         productName,

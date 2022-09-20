@@ -33,6 +33,7 @@ import removeFolder from 'rimraf';
 import { promisify } from 'util';
 import { assert } from '../util/assert.js';
 import { Connection } from '../common/Connection.js';
+import { Connection as BiDiConnection } from '../common/bidi/Connection.js';
 import { debug } from '../common/Debug.js';
 import { TimeoutError } from '../common/Errors.js';
 import { debugError, addEventListener, removeEventListeners, } from '../common/util.js';
@@ -218,6 +219,14 @@ export class BrowserRunner {
         // perform this earlier, then the previous function calls would not happen.
         removeEventListeners(__classPrivateFieldGet(this, _BrowserRunner_listeners, "f"));
     }
+    async setupWebDriverBiDiConnection(options) {
+        assert(this.proc, 'BrowserRunner not started.');
+        const { timeout, slowMo, preferredRevision } = options;
+        let browserWSEndpoint = await waitForWSEndpoint(this.proc, timeout, preferredRevision, /^WebDriver BiDi listening on (ws:\/\/.*)$/);
+        browserWSEndpoint += '/session';
+        const transport = await WebSocketTransport.create(browserWSEndpoint);
+        return new BiDiConnection(transport, slowMo);
+    }
     async setupConnection(options) {
         assert(this.proc, 'BrowserRunner not started.');
         const { usePipe, timeout, slowMo, preferredRevision } = options;
@@ -237,7 +246,7 @@ export class BrowserRunner {
     }
 }
 _BrowserRunner_product = new WeakMap(), _BrowserRunner_executablePath = new WeakMap(), _BrowserRunner_processArguments = new WeakMap(), _BrowserRunner_userDataDir = new WeakMap(), _BrowserRunner_isTempUserDataDir = new WeakMap(), _BrowserRunner_closed = new WeakMap(), _BrowserRunner_listeners = new WeakMap(), _BrowserRunner_processClosing = new WeakMap();
-function waitForWSEndpoint(browserProcess, timeout, preferredRevision) {
+function waitForWSEndpoint(browserProcess, timeout, preferredRevision, regex = /^DevTools listening on (ws:\/\/.*)$/) {
     assert(browserProcess.stderr, '`browserProcess` does not have stderr.');
     const rl = readline.createInterface(browserProcess.stderr);
     let stderr = '';
@@ -272,7 +281,7 @@ function waitForWSEndpoint(browserProcess, timeout, preferredRevision) {
         }
         function onLine(line) {
             stderr += line + '\n';
-            const match = line.match(/^DevTools listening on (ws:\/\/.*)$/);
+            const match = line.match(regex);
             if (!match) {
                 return;
             }

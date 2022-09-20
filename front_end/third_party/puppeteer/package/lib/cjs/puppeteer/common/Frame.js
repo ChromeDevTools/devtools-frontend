@@ -1,4 +1,42 @@
 "use strict";
+/**
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
@@ -10,12 +48,15 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Frame_parentFrame, _Frame_url, _Frame_detached, _Frame_client;
+var _Frame_url, _Frame_detached, _Frame_client;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Frame = void 0;
+const assert_js_1 = require("../util/assert.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const LifecycleWatcher_js_1 = require("./LifecycleWatcher.js");
+const QueryHandler_js_1 = require("./QueryHandler.js");
+const util_js_1 = require("./util.js");
 /**
  * Represents a DOM frame.
  *
@@ -73,8 +114,7 @@ class Frame {
     /**
      * @internal
      */
-    constructor(frameManager, parentFrame, frameId, client) {
-        _Frame_parentFrame.set(this, void 0);
+    constructor(frameManager, frameId, parentFrameId, client) {
         _Frame_url.set(this, '');
         _Frame_detached.set(this, false);
         _Frame_client.set(this, void 0);
@@ -91,15 +131,11 @@ class Frame {
          */
         this._lifecycleEvents = new Set();
         this._frameManager = frameManager;
-        __classPrivateFieldSet(this, _Frame_parentFrame, parentFrame !== null && parentFrame !== void 0 ? parentFrame : null, "f");
         __classPrivateFieldSet(this, _Frame_url, '', "f");
         this._id = frameId;
+        this._parentId = parentFrameId;
         __classPrivateFieldSet(this, _Frame_detached, false, "f");
         this._loaderId = '';
-        this._childFrames = new Set();
-        if (__classPrivateFieldGet(this, _Frame_parentFrame, "f")) {
-            __classPrivateFieldGet(this, _Frame_parentFrame, "f")._childFrames.add(this);
-        }
         this.updateClient(client);
     }
     /**
@@ -108,8 +144,8 @@ class Frame {
     updateClient(client) {
         __classPrivateFieldSet(this, _Frame_client, client, "f");
         this.worlds = {
-            [IsolatedWorld_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(client, this._frameManager, this, this._frameManager.timeoutSettings),
-            [IsolatedWorld_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(client, this._frameManager, this, this._frameManager.timeoutSettings),
+            [IsolatedWorld_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
+            [IsolatedWorld_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
         };
     }
     /**
@@ -255,9 +291,7 @@ class Frame {
         return __classPrivateFieldGet(this, _Frame_client, "f");
     }
     /**
-     * @deprecated Do not use the execution context directly.
-     *
-     * @returns a promise that resolves to the frame's default execution context.
+     * @internal
      */
     executionContext() {
         return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].executionContext();
@@ -391,13 +425,9 @@ class Frame {
      * @throws Throws if an element matching the given selector doesn't appear.
      */
     async waitForSelector(selector, options = {}) {
-        const handle = await this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].waitForSelector(selector, options);
-        if (!handle) {
-            return null;
-        }
-        const mainHandle = (await this.worlds[IsolatedWorld_js_1.MAIN_WORLD].adoptHandle(handle));
-        await handle.dispose();
-        return mainHandle;
+        const { updatedSelector, queryHandler } = (0, QueryHandler_js_1.getQueryHandlerAndSelector)(selector);
+        (0, assert_js_1.assert)(queryHandler.waitFor, 'Query handler does not support waiting');
+        return (await queryHandler.waitFor(this, updatedSelector, options));
     }
     /**
      * @deprecated Use {@link Frame.waitForSelector} with the `xpath` prefix.
@@ -455,7 +485,6 @@ class Frame {
      * @returns the promise which resolve when the `pageFunction` returns a truthy value.
      */
     waitForFunction(pageFunction, options = {}, ...args) {
-        // TODO: Fix when NodeHandle has been added.
         return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].waitForFunction(pageFunction, options, ...args);
     }
     /**
@@ -497,13 +526,13 @@ class Frame {
      * @returns The parent frame, if any. Detached and main frames return `null`.
      */
     parentFrame() {
-        return __classPrivateFieldGet(this, _Frame_parentFrame, "f");
+        return this._frameManager._frameTree.parentFrame(this._id) || null;
     }
     /**
      * @returns An array of child frames.
      */
     childFrames() {
-        return Array.from(this._childFrames);
+        return this._frameManager._frameTree.childFrames(this._id);
     }
     /**
      * @returns `true` if the frame has been detached. Otherwise, `false`.
@@ -515,24 +544,101 @@ class Frame {
      * Adds a `<script>` tag into the page with the desired url or content.
      *
      * @param options - Options for the script.
-     * @returns a promise that resolves to the added tag when the script's
-     * `onload` event fires or when the script content was injected into the
-     * frame.
+     * @returns An {@link ElementHandle | element handle} to the injected
+     * `<script>` element.
      */
     async addScriptTag(options) {
-        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].addScriptTag(options);
+        let { content = '', type } = options;
+        const { path } = options;
+        if (+!!options.url + +!!path + +!!content !== 1) {
+            throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
+        }
+        if (path) {
+            let fs;
+            try {
+                fs = (await Promise.resolve().then(() => __importStar(require('fs')))).promises;
+            }
+            catch (error) {
+                if (error instanceof TypeError) {
+                    throw new Error('Can only pass a file path in a Node-like environment.');
+                }
+                throw error;
+            }
+            content = await fs.readFile(path, 'utf8');
+            content += `//# sourceURL=${path.replace(/\n/g, '')}`;
+        }
+        type = type !== null && type !== void 0 ? type : 'text/javascript';
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].transferHandle(await this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].evaluateHandle(async ({ createDeferredPromise }, { url, id, type, content }) => {
+            const promise = createDeferredPromise();
+            const script = document.createElement('script');
+            script.type = type;
+            script.text = content;
+            if (url) {
+                script.src = url;
+                script.addEventListener('load', () => {
+                    return promise.resolve();
+                }, { once: true });
+                script.addEventListener('error', event => {
+                    var _a;
+                    promise.reject(new Error((_a = event.message) !== null && _a !== void 0 ? _a : 'Could not load script'));
+                }, { once: true });
+            }
+            else {
+                promise.resolve();
+            }
+            if (id) {
+                script.id = id;
+            }
+            document.head.appendChild(script);
+            await promise;
+            return script;
+        }, await this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].puppeteerUtil, { ...options, type, content }));
     }
-    /**
-     * Adds a `<link rel="stylesheet">` tag into the page with the desired url or
-     * a `<style type="text/css">` tag with the content.
-     *
-     * @param options - Options for the style link.
-     * @returns a promise that resolves to the added tag when the stylesheets's
-     * `onload` event fires or when the CSS content was injected into the
-     * frame.
-     */
     async addStyleTag(options) {
-        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].addStyleTag(options);
+        let { content = '' } = options;
+        const { path } = options;
+        if (+!!options.url + +!!path + +!!content !== 1) {
+            throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
+        }
+        if (path) {
+            let fs;
+            try {
+                fs = (await (0, util_js_1.importFS)()).promises;
+            }
+            catch (error) {
+                if (error instanceof TypeError) {
+                    throw new Error('Can only pass a file path in a Node-like environment.');
+                }
+                throw error;
+            }
+            content = await fs.readFile(path, 'utf8');
+            content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
+            options.content = content;
+        }
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].transferHandle(await this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].evaluateHandle(async ({ createDeferredPromise }, { url, content }) => {
+            const promise = createDeferredPromise();
+            let element;
+            if (!url) {
+                element = document.createElement('style');
+                element.appendChild(document.createTextNode(content));
+            }
+            else {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = url;
+                element = link;
+            }
+            element.addEventListener('load', () => {
+                promise.resolve();
+            }, { once: true });
+            element.addEventListener('error', event => {
+                var _a;
+                promise.reject(new Error((_a = event.message) !== null && _a !== void 0 ? _a : 'Could not load style'));
+            }, { once: true });
+            document.head.appendChild(element);
+            await promise;
+            return element;
+        }, await this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].puppeteerUtil, options));
     }
     /**
      * Clicks the first element found that matches `selector`.
@@ -702,12 +808,8 @@ class Frame {
         __classPrivateFieldSet(this, _Frame_detached, true, "f");
         this.worlds[IsolatedWorld_js_1.MAIN_WORLD]._detach();
         this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD]._detach();
-        if (__classPrivateFieldGet(this, _Frame_parentFrame, "f")) {
-            __classPrivateFieldGet(this, _Frame_parentFrame, "f")._childFrames.delete(this);
-        }
-        __classPrivateFieldSet(this, _Frame_parentFrame, null, "f");
     }
 }
 exports.Frame = Frame;
-_Frame_parentFrame = new WeakMap(), _Frame_url = new WeakMap(), _Frame_detached = new WeakMap(), _Frame_client = new WeakMap();
+_Frame_url = new WeakMap(), _Frame_detached = new WeakMap(), _Frame_client = new WeakMap();
 //# sourceMappingURL=Frame.js.map

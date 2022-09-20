@@ -20,6 +20,9 @@ class Puppeteer {
      * @internal
      */
     constructor(settings) {
+        /**
+         * @internal
+         */
         this._changedProduct = false;
         this._isPuppeteerCore = settings.isPuppeteerCore;
         this.connect = this.connect.bind(this);
@@ -33,7 +36,7 @@ class Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        return (0, BrowserConnector_js_1._connectToBrowser)(options);
+        return (0, BrowserConnector_js_1._connectToCDPBrowser)(options);
     }
     /**
      * @deprecated Import directly puppeteer.

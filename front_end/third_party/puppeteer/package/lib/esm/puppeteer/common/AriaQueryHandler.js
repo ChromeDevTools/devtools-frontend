@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 import { assert } from '../util/assert.js';
+import { ElementHandle } from './ElementHandle.js';
+import { Frame } from './Frame.js';
+import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorld.js';
 async function queryAXTree(client, element, accessibleName, role) {
     const { nodes } = await client.send('Accessibility.queryAXTree', {
         objectId: element.remoteObject().objectId,
@@ -57,27 +60,49 @@ function parseAriaSelector(selector) {
     }
     return queryOptions;
 }
-const queryOne = async (element, selector) => {
-    const exeCtx = element.executionContext();
+const queryOneId = async (element, selector) => {
     const { name, role } = parseAriaSelector(selector);
-    const res = await queryAXTree(exeCtx._client, element, name, role);
+    const res = await queryAXTree(element.client, element, name, role);
     if (!res[0] || !res[0].backendDOMNodeId) {
         return null;
     }
-    return (await exeCtx._world.adoptBackendNode(res[0].backendDOMNodeId));
+    return res[0].backendDOMNodeId;
 };
-const waitFor = async (isolatedWorld, selector, options) => {
-    const binding = {
-        name: 'ariaQuerySelector',
-        pptrFunction: async (selector) => {
-            const root = options.root || (await isolatedWorld.document());
-            const element = await queryOne(root, selector);
-            return element;
-        },
+const queryOne = async (element, selector) => {
+    const id = await queryOneId(element, selector);
+    if (!id) {
+        return null;
+    }
+    return (await element.frame.worlds[MAIN_WORLD].adoptBackendNode(id));
+};
+const waitFor = async (elementOrFrame, selector, options) => {
+    let frame;
+    let element;
+    if (elementOrFrame instanceof Frame) {
+        frame = elementOrFrame;
+    }
+    else {
+        frame = elementOrFrame.frame;
+        element = await frame.worlds[PUPPETEER_WORLD].adoptHandle(elementOrFrame);
+    }
+    const ariaQuerySelector = async (selector) => {
+        const id = await queryOneId(element || (await frame.worlds[PUPPETEER_WORLD].document()), selector);
+        if (!id) {
+            return null;
+        }
+        return (await frame.worlds[PUPPETEER_WORLD].adoptBackendNode(id));
     };
-    return (await isolatedWorld._waitForSelectorInPage((_, selector) => {
+    const result = await frame.worlds[PUPPETEER_WORLD]._waitForSelectorInPage((_, selector) => {
         return globalThis.ariaQuerySelector(selector);
-    }, selector, options, binding));
+    }, element, selector, options, new Set([ariaQuerySelector]));
+    if (element) {
+        await element.dispose();
+    }
+    if (!(result instanceof ElementHandle)) {
+        await (result === null || result === void 0 ? void 0 : result.dispose());
+        return null;
+    }
+    return result.frame.worlds[MAIN_WORLD].transferHandle(result);
 };
 const queryAll = async (element, selector) => {
     const exeCtx = element.executionContext();
@@ -88,14 +113,6 @@ const queryAll = async (element, selector) => {
         return world.adoptBackendNode(axNode.backendDOMNodeId);
     }));
 };
-const queryAllArray = async (element, selector) => {
-    const elementHandles = await queryAll(element, selector);
-    const exeCtx = element.executionContext();
-    const jsHandle = exeCtx.evaluateHandle((...elements) => {
-        return elements;
-    }, ...elementHandles);
-    return jsHandle;
-};
 /**
  * @internal
  */
@@ -103,6 +120,5 @@ export const ariaHandler = {
     queryOne,
     waitFor,
     queryAll,
-    queryAllArray,
 };
 //# sourceMappingURL=AriaQueryHandler.js.map

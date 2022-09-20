@@ -130,7 +130,10 @@ _LifecycleWatcher_expectedLifecycle = new WeakMap(), _LifecycleWatcher_frameMana
         return;
     }
     __classPrivateFieldSet(this, _LifecycleWatcher_navigationRequest, request, "f");
-    (_a = __classPrivateFieldGet(this, _LifecycleWatcher_navigationResponseReceived, "f")) === null || _a === void 0 ? void 0 : _a.reject(new Error('New navigation request was received'));
+    // Resolve previous navigation response in case there are multiple
+    // navigation requests reported by the backend. This generally should not
+    // happen by it looks like it's possible.
+    (_a = __classPrivateFieldGet(this, _LifecycleWatcher_navigationResponseReceived, "f")) === null || _a === void 0 ? void 0 : _a.resolve();
     __classPrivateFieldSet(this, _LifecycleWatcher_navigationResponseReceived, createDeferredPromise(), "f");
     if (request.response() !== null) {
         (_b = __classPrivateFieldGet(this, _LifecycleWatcher_navigationResponseReceived, "f")) === null || _b === void 0 ? void 0 : _b.resolve();

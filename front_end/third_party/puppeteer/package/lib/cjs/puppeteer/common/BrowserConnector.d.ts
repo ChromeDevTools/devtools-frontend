@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Browser, IsPageTargetCallback, TargetFilterCallback } from './Browser.js';
+import { IsPageTargetCallback, TargetFilterCallback } from '../api/Browser.js';
+import { CDPBrowser } from './Browser.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
 import { Viewport } from './PuppeteerViewport.js';
 /**
@@ -44,6 +45,11 @@ export interface BrowserConnectOptions {
      * @internal
      */
     _isPageTarget?: IsPageTargetCallback;
+    /**
+     * @defaultValue 'cdp'
+     * @internal
+     */
+    protocol?: 'cdp' | 'webDriverBiDi';
 }
 /**
  * Users should never call this directly; it's called when calling
@@ -51,9 +57,9 @@ export interface BrowserConnectOptions {
  *
  * @internal
  */
-export declare function _connectToBrowser(options: BrowserConnectOptions & {
+export declare function _connectToCDPBrowser(options: BrowserConnectOptions & {
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;
-}): Promise<Browser>;
+}): Promise<CDPBrowser>;
 //# sourceMappingURL=BrowserConnector.d.ts.map

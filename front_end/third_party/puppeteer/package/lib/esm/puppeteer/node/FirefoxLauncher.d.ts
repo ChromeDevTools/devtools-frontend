@@ -1,4 +1,4 @@
-import { Browser } from '../common/Browser.js';
+import { Browser } from '../api/Browser.js';
 import { Product } from '../common/Product.js';
 import { BrowserLaunchArgumentOptions, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
 import { ProductLauncher } from './ProductLauncher.js';

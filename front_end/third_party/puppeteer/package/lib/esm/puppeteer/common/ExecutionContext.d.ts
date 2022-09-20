@@ -15,17 +15,13 @@
  */
 import { Protocol } from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
-import { Frame } from './Frame.js';
 import { IsolatedWorld } from './IsolatedWorld.js';
-import { JSHandle } from './JSHandle.js';
 import { EvaluateFunc, HandleFor } from './types.js';
 /**
  * @public
  */
 export declare const EVALUATION_SCRIPT_URL = "pptr://__puppeteer_evaluation_script__";
 /**
- * @deprecated Do not use directly.
- *
  * Represents a context for JavaScript execution.
  *
  * @example
@@ -44,6 +40,8 @@ export declare const EVALUATION_SCRIPT_URL = "pptr://__puppeteer_evaluation_scri
  * @remarks
  * Besides pages, execution contexts can be found in
  * {@link WebWorker | workers}.
+ *
+ * @internal
  */
 export declare class ExecutionContext {
     #private;
@@ -67,15 +65,6 @@ export declare class ExecutionContext {
      * @internal
      */
     constructor(client: CDPSession, contextPayload: Protocol.Runtime.ExecutionContextDescription, world?: IsolatedWorld);
-    /**
-     * @returns The frame associated with this execution context.
-     *
-     * @remarks
-     * Not every execution context is associated with a frame. For example,
-     * {@link WebWorker | workers} have execution contexts that are not associated
-     * with frames.
-     */
-    frame(): Frame | null;
     /**
      * Evaluates the given function.
      *
@@ -167,28 +156,5 @@ export declare class ExecutionContext {
      * {@link ElementHandle | element handle}.
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
-    /**
-     * Iterates through the JavaScript heap and finds all the objects with the
-     * given prototype.
-     *
-     * @example
-     *
-     * ```ts
-     * // Create a Map object
-     * await page.evaluate(() => (window.map = new Map()));
-     * // Get a handle to the Map object prototype
-     * const mapPrototype = await page.evaluateHandle(() => Map.prototype);
-     * // Query all map instances into an array
-     * const mapInstances = await page.queryObjects(mapPrototype);
-     * // Count amount of map objects in heap
-     * const count = await page.evaluate(maps => maps.length, mapInstances);
-     * await mapInstances.dispose();
-     * await mapPrototype.dispose();
-     * ```
-     *
-     * @param prototypeHandle - a handle to the object prototype
-     * @returns A handle to an array of objects with the given prototype.
-     */
-    queryObjects<Prototype>(prototypeHandle: JSHandle<Prototype>): Promise<HandleFor<Prototype[]>>;
 }
 //# sourceMappingURL=ExecutionContext.d.ts.map

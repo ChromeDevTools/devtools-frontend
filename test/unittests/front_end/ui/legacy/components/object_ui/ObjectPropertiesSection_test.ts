@@ -15,6 +15,8 @@ import {someMutations} from '../../../../helpers/MutationHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import {createTarget} from '../../../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../../helpers/MockConnection.js';
+import {type Chrome} from '../../../../../../../extension-api/ExtensionAPI.js';
+import {TestPlugin} from '../../../../helpers/LanguagePluginHelpers.js';
 
 describeWithRealConnection('ObjectPropertiesSection', () => {
   async function setupTreeOutline(
@@ -251,14 +253,34 @@ describeWithMockConnection('ObjectPropertiesSection', () => {
     const callFrame = {
       debuggerModel,
     } as SDK.DebuggerModel.CallFrame;
-    const valueNode = new Bindings.DebuggerLanguagePlugins.ValueNode(
-        callFrame, undefined, 'object', undefined, undefined, 2 /* inspectableAddress*/);
+    {
+      const valueNode = new Bindings.DebuggerLanguagePlugins.ValueNode(
+          callFrame, undefined, 'object', undefined, undefined, 2 /* inspectableAddress*/);
 
-    const div = document.createElement('div');
-    assert.isFalse(div.hasChildNodes());
-    ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, valueNode);
-    assert.isTrue(div.hasChildNodes());
-    const icon = div.getElementsByClassName('devtools-icon');
-    assert.isNotNull(icon);
+      const div = document.createElement('div');
+      assert.isFalse(div.hasChildNodes());
+      ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, valueNode);
+      assert.isTrue(div.hasChildNodes());
+      const icon = div.getElementsByClassName('devtools-icon');
+      assert.isNotNull(icon);
+    }
+    {
+      const extensionObject = {
+        type: 'string' as Chrome.DevTools.RemoteObjectType,
+        hasChildren: false,
+        description: 'hello',
+        linearMemoryAddress: 2,
+      };
+      const plugin = new TestPlugin('LinearMemoryInspectorTestPlugin');
+      const remoteObject =
+          new Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject(callFrame, extensionObject, plugin);
+
+      const div = document.createElement('div');
+      assert.isFalse(div.hasChildNodes());
+      ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, remoteObject);
+      assert.isTrue(div.hasChildNodes());
+      const icon = div.getElementsByClassName('devtools-icon');
+      assert.isNotNull(icon);
+    }
   });
 });

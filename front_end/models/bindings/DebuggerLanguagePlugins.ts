@@ -796,6 +796,10 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
     return this.extensionObject.linearMemoryAddress;
   }
 
+  get linearMemorySize(): number|undefined {
+    return this.extensionObject.linearMemorySize;
+  }
+
   get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
     return this.extensionObject.objectId as Protocol.Runtime.RemoteObjectId;
   }

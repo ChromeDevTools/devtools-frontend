@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
-import type * as Bindings from '../../../../../../front_end/models/bindings/bindings.js';
+import * as Bindings from '../../../../../../front_end/models/bindings/bindings.js';
 import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
@@ -30,6 +30,20 @@ function createWrapper(array: Uint8Array) {
   const mockRemoteObj = new MockRemoteObject(array.buffer);
   const mockRemoteArrayBuffer = new SDK.RemoteObject.RemoteArrayBuffer(mockRemoteObj);
   return new LinearMemoryInspectorController.RemoteArrayBufferWrapper(mockRemoteArrayBuffer);
+}
+
+function createFakeExtensionRemoteObjectFromValueNode(valueNode: Bindings.DebuggerLanguagePlugins.ValueNode) {
+  const {sourceType, inspectableAddress, description} = valueNode;
+  const {typeInfo} = sourceType ?? {};
+  const pointer = typeInfo?.members.find(m => m.name === '*');
+  const linearMemorySize = pointer ? sourceType.typeMap.get(pointer.typeId)?.typeInfo?.size : typeInfo?.size;
+  const instance = sinon.createStubInstance(Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject);
+
+  sinon.stub(instance, 'linearMemoryAddress').get(() => inspectableAddress);
+  sinon.stub(instance, 'linearMemorySize').get(() => linearMemorySize);
+  sinon.stub(instance, 'description').get(() => description);
+
+  return instance;
 }
 
 describeWithEnvironment('LinearMemoryInspectorController', () => {
@@ -119,8 +133,15 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
       },
     } as Bindings.DebuggerLanguagePlugins.ValueNode;
 
-    const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(mockValueNode);
-    assert.strictEqual(size, expectedSize);
+    {
+      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(mockValueNode);
+      assert.strictEqual(size, expectedSize);
+    }
+    {
+      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(
+          createFakeExtensionRemoteObjectFromValueNode(mockValueNode));
+      assert.strictEqual(size, expectedSize);
+    }
   });
 
   it('retrieves object size for a pointer ValueNode', () => {
@@ -146,8 +167,15 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
       },
     } as Bindings.DebuggerLanguagePlugins.ValueNode;
 
-    const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(pointerValueNode);
-    assert.strictEqual(size, expectedSize);
+    {
+      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(pointerValueNode);
+      assert.strictEqual(size, expectedSize);
+    }
+    {
+      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(
+          createFakeExtensionRemoteObjectFromValueNode(pointerValueNode));
+      assert.strictEqual(size, expectedSize);
+    }
   });
 
   it('retrieves pointer size for a pointer-to-pointer ValueNode', () => {
@@ -183,8 +211,15 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
       },
     } as Bindings.DebuggerLanguagePlugins.ValueNode;
 
-    const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(pointerValueNode);
-    assert.strictEqual(size, expectedSize);
+    {
+      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(pointerValueNode);
+      assert.strictEqual(size, expectedSize);
+    }
+    {
+      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(
+          createFakeExtensionRemoteObjectFromValueNode(pointerValueNode));
+      assert.strictEqual(size, expectedSize);
+    }
   });
 
   it('throws an error when retrieving size of non-conforming (multiple pointer members) ValueNode', () => {
@@ -299,30 +334,58 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
 
   it('extracts array type correctly', () => {
     const obj = {description: 'int[]'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                              .extractObjectTypeDescription(obj);
-    assert.strictEqual(extractedType, 'int[]');
+    {
+      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
+                                .extractObjectTypeDescription(obj);
+      assert.strictEqual(extractedType, 'int[]');
+    }
+    {
+      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
+                                .extractObjectTypeDescription(createFakeExtensionRemoteObjectFromValueNode(obj));
+      assert.strictEqual(extractedType, 'int[]');
+    }
   });
 
   it('extracts multi-level pointer correctly', () => {
     const obj = {description: 'int **'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                              .extractObjectTypeDescription(obj);
-    assert.strictEqual(extractedType, 'int *');
+    {
+      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
+                                .extractObjectTypeDescription(obj);
+      assert.strictEqual(extractedType, 'int *');
+    }
+    {
+      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
+                                .extractObjectTypeDescription(createFakeExtensionRemoteObjectFromValueNode(obj));
+      assert.strictEqual(extractedType, 'int *');
+    }
   });
 
   it('extracts reference type correctly', () => {
     const obj = {description: 'int &'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                              .extractObjectTypeDescription(obj);
-    assert.strictEqual(extractedType, 'int');
+    {
+      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
+                                .extractObjectTypeDescription(obj);
+      assert.strictEqual(extractedType, 'int');
+    }
+    {
+      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
+                                .extractObjectTypeDescription(createFakeExtensionRemoteObjectFromValueNode(obj));
+      assert.strictEqual(extractedType, 'int');
+    }
   });
 
   it('extracts pointer type correctly', () => {
     const obj = {description: 'int *'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                              .extractObjectTypeDescription(obj);
-    assert.strictEqual(extractedType, 'int');
+    {
+      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
+                                .extractObjectTypeDescription(obj);
+      assert.strictEqual(extractedType, 'int');
+    }
+    {
+      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
+                                .extractObjectTypeDescription(createFakeExtensionRemoteObjectFromValueNode(obj));
+      assert.strictEqual(extractedType, 'int');
+    }
   });
 
   it('removes the provided highlightInfo when it is stored in the Controller', () => {
@@ -356,19 +419,35 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
   it('extracts name unchanged when object is not pointer', () => {
     const name = 'myNumbers';
     const obj = {description: 'int[]'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    const extractedName =
-        LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
-            obj, name);
-    assert.strictEqual(extractedName, name);
+    {
+      const extractedName =
+          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
+              obj, name);
+      assert.strictEqual(extractedName, name);
+    }
+    {
+      const extractedName =
+          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
+              createFakeExtensionRemoteObjectFromValueNode(obj), name);
+      assert.strictEqual(extractedName, name);
+    }
   });
 
   it('extracts name with preprended \'*\' when object is a pointer', () => {
     const name = 'myPointerObject';
     const obj = {description: 'int *'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    const extractedName =
-        LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
-            obj, name);
-    assert.strictEqual(extractedName, '*' + name);
+    {
+      const extractedName =
+          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
+              obj, name);
+      assert.strictEqual(extractedName, '*' + name);
+    }
+    {
+      const extractedName =
+          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
+              createFakeExtensionRemoteObjectFromValueNode(obj), name);
+      assert.strictEqual(extractedName, '*' + name);
+    }
   });
 });
 

@@ -187,6 +187,7 @@ export namespace Chrome {
       description?: string;
       objectId?: RemoteObjectId;
       linearMemoryAddress?: number;
+      linearMemorySize?: number;
       hasChildren: boolean;
     }
 

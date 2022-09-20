@@ -217,7 +217,10 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
       Promise<{obj: SDK.RemoteObject.RemoteObject, address: number}|undefined> {
     if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
       const valueNode = obj;
-      const address = valueNode.linearMemoryAddress || 0;
+      const address = obj.linearMemoryAddress;
+      if (address === undefined) {
+        return undefined;
+      }
       const callFrame = valueNode.callFrame;
       const response = await obj.debuggerModel().agent.invoke_evaluateOnCallFrame({
         callFrameId: callFrame.id,
@@ -232,7 +235,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
       return {obj: runtimeModel.createRemoteObject(response.result), address};
     }
     if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode)) {
-      return;
+      return undefined;
     }
 
     const valueNode = obj;
@@ -252,18 +255,20 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     return {obj, address};
   }
 
-  // This function returns the size of the source language value represented
-  // by the ValueNode. If the value is a pointer, the function returns the size of
-  // the pointed-to value. If the pointed-to value is also a pointer, it returns
-  // the size of the pointer (usually 4 bytes). This is the convention taken
-  // by the DWARF extension.
+  // This function returns the size of the source language value represented by the ValueNode or ExtensionRemoteObject.
+  // If the value is a pointer, the function returns the size of the pointed-to value. If the pointed-to value is also a
+  // pointer, it returns the size of the pointer (usually 4 bytes). This is the convention taken by the DWARF extension.
   // > double x = 42.0;
   // > double *ptr = &x;
   // > double **dblptr = &ptr;
   //
   // retrieveObjectSize(ptr_ValueNode) -> 8, the size of a double
   // retrieveObjectSize(dblptr_ValueNode) -> 4, the size of a pointer
-  static extractObjectSize(obj: Bindings.DebuggerLanguagePlugins.ValueNode): number {
+  static extractObjectSize(obj: Bindings.DebuggerLanguagePlugins.ValueNode|
+                           Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject): number {
+    if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
+      return obj.linearMemorySize ?? 0;
+    }
     let typeInfo = obj.sourceType.typeInfo;
     const pointerMembers = typeInfo.members.filter(member => member.name === '*');
     if (pointerMembers.length === 1) {
@@ -287,7 +292,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
   // -> The memory inspector will jump to the address where 3 is stored.
   // -> The memory inspector will highlight the bytes that represent the 3.
   // -> The object type description of what we show will thus be `int` and not `int *`.
-  static extractObjectTypeDescription(obj: Bindings.DebuggerLanguagePlugins.ValueNode): string {
+  static extractObjectTypeDescription(obj: SDK.RemoteObject.RemoteObject): string {
     const objType = obj.description;
     if (!objType) {
       return '';
@@ -314,7 +319,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
   // Examples:
   // (int *) myNumber -> (int) *myNumber
   // (int[]) numbers -> (int[]) numbers
-  static extractObjectName(obj: Bindings.DebuggerLanguagePlugins.ValueNode, expression: string): string {
+  static extractObjectName(obj: SDK.RemoteObject.RemoteObject, expression: string): string {
     const lastChar = obj.description?.charAt(obj.description.length - 1);
     const isPointerType = lastChar === '*';
     if (isPointerType) {
@@ -375,14 +380,20 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
   }
 
   static extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, expression?: string): HighlightInfo|undefined {
-    if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode)) {
+    if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) &&
+        !(obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject)) {
       return undefined;
     }
+
+    const startAddress =
+        (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject ? obj.linearMemoryAddress :
+                                                                                 obj.inspectableAddress) ??
+        0;
 
     let highlightInfo;
     try {
       highlightInfo = {
-        startAddress: obj.inspectableAddress || 0,
+        startAddress,
         size: LinearMemoryInspectorController.extractObjectSize(obj),
         name: expression ? LinearMemoryInspectorController.extractObjectName(obj, expression) : expression,
         type: LinearMemoryInspectorController.extractObjectTypeDescription(obj),

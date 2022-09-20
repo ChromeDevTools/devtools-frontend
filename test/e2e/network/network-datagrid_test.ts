@@ -298,7 +298,8 @@ describe('The Network Tab', async function() {
     ]);
   });
 
-  it('shows web bundle metadata error in the status column', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1365962] shows web bundle metadata error in the status column', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle-with-bad-metadata.html');

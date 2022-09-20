@@ -39,6 +39,11 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
         SourcesComponents.BreakpointsView.BreakpointSelectedEvent.eventName, (event: Event) => {
           this.#onBreakpointSelectedEvent(event);
         });
+    this.#breakpointsView.addEventListener(
+        SourcesComponents.BreakpointsView.BreakpointsRemovedEvent.eventName, (event: Event) => {
+          this.#onBreakpointsRemovedEvent(event);
+        });
+
     this.contentElement.appendChild(this.#breakpointsView);
     this.update();
   }
@@ -56,6 +61,7 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     const {breakpointItem, checked} = checkboxToggledEvent.data;
 
     this.#controller.breakpointStateChanged(breakpointItem, checked);
+    event.consume();
   }
 
   #onBreakpointSelectedEvent(event: Event): void {
@@ -63,12 +69,23 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     const breakpointItem = breakpointSelectedEvent.data.breakpointItem;
 
     void this.#controller.jumpToSource(breakpointItem);
+    event.consume();
+  }
+
+  #onBreakpointsRemovedEvent(event: Event): void {
+    const breakpointSelectedEvent = event as SourcesComponents.BreakpointsView.BreakpointsRemovedEvent;
+    const breakpointItems = breakpointSelectedEvent.data.breakpointItems;
+
+    void this.#controller.breakpointsRemoved(breakpointItems);
+    event.consume();
   }
 }
 export class BreakpointsSidebarController implements UI.ContextFlavorListener.ContextFlavorListener {
   readonly #breakpointManager: Bindings.BreakpointManager.BreakpointManager;
   readonly #breakpointItemToLocationMap =
       new WeakMap<SourcesComponents.BreakpointsView.BreakpointItem, Bindings.BreakpointManager.BreakpointLocation[]>();
+  #updateScheduled = false;
+  #updateRunning = false;
 
   constructor() {
     this.#breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
@@ -95,6 +112,11 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     });
   }
 
+  breakpointsRemoved(breakpointItems: SourcesComponents.BreakpointsView.BreakpointItem[]): void {
+    const locations = breakpointItems.flatMap(breakpointItem => this.#getLocationsForBreakpointItem(breakpointItem));
+    locations.forEach(location => location?.breakpoint.remove(false /* keepInStorage */));
+  }
+
   async jumpToSource(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem): Promise<void> {
     const uiLocations = this.#getLocationsForBreakpointItem(breakpointItem).map(location => location.uiLocation);
     let uiLocation: Workspace.UISourceCode.UILocation|undefined;
@@ -109,8 +131,17 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   }
 
   async update(): Promise<void> {
-    const data = await this.getUpdatedBreakpointViewData();
-    BreakpointsSidebarPane.instance().data = data;
+    this.#updateScheduled = true;
+    if (this.#updateRunning) {
+      return;
+    }
+    this.#updateRunning = true;
+    while (this.#updateScheduled) {
+      this.#updateScheduled = false;
+      const data = await this.getUpdatedBreakpointViewData();
+      BreakpointsSidebarPane.instance().data = data;
+    }
+    this.#updateRunning = false;
   }
 
   async getUpdatedBreakpointViewData(): Promise<SourcesComponents.BreakpointsView.BreakpointsViewData> {

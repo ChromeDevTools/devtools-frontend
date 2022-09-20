@@ -9881,6 +9881,12 @@
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "mixed"
   },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Remove breakpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpointsInFile": {
+    "message": "Remove all breakpoints in file"
+  },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "unchecked"
   },

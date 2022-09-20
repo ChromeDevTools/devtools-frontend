@@ -39,8 +39,12 @@ details > summary {
   height: 18px;
   list-style: none;
   display: flex;
-  padding: 0 4px 0 6px;
+  padding: 0 8px 0 6px;
   align-items: center;
+}
+
+details > summary:hover {
+  background-color: var(--color-background-elevation-1);
 }
 
 details > summary::before {
@@ -63,6 +67,7 @@ details[open] > summary::before {
 .group-header {
   display: inline-flex;
   align-items: center;
+  width: 100%;
 }
 
 .group-header-title {
@@ -74,11 +79,39 @@ details[open] > summary::before {
   white-space: nowrap;
 }
 
+.group-hover-actions {
+  width: 13px;
+}
+
+.breakpoint-item-location-or-actions {
+  min-width: 20px;
+  flex: 0 0 auto;
+  display: flex;
+  padding-left: 8px;
+}
+
+.remove-breakpoint-button {
+  cursor: pointer;
+  width: 13px;
+  height: 13px;
+  border: none;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.remove-breakpoint-button:hover devtools-icon {
+  --icon-color: var(--color-text-primary);
+}
+
 .breakpoint-item {
   display: flex;
   align-items: center;
   line-height: 13px;
   height: 18px;
+  padding-right: 8px;
 }
 
 .breakpoint-item:hover {
@@ -99,5 +132,7 @@ details[open] > summary::before {
 
 .location {
   line-height: 14px;
-  margin: 0 8px;
+  margin-left: auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

@@ -9881,6 +9881,12 @@
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "m̂íx̂éd̂"
   },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpointsInFile": {
+    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń f̂íl̂é"
+  },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "ûńĉh́êćk̂éd̂"
   },

@@ -4,8 +4,8 @@
 
 import * as SourcesComponents from '../../../../../../front_end/panels/sources/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
+
 import {
   assertElement,
   assertElements,
@@ -22,6 +22,8 @@ const GROUP_NAME_SELECTOR = '.group-header-title';
 const BREAKPOINT_ITEM_SELECTOR = '.breakpoint-item';
 const HIT_BREAKPOINT_SELECTOR = BREAKPOINT_ITEM_SELECTOR + '.hit';
 const BREAKPOINT_LOCATION_SELECTOR = '.location';
+const REMOVE_FILE_BREAKPOINTS_SELECTOR = '.group-hover-actions > .remove-breakpoint-button';
+const REMOVE_SINGLE_BREAKPOINT_SELECTOR = '.breakpoint-item-location-or-actions > .remove-breakpoint-button';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -310,5 +312,43 @@ describeWithEnvironment('BreakpointsView', () => {
 
     const renderedBreakpointItem = component.shadowRoot.querySelector(HIT_BREAKPOINT_SELECTOR);
     assertElement(renderedBreakpointItem, HTMLDivElement);
+  });
+
+  it('triggers an event on removing file breakpoints', async () => {
+    const {component, data} = await renderMultipleBreakpoints();
+    assertShadowRoot(component.shadowRoot);
+
+    // Dispatch a mouse over in order to show the remove button.
+    component.shadowRoot.querySelector('summary')?.dispatchEvent(new Event('mouseover'));
+    // Wait until the re-rendering has happened.
+    await coordinator.done();
+
+    const removeFileBreakpointsButton = component.shadowRoot.querySelector(REMOVE_FILE_BREAKPOINTS_SELECTOR);
+    assertElement(removeFileBreakpointsButton, HTMLButtonElement);
+
+    const eventPromise = getEventPromise<SourcesComponents.BreakpointsView.BreakpointsRemovedEvent>(
+        component, SourcesComponents.BreakpointsView.BreakpointsRemovedEvent.eventName);
+    removeFileBreakpointsButton.click();
+    const event = await eventPromise;
+    assert.deepStrictEqual(event.data.breakpointItems, data.groups[0].breakpointItems);
+  });
+
+  it('triggers an event on removing one breakpoint', async () => {
+    const {component, data} = await renderMultipleBreakpoints();
+    assertShadowRoot(component.shadowRoot);
+
+    // Dispatch a mouse over in order to show the remove button.
+    component.shadowRoot.querySelector(BREAKPOINT_ITEM_SELECTOR)?.dispatchEvent(new Event('mouseover'));
+    // Wait until the re-rendering has happened.
+    await coordinator.done();
+
+    const removeFileBreakpointsButton = component.shadowRoot.querySelector(REMOVE_SINGLE_BREAKPOINT_SELECTOR);
+    assertElement(removeFileBreakpointsButton, HTMLButtonElement);
+
+    const eventPromise = getEventPromise<SourcesComponents.BreakpointsView.BreakpointsRemovedEvent>(
+        component, SourcesComponents.BreakpointsView.BreakpointsRemovedEvent.eventName);
+    removeFileBreakpointsButton.click();
+    const event = await eventPromise;
+    assert.strictEqual(event.data.breakpointItems[0], data.groups[0].breakpointItems[0]);
   });
 });

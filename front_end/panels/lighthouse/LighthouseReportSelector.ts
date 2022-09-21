@@ -113,7 +113,12 @@ export class Item {
     this.renderReport = renderReport;
     this.showLandingCallback = showLandingCallback;
 
-    const url = new Common.ParsedURL.ParsedURL(lighthouseResult.finalUrl);
+    // In Lighthouse 10.0, `finalUrl` is not provided on snapshot or timespan reports.
+    // `finalDisplayedUrl` is the new preferred URL to use for cosmetic identification.
+    // TODO: Remove the `finalUrl` backport once Lighthouse 10.0 is rolled into DevTools.
+    const finalDisplayedUrl = lighthouseResult.finalDisplayedUrl || lighthouseResult.finalUrl || '';
+
+    const url = new Common.ParsedURL.ParsedURL(finalDisplayedUrl);
     const timestamp = lighthouseResult.fetchTime;
     this.element = document.createElement('option');
     this.element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;

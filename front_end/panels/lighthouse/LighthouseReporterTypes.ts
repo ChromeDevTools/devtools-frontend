@@ -47,8 +47,9 @@ export interface ReportJSON {
   userAgent: string;
   fetchTime: string;
   timing: {total: number};
-  requestedUrl: string;
-  finalUrl: string;
+  requestedUrl?: string;
+  finalDisplayedUrl: string;
+  finalUrl?: string;
   runWarnings?: string[];
   artifacts: {traces: {defaultPass: {traceEvents: Array<unknown>}}};
   audits: {[x: string]: AuditResultJSON};

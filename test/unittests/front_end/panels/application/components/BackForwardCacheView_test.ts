@@ -2,18 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../../front_end/core/root/root.js';
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import * as TreeOutline from '../../../../../../front_end/ui/components/tree_outline/tree_outline.js';
 import {
   assertElement,
   assertShadowRoot,
+  dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
-import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
-import * as Root from '../../../../../../front_end/core/root/root.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import * as TreeOutline from '../../../../../../front_end/ui/components/tree_outline/tree_outline.js';
+import {describeWithRealConnection} from '../../../helpers/RealConnection.js';
+
+import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -184,5 +189,70 @@ describeWithEnvironment('BackForwardCacheView', () => {
     ];
 
     assert.deepStrictEqual(treeData, expected);
+  });
+});
+
+describeWithRealConnection('BackForwardCacheView', () => {
+  it('can handle delayed navigation history when testing for BFcache availability', async () => {
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+    const resourceTreeModel = mainTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel);
+
+    const entries = [
+      {
+        id: 5,
+        url: 'about:blank',
+        userTypedURL: 'about:blank',
+        title: '',
+        transitionType: Protocol.Page.TransitionType.Typed,
+      },
+      {
+        id: 8,
+        url: 'chrome://terms/',
+        userTypedURL: '',
+        title: '',
+        transitionType: Protocol.Page.TransitionType.Typed,
+      },
+    ];
+    const stub = sinon.stub();
+    stub.onCall(0).returns({entries, currentIndex: 0});
+    stub.onCall(1).returns({entries, currentIndex: 0});
+    stub.onCall(2).returns({entries, currentIndex: 0});
+    stub.onCall(3).returns({entries, currentIndex: 0});
+    stub.onCall(4).returns({entries, currentIndex: 1});
+    resourceTreeModel.navigationHistory = stub;
+
+    resourceTreeModel.navigate = (url: Platform.DevToolsPath.UrlString): Promise<void> => {
+      resourceTreeModel.frameNavigated({url} as unknown as Protocol.Page.Frame, undefined);
+      return Promise.resolve();
+    };
+    resourceTreeModel.navigateToHistoryEntry = (entry: Protocol.Page.NavigationEntry): void => {
+      resourceTreeModel.frameNavigated({url: entry.url} as unknown as Protocol.Page.Frame, undefined);
+    };
+    const navigateToHistoryEntrySpy = sinon.spy(resourceTreeModel, 'navigateToHistoryEntry');
+    resourceTreeModel.storageKeyForFrame = () => Promise.resolve(null);
+
+    const frame = {
+      url: 'about:blank',
+      backForwardCacheDetails: {
+        restoredFromCache: true,
+        explanations: [],
+      },
+    } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
+    const component = await renderBackForwardCacheView(frame);
+    assertShadowRoot(component.shadowRoot);
+    const button = component.shadowRoot.querySelector('[aria-label="Test back/forward cache"]');
+    assertElement(button, HTMLElement);
+    dispatchClickEvent(button);
+
+    await new Promise<void>(resolve => {
+      let eventCounter = 0;
+      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, () => {
+        if (++eventCounter === 2) {
+          resolve();
+        }
+      });
+    });
+    assert.isTrue(navigateToHistoryEntrySpy.calledOnceWithExactly(entries[0]));
   });
 });

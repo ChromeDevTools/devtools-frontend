@@ -9878,8 +9878,14 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "ĉh́êćk̂éd̂"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Ĉón̂d́ît́îón̂: {PH1}"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "m̂íx̂éd̂"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "L̂óĝṕôín̂t́: {PH1}"
   },
   "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
     "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"

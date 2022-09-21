@@ -20,6 +20,8 @@ interface LocationTestData {
   columnNumber: number;
   enabled: boolean;
   content: string;
+  condition: string;
+  hoverText?: string;
 }
 
 function initializeBreakpointManagerWithMockdata(testData: LocationTestData[]): void {
@@ -30,9 +32,17 @@ function initializeBreakpointManagerWithMockdata(testData: LocationTestData[]): 
 }
 
 function createLocationTestData(
-    url: string, lineNumber: number, columnNumber: number, enabled: boolean = true,
-    content: string = ''): LocationTestData {
-  return {url: url as Platform.DevToolsPath.UrlString, lineNumber, columnNumber, enabled, content};
+    url: string, lineNumber: number, columnNumber: number, enabled: boolean = true, content: string = '',
+    condition: string = '', hoverText?: string): LocationTestData {
+  return {
+    url: url as Platform.DevToolsPath.UrlString,
+    lineNumber,
+    columnNumber,
+    enabled,
+    content,
+    condition,
+    hoverText,
+  };
 }
 
 function createBreakpointLocations(testData: LocationTestData[]): Bindings.BreakpointManager.BreakpointLocation[] {
@@ -43,6 +53,7 @@ function createBreakpointLocations(testData: LocationTestData[]): Bindings.Break
     const uiLocation = new Workspace.UISourceCode.UILocation(mocked.sut, data.lineNumber, data.columnNumber);
     const breakpoint = sinon.createStubInstance(Bindings.BreakpointManager.Breakpoint);
     breakpoint.enabled.returns(data.enabled);
+    breakpoint.condition.returns(data.condition);
     return {uiLocation, breakpoint} as Bindings.BreakpointManager.BreakpointLocation;
   });
   return breakpointLocations;
@@ -126,6 +137,15 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       const createExpectedBreakpointGroups = (testData: LocationTestData) => {
         const status = testData.enabled ? SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED :
                                           SourcesComponents.BreakpointsView.BreakpointStatus.DISABLED;
+        let type = SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT;
+
+        if (testData.condition) {
+          if (testData.condition.startsWith(Sources.BreakpointEditDialog.LogpointPrefix)) {
+            type = SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT;
+          } else {
+            type = SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT;
+          }
+        }
 
         return {
           name: testData.url as string,
@@ -137,6 +157,8 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
               codeSnippet: '',
               isHit: false,
               status,
+              type,
+              hoverText: testData.hoverText,
             },
           ],
         };
@@ -280,6 +302,40 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       assert.strictEqual(
           actualViewData.groups[0].breakpointItems[0].status,
           SourcesComponents.BreakpointsView.BreakpointStatus.INDETERMINATE);
+    });
+
+    it('correctly extracts conditional breakpoints', async () => {
+      const condition = 'x < a';
+      const testData = [
+        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, condition),
+      ];
+      initializeBreakpointManagerWithMockdata(testData);
+
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 1);
+      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
+      const breakpointItem = actualViewData.groups[0].breakpointItems[0];
+      assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT);
+      assert.strictEqual(breakpointItem.hoverText, condition);
+    });
+
+    it('correctly extracts logpoints', async () => {
+      const logDetail = 'x';
+      const condition =
+          `${Sources.BreakpointEditDialog.LogpointPrefix}${logDetail}${Sources.BreakpointEditDialog.LogpointSuffix}`;
+      const testData = [
+        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, logDetail),
+      ];
+      initializeBreakpointManagerWithMockdata(testData);
+
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 1);
+      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
+      const breakpointItem = actualViewData.groups[0].breakpointItems[0];
+      assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT);
+      assert.strictEqual(breakpointItem.hoverText, logDetail);
     });
   });
 });

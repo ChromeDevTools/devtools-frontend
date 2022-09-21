@@ -9878,8 +9878,14 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "checked"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Condition: {PH1}"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "mixed"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Logpoint: {PH1}"
   },
   "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
     "message": "Remove breakpoint"

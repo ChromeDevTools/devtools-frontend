@@ -14,6 +14,7 @@ import {
   getEventPromise,
 } from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 
 const EXPANDED_GROUPS_SELECTOR = 'details[open]';
 const COLLAPSED_GROUPS_SELECTOR = 'details:not([open])';
@@ -27,10 +28,15 @@ const REMOVE_SINGLE_BREAKPOINT_SELECTOR = '.breakpoint-item-location-or-actions 
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-async function renderSingleBreakpoint(): Promise<{
+async function renderSingleBreakpoint(
+    type: SourcesComponents.BreakpointsView.BreakpointType =
+        SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+    hoverText?: string): Promise<{
   component: SourcesComponents.BreakpointsView.BreakpointsView,
   data: SourcesComponents.BreakpointsView.BreakpointsViewData,
 }> {
+  // Only provide a hover text if it's not a regular breakpoint.
+  assert.isTrue(!hoverText || type !== SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT);
   const component = new SourcesComponents.BreakpointsView.BreakpointsView();
   renderElementIntoDOM(component);
 
@@ -46,6 +52,8 @@ async function renderSingleBreakpoint(): Promise<{
             codeSnippet: 'const a = 0;',
             isHit: true,
             status: SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED,
+            type,
+            hoverText,
           },
         ],
       },
@@ -350,5 +358,49 @@ describeWithEnvironment('BreakpointsView', () => {
     removeFileBreakpointsButton.click();
     const event = await eventPromise;
     assert.strictEqual(event.data.breakpointItems[0], data.groups[0].breakpointItems[0]);
+  });
+
+  describe('conditional breakpoints', () => {
+    const breakpointDetails = 'x < a';
+
+    it('are rendered', async () => {
+      const {component} = await renderSingleBreakpoint(
+          SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
+      const breakpointItem = component.shadowRoot?.querySelector(BREAKPOINT_ITEM_SELECTOR);
+      assertNotNullOrUndefined(breakpointItem);
+      assertElement(breakpointItem, HTMLDivElement);
+      assert.isTrue(breakpointItem.classList.contains('conditional-breakpoint'));
+    });
+
+    it('show a tooltip', async () => {
+      const {component} = await renderSingleBreakpoint(
+          SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
+      const codeSnippet = component.shadowRoot?.querySelector(CODE_SNIPPET_SELECTOR);
+      assertNotNullOrUndefined(codeSnippet);
+      assertElement(codeSnippet, HTMLSpanElement);
+      assert.strictEqual(codeSnippet.title, `Condition: ${breakpointDetails}`);
+    });
+  });
+
+  describe('logpoints', () => {
+    const breakpointDetails = 'x, a';
+
+    it('are rendered', async () => {
+      const {component} =
+          await renderSingleBreakpoint(SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT, breakpointDetails);
+      const breakpointItem = component.shadowRoot?.querySelector(BREAKPOINT_ITEM_SELECTOR);
+      assertNotNullOrUndefined(breakpointItem);
+      assertElement(breakpointItem, HTMLDivElement);
+      assert.isTrue(breakpointItem.classList.contains('logpoint'));
+    });
+
+    it('show a tooltip', async () => {
+      const {component} =
+          await renderSingleBreakpoint(SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT, breakpointDetails);
+      const codeSnippet = component.shadowRoot?.querySelector(CODE_SNIPPET_SELECTOR);
+      assertNotNullOrUndefined(codeSnippet);
+      assertElement(codeSnippet, HTMLSpanElement);
+      assert.strictEqual(codeSnippet.title, `Logpoint: ${breakpointDetails}`);
+    });
   });
 });

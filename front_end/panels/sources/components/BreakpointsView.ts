@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -36,6 +37,16 @@ const UIStrings = {
   *@description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel.
   */
   removeBreakpoint: 'Remove breakpoint',
+  /**
+  *@description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows the condition, on which the breakpoint will stop.
+  *@example {x < 3} PH1
+  */
+  conditionCode: 'Condition: {PH1}',
+  /**
+  *@description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows what is going to be printed in the console, if execution hits this breakpoint.
+  *@example {'hello'} PH1
+  */
+  logpointCode: 'Logpoint: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/BreakpointsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -58,6 +69,7 @@ export interface BreakpointItem {
   codeSnippet: string;
   isHit: boolean;
   status: BreakpointStatus;
+  type: BreakpointType;
   hoverText?: string;
 }
 
@@ -65,6 +77,12 @@ export const enum BreakpointStatus {
   ENABLED = 'ENABLED',
   DISABLED = 'DISABLED',
   INDETERMINATE = 'INDETERMINATE',
+}
+
+export const enum BreakpointType {
+  LOGPOINT = 'LOGPOINT',
+  CONDITIONAL_BREAKPOINT = 'CONDITIONAL_BREAKPOINT',
+  REGULAR_BREAKPOINT = 'REGULAR_BREAKPOINT',
 }
 
 export class CheckboxToggledEvent extends Event {
@@ -196,17 +214,21 @@ export class BreakpointsView extends HTMLElement {
     const classMap = {
       'breakpoint-item': true,
       'hit': breakpointItem.isHit,
+      'conditional-breakpoint': breakpointItem.type === BreakpointType.CONDITIONAL_BREAKPOINT,
+      'logpoint': breakpointItem.type === BreakpointType.LOGPOINT,
     };
     const breakpointItemDescription = this.#getBreakpointItemDescription(breakpointItem);
     const codeSnippet = Platform.StringUtilities.trimEndWithMaxLength(breakpointItem.codeSnippet, MAX_SNIPPET_LENGTH);
+    const codeSnippetTooltip = this.#getCodeSnippetTooltip(breakpointItem.type, breakpointItem.hoverText);
 
     // clang-format off
     return LitHtml.html`
     <div class=${LitHtml.Directives.classMap(classMap)} aria-label=${breakpointItemDescription}  tabIndex=${breakpointItem.isHit ? 0 : -1} @mouseover=${():void => this.#onMouseOver(breakpointItem)} @mouseout=${():void => this.#onMouseOut(breakpointItem)}>
       <label class='checkbox-label'>
+        <span class='type-indicator'></span>
         <input type='checkbox' aria-label=${breakpointItem.location} ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE} ?checked=${breakpointItem.status === BreakpointStatus.ENABLED} @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}>
       </label>
-      <span class='code-snippet' @click=${():void => {this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));}}>${codeSnippet}</span>
+      <span class='code-snippet' @click=${():void => {this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));}} title=${codeSnippetTooltip}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
         ${isHovered ? LitHtml.html`${deleteButton}`: LitHtml.html`<span class='location'>${breakpointItem.location}</span>`}
       </span>
@@ -229,6 +251,19 @@ export class BreakpointsView extends HTMLElement {
     }
     this.#hoveredElement = undefined;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  #getCodeSnippetTooltip(type: BreakpointType, hoverText?: string): string|undefined {
+    switch (type) {
+      case BreakpointType.REGULAR_BREAKPOINT:
+        return undefined;
+      case BreakpointType.CONDITIONAL_BREAKPOINT:
+        assertNotNullOrUndefined(hoverText);
+        return i18nString(UIStrings.conditionCode, {PH1: hoverText});
+      case BreakpointType.LOGPOINT:
+        assertNotNullOrUndefined(hoverText);
+        return i18nString(UIStrings.logpointCode, {PH1: hoverText});
+    }
   }
 
   #getBreakpointItemDescription(breakpointItem: BreakpointItem): Platform.UIString.LocalizedString {

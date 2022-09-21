@@ -46,7 +46,7 @@ class WaitTask {
         _WaitTask_result.set(this, (0, DeferredPromise_js_1.createDeferredPromise)());
         _WaitTask_poller.set(this, void 0);
         __classPrivateFieldSet(this, _WaitTask_world, world, "f");
-        __classPrivateFieldSet(this, _WaitTask_bindings, (_a = options.bindings) !== null && _a !== void 0 ? _a : new Set(), "f");
+        __classPrivateFieldSet(this, _WaitTask_bindings, (_a = options.bindings) !== null && _a !== void 0 ? _a : new Map(), "f");
         __classPrivateFieldSet(this, _WaitTask_polling, options.polling, "f");
         __classPrivateFieldSet(this, _WaitTask_root, options.root, "f");
         switch (typeof fn) {
@@ -65,8 +65,8 @@ class WaitTask {
             }, options.timeout), "f");
         }
         if (__classPrivateFieldGet(this, _WaitTask_bindings, "f").size !== 0) {
-            for (const fn of __classPrivateFieldGet(this, _WaitTask_bindings, "f")) {
-                __classPrivateFieldGet(this, _WaitTask_world, "f")._boundFunctions.set(fn.name, fn);
+            for (const [name, fn] of __classPrivateFieldGet(this, _WaitTask_bindings, "f")) {
+                __classPrivateFieldGet(this, _WaitTask_world, "f")._boundFunctions.set(name, fn);
             }
         }
         this.rerun();
@@ -78,7 +78,7 @@ class WaitTask {
         try {
             if (__classPrivateFieldGet(this, _WaitTask_bindings, "f").size !== 0) {
                 const context = await __classPrivateFieldGet(this, _WaitTask_world, "f").executionContext();
-                await Promise.all([...__classPrivateFieldGet(this, _WaitTask_bindings, "f")].map(async ({ name }) => {
+                await Promise.all([...__classPrivateFieldGet(this, _WaitTask_bindings, "f")].map(async ([name]) => {
                     return await __classPrivateFieldGet(this, _WaitTask_world, "f")._addBindingToContext(context, name);
                 }));
             }

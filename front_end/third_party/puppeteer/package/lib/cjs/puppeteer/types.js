@@ -16,6 +16,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./api/Browser.js"), exports);
+__exportStar(require("./api/Page.js"), exports);
 __exportStar(require("./common/Accessibility.js"), exports);
 __exportStar(require("./common/AriaQueryHandler.js"), exports);
 __exportStar(require("./common/Browser.js"), exports);

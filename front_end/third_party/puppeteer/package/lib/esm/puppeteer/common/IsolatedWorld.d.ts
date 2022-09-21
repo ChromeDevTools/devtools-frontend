@@ -126,12 +126,12 @@ export declare class IsolatedWorld {
         delay: number;
     }): Promise<void>;
     _addBindingToContext(context: ExecutionContext, name: string): Promise<void>;
-    _waitForSelectorInPage(queryOne: Function, root: ElementHandle<Node> | undefined, selector: string, options: WaitForSelectorOptions, bindings?: Set<(...args: never[]) => unknown>): Promise<JSHandle<unknown> | null>;
+    _waitForSelectorInPage(queryOne: Function, root: ElementHandle<Node> | undefined, selector: string, options: WaitForSelectorOptions, bindings?: Map<string, (...args: never[]) => unknown>): Promise<JSHandle<unknown> | null>;
     waitForFunction<Params extends unknown[], Func extends EvaluateFunc<InnerLazyParams<Params>> = EvaluateFunc<InnerLazyParams<Params>>>(pageFunction: Func | string, options?: {
         polling?: 'raf' | 'mutation' | number;
         timeout?: number;
         root?: ElementHandle<Node>;
-        bindings?: Set<(...args: never[]) => unknown>;
+        bindings?: Map<string, (...args: never[]) => unknown>;
     }, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     title(): Promise<string>;
     adoptBackendNode(backendNodeId?: Protocol.DOM.BackendNodeId): Promise<JSHandle<Node>>;

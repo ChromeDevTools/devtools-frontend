@@ -97,7 +97,7 @@ const waitFor = async (elementOrFrame, selector, options) => {
     };
     const result = await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD]._waitForSelectorInPage((_, selector) => {
         return globalThis.ariaQuerySelector(selector);
-    }, element, selector, options, new Set([ariaQuerySelector]));
+    }, element, selector, options, new Map([['ariaQuerySelector', ariaQuerySelector]]));
     if (element) {
         await element.dispose();
     }

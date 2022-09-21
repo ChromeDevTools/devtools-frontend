@@ -7,6 +7,6 @@ import { Connection } from './package/lib/esm/puppeteer/common/Connection.js';
 import { type ConnectionTransport } from './package/lib/esm/puppeteer/common/ConnectionTransport.js';
 import { Frame } from './package/lib/esm/puppeteer/common/Frame.js';
 import { ElementHandle } from './package/lib/esm/puppeteer/common/ElementHandle.js';
-import { Page } from './package/lib/esm/puppeteer/common/Page.js';
+import { CDPPage } from './package/lib/esm/puppeteer/common/Page.js';
 
-export { CDPBrowser as Browser, Connection, ConnectionTransport, ElementHandle, Frame, Page };
+export { CDPBrowser as Browser, Connection, ConnectionTransport, ElementHandle, Frame, CDPPage as Page };

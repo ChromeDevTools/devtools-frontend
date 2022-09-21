@@ -687,6 +687,8 @@ export declare interface BrowserLaunchArgumentOptions {
 
 /* Excluded from this release type: CDPBrowserContext */
 
+/* Excluded from this release type: CDPPage */
+
 /**
  * The `CDPSession` instances are used to talk raw Chrome Devtools Protocol.
  *
@@ -795,6 +797,11 @@ export declare interface ClickOptions {
      * Offset for the clickable point relative to the top-left corner of the border box.
      */
     offset?: Offset;
+}
+
+declare interface CommandResponse {
+    id: number;
+    result: object;
 }
 
 /**
@@ -3631,7 +3638,6 @@ export declare class HTTPResponse {
      */
     export declare class Page extends EventEmitter {
         #private;
-        /* Excluded from this release type: _create */
         /* Excluded from this release type: __constructor */
         /**
          * @returns `true` if drag events are being intercepted, `false` otherwise.
@@ -3702,7 +3708,6 @@ export declare class HTTPResponse {
          * @returns A target this page was created from.
          */
         target(): Target;
-        /* Excluded from this release type: _client */
         /**
          * Get the browser the page belongs to.
          */
@@ -4122,6 +4127,7 @@ export declare class HTTPResponse {
          */
         addStyleTag(options: Omit<FrameAddStyleTagOptions, 'url'>): Promise<ElementHandle<HTMLStyleElement>>;
         addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLLinkElement>>;
+        addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>>;
         /**
          * The method adds a function called `name` on the page's `window` object.
          * When called, the function executes `puppeteerFunction` in node.js and
@@ -4905,6 +4911,7 @@ export declare class HTTPResponse {
          * Toggles ignoring cache for each request based on the enabled state. By
          * default, caching is enabled.
          * @param enabled - sets the `enabled` state of cache
+         * @defaultValue true
          */
         setCacheEnabled(enabled?: boolean): Promise<void>;
         /**
@@ -6251,6 +6258,8 @@ export declare class HTTPResponse {
 
          /* Excluded from this release type: source */
 
+         /* Excluded from this release type: supportedMetrics */
+
          /**
           * @public
           */
@@ -6396,6 +6405,8 @@ export declare class HTTPResponse {
              screenshots?: boolean;
              categories?: string[];
          }
+
+         /* Excluded from this release type: unitToPixels */
 
          /**
           * @param name - The name of the query handler to unregistered.

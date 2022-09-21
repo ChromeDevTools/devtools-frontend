@@ -306,7 +306,7 @@ export class IsolatedWorld {
         await __classPrivateFieldGet(this, _IsolatedWorld_settingUpBinding, "f");
         __classPrivateFieldSet(this, _IsolatedWorld_settingUpBinding, null, "f");
     }
-    async _waitForSelectorInPage(queryOne, root, selector, options, bindings = new Set()) {
+    async _waitForSelectorInPage(queryOne, root, selector, options, bindings = new Map()) {
         const { visible: waitForVisible = false, hidden: waitForHidden = false, timeout = __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_timeoutSettings_get).timeout(), } = options;
         try {
             const handle = await this.waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {

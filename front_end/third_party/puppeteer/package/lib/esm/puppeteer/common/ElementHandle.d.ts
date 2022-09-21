@@ -19,7 +19,7 @@ import { ExecutionContext } from './ExecutionContext.js';
 import { Frame } from './Frame.js';
 import { WaitForSelectorOptions } from './IsolatedWorld.js';
 import { BoundingBox, BoxModel, ClickOptions, JSHandle, Offset, Point, PressOptions } from './JSHandle.js';
-import { ScreenshotOptions } from './Page.js';
+import { ScreenshotOptions } from '../api/Page.js';
 import { EvaluateFunc, NodeFor } from './types.js';
 import { KeyInput } from './USKeyboardLayout.js';
 /**

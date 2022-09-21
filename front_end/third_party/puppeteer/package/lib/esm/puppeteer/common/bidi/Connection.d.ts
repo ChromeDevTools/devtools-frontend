@@ -15,6 +15,10 @@
  */
 import { ConnectionTransport } from '../ConnectionTransport.js';
 import { EventEmitter } from '../EventEmitter.js';
+interface CommandResponse {
+    id: number;
+    result: object;
+}
 /**
  * @internal
  */
@@ -22,11 +26,12 @@ export declare class Connection extends EventEmitter {
     #private;
     constructor(transport: ConnectionTransport, delay?: number);
     get closed(): boolean;
-    send(method: string, params: object): Promise<any>;
+    send(method: string, params: object): Promise<CommandResponse['result']>;
     /**
      * @internal
      */
     protected onMessage(message: string): Promise<void>;
     dispose(): void;
 }
+export {};
 //# sourceMappingURL=Connection.d.ts.map

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Page } from './Page.js';
+import { Page } from '../api/Page.js';
 import { WebWorker } from './WebWorker.js';
 import { CDPSession } from './Connection.js';
 import type { Browser, BrowserContext, IsPageTargetCallback } from '../api/Browser.js';

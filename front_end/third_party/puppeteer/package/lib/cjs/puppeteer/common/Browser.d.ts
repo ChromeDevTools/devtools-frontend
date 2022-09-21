@@ -16,7 +16,7 @@
 /// <reference types="node" />
 import { ChildProcess } from 'child_process';
 import { Connection } from './Connection.js';
-import { Page } from './Page.js';
+import { Page } from '../api/Page.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
 import { TargetManager } from './TargetManager.js';

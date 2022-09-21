@@ -19,7 +19,7 @@ import { ExecutionContext } from './ExecutionContext.js';
 import { Frame } from './Frame.js';
 import { FrameTree } from './FrameTree.js';
 import { NetworkManager } from './NetworkManager.js';
-import { Page } from './Page.js';
+import { Page } from '../api/Page.js';
 import { Target } from './Target.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
 /**

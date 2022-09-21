@@ -22,7 +22,7 @@ import { HTTPResponse } from './HTTPResponse.js';
 import { MouseButton } from './Input.js';
 import { IsolatedWorldChart, WaitForSelectorOptions } from './IsolatedWorld.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
-import { Page } from './Page.js';
+import { Page } from '../api/Page.js';
 import { EvaluateFunc, HandleFor, NodeFor } from './types.js';
 /**
  * @public

@@ -20,7 +20,7 @@ import { HandleFor } from './types.js';
  * @internal
  */
 export interface WaitTaskOptions {
-    bindings?: Set<(...args: never[]) => unknown>;
+    bindings?: Map<string, (...args: never[]) => unknown>;
     polling: 'raf' | 'mutation' | number;
     root?: ElementHandle<Node>;
     timeout: number;

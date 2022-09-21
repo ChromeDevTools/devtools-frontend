@@ -1,4 +1,5 @@
 export * from './api/Browser.js';
+export * from './api/Page.js';
 export * from './common/Accessibility.js';
 export * from './common/AriaQueryHandler.js';
 export * from './common/Browser.js';

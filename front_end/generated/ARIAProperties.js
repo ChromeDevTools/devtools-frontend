@@ -25,6 +25,14 @@ export const config = {
    "type": "token"
   },
   {
+   "name": "aria-braillelabel",
+   "type": "string"
+  },
+  {
+   "name": "aria-brailleroledescription",
+   "type": "string"
+  },
+  {
    "default": "false",
    "name": "aria-busy",
    "type": "boolean"

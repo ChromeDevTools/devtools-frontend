@@ -140,13 +140,6 @@ const UIStrings = {
   insecurePrivateNetworkSubresourceRequest:
       'The website requested a subresource from a network that it could only access because of its users\' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them.',
   /**
-   * @description A deprecation warning shown in the DevTools Issues tab.
-   * It's shown when a video conferencing website attempts to disable
-   * use of IPv6 addresses with a non-standard API.
-   */
-  legacyConstraintGoogIPv6:
-      'IPv6 is enabled-by-default and the ability to disable it using `googIPv6` is targeted to be removed in M108, after which it will be ignored. Please stop using this legacy constraint.',
-  /**
    * @description TODO(crbug.com/1318865): Description needed for translation
    */
   localCSSFileExtensionRejected:
@@ -419,10 +412,6 @@ export class DeprecationIssue extends Issue {
         messageFunction = i18nLazyString(UIStrings.insecurePrivateNetworkSubresourceRequest);
         feature = 5436853517811712;
         milestone = 92;
-        break;
-      case Protocol.Audits.DeprecationIssueType.LegacyConstraintGoogIPv6:
-        messageFunction = i18nLazyString(UIStrings.legacyConstraintGoogIPv6);
-        milestone = 103;
         break;
       case Protocol.Audits.DeprecationIssueType.LocalCSSFileExtensionRejected:
         messageFunction = i18nLazyString(UIStrings.localCSSFileExtensionRejected);

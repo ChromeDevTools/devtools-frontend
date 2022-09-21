@@ -77,16 +77,6 @@ export class FederatedAuthRequestIssue extends Issue {
 
 const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, LazyMarkdownIssueDescription> = new Map([
   [
-    Protocol.Audits.FederatedAuthRequestIssueReason.ApprovalDeclined,
-    {
-      file: 'federatedAuthRequestApprovalDeclined.md',
-      links: [{
-        link: 'https://fedidcg.github.io/FedCM/',
-        linkTitle: i18nLazyString(UIStrings.fedCm),
-      }],
-    },
-  ],
-  [
     Protocol.Audits.FederatedAuthRequestIssueReason.TooManyRequests,
     {
       file: 'federatedAuthRequestTooManyRequests.md',

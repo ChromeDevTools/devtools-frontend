@@ -152,6 +152,22 @@ const UIStrings = {
     *@description  Description text for Prerender2 cancellation status DataSaverEnabled.
     */
   DataSaverEnabled: 'Data saver enabled',
+  /**
+    *@description  Description text for Prerender2 cancellation status HasEffectiveUrl.
+    */
+  HasEffectiveUrl: 'Has effective URL',
+  /**
+    *@description  Description text for Prerender2 cancellation status ActivatedBeforeStarted.
+    */
+  ActivatedBeforeStarted: 'Activated before started',
+  /**
+    *@description  Description text for Prerender2 cancellation status InactivePageRestriction.
+    */
+  InactivePageRestriction: 'Inactive page restriction',
+  /**
+    *@description  Description text for Prerender2 cancellation status StartFailed.
+    */
+  StartFailed: 'Start failed',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/Prerender2.ts', UIStrings);
@@ -195,4 +211,8 @@ export const Prerender2ReasonDescription = {
   'MemoryLimitExceeded': {name: i18nLazyString(UIStrings.MemoryLimitExceeded)},
   'FailToGetMemoryUsage': {name: i18nLazyString(UIStrings.FailToGetMemoryUsage)},
   'DataSaverEnabled': {name: i18nLazyString(UIStrings.DataSaverEnabled)},
+  'HasEffectiveUrl': {name: i18nLazyString(UIStrings.HasEffectiveUrl)},
+  'ActivatedBeforeStarted': {name: i18nLazyString(UIStrings.ActivatedBeforeStarted)},
+  'InactivePageRestriction': {name: i18nLazyString(UIStrings.InactivePageRestriction)},
+  'StartFailed': {name: i18nLazyString(UIStrings.StartFailed)},
 };

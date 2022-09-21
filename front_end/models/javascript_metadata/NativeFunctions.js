@@ -147,7 +147,7 @@ export const NativeFunctions = [
   {
     name: 'set',
     signatures: [['key','value']],
-    receivers: ['Map','WeakMap']
+    receivers: ['Map','WeakMap','CSSToggleMap']
   },
   {
     name: 'set',
@@ -490,11 +490,23 @@ export const NativeFunctions = [
   },
   {
     name: 'max',
-    signatures: [['...values']]
+    signatures: [['...values']],
+    receivers: ['Math','CSSNumericValue']
+  },
+  {
+    name: 'max',
+    signatures: [['a','b']],
+    receivers: ['MLGraphBuilder']
   },
   {
     name: 'min',
-    signatures: [['...values']]
+    signatures: [['...values']],
+    receivers: ['Math','CSSNumericValue']
+  },
+  {
+    name: 'min',
+    signatures: [['a','b']],
+    receivers: ['MLGraphBuilder']
   },
   {
     name: 'pow',
@@ -1752,7 +1764,7 @@ export const NativeFunctions = [
   },
   {
     name: 'read',
-    signatures: [['buffer','options']],
+    signatures: [['buffer','?options']],
     receivers: ['FileSystemSyncAccessHandle']
   },
   {
@@ -1782,7 +1794,7 @@ export const NativeFunctions = [
   },
   {
     name: 'write',
-    signatures: [['buffer','options']],
+    signatures: [['buffer','?options']],
     receivers: ['FileSystemSyncAccessHandle']
   },
   {
@@ -2521,11 +2533,6 @@ export const NativeFunctions = [
     name: 'decode',
     signatures: [['?input','?options']],
     receivers: ['TextDecoder']
-  },
-  {
-    name: 'decode',
-    signatures: [['chunk']],
-    receivers: ['AudioDecoder','VideoDecoder']
   },
   {
     name: 'decode',
@@ -5241,6 +5248,11 @@ export const NativeFunctions = [
     receivers: ['CSSNumericValue']
   },
   {
+    name: 'sub',
+    signatures: [['a','b']],
+    receivers: ['MLGraphBuilder']
+  },
+  {
     name: 'wait',
     signatures: [['typedArray','index','value','?timeout']]
   },
@@ -5606,11 +5618,23 @@ export const NativeFunctions = [
   },
   {
     name: 'mul',
-    signatures: [['...values']]
+    signatures: [['...values']],
+    receivers: ['CSSNumericValue']
+  },
+  {
+    name: 'mul',
+    signatures: [['a','b']],
+    receivers: ['MLGraphBuilder']
   },
   {
     name: 'div',
-    signatures: [['...values']]
+    signatures: [['...values']],
+    receivers: ['CSSNumericValue']
+  },
+  {
+    name: 'div',
+    signatures: [['a','b']],
+    receivers: ['MLGraphBuilder']
   },
   {
     name: 'equals',
@@ -5933,7 +5957,23 @@ export const NativeFunctions = [
     signatures: [['?data']]
   },
   {
+    name: 'CSSToggleEvent',
+    signatures: [['type','?eventInitDict']]
+  },
+  {
+    name: 'CSSToggle',
+    signatures: [['?options']]
+  },
+  {
+    name: 'requestStorageAccessForSite',
+    signatures: [['site']]
+  },
+  {
     name: 'hasTrustToken',
+    signatures: [['issuer']]
+  },
+  {
+    name: 'hasRedemptionRecord',
     signatures: [['issuer']]
   },
   {
@@ -6263,6 +6303,10 @@ export const NativeFunctions = [
   {
     name: 'convertToBlob',
     signatures: [['?options']]
+  },
+  {
+    name: 'configureHighDynamicRange',
+    signatures: [['options']]
   },
   {
     name: 'ImageData',
@@ -6756,34 +6800,6 @@ export const NativeFunctions = [
     signatures: [['init']]
   },
   {
-    name: 'CanvasFormattedTextRun',
-    signatures: [['text']]
-  },
-  {
-    name: 'CanvasFormattedText',
-    signatures: [['?text']]
-  },
-  {
-    name: 'getRun',
-    signatures: [['index']]
-  },
-  {
-    name: 'appendRun',
-    signatures: [['newRun']]
-  },
-  {
-    name: 'setRun',
-    signatures: [['index','run']]
-  },
-  {
-    name: 'insertRun',
-    signatures: [['index','run']]
-  },
-  {
-    name: 'deleteRun',
-    signatures: [['index','?length']]
-  },
-  {
     name: 'roundRect',
     signatures: [['x','y','w','h','?radii']]
   },
@@ -6792,8 +6808,8 @@ export const NativeFunctions = [
     signatures: [['?path']]
   },
   {
-    name: 'fillFormattedText',
-    signatures: [['formattedText','x','y','wrapWidth','?height']]
+    name: 'drawFormattedText',
+    signatures: [['formattedText','x','y']]
   },
   {
     name: 'Path2D',
@@ -6864,6 +6880,14 @@ export const NativeFunctions = [
   {
     name: 'UDPSocket',
     signatures: [['options']]
+  },
+  {
+    name: 'requestWindow',
+    signatures: [['?options']]
+  },
+  {
+    name: 'requestPictureInPictureWindow',
+    signatures: [['?options']]
   },
   {
     name: 'TextDecoderStream',
@@ -6995,6 +7019,10 @@ export const NativeFunctions = [
   {
     name: 'queryLocalFonts',
     signatures: [['?options']]
+  },
+  {
+    name: 'format',
+    signatures: [['text_runs','?style','?inline_constraint','?block_constraint']]
   },
   {
     name: 'GamepadAxisEvent',
@@ -7203,6 +7231,14 @@ export const NativeFunctions = [
   {
     name: 'averagePool2d',
     signatures: [['input','?options']]
+  },
+  {
+    name: 'maxPool2d',
+    signatures: [['input','?options']]
+  },
+  {
+    name: 'relu',
+    signatures: [['?input']]
   },
   {
     name: 'reshape',
@@ -7421,10 +7457,6 @@ export const NativeFunctions = [
     signatures: [['type','eventInitDict']]
   },
   {
-    name: 'requestPictureInPictureWindow',
-    signatures: [['?options']]
-  },
-  {
     name: 'PresentationConnectionAvailableEvent',
     signatures: [['type','eventInitDict']]
   },
@@ -7622,7 +7654,7 @@ export const NativeFunctions = [
   },
   {
     name: 'URLPattern',
-    signatures: [['?input','?baseURL']]
+    signatures: [['input','options'],['?input','?baseURL','?options']]
   },
   {
     name: 'compareComponent',
@@ -7751,24 +7783,6 @@ export const NativeFunctions = [
     receivers: ['VideoFrame']
   },
   {
-    name: 'AudioDecoder',
-    signatures: [['init']]
-  },
-  {
-    name: 'configure',
-    signatures: [['config']],
-    receivers: ['AudioDecoder','VideoDecoder']
-  },
-  {
-    name: 'configure',
-    signatures: [['descriptor']],
-    receivers: ['GPUCanvasContext']
-  },
-  {
-    name: 'isConfigSupported',
-    signatures: [['config']]
-  },
-  {
     name: 'EncodedAudioChunk',
     signatures: [['init']]
   },
@@ -7783,10 +7797,6 @@ export const NativeFunctions = [
   {
     name: 'VideoColorSpace',
     signatures: [['?init']]
-  },
-  {
-    name: 'VideoDecoder',
-    signatures: [['init']]
   },
   {
     name: 'VideoFrame',
@@ -7921,6 +7931,10 @@ export const NativeFunctions = [
     signatures: [['adapter']]
   },
   {
+    name: 'configure',
+    signatures: [['descriptor']]
+  },
+  {
     name: 'beginRenderPass',
     signatures: [['descriptor']]
   },
@@ -8039,6 +8053,10 @@ export const NativeFunctions = [
   {
     name: 'pushErrorScope',
     signatures: [['filter']]
+  },
+  {
+    name: 'GPUInternalError',
+    signatures: [['message']]
   },
   {
     name: 'GPUOutOfMemoryError',

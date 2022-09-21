@@ -1448,6 +1448,7 @@
                     "type": "string",
                     "enum": [
                         "PermissionPolicyDisabled",
+                        "PermissionPolicyNotDelegated",
                         "UntrustworthyReportingOrigin",
                         "InsecureContext",
                         "InvalidHeader",
@@ -1576,7 +1577,6 @@
                         "HostCandidateAttributeGetter",
                         "IdentityInCanMakePaymentEvent",
                         "InsecurePrivateNetworkSubresourceRequest",
-                        "LegacyConstraintGoogIPv6",
                         "LocalCSSFileExtensionRejected",
                         "MediaSourceAbortRemove",
                         "MediaSourceDurationTruncatingBuffered",
@@ -1657,7 +1657,7 @@
                     "description": "Represents the failure reason when a federated authentication reason fails.\nShould be updated alongside RequestIdTokenStatus in\nthird_party/blink/public/mojom/devtools/inspector_issue.mojom to include\nall cases except for success.",
                     "type": "string",
                     "enum": [
-                        "ApprovalDeclined",
+                        "ShouldEmbargo",
                         "TooManyRequests",
                         "ManifestListHttpNotFound",
                         "ManifestListNoResponse",
@@ -1681,7 +1681,8 @@
                         "IdTokenInvalidResponse",
                         "IdTokenInvalidRequest",
                         "ErrorIdToken",
-                        "Canceled"
+                        "Canceled",
+                        "RpPageNotVisible"
                     ]
                 },
                 {
@@ -6203,7 +6204,7 @@
                         },
                         {
                             "name": "previousNodeId",
-                            "description": "If of the previous siblint.",
+                            "description": "Id of the previous sibling.",
                             "$ref": "NodeId"
                         },
                         {
@@ -15280,7 +15281,7 @@
                         "serial",
                         "shared-autofill",
                         "shared-storage",
-                        "storage-access-api",
+                        "storage-access",
                         "sync-xhr",
                         "trust-token-redemption",
                         "unload",
@@ -16326,11 +16327,14 @@
                         "AudioOutputDeviceRequested",
                         "MixedContent",
                         "TriggerBackgrounded",
-                        "EmbedderTriggeredAndSameOriginRedirected",
                         "EmbedderTriggeredAndCrossOriginRedirected",
                         "MemoryLimitExceeded",
                         "FailToGetMemoryUsage",
-                        "DataSaverEnabled"
+                        "DataSaverEnabled",
+                        "HasEffectiveUrl",
+                        "ActivatedBeforeStarted",
+                        "InactivePageRestriction",
+                        "StartFailed"
                     ]
                 }
             ],
@@ -17899,8 +17903,8 @@
                             "$ref": "PrerenderFinalStatus"
                         },
                         {
-                            "name": "reasonDetails",
-                            "description": "This is used to give users more information about the cancellation details,\nand this will be formatted for display.",
+                            "name": "disallowedApiMethod",
+                            "description": "This is used to give users more information about the name of the API call\nthat is incompatible with prerender and has caused the cancellation of the attempt",
                             "optional": true,
                             "type": "string"
                         }
@@ -23840,6 +23844,18 @@
                             "description": "Average sample interval in bytes. Poisson distribution is used for the intervals. The\ndefault value is 32768 bytes.",
                             "optional": true,
                             "type": "number"
+                        },
+                        {
+                            "name": "includeObjectsCollectedByMajorGC",
+                            "description": "By default, the sampling heap profiler reports only objects which are\nstill alive when the profile is returned via getSamplingProfile or\nstopSampling, which is useful for determining what functions contribute\nthe most to steady-state memory usage. This flag instructs the sampling\nheap profiler to also include information about objects discarded by\nmajor GC, which will show which functions cause large temporary memory\nusage or long GC pauses.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "includeObjectsCollectedByMinorGC",
+                            "description": "By default, the sampling heap profiler reports only objects which are\nstill alive when the profile is returned via getSamplingProfile or\nstopSampling, which is useful for determining what functions contribute\nthe most to steady-state memory usage. This flag instructs the sampling\nheap profiler to also include information about objects discarded by\nminor GC, which is useful when tuning a latency-sensitive application\nfor minimal GC activity.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },

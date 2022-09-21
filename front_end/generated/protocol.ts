@@ -965,6 +965,7 @@ export namespace Audits {
 
   export const enum AttributionReportingIssueType {
     PermissionPolicyDisabled = 'PermissionPolicyDisabled',
+    PermissionPolicyNotDelegated = 'PermissionPolicyNotDelegated',
     UntrustworthyReportingOrigin = 'UntrustworthyReportingOrigin',
     InsecureContext = 'InsecureContext',
     InvalidHeader = 'InvalidHeader',
@@ -1044,7 +1045,6 @@ export namespace Audits {
     HostCandidateAttributeGetter = 'HostCandidateAttributeGetter',
     IdentityInCanMakePaymentEvent = 'IdentityInCanMakePaymentEvent',
     InsecurePrivateNetworkSubresourceRequest = 'InsecurePrivateNetworkSubresourceRequest',
-    LegacyConstraintGoogIPv6 = 'LegacyConstraintGoogIPv6',
     LocalCSSFileExtensionRejected = 'LocalCSSFileExtensionRejected',
     MediaSourceAbortRemove = 'MediaSourceAbortRemove',
     MediaSourceDurationTruncatingBuffered = 'MediaSourceDurationTruncatingBuffered',
@@ -1108,7 +1108,7 @@ export namespace Audits {
    * all cases except for success.
    */
   export const enum FederatedAuthRequestIssueReason {
-    ApprovalDeclined = 'ApprovalDeclined',
+    ShouldEmbargo = 'ShouldEmbargo',
     TooManyRequests = 'TooManyRequests',
     ManifestListHttpNotFound = 'ManifestListHttpNotFound',
     ManifestListNoResponse = 'ManifestListNoResponse',
@@ -1133,6 +1133,7 @@ export namespace Audits {
     IdTokenInvalidRequest = 'IdTokenInvalidRequest',
     ErrorIdToken = 'ErrorIdToken',
     Canceled = 'Canceled',
+    RpPageNotVisible = 'RpPageNotVisible',
   }
 
   /**
@@ -4159,7 +4160,7 @@ export namespace DOM {
      */
     parentNodeId: NodeId;
     /**
-     * If of the previous siblint.
+     * Id of the previous sibling.
      */
     previousNodeId: NodeId;
     /**
@@ -10379,7 +10380,7 @@ export namespace Page {
     Serial = 'serial',
     SharedAutofill = 'shared-autofill',
     SharedStorage = 'shared-storage',
-    StorageAccessAPI = 'storage-access-api',
+    StorageAccess = 'storage-access',
     SyncXhr = 'sync-xhr',
     TrustTokenRedemption = 'trust-token-redemption',
     Unload = 'unload',
@@ -11158,11 +11159,14 @@ export namespace Page {
     AudioOutputDeviceRequested = 'AudioOutputDeviceRequested',
     MixedContent = 'MixedContent',
     TriggerBackgrounded = 'TriggerBackgrounded',
-    EmbedderTriggeredAndSameOriginRedirected = 'EmbedderTriggeredAndSameOriginRedirected',
     EmbedderTriggeredAndCrossOriginRedirected = 'EmbedderTriggeredAndCrossOriginRedirected',
     MemoryLimitExceeded = 'MemoryLimitExceeded',
     FailToGetMemoryUsage = 'FailToGetMemoryUsage',
     DataSaverEnabled = 'DataSaverEnabled',
+    HasEffectiveUrl = 'HasEffectiveUrl',
+    ActivatedBeforeStarted = 'ActivatedBeforeStarted',
+    InactivePageRestriction = 'InactivePageRestriction',
+    StartFailed = 'StartFailed',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {
@@ -12182,10 +12186,10 @@ export namespace Page {
     prerenderingUrl: string;
     finalStatus: PrerenderFinalStatus;
     /**
-     * This is used to give users more information about the cancellation details,
-     * and this will be formatted for display.
+     * This is used to give users more information about the name of the API call
+     * that is incompatible with prerender and has caused the cancellation of the attempt
      */
-    reasonDetails?: string;
+    disallowedApiMethod?: string;
   }
 
   export interface LoadEventFiredEvent {
@@ -15982,6 +15986,26 @@ export namespace HeapProfiler {
      * default value is 32768 bytes.
      */
     samplingInterval?: number;
+    /**
+     * By default, the sampling heap profiler reports only objects which are
+     * still alive when the profile is returned via getSamplingProfile or
+     * stopSampling, which is useful for determining what functions contribute
+     * the most to steady-state memory usage. This flag instructs the sampling
+     * heap profiler to also include information about objects discarded by
+     * major GC, which will show which functions cause large temporary memory
+     * usage or long GC pauses.
+     */
+    includeObjectsCollectedByMajorGC?: boolean;
+    /**
+     * By default, the sampling heap profiler reports only objects which are
+     * still alive when the profile is returned via getSamplingProfile or
+     * stopSampling, which is useful for determining what functions contribute
+     * the most to steady-state memory usage. This flag instructs the sampling
+     * heap profiler to also include information about objects discarded by
+     * minor GC, which is useful when tuning a latency-sensitive application
+     * for minimal GC activity.
+     */
+    includeObjectsCollectedByMinorGC?: boolean;
   }
 
   export interface StartTrackingHeapObjectsRequest {

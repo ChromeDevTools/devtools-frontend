@@ -1433,9 +1433,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "T̂h́ê ẃêb́ŝít̂é r̂éq̂úêśt̂éd̂ á ŝúb̂ŕêśôúr̂ćê f́r̂óm̂ á n̂ét̂ẃôŕk̂ t́ĥát̂ ít̂ ćôúl̂d́ ôńl̂ý âćĉéŝś b̂éĉáûśê óf̂ ít̂ś ûśêŕŝ' ṕr̂ív̂íl̂éĝéd̂ ńêt́ŵór̂ḱ p̂óŝít̂íôń. T̂h́êśê ŕêq́ûéŝt́ŝ éx̂ṕôśê ńôń-p̂úb̂ĺîć d̂év̂íĉéŝ án̂d́ ŝér̂v́êŕŝ t́ô t́ĥé îńt̂ér̂ńêt́, îńĉŕêáŝín̂ǵ t̂h́ê ŕîśk̂ óf̂ á ĉŕôśŝ-śît́ê ŕêq́ûéŝt́ f̂ór̂ǵêŕŷ (ĆŜŔF̂) át̂t́âćk̂, án̂d́/ôŕ îńf̂ór̂ḿât́îón̂ ĺêák̂áĝé. T̂ó m̂ít̂íĝát̂é t̂h́êśê ŕîśk̂ś, Ĉh́r̂óm̂é d̂ép̂ŕêćât́êś r̂éq̂úêśt̂ś t̂ó n̂ón̂-ṕûb́l̂íĉ śûb́r̂éŝóûŕĉéŝ ẃĥén̂ ín̂ít̂íât́êd́ f̂ŕôḿ n̂ón̂-śêćûŕê ćôńt̂éx̂t́ŝ, án̂d́ ŵíl̂ĺ ŝt́âŕt̂ b́l̂óĉḱîńĝ t́ĥém̂."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "ÎṔv̂6 íŝ én̂áb̂ĺêd́-b̂ý-d̂éf̂áûĺt̂ án̂d́ t̂h́ê áb̂íl̂ít̂ý t̂ó d̂íŝáb̂ĺê ít̂ úŝín̂ǵ googIPv6 îś t̂ár̂ǵêt́êd́ t̂ó b̂é r̂ém̂óv̂éd̂ ín̂ Ḿ108, âf́t̂ér̂ ẃĥíĉh́ ît́ ŵíl̂ĺ b̂é îǵn̂ór̂éd̂. Ṕl̂éâśê śt̂óp̂ úŝín̂ǵ t̂h́îś l̂éĝáĉý ĉón̂śt̂ŕâín̂t́."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "ĈŚŜ ćâńn̂ót̂ b́ê ĺôád̂éd̂ f́r̂óm̂ file: ÚR̂Ĺŝ ún̂ĺêśŝ t́ĥéŷ én̂d́ îń â .css f́îĺê éx̂t́êńŝíôń."
   },
@@ -3269,6 +3266,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Âćt̂ív̂át̂éd̂."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Âćt̂ív̂át̂éd̂ b́êf́ôŕê śt̂ár̂t́êd́"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ ĥáŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ t́ĥé Âúd̂íôĆôńt̂éx̂t́ ÂṔÎ ýêt́."
   },
@@ -3307,6 +3307,12 @@
   },
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "F̂áîĺ t̂ó ĝét̂ ḿêḿôŕŷ úŝáĝé"
+  },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Ĥáŝ éf̂f́êćt̂ív̂é ÛŔL̂"
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Îńâćt̂ív̂é p̂áĝé r̂éŝt́r̂íĉt́îón̂"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "ÎńP̂ŕôǵr̂éŝśN̂áv̂íĝát̂íôń."
@@ -3358,6 +3364,9 @@
   },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "ŜŚL̂ ćêŕt̂íf̂íĉát̂é êŕr̂ór̂."
+  },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Ŝt́âŕt̂ f́âíl̂éd̂"
   },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "T̂h́ê t́âb́ îś ŝt́ôṕp̂éd̂."

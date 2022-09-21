@@ -3404,6 +3404,9 @@
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Q̂úêŕŷ ṕâŕâḿêt́êŕ ôŕ êńd̂ṕôín̂t́ f̂ór̂ ṕr̂ót̂óĉól̂ h́âńd̂ĺêŕ"
   },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Êńt̂ér̂ ÚR̂Ĺ"
+  },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "D̂éŝt́îńât́îón̂"
   },

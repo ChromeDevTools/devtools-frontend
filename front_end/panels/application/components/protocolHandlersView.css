@@ -23,6 +23,10 @@ input.devtools-text-input[type="text"] {
   height: 25px;
 }
 
+input.devtools-text-input[type="text"]::placeholder {
+  color: var(--color-text-secondary);
+}
+
 .protocol-handlers-row {
   margin: 10px 0 2px 18px;
 }

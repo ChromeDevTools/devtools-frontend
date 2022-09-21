@@ -56,6 +56,10 @@ const UIStrings = {
   * @description Aria text for screen reader to announce they can enter query parameters or endpoints into the textbox
   */
   textboxLabel: 'Query parameter or endpoint for protocol handler',
+  /**
+  * @description Placeholder for textbox input field, rest of the URL of protocol to test.
+  */
+  textboxPlaceholder: 'Enter URL',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/ProtocolHandlersView.ts', UIStrings);
@@ -134,7 +138,8 @@ export class ProtocolHandlersView extends HTMLElement {
            ${protocolOptions}
         </select>
         <input .value=${this.#queryInputState} class="devtools-text-input" type="text" @change=${
-        this.#handleQueryInputChange} aria-label=${i18nString(UIStrings.textboxLabel)}/>
+        this.#handleQueryInputChange} aria-label=${i18nString(UIStrings.textboxLabel)}
+        placeholder=${i18nString(UIStrings.textboxPlaceholder)}/>
         <${Buttons.Button.Button.litTagName} .variant=${Buttons.Button.Variant.PRIMARY} @click=${
         this.#handleTestProtocolClick}>
             ${i18nString(UIStrings.testProtocol)}

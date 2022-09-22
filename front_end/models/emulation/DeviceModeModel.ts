@@ -736,20 +736,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       overlayModel.setShowViewportSizeOnResize(false);
     }
 
-    // TODO(crbug/1357584): Delete this after the upstream CDP change lands.
-    // Define the right clipping area for fullsize screenshots.
-    if (!clip) {
-      const metrics = await screenCaptureModel.fetchLayoutMetrics();
-      if (!metrics) {
-        return null;
-      }
-
-      // Cap the height to not hit the GPU limit.
-      const contentHeight = Math.min((1 << 14), metrics.contentHeight);
-      clip = {x: 0, y: 0, width: Math.floor(metrics.contentWidth), height: Math.floor(contentHeight), scale: 1};
-    }
-    // TODO(crbug/1357584): Delete till here.
-
     const screenshot = await screenCaptureModel.captureScreenshot(
         Protocol.Page.CaptureScreenshotRequestFormat.Png, 100, screenshotMode, clip);
 

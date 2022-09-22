@@ -52,20 +52,15 @@ export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyA
       fromSurface: true,
     };
     switch (mode) {
-      case 'fromClip':
+      case ScreenshotMode.FROM_CLIP:
         properties.captureBeyondViewport = true;
         properties.clip = clip;
         break;
-      case 'fullpage':
+      case ScreenshotMode.FULLPAGE:
         properties.captureBeyondViewport = true;
-        // TODO(crbug/1357584): Delete this after the upstream CDP change lands.
-        properties.clip = clip;
-        // TODO(crbug/1357584): Uncoment this after the upstream CDP change lands.
-        // properties.clip = undefined;
         break;
-      case 'fromViewport':
+      case ScreenshotMode.FROM_VIEWPORT:
         properties.captureBeyondViewport = false;
-        properties.clip = undefined;
         break;
       default:
         throw new Error('Unexpected or unspecified screnshotMode');

@@ -298,8 +298,7 @@ describe('The Network Tab', async function() {
     ]);
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1365962] shows web bundle metadata error in the status column', async () => {
+  it('shows web bundle metadata error in the status column', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle-with-bad-metadata.html');
@@ -308,12 +307,22 @@ describe('The Network Tab', async function() {
 
     await waitForSomeRequestsToAppear(3);
     await waitForElementWithTextContent('Web Bundle error');
-
-    const getNetworkRequestStatus = () => frontend.evaluate(() => {
-      return Array.from(document.querySelectorAll('.status-column')).slice(2, 4).map(node => node.textContent);
+    await waitForFunction(async () => {
+      const [nameColumn, statusColumn] = await frontend.evaluate(() => {
+        return [
+          Array.from(document.querySelectorAll('.name-column')).map(node => node.textContent),
+          Array.from(document.querySelectorAll('.status-column')).map(node => node.textContent),
+        ];
+      });
+      const webBundleStatus = statusColumn[nameColumn.indexOf('webbundle_bad_metadata.wbn/test/e2e/resources/network')];
+      const webBundleInnerRequestStatus =
+          statusColumn[nameColumn.indexOf('uuid-in-package:020111b3-437a-4c5c-ae07-adb6bbffb720')];
+      return webBundleStatus === 'Web Bundle error' &&
+          (webBundleInnerRequestStatus === '(failed)net::ERR_INVALID_WEB_BUNDLE' ||
+           // There's a race in the renderer where the subresource request will
+           // be canceled if it hasn't finished before parsing the metadata failed.
+           webBundleInnerRequestStatus === '(canceled)');
     });
-
-    assert.sameMembers(await getNetworkRequestStatus(), ['Web Bundle error', '(failed)net::ERR_INVALID_WEB_BUNDLE']);
   });
 
   it('shows web bundle inner request error in the status column', async () => {

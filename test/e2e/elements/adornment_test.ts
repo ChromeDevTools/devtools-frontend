@@ -87,7 +87,8 @@ describe('Adornment in the Elements Tab', async function() {
     ]);
   });
 
-  it('updates when display properties change', async () => {
+  // Flaky on win
+  it.skipOnPlatforms(['win32'], '[crbug.com/1367268] updates when display properties change', async () => {
     // Note that this test simulates several property value editing, like a user would type, with delay between
     // keystrokes. So if this test became flaky in the future, we'd likely have to increase the timeout.
     await goToResource('elements/adornment.html');

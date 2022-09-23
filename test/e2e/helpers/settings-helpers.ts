@@ -67,10 +67,20 @@ export const togglePreferenceInSettingsTab = async (label: string, shouldBeCheck
 export const setIgnoreListPattern = async (pattern: string) => {
   await openSettingsTab('Ignore List');
   await click('[aria-label="Add filename pattern"]');
-  const textBox = await waitFor('[aria-label="Pattern"]');
+  const textBox = await waitFor('[aria-label="Add Pattern"]');
   await click(textBox);
   await textBox.type(pattern);
   await textBox.type('\n');
   await waitFor(`[title="Ignore scripts whose names match '${pattern}'"]`);
+  await closeSettings();
+};
+
+export const toggleIgnoreListing = async (enable: boolean) => {
+  await openSettingsTab('Ignore List');
+  const enabledPattern = '.ignore-list-options:not(.ignore-listing-disabled)';
+  const disabledPattern = '.ignore-list-options.ignore-listing-disabled';
+  await waitFor(enable ? disabledPattern : enabledPattern);
+  await click('[aria-label="Enable Ignore Listing"]');
+  await waitFor(enable ? enabledPattern : disabledPattern);
   await closeSettings();
 };

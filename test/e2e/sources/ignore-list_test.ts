@@ -17,7 +17,7 @@ import {
   waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
+import {setIgnoreListPattern, toggleIgnoreListing} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,
   DEBUGGER_PAUSED_EVENT,
@@ -112,6 +112,19 @@ describe('Ignore list', async function() {
     await setIgnoreListPattern('thirdparty');
     await goToResource('sources/multi-files.html');
     await openSourcesPanel();
+    assert.deepEqual(
+        await readSourcesTreeView(),
+        ['top', 'localhost:XXXX', 'test/e2e/resources/sources', 'multi-files.html', 'multi-files-mycode.js']);
+    await toggleIgnoreListing(false);
+    assert.deepEqual(await readSourcesTreeView(), [
+      'top',
+      'localhost:XXXX',
+      'test/e2e/resources/sources',
+      'multi-files.html',
+      'multi-files-mycode.js',
+      'multi-files-thirdparty.js',
+    ]);
+    await toggleIgnoreListing(true);
     assert.deepEqual(
         await readSourcesTreeView(),
         ['top', 'localhost:XXXX', 'test/e2e/resources/sources', 'multi-files.html', 'multi-files-mycode.js']);

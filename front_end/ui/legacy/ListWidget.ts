@@ -200,6 +200,7 @@ export class ListWidget<T> extends VBox {
     this.focusRestorer = new ElementFocusRestorer(this.element);
 
     this.list.classList.add('list-editing');
+    this.element.classList.add('list-editing');
     this.editItem = item;
     this.editElement = element;
     if (element) {
@@ -227,6 +228,7 @@ export class ListWidget<T> extends VBox {
 
   private stopEditing(): void {
     this.list.classList.remove('list-editing');
+    this.element.classList.remove('list-editing');
     if (this.focusRestorer) {
       this.focusRestorer.restore();
     }

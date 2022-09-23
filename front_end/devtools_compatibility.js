@@ -1062,6 +1062,7 @@
       'emulation.showDeviceMode',
       'emulation.showRulers',
       'enableAsyncStackTraces',
+      'enableIgnoreListing',
       'eventListenerBreakpoints',
       'fileMappingEntries',
       'fileSystemMapping',

@@ -211,15 +211,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       this.navigatorGroupByAuthoredExperiment = Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
     }
 
-    Common.Settings.Settings.instance()
-        .moduleSetting('skipStackFramesPattern')
-        .addChangeListener(this.ignoreListChanged.bind(this));
-    Common.Settings.Settings.instance()
-        .moduleSetting('skipContentScripts')
-        .addChangeListener(this.ignoreListChanged.bind(this));
-    Common.Settings.Settings.instance()
-        .moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts')
-        .addChangeListener(this.ignoreListChanged.bind(this));
+    Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
 
     this.initGrouping();
 

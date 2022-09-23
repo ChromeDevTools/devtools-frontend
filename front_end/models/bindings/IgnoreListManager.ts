@@ -31,6 +31,9 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     Common.Settings.Settings.instance()
         .moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts')
         .addChangeListener(this.patternChanged.bind(this));
+    Common.Settings.Settings.instance()
+        .moduleSetting('enableIgnoreListing')
+        .addChangeListener(this.patternChanged.bind(this));
 
     this.#listeners = new Set();
 
@@ -90,7 +93,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   private setIgnoreListPatterns(debuggerModel: SDK.DebuggerModel.DebuggerModel): Promise<boolean> {
-    const regexPatterns = this.getSkipStackFramesPatternSetting().getAsArray();
+    const regexPatterns = this.enableIgnoreListing ? this.getSkipStackFramesPatternSetting().getAsArray() : [];
     const patterns = ([] as string[]);
     for (const item of regexPatterns) {
       if (!item.disabled && item.pattern) {
@@ -121,6 +124,9 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   isUserIgnoreListedURL(url: Platform.DevToolsPath.UrlString, isContentScript?: boolean): boolean {
+    if (!this.enableIgnoreListing) {
+      return false;
+    }
     if (this.#isIgnoreListedURLCache.has(url)) {
       return Boolean(this.#isIgnoreListedURLCache.get(url));
     }
@@ -217,12 +223,17 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     }
   }
 
+  get enableIgnoreListing(): boolean {
+    return Common.Settings.Settings.instance().moduleSetting('enableIgnoreListing').get();
+  }
+
   get skipContentScripts(): boolean {
-    return Common.Settings.Settings.instance().moduleSetting('skipContentScripts').get();
+    return this.enableIgnoreListing && Common.Settings.Settings.instance().moduleSetting('skipContentScripts').get();
   }
 
   get automaticallyIgnoreListKnownThirdPartyScripts(): boolean {
-    return Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts').get();
+    return this.enableIgnoreListing &&
+        Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts').get();
   }
 
   ignoreListContentScripts(): void {

@@ -210,6 +210,8 @@ export class DebuggerPlugin extends Plugin {
   private activeBreakpointDialog: BreakpointEditDialog|null = null;
   private missingDebugInfoBar: UI.Infobar.Infobar|null = null;
 
+  private readonly ignoreListCallback: () => void;
+
   constructor(
       uiSourceCode: Workspace.UISourceCode.UISourceCode,
       private readonly transformer: SourceFrame.SourceFrame.Transformer) {
@@ -229,15 +231,8 @@ export class DebuggerPlugin extends Plugin {
 
     this.scriptFileForDebuggerModel = new Map();
 
-    Common.Settings.Settings.instance()
-        .moduleSetting('skipStackFramesPattern')
-        .addChangeListener(this.showIgnoreListInfobarIfNeeded, this);
-    Common.Settings.Settings.instance()
-        .moduleSetting('skipContentScripts')
-        .addChangeListener(this.showIgnoreListInfobarIfNeeded, this);
-    Common.Settings.Settings.instance()
-        .moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts')
-        .addChangeListener(this.showIgnoreListInfobarIfNeeded, this);
+    this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
+    Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
     this.liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
@@ -1622,15 +1617,8 @@ export class DebuggerPlugin extends Plugin {
     this.uiSourceCode.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
 
-    Common.Settings.Settings.instance()
-        .moduleSetting('skipStackFramesPattern')
-        .removeChangeListener(this.showIgnoreListInfobarIfNeeded, this);
-    Common.Settings.Settings.instance()
-        .moduleSetting('skipContentScripts')
-        .removeChangeListener(this.showIgnoreListInfobarIfNeeded, this);
-    Common.Settings.Settings.instance()
-        .moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts')
-        .removeChangeListener(this.showIgnoreListInfobarIfNeeded, this);
+    Bindings.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.ignoreListCallback);
+
     super.dispose();
 
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);

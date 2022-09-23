@@ -20,9 +20,16 @@
   margin-top: 10px;
 }
 
-.ignore-list-content-scripts {
-  margin-top: 10px;
+.ignore-list-option {
   flex: none;
+  padding: 3px 6px;
+  min-height: 30px;
+}
+
+.ignore-list-option-group {
+  margin-top: 16px;
+  margin-bottom: 3px;
+  margin-left: 8px;
 }
 
 .add-button {
@@ -32,18 +39,15 @@
 }
 
 .ignore-list {
-  margin-top: 10px;
   max-width: 500px;
   flex: 0 1 auto;
-  min-height: 30px;
 }
 
-.ignore-list-empty {
-  flex: auto;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.ignore-list-global-enable {
+  padding: 3px 0;
+  color: var(--color-text-secondary);
+  font-size: 120%;
+  margin-top: 20px;
 }
 
 .ignore-list-item {
@@ -68,31 +72,6 @@
   overflow: hidden;
 }
 
-.ignore-list-item.ignore-list-disabled .ignore-list-pattern {
-  text-decoration: line-through;
-}
-
-.ignore-list-behavior {
-  flex: 0 0 100px;
-  padding-left: 10px;
-}
-
-.ignore-list-behavior > select {
-  margin-left: -10px;
-}
-
-.ignore-list-separator {
-  flex: 0 0 1px;
-  background-color: var(--color-details-hairline);
-  height: 30px;
-  margin: 0 4px;
-}
-
-.ignore-list-separator-invisible {
-  visibility: hidden;
-  height: 100% !important; /* stylelint-disable-line declaration-no-important */
-}
-
 .ignore-list-edit-row {
   flex: none;
   display: flex;
@@ -105,4 +84,28 @@
 .ignore-list-edit-row select {
   width: 100%;
   text-align: inherit;
+}
+
+.ignore-list-options {
+  margin-left: 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ignore-list-options.ignore-listing-disabled {
+  opacity: 30%;
+}
+
+.list:has(.ignore-list-empty),
+.list:has(.ignore-list-edit-row),
+.list:has(.ignore-list-item) {
+  border: none;
+}
+
+.editor-container:has(.ignore-list-edit-row) {
+  background: var(--color-background-elevation-0);
+}
+
+.ignore-list.list-editing ~ .add-button {
+  display: none;
 }

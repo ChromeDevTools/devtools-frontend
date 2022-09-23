@@ -138,6 +138,12 @@ export class ErrorExpectation {
   readonly #msg: string|RegExp;
   constructor(msg: string|RegExp) {
     this.#msg = msg;
+    pendingErrorExpectations.add(this);
+  }
+
+  drop() {
+    pendingErrorExpectations.delete(this);
+    return this.#caught;
   }
 
   get caught() {
@@ -155,9 +161,7 @@ export class ErrorExpectation {
 }
 
 export function expectError(msg: string|RegExp) {
-  const expectation = new ErrorExpectation(msg);
-  pendingErrorExpectations.add(expectation);
-  return expectation;
+  return new ErrorExpectation(msg);
 }
 
 function formatStackFrame(stackFrame: puppeteer.ConsoleMessageLocation): string {

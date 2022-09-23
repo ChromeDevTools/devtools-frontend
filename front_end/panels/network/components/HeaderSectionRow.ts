@@ -84,6 +84,7 @@ export class HeaderSectionRow extends HTMLElement {
       row: true,
       'header-highlight': Boolean(this.#header.highlight),
       'header-overridden': Boolean(this.#header.isOverride),
+      'header-editable': Boolean(this.#header.editable),
     });
 
     // Disabled until https://crbug.com/1079231 is fixed.

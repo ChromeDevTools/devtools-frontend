@@ -18,12 +18,21 @@
   user-select: text;
 }
 
+.row.header-editable {
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size);
+}
+
 .header-name {
   color: var(--color-primary);
   font-weight: 500;
   width: 160px;
   flex-shrink: 0;
   text-transform: capitalize;
+}
+
+.header-editable .header-name {
+  color: var(--color-syntax-1);
 }
 
 .header-value {

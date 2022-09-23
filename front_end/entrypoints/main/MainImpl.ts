@@ -180,6 +180,10 @@ export class MainImpl {
     self.Host.userMetrics = self.Host.userMetrics || Host.userMetrics;
     // @ts-ignore e2e test global
     self.Host.UserMetrics = self.Host.UserMetrics || Host.UserMetrics;
+    // @ts-ignore e2e test global
+    self.ProtocolClient = self.ProtocolClient || {};
+    // @ts-ignore e2e test global
+    self.ProtocolClient.test = self.ProtocolClient.test || ProtocolClient.InspectorBackend.test;
   }
 
   async requestAndRegisterLocaleData(): Promise<void> {

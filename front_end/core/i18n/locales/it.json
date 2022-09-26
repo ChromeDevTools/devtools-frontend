@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Attiva blocco richieste di rete"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Consenti a DevTools di caricare risorse, ad esempio mappe di origine, dalla condivisione di file in una rete Windows tramite percorsi UNC. Disabilitato per impostazione predefinita per motivi di sicurezza."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Attiva il formato WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Rendering"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Attiva la ricerca durante la digitazione"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Ricerca durante la digitazione"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Disattiva la ricerca durante la digitazione (premi Invio per cercare)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Mostra annunci su questo sito, se consentito"
@@ -1449,7 +1461,7 @@
     "message": "Il tuo partner sta negoziando una versione (D)TLS obsoleta. Rivolgiti al tuo partner per correggere questo problema."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL in contesti non sicuri è deprecato e verrà rimosso nella versione M107. Utilizza Archiviazione web o Database indicizzato."
+    "message": "WebSQL in contesti non sicuri è deprecato e verrà rimosso a breve. Utilizza Archiviazione web o Database indicizzato."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "L'API StorageType.persistent è deprecata. Utilizza invece il criterio navigator.storage standardizzato."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Applicazione"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Barra laterale del riquadro dell'applicazione"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Servizi in background"
@@ -4764,7 +4779,7 @@
     "message": "Prova a rimuovere {REASON_PROPERTY_DECLARATION_CODE} o a modificarne il valore."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "La proprietà {REASON_PROPERTY_DECLARATION_CODE} sullo stesso elemento ignora l'effetto di {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "La proprietà {REASON_PROPERTY_DECLARATION_CODE} su questo elemento ignora l'effetto di {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Aggiungi nuova classe"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Breadcrumb dell'albero DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Scorri a sinistra"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Scorrimento verso destra"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(testo)"
@@ -6330,7 +6351,7 @@
     "message": "Nel 2016, il 75% degli utenti di dispositivi mobili nel mondo ha utilizzato la rete 2G o 3G [Fonte: GSMA Mobile]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfMobilePagesTakeNearlySeconds": {
-    "message": "Nel 70% delle pagine per dispositivi mobili, la visualizzazione sullo schermo dei contenuti visivi above the fold richiede quasi sette secondi. [Fonte: Think with Google]"
+    "message": "Nel 70% delle pagine mobile, la visualizzazione sullo schermo dei contenuti visivi above the fold richiede quasi sette secondi. [Fonte: Think with Google]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | SecondsIsTheAverageTimeAMobile": {
     "message": "19 secondi è il tempo medio impiegato da una pagina web mobile per caricarsi con una connessione 3G [Fonte: Google DoubleClick blog]"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Visualizza certificato"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs attivi."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Attiva client experiment variation IDs che innescano il comportamento lato server."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Seleziona questa opzione se la risorsa e il documento vengono gestiti dallo stesso sito."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Decodificate:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Scopri di più"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Scopri di più nella scheda Problemi"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Scopri di più"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Sono disponibili solo intestazioni provvisorie, perché questa richiesta non è stata inviata tramite rete, ma è stata fornita da una cache locale, in cui non sono archiviate le intestazioni della richiesta originali. Disattiva la cache per visualizzare tutte le intestazioni della richiesta."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Vengono mostrate intestazioni provvisorie."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Vengono mostrate intestazioni provvisorie. Disattiva la cache per visualizzare le intestazioni complete."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(da cache del disco)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Override intestazioni"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Scopri di più"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Scopri di più nella scheda Problemi"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Scegli questa opzione solo se un sito web arbitrario che include questa risorsa non comporta un rischio per la sicurezza."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Sono disponibili solo intestazioni provvisorie, perché questa richiesta non è stata inviata tramite rete, ma è stata fornita da una cache locale, in cui non sono archiviate le intestazioni della richiesta originali. Disattiva la cache per visualizzare tutte le intestazioni della richiesta."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Vengono mostrate intestazioni provvisorie."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Vengono mostrate intestazioni provvisorie. Disattiva la cache per visualizzare le intestazioni complete."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Non elaborate"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Codice di stato"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Il caricamento del documento in un iframe con un attributo sandbox è stato bloccato perché il documento specificava un criterio di apertura multiorigine."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Per incorporare questo frame nel documento, la risposta deve attivare le norme sull'incorporamento multiorigine specificando la seguente intestazione della risposta:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Per usare questa risorsa da un'origine diversa, il server deve specificare un criterio delle risorse multiorigine nelle intestazioni della risposta:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Per usare questa risorsa da un'origine diversa, il server potrebbe rilasciare l'intestazione della risposta del criterio delle risorse multiorigine:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Per usare questa risorsa da un sito diverso, il server potrebbe rilasciare l'intestazione della risposta del criterio delle risorse multiorigine:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Un argomento fornito dal client ha un formato non valido oppure non è valido per altri motivi."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tipo"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Seleziona questa opzione se la risorsa e il documento vengono gestiti dallo stesso sito."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Scegli questa opzione solo se un sito web arbitrario che include questa risorsa non comporta un rischio per la sicurezza."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Il caricamento del documento in un iframe con un attributo sandbox è stato bloccato perché il documento specificava un criterio di apertura multiorigine."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Per incorporare questo frame nel documento, la risposta deve attivare le norme sull'incorporamento multiorigine specificando la seguente intestazione della risposta:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Per usare questa risorsa da un'origine diversa, il server deve specificare un criterio delle risorse multiorigine nelle intestazioni della risposta:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Per usare questa risorsa da un'origine diversa, il server potrebbe rilasciare l'intestazione della risposta del criterio delle risorse multiorigine:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Per usare questa risorsa da un sito diverso, il server potrebbe rilasciare l'intestazione della risposta del criterio delle risorse multiorigine:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Risorsa in bundle"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Non raggruppare gli elementi del log di rete per frame"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Consenti a DevTools di caricare risorse, ad esempio mappe di origine, dalla condivisione di file in una rete Windows tramite percorsi UNC. Disabilitato per impostazione predefinita per motivi di sicurezza."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "frame"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Metti in pausa solo quando la condizione è true"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Nessun punto di interruzione"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Apri selettore colori."
@@ -12159,10 +12177,10 @@
     "message": "Problema non disponibile in questo momento"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Elimina memoria evidenziata"
+    "message": "Smetti di evidenziare questo ricordo"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Passa alla memoria evidenziata"
+    "message": "Passa a questo ricordo"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "L'indirizzo deve essere un numero compreso tra {PH1} e {PH2}"

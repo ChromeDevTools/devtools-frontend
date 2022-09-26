@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "הפעלת חסימה של בקשת הרשת"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "ל-DevTools יש הרשאה לטעון משאבים, כמו מפות מקור, משיתופים ב-Windows דרך נתיבי UNC. האפשרות מושבתת כברירת מחדל מטעמי אבטחה."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "הפעלת הפורמט WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "רינדור"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "הפעלת החיפוש בזמן ההקלדה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "חיפוש בזמן ההקלדה"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "השבתת החיפוש בזמן ההקלדה (יש להקיש על Enter כדי לחפש)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "הצגת מודעות באתר הזה, אם המערכת מאפשרת זאת"
@@ -1449,7 +1461,7 @@
     "message": "השותף שלך מנהל משא ומתן על גרסת ‎(D)TLS מיושנת. עליך לפנות לשותף שלך כדי לתקן זאת."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL בהקשרים לא מאובטחים הוצא משימוש ויוסר ב-M107. יש להשתמש ב-Web Storage או ב-Indexed Database."
+    "message": "WebSQL בהקשרים לא מאובטחים הוצא משימוש ויוסר בקרוב. יש להשתמש ב-Web Storage או ב-Indexed Database."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "האפשרות StorageType.persistent הוצאה משימוש. במקומה יש להשתמש באפשרות navigator.storage רגילה."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "אפליקציה"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "סרגל צד של חלונית האפליקציה"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "שירותים הפועלים ברקע"
@@ -4764,7 +4779,7 @@
     "message": "יש לנסות להסיר את {REASON_PROPERTY_DECLARATION_CODE} או לשנות את הערך שלו."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "המאפיין {REASON_PROPERTY_DECLARATION_CODE} באותו רכיב עוקף את ההשפעה של {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "המאפיין {REASON_PROPERTY_DECLARATION_CODE} ברכיב הזה עוקף את ההשפעה של {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "הוספת מחלקה חדשה"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "נתיבי ניווט של עץ DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "גלילה ימינה"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "גלילה שמאלה"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(טקסט)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "הצגת אישור"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs במצב פעיל"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs במצב פעיל להפעלת התנהגות בצד השרת."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "יש לבחור באפשרות זו אם המידע והמסמך מוצגים מאותו האתר."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "מפוענח:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "מידע נוסף"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "מידע נוסף על כרטיסיית הבעיות"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "מידע נוסף"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "הבקשה הזו לא נשלחה דרך הרשת אלא הוצגה ממטמון מקומי שלא מאוחסנות בו כותרות מקוריות של בקשות, ולכן יש רק כותרות זמניות. כדי לראות את הכותרות המלאות של הבקשות, יש להשבית את המטמון."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "כותרות זמניות מוצגות."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "כותרות זמניות מוצגות. יש להשבית את המטמון כדי לראות את הכותרות בשלמותן."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ממטמון האחסון)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "שינויים בכותרות"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "מידע נוסף"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "מידע נוסף על כרטיסיית הבעיות"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "יש לבחור את האפשרות הזאת רק אם אתר שרירותי, שכולל את מקור המידע הזה, לא מהווה סיכון אבטחה."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "הבקשה הזו לא נשלחה דרך הרשת אלא הוצגה ממטמון מקומי שלא מאוחסנות בו כותרות מקוריות של בקשות, ולכן יש רק כותרות זמניות. כדי לראות את הכותרות המלאות של הבקשות, יש להשבית את המטמון."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "כותרות זמניות מוצגות."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "כותרות זמניות מוצגות. יש להשבית את המטמון כדי לראות את הכותרות בשלמותן."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "גולמי"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "קוד סטטוס"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "טעינת המסמך הזה נחסמה ב-iframe עם מאפיין sandbox מכיוון שבמסמך צוינה מדיניות פתיחה ממקורות שונים."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "כדי להטמיע את המסגרת הזו במסמך, יש להפעיל את המדיניות של כלי ההטמעה ממקורות שונים בתגובה על ידי ציון כותרת התגובה הבאה:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "כדי להשתמש במשאב הזה ממקור אחר, השרת צריך לציין את המדיניות בנושא משאבים ממקורות שונים בכותרות התגובה:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "כדי להשתמש במשאב הזה ממקור אחר, ייתכן שהשרת יחיל את המדיניות בנושא משאבים ממקורות שונים באופן חלקי על כותרת התגובה:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "כדי להשתמש במשאב הזה מאתר אחר, ייתכן שהשרת יחיל את המדיניות בנושא משאבים ממקורות שונים באופן חלקי על כותרת התגובה:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "התבנית של ארגומנט שסופק על ידי לקוח שגויה, או שהארגומנט לא חוקי מסיבה אחרת."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "סוג"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "יש לבחור באפשרות הזו אם המשאב והמסמך מוצגים מאותו האתר."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "יש לבחור את האפשרות הזאת רק אם אתר שרירותי, שכולל את מקור המידע הזה, לא מהווה סיכון אבטחה."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "טעינת המסמך הזה נחסמה ב-iframe עם מאפיין sandbox מכיוון שבמסמך צוינה מדיניות פתיחה ממקורות שונים."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "כדי להטמיע את המסגרת הזו במסמך, יש להפעיל את המדיניות של כלי ההטמעה ממקורות שונים בתגובה על ידי ציון כותרת התגובה הבאה:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "כדי להשתמש במשאב הזה ממקור אחר, השרת צריך לציין את המדיניות בנושא משאבים ממקורות שונים בכותרות התגובה:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "כדי להשתמש במשאב הזה ממקור אחר, ייתכן שהשרת יחיל את המדיניות בנושא משאבים ממקורות שונים באופן חלקי על כותרת התגובה:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "כדי להשתמש במשאב הזה מאתר אחר, ייתכן שהשרת יחיל את המדיניות בנושא משאבים ממקורות שונים באופן חלקי על כותרת התגובה:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "משאב בחבילה"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "אין לקבץ פריטי יומן של רשתות לפי מסגרת"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "ל-DevTools יש הרשאה לטעון משאבים, כמו מפות מקור, משיתופים ב-Windows דרך נתיבי UNC. האפשרות מושבתת כברירת מחדל מטעמי אבטחה."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "מסגרת"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "יש להשהות רק כשהתנאי הוא TRUE"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "אין נקודות עצירה"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "פתיחת בוחר הצבעים."
@@ -12159,10 +12177,10 @@
     "message": "הבעיה לא זמינה כרגע"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "הפסקת ההדגשה של המקטע הזה בזיכרון"
+    "message": "הפסקת ההדגשה של המיקום הזה בזיכרון"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "מעבר למקטע המודגש בזיכרון"
+    "message": "דילוג אל המיקום הזה בזיכרון"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "הכתובת חייבת להיות מספר בין {PH1} לבין {PH2}"

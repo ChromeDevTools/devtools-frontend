@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Овозможете блокирање мрежни барања"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Дозволете DevTools да вчитува ресурси, како изворни мапи, од Windows Shares преку патеки UNC. Оневозможено е стандардно поради безбедносни причини."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Овозможи го форматот WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Обработка"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Овозможете пребарување како што пишувате"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Пребарувајте како што пишувате"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Оневозможете го пребарувањето додека пишувате (притиснете Enter за да пребарате)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Прикажувај реклами на сајтов ако се дозволени"
@@ -1449,7 +1461,7 @@
     "message": "Вашиот партнер преговара со застарена верзија на (D)TLS. Проверете со партнерот за да го поправи ова."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL не е безбеден контекст, не се поддржува и ќе се отстрани во M107. Користете капацитет на прелистувач или индексирана база на податоци."
+    "message": "WebSQL во небезбедни контексти не се поддржува и ќе биде отстрането наскоро. Користете капацитет на прелистувач или индексирана база на податоци."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent не се поддржува. Наместо тоа, користете стандардизиран navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Апликација"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Странична лента на панел за апликации"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Услуги во заднина"
@@ -4764,7 +4779,7 @@
     "message": "Пробајте да отстраните {REASON_PROPERTY_DECLARATION_CODE} или да ја промените вредноста."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Својството {REASON_PROPERTY_DECLARATION_CODE} на истиот елемент го заобиколува ефектот на {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Својството {REASON_PROPERTY_DECLARATION_CODE} на елементов го заобиколува ефектот на {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Додај нова класа"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Елементи за навигација на DOM-дрвото"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Оди налево"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Оди надесно"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(текст)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Прикажи го сертификатот"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Активен client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Активни client experiment variation IDs којшто активира однесување од страна на серверот."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Изберете ја опцијава ако ресурсот и документот доаѓаат од истиот сајт."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Декодирано:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Дознајте повеќе"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Дознајте повеќе во картичката „Проблеми“"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Дознајте повеќе"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Достапни се само привремени заглавја бидејќи барањето не беше испратено преку мрежата, туку доаѓа од локалниот кеш којшто не ги складира оригиналните заглавја на барањата. Оневозможете го кешот за да гледате целосни заглавја на барањата."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Се прикажуваат привремени заглавја."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Се прикажуваат привремени заглавја. Оневозможете го кешот за да гледате целосни заглавја."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(од кеш на дискот)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Отфрлања на заглавија"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Дознајте повеќе"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Дознајте повеќе во картичката „Проблеми“"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Изберете ја опцијава само ако произволниот веб-сајт што го вклучува ресурсов не претставува безбедносен ризик."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Достапни се само привремени заглавја бидејќи барањето не беше испратено преку мрежата, туку доаѓа од локалниот кеш којшто не ги складира оригиналните заглавја на барањата. Оневозможете го кешот за да гледате целосни заглавја на барањата."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Се прикажуваат привремени заглавја."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Се прикажуваат привремени заглавја. Оневозможете го кешот за да гледате целосни заглавја."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Неанализирани"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Код на статус"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Вчитувањето на документов во iframe беше блокирано со атрибутот sandbox бидејќи документов наведе правило за алатката за отворање со вкрстено потекло."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "За да се вметне оваа рамка во вашиот документ, одговорот треба да овозможи правило на алатката за вметнување со вкрстено потекло така што ќе го наведе следното заглавје за одговор:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "За да се користи овој ресурс од друго потекло, серверот треба да го одреди правилото за ресурси со вкрстено потекло во заглавјата на одговорите:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "За да се користи овој ресурс од друго потекло, серверот можеби ќе го олесни правилото за ресурси со вкрстено потекло за заглавјето на одговорот:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "За да се користи овој ресурс од друг сајт, серверот можеби ќе го олесни правилото за ресурси со вкрстено потекло за заглавјето на одговорот:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Аргументот од клиентот беше неправилно форматиран или на друг начин неважечки."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Тип"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Изберете ја опцијава ако ресурсот и документот доаѓаат од истиот сајт."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Изберете ја опцијава само ако произволниот веб-сајт што го вклучува ресурсов не претставува безбедносен ризик."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Вчитувањето на документов во iframe беше блокирано со атрибутот sandbox бидејќи документов наведе правило за алатката за отворање со вкрстено потекло."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "За да се вметне оваа рамка во вашиот документ, одговорот треба да овозможи правило на алатката за вметнување со вкрстено потекло така што ќе го наведе следното заглавие за одговор:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "За да се користи овој ресурс од друго потекло, серверот треба да го одреди правилото за ресурси со вкрстено потекло во заглавјата на одговорите:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "За да се користи овој ресурс од друго потекло, серверот можеби ќе го олесни правилото за ресурси со вкрстено потекло за заглавието на одговорот:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "За да се користи овој ресурс од друг сајт, серверот можеби ќе го олесни правилото за ресурси со вкрстено потекло за заглавието на одговорот:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Пакет ресурс"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Не групирај ставки од мрежната евиденција по рамка"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Дозволете DevTools да вчитува ресурси, како изворни мапи, од Windows Shares преку патеки UNC. Оневозможено е стандардно поради безбедносни причини."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "рамка"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Паузирај само кога условот е точен"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Нема точки на прекин"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Отвори го избирачот на боја."
@@ -12159,10 +12177,10 @@
     "message": "Проблемот не е достапен во моментов"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Избришете ја нагласената меморија"
+    "message": "Прекинете со нагласување на меморијава"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Одете на нагласената меморија"
+    "message": "Одете на меморијава"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адресата мора да биде број помеѓу {PH1} и {PH2}"

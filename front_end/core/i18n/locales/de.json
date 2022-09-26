@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Blockierung der Netzwerkanfrage aktivieren"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevTools darf Ressourcen wie Quellzuordnungen aus Windows Shares über UNC-Pfade laden. Aus Sicherheitsgründen ist diese Option standardmäßig deaktiviert."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP-Format aktivieren"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Rendering"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Suche während der Eingabe aktivieren"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Suche während der Eingabe"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Suche während der Eingabe deaktivieren (zum Suchen Eingabetaste drücken)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Werbung auf dieser Website zeigen, falls zulässig"
@@ -1449,7 +1461,7 @@
     "message": "Dein Partner handelt eine veraltete (D)TLS-Version aus. Bitte wende dich an den Partner, um dieses Problem zu beheben."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL in nicht sicheren Kontexten wurde verworfen und wird in M107 entfernt. Bitte verwende Web Storage oder IndexedDB."
+    "message": "WebSQL ist in unsicheren Kontexten veraltet und wird bald entfernt. Bitte verwende einen Webspeicher oder eine indexierte Datenbank."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "Der Speichertyp „StorageType.persistent“ wurde verworfen. Verwende stattdessen den standardisierten Speichertyp „navigator.storage“."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "App"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Seitenleiste des Anwendungsbereichs"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Hintergrunddienste"
@@ -3990,7 +4005,7 @@
     "message": "DOM-Umschaltpunkte"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | eventListenerBreakpoints": {
-    "message": "Ereignis-Listener-Haltepunkte"
+    "message": "Event-Listener-Haltepunkte"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | globalListeners": {
     "message": "Globale Listener"
@@ -4011,7 +4026,7 @@
     "message": "DOM-Haltepunkte anzeigen"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showEventListenerBreakpoints": {
-    "message": "Ereignis-Listener-Haltepunkte anzeigen"
+    "message": "Event-Listener-Haltepunkte anzeigen"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showGlobalListeners": {
     "message": "Globale Listener anzeigen"
@@ -4764,7 +4779,7 @@
     "message": "Entferne {REASON_PROPERTY_DECLARATION_CODE} oder ändere den Wert."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Aufgrund des Attributs „{REASON_PROPERTY_DECLARATION_CODE}“ für dasselbe Element hat „{AFFECTED_PROPERTY_DECLARATION_CODE}“ keinen Effekt."
+    "message": "Die Property {REASON_PROPERTY_DECLARATION_CODE} für dieses Element umgeht den Effekt von {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Neue Klasse hinzufügen"
@@ -5219,6 +5234,12 @@
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM-Baum-Navigationspfad"
   },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Nach links scrollen"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Nach rechts scrollen"
+  },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(Text)"
   },
@@ -5490,7 +5511,7 @@
     "message": "Gerätesymbolleiste ein- und ausblenden"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
-    "message": "Ereignis-Listener löschen"
+    "message": "Event-Listener löschen"
   },
   "panels/event_listeners/EventListenersView.ts | noEventListeners": {
     "message": "Keine Ereignis-Listener"
@@ -5508,7 +5529,7 @@
     "message": "Passiv ein-/ausschalten"
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
-    "message": "Schalter zum Einstellen, ob der Ereignis-Listener passiv oder blockierend sein soll"
+    "message": "Schalter zum Einstellen, ob der Event-Listener passiv oder blockierend sein soll"
   },
   "panels/input/InputTimeline.ts | clearAll": {
     "message": "Alle löschen"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Zertifikat ansehen"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktive client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktive client experiment variation IDs, die serverseitiges Verhalten auslösen."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Wähle diese Option, wenn die Ressource und das Dokument von der gleichen Website bereitgestellt werden."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Decodiert:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Weitere Informationen"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Weitere Informationen findest du auf dem Tab „Probleme“"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Weitere Informationen"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Es sind nur vorläufige Header verfügbar, da diese Anfrage nicht über das Netzwerk gesendet wurde. Stattdessen wurde sie über einen lokalen Cache bereitgestellt, der die originalen Anfrageheader nicht speichert. Deaktiviere den Cache, um die vollständigen Anfrageheader zu sehen."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Vorläufige Header werden angezeigt."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Vorläufige Header werden angezeigt. Deaktiviere den Cache, um die vollständigen Header zu sehen."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(von Datenträgercache)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Header-Überschreibungen"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Weitere Informationen"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Weitere Informationen findest du auf dem Tab „Probleme“"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Wähle diese Option nur aus, wenn beliebige Websites mit dieser Ressource kein Sicherheitsrisiko darstellen."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Es sind nur vorläufige Header verfügbar, da diese Anfrage nicht über das Netzwerk gesendet wurde. Stattdessen wurde sie über einen lokalen Cache bereitgestellt, der die originalen Anfrageheader nicht speichert. Deaktiviere den Cache, um die vollständigen Anfrageheader zu sehen."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Vorläufige Header werden angezeigt."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Vorläufige Header werden angezeigt. Deaktiviere den Cache, um die vollständigen Header zu sehen."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Rohdaten"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Statuscode"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Das Laden dieses Dokuments in einem iframe mit einem sandbox-Attribut wurde blockiert, da dieses Dokument eine herkunftsübergreifende Richtlinie für die Ursprungsseite festgelegt hat."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Um diesen Frame in dein Dokument einzubetten, muss die Antwort die ursprungsübergreifende Einbettungsrichtlinie aktivieren, indem sie den folgenden Antwortheader angibt:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Um diese Ressource aus einem anderen Ursprung zu verwenden, muss der Server in den Antwortheadern eine ursprungsübergreifende Ressourcenrichtlinie festlegen:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Um diese Ressource aus einem anderen Ursprung zu verwenden, kann der Server Einschränkungen für den Antwortheader der ursprungsübergreifenden Ressourcenrichtlinie aufheben:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Um diese Ressource aus einer anderen Website zu verwenden, kann der Server Einschränkungen für den Antwortheader der ursprungsübergreifenden Ressourcenrichtlinie aufheben:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Ein vom Client bereitgestelltes Argument war fehlerhaft oder anderweitig ungültig."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Typ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Wähle diese Option, wenn die Ressource und das Dokument von der gleichen Website bereitgestellt werden."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Wähle diese Option nur aus, wenn beliebige Websites mit dieser Ressource kein Sicherheitsrisiko darstellen."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Das Laden dieses Dokuments in einem iframe mit einem sandbox-Attribut wurde blockiert, da dieses Dokument eine herkunftsübergreifende Richtlinie für die Ursprungsseite festgelegt hat."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Um diesen Frame in dein Dokument einzubetten, muss die Antwort die ursprungsübergreifende Einbettungsrichtlinie aktivieren, indem sie den folgenden Antwortheader angibt:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Um diese Ressource aus einem anderen Ursprung zu verwenden, muss der Server in den Antwortheadern eine ursprungsübergreifende Ressourcenrichtlinie festlegen:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Um diese Ressource aus einem anderen Ursprung zu verwenden, kann der Server Einschränkungen für den Antwortheader der ursprungsübergreifenden Ressourcenrichtlinie aufheben:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Um diese Ressource aus einer anderen Website zu verwenden, kann der Server Einschränkungen für den Antwortheader der ursprungsübergreifenden Ressourcenrichtlinie aufheben:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Gebündelte Ressource"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Netzwerkprotokoll-Einträge nicht nach Frame gruppieren"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevTools darf Ressourcen wie Quellzuordnungen aus Windows Shares über UNC-Pfade laden. Aus Sicherheitsgründen ist diese Option standardmäßig deaktiviert."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "Frame"
@@ -9791,9 +9812,6 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Nur pausieren, wenn die Bedingung zutrifft"
   },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Keine Haltepunkte"
-  },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Farbauswahl öffnen."
   },
@@ -9885,7 +9903,7 @@
     "message": "Bei Funktion pausiert, für die die Fehlerbehebung ausgeführt wurde"
   },
   "panels/sources/DebuggerPausedMessage.ts | pausedOnEventListener": {
-    "message": "Bei Ereignis-Listener pausiert"
+    "message": "Bei Event-Listener pausiert"
   },
   "panels/sources/DebuggerPausedMessage.ts | pausedOnException": {
     "message": "Bei Ausnahme pausiert"
@@ -12159,10 +12177,10 @@
     "message": "Problem derzeit nicht verfügbar"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Arbeitsspeicher nicht mehr markieren"
+    "message": "Diesen Arbeitsspeicherausschnitt nicht mehr hervorheben"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Zum markierten Arbeitsspeicher springen"
+    "message": "Zu diesem Arbeitsspeicherausschnitt wechseln"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Die Adresse muss eine Zahl zwischen {PH1} und {PH2} sein"

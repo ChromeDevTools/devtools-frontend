@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktiveer netwerkversoekblokkering"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Laat DevTools toe om hulpbronne soos bronkaarte vanaf Windows-lêerdelings via UNC-paaie te laai. By verstek gedeaktiveer vir veiligheidsredes."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktiveer WebP-formaat"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Lewer tans"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktiveer soek terwyl jy tik"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Soek terwyl jy tik"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Deaktiveer soek terwyl jy tik (druk Enter om te soek)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Wys advertensies op hierdie werf indien toegelaat"
@@ -1449,7 +1461,7 @@
     "message": "Jou vennoot onderhandel tans ’n verouderde (D)TLS-weergawe. Kontroleer met jou vennoot om dit reg te stel."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL in onveilige kontekste is opgeskort en sal in M107 verwyder word. Gebruik asseblief webberging of ’n geïndekseerde databasis."
+    "message": "WebSQL in onveilige kontekste is opgeskort en sal binnekort verwyder word. Gebruik asseblief webberging of ’n geïndekseerde databasis."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent is opgeskort. Gebruik pleks daarvan gestandaardiseerdenavigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Program"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Apppaneelkantbalk"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Agtergronddienste"
@@ -4764,7 +4779,7 @@
     "message": "Probeer om {REASON_PROPERTY_DECLARATION_CODE} te verwyder of die waarde daarvan te verander."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Die {REASON_PROPERTY_DECLARATION_CODE}-eienskap op dieselfde element omseil die effek van {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Die {REASON_PROPERTY_DECLARATION_CODE}-eienskap op hierdie element omseil die effek van {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Voeg nuwe klas by"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM-boombroodkrummels"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Rollees na links"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Rollees na regs"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(teks)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Bekyk sertifikaat"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktiewe client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktiewe client experiment variation IDs wat bedienerkantoptrede aktiveer."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Kies hierdie opsie as die hulpbron en die dokument vanaf dieselfde werf bedien word."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Gedekodeer:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Kom meer te wete"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Kom meer te wete in die kwessiesoortjie"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Kom meer te wete"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Slegs voorlopige opskrifte is beskikbaar omdat hierdie versoek nie oor die netwerk gestuur is nie maar uit 'n plaaslike kasgeheue gelewer is wat nie die oorspronklike versoekopskrifte berg nie. Deaktiveer kasgeheue om volledige versoekopskrifte te sien."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Voorlopige opskrifte word gewys."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Voorlopige opskrifte word gewys. Deaktiveer kasgeheue om volledige opskrifte te sien."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(uit skyfkasgeheue)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Opskriftersydestellings"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Kom meer te wete"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Kom meer te wete in die kwessiesoortjie"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Kies hierdie opsie slegs as ’n arbitrêre webwerf wat hierdie hulpbron bevat nie 'n sekuriteitrisiko inhou nie."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Slegs voorlopige opskrifte is beskikbaar omdat hierdie versoek nie oor die netwerk gestuur is nie maar uit 'n plaaslike kasgeheue gelewer is wat nie die oorspronklike versoekopskrifte berg nie. Deaktiveer kasgeheue om volledige versoekopskrifte te sien."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Voorlopige opskrifte word gewys."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Voorlopige opskrifte word gewys. Deaktiveer kasgeheue om volledige opskrifte te sien."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Nie ontleed nie"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Statuskode"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Hierdie dokument is gekeer om in ’n iframe met 'n sandbox-kenmerk te laai omdat hierdie dokument ’n kruisoorsprongoopmaakbeleid gespesifiseer het."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Om hierdie raam by jou dokument in te bed, moet die antwoord die kruisoorspronginbedderbeleid aktiveer deur die volgende antwoordopskrif te spesifiseer:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Om hierdie hulpbron uit ’n ander oorsprong te gebruik, moet die bediener ’n kruisoorspronghulpbronbeleid in die antwoordopskrifte spesifiseer:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Om hierdie hulpbron van ’n ander oorsprong af te gebruik, kan die bediener die kruisoorspronghulpbronbeleid se antwoordopskrif verslap:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Om hierdie hulpbron van ’n ander werf af te gebruik, kan die bediener die kruisoorspronghulpbronbeleid se antwoordopskrif verslap:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "'n Argument wat deur 'n kliënt verskaf is, was misvormd of andersins ongeldig."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tipe"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Kies hierdie opsie as die hulpbron en die dokument vanaf dieselfde werf bedien word."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Kies hierdie opsie slegs as ’n arbitrêre webwerf wat hierdie hulpbron bevat nie ’n sekuriteitrisiko inhou nie."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Hierdie dokument is gekeer om in ’n iframe met ’n sandbox-kenmerk te laai omdat hierdie dokument ’n kruisoorsprongoopmaakbeleid gespesifiseer het."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Om hierdie raam by jou dokument in te bed, moet die antwoord die kruisoorspronginbedderbeleid aktiveer deur die volgende antwoordopskrif te spesifiseer:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Om hierdie hulpbron uit ’n ander oorsprong te gebruik, moet die bediener ’n kruisoorspronghulpbronbeleid in die antwoordopskrifte spesifiseer:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Om hierdie hulpbron van ’n ander oorsprong af te gebruik, kan die bediener die kruisoorspronghulpbronbeleid se antwoordopskrif verslap:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Om hierdie hulpbron van ’n ander werf af te gebruik, kan die bediener die kruisoorspronghulpbronbeleid se antwoordopskrif verslap:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Gebondelde hulpbron"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Moenie netwerkloglêeritems volgens raam groepeer nie"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Laat DevTools toe om hulpbronne soos bronkaarte vanaf Windows-lêerdelings via UNC-paaie te laai. By verstek gedeaktiveer vir veiligheidsredes."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "raam"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Onderbreek slegs wanneer die voorwaarde waar is"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Geen breekpunte nie"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Maak kleurkieser oop."
@@ -12159,10 +12177,10 @@
     "message": "Kwessie is nie op hierdie tydstip beskikbaar nie"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Vee die geheuekleurmerk uit"
+    "message": "Hou op om hierdie herinnering uit te lig"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Spring na kleurmerkgeheue"
+    "message": "Spring na hierdie herinnering"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adres moet 'n getal tussen {PH1} en {PH2} wees"

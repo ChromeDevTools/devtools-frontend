@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Активиране на блокирането на заявките в мрежата"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Разрешете на DevTools да зарежда ресурси, като карти на изходния код, от Windows Shares чрез UNC пътища. От съображения за сигурност това е деактивирано по подразбиране."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Активиране на формата WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Рендериране"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Активиране на предложенията за търсене при писане"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Предложения за търсене при писане"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Деактивиране на предложенията за търсене при писане (натиснете Enter, за да търсите)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Показване на реклами на този сайт, ако е разрешено"
@@ -1449,7 +1461,7 @@
     "message": "Партньорът ви договаря връзка през остаряла версия на (D)TLS. Помолете го да отстрани проблема."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Използването на WebSQL в незащитен контекст е оттеглено и ще бъде премахнато във версия M107. Моля, използвайте уеб хранилище или индексирана база от данни."
+    "message": "Възможността за използване на WebSQL в незащитен контекст е оттеглена и скоро ще бъде премахната. Моля, използвайте уеб хранилище или индексирана база от данни."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "Приложният програмен интерфейс StorageType.persistent е оттеглен. Вместо него използвайте стандартизирания navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Приложение"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Странична лента за панела с приложения"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Фонови услуги"
@@ -4764,7 +4779,7 @@
     "message": "Опитайте да премахнете свойството {REASON_PROPERTY_DECLARATION_CODE} или да промените стойността му."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Свойството {REASON_PROPERTY_DECLARATION_CODE} на същия елемент заобикаля ефекта на {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Свойството {REASON_PROPERTY_DECLARATION_CODE} на този елемент заобикаля ефекта на {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Добавяне на нов клас"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Навигационни пътища за DOM дървото"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Превъртане наляво"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Превъртане надясно"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(текст)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Преглед на сертификата"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Активни: client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Активни елементи (client experiment variation IDs), които предизвикват активност от страна на сървъра."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Изберете тази опция, ако ресурсът и документът се показват от един и същ сайт."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Декодирано:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Научете повече"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Научете повече в раздела за проблеми"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Научете повече"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Налице са само временни заглавки, тъй като тази заявка не бе изпратена през мрежата, а от локалния кеш, където не се съхраняват заглавките на оригиналните заявки. Деактивирайте кеша, за да видите пълните заглавки."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Показани са временни заглавки."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Показани са временни заглавки. Деактивирайте кеша, за да видите пълните заглавки."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(от кеша на диска)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Замени на заглавките"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Научете повече"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Научете повече в раздела за проблеми"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Изберете тази опция само ако даден уебсайт, включващ този ресурс, не представлява риск за сигурността."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Налице са само временни заглавки, тъй като тази заявка не бе изпратена през мрежата, а от локалния кеш, където не се съхраняват заглавките на оригиналните заявки. Деактивирайте кеша, за да видите пълните заглавки."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Показани са временни заглавки."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Показани са временни заглавки. Деактивирайте кеша, за да видите пълните заглавки."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Необработен вид"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Код на състоянието"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Зареждането на този документ бе блокирано в(ъв) iframe с атрибут sandbox, защото документът посочва правило за изолиране на родителския елемент от външни източници."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "За да вградите тази рамка в документа си, правилото относно вграждането на съдържание от външни източници трябва да бъде наложено в отговора чрез посочване на следната заглавка за отговор:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "За да използвате този ресурс от друг източник, заглавките за отговор от сървъра трябва да съдържат правило относно ресурсите от външни източници:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "За да използвате този ресурс от друг източник, сървърът може да не налага правилото относно ресурси от външни източници в заглавката за отговор:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "За да използвате този ресурс от друг сайт, сървърът може да не налага правилото относно ресурси от външни източници в заглавката за отговор:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Аргумент, предоставен от клиентската програма, не е образуван правилно или е невалиден по друга причина."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Тип"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Изберете тази опция, ако ресурсът и документът се показват от един и същ сайт."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Изберете тази опция само ако даден уебсайт, включващ този ресурс, не представлява риск за сигурността."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Зареждането на този документ бе блокирано в(ъв) iframe с атрибут sandbox, защото документът посочва правило за изолиране на родителския елемент от външни източници."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "За да вградите тази рамка в документа си, правилото относно вграждането на съдържание от външни източници трябва да бъде наложено в отговора чрез посочване на следната заглавка за отговор:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "За да използвате този ресурс от друг източник, заглавките за отговор от сървъра трябва да съдържат правило относно ресурсите от външни източници:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "За да използвате този ресурс от друг източник, сървърът може да не налага правилото относно ресурси от външни източници в заглавката за отговор:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "За да използвате този ресурс от друг сайт, сървърът може да не налага правилото относно ресурси от външни източници в заглавката за отговор:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Ресурс в пакет"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Без групиране по рамка на елементите от регистрационния файл за мрежата"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Разрешете на DevTools да зарежда ресурси, като карти на изходния код, от Windows Shares чрез UNC пътища. От съображения за сигурност това е деактивирано по подразбиране."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "рамка"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Поставяне на пауза само когато условието е true"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Няма точки на прекъсване"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Отваряне на инструмента за избор на цветове."
@@ -12159,10 +12177,10 @@
     "message": "В момента проблемът не е налице"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Изтриване на открояването на паметта"
+    "message": "Спиране на открояването на тази памет"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Преминаване към откроената памет"
+    "message": "Преминаване към тази памет"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адресът трябва да е число между {PH1} и {PH2}"

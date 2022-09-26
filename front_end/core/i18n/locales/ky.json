@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Тармак сурамын бөгөттөөнү иштетүү"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevTools кызматына Windows Shares'ден булак карталары сыяктуу булактарды Windows Shares'де UNC жолдору аркылуу жүктөөгө уруксат берүү. Коопсуздук себептеринен улам демейки шартта өчүрүлдү."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP форматын иштетүү"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Үлгүдөн алып тартуу"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Терип жатып издөөнү иштетүү"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Терип жатып издөө"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Терип жатып издөөнү өчүрүү (издөө үчүн Enter баскычын басуу)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Эгер уруксат берилсе, бул сайтта жарнамалар көрсөтүлсүн"
@@ -1449,7 +1461,7 @@
     "message": "Өнөктөшүңүз (D)TLS'тин эски версиясы тууралуу сүйлөшүүлөрдү жүргүзүп жатат. Аны оңдоо үчүн өнөктөшүңүз менен байланышыңыз."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Кооптуу контексттердеги WebSQL жактырылган жок жана M107 ичинен өчүрүлөт. Тармактагы сактагычты же индекстелген дайындар базасын колдонуңуз."
+    "message": "Кооптуу контексттердеги WebSQL жактырылган жок жана жакында өчүрүлөт. Тармактагы сактагычты же индекстелген дайындар базасын колдонуңуз."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent жактырылган жок. Анын ордуна стандарттуу navigator.storage элементин колдонуңуз."
@@ -1848,7 +1860,7 @@
     "message": "Төмөнкү тарабынан сүрөттөлдү:"
   },
   "panels/accessibility/AccessibilityStrings.ts | description": {
-    "message": "Сүрөттөмө"
+    "message": "Учкай маалымат"
   },
   "panels/accessibility/AccessibilityStrings.ts | disabled": {
     "message": "Өчүк"
@@ -2247,10 +2259,10 @@
     "message": "Караңгы теманын түсү"
   },
   "panels/application/AppManifestView.ts | description": {
-    "message": "Сүрөттөмө"
+    "message": "Учкай маалымат"
   },
   "panels/application/AppManifestView.ts | descriptionMayBeTruncated": {
-    "message": "Сүрөттөмө кесилиши мүмкүн."
+    "message": "Учкай маалымат кесилиши мүмкүн."
   },
   "panels/application/AppManifestView.ts | display": {
     "message": "Көрсөтүү"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Колдонмо"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Колдонмонун панелиндеги капталдагы такта"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Фондогу кызматтар"
@@ -4764,7 +4779,7 @@
     "message": "Төмөнкүнү өчүрүп же анын маанисин өзгөртүп көрүңүз: {REASON_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Ошол эле элементтеги {REASON_PROPERTY_DECLARATION_CODE} касиети {AFFECTED_PROPERTY_DECLARATION_CODE} эффектин кыйгап өтөт."
+    "message": "Ушул элементтеги {REASON_PROPERTY_DECLARATION_CODE} касиети {AFFECTED_PROPERTY_DECLARATION_CODE} эффектин кыйгап өтөт."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Жаңы класс кошуу"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM дарагынын чабыттоо тилкелери"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Солго сыдыруу"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Оңго сыдыруу"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(текст)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Тастыктаманы көрүү"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Активдүү client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Сервер аракеттерин иштеткен жигердүү client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Эгер булак менен документ бир сайттан алынса, бул параметрди тандаңыз."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Чечмеленген код:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Кеңири маалымат"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Маселелер өтмөгүнө өтүп, кеңири маалымат алуу"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Кеңири маалымат"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Бул сурам тармак аркылуу эмес, сурамдын баштапкы аталыштарын сактабаган жергиликтүү кештен алынгандыктан, шарттуу аталыштар гана жеткиликтүү. Сурам аталыштарын толугу менен көрүү үчүн кешти өчүрүңүз."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Убактылуу аталыштар көрсөтүлдү."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Убактылуу аталыштар көрсөтүлдү. Аталыштарды толугу менен көрүү үчүн кешти өчүрүңүз."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(диск кешинен)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Башкы саптагы өзгөрүүлөр"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Кеңири маалымат"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Маселелер өтмөгүнө өтүп, кеңири маалымат алуу"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Бул параметрди ушул булак көрсөтүлгөн арбитражга берилген вебсайт коопсуз болсо гана тандаңыз."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Бул сурам тармак аркылуу эмес, сурамдын баштапкы аталыштарын сактабаган жергиликтүү кештен алынгандыктан, шарттуу аталыштар гана жеткиликтүү. Сурам аталыштарын толугу менен көрүү үчүн кешти өчүрүңүз."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Убактылуу аталыштар көрсөтүлдү."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Убактылуу аталыштар көрсөтүлдү. Аталыштарды толугу менен көрүү үчүн кешти өчүрүңүз."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "RAW"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Абал коду"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Бул документте түрдүү булактардан ачуу саясаты көрсөтүлгөндүктөн, анын sandbox атрибуту менен iframe жүктөө аракети бөгөттөлгөн."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Бул фреймди документке жалгаштыруу үчүн жооптун төмөнкү аталышын көрсөтүп, анда түрдүү булактардан жалгаштыруу саясатын иштетүү керек:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Бул булакты башка жерден жүктөө үчүн сервер башка булактардан колдонуу саясатынын жооп аталышын көрсөтүшү мүмкүн:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Бул булакты башка жерден жүктөө үчүн сервер башка булактардан колдонуу саясатынын жооп аталышын өзгөртүшү мүмкүн:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Бул булакты башка сайттан жүктөө үчүн сервер башка булактардан колдонуу саясатынын жооп аталышын өзгөртүшү мүмкүн:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Кардар берген аргумент туура эмес же жараксыз экен."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Түрү"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Эгер булак менен документ бир сайттан алынса, бул параметрди тандаңыз."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Бул параметрди ушул булак көрсөтүлгөн арбитражга берилген вебсайт коопсуз болсо гана тандаңыз."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Бул документте түрдүү булактардан ачуу саясаты көрсөтүлгөндүктөн, анын sandbox атрибуту менен iframe жүктөө аракети бөгөттөлгөн."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Бул алкакты документке жалгаштыруу үчүн жооптун төмөнкү аталышын көрсөтүп, анда түрдүү булактардан жалгаштыруу саясатын иштетүү керек:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Бул булакты башка жерден жүктөө үчүн сервер башка булактардан колдонуу саясатынын жооп аталышын көрсөтүшү мүмкүн:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Бул булакты башка жерден жүктөө үчүн сервер башка булактардан колдонуу саясатынын жооп аталышын өзгөртүшү мүмкүн:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Бул булакты башка сайттан жүктөө үчүн сервер башка булактардан колдонуу саясатынын жооп аталышын өзгөртүшү мүмкүн:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Топтомдогу булактар"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Тармак таржымалындагы нерселер алкагы боюнча топтоштурулбасын"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevTools кызматына Windows Shares'ден булак карталары сыяктуу булактарды Windows Shares'де UNC жолдору аркылуу жүктөөгө уруксат берүү. Коопсуздук себептеринен улам демейки шартта өчүрүлдү."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "алкак"
@@ -9791,9 +9812,6 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Абал туура болгондо гана тындыруу"
   },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Ажырым чекиттери жок"
-  },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Түс тандагычты ачуу."
   },
@@ -10893,7 +10911,7 @@
     "message": "CPU:"
   },
   "panels/timeline/TimelinePanel.ts | description": {
-    "message": "Сүрөттөмө"
+    "message": "Учкай маалымат"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "JavaScript үлгүлөрүн өчүрүү"
@@ -12159,10 +12177,10 @@
     "message": "Көйгөй учурда жеткиликсиз"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Эстутумдагы негизги нерсени өчүрүү"
+    "message": "Бул эстутумду бөлүп көрсөтүүнү токтотуу"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Бөлүп көрсөтүлгөн эстутумга өтүү"
+    "message": "Ушул эстутумга өтүү"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Дарек {PH1} жана {PH2} сандарынын ортосунда болушу керек"

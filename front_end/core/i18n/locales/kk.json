@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Желі сұрауын бөгеуді қосу"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevTools құралына UNC жолдары арқылы Windows желілік ортақ каталогінен түпнұсқа карталар сияқты ресурстарды жүктеуге рұқсат береді. Қауіпсіздік мақсатында әдепкісінше өшіріліп тұрады."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP форматын қосу"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Рендеринг"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Мәтін теру сәтінде іздеу пәрменін қосу"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Мәтін теру сәтінде іздеу"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Мәтін теру сәтінде іздеу пәрменін өшіру (іздеу үшін Enter пернесін басыңыз)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Рұқсат етілсе, осы сайттағы жарнамаларды көрсету"
@@ -1449,7 +1461,7 @@
     "message": "Серіктес ескірген (D)TLS нұсқасын қарастыруда. Мәселені шешу үшін серіктеске жүгініңіз."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Қорғалмаған контекстердегі WebSQL дерекқоры M107 нұсқасында қолданыстан шығарылады. Веб жадын не индекстелген дерекқорды пайдаланыңыз."
+    "message": "Қорғалмаған контекстердегі WebSQL дерекқоры қолданыстан шығарылды және жақын арада жойылады. Веб жадын не индекстелген дерекқорды пайдаланыңыз."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent қолданыстан шығарылды. Оның орнына стандартты navigator.storage пайдаланыңыз."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Қолданба"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Қолданба панелінің жылжыту жолағы"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Фондық қызметтер"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} элементін өшіріп не оның мәнін өзгертіп көріңіз."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Сол элементтегі {REASON_PROPERTY_DECLARATION_CODE} сипаты {AFFECTED_PROPERTY_DECLARATION_CODE} әсерін айналып өтеді."
+    "message": "Осы элементтегі {REASON_PROPERTY_DECLARATION_CODE} сипаты {AFFECTED_PROPERTY_DECLARATION_CODE} әсерін айналып өтеді."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Жаңа класс қосу"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ағашының навигация жолдары"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Солға айналдыру"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Оңға айналдыру"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(мәтін)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Сертификатты көру"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Белсенді client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Сервер тарапындағы әрекетті іске қосатын белсенді client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Ресурс пен құжатқа бірдей сайттан қызмет көрсетілсе, осы опцияны таңдаңыз."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Коды ашылды:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Толығырақ"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Ақаулар қойындысынан толық ақпарат алуға болады."
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Толығырақ"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Тек тексеру тақырыптары қолжетімді, себебі бұл сұрау желімен жіберілген жоқ, оның орнына бастапқы сұрау тақырыптары сақталмайтын жергілікті кэште өңделді. Толық сұрау тақырыптарын көру үшін кэшті өшіріңіз."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Шамамен алынған тақырыптар көрсетілген."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Шамамен алынған тақырыптар көрсетілген. Толық тақырыптарды көру үшін кэшті өшіріңіз."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(диск кэшінен)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Тақырыпты қайта анықтау"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Толығырақ"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Ақаулар қойындысынан толық ақпарат алуға болады."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Арбитрациялық веб-сайт, оның ішінде осы ресурс қауіп төндірмесе, осы опцияны ғана таңдаңыз."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Тек тексеру тақырыптары қолжетімді, себебі бұл сұрау желімен жіберілген жоқ, оның орнына бастапқы сұрау тақырыптары сақталмайтын жергілікті кэште өңделді. Толық сұрау тақырыптарын көру үшін кэшті өшіріңіз."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Шамамен алынған тақырыптар көрсетілген."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Шамамен алынған тақырыптар көрсетілген. Толық тақырыптарды көру үшін кэшті өшіріңіз."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Өңделмеген"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Күй коды"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Бұл құжат iframe аясында бөгеліп, оған sandbox төлсипаты тағайындалды, себебі бұл құжатта түрлі домендегі нысандарды ашу саясаты көрсетілген."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Осы кадрды құжатқа ендіру үшін жауапта мына тақырыпты көрсете отырып, барлық бастапқы орындағы енгізу саясатын қосу қажет:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Осы ресурсты басқа бастапқы орыннан қолдану үшін сервер тиісті жауап тақырыптарында барлық бастапқы орын ресурсының саясатын көрсетуі керек:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Осы ресурсты басқа бастапқы орыннан қолдану үшін сервер барлық бастапқы орын ресурсы саясатының жауап тақырыбын босатуы мүмкін:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Осы ресурсты басқа сайттан пайдалану үшін сервер барлық бастапқы орын ресурсы саясатының жауап тақырыбын босатуы мүмкін:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Клиент көрсеткен аргумент дұрыс құрылмаған немесе басқа жолмен жарамсыз."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tүрі"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Ресурс пен құжатқа бірдей сайттан қызмет көрсетілсе, осы опцияны таңдаңыз."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Арбитрациялық веб-сайт, оның ішінде осы ресурс қауіп төндірмесе, осы опцияны ғана таңдаңыз."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Бұл құжат iframe аясында бөгеліп, оған sandbox төлсипаты тағайындалды, себебі бұл құжатта түрлі түпнұсқалы нысандарды ашу саясаты көрсетілген."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Осы кадрды құжатқа ендіру үшін жауапта мына тақырыпты көрсете отырып, барлық бастапқы орындағы енгізу саясатын қосу қажет:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Осы ресурсты басқа бастапқы орыннан қолдану үшін сервер тиісті жауап тақырыптарында барлық бастапқы орын ресурсының саясатын көрсетуі керек:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Осы ресурсты басқа бастапқы орыннан қолдану үшін сервер барлық бастапқы орын ресурсы саясатының жауап тақырыбын босатуы мүмкін:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Осы ресурсты басқа сайттан пайдалану үшін сервер барлық бастапқы орын ресурсы саясатының жауап тақырыбын босатуы мүмкін:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Жинақталған ресурс"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Желі журналының элементтерін кадр бойынша топтастырмау"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevTools құралына UNC жолдары арқылы Windows желілік ортақ каталогінен түпнұсқа карталар сияқты ресурстарды жүктеуге рұқсат береді. Қауіпсіздік мақсатында әдепкісінше өшіріліп тұрады."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "кадр"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Шарт true болғанда ғана кідіртіңіз"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Тоқтату нүктелері жоқ"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Түс палитрасын ашыңыз."
@@ -12159,10 +12177,10 @@
     "message": "Ақау қазір қолжетімсіз"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Ерекшеленген жадты жою"
+    "message": "Осы жадты ерекшелеуді тоқтату"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Ерекшеленген жадқа өту"
+    "message": "Осы жадқа өту"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Мекенжай {PH1} және {PH2} аралығындағы сан болуы керек"

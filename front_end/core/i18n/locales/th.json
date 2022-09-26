@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "เปิดใช้การบล็อกคำขอเครือข่าย"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "อนุญาตให้ DevTools โหลดทรัพยากร เช่น การแมปแหล่งที่มา จากการแชร์ของ Windows ผ่านเส้นทาง UNC ปิดใช้อยู่โดยค่าเริ่มต้นเพื่อความปลอดภัย"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "เปิดใช้รูปแบบ WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "การแสดงผล"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "เปิดใช้การค้นหาขณะพิมพ์"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "ค้นหาขณะพิมพ์"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "ปิดใช้การค้นหาขณะพิมพ์ (กด Enter เพื่อค้นหา)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "แสดงโฆษณาในเว็บไซต์นี้หากได้รับอนุญาต"
@@ -1449,7 +1461,7 @@
     "message": "พาร์ทเนอร์ของคุณต่อรอง (D)TLS เวอร์ชันที่ล้าสมัย โปรดตรวจสอบกับพาร์ทเนอร์เพื่อดำเนินการแก้ไข"
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "เราเลิกใช้งาน WebSQL ในบริบทที่ไม่ปลอดภัยแล้วและจะนําออกใน M107 โปรดใช้พื้นที่เก็บข้อมูลเว็บหรือฐานข้อมูลที่จัดทำดัชนีแล้ว"
+    "message": "เราเลิกใช้งาน WebSQL ในบริบทที่ไม่ปลอดภัยแล้วและจะนําออกเร็วๆ นี้ โปรดใช้พื้นที่เก็บข้อมูลเว็บหรือฐานข้อมูลที่จัดทำดัชนีแล้ว"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent เลิกใช้งานแล้ว โปรดใช้ navigator.storage มาตรฐานแทน"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "แอปพลิเคชัน"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "แถบด้านข้างของแผงแอปพลิเคชัน"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "บริการที่ทำงานอยู่เบื้องหลัง"
@@ -4764,7 +4779,7 @@
     "message": "ลองนำ {REASON_PROPERTY_DECLARATION_CODE} ออกหรือเปลี่ยนค่า"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "พร็อพเพอร์ตี้ {REASON_PROPERTY_DECLARATION_CODE} ในองค์ประกอบเดียวกันข้ามผลกระทบของ {AFFECTED_PROPERTY_DECLARATION_CODE}"
+    "message": "พร็อพเพอร์ตี้ {REASON_PROPERTY_DECLARATION_CODE} ในองค์ประกอบนี้ข้ามผลกระทบของ {AFFECTED_PROPERTY_DECLARATION_CODE}"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "เพิ่มคลาสใหม่"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "เบรดครัมบ์แผนผัง DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "เลื่อนไปทางซ้าย"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "เลื่อนไปทางขวา"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(ข้อความ)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "ดูใบรับรอง"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs ที่ใช้งานอยู่"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs ที่มีการใช้งานซึ่งทำให้เกิดลักษณะการทำงานฝั่งเซิร์ฟเวอร์"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "เลือกตัวเลือกนี้หากทรัพยากรและเอกสารส่งมาจากเว็บไซต์เดียวกัน"
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "ถอดรหัสแล้ว:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "ดูข้อมูลเพิ่มเติมในแท็บปัญหา"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "มีเพียงส่วนหัวที่จัดสรรไว้เท่านั้นที่พร้อมใช้งาน เนื่องจากคำขอนี้ไม่ได้ส่งผ่านเครือข่ายและแสดงจากแคชในเครื่องแทน ซึ่งไม่ได้จัดเก็บส่วนหัวของคำขอเดิมไว้ ปิดใช้แคชเพื่อดูส่วนหัวของคำขอแบบเต็ม"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "ส่วนหัวที่จัดสรรไว้แสดงอยู่"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "ส่วนหัวที่จัดสรรไว้แสดงอยู่ ปิดใช้แคชเพื่อดูส่วนหัวแบบเต็ม"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(จากแคชดิสก์)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "การลบล้างส่วนหัว"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "ดูข้อมูลเพิ่มเติม"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "ดูข้อมูลเพิ่มเติมในแท็บปัญหา"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "เลือกตัวเลือกนี้เฉพาะในกรณีที่เว็บไซต์ที่กำหนดเองซึ่งรวมถึงทรัพยากรนี้ไม่ทำให้เกิดความเสี่ยงด้านความปลอดภัย"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "มีเพียงส่วนหัวที่จัดสรรไว้เท่านั้นที่พร้อมใช้งาน เนื่องจากคำขอนี้ไม่ได้ส่งผ่านเครือข่ายและแสดงจากแคชในเครื่องแทน ซึ่งไม่ได้จัดเก็บส่วนหัวของคำขอเดิมไว้ ปิดใช้แคชเพื่อดูส่วนหัวของคำขอแบบเต็ม"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "ส่วนหัวที่จัดสรรไว้แสดงอยู่"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "ส่วนหัวที่จัดสรรไว้แสดงอยู่ ปิดใช้แคชเพื่อดูส่วนหัวแบบเต็ม"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "ไฟล์ข้อมูล RAW"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "รหัสสถานะ"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "มีการบล็อกเอกสารนี้ไม่ให้โหลดใน iframe ที่มีแอตทริบิวต์ sandbox เนื่องจากเอกสารระบุนโยบายเครื่องมือเปิดแบบข้ามต้นทาง"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "หากต้องการฝังเฟรมนี้ในเอกสารของคุณ การตอบกลับต้องเปิดใช้นโยบายเครื่องมือฝังแบบข้ามต้นทางโดยระบุส่วนหัวการตอบกลับต่อไปนี้"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "หากต้องการใช้ทรัพยากรนี้จากต้นทางอื่น เซิร์ฟเวอร์อาจต้องระบุนโยบายทรัพยากรแบบข้ามต้นทางในส่วนหัวการตอบกลับ"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "หากต้องการใช้ทรัพยากรนี้จากต้นทางอื่น เซิร์ฟเวอร์อาจคลายส่วนหัวการตอบกลับของนโยบายทรัพยากรแบบข้ามต้นทาง"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "หากต้องการใช้ทรัพยากรนี้จากเว็บไซต์อื่น เซิร์ฟเวอร์อาจคลายส่วนหัวการตอบกลับของนโยบายทรัพยากรแบบข้ามต้นทาง"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "อาร์กิวเมนต์ที่ไคลเอ็นต์ระบุผิดรูปแบบหรือไม่ถูกต้อง"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "ประเภท"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "เลือกตัวเลือกนี้หากทรัพยากรและเอกสารส่งมาจากเว็บไซต์เดียวกัน"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "เลือกตัวเลือกนี้เฉพาะในกรณีที่เว็บไซต์ที่กำหนดเองซึ่งรวมถึงทรัพยากรนี้ไม่ทำให้เกิดความเสี่ยงด้านความปลอดภัย"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "มีการบล็อกเอกสารนี้ไม่ให้โหลดใน iframe ที่มีแอตทริบิวต์ sandbox เนื่องจากเอกสารระบุนโยบายเครื่องมือเปิดแบบข้ามต้นทาง"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "หากต้องการฝังเฟรมนี้ในเอกสารของคุณ การตอบกลับต้องเปิดใช้นโยบายเครื่องมือฝังแบบข้ามต้นทางโดยระบุส่วนหัวการตอบกลับต่อไปนี้"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "หากต้องการใช้ทรัพยากรนี้จากต้นทางอื่น เซิร์ฟเวอร์จะต้องระบุนโยบายทรัพยากรแบบข้ามต้นทางในส่วนหัวการตอบกลับ"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "หากต้องการใช้ทรัพยากรนี้จากต้นทางอื่น เซิร์ฟเวอร์อาจคลายส่วนหัวการตอบกลับของนโยบายทรัพยากรแบบข้ามต้นทาง"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "หากต้องการใช้ทรัพยากรนี้จากเว็บไซต์อื่น เซิร์ฟเวอร์อาจคลายส่วนหัวการตอบกลับของนโยบายทรัพยากรแบบข้ามต้นทาง"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "ทรัพยากรในแพ็กเกจ"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "อย่าจัดกลุ่มรายการในบันทึกเครือข่ายตามเฟรม"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "อนุญาตให้ DevTools โหลดทรัพยากร เช่น การแมปแหล่งที่มา จากการแชร์ของ Windows ผ่านเส้นทาง UNC ปิดใช้อยู่โดยค่าเริ่มต้นเพื่อความปลอดภัย"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "เฟรม"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "หยุดชั่วคราวเฉพาะเมื่อเงื่อนไขเป็นจริง"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "ไม่มีเบรกพอยท์"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "เปิดตัวเลือกสี"
@@ -12159,10 +12177,10 @@
     "message": "ปัญหาที่ยังไม่เรียบร้อย"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "ลบไฮไลต์หน่วยความจำ"
+    "message": "หยุดไฮไลต์หน่วยความจำนี้"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "ข้ามไปยังหน่วยความจำที่ไฮไลต์"
+    "message": "ข้ามไปยังหน่วยความจำนี้"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ที่อยู่ต้องเป็นตัวเลขระหว่าง {PH1} ถึง {PH2}"

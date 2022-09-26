@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ネットワーク リクエストのブロックを有効にする"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevTools が UNC パスを介して Windows Share からソースマップなどのリソースを読み込むことを許可します。セキュリティ上の理由により、デフォルトで無効になっています。"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP 形式を有効にする"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "レンダリング"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "入力逐次検索を有効にする"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "入力逐次検索"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "入力逐次検索を無効にする（Enter キーを押して検索）"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "このサイトに広告を表示（許可されている場合）"
@@ -1449,7 +1461,7 @@
     "message": "パートナーは古い（D）TLS バージョンの交渉を行っています。パートナーに確認してこれを修正してもらってください。"
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "セキュアでないコンテキストの WebSQL はサポートが終了し、M107 で削除される予定です。Web Storage またはインデックス登録済みのデータベースを使用してください。"
+    "message": "セキュアでないコンテキストでの WebSQL は非推奨であり、まもなく削除されます。Web Storage またはインデックス登録済みのデータベースを使用してください。"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent が非推奨となりました。代わりに、標準化された navigator.storage を使用してください。"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "アプリケーション"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "アプリケーション パネルのサイドバー"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "バックグラウンド サービス"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} を削除するか、値を変更してみてください。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "同じ要素に {REASON_PROPERTY_DECLARATION_CODE} プロパティが設定されているため、{AFFECTED_PROPERTY_DECLARATION_CODE} は適用されません。"
+    "message": "この要素の {REASON_PROPERTY_DECLARATION_CODE} プロパティに {AFFECTED_PROPERTY_DECLARATION_CODE} は適用されません。"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "新しいクラスを追加"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ツリーのパンくずリスト"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "左へスクロール"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "右へスクロール"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "（テキスト）"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "証明書を表示"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "有効なclient experiment variation IDs です。"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "サーバーサイドの動作をトリガーするアクティブな client experiment variation IDs です。"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "リソースとドキュメントが同じサイトから配信されている場合は、このオプションを選択してください。"
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "デコード済み:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "詳細"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "詳しくは問題タブをご覧ください"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "詳細"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "このリクエストはネットワーク経由で送信されておらず、提供元のリクエスト ヘッダーが保存されていないローカル キャッシュから提供されているため、暫定的なヘッダーしか使用できません。完全なリクエスト ヘッダーを表示するには、キャッシュを無効にしてください。"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "一時的なヘッダーが表示されています。"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "一時的なヘッダーが表示されています。完全なヘッダーを表示するには、キャッシュを無効にしてください。"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "（ディスク キャッシュから）"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "ヘッダーのオーバーライド"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "詳細"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "詳しくは問題タブをご覧ください"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "このオプションは、このリソースが含まれたウェブサイトにセキュリティ上のリスクがない場合のみ選択してください。"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "このリクエストはネットワーク経由で送信されておらず、提供元のリクエスト ヘッダーが保存されていないローカル キャッシュから提供されているため、暫定的なヘッダーしか使用できません。完全なリクエスト ヘッダーを表示するには、キャッシュを無効にしてください。"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "一時的なヘッダーが表示されています。"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "一時的なヘッダーが表示されています。完全なヘッダーを表示するには、キャッシュを無効にしてください。"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raw"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "ステータス コード"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "このドキュメントはクロスオリジン オープナー ポリシーを指定しているため、sandbox 属性を持つ iframe に読み込めませんでした"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "このフレームをドキュメントに埋め込むには、次のレスポンス ヘッダーを指定することにより、レスポンスがクロスオリジン埋め込みポリシーを有効化する必要があります。"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "このリソースを別のオリジンから使用するために、サーバーはレスポンス ヘッダーでクロスオリジン リソース ポリシーを指定する必要があります。"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "このリソースを別のオリジンから使用するために、サーバーはクロスオリジン リソース ポリシー レスポンス ヘッダーを緩和できます。"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "このリソースを別のサイトから使用するために、サーバーはクロスオリジン リソース ポリシー レスポンス ヘッダーを緩和できます。"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "クライアントが提供した引数の形式が正しくないか、無効です。"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "タイプ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "リソースとドキュメントが同じサイトから配信されている場合は、このオプションを選択してください。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "このオプションは、このリソースが含まれたウェブサイトにセキュリティ上のリスクがない場合のみ選択してください。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "このドキュメントはクロスオリジン オープナー ポリシーを指定しているため、sandbox 属性を持つ iframe に読み込めませんでした"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "このフレームをドキュメントに埋め込むには、次のレスポンス ヘッダーを指定することにより、レスポンスがクロスオリジン埋め込みポリシーを有効化する必要があります。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "このリソースを別のオリジンから使用するために、サーバーはレスポンス ヘッダーでクロスオリジン リソース ポリシーを指定する必要があります。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "このリソースを別のオリジンから使用するために、サーバーはクロスオリジン リソース ポリシー レスポンス ヘッダーを緩和できます。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "このリソースを別のサイトから使用するために、サーバーはクロスオリジン リソース ポリシー レスポンス ヘッダーを緩和できます。"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "バンドルされたリソース"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ネットワーク ログ項目をフレーム別にグループ化しない"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevTools が UNC パスを介して Windows Share からソースマップなどのリソースを読み込むことを許可します。セキュリティ上の理由により、デフォルトで無効になっています。"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "フレーム"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "条件が true の場合のみ一時停止"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "ブレークポイントがありません"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "カラー選択ツールを開く"
@@ -12159,10 +12177,10 @@
     "message": "現在、問題を表示できません"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "メモリのハイライト表示を削除"
+    "message": "このメモリをハイライト表示しない"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "ハイライト表示されたメモリに移動"
+    "message": "このメモリに移動"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "アドレスは {PH1}～{PH2} の数値で指定してください"

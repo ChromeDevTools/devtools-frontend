@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Slå på blokkering av nettverksforespørsler"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "La DevTools laste inn ressurser, for eksempel kildekart, fra Windows-nettverksressurser via UNC-baner. Deaktivert som standard av sikkerhetshensyn."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivér WebP-formatet"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Gjengir"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktiver søk mens du skriver"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Søk mens du skriver"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Deaktiver søk mens du skriver (trykk på Enter for å søke)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Vis annonser på dette nettstedet, hvis tillatt"
@@ -1449,7 +1461,7 @@
     "message": "Partneren din bruker en foreldet (D)TLS-versjon. Snakk med partneren din for å få rettet dette."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL i usikre kontekster er avviklet og blir fjernet i M107. Bruk nettlagring eller indeksert database."
+    "message": "WebSQL i usikre kontekster er avviklet og blir snart fjernet. Bruk nettlagring eller indeksert database."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent er avviklet. Bruk standardisert navigator.storage i stedet."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Program"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Sidefelt for appanel"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Bakgrunnstjenester"
@@ -4764,7 +4779,7 @@
     "message": "Prøv å fjerne {REASON_PROPERTY_DECLARATION_CODE} eller endre verdien."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "{REASON_PROPERTY_DECLARATION_CODE}-egenskapen på samme element omgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "{REASON_PROPERTY_DECLARATION_CODE}-egenskapen til dette elementet omgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Legg til ny klasse"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Brødsmule-navigering i DOM-treet"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Rull til venstre"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Rull til høyre"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(tekst)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Vis sertifikatet"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktiv client experiment variation IDs"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktive client experiment variation IDs som utløser atferd på tjenersiden."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Velg dette alternativet hvis ressursen og dokumentet vises fra samme nettsted."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dekodet:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Finn ut mer"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Finn ut mer på problemer-fanen"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Finn ut mer"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Kun provisoriske hoder er tilgjengelige, ettersom dette hodet ikke ble sendt over nettverket, men hentet fra en lokal buffer som ikke lagrer de opprinnelige forespørselshodene. Slå av bufferen for å se fullstendige forespørselshoder."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Provisoriske overskrifter vises."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Provisoriske overskrifter vises. Slå av bufferen for å se fullstendige overskrifter."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(fra diskbufferen)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Hodeoverstyringer"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Finn ut mer"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Finn ut mer på problemer-fanen"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Velg dette alternativet kun hvis et vilkårlig nettsted som inkluderer denne ressursen, ikke utgjør noen sikkerhetsrisiko."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Kun provisoriske hoder er tilgjengelige, ettersom dette hodet ikke ble sendt over nettverket, men hentet fra en lokal buffer som ikke lagrer de opprinnelige forespørselshodene. Slå av bufferen for å se fullstendige forespørselshoder."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Provisoriske overskrifter vises."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Provisoriske overskrifter vises. Slå av bufferen for å se fullstendige overskrifter."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Uparsede"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Statuskode"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dette dokumentet ble blokkert fra å lastes inn i en iframe med et sandbox-attributt, fordi dokumentet spesifiserte en regel for opphavsuavhengig åpner."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "For at denne rammen skal kunne bygges inn i dokumentet, må responsen slå på regelen for opphavsuavhengig innbygging ved å spesifisere det følgende svarhodet:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "For å bruke denne ressursen fra et annet opphav må tjeneren angi en opphavsuavhengig ressursregel i svarhodene:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "For å bruke denne ressursen fra et annet opphav kan det hende tjeneren er romslig med svarhodet for den opphavsuavhengige ressursregelen:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "For å bruke denne ressursen fra et annet nettsted kan det hende tjeneren er romslig med svarhodet for den opphavsuavhengige ressursregelen:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Et argument fra klienten inneholdt feil eller var ugyldig på en annen måte."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Type"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Velg dette alternativet hvis ressursen og dokumentet vises fra samme nettsted."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Velg dette alternativet kun hvis et vilkårlig nettsted som inkluderer denne ressursen, ikke utgjør noen sikkerhetsrisiko."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Dette dokumentet ble blokkert fra å lastes inn i et iframe-element med et sandbox-attributt, fordi dokumentet spesifiserte en regel for opphavsuavhengig åpning."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "For å bygge denne rammen inn i dokumentet må svaret slå på regelen for opphavsuavhengig innbygging ved å spesifisere det følgende svarhodet:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "For å bruke denne ressursen fra et annet opphav må tjeneren angi en opphavsuavhengig ressursregel i svarhodene:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "For å bruke denne ressursen fra et annet opphav kan det hende tjeneren er romslig med svarhodet for den opphavsuavhengige ressursregelen:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "For å bruke denne ressursen fra et annet nettsted kan det hende tjeneren er romslig med svarhodet for den opphavsuavhengige ressursregelen:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Gruppert ressurs"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ikke gruppér nettverksloggelementer etter ramme"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "La DevTools laste inn ressurser, for eksempel kildekart, fra Windows-nettverksressurser via UNC-baner. Deaktivert som standard av sikkerhetshensyn."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ramme"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Satt på pause bare når tilstanden er oppfylt"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Ingen stoppunkter"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Åpne fargevelger."
@@ -12159,10 +12177,10 @@
     "message": "Problemet er ikke tilgjengelig nå"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Slett fremheving av minne"
+    "message": "Slutt å fremheve dette minnet"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Gå til fremhevet minne"
+    "message": "Gå til dette minnet"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adressen må være et tall mellom {PH1} og {PH2}"

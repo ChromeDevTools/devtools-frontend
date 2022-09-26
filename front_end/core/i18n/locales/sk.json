@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Povoliť blokovanie požiadaviek siete"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Povoľte nástroju DevTools načítavať zdroje, napríklad mapy zdrojov, zo zdieľaných položiek systému Windows prostredníctvom ciest UNC. Z bezpečnostných dôvodov je táto možnosť predvolene vypnutá."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivovať formát WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Vykresľovanie"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Povoliť vyhľadávanie počas zadávania"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Hľadať počas zadávania"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Vypnúť vyhľadávanie počas zadávania (vyhľadávajte stlačením klávesa Enter)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Zobrazovať reklamy na tomto webe (ak sú povolené)"
@@ -1449,7 +1461,7 @@
     "message": "Váš partner používa zastaranú verziu (D)TLS. Požiadajte ho, aby tento problém odstránil."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Podpora rozhrania WebSQL v nezabezpečených kontextoch bola ukončená a vo verzii M107 bude odstránená. Použite webový ukladací priestor alebo indexovanú databázu."
+    "message": "Podpora rozhrania WebSQL v nezabezpečených kontextoch bola ukončená a bude čoskoro odstránená. Použite webový ukladací priestor alebo indexovanú databázu."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "Podpora parametra StorageType.persistent bola ukončená. Použite namiesto neho štandardizovaný parameter navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikácia"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Bočný panel aplikácie"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Služby na pozadí"
@@ -4764,7 +4779,7 @@
     "message": "Skúste položku {REASON_PROPERTY_DECLARATION_CODE} odstrániť alebo zmeniť jej hodnotu."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Na vlastnosť {REASON_PROPERTY_DECLARATION_CODE} v rovnakom prvku nemá {AFFECTED_PROPERTY_DECLARATION_CODE} vplyv."
+    "message": "Vlastnosť {REASON_PROPERTY_DECLARATION_CODE} v tomto prvku obchádza vplyv vlastnosti {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Pridať novú triedu"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Popis cesty stromu modelu DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Posunúť doľava"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Posunúť doprava"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(text)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Zobraziť certifikát"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktívne: client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktívny atribút client experiment variation IDs spúšťajúci správanie na strane servera."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Túto možnosť vyberte, keď sa zdroj a dokument zobrazujú z rovnakého webu."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dekódované:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Viac sa dozviete na karte Problémy"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "K dispozícii sú iba predbežné hlavičky, pretože táto požiadavka nebola odoslaná cez sieť, ale z miestnej vyrovnávacej pamäte, ktorá neuchováva pôvodné hlavičky požiadaviek. Ak chcete zobraziť celé hlavičky požiadaviek, zakážte vyrovnávaciu pamäť."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Zobrazujú sa predbežné hlavičky."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Zobrazujú sa predbežné hlavičky. Ak chcete zobraziť úplné hlavičky, deaktivujte vyrovnávaciu pamäť."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(z vyrovnávacej pamäte disku)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Prepísania hlavičiek"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Ďalšie informácie"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Viac sa dozviete na karte Problémy"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Túto možnosť vyberte iba vtedy, keď arbitrárny web s týmto zdrojom nepredstavuje bezpečnostné riziko."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "K dispozícii sú iba predbežné hlavičky, pretože táto požiadavka nebola odoslaná cez sieť, ale z miestnej vyrovnávacej pamäte, ktorá neuchováva pôvodné hlavičky požiadaviek. Ak chcete zobraziť celé hlavičky požiadaviek, zakážte vyrovnávaciu pamäť."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Zobrazujú sa predbežné hlavičky."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Zobrazujú sa predbežné hlavičky. Ak chcete zobraziť úplné hlavičky, deaktivujte vyrovnávaciu pamäť."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Nespracované"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Stavový kód"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Načítavanie tohto dokumentu v poli iframe s atribútom sandbox bolo blokované, pretože tento dokument špecifikoval pravidlá otvárača zo zmiešaného zdroja."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Ak chcete vložiť tento rám do dokumentu, odpoveď musí povoliť pravidlá vkladania zmiešaného pôvodu špecifikovaním nasledujúcej hlavičky odpovede:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Ak chcete použiť tento zdroj z iného zdroja, server musí špecifikovať v hlavičkách odpovede pravidlá zmiešaného zdroja:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Ak chcete použiť tento zdroj z iného pôvodu, server môže uvoľniť hlavičku odpovede pravidiel zmiešaného zdroja:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Ak chcete použiť tento zdroj z iného webu, server môže uvoľniť hlavičku odpovede pravidiel zmiešaného zdroja."
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Argument poskytnutý klientom mal nesprávny formát alebo bol inak neplatný."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Typ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Túto možnosť vyberte, ak sa zdroj a dokument zobrazujú z rovnakého webu."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Túto možnosť vyberte iba vtedy, keď arbitrárny web s týmto zdrojom nepredstavuje bezpečnostné riziko."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Načítavanie tohto dokumentu v poli iframe s atribútom sandbox bolo blokované, pretože tento dokument špecifikoval pravidlá otvárača zo zmiešaného zdroja."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Ak chcete vložiť tento rám do dokumentu, odpoveď musí povoliť pravidlá vkladania zmiešaného zdroja špecifikovaním nasledujúcej hlavičky odpovede:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Ak chcete použiť tento zdroj z iného zdroja, server musí špecifikovať v hlavičkách odpovede pravidlá zmiešaného zdroja:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Ak chcete použiť tento zdroj z iného zdroja, server môže uvoľniť hlavičku odpovede pravidiel zmiešaného zdroja:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Ak chcete použiť tento zdroj z iného webu, server môže uvoľniť hlavičku odpovede pravidiel zmiešaného zdroja."
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Zdroj v balíku"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Nezoskupovať položky denníka siete podľa rámu"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Povoľte nástroju DevTools načítavať zdroje, napríklad mapy zdrojov, zo zdieľaných položiek systému Windows prostredníctvom ciest UNC. Z bezpečnostných dôvodov je táto možnosť predvolene vypnutá."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "rám"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pozastaviť iba vtedy, keď je podmienka splnená"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Žiadne zlomové body"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Otvoriť výber farieb"
@@ -12159,10 +12177,10 @@
     "message": "Položka nie je momentálne k dispozícii"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Odstrániť zvýraznenie pamäte"
+    "message": "Prestať zvýrazňovať túto spomienku"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Prechod na zvýraznenú pamäť"
+    "message": "Prejsť na túto spomienku"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresa musí byť číslo medzi {PH1} a {PH2}"

@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Włącz blokowanie żądań sieciowych"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Zezwalaj DevTools na ładowanie zasobów, takich jak mapy źródłowe, z udostępniania plików w systemie Windows przy użyciu ścieżek UNC. Ta opcja jest domyślnie wyłączona ze względów bezpieczeństwa."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Włącz format WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderowanie"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Włącz wyszukiwanie w trakcie pisania"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Wyszukuj w trakcie pisania"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Wyłącz wyszukiwanie w trakcie pisania (aby wyszukać, naciśnij Enter)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Pokazuj reklamy w tej witrynie, jeśli jest to dozwolone"
@@ -1449,7 +1461,7 @@
     "message": "Partner negocjuje przestarzałą wersję (D)TLS. Poproś go o rozwiązanie problemu."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Baza danych WebSQL w niezabezpieczonych kontekstach nie jest już używana i w wersji M107 zostanie usunięta. Użyj bazy danych Web Storage lub Indexed Database."
+    "message": "Baza danych WebSQL w niezabezpieczonych kontekstach została wycofana i wkrótce zostanie usunięta. Użyj bazy danych Web Storage lub Indexed Database."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "Wycofano interfejs StorageType.persistent. Zamiast niego użyj standaryzowanego interfejsu navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikacja"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Pasek boczny panelu aplikacji"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Usługi w tle"
@@ -4764,7 +4779,7 @@
     "message": "Spróbuj usunąć właściwość {REASON_PROPERTY_DECLARATION_CODE} lub zmienić jej wartość."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Właściwość {REASON_PROPERTY_DECLARATION_CODE} tego samego elementu omija efekt właściwości {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Właściwość {REASON_PROPERTY_DECLARATION_CODE} tego elementu pomija efekt {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Dodaj nową klasę"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Menu nawigacyjne drzewa DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Przewiń w lewo"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Przewiń w prawo"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(tekst)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Wyświetl certyfikat"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktywny nagłówek client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktywny nagłówek client experiment variation IDs, który wyzwala działanie po stronie serwera."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Wybierz tę opcję, jeśli zasób i dokument są udostępniane z tej samej witryny."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Zdekodowane:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Więcej informacji"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Więcej informacji znajdziesz na karcie Problemy"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Więcej informacji"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Dostępne są tylko nagłówki tymczasowe, ponieważ żądanie nie zostało wysłane przez sieć, lecz udostępnione z lokalnej pamięci podręcznej, która nie przechowuje oryginalnych nagłówków żądania. Wyłącz pamięć podręczną, aby zobaczyć pełne nagłówki żądania."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Widoczne są nagłówki prowizoryczne."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Widoczne są nagłówki prowizoryczne. Aby zobaczyć pełne nagłówki, wyłącz pamięć podręczną."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(z pamięci podręcznej na dysku)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Zastąpienia nagłówka"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Więcej informacji"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Więcej informacji znajdziesz na karcie Problemy"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Wybierz tę opcję tylko wtedy, gdy dowolna witryna zawierająca ten zasób nie stanowi zagrożenia dla bezpieczeństwa."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Dostępne są tylko nagłówki tymczasowe, ponieważ żądanie nie zostało wysłane przez sieć, lecz udostępnione z lokalnej pamięci podręcznej, która nie przechowuje oryginalnych nagłówków żądania. Wyłącz pamięć podręczną, aby zobaczyć pełne nagłówki żądania."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Widoczne są nagłówki prowizoryczne."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Widoczne są nagłówki prowizoryczne. Aby zobaczyć pełne nagłówki, wyłącz pamięć podręczną."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Nieprzetworzone"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Kod stanu"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Zablokowano ładowanie tego dokumentu w iframe z atrybutem sandbox, ponieważ dokument określa zasadę otwierającego z innej domeny."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Jeśli chcesz umieścić tę ramkę w swoim dokumencie, odpowiedź musi włączać zasadę dotyczącą umieszczania zasobów z innych domen, określając ten nagłówek odpowiedzi:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Aby używać tego zasobu z innego źródła, serwer musi podać zasadę dotyczącą zasobów z innych domen w nagłówkach odpowiedzi:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Aby używać tego zasobu z innego źródła, serwer może osłabić zasadę dotyczącą zasobów z innych witryn w nagłówku odpowiedzi:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Aby używać tego zasobu z innej witryny, serwer może osłabić zasadę dotyczącą zasobów z innych witryn w nagłówku odpowiedzi:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Argument podany przez klienta miał zły format lub był nieprawidłowy z innych powodów."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Typ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Wybierz tę opcję, jeśli zasób i dokument są udostępniane z tej samej witryny."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Wybierz tę opcję tylko wtedy, gdy dowolna witryna zawierająca ten zasób nie stanowi zagrożenia dla bezpieczeństwa."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Zablokowano ładowanie tego dokumentu w iframe z atrybutem sandbox, ponieważ dokument określa zasadę otwierającego z innej domeny."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Jeśli chcesz umieścić tę ramkę w swoim dokumencie, odpowiedź musi włączać zasadę dotyczącą umieszczania zasobów z innych domen, określając ten nagłówek odpowiedzi:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Aby używać tego zasobu z innego źródła, serwer musi podać zasadę dotyczącą zasobów z innych witryn w nagłówkach odpowiedzi:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Aby używać tego zasobu z innego źródła, serwer może osłabić zasadę dotyczącą zasobów z innych witryn w nagłówku odpowiedzi:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Aby używać tego zasobu z innej witryny, serwer może osłabić zasadę dotyczącą zasobów z innych witryn w nagłówku odpowiedzi:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Zasób w pakiecie"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Nie grupuj pozycji dziennika sieci według ramki"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Zezwalaj DevTools na ładowanie zasobów, takich jak mapy źródłowe, z udostępniania plików w systemie Windows przy użyciu ścieżek UNC. Ta opcja jest domyślnie wyłączona ze względów bezpieczeństwa."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ramka"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Wstrzymuj tylko wtedy, gdy warunek jest prawdziwy"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Brak punktów przerwania"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Otwórz selektor kolorów."
@@ -12159,10 +12177,10 @@
     "message": "Problem jest teraz niedostępny"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Usuń zaznaczenie pamięci"
+    "message": "Przestań wyróżniać tę pamięć"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Przejdź do zaznaczonej pamięci"
+    "message": "Przejdź do tej pamięci"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adres musi być liczbą z zakresu od {PH1} do {PH2}"

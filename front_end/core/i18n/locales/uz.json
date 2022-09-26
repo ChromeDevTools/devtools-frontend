@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Tarmoq soʻrovlari bloklanishini yoqish"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevTools ob'ektiga Windows Sharesdan UNC yoʻllari orqali manba xaritalari kabi resurslarni yuklashiga ruxsat bering. Xavfsizlik sabablariga koʻra standart holatda ishlamaydi"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP formatini yoqish"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderlash"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Yozayotganda qidirish funksiyasini yoqish"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Yozayotganda qidirish"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Yozayotganda qidirish funksiyasini oʻchirish (qidirish uchun Enter bosiladi)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Ruxsat berilsa, bu saytda reklamalar chiqsin"
@@ -1449,7 +1461,7 @@
     "message": "Hamkoringiz eskirgan (D)TLS versiyasi yuzasidan muzokara olib boryapti. Buni tuzatish uchun hamkoringizga murojaat qiling."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Himoyalanmagan kontekstlarda WebSQL ishlatilishi eskirgan va M107 versiyasida olib tashlanadi. Oʻrniga veb xotira yoki indekslangan axborot omboridan foydalaning."
+    "message": "Himoyalanmagan kontekstlarda WebSQL ishlatilishi eskirgan va tez orada olib tashlanadi. Oʻrniga veb xotira yoki indekslangan axborot omboridan foydalaning."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent tugatilgan. Oʻrniga standartlashtirilgan navigator.storage ishlating."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Ilova"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Ilova yon paneli"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Fondagi xizmatlar"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE}ni olib tashlang yoki qiymatini oʻzgartiring."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Xuddi shu elementdagi {REASON_PROPERTY_DECLARATION_CODE} xususiyati {AFFECTED_PROPERTY_DECLARATION_CODE} effektini bekor qiladi."
+    "message": "Bu elementdagi {REASON_PROPERTY_DECLARATION_CODE} xususiyati {AFFECTED_PROPERTY_DECLARATION_CODE} effektini bekor qiladi."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Yangi class kiritish"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM daraxti sahifalari zanjiri"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Chapga varaqlash"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Oʻngga varaqlash"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(matn)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Sertifikatni ochish"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Faol client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Serverda amal bajaradigan faol client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Agar manba va hujjat bir saytdan boʻlsa, shu variantni tanlang."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dekodlandi:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Batafsil"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Batafsil axborot muammolar sahifasida"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Batafsil"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Faqat vaqtincha sarlavhalar mavjudligi sababli bu soʻrov tarmoq orqali yuborildi va qurilma keshidan foydalandi, natijada soʻrovning asl sarlavhalari saqlanib qolmadi. Barcha soʻrov sarlavhalarini koʻrish uchun keshni faolsizlantiring."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Erta sarlavhalar chiqarilgan."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Erta sarlavhalar chiqarilgan. Toʻliq sarlavhalarni koʻrish uchun keshni faolsizlantiring."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(disk keshidan)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Oldindan aniqlangan sarlavhalar"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Batafsil"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Batafsil axborot muammolar sahifasida"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Bu variantni faqatgina joriy resursi bor sayt ishonchli boʻlsa tanlang."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Faqat vaqtincha sarlavhalar mavjudligi sababli bu soʻrov tarmoq orqali yuborildi va qurilma keshidan foydalandi, natijada soʻrovning asl sarlavhalari saqlanib qolmadi. Barcha soʻrov sarlavhalarini koʻrish uchun keshni faolsizlantiring."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Erta sarlavhalar chiqarilgan."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Erta sarlavhalar chiqarilgan. Toʻliq sarlavhalarni koʻrish uchun keshni faolsizlantiring."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raw"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Holat kodi"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Begona manbadan ochish siyosatida belgilanganligi uchun bu hujjat iframe muhitidan sandbox atributi bilan yuklanishida bloklandi."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Bu freymni hujjatingizga joylash uchun javob quyidagi sarlavha orqali resurslardan birgalikda foydalanish siyosatini faollashtirishi lozim:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Bu resurs boshqa manbadan yuklanishi uchun server javob sarlavhasini bir nechta manbalardan tatbiq qilishi lozim:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Bu resurs boshqa manbadan yuklanishi uchun server javob sarlavhasini bir nechta manbalardan tatbiq qilishi mumkin."
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Bu resursdan boshqa saytda foydalanish uchun server resurslardan birgalikda foydalanish qoidalari javob sarlavhasini kuchsizlantirishi mumkin:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Mijoz taqdim qilgan argument xato formatda yoki yaroqsiz."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Turi"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Agar manba va hujjat bir saytdan boʻlsa, shu variantni tanlang."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Bu variantni faqatgina joriy resursi bor sayt ishonchli boʻlsa tanlang."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Begona manbadan ochish siyosatida belgilanganligi uchun bu hujjat iframe muhitidan sandbox atributi bilan yuklanishida bloklandi."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Bu freymni hujjatingizga joylash uchun javob quyidagi sarlavha orqali resurslardan birgalikda foydalanish siyosatini faollashtirishi lozim:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Bu resurs boshqa manbadan yuklanishi uchun server javob sarlavhasini bir nechta manbalardan tatbiq qilishi lozim:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Bu resurs boshqa manbadan yuklanishi uchun server javob sarlavhasini bir nechta manbalardan tatbiq qilishi mumkin."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Bu resursdan boshqa saytda foydalanish uchun server resurslardan birgalikda foydalanish qoidalari javob sarlavhasini kuchsizlantirishi mumkin:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Web Bundledagi manba"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Tarmoq jurnali qaydlari freym asosida guruhlanmasin"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevTools ob'ektiga Windows Sharesdan UNC yoʻllari orqali manba xaritalari kabi resurslarni yuklashiga ruxsat bering. Xavfsizlik sabablariga koʻra standart holatda ishlamaydi"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "freym"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Faqat shart faol boʻlsa, pauza qilish"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Oraliq nuqtalarsiz"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Ranglar palitrasini ochish."
@@ -12159,10 +12177,10 @@
     "message": "Hozircha muammo mavjud emas"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Yorqin xotirani oʻchirish"
+    "message": "Bu xotirani eslatishni toʻxtatish"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Yorqin xotirga oʻtish"
+    "message": "Bu xotirani ochish"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Manzil soni {PH1}–{PH2} orasida boʻlsin"

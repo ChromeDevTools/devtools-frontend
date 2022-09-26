@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Nika amandla isicelo sokuvimba inethiwekhi"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Vumela i-DevTools ilayishe izinsiza, njengamamephu omthombo, kusukela ku-Windows Shares ngezindlela ze-UNC. Ikhutshazwe ngokuzenzakalela ngenxa yezizathu zokuphepha."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Nika amandla ifomethi ye-WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Inikezela"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Nika amandla ukusesha njengoba uthayipha"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Sesha njengoba uthayipha"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Khubaza ukusesha ngenkathi uthayipha (cindezela u-Enter ukuze useshe)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Bonisa izikhangiso kuleli sayithi, uma kuvumelekile"
@@ -1449,7 +1461,7 @@
     "message": "Uzakwenu uxoxisana ngohlobo oluphelelwe yisikhathi (D)TLS. Sicela uhlole nozakwenu ukuze kulungiswe lokhu."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "I-WebSQL emongweni ongavikelekile ihoxisiwe futhi izokhishwa ku-M107. Sicela usebenzise Isitolo Sewebhu noma Isizindalwazi Senkomba."
+    "message": "I-WebSQL kokuqukethwe okungavikelekile ihoxisiwe futhi izosuswa maduzane. Sicela usebenzise Isitolo Sewebhu noma Isizindalwazi Senkomba."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "I-StorageType.persistent ihoxisiwe. Sicela usebenzise i-navigator.storage ejwayelekile kunalokho."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Uhlelo lokusebenza"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Ibha eseceleni yephaneli ye-app"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Amasevisi Angemuva"
@@ -4764,7 +4779,7 @@
     "message": "Zama ukususa i-{REASON_PROPERTY_DECLARATION_CODE} noma ukushintsha inani layo."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Impahla ye-{REASON_PROPERTY_DECLARATION_CODE} kwi-elementi efanayo idlula umphumela we-{AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Isakhiwo se-{REASON_PROPERTY_DECLARATION_CODE} esikule elementi sidlula umphumela we-{AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Engeza iklasi elisha"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "I-DOM tree breadcrumbs"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Skrolela ngakwesokunxele"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Skrolela ngakwesokudla"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(umbhalo)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Buka isitifiketi"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Umsebenzi we-client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "I-client experiment variation IDs esebenzayo icupha ukusebenza kweseva esohlangothini."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Khetha le nketho uma insiza nedokhumenti kunikezwa ukusuka kusayithi efanayo."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Kukhishwe ikhodi:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Funda kabanzi"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Funda kabanzi kuthebhu yezinkinga"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Funda kabanzi"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Kunonhlokweni besikhashana kuphela abatholakalayo ngoba lesi sicelo asithunyelwanga ngenethiwekhi kunalokho sinikezwe ukusuka kunqolobane yasendaweni, engagcini onhlokweni boqobo bohlelo. Khubaza inqolobane ukubona onhlokweni abagcwele besicelo."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Onhlokweni abanikeziwe bayaboniswa."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Onhlokweni abanikeziwe bayaboniswa. Khubaza inqolobane ukuze ubone onhlokweni abaphelele."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(kusuka kunqolobane yediski)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Ukukhipha unhlokweni"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Funda kabanzi"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Funda kabanzi kuthebhu yezinkinga"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Khetha kuphela le nketho uma iwebhusayithi ye-arbitrary ebandakanya le nsiza ingabeki ingcuphe yezokuphepha."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Kunonhlokweni besikhashana kuphela abatholakalayo ngoba lesi sicelo asithunyelwanga ngenethiwekhi kunalokho sinikezwe ukusuka kunqolobane yasendaweni, engagcini onhlokweni boqobo bohlelo. Khubaza inqolobane ukubona onhlokweni abagcwele besicelo."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Onhlokweni abanikeziwe bayaboniswa."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Onhlokweni abanikeziwe bayaboniswa. Khubaza inqolobane ukuze ubone onhlokweni abaphelele."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "I-Raw"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Ikhodi Yesimo"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Le dokhumenti iye yavinjwa ekulayisheni ku-iframe ngesibaluli se-sandbox ngoba le dokhumenti icacise inqubomgomo yesivuli somsuka ophambanayo."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Ukuze ushumeke lolu hlaka kudokhumenti yakho, impendulo idinga ukunika amandla inqubomgomo yokushumeka yemvelaphi ehlukahlukene ngokucacisa isihloko sempendulo esilandelayo:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Ukuze isebenzise le nsiza kwindabuko ehlukile, iseva idinga ukucacisa inqubomgomo yensiza yendabuko ehlukile konhlokweni bokusabela:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Ukuze usebenzise le nsiza ukusuka kwindabuko ehlukile, iseva ingase iphumuze unhlokweni wokusabela wenqubomgomo yensiza yendabuko ehlukile:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Ukuze usebenzise le nsiza ukusuka kusayithi elihlukile, iseva ingenza kukhululeke isihloko sempendulo yenqubomgomo yensiza yendabuko ehlukile:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Ukuphikisana okunikezwe iklayenti kade kungasebenzi noma akuvumelekile."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Uhlobo"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Khetha le nketho uma insiza nedokhumenti kunikezwa ukusuka kusayithi efanayo."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Khetha kuphela le nketho uma iwebhusayithi ye-arbitrary ebandakanya le nsiza ingabeki ingcuphe yezokuphepha."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Le dokhumenti iye yavinjwa ekulayisheni ku-iframe ngesibaluli se-sandbox ngoba le dokhumenti icacise inqubomgomo yesivuli somsuka ophambanayo."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Ukuze ushumeke lolu hlaka kudokhumenti yakho, impendulo idinga ukunika amandla inqubomgomo yokushumeka yemvelaphi ehlukahlukene ngokucacisa isihloko sempendulo esilandelayo:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Ukuze isebenzise le nsiza kwindabuko ehlukile, iseva idinga ukucacisa inqubomgomo yensiza yendabuko ehlukile konhlokweni bokusabela:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Ukuze usebenzise le nsiza ukusuka kwindabuko ehlukile, iseva ingase iphumuze unhlokweni wokusabela wenqubomgomo yensiza yendabuko ehlukile:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Ukuze usebenzise le nsiza ukusuka kusayithi elihlukile, iseva ingenza kukhululeke isihloko sempendulo yenqubomgomo yensiza yendabuko ehlukile:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Umthombo wenqwaba"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ungafaki eqenjini izinto zelogu zenethiwekhi yeqembu ngohlaka"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Vumela i-DevTools ilayishe izinsiza, njengamamephu omthombo, kusukela ku-Windows Shares ngezindlela ze-UNC. Ikhutshazwe ngokuzenzakalela ngenxa yezizathu zokuphepha."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "uhlaka"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Phumula kuphela uma isimo siyiqiniso"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Awekho ama-breakpoint"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Vula isikhethi sombala."
@@ -12159,10 +12177,10 @@
     "message": "Inkinga ayitholakali ngalesi sikhathi"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Sula okuvelele kwenkumbulo"
+    "message": "Yeka ukugqamisa le nkumbulo"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Yeqela kwinkumbulo egqanyisiwe"
+    "message": "Gxumela kule nkumbulo"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Ikheli kufanele kube inombolo phakathi kuka-{PH1} no-{PH2}"

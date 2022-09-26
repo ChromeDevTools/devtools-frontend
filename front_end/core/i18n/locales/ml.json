@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്യൽ പ്രവർത്തനക്ഷമമാക്കുക"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "UNC പാതകളിലൂടെ Windows Shares-ൽ നിന്ന് സോഴ്‌സ് മാപ്പുകൾ പോലുള്ള ഉറവിടങ്ങൾ ലോഡ് ചെയ്യാൻ DevTools എന്നതിനെ അനുവദിക്കുക. സുരക്ഷാ കാരണങ്ങളാൽ ഡിഫോൾട്ടായി പ്രവർത്തനരഹിതമാക്കി."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ഫോർമാറ്റ് പ്രവർത്തനക്ഷമമാക്കുക"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "റെൻഡർ ചെയ്യുന്നു"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "നിങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ തിരയുന്നത് പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "നിങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ തിരയുക"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "നിങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ തിരയുന്നത് പ്രവർത്തനരഹിതമാക്കുക (തിരയാൻ Enter അമർത്തുക)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "അനുവദനീയമെങ്കിൽ ഈ സൈറ്റിൽ പരസ്യങ്ങൾ കാണിക്കുക"
@@ -1449,7 +1461,7 @@
     "message": "കാലഹരണപ്പെട്ട ഒരു (D)TLS പതിപ്പാണ് നിങ്ങളുടെ പങ്കാളി ഉപയോഗിക്കുന്നത്. ഇത് പരിഹരിക്കാൻ നിങ്ങളുടെ പങ്കാളിയെ ബന്ധപ്പെടുക."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "സുരക്ഷിതമല്ലാത്ത സാഹചര്യങ്ങളിലെ WebSQL അവസാനിപ്പിച്ചു, അത് M107-ൽ നീക്കം ചെയ്യും. വെബ് സ്റ്റോറേജ് അല്ലെങ്കിൽ സൂചികയിലാക്കിയ ഡാറ്റാബേസ് ഉപയോഗിക്കുക."
+    "message": "സുരക്ഷിതമല്ലാത്ത സാഹചര്യങ്ങളിലെ WebSQL അവസാനിപ്പിച്ചു, അത് ഉടൻ തന്നെ നീക്കം ചെയ്യും. വെബ് സ്റ്റോറേജ് അല്ലെങ്കിൽ സൂചികയിലാക്കിയ ഡാറ്റാബേസ് ഉപയോഗിക്കുക."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent അവസാനിപ്പിച്ചു. പകരം, ഏകീകൃത navigator.storage ഉപയോഗിക്കുക."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "ആപ്പ്"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "ആപ്പ് പാനൽ സൈഡ്ബാർ"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "പശ്ചാത്തല സേവനങ്ങൾ"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} നീക്കം ചെയ്യാനോ അതിന്റെ മൂല്യം മാറ്റാനോ ശ്രമിക്കുക."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ഒരേ എലമെന്റിലെ {REASON_PROPERTY_DECLARATION_CODE} പ്രോപ്പർട്ടി {AFFECTED_PROPERTY_DECLARATION_CODE} എന്നതിന്റെ ഫലത്തെ ബെെപ്പാസ് ചെയ്യുന്നു."
+    "message": "ഈ എലമെന്റിലെ {REASON_PROPERTY_DECLARATION_CODE} പ്രോപ്പർട്ടി {AFFECTED_PROPERTY_DECLARATION_CODE} എന്നതിന്റെ ഫലത്തെ ബെെപ്പാസ് ചെയ്യുന്നു."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "പുതിയ ക്ലാസ് ചേർക്കുക"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ട്രീ ബ്രെഡ്‌ക്രമ്പുകൾ"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "ഇടത്തേക്ക് സ്ക്രോൾ ചെയ്യുക"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "വലത്തേക്ക് സ്ക്രോൾ ചെയ്യുക"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(ടെക്‌സ്റ്റ്)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "സർട്ടിഫിക്കറ്റ് കാണുക"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "സജീവമായ client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "സെർവർ സൈഡ് പ്രവർത്തനരീതി ട്രിഗർ ചെയ്യുന്ന സജീവ client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "ഉറവിടവും ഡോക്യുമെന്റും ഒരേ സൈറ്റിൽ നിന്നാണ് നൽകുന്നതെങ്കിൽ ഈ ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "ഡീകോഡ് ചെയ്‌തു:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "കൂടുതലറിയുക"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "പ്രശ്നങ്ങളുടെ ടാബിൽ കൂടുതലറിയുക"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "കൂടുതലറിയുക"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "ഈ അഭ്യർത്ഥന നെറ്റ്‌വർക്കിലൂടെ അയയ്‌ക്കാതെ ഒരു ലോക്കൽ കാഷെയിൽ നിന്നും നൽകിയതിനാൽ പ്രൊവിഷണൽ ഹെഡ്ഡറുകൾ മാത്രമേ ലഭ്യമാകൂ, അത് യഥാർത്ഥ അഭ്യർത്ഥനാ ഹെഡ്ഡറുകൾ സംഭരിക്കില്ല. പൂർണ്ണ അഭ്യർത്ഥനാ ഹെഡ്ഡറുകൾ കാണാൻ കാഷെ പ്രവർത്തനരഹിതമാക്കുക."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "പ്രൊവിഷണൽ ഹെഡ്ഡറുകൾ കാണിക്കുന്നുണ്ട്."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "പ്രൊവിഷണൽ ഹെഡ്ഡറുകൾ കാണിക്കുന്നുണ്ട്. പൂർണ്ണ ഹെഡ്ഡറുകൾ കാണാൻ കാഷെ പ്രവർത്തനരഹിതമാക്കുക."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ഡിസ്‌ക് കാഷെയിൽ നിന്നുള്ളത്)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "ഹെഡ്ഡർ ഓവർറൈഡുകൾ"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "കൂടുതലറിയുക"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "പ്രശ്നങ്ങളുടെ ടാബിൽ കൂടുതലറിയുക"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "ഈ ഉറവിടം ഉൾക്കൊള്ളുന്ന ആർബിട്രറി വെബ്‌സൈറ്റ് സുരക്ഷാ വെല്ലുവിളിയുണ്ടാക്കുന്നില്ലെങ്കിൽ മാത്രം ഈ ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "ഈ അഭ്യർത്ഥന നെറ്റ്‌വർക്കിലൂടെ അയയ്‌ക്കാതെ ഒരു ലോക്കൽ കാഷെയിൽ നിന്നും നൽകിയതിനാൽ പ്രൊവിഷണൽ ഹെഡ്ഡറുകൾ മാത്രമേ ലഭ്യമാകൂ, അത് യഥാർത്ഥ അഭ്യർത്ഥനാ ഹെഡ്ഡറുകൾ സംഭരിക്കില്ല. പൂർണ്ണ അഭ്യർത്ഥനാ ഹെഡ്ഡറുകൾ കാണാൻ കാഷെ പ്രവർത്തനരഹിതമാക്കുക."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "പ്രൊവിഷണൽ ഹെഡ്ഡറുകൾ കാണിക്കുന്നുണ്ട്."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "പ്രൊവിഷണൽ ഹെഡ്ഡറുകൾ കാണിക്കുന്നുണ്ട്. പൂർണ്ണ ഹെഡ്ഡറുകൾ കാണാൻ കാഷെ പ്രവർത്തനരഹിതമാക്കുക."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "റോ ഡാറ്റ ഫയൽ"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "സ്റ്റാറ്റസ് കോഡ്"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "ഈ ഡോക്യുമെന്റ് ഒരു ക്രോസ്-ഒറിജിൻ ഓപ്പണർ നയം വ്യക്തമാക്കിയതിനാൽ sandbox ആട്രിബ്യൂട്ട് ഉപയോഗിച്ച് iframe എന്നതിൽ ലോഡ് ചെയ്യുന്നതിൽ നിന്ന് ഈ ഡോക്യുമെന്റിനെ ബ്ലോക്ക് ചെയ്‌തിരിക്കുന്നു."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "നിങ്ങളുടെ ഡോക്യുമെന്റിൽ ഈ ഫ്രെയിം ഉൾച്ചേർക്കാൻ, ഇനിപ്പറയുന്ന പ്രതികരണ ഹെഡ്ഡർ വ്യക്തമാക്കുന്നതിലൂടെ പ്രതികരണത്തിന് ക്രോസ്-ഒറിജിൻ ഉൾച്ചേർക്കൽ നയം പ്രവർത്തനക്ഷമമാക്കേണ്ടതുണ്ട്:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "മറ്റൊരു ഉറവിടത്തിൽ നിന്ന് ഈ റിസോഴ്‌സ് ഉപയോഗിക്കാൻ, പ്രതികരണ ഹെഡറുകളിൽ ക്രോസ്-ഒറിജിൻ ഉറവിട നയം സെർവർ വ്യക്തമാക്കേണ്ടതുണ്ട്:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "മറ്റൊരു ഉറവിടത്തിൽ നിന്ന് ഈ റിസോഴ്‌സ് ഉപയോഗിക്കാൻ, സെർവർ, ക്രോസ്-ഒറിജിൻ ഉറവിട നയ പ്രതികരണ ഹെഡ്ഡർ, റിലാക്‌സ് ചെയ്‌തേക്കാം:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "മറ്റൊരു സൈറ്റിൽ നിന്ന് ഈ ഉറവിടം ഉപയോഗിക്കാൻ, ക്രോസ്-ഒറിജിൻ ഉറവിട നയ പ്രതികരണ ഹെഡറിന് സെർവർ ഇളവ് നൽകിയേക്കാം:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "ക്ലയന്റ് നൽകിയ ഒരു വാദം തകരാറിലായി അല്ലെങ്കിൽ അസാധുവാണ്."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "തരം"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "ഉറവിടവും ഡോക്യുമെന്റും ഒരേ സൈറ്റിൽ നിന്നാണ് നൽകുന്നതെങ്കിൽ ഈ ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "ഈ ഉറവിടം ഉൾക്കൊള്ളുന്ന ആർബിട്രറി വെബ്‌സൈറ്റ് സുരക്ഷാ വെല്ലുവിളിയുണ്ടാക്കുന്നില്ലെങ്കിൽ മാത്രം ഈ ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "ഈ ഡോക്യുമെന്റ് ഒരു ക്രോസ്-ഒറിജിൻ ഓപ്പണർ നയം വ്യക്തമാക്കിയതിനാൽ sandbox ആട്രിബ്യൂട്ട് ഉപയോഗിച്ച് iframe എന്നതിൽ ലോഡ് ചെയ്യുന്നതിൽ നിന്ന് ഈ ഡോക്യുമെന്റിനെ ബ്ലോക്ക് ചെയ്‌തിരിക്കുന്നു."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "നിങ്ങളുടെ ഡോക്യുമെന്റിൽ ഈ ഫ്രെയിം ഉൾച്ചേർക്കാൻ, ഇനിപ്പറയുന്ന പ്രതികരണ ഹെഡർ വ്യക്തമാക്കുന്നതിലൂടെ പ്രതികരണത്തിന് ക്രോസ്-ഒറിജിൻ ഉൾച്ചേർക്കൽ നയം പ്രവർത്തനക്ഷമമാക്കേണ്ടതുണ്ട്:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "മറ്റൊരു ഉറവിടത്തിൽ നിന്ന് ഈ റിസോഴ്‌സ് ഉപയോഗിക്കാൻ, പ്രതികരണ ഹെഡറുകളിൽ ക്രോസ്-ഒറിജിൻ ഉറവിട നയം സെർവർ വ്യക്തമാക്കേണ്ടതുണ്ട്:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "മറ്റൊരു ഉറവിടത്തിൽ നിന്ന് ഈ റിസോഴ്‌സ് ഉപയോഗിക്കാൻ, ക്രോസ്-ഒറിജിൻ ഉറവിട നയ പ്രതികരണ ഹെഡറിന് സെർവർ ഇളവ് നൽകിയേക്കാം:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "മറ്റൊരു സൈറ്റിൽ നിന്ന് ഈ ഉറവിടം ഉപയോഗിക്കാൻ, ക്രോസ്-ഒറിജിൻ ഉറവിട നയ പ്രതികരണ ഹെഡറിന് സെർവർ ഇളവ് നൽകിയേക്കാം:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "ബണ്ടിൽ ചെയ്ത ഉറവിടം"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ഫ്രെയിം അനുസരിച്ച് നെറ്റ്‍വർക്ക് ലോഗ് ഇനങ്ങൾ ഗ്രൂപ്പ് ചെയ്യരുത്"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "UNC പാതകളിലൂടെ Windows Shares-ൽ നിന്ന് സോഴ്‌സ് മാപ്പുകൾ പോലുള്ള ഉറവിടങ്ങൾ ലോഡ് ചെയ്യാൻ DevTools എന്നതിനെ അനുവദിക്കുക. സുരക്ഷാ കാരണങ്ങളാൽ ഡിഫോൾട്ടായി പ്രവർത്തനരഹിതമാക്കി."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ഫ്രെയിം"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "അവസ്ഥ \"ശരി\" ആയിരിക്കുമ്പോൾ മാത്രം താൽക്കാലികമായി നിർത്തുക"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "ബ്രേക്ക്‌പോയിന്റുകൾ ഒന്നുമില്ല"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "വർണ്ണ പിക്കർ തുറക്കുക."
@@ -12159,10 +12177,10 @@
     "message": "പ്രശ്നം ഇപ്പോൾ ലഭ്യമല്ല"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "മെമ്മറി ഹൈലൈറ്റ് ഇല്ലാതാക്കുക"
+    "message": "ഈ മെമ്മറി ഹൈലൈറ്റ് ചെയ്യുന്നത് നിർത്തുക"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "ഹൈലൈറ്റ് ചെയ്ത മെമ്മറിയിലേക്ക് പോകുക"
+    "message": "ഈ മെമ്മറിയിലേക്ക് പോകുക"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "{PH1} എന്നതിന്റെയും {PH2} എന്നതിന്റെയും ഇടയിലുള്ള ഒരു നമ്പറായിരിക്കണം വിലാസം"

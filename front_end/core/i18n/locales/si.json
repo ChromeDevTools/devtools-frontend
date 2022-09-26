@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ජාල ඉල්ලීම් අවහිර කිරීම සබල කරන්න"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "UNC මාර්ග ඔස්සේ Windows Shares වෙතින්, මූලාශ්‍ර සිතියම් වැනි, සම්පත් පූරණය කිරීමට DevTools හට ඉඩ දෙන්න. ආරක්ෂක හේතූන් මත පෙරනිමියෙන් අබල කර ඇත."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ආකෘතිය සබල කරන්න"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "විදැහීම"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "ඔබ ටයිප් කරන විට සෙවීම සබල කරන්න"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "ඔබ ටයිප් කරන ආකාරයටම සොයන්න"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "ඔබ ටයිප් කරන විට සෙවීම අබල කරන්න (සෙවීමට Enter ඔබන්න)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "ඉඩ දෙන්නේ නම්, මෙම අඩවියේ වෙළඳ දැන්වීම් පෙන්වන්න"
@@ -1449,7 +1461,7 @@
     "message": "ඔබගේ සහායක යල් පැන ගිය (D)TLS අනුවාදයක් ගැන සාකච්ඡා කරමින් සිටී. මෙය නිවැරදි කිරීමට කරුණාකර ඔබගේ සහායක සමඟ පරීක්ෂා කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "සුරක්‍ෂිත නොවන සන්දර්භ තුළ ඇති WebSQL අත්හරින ලද අතර M107 තුළ ඉවත් කරනු ලැබේ. වෙබ ආචයනය හෝ සූචික දත්ත සමුදාය භාවිත කරන්න."
+    "message": "සුරක්ෂිත නොවන සන්දර්භ තුළ ඇති WebSQL අත්හරින ලද අතර ඉක්මනින් ඉවත් කරනු ලැබේ. වෙබ ආචයනය හෝ සූචික දත්ත සමුදාය භාවිත කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent අත්හරිනු ලැබේ. ඒ වෙනුවට ප්‍රමිත navigator.storage භාවිතා කරන්න."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "යෙදුම"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "යෙදුම් පැනල පැති තීරුව"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "පසුබිම් සේවා"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} ඉවත් කිරීමට හෝ එහි අගය වෙනස් කිරීමට උත්සාහ කරන්න."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "එකම මූලාංගයෙහි ඇති {REASON_PROPERTY_DECLARATION_CODE} ගුණය {AFFECTED_PROPERTY_DECLARATION_CODE} හි බලපෑම මග හරියි."
+    "message": "මෙම මූලාංගයෙහි ඇති {REASON_PROPERTY_DECLARATION_CODE} ගුණය {AFFECTED_PROPERTY_DECLARATION_CODE} හි බලපෑම මග හරියි."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "නව පන්තිය එක් කරන්න"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM රුක් පියසටහන්"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "වමට අනුචලනය කරන්න"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "දකුණට අනුචලනය කරන්න"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(පෙළ)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "සහතිකය බලන්න"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "සක්‍රිය client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "සේවාදායක පාර්ශ්ව හැසිරීම ප්‍රේරණය කරන client experiment variation IDs සක්‍රිය කරන්න"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "එකම අඩවියකින් සම්පත් සහ ලේඛනය සපයන්නේ නම් මෙම විකල්පය තෝරන්න."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "විකේතනය කරන ලදි:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "තව දැන ගන්න"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "ගැටලු පටිත්ත තුළ තව දැන ගන්න"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "තව දැන ගන්න"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "මෙම ඉල්ලීම ජාලය හරහා යවා නැති අතර ඒ වෙනුවට, මුල් ඉල්ලීම් ශීර්ෂක ගබඩා නොකරන ස්ථානික හැඹිලියකින් පිරිනමන ලද බැවින් තාවකාලික ප්‍රතිපාදන ශීර්ෂක පමණක් ලබා ගත හැකිය. පූර්ණ ඉල්ලීම් ශීර්ෂක බැලීමට හැඹිලිය අබල කරන්න."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "ප්‍රතිපාදන ශීර්ෂක පෙන්වයි."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "ප්‍රතිපාදන ශීර්ෂක පෙන්වයි. පූර්ණ ශීර්ෂක බැලීමට හැඹිලිය අබල කරන්න."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(තැටි හැඹිලිය වෙතින්)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "ශීර්ෂක ප්‍රතික්ෂේප කිරීම්"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "තව දැන ගන්න"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "ගැටලු පටිත්ත තුළ තව දැන ගන්න"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "මෙම සම්පත ඇතුළු අත්තනෝමතික වෙබ් අඩවියක් ආරක්ෂක අවදානමක් ඇති නොකරන්නේ නම් පමණක් මෙම විකල්පය තෝරන්න."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "මෙම ඉල්ලීම ජාලය හරහා යවා නැති අතර ඒ වෙනුවට, මුල් ඉල්ලීම් ශීර්ෂක ගබඩා නොකරන ස්ථානික හැඹිලියකින් පිරිනමන ලද බැවින් තාවකාලික ප්‍රතිපාදන ශීර්ෂක පමණක් ලබා ගත හැකිය. පූර්ණ ඉල්ලීම් ශීර්ෂක බැලීමට හැඹිලිය අබල කරන්න."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "ප්‍රතිපාදන ශීර්ෂක පෙන්වයි."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "ප්‍රතිපාදන ශීර්ෂක පෙන්වයි. පූර්ණ ශීර්ෂක බැලීමට හැඹිලිය අබල කරන්න."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "RAW"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "තත්ත්ව කේතය"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "මෙම ලේඛනය sandbox සහිත iframe එකක් පූරණය කිරීමෙන්, මෙම ලේඛනය ප්‍රති-මූලාරම්භ ප්‍රතිපත්තියක් සඳහන් කරන නිසා අවහිර කරන ලදි."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "ඔබගේ ලේඛනයේ මෙම රාමුව කාවැද්දීමට, ප්‍රතිචාරය පහත ප්‍රතිචාර ශීර්ෂකය සඳහන් කිරීමෙන් හරස් සම්භවයක් ඇති කාවැද්දීමේ ප්‍රතිපත්තිය සබල කළ යුතුය:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "මෙම සම්පත වෙනත් මූලාරම්භයකින් භාවිත කිරීමට, සේවාදායකට ප්‍රතිචාර ශීර්ෂකයන්හි හරස්-මූලාරම්භ සම්පත් ප්‍රතිපත්තියක් නියම කිරීමට අවශ්‍යය:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "වෙනත් මූලාරම්භයකින් මෙම සම්පත භාවිත කිරීමට, සේවාදායකයාට හරස් මූලාරම්භ සම්පත් ප්‍රතිපත්ති ප්‍රතිචාර ශීර්ෂකය ලිහිල් කළ හැකිය:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "වෙනත් අඩවියකින් මෙම සම්පත භාවිත කිරීමට, සේවාදායකයාට ප්‍රති මූලාරම්භ සම්පත් ප්‍රතිපත්ති ප්‍රතිචාර ශීර්ෂකය ලිහිල් කළ හැකිය:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "සේවාලාභීයා සපයන ලද තර්කයක් විකෘති වී ඇත නැතහොත් වලංගු නැත."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "වර්ගය"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "එකම අඩවියකින් සම්පත් සහ ලේඛනය සපයන්නේ නම් මෙම විකල්පය තෝරා ගන්න."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "මෙම සම්පත ඇතුළු අත්තනෝමතික වෙබ් අඩවියක් ආරක්ෂක අවදානමක් ඇති නොකරන්නේ නම් පමණක් මෙම විකල්පය තෝරා ගන්න."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "මෙම ලේඛනය sandbox සහිත iframe එකක් පූරණය කිරීමෙන්, මෙම ලේඛනය ප්‍රති-මූලාරම්භ ප්‍රතිපත්තියක් සඳහන් කරන නිසා අවහිර කරන ලදි."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "ඔබේ ලේඛනයේ මෙම රාමුව කාවැද්දීමට, ප්‍රතිචාරය පහත ප්‍රතිචාර ශීර්ෂකය සඳහන් කිරීමෙන් හරස් සම්භවයක් ඇති කාවැද්දීමේ ප්‍රතිපත්තිය සබල කිරීමට අවශ්‍ය වේ:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "මෙම සම්පත වෙනත් මූලාරම්භයකින් භාවිත කිරීමට, සේවාදායකට ප්‍රතිචාර ශීර්ෂකයන්හි හරස්-මූලාරම්භ සම්පත් ප්‍රතිපත්තියක් නියම කිරීමට අවශ්‍ය වේ"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "වෙනත් මූලාරම්භයකින් මෙම සම්පත භාවිත කිරීමට, සේවාදායකයාට හරස් මූලාරම්භ සම්පත් ප්‍රතිපත්ති ප්‍රතිචාර ශීර්ෂකය ලිහිල් කළ හැක:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "වෙනත් අඩවියකින් මෙම සම්පත භාවිත කිරීමට, සේවාදායකයාට ප්‍රති මූලාරම්භ සම්පත් ප්‍රතිපත්ති ප්‍රතිචාර ශීර්ෂකය ලිහිල් කළ හැක:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "පොදිගත සම්පත"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "රාමුව අනුව ජාල ලොග අයිතම සමූහ නොකරන්න"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "UNC මාර්ග ඔස්සේ Windows Shares වෙතින්, මූලාශ්‍ර සිතියම් වැනි, සම්පත් පූරණය කිරීමට DevTools හට ඉඩ දෙන්න. ආරක්ෂක හේතූන් මත පෙරනිමියෙන් අබල කර ඇත."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "රාමුව"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "කොන්දේසිය සත්‍ය විට පමණක් විරාම කරන්න"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "බිඳුම් ලක්ෂ්‍යයන් නැත"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "වර්ණ තෝරකය විවෘත කරන්න."
@@ -12159,10 +12177,10 @@
     "message": "මෙම අවස්ථාවේදී ගැටලුව නොතිබේ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "මතක උද්දීපනය මකන්න"
+    "message": "මෙම මතකය උද්දීපනය කිරීම නවත්වන්න"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "උද්දීපනය කළ මතකය වෙත පනින්න"
+    "message": "මෙම මතකයට පනින්න"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ලිපිනය {PH1} සහ {PH2} අතර අංකයක් විය යුතුය"

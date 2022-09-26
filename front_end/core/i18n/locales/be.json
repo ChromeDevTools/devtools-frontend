@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Уключыць блакіроўку сеткавых запытаў"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Дазволіць інструментам \"DevTools\" загружаць такія рэсурсы, як карты зыходнага кода, з абагуленых рэсурсаў у сістэме Windows праз шляхі UNC. Стандартна гэта функцыя адключана з меркаванняў бяспекі."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Уключыць фармат WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Візуалізацыя"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Уключыць пошук падчас набору"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Пошук падчас набору"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Адключыць пошук падчас набору (для пошуку трэба націскаць Увод)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Паказаць рэкламу на гэтым сайце (калі яна дазволена)"
@@ -1449,7 +1461,7 @@
     "message": "Ваш партнёр абменьваецца данымі з выкарыстаннем устарэлай версіі пратакола (D)TLS. Укажыце партнёру на неабходнасць выправіць гэта."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "База даных WebSQL больш не падтрымліваецца ў небяспечных кантэкстах і ў версіі M107 будзе выдалена. Выкарыстоўвайце вэб-сховішча або індэксаваную базу даных."
+    "message": "База даных WebSQL больш не падтрымліваецца ў небяспечных кантэкстах і неўзабаве будзе выдалена. Выкарыстоўвайце вэб-сховішча або індэксаваную базу даных."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent больш не падтрымліваецца. Выкарыстоўвайце стандартную ўласцівасць navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Праграма"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Бакавая панэль праграмы"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Фонавыя сэрвісы"
@@ -4764,7 +4779,7 @@
     "message": "Паспрабуйце выдаліць уласцівасць \"{REASON_PROPERTY_DECLARATION_CODE}\" або змяніць яе значэнне."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Уласцівасць \"{REASON_PROPERTY_DECLARATION_CODE}\" гэтага самага элемента перакрывае дзеянне ўласцівасці \"{AFFECTED_PROPERTY_DECLARATION_CODE}\"."
+    "message": "Уласцівасць \"{REASON_PROPERTY_DECLARATION_CODE}\" гэтага элемента перакрывае дзеянне ўласцівасці \"{AFFECTED_PROPERTY_DECLARATION_CODE}\"."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Дадаць новы клас"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Ланцужкі навігацыі дрэва DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Прагартаць улева"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Прагартаць управа"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(тэкст)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Прагледзець сертыфікат"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Актыўна: client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs (актыўных), якія актывуюць паводзіны на баку сервера."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Выберыце гэты варыянт, калі рэсурс і дакумент атрымліваюцца з аднаго сайта."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Дэкадавана:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Даведацца больш"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Даведацца больш на ўкладцы \"Праблемы\""
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Даведацца больш"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Даступныя толькі папярэднія загалоўкі, паколькі гэты запыт не быў адпраўлены па сетцы, а замест гэтага быў паказаны з лакальнага кэша, у якім не захоўваюцца зыходныя загалоўкі запытаў. Каб пабачыць поўныя загалоўкі запытаў, адключыце кэш."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Паказаны папярэднія загалоўкі."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Паказаны папярэднія загалоўкі. Каб убачыць поўныя загалоўкі, адключыце кэш."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(з кэша на дыску)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Перавызначэнні загалоўкаў"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Даведацца больш"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Даведацца больш на ўкладцы \"Праблемы\""
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Выбірайце гэты варыянт толькі тады, калі адвольны вэб-сайт, які ўключае ў сябе гэты рэсурс, не пагражае бяспецы."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Даступныя толькі папярэднія загалоўкі, паколькі гэты запыт не быў адпраўлены па сетцы, а замест гэтага быў паказаны з лакальнага кэша, у якім не захоўваюцца зыходныя загалоўкі запытаў. Каб пабачыць поўныя загалоўкі запытаў, адключыце кэш."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Паказаны папярэднія загалоўкі."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Паказаны папярэднія загалоўкі. Каб убачыць поўныя загалоўкі, адключыце кэш."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Неапрацаваныя"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Код стану"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Загрузка дакумента ў акно iframe \"iframe\" з атрыбутам \"sandbox\" была заблакіравана, бо ў гэтым дакуменце ўказана палітыка адкрыцця з розных крыніц (COOP)."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Каб убудаваць гэты фрэйм у ваш дакумент, пры адказе неабходна ўключыць палітыку ўбудоўвання з розных крыніц (COEP), указаўшы наступны загаловак адказу:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Калі вы хочаце выкарыстаць гэты рэсурс з іншага паходжання, серверу неабходна ўказаць палітыку рэсурсаў з розных крыніц (CORP) у загалоўках адказу:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Калі вы хочаце выкарыстаць гэты рэсурс з іншага паходжання, сервер можа паслабіць палітыку рэсурсаў з розных крыніц (CORP) у загалоўку адказу:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Калі вы хочаце выкарыстаць гэты рэсурс з іншага сайта, сервер можа паслабіць палітыку рэсурсаў з розных крыніц (CORP), у загалоўку адказу:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Пададзены кліентам аргумент меў няправільны фармат або быў памылковым з іншай прычыны."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Тып"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Выберыце гэты варыянт, калі рэсурс і дакумент атрымліваюцца з аднаго сайта."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Выбірайце гэты варыянт толькі тады, калі адвольны вэб-сайт, які ўключае ў сябе гэты рэсурс, не пагражае бяспецы."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Загрузка дакумента ў акно iframe \"iframe\" з атрыбутам \"sandbox\" была заблакіравана, бо ў гэтым дакуменце ўказана палітыка адкрыцця з розных крыніц (COOP)."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Каб убудаваць гэты фрэйм у ваш дакумент, пры адказе неабходна ўключыць палітыку ўбудоўвання з розных крыніц (COEP), указаўшы наступны загаловак адказу:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Калі вы хочаце выкарыстаць гэты рэсурс з іншага паходжання, серверу неабходна ўказаць палітыку рэсурсаў з розных крыніц (CORP) у загалоўках адказу:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Калі вы хочаце выкарыстаць гэты рэсурс з іншага паходжання, сервер можа паслабіць палітыку рэсурсаў з розных крыніц (CORP) у загалоўку адказу:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Калі вы хочаце выкарыстаць гэты рэсурс з іншага сайта, сервер можа паслабіць палітыку рэсурсаў з розных крыніц (CORP) у загалоўку адказу:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Рэсурс у пакеце"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Не групаваць элементы сеткавага журнала па фрэймах"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Дазволіць інструментам \"DevTools\" загружаць такія рэсурсы, як карты зыходнага кода, з абагуленых рэсурсаў у сістэме Windows праз шляхі UNC. Стандартна гэта функцыя адключана з меркаванняў бяспекі."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "фрэйм"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Прыпыніць, толькі калі ўмова роўная true"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Няма пунктаў прыпынення"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Адкрыць сродак выбару колеру."
@@ -12159,10 +12177,10 @@
     "message": "Зараз праблему паказаць немагчыма"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Скасаваць вылучэнне памяці"
+    "message": "Перастаць вылучаць гэта месца ў памяці"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Перайсці да вылучанай памяці"
+    "message": "Перайсці да гэтага месца ў памяці"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адрас павінен быць лікам ад {PH1} да {PH2}"

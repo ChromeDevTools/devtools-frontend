@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "启用网络请求屏蔽功能"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "允许DevTools通过 UNC 路径从 Windows 共享区加载资源（比如来源映射关系）。为安全起见，此功能默认处于停用状态。"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "启用 WebP 格式"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "渲染"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "启用即输即搜功能"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "即输即搜"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "停用即输即搜功能（按 Enter 键即可搜索）"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "在此网站上显示广告（如果允许）"
@@ -1449,7 +1461,7 @@
     "message": "您的合作伙伴正在协商某个已过时的 (D)TLS 版本。请与您的合作伙伴联系，以解决此问题。"
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "不安全情境中的 WebSQL 已被弃用，并将在 M107 中被移除。请使用网络存储或索引型数据库。"
+    "message": "不安全情境中的 WebSQL 已被弃用，很快就会被移除。请使用网络存储或索引型数据库。"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent 已被弃用。请改用标准化 navigator.storage。"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "应用"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "应用面板边栏"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "后台服务"
@@ -4764,7 +4779,7 @@
     "message": "请尝试移除 {REASON_PROPERTY_DECLARATION_CODE} 或更改其值。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "同一元素的 {REASON_PROPERTY_DECLARATION_CODE} 属性会绕过 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
+    "message": "此元素的 {REASON_PROPERTY_DECLARATION_CODE} 属性会绕过 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "添加新类"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM 树面包屑导航"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "向左滚动"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "向右滚动"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "（文本）"
@@ -7125,7 +7146,7 @@
     "message": "以 fetch 格式复制"
   },
   "panels/network/NetworkLogView.ts | copyAsNodejsFetch": {
-    "message": "以 Node.jsfetch 格式复制"
+    "message": "以 Node.js fetch 格式复制"
   },
   "panels/network/NetworkLogView.ts | copyAsPowershell": {
     "message": "以 PowerShell 格式复制"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "查看证书"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "活跃的client experiment variation IDs。"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "触发服务器端行为的活跃client experiment variation IDs。"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "如果资源和文档由同一网站提供，请选择此选项。"
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "已解码："
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "了解详情"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "前往“问题”标签页了解详情"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "了解详情"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "仅预配标头可用，因为此请求并非通过网络发送，而是从本地缓存提供，其中不会存储原始请求标头。停用缓存即可查看完整请求标头。"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "当前显示的是预配标头。"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "当前显示的是预配标头。停用缓存即可查看完整标头。"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "（来自磁盘缓存）"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "标头覆盖"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "了解详情"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "前往“问题”标签页了解详情"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "仅当包括此资源在内的任意网站不会带来安全风险时，才可选择此选项。"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "仅预配标头可用，因为此请求并非通过网络发送，而是从本地缓存提供，其中不会存储原始请求标头。停用缓存即可查看完整请求标头。"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "当前显示的是预配标头。"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "当前显示的是预配标头。停用缓存即可查看完整标头。"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "原始"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "状态代码"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "此文档指定了跨源 opener 政策，因此被禁止在具有 sandbox 属性的 iframe 中加载。"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "若要在您的文档中嵌入此框架，则需在响应中指定如下响应标头，以启用跨源嵌入器政策："
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "为了从另一个源使用此资源，服务器需要在响应标头中指定跨源资源政策："
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "为了从另一个源使用此资源，服务器可能会放宽对跨源资源政策响应标头的要求："
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "为了从另一个网站使用此资源，服务器可能会放宽对跨源资源政策响应标头的要求："
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "客户端提供的参数格式不正确或无效。"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "类型"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "如果资源和文档由同一网站提供，请选择此选项。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "仅当包括此资源在内的任意网站不会带来安全风险时，才可选择此选项。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "此文档指定了跨源 opener 政策，因此被禁止在具有 sandbox 属性的 iframe 中加载。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "若要在您的文档中嵌入此框架，则需在响应中指定如下响应标头，以启用跨源嵌入器政策："
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "为了从另一个源使用此资源，服务器需要在响应标头中指定跨源资源政策："
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "为了从另一个源使用此资源，服务器可能会放宽对跨源资源政策响应标头的要求："
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "为了从另一个网站使用此资源，服务器可能会放宽对跨源资源政策响应标头的要求："
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "捆绑的资源"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "请勿按框架对网络日志内容分组"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "允许DevTools通过 UNC 路径从 Windows 共享区加载资源（比如来源映射关系）。为安全起见，此功能默认处于停用状态。"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "框架"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "仅在条件为 true 时暂停"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "无断点"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "打开颜色选择器。"
@@ -12159,10 +12177,10 @@
     "message": "目前无法解决的问题"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "删除内存中的突出显示效果"
+    "message": "停止突出显示此内存"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "跳转到突出显示的内存"
+    "message": "跳转到此内存"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "地址必须是一个介于 {PH1} 和 {PH2} 之间的数字"

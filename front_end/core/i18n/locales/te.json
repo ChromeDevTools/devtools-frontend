@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్‌ను ఎనేబుల్ చేయండి"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "UNC పాత్‌ల ద్వారా Windows షేర్‌ల నుండి సోర్స్ మ్యాప్‌ల వంటి రిసోర్స్‌లను లోడ్ చేయడానికి DevTools‌ను అనుమతించండి. సెక్యూరిటీ కారణాల దృష్ట్యా ఆటోమేటిక్‌గా డిజేబుల్ చేయబడింది."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ఫార్మాట్‌ను ఎనేబుల్ చేయండి"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "రెండరింగ్"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "మీరు టైప్ చేసిన దానిని సెర్చ్ చేయడాన్ని ఎనేబుల్ చేయండి"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "మీరు టైప్ చేసిన దాన్ని సెర్చ్ చేయండి"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "మీరు టైప్ చేసిన దానిని సెర్చ్ చేయడాన్ని డిజేబుల్ చేయండి (సెర్చ్ చేయడానికి Enterను నొక్కండి)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "అనుమతించబడినట్లయితే, ఈ సైట్‌లో యాడ్‌లను చూపండి"
@@ -1449,7 +1461,7 @@
     "message": "మీ పార్ట్‌నర్ వాడుకలో లేని (D)TLS వెర్షన్‌ను ఉపయోగిస్తున్నారు. దీనిని పరిష్కరించడం గురించి దయచేసి మీ పార్ట్‌నర్‌తో సంప్రదించండి."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "సురక్షితం కాని సందర్భాలలో WebSQL విస్మరించబడుతుంది, M107లో తీసివేయబడుతుంది. దయచేసి వెబ్ స్టోర్‌ను లేదా ఇండెక్స్ చేయబడిన డేటాబేస్‌ను ఉపయోగించండి."
+    "message": "సురక్షితం కాని సందర్భాలలో WebSQL విస్మరించబడుతుంది, అలాగే ఇది త్వరలోనే తీసివేయబడుతుంది. దయచేసి వెబ్ స్టోర్‌ను లేదా ఇండెక్స్ చేయబడిన డేటాబేస్‌ను ఉపయోగించండి."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent విస్మరించబడింది. బదులుగా దయచేసి ప్రామాణిక navigator.storage‌ను ఉపయోగించండి."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "అప్లికేషన్"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "అప్లికేషన్ ప్యానెల్ సైడ్‌బార్"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "బ్యాక్‌గ్రౌండ్ సర్వీస్‌లు"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE}‌ను తీసివేయడానికి లేదా దాని విలువను మార్చడానికి ట్రై చేయండి."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ఒకే ఎలిమెంట్‌లో ఉన్న {REASON_PROPERTY_DECLARATION_CODE} ప్రాపర్టీ, {AFFECTED_PROPERTY_DECLARATION_CODE} ప్రభావాన్ని బైపాస్ చేస్తుంది."
+    "message": "ఈ ఎలిమెంట్‌లో ఉన్న {REASON_PROPERTY_DECLARATION_CODE} ప్రాపర్టీ, {AFFECTED_PROPERTY_DECLARATION_CODE} ప్రభావాన్ని బైపాస్ చేస్తుంది."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "కొత్త క్లాస్‌ను జోడించండి"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ట్రీ క్రమానుగతులు"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "ఎడమవైపునకు స్క్రోల్ చేయండి"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "కుడివైపునకు స్క్రోల్ చేయండి"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(టెక్స్ట్)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "సర్టిఫికెట్‌ను చూడండి"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs యాక్టివ్‌గా ఉంది."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "సర్వర్-వైపు పనితీరును ట్రిగ్గర్ చేసే యాక్టివ్ client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "రిసోర్స్, డాక్యుమెంట్ ఒకే సైట్ నుండి అందించబడితే ఈ ఆప్షన్‌ను ఎంచుకోండి."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "డీకోడ్ చేసినవి:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "మరింత తెలుసుకోండి"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "సమస్యల ట్యాబ్‌లో మరింత తెలుసుకోండి"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "మరింత తెలుసుకోండి"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "ఈ రిక్వెస్ట్ నెట్‌వర్క్ ద్వారా పంపబడలేదు, బదులుగా ఒరిజినల్ రిక్వెస్ట్ హెడర్‌లను స్టోర్ చేయని లోకల్ కాష్ నుండి సర్వ్ చేయబడింది కాబట్టి కేవలం తాత్కాలిక హెడర్‌లు మాత్రమే అందుబాటులో ఉన్నాయి. పూర్తి రిక్వెస్ట్ హెడర్‌లను చూడటానికి కాష్‌ను డిజేబుల్ చేయండి."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "తాత్కాలిక హెడర్‌లు చూపించబడ్డాయి."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "తాత్కాలిక హెడర్‌లు చూపించబడ్డాయి. పూర్తి హెడర్‌లను చూడటానికి కాష్‌ను డిజేబుల్ చేయండి."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(డిస్క్ కాష్ నుండి)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "హెడర్ ఓవర్‌రైడ్‌లు"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "మరింత తెలుసుకోండి"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "సమస్యల ట్యాబ్‌లో మరింత తెలుసుకోండి"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "ఈ రిసోర్స్‌తో సహా వెబ్‌సైట్ ఏదీ భద్రతా ప్రమాదాన్ని కలిగించకుండా ఉన్నప్పుడు మాత్రమే ఈ ఆప్షన్‌ను ఎంచుకోండి."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "ఈ రిక్వెస్ట్ నెట్‌వర్క్ ద్వారా పంపబడలేదు, బదులుగా ఒరిజినల్ రిక్వెస్ట్ హెడర్‌లను స్టోర్ చేయని లోకల్ కాష్ నుండి సర్వ్ చేయబడింది కాబట్టి కేవలం తాత్కాలిక హెడర్‌లు మాత్రమే అందుబాటులో ఉన్నాయి. పూర్తి రిక్వెస్ట్ హెడర్‌లను చూడటానికి కాష్‌ను డిజేబుల్ చేయండి."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "తాత్కాలిక హెడర్‌లు చూపించబడ్డాయి."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "తాత్కాలిక హెడర్‌లు చూపించబడ్డాయి. పూర్తి హెడర్‌లను చూడటానికి కాష్‌ను డిజేబుల్ చేయండి."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "ప్రాసెస్ చేయనిది"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "స్టేటస్ కోడ్"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "ఈ డాక్యుమెంట్ క్రాస్ ఆరిజిన్ ఓపెనర్ పాలసీని పేర్కొన్న కారణంగా sandbox లక్షణంతో iframeను లోడ్ చేయకుండా ఈ డాక్యుమెంట్ బ్లాక్ చేయబడింది."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "ఈ ఫ్రేమ్‌ను మీ డాక్యుమెంట్‌లో పొందుపరచడానికి, ఈ కింది ప్రతిస్పందన హెడర్‌ను పేర్కొనడం ద్వారా ప్రతిస్పందన అన్నది క్రాస్-ఆరిజిన్ ఎంబెడర్ పాలసీని ఎనేబుల్ చేయాలి:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "ఈ రిసోర్స్‌ను వేరే ఆరిజిన్ నుండి ఉపయోగించడానికి, ప్రతిస్పందన హెడర్‌లలో సర్వర్, క్రాస్-ఆరిజిన్ పాలసీని పేర్కొనాల్సి ఉంటుంది:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "ఈ రిసోర్స్‌ను వేరే ఆరిజిన్ నుండి ఉపయోగించడానికి, క్రాస్-ఆరిజిన్ రిసోర్స్ పాలసీ ప్రతిస్పందన హెడర్‌ను సర్వర్ సడలించవచ్చు:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "ఈ రిసోర్స్‌ను వేరే సైట్ నుండి ఉపయోగించడానికి, క్రాస్-ఆరిజిన్ రిసోర్స్ పాలసీ ప్రతిస్పందన హెడర్‌ను సర్వర్ సడలించవచ్చు:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "క్లయింట్ అందించిన తర్కం తప్పు లేదా చెల్లదు."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "రకం"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "రిసోర్స్, డాక్యుమెంట్ ఒకే సైట్ నుండి అందించబడితే ఈ ఆప్షన్‌ను ఎంచుకోండి."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "ఈ రిసోర్స్‌తో సహా వెబ్‌సైట్ ఏదీ భద్రతా ప్రమాదాన్ని కలిగించకుండా ఉన్నప్పుడు మాత్రమే ఈ ఆప్షన్‌ను ఎంచుకోండి."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "ఈ డాక్యుమెంట్ క్రాస్ ఆరిజిన్ ఓపెనర్ పాలసీని పేర్కొన్న కారణంగా sandbox లక్షణంతో iframeను లోడ్ చేయకుండా ఈ డాక్యుమెంట్ బ్లాక్ చేయబడింది."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "ఈ ఫ్రేమ్‌ను మీ డాక్యుమెంట్‌లో పొందుపరచడానికి, ఈ కింది ప్రతిస్పందన హెడర్‌ను పేర్కొనడం ద్వారా ప్రతిస్పందన అన్నది క్రాస్-ఆరిజిన్ ఎంబెడర్ పాలసీని ఎనేబుల్ చేయాలి:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "ఈ రిసోర్స్‌ను వేరే ఆరిజిన్ నుండి ఉపయోగించడానికి, ప్రతిస్పందన హెడర్‌లలో సర్వర్, క్రాస్-ఆరిజిన్ పాలసీని పేర్కొనాల్సి ఉంటుంది:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "ఈ రిసోర్స్‌ను వేరే ఆరిజిన్ నుండి ఉపయోగించడానికి, క్రాస్-ఆరిజిన్ రిసోర్స్ పాలసీ ప్రతిస్పందన హెడర్‌ను సర్వర్ సడలించవచ్చు:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "ఈ రిసోర్స్‌ను వేరే సైట్ నుండి ఉపయోగించడానికి, క్రాస్-ఆరిజిన్ రిసోర్స్ పాలసీ ప్రతిస్పందన హెడర్‌ను సర్వర్ సడలించవచ్చు:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "బండిల్ చేయబడిన రిసోర్స్"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ఫ్రేమ్ వారీగా నెట్‌వర్క్ లాగ్ ఐటెమ్‌లను గ్రూప్ చేయవద్దు"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "UNC పాత్‌ల ద్వారా Windows షేర్‌ల నుండి సోర్స్ మ్యాప్‌ల వంటి రిసోర్స్‌లను లోడ్ చేయడానికి DevTools‌ను అనుమతించండి. సెక్యూరిటీ కారణాల దృష్ట్యా ఆటోమేటిక్‌గా డిజేబుల్ చేయబడింది."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ఫ్రేమ్"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "కండిషన్ ఒప్పు అయినప్పుడు మాత్రమే పాజ్ చేయండి"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "బ్రేక్ పాయింట్‌లు ఏవీ లేవు"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "రంగు ఎంపికను తెరవండి."
@@ -12159,10 +12177,10 @@
     "message": "ప్రస్తుతం సమస్య అందుబాటులో లేదు"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "మెమరీ హైలైట్‌ను తొలగించండి"
+    "message": "ఈ మెమరీని హైలైట్ చేయడాన్ని ఆపివేయండి"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "హైలైట్ చేయబడిన మెమరీకి వెళ్లండి"
+    "message": "ఈ మెమరీకి వెళ్లండి"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "అడ్రస్ {PH1}, {PH2}లకు మధ్య ఉన్న నంబర్ అయి ఉండాలి"

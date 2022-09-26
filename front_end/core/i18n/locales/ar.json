@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "تفعيل حظر طلبات الشبكة"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "يسمح هذا الإعداد لـ DevTools بتحميل الموارد، مثل خرائط المصدر، من شبكات خوادم مشاركة الملفات في Windows عبر مسارات UNC. يكون هذا الإعداد غير مفعَّل بشكل تلقائي لأسباب تتعلق بالأمان."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "تفعيل التنسيق WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "عرض صفحة الويب"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "تفعيل البحث أثناء الكتابة"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "البحث أثناء الكتابة"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "إيقاف البحث أثناء الكتابة (اضغط على مفتاح Enter للبحث)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "عرض الإعلانات على هذا الموقع الإلكتروني في حال السماح بذلك"
@@ -1449,7 +1461,7 @@
     "message": "يتفاوض شريكك لاستخدام إصدار (D) القديم من بروتوكول أمان طبقة النقل (TLS). يُرجى التحقّق من الأمر مع شريكك لحلّ هذه المشكلة."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "لغة الاستعلامات البنيوية (SQL) على الويب في السياقات غير الآمنة تم إيقافها نهائيًا وستتم إزالتها في الإصدار M107. يُرجى استخدام \"مساحة تخزين الويب\" أو \"قاعدة البيانات المُفهرَسة\"."
+    "message": "تم إيقاف لغة الاستعلامات البنيوية (SQL) على الويب نهائيًا في السياقات غير الآمنة وستتم إزالتها قريبًا. يُرجى استخدام Web Storage أو Indexed Database."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "تم إيقاف StorageType.persistent نهائيًا. يُرجى استخدام navigator.storage الموحّدة بدلاً منها."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "التطبيق"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "الشريط الجانبي للوحة التطبيقات"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "خدمات تُشغَّل في الخلفية"
@@ -4764,7 +4779,7 @@
     "message": "حاوِل إزالة {REASON_PROPERTY_DECLARATION_CODE} أو تغيير قيمته."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "إنّ سمة {REASON_PROPERTY_DECLARATION_CODE} في العنصر نفسه تتجاوز تأثير {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "تُبطل سمة {REASON_PROPERTY_DECLARATION_CODE} في هذا العنصر تأثير سمة {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "إضافة فئة جديدة"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "أشرطة التنقّل الخاصة بشجرة نموذج العناصر في المستند"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "التمرير لليسار"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "التمرير لليمين"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(نص)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "عرض الشهادة"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs النشِطة"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs النشِطة التي تؤدي إلى سلوك من جهة الخادم"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "يمكنك تحديد هذا الخيار إذا تم عرض المورد والمستند من الموقع الإلكتروني ذاته."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "العناوين التي تم فك ترميزها:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "مزيد من المعلومات"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "مزيد من المعلومات في علامة تبويب \"المشاكل\""
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "مزيد من المعلومات"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "تتوفّر فقط العناوين المؤقتة لأنّه لم يتم إرسال هذا الطلب من خلال الشبكة، بل تم عرضه من ذاكرة تخزين مؤقت محلية لا تخزِّن عناوين الطلب الأصلية. يمكنك إيقاف ذاكرة التخزين المؤقت للاطّلاع على عناوين الطلب الكاملة."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "يتم عرض العناوين المؤقتة."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "يتم عرض العناوين المؤقتة. وعليك إيقاف التخزين المؤقت لعرض العناوين الكاملة."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(من ذاكرة التخزين المؤقت للقرص)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "حالات تجاوز العنوان"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "مزيد من المعلومات"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "مزيد من المعلومات في علامة تبويب \"المشاكل\""
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "حدِّد هذا الخيار فقط إذا كان الموقع الإلكتروني العشوائي الذي يتضمّن هذا المورد لا يشكِّل خطورة أمنية."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "تتوفّر فقط العناوين المؤقتة لأنّه لم يتم إرسال هذا الطلب من خلال الشبكة، بل تم عرضه من ذاكرة تخزين مؤقت محلية لا تخزِّن عناوين الطلب الأصلية. يمكنك إيقاف ذاكرة التخزين المؤقت للاطّلاع على عناوين الطلب الكاملة."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "يتم عرض العناوين المؤقتة."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "يتم عرض العناوين المؤقتة. وعليك إيقاف التخزين المؤقت لعرض العناوين الكاملة."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "عناوين أوّلية"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "رمز الحالة"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "تم حظر تحميل هذا المستند في iframe من خلال سمة sandbox، لأنّ هذا المستند يستخدم سياسة محدّدة لفتح المستندات المشتركة النطاق."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "لتضمين هذا الإطار في المستند، يجب أن تؤدي الاستجابة إلى تفعيل سياسة أداة تضمين الموارد المشتركة النطاق وذلك من خلال تحديد عنوان الاستجابة التالي:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "لاستخدام هذا المورد من مصدر مختلف، على الخادم تحديد سياسة لمشاركة مورد عناوين URL التابعة للنطاق نفسه في عناوين الاستجابة:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "لاستخدام هذا المورد من مصدر مختلف، قد يخفِّف الخادم عنوان الاستجابة الخاص بسياسة الموارد المشتركة النطاق:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "لاستخدام هذا المورِد من موقع إلكتروني مختلف، قد يخفِّف الخادم عنوان الاستجابة الخاص بسياسة الموارد المشتركة النطاق."
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "الوسيطة التي قدّمها العميل غير صحيحة أو غير صالحة."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "نوع"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "حدِّد هذا الخيار إذا تم عرض المورد والمستند من الموقع الإلكتروني ذاته."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "لا تحدِّد هذا الخيار إذا كان الموقع الإلكتروني العشوائي الذي يتضمّن هذا المورد لا يشكِّل خطورة أمنية."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "تم حظر تحميل هذا المستند في iframe من خلال سمة sandbox، لأن هذا المستند يستخدم سياسة محدّدة لفتح الموارد من مصادر خارجية."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "لتضمين هذا الإطار في المستند، يجب أن تفعِّل الاستجابة سياسة أداة تضمين الموارد من مصادر خارجية وذلك من خلال تحديد عنوان الاستجابة التالي:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "لاستخدام هذا المورد من مصدر مختلف، على الخادم تحديد سياسة لتضمين الموارد من مصادر خارجية في عناوين الاستجابة:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "لاستخدام هذا المورد من مصدر مختلف، قد يخفِّف الخادم متطلبات عنوان الاستجابة الخاص بسياسة تضمين الموارد من مصادر خارجية:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "لاستخدام هذا المورد من موقع إلكتروني مختلف، قد يخفِّف الخادم متطلبات عنوان الاستجابة الخاص بسياسة تضمين الموارد من مصادر خارجية:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "المصدر المجمّع"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "عدم تجميع عناصر سجلّ الشبكة حسب الإطار"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "يسمح هذا الإعداد لـ DevTools بتحميل الموارد، مثل خرائط المصدر، من شبكات خوادم مشاركة الملفات في Windows عبر مسارات UNC. يكون هذا الإعداد غير مفعَّل بشكل تلقائي لأسباب تتعلق بالأمان."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "إطار"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "الإيقاف المؤقت فقط عندما تكون الحالة بالقيمة \"true\""
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "ما مِن نقاط إيقاف."
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "افتح علبة الألوان."
@@ -12159,10 +12177,10 @@
     "message": "المشكلة غير متاحة في الوقت الحالي"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "حذف تمييز الذاكرة"
+    "message": "إيقاف تمييز هذا الجزء من الذاكرة"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "الانتقال إلى الذاكرة المميّزة"
+    "message": "الانتقال إلى هذا الجزء من الذاكرة"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "يجب أن يكون العنوان عددًا بين {PH1} و{PH2}"

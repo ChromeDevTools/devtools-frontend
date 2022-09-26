@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktivizo bllokimin e kërkesës së rrjetit"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Lejo që DevTools të ngarkojë burimet, si p.sh. hartat e burimit, nga Windows Shares nëpërmjet shtigjeve UNC. Çaktivizuar si parazgjedhje për arsye sigurie."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivizo formatin WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Paraqitja"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktivizo kërkimin ndërkohë që shkruan"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Kërko ndërkohë që shkruan"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Çaktivizo kërkimin ndërkohë që shkruan (shtyp \"Enter\" për të kërkuar)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Shfaq reklama në këtë sajt, nëse lejohet"
@@ -1449,7 +1461,7 @@
     "message": "Partneri yt po negocion për një version të vjetruar (D)TLS. Kontakto me partnerin për ta rregulluar këtë."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL në kontekste jo të sigurta është zhvlerësuar dhe do të hiqet në M107. Përdor hapësirën ruajtëse të uebit ose bazën e indeksuar të të dhënave."
+    "message": "WebSQL në kontekste jo të sigurta është zhvlerësuar dhe do të hiqet së shpejti. Përdor hapësirën ruajtëse të uebit ose bazën e indeksuar të të dhënave."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent është zhvlerësuar. Përdor më mirë një version të standardizuar të navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikacioni"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Shiriti anësor i panelit të aplikacioneve"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Shërbimet e sfondit"
@@ -4764,7 +4779,7 @@
     "message": "Provo ta heqësh {REASON_PROPERTY_DECLARATION_CODE} ose të ndryshosh vlerën e saj."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Karakteristika {REASON_PROPERTY_DECLARATION_CODE} në të njëjtin element shmang efektin e {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Karakteristika {REASON_PROPERTY_DECLARATION_CODE} në këtë element shmang efektin e {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Shto klasë të re"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Shtegu i navigimit i pemës DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Lëviz majtas"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Lëviz djathtas"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(tekst)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Shiko certifikatën"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktiv: client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs (aktive) që aktivizojnë sjelljen nga ana e serverit."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Zgjidhe këtë opsion nëse burimi dhe dokumenti shërbehen nga i njëjti sajt."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dekoduar:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Mëso më shumë"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Mëso më shumë në skedën e problemeve"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Mëso më shumë"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Vetëm titujt e përkohshëm ofrohen sepse kjo kërkesë nuk u dërgua nga rrjeti dhe në vend të saj u paraqit nga një memorie specifike lokale që nuk i ruan titujt e kërkesës origjinale. Çaktivizo memorien specifike për të parë titujt e plotë të kërkesave."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Shfaqen titujt e përkohshëm."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Shfaqen titujt e përkohshëm. Çaktivizo memorien specifike për të parë titujt e plotë."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(nga memoria specifike e diskut)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Anulimet e kokave"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Mëso më shumë"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Mëso më shumë në skedën e problemeve"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Zgjidh këtë opsion vetëm nëse një sajt uebi arbitrar, duke përfshirë këtë burim, nuk përbën një rrezik sigurie."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Vetëm titujt e përkohshëm ofrohen sepse kjo kërkesë nuk u dërgua nga rrjeti dhe në vend të saj u paraqit nga një memorie specifike lokale që nuk i ruan titujt e kërkesës origjinale. Çaktivizo memorien specifike për të parë titujt e plotë të kërkesave."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Shfaqen titujt e përkohshëm."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Shfaqen titujt e përkohshëm. Çaktivizo memorien specifike për të parë titujt e plotë."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Të papërpunuara"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Kodi i statusit"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Ky dokument është bllokuar nga ngarkimi në një iframe me një atribut sandbox për shkak se ky dokument ka specifikuar një politikë hapësi me origjinë të kryqëzuar."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Për ta integruar këtë kuadër në dokumentin tënd, përgjigja duhet të aktivizojë politikën e integruesit me origjinë të kryqëzuar duke specifikuar titullin e përgjigjes së mëposhtme:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri duhet të specifikojë një politikë për burimet me origjinë të kryqëzuar në titujt e përgjigjeve:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të kryqëzuar:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Për të përdorur këtë burim nga një sajt i ndryshëm, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të kryqëzuar:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Një argument i ofruar nga klienti ishte i keqformuar ose përndryshe i pavlefshëm."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Lloji"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Zgjidhe këtë opsion nëse burimi dhe dokumenti shërbehen nga i njëjti sajt."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Zgjidh këtë opsion vetëm nëse një sajt uebi arbitrar, duke përfshirë këtë burim, nuk përbën një rrezik sigurie."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Ky dokument është bllokuar nga ngarkimi në një iframe me një atribut sandbox për shkak se ky dokument ka specifikuar një politikë hapësi me origjinë të kryqëzuar."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Për ta integruar këtë kuadër në dokumentin tënd, përgjigja duhet të aktivizojë politikën e integruesit me origjinë të kryqëzuar duke specifikuar titullin e përgjigjes së mëposhtme:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri duhet të specifikojë një politikë për burimet me origjinë të kryqëzuar në titujt e përgjigjeve:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të kryqëzuar:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Për të përdorur këtë burim nga një sajt i ndryshëm, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të kryqëzuar:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Burim në paketë"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Mos grupo artikujt e evidencës së rrjetit sipas kuadrit"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Lejo që DevTools të ngarkojë burimet, si p.sh. hartat e burimit, nga Windows Shares nëpërmjet shtigjeve UNC. Çaktivizuar si parazgjedhje për arsye sigurie."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "kuadër"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Vendos në pauzë vetëm kur kushti është i vërtetë"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Asnjë pikë ndërprerjeje"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Hap zgjedhësin e ngjyrës."
@@ -12159,10 +12177,10 @@
     "message": "Problemi nuk ofrohet për momentin"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Fshi memorien e theksuar"
+    "message": "Ndalo theksimin e këtij kujtimi"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Kalo te memoria e theksuar"
+    "message": "Kalo te ky kujtim"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresa duhet të jetë numër mes {PH1} dhe {PH2}"

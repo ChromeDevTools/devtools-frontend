@@ -48,7 +48,7 @@
     "message": "Muu"
   },
   "core/common/ResourceType.ts | ping": {
-    "message": "Ping-kutsu"
+    "message": "Ping"
   },
   "core/common/ResourceType.ts | preflight": {
     "message": "Valmistelu"
@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Ota käyttöön verkkopyyntöjen esto"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Salli, että DevTools voi ladata materiaaleja, esim. lähdekarttoja, Windows-tiedostojaon polkujen (UNC) kautta. Oletuksena pois käytöstä turvallisuussyistä."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Ota muoto WebP käyttöön"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderöinti"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Ota käyttöön Haku kirjoittaessa -ominaisuus"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Haku kirjoittaessa"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Poista Haku kirjoittaessa käytöstä (hae painamalla Enter-näppäintä)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Näytä tällä sivustolla mainoksia, jos se on sallittua"
@@ -1449,7 +1461,7 @@
     "message": "Yhteistyökumppanisi neuvottelee vanhentuneesta (D)TLS-versiosta. Pyydä yhteistyökumppaniasi korjaamaan tämä."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL on poistettu käytöstä suojaamattomissa konteksteissa ja poistetaan kokonaan M107:ssa. Käytä verkkotallennustilaa tai hakemistoon lisättyä tietokantaa."
+    "message": "WebSQL on poistettu käytöstä suojaamattomissa konteksteissa ja se poistetaan pian. Käytä verkkotallennustilaa tai hakemistoon lisättyä tietokantaa."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent on poistettu käytöstä. Valitse sen sijaan standardoitu navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Sovellus"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Sovelluspaneelin sivupalkki"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Taustapalvelut"
@@ -4764,7 +4779,7 @@
     "message": "Kokeile poistaa {REASON_PROPERTY_DECLARATION_CODE} tai muuttaa sen arvoa."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Samassa elementissä oleva ominaisuus ({REASON_PROPERTY_DECLARATION_CODE}) ohittaa vaikutuksen ({AFFECTED_PROPERTY_DECLARATION_CODE})."
+    "message": "Tämän elementin ominaisuus ({REASON_PROPERTY_DECLARATION_CODE}) ohittaa vaikutuksen ({AFFECTED_PROPERTY_DECLARATION_CODE})."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Lisää uusi luokka"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM-puun navigointipolut"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Vieritä vasemmalle"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Vieritä oikealle"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(teksti)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Katso varmenne"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktiivinen client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktiiviset tyypin client experiment variation IDs kohteet, jotka käynnistävät palvelinpuolen toimia."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Valitse tämä vaihtoehto, jos materiaali ja dokumentti toimitetaan samalta sivustolta."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Purettu:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Lue lisää"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Lue lisää Ongelmat-välilehdeltä"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Lue lisää"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Vain tilapäiset otsikot ovat saatavilla, koska tätä pyyntöä ei lähetetty verkon kautta vaan paikallisesta välimuistista, joka ei sisällä alkuperäisen pyynnön otsikkoja. Poista välimuisti käytöstä nähdäksesi kaikki pyynnön otsikot."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Tilapäiset otsikot ovat näkyvillä."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Tilapäiset otsikot ovat näkyvillä. Poista välimuisti käytöstä nähdäksesi kaikki otsikot."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(levyn välimuistista)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Otsikon ohitukset"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Lue lisää"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Lue lisää Ongelmat-välilehdeltä"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Valitse tämä vaihtoehto vain, jos tämän resurssin sisältävä satunnainen verkkosivusto ei aiheuta turvallisuusriskiä."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Vain tilapäiset otsikot ovat saatavilla, koska tätä pyyntöä ei lähetetty verkon kautta vaan paikallisesta välimuistista, joka ei sisällä alkuperäisen pyynnön otsikkoja. Poista välimuisti käytöstä nähdäksesi kaikki pyynnön otsikot."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Tilapäiset otsikot ovat näkyvillä."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Tilapäiset otsikot ovat näkyvillä. Poista välimuisti käytöstä nähdäksesi kaikki otsikot."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raaka"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Tilakoodi"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Tältä dokumentilta estettiin lataus (iframe, määrite sandbox), koska dokumentilla on eri lähteestä tulevan sisällön avauskäytäntö."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Jos haluat upottaa tämän kehyksen asiakirjaasi, vastauksen on sallittava eri lähteistä upottamisen käytäntö mainitsemalla seuraava vastauksen otsikko:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Käyttääkseen tätä toisen lähteen resurssia palvelimen on ilmoitettava eri lähteistä tulevan sisällön käytäntö vastauksen otsikossa:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Käyttääkseen tätä toisen lähteen resurssia palvelin voi lieventää vastauksen otsikkoa, joka kuuluu eri lähteestä tulevan resurssin käytäntöön:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Käyttääkseen tätä toisen sivuston resurssia palvelin voi lieventää vastauksen otsikkoa, joka kuuluu eri lähteestä tulevan resurssin käytäntöön:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Asiakassovelluksen argumentti oli väärin muotoiltu tai muuten virheellinen."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tyyppi"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Valitse tämä vaihtoehto, jos materiaali ja dokumentti toimitetaan samalta sivustolta."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Valitse tämä vaihtoehto vain, jos tämän resurssin sisältävä satunnainen verkkosivusto ei aiheuta turvallisuusriskiä."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Tältä dokumentilta estettiin lataus (iframe, määrite sandbox), koska dokumentilla on eri lähteestä tulevan sisällön avauskäytäntö."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Jos haluat upottaa tämän kehyksen asiakirjaasi, vastauksen on sallittava eri lähteistä upottamisen käytäntö mainitsemalla seuraava vastauksen otsikko:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Käyttääkseen tätä toisen lähteen resurssia palvelimen on ilmoitettava eri lähteistä tulevan sisällön käytäntö vastauksen otsikossa:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Käyttääkseen tätä toisen lähteen resurssia palvelin voi lieventää vastauksen otsikkoa, joka kuuluu eri lähteestä tulevan resurssin käytäntöön:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Käyttääkseen tätä toisen sivuston resurssia palvelin voi lieventää vastauksen otsikkoa, joka kuuluu eri lähteestä tulevan resurssin käytäntöön:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Materiaalipaketti"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Älä ryhmittele verkkolokin sisältöä kehysten mukaan"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Salli, että DevTools voi ladata materiaaleja, esim. lähdekarttoja, Windows-tiedostojaon polkujen (UNC) kautta. Oletuksena pois käytöstä turvallisuussyistä."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "kehys"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Keskeytyy vain, kun ehto on tosi"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Ei pysäytyspisteitä"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Avaa värivalitsin."
@@ -12159,10 +12177,10 @@
     "message": "Ongelmaa ei ole saatavilla tällä hetkellä"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Poista muistin korostus"
+    "message": "Lopeta muiston korostaminen"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Siirry korostettuun muistiin"
+    "message": "Siirry tähän muistoon"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Osoitteen on oltava numero välillä {PH1}–{PH2}"

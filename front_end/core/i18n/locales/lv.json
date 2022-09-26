@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Iespējot tīkla pieprasījumu bloķēšanu"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Atļaut rīku komplektam DevTools ielādēt resursus, piemēram, avotu kartes, no Windows koplietojumiem, izmantojot UNC ceļus. Drošības apsvērumu dēļ šī opcija pēc noklusējuma ir atspējota."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Iespējot formātu WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderēšana"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Iespējot meklēšanu teksta ievades laikā"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Meklēt teksta ievades laikā"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Atspējot meklēšanu teksta ievades laikā (nospiediet taustiņu Enter, lai meklētu)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Rādīt reklāmas šajā vietnē, ja tas ir atļauts"
@@ -1449,7 +1461,7 @@
     "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Saskarne WebSQL vairs netiek izmantota nedrošos kontekstos un versijā M107 tiks noņemta. Lūdzu, izmantojiet saskarni Web Storage vai Indexed Database."
+    "message": "Saskarne WebSQL vairs netiek izmantota nedrošos kontekstos un drīz tiks noņemta. Lūdzu, izmantojiet saskarni Web Storage vai Indexed Database."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "Tips StorageType.persistent vairs netiek atbalstīts. Tā vietā, lūdzu, izmantojiet standartizētu navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Lietojumprogramma"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Lietojumprogrammas paneļa sānjosla"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Fona pakalpojumi"
@@ -4764,7 +4779,7 @@
     "message": "Mēģiniet noņemt rekvizītu {REASON_PROPERTY_DECLARATION_CODE} vai mainīt tā vērtību."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Rekvizīta {AFFECTED_PROPERTY_DECLARATION_CODE} darbība tiek apieta, jo tam pašam elementam ir norādīts rekvizīts {REASON_PROPERTY_DECLARATION_CODE}."
+    "message": "Rekvizīta {AFFECTED_PROPERTY_DECLARATION_CODE} darbība tiek apieta, jo šim elementam ir norādīts rekvizīts {REASON_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Pievienot jaunu klasi"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM koka hierarhiskā navigācija"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Ritināt pa kreisi"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Ritināt pa labi"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(teksts)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Skatīt sertifikātu"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktīvi client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktīvi identifikatori (client experiment variation IDs), kas aktivizē servera puses darbību."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Izvēlieties šo iespēju, ja resurss un dokuments tiek rādīts no vienas vietnes."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dekodēts:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Uzzināt vairāk"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Uzzināt vairāk cilnē Problēmas"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Uzzināt vairāk"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Ir pieejamas tikai provizoriskas galvenes, jo šis pieprasījums netika nosūtīts pa tīklu, bet gan no lokālas kešatmiņas, kurā netiek glabātas sākotnējā pieprasījuma galvenes. Lai skatītu pilnas pieprasījuma galvenes, atspējojiet kešatmiņu."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Tiek rādītas provizoriskas galvenes."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Tiek rādītas provizoriskas galvenes. Lai skatītu pilnas galvenes, atspējojiet kešatmiņu."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(no diska kešatmiņas)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Galveņu ignorēšana"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Uzzināt vairāk"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Uzzināt vairāk cilnē Problēmas"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Izvēlieties šo opciju tikai tad, ja neviena vietne ar šo resursu nerada drošības apdraudējumu."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Ir pieejamas tikai provizoriskas galvenes, jo šis pieprasījums netika nosūtīts pa tīklu, bet gan no lokālas kešatmiņas, kurā netiek glabātas sākotnējā pieprasījuma galvenes. Lai skatītu pilnas pieprasījuma galvenes, atspējojiet kešatmiņu."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Tiek rādītas provizoriskas galvenes."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Tiek rādītas provizoriskas galvenes. Lai skatītu pilnas galvenes, atspējojiet kešatmiņu."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Neapstrādātas"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Statusa kods"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Šī dokumenta ielāde iframe ietvarā ar atribūtusandbox tika bloķēta, jo šajā dokumentā bija norādīta politika par citas izcelsmes resursu atvēršanu."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Lai iegultu šo ietvaru jūsu dokumentā, atbildei ir jāiespējo politika par citas izcelsmes resursu iegulšanu, norādot šādu atbildes galveni:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Lai izmantotu šo citas izcelsmes resursu, serverim ir atbildes galvenēs jānorāda politika par citas izcelsmes resursu kopīgošanu:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Lai izmantotu šo citas izcelsmes resursu, serveris var iestatīt mazāk stingru vērtību atbildes galvenē, kas nosaka politiku par citas izcelsmes resursiem:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Lai izmantotu šo resursu no citas vietnes, serveris var iestatīt mazāk stingru vērtību atbildes galvenē, kas nosaka politiku par citas izcelsmes resursiem:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Klienta norādīts arguments nebija veidots pareizi vai cita iemesla dēļ nebija derīgs."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tips"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Izvēlieties šo opciju, ja resurss un dokuments tiek rādīts no vienas vietnes."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Izvēlieties šo opciju tikai tad, ja neviena vietne ar šo resursu nerada drošības apdraudējumu."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Šī dokumenta ielāde ietvarā iframe ar atribūtusandbox tika bloķēta, jo šis dokuments norādīja politiku par citas izcelsmes resursu atvēršanu."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Lai iegultu šo ietvaru jūsu dokumentā, atbildei ir jāiespējo politika par citas izcelsmes resursu kopīgošanu, norādot šādu atbildes galveni:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Lai izmantotu šo citas izcelsmes resursu, serverim ir atbildes galvenēs jānorāda politika par citas izcelsmes resursu kopīgošanu:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Lai izmantotu šo citas izcelsmes resursu, serveris var iestatīt mazāk stingru vērtību atbildes galvenē, kas nosaka politiku par citas izcelsmes resursu kopīgošanu:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Lai izmantotu šo resursu no citas vietnes, serveris var iestatīt mazāk stingru vērtību atbildes galvenē, kas nosaka politiku par citas izcelsmes resursu kopīgošanu:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Resursu komplekts"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Negrupēt tīkla žurnāla vienumus pēc ietvara"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Atļaut rīku komplektam DevTools ielādēt resursus, piemēram, avotu kartes, no Windows koplietojumiem, izmantojot UNC ceļus. Drošības apsvērumu dēļ šī opcija pēc noklusējuma ir atspējota."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ietvars"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pārtraukt tikai, kad nosacījuma vērtība ir “true”"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Nav pārtraukumpunktu"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Atveriet krāsu atlasītāju."
@@ -12159,10 +12177,10 @@
     "message": "Problēma šobrīd nav pieejama"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Dzēst atzīmēto atmiņu"
+    "message": "Vairs neizcelt šo atmiņu"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Pāriet uz atzīmēto atmiņu"
+    "message": "Pāriet uz šo atmiņu"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adreses vērtībai ir jābūt skaitlim no {PH1} līdz {PH2}"

@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktivér blokering af netværksanmodning"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Giv DevTools tilladelse til at indlæse ressourcer såsom kildekort fra Windows Shares via UNC-stier. Af sikkerhedsmæssige årsager er den som standard deaktiveret."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivér formatet WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Gengivelse"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktivér søgning mens du indtaster."
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Søg, mens du indtaster"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Deaktiver søgning, mens du indtaster (tryk på Enter for at søge)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Vis annoncer på dette website, hvis det er tilladt"
@@ -1449,7 +1461,7 @@
     "message": "Din partner forhandler om en forældet version af (D)TLS. Kontakt din partner for at løse dette problem."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL i usikre kontekster er udfaset og fjernes i M107. Du skal bruge Web Storage eller Indexed Database."
+    "message": "WebSQL i usikre kontekster er udfaset og fjernes snart. Du skal bruge Web Storage eller Indexed Database."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent er udfaset. Brug i stedet standardiseret navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "App"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Programpanelets sidebjælke"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Baggrundstjenester"
@@ -4764,7 +4779,7 @@
     "message": "Prøv at fjerne {REASON_PROPERTY_DECLARATION_CODE} eller ændre dens værdi."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Egenskaben {REASON_PROPERTY_DECLARATION_CODE} på det samme element omgår effekten af {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Egenskaben {REASON_PROPERTY_DECLARATION_CODE} på dette element omgår effekten af {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Tilføj et nyt hold"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Brødkrummer for DOM-træ"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Rul til venstre"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Rul til højre"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(tekst)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Se certifikat"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktive client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktive client experiment variation IDs, der aktiverer serversideadfærd."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Vælg denne mulighed, hvis ressourcen og dokumentet vises via samme website."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Afkodet:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Få flere oplysninger"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Få flere oplysninger på fanen med problemer"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Få flere oplysninger"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Kun midlertidige headere er tilgængelige, da denne anmodning ikke blev sendt via netværket og i stedet blev vist fra en lokal cache, hvilket ikke gemmer de oprindelige anmodningsheadere. Deaktiver cache for at se komplette anmodningsheadere."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Midlertidige headere vises."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Midlertidige headere vises. Deaktiver cache for at se de komplette headere."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(fra diskcache)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Tilsidesættelse af header"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Få flere oplysninger"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Få flere oplysninger på fanen med problemer"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Vælg kun denne valgmulighed, hvis et vilkårligt website inklusive denne ressource ikke udgør en sikkerhedsrisiko."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Kun midlertidige headere er tilgængelige, da denne anmodning ikke blev sendt via netværket og i stedet blev vist fra en lokal cache, hvilket ikke gemmer de oprindelige anmodningsheadere. Deaktiver cache for at se komplette anmodningsheadere."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Midlertidige headere vises."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Midlertidige headere vises. Deaktiver cache for at se de komplette headere."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Rå"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Statuskode"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dette dokument blev blokeret og kan ikke indlæses i en iframe med en sandbox-attribut, fordi dette dokument specificerede en politik for åbnerens krydsoprindelse."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Hvis du vil indlejre denne ramme i dit dokument, skal svaret aktivere politikken for indlejring med krydsoprindelse ved at angive følgende svarheader:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Serveren skal angive en politik for ressourcer med krydsoprindelse i svarheaderne for at bruge denne ressource fra en anden oprindelse:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Serveren kan lempe politikken for ressourcer med krydsoprindelse i svarheaderen for at bruge denne ressource fra en anden oprindelse."
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Serveren kan lempe politikken for ressourcer med krydsoprindelse i svarheaderen for at bruge denne ressource fra et andet website:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Et klientangivet argument var udformet forkert eller på anden måde ugyldigt."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Type"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Vælg denne mulighed, hvis ressourcen og dokumentet vises via samme website."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Vælg kun denne mulighed, hvis et vilkårligt website inklusive denne ressource ikke udgør en sikkerhedsrisiko."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Dette dokument blev blokeret og kan ikke indlæses i en iframe med et sandbox-attribut, fordi dette dokument specificerede en politik for åbner med krydsoprindelse."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Hvis du vil indlejre denne ramme i dit dokument, skal svaret aktivere politikken for indlejring med krydsoprindelse ved at angive følgende svarheader:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Serveren skal angive en politik for ressourcer med krydsoprindelse i svarheaderne for at bruge denne ressource fra en anden oprindelse."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Serveren kan lempe politikken for ressourcer med krydsoprindelse i svarheaderen for at bruge denne ressource fra en anden oprindelse."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Serveren kan lempe politikken for ressourcer med krydsoprindelse i svarheaderen for at bruge denne ressource fra et andet website."
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Grupperet ressource"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Gruppér ikke elementer i netværkslog efter ramme"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Giv DevTools tilladelse til at indlæse ressourcer såsom kildekort fra Windows Shares via UNC-stier. Af sikkerhedsmæssige årsager er den som standard deaktiveret."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ramme"
@@ -9791,9 +9812,6 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Sæt kun på pause, når tilstanden er sand"
   },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Der er ingen stoppunkter"
-  },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Åbn farvevælgeren."
   },
@@ -9903,7 +9921,7 @@
     "message": "ændringer af undertræ"
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypePolicyViolation": {
-    "message": "Politikovertrædelsen Trusted Type"
+    "message": "Overtrædelse af politik Trusted Type"
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type – overtrædelser i forbindelse med datamodtager"
@@ -12159,10 +12177,10 @@
     "message": "Problemet er ikke tilgængeligt på nuværende tidspunkt"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Slet fremhævning af hukommelse"
+    "message": "Stop med at fremhæve dette sted i hukommelsen"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Gå til fremhævet hukommelse"
+    "message": "Gå til dette sted i hukommelsen"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adressen skal være et tal mellem {PH1} og {PH2}"

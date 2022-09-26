@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Kveikja á útilokun netbeiðna"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Leyfa DevTools að hlaða gögnum, svo sem upprunavörpunum, úr Windows deilingu meðUNC-slóðum. Slökkt sjálfkrafa af öryggisástæðum."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Virkja WebP-snið"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Teiknun"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Kveikja á leit á meðan þú skrifar"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Leita á meðan þú skrifar"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Slökkva á leit á meðan þú skrifar (ýttu á „Enter“ til að leita)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Birta auglýsingar á þessu vefsvæði ef það er leyft"
@@ -1449,7 +1461,7 @@
     "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL í óöruggu samhengi er úrelt og verður fjarlægt í M107. Notaðu vefgeymslu eða niðurskiptan gagnagrunn."
+    "message": "WebSQL í ótraustu samhengi er úrelt og verður fjarlægt fljótlega. Notaðu vefgeymslu eða niðurskiptan gagnagrunn."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent er úrelt. Nota skal staðlað navigator.storage í staðinn."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Forrit"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Hliðarstika forritsglugga"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Bakgrunnsþjónusta"
@@ -4764,7 +4779,7 @@
     "message": "Prófaðu að fjarlægja {REASON_PROPERTY_DECLARATION_CODE} eða breyta gildi þess."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "{REASON_PROPERTY_DECLARATION_CODE}-eiginleikinn í sömu einingu sneiðir hjá áhrifum {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "{REASON_PROPERTY_DECLARATION_CODE}-eiginleikinn í þessari einingu sneiðir hjá áhrifum {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Bæta við nýjum flokki"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM trjáslóð"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Fletta til vinstri"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Fletta til hægri"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(texti)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Skoða vottorð"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Virkt client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Virkt client experiment variation IDs sem ræsir aðgerðir á þjóni."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Veldu þennan valkost ef gögnin og skjalið eru frá sama vefsvæði."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Afkóðað:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Frekari upplýsingar"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Frekari upplýsingar í vandamálaflipanum"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Frekari upplýsingar"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Eingöngu bráðabirgðahausar eru í boði vegna þess að beiðnin var ekki send yfir net heldur svarað úr staðbundnu skyndiminni sem geymir ekki upprunalega hausa beiðninnar. Slökktu á skyndiminni til að sjá hausa beiðninnar í heild sinni."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Bráðabirgðahausar eru birtir."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Bráðabirgðahausar eru birtir. Slökktu á skyndiminni til að sjá hausa í heild sinni."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(úr skyndiminni á diski)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Hnekkingar hauss"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Frekari upplýsingar"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Frekari upplýsingar í vandamálaflipanum"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Veldu þennan kost aðeins ef ekki stafar öryggisógn af því að vefsíða innihaldi þetta tilfang."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Eingöngu bráðabirgðahausar eru í boði vegna þess að beiðnin var ekki send yfir net heldur svarað úr staðbundnu skyndiminni sem geymir ekki upprunalega hausa beiðninnar. Slökktu á skyndiminni til að sjá hausa beiðninnar í heild sinni."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Bráðabirgðahausar eru birtir."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Bráðabirgðahausar eru birtir. Slökktu á skyndiminni til að sjá hausa í heild sinni."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Óunnið"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Stöðukóði"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Komið var í veg fyrir að þetta skjal væri hlaðið í iframe með eigindina sandbox vegna þess að skjalið tiltók opnunarreglu þvert á uppruna."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Til að fella þennan ramma inn í skjalið þarf svarið að virkja reglur um innfellingu þvert á uppruna með því að tilgreina eftirfarandi í haus svarsins:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Til að geta notað þetta efni af öðrum uppruna verður þjónninn að tiltaka reglur um tilföng þvert á uppruna í haus svarsins:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Til að geta notað þetta efni af öðrum uppruna kann þjónninn að slaka á reglum um tilföng þvert á uppruna í haus svarsins:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Til að geta notað þetta efni af öðru vefsvæði kann þjónninn að slaka á reglum um tilföng þvert á uppruna í haus svarsins:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Breyta frá biðlara var gölluð eða ógild á annan hátt."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tegund"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Veldu þennan valkost ef gögnin og skjalið eru frá sama vefsvæði."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Veldu þennan kost aðeins ef ekki stafar öryggisógn af því að vefsíða innihaldi þessi gögn."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Komið var í veg fyrir að þessu skjali væri hlaðið í iframe með eigindinni sandbox vegna þess að skjalið tiltók opnunarreglu þvert á uppruna."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Til að fella þennan ramma inn í skjalið þarf svarið að virkja reglur um innfellingu þvert á uppruna með því að tilgreina eftirfarandi í haus svarsins:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Til að geta notað þessi gögn af öðrum uppruna verður þjónninn að tiltaka reglur um tilföng þvert á uppruna í haus svarsins:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Til að geta notað þessi gögn af öðrum uppruna kann þjónninn að slaka á reglum um tilföng þvert á uppruna í haus svarsins:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Til að geta notað þessi gögn af öðru vefsvæði kann þjónninn að slaka á reglum um gögn þvert á uppruna í haus svarsins:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Tilfang í pakka"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ekki flokka atriði netannáls eftir römmum"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Leyfa DevTools að hlaða gögnum, svo sem upprunavörpunum, úr Windows deilingu meðUNC-slóðum. Slökkt sjálfkrafa af öryggisástæðum."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "rammi"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Aðeins gera hlé þegar staðsetningin er sönn"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Engir stopppunktar"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Opna litaval."
@@ -12162,7 +12180,7 @@
     "message": "Hætta að merkja þetta minni"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Fara í merkt minni"
+    "message": "Hoppa yfir í þetta minni"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Vistfang verður að vera tala á bilinu {PH1} til {PH2}"

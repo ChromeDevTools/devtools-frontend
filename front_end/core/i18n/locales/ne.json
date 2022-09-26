@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने सुविधा अन गर्नुहोस्"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevTools लाई UNC पथ मार्फत Windows Shares मा भएका स्रोत नक्सालगायतका स्रोतहरू लोड गर्ने अनुमति दिनुहोस्। सुरक्षासम्बन्धी कारणहरूले गर्दा स्वतः अफ गरिएको छ।"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP फर्म्याट सक्षम पार्नुहोस्"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "रेन्डर गरिँदै छ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "\"टाइप गर्दागर्दै खोज्नुहोस्\" अन गर्नुहोस्"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "टाइप गर्दागर्दै खोज्नुहोस्"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "\"टाइप गर्दागर्दै खोज्नुहोस्\" अफ गर्नुहोस् (खोजी गर्न \"इन्टर\" थिच्नुहोस्)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "अनुमति दिइएको खण्डमा यो साइटमा विज्ञापनहरू देखाइऊन्"
@@ -1449,7 +1461,7 @@
     "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "असुरक्षित परिस्थितिमा रहेको WebSQL चल्तीबाट हटाइएको छ र यसलाई M107 मा हटाइने छ। कृपया वेब भण्डारण वा इन्डेक्स गरिएको डेटाबेस प्रयोग गर्नुहोस्।"
+    "message": "असुरक्षित परिस्थितिमा रहेको WebSQL चल्तीबाट हटाइँदै छ र यसलाई चाँडै नै सदाका लागि हटाइने छ। कृपया वेब भण्डारण वा इन्डेक्स गरिएको डेटाबेस प्रयोग गर्नुहोस्।"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent चल्तीबाट हटाइएको छ। कृपया यसको साटो स्तरीकृत navigator.storage प्रयोग गर्नुहोस्।"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "एप"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "एप प्यानल साइडबार"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "ब्याकग्राउन्ड सेवाहरू"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} हटाई वा यसको मान परिवर्तन गरी हेर्नुहोस्।"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "यही एलिमेन्टको {REASON_PROPERTY_DECLARATION_CODE} प्रोपर्टीले {AFFECTED_PROPERTY_DECLARATION_CODE} को प्रभाव बाइपास गर्छ।"
+    "message": "यो एलिमेन्टको {REASON_PROPERTY_DECLARATION_CODE} प्रोपर्टीले {AFFECTED_PROPERTY_DECLARATION_CODE} को प्रभाव बाइपास गर्छ।"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "नयाँ क्लास थप्नुहोस्"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ट्री breadcrumbs"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "बायाँतिर स्क्रोल गर्नुहोस्"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "दायाँतिर स्क्रोल गर्नुहोस्"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(पाठ)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "प्रमाणपत्र हेर्नुहोस्"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "सक्रिय client experiment variation IDs।"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "सर्भर साइड बिहेभियर ट्रिगर गर्ने सक्रिय client experiment variation IDs।"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "रिसोर्स र डकुमेन्ट दुवै उही साइटबाट देखाइन्छ भने यो विकल्प चयन गर्नुहोस्।"
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "डिकोड गरियो:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "थप जान्नुहोस्"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "\"समस्या\" ट्याबमा गई थप जान्नुहोस्"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "थप जान्नुहोस्"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "यो अनुरोध नेटवर्कमार्फत पठाइएको नभई स्थानीय क्यासबाट गरिएको र स्थानीय क्यासमा अनुरोधका मूल हेडरहरू भण्डारण नगरिने भएकाले अस्थायी हेडरहरू मात्र उपलब्ध छन्। अनुरोधका सबै हेडरहरू हेर्न क्यास अफ गर्नुहोस्।"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "अस्थायी हेडरहरू देखाइएका छन्।"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "अस्थायी हेडरहरू देखाइएका छन्। सबै हेडरहरू हेर्न क्यास अफ गर्नुहोस्।"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(डिस्कमा भएको क्यासबाट)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "हेडरका ओभरराइडहरू"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "थप जान्नुहोस्"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "\"समस्या\" ट्याबमा गई थप जान्नुहोस्"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "यो रिसोर्स भएको आर्बिट्रेरी वेबसाइटमा सुरक्षासम्बन्धी कुनै जोखिम छैन भने मात्र यो विकल्प चयन गर्नुहोस्।"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "यो अनुरोध नेटवर्कमार्फत पठाइएको नभई स्थानीय क्यासबाट गरिएको र स्थानीय क्यासमा अनुरोधका मूल हेडरहरू भण्डारण नगरिने भएकाले अस्थायी हेडरहरू मात्र उपलब्ध छन्। अनुरोधका सबै हेडरहरू हेर्न क्यास अफ गर्नुहोस्।"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "अस्थायी हेडरहरू देखाइएका छन्।"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "अस्थायी हेडरहरू देखाइएका छन्। सबै हेडरहरू हेर्न क्यास अफ गर्नुहोस्।"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "अप्रशोधित"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "वस्तुस्थिति कोड"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "यो डकुमेन्टमा फरक ओरिजिनको ओपनर नीति तय गरिएकाले यो डकुमेन्टलाई iframe मा sandbox विशेषतासँग लोड गर्न ब्लक गरिएको थियो।"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "आफ्नो डकुमेन्टमा यो फ्रेम इम्बेड गर्न तपाईंले निम्न रिस्पन्स हेडर तोकेर रिस्पन्समा क्रस ओरिजिन इम्बेडरसम्बन्धी नीति सक्षम पार्नु पर्ने हुन्छ:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "अर्कै ओरिजिनबाट लिइएको यो रोसोर्स प्रयोग गर्न यो सर्भरले रिस्पन्स हेडरहरूमा अर्कै ओरिजिनबाट लिइएको रिसोर्सको प्रयोगसम्बन्धी नीति तोकेको हुनु पर्छ:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "अर्कै ओरिजिनबाट लिइएको यो रिसोर्स प्रयोग गर्न यो सर्भरले रिस्पन्स हेडरमा फरक ओरिजिनको रिसोर्सको प्रयोगसम्बन्धी नीतिको कार्यान्वयन खुकुलो पार्न सक्छ:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "अर्कै साइटबाट लिइएको यो रिसोर्स प्रयोग गर्न यो सर्भरले रिस्पन्स हेडरमा फरक ओरिजिनको रिसोर्सको प्रयोगसम्बन्धी नीतिको कार्यान्वयन खुकुलो पार्न सक्छ:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "क्लाइनटले प्रदान गरेको आर्गुमेन्ट खराब छ वा अन्य तरिकाले अवैध छ।"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "प्रकार"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "रिसोर्स र डकुमेन्ट दुवै उही साइटबाट देखाइन्छ भने यो विकल्प चयन गर्नुहोस्।"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "यो रिसोर्स भएको आर्बिट्रेरी वेबसाइटमा सुरक्षासम्बन्धी कुनै जोखिम छैन भने मात्र यो विकल्प चयन गर्नुहोस्।"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "यो डकुमेन्टमा फरक ओरिजिनको ओपनर नीति तय गरिएकाले यो डकुमेन्टलाई iframe मा sandbox विशेषतासँग लोड गर्न ब्लक गरिएको थियो।"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "आफ्नो डकुमेन्टमा यो फ्रेम इम्बेड गर्न तपाईंले निम्न रिस्पन्स हेडर तोकेर रिस्पन्समा क्रस ओरिजिन इम्बेडरसम्बन्धी नीति सक्षम पार्नु पर्ने हुन्छ:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "अर्कै ओरिजिनबाट लिइएको यो रिसोर्स प्रयोग गर्न यो सर्भरले रिस्पन्स हेडरहरूमा अर्कै ओरिजिनबाट लिइएको रिसोर्सको प्रयोगसम्बन्धी नीति तोकेको हुनु पर्छ:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "अर्कै ओरिजिनबाट लिइएको यो रिसोर्स प्रयोग गर्न यो सर्भरले रिस्पन्स हेडरमा फरक ओरिजिनको रिसोर्सको प्रयोगसम्बन्धी नीतिको कार्यान्वयन खुकुलो पार्न सक्छ:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "अर्कै साइटबाट लिइएको यो रिसोर्स प्रयोग गर्न यो सर्भरले रिस्पन्स हेडरमा फरक ओरिजिनको रिसोर्सको प्रयोगसम्बन्धी नीतिको कार्यान्वयन खुकुलो पार्न सक्छ:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "बन्डलमा राखिएको स्रोत"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "नेटवर्क लग वस्तुका फ्रेमका आधारमा समूह नबनाइयोस्"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevTools लाई UNC पथ मार्फत Windows Shares मा भएका स्रोत नक्सालगायतका स्रोतहरू लोड गर्ने अनुमति दिनुहोस्। सुरक्षासम्बन्धी कारणहरूले गर्दा स्वतः अफ गरिएको छ।"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "फ्रेम"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "यो अवस्था सही हुँदा मात्र पज गरियोस्"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "कुनै पनि ब्रेकपोइन्ट छैन"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "कलर पिकर खोल्नुहोस्।"
@@ -12159,10 +12177,10 @@
     "message": "हाल यो समस्या उपलब्ध छैन"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "हाइलाइट गरिएको मेमोरी हटाउनुहोस्"
+    "message": "यो मेमोरी हाइलाइट गर्न छाड्नुहोस्"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "हाइलाइट गरिएको मेमोरीमा जानुहोस्"
+    "message": "यो मेमोरीमा जानुहोस्"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ठेगाना {PH1} र {PH2} बिचको कुनै नम्बर हुनु पर्छ"

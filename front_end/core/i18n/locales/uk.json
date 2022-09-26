@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Увімкнути блокування запитів мережі"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Дозволити DevTools завантажувати ресурси, як-от карти джерел, із загальних ресурсів Windows через шляхи UNC. За умовчанням цю опцію вимкнено з міркувань безпеки."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Увімкнути формат WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Відрисовка"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Увімкнути пошук під час введення"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Пошук під час введення"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Вимкнути пошук під час введення (натисніть Enter, щоб шукати)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Показувати оголошення на цьому сайті, якщо їх дозволено"
@@ -1449,7 +1461,7 @@
     "message": "Ваш партнер використовує застарілу версію (D)TLS. Щоб вирішити проблему, зверніться до партнера."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Підтримку WebSQL у незахищених контекстах припинено. Його буде вилучено у версії M107. Використовуйте веб-сховище чи проіндексовану базу даних."
+    "message": "Інтерфейс WebSQL не підтримується в незахищених контекстах, і невдовзі його буде вилучено. Використовуйте веб-сховище або проіндексовану базу даних."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent не підтримується. Натомість використовуйте стандартну властивість navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Додаток"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Бічна панель додатка"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Фонові сервіси"
@@ -4764,7 +4779,7 @@
     "message": "Вилучіть властивість {REASON_PROPERTY_DECLARATION_CODE} або змініть її значення."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Властивість {REASON_PROPERTY_DECLARATION_CODE} для того самого елемента обходить дію властивості {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Властивість {REASON_PROPERTY_DECLARATION_CODE} для цього елемента обходить дію властивості {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Додати новий клас"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Ланцюжки навігації дерева DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Прокрутити ліворуч"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Прокрутити праворуч"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(текст)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Переглянути сертифікат"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs: активно."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Активні client experiment variation IDs, які запускають поведінку на стороні сервера."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Виберіть цей варіант, якщо ресурс і документ розміщено на одному сайті."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Розкодовано:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Докладніше"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Докладніше на вкладці \"Проблеми\""
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Докладніше"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Доступні лише попередньо завантажені заголовки, оскільки цей запит надіслано не через мережу, а з локального кешу, який не зберігає початкові заголовки запитів. Щоб переглянути повні заголовки, вимкніть кеш."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Показано попередньо завантажені заголовки."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Показано попередньо завантажені заголовки. Щоб переглянути повні, вимкніть кеш."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(джерело: кеш диска)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Перевизначення заголовків"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Докладніше"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Докладніше на вкладці \"Проблеми\""
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Вибирайте цю опцію лише в тому випадку, якщо довільний веб-сайт, зокрема цей ресурс, не загрожує безпеці."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Доступні лише попередньо завантажені заголовки, оскільки цей запит надіслано не через мережу, а з локального кешу, який не зберігає початкові заголовки запитів. Щоб переглянути повні заголовки, вимкніть кеш."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Показано попередньо завантажені заголовки."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Показано попередньо завантажені заголовки. Щоб переглянути повні, вимкніть кеш."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Необроблені"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Код статусу"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Завантаження цього документа у вікні iframe з атрибутом sandbox заблоковано, оскільки для документа визначено Cross-Origin Opener Policy."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Щоб вбудувати цей фрейм у документ, потрібно ввімкнути правило Cross-Origin Embedder Policy, указавши такий заголовок відповіді:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Щоб скористатися цим ресурсом з іншого джерела, сервер має вказати правило Cross-Origin Resource Policy в заголовках відповіді:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Щоб скористатися цим ресурсом з іншого джерела, сервер може послабити конфігурацію Cross-Origin Resource Policy в заголовку відповіді:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Щоб скористатися цим ресурсом з іншого сайту, сервер може послабити конфігурацію Cross-Origin Resource Policy в заголовку відповіді:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Аргумент, наданий клієнтом, має неправильний формат або недійсний через інші причини."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Тип"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Виберіть цей варіант, якщо ресурс і документ розміщено на одному сайті."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Вибирайте цей варіант, лише якщо довільний веб-сайт, зокрема цей ресурс, не загрожує безпеці."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Завантаження цього документа у вікні iframe з атрибутом sandbox заблоковано, оскільки для документа визначено правило Cross-Origin Opener Policy."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Щоб вбудувати цей фрейм у документ, потрібно ввімкнути правило Cross-Origin Embedder Policy, указавши такий заголовок відповіді:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Щоб скористатися цим ресурсом з іншого джерела, сервер має вказати правило Cross-Origin Resource Policy в заголовках відповіді:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Щоб скористатися цим ресурсом з іншого джерела, сервер може послабити конфігурацію Cross-Origin Resource Policy в заголовку відповіді:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Щоб скористатися цим ресурсом з іншого сайту, сервер може послабити конфігурацію Cross-Origin Resource Policy в заголовку відповіді:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Ресурс у пакеті"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Не групувати елементи журналу мережі за фреймом"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Дозволити DevTools завантажувати ресурси, як-от карти джерел, із загальних ресурсів Windows через шляхи UNC. За умовчанням цю опцію вимкнено з міркувань безпеки."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "фрейм"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Призупиняти лише тоді, коли умова – true"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Немає точок зупину"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Відкрити палітру."
@@ -12159,10 +12177,10 @@
     "message": "Проблема наразі недоступна"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Скасувати виділення пам’яті"
+    "message": "Припинити виділення цієї частини пам’яті"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Перейти до виділеної пам’яті"
+    "message": "Перейти до цієї частини пам’яті"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адреса має бути числом від {PH1} до {PH2}"

@@ -169,6 +169,7 @@ td .text-button {
   align-items: center;
   height: 100%;
   text-align: center;
+  overflow: hidden;
 }
 
 .webauthn-pane.enabled .learn-more {

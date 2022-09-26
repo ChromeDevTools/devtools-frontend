@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Включить блокировку сетевых запросов"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Позволить DevTools загружать ресурсы, например карты исходного кода, при предоставлении доступа в Windows через пути UNC. По умолчанию эта функция отключена из соображений безопасности."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Включить формат WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Отрисовка"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Включить поиск при вводе запроса"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Поиск при вводе запроса"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Отключить поиск при вводе запроса (для поиска нужно нажать Ввод)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Показать рекламу на этом сайте (если разрешено)"
@@ -1449,7 +1461,7 @@
     "message": "Ваш партнер обменивается данными с использованием устаревшей версии (D)TLS. Сообщите ему о необходимости это исправить."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Технология WebSQL в небезопасных контекстах больше не поддерживается и будет удалена в версии M107. Используйте веб-хранилище или индексированную базу."
+    "message": "Мы прекращаем поддержку WebSQL в небезопасных контекстах. Этот API скоро будет удален. Используйте веб-хранилище или индексированную базу данных."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent больше не поддерживается. Используйте стандартный метод navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Приложение"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Боковая панель приложения"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Фоновые службы"
@@ -4764,7 +4779,7 @@
     "message": "Попробуйте удалить {REASON_PROPERTY_DECLARATION_CODE} или изменить значение."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Свойство {REASON_PROPERTY_DECLARATION_CODE} в том же элементе обходит эффект, накладываемый {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Свойство {REASON_PROPERTY_DECLARATION_CODE} этого элемента позволяет обойти действие свойства {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Добавить класс"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Строки навигации дерева DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Влево"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Вправо"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(текст)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Показать сертификат"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs: активно."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Активные client experiment variation IDs, которые запускают поведение со стороны сервера."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Выберите этот вариант, если ресурс и документ находятся на одном и том же сайте."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Декодировано:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Узнайте больше на вкладке \"Проблемы\""
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Доступны только предварительные заголовки, так как запрос не был отправлен через сеть, а был использован локальный кеш, который не хранит заголовки исходных запросов. Чтобы видеть полные заголовки запросов, отключите кеш."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Отображаются предварительные заголовки."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Отображаются предварительные заголовки. Чтобы увидеть полные заголовки, отключите кеш."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(источник: кеш диска)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Переопределения заголовков"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Подробнее…"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Узнайте больше на вкладке \"Проблемы\""
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Выбирайте этот параметр, только если случайный сайт, включая этот ресурс, не представляет угрозу безопасности."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Доступны только предварительные заголовки, так как запрос не был отправлен через сеть, а был использован локальный кеш, который не хранит заголовки исходных запросов. Чтобы видеть полные заголовки запросов, отключите кеш."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Отображаются предварительные заголовки."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Отображаются предварительные заголовки. Чтобы увидеть полные заголовки, отключите кеш."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Исходные заголовки"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Код статуса"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Загрузка этого документа в окне iframe с атрибутом sandbox заблокирована, потому что в документе указаны правила междоменного открытия."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Чтобы встроить этот фрейм в документ, необходимо включить правило междоменного встраивания, указав следующий заголовок ответа:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Чтобы использовать этот ресурс из другого источника, серверу нужно указать заголовок ответа в правилах для ресурсов с разными источниками:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Чтобы использовать этот ресурс из другого источника, сервер может ослабить правила совместного использования ресурсов между разными источниками в заголовке ответа."
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Чтобы использовать этот ресурс с другого сайта, сервер может ослабить правила совместного использования ресурсов между разными источниками в заголовке ответа:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Аргумент, предоставленный клиентом, недопустим (например, имеет неверный формат)."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Тип"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Выберите этот вариант, если ресурс и документ находятся на одном и том же сайте."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Выбирайте этот параметр, только если случайный сайт, включая этот ресурс, не представляет угрозу безопасности."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Загрузка этого документа в окне iframe с атрибутом sandbox заблокирована, потому что в документе указаны правила междоменного открытия."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Чтобы встроить этот фрейм в документ, необходимо включить правило междоменного встраивания, указав следующий заголовок ответа:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Чтобы использовать этот ресурс из другого источника, серверу нужно указать заголовок ответа в правилах для ресурсов с разными источниками:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Чтобы использовать этот ресурс из другого источника, сервер может использовать заголовок ответа в правилах для ресурсов с разными источниками:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Чтобы использовать этот ресурс с другого сайта, сервер может ослабить правила совместного использования ресурсов между разными источниками в заголовке ответа:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Ресурс в Web Bundle"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Не группировать записи сети по фреймам"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Позволить DevTools загружать ресурсы, например карты исходного кода, при предоставлении доступа в Windows через пути UNC. По умолчанию эта функция отключена из соображений безопасности."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "фрейм"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Приостанавливать, если условие имеет значение true"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Отсутствуют точки останова."
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Открыть палитру"
@@ -12159,10 +12177,10 @@
     "message": "Сведения о проблеме сейчас недоступны"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Снять выделение памяти"
+    "message": "Прекратить выделение места в памяти, где хранится эта переменная"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Перейти к выделенной памяти"
+    "message": "Перейти к месту в памяти, где хранится эта переменная"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адрес должен быть числом от {PH1} до {PH2}"

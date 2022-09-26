@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "啟用網路要求封鎖功能"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "允許 DevTools 透過 UNC 路徑從 Windows 共用載入來源對應等資源。為了安全起見，系統預設會停用這項設定。"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "啟用 WebP 格式"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "算繪"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "啟用即時搜尋功能"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "即時搜尋"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "停用即時搜尋功能 (按下 Enter 鍵搜尋)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "在情況允許時顯示這個網站上的廣告"
@@ -1449,7 +1461,7 @@
     "message": "你的合作夥伴正在交涉已過時的傳輸層安全標準 (TLS)/DTLS 版本。請洽詢你的合作夥伴，請對方解決這個問題。"
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "不安全環境中的 WebSQL 已淘汰，並將在 M107 中移除。請使用網路儲存空間或已建立索引的資料庫。"
+    "message": "系統已淘汰不安全內容中的 WebSQL，並將在近期內移除。請使用網路儲存空間或已建立索引的資料庫。"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent 已經淘汰，請改用標準化的 navigator.storage。"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "應用程式"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "應用程式面板側欄"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "背景服務"
@@ -4764,7 +4779,7 @@
     "message": "請嘗試移除 {REASON_PROPERTY_DECLARATION_CODE} 或變更值。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "相同元素中的 {REASON_PROPERTY_DECLARATION_CODE} 屬性會略過 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
+    "message": "這個元素的 {REASON_PROPERTY_DECLARATION_CODE} 屬性會略過 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "新增類別"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM 樹狀結構導覽標記"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "向左捲動"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "向右捲動"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(文字)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "查看憑證"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "有效client experiment variation IDs。"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "觸發伺服器端行為的有效client experiment variation IDs。"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "如果資源和文件是由同一個網站提供，請選擇這個選項。"
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "已解碼："
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "瞭解詳情"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "前往「問題」分頁瞭解詳情"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "瞭解詳情"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "由於這個要求不是透過網路傳送，而是由不會儲存原始要求標頭的本機快取提供，因此只能使用臨時標頭。停用快取即可查看完整要求標頭。"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "目前顯示佈建標頭。"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "目前顯示佈建標頭，停用快取即可查看完整標頭。"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(透過磁碟快取)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "覆寫標頭"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "瞭解詳情"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "前往「問題」分頁瞭解詳情"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "只有在含有這項資源的任意網站不會造成安全性風險的情況下，才可選取這個選項。"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "由於這個要求不是透過網路傳送，而是由不會儲存原始要求標頭的本機快取提供，因此只能使用臨時標頭。停用快取即可查看完整要求標頭。"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "目前顯示佈建標頭。"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "目前顯示佈建標頭，停用快取即可查看完整標頭。"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "原始"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "狀態碼"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "這份文件指定了跨來源開啟彈出式視窗的頁面政策，因此無法在屬性為 sandbox 的 iframe 中載入。"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "如要在文件中嵌入這個頁框，請在回應中指定下列回應標頭以啟用跨來源嵌入程式政策："
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "如果這項資源的來源不同，伺服器必須在使用時透過回應標頭指定跨來源資源政策："
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "如果這項資源的來源不同，伺服器可能會在使用時放寬跨來源資源政策回應標頭："
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "如果這項資源來自不同的網站，伺服器可能會在使用時放寬跨來源資源政策回應標頭："
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "用戶端提供的引數格式錯誤或無效。"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "類型"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "如果資源和文件是由同一個網站提供，請選擇這個選項。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "只有在含有這項資源的任意網站不會造成安全性風險的情況下，才可選取這個選項。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "這份文件指定了跨來源開啟彈出式視窗的頁面政策，因此無法在屬性為 sandbox 的 iframe 中載入。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "如要在文件中嵌入這個頁框，請在回應中指定下列回應標頭以啟用跨來源嵌入程式政策："
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "如果這項資源的來源不同，伺服器必須在使用時透過回應標頭指定跨來源資源政策："
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "如果這項資源的來源不同，伺服器可能會在使用時放寬跨來源資源政策回應標頭："
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "如果這項資源來自不同的網站，伺服器可能會在使用時放寬跨來源資源政策回應標頭："
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Web Bundle 中的資源"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "請勿依頁框將網路記錄項目分組"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "允許 DevTools 透過 UNC 路徑從 Windows 共用載入來源對應等資源。為了安全起見，系統預設會停用這項設定。"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "外框"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "僅在條件為 true 時暫停"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "無中斷點"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "開啟顏色挑選器。"
@@ -12159,10 +12177,10 @@
     "message": "目前無法取得問題"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "刪除記憶體醒目顯示"
+    "message": "停止醒目顯示這個記憶體"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "跳到醒目顯示的記憶體"
+    "message": "跳至這個記憶體"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "位址必須是介於 {PH1} 至 {PH2} 之間的數字"

@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Hálózati kérések blokkolásának engedélyezése"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "A források betöltésének engedélyezése a DevTools számára (ilyenek például a forrás-hozzárendelések a Windows Shares szolgáltatásból a UNC-útvonalakon keresztül). Biztonsági okokból alapértelmezés szerint le van tiltva."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP-formátum engedélyezése"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderelés"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "A keresés gépelés közben funkció engedélyezése"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Keresés gépelés közben"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "A keresés gépelés közben funkció letiltása (nyomja le az Entert a kereséshez)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Hirdetések megjelenítése ezen a webhelyen, ha engedélyezett"
@@ -1449,7 +1461,7 @@
     "message": "Partnere egy elavult (D)TLS-verzióról tárgyal. Kérje meg partnerét, hogy javítsa ki ezt a problémát."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "A nem biztonságos környezetben lévő WebSQL elavult, ezért az M107-ben el fogjuk távolítani. Használjon webes tárhelyet vagy indexelt adatbázist."
+    "message": "A nem biztonságos környezetben lévő WebSQL elavult, ezért hamarosan eltávolítjuk. Használjon webes tárhelyet vagy indexelt adatbázist."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "A StorageType.persistent paramétert megszüntettük. Használja helyette a szabványosított navigator.storage paramétert."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Alkalmazás"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Alkalmazáspanel oldalsávja"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Háttérszolgáltatások"
@@ -4764,7 +4779,7 @@
     "message": "Próbálja meg eltávolítani a következőt: {REASON_PROPERTY_DECLARATION_CODE}, vagy módosítsa az értékét."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Az ugyanazon az elemen található {REASON_PROPERTY_DECLARATION_CODE} tulajdonság megkerüli az {AFFECTED_PROPERTY_DECLARATION_CODE} hatását."
+    "message": "Az elem {REASON_PROPERTY_DECLARATION_CODE} tulajdonsága megkerüli az {AFFECTED_PROPERTY_DECLARATION_CODE} hatását."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Új osztály hozzáadása"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "A DOM-fa navigációs útvonalai"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Görgetés balra"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Görgetés jobbra"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(szöveg)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Tanúsítvány megtekintése"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktív client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Szerveroldali viselkedést kiváltó aktív client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Akkor válassza ezt a lehetőséget, ha az erőforrás és a dokumentum ugyanarról a webhelyről kerül megjelenítésre."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dekódolva:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "További információ"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "További információ a Problémák lapon"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "További információ"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Csak előzetes fejlécek állnak rendelkezésre, mert ezt a kérést nem a hálózaton küldték, hanem a helyi gyorsítótárból volt kiszolgálva, amely nem tárolja az eredeti kérelemfejléceket. Tiltsa le a gyorsítótárat a teljes kérelemfejlécek megtekintéséhez."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Előzetes fejlécek láthatók."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Előzetes fejlécek láthatók. A teljes fejlécek megjelenítéséhez tiltsa le a gyorsítótárat."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(a lemez gyorsítótárából)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Fejléc-felülbírálások"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "További információ"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "További információ a Problémák lapon"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Csak akkor válassza ezt a lehetőséget, ha az ezt a forrást tartalmazó adott webhely nem jelent biztonsági kockázatot."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Csak előzetes fejlécek állnak rendelkezésre, mert ezt a kérést nem a hálózaton küldték, hanem a helyi gyorsítótárból volt kiszolgálva, amely nem tárolja az eredeti kérelemfejléceket. Tiltsa le a gyorsítótárat a teljes kérelemfejlécek megtekintéséhez."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Előzetes fejlécek láthatók."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Előzetes fejlécek láthatók. A teljes fejlécek megjelenítéséhez tiltsa le a gyorsítótárat."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Nyers"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Állapotkód"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Ez a dokumentum nem tölthető be az egyik sandbox attribútumú iframe keretben, mert ez a dokumentum eltérő eredetű megnyitókra vonatkozó házirendet határozott meg."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "A keret dokumentumba való ágyazásához a válasznak engedélyeznie kell az eltérő eredetű beágyazóra vonatkozó házirendet a következő válaszfejléc megadásával:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Az erőforrás eltérő eredetről való használatához a szervernek meg kell határoznia az eltérő eredetű erőforrásokra vonatkozó házirend válaszfejlécét:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Az erőforrás eltérő eredetről való használatához a szerver pihentetheti az eltérő eredetű kérelmekre vonatkozó házirend válaszfejlécét:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Az erőforrás eltérő webhelyről való használatához a szerver pihentetheti az eltérő eredetű kérelmekre vonatkozó házirend válaszfejlécét:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Az egyik, ügyfél által biztosított argumentum rosszul van formázva, vagy más módon érvénytelen."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Típus"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Akkor válassza ezt a lehetőséget, ha az erőforrás és a dokumentum ugyanarról a webhelyről kerül megjelenítésre."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Csak akkor válassza ezt a lehetőséget, ha az ezt a forrást tartalmazó adott webhely nem jelent biztonsági kockázatot."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Ez a dokumentum nem tölthető be az egyik sandbox attribútumú iframe keretben, mert ez a dokumentum eltérő eredetű megnyitókra vonatkozó házirendet határozott meg."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "A keret dokumentumba való ágyazásához a válasznak engedélyeznie kell az eltérő eredetű beágyazóra vonatkozó házirendet a következő válaszfejléc megadásával:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Az erőforrás eltérő eredetről való használatához a szervernek meg kell határoznia az eltérő eredetű erőforrásokra vonatkozó házirend válaszfejlécét:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Az erőforrás eltérő eredetről való használatához a szerver pihentetheti az eltérő eredetű kérelmekre vonatkozó házirend válaszfejlécét:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Az erőforrás eltérő webhelyről való használatához a szerver pihentetheti az eltérő eredetű kérelmekre vonatkozó házirend válaszfejlécét:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Csomagban található forrás"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ne csoportosítsa keretek szerint a hálózati napló elemeit"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "A források betöltésének engedélyezése a DevTools számára (ilyenek például a forrás-hozzárendelések a Windows Shares szolgáltatásból a UNC-útvonalakon keresztül). Biztonsági okokból alapértelmezés szerint le van tiltva."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "keret"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Csak akkor szüneteljen, ha a feltétel igaz"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Nincsenek töréspontok"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Színválasztó megnyitása."
@@ -12159,10 +12177,10 @@
     "message": "Jelenleg nem hozzáférhető a probléma"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Kiemelt memória törlése"
+    "message": "A memória kiemelésének leállítása"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Ugrás a kiemelt memóriára"
+    "message": "Ugrás a memóriára"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "A címnek {PH1} és {PH2} közötti számnak kell lennie"

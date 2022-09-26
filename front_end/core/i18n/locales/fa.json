@@ -555,7 +555,7 @@
     "message": "بارگیری به‌دلیل روی دادن درنگ در بارگیری لغو شد"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
-    "message": "به‌دلیل تازه‌سازی صفحه بررسی‌شده، بارگیری لغو شد"
+    "message": "به‌دلیل بار کردن مجدد صفحه بررسی‌شده، بارگیری لغو شد"
   },
   "core/sdk/Script.ts | scriptRemovedOrDeleted": {
     "message": "متن حذف یا برداشته شده است."
@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "فعال کردن مسدودسازی درخواست شبکه"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "به DevTools اجازه دهید از Windows Shares ازطریق مسیرهای UNC منابع (ازجمله نقشه منابع) را بار کند. به دلایل امنیتی به‌طور پیش‌فرض غیرفعال شده است."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "فعال کردن قالب WebP"
   },
@@ -879,7 +882,7 @@
     "message": "غیرفعال کردن قالب تصویر WebP"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disablesLocalSourcesInFontface": {
-    "message": "منابع local() را در قوانین @font-face غیرفعال می‌کند. برای اعمال باید صفحه تازه‌سازی شود."
+    "message": "منابع local() را در قوانین @font-face غیرفعال می‌کند. برای اعمال باید صفحه بار کردن مجدد شود."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "شبیه‌سازی صفحه متمرکز"
@@ -948,7 +951,7 @@
     "message": "ظرفیت گذرداد قاب، توزیع قاب‌های رهاشده، و حافظه GPU را ترسیم می‌کند."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | requiresAPageReloadToApplyAnd": {
-    "message": "برای اعمال باید صفحه تازه‌سازی شود و حافظه پنهان را برای درخواست‌های تصویر غیرفعال می‌کند."
+    "message": "برای اعمال باید صفحه بار کردن مجدد شود و حافظه پنهان را برای درخواست‌های تصویر غیرفعال می‌کند."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | scrollingPerformanceIssues": {
     "message": "مشکلات عملکرد پیمایش"
@@ -987,7 +990,7 @@
     "message": "FPS"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | hardReloadPage": {
-    "message": "تازه‌سازی سخت صفحه"
+    "message": "بار کردن مجدد سخت صفحه"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | layout": {
     "message": "طرح‌بندی"
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "درحال پرداز زدن"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "فعال کردن جستجو درحین تایپ کردن"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "جستجو درحین تایپ کردن"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "غیرفعال کردن جستجو درحین تایپ کردن (برای جستجو Enter را فشار دهید)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "آگهی‌ها درصورت مجاز بودن، در این سایت نشان داده شود"
@@ -1131,7 +1143,7 @@
     "message": "پانل قبلی"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
-    "message": "تازه‌سازی DevTools"
+    "message": "بار کردن مجدد DevTools"
   },
   "entrypoints/main/main-meta.ts | resetZoomLevel": {
     "message": "بازنشانی بزرگ‌نمایی"
@@ -1449,7 +1461,7 @@
     "message": "شریک شما درحال مذاکره با نسخه منسوخی از ‎(D)TLS است. لطفاً برای برطرف کردن این مشکل با شریکتان تماس بگیرید."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL در بافتارهای ناامن منسوخ شده است و در M107 برداشته خواهد شد. لطفاً از «فضای ذخیره‌سازی وب» یا «پایگاه داده نمایه‌شده» استفاده کنید."
+    "message": "WebSQL در بافتارهای ناامن منسوخ شده است و به‌زودی برداشته خواهد شد. لطفاً از «فضای ذخیره‌سازی وب» یا «پایگاه داده نمایه‌شده» استفاده کنید."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent منسوخ شده است. لطفاً درعوض از navigator.storage استانداردشده استفاده کنید."
@@ -1554,7 +1566,7 @@
     "message": "پاک کردن"
   },
   "models/logs/logs-meta.ts | doNotPreserveLogOnPageReload": {
-    "message": "گزارش هنگام پیمایش/ تازه‌سازی صفحه حفظ نشود"
+    "message": "گزارش هنگام پیمایش/ بار کردن مجدد صفحه حفظ نشود"
   },
   "models/logs/logs-meta.ts | preserve": {
     "message": "حفظ کردن"
@@ -1563,7 +1575,7 @@
     "message": "حفظ گزارش"
   },
   "models/logs/logs-meta.ts | preserveLogOnPageReload": {
-    "message": "حفظ گزارش هنگام پیمایش / تازه‌سازی صفحه"
+    "message": "حفظ گزارش هنگام پیمایش / بار کردن مجدد صفحه"
   },
   "models/logs/logs-meta.ts | recordNetworkLog": {
     "message": "ضبط گزارش شبکه"
@@ -1728,7 +1740,7 @@
     "message": "(نمایه)"
   },
   "models/workspace/UISourceCode.ts | thisFileWasChangedExternally": {
-    "message": "این فایل به‌صورت خارجی تغییر کرده است. مایلید آن را تازه‌سازی کنید؟"
+    "message": "این فایل به‌صورت خارجی تغییر کرده است. مایلید آن را بار کردن مجدد کنید؟"
   },
   "panels/accessibility/ARIAAttributesView.ts | ariaAttributes": {
     "message": "مشخصات ARIA"
@@ -1749,7 +1761,7 @@
     "message": "نادیده‌گرفته‌شده"
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "پیش‌از اعمال تغییر، باید تازه‌سازی کنید."
+    "message": "پیش‌از اعمال تغییر، باید بار کردن مجدد کنید."
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "پیمایش کنید تا نمایش داده شود"
@@ -2316,7 +2328,7 @@
     "message": "هیچ مانیفستی شناسایی نشد"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "service worker منطبقی شناسایی نشد. شاید لازم باشد صفحه را تازه‌سازی کنید، یا بررسی کنید که محدوده service worker برای صفحه کنونی، محدوده و شروع نشانی وب موجود در مانیفست را دربر گیرید."
+    "message": "service worker منطبقی شناسایی نشد. شاید لازم باشد صفحه را بار کردن مجدد کنید، یا بررسی کنید که محدوده service worker برای صفحه کنونی، محدوده و شروع نشانی وب موجود در مانیفست را دربر گیرید."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "هیچ شناسه «فروشگاه Play» ارائه نشده است"
@@ -2439,10 +2451,13 @@
     "message": "حذف"
   },
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "بازخوانی حافظه‌های پنهان"
+    "message": "بازآوری حافظه‌های پنهان"
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "برنامه"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "نوار کناری پانل برنامه"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "سرویس‌های پس‌زمینه‌ای"
@@ -2493,7 +2508,7 @@
     "message": "پنجره‌های بازشده"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
-    "message": "بازخوانی IndexedDB"
+    "message": "بازآوری IndexedDB"
   },
   "panels/application/ApplicationPanelSidebar.ts | sessionStorage": {
     "message": "فضای ذخیره‌سازی جلسه"
@@ -2661,7 +2676,7 @@
     "message": "پایگاه داده"
   },
   "panels/application/DatabaseTableView.ts | refresh": {
-    "message": "بازخوانی"
+    "message": "بازآوری"
   },
   "panels/application/DatabaseTableView.ts | theStableIsEmpty": {
     "message": "جدول «{PH1}» خالی است."
@@ -2715,10 +2730,10 @@
     "message": "کلید اصلی"
   },
   "panels/application/IndexedDBViews.ts | refresh": {
-    "message": "بازخوانی"
+    "message": "بازآوری"
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
-    "message": "بازخوانی پایگاه داده"
+    "message": "بازآوری پایگاه داده"
   },
   "panels/application/IndexedDBViews.ts | securityOrigin": {
     "message": "مبدأ امنیتی"
@@ -2835,7 +2850,7 @@
     "message": "پیش‌نمایش"
   },
   "panels/application/ServiceWorkerCacheViews.ts | refresh": {
-    "message": "بازخوانی"
+    "message": "بازآوری"
   },
   "panels/application/ServiceWorkerCacheViews.ts | selectACacheEntryAboveToPreview": {
     "message": "انتخاب یکی از ورودی‌های حافظه پنهان در بالا برای پیش‌دید کردن"
@@ -2886,7 +2901,7 @@
     "message": "درخواست‌های شبکه"
   },
   "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "هنگام تازه‌سازی صفحه، service worker را به‌اجبار به‌روزرسانی و سپس فعال کنید"
+    "message": "هنگام بار کردن مجدد صفحه، service worker را به‌اجبار به‌روزرسانی و سپس فعال کنید"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
     "message": "همگام‌سازی دوره‌ای"
@@ -2964,7 +2979,7 @@
     "message": "به‌روزرسانی چرخه"
   },
   "panels/application/ServiceWorkersView.ts | updateOnReload": {
-    "message": "به‌روزرسانی هنگام تازه‌سازی"
+    "message": "به‌روزرسانی هنگام بار کردن مجدد"
   },
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "عامل: {PH1}"
@@ -2979,10 +2994,10 @@
     "message": "فیلتر"
   },
   "panels/application/StorageItemsView.ts | refresh": {
-    "message": "بازخوانی"
+    "message": "بازآوری"
   },
   "panels/application/StorageItemsView.ts | refreshedStatus": {
-    "message": "جدول بازخوانی شد"
+    "message": "جدول بازآوری شد"
   },
   "panels/application/StorageView.ts | application": {
     "message": "برنامه"
@@ -3540,7 +3555,7 @@
     "message": "برای نمایش در پانل «شبکه» کلیک کنید"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
-    "message": "برای نمایش در پانل «شبکه»، کلیک کنید (ممکن است لازم باشد صفحه تازه‌سازی شود)"
+    "message": "برای نمایش در پانل «شبکه»، کلیک کنید (ممکن است لازم باشد صفحه بار کردن مجدد شود)"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "برای نمایش در پانل «منابع»، کلیک کنید"
@@ -3597,7 +3612,7 @@
     "message": "وضعیت پیش‌پرداززنی"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
-    "message": "بازخوانی"
+    "message": "بازآوری"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "گزارش دادن به"
@@ -4146,7 +4161,7 @@
     "message": "سطوح پیش‌فرض"
   },
   "panels/console/ConsoleView.ts | doNotClearLogOnPageReload": {
-    "message": "گزارش هنگام پیمایش / تازه‌سازی صفحه پاک نمی‌شود"
+    "message": "گزارش هنگام پیمایش / بار کردن مجدد صفحه پاک نمی‌شود"
   },
   "panels/console/ConsoleView.ts | eagerlyEvaluateTextInThePrompt": {
     "message": "ارزیابی مشتاقانه نوشتار درون درخواست"
@@ -4482,7 +4497,7 @@
     "message": "برای شروع ضبط پوشش، روی دکمه ضبط {PH1} کلیک کنید."
   },
   "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
-    "message": "برای تازه‌سازی و شروع ضبط پوشش، روی دکمه تازه‌سازی {PH1} کلیک کنید."
+    "message": "برای بار کردن مجدد و شروع ضبط پوشش، روی دکمه بار کردن مجدد {PH1} کلیک کنید."
   },
   "panels/coverage/CoverageView.ts | contentScripts": {
     "message": "متون محتوا"
@@ -4527,7 +4542,7 @@
     "message": "نمایش «پوشش»"
   },
   "panels/coverage/coverage-meta.ts | startInstrumentingCoverageAnd": {
-    "message": "شروع پوشش ابزارگری و تازه‌سازی صفحه"
+    "message": "شروع پوشش ابزارگری و بار کردن مجدد صفحه"
   },
   "panels/coverage/coverage-meta.ts | stopInstrumentingCoverageAndShow": {
     "message": "توقف ابزارگری پوشش و نمایش نتایج"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} را حذف کنید یا مقدار آن را تغییر دهید."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "خصوصیت {REASON_PROPERTY_DECLARATION_CODE} عنصرْ تأثیر خصوصیت {AFFECTED_PROPERTY_DECLARATION_CODE} همان عنصر را خنثی می‌کند."
+    "message": "خصوصیت {REASON_PROPERTY_DECLARATION_CODE} این عنصر تأثیر {AFFECTED_PROPERTY_DECLARATION_CODE} را خنثی می‌کند."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "افزودن کلاس جدید"
@@ -5004,7 +5019,7 @@
     "message": "منفعل"
   },
   "panels/elements/EventListenersWidget.ts | refresh": {
-    "message": "بازخوانی"
+    "message": "بازآوری"
   },
   "panels/elements/EventListenersWidget.ts | resolveEventListenersBoundWith": {
     "message": "حل کردن شنوندگان رویداد مرتبط با چارچوب"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "نشانگر صفحات درخت DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "پیمایش به چپ"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "پیمایش به راست"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(نوشتار)"
@@ -7188,7 +7209,7 @@
     "message": "فقط درخواست‌هایی که مبدأ آن‌ها با مبدأ صفحه متفاوت است نشان داده می‌شود"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
-    "message": "برای ضبط تازه‌سازی، درخواستی را اجرا کنید یا {PH1} را فشار دهید."
+    "message": "برای ضبط بار کردن مجدد، درخواستی را اجرا کنید یا {PH1} را فشار دهید."
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
     "message": "برای نمایش فعالیت شبکه، گزارش شبکه ({PH1}) را ضبط کنید."
@@ -7362,7 +7383,7 @@
     "message": "غیرفعال کردن حافظه پنهان (وقتی DevTools باز است)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
-    "message": "گزارش هنگام پیمایش / تازه‌سازی صفحه پاک نمی‌شود"
+    "message": "گزارش هنگام پیمایش / بار کردن مجدد صفحه پاک نمی‌شود"
   },
   "panels/network/NetworkPanel.ts | exportHar": {
     "message": "صادر کردن HAR…"
@@ -7377,7 +7398,7 @@
     "message": "گروه‌بندی درخواست‌ها براساس قاب درخواست سطح بالا"
   },
   "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "برای تازه‌سازی و ضبط نوار فیلم، {PH1} را فشار دهید."
+    "message": "برای بار کردن مجدد و ضبط نوار فیلم، {PH1} را فشار دهید."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "درحال وارد کردن فایل HAR…"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "مشاهده گواهینامه"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs فعال."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs فعالی که رفتار سمت سرور را راه‌اندازی می‌کند."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "این گزینه را درصورتی انتخاب کنید که منبع و سند از یک سایت عرضه شوند."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "رمزگشایی‌شده:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "اطلاعات بیشتر در برگه مشکلات"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "فقط سرصفحه‌های موقت دردسترس است زیرا این درخواست ازطریق شبکه ارسال نشده است و درعوض ازطریق حافظه پنهان محلی ارائه شده است، که این حافظه سرصفحه‌های اصلی درخواست را ذخیره نمی‌کند. برای دیدن سرصفحه‌های کامل درخواست، حافظه پنهان را غیرفعال کنید."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "سرصفحه‌های موقت نمایش داده شده است."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "سرصفحه‌های موقت نمایش داده شده است. برای دیدن سرصفحه‌های کامل، حافظه پنهان را غیرفعال کنید."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(از حافظه نهان دیسک)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "ملغی کردن سرصفحه"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "بیشتر بدانید"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "اطلاعات بیشتر در برگه مشکلات"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "فقط درصورتی این گزینه را انتخاب کنید که وب‌سایت اختیاریِ حاوی این منبع با تحمیل خطر امنیتی همراه نباشد."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "فقط سرصفحه‌های موقت دردسترس است زیرا این درخواست ازطریق شبکه ارسال نشده است و درعوض ازطریق حافظه پنهان محلی ارائه شده است، که این حافظه سرصفحه‌های اصلی درخواست را ذخیره نمی‌کند. برای دیدن سرصفحه‌های کامل درخواست، حافظه پنهان را غیرفعال کنید."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "سرصفحه‌های موقت نمایش داده شده است."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "سرصفحه‌های موقت نمایش داده شده است. برای دیدن سرصفحه‌های کامل، حافظه پنهان را غیرفعال کنید."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "خام"
@@ -7967,21 +7985,6 @@
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "رمز وضعیت"
   },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "از بار شدن این سند در iframe با مشخصه sandbox جلوگیری شد زیرا این سند خط‌مشی بازکننده بین‌مبدائی را مشخص می‌کند."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "برای جاسازی کردن این قاب در سند، پاسخ باید ازطریق تعیین کردن سرصفحه پاسخ زیر، خط‌مشی جاساز بین‌مبدائی را فعال کند:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "برای استفاده از این منبع از مبدائی دیگر، سرور باید خط‌مشی منبع بین‌مبدائی را در سرصفحه پاسخ مشخص کند:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "برای استفاده از این منبع از مبدائی دیگر، سرور ممکن است سرصفحه پاسخ مربوط به خط‌مشی منبع بین‌مبدائی را رها کند:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "برای استفاده از این منبع از سایتی دیگر، سرور ممکن است سرصفحه پاسخ خط‌مشی منبع بین‌مبدائی را رها کند:"
-  },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "متغیر مستقلی که کارخواه ارائه کرده است ناقص یا نامعتبر است."
   },
@@ -8004,7 +8007,7 @@
     "message": "پارامترها"
   },
   "panels/network/components/RequestTrustTokensView.ts | refreshPolicy": {
-    "message": "خط‌مشی بازخوانی"
+    "message": "خط‌مشی بازآوری"
   },
   "panels/network/components/RequestTrustTokensView.ts | result": {
     "message": "نتیجه"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "نوع"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "این گزینه را درصورتی انتخاب کنید که منبع و سند از یک سایت عرضه شوند."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "فقط درصورتی این گزینه را انتخاب کنید که وب‌سایت اختیاریِ حاوی این منبع با تحمیل خطر امنیتی همراه نباشد."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "از بار شدن این سند در iframe با مشخصه sandbox جلوگیری شد زیرا این سند خط‌مشی بازکننده بین‌مبدائی را مشخص می‌کند."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "برای جاسازی کردن این قاب در سند، پاسخ باید ازطریق تعیین کردن سرصفحه پاسخ زیر، خط‌مشی جاساز بین‌مبدائی را فعال کند:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "برای استفاده از این منبع از مبدائی دیگر، سرور باید خط‌مشی منبع بین‌مبدائی را در سرصفحه پاسخ مشخص کند:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "برای استفاده از این منبع از مبدائی دیگر، سرور ممکن است سرصفحه پاسخ مربوط به خط‌مشی منبع بین مبدائی را کاهش دهد:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "برای استفاده از این منبع از سایتی دیگر، سرور ممکن است سرصفحه پاسخ خط‌مشی منبع بین‌مبدائی را رها کند:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "منبع دسته‌شده"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "موارد گزارش شبکه براساس قاب گروه‌بندی نشود"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "به DevTools اجازه دهید از Windows Shares ازطریق مسیرهای UNC منابع (ازجمله نقشه منابع) را بار کند. به دلایل امنیتی به‌طور پیش‌فرض غیرفعال شده است."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "قاب"
@@ -8763,7 +8784,7 @@
     "message": "شروع ضبط تخصیص پشته"
   },
   "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "شروع کردن ضبط تخصیص‌های پشته و تازه‌سازی صفحه"
+    "message": "شروع کردن ضبط تخصیص‌های پشته و بار کردن مجدد صفحه"
   },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "شروع/ توقف ضبط"
@@ -8841,7 +8862,7 @@
     "message": "تحلیل درحال انجام است"
   },
   "panels/screencast/ScreencastView.ts | reload": {
-    "message": "تازه‌سازی"
+    "message": "بار کردن مجدد"
   },
   "panels/screencast/ScreencastView.ts | screencastViewOfDebugTarget": {
     "message": "نمای ضبط ویدیویی صفحه از هدف موردنظر برای اشکال‌زدایی"
@@ -8883,7 +8904,7 @@
     "message": "مورد منطبقی یافت نشد."
   },
   "panels/search/SearchView.ts | refresh": {
-    "message": "بازخوانی"
+    "message": "بازآوری"
   },
   "panels/search/SearchView.ts | search": {
     "message": "جستجو"
@@ -9060,10 +9081,10 @@
     "message": "یکی از گواهینامه‌های ریشه محلی «پین کلید عمومی» را دور زده است."
   },
   "panels/security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
-    "message": "برای ثبت درخواست‌های مربوط به منابع HTTP، صفحه را تازه‌سازی کنید."
+    "message": "برای ثبت درخواست‌های مربوط به منابع HTTP، صفحه را بار کردن مجدد کنید."
   },
   "panels/security/SecurityPanel.ts | reloadToViewDetails": {
-    "message": "برای مشاهده جزئیات، تازه‌سازی کنید"
+    "message": "برای مشاهده جزئیات، بار کردن مجدد کنید"
   },
   "panels/security/SecurityPanel.ts | resources": {
     "message": "منابع"
@@ -9555,13 +9576,13 @@
     "message": "هیچ آزمایشی با این فیلتر مطابقت ندارد"
   },
   "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به تازه‌سازی نیاز دارد."
+    "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به بار کردن مجدد نیاز دارد."
   },
   "panels/settings/SettingsScreen.ts | preferences": {
     "message": "اولویت‌ها"
   },
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
-    "message": "بازیابی تنظیمات پیش‌فرض و تازه‌سازی"
+    "message": "بازیابی تنظیمات پیش‌فرض و بار کردن مجدد"
   },
   "panels/settings/SettingsScreen.ts | sendFeedback": {
     "message": "ارسال بازخورد"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "فقط درصورت درست بودن شرط موقتاً متوقف شود"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "نقطه توقفی وجود ندارد"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "باز کردن انتخابگر رنگ."
@@ -10347,7 +10365,7 @@
     "message": "<دردسترس نیست>"
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
-    "message": "بازخوانی عبارت‌های نظارت"
+    "message": "بازآوری عبارت‌های نظارت"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "رسیدن به نقطه توقف {PH1}"
@@ -10881,7 +10899,7 @@
     "message": "برای ضبط جدید، روی دکمه ضبط {PH1} کلیک کنید یا {PH2} را فشار دهید."
   },
   "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "برای ضبط کردن بارگیری صفحه، روی دکمه تازه‌سازی {PH1} کلیک کنید یا {PH2} را فشار دهید."
+    "message": "برای ضبط کردن بارگیری صفحه، روی دکمه بار کردن مجدد {PH1} کلیک کنید یا {PH2} را فشار دهید."
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "بستن"
@@ -11976,7 +11994,7 @@
     "message": "نمایش جلسه‌های خط زمان اخیر"
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
-    "message": "شروع نمایه‌سازی و تازه‌سازی صفحه"
+    "message": "شروع نمایه‌سازی و بار کردن مجدد صفحه"
   },
   "panels/timeline/timeline-meta.ts | startStopRecording": {
     "message": "شروع/ توقف ضبط"
@@ -12159,10 +12177,10 @@
     "message": "مشکل درحال‌حاضر دردسترس نیست"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "حذف کردن حافظه برگزیده"
+    "message": "توقف برجسته‌سازی این حافظه"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "رفتن به حافظه برگزیده"
+    "message": "رفتن به این حافظه"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "نشانی باید عددی بین {PH1} و {PH2} باشد"
@@ -12189,7 +12207,7 @@
     "message": "صفحه قبلی"
   },
   "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | refresh": {
-    "message": "بازخوانی"
+    "message": "بازآوری"
   },
   "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | changeEndianness": {
     "message": "تغییر Endianness"
@@ -12252,7 +12270,7 @@
     "message": "برای باز کردن پانل شبکه و نمایش درخواست برای نشانی وب {url}، کلیک کنید"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
-    "message": "درخواست در پانل شبکه دردسترس نیست، صفحه بازرسی‌شده را تازه‌سازی کنید"
+    "message": "درخواست در پانل شبکه دردسترس نیست، صفحه بازرسی‌شده را بار کردن مجدد کنید"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
     "message": "نشانی وب کوتاه‌شده"
@@ -12342,7 +12360,7 @@
     "message": "پانل‌ها"
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
-    "message": "تازه‌سازی DevTools"
+    "message": "بار کردن مجدد DevTools"
   },
   "ui/legacy/InspectorView.ts | selectFolder": {
     "message": "انتخاب پوشه"
@@ -12414,10 +12432,10 @@
     "message": "استفاده از عبارت باقاعده"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به تازه‌سازی نیاز دارد."
+    "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به بار کردن مجدد نیاز دارد."
   },
   "ui/legacy/SettingsUI.ts | srequiresReload": {
-    "message": "*به تازه‌سازی نیاز دارد"
+    "message": "*به بار کردن مجدد نیاز دارد"
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
     "message": "علامت زده شد"
@@ -12465,7 +12483,7 @@
     "message": "ارتباط DevTools با صفحه قطع شد."
   },
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
-    "message": "پس‌از تازه‌سازی صفحه، DevTools دوباره متصل خواهد شد."
+    "message": "پس‌از بار کردن مجدد صفحه، DevTools دوباره متصل خواهد شد."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
     "message": "پاک کردن ورودی"
@@ -12669,7 +12687,7 @@
     "message": "سطح {PH1}"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | refresh": {
-    "message": "بازخوانی"
+    "message": "بازآوری"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "بازنشانی ستون‌ها"
@@ -12924,7 +12942,7 @@
     "message": "هیچ فرمانی پیدا نشد"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به تازه‌سازی نیاز دارد."
+    "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به بار کردن مجدد نیاز دارد."
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | run": {
     "message": "اجرا"

@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Activează blocarea solicitărilor din rețea"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Permite ca DevTools să încarce resurse, cum ar fi hărțile sursă, din resurse de distribuire în rețea Windows prin căi UNC. Opțiune dezactivată în mod prestabilit din motive de securitate."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Activează formatul WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Redare"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Activează căutarea pe măsură ce introduci text"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Caută pe măsură ce introduci text"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Dezactivează căutarea pe măsură ce tastezi (apasă pe Enter pentru a căuta)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Afișează anunțuri pe acest site, dacă sunt permise"
@@ -1449,7 +1461,7 @@
     "message": "Partenerul tău negociază o versiune (D)TLS învechită. Consultă-te cu partenerul pentru a remedia problema."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL în contexte nesecurizate este învechit și va fi eliminat în M107. Folosește Spațiul de stocare web sau Baza de date indexată."
+    "message": "WebSQL în contexte nesecurizate este învechit și va fi eliminat în curând. Folosește Spațiul de stocare web sau Baza de date indexată."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent s-a învechit. Folosește navigator.storage standardizat."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplicație"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Bara laterală a panoului aplicației"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Servicii în fundal"
@@ -4764,7 +4779,7 @@
     "message": "Încearcă să elimini {REASON_PROPERTY_DECLARATION_CODE} sau să-i modifici valoarea."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Proprietatea {REASON_PROPERTY_DECLARATION_CODE} din același element omite efectul {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Proprietatea {REASON_PROPERTY_DECLARATION_CODE} din acest element omite efectul {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Adaugă o clasă nouă"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Cale de navigare spre structura arbore DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Derulează la stânga"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Derulează la dreapta"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(text)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Vezi certificatul"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs active."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs active care declanșează comportamentul la nivel de server."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Alege această opțiune dacă resursa și documentul sunt difuzate de același site."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Decodate:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Află mai multe"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Află mai multe din fila Probleme"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Află mai multe"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Sunt disponibile numai anteturi provizorii, deoarece această solicitare nu a fost trimisă în rețea, ci a fost difuzată dintr-o memorie cache locală, care nu stochează anteturile de solicitare inițiale. Dezactivează memoria cache pentru a vedea anteturile de solicitare complete."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Se afișează anteturile provizorii."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Se afișează anteturile provizorii. Dezactivează memoria cache pentru a vedea anteturile complete."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(din memoria cache a discului)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Modificări de antet"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Află mai multe"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Află mai multe din fila Probleme"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Alege această opțiune numai dacă un site arbitrar care include această resursă nu prezintă un risc de securitate."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Sunt disponibile numai anteturi provizorii, deoarece această solicitare nu a fost trimisă în rețea, ci a fost difuzată dintr-o memorie cache locală, care nu stochează anteturile de solicitare inițiale. Dezactivează memoria cache pentru a vedea anteturile de solicitare complete."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Se afișează anteturile provizorii."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Se afișează anteturile provizorii. Dezactivează memoria cache pentru a vedea anteturile complete."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Brute"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Cod de stare"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Acest document a fost blocat de la încărcare într-un iframe cu un atribut sandbox, deoarece documentul specifică o politică de deschidere cu surse multiple."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Pentru a încorpora acest cadru în document, trebuie ca răspunsul să activeze politica privind elementele de încorporare cu origini multiple, indicând următorul antet de răspuns:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Pentru a folosi această resursă din altă origine, serverul trebuie să indice o politică privind resursele cu origini multiple în anteturile de răspuns:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Pentru a folosi această resursă din altă origine, este posibil ca serverul să relaxeze antetul de răspuns al politicii privind resursele cu origini multiple:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Pentru a folosi această resursă din alt site, este posibil ca serverul să relaxeze antetul de răspuns al politicii privind resursele cu origini multiple:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Un argument introdus de client este incorect sau nevalid."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tip"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Alege această opțiune dacă resursa și documentul sunt difuzate de același site."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Alege această opțiune numai dacă un site web arbitrar care include această resursă nu prezintă un risc de securitate."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Acest document a fost blocat de la încărcare într-un iframe cu un atribut sandbox, deoarece documentul specifică o politică de deschidere cu surse multiple."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Pentru a încorpora acest cadru în document, trebuie ca răspunsul să activeze politica privind elementele de încorporare cu origini multiple indicând următorul antet de răspuns:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Pentru a folosi această resursă din altă origine, serverul trebuie să indice o politică privind resursele cu origini multiple în anteturile de răspuns:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Pentru a folosi această resursă din altă origine, este posibil ca serverul să relaxeze antetul de răspuns al politicii privind resursele cu origini multiple:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Pentru a folosi această resursă din alt site, este posibil ca serverul să relaxeze antetul de răspuns al politicii privind resursele cu origini multiple:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Resurse grupate"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Nu grupa elementele jurnal ale rețelei după cadru"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Permite ca DevTools să încarce resurse, cum ar fi hărțile sursă, din resurse de distribuire în rețea Windows prin căi UNC. Opțiune dezactivată în mod prestabilit din motive de securitate."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "cadru"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Întrerupe numai când condiția este adevărată"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Fără puncte de întrerupere"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Deschide selectorul de culoare."
@@ -12159,10 +12177,10 @@
     "message": "Problemă indisponibilă în acest moment"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Șterge evidențierea memoriei"
+    "message": "Nu mai evidenția această memorie"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Accesează memoria evidențiată"
+    "message": "Accesează această memorie"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresa trebuie să fie un număr între {PH1} și {PH2}"

@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Ağ istek engellemeyi etkinleştir"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevTools sitesinin, Windows paylaşımlarından UNC yolları aracılığıyla kaynak haritaları gibi kaynakları yüklemesine izin verin. Güvenlik nedeniyle varsayılan olarak devre dışıdır."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP biçimini etkinleştir"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Oluşturma"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Yazarken arama özelliğini etkinleştir"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Yazarken ara"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Yazarken aramayı devre dışı bırakın (arama yapmak için Enter tuşuna basın)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "İzin veriliyorsa bu sitede reklamları göster"
@@ -1449,7 +1461,7 @@
     "message": "İş ortağınızın anlaşma yaptığı (D)TLS sürümü artık kullanılmıyor. Lütfen iş ortağınızla görüşüp bu durumu düzeltin."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Güvenli olmayan bağlamlarda WebSQL kullanımı kaldırılacak ve M107'de mevcut olmayacak. Lütfen web depolama veya dizine eklenmiş veritabanı kullanın."
+    "message": "Güvenli olmayan bağlamlarda WebSQL kullanımı kaldırılacak ve yakında mevcut olmayacak. Lütfen web depolama veya dizine eklenmiş veritabanı kullanın."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent kullanımdan kaldırıldı. Lütfen bunun yerine standart navigator.storage kullanın."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Uygulama"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Uygulama paneli kenar çubuğu"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Arka Plan Hizmetleri"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} özelliğini kaldırmayı veya değerini değiştirmeyi deneyin."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Aynı öğedeki {REASON_PROPERTY_DECLARATION_CODE} özelliği {AFFECTED_PROPERTY_DECLARATION_CODE} etkisini atlar."
+    "message": "Bu öğedeki {REASON_PROPERTY_DECLARATION_CODE} özelliği {AFFECTED_PROPERTY_DECLARATION_CODE} etkisini atlar."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Yeni sınıf ekle"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ağacı içerik haritaları"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Sola kaydır"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Sağa kaydır"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(metin)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Sertifikayı göster"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs etkin."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Sunucu tarafı davranışlarını tetikleyen aktif client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Hem kaynak hem de doküman aynı siteden yayınlanıyorsa bu seçeneği belirleyin."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Kod çözüldü:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Daha fazla bilgi"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Sorunlar sekmesinde daha fazla bilgi bulabilirsiniz"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Daha fazla bilgi"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Bu istek ağ üzerinden gönderilmek yerine orijinal istek başlıklarını depolamayan yerel bir önbellekten sunulduğu için yalnızca hazır başlıklar kullanılabilir. Bütün istek başlıklarını görmek için önbelleği devre dışı bırakın."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Hazır başlıklar gösteriliyor."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Hazır başlıklar gösteriliyor. Bütün başlıkları görmek için önbelleği devre dışı bırakın."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(disk önbelleğinden)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Üst bilgi geçersiz kılmaları"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Daha fazla bilgi"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Sorunlar sekmesinde daha fazla bilgi bulabilirsiniz"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Yalnızca, bu kaynağı içeren rastgele bir web sitesi bir güvenlik riski oluşturmuyorsa bu seçeneği belirleyin."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Bu istek ağ üzerinden gönderilmek yerine orijinal istek başlıklarını depolamayan yerel bir önbellekten sunulduğu için yalnızca hazır başlıklar kullanılabilir. Bütün istek başlıklarını görmek için önbelleği devre dışı bırakın."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Hazır başlıklar gösteriliyor."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Hazır başlıklar gösteriliyor. Bütün başlıkları görmek için önbelleği devre dışı bırakın."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "İşlenmemiş"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Durum Kodu"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Bu doküman çapraz kaynak açıcı politikası belirttiği için dokümanın sandbox özelliği olan bir iframe içinde yüklenmesi engellendi."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Bu çerçeveyi dokümanınıza yerleştirmek için yanıtın aşağıdaki yanıt üst bilgisini belirleyerek çapraz kaynak yerleştirme politikasını etkinleştirmesi gerekir:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Bu kaynağı başka bir merkezden kullanabilmek için sunucu tarafından yanıt üst bilgilerinde merkezler arası kaynak politikası belirtmesi gerekir:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Sunucu, bu kaynağı başka bir merkezden kullanabilmek için merkezler arası kaynak politikası yanıt başlığını gevşetebilir:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Sunucu, bu kaynağı başka bir siteden kullanabilmek için merkezler arası kaynak politikası başlığını gevşetebilir."
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "İstemci tarafından sağlanan bir bağımsız değişken bozuk veya geçersizdi."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tür"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Hem kaynak hem de doküman aynı siteden yayınlanıyorsa bu seçeneği belirleyin."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Yalnızca, bu kaynağı içeren rastgele bir web sitesi bir güvenlik riski oluşturmuyorsa bu seçeneği belirleyin."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Bu doküman çapraz kaynak açıcı politikası belirttiği için dokümanın sandbox özelliği olan bir iframe içinde yüklenmesi engellendi."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Bu çerçeveyi dokümanınıza yerleştirmek için yanıtın aşağıdaki yanıt üst bilgisini belirleyerek çapraz kaynak yerleştirme politikasını etkinleştirmesi gerekir:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Bu kaynağı başka bir merkezden kullanabilmek için sunucu tarafından yanıt üst bilgilerinde merkezler arası kaynak politikası belirtmesi gerekir:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Sunucu, bu kaynağı başka bir merkezden kullanabilmek için merkezler arası kaynak politikası yanıt başlığını gevşetebilir:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Sunucu, bu kaynağı başka bir siteden kullanabilmek için merkezler arası kaynak politikası başlığını gevşetebilir."
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Paket kaynak"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ağ günlüğü nesneleri çerçeveye göre gruplanmasın"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevTools sitesinin, Windows paylaşımlarından UNC yolları aracılığıyla kaynak haritaları gibi kaynakları yüklemesine izin verin. Güvenlik nedeniyle varsayılan olarak devre dışıdır."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "çerçeve"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Yalnızca koşul doğruysa duraklat"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Ayrılma noktası yok"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Renk seçiciyi aç."
@@ -12159,10 +12177,10 @@
     "message": "Sorun şu anda kullanılamıyor"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Bellek vurgulamasını sil"
+    "message": "Bu belleği vurgulamayı durdur"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Vurgulanan belleğe atla"
+    "message": "Bu belleğe atla"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adres {PH1} ile {PH2} arasında bir sayı olmalıdır"

@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Luba võrgutaotluse blokeerimine"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Lubage tööriistal DevTools laadida Windowsi jagatud failidest ressursse (nt kaarte) üksuse UNC teede kaudu. Turvalisuse huvides on see vaikimisi keelatud."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Luba vorming WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderdamine"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Luba otsing sisestamisel"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Otsing sisestamisel"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Keela otsing sisestamisel (otsimiseks peab vajutama sisestusklahvi)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Kuva sellel saidil reklaamid, kui see on lubatud"
@@ -1449,7 +1461,7 @@
     "message": "Teie partner kasutab aegunud (D)TLS-i versiooni. Paluge oma partneril see parandada."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL-i tugi on ebaturvalistes kontekstides katkestatud ja eemaldatakse M107-s. Kasutage veebipõhist salvestusruumi või indekseeritud andmebaasi."
+    "message": "Üksuse WebSQL tugi ebaturvalises kontekstis on katkestatud ja see eemaldatakse peagi. Kasutage veebipõhist salvestusruumi või indekseeritud andmebaasi."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "API StorageType.persistent tugi on katkestatud. Kasutage selle asemel standardset API-t navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Rakendus"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Rakenduse paneeli külgriba"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Taustateenused"
@@ -4764,7 +4779,7 @@
     "message": "Proovige {REASON_PROPERTY_DECLARATION_CODE} eemaldada või muuta selle väärtust."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Sama elemendi atribuut {REASON_PROPERTY_DECLARATION_CODE} eirab atribuudi {AFFECTED_PROPERTY_DECLARATION_CODE} mõju."
+    "message": "Selle elemendi {REASON_PROPERTY_DECLARATION_CODE} atribuut eirab atribuudi {AFFECTED_PROPERTY_DECLARATION_CODE} mõju."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Lisa uus klass"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM-puu jäljerida"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Vasakule kerimine"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Paremale kerimine"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(tekst)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Kuva sertifikaat"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktiivne client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktiivsed client experiment variation IDs, mis käivitavad serveripoolse käitumise."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Tehke see valik, kui ressurss ja dokument esitatakse samalt saidilt."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dekodeeritud:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Lisateave"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Vaadake lisateavet probleemide vahekaardil"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Lisateave"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Saadaval on ainult esialgsed päised, kuna seda taotlust ei saadetud võrgu kaudu, vaid see esitati kohalikust vahemälust, mis ei talleta algsete taotluste päiseid. Taotluste täielike päiste nägemiseks keelake vahemälu."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Kuvatud on esialgsed päised."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Kuvatud on esialgsed päised. Kõigi päiste vaatamiseks keelake vahemälu."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ketta vahemälust)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Päiste alistamised"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Lisateave"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Vaadake lisateavet probleemide vahekaardil"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Valige see ainult juhul, kui seda ressurssi hõlmav juhuslik veebisait ei kujuta endast turvariski."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Saadaval on ainult esialgsed päised, kuna seda taotlust ei saadetud võrgu kaudu, vaid see esitati kohalikust vahemälust, mis ei talleta algsete taotluste päiseid. Taotluste täielike päiste nägemiseks keelake vahemälu."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Kuvatud on esialgsed päised."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Kuvatud on esialgsed päised. Kõigi päiste vaatamiseks keelake vahemälu."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "RAW"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Olekukood"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dokumendi laadimine iframe'is atribuudiga sandbox blokeeriti, kuna dokument määras mitme lähtekohaga avaja eeskirjad."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Selleks et see raam dokumendile manustada, peab vastus lubama mitme lähtekohaga manustaja eeskirjad, määrates järgmise vastuse päise:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Server peab määrama vastuste päistes mitme lähtekohaga ressursside eeskirjad, et kasutada seda ressurssi muust lähtekohast."
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Server võib mitme päritoluga ressursside eeskirjade vastuse päist leebemaks muuta, et kasutada seda ressurssi muust lähtekohast."
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Server võib mitme lähtekohaga ressursside eeskirjade vastuse päist leebemaks muuta, et kasutada seda ressurssi muult saidilt."
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Kliendi esitatud argument oli vigane või muul moel sobimatu."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tüüp"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Tehke see valik, kui allikas ja dokument esitatakse samalt saidilt."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Valige see ainult juhul, kui seda ressurssi hõlmav juhuslik veebisait ei kujuta endast turvariski."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Dokumendi laadimine iframe'is atribuudiga sandbox blokeeriti, kuna dokument määras mitme lähtekohaga avaja eeskirjad."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Selleks et see raam dokumendile manustada, peab vastus lubama mitme lähtekohaga manustaja eeskirjad, määrates järgmise vastuse päise:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Server peab määrama vastuste päistes mitme lähtekohaga ressursside eeskirjad, et kasutada seda ressurssi muust lähtekohast."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Server võib mitme päritoluga ressursside eeskirjade vastuse päist leebemaks muuta, et kasutada seda ressurssi muust lähtekohast."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Server võib mitme lähtekohaga ressursside eeskirjade vastuse päist leebemaks muuta, et kasutada seda ressurssi muult saidilt."
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "WebBundle'i ressurss"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ära rühmita võrgulogi üksusi raami alusel"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Lubage tööriistal DevTools laadida Windowsi jagatud failidest ressursse (nt kaarte) üksuse UNC teede kaudu. Turvalisuse huvides on see vaikimisi keelatud."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "raam"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Peata ainult juhul, kui tingimus on tõene"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Katkestuspunkte ei ole"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Ava värvivalija."
@@ -12162,7 +12180,7 @@
     "message": "Peata selle mäluüksuse esiletõstmine"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Liigu esiletõstetud mäluüksuse juurde"
+    "message": "Liigu sellele mäluüksusele"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Aadress peab olema number vahemikus {PH1} ja {PH2}"

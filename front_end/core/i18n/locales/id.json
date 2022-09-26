@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktifkan pemblokiran permintaan jaringan"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Izinkan DevTools memuat resource, seperti peta sumber, dari Windows Shares melalui jalur UNC. Dinonaktifkan secara default karena alasan keamanan."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktifkan format WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Rendering"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktifkan telusuri saat Anda mengetik"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Telusuri saat Anda mengetik"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Nonaktifkan telusuri saat Anda mengetik (tekan Enter untuk menelusuri)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Tampilkan iklan di situs ini, jika diizinkan"
@@ -1449,7 +1461,7 @@
     "message": "Partner Anda sedang menegosiasikan versi (D)TLS yang usang. Hubungi partner Anda untuk memperbaikinya."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL dalam konteks yang tidak aman tidak digunakan lagi dan akan dihapus di M107. Gunakan Penyimpanan Web atau Database yang Diindeks."
+    "message": "WebSQL dalam konteks yang tidak aman tidak digunakan lagi dan akan segera dihapus. Gunakan Penyimpanan Web atau Database yang Diindeks."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent tidak digunakan lagi. Sebagai gantinya, gunakan navigator.storage standar."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikasi"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Sidebar panel aplikasi"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Layanan Latar Belakang"
@@ -4764,7 +4779,7 @@
     "message": "Coba hapus {REASON_PROPERTY_DECLARATION_CODE} atau ubah nilainya."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Properti {REASON_PROPERTY_DECLARATION_CODE} pada elemen yang sama mengabaikan efek {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Properti {REASON_PROPERTY_DECLARATION_CODE} pada elemen ini mengabaikan efek {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Tambahkan class baru"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Breadcrumb hierarki DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Scroll ke kiri"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Scroll ke kanan"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(teks)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Lihat sertifikat"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs aktif."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs aktif yang memicu perilaku sisi server."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Pilih opsi ini jika resource dan dokumen dikirimkan dari situs yang sama."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Didekode:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Pelajari lebih lanjut"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Pelajari lebih lanjut di tab masalah"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Pelajari lebih lanjut"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Hanya header sementara yang tersedia karena permintaan ini tidak dikirim melalui jaringan dan ditayangkan dari cache lokal, yang tidak menyimpan header permintaan asli. Nonaktifkan cache untuk melihat header permintaan lengkap."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Header sementara ditampilkan."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Header sementara ditampilkan. Nonaktifkan cache untuk melihat header lengkap."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(dari cache disk)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Penggantian header"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Pelajari lebih lanjut"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Pelajari lebih lanjut di tab masalah"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Hanya pilih opsi ini jika situs arbitrer yang menyertakan resource ini tidak menimbulkan risiko keamanan."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Hanya header sementara yang tersedia karena permintaan ini tidak dikirim melalui jaringan dan ditayangkan dari cache lokal, yang tidak menyimpan header permintaan asli. Nonaktifkan cache untuk melihat header permintaan lengkap."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Header sementara ditampilkan."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Header sementara ditampilkan. Nonaktifkan cache untuk melihat header lengkap."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raw"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Kode Status"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dokumen ini diblokir agar tidak dimuat dalam iframe dengan atribut sandbox karena dokumen ini menetapkan kebijakan pembuka lintas asal."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Untuk menyematkan frame ini di dokumen Anda, respons harus mengaktifkan kebijakan penyemat lintas asal dengan menentukan header respons berikut:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Untuk menggunakan resource ini dari asal lain, server perlu menentukan kebijakan resource lintas asal di header respons:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Untuk menggunakan resource ini dari asal lain, server dapat melonggarkan header respons kebijakan resource lintas asal:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Untuk menggunakan resource ini dari situs lain, server dapat melonggarkan header respons kebijakan resource lintas asal:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Argumen yang diberikan klien salah atau tidak valid."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Jenis"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Pilih opsi ini jika resource dan dokumen dikirimkan dari situs yang sama."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Hanya pilih opsi ini jika situs arbitrer yang menyertakan resource ini tidak menimbulkan risiko keamanan."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Dokumen ini diblokir agar tidak dimuat dalam iframe dengan atribut sandbox karena dokumen ini menetapkan kebijakan pembuka lintas asal."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Untuk menyematkan frame ini di dokumen Anda, respons harus mengaktifkan kebijakan penyemat lintas asal dengan menentukan header respons berikut:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Untuk menggunakan resource ini dari asal lain, server perlu menentukan kebijakan resource lintas asal di header respons:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Untuk menggunakan resource ini dari asal lain, server dapat melonggarkan header respons kebijakan resource lintas asal:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Untuk menggunakan resource ini dari situs lain, server dapat melonggarkan header respons kebijakan resource lintas asal:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Sumber paket"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Jangan kelompokkan item log jaringan menurut frame"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Izinkan DevTools memuat resource, seperti peta sumber, dari Windows Shares melalui jalur UNC. Dinonaktifkan secara default karena alasan keamanan."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "frame"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Jeda hanya jika kondisinya benar"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Tidak ada titik henti sementara"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Buka pemilih warna."
@@ -12159,10 +12177,10 @@
     "message": "Masalah tidak tersedia untuk saat ini"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Hapus penanda memori"
+    "message": "Berhenti menandai memori ini"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Langsung ke memori yang ditandai"
+    "message": "Lompat ke memori ini"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Alamat harus berupa angka antara {PH1} hingga {PH2}"

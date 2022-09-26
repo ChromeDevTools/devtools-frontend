@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Blokkeren van netwerkverzoeken aanzetten"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Toestaan dat DevTools bronnen, zoals bronkaarten, laadt vanuit Windows-shares via UNC-paden. Standaard uitgezet wegens beveiligingsredenen."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP-indeling aanzetten"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderen"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Zoeken terwijl je typt aanzetten"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Zoeken terwijl je typt"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Zoeken terwijl je typt uitzetten (druk op Enter om te zoeken)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Advertenties bekijken op deze site, indien toegestaan"
@@ -1449,7 +1461,7 @@
     "message": "Je partner gebruikt een verouderde (D)TLS-versie. Neem contact op met je partner om dit op te lossen."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL in niet-beveiligde contexten is beëindigd en wordt verwijderd in M107. Gebruik webopslag of geïndexeerde database."
+    "message": "WebSQL in niet-beveiligde contexten is beëindigd en wordt binnenkort verwijderd. Gebruik webopslag of geïndexeerde database."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent is beëindigd. Gebruik in plaats daarvan de gestandaardiseerde navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "App"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Zijbalk van app-venster"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Achtergrondservices"
@@ -4764,7 +4779,7 @@
     "message": "Verwijder {REASON_PROPERTY_DECLARATION_CODE} of wijzig de bijbehorende waarde."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "De eigenschap {REASON_PROPERTY_DECLARATION_CODE} voor hetzelfde element omzeilt het effect van {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "De eigenschap {REASON_PROPERTY_DECLARATION_CODE} voor dit element omzeilt het effect van {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Nieuwe klasse toevoegen"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Broodkruimels van DOM-boomstructuur"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Naar links scrollen"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Naar rechts scrollen"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(tekst)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Certificaat bekijken"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Actieve client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Actieve client experiment variation IDs die gedrag aan de serverzijde activeren."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Kies deze optie als de bron en het document afkomstig zijn van dezelfde site."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Gedecodeerd:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Meer informatie"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Meer informatie op het tabblad Problemen"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Meer informatie"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Er zijn alleen tijdelijke headers beschikbaar, omdat dit verzoek niet via het netwerk is gestuurd, maar vanaf een lokaal cachegeheugen waar de originele verzoekheaders niet zijn opgeslagen. Zet de cache uit om volledige verzoekheaders te zien."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Voorlopige headers worden getoond."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Voorlopige headers worden getoond. Zet de cache uit om volledige headers te zien."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(vanuit schijfcache)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Koptekstoverschrijvingen"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Meer informatie"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Meer informatie op het tabblad Problemen"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Kies deze optie alleen als een willekeurige website die deze resource bevat geen beveiligingsrisico inhoudt."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Er zijn alleen tijdelijke headers beschikbaar, omdat dit verzoek niet via het netwerk is gestuurd, maar vanaf een lokaal cachegeheugen waar de originele verzoekheaders niet zijn opgeslagen. Zet de cache uit om volledige verzoekheaders te zien."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Voorlopige headers worden getoond."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Voorlopige headers worden getoond. Zet de cache uit om volledige headers te zien."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Onbewerkt"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Statuscode"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dit document is geblokkeerd zodat het niet in een iframe met een sandbox-kenmerk kan worden geladen, omdat voor dit document een cross-origin-openerbeleid is opgegeven."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Als je dit frame in je document wilt insluiten, moet de reactie het beleid voor cross-origin-embedding aanzetten door de volgende reactieheader op te geven."
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Als je deze resource vanuit een andere oorsprong wilt gebruiken, moet de server een cross-origin-resourcebeleid vermelden in de reactieheaders:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Als je deze resource vanuit een andere oorsprong wilt gebruiken, kan de server het cross-origin-resourcebeleid voor de reactieheader versoepelen:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Als je deze resource van een andere site wilt gebruiken, kan de server het cross-origin-resourcebeleid voor de kop van een reactie versoepelen:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Een door de client opgegeven argument is onjuist opgemaakt of anderszins ongeldig."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Type"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Kies deze optie als de resource en het document afkomstig zijn van dezelfde site."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Kies deze optie alleen als een willekeurige website die deze resource bevat geen beveiligingsrisico inhoudt."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Dit document is geblokkeerd zodat het niet in een iframe met een sandbox-kenmerk kan worden geladen, omdat voor dit document een cross-origin-openerbeleid is opgegeven."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Als je dit frame in je document wilt insluiten, moet de reactie het beleid voor cross-origin-embedding aanzetten door de volgende reactieheader op te geven."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Als je deze resource vanuit een andere oorsprong wilt gebruiken, moet de server een cross-origin-resourcebeleid vermelden in de reactieheaders:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Als je deze resource vanuit een andere oorsprong wilt gebruiken, kan de server het cross-origin-resourcebeleid voor de reactieheader versoepelen:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Als je deze resource van een andere site wilt gebruiken, kan de server het cross-origin-resourcebeleid voor de kop van een reactie versoepelen:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Gebundelde bron"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Items in het netwerklogboek niet groeperen op frame"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Toestaan dat DevTools bronnen, zoals bronkaarten, laadt vanuit Windows-shares via UNC-paden. Standaard uitgezet wegens beveiligingsredenen."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "frame"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Alleen onderbreken als de voorwaarde True is"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Geen breakpoints"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Kleurkiezer openen."
@@ -12159,10 +12177,10 @@
     "message": "Het probleem is op dit moment niet beschikbaar"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Geheugenmarkering verwijderen"
+    "message": "Dit geheugen niet meer markeren"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Naar het gemarkeerde geheugen gaan"
+    "message": "Naar dit geheugen gaan"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adres moet een getal zijn tussen {PH1} en {PH2}"

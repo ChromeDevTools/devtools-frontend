@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ქსელის მოთხოვნების დაბლოკვის ჩართვა"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "მიეცით საშუალება DevTools-ს, ჩატვირთოს რესურსები, როგორიცაა, მაგალითად, წყაროების რუკები, გაზიარებებიდან Windows-ზე, UNC მდებარეობების მეშვეობით. უსაფრთხოების მოსაზრებებიდან გამომდინარე, ნაგულისხმევად გათიშულია."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ფორმატის ჩართვა"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "რენდერი"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "ტექსტის აკრეფის პარალელურად ძიების ჩართვა"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "ძიება ტექსტის აკრეფის პარალელურად"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "ტექსტის აკრეფის პარალელურად ძიების გათიშვა (ძიებისთვის Enter-ზე დაჭერა)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "ამ საიტზე რეკლამის ჩვენება (თუ დაშვებულია)"
@@ -1449,7 +1461,7 @@
     "message": "თქვენი პარტნიორი ათანხმებს (D)TLS-ის ხმარებიდან ამოღებულ ვერსიას. გთხოვთ, გაესაუბროთ თქვენს პარტნიორს ამ პრობლემის მოგვარების თაობაზე."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "დაუცველ კონტექსტებში WebSQL-ის გამოყენების შესაძლებლობა მოძველდა და M107-ში გაუქმდება. გამოიყენეთ ვებსაცავი ან ინდექსირებული მონაცემთა ბაზა."
+    "message": "დაუცველ კონტექსტებში WebSQL-ის გამოყენების შესაძლებლობა მოძველდა და მალე გაუქმდება. გამოიყენეთ ვებსაცავი ან ინდექსირებული მონაცემთა ბაზა."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent მოძველდა. გთხოვთ, სანაცვლოდ, გამოიყენოთ სტანდარტიზებული navigator.storage."
@@ -2444,6 +2456,9 @@
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "აპლიკაცია"
   },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "აპლიკაციების პანელის გვერდითი ზოლი"
+  },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "ფონური სერვისები"
   },
@@ -3144,7 +3159,7 @@
     "message": "გვერდები, რომლებიც იყენებს Media Device Dispatcher-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "მედია დამკვრელი უკრავდა სხვა გვერდზე გადასვლისას."
+    "message": "მედიადამკვრელი უკრავდა სხვა გვერდზე გადასვლისას."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
     "message": "გვერდები, რომლებიც იყენებს MediaSession API-ს და რომლებსაც არჩეული აქვს დაკვრის მდგომარეობა, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
@@ -4764,7 +4779,7 @@
     "message": "ცადეთ, ამოშალოთ {REASON_PROPERTY_DECLARATION_CODE} ან შეცვალოთ მისი მნიშვნელობა."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "თვისება „{REASON_PROPERTY_DECLARATION_CODE}“ იმავე ელემენტზე უგულებელყოფს „{AFFECTED_PROPERTY_DECLARATION_CODE}“-ის მოქმედებას."
+    "message": "თვისება „{REASON_PROPERTY_DECLARATION_CODE}“ ამ ელემენტზე უგულებელყოფს „{AFFECTED_PROPERTY_DECLARATION_CODE}“-ის მოქმედებას."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "ახალი კლასის დამატება"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ხეში იერარქიული ნავიგაცია"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "გადაადგილება მარცხნივ"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "გადაადგილება მარჯვნივ"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(ტექსტი)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "სერტიფიკატის ნახვა"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "აქტიური client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "აქტიური client experiment variation IDs, რომლებიც იწვევს ქცევას სერვერის მხრიდან."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "აირჩიეთ ეს ვარიანტი, თუ რესურსისა და დოკუმენტის მოწოდება ხდება ერთსა და იმავე საიტიდან."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "გაშიფრული:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "შეიტყვეთ მეტი"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "დამატებითი ინფორმაცია ხელმისაწვდომია პრობლემების ჩანართზე"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "შეიტყვეთ მეტი"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "ხელმისაწვდომია მხოლოდ დროებითი ჰედერები, რადგან მოთხოვნა არ გაგზავნილა ქსელის მეშვეობით, არამედ მოწოდებულია ადგილობრივი ქეშიდან, რომელიც არ ინახავს მოთხოვნების თავდაპირველ ჰედერებს. მოთხოვნების სრული ჰედერების სანახავად გათიშეთ ქეში."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "ნაჩვენებია დროებითი ჰედერები."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "ნაჩვენებია დროებითი ჰედერები. სრული ჰედერების სანახავად გათიშეთ ქეში."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(დისკის ქეშიდან)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "ჰედერის უგულებელყოფები"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "შეიტყვეთ მეტი"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "დამატებითი ინფორმაცია ხელმისაწვდომია პრობლემების ჩანართზე"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "აირჩიეთ ეს ვარიანტი, თუ არბიტრარული ვებსაიტი, მათ შორის, ეს რესურსი, არ უქმნის რისკს უსაფრთხოებას."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "ხელმისაწვდომია მხოლოდ დროებითი ჰედერები, რადგან მოთხოვნა არ გაგზავნილა ქსელის მეშვეობით, არამედ მოწოდებულია ადგილობრივი ქეშიდან, რომელიც არ ინახავს მოთხოვნების თავდაპირველ ჰედერებს. მოთხოვნების სრული ჰედერების სანახავად გათიშეთ ქეში."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "ნაჩვენებია დროებითი ჰედერები."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "ნაჩვენებია დროებითი ჰედერები. სრული ჰედერების სანახავად გათიშეთ ქეში."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "ნედლი"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "სტატუსის კოდი"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "ამ დოკუმენტის ჩატვირთვა დაიბლოკა iframe-ში ატრიბუტით sandbox, რადგან ამ დოკუმენტმა მიუთითა ჯვარედინი წარმოშობის გამხსნელის წესები."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "ამ ფრეიმის თქვენს დოკუმენტში ჩასაშენებლად პასუხში ჩართული უნდა იყოს ჯვარედინი წარმოშობის ჩამშენებლის წესები პასუხის შემდეგი ჰედერის განსაზღვრით:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "ამ რესურსის სხვა წყაროდან გამოსაყენებლად სერვერმა უნდა განსაზღვროს ჯვარედინი წარმოშობის რესურსების შესახებ წესები პასუხების ჰედერებში:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "ამ რესურსის სხვა წყაროდან გამოსაყენებლად სერვერმა, შესაძლოა, შეამსუბუქოს ჯვარედინი წარმოშობის რესურსების შესახებ წესების საპასუხო ჰედერი:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "ამ რესურსის სხვა საიტიდან გამოსაყენებლად სერვერმა, შესაძლოა, შეამსუბუქოს ჯვარედინი წარმოშობის რესურსების შესახებ წესების საპასუხო ჰედერი:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "კლიენტის მიერ მოწოდებული არგუმენტი არასწორად ფორმირებული ან სხვაგვარად არასწორი იყო."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "ტიპი"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "აირჩიეთ ეს ვარიანტი, თუ რესურსი და დოკუმენტი უზრუნველყოფილია ერთი და იმავე საიტიდან."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "აირჩიეთ ეს ვარიანტი, თუ არბიტრარული ვებსაიტი (ამ რესურსის ჩათვლით), არ უქმნის რისკს უსაფრთხოებას."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "ამ დოკუმენტის ჩატვირთვა დაიბლოკა iframe-ში ატრიბუტით sandbox, რადგან ამ დოკუმენტმა მიუთითა ჯვარედინი წარმოშობის გამხსნელის წესები."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "ამ ფრეიმის თქვენს დოკუმენტში ჩასაშენებლად პასუხში ჩართული უნდა იყოს ჯვარედინი წარმოშობის ჩამშენებლის წესები. ამისთვის უნდა განისაზღვროს შემდეგი საპასუხო ჰედერი:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "ამ რესურსის სხვა წყაროდან გამოსაყენებლად სერვერმა საპასუხო ჰედერებში უნდა განსაზღვროს წესები ჯვარედინი წარმოშობის რესურსებთან დაკავშირებით:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "ამ რესურსის სხვა წყაროდან გამოსაყენებლად სერვერმა, შესაძლოა, შეამსუბუქოს ჯვარედინი წარმოშობის რესურსებთან დაკავშირებული წესების საპასუხო ჰედერი:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "ამ რესურსის სხვა საიტიდან გამოსაყენებლად სერვერმა, შესაძლოა, შეამსუბუქოს ჯვარედინი წარმოშობის რესურსებთან დაკავშირებული წესების საპასუხო ჰედერი:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "რესურსი ნაკრებში"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "არ დაჯგუფდეს ქსელის ჟურნალის ერთეულები ფრეიმების მიხედვით"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "მიეცით საშუალება DevTools-ს, ჩატვირთოს რესურსები, როგორიცაა, მაგალითად, წყაროების რუკები, გაზიარებებიდან Windows-ზე, UNC მდებარეობების მეშვეობით. უსაფრთხოების მოსაზრებებიდან გამომდინარე, ნაგულისხმევად გათიშულია."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ფრეიმი"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "დაპაუზება მხოლოდ მაშინ, როცა პირობა არის „true“"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "წყვეტის წერტილები არ არის"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "ფერის ამომრჩევის გახსნა."
@@ -12159,10 +12177,10 @@
     "message": "პრობლემა ამჟამად მიუწვდომელია"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "მეხსიერების გამოყოფის წაშლა"
+    "message": "ამ მეხსიერების გამოყოფის შეწყვეტა"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "გამოყოფილ მეხსიერებაზე გადასვლა"
+    "message": "ამ მეხსიერებაზე გადასვლა"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "მისამართი უნდა იყოს რიცხვი {PH1}-დან {PH2}-მდე"

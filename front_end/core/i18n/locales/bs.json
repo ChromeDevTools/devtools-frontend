@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Omogući blokiranje zahtjeva za mrežu"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Dozvolite alatu DevTools da učitava izvore, kao što su izvorne mape, iz Windows dijeljenih izvora putem UNC putanja. Prema zadanim postavkama je onemogućeno iz sigurnosnih razloga."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Omogući format WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderovanje"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Omogućite pretraživanje tokom pisanja"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Pretražuj tokom pisanja"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Onemogućite pretraživanje dok pišete (pritisnite Enter da pretražujete)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Prikaži oglase na ovoj web lokaciji, ako su dozvoljeni"
@@ -1449,7 +1461,7 @@
     "message": "Vaš partner pregovara zastarjelu verziju (D)TLS-a. Provjerite sa svojim partnerom da to ispravite."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL u nesigurnim kontekstima je zastario i bit će uklonjen u M107. Koristite Web pohranu ili Indeksiranu bazu podataka"
+    "message": "WebSQL u nesigurnim kontekstima je zastario i uklonit će se uskoro. Koristite Web pohranu ili Indeksiranu bazu podataka."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "Metoda StorageType.persistent je zastarjela. Umjesto toga koristite standardnu metodu navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikacija"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Bočna traka ploče s aplikacijama"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Usluge u pozadini"
@@ -4764,7 +4779,7 @@
     "message": "Pokušajte ukloniti svojstvo {REASON_PROPERTY_DECLARATION_CODE} ili promijenite njegovu vrijednost."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Svojstvo {REASON_PROPERTY_DECLARATION_CODE} na istom elementu zaobilazi efekat svojstva {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Svojstvo {REASON_PROPERTY_DECLARATION_CODE} na ovom elementu zaobilazi efekat svojstva {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Dodaj novu klasu"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Hijerarhijska navigacija DOM stabla"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Kliznite ulijevo"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Kliznite udesno"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(tekst)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Prikaži certifikat"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktivni ID-ovi client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktivni ID-ovi client experiment variation IDs koji aktiviraju ponašanje na serveru."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Odaberite ovu opciju ako izvor i dokument dolaze s iste web lokacije."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dekodirano:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Saznajte više"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Saznajte više na kartici s problemima"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Saznajte više"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Dostupna su samo privremena zaglavlja, jer ovaj zahtjev nije poslan mrežom već je poslužen iz lokalne keš memorije koja ne pohranjuje zaglavlja izvornih zahtjeva. Onemogućite keš memoriju da vidite cijela zaglavlja zahtjeva."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Prikazana su privremena zaglavlja."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Prikazana su privremena zaglavlja. Onemogućite keš memoriju da vidite cijela zaglavlja."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(iz keš memorije diska)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Zaobilaženje zaglavlja"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Saznajte više"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Saznajte više na kartici s problemima"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Odaberite ovu opciju samo ako proizvoljna web lokacija, uključujući ovaj izvor, ne predstavlja sigurnosni rizik."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Dostupna su samo privremena zaglavlja, jer ovaj zahtjev nije poslan mrežom već je poslužen iz lokalne keš memorije koja ne pohranjuje zaglavlja izvornih zahtjeva. Onemogućite keš memoriju da vidite cijela zaglavlja zahtjeva."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Prikazana su privremena zaglavlja."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Prikazana su privremena zaglavlja. Onemogućite keš memoriju da vidite cijela zaglavlja."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Neobrađeno"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Kôd statusa"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Učitavanje dokumenta u iframe s atributom sandbox blokirano je jer je dokument naveo pravilo otvarača izvora unakrsnog porijekla."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Da ugradite ovaj okvir u dokument, odgovor mora omogućiti pravila ugrađivanja unakrsnog porijekla navođenjem sljedećeg zaglavlja odgovora:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Da koristi ovaj izvor drugog porijekla, server mora naznačiti pravilo unakrsnih izvora u zaglavljima odgovora:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Da koristi ovaj izvor iz drugog porijekla, server može opustiti zaglavlje odgovora za pravila korištenja izvora različitog porijekla:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Da koristi ovaj izvor s druge web lokacije, server može popustiti zaglavlje odgovora pravila izvora različitog porijekla:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Argument koji je pružio klijent je nepravilno formiran ili je nevažeći."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Vrsta"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Odaberite ovu opciju ako izvor i dokument dolaze s iste web lokacije."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Odaberite ovu opciju samo ako proizvoljna web lokacija, uključujući ovaj izvor, ne predstavlja sigurnosni rizik."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Učitavanje dokumenta u iframe s atributom sandbox blokirano je jer je dokument naveo pravilo otvarača izvora unakrsnog porijekla."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Da ugradite ovaj okvir u dokument, odgovor mora omogućiti pravila ugrađivanja unakrsnog porijekla navođenjem sljedećeg zaglavlja odgovora:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Da koristi ovaj izvor drugog porijekla, server mora naznačiti pravilo unakrsnih izvora u zaglavljima odgovora:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Da koristi ovaj izvor iz drugog porijekla, server može opustiti zaglavlje odgovora za pravila korištenja izvora različitog porijekla:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Da koristi ovaj izvor s druge web lokacije, server može popustiti zaglavlje odgovora pravila izvora različitog porijekla:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Izvor u paketu"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Nemoj grupisati stavke u zapisniku mreže po okviru"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Dozvolite alatu DevTools da učitava izvore, kao što su izvorne mape, iz Windows dijeljenih izvora putem UNC putanja. Prema zadanim postavkama je onemogućeno iz sigurnosnih razloga."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "okvir"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pauziraj samo kada je uslov ispunjen"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Nema prijelomnih tačaka"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Otvori birač boje."
@@ -12159,10 +12177,10 @@
     "message": "Problem je trenutno nedostupan"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Izbrišite istaknute stavke iz memorije"
+    "message": "Zaustavite isticanje ove memorije"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Pređite u memoriju istaknutih stavki"
+    "message": "Pređite u ovu memoriju"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresa mora biti broj između {PH1} i {PH2}"

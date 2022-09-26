@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Povolit blokování síťových požadavků"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Povolit nástrojům DevTools načítat zdroje, jako jsou mapy zdrojů, ze sdílených složek Windows prostřednictvím cest UNC. Ve výchozím nastavení je to z bezpečnostních důvodů zakázáno."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Povolit formát WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Vykreslování"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktivovat vyhledávání během psaní"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Vyhledávání během psaní"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Zakázat vyhledávání během psaní (vyhledávání provedete stisknutím klávesy Enter)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Na tomto webu zobrazovat reklamy, pokud jsou povoleny"
@@ -1449,7 +1461,7 @@
     "message": "Váš partner vyjednává zastaralou verzi (D)TLS. Požádejte ho o nápravu."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Podpora WebSQL v nezabezpečených kontextech je zastaralá a v M107 bude odstraněna. Použijte rozhraní Web Storage nebo IndexedDB."
+    "message": "Podpora protokolu WebSQL v nezabezpečených kontextech byla ukončena a brzy bude odstraněna. Použijte rozhraní Web Storage nebo IndexedDB."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "Rozhraní StorageType.persistent je zastaralé. Použijte místo něj standardizované rozhraní navigator.storage."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikace"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Postranní panel aplikace"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Služby na pozadí"
@@ -4764,7 +4779,7 @@
     "message": "Zkuste vlastnost {REASON_PROPERTY_DECLARATION_CODE} odstranit nebo změnit její hodnotu."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Vlastnost {REASON_PROPERTY_DECLARATION_CODE} stejného prvku obchází účinek vlastnosti {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Vlastnost {REASON_PROPERTY_DECLARATION_CODE} tohoto prvku obchází účinek vlastnosti {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Přidat novou třídu"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Struktura stromu modelu DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Posunout vlevo"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Posunout vpravo"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(text)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Zobrazit certifikát"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktivní client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktivní client experiment variation IDs, která spouštějí chování na straně serveru."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Tuto možnost vyberte, pokud je zdroj i dokument poskytován ze stejného webu."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dekódované:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Další informace"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Další informace najdete na kartě s problémy"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Další informace"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Jsou k dispozici jen přechodná záhlaví, protože tento požadavek nebyl odeslán přes síť a místo toho byl doplněn z místní mezipaměti, která neukládá záhlaví původních požadavků. Pokud chcete vidět úplná záhlaví požadavků, vypněte mezipaměť."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Jsou zobrazena prozatímní záhlaví."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Jsou zobrazena prozatímní záhlaví. Pokud chcete vidět úplná záhlaví, vypněte mezipaměť."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(z mezipaměti disku)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Přepsání záhlaví"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Další informace"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Další informace najdete na kartě s problémy"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Tuto možnost vyberte pouze v případě, že web zahrnující tento zdroj nepředstavuje bezpečnostní riziko.‏"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Jsou k dispozici jen přechodná záhlaví, protože tento požadavek nebyl odeslán přes síť a místo toho byl doplněn z místní mezipaměti, která neukládá záhlaví původních požadavků. Pokud chcete vidět úplná záhlaví požadavků, vypněte mezipaměť."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Jsou zobrazena prozatímní záhlaví."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Jsou zobrazena prozatímní záhlaví. Pokud chcete vidět úplná záhlaví, vypněte mezipaměť."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Nezpracováno"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Stavový kód"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Načtení tohoto dokumentu bylo zablokováno v iframe s atributem sandbox, protože tento dokument zadal zásadu otevírače napříč doménami."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Pokud chcete tento rámec vložit do svého dokumentu, odpověď musí zapnout zásadu pro vkládání napříč doménami uvedením následujícího záhlaví odpovědi:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Aby tento zdroj bylo možné použít z jiné domény, musí server v záhlaví odpovědi uvést zásadu použití zdrojů napříč doménami:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Za účelem použití tohoto zdroje z jiné domény je na serveru možné nastavit méně omezující záhlaví odpovědi Cross-Origin-Resource-Policy:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Za účelem použití tohoto zdroje z jiného webu je na serveru možné nastavit méně omezující záhlaví odpovědi Cross-Origin-Resource-Policy:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Argument poskytnutý klientem měl nesprávný formát nebo byl z jiného důvodu neplatný."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Typ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Tuto možnost vyberte, pokud je zdroj i dokument poskytován ze stejného webu."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Tuto možnost vyberte pouze v případě, že web zahrnující tento zdroj nepředstavuje bezpečnostní riziko.‏"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Načtení tohoto dokumentu bylo zablokováno v iframe s atributem sandbox, protože tento dokument zadal zásadu otevírače napříč doménami."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Pokud chcete tento rámec vložit do svého dokumentu, odpověď musí zapnout zásadu pro vkládání napříč doménami uvedením následujícího záhlaví odpovědi:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Aby tento zdroj bylo možné použít v jiné doméně, musí server v záhlaví odpovědi uvést zásadu použití zdrojů napříč doménami:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Za účelem použití tohoto zdroje z jiné domény je na serveru možné nastavit méně omezující záhlaví odpovědi Cross-Origin-Resource-Policy:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Za účelem použití tohoto zdroje z jiného webu je na serveru možné nastavit méně omezující záhlaví odpovědi Cross-Origin-Resource-Policy:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Zdroj v balíčku"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Neseskupovat položky protokolu sítě podle rámce"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Povolit nástrojům DevTools načítat zdroje, jako jsou mapy zdrojů, ze sdílených složek Windows prostřednictvím cest UNC. Ve výchozím nastavení je to z bezpečnostních důvodů zakázáno."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "rámec"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pozastavit, pouze při splnění podmínky"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Žádné zarážky"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Otevřít výběr barvy."
@@ -12159,10 +12177,10 @@
     "message": "Problém v tuto chvíli není k dispozici"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Smazat zvýraznění paměti"
+    "message": "Přestat zvýrazňovat tuto vzpomínku"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Přejít na zvýrazněnou paměť"
+    "message": "Přejít na tuto vzpomínku"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresa musí být číslo mezi {PH1} a {PH2}"

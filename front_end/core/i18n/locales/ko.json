@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "네트워크 요청 차단 사용 설정"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevTools이(가) UNC 경로를 통해 Windows 네트워크 공유 위치에서 소스 맵과 같은 리소스를 로드하도록 허용합니다. 보안상의 이유로 기본적으로 사용 중지되어 있습니다."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP 형식 사용 설정"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "렌더링"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "실시간 검색 사용"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "실시간 검색"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "실시간 검색 사용 중지(Enter 키를 눌러야 검색)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "허용된 경우 이 사이트에 광고 표시"
@@ -1449,7 +1461,7 @@
     "message": "파트너가 지원 중단된 (D)TLS 버전을 협상합니다. 파트너에게 확인하여 이를 해결하세요."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "비보안 컨텍스트의 WebSQL이 지원 중단되었으며 M107에서 삭제될 예정입니다. 웹 스토리지 또는 색인이 생성된 데이터베이스를 사용하세요."
+    "message": "비보안 컨텍스트의 WebSQL은 지원 중단되었으며 곧 삭제됩니다. 웹 스토리지 또는 색인이 생성된 데이터베이스를 사용하세요."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent은(는) 지원 중단되었습니다. 대신 표준화된 navigator.storage을(를) 사용하세요."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "애플리케이션"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "애플리케이션 패널 사이드바"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "백그라운드 서비스"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE}을(를) 삭제하거나 값을 변경해 보세요."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "동일한 요소의 {REASON_PROPERTY_DECLARATION_CODE} 속성은 {AFFECTED_PROPERTY_DECLARATION_CODE}의 효과를 우회합니다."
+    "message": "이 요소의 {REASON_PROPERTY_DECLARATION_CODE} 속성은 {AFFECTED_PROPERTY_DECLARATION_CODE}의 효과를 우회합니다."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "새 클래스 추가"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM 트리 탐색경로"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "왼쪽으로 스크롤"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "오른쪽으로 스크롤"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(텍스트)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "인증서 보기"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "활성 client experiment variation IDs입니다."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "서버 측 행동을 트리거하는 활성 client experiment variation IDs입니다."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "리소스와 문서가 동일한 사이트에서 제공되는 경우 이 옵션을 선택하세요."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "디코딩됨:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "자세히 알아보기"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "문제 탭에서 자세히 알아보기"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "자세히 알아보기"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "이 요청이 네트워크를 통해 전송되지 않고 원본 요청 헤더를 저장하지 않는 로컬 캐시에서 제공되었으므로 임시 헤더만 사용할 수 있습니다. 전체 요청 헤더를 보려면 캐시를 사용 중지하세요."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "임시 헤더가 표시됩니다."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "임시 헤더가 표시됩니다. 전체 헤더를 보려면 캐시를 사용 중지하세요."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(디스크 캐시에서)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "헤더 재정의"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "자세히 알아보기"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "문제 탭에서 자세히 알아보기"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "이 리소스를 포함하는 임의의 웹사이트로 인해 보안 위험이 제기되지 않는 경우에만 이 옵션을 선택합니다."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "이 요청이 네트워크를 통해 전송되지 않고 원본 요청 헤더를 저장하지 않는 로컬 캐시에서 제공되었으므로 임시 헤더만 사용할 수 있습니다. 전체 요청 헤더를 보려면 캐시를 사용 중지하세요."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "임시 헤더가 표시됩니다."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "임시 헤더가 표시됩니다. 전체 헤더를 보려면 캐시를 사용 중지하세요."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "원본 헤더"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "상태 코드"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "문서에 교차 출처 오프너 정책이 지정되어 있기 때문에 sandbox 속성이 있는 iframe에서 로드되지 않도록 문서가 차단되었습니다"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "문서에서 이 프레임을 삽입하려면 응답에서 다음 응답 헤더를 지정하여 교차 출처 삽입 정책을 사용 설정해야 합니다."
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "다른 출처의 이 리소스를 사용하기 위해 서버에서 응답 헤더 내 교차 출처 리소스 정책을 지정해야 합니다."
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "다른 출처의 이 리소스를 사용하기 위해 서버에서 교차 출처 리소스 정책 응답 헤더를 완화할 수 있습니다."
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "다른 사이트의 이 리소스를 사용하기 위해 서버에서 교차 출처 리소스 정책 응답 헤더를 완화할 수 있습니다"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "클라이언트 제공 인수가 잘못된 형식이거나 다른 이유로 유효하지 않습니다."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "유형"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "리소스와 문서가 동일한 사이트에서 제공되는 경우 이 옵션을 선택하세요."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "이 리소스를 포함하는 임의의 웹사이트로 인해 보안 위험이 제기되지 않는 경우에만 이 옵션을 선택합니다."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "문서에 교차 출처 오프너 정책이 지정되어 있기 때문에 sandbox 속성이 있는 iframe에서 로드되지 않도록 문서가 차단되었습니다."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "문서에서 이 프레임을 삽입하려면 응답에서 다음 응답 헤더를 지정하여 교차 출처 삽입 정책을 사용 설정해야 합니다."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "다른 출처의 이 리소스를 사용하기 위해 서버에서 응답 헤더 내 교차 출처 리소스 정책을 지정해야 합니다."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "다른 출처의 이 리소스를 사용하기 위해 서버에서 교차 출처 리소스 정책 응답 헤더를 완화할 수 있습니다."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "다른 사이트의 이 리소스를 사용하기 위해 서버에서 교차 출처 리소스 정책 응답 헤더를 완화할 수 있습니다."
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "번들 리소스"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "프레임별로 네트워크 로그 항목을 그룹 지정하지 마세요"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevTools이(가) UNC 경로를 통해 Windows 네트워크 공유 위치에서 소스 맵과 같은 리소스를 로드하도록 허용합니다. 보안상의 이유로 기본적으로 사용 중지되어 있습니다."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "프레임"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "조건이 true인 경우에만 일시중지"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "중단점 없음"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "색상 선택 도구를 엽니다."
@@ -12159,10 +12177,10 @@
     "message": "현재 문제를 표시할 수 없음"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "메모리 강조표시 삭제"
+    "message": "이 메모리 강조표시 중지"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "강조표시된 메모리로 이동"
+    "message": "이 메모리로 이동"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "주소는 {PH1}에서 {PH2} 사이의 숫자여야 합니다."

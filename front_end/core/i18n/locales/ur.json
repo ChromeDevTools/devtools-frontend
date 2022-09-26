@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "نیٹ ورک درخواست کی مسدودگی فعال کریں"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevTools کو UNC راستوں کے ذریعے Windows Shares سے سورس میپس جیسے وسائل لوڈ کرنے کی اجازت دیں۔ سیکیورٹی کی وجوہات کی بنا پر بطور ڈیفالٹ کو غیر فعال کر دیا گیا۔"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP فارمیٹ کو فعال کریں"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "رینڈرنگ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "ٹائپ کرنے کے دوران تلاش کریں کو فعال کریں"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "ٹائپ کرنے کے دوران تلاش کریں"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "ٹائپ کرنے کے دوران تلاش کریں کو غیر فعال کریں (تلاش کرنے کے لیے Enter دبائیں)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "اجازت ملنے پر اس سائٹ پر اشتہارات دکھائيں"
@@ -1449,7 +1461,7 @@
     "message": "آپ کا پارٹنر ایک پرانے ‎(D)TLS ورژن پر بات چیت کر رہا ہے۔ اس کو درست کروانے کے لیے براہ کرم اپنے پارٹنر سے رابطہ کریں۔"
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "غیر محفوظ سیاق و سباق میں WebSQL پرانا ہے اور اسے M107 میں ہٹا دیا جائے گا۔ براہ کرم ویب سٹوریج یا انڈیکس کردہ ڈیٹا بیس استعمال کریں۔"
+    "message": "غیر محفوظ سیاق و سباق میں WebSQL پرانا ہو چکا ہے اور جلد ہی اسے ہٹا دیا جائے گا۔ براہ کرم ویب سٹوریج یا انڈیکس کردہ ڈیٹا بیس استعمال کریں۔"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent پرانا ہو چکا ہے۔ براہ کرم اس کے بجائے معیاری navigator.storage استعمال کریں۔"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "ایپلیکیشن"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "ایپلیکیشن پینل سائڈبار"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "پس منظر کی سروسز"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} کو ہٹانے یا اس کی قدر کو تبدیل کرنے کی کوشش کریں۔"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ایک ہی عنصر پر {REASON_PROPERTY_DECLARATION_CODE} پراپرٹی {AFFECTED_PROPERTY_DECLARATION_CODE} کے اثر کو نظرانداز کرتی ہے۔"
+    "message": "اس عنصر پر {REASON_PROPERTY_DECLARATION_CODE} پراپرٹی {AFFECTED_PROPERTY_DECLARATION_CODE} کے اثر کو نظرانداز کرتی ہے۔"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "نئی کلاس شامل کریں"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ٹری بریڈ کرمبز"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "بائیں اسکرول کریں"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "دائیں اسکرول کریں"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(ٹیکسٹ)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "سرٹیفکیٹ دیکھیں"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "فعال client experiment variation IDs۔"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "فعال client experiment variation IDs جو سرور سائیڈ برتاؤ کو متحرک کرتی ہیں۔"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "اگر وسیلہ اور دستاویز ایک ہی سائٹ سے پیش کیے جاتے ہیں تو اس اختیار کو منتخب کریں۔"
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "ڈی کوڈ کردہ:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "مزید جانیں"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "مسائل ٹیب میں مزید جانیں"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "مزید جانیں"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "صرف عارضی ہیڈرز دستیاب ہیں کیونکہ یہ درخواست نیٹ ورک پر نہیں بھیجی گئی اور اس کے بجائے مقامی کیش سے پیش کی گئی جس میں اصل درخواست کے ہیڈرز کو محفوظ نہیں کیا جاتا ہے۔ درخواست کے مکمل ہیڈرز دیکھنے کے لیے کیش غیر فعال کریں۔"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "عارضی ہیڈرز دکھائے جا رہے ہیں۔"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "عارضی ہیڈرز دکھائے جا رہے ہیں۔ مکمل ہیڈرز دیکھنے کے لیے کیش غیر فعال کریں۔"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ڈسک کیش سے)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "ہیڈر اوور رائیڈز"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "مزید جانیں"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "مسائل ٹیب میں مزید جانیں"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "یہ اختیار صرف تبھی منتخب کریں اگر اس وسیلہ سمیت بے قاعدہ ویب سائٹ سے سیکیورٹی کا خطرہ نہ ہو۔"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "صرف عارضی ہیڈرز دستیاب ہیں کیونکہ یہ درخواست نیٹ ورک پر نہیں بھیجی گئی اور اس کے بجائے مقامی کیش سے پیش کی گئی جس میں اصل درخواست کے ہیڈرز کو محفوظ نہیں کیا جاتا ہے۔ درخواست کے مکمل ہیڈرز دیکھنے کے لیے کیش غیر فعال کریں۔"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "عارضی ہیڈرز دکھائے جا رہے ہیں۔"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "عارضی ہیڈرز دکھائے جا رہے ہیں۔ مکمل ہیڈرز دیکھنے کے لیے کیش غیر فعال کریں۔"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "خام"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "صورتحال کا کوڈ"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "iframe میں sandbox انتساب کے ساتھ لوڈ ہونے سے اس دستاویز کو مسدود کر دیا گيا کیونکہ اس دستاویز نے ایک کراس اوریجن اوپنر پالیسی متعین کی ہے۔"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "اپنی دستاویز میں اس فریم کو سرایت کرنے کے لیے، جواب کو مندرجہ ذیل جواب کے ہیڈر کی وضاحت کر کے کراس اوریجن ایمبیڈر پالیسی فعال کرنا ضروری ہے:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "کسی مختلف اوریجن سے یہ وسیلہ استعمال کرنے کے لیے، سرور کو جوابی ہیڈرز میں ایک کراس اوریجن وسیلہ پالیسی کی ضرورت ہے:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "کسی مختلف اوریجن سے یہ وسیلہ استعمال کرنے کے لیے سرور کراس اوریجن وسیلہ پالیسی کے جوابی ہیڈر کو ریلیکس کر سکتا ہے:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "مختلف سائٹ سے یہ وسیلہ استعمال کرنے کے لیے سرور کراس اوریجن وسیلہ پالیسی کے جوابی ہیڈر کو ریلیکس کر سکتا ہے:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "کلائنٹ کی فراہم کردہ آرگیومینٹ ناقص تھی یا غلط تھی۔"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "قسم"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "اگر وسیلہ اور دستاویز ایک ہی سائٹ سے پیش کیے جاتے ہیں تو اس اختیار کو منتخب کریں۔"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "یہ اختیار صرف تبھی منتخب کریں اگر اس وسیلہ سمیت بے قاعدہ ویب سائٹ سے سیکیورٹی کا خطرہ نہ ہو۔"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "iframe میں sandbox انتساب کے ساتھ لوڈ ہونے سے اس دستاویز کو مسدود کر دیا گيا کیونکہ اس دستاویز نے ایک کراس اوریجن اوپنر پالیسی متعین کی ہے۔"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "اپنی دستاویز میں اس فریم کو سرایت کرنے کے لیے، جواب کو مندرجہ ذیل جواب کے ہیڈر کی وضاحت کر کے کراس اوریجن ایمبیڈر پالیسی فعال کرنا ضروری ہے:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "کسی مختلف اوریجن سے یہ وسیلہ استعمال کرنے کے لیے، سرور کو جوابی ہیڈرز میں ایک کراس اوریجن وسیلہ پالیسی کی ضرورت ہے:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "کسی مختلف اوریجن سے یہ وسیلہ استعمال کرنے کے لیے سرور کراس اوریجن وسیلہ پالیسی کے جوابی ہیڈر کو ریلیکس کر سکتا ہے:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "مختلف سائٹ سے یہ وسیلہ استعمال کرنے کے لیے سرور کراس اوریجن وسیلہ پالیسی کے جوابی ہیڈر کو ریلیکس کر سکتا ہے:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "بنڈل کردہ وسائل"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "نیٹ ورک لاگ کے آئٹمز کو فریم کے لحاظ سے گروپ بند نہ کریں"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevTools کو UNC راستوں کے ذریعے Windows Shares سے سورس میپس جیسے وسائل لوڈ کرنے کی اجازت دیں۔ سیکیورٹی کی وجوہات کی بنا پر بطور ڈیفالٹ کو غیر فعال کر دیا گیا۔"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "فریم"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "صرف صحیح حالت ہونے پر موقوف کریں"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "کوئی بریک پوائنٹ نہیں ہے"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "رنگ چنندہ کھولیں۔"
@@ -12159,10 +12177,10 @@
     "message": "اس وقت مسئلہ دستیاب نہیں ہے"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "نمایاں کردہ میموری کو حذف کریں"
+    "message": "اس میموری کو نمایاں کرنا بند کریں"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "نمایاں کردہ میموری پر جائیں"
+    "message": "اس میموری پر جائیں"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "پتہ کا {PH1} اور {PH2} کے بیچ نمبر ہونا ضروری ہے"

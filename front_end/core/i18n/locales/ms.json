@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Dayakan penyekatan permintaan rangkaian"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Benarkan DevTools memuatkan sumber seperti peta sumber daripada Windows Shares melalui laluan UNC. Dilumpuhkan secara lalai kerana faktor keselamatan."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Dayakan format WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Pemaparan"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Dayakan perintah cari sambil anda taip."
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Cari sambil anda taip."
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Lumpuhkan perintah cari sambil anda taip (tekan Enter untuk membuat carian)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Paparkan iklan pada laman ini, jika dibenarkan"
@@ -1449,7 +1461,7 @@
     "message": "Rakan kongsi anda sedang merundingkan versi (D)TLS yang lapuk. Sila semak dengan rakan kongsi anda untuk membetulkan versi itu."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL dalam konteks yang tidak selamat ditamatkan dan akan dialih keluar dalam M107. Sila gunakan Storan Web atau Pangkalan Data Berindeks."
+    "message": "WebSQL dalam konteks tidak selamat ditamatkan dan akan dialih keluar tidak lama lagi. Sila gunakan Storan Web atau Pangkalan Data Berindeks."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent telah ditamatkan. Sila gunakan navigator.storage standard."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikasi"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Bar sisi panel aplikasi"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Perkhidmatan Latar Belakang"
@@ -4764,7 +4779,7 @@
     "message": "Cuba alih keluar {REASON_PROPERTY_DECLARATION_CODE} atau ubah nilainya."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Sifat {REASON_PROPERTY_DECLARATION_CODE} pada elemen yang sama memintas kesan daripada {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Sifat {REASON_PROPERTY_DECLARATION_CODE} pada elemen memintas kesan daripada {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Tambah kelas baharu"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Jejak pohon DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Tatal ke kiri"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Tatal ke kanan"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(teks)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Lihat sijil"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktif client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs aktif yang mencetuskan gelagat sebelah pelayan."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Buat pilihan ini jika sumber dan dokumen disiarkan daripada laman yang sama."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Dinyahkod:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Ketahui lebih lanjut"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Ketahui lebih lanjut dalam tab isu"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Ketahui lebih lanjut"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Hanya pengepala sementara tersedia kerana permintaan ini tidak dihantar melalui rangkaian dan sebaliknya disajikan daripada cache setempat, yang tidak menyimpan pengepala permintaan asal. Lumpuhkan cache untuk melihat pengepala penuh permintaan."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Pengepala sementara dipaparkan."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Pengepala sementara dipaparkan. Lumpuhkan cache untuk melihat pengepala penuh."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(daripada cache cakera)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Penggantian pengepala"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Ketahui lebih lanjut"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Ketahui lebih lanjut dalam tab isu"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Buat pilihan ini hanya jika laman web rambang, termasuk sumber ini tidak menimbulkan risiko keselamatan."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Hanya pengepala sementara tersedia kerana permintaan ini tidak dihantar melalui rangkaian dan sebaliknya disajikan daripada cache setempat, yang tidak menyimpan pengepala permintaan asal. Lumpuhkan cache untuk melihat pengepala penuh permintaan."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Pengepala sementara dipaparkan."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Pengepala sementara dipaparkan. Lumpuhkan cache untuk melihat pengepala penuh."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Mentah"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Kod Status"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dokumen ini telah disekat daripada dimuatkan dalam iframe dengan atribut sandbox kerana dokumen ini menetapkan dasar pembuka rentas asalan."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Untuk membenamkan bingkai ini dalam dokumen anda, respons perlu mendayakan dasar pembenam rentas asalan dengan menyatakan pengepala respons berikut:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Untuk menggunakan sumber ini daripada asalan yang lain, pelayan perlu menyatakan dasar sumber rentas asalan dalam pengepala respons:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Untuk menggunakan sumber ini daripada asalan yang lain, pelayan boleh melonggarkan pengepala respons dasar sumber rentas asalan:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Untuk menggunakan sumber ini daripada laman yang lain, pelayan boleh melonggarkan pengepala respons dasar sumber rentas asalan:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Argumen yang diberikan oleh klien cacat ataupun tidak sah."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Taip"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Buat pilihan ini jika sumber dan dokumen disiarkan daripada laman yang sama."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Hanya pilih pilihan ini jika laman web rambang, termasuk sumber ini tidak menimbulkan risiko keselamatan."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Dokumen ini telah disekat daripada dimuatkan dalam iframe dengan atribut sandbox kerana dokumen ini menetapkan dasar pembuka rentas asalan."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Untuk membenamkan bingkai ini dalam dokumen anda, respons perlu mendayakan dasar pembenam rentas asalan dengan menyatakan pengepala respons berikut:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Untuk menggunakan sumber ini daripada asalan yang lain, pelayan perlu menyatakan dasar sumber rentas asalan dalam pengepala respons:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Untuk menggunakan sumber ini daripada asalan yang lain, pelayan boleh melonggarkan pengepala respons dasar sumber rentas asalan:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Untuk menggunakan sumber ini daripada laman yang lain, pelayan boleh melonggarkan pengepala respons dasar sumber rentas asalan:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Sumber dihimpunkan"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Jangan kumpulkan item log rangkaian mengikut bingkai"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Benarkan DevTools memuatkan sumber seperti peta sumber daripada Windows Shares melalui laluan UNC. Dilumpuhkan secara lalai kerana faktor keselamatan."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "bingkai"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Jeda hanya apabila keadaan benar"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Tiada titik putus"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Buka pemilih warna."
@@ -12159,10 +12177,10 @@
     "message": "Isu tidak tersedia pada masa ini"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Padamkan serlahan memori"
+    "message": "Berhenti menyerlahkan memori ini"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Langkau ke memori yang diserlahkan"
+    "message": "Langkau ke memori ini"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Alamat hendaklah nombor antara {PH1} hingga {PH2}"

@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktivera blockering av nätverksbegäran"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Tillåt att DevTools läser in resurser, till exempel källkartor, från filresurser i Windows-nätverk via sökvägar i UNC. Inaktiverat som standard av säkerhetsskäl."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivera WebP-format"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderar"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktivera funktionen Sök medan du skriver"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Sök medan du skriver"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Inaktivera funktionen Sök medan du skriver (tryck på Retur för att söka)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Visa annonser på den här webbplatsen om det tillåts"
@@ -1449,7 +1461,7 @@
     "message": "Partnern förhandlar med en föråldrad version av (D)TLS. Kontakta partnern om att åtgärda detta."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL i osäkra sammanhang fasas ut och tas bort i M107. Använd webblagring eller indexerade databaser."
+    "message": "WebSQL i osäkra sammanhang har fasats ut och kommer snart att tas bort. Använd webblagring eller indexerade databaser."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent är utfasad. Använd navigator.storage i stället."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "App"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Sidofält för apppanelen"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Bakgrundstjänster"
@@ -4764,7 +4779,7 @@
     "message": "Testa att ta bort {REASON_PROPERTY_DECLARATION_CODE} eller ändra dess värde."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Egenskapen {REASON_PROPERTY_DECLARATION_CODE} i samma element kringgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Egenskapen {REASON_PROPERTY_DECLARATION_CODE} i detta element kringgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Lägg till ny klass"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Sökvägar för DOM-trädstruktur"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Scrolla åt vänster"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Scrolla åt höger"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(text)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Visa certifikat"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktiva client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktiva client experiment variation IDs som utlöser beteenden på serversidan."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Välj detta alternativ om resursen och dokumentet visas från samma webbplats."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Avkodat:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Läs mer"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Läs mer på fliken Problem"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Läs mer"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Endast preliminära sidhuvuden är tillgängliga eftersom denna begäran inte skickades via nätverket och i stället visades från ett lokalt cacheminnet där de ursprungliga sidhuvudena för begäran inte lagras. Inaktivera cache för att visa hela sidhuvudena för begäran."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Preliminära sidhuvuden visas"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Preliminära sidhuvuden visas Inaktivera cache för att visa hela sidhuvudena."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(från diskcache)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Åsidosättanden av huvuden"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Läs mer"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Läs mer på fliken Problem"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Välj endast det här alternativet om en slumpmässig webbplats med den här resursen inte utgör en säkerhetsrisk."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Endast preliminära sidhuvuden är tillgängliga eftersom denna begäran inte skickades via nätverket och i stället visades från ett lokalt cacheminnet där de ursprungliga sidhuvudena för begäran inte lagras. Inaktivera cache för att visa hela sidhuvudena för begäran."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Preliminära sidhuvuden visas"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Preliminära sidhuvuden visas Inaktivera cache för att visa hela sidhuvudena."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Rå"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Statuskod"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Inläsning av detta dokument har blockerats i iframe med ett sandbox-attribut eftersom en princip för öppnare med korsursprung angavs av dokumentet."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Om du vill bädda in den här ramen i dokumentet måste svaret aktivera principen för inbäddning av korsursprung genom att ange följande svarshuvud:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Om du vill använda den här resursen från en annan källa behöver servern ange en princip om resurser med korsursprung i svarshuvudet:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Om du vill använda den här resursen från en annan källa kan servern släppa på svarshuvudet för principen om resurser med korsursprung:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Om du vill använda den här resursen från en annan webbplats kan servern släppa på svarshuvudet för principen om resurser med korsursprung:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Ett argument från klienten hade fel format eller var på annat sätt ogiltigt."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Typ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Välj detta alternativ om resursen och dokumentet visas från samma webbplats."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Välj endast det här alternativet om en slumpmässig webbplats med den här resursen inte utgör en säkerhetsrisk."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Inläsning av detta dokument har blockerats i iframe med ett sandbox-attribut eftersom en princip för öppnare med korsursprung angavs av dokumentet."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Om du vill bädda in den här ramen i dokumentet måste svaret aktivera principen för inbäddning av korsursprung genom att ange följande svarshuvud:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Om du vill använda den här resursen från en annan källa behöver servern ange en princip om resurser med korsursprung i svarshuvudet:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Om du vill använda den här resursen från en annan källa kan servern släppa på svarshuvudet för principen om resurser med korsursprung:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Om du vill använda den här resursen från en annan webbplats kan servern släppa på svarshuvudet för principen om resurser med korsursprung:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Resurs i arkiv"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Gruppera inte objekt i nätverksloggar efter ram"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Tillåt att DevTools läser in resurser, till exempel källkartor, från filresurser i Windows-nätverk via sökvägar i UNC. Inaktiverat som standard av säkerhetsskäl."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ram"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pausa endast när villkoret är sant"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Inga brytpunkter"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Öppna färgväljaren."
@@ -12159,10 +12177,10 @@
     "message": "Problemet är inte tillgängligt för närvarande"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Radera minnesmarkering"
+    "message": "Sluta lyfta fram det här minnet"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Hoppa till markerat minne"
+    "message": "Hoppa till det här minnet"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adressen måste vara ett tal mellan {PH1} och {PH2}"
@@ -13056,13 +13074,13 @@
     "message": "Bild från {PH1}"
   },
   "ui/legacy/components/utils/ImagePreview.ts | intrinsicAspectRatio": {
-    "message": "Inbyggda bildproportioner:"
+    "message": "Inbyggt bildformat:"
   },
   "ui/legacy/components/utils/ImagePreview.ts | intrinsicSize": {
     "message": "Inbyggt storlek:"
   },
   "ui/legacy/components/utils/ImagePreview.ts | renderedAspectRatio": {
-    "message": "Renderade bildproportioner:"
+    "message": "Renderat bildformat:"
   },
   "ui/legacy/components/utils/ImagePreview.ts | renderedSize": {
     "message": "Renderad storlek:"

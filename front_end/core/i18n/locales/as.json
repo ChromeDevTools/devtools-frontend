@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "নেটৱৰ্কৰ অনুৰোধ অৱৰোধ কৰাটো সক্ষম কৰক"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "DevToolsক সম্পদ ল’ড কৰিবলৈ অনুমতি দিয়ক, UNC পথৰ জৰিয়তে Windows Sharesৰ পৰা উৎসৰ মেপ। সুৰক্ষাজনিত কাৰণৰ বাবে ডিফ’ল্ট হিচাপে অক্ষম কৰা হৈছে।"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ফৰ্মেট সক্ষম কৰক"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ৰেণ্ডাৰিং"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "টাইপ কৰা মাত্ৰকে সন্ধান কৰাৰ সুবিধাটো সক্ষম কৰক"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "টাইপ কৰা মাত্ৰকে সন্ধান কৰক"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "টাইপ কৰা মাত্ৰকে সন্ধান কৰাৰ সুবিধাটো অক্ষম কৰক (সন্ধান কৰিবলৈ Enter টিপক)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "যদি অনুমতি দিয়ে, এই ছাইটটোত বিজ্ঞাপন দেখুৱাওক"
@@ -1449,7 +1461,7 @@
     "message": "আপোনাৰ অংশীদাৰে এটা অপ্ৰচলিত (D)TLS সংস্কৰণৰ আলোচনা কৰি আছে। এইটো ঠিক কৰিবলৈ অনুগ্ৰহ কৰি আপোনাৰ অংশীদাৰৰ সৈতে পৰীক্ষা কৰক।"
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "অনা উৎসৰ প্ৰসংগত থকা WebSQL অপ্ৰচলিত কৰা হৈছে আৰু M107ত আঁতৰোৱা হ'ব। অনুগ্ৰহ কৰি Web Storage অথবা Indexed Database ব্যৱহাৰ কৰক।"
+    "message": "অনা উৎসৰ প্ৰসংগত থকা WebSQL অপ্ৰচলিত কৰা হৈছে আৰু অতি সোনকালে আঁতৰোৱা হ’ব। অনুগ্ৰহ কৰি Web Storage অথবা Indexed Database ব্যৱহাৰ কৰক।"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent অপ্ৰচলিত। তাৰ পৰিৱৰ্তে উন্নত কৰা navigator.storage ব্যৱহাৰ কৰক।"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "এপ্লিকেশ্বন"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "এপ্লিকেশ্বনৰ পেনেলৰ ছাইডবাৰ"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "নেপথ্যৰ সেৱা"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE}ক আঁতৰাই অথবা ইয়াৰ মান সলনি কৰি চাওক।"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "একে উপাদানৰ {REASON_PROPERTY_DECLARATION_CODE} সম্পদে {AFFECTED_PROPERTY_DECLARATION_CODE}ৰ প্ৰভাৱ বাইপাছ কৰে।"
+    "message": "এই উপাদানটোৰ {REASON_PROPERTY_DECLARATION_CODE} সম্পদে {AFFECTED_PROPERTY_DECLARATION_CODE}ৰ প্ৰভাৱ বাইপাছ কৰে।"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "নতুন শ্ৰেণী যোগ দিয়ক"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ট্ৰীৰ ব্ৰেডক্ৰাম্ব"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "বাওঁফাললৈ স্ক্ৰ’ল কৰক"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "সোঁফাললৈ স্ক্ৰ’ল কৰক"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(পাঠ)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "প্ৰমাণপত্ৰ চাওক"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "সক্ৰিয় client experiment variation IDs।"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs সক্ৰিয় হৈ আছে, যি ছাৰ্ভাৰ পক্ষৰ আচৰণৰ সূচনা কৰে।"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "সম্পদটো আৰু নথিখন একেটা ছাইটৰ পৰা আগবঢ়োৱা হ’লে এই বিকল্পটো বাছনি কৰক।"
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "ডিক’ড কৰা হৈছে:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "অধিক জানক"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "সমস্যাৰ টেবত অধিক জানক"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "অধিক জানক"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "কেৱল প্ৰ’ভিজনেল হে'ডাৰসমূহ উপলব্ধ কাৰণ এই অনুৰোধটো এটা নেটৱৰ্কৰ জৰিয়তে পঠিওৱা হোৱা নাই আৰু তাৰ সলনি এটা স্থানীয় কেশ্বৰ পৰা প্ৰদান কৰা হৈছে, যিটোৱে প্ৰকৃত অনুৰোধৰ হে'ডাৰসমূহ ষ্ট'ৰ নকৰে। সম্পূৰ্ণ অনুৰোধৰ হে'ডাৰসমূহ চাবলৈ কেশ্ব অক্ষম কৰক।"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "প্ৰ’ভিজনেল হেডাৰসমূহ দেখুওৱা হৈছে।"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "প্ৰ’ভিজনেল হেডাৰসমূহ দেখুওৱা হৈছে। সম্পূৰ্ণ হেডাৰসমূহ চাবলৈ কেশ্ব অক্ষম কৰক।"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ডিস্কৰ কেশ্বৰ পৰা)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "হে’ডাৰৰ অ’ভাৰৰাইড"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "অধিক জানক"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "সমস্যাৰ টেবত অধিক জানক"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "এই উৎসটোকে ধৰি কোনো নিয়মবহিৰ্ভূত ৱেবছাইটত সুৰক্ষা বিষয়ক বিপদাশংকা নাথাকিলেহে এই বিকল্পটো বাছনি কৰক।"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "কেৱল প্ৰ’ভিজনেল হে'ডাৰসমূহ উপলব্ধ কাৰণ এই অনুৰোধটো এটা নেটৱৰ্কৰ জৰিয়তে পঠিওৱা হোৱা নাই আৰু তাৰ সলনি এটা স্থানীয় কেশ্বৰ পৰা প্ৰদান কৰা হৈছে, যিটোৱে প্ৰকৃত অনুৰোধৰ হে'ডাৰসমূহ ষ্ট'ৰ নকৰে। সম্পূৰ্ণ অনুৰোধৰ হে'ডাৰসমূহ চাবলৈ কেশ্ব অক্ষম কৰক।"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "প্ৰ’ভিজনেল হেডাৰসমূহ দেখুওৱা হৈছে।"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "প্ৰ’ভিজনেল হেডাৰসমূহ দেখুওৱা হৈছে। সম্পূৰ্ণ হেডাৰসমূহ চাবলৈ কেশ্ব অক্ষম কৰক।"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "শাৰী"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "স্থিতিৰ ক’ড"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "এই নথিখন sandbox এট্ৰিবিউটৰ সৈতে এটা iframeত ল’ড কৰাটো অৱৰোধ কৰা হৈছে কাৰণ এই নথিখনে এটা ক্ৰছ-অৰিজিন অপেনাৰ নীতি নিৰ্দিষ্ট কৰে।"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "আপোনাৰ নথিত এই ফ্ৰে'মটো এম্বেড কৰিবলৈ সঁহাৰিটোৱে তলত দিয়া সঁহাৰিৰ হে'ডাৰটো নিৰ্দিষ্ট কৰি ক্ৰছ-অৰিজিন এম্বেডাৰ নীতিটো সক্ষম কৰিব লাগে:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "এই সম্পদটো অন্য এটা উৎসৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে এটা ক্ৰছ-অৰিজিন সম্পদ নীতি সঁহাৰিৰ হে'ডাৰ নিৰ্দিষ্ট কৰিব লাগে:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "এই সম্পদটো অন্য এটা উৎসৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে হয়তো ক্ৰছ-অৰিজিন উৎস নীতিৰ সঁহাৰিৰ হে'ডাৰ শিথিল কৰিব পাৰে:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "এই উৎসটো অন্য এটা ছাইটৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে ক্ৰছ-অৰিজিন উৎস নীতিৰ সঁহাৰিৰ হেডাৰ শিথিল কৰিব পাৰে:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "এগৰাকী ক্লায়েণ্টে প্ৰদান কৰা যুক্তিটোৱে কাম কৰা নাই অথবা সেইটো মান্য নহয়।"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "প্ৰকাৰ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "সম্পদটো আৰু নথিখন একেটা ছাইটৰ পৰা আগবঢ়োৱা হ’লে এই বিকল্পটো বাছনি কৰক।"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "এই উৎসটোকে ধৰি কোনো নিয়মবহিৰ্ভূত ৱেবছাইটত সুৰক্ষা বিষয়ক বিপদাশংকা নাথাকিলেহে এই বিকল্পটো বাছনি কৰক।"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "এই নথিখন sandbox এট্ৰিবিউটৰ সৈতে এটা iframeত ল’ড কৰাটো অৱৰোধ কৰা হৈছে কাৰণ এই নথিখনে এটা ক্ৰছ-অৰিজিন অপেনাৰ নীতি নিৰ্দিষ্ট কৰে।"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "আপোনাৰ নথিত এই ফ্ৰে’মটো এম্বেড কৰিবলৈ সঁহাৰিটোৱে তলত দিয়া সঁহাৰিৰ হে’ডাৰটো নিৰ্দিষ্ট কৰি ক্ৰছ-অৰিজিন এম্বেডাৰ নীতিটো সক্ষম কৰিব লাগে:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "এই সম্পদটো অন্য এটা উৎসৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে এটা ক্ৰছ-অৰিজিন সম্পদ নীতি সঁহাৰিৰ হে’ডাৰ নিৰ্দিষ্ট কৰিব লাগে:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "এই সম্পদটো অন্য এটা উৎসৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে হয়তো ক্ৰছ-অৰিজিন উৎস নীতিৰ সঁহাৰিৰ হে’ডাৰ শিথিল কৰিব পাৰে:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "এই উৎসটো অন্য এটা ছাইটৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে ক্ৰছ-অৰিজিন উৎস নীতিৰ সঁহাৰিৰ হেডাৰ শিথিল কৰিব পাৰে:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "বাণ্ডল কৰা উৎস"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ফ্ৰে’ম অনুসৰি নেটৱৰ্ক লগৰ সামগ্ৰী একগোট নকৰিব"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "DevToolsক সম্পদ ল’ড কৰিবলৈ অনুমতি দিয়ক, UNC পথৰ জৰিয়তে Windows Sharesৰ পৰা উৎসৰ মেপ। সুৰক্ষাজনিত কাৰণৰ বাবে ডিফ’ল্ট হিচাপে অক্ষম কৰা হৈছে।"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ফ্ৰে’ম"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "চৰ্তটো সঁচা হ’লেহে পজ কৰক"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "কোনো ব্ৰেকপইণ্ট নাই"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "ৰং বাছনি কৰোঁতা খোলক।"
@@ -12159,10 +12177,10 @@
     "message": "এই মুহূৰ্তত সমস্যা উপলব্ধ নহয়"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "মেম’ৰীৰ হাইলাইট মচক"
+    "message": "এই মেম’ৰীটো হাইলাইট কৰাটো বন্ধ কৰক"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "হাইলাইট কৰা মেম’ৰীলৈ পোনপটীয়াকৈ যাওক"
+    "message": "এই মেম’ৰীটোলৈ পোনপটীয়াকৈ যাওক"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ঠিকনাটো {PH1} আৰু {PH2}ৰ মাজৰ এটা সংখ্যা হ’ব লাগিব"

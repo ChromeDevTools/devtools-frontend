@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ເປີດການນຳໃຊ້ການບລັອກຄຳຮ້ອງຂໍເຄືອຂ່າຍ"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "ອະນຸຍາດ DevTools ໃຫ້ໂຫຼດຊັບພະຍາກອນ ເຊັ່ນ: ແຜນທີ່ແຫຼ່ງທີ່ມາ ຈາກການແບ່ງປັນຂອງ Windows ຜ່ານເສັ້ນທາງ UNC. ປິດການນຳໃຊ້ຕາມຄ່າເລີ່ມຕົ້ນເພື່ອຄວາມປອດໄພ."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "ເປິດການນຳໃຊ້ຮູບແບບ WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ການສະແດງພາບ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "ເປີດການນຳໃຊ້ການຊອກຫາທັນທີທີ່ທ່ານພິມ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "ຊອກຫາທັນທີທີ່ທ່ານພິມ"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "ປິດການນຳໃຊ້ຊອກຫາທັນທີທີ່ທ່ານພິມ (ກົດ Enter ເພື່ອຊອກຫາ)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "ສະແດງໂຄສະນາຢູ່ເວັບໄຊນີ້, ຫາກອະນຸຍາດ"
@@ -1449,7 +1461,7 @@
     "message": "ຮຸ້ນສ່ວນຂອງທ່ານກຳລັງເຈລະຈາເວີຊັນ (D)TLS ທີ່ເຊົາໃຊ້ແລ້ວ. ກະລຸນາກວດສອບກັບຮຸ້ນສ່ວນຂອງທ່ານເພື່ອແກ້ໄຂບັນຫານີ້."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "ເຊົາໃຊ້ WebSQL ໃນບໍລິບົດທີ່ບໍ່ປອດໄພແລ້ວ ແລະ ມັນຈະຖືກລຶບອອກໃນ M107. ກະລຸນາໃຊ້ບ່ອນຈັດເກັບຂໍ້ມູນເວັບ ຫຼື ຖານຂໍ້ມູນດັດຊະນີ."
+    "message": "WebSQL ໃນບໍລິບົດທີ່ບໍ່ປອດໄພແມ່ນເຊົາສະໜັບສະໜູນແລ້ວ ແລະ ຈະຖືກລຶບອອກໄວໆນີ້. ກະລຸນາໃຊ້ບ່ອນຈັດເກັບຂໍ້ມູນເວັບ ຫຼື ຖານຂໍ້ມູນດັດຊະນີ."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "ເຊົາສະໜັບສະໜູນ StorageType.persistent ແລ້ວ. ກະລຸນາໃຊ້ navigator.storage ທີ່ໄດ້ມາດຕະຖານແທນ."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "ແອັບພລິເຄຊັນ"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "ແຖບດ້ານຂ້າງແຜງໜ້າປັດແອັບພລິເຄຊັນ"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "ການບໍລິການໃນພື້ນຫຼັງ"
@@ -4764,7 +4779,7 @@
     "message": "ລອງລຶບ {REASON_PROPERTY_DECLARATION_CODE} ອອກ ຫຼື ປ່ຽນຄ່າຂອງມັນ."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ຄຸນສົມບັດ {REASON_PROPERTY_DECLARATION_CODE} ໃນອົງປະກອບດຽວກັນບາຍພາສຜົນກະທົບຂອງ {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "ຄຸນສົມບັດ {REASON_PROPERTY_DECLARATION_CODE} ໃນອົງປະກອບນີ້ຂ້າມຜົນກະທົບຂອງ {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "ເພີ່ມຄລາສໃໝ່"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "ລຳ​ດັບ​ຂັ້ນແຜນຜັງ DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "ເລື່ອນໄປຊ້າຍ"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "ເລື່ອນໄປຂວາ"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(ຂໍ້ຄວາມ)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "ເບິ່ງໃບຮັບຮອງ"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs ທີ່ນຳໃຊ້ຢູ່."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs ທີ່ນຳໃຊ້ຢູ່ເຊິ່ງກະຕຸ້ນໃຫ້ເກີດລັກສະນະການເຮັດວຽກຝັ່ງເຊີບເວີ."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "ເລືອກຕົວເລືອກນີ້ຖ້າຊັບພະຍາກອນ ແລະ ເອກະສານນຳມາຈາກເວັບໄຊດຽວກັນ."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "ຖອດລະຫັດແລ້ວ:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "ສຶກສາເພີ່ມເຕີມ"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "ສຶກສາເພີ່ມເຕີມໃນແຖບບັນຫາ"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "ສຶກສາເພີ່ມເຕີມ"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "ມີພຽງສ່ວນຫົວທີ່ຈັດໃຫ້ໄວ້ເທົ່ານັ້ນທີ່ພ້ອມນຳໃຊ້ ເນື່ອງຈາກຄຳຂໍນີ້ບໍ່ໄດ້ສົ່ງຜ່ານເຄືອຂ່າຍ ແລະ ສະແດງຈາກແຄສໃນເຄື່ອງແທນ, ເຊິ່ງບໍ່ເກັບຈັດເກັບສ່ວນຫົວຂອງຄຳຂໍເກົ່າໄວ້. ປິດການນຳໃຊ້ແຄສເພື່ອເບິ່ງສ່ວນຫົວຂອງຄຳຂໍແບບເຕັມ."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "ສ່ວນຫົວທີ່ຈັດສັນໄວ້ຈະສະແດງຂຶ້ນ."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "ສ່ວນຫົວທີ່ຈັດສັນໄວ້ຈະສະແດງຂຶ້ນ. ປິດການນຳໃຊ້ແຄສເພື່ອເບິ່ງສ່ວນຫົວແບບເຕັມ."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ຈາກແຄສດິສ)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "ການຍົກເລີກສ່ວນຫົວ"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "ສຶກສາເພີ່ມເຕີມ"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "ສຶກສາເພີ່ມເຕີມໃນແຖບບັນຫາ"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "ພຽງແຕ່ເລືອກຕົວເລືອກນີ້ຖ້າເວັບໄຊທີ່ກຳນົດເອງ ເຊິ່ງຮວມທັງຊັບພະຍາກອນນີ້ບໍ່ເຮັດໃຫ້ເກີດຄວາມສ່ຽງດ້ານຄວາມປອດໄພ."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "ມີພຽງສ່ວນຫົວທີ່ຈັດໃຫ້ໄວ້ເທົ່ານັ້ນທີ່ພ້ອມນຳໃຊ້ ເນື່ອງຈາກຄຳຂໍນີ້ບໍ່ໄດ້ສົ່ງຜ່ານເຄືອຂ່າຍ ແລະ ສະແດງຈາກແຄສໃນເຄື່ອງແທນ, ເຊິ່ງບໍ່ເກັບຈັດເກັບສ່ວນຫົວຂອງຄຳຂໍເກົ່າໄວ້. ປິດການນຳໃຊ້ແຄສເພື່ອເບິ່ງສ່ວນຫົວຂອງຄຳຂໍແບບເຕັມ."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "ສ່ວນຫົວທີ່ຈັດສັນໄວ້ຈະສະແດງຂຶ້ນ."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "ສ່ວນຫົວທີ່ຈັດສັນໄວ້ຈະສະແດງຂຶ້ນ. ປິດການນຳໃຊ້ແຄສເພື່ອເບິ່ງສ່ວນຫົວແບບເຕັມ."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "ຂໍ້ມູນດິບ"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "ລະຫັດສະຖານະ"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "ເອກະສານນີ້ຖືກບລັອກບໍ່ໃຫ້ໂຫຼດໃນ iframe ທີ່ມີຄຸນສົມບັດ sandbox ເນື່ອງຈາກເອກະສານລະບຸນະໂຍບາຍເຄື່ອງມືເປີດແບບຂ້າມຕົ້ນທາງ."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "ຖ້າຕ້ອງການຝັງເຟຣມນີ້ໃນເອກະສານຂອງທ່ານ, ການຕອບກັບຕ້ອງເປີດນຳໃຊ້ນະໂຍບາຍເຄື່ອງມືຝັງແບບຂ້າມຕົ້ນທາງໂດຍການລະບຸສ່ວນຫົວການຕອບກັບຕໍ່ໄປນີ້:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "ເພື່ອໃຊ້ຊັບພະຍາກອນນີ້ຈາກຕົ້ນທາງອື່ນ, ເຊີບເວີຈຳເປັນຕ້ອງລະບຸນະໂຍບາຍຊັບພະຍາກອນແບບຂ້າມຕົ້ນທາງໃນສ່ວນຫົວການຕອບກັບ:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "ເພື່ອໃຊ້ຊັບພະຍາກອນນີ້ຈາກຕົ້ນທາງອື່ນ, ເຊີບເວີອາດຈະຜ່ອນຄາຍສ່ວນຫົວການຕອບກັບຂອງນະໂຍບາຍຊັບພະຍາກອນແບບຂ້າມຕົ້ນທາງ:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "ເພື່ອໃຊ້ຊັບພະຍາກອນນີ້ຈາກເວັບໄຊອື່ນ, ເຊີບເວີອາດຈະຜ່ອນຄາຍສ່ວນຫົວການຕອບກັບຂອງນະໂຍບາຍຊັບພະຍາກອນແບບຂ້າມຕົ້ນທາງ:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "ອາກິວເມັນທີ່ລູກຂ່າຍສະໜອງໃຫ້ມີຮູບແບບຜິດ ຫຼື ບໍ່ຖືກຕ້ອງ."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "ປະເພດ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "ເລືອກຕົວເລືອກນີ້ຖ້າຊັບພະຍາກອນ ແລະ ເອກະສານນຳມາຈາກເວັບໄຊດຽວກັນ."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "ພຽງແຕ່ເລືອກຕົວເລືອກນີ້ຖ້າເວັບໄຊທີ່ກຳນົດເອງ ເຊິ່ງຮວມທັງຊັບພະຍາກອນນີ້ບໍ່ເຮັດໃຫ້ເກີດຄວາມສ່ຽງດ້ານຄວາມປອດໄພ."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "ເອກະສານນີ້ຖືກບລັອກບໍ່ໃຫ້ໂຫຼດໃນ iframe ທີ່ມີຄຸນສົມບັດ sandbox ເນື່ອງຈາກເອກະສານລະບຸນະໂຍບາຍເຄື່ອງມືເປີດແບບຂ້າມຕົ້ນທາງ."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "ຖ້າຕ້ອງການຝັງເຟຣມນີ້ໃນເອກະສານຂອງທ່ານ, ການຕອບກັບຕ້ອງເປີດນຳໃຊ້ນະໂຍບາຍເຄື່ອງມືຝັງແບບຂ້າມຕົ້ນທາງໂດຍການລະບຸສ່ວນຫົວການຕອບກັບຕໍ່ໄປນີ້:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "ເພື່ອໃຊ້ຊັບພະຍາກອນນີ້ຈາກຕົ້ນທາງອື່ນ, ເຊີບເວີຈຳເປັນຕ້ອງລະບຸນະໂຍບາຍຊັບພະຍາກອນແບບຂ້າມຕົ້ນທາງໃນສ່ວນຫົວການຕອບກັບ:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "ເພື່ອໃຊ້ຊັບພະຍາກອນນີ້ຈາກຕົ້ນທາງອື່ນ, ເຊີບເວີອາດຈະຜ່ອນຄາຍສ່ວນຫົວການຕອບກັບຂອງນະໂຍບາຍຊັບພະຍາກອນແບບຂ້າມຕົ້ນທາງ:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "ເພື່ອໃຊ້ຊັບພະຍາກອນນີ້ຈາກເວັບໄຊອື່ນ, ເຊີບເວີອາດຈະຜ່ອນຄາຍສ່ວນຫົວການຕອບກັບຂອງນະໂຍບາຍຊັບພະຍາກອນແບບຂ້າມຕົ້ນທາງ:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "ຊັບ​ພະ​ຍາ​ກອນແບບເປັນຊຸດ"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ຢ່າຈັດກຸ່ມລາຍການບັນທຶກເຄືອຂ່າຍຕາມເຟຣມ"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "ອະນຸຍາດ DevTools ໃຫ້ໂຫຼດຊັບພະຍາກອນ ເຊັ່ນ: ແຜນທີ່ແຫຼ່ງທີ່ມາ ຈາກການແບ່ງປັນຂອງ Windows ຜ່ານເສັ້ນທາງ UNC. ປິດການນຳໃຊ້ຕາມຄ່າເລີ່ມຕົ້ນເພື່ອຄວາມປອດໄພ."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ເຟຣມ"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "ຢຸດຊົ່ວຄາວສະເພາະເມື່ອເງື່ອນໄຂເປັນ true"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "ບໍ່ມີຈຸດເບຣກພອຍ"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "ເປີດຕົວເລືອກສີ."
@@ -12159,10 +12177,10 @@
     "message": "ບັນຫາທີ່ຍັງບໍ່ສາມາດແກ້ໄຂ."
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "ລຶບໜ່ວຍຄວາມຈຳທີ່ໄຮໄລ"
+    "message": "ຢຸດການໄຮໄລ້ຄວາມຊົງຈຳນີ້"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "ຂ້າມໄປຫາໜ່ວຍຄວາມຈຳທີ່ໄຮໄລ"
+    "message": "ຂ້າມໄປຫາຄວາມຊົງຈຳນີ້"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ທີ່ຢູ່ຈຳເປັນຕ້ອງເປັນຕົວເລກລະຫວ່າງ {PH1} ຫາ {PH2}"

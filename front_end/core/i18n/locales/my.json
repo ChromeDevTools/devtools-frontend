@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ကွန်ရက်တောင်းဆိုချက် ပိတ်ဆို့ခြင်းကို ဖွင့်ရန်"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "UNC ဖိုင်တွဲများလမ်းကြောင်းများမှတစ်ဆင့် Windows Shares မှ မြေပုံများကဲ့သို့ ရင်းမြစ်များအား DevTools ကို ဖွင့်ခွင့်ပြုရန်။ လုံခြုံရေးအကြောင်းများကြောင့် မူရင်းသတ်မှတ်ချက်အနေဖြင့် ပိတ်ထားသည်။"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP အမျိုးအစား ဖွင့်ပါ"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ပုံဖော်ခြင်း"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "စာရိုက်နေစဉ် ရှာဖွေခြင်းကို ဖွင့်ရန်"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "စာရိုက်နေစဉ် ရှာဖွေရန်"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "စာရိုက်နေစဉ် ရှာဖွေခြင်းကို ပိတ်ရန် (Enter ခလုတ် နှိပ်၍ ရှာဖွေရန်)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "ခွင့်ပြုပါက ဤဝဘ်ဆိုက်တွင် ကြော်ငြာများကို ပြရန်"
@@ -1449,7 +1461,7 @@
     "message": "သင့်ပါတနာသည် (D)TLS ဗားရှင်းအဟောင်းကို ဆက်သုံးနေသည်။ ၎င်းကိုဖြေရှင်းရန် သင့်ပါတနာနှင့် ဆက်သွယ်ပါ။"
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "လုံခြုံမှုမရှိသည့် အကြောင်းအရာများရှိ WebSQL ကို ရပ်ဆိုင်းထားပြီး M107 တွင် ဖယ်ရှားပါမည်။ ‘ဝဘ်သိုလှောင်ခန်း’ (သို့) ‘အညွှန်းပါသည့် ဒေတာဘေ့စ်’ ကို အသုံးပြုပါ။"
+    "message": "မလုံခြုံသော အခြေအနေများရှိ WebSQL ကို ရပ်ဆိုင်းထားပြီး မကြာမီ ဖယ်ရှားသွားပါမည်။ ‘ဝဘ်သိုလှောင်ခန်း’ (သို့) ‘အညွှန်းပါသည့် ဒေတာဘေ့စ်’ ကို အသုံးပြုပါ။"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား စံသတ်မှတ်ထားသည့် navigator.storage ကို အသုံးပြုပါ။"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "အပလီကေးရှင်း"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "အပလီကေးရှင်းအကန့် ဆိုက်ဘား"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "နောက်ခံ ဝန်ဆောင်မှုများ"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} ကို ဖယ်ရှားကြည့်ပါ (သို့) ၎င်း၏တန်ဖိုးကို ပြောင်းကြည့်ပါ။"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "တူညီသော အစိတ်အပိုင်းရှိ {REASON_PROPERTY_DECLARATION_CODE} property အပေါ် {AFFECTED_PROPERTY_DECLARATION_CODE} ၏ သက်ရောက်မှု မရှိပါ။"
+    "message": "ဤအစိတ်အပိုင်းရှိ {REASON_PROPERTY_DECLARATION_CODE} property အပေါ် {AFFECTED_PROPERTY_DECLARATION_CODE} ၏ သက်ရောက်မှု မရှိပါ။"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "အမျိုးအစားအသစ် ထည့်ရန်"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ဖွဲ့စည်းပုံ breadcrumbs"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "ဘယ်သို့ လှိမ့်ရန်"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "ညာသို့ လှိမ့်ရန်"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(စာသား)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "အသိအမှတ်ပြုလက်မှတ်ကို ကြည့်ရန်"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs သုံးနေသည်။"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "ဆာဗာအခြမ်းလုပ်ဆောင်ပုံကို စတင်စေသည့် အသုံးပြုနေသော client experiment variation IDs။"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "ရင်းမြစ်နှင့် မှတ်တမ်းဖိုင်တို့ကို ဝဘ်ဆိုက်တစ်ခုတည်းမှ ဝန်ဆောင်မှုပေးပါက ဤတစ်ခုကို ရွေးပါ။"
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "ကုဒ်ဖြည်ထားသည်-"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "ပိုမိုလေ့လာရန်"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "ပြဿနာများတဘ်တွင် ပိုမိုလေ့လာရန်"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "ပိုမိုလေ့လာရန်"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "ဤတောင်းဆိုချက်ကို ကွန်ရက်မှ ပို့ထားခြင်းမဟုတ်ဘဲ ထိုအစား မူရင်းတောင်းဆိုချက် ခေါင်းစီးများကို မသိမ်းသည့် စက်တွင်းကက်ရှ်မှ ဝန်ဆောင်မှုပေးထားသောကြောင့် ယာယီခေါင်းစီးများသာ ရနိုင်သည်။ တောင်းဆိုချက်ခေါင်းစီးများ အပြည့်အစုံကို ကြည့်ရန် ကက်ရှ်ကို ပိတ်ပါ။"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "ယာယီခေါင်းစီးများကို ပြထားသည်။"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "ယာယီခေါင်းစီးများကို ပြထားသည်။ ခေါင်းစီးများ အပြည့်အစုံကို ကြည့်ရန် ကက်ရှ်ကိုပိတ်ပါ။"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ဒစ်ခ်ကက်ရှ်မှ)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "ခေါင်းစီး အစားထိုးရန်"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "ပိုမိုလေ့လာရန်"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "ပြဿနာများတဘ်တွင် ပိုမိုလေ့လာရန်"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "ဤရင်းမြစ်ထည့်သွင်းထားသော မည်သည့်ဝဘ်ဆိုက်တွင်မဆို လုံခြုံရေးဆိုင်ရာအန္တရာယ် မပေးသည့်အခါ၌သာ ဤနည်းလမ်းကို ရွေးပါ။"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "ဤတောင်းဆိုချက်ကို ကွန်ရက်မှ ပို့ထားခြင်းမဟုတ်ဘဲ ထိုအစား မူရင်းတောင်းဆိုချက် ခေါင်းစီးများကို မသိမ်းသည့် စက်တွင်းကက်ရှ်မှ ဝန်ဆောင်မှုပေးထားသောကြောင့် ယာယီခေါင်းစီးများသာ ရနိုင်သည်။ တောင်းဆိုချက်ခေါင်းစီးများ အပြည့်အစုံကို ကြည့်ရန် ကက်ရှ်ကို ပိတ်ပါ။"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "ယာယီခေါင်းစီးများကို ပြထားသည်။"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "ယာယီခေါင်းစီးများကို ပြထားသည်။ ခေါင်းစီးများ အပြည့်အစုံကို ကြည့်ရန် ကက်ရှ်ကိုပိတ်ပါ။"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "အကြမ်း"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "အခြေအနေပြကုဒ်"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "ဤမှတ်တမ်းဖိုင်သည် ဇာစ်မြစ်အမျိုးမျိုး ဖွင့်စနစ်မူဝါဒကို သတ်မှတ်ထားသဖြင့် sandbox ရည်ညွှန်းချက်ဖြင့် iframe တွင် ဤမှတ်တမ်းဖွင့်ခြင်းကို ပိတ်ထားသည်။"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "သင်၏မှတ်တမ်းတွင် ဤဖရိမ်ကို မြှုပ်သွင်းရန်အတွက် တုံ့ပြန်ချက်သည် အောက်ပါတုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးကို သတ်မှတ်ခြင်းဖြင့် ဇာစ်မြစ်အမျိုးမျိုးတွင် မြှုပ်သွင်းခြင်းစနစ် မူဝါဒကို ဖွင့်ထားရန်လိုသည်-"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "အခြားဇာစ်မြစ်တစ်ခုမှ ဤရင်းမြစ်ကို သုံးရန် ဆာဗာသည် တုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးတွင် ဇာစ်မြစ်အမျိုးမျိုးရှိ ရင်းမြစ်မူဝါဒကို သတ်မှတ်ရန်လိုအပ်သည်-"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "ဤရင်းမြစ်ကို အခြားဇာစ်မြစ်တစ်ခုမှ သုံးရန်အတွက် ဆာဗာသည် ဇာစ်မြစ်အမျိုးမျိုးရှိ ရင်းမြစ်မူဝါဒ တုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးကို ဖြေလျော့ပေးနိုင်သည်-"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "ဤရင်းမြစ်ကို အခြားဝဘ်ဆိုက်တစ်ခုမှ သုံးရန် ဆာဗာသည် ဇာစ်မြစ်အမျိုးမျိုးရှိ ရင်းမြစ်မူဝါဒ တုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးကို ဖြေလျော့ပေးနိုင်သည်-"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "ကလိုင်းယင့်ပေးထားသော အကြောင်းပြချက် ပုံစံပျက်နေသည် (သို့) မှားယွင်းနေသည်။"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "အမျိုးအစား"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "ရင်းမြစ်နှင့် မှတ်တမ်းဖိုင်တို့ကို ဝဘ်ဆိုက်တစ်ခုတည်းမှ ဝန်ဆောင်မှုပေးပါက ဤတစ်ခုကို ရွေးပါ။"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "ဤရင်းမြစ်ထည့်သွင်းထားသော မည်သည့်ဝဘ်ဆိုက်တွင်မဆို လုံခြုံရေးဆိုင်ရာအန္တရာယ် မပေးသည့်အခါ၌သာ ဤနည်းလမ်းကို ရွေးပါ။"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "ဤမှတ်တမ်းဖိုင်သည် ဇာစ်မြစ်အမျိုးမျိုး ဖွင့်စနစ်မူဝါဒကို သတ်မှတ်ထားသဖြင့် sandbox ရည်ညွှန်းချက်ဖြင့် iframe တွင် ဤမှတ်တမ်းဖိုင်ဖွင့်ခြင်းကို ပိတ်ထားသည်။"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "သင်၏မှတ်တမ်းဖိုင်တွင် ဤဖရိမ်ကို မြှုပ်သွင်းရန်အတွက် တုံ့ပြန်ချက်သည် အောက်ပါတုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးကို သတ်မှတ်ခြင်းဖြင့် ဇာစ်မြစ်အမျိုးမျိုးတွင် မြှုပ်သွင်းခြင်းစနစ် မူဝါဒကို ဖွင့်ထားရန်လိုသည်-"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "အခြား ဇာစ်မြစ်တစ်ခုမှ ဤရင်းမြစ်ကို သုံးရန်အတွက် ဆာဗာသည် တုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးတွင် ဇာစ်မြစ်အမျိုးမျိုးရှိ ရင်းမြစ်မူဝါဒကို သတ်မှတ်ရန်လိုအပ်သည်-"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "ဤရင်းမြစ်ကို အခြားဇာစ်မြစ်တစ်ခုမှ သုံးရန်အတွက် ဆာဗာသည် ဇာစ်မြစ်အမျိုးမျိုးရှိ ရင်းမြစ်မူဝါဒ တုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးကို ဖြေလျော့ပေးနိုင်သည်-"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "ဤရင်းမြစ်ကို အခြားဝဘ်ဆိုက်တစ်ခုမှ သုံးရန်အတွက် ဆာဗာသည် ဇာစ်မြစ်အမျိုးမျိုးရှိ ရင်းမြစ်မူဝါဒ တုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးကို ဖြေလျော့ပေးနိုင်သည်-"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "အတွဲလိုက် ရင်းမြစ်"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ကွန်ရက်မှတ်တမ်းဖိုင်များကို ဖရိမ်အလိုက် အုပ်စုမဖွဲ့ပါနှင့်"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "UNC ဖိုင်တွဲများလမ်းကြောင်းများမှတစ်ဆင့် Windows Shares မှ မြေပုံများကဲ့သို့ ရင်းမြစ်များအား DevTools ကို ဖွင့်ခွင့်ပြုရန်။ လုံခြုံရေးအကြောင်းများကြောင့် မူရင်းသတ်မှတ်ချက်အနေဖြင့် ပိတ်ထားသည်။"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ဖရိမ်"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "အခြေအနေအမှန်ဖြစ်မှသာ ခဏရပ်ပါ"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "ဖြတ်တောက်မှတ်များ မရှိပါ"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "အရောင်ရွေးစနစ်ကို ဖွင့်ပါ။"
@@ -12159,10 +12177,10 @@
     "message": "လောလောဆယ်တွင် ပြဿနာကို မရနိုင်ပါ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "မှတ်ဉာဏ် မြင်သာထင်သာဖြစ်အောင်လုပ်ခြင်းကို ဖျက်ရန်"
+    "message": "ဤမှတ်ဉာဏ် မြင်သာထင်သာဖြစ်အောင်လုပ်ခြင်းကို ရပ်ရန်"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "မြင်သာထင်သာဖြစ်အောင်လုပ်ထားသည့် မှတ်ဉာဏ်သို့ သွားရန်"
+    "message": "ဤမှတ်ဉာဏ်သို့ တိုက်ရိုက်သွားရန်"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "လိပ်စာသည် {PH1} နှင့် {PH2} အကြား ကိန်းဖြစ်ရမည်"

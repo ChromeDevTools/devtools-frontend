@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "បើកការទប់ស្កាត់សំណើសុំភ្ជាប់បណ្ដាញ"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "អនុញ្ញាតឱ្យ DevTools ផ្ទុកធនធាន ដូចជាផែនទីប្រភពពី Windows Shares តាមរយៈផ្លូវ UNC។ បានបិទតាម​លំនាំដើមដោយសារហេតុផលសុវត្ថិភាព។"
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "បើកទម្រង់ WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ការបំប្លែង"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "បើក​ការស្វែងរក​ស្របពេលអ្នកវាយបញ្ចូល"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "ស្វែងរក​ស្របពេលអ្នក​វាយបញ្ចូល"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "បិទ​ការស្វែងរកស្របពេល​អ្នក​វាយបញ្ចូល (ចុច Enter ដើម្បីស្វែងរក)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "បង្ហាញ​ការផ្សាយ​ពាណិជ្ជកម្ម​នៅលើ​គេហទំព័រ​នេះ ប្រសិនបើ​អនុញ្ញាត"
@@ -1449,7 +1461,7 @@
     "message": "ដៃគូរបស់អ្នកកំពុងចរចាលើកំណែ (D)TLS ដែលលែងប្រើ។ សូមផ្ទៀងផ្ទាត់ជាមួយដៃគូរបស់អ្នក ដើម្បីដោះស្រាយបញ្ហានេះ។"
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL ក្នុង​បរិបទ​អសុវត្ថិភាព​ត្រូវបាន​បញ្ឈប់ ហើយ​នឹង​ត្រូវបាន​លុបចេញ​នៅក្នុង M107។ សូមប្រើប្រាស់​ទំហំផ្ទុក​លើ​បណ្ដាញ ឬ​មូលដ្ឋានទិន្នន័យ​ដែល​បានធ្វើ​សន្ទស្សន៍។"
+    "message": "WebSQL ក្នុង​បរិបទ​គ្មានសុវត្ថិភាព​ត្រូវបាន​បញ្ឈប់ ហើយ​នឹង​ត្រូវបាន​លុបចេញ​ឆាប់ៗនេះ។ សូមប្រើប្រាស់​ទំហំផ្ទុក​លើ​បណ្ដាញ ឬ​មូលដ្ឋានទិន្នន័យ​ដែល​បានធ្វើ​សន្ទស្សន៍។"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ navigator.storage ស្តង់ដារ​ជំនួសវិញ។"
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "កម្មវិធី"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "របារចំហៀង​នៃផ្ទាំង​កម្មវិធី"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "សេវាកម្ម​ផ្ទៃខាងក្រោយ"
@@ -4764,7 +4779,7 @@
     "message": "សាកល្បងលុប {REASON_PROPERTY_DECLARATION_CODE} ចេញ ឬផ្លាស់ប្ដូរតម្លៃរបស់វា។"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "លក្ខណៈ {REASON_PROPERTY_DECLARATION_CODE} នៅលើធាតុដដែលរំលងឥទ្ធិពលនៃ {AFFECTED_PROPERTY_DECLARATION_CODE}។"
+    "message": "លក្ខណៈ {REASON_PROPERTY_DECLARATION_CODE} នៅលើ​ធាតុ​នេះ​រំលង​ឥទ្ធិពល​នៃ {AFFECTED_PROPERTY_DECLARATION_CODE}។"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "បញ្ចូល​ថ្នាក់​ថ្មី"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "ដានទីតាំង​មែកធាង DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "រំកិលទៅឆ្វេង"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "រំកិលទៅស្តាំ"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(អត្ថបទ)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "មើល​វិញ្ញាបនបត្រ"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs សកម្ម។"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs សកម្ម​ដែលជំរុញ​សកម្មភាព​នៅផ្នែក​ម៉ាស៊ីនមេ​។"
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "ជ្រើសរើស​ជម្រើសនេះ ប្រសិនបើ​ធនធាន និងឯកសារ​មានផ្ដល់ជូន​ពីគេហទំព័រតែមួយ។"
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "បានឌិកូដ៖"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "ស្វែងយល់បន្ថែម"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "ស្វែងយល់បន្ថែម​នៅក្នុង​ផ្ទាំងបញ្ហា"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "ស្វែងយល់បន្ថែម"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "អាចប្រើ​បានតែ​ផ្នែក​ក្បាល​ដែល​បានផ្ដល់​ឱ្យ​ប៉ុណ្ណោះ ដោយសារ​សំណើ​នេះ​មិនត្រូវបាន​បញ្ជូន​តាមរយៈ​បណ្ដាញ​ទេ ផ្ទុយមកវិញ វាត្រូវបាន​ផ្ដល់ជូន​ដោយ​ឃ្លាំង​បម្រុង​មូលដ្ឋាន ដែលមិន​រក្សាទុក​ផ្នែកក្បាល​នៃ​សំណើដើមទេ។ សូមបិទ​ឃ្លាំង​បម្រុង ដើម្បី​មើល​ផ្នែក​ក្បាល​នៃសំណើ​ពេញលេញ។"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "ផ្នែកក្បាល​ដែលបានផ្ដល់ឱ្យ​ត្រូវបានបង្ហាញ។"
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "ផ្នែកក្បាល​ដែលបានផ្ដល់ឱ្យ​ត្រូវបានបង្ហាញ។ សូមបិទ​ឃ្លាំងបម្រុង ដើម្បីមើល​ផ្នែកក្បាល​ពេញលេញ។"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ពី​ឃ្លាំងបម្រុង​របស់​ថាស)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "ការលុបពីលើផ្នែកក្បាល"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "ស្វែងយល់បន្ថែម"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "ស្វែងយល់បន្ថែម​នៅក្នុង​ផ្ទាំងបញ្ហា"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "ជ្រើសរើសតែ​ជម្រើសនេះ​ប៉ុណ្ណោះ ប្រសិនបើ​គេហទំព័រ​មិនច្បាស់ រួមទាំង​ធនធាននេះ​មិនបង្កហានិភ័យ​ផ្នែកសុវត្ថិភាពទេ។"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "អាចប្រើ​បានតែ​ផ្នែក​ក្បាល​ដែល​បានផ្ដល់​ឱ្យ​ប៉ុណ្ណោះ ដោយសារ​សំណើ​នេះ​មិនត្រូវបាន​បញ្ជូន​តាមរយៈ​បណ្ដាញ​ទេ ផ្ទុយមកវិញ វាត្រូវបាន​ផ្ដល់ជូន​ដោយ​ឃ្លាំង​បម្រុង​មូលដ្ឋាន ដែលមិន​រក្សាទុក​ផ្នែកក្បាល​នៃ​សំណើដើមទេ។ សូមបិទ​ឃ្លាំង​បម្រុង ដើម្បី​មើល​ផ្នែក​ក្បាល​នៃសំណើ​ពេញលេញ។"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "ផ្នែកក្បាល​ដែលបានផ្ដល់ឱ្យ​ត្រូវបានបង្ហាញ។"
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "ផ្នែកក្បាល​ដែលបានផ្ដល់ឱ្យ​ត្រូវបានបង្ហាញ។ សូមបិទ​ឃ្លាំងបម្រុង ដើម្បីមើល​ផ្នែកក្បាល​ពេញលេញ។"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "ដើម"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "លេខ​កូដ​ស្ថានភាព"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "ឯកសារនេះ​ត្រូវបានទប់ស្កាត់​ពីការផ្ទុក​នៅក្នុង iframe ដែលមាន​លក្ខណៈ sandbox ដោយសារ​ឯកសារនេះ​បានបញ្ជាក់​គោលការណ៍​ស្ដីពី​កម្មវិធីបើក​ប្រភពដើមផ្សេងទៀត។"
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "ដើម្បីបង្កប់​ស៊ុម​នេះ​នៅក្នុង​ឯកសារ​របស់អ្នក ការឆ្លើយតប​ត្រូវ​បើក​គោលការណ៍​កម្មវិធីបង្កប់​ដែលមានប្រភព​ដើមផ្សេង ដោយបញ្ជាក់​ផ្នែក​ក្បាល​នៃការឆ្លើយតប​ដូចខាងក្រោម៖"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "ដើម្បីប្រើ​ធនធាន​នេះ​ពីប្រភព​ផ្សេង ម៉ាស៊ីនមេ​ត្រូវបញ្ជាក់​គោលការណ៍​ធនធាន​ដែល​មានប្រភពដើម​ផ្សេង​នៅក្នុង​ផ្នែកក្បាល​នៃការឆ្លើយតប៖"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "ដើម្បីប្រើ​ធនធាន​នេះ​ពីប្រភព​ផ្សេង ម៉ាស៊ីនមេ​អាច​ឈប់ប្រើ​ផ្នែកក្បាល​នៃ​ការឆ្លើយតប​របស់​គោលការណ៍​ធនធាន​ដែលមានប្រភពដើម​ផ្សេង៖"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "ដើម្បីប្រើ​ធនធាននេះ​ពីគេហទំព័រ​ផ្សេង ម៉ាស៊ីនមេអាច​សម្រាក​ផ្នែក​ក្បាល​នៃការឆ្លើយតប​របស់​គោលការណ៍​ស្ដីពី​ធនធាន​ដែល​មាន​ប្រភពដើម​ផ្សេង៖"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "អញ្ញត្តិដែលផ្ដល់ដោយកម្មវិធីភ្ញៀវមានទម្រង់មិនត្រឹមត្រូវ ឬគ្មានសុពលភាព។"
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "ប្រភេទ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "ជ្រើសរើស​ជម្រើសនេះ ប្រសិនបើ​ធនធាន និងឯកសារ​ត្រូវបានផ្ដល់​ពីគេហទំព័រតែមួយ។"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "ជ្រើសរើស​ជម្រើសនេះ​ តែក្នុងករណីគេហទំព័រដែល​មិនច្បាស់ រួមទាំង​ធនធាននេះ​ មិនបង្កហានិភ័យ​ផ្នែកសុវត្ថិភាពប៉ុណ្ណោះ។"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "ឯកសារនេះ​ត្រូវបានទប់ស្កាត់​ពីការផ្ទុក​នៅក្នុង iframe ដែលមាន​លក្ខណៈ sandbox ដោយសារ​ឯកសារនេះ​បានបញ្ជាក់​គោលការណ៍ស្ដីពីកម្មវិធីបើក​ប្រភពដើមផ្សេង។"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "ដើម្បីបង្កប់ស៊ុមនេះនៅក្នុងឯកសាររបស់អ្នក ការឆ្លើយតបត្រូវបើកគោលការណ៍ស្ដីពីកម្មវិធីបង្កប់​ដែលមានប្រភពដើមផ្សេង ដោយបញ្ជាក់ផ្នែកក្បាលនៃការឆ្លើយតបដូចខាងក្រោម៖"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "ដើម្បីប្រើធនធាននេះពីប្រភពផ្សេង ម៉ាស៊ីនមេត្រូវបញ្ជាក់គោលការណ៍ស្ដីពីធនធានដែលមានប្រភពដើមផ្សេងនៅក្នុងផ្នែកក្បាលនៃការឆ្លើយតប៖"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "ដើម្បីប្រើធនធាននេះពីប្រភពផ្សេង ម៉ាស៊ីនមេអាចសម្រាកផ្នែកក្បាលនៃការឆ្លើយតបរបស់គោលការណ៍ស្ដីពីធនធានដែលមានប្រភពដើមផ្សេង៖"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "ដើម្បីប្រើ​ធនធាននេះ​ពីគេហទំព័រផ្សេង ម៉ាស៊ីនមេអាច​សម្រាក​ផ្នែកក្បាលនៃការឆ្លើយតបរបស់គោលការណ៍ស្ដីពីធនធានដែលមានប្រភពដើមផ្សេង៖"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "ធនធាន​ជាកញ្ចប់"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "កុំដាក់​ធាតុកំណត់ហេតុបណ្ដាញ​ជាក្រុម​តាមស៊ុម"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "អនុញ្ញាតឱ្យ DevTools ផ្ទុកធនធាន ដូចជាផែនទីប្រភពពី Windows Shares តាមរយៈផ្លូវ UNC។ បានបិទតាម​លំនាំដើមដោយសារហេតុផលសុវត្ថិភាព។"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ស៊ុម"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "ផ្អាក​តែនៅពេល​ដែលស្ថានភាព​គឺពិត​ប៉ុណ្ណោះ"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "គ្មាន​ចំណុចផ្អាក​ទេ"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "បើកផ្ទាំង​ជ្រើសរើស​ពណ៌។"
@@ -12159,10 +12177,10 @@
     "message": "មិនអាច​បង្ហាញបញ្ហា​បានទេ​នៅពេលនេះ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "លុបការរំលេចអង្គចងចាំ"
+    "message": "ឈប់​រំលេច​អង្គចងចាំ​នេះ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "រំលងទៅអង្គចងចាំដែលបានរំលេច"
+    "message": "រំលង​មក​អង្គចងចាំ​នេះ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "អាសយដ្ឋាន​ត្រូវតែជា​លេខចន្លោះពី {PH1} ទៅ {PH2}"

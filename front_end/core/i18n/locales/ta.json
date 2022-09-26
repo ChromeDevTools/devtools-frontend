@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "நெட்வொர்க் கோரிக்கைத் தடையை இயக்கு"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "சோர்ஸ் மேப்ஸ் போன்ற ஆதாரங்களை UNC தடங்கள் வழியாக Windows Sharesஸில் இருந்து DevTools பதிவிறக்க அனுமதி. பாதுகாப்புக் காரணங்களுக்காக இயல்பாகவே முடக்கப்பட்டிருக்கும்."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP வடிவமைப்பை இயக்கு"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ரெண்டரிங்"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "டைப் செய்யும்போதே தேடு என்பதை இயக்கு"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "டைப் செய்யும்போதே தேடு"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "டைப் செய்யும்போதே தேடுவதை முடக்கு (தேட Enter அழுத்தவும்)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "அனுமதிக்கப்பட்டால் இந்தத் தளத்தில் விளம்பரங்களைக் காட்டு"
@@ -1449,7 +1461,7 @@
     "message": "காலாவதியான (D)TLS பதிப்பை உங்கள் கூட்டாளர் பரிமாற்றம் செய்கிறார். இதைச் சரிசெய்ய உங்கள் கூட்டாளரைத் தொடர்புகொள்ளவும்."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "பாதுகாப்பற்ற சூழல்களில் உள்ள WebSQL நிறுத்தப்படும், அத்துடன் அது M107ல் இருந்தும் அகற்றப்படும். இணையச் சேமிப்பகம் அல்லது இண்டெக்ஸ் செய்யப்பட்ட தரவுத்தளத்தைப் பயன்படுத்தவும்."
+    "message": "பாதுகாப்பற்ற சூழல்களில் உள்ள WebSQL நிறுத்தப்படும், அத்துடன் அது விரைவில் அகற்றப்படும். இணையச் சேமிப்பகம் அல்லது இண்டெக்ஸ் செய்யப்பட்ட தரவுத்தளத்தைப் பயன்படுத்தவும்."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent நிறுத்தப்பட்டது. இதற்குப் பதிலாக நிலையான navigator.storage ஐப் பயன்படுத்தவும்."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "ஆப்ஸ்"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "ஆப்ஸ் பேனல் பக்கப்பட்டி"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "பின்னணிச் சேவைகள்"
@@ -4764,7 +4779,7 @@
     "message": "{REASON_PROPERTY_DECLARATION_CODE} என்பதை அகற்றுங்கள் அல்லது அதன் மதிப்பை மாற்றுங்கள்."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "அதே உறுப்பின் மீது செயல்படும் {REASON_PROPERTY_DECLARATION_CODE} பிராப்பர்ட்டி {AFFECTED_PROPERTY_DECLARATION_CODE} இன் தாக்கத்தை மீறிச் செயல்படுகிறது."
+    "message": "இந்த உறுப்பின் மீது செயல்படும் {REASON_PROPERTY_DECLARATION_CODE} பிராப்பர்ட்டி {AFFECTED_PROPERTY_DECLARATION_CODE} இன் தாக்கத்தை மீறிச் செயல்படுகிறது."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "புதிய கிளாஸைச் சேருங்கள்"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ட்ரீ பாதைகள்"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "இடதுபுறம் செல்லும்"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "வலதுபுறம் செல்லும்"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(உரை)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "சான்றிதழைக் காட்டு"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "செயலில் உள்ள client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "சேவையகப் பக்கத்தின் நடத்தையை ட்ரிகர் செய்யும் ஆக்டிவ் client experiment variation IDs."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "ஆதாரமும் ஆவணமும் ஒரே தளத்தில் இருந்து வழங்கப்பட்டிருந்தால் இந்த விருப்பத்தைத் தேர்வுசெய்யவும்."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "டீகோட் செய்யப்பட்டது:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "மேலும் அறிக"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "‘சிக்கல்கள்’ பிரிவில் மேலும் அறிக"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "மேலும் அறிக"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "இந்தக் கோரிக்கை நெட்வொர்க் வழியாக அனுப்பப்படாத காரணத்தினாலும் அசல் கோரிக்கைத் தலைப்புகளைச் சேமிக்காத அகத் தற்காலிகச் சேமிப்பிலிருந்து வழங்கப்பட்டதாலும் தற்காலிகத் தலைப்புகள் மட்டுமே கிடைக்கின்றன. முழுக் கோரிக்கைத் தலைப்புகளைப் பார்க்க தற்காலிகச் சேமிப்பை முடக்கவும்."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "தற்காலிகமான தலைப்புகள் காட்டப்படுகின்றன."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "தற்காலிகமான தலைப்புகள் காட்டப்படுகின்றன. முழுத் தலைப்புகளைப் பார்க்க தற்காலிக நினைவகத்தை முடக்கவும்."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(டிஸ்க் தற்காலிக நினைவகத்திலிருந்து)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "மீறிச்செயல்படும் தலைப்புகள்"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "மேலும் அறிக"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "‘சிக்கல்கள்’ பிரிவில் மேலும் அறிக"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "இந்தத் தளம் உட்பட தன்னிச்சையான இணையதளம் எதுவும் பாதுகாப்பு அபாயத்தை ஏற்படுத்தாது என்றால் மட்டுமே இந்த விருப்பத்தைத் தேர்வுசெய்யவும்."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "இந்தக் கோரிக்கை நெட்வொர்க் வழியாக அனுப்பப்படாத காரணத்தினாலும் அசல் கோரிக்கைத் தலைப்புகளைச் சேமிக்காத அகத் தற்காலிகச் சேமிப்பிலிருந்து வழங்கப்பட்டதாலும் தற்காலிகத் தலைப்புகள் மட்டுமே கிடைக்கின்றன. முழுக் கோரிக்கைத் தலைப்புகளைப் பார்க்க தற்காலிகச் சேமிப்பை முடக்கவும்."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "தற்காலிகமான தலைப்புகள் காட்டப்படுகின்றன."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "தற்காலிகமான தலைப்புகள் காட்டப்படுகின்றன. முழுத் தலைப்புகளைப் பார்க்க தற்காலிக நினைவகத்தை முடக்கவும்."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raw"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "நிலைக் குறியீடு"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "கிராஸ் ஆரிஜின் ஓப்பனர் கொள்கையை இந்த ஆவணம் குறிப்பிட்டதால், sandbox பண்புக்கூறை உடைய iframe ஐக் காட்டுவதில் இருந்து அது தடுக்கப்பட்டது."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "இந்த ஃபிரேமை உங்கள் ஆவணத்தில் உட்பொதிக்க, பின்வரும் பதிலளிப்புத் தலைப்பைக் குறிப்பிட்டுக் கொண்டு கிராஸ் ஆர்ஜின் உட்பொதிவுக் கொள்கையைப் பதிலானது இயக்க வேண்டும்:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "இந்த ஆதாரத்தை வேறொரு ஆரிஜினிலிருந்து பயன்படுத்த, பதிலளிப்புத் தலைப்பில் கிராஸ் ஆரிஜின் ஆதாரக் கொள்கையைச் சேவையகம் குறிப்பிட வேண்டும்:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "இந்த ஆதாரத்தை வேறொரு ஆரிஜினிலிருந்து பயன்படுத்த, கிராஸ் ஆரிஜின் ஆதாரக் கொள்கை பதிலளிப்புத் தலைப்பை இந்தச் சேவையகம் சிறிது மாற்றியமைக்கக்கூடும்:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "இந்த ஆதாரத்தை வேறொரு தளத்தில் இருந்து பயன்படுத்த, கிராஸ் ஆரிஜின் ஆதாரக் கொள்கை பதிலளிப்புத் தலைப்பை இந்தச் சேவையகம் சிறிது மாற்றியமைக்கலாம்:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "கிளையண்ட் வழங்கிய தருமதிப்பு தவறானது/செல்லாதது."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "உள்ளிடு"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "ஆதாரமும் ஆவணமும் ஒரே தளத்தில் இருந்து வழங்கப்பட்டிருந்தால் இந்த விருப்பத்தைத் தேர்வுசெய்யவும்."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "இந்தத் தளம் உட்பட தன்னிச்சையான இணையதளம் எதுவும் பாதுகாப்பு அபாயத்தை ஏற்படுத்தாது என்றால் மட்டுமே இந்த விருப்பத்தைத் தேர்வுசெய்யவும்."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "கிராஸ் ஆரிஜின் ஓப்பனர் கொள்கையை இந்த ஆவணம் குறிப்பிட்டதால், sandbox பண்புக்கூறை உடைய iframe ஐக் காட்டுவதில் இருந்து அது தடுக்கப்பட்டது."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "இந்த ஃபிரேமை உங்கள் ஆவணத்தில் உட்பொதிக்க, பின்வரும் பதிலளிப்புத் தலைப்பைக் குறிப்பிட்டுக் கொண்டு கிராஸ் ஆரிஜின் உட்பொதிவுக் கொள்கையைப் பதிலானது இயக்க வேண்டும்:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "இந்த ஆதாரத்தை வேறொரு ஆரிஜினிலிருந்து பயன்படுத்த, பதிலளிப்புத் தலைப்புகளில் கிராஸ் ஆரிஜின் ஆதாரக் கொள்கையைச் சேவையகம் குறிப்பிட வேண்டும்:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "இந்த ஆதாரத்தை வேறொரு ஆரிஜினிலிருந்து பயன்படுத்த, கிராஸ் ஆரிஜின் ஆதாரக் கொள்கை பதிலளிப்புத் தலைப்பை இந்தச் சேவையகம் சிறிது மாற்றியமைக்கக்கூடும்:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "இந்த ஆதாரத்தை வேறொரு தளத்தில் இருந்து பயன்படுத்த, கிராஸ் ஆரிஜின் ஆதாரக் கொள்கை பதிலளிப்புத் தலைப்பை இந்தச் சேவையகம் சிறிது மாற்றியமைக்கலாம்:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "தொகுக்கப்பட்ட ஆதாரம்"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "நெட்வொர்க் பதிவுகளை ஃபிரேம் வாரியாகக் குழுவாக்க வேண்டாம்"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "சோர்ஸ் மேப்ஸ் போன்ற ஆதாரங்களை UNC தடங்கள் வழியாக Windows Sharesஸில் இருந்து DevTools பதிவிறக்க அனுமதி. பாதுகாப்புக் காரணங்களுக்காக இயல்பாகவே முடக்கப்பட்டிருக்கும்."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ஃப்ரேம்"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "நிபந்தனை ’true’ என இருந்தால் மட்டும் இடைநிறுத்து"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "பிரேக்பாயிண்ட்டுகள் எதுவுமில்லை"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "வண்ணத் தேர்வியைத் திறத்தல்."
@@ -12159,10 +12177,10 @@
     "message": "சிக்கலைத் தற்போது கண்டறிய முடியவில்லை"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "நினைவக ஹைலைட்டை நீக்கும்"
+    "message": "இந்த நினைவகத்தை ஹைலைட் செய்வதை நிறுத்தும்"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "ஹைலைட் செய்யப்பட்ட நினைவகத்திற்குச் செல்லும்"
+    "message": "இந்த நினைவகத்திற்குச் செல்லும்"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "முகவரியின் மதிப்பு {PH1}, {PH2} ஆகியவற்றுக்கு இடையிலான எண்ணாக இருக்க வேண்டும்"

@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Gaitu sareko eskaerak blokeatzeko aukera"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Eman UNC bide-izenen bidez baliabideak (adibidez, iturburu-mapak) Windows Shares-etik kargatzeko baimena DevTools garatzaileentzako tresnei. Segurtasuna bermatzeko, desgaituta dago modu lehenetsian."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Gaitu WebP formatua"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Errendatzea"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Gaitu Bilatu idatzi ahala"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Bilatu idatzi ahala"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Desgaitu Bilatu idatzi ahala (bilatzeko, Sartu sakatu behar da)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Erakutsi iragarkiak webgune honetan, halakorik egiteko baimenik balego"
@@ -1449,7 +1461,7 @@
     "message": "Zure bazkidea (D)TLSaren bertsio zaharkitu bat negoziatzen ari da. Arazo hori konpontzeko, jarri harekin harremanetan."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL zaharkituta dago seguruak ez diren testuinguruetan, eta kendu egingo da M107 bertsioan. Erabili web-biltegiratzea edo indexatutako datu-basea."
+    "message": "WebSQL zaharkituta dago seguruak ez diren testuinguruetan, eta laster kenduko da. Erabili sareko biltegiratzea edo indexatutako datu-basea."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent zaharkituta dago. Haren ordez, erabili navigator.storage estandarra."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikazioa"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Aplikazio-panelaren alboko barra"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Atzeko planoko zerbitzuak"
@@ -4764,7 +4779,7 @@
     "message": "Kendu {REASON_PROPERTY_DECLARATION_CODE} edo aldatu haren balioa."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Elementu bereko {REASON_PROPERTY_DECLARATION_CODE} propietateak {AFFECTED_PROPERTY_DECLARATION_CODE} propietatearen eragina saihesten du."
+    "message": "Elementuko {REASON_PROPERTY_DECLARATION_CODE} propietateak {AFFECTED_PROPERTY_DECLARATION_CODE} propietatearen eragina saihesten du."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Gehitu ikasgela bat"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOMaren zuhaitz moduko nabigazio-bidea"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Egin ezkerrera"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Egin eskuinera"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(testua)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Ikusi ziurtagiria"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs aktiboak."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Zerbitzariaren portaera abiarazten duten client experiment variation IDs aktiboak."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Aukeratu hau baliabidea eta dokumentua webgune beretik badatoz."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Deskodetutakoak:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Lortu informazio gehiago"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Lortu informazio gehiago arazoen fitxan"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Lortu informazio gehiago"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Aldi baterako goiburuak soilik daude erabilgarri eskaera ez delako bidali sarearen bidez, cache lokaletik baizik, eta hark ez dituelako gordetzen jatorrizko eskaeraren goiburuak. Eskaeraren goiburu osoak ikusteko, desgaitu cachea."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Aldi baterako goiburuak daude ikusgai."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Aldi baterako goiburuak daude ikusgai. Goiburu osoak ikusteko, desgaitu cachea."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(iturburua: disko-cachea)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Goiburuaren ordezkapenak"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Lortu informazio gehiago"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Lortu informazio gehiago arazoen fitxan"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Baliabide hau duen webgune arbitrario batek segurtasun-arriskurik suposatzen ez duenean soilik aukeratu beharko zenuke hau."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Aldi baterako goiburuak soilik daude erabilgarri eskaera ez delako bidali sarearen bidez, cache lokaletik baizik, eta hark ez dituelako gordetzen jatorrizko eskaeraren goiburuak. Eskaeraren goiburu osoak ikusteko, desgaitu cachea."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Aldi baterako goiburuak daude ikusgai."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Aldi baterako goiburuak daude ikusgai. Goiburu osoak ikusteko, desgaitu cachea."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Gordinak"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Egoera-kodea"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dokumentu hau kargatzeko aukera sandbox atributua duen iframe batean blokeatu da, dokumentuak jatorri anitzeko irekitze-gidalerro bat zehaztu duelako."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Marko hau dokumentuan kapsulatzeko, jatorri anitzeko kapsulatzeari buruzko gidalerroak gaitu behar ditu erantzunak, erantzun-goiburu hau zehaztuta:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Baliabide hau beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburuak zehaztu behar ditu:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Baliabide hau beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburua erlaxa dezake:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Baliabide hau beste webgune batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroen erantzun-goiburua erlaxa dezake:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Bezeroak emandako argumentua oker eratuta dago edo ez du balio."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Mota"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Aukeratu hau baliabidea eta dokumentua webgune beretik badatoz."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Baliabidea duen webgune arbitrario batek segurtasun-arriskurik ez duenean soilik aukeratu beharko zenuke hau."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Dokumentu hau kargatzeko aukera sandbox atributua duen iframe batean blokeatu da, dokumentuak jatorri anitzeko irekitze-gidalerro bat zehaztu duelako."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Markoa dokumentuan kapsulatzeko, jatorri anitzeko kapsulatzaileari buruzko gidalerroak gaitu behar ditu erantzunak, erantzun-goiburu hau zehaztuta:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Baliabidea beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerro bat zehaztu behar du erantzun-goiburuetan:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Baliabidea beste jatorri batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroaren erantzun-goiburua erlaxa dezake:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Baliabidea beste webgune batetik erabiltzeko, zerbitzariak jatorri anitzeko baliabideen gidalerroaren erantzun-goiburua erlaxa dezake:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Baliabide multzokatua"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ez taldekatu sarearen erregistroko elementuak markoaren arabera"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Eman UNC bide-izenen bidez baliabideak (adibidez, iturburu-mapak) Windows Shares-etik kargatzeko baimena DevTools garatzaileentzako tresnei. Segurtasuna bermatzeko, desgaituta dago modu lehenetsian."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "markoa"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pausatu soilik baldintza egiazkoa denean"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Ez dago eten-punturik"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Ireki kolore-hautatzailea."
@@ -12159,10 +12177,10 @@
     "message": "Arazoa ez dago erabilgarri une honetan"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Ezabatu memoriaren nabarmentzea"
+    "message": "Utzi memoria nabarmentzeari"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Joan nabarmendutako memoriara"
+    "message": "Joan memoria zati honetara"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Helbideak {PH1} eta {PH2} arteko zenbaki bat izan behar du"

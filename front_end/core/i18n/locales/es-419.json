@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Habilitar el bloqueo de solicitudes de red"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Permite que DevTools cargue recursos, como mapas de origen, desde los elementos compartidos de Windows mediante rutas de acceso UNC. Se inhabilitó de forma predeterminada por razones de seguridad."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Habilitar el formato de WebP"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderización"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Habilitar la búsqueda mientras escribes"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Buscar mientras escribes"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Inhabilitar la búsqueda mientras escribes (presiona Intro para realizar la búsqueda)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Mostrar anuncios en este sitio si está permitido"
@@ -1449,7 +1461,7 @@
     "message": "Tu socio está negociando una versión de (D)TLS que ya no está disponible. Consúltalo con tu socio para solucionar este problema."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL es obsoleto en contextos no seguros y se quitará en la versión M107. Usa el almacenamiento web o la base de datos indexada."
+    "message": "WebSQL en contextos no seguros dejó de estar disponible y se quitará pronto. Usa Web Store o la Database indexada."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent ya no está disponible. En su lugar, usa navigator.storage estandarizado."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplicación"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Barra lateral del panel de la app"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Servicios en segundo plano"
@@ -4764,7 +4779,7 @@
     "message": "Intenta quitar {REASON_PROPERTY_DECLARATION_CODE} o cambiar su valor."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "La propiedad {REASON_PROPERTY_DECLARATION_CODE} del mismo elemento omite el efecto de {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "La propiedad {REASON_PROPERTY_DECLARATION_CODE} de este elemento omite el efecto de {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Agregar clase"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Rutas de navegación del árbol del DOM"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Desplazar hacia la izquierda"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Desplazar hacia la derecha"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(texto)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Ver certificado"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs activo."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "client experiment variation IDs activos que activan el comportamiento del servidor."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Elige esta opción si el recurso y el documento proceden del mismo sitio."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Decodificado:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Más información"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Obtén más información en la pestaña de problemas"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Más información"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Solo están disponibles los encabezados provisionales porque esta solicitud no fue enviada mediante la red, sino mediante un almacenamiento caché local, que no almacena los encabezados de la solicitud originales. Inhabilita el almacenamiento caché para ver los encabezados de la solicitud completos."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Se muestran encabezados provisionales."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Se muestran encabezados provisionales. Inhabilita el almacenamiento caché para ver los encabezados completos."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(de la memoria caché del disco)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Anulaciones del encabezado"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Más información"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Obtén más información en la pestaña de problemas"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Elige esta opción solo si un sitio web arbitrario que incluya este recurso no representa un riesgo en la seguridad."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Solo están disponibles los encabezados provisionales porque esta solicitud no fue enviada mediante la red, sino mediante un almacenamiento caché local, que no almacena los encabezados de la solicitud originales. Inhabilita el almacenamiento caché para ver los encabezados de la solicitud completos."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Se muestran encabezados provisionales."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Se muestran encabezados provisionales. Inhabilita el almacenamiento caché para ver los encabezados completos."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Sin procesar"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Código de estado"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Este documento no puede cargarse en un iframe con un atributo sandbox porque este documento especificó una política de abridor de origen cruzado."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Para incorporar este marco en el documento, la respuesta tiene que especificar el siguiente encabezado de respuesta a fin de habilitar la política de incorporaciones de origen cruzado:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Para usar este recurso desde otro origen, el servidor debe especificar una política de recursos de origen cruzado en los encabezados de respuesta:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Para usar este recurso desde otro origen, es posible que el servidor relaje el encabezado de respuesta de la política de recursos de origen cruzado:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Para usar este recurso desde otro sitio, es posible que el servidor relaje el encabezado de respuesta de la política de recursos de origen cruzado:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Un cliente proporcionó un argumento incorrecto o no válido."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tipo"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Elige esta opción si el recurso y el documento proceden del mismo sitio."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Elige esta opción solo si un sitio web arbitrario que incluya este recurso no representa un riesgo en la seguridad."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Este documento no puede cargarse en un iframe con un atributo sandbox porque este documento especificó una política de abridor de origen cruzado."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Para incorporar este marco en el documento, la respuesta tiene que especificar el siguiente encabezado de respuesta a fin de habilitar la política de incorporaciones de origen cruzado:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Para usar este recurso desde otro origen, el servidor debe especificar una política de recursos de origen cruzado en los encabezados de respuesta:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Para usar este recurso desde otro origen, es posible que el servidor relaje el encabezado de respuesta de la política de recursos de origen cruzado:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Para usar este recurso desde otro sitio, es posible que el servidor relaje el encabezado de respuesta de la política de recursos de origen cruzado:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Recurso en paquete"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "No agrupar elementos de registro de red por marco"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Permite que DevTools cargue recursos, como mapas de origen, desde los elementos compartidos de Windows mediante rutas de acceso UNC. Se inhabilitó de forma predeterminada por razones de seguridad."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "marco"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pausar solo cuando la condición sea verdadera"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Sin interrupciones"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Abre el selector de color."
@@ -12159,10 +12177,10 @@
     "message": "No es posible mostrar el problema en este momento"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Dejar de destacar esta memoria"
+    "message": "Dejar de destacar esta parte de la memoria"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Ir a la memoria destacada"
+    "message": "Saltar a esta parte de la memoria"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "La dirección debe ser un número entre {PH1} y {PH2}"

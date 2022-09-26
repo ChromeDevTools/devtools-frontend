@@ -758,6 +758,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Įgalinti tinklo užklausų blokavimą"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Leiskite „DevTools“ įkelti šaltinius, pvz., šaltinio žemėlapius, iš „Windows Shares“ naudojant UNC kelius. Išjungta pagal numatytuosius nustatymus saugos sumetimais."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Įgalinti „WebP“ formatą"
   },
@@ -1000,6 +1003,15 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Pateikimas"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Įgalinti paiešką vedant tekstą"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Ieškoti vedant tekstą"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Išjungti paiešką vedant tekstą (jei norite ieškoti, paspauskite „Enter“)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Rodyti skelbimus šioje svetainėje, jei leidžiama"
@@ -1449,7 +1461,7 @@
     "message": "Jūsų partneris derasi dėl pasenusios (D)TLS versijos. Susisiekite su partneriu, kad tai sutvarkytumėte."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "„WebSQL“ teikimas nesaugiame kontekste nutraukiamas ir pašalinama M107. Naudokite žiniatinklio saugyklą arba indeksuotą duomenų bazę."
+    "message": "„WebSQL“ nesaugiame kontekste nebenaudojamas ir netrukus bus pašalintas. Naudokite žiniatinklio saugyklą arba indeksuotą duomenų bazę."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "„StorageType.persistent“ teikimas nutrauktas. Vietoj to naudokite standartizuotą „navigator.storage“."
@@ -2443,6 +2455,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Programa"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
+    "message": "Programos skydelio šoninė juosta"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Foninės paslaugos"
@@ -4764,7 +4779,7 @@
     "message": "Pabandykite pašalinti „{REASON_PROPERTY_DECLARATION_CODE}“ arba pakeisti jo vertę."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Nuosavybė „{REASON_PROPERTY_DECLARATION_CODE}“ tame pačiame elemente apeina „{AFFECTED_PROPERTY_DECLARATION_CODE}“ poveikį."
+    "message": "Šio elemento nuosavybė „{REASON_PROPERTY_DECLARATION_CODE}“ apeina funkcijos „{AFFECTED_PROPERTY_DECLARATION_CODE}“ poveikį."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Pridėti naują kursą"
@@ -5218,6 +5233,12 @@
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM medžio naršymo kelias"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Slinkti kairėn"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Slinkti dešinėn"
   },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(tekstas)"
@@ -7886,17 +7907,32 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Žiūrėti sertifikatą"
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktyvus „client experiment variation IDs“."
   },
-  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+  "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Aktyvus client experiment variation IDs, kuris suaktyvina serverio veikimą."
   },
-  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Pasirinkite šią parinktį, jei šaltinis ir dokumentas teikiami iš tos pačios svetainės."
-  },
-  "panels/network/components/RequestHeadersView.ts | decoded": {
+  "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Iššifruota:"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMore": {
+    "message": "Sužinokite daugiau"
+  },
+  "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
+    "message": "Sužinokite daugiau problemų skirtuke"
+  },
+  "panels/network/components/RequestHeaderSection.ts | learnMore": {
+    "message": "Sužinokite daugiau"
+  },
+  "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
+    "message": "Pasiekiamos tik laikinos antraštės, nes ši užklausa neišsiųsta tinkle, vietoj to ji teikiama iš vietinės talpyklos, kurioje pradinės užklausų antraštės nesaugomos. Išjunkite talpyklą, kad matytumėte visas užklausų antraštes."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
+    "message": "Rodomos laikinos antraštės."
+  },
+  "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Rodomos laikinos antraštės. Išjunkite talpyklą, kad matytumėte visas antraštes."
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(iš disko talpyklos)"
@@ -7921,24 +7957,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | headerOverrides": {
     "message": "Antraščių nepaisymas"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMore": {
-    "message": "Sužinokite daugiau"
-  },
-  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Sužinokite daugiau problemų skirtuke"
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Šią parinktį rinkitės tik jei atsitiktinė svetainė, kurioje yra šis šaltinis, nekelia pavojaus saugumui."
-  },
-  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Pasiekiamos tik laikinos antraštės, nes ši užklausa neišsiųsta tinkle, vietoj to ji teikiama iš vietinės talpyklos, kurioje pradinės užklausų antraštės nesaugomos. Išjunkite talpyklą, kad matytumėte visas užklausų antraštes."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
-    "message": "Rodomos laikinos antraštės."
-  },
-  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
-    "message": "Rodomos laikinos antraštės. Išjunkite talpyklą, kad matytumėte visas antraštes."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Neapdorotas"
@@ -7966,21 +7984,6 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Būsenos kodas"
-  },
-  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Šio dokumento įkėlimas į „iframe“ naudojant „sandbox“ atributą užblokuotas, nes šis dokumentas nurodė kelių šaltinių atidarymo programos politiką."
-  },
-  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Norint įterpti šį rėmelį dokumente, atsakant reikia įgalinti kelių šaltinių įterpimo programos politiką, nurodant toliau pateiktą atsako antraštę:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Jei norite naudoti šį šaltinį iš kito šaltinio, serverio atsako antraštėse turi būti nurodoma kelių šaltinių politika:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Jei norite naudoti šį šaltinį iš kito šaltinio, serveris gali atlaisvinti kelių šaltinių politikos atsako antraštę:"
-  },
-  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Jei norite naudoti šį šaltinį iš kitos svetainės, serveris gali atlaisvinti kelių šaltinių politikos atsako antraštę:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Kliento pateiktas argumentas netinkamai suformatuotas arba netinkamas dėl kitų priežasčių."
@@ -8033,6 +8036,27 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tipas"
   },
+  "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Pasirinkite šią parinktį, jei šaltinis ir dokumentas teikiami iš tos pačios svetainės."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
+    "message": "Šią parinktį rinkitės tik jei atsitiktinė svetainė, kurioje yra šis šaltinis, nekelia pavojaus saugumui."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
+    "message": "Šio dokumento įkėlimas į „iframe“ naudojant „sandbox“ atributą užblokuotas, nes šis dokumentas nurodė kelių šaltinių atidarymo programos politiką."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Norint įterpti šį rėmelį dokumente, atsakant reikia įgalinti kelių šaltinių įterpimo programos politiką, nurodant toliau pateiktą atsako antraštę:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
+    "message": "Jei norite naudoti šį šaltinį iš kito šaltinio, serverio atsako antraštėse turi būti nurodoma kelių šaltinių politika:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Jei norite naudoti šį šaltinį iš kito šaltinio, serveris gali atlaisvinti kelių šaltinių politikos atsako antraštę:"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Jei norite naudoti šį šaltinį iš kitos svetainės, serveris gali atlaisvinti kelių šaltinių politikos atsako antraštę:"
+  },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Į grupę įtrauktas šaltinis"
   },
@@ -8050,9 +8074,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Negrupuoti tinklo žurnalo elementų pagal rėmelį"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Leiskite „DevTools“ įkelti šaltinius, pvz., šaltinio žemėlapius, iš „Windows Shares“ naudojant UNC kelius. Išjungta pagal numatytuosius nustatymus saugos sumetimais."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "rėmelis"
@@ -9790,9 +9811,6 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pristabdyti, tik kai sąlyga teisinga"
-  },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Stabdos taškų nėra"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Atidaryti spalvos parinkiklį."
@@ -12159,10 +12177,10 @@
     "message": "Problema šiuo metu nepasiekiama"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Ištrinti paryškintą atmintį"
+    "message": "Sustabdyti šios atminties paryškinimą"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Pereiti į paryškintą atmintį"
+    "message": "Pereiti į šią atmintį"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresas turi būti skaičius nuo {PH1} iki {PH2}"

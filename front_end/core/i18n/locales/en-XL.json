@@ -2357,6 +2357,9 @@
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Ĉóm̂ṕût́êd́ Âṕp̂ Íd̂"
   },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "Ĉóp̂íêd́ ŝúĝǵêśt̂éd̂ ÍD̂ {PH1} t́ô ćl̂íp̂b́ôár̂d́"
+  },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Ĉóp̂ý t̂ó ĉĺîṕb̂óâŕd̂"
   },

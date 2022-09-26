@@ -91,6 +91,11 @@ const UIStrings = {
   */
   copyToClipboard: 'Copy to clipboard',
   /**
+  *@description Screen reader announcement string when the user clicks the copy to clipboard button.
+  *@example {/index.html} PH1
+  */
+  copiedToClipboard: 'Copied suggested ID {PH1} to clipboard',
+  /**
   *@description Text for the description of something
   */
   description: 'Description',
@@ -645,6 +650,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
             iconColor: 'var(--color-text-primary)',
           }],
           clickHandler: (): void => {
+            UI.ARIAUtils.alert(i18nString(UIStrings.copiedToClipboard, {PH1: recommendedId}));
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
           },
           compact: true,

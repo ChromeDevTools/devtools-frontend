@@ -2357,6 +2357,9 @@
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Computed App Id"
   },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "Copied suggested ID {PH1} to clipboard"
+  },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Copy to clipboard"
   },

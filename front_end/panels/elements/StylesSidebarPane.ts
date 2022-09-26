@@ -1698,6 +1698,14 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         this.tabKeyPressed();
         keyboardEvent.preventDefault();
         return;
+      case ' ':
+        if (this.isEditingName) {
+          // Since property names cannot contain a space
+          // we accept available autocompletions for property name when the user presses space.
+          this.tabKeyPressed();
+          keyboardEvent.preventDefault();
+          return;
+        }
     }
 
     super.onKeyDown(keyboardEvent);

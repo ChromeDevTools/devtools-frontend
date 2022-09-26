@@ -1174,7 +1174,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const keyboardEvent = (event as KeyboardEvent);
     const target = (keyboardEvent.target as HTMLElement);
     let result;
-    if (keyboardEvent.key === 'Enter' && !keyboardEvent.shiftKey) {
+    if ((keyboardEvent.key === 'Enter' && !keyboardEvent.shiftKey) ||
+        (context.isEditingName && keyboardEvent.key === ' ')) {
       result = 'forward';
     } else if (
         keyboardEvent.keyCode === UI.KeyboardShortcut.Keys.Esc.code ||

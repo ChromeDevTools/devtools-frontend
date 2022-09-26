@@ -1,9 +1,8 @@
-# Ensure that the `attribution-reporting` permission policy is enabled
+# The Attribution Reporting API can’t be used because Permissions Policy has been disabled
 
 This page tried to use the Attribution Reporting API but failed because the
-`attribution-reporting` permission policy is not enabled.
+`attribution-reporting` Permission Policy was explicitly disabled.
 
-This API is enabled by default in the top-level context and in same-origin
-child frames, but must be explicitly opted-in for cross-origin frames. Add the
-permission policy as follows:
-`<iframe src="..." allow="attribution-reporting">`.
+This API is currently enabled by default for top-level and cross-origin frames,
+but it is still possible for frames to have the permission disabled by their
+parent, e.g. with `<iframe src="…" allow="attribution-reporting 'none'">`.

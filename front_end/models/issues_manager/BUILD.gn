@@ -58,6 +58,7 @@ devtools_issue_description_files = [
   "arInvalidRegisterSourceHeader.md",
   "arInvalidRegisterTriggerHeader.md",
   "arPermissionPolicyDisabled.md",
+  "arPermissionPolicyNotDelegated.md",
   "arSourceAndTriggerHeaders.md",
   "arSourceIgnored.md",
   "arTriggerIgnored.md",

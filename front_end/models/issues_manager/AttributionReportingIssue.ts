@@ -10,6 +10,7 @@ import {type MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 export const enum IssueCode {
   PermissionPolicyDisabled = 'AttributionReportingIssue::PermissionPolicyDisabled',
+  PermissionPolicyNotDelegated = 'AttributionReportingIssue::PermissionPolicyNotDelegated',
   UntrustworthyReportingOrigin = 'AttributionReportingIssue::UntrustworthyReportingOrigin',
   InsecureContext = 'AttributionReportingIssue::InsecureContext',
   InvalidRegisterSourceHeader = 'AttributionReportingIssue::InvalidRegisterSourceHeader',
@@ -28,6 +29,8 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
   switch (details.violationType) {
     case Protocol.Audits.AttributionReportingIssueType.PermissionPolicyDisabled:
       return IssueCode.PermissionPolicyDisabled;
+    case Protocol.Audits.AttributionReportingIssueType.PermissionPolicyNotDelegated:
+      return IssueCode.PermissionPolicyNotDelegated;
     case Protocol.Audits.AttributionReportingIssueType.UntrustworthyReportingOrigin:
       return IssueCode.UntrustworthyReportingOrigin;
     case Protocol.Audits.AttributionReportingIssueType.InsecureContext:
@@ -74,6 +77,11 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.PermissionPolicyDisabled:
         return {
           file: 'arPermissionPolicyDisabled.md',
+          links: [],
+        };
+      case IssueCode.PermissionPolicyNotDelegated:
+        return {
+          file: 'arPermissionPolicyNotDelegated.md',
           links: [],
         };
       case IssueCode.UntrustworthyReportingOrigin:
@@ -131,7 +139,22 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
   }
 
   getKind(): IssueKind {
-    return IssueKind.PageError;
+    switch (this.code()) {
+      case IssueCode.PermissionPolicyNotDelegated:
+        return IssueKind.BreakingChange;
+      case IssueCode.PermissionPolicyDisabled:
+      case IssueCode.UntrustworthyReportingOrigin:
+      case IssueCode.InsecureContext:
+      case IssueCode.InvalidRegisterSourceHeader:
+      case IssueCode.InvalidRegisterTriggerHeader:
+      case IssueCode.InvalidEligibleHeader:
+      case IssueCode.TooManyConcurrentRequests:
+      case IssueCode.SourceAndTriggerHeaders:
+      case IssueCode.SourceIgnored:
+      case IssueCode.TriggerIgnored:
+      case IssueCode.Unknown:
+        return IssueKind.PageError;
+    }
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

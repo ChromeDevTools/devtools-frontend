@@ -411,6 +411,7 @@ export class MainImpl {
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
       'lighthousePanelFR',
       'keyboardShortcutEditor',
+      'groupAndHideIssuesByKind',
     ]);
 
     Root.Runtime.experiments.setNonConfigurableExperiments([

@@ -544,7 +544,9 @@ export class SoftContextMenu {
       return;
     }
     for (const child of this.contextMenuElement.children) {
-      ARIAUtils.markAsMenuItemCheckBox(child);
+      if (child.className !== 'soft-context-menu-separator') {
+        ARIAUtils.markAsMenuItemCheckBox(child);
+      }
     }
   }
 }

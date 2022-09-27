@@ -382,7 +382,8 @@ export class NetworkLogViewColumns {
     if (!this.waterfallColumn.isShowing()) {
       return;
     }
-    this.waterfallScrollerContent.style.height = this.dataGridScroller.scrollHeight + 'px';
+    this.waterfallScrollerContent.style.height =
+        this.dataGridScroller.scrollHeight - this.dataGridInternal.headerHeight() + 'px';
     this.updateScrollerWidthIfNeeded();
     this.dataGridScroller.scrollTop = this.waterfallScroller.scrollTop;
   }

@@ -1551,7 +1551,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.scrollContainer === this.dataContainerInternal ? this.headerHeight() : 0;
   }
 
-  protected headerHeight(): number {
+  headerHeight(): number {
     return this.dataTableHeadInternal.offsetHeight;
   }
 

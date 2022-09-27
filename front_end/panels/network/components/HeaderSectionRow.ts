@@ -11,7 +11,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Host from '../../../core/host/host.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 
@@ -43,12 +43,14 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/HeaderSectionRow.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class HeaderValueChangedEvent extends Event {
-  static readonly eventName = 'headervaluechanged';
+export class HeaderEditedEvent extends Event {
+  static readonly eventName = 'headeredited';
+  headerName: Platform.StringUtilities.LowerCaseString;
   headerValue: string;
 
-  constructor(headerValue: string) {
-    super(HeaderValueChangedEvent.eventName, {});
+  constructor(headerName: Platform.StringUtilities.LowerCaseString, headerValue: string) {
+    super(HeaderEditedEvent.eventName, {});
+    this.headerName = headerName;
     this.headerValue = headerValue;
   }
 }
@@ -61,6 +63,7 @@ export class HeaderSectionRow extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-header-section-row`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #header: HeaderDescriptor|null = null;
+  readonly #boundRender = this.#render.bind(this);
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [headerSectionRowStyles];
@@ -72,10 +75,14 @@ export class HeaderSectionRow extends HTMLElement {
 
   set data(data: HeaderSectionRowData) {
     this.#header = data.header;
-    this.#render();
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   #render(): void {
+    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
+      throw new Error('HeaderSectionRow render was not scheduled');
+    }
+
     if (!this.#header) {
       return;
     }
@@ -84,7 +91,7 @@ export class HeaderSectionRow extends HTMLElement {
       row: true,
       'header-highlight': Boolean(this.#header.highlight),
       'header-overridden': Boolean(this.#header.isOverride),
-      'header-editable': Boolean(this.#header.editable),
+      'header-editable': Boolean(this.#header.valueEditable),
     });
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -95,19 +102,22 @@ export class HeaderSectionRow extends HTMLElement {
           ${this.#header.headerNotSet ?
             html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div> ` :
             LitHtml.nothing
-          }${this.#header.name}:
+          }${this.#header.nameEditable ? this.#renderEditable(this.#header.name) : this.#header.name}:
         </div>
         <div
           class="header-value ${this.#header.headerValueIncorrect ? 'header-warning' : ''}"
           @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
         >
-          ${this.#header.editable ? this.#renderEditable(this.#header.value || '') : this.#header.value || ''}
+          ${this.#header.valueEditable ? this.#renderEditable(this.#header.value || '') : this.#header.value || ''}
           ${this.#maybeRenderHeaderValueSuffix(this.#header)}
         </div>
       </div>
       ${this.#maybeRenderBlockedDetails(this.#header.blockedDetails)}
     `, this.#shadow, {host: this});
     // clang-format on
+
+    const focusElement = this.#shadow.querySelector<HTMLElement>('.header-name .editable');
+    focusElement?.focus();
   }
 
   #renderEditable(value: string): LitHtml.TemplateResult {
@@ -229,10 +239,22 @@ export class HeaderSectionRow extends HTMLElement {
     }
   }
 
-  #onFocusOut(e: Event): void {
-    const target = e.target as HTMLElement;
-    if (this.#header?.value !== target.innerText) {
-      this.dispatchEvent(new HeaderValueChangedEvent(target.innerText));
+  #onFocusOut(): void {
+    const headerNameElement = this.#shadow.querySelector('.header-name') as HTMLElement;
+    const headerValueElement = this.#shadow.querySelector('.header-value') as HTMLElement;
+    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.slice(0, -1));
+    const headerValue = headerValueElement.innerText;
+
+    if (headerName !== '') {
+      if (headerName !== this.#header?.name || headerValue !== this.#header?.value) {
+        this.dispatchEvent(new HeaderEditedEvent(headerName, headerValue));
+      }
+    } else {
+      // If the header name has been edited to '', reset it to its previous value.
+      const headerNameEditable = this.#shadow.querySelector('.header-name .editable');
+      if (headerNameEditable) {
+        (headerNameEditable as HTMLElement).innerText = this.#header?.name || '';
+      }
     }
 
     // clear selection
@@ -245,7 +267,11 @@ export class HeaderSectionRow extends HTMLElement {
     const target = event.target as HTMLElement;
     if (keyboardEvent.key === 'Escape') {
       event.consume();
-      target.innerText = this.#header?.value || '';
+      if (target.matches('.header-name .editable')) {
+        target.innerText = this.#header?.name || '';
+      } else if (target.matches('.header-value .editable')) {
+        target.innerText = this.#header?.value || '';
+      }
       target.blur();
     }
     if (keyboardEvent.key === 'Enter') {
@@ -278,7 +304,7 @@ declare global {
   }
 
   interface HTMLElementEventMap {
-    [HeaderValueChangedEvent.eventName]: HeaderValueChangedEvent;
+    [HeaderEditedEvent.eventName]: HeaderEditedEvent;
   }
 }
 
@@ -304,5 +330,6 @@ export interface HeaderDescriptor {
   setCookieBlockedReasons?: Protocol.Network.SetCookieBlockedReason[];
   highlight?: boolean;
   isOverride?: boolean;
-  editable?: boolean;
+  valueEditable?: boolean;
+  nameEditable?: boolean;
 }

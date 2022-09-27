@@ -7019,8 +7019,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "T̂ýp̂é"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Âd́d̂ h́êád̂ér̂"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Ĉh́ôóŝé t̂h́îś ôṕt̂íôń îf́ t̂h́ê ŕêśôúr̂ćê án̂d́ t̂h́ê d́ôćûḿêńt̂ ár̂é ŝér̂v́êd́ f̂ŕôḿ t̂h́ê śâḿê śît́ê."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "ĥéâd́êŕ-n̂ám̂é"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "ĥéâd́êŕ v̂ál̂úê"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Ôńl̂ý ĉh́ôóŝé t̂h́îś ôṕt̂íôń îf́ âń âŕb̂ít̂ŕâŕŷ ẃêb́ŝít̂é îńĉĺûd́îńĝ t́ĥíŝ ŕêśôúr̂ćê d́ôéŝ ńôt́ îḿp̂óŝé â śêćûŕît́ŷ ŕîśk̂."

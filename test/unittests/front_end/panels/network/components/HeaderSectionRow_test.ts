@@ -154,29 +154,76 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assertElement(headerRowElement, HTMLDivElement);
   });
 
-  it('emits "headervaluechanged" event on blur after being edited', async () => {
+  it('allows editing header name and header value', async () => {
+    const headerName = Platform.StringUtilities.toLowerCaseString('some-header-name');
+    const headerValue = 'someHeaderValue';
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
-      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
-      value: 'someHeaderValue',
-      editable: true,
+      name: headerName,
+      value: headerValue,
+      nameEditable: true,
+      valueEditable: true,
     };
+    const editedHeaderName = 'new-header-name';
     const editedHeaderValue = 'new value for header';
 
     const component = await renderHeaderSectionRow(headerData);
     assertShadowRoot(component.shadowRoot);
 
     let headerValueFromEvent = '';
-    component.addEventListener('headervaluechanged', event => {
+    let headerNameFromEvent = '';
+    let headerEditedEventCount = 0;
+    component.addEventListener('headeredited', event => {
+      headerEditedEventCount++;
       headerValueFromEvent = event.headerValue;
+      headerNameFromEvent = event.headerName;
     });
 
-    const editable = component.shadowRoot.querySelector('.editable');
+    let editable = component.shadowRoot.querySelector('.header-name .editable');
+    assertElement(editable, HTMLSpanElement);
+    editable.focus();
+    editable.innerText = editedHeaderName;
+    editable.blur();
+
+    assert.strictEqual(headerEditedEventCount, 1);
+    assert.strictEqual(headerNameFromEvent, editedHeaderName);
+    assert.strictEqual(headerValueFromEvent, headerValue);
+
+    editable = component.shadowRoot.querySelector('.header-value .editable');
     assertElement(editable, HTMLSpanElement);
     editable.focus();
     editable.innerText = editedHeaderValue;
     editable.blur();
 
+    assert.strictEqual(headerEditedEventCount, 2);
+    assert.strictEqual(headerNameFromEvent, editedHeaderName);
     assert.strictEqual(headerValueFromEvent, editedHeaderValue);
+  });
+
+  it('does not allow setting an emtpy header name', async () => {
+    const headerName = Platform.StringUtilities.toLowerCaseString('some-header-name');
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: headerName,
+      value: 'someHeaderValue',
+      nameEditable: true,
+      valueEditable: true,
+    };
+
+    const component = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+
+    let headerEditedEventCount = 0;
+    component.addEventListener('headeredited', () => {
+      headerEditedEventCount++;
+    });
+
+    const editable = component.shadowRoot.querySelector('.header-name .editable');
+    assertElement(editable, HTMLSpanElement);
+    editable.focus();
+    editable.innerText = '';
+    editable.blur();
+
+    assert.strictEqual(headerEditedEventCount, 0);
+    assert.strictEqual(editable.innerText, 'Some-Header-Name');
   });
 
   it('resets edited value on escape key', async () => {
@@ -184,7 +231,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
       name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
       value: originalHeaderValue,
-      editable: true,
+      valueEditable: true,
     };
 
     const component = await renderHeaderSectionRow(headerData);
@@ -209,7 +256,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
       name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
       value: 'someHeaderValue',
-      editable: true,
+      valueEditable: true,
     };
     const editedHeaderValue = 'new value for header';
 
@@ -218,7 +265,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
     let headerValueFromEvent = '';
     let eventCount = 0;
-    component.addEventListener('headervaluechanged', event => {
+    component.addEventListener('headeredited', event => {
       headerValueFromEvent = event.headerValue;
       eventCount++;
     });
@@ -237,14 +284,14 @@ describeWithEnvironment('HeaderSectionRow', () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
       name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
       value: 'someHeaderValue',
-      editable: true,
+      valueEditable: true,
     };
 
     const component = await renderHeaderSectionRow(headerData);
     assertShadowRoot(component.shadowRoot);
 
     let headerValueFromEvent = '';
-    component.addEventListener('headervaluechanged', event => {
+    component.addEventListener('headeredited', event => {
       headerValueFromEvent = event.headerValue;
     });
 

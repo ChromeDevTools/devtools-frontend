@@ -7019,8 +7019,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Type"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Add header"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Choose this option if the resource and the document are served from the same site."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "header value"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."

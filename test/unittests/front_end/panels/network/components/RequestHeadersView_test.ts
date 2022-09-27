@@ -190,6 +190,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     // Switch to viewing parsed view
     responseHeadersCategory.dispatchEvent(new NetworkComponents.RequestHeadersView.ToggleRawHeadersEvent());
+    await coordinator.done();
 
     assert.deepStrictEqual(
         getRowsTextFromCategory(responseHeadersCategory),
@@ -243,6 +244,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     renderElementIntoDOM(div);
     view.markAsRoot();
     view.show(div);
+    await coordinator.done();
 
     const component = view.element.querySelector('devtools-request-headers');
     assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
@@ -255,6 +257,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.deepStrictEqual(getRowsTextFromCategory(responseHeadersCategory), [['originalname:', 'originalValue']]);
 
     request.responseHeaders = [{name: 'updatedName', value: 'updatedValue'}];
+    await coordinator.done();
     assert.isTrue(spy.set.calledOnce);
     assert.deepStrictEqual(getRowsTextFromCategory(responseHeadersCategory), [['updatedname:', 'updatedValue']]);
 
@@ -277,6 +280,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     renderElementIntoDOM(div);
     view.markAsRoot();
     view.show(div);
+    await coordinator.done();
 
     const component = view.element.querySelector('devtools-request-headers');
     assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
@@ -290,6 +294,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     assert.deepStrictEqual(getRowHighlightStatus(responseHeadersCategory), [false, false, false]);
     view.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.Response, 'HiGhLiGhTmE');
+    await coordinator.done();
     assert.deepStrictEqual(getRowHighlightStatus(responseHeadersCategory), [false, false, true]);
 
     view.detach();
@@ -311,6 +316,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     renderElementIntoDOM(div);
     view.markAsRoot();
     view.show(div);
+    await coordinator.done();
 
     const component = view.element.querySelector('devtools-request-headers');
     assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
@@ -324,6 +330,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     assert.deepStrictEqual(getRowHighlightStatus(requestHeadersCategory), [false, false, false]);
     view.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.Request, 'HiGhLiGhTmE');
+    await coordinator.done();
     assert.deepStrictEqual(getRowHighlightStatus(requestHeadersCategory), [false, false, true]);
 
     view.detach();

@@ -149,3 +149,7 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
   box-shadow: 0 0 0 1px var(--color-details-hairline);
   border-radius: 2px;
 }
+
+.header-editable .header-name .editable {
+  color: var(--color-syntax-1);
+}

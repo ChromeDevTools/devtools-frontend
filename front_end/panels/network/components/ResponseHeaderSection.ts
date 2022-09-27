@@ -15,12 +15,13 @@ import {
   type HeaderDescriptor,
   HeaderSectionRow,
   type HeaderSectionRowData,
-  type HeaderValueChangedEvent,
+  type HeaderEditedEvent,
 } from './HeaderSectionRow.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
 import type * as Workspace from '../../../models/workspace/workspace.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Common from '../../../core/common/common.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 
 import responseHeaderSectionStyles from './ResponseHeaderSection.css.js';
 
@@ -28,10 +29,22 @@ const {render, html} = LitHtml;
 
 const UIStrings = {
   /**
+  *@description Label for a button which allows adding an HTTP header.
+  */
+  addHeader: 'Add header',
+  /**
   *@description Explanation text for which cross-origin policy to set.
   */
   chooseThisOptionIfTheResourceAnd:
       'Choose this option if the resource and the document are served from the same site.',
+  /**
+  *@description Default name of the HTTP header when adding a header override. Header names are lower case and cannot contain whitespace.
+  */
+  defaultHeaderName: 'header-name',
+  /**
+  *@description Default value of the HTTP header when adding a header override.
+  */
+  defaultHeaderValue: 'header value',
   /**
   *@description Explanation text for which cross-origin policy to set.
   */
@@ -65,7 +78,10 @@ const UIStrings = {
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/ResponseHeaderSection.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
+const plusIconUrl = new URL('../../../Images/plus_icon.svg', import.meta.url).toString();
 
 export interface ResponseHeaderSectionData {
   request: SDK.NetworkRequest.NetworkRequest;
@@ -79,6 +95,7 @@ export class ResponseHeaderSection extends HTMLElement {
   #headers: HeaderDescriptor[] = [];
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #overrides: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
+  #successfullyParsedOverrides = false;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [responseHeaderSectionStyles];
@@ -179,11 +196,13 @@ export class ResponseHeaderSection extends HTMLElement {
       if (!this.#overrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
         throw 'Type mismatch after parsing';
       }
+      this.#successfullyParsedOverrides = true;
       for (const header of this.#headers) {
-        header.editable = true;
+        header.valueEditable = true;
       }
       this.#render();
     } catch (error) {
+      this.#successfullyParsedOverrides = false;
       console.error(
           'Failed to parse', this.#uiSourceCode?.url() || 'source code file', 'for locally overriding headers.');
     }
@@ -252,19 +271,28 @@ export class ResponseHeaderSection extends HTMLElement {
     }
   }
 
-  #onHeaderValueChanged(event: HeaderValueChangedEvent): void {
+  #onHeaderEdited(event: HeaderEditedEvent): void {
     const target = event.target as HTMLElement;
-    if (!this.#request || target.dataset.index === undefined) {
+    if (target.dataset.index === undefined) {
+      return;
+    }
+    const index = Number(target.dataset.index);
+    this.#updateOverrides(event.headerName, event.headerValue, index);
+  }
+
+  #updateOverrides(headerName: Platform.StringUtilities.LowerCaseString, headerValue: string, index: number): void {
+    if (!this.#request) {
       return;
     }
 
-    const index = Number(target.dataset.index);
-    this.#headers[index].value = event.headerValue;
+    const previousName = this.#headers[index].name;
+    const previousValue = this.#headers[index].value;
+    this.#headers[index].name = headerName;
+    this.#headers[index].value = headerValue;
 
     // If multiple headers have the same name 'foo', we treat them as a unit.
     // If there are overrides for 'foo', all original 'foo' headers are removed
     // and replaced with the override(s) for 'foo'.
-    const headerName = this.#headers[index].name;
     const headersToUpdate = this.#headers.filter(
         header => header.name === headerName && (header.value !== header.originalValue || header.isOverride));
 
@@ -292,6 +320,17 @@ export class ResponseHeaderSection extends HTMLElement {
     // Keep header overrides for headers with a different name.
     block.headers = block.headers.filter(header => header.name !== headerName);
 
+    // If a header name has been edited (only possible when adding headers),
+    // remove the previous override entry.
+    if (this.#headers[index].name !== previousName) {
+      for (let i = 0; i < block.headers.length; ++i) {
+        if (block.headers[i].name === previousName && block.headers[i].value === previousValue) {
+          block.headers.splice(i, 1);
+          break;
+        }
+      }
+    }
+
     // Append freshly edited header overrides.
     for (const header of headersToUpdate) {
       block.headers.push({name: header.name, value: header.value || ''});
@@ -300,6 +339,19 @@ export class ResponseHeaderSection extends HTMLElement {
     this.#uiSourceCode?.setWorkingCopy(JSON.stringify(this.#overrides, null, 2));
     this.#uiSourceCode?.commitWorkingCopy();
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().updateInterceptionPatterns();
+  }
+
+  #onAddHeaderClick(): void {
+    this.#headers.push({
+      name: Platform.StringUtilities.toLowerCaseString(i18nString(UIStrings.defaultHeaderName)),
+      value: i18nString(UIStrings.defaultHeaderValue),
+      isOverride: true,
+      nameEditable: true,
+      valueEditable: true,
+    });
+    const index = this.#headers.length - 1;
+    this.#updateOverrides(this.#headers[index].name, this.#headers[index].value || '', index);
+    this.#render();
   }
 
   #render(): void {
@@ -313,8 +365,17 @@ export class ResponseHeaderSection extends HTMLElement {
       ${this.#headers.map((header, index) => html`
         <${HeaderSectionRow.litTagName} .data=${{
           header: header,
-        } as HeaderSectionRowData} @headervaluechanged=${this.#onHeaderValueChanged} data-index=${index}></${HeaderSectionRow.litTagName}>
+        } as HeaderSectionRowData} @headeredited=${this.#onHeaderEdited} data-index=${index}></${HeaderSectionRow.litTagName}>
       `)}
+      ${this.#successfullyParsedOverrides ? html`
+        <${Buttons.Button.Button.litTagName}
+          class="add-header-button"
+          .variant=${Buttons.Button.Variant.SECONDARY}
+          .iconUrl=${plusIconUrl}
+          @click=${this.#onAddHeaderClick}>
+          ${i18nString(UIStrings.addHeader)}
+        </${Buttons.Button.Button.litTagName}>
+      ` : LitHtml.nothing}
     `, this.#shadow, {host: this});
     // clang-format on
   }

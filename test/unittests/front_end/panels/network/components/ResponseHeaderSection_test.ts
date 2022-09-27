@@ -22,6 +22,11 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
+const enum HeaderAttribute {
+  HeaderName = 'HeaderName',
+  HeaderValue = 'HeaderValue',
+}
+
 async function renderResponseHeaderSection(request: SDK.NetworkRequest.NetworkRequest):
     Promise<NetworkComponents.ResponseHeaderSection.ResponseHeaderSection> {
   const component = new NetworkComponents.ResponseHeaderSection.ResponseHeaderSection();
@@ -35,13 +40,16 @@ async function renderResponseHeaderSection(request: SDK.NetworkRequest.NetworkRe
 }
 
 function editHeaderRow(
-    component: NetworkComponents.ResponseHeaderSection.ResponseHeaderSection, index: number, newValue: string) {
+    component: NetworkComponents.ResponseHeaderSection.ResponseHeaderSection, index: number,
+    headerAttribute: HeaderAttribute, newValue: string) {
   assertShadowRoot(component.shadowRoot);
   const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
   assert.isTrue(rows.length >= index + 1, 'Trying to edit row with index greater than # of rows.');
   const row = rows[index];
   assertShadowRoot(row.shadowRoot);
-  const editable = row.shadowRoot.querySelector('.editable');
+  const selector =
+      headerAttribute === HeaderAttribute.HeaderName ? '.header-name .editable' : '.header-value .editable';
+  const editable = row.shadowRoot.querySelector(selector);
   assertElement(editable, HTMLSpanElement);
   editable.textContent = newValue;
   dispatchFocusOutEvent(editable, {bubbles: true});
@@ -348,7 +356,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
-    editHeaderRow(component, 1, 'max-age=9999');
+    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'max-age=9999');
 
     const expected = [{
       applyTo: 'index.html',
@@ -388,7 +396,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
-    editHeaderRow(component, 0, 'edited value');
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'edited value');
 
     const expected = [{
       applyTo: 'index.html',
@@ -400,6 +408,74 @@ describeWithEnvironment('ResponseHeaderSection', () => {
       ],
     }];
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+  });
+
+  it('can add headers', async () => {
+    const headerOverridesFileContent = `[
+      {
+        "applyTo": "index.html",
+        "headers": [{
+          "name": "server",
+          "value": "overridden server"
+        }]
+      }
+    ]`;
+    const actualHeaders = [{name: 'server', value: 'overridden server'}];
+    const originalHeaders = [{name: 'server', value: 'original server'}];
+
+    const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
+    assertShadowRoot(component.shadowRoot);
+    const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
+    assertElement(addHeaderButton, HTMLElement);
+    addHeaderButton.click();
+    await coordinator.done();
+
+    let expected = [{
+      applyTo: 'index.html',
+      headers: [
+        {
+          name: 'server',
+          value: 'overridden server',
+        },
+        {
+          name: 'header-name',
+          value: 'header value',
+        },
+      ],
+    }];
+    assert.isTrue(spy.getCall(-1).calledWith(JSON.stringify(expected, null, 2)));
+
+    editHeaderRow(component, 1, HeaderAttribute.HeaderName, 'foo');
+    expected = [{
+      applyTo: 'index.html',
+      headers: [
+        {
+          name: 'server',
+          value: 'overridden server',
+        },
+        {
+          name: 'foo',
+          value: 'header value',
+        },
+      ],
+    }];
+    assert.isTrue(spy.getCall(-1).calledWith(JSON.stringify(expected, null, 2)));
+
+    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'bar');
+    expected = [{
+      applyTo: 'index.html',
+      headers: [
+        {
+          name: 'server',
+          value: 'overridden server',
+        },
+        {
+          name: 'foo',
+          value: 'bar',
+        },
+      ],
+    }];
+    assert.isTrue(spy.getCall(-1).calledWith(JSON.stringify(expected, null, 2)));
   });
 
   it('can edit multiple headers', async () => {
@@ -424,8 +500,8 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
-    editHeaderRow(component, 0, 'edited server');
-    editHeaderRow(component, 1, 'edited cache-control');
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'edited server');
+    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'edited cache-control');
 
     const expected = [{
       applyTo: 'index.html',
@@ -457,7 +533,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
-    editHeaderRow(component, 0, 'third value');
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'third value');
 
     let expected = [{
       applyTo: 'index.html',
@@ -470,7 +546,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     }];
     assert.isTrue(spy.lastCall.calledWith(JSON.stringify(expected, null, 2)));
 
-    editHeaderRow(component, 1, 'fourth value');
+    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'fourth value');
     expected = [{
       applyTo: 'index.html',
       headers: [
@@ -515,7 +591,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
-    editHeaderRow(component, 1, 'fifth value');
+    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'fifth value');
 
     let expected = [{
       applyTo: 'index.html',
@@ -532,7 +608,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     }];
     assert.isTrue(spy.lastCall.calledWith(JSON.stringify(expected, null, 2)));
 
-    editHeaderRow(component, 0, 'sixth value');
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'sixth value');
     expected = [{
       applyTo: 'index.html',
       headers: [

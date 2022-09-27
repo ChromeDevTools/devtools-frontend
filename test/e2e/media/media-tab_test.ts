@@ -15,7 +15,8 @@ import {
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Media Tab', () => {
-  it('ensures video playback adds entry', async () => {
+  // Flaky on windows
+  it.skipOnPlatforms(['win32'], '[crbug.com/1368558] ensures video playback adds entry', async () => {
     await openPanelViaMoreTools('Media');
     await playMediaFile('fisch.webm');
     const entryName = await getPlayerButtonText();

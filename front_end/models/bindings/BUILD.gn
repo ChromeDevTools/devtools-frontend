@@ -57,7 +57,6 @@ devtools_entrypoint("bundle") {
     "../../panels/application/*",
     "../../panels/console/*",
     "../../panels/coverage/*",
-    "../../panels/input/*",
     "../../panels/network/*",
     "../../panels/profiler/*",
     "../../panels/sources/*",

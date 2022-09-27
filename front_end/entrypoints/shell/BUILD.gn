@@ -21,7 +21,6 @@ devtools_entrypoint("shell") {
     "../../panels/console:meta",
     "../../panels/console_counters:meta",
     "../../panels/coverage:meta",
-    "../../panels/input:meta",
     "../../panels/profiler:meta",
     "../../panels/protocol_monitor:meta",
     "../../panels/settings:meta",

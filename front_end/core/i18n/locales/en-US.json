@@ -5549,36 +5549,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Toggle whether event listener is passive or blocking"
   },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Inputs"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Pause"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Resume"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Show Inputs"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Start recording"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Start replaying"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Stop recording"
-  },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Clear all"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Load profile…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Save profile…"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blocked Resource"
   },

@@ -5549,36 +5549,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "T̂óĝǵl̂é ŵh́êt́ĥér̂ év̂én̂t́ l̂íŝt́êńêŕ îś p̂áŝśîv́ê ór̂ b́l̂óĉḱîńĝ"
   },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Îńp̂út̂ś"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "P̂áûśê"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "R̂éŝúm̂é"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Ŝh́ôẃ Îńp̂út̂ś"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Ŝt́âŕt̂ ŕêćôŕd̂ín̂ǵ"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Ŝt́âŕt̂ ŕêṕl̂áŷín̂ǵ"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Ŝt́ôṕ r̂éĉór̂d́îńĝ"
-  },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Ĉĺêár̂ ál̂ĺ"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "L̂óâd́ p̂ŕôf́îĺê…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Ŝáv̂é p̂ŕôf́îĺê…"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "B̂ĺôćk̂éd̂ Ŕêśôúr̂ćê"
   },

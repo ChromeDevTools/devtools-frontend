@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
+import {waitForFunction} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
 import {createNewSnippet, getOpenSources, openSnippetsSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 
@@ -15,13 +16,21 @@ describe('Snippets subpane', () => {
     await createNewSnippet(name);
 
     // Title matches
-    assert.deepEqual(await getOpenSources(), [name]);
+    const openSources = await waitForFunction(async () => {
+      const openSources = await getOpenSources();
+      return openSources.length > 0 ? openSources : undefined;
+    });
+    assert.deepEqual(openSources, [name]);
 
     await openCommandMenu();
     await showSnippetsAutocompletion();
 
     // Available in autocompletion
-    assert.deepEqual(await getAvailableSnippets(), [
+    const availableSnippets = await waitForFunction(async () => {
+      const availableSnippets = await getAvailableSnippets();
+      return availableSnippets.length > 0 ? availableSnippets : undefined;
+    });
+    assert.deepEqual(availableSnippets, [
       name + '\u200B',
     ]);
   }
@@ -30,8 +39,7 @@ describe('Snippets subpane', () => {
     await runTest('MySnippet');
   });
 
-  // TODO(crbug.com/1356139): Disabled due to flakiness.
-  it.skip('[crbug.com/1356139]: can create snippet with name like default name', async () => {
+  it('can create snippet with name like default name', async () => {
     await runTest('My Snippet #555');
   });
 

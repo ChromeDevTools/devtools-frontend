@@ -32,6 +32,7 @@ const ALLOWED_ASSERTION_FAILURES = [
   // See: https://crbug.com/1192052
   'Request Runtime.evaluate failed. {"code":-32602,"message":"uniqueContextId not found"}',
   'uniqueContextId not found',
+  'Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}',
 ];
 
 const logLevels = {

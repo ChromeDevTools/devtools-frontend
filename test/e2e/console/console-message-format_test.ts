@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {expectError} from '../../conductor/events.js';
 import {getTestServerPort} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -244,9 +243,6 @@ describe('The Console Tab', async () => {
 
   describe('shows messages from before', async () => {
     it('iframe removal', async () => {
-      const expectedError = expectError(
-          'Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}');
-
       const messages =
           await getConsoleMessages('navigation/after-removal', false, () => waitForConsoleMessagesToBeNonEmpty(3));
 
@@ -255,12 +251,9 @@ describe('The Console Tab', async () => {
         '2011 \'A message with first argument integer\'',
         'Window\xA0{window: Window, self: Window, document: document, name: \'\', location: Location,\xA0…} \'A message with first argument window\'',
       ]);
-      expectedError.drop();
     });
 
     it('and after iframe navigation', async () => {
-      const expectedError = expectError(
-          'Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}');
       const messages =
           await getConsoleMessages('navigation/after-navigation', false, () => waitForConsoleMessagesToBeNonEmpty(4));
 
@@ -270,7 +263,6 @@ describe('The Console Tab', async () => {
         'Window\xA0{window: Window, self: Window, document: document, name: \'\', location: Location,\xA0…} \'A message with first argument window\'',
         'After iframe navigation.',
       ]);
-      expectedError.drop();
     });
   });
 });

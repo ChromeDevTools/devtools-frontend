@@ -1056,6 +1056,7 @@ export namespace Audits {
     ObsoleteWebRtcCipherSuite = 'ObsoleteWebRtcCipherSuite',
     OpenWebDatabaseInsecureContext = 'OpenWebDatabaseInsecureContext',
     OverflowVisibleOnReplacedElement = 'OverflowVisibleOnReplacedElement',
+    PaymentInstruments = 'PaymentInstruments',
     PersistentQuotaType = 'PersistentQuotaType',
     PictureSourceSrc = 'PictureSourceSrc',
     PrefixedCancelAnimationFrame = 'PrefixedCancelAnimationFrame',

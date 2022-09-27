@@ -5965,8 +5965,8 @@ export const NativeFunctions = [
     signatures: [['?options']]
   },
   {
-    name: 'requestStorageAccessForSite',
-    signatures: [['site']]
+    name: 'requestStorageAccessForOrigin',
+    signatures: [['origin']]
   },
   {
     name: 'hasTrustToken',
@@ -7227,6 +7227,10 @@ export const NativeFunctions = [
   {
     name: 'gemm',
     signatures: [['a','b','?options']]
+  },
+  {
+    name: 'hardSwish',
+    signatures: [['?x']]
   },
   {
     name: 'averagePool2d',

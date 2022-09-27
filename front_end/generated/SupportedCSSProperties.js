@@ -2236,9 +2236,6 @@ export const generatedProperties = [
   "name": "max-width"
  },
  {
-  "name": "max-zoom"
- },
- {
   "name": "min-block-size"
  },
  {
@@ -2249,9 +2246,6 @@ export const generatedProperties = [
  },
  {
   "name": "min-width"
- },
- {
-  "name": "min-zoom"
  },
  {
   "keywords": [
@@ -2340,9 +2334,6 @@ export const generatedProperties = [
  },
  {
   "name": "order"
- },
- {
-  "name": "orientation"
  },
  {
   "keywords": [
@@ -3361,9 +3352,6 @@ export const generatedProperties = [
   "name": "user-select"
  },
  {
-  "name": "user-zoom"
- },
- {
   "keywords": [
    "none",
    "non-scaling-stroke"
@@ -3396,9 +3384,6 @@ export const generatedProperties = [
  },
  {
   "name": "view-timeline-name"
- },
- {
-  "name": "viewport-fit"
  },
  {
   "inherited": true,

@@ -1343,7 +1343,6 @@
     {
       name: "zoom",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      is_descriptor: true,
       field_group: "visual",
       field_template: "primitive",
       default_value: "1.0",
@@ -2797,7 +2796,6 @@
     {
       name: "height",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      is_descriptor: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "box",
@@ -3177,7 +3175,6 @@
     {
       name: "max-height",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      is_descriptor: true,
       interpolable: true,
       field_group: "box",
       field_template: "<length>",
@@ -3195,7 +3192,6 @@
     {
       name: "max-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      is_descriptor: true,
       interpolable: true,
       field_group: "box",
       field_template: "<length>",
@@ -3213,7 +3209,6 @@
     {
       name: "min-height",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      is_descriptor: true,
       interpolable: true,
       field_group: "box",
       field_template: "<length>",
@@ -3230,7 +3225,6 @@
     {
       name: "min-width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      is_descriptor: true,
       interpolable: true,
       field_group: "box",
       field_template: "<length>",
@@ -5644,7 +5638,6 @@
     {
       name: "width",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      is_descriptor: true,
       interpolable: true,
       layout_dependent: true,
       field_group: "box",
@@ -6184,21 +6177,6 @@
       is_property: false,
     },
     {
-      name: "max-zoom",
-      is_descriptor: true,
-      is_property: false,
-    },
-    {
-      name: "min-zoom",
-      is_descriptor: true,
-      is_property: false,
-    },
-    {
-      name: "orientation",
-      is_descriptor: true,
-      is_property: false,
-    },
-    {
       name: "src",
       is_descriptor: true,
       is_property: false,
@@ -6207,17 +6185,6 @@
       name: "unicode-range",
       is_descriptor: true,
       is_property: false,
-    },
-    {
-      name: "user-zoom",
-      is_descriptor: true,
-      is_property: false,
-    },
-    {
-      name: "viewport-fit",
-      is_descriptor: true,
-      is_property: false,
-      runtime_flag: "DisplayCutoutAPI",
     },
     {
       name: "syntax",

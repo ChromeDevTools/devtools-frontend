@@ -235,7 +235,11 @@ function wrapMochaCall(
     hookTestTimeout(test);
 
     if (callback.length === 0) {
-      (callback as Mocha.AsyncFunc).bind(this)().then(done, done);
+      async function onError() {
+        await takeScreenshots(name);
+        done.apply(arguments);
+      }
+      (callback as Mocha.AsyncFunc).bind(this)().then(done, onError);
     } else {
       (callback as Mocha.Func).bind(this)(done);
     }

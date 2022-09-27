@@ -180,6 +180,10 @@ const UIStrings = {
   openWebDatabaseInsecureContext:
       'WebSQL in non-secure contexts is deprecated and will be removed soon. Please use Web Storage or Indexed Database.',
   /**
+   * @description Warning displayed to developers when they use the PaymentInstruments API to let them know this API is deprecated.
+   */
+  paymentInstruments: '`paymentManager.instruments` is deprecated. Please use just-in-time install for payment handlers instead.',
+  /**
    * @description Warning displayed to developers when persistent storage type is used to notify that storage type is deprecated.
    */
   persistentQuotaType:
@@ -454,6 +458,10 @@ export class DeprecationIssue extends Issue {
         messageFunction = i18nLazyString(UIStrings.openWebDatabaseInsecureContext);
         feature = 5175124599767040;
         milestone = 105;
+        break;
+      case Protocol.Audits.DeprecationIssueType.PaymentInstruments:
+        messageFunction = i18nLazyString(UIStrings.paymentInstruments);
+        feature = 5099285054488576;
         break;
       case Protocol.Audits.DeprecationIssueType.PersistentQuotaType:
         messageFunction = i18nLazyString(UIStrings.persistentQuotaType);

@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Ŵéb̂ŚQ̂Ĺ îń n̂ón̂-śêćûŕê ćôńt̂éx̂t́ŝ íŝ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ śôón̂. Ṕl̂éâśê úŝé Ŵéb̂ Śt̂ór̂áĝé ôŕ Îńd̂éx̂éd̂ D́ât́âb́âśê."
   },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê j́ûśt̂-ín̂-t́îḿê ín̂śt̂ál̂ĺ f̂ór̂ ṕâým̂én̂t́ ĥán̂d́l̂ér̂ś îńŝt́êád̂."
+  },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê śt̂án̂d́âŕd̂íẑéd̂ navigator.storage ín̂śt̂éâd́."
   },

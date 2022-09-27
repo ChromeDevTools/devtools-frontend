@@ -44,6 +44,7 @@ group("docs") {
     "./theme_colors",
     "./tree_outline",
     "./trust_tokens_view",
+    "./two_states_counter",
     "./user_agent_client_hints",
     "./webvitals",
   ]

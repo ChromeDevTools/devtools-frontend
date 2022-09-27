@@ -62,6 +62,7 @@ group("front_end") {
     "ui/components/render_coordinator",
     "ui/components/request_link_icon",
     "ui/components/settings",
+    "ui/components/two_states_counter",
     "ui/legacy",
     "ui/legacy/components/inline_editor",
     "ui/legacy/components/object_ui",

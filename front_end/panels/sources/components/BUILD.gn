@@ -26,6 +26,7 @@ devtools_module("components") {
     "../../../models/workspace:bundle",
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/helpers:bundle",
+    "../../../ui/components/two_states_counter:bundle",
     "../../../ui/legacy/components/utils:bundle",
     "../../../ui/lit-html:bundle",
   ]

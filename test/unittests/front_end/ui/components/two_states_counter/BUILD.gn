@@ -1,0 +1,16 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../third_party/typescript/typescript.gni")
+
+ts_library("two_states_counter") {
+  testonly = true
+  sources = [ "TwoStatesCounter_test.ts" ]
+
+  deps = [
+    "../../../../../../front_end/core/common:bundle",
+    "../../../../../../front_end/ui/components/two_states_counter:bundle",
+    "../../../helpers",
+  ]
+}

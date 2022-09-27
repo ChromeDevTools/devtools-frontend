@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 
-import {createFakeSetting, describeWithEnvironment, enableFeatureForTest} from '../../helpers/EnvironmentHelpers.js';
+import {createFakeSetting, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {mkInspectorCspIssue, StubIssue, ThirdPartyStubIssue} from './StubIssue.js';
 import {MockIssuesModel} from './MockIssuesModel.js';
 
@@ -97,10 +97,6 @@ describeWithEnvironment('IssuesManager', () => {
 });
 
 describeWithEnvironment('IssuesManager', () => {
-  beforeEach(() => {
-    enableFeatureForTest('hideIssuesFeature');
-  });
-
   it('hides issues added after setting has been initialised', () => {
     const issues = [
       new StubIssue('HiddenStubIssue1', [], []),
@@ -180,7 +176,6 @@ describeWithEnvironment('IssuesManager', () => {
   });
 
   it('unhides issues present in IssuesManager when setting is updated', () => {
-    enableFeatureForTest('hideIssuesFeature');
     const issues = [
       new StubIssue('HiddenStubIssue1', [], []),
       new StubIssue('HiddenStubIssue2', [], []),
@@ -232,7 +227,6 @@ describeWithEnvironment('IssuesManager', () => {
   });
 
   it('unhides all issues correctly', () => {
-    enableFeatureForTest('hideIssuesFeature');
     const issues = [
       new StubIssue('HiddenStubIssue1', [], []),
       new StubIssue('HiddenStubIssue2', [], []),

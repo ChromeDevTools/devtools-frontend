@@ -12,7 +12,7 @@ import {StubIssue} from '../../models/issues_manager/StubIssue.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {createFakeSetting, describeWithEnvironment, enableFeatureForTest} from '../../helpers/EnvironmentHelpers.js';
+import {createFakeSetting, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('AggregatedIssue', async () => {
   const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
@@ -232,7 +232,6 @@ describeWithEnvironment('IssueAggregator', () => {
   let aggregator: Issues.IssueAggregator.IssueAggregator;
 
   beforeEach(() => {
-    enableFeatureForTest('hideIssuesFeature');
     hideIssueByCodeSetting =
         createFakeSetting('hide by code', ({} as IssuesManager.IssuesManager.HideIssueMenuSetting));
     showThirdPartyIssuesSetting = createFakeSetting('third party flag', false);

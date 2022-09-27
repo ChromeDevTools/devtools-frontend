@@ -354,11 +354,6 @@ export class MainImpl {
     Root.Runtime.experiments.register('experimentalCookieFeatures', 'Enable experimental cookie features');
 
     // Hide Issues Feature.
-    Root.Runtime.experiments.register(
-        'hideIssuesFeature', 'Enable experimental hide issues menu', undefined,
-        'https://developer.chrome.com/blog/new-in-devtools-94/#hide-issues');
-
-    // Hide Issues Feature.
     Root.Runtime.experiments.register('groupAndHideIssuesByKind', 'Allow grouping and hiding of issues by IssueKind');
 
     // Debugging of Reporting API
@@ -413,7 +408,6 @@ export class MainImpl {
 
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
-      'hideIssuesFeature',
       'cssTypeComponentLength',
       Root.Runtime.ExperimentName.PRECISE_CHANGES,
       'reportingApiDebugging',

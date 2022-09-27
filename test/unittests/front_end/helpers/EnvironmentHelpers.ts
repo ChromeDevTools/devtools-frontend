@@ -43,7 +43,6 @@ function createSettingValue(
 const REGISTERED_EXPERIMENTS = [
   'bfcacheDisplayTree',
   'captureNodeCreationStacks',
-  'hideIssuesFeature',
   'keyboardShortcutEditor',
   'preciseChanges',
   'protocolMonitor',

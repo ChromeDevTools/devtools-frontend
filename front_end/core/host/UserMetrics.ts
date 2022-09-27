@@ -624,7 +624,6 @@ export enum DevtoolsExperiments {
   'ignoreListJSFramesOnTimeline' = 43,
   'contrastIssues' = 44,
   'experimentalCookieFeatures' = 45,
-  'hideIssuesFeature' = 48,
   'reportingApiDebugging' = 49,
   'groupAndHideIssuesByKind' = 51,
   'cssTypeComponentLength' = 52,

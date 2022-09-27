@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -187,9 +186,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     // issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
     // a full update when the setting changes to get an up-to-date issues list.
     this.showThirdPartyIssuesSetting?.addChangeListener(() => this.#updateFilteredIssues());
-    if (Root.Runtime.experiments.isEnabled('hideIssuesFeature')) {
-      this.hideIssueSetting?.addChangeListener(() => this.#updateFilteredIssues());
-    }
+    this.hideIssueSetting?.addChangeListener(() => this.#updateFilteredIssues());
   }
 
   static instance(opts: IssuesManagerCreationOptions = {
@@ -287,10 +284,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
         this.#issuesById.set(issueId, issue);
       }
       const values = this.hideIssueSetting?.get();
-      const hideIssuesFeature = Root.Runtime.experiments.isEnabled('hideIssuesFeature');
-      if (hideIssuesFeature) {
-        this.#updateIssueHiddenStatus(issue, values);
-      }
+      this.#updateIssueHiddenStatus(issue, values);
       if (issue.isHidden()) {
         this.#hiddenIssueCount.set(issue.getKind(), 1 + (this.#hiddenIssueCount.get(issue.getKind()) || 0));
       }
@@ -355,12 +349,9 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#issuesById.clear();
     this.#hiddenIssueCount.clear();
     const values = this.hideIssueSetting?.get();
-    const hideIssuesFeature = Root.Runtime.experiments.isEnabled('hideIssuesFeature');
     for (const [key, issue] of this.#allIssues) {
       if (this.#issueFilter(issue)) {
-        if (hideIssuesFeature) {
-          this.#updateIssueHiddenStatus(issue, values);
-        }
+        this.#updateIssueHiddenStatus(issue, values);
         this.#filteredIssues.set(key, issue);
         this.#issueCounts.set(issue.getKind(), 1 + (this.#issueCounts.get(issue.getKind()) ?? 0));
         if (issue.isHidden()) {

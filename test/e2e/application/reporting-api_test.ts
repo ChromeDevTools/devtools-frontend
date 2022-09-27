@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import {
   $,
   click,
-  enableExperiment,
   getBrowserAndPages,
   getTestServerPort,
   goToResource,
@@ -20,9 +19,6 @@ import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../help
 const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 
 describe('The Reporting API Page', async () => {
-  beforeEach(async () => {
-    await enableExperiment('reportingApiDebugging');
-  });
   it('shows reports', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'reporting-api');

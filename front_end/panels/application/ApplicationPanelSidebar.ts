@@ -353,10 +353,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
             new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PushMessaging);
         backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
       }
-      if (Root.Runtime.experiments.isEnabled('reportingApiDebugging')) {
-        this.reportingApiTreeElement = new ReportingApiTreeElement(panel);
-        backgroundServiceTreeElement.appendChild(this.reportingApiTreeElement);
-      }
+      this.reportingApiTreeElement = new ReportingApiTreeElement(panel);
+      backgroundServiceTreeElement.appendChild(this.reportingApiTreeElement);
     }
     const resourcesSectionTitle = i18nString(UIStrings.frames);
     const resourcesTreeElement = this.addSidebarSection(resourcesSectionTitle);

@@ -356,9 +356,6 @@ export class MainImpl {
     // Hide Issues Feature.
     Root.Runtime.experiments.register('groupAndHideIssuesByKind', 'Allow grouping and hiding of issues by IssueKind');
 
-    // Debugging of Reporting API
-    Root.Runtime.experiments.register('reportingApiDebugging', 'Enable Reporting API panel in the Application panel');
-
     // CSS <length> authoring tool.
     Root.Runtime.experiments.register(
         'cssTypeComponentLength', 'Enable CSS <length> authoring tool in the Styles pane', undefined,
@@ -410,7 +407,6 @@ export class MainImpl {
       'sourceOrderViewer',
       'cssTypeComponentLength',
       Root.Runtime.ExperimentName.PRECISE_CHANGES,
-      'reportingApiDebugging',
       Root.Runtime.ExperimentName.CSS_LAYERS,
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
       'lighthousePanelFR',

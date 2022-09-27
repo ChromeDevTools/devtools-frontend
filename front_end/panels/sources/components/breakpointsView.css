@@ -26,6 +26,12 @@
   overflow: hidden;
   white-space: nowrap;
   flex-shrink: 100;
+  cursor: pointer;
+}
+
+.code-snippet:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
 }
 
 input {

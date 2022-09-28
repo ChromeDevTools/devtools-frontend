@@ -6449,10 +6449,6 @@ export const NativeFunctions = [
     signatures: [['type','eventInit']]
   },
   {
-    name: 'transitionWhile',
-    signatures: [['newNavigationAction','?options']]
-  },
-  {
     name: 'intercept',
     signatures: [['?options']]
   },
@@ -6790,6 +6786,10 @@ export const NativeFunctions = [
   {
     name: 'BroadcastChannel',
     signatures: [['name']]
+  },
+  {
+    name: 'browsingTopics',
+    signatures: [['?options']]
   },
   {
     name: 'setExpires',
@@ -7658,7 +7658,7 @@ export const NativeFunctions = [
   },
   {
     name: 'URLPattern',
-    signatures: [['input','options'],['?input','?baseURL','?options']]
+    signatures: [['?input','?options'],['input','baseURL','?options']]
   },
   {
     name: 'compareComponent',

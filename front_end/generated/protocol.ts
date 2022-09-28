@@ -1048,8 +1048,6 @@ export namespace Audits {
     LocalCSSFileExtensionRejected = 'LocalCSSFileExtensionRejected',
     MediaSourceAbortRemove = 'MediaSourceAbortRemove',
     MediaSourceDurationTruncatingBuffered = 'MediaSourceDurationTruncatingBuffered',
-    NavigateEventRestoreScroll = 'NavigateEventRestoreScroll',
-    NavigateEventTransitionWhile = 'NavigateEventTransitionWhile',
     NoSysexWebMIDIWithoutPermission = 'NoSysexWebMIDIWithoutPermission',
     NotificationInsecureOrigin = 'NotificationInsecureOrigin',
     NotificationPermissionRequestedIframe = 'NotificationPermissionRequestedIframe',
@@ -1057,6 +1055,7 @@ export namespace Audits {
     OpenWebDatabaseInsecureContext = 'OpenWebDatabaseInsecureContext',
     OverflowVisibleOnReplacedElement = 'OverflowVisibleOnReplacedElement',
     PaymentInstruments = 'PaymentInstruments',
+    PaymentRequestCSPViolation = 'PaymentRequestCSPViolation',
     PersistentQuotaType = 'PersistentQuotaType',
     PictureSourceSrc = 'PictureSourceSrc',
     PrefixedCancelAnimationFrame = 'PrefixedCancelAnimationFrame',
@@ -7602,6 +7601,20 @@ export namespace Network {
   }
 
   /**
+   * The reason why Chrome uses a specific transport protocol for HTTP semantics.
+   */
+  export const enum AlternateProtocolUsage {
+    AlternativeJobWonWithoutRace = 'alternativeJobWonWithoutRace',
+    AlternativeJobWonRace = 'alternativeJobWonRace',
+    MainJobWonRace = 'mainJobWonRace',
+    MappingMissing = 'mappingMissing',
+    Broken = 'broken',
+    DnsAlpnH3JobWonWithoutRace = 'dnsAlpnH3JobWonWithoutRace',
+    DnsAlpnH3JobWonRace = 'dnsAlpnH3JobWonRace',
+    UnspecifiedReason = 'unspecifiedReason',
+  }
+
+  /**
    * HTTP response data.
    */
   export interface Response {
@@ -7689,6 +7702,10 @@ export namespace Network {
      * Protocol used to fetch this request.
      */
     protocol?: string;
+    /**
+     * The reason why Chrome uses a specific transport protocol for HTTP semantics.
+     */
+    alternateProtocolUsage?: AlternateProtocolUsage;
     /**
      * Security state of the request resource.
      */
@@ -13444,6 +13461,11 @@ export namespace Target {
      */
     openerFrameId?: Page.FrameId;
     browserContextId?: Browser.BrowserContextID;
+    /**
+     * Provides additional details for specific target types. For example, for
+     * the type of "page", this may be set to "portal" or "prerender".
+     */
+    subtype?: string;
   }
 
   /**

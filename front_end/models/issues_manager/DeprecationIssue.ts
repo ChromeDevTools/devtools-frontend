@@ -429,15 +429,6 @@ export class DeprecationIssue extends Issue {
         messageFunction = i18nLazyString(UIStrings.mediaSourceDurationTruncatingBuffered);
         feature = 6107495151960064;
         break;
-      case Protocol.Audits.DeprecationIssueType.NavigateEventRestoreScroll:
-        messageFunction = i18nLazyString(
-            UIStrings.deprecatedWithReplacement, {PH1: 'navigateEvent.restoreScroll()', PH2: 'navigateEvent.scroll()'});
-        break;
-      case Protocol.Audits.DeprecationIssueType.NavigateEventTransitionWhile:
-        messageFunction = i18nLazyString(
-            UIStrings.deprecatedWithReplacement,
-            {PH1: 'navigateEvent.transitionWhile()', PH2: 'navigateEvent.intercept()'});
-        break;
       case Protocol.Audits.DeprecationIssueType.NoSysexWebMIDIWithoutPermission:
         messageFunction = i18nLazyString(UIStrings.noSysexWebMIDIWithoutPermission);
         feature = 5138066234671104;

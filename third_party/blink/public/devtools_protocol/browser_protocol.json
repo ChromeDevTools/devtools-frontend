@@ -1580,8 +1580,6 @@
                         "LocalCSSFileExtensionRejected",
                         "MediaSourceAbortRemove",
                         "MediaSourceDurationTruncatingBuffered",
-                        "NavigateEventRestoreScroll",
-                        "NavigateEventTransitionWhile",
                         "NoSysexWebMIDIWithoutPermission",
                         "NotificationInsecureOrigin",
                         "NotificationPermissionRequestedIframe",
@@ -1589,6 +1587,7 @@
                         "OpenWebDatabaseInsecureContext",
                         "OverflowVisibleOnReplacedElement",
                         "PaymentInstruments",
+                        "PaymentRequestCSPViolation",
                         "PersistentQuotaType",
                         "PictureSourceSrc",
                         "PrefixedCancelAnimationFrame",
@@ -11352,6 +11351,22 @@
                     ]
                 },
                 {
+                    "id": "AlternateProtocolUsage",
+                    "description": "The reason why Chrome uses a specific transport protocol for HTTP semantics.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "alternativeJobWonWithoutRace",
+                        "alternativeJobWonRace",
+                        "mainJobWonRace",
+                        "mappingMissing",
+                        "broken",
+                        "dnsAlpnH3JobWonWithoutRace",
+                        "dnsAlpnH3JobWonRace",
+                        "unspecifiedReason"
+                    ]
+                },
+                {
                     "id": "Response",
                     "description": "HTTP response data.",
                     "type": "object",
@@ -11475,6 +11490,13 @@
                             "description": "Protocol used to fetch this request.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "alternateProtocolUsage",
+                            "description": "The reason why Chrome uses a specific transport protocol for HTTP semantics.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "AlternateProtocolUsage"
                         },
                         {
                             "name": "securityState",
@@ -19905,6 +19927,13 @@
                             "experimental": true,
                             "optional": true,
                             "$ref": "Browser.BrowserContextID"
+                        },
+                        {
+                            "name": "subtype",
+                            "description": "Provides additional details for specific target types. For example, for\nthe type of \"page\", this may be set to \"portal\" or \"prerender\".",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },

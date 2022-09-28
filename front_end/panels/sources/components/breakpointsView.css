@@ -62,7 +62,7 @@ details > summary::before {
   background-color: var(--color-text-secondary);
   content: "";
   height: 12px;
-  width: 9px;
+  min-width: 9px;
   overflow: hidden;
 }
 
@@ -74,6 +74,8 @@ details[open] > summary::before {
   display: inline-flex;
   align-items: center;
   width: 100%;
+  padding-right: 8px;
+  overflow: hidden;
 }
 
 .group-header-title {
@@ -86,7 +88,11 @@ details[open] > summary::before {
 }
 
 .group-hover-actions {
-  width: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  font-size: 10px;
+  font-weight: 500;
 }
 
 .breakpoint-item-location-or-actions {
@@ -94,6 +100,7 @@ details[open] > summary::before {
   flex: 0 0 auto;
   display: flex;
   padding-left: 8px;
+  justify-content: right;
 }
 
 .remove-breakpoint-button {

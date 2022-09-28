@@ -15,6 +15,7 @@ import {
 } from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
+import * as TwoStatesCounter from '../../../../../../front_end/ui/components/two_states_counter/two_states_counter.js';
 
 const EXPANDED_GROUPS_SELECTOR = 'details[open]';
 const COLLAPSED_GROUPS_SELECTOR = 'details:not([open])';
@@ -358,6 +359,15 @@ describeWithEnvironment('BreakpointsView', () => {
     removeFileBreakpointsButton.click();
     const event = await eventPromise;
     assert.strictEqual(event.data.breakpointItems[0], data.groups[0].breakpointItems[0]);
+  });
+
+  it('renders a counter of enabled/disabled breakpoints', async () => {
+    const {component, data} = await renderMultipleBreakpoints();
+    assertShadowRoot(component.shadowRoot);
+
+    const counters = component.shadowRoot.querySelectorAll('devtools-two-states-counter');
+    assertElements(counters, TwoStatesCounter.TwoStatesCounter.TwoStatesCounter);
+    assert.lengthOf(counters, data.groups.length);
   });
 
   describe('conditional breakpoints', () => {

@@ -6,7 +6,16 @@ import {assert} from 'chai';
 
 import {getBrowserAndPages, waitFor, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {clickOnContextMenu, openSourceCodeEditorForFile, openSourcesPanel, toggleDebuggerSidebar, toggleNavigatorSidebar} from '../helpers/sources-helpers.js';
+import {
+  clickOnContextMenu,
+  getScrollPositionInEditor,
+  openFileInEditor,
+  openSourceCodeEditorForFile,
+  openSourcesPanel,
+  scrollByInEditor,
+  toggleDebuggerSidebar,
+  toggleNavigatorSidebar,
+} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   describe('Navigation', () => {
@@ -19,6 +28,23 @@ describe('The Sources Tab', async () => {
 
       assert.strictEqual(value, 'file:test/e2e/resources/sources/navigation');
     });
+  });
+
+  describe('Tabbed editor navigation', async () => {
+    it('After performing scrolls in an editor and navigating between different editor tabs should restore the correct scroll position',
+       async () => {
+         await openSourceCodeEditorForFile('tabbed-editor-scroll-position-1.js', 'tabbed-editor-scroll-position.html');
+
+         await scrollByInEditor({x: 15, y: 15});
+         await scrollByInEditor({x: 15, y: 15});
+         await openFileInEditor('tabbed-editor-scroll-position-2.js');
+         await openFileInEditor('tabbed-editor-scroll-position-1.js');
+
+         assert.deepEqual(
+             await getScrollPositionInEditor(),
+             {scrollLeft: 30, scrollTop: 30},
+         );
+       });
   });
 
   describe('Sidebar shortcuts', () => {

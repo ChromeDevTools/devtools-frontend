@@ -52,25 +52,22 @@ describe('Snapshot', async function() {
 
     assert.strictEqual(lhr.gatherMode, 'snapshot');
 
-    const {innerWidth, innerHeight, outerWidth, outerHeight, devicePixelRatio} = artifacts.ViewportDimensions;
-    // This value can vary slightly, depending on the display.
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=1346355
-    assert.approximately(innerHeight, 1742, 1);
-    assert.strictEqual(innerWidth, 980);
-    assert.strictEqual(outerWidth, 360);
-    assert.strictEqual(outerHeight, 640);
-    assert.strictEqual(devicePixelRatio, 3);
+    assert.deepStrictEqual(artifacts.ViewportDimensions, {
+      innerHeight: 640,
+      innerWidth: 360,
+      outerHeight: 640,
+      outerWidth: 360,
+      devicePixelRatio: 3,
+    });
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
     assert.strictEqual(auditResults.length, 73);
     assert.strictEqual(erroredAudits.length, 0);
     assert.deepStrictEqual(failedAudits.map(audit => audit.id), [
-      'viewport',
       'document-title',
       'html-has-lang',
       'label',
       'meta-description',
-      'font-size',
       'tap-targets',
     ]);
 

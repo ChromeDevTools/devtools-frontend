@@ -41,6 +41,10 @@ export const markdownLinks = new Map<string, string>([
     'https://developer.chrome.com/blog/immutable-document-domain/',
     'https://developer.chrome.com/blog/immutable-document-domain/',
   ],
+  [
+    'https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md',
+    'https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md',
+  ],
 ]);
 
 export const getMarkdownLink = (key: string): string => {

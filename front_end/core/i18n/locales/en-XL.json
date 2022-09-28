@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Ŵéb̂ŚQ̂Ĺ îń n̂ón̂-śêćûŕê ćôńt̂éx̂t́ŝ íŝ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ śôón̂. Ṕl̂éâśê úŝé Ŵéb̂ Śt̂ór̂áĝé ôŕ Îńd̂éx̂éd̂ D́ât́âb́âśê."
   },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Ŝṕêćîf́ŷín̂ǵ overflow: visible ôń îḿĝ, v́îd́êó âńd̂ ćâńv̂áŝ t́âǵŝ ḿâý ĉáûśê t́ĥém̂ t́ô ṕr̂ód̂úĉé v̂íŝúâĺ ĉón̂t́êńt̂ óût́ŝíd̂é ôf́ t̂h́ê él̂ém̂én̂t́ b̂óûńd̂ś. Ŝéê h́t̂t́p̂ś://ĝít̂h́ûb́.ĉóm̂/ẂÎĆĜ/śĥár̂éd̂-él̂ém̂én̂t́-t̂ŕâńŝít̂íôńŝ/b́l̂ób̂/ḿâín̂/d́êb́ûǵĝín̂ǵ_ôv́êŕf̂ĺôẃ_ôń_îḿâǵêś.m̂d́."
+  },
   "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
     "message": "paymentManager.instruments îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê j́ûśt̂-ín̂-t́îḿê ín̂śt̂ál̂ĺ f̂ór̂ ṕâým̂én̂t́ ĥán̂d́l̂ér̂ś îńŝt́êád̂."
   },

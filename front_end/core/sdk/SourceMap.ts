@@ -253,27 +253,29 @@ export class TextSourceMap implements SourceMap {
     sourceURL: Platform.DevToolsPath.UrlString,
   }|null {
     const mappings = this.mappings();
-    const index = Platform.ArrayUtilities.upperBound(
+    const endIndex = Platform.ArrayUtilities.upperBound(
         mappings, undefined, (unused, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
-    if (!index) {
+    if (!endIndex) {
       // If the line and column are preceding all the entries, then there is nothing to map.
       return null;
     }
-    const sourceURL = mappings[index].sourceURL;
+    // startIndex must be within mappings range because endIndex must be not falsy
+    const startIndex = endIndex - 1;
+    const sourceURL = mappings[startIndex].sourceURL;
     if (!sourceURL) {
       return null;
     }
 
     // Let us compute the range that contains the source position in the compiled code.
-    const endLine = index < mappings.length ? mappings[index].lineNumber : 2 ** 31 - 1;
-    const endColumn = index < mappings.length ? mappings[index].columnNumber : 2 ** 31 - 1;
+    const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : 2 ** 31 - 1;
+    const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
     const range = new TextUtils.TextRange.TextRange(
-        mappings[index - 1].lineNumber, mappings[index - 1].columnNumber, endLine, endColumn);
+        mappings[startIndex].lineNumber, mappings[startIndex].columnNumber, endLine, endColumn);
 
     // Now try to find the corresponding token in the original code.
     const reverseMappings = this.reversedMappings(sourceURL);
-    const startSourceLine = mappings[index - 1].sourceLineNumber;
-    const startSourceColumn = mappings[index - 1].sourceColumnNumber;
+    const startSourceLine = mappings[startIndex].sourceLineNumber;
+    const startSourceColumn = mappings[startIndex].sourceColumnNumber;
     const endReverseIndex = Platform.ArrayUtilities.upperBound(
         reverseMappings, undefined,
         (unused, i) =>

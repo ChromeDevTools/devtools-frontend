@@ -8,6 +8,7 @@ import {
   enableExperiment,
   getBrowserAndPages,
   goToResource,
+  waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -63,6 +64,9 @@ describe('CSS hints in the Styles panel', async () => {
     await frontend.keyboard.type('wrap', {delay: 100});
     await frontend.keyboard.press('Enter');
 
-    assert.deepEqual(await getPropertiesWithHints(), []);
+    await waitForFunction(async () => {
+      const propertiesWithHints = await getPropertiesWithHints();
+      return propertiesWithHints.length === 0;
+    });
   });
 });

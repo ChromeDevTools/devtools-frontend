@@ -311,6 +311,14 @@ const UIStrings = {
    */
   xrSupportsSession:
       '`supportsSession()` is deprecated. Please use `isSessionSupported()` and check the resolved boolean value instead.',
+  /**
+   * @description Warning displayed to developers that use overflow:visible
+   * for replaced elements. This declaration was earlier ignored but will now
+   * change the element's painting based on whether the overflow value allows
+   * the element to paint outside its bounds.
+   */
+  overflowVisibleOnReplacedElement:
+      'Specifying `overflow: visible` on img, video and canvas tags may cause them to produce visual content outside of the element bounds. See https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md.',
 };
 // clang-format on
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/DeprecationIssue.ts', UIStrings);
@@ -522,6 +530,11 @@ export class DeprecationIssue extends Issue {
       case Protocol.Audits.DeprecationIssueType.RequestedSubresourceWithEmbeddedCredentials:
         messageFunction = i18nLazyString(UIStrings.requestedSubresourceWithEmbeddedCredentials);
         feature = 5669008342777856;
+        break;
+      case Protocol.Audits.DeprecationIssueType.OverflowVisibleOnReplacedElement:
+        messageFunction = i18nLazyString(UIStrings.overflowVisibleOnReplacedElement);
+        feature = 5137515594383360;
+        milestone = 108;
         break;
       case Protocol.Audits.DeprecationIssueType.RTCConstraintEnableDtlsSrtpFalse:
         messageFunction = i18nLazyString(UIStrings.rtcConstraintEnableDtlsSrtpFalse);

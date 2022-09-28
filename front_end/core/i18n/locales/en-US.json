@@ -1463,6 +1463,9 @@
   "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
     "message": "paymentManager.instruments is deprecated. Please use just-in-time install for payment handlers instead."
   },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "Your PaymentRequest call bypassed Content-Security-Policy (CSP) connect-src directive. This bypass is deprecated. Please add the payment method identifier from the PaymentRequest API (in supportedMethods field) to your CSP connect-src directive."
+  },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent is deprecated. Please use standardized navigator.storage instead."
   },

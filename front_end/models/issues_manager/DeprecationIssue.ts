@@ -184,6 +184,10 @@ const UIStrings = {
    */
   paymentInstruments: '`paymentManager.instruments` is deprecated. Please use just-in-time install for payment handlers instead.',
   /**
+   * @description Warning displayed to developers when their Web Payment API usage violates their Content-Security-Policy (CSP) connect-src directive to let them know this CSP bypass has been deprecated.
+   */
+  paymentRequestCSPViolation: 'Your `PaymentRequest` call bypassed Content-Security-Policy (CSP) `connect-src` directive. This bypass is deprecated. Please add the payment method identifier from the `PaymentRequest` API (in `supportedMethods` field) to your CSP `connect-src` directive.',
+  /**
    * @description Warning displayed to developers when persistent storage type is used to notify that storage type is deprecated.
    */
   persistentQuotaType:
@@ -453,6 +457,10 @@ export class DeprecationIssue extends Issue {
       case Protocol.Audits.DeprecationIssueType.PaymentInstruments:
         messageFunction = i18nLazyString(UIStrings.paymentInstruments);
         feature = 5099285054488576;
+        break;
+      case Protocol.Audits.DeprecationIssueType.PaymentRequestCSPViolation:
+        messageFunction = i18nLazyString(UIStrings.paymentRequestCSPViolation);
+        feature = 6286595631087616;
         break;
       case Protocol.Audits.DeprecationIssueType.PersistentQuotaType:
         messageFunction = i18nLazyString(UIStrings.persistentQuotaType);

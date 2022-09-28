@@ -1463,6 +1463,9 @@
   "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
     "message": "paymentManager.instruments îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê j́ûśt̂-ín̂-t́îḿê ín̂śt̂ál̂ĺ f̂ór̂ ṕâým̂én̂t́ ĥán̂d́l̂ér̂ś îńŝt́êád̂."
   },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "Ŷóûŕ PaymentRequest ĉál̂ĺ b̂ýp̂áŝśêd́ Ĉón̂t́êńt̂-Śêćûŕît́ŷ-Ṕôĺîćŷ (ĆŜṔ) connect-src d̂ír̂éĉt́îv́ê. T́ĥíŝ b́ŷṕâśŝ íŝ d́êṕr̂éĉát̂éd̂. Ṕl̂éâśê ád̂d́ t̂h́ê ṕâým̂én̂t́ m̂ét̂h́ôd́ îd́êńt̂íf̂íêŕ f̂ŕôḿ t̂h́ê PaymentRequest ÁP̂Í (îń supportedMethods f̂íêĺd̂) t́ô ýôúr̂ ĆŜṔ connect-src d̂ír̂éĉt́îv́ê."
+  },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê śt̂án̂d́âŕd̂íẑéd̂ navigator.storage ín̂śt̂éâd́."
   },

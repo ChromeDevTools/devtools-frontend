@@ -50,8 +50,7 @@ highly_privileged_builder(
                 "third_party/esbuild:infra/3pp/tools/esbuild/${platform}",
             ],
             "reviewers": [
-                "machenbach@chromium.org",
-                "liviurau@chromium.org",
+                "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com",
             ],
             "show_commit_log": False,
             "roll_chromium_pin": True,

@@ -2,14 +2,32 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, goToResource, waitFor, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
+import {
+  $,
+  click,
+  getBrowserAndPages,
+  goToResource,
+  waitFor,
+  waitForAria,
+  waitForElementWithTextContent,
+  waitForFunction,
+} from '../../shared/helper.js';
 
 import {waitForQuotaUsage} from './application-helpers.js';
 
 import {type ElementHandle} from 'puppeteer';
 
 export async function navigateToLighthouseTab(path?: string): Promise<ElementHandle<Element>> {
-  await click('#tab-lighthouse');
+  let lighthouseTabButton = await $('#tab-lighthouse');
+
+  // Lighthouse tab can be hidden if the frontend is in a dockable state.
+  if (!lighthouseTabButton) {
+    const moreTabsButton = await waitForAria('More tabs');
+    await moreTabsButton.click();
+    lighthouseTabButton = await waitForElementWithTextContent('Lighthouse');
+  }
+
+  await lighthouseTabButton.click();
   await waitFor('.view-container > .lighthouse');
   if (path) {
     await goToResource(path);
@@ -172,4 +190,15 @@ export function getAuditsBreakdown(lhr: any, flakyAudits: string[] = []) {
   );
 
   return {auditResults, erroredAudits, failedAudits};
+}
+
+export async function getTargetViewport() {
+  const {target} = await getBrowserAndPages();
+  return target.evaluate(() => ({
+                           innerHeight: window.innerHeight,
+                           innerWidth: window.innerWidth,
+                           outerWidth: window.outerWidth,
+                           outerHeight: window.outerHeight,
+                           devicePixelRatio: window.devicePixelRatio,
+                         }));
 }

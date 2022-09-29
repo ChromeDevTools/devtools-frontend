@@ -45,6 +45,14 @@ describe('Navigation', async function() {
         await navigateToLighthouseTab('lighthouse/hello.html');
 
         await setLegacyNavigation(mode === 'legacy');
+        await selectCategories([
+          'performance',
+          'accessibility',
+          'best-practices',
+          'seo',
+          'pwa',
+          'lighthouse-plugin-publisher-ads',
+        ]);
 
         await clickStartButton();
 
@@ -76,7 +84,7 @@ describe('Navigation', async function() {
         });
 
         const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
-        assert.strictEqual(auditResults.length, 152);
+        assert.strictEqual(auditResults.length, 175);
         assert.strictEqual(erroredAudits.length, 0);
         assert.deepStrictEqual(failedAudits.map(audit => audit.id), [
           'service-worker',

@@ -15,6 +15,8 @@ import {platform, type Platform} from './helper.js';
 
 export {beforeEach} from 'mocha';
 
+let didInitializeHtmlOutputFile = false;
+
 function htmlEscape(raw: string) {
   return raw.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 }
@@ -202,6 +204,20 @@ export function makeCustomWrappedIt(namePrefix: string = '') {
   return newMochaItFunc;
 }
 
+function initializeHtmlOutputFile() {
+  if (didInitializeHtmlOutputFile) {
+    return;
+  }
+  didInitializeHtmlOutputFile = true;
+  const filename = getEnvVar('HTML_OUTPUT_FILE');
+
+  if (filename) {
+    // We can add styles or scripts or UI here, but for
+    // now we will start with a blank file.
+    FS.writeFileSync(filename, '');
+  }
+}
+
 function hookTestTimeout(test?: Mocha.Runnable) {
   if (test) {
     const originalDone = test.callback;
@@ -215,6 +231,7 @@ function wrapMochaCall(
     call: Mocha.TestFunction|Mocha.PendingTestFunction|Mocha.ExclusiveTestFunction, name: string,
     callback: Mocha.Func|Mocha.AsyncFunc) {
   const test = call(name, function(done: Mocha.Done) {
+    initializeHtmlOutputFile();
     hookTestTimeout(test);
 
     if (callback.length === 0) {

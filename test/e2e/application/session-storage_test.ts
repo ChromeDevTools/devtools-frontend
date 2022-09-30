@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, getTestServerPort, step} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   deleteSelectedStorageItem,
   doubleClickSourceTreeItem,
@@ -48,7 +49,8 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('can delete selected items', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1369995] can delete selected items', async () => {
     const {target} = getBrowserAndPages();
 
     await navigateToApplicationTab(target, 'session-storage');

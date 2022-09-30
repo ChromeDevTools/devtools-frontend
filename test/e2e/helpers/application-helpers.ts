@@ -80,7 +80,9 @@ export async function clearStorageItems() {
 
 export async function selectStorageItemAtIndex(index: number) {
   const dataGridNodes = await $$('.storage-view .data-grid-data-grid-node:not(.creation-node)');
-  dataGridNodes[index].click();
+  await dataGridNodes[index].click();
+  throw new Error('This helper is flaky and should not be used.');
+  // TODO(crbug.com/1369995) This helper is flaky, grid nodes might go away after the selector and before the click.
 }
 
 export async function deleteSelectedStorageItem() {

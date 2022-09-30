@@ -78,21 +78,23 @@ async function enable({reset = true} = {}) {
       },
 
       sendRawMessage(message: string) {
-        const outgoingMessage = JSON.parse(message) as {id: number, method: ProtocolCommand, params: unknown};
-        const handler = responseMap.get(outgoingMessage.method);
-        if (!handler) {
-          return;
-        }
+        void (async () => {
+          const outgoingMessage = JSON.parse(message) as {id: number, method: ProtocolCommand, params: unknown};
+          const handler = responseMap.get(outgoingMessage.method);
+          if (!handler) {
+            return;
+          }
 
-        const result = handler.call(undefined, outgoingMessage.params);
+          const result = await handler.call(undefined, outgoingMessage.params);
 
-        // Since we allow the test author to omit the getError call, we
-        // need to add it in here on their behalf so that the calling code
-        // will succeed.
-        if (!('getError' in result)) {
-          result.getError = () => undefined;
-        }
-        messageCallback.call(undefined, {id: outgoingMessage.id, method: outgoingMessage.method, result});
+          // Since we allow the test author to omit the getError call, we
+          // need to add it in here on their behalf so that the calling code
+          // will succeed.
+          if (!('getError' in result)) {
+            result.getError = () => undefined;
+          }
+          messageCallback.call(undefined, {id: outgoingMessage.id, method: outgoingMessage.method, result});
+        })();
       },
 
       async disconnect() {
@@ -125,3 +127,14 @@ export function describeWithMockConnection(title: string, fn: (this: Mocha.Suite
     describe(title, fn);
   });
 }
+
+describeWithMockConnection.only = function(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
+  reset: true,
+}) {
+  // eslint-disable-next-line mocha/no-exclusive-tests
+  return describe.only(`mock-${title}`, () => {
+    beforeEach(async () => await enable(opts));
+    afterEach(disable);
+    describe(title, fn);
+  });
+};

@@ -90,6 +90,10 @@ export const waitForAdorners = async (expectedAdorners: {textContent: string, is
   });
 };
 
+export const waitForSelectedNodeToBeExpanded = async () => {
+  await waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR}[aria-expanded="true"]`);
+};
+
 export const waitForAdornerOnSelectedNode = async (expectedAdornerText: string) => {
   await waitForFunction(async () => {
     const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);

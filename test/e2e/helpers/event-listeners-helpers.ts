@@ -4,7 +4,11 @@
 
 import {$$, click, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 
-import {waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from './elements-helpers.js';
+import {
+  waitForContentOfSelectedElementsNode,
+  waitForElementsStyleSection,
+  waitForSelectedNodeToBeExpanded,
+} from './elements-helpers.js';
 
 export const loadEventListenersAndSelectButtonNode = async () => {
   const {frontend} = getBrowserAndPages();
@@ -13,6 +17,9 @@ export const loadEventListenersAndSelectButtonNode = async () => {
 
   // Check to make sure we have the correct node selected after opening a file
   await waitForContentOfSelectedElementsNode('<body class=\u200B"test-js-loaded">\u200B');
+
+  // Wait for element to be expanded
+  await waitForSelectedNodeToBeExpanded();
 
   // Select the button that has the events and make sure it's selected
   await frontend.keyboard.press('ArrowRight');

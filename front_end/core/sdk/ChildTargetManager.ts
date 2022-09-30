@@ -40,7 +40,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       void this.#targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
     }
 
-    if (!parentTarget.parentTarget() && !Host.InspectorFrontendHost.isUnderTest()) {
+    if (parentTarget.parentTarget()?.type() !== Type.Frame && !Host.InspectorFrontendHost.isUnderTest()) {
       void this.#targetAgent.invoke_setDiscoverTargets({discover: true});
       void this.#targetAgent.invoke_setRemoteLocations({locations: [{host: 'localhost', port: 9229}]});
     }

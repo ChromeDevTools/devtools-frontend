@@ -65,14 +65,11 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assert.isTrue(clearRequests.calledOnce, 'Not called just once');
   });
 
-  it('calls clearRequests on top frame navigated', () => {
-    if (!networkManager) {
-      throw new Error('No networkManager');
-    }
-    const clearRequests = sinon.stub(networkManager, 'clearRequests');
-    dispatchEvent(target, 'Page.frameNavigated', {
+  function frameNavigatedEvent(parentId?: string, id?: string) {
+    return {
       frame: {
-        id: 'main',
+        id: id ?? 'main',
+        parentId,
         loaderId: 'foo',
         url: 'http://example.com',
         domainAndRegistry: 'example.com',
@@ -82,7 +79,15 @@ describeWithMockConnection('ResourceTreeModel', () => {
         crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
         gatedAPIFeatures: [],
       },
-    });
+    };
+  }
+
+  it('calls clearRequests on top frame navigated', () => {
+    if (!networkManager) {
+      throw new Error('No networkManager');
+    }
+    const clearRequests = sinon.stub(networkManager, 'clearRequests');
+    dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent());
     assert.isTrue(clearRequests.calledOnce, 'Not called just once');
   });
 
@@ -91,37 +96,12 @@ describeWithMockConnection('ResourceTreeModel', () => {
       throw new Error('No networkManager');
     }
     const clearRequests = sinon.stub(networkManager, 'clearRequests');
-    dispatchEvent(target, 'Page.frameNavigated', {
-      frame: {
-        id: 'main',
-        parentId: 'parentId',
-        loaderId: 'foo',
-        url: 'http://example.com',
-        domainAndRegistry: 'example.com',
-        securityOrigin: 'http://example.com',
-        mimeType: 'text/html',
-        secureContextType: Protocol.Page.SecureContextType.Secure,
-        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
-        gatedAPIFeatures: [],
-      },
-    });
+    dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
     assert.isTrue(clearRequests.notCalled, 'Called unexpctedly');
   });
 
   it('records prerenderingStatus', () => {
-    dispatchEvent(target, 'Page.frameNavigated', {
-      frame: {
-        id: 'main',
-        loaderId: 'foo',
-        url: 'http://example.com',
-        domainAndRegistry: 'example.com',
-        securityOrigin: 'http://example.com',
-        mimeType: 'text/html',
-        secureContextType: Protocol.Page.SecureContextType.Secure,
-        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
-        gatedAPIFeatures: [],
-      },
-    });
+    dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent());
     dispatchEvent(
         target,
         'Page.prerenderAttemptCompleted',
@@ -144,19 +124,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assertNotNullOrUndefined(resourceTreeModel.mainFrame);
     assert.strictEqual(
         resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.TriggerDestroyed);
-    dispatchEvent(target, 'Page.frameNavigated', {
-      frame: {
-        id: 'next',
-        loaderId: 'foo',
-        url: 'http://example.com/next',
-        domainAndRegistry: 'example.com',
-        securityOrigin: 'http://example.com',
-        mimeType: 'text/html',
-        secureContextType: Protocol.Page.SecureContextType.Secure,
-        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
-        gatedAPIFeatures: [],
-      },
-    });
+    dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent(undefined, 'next'));
     assertNotNullOrUndefined(resourceTreeModel);
     assertNotNullOrUndefined(resourceTreeModel.mainFrame);
     assert.strictEqual(
@@ -268,5 +236,57 @@ describeWithMockConnection('ResourceTreeModel', () => {
     resourceTreeModel?.frameDetached('main' as Protocol.Page.FrameId, false);
     assert.isEmpty(resourceTreeModel?.frames());
     await Promise.all([mainStorageKeyChangedPromise, storageKeyRemovedPromise]);
+  });
+
+  function getResourceTeeModel(target: SDK.Target.Target): SDK.ResourceTreeModel.ResourceTreeModel {
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel);
+    return resourceTreeModel;
+  }
+
+  it('calls reloads only top frames without tab target', () => {
+    const mainFrameTarget = createTarget();
+    const subframeTarget = createTarget({parentTarget: mainFrameTarget});
+    const reloadMainFramePage = sinon.spy(getResourceTeeModel(mainFrameTarget), 'reloadPage');
+    const reloadSubframePage = sinon.spy(getResourceTeeModel(subframeTarget), 'reloadPage');
+    SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages();
+
+    assert.isTrue(reloadMainFramePage.calledOnce);
+    assert.isTrue(reloadSubframePage.notCalled);
+  });
+
+  it('calls reloads only top frames with tab target', () => {
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const mainFrameTarget = createTarget({parentTarget: tabTarget});
+    const subframeTarget = createTarget({parentTarget: mainFrameTarget});
+    const reloadMainFramePage = sinon.spy(getResourceTeeModel(mainFrameTarget), 'reloadPage');
+    const reloadSubframePage = sinon.spy(getResourceTeeModel(subframeTarget), 'reloadPage');
+    SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages();
+
+    assert.isTrue(reloadMainFramePage.calledOnce);
+    assert.isTrue(reloadSubframePage.notCalled);
+  });
+
+  it('identifies top frame without tab target', async () => {
+    const mainFrameTarget = createTarget();
+    const subframeTarget = createTarget({parentTarget: mainFrameTarget});
+
+    dispatchEvent(mainFrameTarget, 'Page.frameNavigated', frameNavigatedEvent());
+    dispatchEvent(subframeTarget, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
+    assert.isTrue(getResourceTeeModel(mainFrameTarget).mainFrame?.isTopFrame());
+    assertNotNullOrUndefined(getResourceTeeModel(subframeTarget));
+    assert.isFalse(getResourceTeeModel(subframeTarget).mainFrame?.isTopFrame());
+  });
+
+  it('identifies not top frame with tab target', async () => {
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const mainFrameTarget = createTarget({parentTarget: tabTarget});
+    const subframeTarget = createTarget({parentTarget: mainFrameTarget});
+
+    dispatchEvent(mainFrameTarget, 'Page.frameNavigated', frameNavigatedEvent());
+    dispatchEvent(subframeTarget, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
+    assert.isTrue(getResourceTeeModel(mainFrameTarget).mainFrame?.isTopFrame());
+    assertNotNullOrUndefined(getResourceTeeModel(subframeTarget));
+    assert.isFalse(getResourceTeeModel(subframeTarget).mainFrame?.isTopFrame());
   });
 });

@@ -41,7 +41,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
             Capability.Log | Capability.Network | Capability.Target | Capability.Tracing | Capability.Emulation |
             Capability.Input | Capability.Inspector | Capability.Audits | Capability.WebAuthn | Capability.IO |
             Capability.Media;
-        if (!parentTarget) {
+        if (parentTarget?.type() !== Type.Frame) {
           // This matches backend exposing certain capabilities only for the main frame.
           this.#capabilitiesMask |=
               Capability.DeviceEmulation | Capability.ScreenCapture | Capability.Security | Capability.ServiceWorker;
@@ -52,7 +52,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       case Type.ServiceWorker:
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
             Capability.Inspector | Capability.IO;
-        if (!parentTarget) {
+        if (parentTarget?.type() !== Type.Frame) {
           this.#capabilitiesMask |= Capability.Browser;
         }
         break;
@@ -177,7 +177,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     this.#inspectedURLInternal = inspectedURL;
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(inspectedURL);
     this.#inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this.#idInternal;
-    if (!this.parentTarget()) {
+    if (this.parentTarget()?.type() !== Type.Frame) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(
           inspectedURL || Platform.DevToolsPath.EmptyUrlString);
     }

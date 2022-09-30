@@ -45,7 +45,7 @@ import {type NetworkRequest} from './NetworkRequest.js';
 import {Resource} from './Resource.js';
 import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 
-import {Capability, type Target} from './Target.js';
+import {Capability, Type, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';
@@ -130,7 +130,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 
   static reloadAllPages(bypassCache?: boolean, scriptToEvaluateOnLoad?: string): void {
     for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
-      if (!resourceTreeModel.target().parentTarget()) {
+      if (resourceTreeModel.target().parentTarget()?.type() !== Type.Frame) {
         resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
       }
     }
@@ -886,7 +886,7 @@ export class ResourceTreeFrame {
       return null;
     }
     const parentTarget = this.#model.target().parentTarget();
-    if (!parentTarget) {
+    if (parentTarget?.type() !== Type.Frame) {
       return null;
     }
     const parentModel = parentTarget.model(ResourceTreeModel);
@@ -923,7 +923,7 @@ export class ResourceTreeFrame {
    * tab.
    */
   isTopFrame(): boolean {
-    return !this.#model.target().parentTarget() && !this.#sameTargetParentFrameInternal &&
+    return this.#model.target().parentTarget()?.type() !== Type.Frame && !this.#sameTargetParentFrameInternal &&
         !this.crossTargetParentFrameId;
   }
 
@@ -1049,7 +1049,7 @@ export class ResourceTreeFrame {
     }
 
     // Portals.
-    if (parentTarget) {
+    if (parentTarget?.type() === Type.Frame) {
       const domModel = parentTarget.model(DOMModel);
       if (domModel) {
         return highlightFrameOwner(domModel);

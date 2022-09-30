@@ -26,11 +26,13 @@ ts_library("sdk") {
     "PageResourceLoader_test.ts",
     "RemoteObject_test.ts",
     "ResourceTreeModel_test.ts",
+    "RuntimeModel_test.ts",
     "Script_test.ts",
     "ServerTiming_test.ts",
     "SourceMapManager_test.ts",
     "SourceMap_test.ts",
     "StorageKeyManager_test.ts",
+    "Target_test.ts",
     "TracingModel_test.ts",
   ]
 

@@ -589,7 +589,7 @@ export class ExecutionContext {
 
   static comparator(a: ExecutionContext, b: ExecutionContext): number {
     function targetWeight(target: Target): number {
-      if (!target.parentTarget()) {
+      if (target.parentTarget()?.type() !== Type.Frame) {
         return 5;
       }
       if (target.type() === Type.Frame) {

@@ -422,16 +422,8 @@ export const getComputedStyleProperties = async () => {
 };
 
 export const getDisplayedCSSDeclarations = async () => {
-  const allRuleSelectors = await $$(CSS_STYLE_RULE_SELECTOR);
-  const declarations = [];
-  for (const ruleSelector of allRuleSelectors) {
-    const cssDeclarations = await $$(CSS_DECLARATION_SELECTOR, ruleSelector);
-    const currentDeclarations =
-        await Promise.all(cssDeclarations.map(async node => await node.evaluate(n => n.textContent?.trim())));
-    declarations.push(...currentDeclarations);
-  }
-
-  return declarations;
+  const cssDeclarations = await $$(CSS_DECLARATION_SELECTOR);
+  return Promise.all(cssDeclarations.map(async node => await node.evaluate(n => n.textContent?.trim())));
 };
 
 export const getDisplayedStyleRulesCompact = async () => {

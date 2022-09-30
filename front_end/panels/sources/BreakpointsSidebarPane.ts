@@ -44,6 +44,12 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
         SourcesComponents.BreakpointsView.BreakpointsRemovedEvent.eventName, (event: Event) => {
           this.#onBreakpointsRemovedEvent(event);
         });
+    this.#breakpointsView.addEventListener(
+        SourcesComponents.BreakpointsView.PauseOnExceptionsStateChangedEvent.eventName,
+        this.#onPauseOnExceptionsStateChanged.bind(this));
+    this.#breakpointsView.addEventListener(
+        SourcesComponents.BreakpointsView.PauseOnCaughtExceptionsStateChangedEvent.eventName,
+        this.#onPauseOnCaughtExceptionsStateChanged.bind(this));
 
     this.contentElement.appendChild(this.#breakpointsView);
     this.update();
@@ -80,23 +86,53 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     void this.#controller.breakpointsRemoved(breakpointItems);
     event.consume();
   }
+
+  #onPauseOnExceptionsStateChanged(event: Event): void {
+    const {data: {checked}} = event as SourcesComponents.BreakpointsView.PauseOnExceptionsStateChangedEvent;
+
+    this.#controller.setPauseOnExceptions(checked);
+    event.consume();
+  }
+
+  #onPauseOnCaughtExceptionsStateChanged(event: Event): void {
+    const {data: {checked}} = event as SourcesComponents.BreakpointsView.PauseOnCaughtExceptionsStateChangedEvent;
+
+    this.#controller.setPauseOnCaughtExceptions(checked);
+    event.consume();
+  }
 }
+
 export class BreakpointsSidebarController implements UI.ContextFlavorListener.ContextFlavorListener {
   readonly #breakpointManager: Bindings.BreakpointManager.BreakpointManager;
   readonly #breakpointItemToLocationMap =
       new WeakMap<SourcesComponents.BreakpointsView.BreakpointItem, Bindings.BreakpointManager.BreakpointLocation[]>();
+  readonly #pauseOnExceptionEnabledSetting: Common.Settings.Setting<boolean>;
+  readonly #pauseOnCaughtExceptionSetting: Common.Settings.Setting<boolean>;
   #updateScheduled = false;
   #updateRunning = false;
 
-  constructor() {
-    this.#breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
+  private constructor(
+      breakpointManager: Bindings.BreakpointManager.BreakpointManager, settings: Common.Settings.Settings) {
+    this.#breakpointManager = breakpointManager;
     this.#breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);
     this.#breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointRemoved, this.update, this);
+    this.#pauseOnExceptionEnabledSetting = settings.moduleSetting('pauseOnExceptionEnabled');
+    this.#pauseOnExceptionEnabledSetting.addChangeListener(this.update, this);
+    this.#pauseOnCaughtExceptionSetting = settings.moduleSetting('pauseOnCaughtException');
+    this.#pauseOnCaughtExceptionSetting.addChangeListener(this.update, this);
   }
 
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): BreakpointsSidebarController {
-    if (!breakpointsViewControllerInstance || opts.forceNew) {
-      breakpointsViewControllerInstance = new BreakpointsSidebarController();
+  static instance({forceNew, breakpointManager, settings}: {
+    forceNew: boolean|null,
+    breakpointManager: Bindings.BreakpointManager.BreakpointManager,
+    settings: Common.Settings.Settings,
+  } = {
+    forceNew: null,
+    breakpointManager: Bindings.BreakpointManager.BreakpointManager.instance(),
+    settings: Common.Settings.Settings.instance(),
+  }): BreakpointsSidebarController {
+    if (!breakpointsViewControllerInstance || forceNew) {
+      breakpointsViewControllerInstance = new BreakpointsSidebarController(breakpointManager, settings);
     }
     return breakpointsViewControllerInstance;
   }
@@ -131,6 +167,14 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     }
   }
 
+  setPauseOnExceptions(value: boolean): void {
+    this.#pauseOnExceptionEnabledSetting.set(value);
+  }
+
+  setPauseOnCaughtExceptions(value: boolean): void {
+    this.#pauseOnCaughtExceptionSetting.set(value);
+  }
+
   async update(): Promise<void> {
     this.#updateScheduled = true;
     if (this.#updateRunning) {
@@ -146,9 +190,12 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   }
 
   async getUpdatedBreakpointViewData(): Promise<SourcesComponents.BreakpointsView.BreakpointsViewData> {
+    const pauseOnExceptions = this.#pauseOnExceptionEnabledSetting.get();
+    const pauseOnCaughtExceptions = this.#pauseOnCaughtExceptionSetting.get();
+
     const breakpointLocations = this.#getBreakpointLocations();
     if (!breakpointLocations.length) {
-      return {groups: []};
+      return {pauseOnCaughtExceptions, pauseOnExceptions, groups: []};
     }
 
     const locationsGroupedById = this.#groupBreakpointLocationsById(breakpointLocations);
@@ -191,7 +238,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
         urlToGroup.set(sourceURL, group);
       }
     }
-    return {groups: Array.from(urlToGroup.values())};
+    return {pauseOnCaughtExceptions, pauseOnExceptions, groups: Array.from(urlToGroup.values())};
   }
 
   #getBreakpointTypeAndDetails(locations: Bindings.BreakpointManager.BreakpointLocation[]):

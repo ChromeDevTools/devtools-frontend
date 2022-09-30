@@ -18,7 +18,6 @@
 
 .code-snippet {
   width: 100%;
-  padding-left: 6px;
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size);
   color: var(--color-text-secondary);
@@ -168,6 +167,7 @@ details[open] > summary::before {
 
 .checkbox-label > input {
   margin-left: 16px;
+  margin-right: 6px;
 }
 
 .location {
@@ -175,4 +175,21 @@ details[open] > summary::before {
   margin-left: auto;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.pause-on-exceptions > .checkbox-label > input {
+  margin-left: 6px;
+}
+
+.pause-on-caught-exceptions > .checkbox-label > input {
+  margin-left: 20px;
+}
+
+.pause-on-exceptions,
+.pause-on-caught-exceptions {
+  display: flex;
+  align-items: center;
+  line-height: 13px;
+  height: 18px;
+  padding-right: 8px;
 }

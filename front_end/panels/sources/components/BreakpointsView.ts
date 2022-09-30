@@ -14,6 +14,14 @@ import breakpointsViewStyles from './breakpointsView.css.js';
 
 const UIStrings = {
   /**
+  *@description Text in pausing the debugger on exceptions in the Sources panel.
+  */
+  pauseOnExceptions: 'Pause on exceptions',
+  /**
+  *@description Text for pausing the debugger on caught exceptions in the Sources panel.
+  */
+  pauseOnCaughtExceptions: 'Pause on caught exceptions',
+  /**
   *@description Text exposed to screen readers on checked items.
   */
   checked: 'checked',
@@ -55,6 +63,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_SNIPPET_LENGTH = 200;
 
 export interface BreakpointsViewData {
+  pauseOnExceptions: boolean;
+  pauseOnCaughtExceptions: boolean;
   groups: BreakpointGroup[];
 }
 
@@ -96,6 +106,26 @@ export class CheckboxToggledEvent extends Event {
   }
 }
 
+export class PauseOnExceptionsStateChangedEvent extends Event {
+  static readonly eventName = 'pauseonexceptionsstatechanged';
+  data: {checked: boolean};
+
+  constructor(checked: boolean) {
+    super(PauseOnExceptionsStateChangedEvent.eventName);
+    this.data = {checked};
+  }
+}
+
+export class PauseOnCaughtExceptionsStateChangedEvent extends Event {
+  static readonly eventName = 'pauseoncaughtexceptionsstatechanged';
+  data: {checked: boolean};
+
+  constructor(checked: boolean) {
+    super(PauseOnCaughtExceptionsStateChangedEvent.eventName);
+    this.data = {checked};
+  }
+}
+
 export class ExpandedStateChangedEvent extends Event {
   static readonly eventName = 'expandedstatechanged';
   data: {url: Platform.DevToolsPath.UrlString, expanded: boolean};
@@ -131,10 +161,14 @@ export class BreakpointsView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
 
+  #pauseOnExceptions: boolean = false;
+  #pauseOnCaughtExceptions: boolean = false;
   #breakpointGroups: BreakpointGroup[] = [];
   #hoveredElement?: BreakpointGroup|BreakpointItem;
 
   set data(data: BreakpointsViewData) {
+    this.#pauseOnExceptions = data.pauseOnExceptions;
+    this.#pauseOnCaughtExceptions = data.pauseOnCaughtExceptions;
     this.#breakpointGroups = data.groups;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -145,14 +179,30 @@ export class BreakpointsView extends HTMLElement {
   }
 
   #render(): void {
-    const renderedGroups = this.#breakpointGroups.map((group, index) => {
-      const out = this.#renderBreakpointGroup(group);
-      if (index === this.#breakpointGroups.length - 1) {
-        return out;
-      }
-      return LitHtml.html`${out}<div class='divider'></div>`;
-    });
-    LitHtml.render(LitHtml.html`${renderedGroups}`, this.#shadow, {host: this});
+    // clang-format off
+    const renderedGroups = this.#breakpointGroups.map(
+        group => LitHtml.html`
+          <div class='divider'></div>
+          ${this.#renderBreakpointGroup(group)}
+        `);
+    const out = LitHtml.html`
+    <div class='pause-on-exceptions'>
+      <label class='checkbox-label '>
+        <input type='checkbox' ?checked=${this.#pauseOnExceptions} @change=${this.#onPauseOnExceptionsStateChanged.bind(this)}>
+        <span>${i18nString(UIStrings.pauseOnExceptions)}</span>
+      </label>
+    </div>
+    ${this.#pauseOnExceptions ? LitHtml.html`
+      <div class='pause-on-caught-exceptions'>
+        <label class='checkbox-label'>
+          <input type='checkbox' ?checked=${this.#pauseOnCaughtExceptions} @change=${this.#onPauseOnCaughtExceptionsStateChanged.bind(this)}>
+          <span>${i18nString(UIStrings.pauseOnCaughtExceptions)}</span>
+        </label>
+      </div>
+      ` : LitHtml.nothing}
+    ${renderedGroups}`;
+    // clang-format on
+    LitHtml.render(out, this.#shadow, {host: this});
   }
 
   #renderRemoveBreakpointButton(breakpointItems: BreakpointItem[], tooltipText: string): LitHtml.TemplateResult {
@@ -305,6 +355,16 @@ export class BreakpointsView extends HTMLElement {
   #onCheckboxToggled(e: Event, item: BreakpointItem): void {
     const element = e.target as HTMLInputElement;
     this.dispatchEvent(new CheckboxToggledEvent(item, element.checked));
+  }
+
+  #onPauseOnCaughtExceptionsStateChanged(e: Event): void {
+    const {checked} = e.target as HTMLInputElement;
+    this.dispatchEvent(new PauseOnCaughtExceptionsStateChangedEvent(checked));
+  }
+
+  #onPauseOnExceptionsStateChanged(e: Event): void {
+    const {checked} = e.target as HTMLInputElement;
+    this.dispatchEvent(new PauseOnExceptionsStateChangedEvent(checked));
   }
 }
 

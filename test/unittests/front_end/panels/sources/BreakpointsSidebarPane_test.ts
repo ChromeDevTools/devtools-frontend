@@ -24,11 +24,39 @@ interface LocationTestData {
   hoverText?: string;
 }
 
-function initializeBreakpointManagerWithMockdata(testData: LocationTestData[]): void {
-  const breakpointManagerStub = sinon.createStubInstance(Bindings.BreakpointManager.BreakpointManager);
-  sinon.stub(Bindings.BreakpointManager.BreakpointManager, 'instance').returns(breakpointManagerStub);
+function createBreakpointLocations(testData: LocationTestData[]): Bindings.BreakpointManager.BreakpointLocation[] {
+  const breakpointLocations = testData.map(data => {
+    const mocked = setupMockedUISourceCode(data.url);
+    const mockedContent = Promise.resolve({content: data.content, isEncoded: true});
+    sinon.stub(mocked.sut, 'requestContent').returns(mockedContent);
+    const uiLocation = new Workspace.UISourceCode.UILocation(mocked.sut, data.lineNumber, data.columnNumber);
+    const breakpoint = sinon.createStubInstance(Bindings.BreakpointManager.Breakpoint);
+    breakpoint.enabled.returns(data.enabled);
+    breakpoint.condition.returns(data.condition);
+    return {uiLocation, breakpoint} as Bindings.BreakpointManager.BreakpointLocation;
+  });
+  return breakpointLocations;
+}
+
+function createStubBreakpointManagerAndSettings() {
+  const breakpointManager = sinon.createStubInstance(Bindings.BreakpointManager.BreakpointManager);
+  const dummyStorage = new Common.Settings.SettingsStorage({});
+  const settings = Common.Settings.Settings.instance({
+    forceNew: true,
+    syncedStorage: dummyStorage,
+    globalStorage: dummyStorage,
+    localStorage: dummyStorage,
+  });
+  return {breakpointManager, settings};
+}
+
+function createStubBreakpointManagerAndSettingsWithMockdata(testData: LocationTestData[]):
+    {breakpointManager: Bindings.BreakpointManager.BreakpointManager, settings: Common.Settings.Settings} {
+  const {breakpointManager, settings} = createStubBreakpointManagerAndSettings();
+  sinon.stub(Bindings.BreakpointManager.BreakpointManager, 'instance').returns(breakpointManager);
   const breakpointLocations = createBreakpointLocations(testData);
-  breakpointManagerStub.allBreakpointLocations.returns(breakpointLocations);
+  breakpointManager.allBreakpointLocations.returns(breakpointLocations);
+  return {breakpointManager, settings};
 }
 
 function createLocationTestData(
@@ -45,20 +73,6 @@ function createLocationTestData(
   };
 }
 
-function createBreakpointLocations(testData: LocationTestData[]): Bindings.BreakpointManager.BreakpointLocation[] {
-  const breakpointLocations = testData.map(data => {
-    const mocked = setupMockedUISourceCode(data.url);
-    const mockedContent = Promise.resolve({content: data.content, isEncoded: true});
-    sinon.stub(mocked.sut, 'requestContent').returns(mockedContent);
-    const uiLocation = new Workspace.UISourceCode.UILocation(mocked.sut, data.lineNumber, data.columnNumber);
-    const breakpoint = sinon.createStubInstance(Bindings.BreakpointManager.Breakpoint);
-    breakpoint.enabled.returns(data.enabled);
-    breakpoint.condition.returns(data.condition);
-    return {uiLocation, breakpoint} as Bindings.BreakpointManager.BreakpointLocation;
-  });
-  return breakpointLocations;
-}
-
 async function setUpTestWithOneBreakpointLocation(
     params: {file: string, lineNumber: number, columnNumber: number, enabled?: boolean, snippet?: string} = {
       file: HELLO_JS_FILE,
@@ -70,9 +84,10 @@ async function setUpTestWithOneBreakpointLocation(
   const testData = [
     createLocationTestData(params.file, params.lineNumber, params.columnNumber, params.enabled, params.snippet),
   ];
-  initializeBreakpointManagerWithMockdata(testData);
+  const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
 
-  const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+  const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+      {forceNew: true, breakpointManager, settings});
   const data = await controller.getUpdatedBreakpointViewData();
 
   assert.lengthOf(data.groups, 1);
@@ -130,9 +145,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         createLocationTestData(HELLO_JS_FILE, 3, 10),
         createLocationTestData(TEST_JS_FILE, 1, 1),
       ];
-      initializeBreakpointManagerWithMockdata(testData);
 
-      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
       const actual = await controller.getUpdatedBreakpointViewData();
       const createExpectedBreakpointGroups = (testData: LocationTestData) => {
         const status = testData.enabled ? SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED :
@@ -163,7 +179,11 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
           ],
         };
       };
-      const expected = {groups: testData.map(createExpectedBreakpointGroups)};
+      const expected = {
+        pauseOnExceptions: false,
+        pauseOnCaughtExceptions: false,
+        groups: testData.map(createExpectedBreakpointGroups),
+      };
       assert.deepEqual(actual, expected);
     });
 
@@ -172,9 +192,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         createLocationTestData(HELLO_JS_FILE, 3, 10),
         createLocationTestData(TEST_JS_FILE, 1, 1),
       ];
-      initializeBreakpointManagerWithMockdata(testData);
 
-      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
       const actualViewData = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(actualViewData.groups, 2);
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
@@ -199,9 +220,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
            createLocationTestData(HELLO_JS_FILE, 3, 10),
            createLocationTestData(HELLO_JS_FILE, 3, 15),
          ];
-         initializeBreakpointManagerWithMockdata(testData);
 
-         const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+         const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+         const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+             {forceNew: true, breakpointManager, settings});
          const actualViewData = await controller.getUpdatedBreakpointViewData();
          assert.lengthOf(actualViewData.groups, 1);
          assert.lengthOf(actualViewData.groups[0].breakpointItems, 2);
@@ -214,9 +236,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         createLocationTestData(HELLO_JS_FILE, 3, 15),
         createLocationTestData(HELLO_JS_FILE, 3, 10),
       ];
-      initializeBreakpointManagerWithMockdata(testData);
 
-      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
       const actualViewData = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(actualViewData.groups, 1);
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 2);
@@ -230,8 +253,9 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         createLocationTestData(HELLO_JS_FILE, 3, 10),
       ];
 
-      initializeBreakpointManagerWithMockdata(testData);
-      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
       const actualViewData = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(actualViewData.groups, 2);
       const names = actualViewData.groups.map(group => group.name);
@@ -243,9 +267,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         createLocationTestData(TEST_JS_FILE, 3, 15),
         createLocationTestData(TEST_JS_FILE, 3, 15),
       ];
-      initializeBreakpointManagerWithMockdata(testData);
 
-      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
       const actualViewData = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(actualViewData.groups, 1);
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
@@ -270,9 +295,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
         createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),
       ];
-      initializeBreakpointManagerWithMockdata(testData);
 
-      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
       const actualViewData = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(actualViewData.groups, 1);
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
@@ -293,9 +319,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
         createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),
       ];
-      initializeBreakpointManagerWithMockdata(testData);
 
-      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
       const actualViewData = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(actualViewData.groups, 1);
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
@@ -309,9 +336,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       const testData = [
         createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, condition),
       ];
-      initializeBreakpointManagerWithMockdata(testData);
 
-      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
       const actualViewData = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(actualViewData.groups, 1);
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
@@ -327,9 +355,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       const testData = [
         createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, logDetail),
       ];
-      initializeBreakpointManagerWithMockdata(testData);
 
-      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({forceNew: true});
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
       const actualViewData = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(actualViewData.groups, 1);
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
@@ -337,5 +366,24 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT);
       assert.strictEqual(breakpointItem.hoverText, logDetail);
     });
+  });
+
+  it('changes pause on exception state', async () => {
+    const {breakpointManager, settings} = createStubBreakpointManagerAndSettings();
+    breakpointManager.allBreakpointLocations.returns([]);
+    const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+        {forceNew: true, breakpointManager, settings});
+    for (const pauseOnExceptions of [true, false]) {
+      for (const pauseOnCaughtExceptions of [true, false]) {
+        controller.setPauseOnExceptions(pauseOnExceptions);
+        controller.setPauseOnCaughtExceptions(pauseOnCaughtExceptions);
+
+        const data = await controller.getUpdatedBreakpointViewData();
+        assert.strictEqual(data.pauseOnExceptions, pauseOnExceptions);
+        assert.strictEqual(data.pauseOnCaughtExceptions, pauseOnCaughtExceptions);
+        assert.strictEqual(settings.moduleSetting('pauseOnExceptionEnabled').get(), pauseOnExceptions);
+        assert.strictEqual(settings.moduleSetting('pauseOnCaughtException').get(), pauseOnCaughtExceptions);
+      }
+    }
   });
 });

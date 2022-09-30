@@ -9890,6 +9890,12 @@
   "panels/sources/components/BreakpointsView.ts | logpointCode": {
     "message": "Logpoint: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Pause on caught exceptions"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Pause on exceptions"
+  },
   "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
     "message": "Remove breakpoint"
   },

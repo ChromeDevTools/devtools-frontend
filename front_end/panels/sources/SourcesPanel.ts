@@ -651,11 +651,13 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   private pauseOnExceptionEnabledChanged(): void {
-    const enabled = Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get();
-    const button = (this.pauseOnExceptionButton as UI.Toolbar.ToolbarToggle);
-    button.setToggled(enabled);
-    button.setTitle(enabled ? i18nString(UIStrings.dontPauseOnExceptions) : i18nString(UIStrings.pauseOnExceptions));
-    this.debugToolbarDrawer.classList.toggle('expanded', enabled);
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.BREAKPOINT_VIEW)) {
+      const enabled = Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get();
+      const button = (this.pauseOnExceptionButton as UI.Toolbar.ToolbarToggle);
+      button.setToggled(enabled);
+      button.setTitle(enabled ? i18nString(UIStrings.dontPauseOnExceptions) : i18nString(UIStrings.pauseOnExceptions));
+      this.debugToolbarDrawer.classList.toggle('expanded', enabled);
+    }
   }
 
   private async updateDebuggerButtonsAndStatus(): Promise<void> {
@@ -871,10 +873,12 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     debugToolbar.appendSeparator();
     debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleBreakpointsActiveAction));
 
-    this.pauseOnExceptionButton = new UI.Toolbar.ToolbarToggle('', 'largeicon-pause-on-exceptions');
-    this.pauseOnExceptionButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this.togglePauseOnExceptions, this);
-    debugToolbar.appendToolbarItem(this.pauseOnExceptionButton);
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.BREAKPOINT_VIEW)) {
+      this.pauseOnExceptionButton = new UI.Toolbar.ToolbarToggle('', 'largeicon-pause-on-exceptions');
+      this.pauseOnExceptionButton.addEventListener(
+          UI.Toolbar.ToolbarButton.Events.Click, this.togglePauseOnExceptions, this);
+      debugToolbar.appendToolbarItem(this.pauseOnExceptionButton);
+    }
 
     return debugToolbar;
   }

@@ -33,18 +33,22 @@ describeWithMockConnection('ResourceTreeModel', () => {
   let target: SDK.Target.Target;
   let resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
   let networkManager: SDK.NetworkManager.NetworkManager|null;
+  let beforeGetResourceTree = Promise.resolve();
 
   beforeEach(async () => {
-    setMockConnectionResponseHandler('Page.getResourceTree', () => {
+    setMockConnectionResponseHandler('Page.getResourceTree', async () => {
+      await beforeGetResourceTree;
       return {
-        frame: {
-          id: 'test-id',
-          loaderId: 'test',
-          url: 'http://example.com',
-          securityOrigin: 'http://example.com',
-          mimeType: 'text/html',
+        frameTree: {
+          frame: {
+            id: 'main',
+            loaderId: 'test',
+            url: 'http://example.com',
+            securityOrigin: 'http://example.com',
+            mimeType: 'text/html',
+          },
+          resources: [],
         },
-        resources: [],
       };
     });
     target = createTarget();
@@ -157,6 +161,35 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assertNotNullOrUndefined(resourceTreeModel.mainFrame);
     assert.strictEqual(
         resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.ClientCertRequested);
+  });
+  describe('prerender event before getResourceTree', () => {
+    let resolveGetResourceTree: () => void;
+    before(() => {
+      beforeGetResourceTree = new Promise(resolve => {
+        resolveGetResourceTree = resolve;
+      });
+    });
+
+    it('process prending event', async () => {
+      dispatchEvent(
+          target,
+          'Page.prerenderAttemptCompleted',
+          {
+            'initiatingFrameId': 'main',
+            'prerenderingUrl': 'http://example.com/page.html',
+            'finalStatus': Protocol.Page.PrerenderFinalStatus.TriggerDestroyed,
+          },
+      );
+      assertNotNullOrUndefined(resourceTreeModel);
+      assert.isNull(resourceTreeModel.mainFrame);
+      resolveGetResourceTree();
+      await new Promise(resolve => {
+        resourceTreeModel?.addEventListener(SDK.ResourceTreeModel.Events.FrameAdded, resolve);
+      });
+      assertNotNullOrUndefined(resourceTreeModel.mainFrame);
+      assert.strictEqual(
+          resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.TriggerDestroyed);
+    });
   });
 
   it('added frame has storageKey when navigated', async () => {

@@ -94,6 +94,9 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 
     void this.agent.invoke_getResourceTree().then(event => {
       this.processCachedResources(event.getError() ? null : event.frameTree);
+      if (this.mainFrame) {
+        this.processPendingEvents(this.mainFrame);
+      }
     });
   }
 

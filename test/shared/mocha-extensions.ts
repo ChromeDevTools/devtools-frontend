@@ -235,7 +235,13 @@ function wrapMochaCall(
     hookTestTimeout(test);
 
     if (callback.length === 0) {
-      (callback as Mocha.AsyncFunc).bind(this)().then(done, done);
+      async function onError(this: unknown, err?: unknown) {
+        if (err && !getEnvVar('DEBUG_TEST')) {
+          await takeScreenshots(name);
+        }
+        done.call(this, err);
+      }
+      (callback as Mocha.AsyncFunc).bind(this)().then(onError, onError);
     } else {
       (callback as Mocha.Func).bind(this)(done);
     }

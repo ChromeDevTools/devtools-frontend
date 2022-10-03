@@ -102,19 +102,27 @@ details[open] > summary::before {
   justify-content: right;
 }
 
-.remove-breakpoint-button {
+button {
   cursor: pointer;
   width: 13px;
   height: 13px;
   border: none;
   background-color: transparent;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   margin-left: auto;
 }
 
-.remove-breakpoint-button:hover devtools-icon {
+summary:hover devtools-two-states-counter {
+  display: none;
+}
+
+summary:hover button {
+  display: flex;
+}
+
+button:hover devtools-icon {
   --icon-color: var(--color-text-primary);
 }
 
@@ -175,6 +183,14 @@ details[open] > summary::before {
   margin-left: auto;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.breakpoint-item:hover .location {
+  display: none;
+}
+
+.breakpoint-item:hover button {
+  display: flex;
 }
 
 .pause-on-exceptions > .checkbox-label > input {

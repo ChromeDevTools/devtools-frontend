@@ -192,6 +192,38 @@ describeWithMockConnection('ResourceTreeModel', () => {
     });
   });
 
+  it('records prerendering disallowedApiMethod', () => {
+    dispatchEvent(target, 'Page.frameNavigated', {
+      frame: {
+        id: 'main',
+        loaderId: 'foo',
+        url: 'http://example.com',
+        domainAndRegistry: 'example.com',
+        securityOrigin: 'http://example.com',
+        mimeType: 'text/html',
+        secureContextType: Protocol.Page.SecureContextType.Secure,
+        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
+        gatedAPIFeatures: [],
+      },
+    });
+    dispatchEvent(
+        target,
+        'Page.prerenderAttemptCompleted',
+        {
+          'initiatingFrameId': 'main',
+          'prerenderingUrl': 'http://example.com/page.html',
+          'finalStatus': Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy,
+          'disallowedApiMethod': 'device.mojom.GamepadMonitor',
+        },
+    );
+
+    assertNotNullOrUndefined(resourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel.mainFrame);
+    assert.strictEqual(
+        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy);
+    assert.strictEqual(resourceTreeModel.mainFrame.prerenderDisallowedApiMethod, 'device.mojom.GamepadMonitor');
+  });
+
   it('added frame has storageKey when navigated', async () => {
     const testKey = 'test-storage-key';
 

@@ -3308,6 +3308,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "D̂íd̂F́âíl̂Ĺôád̂Ẃît́ĥÉr̂ŕôŕ ĥáp̂ṕêńêd́ d̂úr̂ín̂ǵ p̂ŕêŕêńd̂ér̂ín̂ǵ."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "D̂íŝál̂ĺôẃêd́ ÂṔÎ ḿêt́ĥód̂"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "D̂óŵńl̂óâd́ îś d̂íŝál̂ĺôẃêd́ îń P̂ŕêŕêńd̂ér̂."
   },

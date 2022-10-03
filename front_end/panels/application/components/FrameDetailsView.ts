@@ -796,6 +796,26 @@ export class FrameDetailsReportView extends HTMLElement {
       return LitHtml.nothing;
     }
     const finalStatus = Prerender2ReasonDescription[this.#frame.prerenderFinalStatus].name();
+
+    if (this.#frame.prerenderDisallowedApiMethod) {
+      const detailSection = Prerender2ReasonDescription['DisallowedApiMethod'].name();
+      return LitHtml.html`
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>
+      ${i18nString(UIStrings.prerendering)}</${ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.prerenderingStatus)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
+      <div class="text-ellipsis" title=${finalStatus}>${finalStatus}</div>
+      </${ReportView.ReportView.ReportValue.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${detailSection}</${ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
+      <div class="text-ellipsis" title=${this.#frame.prerenderDisallowedApiMethod}>
+        ${this.#frame.prerenderDisallowedApiMethod}
+      </div>
+      </${ReportView.ReportView.ReportValue.litTagName}>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+          ReportView.ReportView.ReportSectionDivider.litTagName}>`;
+    }
     return LitHtml.html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>
       ${i18nString(UIStrings.prerendering)}</${ReportView.ReportView.ReportSectionHeader.litTagName}>

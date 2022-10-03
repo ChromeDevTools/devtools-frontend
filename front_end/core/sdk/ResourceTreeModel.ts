@@ -597,6 +597,9 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     if (this.mainFrame && this.mainFrame.id === event.initiatingFrameId) {
       this.mainFrame.setPrerenderFinalStatus(event.finalStatus);
       this.dispatchEventToListeners(Events.PrerenderingStatusUpdated, this.mainFrame);
+      if (event.disallowedApiMethod) {
+        this.mainFrame.setPrerenderDisallowedApiMethod(event.disallowedApiMethod);
+      }
     } else {
       this.#pendingPrerenderAttemptCompletedEvents.add(event);
     }
@@ -616,6 +619,11 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     for (const event of this.#pendingPrerenderAttemptCompletedEvents) {
       if (frame.id === event.initiatingFrameId) {
         frame.setPrerenderFinalStatus(event.finalStatus);
+
+        if (event.disallowedApiMethod) {
+          frame.setPrerenderDisallowedApiMethod(event.disallowedApiMethod);
+        }
+
         this.#pendingPrerenderAttemptCompletedEvents.delete(event);
         break;
       }
@@ -700,6 +708,7 @@ export class ResourceTreeFrame {
     explanationsTree: undefined,
   };
   prerenderFinalStatus: Protocol.Page.PrerenderFinalStatus|null;
+  prerenderDisallowedApiMethod: string|null;
 
   constructor(
       model: ResourceTreeModel, parentFrame: ResourceTreeFrame|null, frameId: Protocol.Page.FrameId,
@@ -733,6 +742,7 @@ export class ResourceTreeFrame {
 
     this.resourcesMap = new Map();
     this.prerenderFinalStatus = null;
+    this.prerenderDisallowedApiMethod = null;
 
     if (this.#sameTargetParentFrameInternal) {
       this.#sameTargetParentFrameInternal.#childFramesInternal.add(this);
@@ -1091,6 +1101,10 @@ export class ResourceTreeFrame {
 
   setPrerenderFinalStatus(status: Protocol.Page.PrerenderFinalStatus): void {
     this.prerenderFinalStatus = status;
+  }
+
+  setPrerenderDisallowedApiMethod(disallowedApiMethod: string): void {
+    this.prerenderDisallowedApiMethod = disallowedApiMethod;
   }
 }
 

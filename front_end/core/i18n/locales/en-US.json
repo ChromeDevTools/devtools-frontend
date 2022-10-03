@@ -3308,6 +3308,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "DidFailLoadWithError happened during prerendering."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Disallowed API method"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Download is disallowed in Prerender."
   },

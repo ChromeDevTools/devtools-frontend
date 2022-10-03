@@ -92,7 +92,8 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
       },
     ]),
     getPermissionsPolicyState: () => null,
-    prerenderFinalStatus: Protocol.Page.PrerenderFinalStatus.TriggerDestroyed,
+    prerenderFinalStatus: Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy,
+    prerenderDisallowedApiMethod: 'device.mojom.GamepadMonitor',
   } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
   return newFrame;
 };
@@ -150,6 +151,7 @@ describeWithRealConnection('FrameDetailsView', () => {
       'SharedArrayBuffers',
       'Measure Memory',
       'Prerendering Status',
+      'Disallowed API method',
     ]);
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
@@ -166,7 +168,8 @@ describeWithRealConnection('FrameDetailsView', () => {
       'SameOrigin',
       'available, transferable',
       'available\xA0Learn more',
-      'Prerender is not activated and destroyed with the trigger.',
+      'A disallowed API was used by the prerendered page',
+      'device.mojom.GamepadMonitor',
     ]);
 
     const stackTrace = getElementWithinComponent(

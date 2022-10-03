@@ -224,9 +224,15 @@ export class BreakpointsView extends HTMLElement {
   }
 
   #renderBreakpointGroup(group: BreakpointGroup): LitHtml.TemplateResult {
+    const toggleHandler = (event: Event): void => {
+      const {open} = event.target as HTMLDetailsElement;
+      group.expanded = open;
+      this.dispatchEvent(new ExpandedStateChangedEvent(group.url, open));
+      event.consume();
+    };
     // clang-format off
     return LitHtml.html`
-      <details data-group='true' ?open=${group.expanded} @click=${(e: Event): void => this.#onGroupExpandToggled(e, group)}>
+      <details data-group='true' ?open=${group.expanded} @toggle=${toggleHandler}>
         <summary>
           <span class='group-header'>${this.#renderFileIcon()}<span class='group-header-title'>${group.name}</span></span>
           <span class='group-hover-actions'>
@@ -322,12 +328,6 @@ export class BreakpointsView extends HTMLElement {
       return checkboxDescription;
     }
     return i18nString(UIStrings.breakpointHit, {PH1: checkboxDescription});
-  }
-
-  #onGroupExpandToggled(e: Event, group: BreakpointGroup): void {
-    const detailsElement = e.target as HTMLDetailsElement;
-    group.expanded = detailsElement.open;
-    this.dispatchEvent(new ExpandedStateChangedEvent(group.url, detailsElement.open));
   }
 
   #onCheckboxToggled(e: Event, item: BreakpointItem): void {

@@ -205,8 +205,9 @@ export class BreakpointsView extends HTMLElement {
   }
 
   #renderRemoveBreakpointButton(breakpointItems: BreakpointItem[], tooltipText: string): LitHtml.TemplateResult {
-    const clickHandler = (): void => {
+    const clickHandler = (event: Event): void => {
       this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
+      event.consume();
     };
     // clang-format off
     return LitHtml.html`
@@ -271,6 +272,10 @@ export class BreakpointsView extends HTMLElement {
   }
 
   #renderBreakpointEntry(breakpointItem: BreakpointItem): LitHtml.TemplateResult {
+    const clickHandler = (event: Event): void => {
+      this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));
+      event.consume();
+    };
     const classMap = {
       'breakpoint-item': true,
       'hit': breakpointItem.isHit,
@@ -288,7 +293,7 @@ export class BreakpointsView extends HTMLElement {
         <span class='type-indicator'></span>
         <input type='checkbox' aria-label=${breakpointItem.location} ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE} ?checked=${breakpointItem.status === BreakpointStatus.ENABLED} @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}>
       </label>
-      <span class='code-snippet' @click=${():void => {this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));}} title=${codeSnippetTooltip}>${codeSnippet}</span>
+      <span class='code-snippet' @click=${clickHandler} title=${codeSnippetTooltip}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
         ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint))}
         <span class='location'>${breakpointItem.location}</span>

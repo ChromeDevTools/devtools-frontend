@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
-import {setDevToolsSettings} from '../../shared/helper.js';
+import {setDevToolsSettings, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickStartButton,
@@ -98,10 +98,18 @@ describe('Navigation', async function() {
           'meta-description',
         ]);
 
-        const viewTraceText = await reportEl.$eval('.lh-button--trace', viewTraceEl => {
+        const viewTraceButton = await waitFor('.lh-button--trace', reportEl);
+        const viewTraceText = await viewTraceButton.evaluate(viewTraceEl => {
           return viewTraceEl.textContent;
         });
         assert.strictEqual(viewTraceText, 'View Original Trace');
+
+        await viewTraceButton.click();
+        const selectedTab = await waitFor('.tabbed-pane-header-tab.selected[aria-label="Performance"]');
+        const selectedTabText = await selectedTab.evaluate(selectedTabEl => {
+          return selectedTabEl.textContent;
+        });
+        assert.strictEqual(selectedTabText, 'Performance');
       });
 
       it('successfully returns a Lighthouse report with DevTools throttling', async () => {

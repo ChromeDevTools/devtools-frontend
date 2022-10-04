@@ -12,14 +12,16 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {Bounds, formatMillisecondsToSeconds} from './TickingFlameChartHelpers.js';
 
 const defaultFont = '11px ' + Host.Platform.fontFamily();
-const defaultColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+function getGroupDefaultTextColor(): string {
+  return ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+}
 
 const DefaultStyle = {
   height: 20,
   padding: 2,
   collapsible: false,
   font: defaultFont,
-  color: defaultColor,
+  color: getGroupDefaultTextColor(),
   backgroundColor: 'rgba(100 0 0 / 10%)',
   nestingLevel: 0,
   itemsHeight: 20,
@@ -390,13 +392,17 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
    */
   addGroup(name: Common.UIString.LocalizedString, depth: number): void {
     if (this.timelineDataInternal.groups) {
-      this.timelineDataInternal.groups.push({
+      const newGroup = {
         name: name,
         startLevel: this.maxLevel,
         expanded: true,
         selectable: false,
         style: DefaultStyle,
         track: null,
+      };
+      this.timelineDataInternal.groups.push(newGroup);
+      ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+        newGroup.style.color = getGroupDefaultTextColor();
       });
     }
     this.maxLevel += depth;

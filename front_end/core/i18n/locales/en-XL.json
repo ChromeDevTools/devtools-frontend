@@ -9887,6 +9887,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Ĉón̂d́ît́îón̂: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Êd́ît́ b̂ŕêák̂ṕôín̂t́"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "m̂íx̂éd̂"
   },

@@ -62,6 +62,7 @@ devtools_svg_sources = [
   "close-icon.svg",
   "copy_icon.svg",
   "dropdown_7x6_icon.svg",
+  "edit-icon.svg",
   "elements_panel_icon.svg",
   "errorWave.svg",
   "error_icon.svg",

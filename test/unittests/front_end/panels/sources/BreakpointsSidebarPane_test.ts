@@ -33,7 +33,7 @@ function createBreakpointLocations(testData: LocationTestData[]): Bindings.Break
     const breakpoint = sinon.createStubInstance(Bindings.BreakpointManager.Breakpoint);
     breakpoint.enabled.returns(data.enabled);
     breakpoint.condition.returns(data.condition);
-    return {uiLocation, breakpoint} as Bindings.BreakpointManager.BreakpointLocation;
+    return new Bindings.BreakpointManager.BreakpointLocation(breakpoint, uiLocation);
   });
   return breakpointLocations;
 }
@@ -97,6 +97,11 @@ async function setUpTestWithOneBreakpointLocation(
   return {groups: data.groups, location: locations[0]};
 }
 
+class MockRevealer extends Common.Revealer.Revealer {
+  async reveal(_object: Object, _omitFocus?: boolean|undefined): Promise<void> {
+  }
+}
+
 describeWithEnvironment('BreakpointsSidebarController', () => {
   it('can remove a breakpoint', async () => {
     const {groups, location} = await setUpTestWithOneBreakpointLocation();
@@ -118,25 +123,42 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
     assert.isTrue(breakpoint.setEnabled.calledWith(false));
   });
 
-  it('triggers a jump to source', async () => {
-    const {groups} = await setUpTestWithOneBreakpointLocation();
+  it('correctly reveals source location', async () => {
+    const {groups, location: {uiLocation}} = await setUpTestWithOneBreakpointLocation();
     const breakpointItem = groups[0].breakpointItems[0];
+    const revealer = sinon.createStubInstance(MockRevealer);
 
     Common.Revealer.registerRevealer({
       contextTypes() {
-        return [
-          Workspace.UISourceCode.UILocation,
-        ];
+        return [Workspace.UISourceCode.UILocation];
       },
       destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
       async loadRevealer() {
-        return Sources.SourcesPanel.UILocationRevealer.instance();
+        return revealer;
       },
     });
 
-    const revealStub = sinon.stub(Sources.SourcesPanel.UILocationRevealer.instance(), 'reveal');
     await Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().jumpToSource(breakpointItem);
-    assert.isTrue(revealStub.called);
+    assert.isTrue(revealer.reveal.calledOnceWith(uiLocation));
+  });
+
+  it('correctly reveals breakpoint editor', async () => {
+    const {groups, location} = await setUpTestWithOneBreakpointLocation();
+    const breakpointItem = groups[0].breakpointItems[0];
+    const revealer = sinon.createStubInstance(MockRevealer);
+
+    Common.Revealer.registerRevealer({
+      contextTypes() {
+        return [Bindings.BreakpointManager.BreakpointLocation];
+      },
+      destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+      async loadRevealer() {
+        return revealer;
+      },
+    });
+
+    await Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().breakpointEdited(breakpointItem);
+    assert.isTrue(revealer.reveal.calledOnceWith(location));
   });
 
   describe('getUpdatedBreakpointViewData', () => {

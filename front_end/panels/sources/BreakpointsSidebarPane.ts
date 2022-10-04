@@ -41,6 +41,12 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
           this.#onBreakpointSelectedEvent(event);
         });
     this.#breakpointsView.addEventListener(
+        SourcesComponents.BreakpointsView.BreakpointEditedEvent.eventName, (event: Event) => {
+          const {data: {breakpointItem}} = event as SourcesComponents.BreakpointsView.BreakpointEditedEvent;
+          void this.#controller.breakpointEdited(breakpointItem);
+          event.consume();
+        });
+    this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.BreakpointsRemovedEvent.eventName, (event: Event) => {
           this.#onBreakpointsRemovedEvent(event);
         });
@@ -147,6 +153,19 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       const breakpoint = value.breakpoint;
       breakpoint.setEnabled(checked);
     });
+  }
+
+  async breakpointEdited(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem): Promise<void> {
+    const locations = this.#getLocationsForBreakpointItem(breakpointItem);
+    let location: Bindings.BreakpointManager.BreakpointLocation|undefined;
+    for (const locationCandidate of locations) {
+      if (!location || locationCandidate.uiLocation.compareTo(location.uiLocation) < 0) {
+        location = locationCandidate;
+      }
+    }
+    if (location) {
+      await Common.Revealer.reveal(location);
+    }
   }
 
   breakpointsRemoved(breakpointItems: SourcesComponents.BreakpointsView.BreakpointItem[]): void {

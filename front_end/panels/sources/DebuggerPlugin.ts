@@ -170,6 +170,8 @@ type BreakpointDescription = {
   breakpoint: Bindings.BreakpointManager.Breakpoint,
 };
 
+const debuggerPluginForUISourceCode = new Map<Workspace.UISourceCode.UISourceCode, DebuggerPlugin>();
+
 export class DebuggerPlugin extends Plugin {
   private editor: TextEditor.TextEditor.TextEditor|undefined = undefined;
   // Set if the debugger is stopped on a breakpoint in this file
@@ -216,6 +218,8 @@ export class DebuggerPlugin extends Plugin {
       uiSourceCode: Workspace.UISourceCode.UISourceCode,
       private readonly transformer: SourceFrame.SourceFrame.Transformer) {
     super(uiSourceCode);
+
+    debuggerPluginForUISourceCode.set(uiSourceCode, this);
 
     this.scriptsPanel = SourcesPanel.instance();
     this.breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
@@ -425,6 +429,16 @@ export class DebuggerPlugin extends Plugin {
 
   willHide(): void {
     this.popoverHelper?.hidePopover();
+  }
+
+  editBreakpointLocation({breakpoint, uiLocation}: Bindings.BreakpointManager.BreakpointLocation): void {
+    const {lineNumber} = this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
+    const line = this.editor?.state.doc.line(lineNumber + 1);
+    if (!line) {
+      return;
+    }
+    const isLogpoint = breakpoint.condition().includes(LogpointPrefix);
+    this.editBreakpointCondition(line, breakpoint, null, isLogpoint);
   }
 
   populateLineGutterContextMenu(contextMenu: UI.ContextMenu.ContextMenu, editorLineNumber: number): void {
@@ -1619,10 +1633,35 @@ export class DebuggerPlugin extends Plugin {
 
     Bindings.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.ignoreListCallback);
 
+    debuggerPluginForUISourceCode.delete(this.uiSourceCode);
     super.dispose();
 
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
     this.liveLocationPool.disposeAll();
+  }
+}
+
+let breakpointLocationRevealerInstance: BreakpointLocationRevealer;
+
+export class BreakpointLocationRevealer implements Common.Revealer.Revealer {
+  static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): BreakpointLocationRevealer {
+    if (!breakpointLocationRevealerInstance || forceNew) {
+      breakpointLocationRevealerInstance = new BreakpointLocationRevealer();
+    }
+
+    return breakpointLocationRevealerInstance;
+  }
+
+  async reveal(breakpointLocation: Object, omitFocus?: boolean|undefined): Promise<void> {
+    if (!(breakpointLocation instanceof Bindings.BreakpointManager.BreakpointLocation)) {
+      throw new Error('Internal error: not a breakpoint location');
+    }
+    const {uiLocation} = breakpointLocation;
+    SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
+    const debuggerPlugin = debuggerPluginForUISourceCode.get(uiLocation.uiSourceCode);
+    if (debuggerPlugin) {
+      debuggerPlugin.editBreakpointLocation(breakpointLocation);
+    }
   }
 }
 

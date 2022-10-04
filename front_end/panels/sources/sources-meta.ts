@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
@@ -1701,6 +1702,19 @@ Common.Revealer.registerRevealer({
   async loadRevealer() {
     const Sources = await loadSourcesModule();
     return Sources.SourcesPanel.DebuggerPausedDetailsRevealer.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      Bindings.BreakpointManager.BreakpointLocation,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+  async loadRevealer() {
+    const Sources = await loadSourcesModule();
+    return Sources.DebuggerPlugin.BreakpointLocationRevealer.instance();
   },
 });
 

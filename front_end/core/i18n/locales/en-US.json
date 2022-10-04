@@ -9887,6 +9887,9 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Condition: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Edit breakpoint"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "mixed"
   },

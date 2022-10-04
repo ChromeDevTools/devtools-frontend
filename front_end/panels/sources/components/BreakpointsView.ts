@@ -43,6 +43,10 @@ const UIStrings = {
   */
   removeBreakpointsInFile: 'Remove all breakpoints in file',
   /**
+  *@description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint in the breakpoint sidebar of the sources panel.
+  */
+  editBreakpoint: 'Edit breakpoint',
+  /**
   *@description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel.
   */
   removeBreakpoint: 'Remove breakpoint',
@@ -146,6 +150,16 @@ export class BreakpointSelectedEvent extends Event {
   }
 }
 
+export class BreakpointEditedEvent extends Event {
+  static readonly eventName = 'breakpointedited';
+  data: {breakpointItem: BreakpointItem};
+
+  constructor(breakpointItem: BreakpointItem) {
+    super(BreakpointEditedEvent.eventName);
+    this.data = {breakpointItem};
+  }
+}
+
 export class BreakpointsRemovedEvent extends Event {
   static readonly eventName = 'breakpointsremoved';
   data: {breakpointItems: BreakpointItem[]};
@@ -202,6 +216,26 @@ export class BreakpointsView extends HTMLElement {
     ${renderedGroups}`;
     // clang-format on
     LitHtml.render(out, this.#shadow, {host: this});
+  }
+
+  #renderEditBreakpointButton(breakpointItem: BreakpointItem): LitHtml.TemplateResult {
+    const clickHandler = (event: Event): void => {
+      this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
+      event.consume();
+    };
+    // clang-format off
+    return LitHtml.html`
+    <button class='edit-breakpoint-button' @click=${clickHandler} title=${i18nString(UIStrings.editBreakpoint)}>
+    <${IconButton.Icon.Icon.litTagName} .data=${{
+        iconName: 'edit-icon',
+        width: '10px',
+        color: 'var(--color-text-secondary)',
+      } as IconButton.Icon.IconData}
+      }>
+      </${IconButton.Icon.Icon.litTagName}>
+    </button>
+      `;
+    // clang-format on
   }
 
   #renderRemoveBreakpointButton(breakpointItems: BreakpointItem[], tooltipText: string): LitHtml.TemplateResult {
@@ -295,6 +329,7 @@ export class BreakpointsView extends HTMLElement {
       </label>
       <span class='code-snippet' @click=${clickHandler} title=${codeSnippetTooltip}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
+        ${this.#renderEditBreakpointButton(breakpointItem)}
         ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint))}
         <span class='location'>${breakpointItem.location}</span>
       </span>

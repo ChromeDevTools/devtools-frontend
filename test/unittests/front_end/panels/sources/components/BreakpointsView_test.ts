@@ -26,6 +26,7 @@ const HIT_BREAKPOINT_SELECTOR = BREAKPOINT_ITEM_SELECTOR + '.hit';
 const BREAKPOINT_LOCATION_SELECTOR = '.location';
 const REMOVE_FILE_BREAKPOINTS_SELECTOR = '.group-hover-actions > .remove-breakpoint-button';
 const REMOVE_SINGLE_BREAKPOINT_SELECTOR = '.breakpoint-item-location-or-actions > .remove-breakpoint-button';
+const EDIT_SINGLE_BREAKPOINT_SELECTOR = '.edit-breakpoint-button';
 const PAUSE_ON_EXCEPTIONS_SELECTOR = '.pause-on-exceptions';
 const PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR = '.pause-on-caught-exceptions';
 
@@ -383,6 +384,25 @@ describeWithEnvironment('BreakpointsView', () => {
     removeFileBreakpointsButton.click();
     const event = await eventPromise;
     assert.strictEqual(event.data.breakpointItems[0], data.groups[0].breakpointItems[0]);
+  });
+
+  it('triggers an event on editing one breakpoint', async () => {
+    const {component, data} = await renderMultipleBreakpoints();
+    assertShadowRoot(component.shadowRoot);
+
+    // Dispatch a mouse over in order to show the edit button.
+    component.shadowRoot.querySelector(BREAKPOINT_ITEM_SELECTOR)?.dispatchEvent(new Event('mouseover'));
+    // Wait until the re-rendering has happened.
+    await coordinator.done();
+
+    const removeFileBreakpointsButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
+    assertElement(removeFileBreakpointsButton, HTMLButtonElement);
+
+    const eventPromise = getEventPromise<SourcesComponents.BreakpointsView.BreakpointEditedEvent>(
+        component, SourcesComponents.BreakpointsView.BreakpointEditedEvent.eventName);
+    removeFileBreakpointsButton.click();
+    const event = await eventPromise;
+    assert.strictEqual(event.data.breakpointItem, data.groups[0].breakpointItems[0]);
   });
 
   it('renders a counter of enabled/disabled breakpoints', async () => {

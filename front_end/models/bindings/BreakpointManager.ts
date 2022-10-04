@@ -386,7 +386,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       breakpoints = new Map();
       this.#breakpointsForUISourceCode.set(uiLocation.uiSourceCode, breakpoints);
     }
-    const breakpointLocation = {breakpoint: breakpoint, uiLocation: uiLocation};
+    const breakpointLocation = new BreakpointLocation(breakpoint, uiLocation);
     breakpoints.set(uiLocation.id(), breakpointLocation);
     this.dispatchEventToListeners(Events.BreakpointAdded, breakpointLocation);
   }
@@ -404,7 +404,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     if (breakpoints.size === 0) {
       this.#breakpointsForUISourceCode.delete(uiLocation.uiSourceCode);
     }
-    this.dispatchEventToListeners(Events.BreakpointRemoved, {breakpoint: breakpoint, uiLocation: uiLocation});
+    this.dispatchEventToListeners(Events.BreakpointRemoved, breakpointLocation);
   }
 }
 
@@ -1095,7 +1095,12 @@ namespace Storage {
   }
 }
 
-export interface BreakpointLocation {
-  breakpoint: Breakpoint;
-  uiLocation: Workspace.UISourceCode.UILocation;
+export class BreakpointLocation {
+  readonly breakpoint: Breakpoint;
+  readonly uiLocation: Workspace.UISourceCode.UILocation;
+
+  constructor(breakpoint: Breakpoint, uiLocation: Workspace.UISourceCode.UILocation) {
+    this.breakpoint = breakpoint;
+    this.uiLocation = uiLocation;
+  }
 }

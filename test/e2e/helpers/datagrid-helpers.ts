@@ -94,7 +94,8 @@ export async function assertDataGridNotScrolled(dataGrid: ElementHandle) {
 export async function waitForScrollTopOfDataGrid(dataGrid: ElementHandle, targetTop: number): Promise<boolean> {
   return waitForFunction(async () => {
     const scrollTop = await getDataGridScrollTop(dataGrid);
-    return scrollTop === targetTop;
+    // Allow for a few pixels either side
+    return scrollTop >= targetTop - 5 && scrollTop <= targetTop + 5;
   });
 }
 

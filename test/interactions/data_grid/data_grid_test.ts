@@ -232,8 +232,7 @@ describe('data grid', async () => {
         assertNumberBetween(columnWidths[1], 395, 400);  // 44.12% of 900 = 397
       });
 
-  // Flaky
-  it.skip('[crbug.com/1364578] persists the column resizes when new data is added', async () => {
+  it('persists the column resizes when new data is added', async () => {
     await loadComponentDocExample('data_grid/adding-data.html');
 
     const dataGrid = await getDataGrid();
@@ -296,8 +295,7 @@ describe('data grid', async () => {
       await waitForScrollTopOfDataGrid(dataGrid, 89);
     });
 
-    // Flaky
-    it.skip('[crbug.com/1364578] does not auto-scroll if the user has clicked on a cell', async () => {
+    it('does not auto-scroll if the user has clicked on a cell', async () => {
       const dataGrid = await getDataGrid();
       await assertDataGridNotScrolled(dataGrid);
 
@@ -313,8 +311,7 @@ describe('data grid', async () => {
       await waitForScrollTopOfDataGrid(dataGrid, 0);
     });
 
-    // Flaky
-    it.skip('[crbug.com/1364578] does not auto-scroll if the user has scrolled in the data-grid', async () => {
+    it('does not auto-scroll if the user has scrolled in the data-grid', async () => {
       const dataGrid = await getDataGrid();
       await assertDataGridNotScrolled(dataGrid);
       await scrollDataGridDown(dataGrid, 20);
@@ -341,10 +338,8 @@ describe('data grid', async () => {
          await waitForScrollTopOfDataGrid(dataGrid, 89);
        });
 
-    // Flaky
-    it.skip(
-        '[crbug.com/1364578] will resume autoscroll if the user clicks a cell but then scrolls to the bottom',
-        async () => {
+    it(
+        'will resume autoscroll if the user clicks a cell but then scrolls to the bottom', async () => {
           const {frontend} = getBrowserAndPages();
           const dataGrid = await getDataGrid();
           await assertDataGridNotScrolled(dataGrid);

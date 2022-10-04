@@ -48,6 +48,7 @@ highly_privileged_builder(
             "subject": "Update DevTools DEPS",
             "excludes": [
                 "third_party/esbuild:infra/3pp/tools/esbuild/${platform}",
+                "third_party/ninja:infra/3pp/tools/ninja/${platform}",
             ],
             "reviewers": [
                 "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com",

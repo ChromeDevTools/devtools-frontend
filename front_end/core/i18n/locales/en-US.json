@@ -1181,6 +1181,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Dock side"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Use left and right arrow keys to navigate the options"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Dock to bottom"
   },
@@ -12925,6 +12928,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Close"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools is docked to {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "DevTools is undocked"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Dock to bottom"

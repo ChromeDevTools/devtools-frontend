@@ -1181,6 +1181,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "D̂óĉḱ ŝíd̂é"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Ûśê ĺêf́t̂ án̂d́ r̂íĝh́t̂ ár̂ŕôẃ k̂éŷś t̂ó n̂áv̂íĝát̂é t̂h́ê óp̂t́îón̂ś"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "D̂óĉḱ t̂ó b̂ót̂t́ôḿ"
   },
@@ -12925,6 +12928,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Ĉĺôśê"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "D̂év̂T́ôól̂ś îś d̂óĉḱêd́ t̂ó {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "D̂év̂T́ôól̂ś îś ûńd̂óĉḱêd́"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "D̂óĉḱ t̂ó b̂ót̂t́ôḿ"

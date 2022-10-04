@@ -105,6 +105,10 @@ const UIStrings = {
   *@description Text for the viewing the help options
   */
   help: 'Help',
+  /**
+  *@description Text describing how to navigate the dock side menu
+  */
+  dockSideNaviation: 'Use left and right arrow keys to navigate the options',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -624,6 +628,7 @@ export class MainImpl {
 
     // Initialize ARIAUtils.alert Element
     UI.ARIAUtils.alertElementInstance();
+    UI.DockController.DockController.instance().announceDockLocation();
 
     // Allow UI cycles to repaint prior to creating connection.
     window.setTimeout(this.#initializeTarget.bind(this), 0);
@@ -866,8 +871,9 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       const dockItemElement = document.createElement('div');
       dockItemElement.classList.add('flex-centered');
       dockItemElement.classList.add('flex-auto');
+      dockItemElement.classList.add('location-menu');
       dockItemElement.tabIndex = -1;
-      UI.ARIAUtils.setAccessibleName(dockItemElement, UIStrings.dockSide);
+      UI.ARIAUtils.setAccessibleName(dockItemElement, UIStrings.dockSide + UIStrings.dockSideNaviation);
       const titleElement = dockItemElement.createChild('span', 'dockside-title');
       titleElement.textContent = i18nString(UIStrings.dockSide);
       const toggleDockSideShorcuts =
@@ -909,6 +915,10 @@ export class MainMenuItem implements UI.Toolbar.Provider {
           dir = -1;
         } else if (event.key === 'ArrowRight') {
           dir = 1;
+        } else if (event.key === 'ArrowDown') {
+          const contextMenuElement = dockItemElement.closest('.soft-context-menu');
+          contextMenuElement?.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown'}));
+          return;
         } else {
           return;
         }

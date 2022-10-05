@@ -253,7 +253,7 @@ export class TextEditor extends HTMLElement {
       // Reset the highlight state if, after 2 seconds (the animation
       // duration) it is still showing this highlight.
       window.setTimeout(() => {
-        if (view.state.field(highlightState).id === id) {
+        if (view === this.#activeEditor && view.state.field(highlightState).id === id) {
           view.dispatch({effects: setHighlightLine.of(null)});
         }
       }, 2000);

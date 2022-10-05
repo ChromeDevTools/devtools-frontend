@@ -8,13 +8,13 @@ import {getBrowserAndPages, waitFor, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickOnContextMenu,
-  getScrollPositionInEditor,
   openFileInEditor,
   openSourceCodeEditorForFile,
   openSourcesPanel,
   scrollByInEditor,
   toggleDebuggerSidebar,
   toggleNavigatorSidebar,
+  waitForScrollPositionInEditor,
 } from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
@@ -40,10 +40,10 @@ describe('The Sources Tab', async () => {
          await openFileInEditor('tabbed-editor-scroll-position-2.js');
          await openFileInEditor('tabbed-editor-scroll-position-1.js');
 
-         assert.deepEqual(
-             await getScrollPositionInEditor(),
-             {scrollLeft: 30, scrollTop: 30},
-         );
+         await waitForScrollPositionInEditor({
+           scrollLeft: 30,
+           scrollTop: 30,
+         });
        });
   });
 

@@ -88,12 +88,15 @@ export async function scrollByInEditor({x, y}: {x: number, y: number}) {
   }, codeMirrorScrolDOM, x, y);
 }
 
-export async function getScrollPositionInEditor() {
+export async function waitForScrollPositionInEditor(expected: {scrollLeft: number, scrollTop: number}) {
   const codeMirrorScrolDOM = await waitFor(EDITOR_SCROLL_DOM_SELECTOR);
-  return codeMirrorScrolDOM.evaluate(element => ({
-                                       scrollLeft: element.scrollLeft,
-                                       scrollTop: element.scrollTop,
-                                     }));
+  await waitForFunction(async () => {
+    const actual = await codeMirrorScrolDOM.evaluate(element => ({
+                                                       scrollLeft: element.scrollLeft,
+                                                       scrollTop: element.scrollTop,
+                                                     }));
+    return actual.scrollLeft === expected.scrollLeft && actual.scrollTop === expected.scrollTop;
+  });
 }
 
 export async function doubleClickSourceTreeItem(selector: string) {

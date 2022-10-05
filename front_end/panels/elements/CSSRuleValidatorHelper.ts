@@ -4,13 +4,17 @@
 
 export const buildPropertyDefinitionText = (property: string, value?: string): string => {
   if (value === undefined) {
-    return buildPropertyText(property);
+    return buildPropertyName(property);
   }
   return '<code class="unbreakable-text"><span class="property">' + property + '</span>: ' + value + '</code>';
 };
 
-export const buildPropertyText = (property: string): string => {
+export const buildPropertyName = (property: string): string => {
   return '<code class="unbreakable-text"><span class="property">' + property + '</span></code>';
+};
+
+export const buildPropertyValue = (property: string): string => {
+  return '<code class="unbreakable-text">' + property + '</code>';
 };
 
 export const isFlexContainer = (computedStyles?: Map<string, string>): boolean => {

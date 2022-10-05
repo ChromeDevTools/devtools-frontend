@@ -4889,26 +4889,20 @@
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Ŝh́ôẃ âĺl̂"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "D̂ép̂ŕêćât́êd́ p̂ŕôṕêŕt̂ý"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Îńâćt̂ív̂é p̂ŕôṕêŕt̂ý"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "T̂ŕŷ ćĥán̂ǵîńĝ t́ĥé {EXISTING_PARENT_ELEMENT_RULE} p̂ŕôṕêŕt̂ý ôń t̂h́ê ṕâŕêńt̂ t́ô {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "T̂ŕŷ śêt́t̂ín̂ǵ t̂h́ê {EXISTING_PARENT_ELEMENT_RULE} ṕr̂óp̂ér̂t́ŷ ón̂ t́ĥé p̂ár̂én̂t́ t̂ó {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "T̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ ón̂ t́ĥé p̂ár̂én̂t́ êĺêḿêńt̂ b́ŷṕâśŝéŝ t́ĥé êf́f̂éĉt́ ôf́ {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "T̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ ón̂ t́ĥé p̂ár̂én̂t́ êĺêḿêńt̂ ṕr̂év̂én̂t́ŝ {AFFECTED_PROPERTY_DECLARATION_CODE} f́r̂óm̂ h́âv́îńĝ án̂ éf̂f́êćt̂."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "T̂ŕŷ ćĥán̂ǵîńĝ t́ĥé {EXISTING_PROPERTY_DECLARATION} p̂ŕôṕêŕt̂ý t̂ó {TARGET_PROPERTY_DECLARATION}."
+    "message": "T̂ŕŷ śêt́t̂ín̂ǵ t̂h́ê {EXISTING_PROPERTY_DECLARATION} ṕr̂óp̂ér̂t́ŷ t́ô {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "T̂ŕŷ ŕêḿôv́îńĝ {REASON_PROPERTY_DECLARATION_CODE} ór̂ ćĥán̂ǵîńĝ ít̂ś v̂ál̂úê."
+    "message": "T̂ŕŷ śêt́t̂ín̂ǵ {PROPERTY_NAME} t̂ó ŝóm̂ét̂h́îńĝ ót̂h́êŕ t̂h́âń {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "T̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ ón̂ t́ĥíŝ él̂ém̂én̂t́ b̂ýp̂áŝśêś t̂h́ê éf̂f́êćt̂ óf̂ {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "T̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ ṕr̂év̂én̂t́ŝ {AFFECTED_PROPERTY_DECLARATION_CODE} f́r̂óm̂ h́âv́îńĝ án̂ éf̂f́êćt̂."
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<n̂ód̂é>"

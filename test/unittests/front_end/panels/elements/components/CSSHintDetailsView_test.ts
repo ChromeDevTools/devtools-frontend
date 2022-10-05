@@ -18,7 +18,6 @@ describeWithEnvironment('CSSHintDetailsView', async () => {
 
     it('renders every section', async () => {
       const hintMessage = new Elements.CSSRuleValidator.Hint(
-          Elements.CSSRuleValidator.HintType.INACTIVE_PROPERTY,
           'This element has <code class="unbreakable-text"><span class="property">flex-wrap</span>: nowrap</code> rule, therefore <code class="unbreakable-text"><span class="property">align-content</span></code> has no effect.',
           'For this property to work, please remove or change the value of <code class="unbreakable-text"><span class="property">flex-wrap</span></code> rule.',
           'align-content',
@@ -42,7 +41,6 @@ describeWithEnvironment('CSSHintDetailsView', async () => {
 
     it('does not render learn more', async () => {
       const hint = new Elements.CSSRuleValidator.Hint(
-          Elements.CSSRuleValidator.HintType.INACTIVE_PROPERTY,
           'This element has <code class="unbreakable-text"><span class="property">flex-wrap</span>: nowrap</code> rule, therefore <code class="unbreakable-text"><span class="property">align-content</span></code> has no effect.',
           'For this property to work, please remove or change the value of <code class="unbreakable-text"><span class="property">flex-wrap</span></code> rule.',
       );
@@ -54,12 +52,8 @@ describeWithEnvironment('CSSHintDetailsView', async () => {
 
       const shadowRoot = popupComponent.shadowRoot;
 
-      const popupReasonRendered = shadowRoot.querySelector('.hint-popup-reason') !== null;
-      const popupPossibleFixRendered = shadowRoot.querySelector('.hint-popup-possible-fix') !== null;
-      const popupLearnMoreRendered = shadowRoot.querySelector('#learn-more') !== null;
-
-      assert.isTrue(popupReasonRendered);
-      assert.isTrue(popupPossibleFixRendered);
-      assert.isFalse(popupLearnMoreRendered);
+      assert(shadowRoot.querySelector('.hint-popup-reason') !== null);
+      assert(shadowRoot.querySelector('.hint-popup-possible-fix') !== null);
+      assert(shadowRoot.querySelector('#learn-more') === null);
     });
 });

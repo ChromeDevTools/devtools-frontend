@@ -21,7 +21,7 @@ import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {type StylePropertiesSection} from './StylePropertiesSection.js';
 import {CSSPropertyPrompt, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
-import {cssRuleValidatorsMap, type Hint, HintType} from './CSSRuleValidator.js';
+import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -785,9 +785,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
         activeHints.set(hintIcon, hint);
         this.listItemElement.append(hintIcon);
-        if (hint.getType() === HintType.INACTIVE_PROPERTY) {
-          this.listItemElement.classList.add('inactive-property');
-        }
+        this.listItemElement.classList.add('inactive-property');
         break;
       }
     }

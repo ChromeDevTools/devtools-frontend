@@ -141,15 +141,25 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     const editorWrapper = this.contentElement.appendChild(document.createElement('div'));
     editorWrapper.classList.add('condition-editor');
 
-    this.editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
-      doc: content,
-      selection: {anchor: 0, head: content.length},
-      extensions: [
-        this.placeholderCompartment.of(this.getPlaceholder()),
-        CodeMirror.keymap.of(keymap),
-        editorConfig,
-      ],
-    }));
+    this.editor = new TextEditor.TextEditor.TextEditor(
+        CodeMirror.EditorState.create({
+          doc: content,
+          selection: {anchor: 0, head: content.length},
+          extensions: [
+            this.placeholderCompartment.of(this.getPlaceholder()),
+            CodeMirror.keymap.of(keymap),
+            editorConfig,
+          ],
+        }),
+        {
+          // CodeMirror selects which node to scroll based on its `scrollHeight`
+          // and `clientHeight`. It goes up until the `window` to find
+          // a scrollable node. Since this text editor lives inside another TextEditor and
+          // it doesn't contain a scroll area, scrollIntoView in CodeMirror instead
+          // causes the wrapping CodeMirror to scroll. That's why we cancel
+          // restoring scroll position for the TextEditor instance in the dialog.
+          restoreScrollPosition: false,
+        });
     editorWrapper.appendChild(this.editor);
 
     this.updateTooltip();

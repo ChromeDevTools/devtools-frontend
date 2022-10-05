@@ -19,6 +19,10 @@ declare global {
   }
 }
 
+interface TextEditorOptions {
+  restoreScrollPosition: boolean;
+}
+
 export class TextEditor extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-text-editor`;
 
@@ -40,11 +44,15 @@ export class TextEditor extends HTMLElement {
     }
   };
   #devtoolsResizeObserver = new ResizeObserver(this.#resizeListener);
+  #options: TextEditorOptions;
 
-  constructor(pendingState?: CodeMirror.EditorState) {
+  constructor(pendingState?: CodeMirror.EditorState, options: TextEditorOptions = {
+    restoreScrollPosition: true,
+  }) {
     super();
     this.#pendingState = pendingState;
     this.#shadow.adoptedStyleSheets = [CodeHighlighter.Style.default];
+    this.#options = options;
   }
 
   #createEditor(): CodeMirror.EditorView {
@@ -60,17 +68,19 @@ export class TextEditor extends HTMLElement {
       },
     });
 
-    this.#restoreScrollPosition(this.#activeEditor);
-    this.#activeEditor.scrollDOM.addEventListener('scroll', event => {
-      if (!this.#activeEditor) {
-        return;
-      }
+    if (this.#options.restoreScrollPosition) {
+      this.#restoreScrollPosition(this.#activeEditor);
+      this.#activeEditor.scrollDOM.addEventListener('scroll', event => {
+        if (!this.#activeEditor) {
+          return;
+        }
 
-      this.#saveScrollPosition(this.#activeEditor, {
-        scrollLeft: (event.target as HTMLElement).scrollLeft,
-        scrollTop: (event.target as HTMLElement).scrollTop,
+        this.#saveScrollPosition(this.#activeEditor, {
+          scrollLeft: (event.target as HTMLElement).scrollLeft,
+          scrollTop: (event.target as HTMLElement).scrollTop,
+        });
       });
-    });
+    }
 
     this.#ensureSettingListeners();
     this.#startObservingResize();

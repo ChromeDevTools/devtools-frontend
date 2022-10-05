@@ -226,6 +226,16 @@ export async function getToolbarText() {
   return Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
 }
 
+export async function openEditBreakpointDialog(frontend: puppeteer.Page, index: number|string) {
+  const breakpointLine = await getLineNumberElement(index);
+  assertNotNullOrUndefined(breakpointLine);
+
+  // Make sure that breakpoint exists there
+  await waitForFunction(async () => await isBreakpointSet(index));
+
+  await clickOnContextMenu('.cm-breakpoint', 'Edit breakpoint…');
+}
+
 export async function addBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
   const breakpointLine = await getLineNumberElement(index);
   assertNotNullOrUndefined(breakpointLine);

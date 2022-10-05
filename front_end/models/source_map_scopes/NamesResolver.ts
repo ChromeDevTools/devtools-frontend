@@ -16,6 +16,23 @@ interface CachedScopeMap {
 
 const scopeToCachedIdentifiersMap = new WeakMap<SDK.DebuggerModel.ScopeChainEntry, CachedScopeMap>();
 const cachedMapByCallFrame = new WeakMap<SDK.DebuggerModel.CallFrame, Map<string, string>>();
+const cachedTextByDeferredContent = new WeakMap<TextUtils.ContentProvider.DeferredContent, TextUtils.Text.Text|null>();
+
+async function getTextFor(contentProvider: TextUtils.ContentProvider.ContentProvider):
+    Promise<TextUtils.Text.Text|null> {
+  // We intentionally cache based on the DeferredContent object rather
+  // than the ContentProvider object, which may appear as a more sensible
+  // choice, since the content of both Script and UISourceCode objects
+  // can change over time.
+  const deferredContent = await contentProvider.requestContent();
+  let text = cachedTextByDeferredContent.get(deferredContent);
+  if (text === undefined) {
+    const {content} = deferredContent;
+    text = content ? new TextUtils.Text.Text(content) : null;
+    cachedTextByDeferredContent.set(deferredContent, text);
+  }
+  return text;
+}
 
 export class IdentifierPositions {
   name: string;
@@ -43,12 +60,11 @@ const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeCh
   if (!script || !script.sourceMapURL || script !== functionEndLocation.script()) {
     return null;
   }
-  const {content} = await script.requestContent();
-  if (!content) {
+  const text = await getTextFor(script);
+  if (!text) {
     return null;
   }
 
-  const text = new TextUtils.Text.Text(content);
   const scopeRange = new TextUtils.TextRange.TextRange(
       functionStartLocation.lineNumber, functionStartLocation.columnNumber, functionEndLocation.lineNumber,
       functionEndLocation.columnNumber);
@@ -209,7 +225,6 @@ const resolveScope =
           if (!sourceMap) {
             return {variableMapping, thisMapping};
           }
-          const textCache = new Map<string, TextUtils.Text.Text>();
           // Extract as much as possible from SourceMap and resolve
           // missing identifier names from SourceMap ranges.
           const promises: Promise<void>[] = [];
@@ -233,7 +248,7 @@ const resolveScope =
               // mappings agree. However, that can be expensive for identifiers with many uses,
               // so we iterate sequentially, stopping at the first non-empty mapping.
               for (const position of id.positions) {
-                const sourceName = await resolveSourceName(script, sourceMap, id.name, position, textCache);
+                const sourceName = await resolveSourceName(script, sourceMap, id.name, position);
                 if (sourceName) {
                   handler(sourceName);
                   return;
@@ -273,8 +288,7 @@ const resolveScope =
 
   async function resolveSourceName(
       script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap, name: string,
-      position: {lineNumber: number, columnNumber: number},
-      textCache: Map<string, TextUtils.Text.Text>): Promise<string|null> {
+      position: {lineNumber: number, columnNumber: number}): Promise<string|null> {
     const ranges = sourceMap.findEntryRanges(position.lineNumber, position.columnNumber);
     if (!ranges) {
       return null;
@@ -287,7 +301,7 @@ const resolveScope =
     if (!uiSourceCode) {
       return null;
     }
-    const compiledText = getTextFor((await script.requestContent()).content);
+    const compiledText = await getTextFor(script);
     if (!compiledText) {
       return null;
     }
@@ -303,7 +317,7 @@ const resolveScope =
 
     // Extract the mapped name from the source code range and ensure that the punctuation
     // matches the one from the compiled code.
-    const sourceText = getTextFor((await uiSourceCode.requestContent()).content);
+    const sourceText = await getTextFor(uiSourceCode);
     if (!sourceText) {
       return null;
     }
@@ -354,18 +368,6 @@ const resolveScope =
       }
 
       return {name, punctuation};
-    }
-
-    function getTextFor(content: string|null): TextUtils.Text.Text|null {
-      if (!content) {
-        return null;
-      }
-      let text = textCache.get(content);
-      if (!text) {
-        text = new TextUtils.Text.Text(content);
-        textCache.set(content, text);
-      }
-      return text;
     }
   }
 
@@ -455,11 +457,10 @@ export const resolveExpression = async(
   if (!sourceMap) {
     return '';
   }
-  const {content} = await script.requestContent();
-  if (!content) {
+  const text = await getTextFor(script);
+  if (!text) {
     return '';
   }
-  const text = new TextUtils.Text.Text(content);
   const textRange = sourceMap.reverseMapTextRange(
       uiSourceCode.url(),
       new TextUtils.TextRange.TextRange(lineNumber, startColumnNumber, lineNumber, endColumnNumber));
@@ -655,12 +656,11 @@ export async function resolveFrameFunctionName(frame: SDK.DebuggerModel.CallFram
   if (!startLocation) {
     return null;
   }
-  const {content} = await script.requestContent();
-  if (!content) {
+  const text = await getTextFor(script);
+  if (!text) {
     return null;
   }
 
-  const text = new TextUtils.Text.Text(content);
   const openRange = new TextUtils.TextRange.TextRange(
       startLocation.lineNumber, startLocation.columnNumber, startLocation.lineNumber, startLocation.columnNumber + 1);
   if (text.extract(openRange) !== '(') {

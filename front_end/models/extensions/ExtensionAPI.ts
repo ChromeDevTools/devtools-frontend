@@ -203,7 +203,7 @@ export namespace PrivateAPI {
     entries: Array<KeyboardEventInit&{eventType: string}>,
   };
   type GetHARRequest = {command: Commands.GetHAR};
-  type GetPageResourcesRequest = {command: Commands.GetPageResources, includeFiles: boolean};
+  type GetPageResourcesRequest = {command: Commands.GetPageResources};
   type GetWasmLinearMemoryRequest = {
     command: Commands.GetWasmLinearMemory,
     offset: number,
@@ -639,7 +639,9 @@ self.injectedExtensionAPI = function(
         userAction = true;
         try {
           const {resource, lineNumber} = message as {resource: APIImpl.ResourceData, lineNumber: number};
-          callback.call(null, new (Constructor(Resource))(resource), lineNumber);
+          if (canAccessResource(resource)) {
+            callback.call(null, new (Constructor(Resource))(resource), lineNumber);
+          }
         } finally {
           userAction = false;
         }
@@ -1135,17 +1137,28 @@ self.injectedExtensionAPI = function(
     this.onRecordingStopped = new (Constructor(EventSink))(PrivateAPI.Events.RecordingStopped + id);
   }
 
+  function canAccessResource(resource: APIImpl.ResourceData): boolean {
+    return extensionInfo.allowFileAccess || !resource.url.startsWith('file://');
+  }
+
   function InspectedWindow(this: PublicAPI.Chrome.DevTools.InspectedWindow): void {
     function dispatchResourceEvent(
         this: APIImpl.EventSink<(resource: APIImpl.Resource) => unknown>, message: {arguments: unknown[]}): void {
-      this._fire(new (Constructor(Resource))(message.arguments[0] as APIImpl.ResourceData));
+      const resourceData = message.arguments[0] as APIImpl.ResourceData;
+      if (!canAccessResource(resourceData)) {
+        return;
+      }
+      this._fire(new (Constructor(Resource))(resourceData));
     }
 
     function dispatchResourceContentEvent(
         this: APIImpl.EventSink<(resource: APIImpl.Resource, content: string) => unknown>,
         message: {arguments: unknown[]}): void {
-      this._fire(
-          new (Constructor(Resource))(message.arguments[0] as APIImpl.ResourceData), message.arguments[1] as string);
+      const resourceData = message.arguments[0] as APIImpl.ResourceData;
+      if (!canAccessResource(resourceData)) {
+        return;
+      }
+      this._fire(new (Constructor(Resource))(resourceData), message.arguments[1] as string);
     }
 
     this.onResourceAdded = new (Constructor(EventSink))(PrivateAPI.Events.ResourceAdded, dispatchResourceEvent);
@@ -1207,15 +1220,16 @@ self.injectedExtensionAPI = function(
         return new (Constructor(Resource))(resourceData);
       }
       function callbackWrapper(resources: unknown): void {
-        callback && callback((resources as APIImpl.ResourceData[]).map(wrapResource));
+        callback && callback((resources as APIImpl.ResourceData[]).map(wrapResource).filter(canAccessResource));
       }
-      extensionServer.sendRequest(
-          {command: PrivateAPI.Commands.GetPageResources, includeFiles: Boolean(extensionInfo.allowFileAccess)},
-          callback && callbackWrapper);
+      extensionServer.sendRequest({command: PrivateAPI.Commands.GetPageResources}, callback && callbackWrapper);
     },
   };
 
   function ResourceImpl(this: APIImpl.Resource, resourceData: APIImpl.ResourceData): void {
+    if (!canAccessResource) {
+      throw new Error('Resource access not allowed');
+    }
     this._url = resourceData.url;
     this._type = resourceData.type;
   }

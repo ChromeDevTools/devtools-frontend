@@ -52,7 +52,7 @@ import {
   type ExecutionContext,
   type QueryObjectRequestedEvent,
 } from './RuntimeModel.js';
-import {type Target} from './Target.js';
+import {type Target, Type} from './Target.js';
 import {TargetManager, type Observer} from './TargetManager.js';
 
 const UIStrings = {
@@ -140,7 +140,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
 
     const resourceTreeModel = target.model(ResourceTreeModel);
-    if (resourceTreeModel && !target.parentTarget()) {
+    if (resourceTreeModel && target.parentTarget()?.type() !== Type.Frame) {
       eventListeners.push(resourceTreeModel.addEventListener(
           ResourceTreeModelEvents.MainFrameNavigated, this.mainFrameNavigated, this));
     }
@@ -153,7 +153,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
           RuntimeModelEvents.ExceptionRevoked, this.exceptionRevoked.bind(this, runtimeModel)));
       eventListeners.push(runtimeModel.addEventListener(
           RuntimeModelEvents.ConsoleAPICalled, this.consoleAPICalled.bind(this, runtimeModel)));
-      if (!target.parentTarget()) {
+      if (target.parentTarget()?.type() !== Type.Frame) {
         eventListeners.push(runtimeModel.debuggerModel().addEventListener(
             DebuggerModelEvents.GlobalObjectCleared, this.clearIfNecessary, this));
       }

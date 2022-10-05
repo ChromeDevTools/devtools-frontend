@@ -122,7 +122,8 @@ ol.expanded {
 }
 
 .implicit,
-.inherited {
+.inherited,
+.inactive-property {
   opacity: 50%;
 }
 

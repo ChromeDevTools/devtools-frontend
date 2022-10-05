@@ -86,6 +86,10 @@ export class Hint {
     }
   }
 
+  getType(): HintType {
+    return this.#hintType;
+  }
+
   getMessage(): string {
     return this.#hintMessage;
   }

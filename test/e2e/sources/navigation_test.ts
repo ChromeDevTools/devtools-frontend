@@ -33,17 +33,20 @@ describe('The Sources Tab', async () => {
   });
 
   describe('Scroll and navigation', async () => {
-    it('after performing scrolls in an editor and navigating between different editor tabs should restore the correct scroll position',
-       async () => {
-         await openSourceCodeEditorForFile('tabbed-editor-scroll-position-1.js', 'tabbed-editor-scroll-position.html');
+    // Flaky test
+    it.skipOnPlatforms(
+        ['mac'],
+        '[crbug.com/1370991] after performing scrolls in an editor and navigating between different editor tabs should restore the correct scroll position',
+        async () => {
+          await openSourceCodeEditorForFile('tabbed-editor-scroll-position-1.js', 'tabbed-editor-scroll-position.html');
 
-         await scrollByInEditor({x: 15, y: 15});
-         await scrollByInEditor({x: 15, y: 15});
-         await openFileInEditor('tabbed-editor-scroll-position-2.js');
-         await openFileInEditor('tabbed-editor-scroll-position-1.js');
+          await scrollByInEditor({x: 15, y: 15});
+          await scrollByInEditor({x: 15, y: 15});
+          await openFileInEditor('tabbed-editor-scroll-position-2.js');
+          await openFileInEditor('tabbed-editor-scroll-position-1.js');
 
-         await waitForScrollPositionInEditor({scrollLeft: 30, scrollTop: 30});
-       });
+          await waitForScrollPositionInEditor({scrollLeft: 30, scrollTop: 30});
+        });
 
     it('scroll position doesn\'t change when edit breakpoint dialog is opened', async () => {
       const {frontend} = getBrowserAndPages();

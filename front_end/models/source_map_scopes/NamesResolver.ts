@@ -647,16 +647,26 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
 // start or if the function scope does not start with a left paren (e.g., arrow
 // function with one parameter), the resolution returns null.
 export async function resolveFrameFunctionName(frame: SDK.DebuggerModel.CallFrame): Promise<string|null> {
-  const script = frame.script;
-  const scope = frame.localScope();
-  if (!scope || !script) {
+  // To reduce the overhead of resolving function names,
+  // we check for source maps first and immediately leave
+  // this function if the frame doesn't have a sourcemap.
+  const sourceMap =
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapForScript(frame.script);
+  if (!sourceMap) {
     return null;
   }
-  const startLocation = scope.startLocation();
+
+  const startLocation = frame.localScope()?.startLocation();
   if (!startLocation) {
     return null;
   }
-  const text = await getTextFor(script);
+
+  const name = sourceMap.findEntry(startLocation.lineNumber, startLocation.columnNumber)?.name;
+  if (!name) {
+    return null;
+  }
+
+  const text = await getTextFor(frame.script);
   if (!text) {
     return null;
   }
@@ -667,12 +677,7 @@ export async function resolveFrameFunctionName(frame: SDK.DebuggerModel.CallFram
     return null;
   }
 
-  const sourceMap = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapForScript(script);
-  if (!sourceMap) {
-    return null;
-  }
-  const entry = sourceMap.findEntry(startLocation.lineNumber, startLocation.columnNumber);
-  return entry?.name ?? null;
+  return name;
 }
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)

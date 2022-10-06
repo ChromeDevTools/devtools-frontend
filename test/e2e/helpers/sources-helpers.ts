@@ -49,7 +49,6 @@ export const MORE_TABS_SELECTOR = '[aria-label="More tabs"]';
 const OVERRIDES_TAB_SELECTOR = '[aria-label="Overrides"]';
 export const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
 const CLEAR_CONFIGURATION_SELECTOR = '[aria-label="Clear configuration"]';
-const EDITOR_SCROLL_DOM_SELECTOR = '.cm-scroller';
 
 export async function toggleNavigatorSidebar(frontend: puppeteer.Page) {
   const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
@@ -78,25 +77,6 @@ export async function getLineNumberElement(lineNumber: number|string) {
     }
   }
   return null;
-}
-
-export async function scrollByInEditor({x, y}: {x: number, y: number}) {
-  const {frontend} = getBrowserAndPages();
-  const codeMirrorScrolDOM = await waitFor(EDITOR_SCROLL_DOM_SELECTOR);
-  await frontend.evaluate((element, x, y) => {
-    element.scrollBy(x, y);
-  }, codeMirrorScrolDOM, x, y);
-}
-
-export async function waitForScrollPositionInEditor(expected: {scrollLeft: number, scrollTop: number}) {
-  const codeMirrorScrolDOM = await waitFor(EDITOR_SCROLL_DOM_SELECTOR);
-  await waitForFunction(async () => {
-    const actual = await codeMirrorScrolDOM.evaluate(element => ({
-                                                       scrollLeft: element.scrollLeft,
-                                                       scrollTop: element.scrollTop,
-                                                     }));
-    return actual.scrollLeft === expected.scrollLeft && actual.scrollTop === expected.scrollTop;
-  });
 }
 
 export async function doubleClickSourceTreeItem(selector: string) {

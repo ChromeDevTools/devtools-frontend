@@ -8,13 +8,10 @@ import {getBrowserAndPages, waitFor, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickOnContextMenu,
-  openFileInEditor,
   openSourceCodeEditorForFile,
   openSourcesPanel,
-  scrollByInEditor,
   toggleDebuggerSidebar,
   toggleNavigatorSidebar,
-  waitForScrollPositionInEditor,
 } from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
@@ -28,26 +25,6 @@ describe('The Sources Tab', async () => {
 
       assert.strictEqual(value, 'file:test/e2e/resources/sources/navigation');
     });
-  });
-
-  describe('Scroll and navigation', async () => {
-    // Flaky test
-    it.skipOnPlatforms(
-        ['mac'],
-        '[crbug.com/1370991] after performing scrolls in an editor and navigating between different editor tabs should restore the correct scroll position',
-        async () => {
-          await openSourceCodeEditorForFile('tabbed-editor-scroll-position-1.js', 'tabbed-editor-scroll-position.html');
-
-          await scrollByInEditor({x: 15, y: 15});
-          await scrollByInEditor({x: 15, y: 15});
-          await openFileInEditor('tabbed-editor-scroll-position-2.js');
-          await openFileInEditor('tabbed-editor-scroll-position-1.js');
-
-          await waitForScrollPositionInEditor({
-            scrollLeft: 30,
-            scrollTop: 30,
-          });
-        });
   });
 
   describe('Sidebar shortcuts', () => {

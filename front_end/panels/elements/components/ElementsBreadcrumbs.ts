@@ -342,7 +342,13 @@ export class ElementsBreadcrumbs extends HTMLElement {
     if (activeCrumb) {
       await coordinator.scroll(() => {
         activeCrumb.scrollIntoView({
-          behavior: 'smooth',
+          // We only want to scroll smoothly when the user is clicking the
+          // buttons manually. If we are automatically scrolling, we could be
+          // scrolling a long distance, so just jump there right away. This
+          // most commonly occurs when the user first opens DevTools on a
+          // deeply nested element, and the slow scrolling of the breadcrumbs
+          // is just a distraction and not useful.
+          behavior: 'auto',
         });
       });
     }

@@ -331,7 +331,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       void {
     const mainFrame = event.data;
     const manager = mainFrame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
-    if (!manager || mainFrame.resourceTreeModel().target().parentTarget()) {
+    if (!manager || mainFrame.resourceTreeModel().target().parentTarget()?.type() === SDK.Target.Type.Frame) {
       return;
     }
 

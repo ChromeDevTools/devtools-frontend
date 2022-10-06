@@ -146,6 +146,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.PERSISTENCE, 'persistenceNetworkOverridesEnabled', true,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
+        Common.Settings.SettingCategory.NETWORK, 'network_log.preserve-log', true, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
         Common.Settings.SettingCategory.NETWORK, 'network_log.record-log', true, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
         Common.Settings.SettingCategory.SOURCES, 'network.enable-unc-loading', false,

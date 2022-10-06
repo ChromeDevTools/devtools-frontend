@@ -49,3 +49,15 @@ npm run auto-unittest -- --expanded-reporting
 To run tests under the debugger, open the "Run and Debug" sidebar,
 select "Run unit tests in VS Code debugger" from the dropdown, and click
 the start button or press F5.
+
+### Debugging with DevTools
+
+To run tests under the DevTools debugger use `DEBUG_TEST` environment variable.
+
+```bash
+DEBUG_TEST=1 npm run auto-unittest
+```
+
+This will bring up Chrome with a Karma launcher page. Wait for "Debug" button to
+appear and click it. A new page will open, here you can open DevTools, set
+breakpoints in the tests and reload page to rerun tests.

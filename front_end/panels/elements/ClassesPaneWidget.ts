@@ -75,7 +75,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
   }
 
   private onKeyDown(event: KeyboardEvent): void {
-    if (!(event.key === 'Enter') && !isEscKey(event)) {
+    if (!(event.key === 'Enter') && !Platform.KeyboardUtilities.isEscKey(event)) {
       return;
     }
 
@@ -88,7 +88,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
 
     const eventTarget = (event.target as HTMLElement);
     let text: ''|string = (eventTarget.textContent as string);
-    if (isEscKey(event)) {
+    if (Platform.KeyboardUtilities.isEscKey(event)) {
       if (!Platform.StringUtilities.isWhitespace(text)) {
         event.consume(true);
       }

@@ -425,7 +425,7 @@ export class SearchableView extends VBox {
 
   private onSearchKeyDown(ev: Event): void {
     const event = (ev as KeyboardEvent);
-    if (isEscKey(event)) {
+    if (Platform.KeyboardUtilities.isEscKey(event)) {
       this.closeSearch();
       event.consume(true);
       return;

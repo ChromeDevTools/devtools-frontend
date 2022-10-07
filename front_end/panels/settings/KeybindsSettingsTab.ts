@@ -381,7 +381,7 @@ export class ShortcutListItem {
         i18nString(UIStrings.discardChanges), 'largeicon-delete', 'keybinds-cancel-button',
         () => this.settingsTab.stopEditing(this.item)));
     this.element.addEventListener('keydown', event => {
-      if (isEscKey(event)) {
+      if (Platform.KeyboardUtilities.isEscKey(event)) {
         this.settingsTab.stopEditing(this.item);
         event.consume(true);
       }

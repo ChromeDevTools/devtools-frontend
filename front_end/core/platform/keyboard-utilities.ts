@@ -28,3 +28,7 @@ export const ARROW_KEYS = new Set<ArrowKey>([
 export function keyIsArrowKey(key: string): key is ArrowKey {
   return ARROW_KEYS.has(key as ArrowKey);
 }
+
+export function isEscKey(event: KeyboardEvent): boolean {
+  return event.key === 'Escape';
+}

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import listWidgetStyles from './listWidget.css.legacy.js';
@@ -277,7 +278,8 @@ export class Editor<T> {
   constructor() {
     this.element = document.createElement('div');
     this.element.classList.add('editor-container');
-    this.element.addEventListener('keydown', onKeyDown.bind(null, isEscKey, this.cancelClicked.bind(this)), false);
+    this.element.addEventListener(
+        'keydown', onKeyDown.bind(null, Platform.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
 
     this.contentElementInternal = this.element.createChild('div', 'editor-content');
     this.contentElementInternal.addEventListener(

@@ -557,10 +557,6 @@ self.isEnterOrSpaceKey = function(event: Event): boolean {
   return event.key === 'Enter' || event.key === ' ';
 };
 
-self.isEscKey = function(event: Event): boolean {
-  return event.keyCode === 27;
-};
-
 // DevTools front-end still assumes that
 //   classList.toggle('a', undefined) works as
 //   classList.toggle('a', false) rather than as

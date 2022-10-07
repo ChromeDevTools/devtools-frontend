@@ -539,8 +539,9 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private promptKeyDown(event: KeyboardEvent): void {
-    if (event.key === 'Enter' || isEscKey(event)) {
-      this.finishEditing(event, isEscKey(event));
+    const isEscapeKey = Platform.KeyboardUtilities.isEscKey(event);
+    if (event.key === 'Enter' || isEscapeKey) {
+      this.finishEditing(event, isEscapeKey);
     }
   }
 

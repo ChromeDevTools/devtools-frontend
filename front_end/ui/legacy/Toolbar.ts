@@ -31,7 +31,9 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+
 import * as Utils from './utils/utils.js';
 
 import {Events as ActionEvents, type Action} from './ActionRegistration.js';
@@ -688,7 +690,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     this.prompt = new TextPrompt();
     this.proxyElement = this.prompt.attach(internalPromptElement);
     this.proxyElement.classList.add('toolbar-prompt-proxy');
-    this.proxyElement.addEventListener('keydown', (event: Event) => this.onKeydownCallback(event));
+    this.proxyElement.addEventListener('keydown', (event: Event) => this.onKeydownCallback(event as KeyboardEvent));
     this.prompt.initialize(completions || ((): Promise<never[]> => Promise.resolve([])), ' ', dynamicCompletions);
     if (tooltip) {
       this.prompt.setTitle(tooltip);
@@ -730,11 +732,11 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     return this.prompt.textWithCurrentSuggestion();
   }
 
-  private onKeydownCallback(event: Event): void {
-    if ((event as KeyboardEvent).key === 'Enter' && this.prompt.text()) {
+  private onKeydownCallback(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && this.prompt.text()) {
       this.dispatchEventToListeners(ToolbarInput.Event.EnterPressed, this.prompt.text());
     }
-    if (!isEscKey(event) || !this.prompt.text()) {
+    if (!Platform.KeyboardUtilities.isEscKey(event) || !this.prompt.text()) {
       return;
     }
     this.setValue('', true);

@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 import {ariaMetadata} from './ARIAMetadata.js';
@@ -181,7 +182,7 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    if (isEscKey(event)) {
+    if (Platform.KeyboardUtilities.isEscKey(event)) {
       this.editingCancelled();
       event.consume();
       return;

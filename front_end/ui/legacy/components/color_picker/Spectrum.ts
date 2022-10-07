@@ -481,8 +481,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.focusInternal();
   }
 
-  private onCloseBtnKeydown(event: Event): void {
-    if (isEscKey(event) || isEnterOrSpaceKey(event)) {
+  private onCloseBtnKeydown(event: KeyboardEvent): void {
+    if (Platform.KeyboardUtilities.isEscKey(event) || isEnterOrSpaceKey(event)) {
       this.togglePalettePanel(false);
       event.consume(true);
     }
@@ -845,19 +845,18 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
   }
 
-  private onShadeColorKeydown(colorElement: HTMLElement, event: Event): void {
-    const keyboardEvent = event as KeyboardEvent;
-    const target = keyboardEvent.target as HTMLElement;
-    if (isEscKey(event) || keyboardEvent.key === 'Tab') {
+  private onShadeColorKeydown(colorElement: HTMLElement, event: KeyboardEvent): void {
+    const target = event.target as HTMLElement;
+    if (Platform.KeyboardUtilities.isEscKey(event) || event.key === 'Tab') {
       colorElement.focus();
       if (this.shadesCloseHandler) {
         this.shadesCloseHandler();
       }
       event.consume(true);
-    } else if (keyboardEvent.key === 'ArrowUp' && target.previousElementSibling) {
+    } else if (event.key === 'ArrowUp' && target.previousElementSibling) {
       (target.previousElementSibling as HTMLElement).focus();
       event.consume(true);
-    } else if (keyboardEvent.key === 'ArrowDown' && target.nextElementSibling) {
+    } else if (event.key === 'ArrowDown' && target.nextElementSibling) {
       (target.nextElementSibling as HTMLElement).focus();
       event.consume(true);
     }

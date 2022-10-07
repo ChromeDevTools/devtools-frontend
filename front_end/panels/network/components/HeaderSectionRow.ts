@@ -320,16 +320,23 @@ interface BlockedDetailsDescriptor {
   reveal?: () => void;
 }
 
-export interface HeaderDescriptor {
+export interface HeaderDetailsDescriptor {
   name: Platform.StringUtilities.LowerCaseString;
   value: string|null;
-  originalValue?: string|null;
   headerValueIncorrect?: boolean;
   blockedDetails?: BlockedDetailsDescriptor;
   headerNotSet?: boolean;
   setCookieBlockedReasons?: Protocol.Network.SetCookieBlockedReason[];
   highlight?: boolean;
+}
+
+export interface HeaderEditorDescriptor {
+  name: Platform.StringUtilities.LowerCaseString;
+  value: string|null;
+  originalValue?: string|null;
   isOverride?: boolean;
   valueEditable?: boolean;
   nameEditable?: boolean;
 }
+
+export type HeaderDescriptor = HeaderDetailsDescriptor&HeaderEditorDescriptor;

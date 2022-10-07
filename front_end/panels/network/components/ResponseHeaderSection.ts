@@ -13,9 +13,11 @@ import * as Host from '../../../core/host/host.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import {
   type HeaderDescriptor,
+  type HeaderDetailsDescriptor,
+  type HeaderEditedEvent,
+  type HeaderEditorDescriptor,
   HeaderSectionRow,
   type HeaderSectionRowData,
-  type HeaderEditedEvent,
 } from './HeaderSectionRow.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
 import type * as Workspace from '../../../models/workspace/workspace.js';
@@ -92,7 +94,8 @@ export class ResponseHeaderSection extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-response-header-section`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #request?: Readonly<SDK.NetworkRequest.NetworkRequest>;
-  #headers: HeaderDescriptor[] = [];
+  #headerDetails: HeaderDetailsDescriptor[] = [];
+  #headerEditors: HeaderEditorDescriptor[] = [];
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #overrides: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
   #successfullyParsedOverrides = false;
@@ -103,13 +106,11 @@ export class ResponseHeaderSection extends HTMLElement {
 
   set data(data: ResponseHeaderSectionData) {
     this.#request = data.request;
-    this.#headers =
+    this.#headerDetails =
         this.#request.sortedResponseHeaders.map(header => ({
                                                   name: Platform.StringUtilities.toLowerCaseString(header.name),
                                                   value: header.value,
-                                                  originalValue: header.value,
                                                 }));
-    this.#markOverrides();
 
     const headersWithIssues = [];
     if (this.#request.wasBlocked()) {
@@ -134,9 +135,9 @@ export class ResponseHeaderSection extends HTMLElement {
     }
 
     function mergeHeadersWithIssues(
-        headers: HeaderDescriptor[], headersWithIssues: HeaderDescriptor[]): HeaderDescriptor[] {
+        headers: HeaderDetailsDescriptor[], headersWithIssues: HeaderDetailsDescriptor[]): HeaderDetailsDescriptor[] {
       let i = 0, j = 0;
-      const result: HeaderDescriptor[] = [];
+      const result: HeaderDetailsDescriptor[] = [];
       while (i < headers.length && j < headersWithIssues.length) {
         if (headers[i].name < headersWithIssues[j].name) {
           result.push({...headers[i++], headerNotSet: false});
@@ -155,12 +156,12 @@ export class ResponseHeaderSection extends HTMLElement {
       return result;
     }
 
-    this.#headers = mergeHeadersWithIssues(this.#headers, headersWithIssues);
+    this.#headerDetails = mergeHeadersWithIssues(this.#headerDetails, headersWithIssues);
 
     const blockedResponseCookies = this.#request.blockedResponseCookies();
     const blockedCookieLineToReasons = new Map<string, Protocol.Network.SetCookieBlockedReason[]>(
         blockedResponseCookies?.map(c => [c.cookieLine, c.blockedReasons]));
-    for (const header of this.#headers) {
+    for (const header of this.#headerDetails) {
       if (header.name === 'set-cookie' && header.value) {
         const matchingBlockedReasons = blockedCookieLineToReasons.get(header.value);
         if (matchingBlockedReasons) {
@@ -170,16 +171,20 @@ export class ResponseHeaderSection extends HTMLElement {
     }
 
     if (data.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response) {
-      this.#headers.filter(header => header.name === data.toReveal?.header?.toLowerCase()).forEach(header => {
+      this.#headerDetails.filter(header => header.name === data.toReveal?.header?.toLowerCase()).forEach(header => {
         header.highlight = true;
       });
     }
 
-    void this.#loadOverridesInfo();
+    this.#headerEditors =
+        this.#headerDetails.map(header => ({name: header.name, value: header.value, originalValue: header.value}));
+    this.#markOverrides();
+
+    void this.#loadOverridesFileInfo();
     this.#render();
   }
 
-  async #loadOverridesInfo(): Promise<void> {
+  async #loadOverridesFileInfo(): Promise<void> {
     if (!this.#request) {
       return;
     }
@@ -197,7 +202,7 @@ export class ResponseHeaderSection extends HTMLElement {
         throw 'Type mismatch after parsing';
       }
       this.#successfullyParsedOverrides = true;
-      for (const header of this.#headers) {
+      for (const header of this.#headerEditors) {
         header.valueEditable = true;
       }
       this.#render();
@@ -231,13 +236,12 @@ export class ResponseHeaderSection extends HTMLElement {
     }
 
     const actualHeaders = new Map<Platform.StringUtilities.LowerCaseString, string[]>();
-    for (const header of this.#headers) {
-      const headerName = Platform.StringUtilities.toLowerCaseString(header.name);
-      const headerValues = actualHeaders.get(headerName);
+    for (const header of this.#headerDetails) {
+      const headerValues = actualHeaders.get(header.name);
       if (headerValues) {
         headerValues.push(header.value || '');
       } else {
-        actualHeaders.set(headerName, [header.value || '']);
+        actualHeaders.set(header.name, [header.value || '']);
       }
     }
 
@@ -264,7 +268,7 @@ export class ResponseHeaderSection extends HTMLElement {
       // If the array of actual headers and the array of original headers do not
       // exactly match, mark all headers with 'headerName' as being overridden.
       if (isDifferent(headerName, actualHeaders, originalHeaders)) {
-        this.#headers.filter(header => header.name === headerName).forEach(header => {
+        this.#headerEditors.filter(header => header.name === headerName).forEach(header => {
           header.isOverride = true;
         });
       }
@@ -285,15 +289,15 @@ export class ResponseHeaderSection extends HTMLElement {
       return;
     }
 
-    const previousName = this.#headers[index].name;
-    const previousValue = this.#headers[index].value;
-    this.#headers[index].name = headerName;
-    this.#headers[index].value = headerValue;
+    const previousName = this.#headerEditors[index].name;
+    const previousValue = this.#headerEditors[index].value;
+    this.#headerEditors[index].name = headerName;
+    this.#headerEditors[index].value = headerValue;
 
     // If multiple headers have the same name 'foo', we treat them as a unit.
     // If there are overrides for 'foo', all original 'foo' headers are removed
     // and replaced with the override(s) for 'foo'.
-    const headersToUpdate = this.#headers.filter(
+    const headersToUpdate = this.#headerEditors.filter(
         header => header.name === headerName && (header.value !== header.originalValue || header.isOverride));
 
     const rawPath = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().rawPathFromUrl(
@@ -322,7 +326,7 @@ export class ResponseHeaderSection extends HTMLElement {
 
     // If a header name has been edited (only possible when adding headers),
     // remove the previous override entry.
-    if (this.#headers[index].name !== previousName) {
+    if (this.#headerEditors[index].name !== previousName) {
       for (let i = 0; i < block.headers.length; ++i) {
         if (block.headers[i].name === previousName && block.headers[i].value === previousValue) {
           block.headers.splice(i, 1);
@@ -342,15 +346,15 @@ export class ResponseHeaderSection extends HTMLElement {
   }
 
   #onAddHeaderClick(): void {
-    this.#headers.push({
+    this.#headerEditors.push({
       name: Platform.StringUtilities.toLowerCaseString(i18nString(UIStrings.defaultHeaderName)),
       value: i18nString(UIStrings.defaultHeaderValue),
       isOverride: true,
       nameEditable: true,
       valueEditable: true,
     });
-    const index = this.#headers.length - 1;
-    this.#updateOverrides(this.#headers[index].name, this.#headers[index].value || '', index);
+    const index = this.#headerEditors.length - 1;
+    this.#updateOverrides(this.#headerEditors[index].name, this.#headerEditors[index].value || '', index);
     this.#render();
   }
 
@@ -359,10 +363,13 @@ export class ResponseHeaderSection extends HTMLElement {
       return;
     }
 
+    const headerDescriptors: HeaderDescriptor[] =
+        this.#headerEditors.map((headerEditor, index) => ({...this.#headerDetails[index], ...headerEditor}));
+
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      ${this.#headers.map((header, index) => html`
+      ${headerDescriptors.map((header, index) => html`
         <${HeaderSectionRow.litTagName} .data=${{
           header: header,
         } as HeaderSectionRowData} @headeredited=${this.#onHeaderEdited} data-index=${index}></${HeaderSectionRow.litTagName}>
@@ -389,7 +396,7 @@ declare global {
   }
 }
 
-const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescriptor>([
+const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDetailsDescriptor>([
   [
     Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader,
     {

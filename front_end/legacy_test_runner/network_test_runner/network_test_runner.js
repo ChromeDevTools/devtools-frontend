@@ -59,7 +59,7 @@ NetworkTestRunner.recordNetwork = function() {
 };
 
 NetworkTestRunner.networkWaterfallColumn = function() {
-  return UI.panels.network.networkLogView.columns.waterfallColumn;
+  return UI.panels.network.networkLogView.columns().waterfallColumn;
 };
 
 NetworkTestRunner.networkRequests = function() {

@@ -385,7 +385,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly timeCalculatorInternal: NetworkTransferTimeCalculator;
   private readonly durationCalculator: NetworkTransferDurationCalculator;
   private calculatorInternal: NetworkTransferTimeCalculator;
-  private readonly columns: NetworkLogViewColumns;
+  private readonly columnsInternal: NetworkLogViewColumns;
   private staleRequests: Set<SDK.NetworkRequest.NetworkRequest>;
   private mainRequestLoadTime: number;
   private mainRequestDOMContentLoadedTime: number;
@@ -452,9 +452,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.durationCalculator = new NetworkTransferDurationCalculator();
     this.calculatorInternal = this.timeCalculatorInternal;
 
-    this.columns = new NetworkLogViewColumns(
+    this.columnsInternal = new NetworkLogViewColumns(
         this, this.timeCalculatorInternal, this.durationCalculator, networkLogLargeRowsSetting);
-    this.columns.show(this.element);
+    this.columnsInternal.show(this.element);
 
     this.staleRequests = new Set();
     this.mainRequestLoadTime = -1;
@@ -537,9 +537,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(searchKeys, NetworkLogView.sortSearchValues);
     this.resetSuggestionBuilder();
 
-    this.dataGrid = this.columns.dataGrid();
+    this.dataGrid = this.columnsInternal.dataGrid();
     this.setupDataGrid();
-    this.columns.sortByCurrentColumn();
+    this.columnsInternal.sortByCurrentColumn();
     filterBar.filterButton().addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this.dataGrid.scheduleUpdate.bind(this.dataGrid, true /* isFromUser */));
 
@@ -825,6 +825,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.updateSummaryBar();
   }
 
+  columns(): NetworkLogViewColumns {
+    return this.columnsInternal;
+  }
+
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {
     // TODO(allada) Remove dependency on networkManager and instead use NetworkLog and PageLoad for needed data.
     if (networkManager.target().parentTarget()) {
@@ -940,7 +944,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private setHidden(value: boolean): void {
-    this.columns.setHidden(value);
+    this.columnsInternal.setHidden(value);
     UI.ARIAUtils.setHidden(this.summaryToolbar.element, value);
   }
 
@@ -1141,15 +1145,15 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   addFilmStripFrames(times: number[]): void {
-    this.columns.addEventDividers(times, 'network-frame-divider');
+    this.columnsInternal.addEventDividers(times, 'network-frame-divider');
   }
 
   selectFilmStripFrame(time: number): void {
-    this.columns.selectFilmStripFrame(time);
+    this.columnsInternal.selectFilmStripFrame(time);
   }
 
   clearFilmStripFrame(): void {
-    this.columns.clearFilmStripFrame();
+    this.columnsInternal.clearFilmStripFrame();
   }
 
   private refreshIfNeeded(): void {
@@ -1182,14 +1186,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     if (this.calculatorInternal !== x) {
       this.calculatorInternal = x;
-      this.columns.setCalculator(this.calculatorInternal);
+      this.columnsInternal.setCalculator(this.calculatorInternal);
     }
     this.calculatorInternal.reset();
 
     if (this.calculatorInternal.startAtZero) {
-      this.columns.hideEventDividers();
+      this.columnsInternal.hideEventDividers();
     } else {
-      this.columns.showEventDividers();
+      this.columnsInternal.showEventDividers();
     }
 
     this.invalidateAllItems();
@@ -1205,7 +1209,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const time = event.data.loadTime;
     if (time) {
       this.mainRequestLoadTime = time;
-      this.columns.addEventDividers([time], 'network-load-divider');
+      this.columnsInternal.addEventDividers([time], 'network-load-divider');
     }
   }
 
@@ -1216,18 +1220,18 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const {data} = event;
     if (data) {
       this.mainRequestDOMContentLoadedTime = data;
-      this.columns.addEventDividers([data], 'network-dcl-divider');
+      this.columnsInternal.addEventDividers([data], 'network-dcl-divider');
     }
   }
 
   wasShown(): void {
     this.refreshIfNeeded();
     this.registerCSSFiles([networkLogViewStyles]);
-    this.columns.wasShown();
+    this.columnsInternal.wasShown();
   }
 
   willHide(): void {
-    this.columns.willHide();
+    this.columnsInternal.willHide();
   }
 
   onResize(): void {
@@ -1268,7 +1272,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   stylesChanged(): void {
-    this.columns.scheduleRefresh();
+    this.columnsInternal.scheduleRefresh();
   }
 
   private refresh(): void {
@@ -1364,7 +1368,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.updateSummaryBar();
 
     if (nodesToInsert.size) {
-      this.columns.sortByCurrentColumn();
+      this.columnsInternal.sortByCurrentColumn();
     }
 
     this.dataGrid.updateInstantly();
@@ -1390,7 +1394,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.dispatchEventToListeners(Events.RequestActivated, {showPanel: false});
 
     this.setHoveredNode(null);
-    this.columns.reset();
+    this.columnsInternal.reset();
 
     this.timeFilter = null;
     this.calculatorInternal.reset();
@@ -1500,7 +1504,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   switchViewMode(gridMode: boolean): void {
-    this.columns.switchViewMode(gridMode);
+    this.columnsInternal.switchViewMode(gridMode);
   }
 
   handleContextMenuForRequest(contextMenu: UI.ContextMenu.ContextMenu, request: SDK.NetworkRequest.NetworkRequest):

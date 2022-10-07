@@ -79,7 +79,8 @@ async function enable({reset = true} = {}) {
 
       sendRawMessage(message: string) {
         void (async () => {
-          const outgoingMessage = JSON.parse(message) as {id: number, method: ProtocolCommand, params: unknown};
+          const outgoingMessage =
+              JSON.parse(message) as {id: number, method: ProtocolCommand, params: unknown, sessionId: string};
           const handler = responseMap.get(outgoingMessage.method);
           if (!handler) {
             return;
@@ -93,7 +94,9 @@ async function enable({reset = true} = {}) {
           if (!('getError' in result)) {
             result.getError = () => undefined;
           }
-          messageCallback.call(undefined, {id: outgoingMessage.id, method: outgoingMessage.method, result});
+          messageCallback.call(
+              undefined,
+              {id: outgoingMessage.id, method: outgoingMessage.method, result, sessionId: outgoingMessage.sessionId});
         })();
       },
 

@@ -27,11 +27,21 @@ function initializeTargetManagerIfNecessary(): SDK.TargetManager.TargetManager {
   return targetManager;
 }
 
+let uniqueTargetId = 0;
+
 export function createTarget(
-    {id = 'test' as Protocol.Target.TargetID, name = 'test', type = SDK.Target.Type.Frame, parentTarget}:
+    {id, name = 'test', type = SDK.Target.Type.Frame, parentTarget}:
         {id?: Protocol.Target.TargetID, name?: string, type?: SDK.Target.Type, parentTarget?: SDK.Target.Target} = {}) {
+  if (!id) {
+    if (!uniqueTargetId++) {
+      id = 'test' as Protocol.Target.TargetID;
+    } else {
+      id = ('test' + uniqueTargetId) as Protocol.Target.TargetID;
+    }
+  }
   const targetManager = initializeTargetManagerIfNecessary();
-  return targetManager.createTarget(id, name, type, parentTarget ? parentTarget : null);
+  return targetManager.createTarget(
+      id, name, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget?.id());
 }
 
 function createSettingValue(

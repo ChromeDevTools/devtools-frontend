@@ -30,9 +30,6 @@ function navigateFrameWithMockConnection(
 }
 
 describeWithMockConnection('ResourceTreeModel', () => {
-  let target: SDK.Target.Target;
-  let resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
-  let networkManager: SDK.NetworkManager.NetworkManager|null;
   let beforeGetResourceTree = Promise.resolve();
 
   beforeEach(async () => {
@@ -51,17 +48,16 @@ describeWithMockConnection('ResourceTreeModel', () => {
         },
       };
     });
-    target = createTarget();
-    resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    networkManager = target.model(SDK.NetworkManager.NetworkManager);
   });
 
   it('calls clearRequests on reloadPage', () => {
-    if (!networkManager) {
-      throw new Error('No networkManager');
-    }
+    const target = createTarget();
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assertNotNullOrUndefined(resourceTreeModel);
+    assertNotNullOrUndefined(networkManager);
     const clearRequests = sinon.stub(networkManager, 'clearRequests');
-    resourceTreeModel?.reloadPage();
+    resourceTreeModel.reloadPage();
     assert.isTrue(clearRequests.calledOnce, 'Not called just once');
   });
 
@@ -83,24 +79,26 @@ describeWithMockConnection('ResourceTreeModel', () => {
   }
 
   it('calls clearRequests on top frame navigated', () => {
-    if (!networkManager) {
-      throw new Error('No networkManager');
-    }
+    const target = createTarget();
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assertNotNullOrUndefined(networkManager);
     const clearRequests = sinon.stub(networkManager, 'clearRequests');
     dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent());
     assert.isTrue(clearRequests.calledOnce, 'Not called just once');
   });
 
   it('does not call clearRequests on non-top frame navigated', () => {
-    if (!networkManager) {
-      throw new Error('No networkManager');
-    }
+    const target = createTarget();
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assertNotNullOrUndefined(networkManager);
     const clearRequests = sinon.stub(networkManager, 'clearRequests');
     dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
     assert.isTrue(clearRequests.notCalled, 'Called unexpctedly');
   });
 
   it('records prerenderingStatus', () => {
+    const target = createTarget();
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent());
     dispatchEvent(
         target,
@@ -139,6 +137,8 @@ describeWithMockConnection('ResourceTreeModel', () => {
     });
 
     it('process prending event', async () => {
+      const target = createTarget();
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       dispatchEvent(
           target,
           'Page.prerenderAttemptCompleted',
@@ -161,6 +161,8 @@ describeWithMockConnection('ResourceTreeModel', () => {
   });
 
   it('records prerendering disallowedApiMethod', () => {
+    const target = createTarget();
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     dispatchEvent(target, 'Page.frameNavigated', {
       frame: {
         id: 'main',
@@ -195,6 +197,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
   it('added frame has storageKey when navigated', async () => {
     const testKey = 'test-storage-key';
 
+    const resourceTreeModel = createTarget().model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.isEmpty(resourceTreeModel?.frames());
     navigateFrameWithMockConnection(testKey, resourceTreeModel);
     const frames = resourceTreeModel?.frames();
@@ -210,6 +213,8 @@ describeWithMockConnection('ResourceTreeModel', () => {
   it('storage key gets updated when frame tree changes', async () => {
     const testKey = 'test-storage-key';
 
+    const target = createTarget();
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.isEmpty(resourceTreeModel?.frames());
     const manager = target.model(SDK.StorageKeyManager.StorageKeyManager);
     assertNotNullOrUndefined(manager);

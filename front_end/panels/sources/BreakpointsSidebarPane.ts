@@ -251,9 +251,14 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       if (group) {
         group.breakpointItems.push(item);
       } else {
-        group =
-            {url: sourceURL, name: uiLocation.uiSourceCode.displayName(), expanded: true, breakpointItems: [item]} as
-            SourcesComponents.BreakpointsView.BreakpointGroup;
+        const editable = this.#breakpointManager.supportsConditionalBreakpoints(uiLocation.uiSourceCode);
+        group = {
+          url: sourceURL,
+          name: uiLocation.uiSourceCode.displayName(),
+          editable,
+          expanded: true,
+          breakpointItems: [item],
+        };
         urlToGroup.set(sourceURL, group);
       }
     }

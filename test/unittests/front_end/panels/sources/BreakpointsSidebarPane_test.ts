@@ -40,6 +40,7 @@ function createBreakpointLocations(testData: LocationTestData[]): Bindings.Break
 
 function createStubBreakpointManagerAndSettings() {
   const breakpointManager = sinon.createStubInstance(Bindings.BreakpointManager.BreakpointManager);
+  breakpointManager.supportsConditionalBreakpoints.returns(true);
   const dummyStorage = new Common.Settings.SettingsStorage({});
   const settings = Common.Settings.Settings.instance({
     forceNew: true,
@@ -50,8 +51,10 @@ function createStubBreakpointManagerAndSettings() {
   return {breakpointManager, settings};
 }
 
-function createStubBreakpointManagerAndSettingsWithMockdata(testData: LocationTestData[]):
-    {breakpointManager: Bindings.BreakpointManager.BreakpointManager, settings: Common.Settings.Settings} {
+function createStubBreakpointManagerAndSettingsWithMockdata(testData: LocationTestData[]): {
+  breakpointManager: sinon.SinonStubbedInstance<Bindings.BreakpointManager.BreakpointManager>,
+  settings: Common.Settings.Settings,
+} {
   const {breakpointManager, settings} = createStubBreakpointManagerAndSettings();
   sinon.stub(Bindings.BreakpointManager.BreakpointManager, 'instance').returns(breakpointManager);
   const breakpointLocations = createBreakpointLocations(testData);
@@ -188,6 +191,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         return {
           name: testData.url as string,
           url: testData.url,
+          editable: true,
           expanded: true,
           breakpointItems: [
             {
@@ -201,12 +205,31 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
           ],
         };
       };
-      const expected = {
+      const expected: SourcesComponents.BreakpointsView.BreakpointsViewData = {
         pauseOnExceptions: false,
         pauseOnCaughtExceptions: false,
         groups: testData.map(createExpectedBreakpointGroups),
       };
       assert.deepEqual(actual, expected);
+    });
+
+    it('marks groups as editable based on conditional breakpoint support', async () => {
+      const testData = [
+        createLocationTestData(HELLO_JS_FILE, 3, 10),
+        createLocationTestData(TEST_JS_FILE, 1, 1),
+      ];
+
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      breakpointManager.supportsConditionalBreakpoints.returns(false);
+      for (const group of (await controller.getUpdatedBreakpointViewData()).groups) {
+        assert.isFalse(group.editable);
+      }
+      breakpointManager.supportsConditionalBreakpoints.returns(true);
+      for (const group of (await controller.getUpdatedBreakpointViewData()).groups) {
+        assert.isTrue(group.editable);
+      }
     });
 
     it('groups breakpoints that are in the same file', async () => {

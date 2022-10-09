@@ -406,6 +406,10 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     }
     this.dispatchEventToListeners(Events.BreakpointRemoved, breakpointLocation);
   }
+
+  supportsConditionalBreakpoints(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    return this.debuggerWorkspaceBinding.supportsConditionalBreakpoints(uiSourceCode);
+  }
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

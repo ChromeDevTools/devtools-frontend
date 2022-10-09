@@ -96,6 +96,7 @@ export interface BreakpointsViewData {
 export interface BreakpointGroup {
   name: string;
   url: Platform.DevToolsPath.UrlString;
+  editable: boolean;
   expanded: boolean;
   breakpointItems: BreakpointItem[];
 }
@@ -334,7 +335,7 @@ export class BreakpointsView extends HTMLElement {
             ${this.#renderBreakpointCounter(group)}
           </span>
         </summary>
-        ${group.breakpointItems.map(entry => this.#renderBreakpointEntry(entry))}
+        ${group.breakpointItems.map(entry => this.#renderBreakpointEntry(entry, group.editable))}
       </div>
       `;
     // clang-format on
@@ -364,7 +365,7 @@ export class BreakpointsView extends HTMLElement {
     `;
   }
 
-  #onBreakpointEntryContextMenu(event: Event, breakpointItem: BreakpointItem): void {
+  #onBreakpointEntryContextMenu(event: Event, breakpointItem: BreakpointItem, editable: boolean): void {
     const menu = new UI.ContextMenu.ContextMenu(event);
 
     menu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
@@ -372,7 +373,7 @@ export class BreakpointsView extends HTMLElement {
     });
     menu.defaultSection().appendItem(i18nString(UIStrings.editBreakpoint), () => {
       this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
-    });
+    }, !editable);
     menu.defaultSection().appendItem(i18nString(UIStrings.revealLocation), () => {
       this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));
     });
@@ -390,13 +391,13 @@ export class BreakpointsView extends HTMLElement {
     void menu.show();
   }
 
-  #renderBreakpointEntry(breakpointItem: BreakpointItem): LitHtml.TemplateResult {
+  #renderBreakpointEntry(breakpointItem: BreakpointItem, editable: boolean): LitHtml.TemplateResult {
     const clickHandler = (event: Event): void => {
       this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));
       event.consume();
     };
     const contextmenuHandler = (event: Event): void => {
-      this.#onBreakpointEntryContextMenu(event, breakpointItem);
+      this.#onBreakpointEntryContextMenu(event, breakpointItem, editable);
       event.consume();
     };
     const classMap = {
@@ -418,7 +419,7 @@ export class BreakpointsView extends HTMLElement {
       </label>
       <span class='code-snippet' @click=${clickHandler} title=${codeSnippetTooltip}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
-        ${this.#renderEditBreakpointButton(breakpointItem)}
+        ${editable ? this.#renderEditBreakpointButton(breakpointItem) : LitHtml.nothing}
         ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint))}
         <span class='location'>${breakpointItem.location}</span>
       </span>

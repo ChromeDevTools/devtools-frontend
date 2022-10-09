@@ -62,6 +62,7 @@ async function renderSingleBreakpoint(
       {
         name: 'test1.js',
         url: 'https://google.com/test1.js' as Platform.DevToolsPath.UrlString,
+        editable: true,
         expanded: true,
         breakpointItems: [
           {
@@ -96,6 +97,7 @@ async function renderMultipleBreakpoints(): Promise<{
       {
         name: 'test1.js',
         url: 'https://google.com/test1.js' as Platform.DevToolsPath.UrlString,
+        editable: true,
         expanded: true,
         breakpointItems: [
           {
@@ -117,6 +119,7 @@ async function renderMultipleBreakpoints(): Promise<{
       {
         name: 'test2.js',
         url: 'https://google.com/test2.js' as Platform.DevToolsPath.UrlString,
+        editable: false,
         expanded: true,
         breakpointItems: [
           {
@@ -131,6 +134,7 @@ async function renderMultipleBreakpoints(): Promise<{
       {
         name: 'main.js',
         url: 'https://test.com/main.js' as Platform.DevToolsPath.UrlString,
+        editable: true,
         expanded: false,
         breakpointItems: [
           {
@@ -403,6 +407,45 @@ describeWithEnvironment('BreakpointsView', () => {
     removeFileBreakpointsButton.click();
     const event = await eventPromise;
     assert.strictEqual(event.data.breakpointItem, data.groups[0].breakpointItems[0]);
+  });
+
+  it('only renders edit button for breakpoints in editable groups', async () => {
+    const component = new SourcesComponents.BreakpointsView.BreakpointsView();
+    renderElementIntoDOM(component);
+
+    const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
+      pauseOnExceptions: false,
+      pauseOnCaughtExceptions: false,
+      groups: [
+        {
+          name: 'test1.js',
+          url: 'https://google.com/test1.js' as Platform.DevToolsPath.UrlString,
+          editable: false,
+          expanded: true,
+          breakpointItems: [
+            {
+              location: '1',
+              codeSnippet: 'const a = 0;',
+              isHit: true,
+              status: SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED,
+              type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+            },
+          ],
+        },
+      ],
+    };
+
+    component.data = data;
+    await coordinator.done();
+    assertShadowRoot(component.shadowRoot);
+
+    // Dispatch a mouse over in order to show the edit button.
+    component.shadowRoot.querySelector(BREAKPOINT_ITEM_SELECTOR)?.dispatchEvent(new Event('mouseover'));
+    // Wait until the re-rendering has happened.
+    await coordinator.done();
+
+    const removeFileBreakpointsButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
+    assert.isNull(removeFileBreakpointsButton);
   });
 
   it('renders a counter of enabled/disabled breakpoints', async () => {

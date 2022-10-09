@@ -390,7 +390,7 @@ describe('The Network Tab', async function() {
     await waitForFunction(async () => {
       const {status, time} = await getRequestRowInfo(frontend, 'sendBeacon');
       // Depending on timing of the reporting, the status infomation (404) might reach DevTools in time.
-      return (status === '(unknown)' || status === '404') && time === '(unknown)';
+      return (status === '(unknown)' || status === '404Not Found') && time === '(unknown)';
     });
   });
 

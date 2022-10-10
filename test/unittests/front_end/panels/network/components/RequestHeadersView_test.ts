@@ -234,8 +234,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.strictEqual(fullRawTextContent?.length, 4450);
   });
 
-  // Fix update behaviour when receiving 'ResponseHeadersChanged' event.
-  it.skip('[crbug.com/1372401] re-renders on request headers update', async () => {
+  it('re-renders on request headers update', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId,
         'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,

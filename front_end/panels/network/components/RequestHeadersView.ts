@@ -20,7 +20,11 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Sources from '../../sources/sources.js';
 
 import {type RequestHeaderSectionData, RequestHeaderSection} from './RequestHeaderSection.js';
-import {type ResponseHeaderSectionData, ResponseHeaderSection} from './ResponseHeaderSection.js';
+import {
+  type ResponseHeaderSectionData,
+  ResponseHeaderSection,
+  RESPONSE_HEADER_SECTION_DATA_KEY,
+} from './ResponseHeaderSection.js';
 
 import requestHeadersViewStyles from './RequestHeadersView.css.js';
 
@@ -119,7 +123,8 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this.#request.addEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this.#refreshHeadersView, this);
     this.#request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.#refreshHeadersView, this);
     this.#request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.#refreshHeadersView, this);
-    this.#request.addEventListener(SDK.NetworkRequest.Events.ResponseHeadersChanged, this.#refreshHeadersView, this);
+    this.#request.addEventListener(
+        SDK.NetworkRequest.Events.ResponseHeadersChanged, this.#resetAndRefreshHeadersView, this);
     this.#refreshHeadersView();
   }
 
@@ -127,7 +132,15 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this.#request.removeEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this.#refreshHeadersView, this);
     this.#request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.#refreshHeadersView, this);
     this.#request.removeEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.#refreshHeadersView, this);
-    this.#request.removeEventListener(SDK.NetworkRequest.Events.ResponseHeadersChanged, this.#refreshHeadersView, this);
+    this.#request.removeEventListener(
+        SDK.NetworkRequest.Events.ResponseHeadersChanged, this.#resetAndRefreshHeadersView, this);
+  }
+
+  #resetAndRefreshHeadersView(): void {
+    this.#request.deleteAssociatedData(RESPONSE_HEADER_SECTION_DATA_KEY);
+    this.#requestHeadersComponent.data = {
+      request: this.#request,
+    };
   }
 
   #refreshHeadersView(): void {

@@ -416,6 +416,7 @@ export class MainImpl {
       'lighthousePanelFR',
       'keyboardShortcutEditor',
       'groupAndHideIssuesByKind',
+      Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS,
     ]);
 
     Root.Runtime.experiments.setNonConfigurableExperiments([

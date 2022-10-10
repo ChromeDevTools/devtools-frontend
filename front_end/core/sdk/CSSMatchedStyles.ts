@@ -13,6 +13,14 @@ import {CSSKeyframesRule, CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {type DOMNode} from './DOMModel.js';
 
+export function parseCSSVariableNameAndFallback(cssVariableValue: string): {
+  variableName: string|null,
+  fallback: string|null,
+} {
+  const match = cssVariableValue.match(/^var\((--[a-zA-Z0-9-_]+)[,]?\s*(.*)\)$/);
+  return {variableName: match && match[1], fallback: match && match[2]};
+}
+
 export class CSSMatchedStyles {
   readonly #cssModelInternal: CSSModel;
   readonly #nodeInternal: DOMNode;
@@ -755,17 +763,9 @@ class DOMInheritanceCascade {
       return null;
     }
     const computedValue = this.innerComputeValue(availableCSSVariables, computedCSSVariables, cssVariableValue);
-    const {variableName} = this.getCSSVariableNameAndFallback(cssVariableValue);
+    const {variableName} = parseCSSVariableNameAndFallback(cssVariableValue);
 
     return {computedValue, fromFallback: variableName !== null && !availableCSSVariables.has(variableName)};
-  }
-
-  private getCSSVariableNameAndFallback(cssVariableValue: string): {
-    variableName: string|null,
-    fallback: string|null,
-  } {
-    const match = cssVariableValue.match(/^var\((--[a-zA-Z0-9-_]+)[,]?\s*(.*)\)$/);
-    return {variableName: match && match[1], fallback: match && match[2]};
   }
 
   private innerComputeCSSVariable(
@@ -799,7 +799,7 @@ class DOMInheritanceCascade {
         continue;
       }
       // process var() function
-      const {variableName, fallback} = this.getCSSVariableNameAndFallback(result.value);
+      const {variableName, fallback} = parseCSSVariableNameAndFallback(result.value);
       if (!variableName) {
         return null;
       }

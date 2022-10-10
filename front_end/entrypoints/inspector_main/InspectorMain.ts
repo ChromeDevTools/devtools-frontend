@@ -227,7 +227,7 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
   }
 
   #updateTarget(target: SDK.Target.Target): void {
-    if (target.type() !== SDK.Target.Type.Frame || target.parentTarget()) {
+    if (target.type() !== SDK.Target.Type.Frame || target.parentTarget()?.type() === SDK.Target.Type.Frame) {
       return;
     }
     void target.pageAgent().invoke_setAdBlockingEnabled({enabled: this.#adBlockEnabledSetting.get()});

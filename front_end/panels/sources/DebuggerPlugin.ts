@@ -1549,7 +1549,9 @@ export class DebuggerPlugin extends Plugin {
   private async setBreakpoint(lineNumber: number, columnNumber: number|undefined, condition: string, enabled: boolean):
       Promise<void> {
     Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(true);
-    await this.breakpointManager.setBreakpoint(this.uiSourceCode, lineNumber, columnNumber, condition, enabled);
+    await this.breakpointManager.setBreakpoint(
+        this.uiSourceCode, lineNumber, columnNumber, condition, enabled,
+        Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
     this.breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
   }
 

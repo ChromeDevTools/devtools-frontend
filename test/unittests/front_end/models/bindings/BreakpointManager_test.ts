@@ -76,7 +76,8 @@ describeWithRealConnection('BreakpointManager', () => {
     project: Persistence.FileSystemWorkspaceBinding.FileSystem,
   }) {
     const debuggerModel = new TestDebuggerModel(target);
-    const breakpoint = await breakpointManager.setBreakpoint(fileSystem.uiSourceCode, 0, 0, '', true);
+    const breakpoint = await breakpointManager.setBreakpoint(
+        fileSystem.uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
 
     const content = await fileSystem.project.requestFileContent(fileSystem.uiSourceCode);
     const metadata = await fileSystem.project.requestMetadata(fileSystem.uiSourceCode);
@@ -129,7 +130,8 @@ describeWithRealConnection('BreakpointManager', () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
 
     const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
-    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, '', true);
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
 
     // Create a new DebuggerModel and notify the breakpoint engine about it.
     const debuggerModel = new TestDebuggerModel(target);
@@ -182,7 +184,8 @@ describeWithRealConnection('BreakpointManager', () => {
     const {uiSourceCode, project} =
         createContentProviderUISourceCode({url: 'test.cc' as Platform.DevToolsPath.UrlString, mimeType: JS_MIME_TYPE});
     assertNotNullOrUndefined(uiSourceCode);
-    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, '', true);
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
 
     // Make sure that we await all updates that are triggered by adding the model.
     await breakpoint.updateBreakpoint();
@@ -243,7 +246,8 @@ describeWithRealConnection('BreakpointManager', () => {
     const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
 
     const debuggerModel = new TestDebuggerModel(target);
-    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 42, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
 
     const modelBreakpoint = new Bindings.BreakpointManager.ModelBreakpoint(
         debuggerModel, breakpoint, breakpointManager.debuggerWorkspaceBinding);
@@ -280,7 +284,8 @@ describeWithRealConnection('BreakpointManager', () => {
     const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, SCRIPT_ID);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
 
-    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 42, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
     breakpoint.modelAdded(debuggerModel);
 
     // Make sure that the location could be resolved, and that we could set a breakpoint.
@@ -354,12 +359,14 @@ describeWithRealConnection('BreakpointManager', () => {
       const debuggerModel = new TestDebuggerModel(target);
 
       // Create first breakpoint that resolves to that location.
-      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
+      const breakpoint = await breakpointManager.setBreakpoint(
+          uiSourceCode, 42, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
       breakpoint.modelAdded(debuggerModel);
       assert.isFalse(breakpoint.getIsRemoved());
 
       // Create second breakpoint that will resolve to the same location.
-      const slidingBreakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 43, 0, '', true);
+      const slidingBreakpoint = await breakpointManager.setBreakpoint(
+          uiSourceCode, 43, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
       const removedSpy = sinon.spy(slidingBreakpoint, 'remove');
       slidingBreakpoint.modelAdded(debuggerModel);
 
@@ -394,7 +401,8 @@ describeWithRealConnection('BreakpointManager', () => {
       const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, SCRIPT_ID);
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
 
-      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
+      const breakpoint = await breakpointManager.setBreakpoint(
+          uiSourceCode, 42, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
       breakpoint.modelAdded(debuggerModel);
       const removedSpy = sinon.spy(breakpoint, 'remove');
       await breakpoint.updateBreakpoint();

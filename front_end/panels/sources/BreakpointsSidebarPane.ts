@@ -15,7 +15,7 @@ import {LogpointPrefix, LogpointSuffix} from './BreakpointEditDialog.js';
 import * as SourcesComponents from './components/components.js';
 
 let breakpointsSidebarPaneInstance: BreakpointsSidebarPane;
-let breakpointsViewControllerInstance: BreakpointsSidebarController;
+let breakpointsViewControllerInstance: BreakpointsSidebarController|null;
 
 export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   readonly #breakpointsView: SourcesComponents.BreakpointsView.BreakpointsView;
@@ -34,11 +34,11 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this.#breakpointsView = new SourcesComponents.BreakpointsView.BreakpointsView();
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.CheckboxToggledEvent.eventName, (event: Event) => {
-          this.#onCheckBoxToggledEvent(event);
+          this.#onCheckBoxToggled(event);
         });
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.BreakpointSelectedEvent.eventName, (event: Event) => {
-          this.#onBreakpointSelectedEvent(event);
+          this.#onBreakpointSelected(event);
         });
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.BreakpointEditedEvent.eventName, (event: Event) => {
@@ -48,7 +48,11 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
         });
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.BreakpointsRemovedEvent.eventName, (event: Event) => {
-          this.#onBreakpointsRemovedEvent(event);
+          this.#onBreakpointsRemoved(event);
+        });
+    this.#breakpointsView.addEventListener(
+        SourcesComponents.BreakpointsView.ExpandedStateChangedEvent.eventName, (event: Event) => {
+          this.#onExpandedStateChanged(event);
         });
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.PauseOnExceptionsStateChangedEvent.eventName,
@@ -69,7 +73,7 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this.#breakpointsView.data = data;
   }
 
-  #onCheckBoxToggledEvent(event: Event): void {
+  #onCheckBoxToggled(event: Event): void {
     const checkboxToggledEvent = event as SourcesComponents.BreakpointsView.CheckboxToggledEvent;
     const {breakpointItem, checked} = checkboxToggledEvent.data;
 
@@ -77,7 +81,7 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     event.consume();
   }
 
-  #onBreakpointSelectedEvent(event: Event): void {
+  #onBreakpointSelected(event: Event): void {
     const breakpointSelectedEvent = event as SourcesComponents.BreakpointsView.BreakpointSelectedEvent;
     const breakpointItem = breakpointSelectedEvent.data.breakpointItem;
 
@@ -85,7 +89,7 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     event.consume();
   }
 
-  #onBreakpointsRemovedEvent(event: Event): void {
+  #onBreakpointsRemoved(event: Event): void {
     const breakpointSelectedEvent = event as SourcesComponents.BreakpointsView.BreakpointsRemovedEvent;
     const breakpointItems = breakpointSelectedEvent.data.breakpointItems;
 
@@ -104,6 +108,13 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     const {data: {checked}} = event as SourcesComponents.BreakpointsView.PauseOnCaughtExceptionsStateChangedEvent;
 
     this.#controller.setPauseOnCaughtExceptions(checked);
+  }
+
+  #onExpandedStateChanged(event: Event): void {
+    const breakpointSelectedEvent = event as SourcesComponents.BreakpointsView.ExpandedStateChangedEvent;
+    const {url, expanded} = breakpointSelectedEvent.data;
+
+    void this.#controller.expandedStateChanged(url, expanded);
     event.consume();
   }
 }
@@ -114,14 +125,22 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       new WeakMap<SourcesComponents.BreakpointsView.BreakpointItem, Bindings.BreakpointManager.BreakpointLocation[]>();
   readonly #pauseOnExceptionEnabledSetting: Common.Settings.Setting<boolean>;
   readonly #pauseOnCaughtExceptionSetting: Common.Settings.Setting<boolean>;
+
+  readonly #collapsedFilesSettings: Common.Settings.Setting<Platform.DevToolsPath.UrlString[]>;
+  readonly #collapsedFiles: Set<Platform.DevToolsPath.UrlString>;
+
   #updateScheduled = false;
   #updateRunning = false;
 
   private constructor(
       breakpointManager: Bindings.BreakpointManager.BreakpointManager, settings: Common.Settings.Settings) {
+    this.#collapsedFilesSettings = Common.Settings.Settings.instance().createLocalSetting('collapsedFiles', []);
+    this.#collapsedFiles = new Set(this.#collapsedFilesSettings.get());
     this.#breakpointManager = breakpointManager;
-    this.#breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);
-    this.#breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointRemoved, this.update, this);
+    this.#breakpointManager.addEventListener(
+        Bindings.BreakpointManager.Events.BreakpointAdded, this.#onBreakpointAdded, this);
+    this.#breakpointManager.addEventListener(
+        Bindings.BreakpointManager.Events.BreakpointRemoved, this.#onBreakpointRemoved, this);
     this.#pauseOnExceptionEnabledSetting = settings.moduleSetting('pauseOnExceptionEnabled');
     this.#pauseOnExceptionEnabledSetting.addChangeListener(this.update, this);
     this.#pauseOnCaughtExceptionSetting = settings.moduleSetting('pauseOnCaughtException');
@@ -141,6 +160,10 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       breakpointsViewControllerInstance = new BreakpointsSidebarController(breakpointManager, settings);
     }
     return breakpointsViewControllerInstance;
+  }
+
+  static removeInstance(): void {
+    breakpointsViewControllerInstance = null;
   }
 
   flavorChanged(_object: Object|null): void {
@@ -171,6 +194,16 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   breakpointsRemoved(breakpointItems: SourcesComponents.BreakpointsView.BreakpointItem[]): void {
     const locations = breakpointItems.flatMap(breakpointItem => this.#getLocationsForBreakpointItem(breakpointItem));
     locations.forEach(location => location?.breakpoint.remove(false /* keepInStorage */));
+  }
+
+  expandedStateChanged(url: Platform.DevToolsPath.UrlString, expanded: boolean): void {
+    if (expanded) {
+      this.#collapsedFiles.delete(url);
+    } else {
+      this.#collapsedFiles.add(url);
+    }
+
+    this.#saveSettings();
   }
 
   async jumpToSource(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem): Promise<void> {
@@ -241,6 +274,12 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       const text = (content[idx] as TextUtils.Text.Text);
       const codeSnippet = text.lineAt(uiLocation.lineNumber);
 
+      if (isHit && this.#collapsedFiles.has(sourceURL)) {
+        this.#collapsedFiles.delete(sourceURL);
+        this.#saveSettings();
+      }
+      const expanded = !this.#collapsedFiles.has(sourceURL);
+
       const status: SourcesComponents.BreakpointsView.BreakpointStatus = this.#getBreakpointState(locations);
       const {type, hoverText} = this.#getBreakpointTypeAndDetails(locations);
       const item = {location: locationText, codeSnippet, isHit, status, type, hoverText} as
@@ -250,19 +289,52 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       let group = urlToGroup.get(sourceURL);
       if (group) {
         group.breakpointItems.push(item);
+        group.expanded ||= expanded;
       } else {
         const editable = this.#breakpointManager.supportsConditionalBreakpoints(uiLocation.uiSourceCode);
         group = {
           url: sourceURL,
           name: uiLocation.uiSourceCode.displayName(),
           editable,
-          expanded: true,
+          expanded,
           breakpointItems: [item],
         };
         urlToGroup.set(sourceURL, group);
       }
     }
     return {pauseOnCaughtExceptions, pauseOnExceptions, groups: Array.from(urlToGroup.values())};
+  }
+
+  #onBreakpointAdded(event: Common.EventTarget.EventTargetEvent<Bindings.BreakpointManager.BreakpointLocation>):
+      Promise<void> {
+    const breakpoint = event.data.breakpoint;
+    if (breakpoint.origin === Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION &&
+        this.#collapsedFiles.has(breakpoint.url())) {
+      // Auto-expand if a new breakpoint was added to a collapsed group.
+      this.#collapsedFiles.delete(breakpoint.url());
+      this.#saveSettings();
+    }
+    return this.update();
+  }
+
+  #onBreakpointRemoved(event: Common.EventTarget.EventTargetEvent<Bindings.BreakpointManager.BreakpointLocation>):
+      Promise<void> {
+    const breakpoint = event.data.breakpoint;
+    if (this.#collapsedFiles.has(breakpoint.url())) {
+      const locations = Bindings.BreakpointManager.BreakpointManager.instance().allBreakpointLocations();
+      const otherBreakpointsOnSameFileExist =
+          locations.some(location => location.breakpoint.url() === breakpoint.url());
+      if (!otherBreakpointsOnSameFileExist) {
+        // Clear up the #collapsedFiles set from this url if no breakpoint is left in this group.
+        this.#collapsedFiles.delete(breakpoint.url());
+        this.#saveSettings();
+      }
+    }
+    return this.update();
+  }
+
+  #saveSettings(): void {
+    this.#collapsedFilesSettings.set(Array.from(this.#collapsedFiles.values()));
   }
 
   #getBreakpointTypeAndDetails(locations: Bindings.BreakpointManager.BreakpointLocation[]):

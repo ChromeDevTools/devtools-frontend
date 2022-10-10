@@ -2,15 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as SourcesComponents from '../../../../../front_end/panels/sources/components/components.js';
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {setupMockedUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createContentProviderUISourceCode, setupMockedUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import {describeWithRealConnection} from '../../helpers/RealConnection.js';
+import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
 const HELLO_JS_FILE = 'hello.js';
 const TEST_JS_FILE = 'test.js';
@@ -97,7 +101,7 @@ async function setUpTestWithOneBreakpointLocation(
   assert.lengthOf(data.groups[0].breakpointItems, 1);
   const locations = Bindings.BreakpointManager.BreakpointManager.instance().allBreakpointLocations();
   assert.lengthOf(locations, 1);
-  return {groups: data.groups, location: locations[0]};
+  return {controller, groups: data.groups, location: locations[0]};
 }
 
 class MockRevealer extends Common.Revealer.Revealer {
@@ -106,6 +110,10 @@ class MockRevealer extends Common.Revealer.Revealer {
 }
 
 describeWithEnvironment('BreakpointsSidebarController', () => {
+  after(() => {
+    Sources.BreakpointsSidebarPane.BreakpointsSidebarController.removeInstance();
+  });
+
   it('can remove a breakpoint', async () => {
     const {groups, location} = await setUpTestWithOneBreakpointLocation();
     const breakpoint = location.breakpoint as sinon.SinonStubbedInstance<Bindings.BreakpointManager.Breakpoint>;
@@ -411,6 +419,201 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT);
       assert.strictEqual(breakpointItem.hoverText, logDetail);
     });
+
+    describe('breakpoint groups', () => {
+      it('are expanded by default', async () => {
+        const {controller} = await setUpTestWithOneBreakpointLocation();
+        const actualViewData = await controller.getUpdatedBreakpointViewData();
+        assert.isTrue(actualViewData.groups[0].expanded);
+      });
+
+      it('are collapsed if user collapses it', async () => {
+        const {controller, groups} = await setUpTestWithOneBreakpointLocation();
+        controller.expandedStateChanged(groups[0].url, false /* expanded */);
+        const actualViewData = await controller.getUpdatedBreakpointViewData();
+        assert.isFalse(actualViewData.groups[0].expanded);
+      });
+
+      it('are expanded if user expands it', async () => {
+        const {controller, groups} = await setUpTestWithOneBreakpointLocation();
+        controller.expandedStateChanged(groups[0].url, true /* expanded */);
+        const actualViewData = await controller.getUpdatedBreakpointViewData();
+        assert.isTrue(actualViewData.groups[0].expanded);
+      });
+
+      it('remember the collapsed state', async () => {
+        {
+          const {controller, groups} = await setUpTestWithOneBreakpointLocation();
+          controller.expandedStateChanged(groups[0].url, false /* expanded */);
+          const actualViewData = await controller.getUpdatedBreakpointViewData();
+          assert.isFalse(actualViewData.groups[0].expanded);
+        }
+
+        // A new controller is created and initialized with the expanded settings.
+        {const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
+         const settings = Common.Settings.Settings.instance();
+         const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({
+           forceNew: true,
+           breakpointManager,
+           settings,
+         });
+         const actualViewData = await controller.getUpdatedBreakpointViewData();
+         assert.isFalse(actualViewData.groups[0].expanded);}
+      });
+
+      it('remember the expanded state', async () => {
+        {
+          const {controller, groups} = await setUpTestWithOneBreakpointLocation();
+          controller.expandedStateChanged(groups[0].url, true /* expanded */);
+          const actualViewData = await controller.getUpdatedBreakpointViewData();
+          assert.isTrue(actualViewData.groups[0].expanded);
+        }
+        // A new controller is created and initialized with the expanded settings.
+        {
+
+            const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({
+              forceNew: true,
+              breakpointManager: Bindings.BreakpointManager.BreakpointManager.instance(),
+              settings: Common.Settings.Settings.instance(),
+            });
+            const actualViewData = await controller.getUpdatedBreakpointViewData();
+            assert.isTrue(actualViewData.groups[0].expanded);
+
+        }
+      });
+    });
+  });
+});
+
+describeWithRealConnection('BreakpointsSidebarController', () => {
+  it('auto-expands if a user adds a new  breakpoint', async () => {
+    const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
+    const settings = Common.Settings.Settings.instance();
+    const {uiSourceCode, project} = createContentProviderUISourceCode(
+        {url: 'test.js' as Platform.DevToolsPath.UrlString, mimeType: 'text/javascript'});
+    const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+        {forceNew: false, breakpointManager, settings});
+
+    // Add one breakpoint and collapse the tree.
+    const b1 = await breakpointManager.setBreakpoint(
+        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+    {
+      controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
+      const data = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(data.groups, 1);
+      assert.lengthOf(data.groups[0].breakpointItems, 1);
+      assert.isFalse(data.groups[0].expanded);
+    }
+
+    // Add a new breakpoint and check if it's expanded as expected.
+    const b2 = await breakpointManager.setBreakpoint(
+        uiSourceCode, 0, 3, '', true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+    {
+      const data = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(data.groups, 1);
+      assert.lengthOf(data.groups[0].breakpointItems, 2);
+      assert.isTrue(data.groups[0].expanded);
+    }
+
+    // Clean up.
+    await b1.remove(false /* keepInStorage */);
+    await b2.remove(false /* keepInStorage */);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+  });
+
+  it('does not auto-expand if a breakpoint was not triggered by user action', async () => {
+    const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
+    const settings = Common.Settings.Settings.instance();
+    const {uiSourceCode, project} = createContentProviderUISourceCode(
+        {url: 'test.js' as Platform.DevToolsPath.UrlString, mimeType: 'text/javascript'});
+    const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+        {forceNew: false, breakpointManager, settings});
+
+    // Add one breakpoint and collapse the tree.
+    const b1 = await breakpointManager.setBreakpoint(
+        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+    {
+      controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
+      const data = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(data.groups, 1);
+      assert.lengthOf(data.groups[0].breakpointItems, 1);
+      assert.isFalse(data.groups[0].expanded);
+    }
+
+    // Add a new non-user triggered breakpoint and check if it's still collapsed.
+    const b2 = await breakpointManager.setBreakpoint(
+        uiSourceCode, 0, 3, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    {
+      const data = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(data.groups, 1);
+      assert.lengthOf(data.groups[0].breakpointItems, 2);
+      assert.isFalse(data.groups[0].expanded);
+    }
+
+    // Clean up.
+    await b1.remove(false /* keepInStorage */);
+    await b2.remove(false /* keepInStorage */);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+  });
+
+  it('auto-expands if a breakpoint was hit', async () => {
+    const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
+
+    // Set up sdk and ui location, and a mapping between them, such that we can identify that
+    // the hit breakpoint is the one we are adding.
+    const scriptId = '0' as Protocol.Runtime.ScriptId;
+
+    const {uiSourceCode, project} = createContentProviderUISourceCode(
+        {url: 'test.js' as Platform.DevToolsPath.UrlString, mimeType: 'text/javascript'});
+    const uiLocation = new Workspace.UISourceCode.UILocation(uiSourceCode, 0, 0);
+
+    const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+    const sdkLocation = new SDK.DebuggerModel.Location(debuggerModel, scriptId, 0);
+
+    const mapping: Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping = {
+      rawLocationToUILocation: (_: SDK.DebuggerModel.Location) => uiLocation,
+      uiLocationToRawLocations:
+          (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _lineNumber: number,
+           _columnNumber?: number) => [sdkLocation],
+    };
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
+
+    // Add one breakpoint and collapse its group.
+    const b1 = await breakpointManager.setBreakpoint(
+        uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, '', true,
+        Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+    const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+        {forceNew: false, breakpointManager, settings: Common.Settings.Settings.instance()});
+    controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
+
+    // Double check that the group is collapsed.
+    {
+      const data = await controller.getUpdatedBreakpointViewData();
+      assert.isFalse(data.groups[0].expanded);
+    }
+
+    // Simulating a breakpoint hit. Update the DebuggerPausedDetails to contain the info on the hit breakpoint.
+    const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+    callFrame.location.returns(new SDK.DebuggerModel.Location(debuggerModel, scriptId, sdkLocation.lineNumber));
+    const pausedDetails = sinon.createStubInstance(SDK.DebuggerModel.DebuggerPausedDetails);
+    pausedDetails.callFrames = [callFrame];
+
+    // Instead of setting the flavor, directly call `flavorChanged` on the controller and mock what it's set to.
+    // Setting the flavor would have other listeners listening to it, and would cause undesirable side effects.
+    sinon.stub(UI.Context.Context.instance(), 'flavor')
+        .callsFake(flavorType => flavorType === SDK.DebuggerModel.DebuggerPausedDetails ? pausedDetails : null);
+    controller.flavorChanged(pausedDetails);
+    {
+      const data = await controller.getUpdatedBreakpointViewData();
+      // Assert that the breakpoint is hit and the group is expanded.
+      assert.isTrue(data.groups[0].breakpointItems[0].isHit);
+      assert.isTrue(data.groups[0].expanded);
+    }
+
+    // Clean up.
+    await b1.remove(false /* keepInStorage */);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
   });
 
   it('changes pause on exception state', async () => {

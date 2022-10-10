@@ -14,6 +14,7 @@ import {
   navigateToLighthouseTab,
   selectDevice,
   selectMode,
+  setThrottlingMethod,
   waitForResult,
   waitForTimespanStarted,
 } from '../helpers/lighthouse-helpers.js';
@@ -41,6 +42,7 @@ describe('Timespan', async function() {
     await selectDevice('desktop');
 
     await selectMode('timespan');
+    await setThrottlingMethod('simulate');
     await clickStartButton();
     await waitForTimespanStarted();
 
@@ -54,6 +56,9 @@ describe('Timespan', async function() {
     const {lhr, artifacts, reportEl} = await waitForResult();
 
     assert.strictEqual(lhr.gatherMode, 'timespan');
+
+    // Even though the dropdown is set to "simulate", throttling method should be overriden to "devtools".
+    assert.strictEqual(lhr.configSettings.throttlingMethod, 'devtools');
 
     const {innerWidth, innerHeight, devicePixelRatio} = artifacts.ViewportDimensions;
     // TODO: Figure out why outerHeight can be different depending on OS

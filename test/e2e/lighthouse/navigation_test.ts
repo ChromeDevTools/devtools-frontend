@@ -152,11 +152,11 @@ describe('Navigation', async function() {
       });
 
       it('successfully returns a Lighthouse report when settings changed', async () => {
-        await setDevToolsSettings({language: 'en-XL'});
+        await setDevToolsSettings({language: 'es'});
         await navigateToLighthouseTab('lighthouse/hello.html');
 
-        await setToolbarCheckboxWithText(mode === 'legacy', 'L̂éĝáĉý n̂áv̂íĝát̂íôń');
-        await setToolbarCheckboxWithText(false, 'Ĉĺêár̂ śt̂ór̂áĝé');
+        await setToolbarCheckboxWithText(mode === 'legacy', 'Navegación antigua');
+        await setToolbarCheckboxWithText(false, 'Borrar almacenamiento');
         await selectCategories(['performance', 'best-practices']);
         await selectDevice('desktop');
 
@@ -190,9 +190,13 @@ describe('Navigation', async function() {
         const viewTraceText = await reportEl.$eval('.lh-button--trace', viewTraceEl => {
           return viewTraceEl.textContent;
         });
-        assert.strictEqual(viewTraceText, 'V̂íêẃ Ôŕîǵîńâĺ T̂ŕâćê');
+        assert.strictEqual(viewTraceText, 'Ver rastro original');
 
-        assert.strictEqual(lhr.i18n.rendererFormattedStrings.footerIssue, 'F̂íl̂é âń îśŝúê');
+        const footerIssueText = await reportEl.$eval('.lh-footer__version_issue', footerIssueEl => {
+          return footerIssueEl.textContent;
+        });
+        assert.strictEqual(lhr.i18n.rendererFormattedStrings.footerIssue, 'Notificar un problema');
+        assert.strictEqual(footerIssueText, 'Notificar un problema');
       });
     });
   }

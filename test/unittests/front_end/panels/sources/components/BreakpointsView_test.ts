@@ -448,13 +448,23 @@ describeWithEnvironment('BreakpointsView', () => {
     assert.isNull(removeFileBreakpointsButton);
   });
 
-  it('renders a counter of enabled/disabled breakpoints', async () => {
+  it('renders a counter of enabled/disabled breakpoints only if breakpoint group is collapsed', async () => {
     const {component, data} = await renderMultipleBreakpoints();
     assertShadowRoot(component.shadowRoot);
 
+    const numCollapsed =
+        data.groups.reduce((previousValue: number, currentValue: SourcesComponents.BreakpointsView.BreakpointGroup) => {
+          return currentValue.expanded ? previousValue : previousValue + 1;
+        }, 0);
+    assert.isAbove(numCollapsed, 0);
+    assert.isBelow(numCollapsed, data.groups.length);
+
     const counters = component.shadowRoot.querySelectorAll('devtools-two-states-counter');
     assertElements(counters, TwoStatesCounter.TwoStatesCounter.TwoStatesCounter);
-    assert.lengthOf(counters, data.groups.length);
+    const computedStyles = Array.from(counters).map(counter => window.getComputedStyle(counter));
+
+    const visibleCounters = computedStyles.filter(style => style.display !== 'none');
+    assert.lengthOf(visibleCounters, numCollapsed);
   });
 
   describe('conditional breakpoints', () => {

@@ -114,6 +114,10 @@ button {
   margin-left: auto;
 }
 
+details[open] devtools-two-states-counter {
+  display: none;
+}
+
 summary:hover devtools-two-states-counter {
   display: none;
 }

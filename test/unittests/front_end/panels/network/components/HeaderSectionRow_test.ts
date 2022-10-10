@@ -11,6 +11,7 @@ import {
   assertElement,
   assertShadowRoot,
   dispatchCopyEvent,
+  dispatchInputEvent,
   dispatchKeyDownEvent,
   dispatchPasteEvent,
   getCleanTextContentFromElements,
@@ -305,5 +306,28 @@ describeWithEnvironment('HeaderSectionRow', () => {
     editable.blur();
 
     assert.strictEqual(headerValueFromEvent, 'foo bar');
+  });
+
+  it('adds and removes `header-overridden` class correctly', async () => {
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
+      value: 'someHeaderValue',
+      originalValue: 'someHeaderValue',
+      valueEditable: true,
+    };
+
+    const component = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+    const editable = component.shadowRoot.querySelector('.editable');
+    assertElement(editable, HTMLSpanElement);
+    assert.isFalse(component.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
+
+    editable.focus();
+    editable.innerText = 'a';
+    dispatchInputEvent(editable, {inputType: 'insertText', data: 'a', bubbles: true});
+    assert.isTrue(component.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
+
+    dispatchKeyDownEvent(editable, {key: 'Escape', bubbles: true});
+    assert.isFalse(component.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
   });
 });

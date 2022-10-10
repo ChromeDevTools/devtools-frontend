@@ -8,13 +8,12 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {createWorkspaceProject} from '../../helpers/OverridesHelpers.js';
-
-import * as Root from '../../../../../front_end/core/root/root.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
-describe('MultitargetNetworkManager', () => {
+describeWithMockConnection('MultitargetNetworkManager', () => {
   describe('Trust Token done event', () => {
     it('is not lost when arriving before the corresponding requestWillBeSent event', () => {
       // 1) Setup a NetworkManager and listen to "RequestStarted" events.
@@ -36,6 +35,35 @@ describe('MultitargetNetworkManager', () => {
       assert.strictEqual(startedRequests.length, 1);
       assert.strictEqual(startedRequests[0].trustTokenOperationDoneEvent(), mockEvent);
     });
+  });
+
+  it('uses main frame under tab target to get certificate', () => {
+    SDK.ChildTargetManager.ChildTargetManager.install();
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const mainFrameTarget = createTarget({parentTarget: tabTarget});
+    const prerenderTarget = createTarget({parentTarget: mainFrameTarget, subtype: 'prerender'});
+    const subframeTarget = createTarget({parentTarget: mainFrameTarget, subtype: ''});
+
+    const unexpectedCalls =
+        [tabTarget, prerenderTarget, subframeTarget].map(t => sinon.spy(t.networkAgent(), 'invoke_getCertificate'));
+    const expectedCall = sinon.spy(mainFrameTarget.networkAgent(), 'invoke_getCertificate');
+    void SDK.NetworkManager.MultitargetNetworkManager.instance().getCertificate('https://example.com');
+    for (const unexpectedCall of unexpectedCalls) {
+      assert.isTrue(unexpectedCall.notCalled);
+    }
+    assert.isTrue(expectedCall.calledOnceWith({origin: 'https://example.com'}));
+  });
+
+  it('uses main frame without tab target to get certificate', () => {
+    SDK.ChildTargetManager.ChildTargetManager.install();
+    const mainFrameTarget = createTarget();
+    const subframeTarget = createTarget({parentTarget: mainFrameTarget});
+
+    const unexpectedCall = sinon.spy(subframeTarget.networkAgent(), 'invoke_getCertificate');
+    const expectedCall = sinon.spy(mainFrameTarget.networkAgent(), 'invoke_getCertificate');
+    void SDK.NetworkManager.MultitargetNetworkManager.instance().getCertificate('https://example.com');
+    assert.isTrue(unexpectedCall.notCalled);
+    assert.isTrue(expectedCall.calledOnceWith({origin: 'https://example.com'}));
   });
 });
 

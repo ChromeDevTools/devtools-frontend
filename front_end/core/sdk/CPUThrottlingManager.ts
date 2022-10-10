@@ -52,7 +52,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   async getHardwareConcurrency(): Promise<number> {
-    const target = TargetManager.instance().mainTarget();
+    const target = TargetManager.instance().mainFrameTarget();
     const existingCallback = this.#pendingMainTargetPromise;
 
     // If the main target hasn't attached yet, block callers until it appears.

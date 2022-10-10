@@ -7,14 +7,14 @@
  */
 self.SourcesTestRunner = self.SourcesTestRunner || {};
 
-SourcesTestRunner.startDebuggerTest = function(callback, quiet) {
+SourcesTestRunner.startDebuggerTest = async function(callback, quiet) {
   console.assert(TestRunner.debuggerModel.debuggerEnabled(), 'Debugger has to be enabled');
 
   if (quiet !== undefined) {
     SourcesTestRunner.quiet = quiet;
   }
 
-  self.UI.viewManager.showView('sources');
+  await TestRunner.showPanel('sources');
   TestRunner.addSniffer(SDK.DebuggerModel.prototype, 'pausedScript', SourcesTestRunner.pausedScript, true);
   TestRunner.addSniffer(SDK.DebuggerModel.prototype, 'resumedScript', SourcesTestRunner.resumedScript, true);
   TestRunner.safeWrap(callback)();

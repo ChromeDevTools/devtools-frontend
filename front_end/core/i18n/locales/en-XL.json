@@ -9884,8 +9884,14 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Ĉón̂d́ît́îón̂: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "D̂íŝáb̂ĺê ál̂ĺ b̂ŕêák̂ṕôín̂t́ŝ ín̂ f́îĺê"
+  },
   "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
     "message": "Êd́ît́ b̂ŕêák̂ṕôín̂t́"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Êńâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń f̂íl̂é"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "m̂íx̂éd̂"
@@ -9899,11 +9905,20 @@
   "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
     "message": "P̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
   },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń f̂íl̂é"
+  },
   "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
     "message": "R̂ém̂óv̂é b̂ŕêák̂ṕôín̂t́"
   },
-  "panels/sources/components/BreakpointsView.ts | removeBreakpointsInFile": {
-    "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń f̂íl̂é"
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "R̂ém̂óv̂é ôt́ĥér̂ b́r̂éâḱp̂óîńt̂ś"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "R̂év̂éâĺ l̂óĉát̂íôń"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "ûńĉh́êćk̂éd̂"

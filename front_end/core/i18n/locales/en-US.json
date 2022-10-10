@@ -9884,8 +9884,14 @@
   "panels/sources/components/BreakpointsView.ts | conditionCode": {
     "message": "Condition: {PH1}"
   },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Disable all breakpoints in file"
+  },
   "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
     "message": "Edit breakpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Enable all breakpoints in file"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "mixed"
@@ -9899,11 +9905,20 @@
   "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
     "message": "Pause on exceptions"
   },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Remove all breakpoints"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Remove all breakpoints in file"
+  },
   "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
     "message": "Remove breakpoint"
   },
-  "panels/sources/components/BreakpointsView.ts | removeBreakpointsInFile": {
-    "message": "Remove all breakpoints in file"
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Remove other breakpoints"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Reveal location"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "unchecked"

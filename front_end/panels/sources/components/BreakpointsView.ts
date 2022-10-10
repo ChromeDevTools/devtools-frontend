@@ -8,6 +8,7 @@ import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as TwoStatesCounter from '../../../ui/components/two_states_counter/two_states_counter.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import breakpointsViewStyles from './breakpointsView.css.js';
@@ -39,17 +40,37 @@ const UIStrings = {
   */
   breakpointHit: '{PH1} breakpoint hit',
   /**
-  *@description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebarof the sources panel.
+  *@description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebarof the sources panel. Also used in the context menu for breakpoint groups.
   */
-  removeBreakpointsInFile: 'Remove all breakpoints in file',
+  removeAllBreakpointsInFile: 'Remove all breakpoints in file',
+  /**
+   *@description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that disables all breakpoints in a file.
+   */
+  disableAllBreakpointsInFile: 'Disable all breakpoints in file',
+  /**
+   *@description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that enables all breakpoints in a file.
+   */
+  enableAllBreakpointsInFile: 'Enable all breakpoints in file',
   /**
   *@description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint in the breakpoint sidebar of the sources panel.
   */
   editBreakpoint: 'Edit breakpoint',
   /**
-  *@description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel.
+  *@description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint items.
   */
   removeBreakpoint: 'Remove breakpoint',
+  /**
+  *@description Text to remove all breakpoints
+  */
+  removeAllBreakpoints: 'Remove all breakpoints',
+  /**
+  *@description Text in Breakpoints Sidebar Pane of the Sources panel
+  */
+  removeOtherBreakpoints: 'Remove other breakpoints',
+  /**
+  *@description Context menu item that reveals the source code location of a breakpoint in the Sources panel.
+  */
+  revealLocation: 'Reveal location',
   /**
   *@description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows the condition, on which the breakpoint will stop.
   *@example {x < 3} PH1
@@ -258,7 +279,45 @@ export class BreakpointsView extends HTMLElement {
     // clang-format on
   }
 
+  #onBreakpointGroupContextMenu(event: Event, breakpointGroup: BreakpointGroup): void {
+    const {breakpointItems} = breakpointGroup;
+    const menu = new UI.ContextMenu.ContextMenu(event);
+
+    menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpointsInFile), () => {
+      this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
+    });
+    const notDisabledItems =
+        breakpointItems.filter(breakpointItem => breakpointItem.status !== BreakpointStatus.DISABLED);
+    menu.defaultSection().appendItem(i18nString(UIStrings.disableAllBreakpointsInFile), () => {
+      for (const breakpointItem of notDisabledItems) {
+        this.dispatchEvent(new CheckboxToggledEvent(breakpointItem, false));
+      }
+    }, notDisabledItems.length === 0);
+    const notEnabledItems =
+        breakpointItems.filter(breakpointItem => breakpointItem.status !== BreakpointStatus.ENABLED);
+    menu.defaultSection().appendItem(i18nString(UIStrings.enableAllBreakpointsInFile), () => {
+      for (const breakpointItem of notEnabledItems) {
+        this.dispatchEvent(new CheckboxToggledEvent(breakpointItem, true));
+      }
+    }, notEnabledItems.length === 0);
+    menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
+      const breakpointItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
+      this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
+    });
+    const otherGroups = this.#breakpointGroups.filter(group => group !== breakpointGroup);
+    menu.defaultSection().appendItem(i18nString(UIStrings.removeOtherBreakpoints), () => {
+      const breakpointItems = otherGroups.map(({breakpointItems}) => breakpointItems).flat();
+      this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
+    }, otherGroups.length === 0);
+
+    void menu.show();
+  }
+
   #renderBreakpointGroup(group: BreakpointGroup): LitHtml.TemplateResult {
+    const contextmenuHandler = (event: Event): void => {
+      this.#onBreakpointGroupContextMenu(event, group);
+      event.consume();
+    };
     const toggleHandler = (event: Event): void => {
       const {open} = event.target as HTMLDetailsElement;
       group.expanded = open;
@@ -268,10 +327,10 @@ export class BreakpointsView extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <details data-group='true' ?open=${group.expanded} @toggle=${toggleHandler}>
-        <summary>
+        <summary @contextmenu=${contextmenuHandler} >
           <span class='group-header'>${this.#renderFileIcon()}<span class='group-header-title'>${group.name}</span></span>
           <span class='group-hover-actions'>
-            ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeBreakpointsInFile))}
+            ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
             ${this.#renderBreakpointCounter(group)}
           </span>
         </summary>
@@ -305,9 +364,39 @@ export class BreakpointsView extends HTMLElement {
     `;
   }
 
+  #onBreakpointEntryContextMenu(event: Event, breakpointItem: BreakpointItem): void {
+    const menu = new UI.ContextMenu.ContextMenu(event);
+
+    menu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
+      this.dispatchEvent(new BreakpointsRemovedEvent([breakpointItem]));
+    });
+    menu.defaultSection().appendItem(i18nString(UIStrings.editBreakpoint), () => {
+      this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
+    });
+    menu.defaultSection().appendItem(i18nString(UIStrings.revealLocation), () => {
+      this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));
+    });
+    menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
+      const breakpointItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
+      this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
+    });
+    const otherItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems)
+                           .flat()
+                           .filter(item => item !== breakpointItem);
+    menu.defaultSection().appendItem(i18nString(UIStrings.removeOtherBreakpoints), () => {
+      this.dispatchEvent(new BreakpointsRemovedEvent(otherItems));
+    }, otherItems.length === 0);
+
+    void menu.show();
+  }
+
   #renderBreakpointEntry(breakpointItem: BreakpointItem): LitHtml.TemplateResult {
     const clickHandler = (event: Event): void => {
       this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));
+      event.consume();
+    };
+    const contextmenuHandler = (event: Event): void => {
+      this.#onBreakpointEntryContextMenu(event, breakpointItem);
       event.consume();
     };
     const classMap = {
@@ -322,7 +411,7 @@ export class BreakpointsView extends HTMLElement {
 
     // clang-format off
     return LitHtml.html`
-    <div class=${LitHtml.Directives.classMap(classMap)} aria-label=${breakpointItemDescription}  tabIndex=${breakpointItem.isHit ? 0 : -1}>
+    <div class=${LitHtml.Directives.classMap(classMap)} aria-label=${breakpointItemDescription}  tabIndex=${breakpointItem.isHit ? 0 : -1} @contextmenu=${contextmenuHandler}>
       <label class='checkbox-label'>
         <span class='type-indicator'></span>
         <input type='checkbox' aria-label=${breakpointItem.location} ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE} ?checked=${breakpointItem.status === BreakpointStatus.ENABLED} @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}>

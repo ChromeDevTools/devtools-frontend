@@ -97,6 +97,14 @@ async function setupHeaderEditingWithRequest(
   return {component, spy};
 }
 
+function isRowFocused(
+    component: NetworkComponents.ResponseHeaderSection.ResponseHeaderSection, rowIndex: number): boolean {
+  assertShadowRoot(component.shadowRoot);
+  const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+  assert.isTrue(rows.length > rowIndex);
+  return Boolean(rows[rowIndex].shadowRoot?.activeElement);
+}
+
 describeWithEnvironment('ResponseHeaderSection', () => {
   beforeEach(async () => {
     await setUpEnvironment();
@@ -707,5 +715,39 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     checkRow(rows[0].shadowRoot, 'server:', 'unit test', true, false, true);
     assertShadowRoot(rows[1].shadowRoot);
     checkRow(rows[1].shadowRoot, 'foo:', 'bar', true, true, true);
+  });
+
+  it('focuses on newly added header rows on initial render', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'https://www.example.com/index.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
+        null, null, null);
+    request.responseHeaders = [{name: 'server', value: 'overridden server'}];
+    request.originalResponseHeaders = [{name: 'server', value: 'original server'}];
+
+    const headerOverridesFileContent = `[
+      {
+        "applyTo": "index.html",
+        "headers": [{
+          "name": "server",
+          "value": "overridden server"
+        }]
+      }
+    ]`;
+
+    const {component} = await setupHeaderEditingWithRequest(headerOverridesFileContent, request);
+    assertShadowRoot(component.shadowRoot);
+    const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
+    assertElement(addHeaderButton, HTMLElement);
+    addHeaderButton.click();
+    await coordinator.done();
+    assert.isFalse(isRowFocused(component, 0));
+    assert.isTrue(isRowFocused(component, 1));
+
+    component.remove();
+    const component2 = await renderResponseHeaderSection(request);
+    assertShadowRoot(component2.shadowRoot);
+    assert.isFalse(isRowFocused(component2, 0));
+    assert.isFalse(isRowFocused(component2, 1));
   });
 });

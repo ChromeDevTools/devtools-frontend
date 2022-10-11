@@ -335,7 +335,7 @@ export class BreakpointsView extends HTMLElement {
     return LitHtml.html`
       <details class=${LitHtml.Directives.classMap(classMap)} data-group='true' ?open=${group.expanded} @toggle=${toggleHandler}>
         <summary @contextmenu=${contextmenuHandler} >
-          <span class='group-header'>${this.#renderFileIcon()}<span class='group-header-title'>${group.name}</span></span>
+          <span class='group-header'>${this.#renderFileIcon()}<span class='group-header-title' title='${group.url}'>${group.name}</span></span>
           <span class='group-hover-actions'>
             ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
             ${this.#renderBreakpointCounter(group)}

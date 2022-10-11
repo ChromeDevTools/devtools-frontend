@@ -85,8 +85,6 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 const plusIconUrl = new URL('../../../Images/plus_icon.svg', import.meta.url).toString();
 
-const associatedDataKeyForRequest = 'ResponseHeaderSection';
-
 export interface ResponseHeaderSectionData {
   request: SDK.NetworkRequest.NetworkRequest;
   toReveal?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, header?: string};
@@ -178,17 +176,11 @@ export class ResponseHeaderSection extends HTMLElement {
       });
     }
 
-    const dataAssociatedWithRequest = this.#request.getAssociatedData(associatedDataKeyForRequest);
-    if (dataAssociatedWithRequest) {
-      this.#headerEditors = dataAssociatedWithRequest as HeaderEditorDescriptor[];
-    } else {
-      this.#headerEditors =
-          this.#headerDetails.map(header => ({name: header.name, value: header.value, originalValue: header.value}));
-      this.#markOverrides();
-    }
+    this.#headerEditors =
+        this.#headerDetails.map(header => ({name: header.name, value: header.value, originalValue: header.value}));
+    this.#markOverrides();
 
     void this.#loadOverridesFileInfo();
-    this.#request.setAssociatedData(associatedDataKeyForRequest, this.#headerEditors);
     this.#render();
   }
 

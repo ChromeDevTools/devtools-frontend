@@ -291,7 +291,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #contentDataProvider?: (() => Promise<ContentData>);
   #isSameSiteInternal: boolean|null;
   #wasIntercepted: boolean;
-  #associatedData = new Map<string, object>();
 
   private constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: Platform.DevToolsPath.UrlString,
@@ -1481,14 +1480,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   isSameSite(): boolean|null {
     return this.#isSameSiteInternal;
-  }
-
-  getAssociatedData(key: string): object|null {
-    return this.#associatedData.get(key) || null;
-  }
-
-  setAssociatedData(key: string, data: object): void {
-    this.#associatedData.set(key, data);
   }
 }
 

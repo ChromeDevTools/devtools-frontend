@@ -156,11 +156,6 @@ export function dispatchKeyDownEvent<T extends Element>(element: T, options: Key
   }
 }
 
-export function dispatchInputEvent<T extends Element>(element: T, options: InputEventInit = {}) {
-  const inputEvent = new InputEvent('input', options);
-  element.dispatchEvent(inputEvent);
-}
-
 /**
  * Dispatches a mouse over event.
  */

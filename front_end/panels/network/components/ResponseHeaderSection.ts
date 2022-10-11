@@ -301,7 +301,6 @@ export class ResponseHeaderSection extends HTMLElement {
     const previousValue = this.#headerEditors[index].value;
     this.#headerEditors[index].name = headerName;
     this.#headerEditors[index].value = headerValue;
-    this.#headerEditors[index].isOverride = true;
 
     // If multiple headers have the same name 'foo', we treat them as a unit.
     // If there are overrides for 'foo', all original 'foo' headers are removed

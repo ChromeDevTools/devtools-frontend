@@ -933,11 +933,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     let lastLayers: SDK.CSSLayer.CSSLayer[]|null = null;
     let sawLayers: boolean = false;
 
-    const layersExperimentEnabled = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.CSS_LAYERS);
     const addLayerSeparator = (style: SDK.CSSStyleDeclaration.CSSStyleDeclaration): void => {
-      if (!layersExperimentEnabled) {
-        return;
-      }
       const parentRule = style.parentRule;
       if (parentRule instanceof SDK.CSSRule.CSSStyleRule) {
         const layers = parentRule.layers;
@@ -1065,16 +1061,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       blocks.push(block);
     }
 
-    if (layersExperimentEnabled) {
-      // If we have seen a layer in matched styles we enable
-      // the layer widget button.
-      if (sawLayers) {
-        LayersWidget.ButtonProvider.instance().item().setVisible(true);
-      } else if (LayersWidget.LayersWidget.instance().isShowing()) {
-        // Since the button for toggling the layers view is now hidden
-        // we ensure that the layers view is not currently toggled.
-        ElementsPanel.instance().showToolbarPane(null, LayersWidget.ButtonProvider.instance().item());
-      }
+    // If we have seen a layer in matched styles we enable
+    // the layer widget button.
+    if (sawLayers) {
+      LayersWidget.ButtonProvider.instance().item().setVisible(true);
+    } else if (LayersWidget.LayersWidget.instance().isShowing()) {
+      // Since the button for toggling the layers view is now hidden
+      // we ensure that the layers view is not currently toggled.
+      ElementsPanel.instance().showToolbarPane(null, LayersWidget.ButtonProvider.instance().item());
     }
 
     await this.idleCallbackManager.awaitDone();

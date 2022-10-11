@@ -632,7 +632,6 @@ export enum DevtoolsExperiments {
   'headerOverrides' = 56,
   'lighthousePanelFR' = 57,
   'evaluateExpressionsWithSourceMaps' = 58,
-  'cssLayers' = 59,
   'eyedropperColorPicker' = 60,
   'instrumentationBreakpoints' = 61,
   'cssAuthoringHints' = 62,

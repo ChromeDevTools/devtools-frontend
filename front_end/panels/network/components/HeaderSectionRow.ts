@@ -115,13 +115,9 @@ export class HeaderSectionRow extends HTMLElement {
       ${this.#maybeRenderBlockedDetails(this.#header.blockedDetails)}
     `, this.#shadow, {host: this});
     // clang-format on
-  }
 
-  focus(): void {
-    requestAnimationFrame(() => {
-      const editableName = this.#shadow.querySelector<HTMLElement>('.header-name .editable');
-      editableName?.focus();
-    });
+    const focusElement = this.#shadow.querySelector<HTMLElement>('.header-name .editable');
+    focusElement?.focus();
   }
 
   #renderEditable(value: string): LitHtml.TemplateResult {

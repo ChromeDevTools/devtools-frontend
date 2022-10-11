@@ -364,10 +364,6 @@ export class ResponseHeaderSection extends HTMLElement {
     const index = this.#headerEditors.length - 1;
     this.#updateOverrides(this.#headerEditors[index].name, this.#headerEditors[index].value || '', index);
     this.#render();
-
-    const rows = this.#shadow.querySelectorAll<HeaderSectionRow>('devtools-header-section-row');
-    const [lastRow] = Array.from(rows).slice(-1);
-    lastRow?.focus();
   }
 
   #render(): void {

@@ -16,5 +16,9 @@
       input.type = 'text';
       document.body.append(input);
     }
+
+    window.registerServiceWorker = async () => {
+      await navigator.serviceWorker.register('./sw.js');
+    }
   </script>
 </body>

@@ -10,7 +10,9 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickStartButton,
   getAuditsBreakdown,
+  getServiceWorkerCount,
   navigateToLighthouseTab,
+  registerServiceWorker,
   selectCategories,
   selectDevice,
   setLegacyNavigation,
@@ -43,6 +45,7 @@ describe('Navigation', async function() {
 
       it('successfully returns a Lighthouse report', async () => {
         await navigateToLighthouseTab('lighthouse/hello.html');
+        await registerServiceWorker();
 
         await setLegacyNavigation(mode === 'legacy');
         await selectCategories([
@@ -110,6 +113,9 @@ describe('Navigation', async function() {
           return selectedTabEl.textContent;
         });
         assert.strictEqual(selectedTabText, 'Performance');
+
+        // Ensure service worker was cleared.
+        assert.strictEqual(await getServiceWorkerCount(), 0);
       });
 
       it('successfully returns a Lighthouse report with DevTools throttling', async () => {
@@ -154,6 +160,7 @@ describe('Navigation', async function() {
       it('successfully returns a Lighthouse report when settings changed', async () => {
         await setDevToolsSettings({language: 'es'});
         await navigateToLighthouseTab('lighthouse/hello.html');
+        await registerServiceWorker();
 
         await setToolbarCheckboxWithText(mode === 'legacy', 'Navegación antigua');
         await setToolbarCheckboxWithText(false, 'Borrar almacenamiento');
@@ -197,6 +204,9 @@ describe('Navigation', async function() {
         });
         assert.strictEqual(lhr.i18n.rendererFormattedStrings.footerIssue, 'Notificar un problema');
         assert.strictEqual(footerIssueText, 'Notificar un problema');
+
+        // Ensure service worker is not cleared because we disable the storage reset.
+        assert.strictEqual(await getServiceWorkerCount(), 1);
       });
     });
   }

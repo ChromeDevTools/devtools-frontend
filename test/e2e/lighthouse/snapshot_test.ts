@@ -10,7 +10,9 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickStartButton,
   getAuditsBreakdown,
+  getServiceWorkerCount,
   navigateToLighthouseTab,
+  registerServiceWorker,
   selectMode,
   waitForResult,
 } from '../helpers/lighthouse-helpers.js';
@@ -33,6 +35,7 @@ describe('Snapshot', async function() {
 
   it('successfully returns a Lighthouse report for the page state', async () => {
     await navigateToLighthouseTab('lighthouse/hello.html');
+    await registerServiceWorker();
 
     const {target} = await getBrowserAndPages();
     await target.evaluate(() => {
@@ -77,5 +80,8 @@ describe('Snapshot', async function() {
     // No trace was collected in snapshot mode.
     const viewTrace = await reportEl.$('.lh-button--trace');
     assert.strictEqual(viewTrace, null);
+
+    // Ensure service worker is not cleared in snapshot mode.
+    assert.strictEqual(await getServiceWorkerCount(), 1);
   });
 });

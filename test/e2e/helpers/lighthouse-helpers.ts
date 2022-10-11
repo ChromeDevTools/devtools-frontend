@@ -16,6 +16,7 @@ import {
 import {waitForQuotaUsage} from './application-helpers.js';
 
 import {type ElementHandle} from 'puppeteer';
+import {assert} from 'chai';
 
 export async function navigateToLighthouseTab(path?: string): Promise<ElementHandle<Element>> {
   let lighthouseTabButton = await $('#tab-lighthouse');
@@ -201,4 +202,20 @@ export async function getTargetViewport() {
                            outerHeight: window.outerHeight,
                            devicePixelRatio: window.devicePixelRatio,
                          }));
+}
+
+export async function getServiceWorkerCount() {
+  const {target} = await getBrowserAndPages();
+  return target.evaluate(async () => {
+    return (await navigator.serviceWorker.getRegistrations()).length;
+  });
+}
+
+export async function registerServiceWorker() {
+  const {target} = await getBrowserAndPages();
+  await target.evaluate(async () => {
+    // @ts-expect-error Custom function added to global scope.
+    await window.registerServiceWorker();
+  });
+  assert.strictEqual(await getServiceWorkerCount(), 1);
 }

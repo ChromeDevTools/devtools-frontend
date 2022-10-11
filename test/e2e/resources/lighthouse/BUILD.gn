@@ -9,5 +9,6 @@ copy_to_gen("lighthouse") {
     "basic.css",
     "hello.html",
     "lighthouse-storage.html",
+    "sw.js",
   ]
 }

@@ -38,7 +38,12 @@ async function renderNoBreakpoints(
   const component = new SourcesComponents.BreakpointsView.BreakpointsView();
   renderElementIntoDOM(component);
 
-  component.data = {pauseOnExceptions, pauseOnCaughtExceptions, groups: []};
+  component.data = {
+    breakpointsActive: true,
+    pauseOnExceptions,
+    pauseOnCaughtExceptions,
+    groups: [],
+  };
   await coordinator.done();
   return component;
 }
@@ -56,6 +61,7 @@ async function renderSingleBreakpoint(
   renderElementIntoDOM(component);
 
   const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
+    breakpointsActive: true,
     pauseOnExceptions: false,
     pauseOnCaughtExceptions: false,
     groups: [
@@ -91,6 +97,7 @@ async function renderMultipleBreakpoints(): Promise<{
   renderElementIntoDOM(component);
 
   const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
+    breakpointsActive: true,
     pauseOnExceptions: false,
     pauseOnCaughtExceptions: false,
     groups: [
@@ -414,6 +421,7 @@ describeWithEnvironment('BreakpointsView', () => {
     renderElementIntoDOM(component);
 
     const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
+      breakpointsActive: true,
       pauseOnExceptions: false,
       pauseOnCaughtExceptions: false,
       groups: [

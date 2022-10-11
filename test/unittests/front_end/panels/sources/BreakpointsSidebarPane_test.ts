@@ -214,11 +214,24 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         };
       };
       const expected: SourcesComponents.BreakpointsView.BreakpointsViewData = {
+        breakpointsActive: true,
         pauseOnExceptions: false,
         pauseOnCaughtExceptions: false,
         groups: testData.map(createExpectedBreakpointGroups),
       };
       assert.deepEqual(actual, expected);
+    });
+
+    it('respects the breakpointsActive setting', async () => {
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata([]);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      settings.moduleSetting('breakpointsActive').set(true);
+      let data = await controller.getUpdatedBreakpointViewData();
+      assert.strictEqual(data.breakpointsActive, true);
+      settings.moduleSetting('breakpointsActive').set(false);
+      data = await controller.getUpdatedBreakpointViewData();
+      assert.strictEqual(data.breakpointsActive, false);
     });
 
     it('marks groups as editable based on conditional breakpoint support', async () => {

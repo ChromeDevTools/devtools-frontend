@@ -88,6 +88,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_SNIPPET_LENGTH = 200;
 
 export interface BreakpointsViewData {
+  breakpointsActive: boolean;
   pauseOnExceptions: boolean;
   pauseOnCaughtExceptions: boolean;
   groups: BreakpointGroup[];
@@ -199,11 +200,13 @@ export class BreakpointsView extends HTMLElement {
 
   #pauseOnExceptions: boolean = false;
   #pauseOnCaughtExceptions: boolean = false;
+  #breakpointsActive: boolean = true;
   #breakpointGroups: BreakpointGroup[] = [];
 
   set data(data: BreakpointsViewData) {
     this.#pauseOnExceptions = data.pauseOnExceptions;
     this.#pauseOnCaughtExceptions = data.pauseOnCaughtExceptions;
+    this.#breakpointsActive = data.breakpointsActive;
     this.#breakpointGroups = data.groups;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -325,9 +328,12 @@ export class BreakpointsView extends HTMLElement {
       this.dispatchEvent(new ExpandedStateChangedEvent(group.url, open));
       event.consume();
     };
+    const classMap = {
+      active: this.#breakpointsActive,
+    };
     // clang-format off
     return LitHtml.html`
-      <details data-group='true' ?open=${group.expanded} @toggle=${toggleHandler}>
+      <details class=${LitHtml.Directives.classMap(classMap)} data-group='true' ?open=${group.expanded} @toggle=${toggleHandler}>
         <summary @contextmenu=${contextmenuHandler} >
           <span class='group-header'>${this.#renderFileIcon()}<span class='group-header-title'>${group.name}</span></span>
           <span class='group-hover-actions'>

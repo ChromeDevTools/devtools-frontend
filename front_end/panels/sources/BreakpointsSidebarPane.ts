@@ -123,6 +123,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   readonly #breakpointManager: Bindings.BreakpointManager.BreakpointManager;
   readonly #breakpointItemToLocationMap =
       new WeakMap<SourcesComponents.BreakpointsView.BreakpointItem, Bindings.BreakpointManager.BreakpointLocation[]>();
+  readonly #breakpointsActiveSetting: Common.Settings.Setting<boolean>;
   readonly #pauseOnExceptionEnabledSetting: Common.Settings.Setting<boolean>;
   readonly #pauseOnCaughtExceptionSetting: Common.Settings.Setting<boolean>;
 
@@ -141,6 +142,8 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
         Bindings.BreakpointManager.Events.BreakpointAdded, this.#onBreakpointAdded, this);
     this.#breakpointManager.addEventListener(
         Bindings.BreakpointManager.Events.BreakpointRemoved, this.#onBreakpointRemoved, this);
+    this.#breakpointsActiveSetting = settings.moduleSetting('breakpointsActive');
+    this.#breakpointsActiveSetting.addChangeListener(this.update, this);
     this.#pauseOnExceptionEnabledSetting = settings.moduleSetting('pauseOnExceptionEnabled');
     this.#pauseOnExceptionEnabledSetting.addChangeListener(this.update, this);
     this.#pauseOnCaughtExceptionSetting = settings.moduleSetting('pauseOnCaughtException');
@@ -242,12 +245,18 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   }
 
   async getUpdatedBreakpointViewData(): Promise<SourcesComponents.BreakpointsView.BreakpointsViewData> {
+    const breakpointsActive = this.#breakpointsActiveSetting.get();
     const pauseOnExceptions = this.#pauseOnExceptionEnabledSetting.get();
     const pauseOnCaughtExceptions = this.#pauseOnCaughtExceptionSetting.get();
 
     const breakpointLocations = this.#getBreakpointLocations();
     if (!breakpointLocations.length) {
-      return {pauseOnCaughtExceptions, pauseOnExceptions, groups: []};
+      return {
+        breakpointsActive,
+        pauseOnCaughtExceptions,
+        pauseOnExceptions,
+        groups: [],
+      };
     }
 
     const locationsGroupedById = this.#groupBreakpointLocationsById(breakpointLocations);
@@ -302,7 +311,12 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
         urlToGroup.set(sourceURL, group);
       }
     }
-    return {pauseOnCaughtExceptions, pauseOnExceptions, groups: Array.from(urlToGroup.values())};
+    return {
+      breakpointsActive,
+      pauseOnCaughtExceptions,
+      pauseOnExceptions,
+      groups: Array.from(urlToGroup.values()),
+    };
   }
 
   #onBreakpointAdded(event: Common.EventTarget.EventTargetEvent<Bindings.BreakpointManager.BreakpointLocation>):

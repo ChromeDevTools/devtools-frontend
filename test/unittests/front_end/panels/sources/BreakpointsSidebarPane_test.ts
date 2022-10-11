@@ -109,382 +109,377 @@ class MockRevealer extends Common.Revealer.Revealer {
   }
 }
 
-// Skip the whole test suite for now, as it might leak to other tests.
-describe.skip('[crbug.com/1373345]', () => {
-  describeWithEnvironment('BreakpointsSidebarController', () => {
-    after(() => {
-      1;
-      Sources.BreakpointsSidebarPane.BreakpointsSidebarController.removeInstance();
+describeWithEnvironment('BreakpointsSidebarController', () => {
+  after(() => {
+    Sources.BreakpointsSidebarPane.BreakpointsSidebarController.removeInstance();
+  });
+
+  it('can remove a breakpoint', async () => {
+    const {groups, location} = await setUpTestWithOneBreakpointLocation();
+    const breakpoint = location.breakpoint as sinon.SinonStubbedInstance<Bindings.BreakpointManager.Breakpoint>;
+    const breakpointItem = groups[0].breakpointItems[0];
+
+    Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().breakpointsRemoved([breakpointItem]);
+    assert.isTrue(breakpoint.remove.calledOnceWith(false));
+  });
+
+  it('changes breakpoint state', async () => {
+    const {groups, location} = await setUpTestWithOneBreakpointLocation();
+    const breakpointItem = groups[0].breakpointItems[0];
+    assert.strictEqual(breakpointItem.status, SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED);
+
+    const breakpoint = location.breakpoint as sinon.SinonStubbedInstance<Bindings.BreakpointManager.Breakpoint>;
+    Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().breakpointStateChanged(
+        breakpointItem, false);
+    assert.isTrue(breakpoint.setEnabled.calledWith(false));
+  });
+
+  it('correctly reveals source location', async () => {
+    const {groups, location: {uiLocation}} = await setUpTestWithOneBreakpointLocation();
+    const breakpointItem = groups[0].breakpointItems[0];
+    const revealer = sinon.createStubInstance(MockRevealer);
+
+    Common.Revealer.registerRevealer({
+      contextTypes() {
+        return [Workspace.UISourceCode.UILocation];
+      },
+      destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+      async loadRevealer() {
+        return revealer;
+      },
     });
 
-    it('can remove a breakpoint', async () => {
-      const {groups, location} = await setUpTestWithOneBreakpointLocation();
-      const breakpoint = location.breakpoint as sinon.SinonStubbedInstance<Bindings.BreakpointManager.Breakpoint>;
-      const breakpointItem = groups[0].breakpointItems[0];
+    await Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().jumpToSource(breakpointItem);
+    assert.isTrue(revealer.reveal.calledOnceWith(uiLocation));
+  });
 
-      Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().breakpointsRemoved([breakpointItem]);
-      assert.isTrue(breakpoint.remove.calledOnceWith(false));
+  it('correctly reveals breakpoint editor', async () => {
+    const {groups, location} = await setUpTestWithOneBreakpointLocation();
+    const breakpointItem = groups[0].breakpointItems[0];
+    const revealer = sinon.createStubInstance(MockRevealer);
+
+    Common.Revealer.registerRevealer({
+      contextTypes() {
+        return [Bindings.BreakpointManager.BreakpointLocation];
+      },
+      destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+      async loadRevealer() {
+        return revealer;
+      },
     });
 
-    it('changes breakpoint state', async () => {
-      const {groups, location} = await setUpTestWithOneBreakpointLocation();
+    await Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().breakpointEdited(breakpointItem);
+    assert.isTrue(revealer.reveal.calledOnceWith(location));
+  });
+
+  describe('getUpdatedBreakpointViewData', () => {
+    it('extracts breakpoint data', async () => {
+      const testData = [
+        createLocationTestData(HELLO_JS_FILE, 3, 10),
+        createLocationTestData(TEST_JS_FILE, 1, 1),
+      ];
+
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      const actual = await controller.getUpdatedBreakpointViewData();
+      const createExpectedBreakpointGroups = (testData: LocationTestData) => {
+        const status = testData.enabled ? SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED :
+                                          SourcesComponents.BreakpointsView.BreakpointStatus.DISABLED;
+        let type = SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT;
+
+        if (testData.condition) {
+          if (testData.condition.startsWith(Sources.BreakpointEditDialog.LogpointPrefix)) {
+            type = SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT;
+          } else {
+            type = SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT;
+          }
+        }
+
+        return {
+          name: testData.url as string,
+          url: testData.url,
+          editable: true,
+          expanded: true,
+          breakpointItems: [
+            {
+              location: `${testData.lineNumber + 1}`,
+              codeSnippet: '',
+              isHit: false,
+              status,
+              type,
+              hoverText: testData.hoverText,
+            },
+          ],
+        };
+      };
+      const expected: SourcesComponents.BreakpointsView.BreakpointsViewData = {
+        pauseOnExceptions: false,
+        pauseOnCaughtExceptions: false,
+        groups: testData.map(createExpectedBreakpointGroups),
+      };
+      assert.deepEqual(actual, expected);
+    });
+
+    it('marks groups as editable based on conditional breakpoint support', async () => {
+      const testData = [
+        createLocationTestData(HELLO_JS_FILE, 3, 10),
+        createLocationTestData(TEST_JS_FILE, 1, 1),
+      ];
+
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      breakpointManager.supportsConditionalBreakpoints.returns(false);
+      for (const group of (await controller.getUpdatedBreakpointViewData()).groups) {
+        assert.isFalse(group.editable);
+      }
+      breakpointManager.supportsConditionalBreakpoints.returns(true);
+      for (const group of (await controller.getUpdatedBreakpointViewData()).groups) {
+        assert.isTrue(group.editable);
+      }
+    });
+
+    it('groups breakpoints that are in the same file', async () => {
+      const testData = [
+        createLocationTestData(HELLO_JS_FILE, 3, 10),
+        createLocationTestData(TEST_JS_FILE, 1, 1),
+      ];
+
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 2);
+      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
+      assert.lengthOf(actualViewData.groups[1].breakpointItems, 1);
+    });
+
+    it('correctly sets the name of the group', async () => {
+      const {groups} = await setUpTestWithOneBreakpointLocation(
+          {file: HELLO_JS_FILE, lineNumber: 0, columnNumber: 0, enabled: false});
+      assert.strictEqual(groups[0].name, HELLO_JS_FILE);
+    });
+
+    it('only extracts the line number as location if one breakpoint is on that line', async () => {
+      const {groups} = await setUpTestWithOneBreakpointLocation(
+          {file: HELLO_JS_FILE, lineNumber: 4, columnNumber: 0, enabled: false});
+      assert.strictEqual(groups[0].breakpointItems[0].location, '5');
+    });
+
+    it('extracts the line number and column number as location if more than one breakpoint is on that line',
+       async () => {
+         const testData = [
+           createLocationTestData(HELLO_JS_FILE, 3, 10),
+           createLocationTestData(HELLO_JS_FILE, 3, 15),
+         ];
+
+         const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+         const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+             {forceNew: true, breakpointManager, settings});
+         const actualViewData = await controller.getUpdatedBreakpointViewData();
+         assert.lengthOf(actualViewData.groups, 1);
+         assert.lengthOf(actualViewData.groups[0].breakpointItems, 2);
+         assert.strictEqual(actualViewData.groups[0].breakpointItems[0].location, '4:11');
+         assert.strictEqual(actualViewData.groups[0].breakpointItems[1].location, '4:16');
+       });
+
+    it('orders breakpoints within a file by location', async () => {
+      const testData = [
+        createLocationTestData(HELLO_JS_FILE, 3, 15),
+        createLocationTestData(HELLO_JS_FILE, 3, 10),
+      ];
+
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 1);
+      assert.lengthOf(actualViewData.groups[0].breakpointItems, 2);
+      assert.strictEqual(actualViewData.groups[0].breakpointItems[0].location, '4:11');
+      assert.strictEqual(actualViewData.groups[0].breakpointItems[1].location, '4:16');
+    });
+
+    it('orders breakpoints within groups by location', async () => {
+      const testData = [
+        createLocationTestData(TEST_JS_FILE, 3, 15),
+        createLocationTestData(HELLO_JS_FILE, 3, 10),
+      ];
+
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 2);
+      const names = actualViewData.groups.map(group => group.name);
+      assert.deepEqual(names, [HELLO_JS_FILE, TEST_JS_FILE]);
+    });
+
+    it('merges breakpoints mapping to the same location into one', async () => {
+      const testData = [
+        createLocationTestData(TEST_JS_FILE, 3, 15),
+        createLocationTestData(TEST_JS_FILE, 3, 15),
+      ];
+
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 1);
+      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
+    });
+
+    it('correctly extracts the enabled state', async () => {
+      const {groups} =
+          await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: true});
       const breakpointItem = groups[0].breakpointItems[0];
       assert.strictEqual(breakpointItem.status, SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED);
-
-      const breakpoint = location.breakpoint as sinon.SinonStubbedInstance<Bindings.BreakpointManager.Breakpoint>;
-      Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().breakpointStateChanged(
-          breakpointItem, false);
-      assert.isTrue(breakpoint.setEnabled.calledWith(false));
     });
 
-    it('correctly reveals source location', async () => {
-      const {groups, location: {uiLocation}} = await setUpTestWithOneBreakpointLocation();
+    it('correctly extracts the enabled state', async () => {
+      const {groups} =
+          await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: false});
       const breakpointItem = groups[0].breakpointItems[0];
-      const revealer = sinon.createStubInstance(MockRevealer);
-
-      Common.Revealer.registerRevealer({
-        contextTypes() {
-          return [Workspace.UISourceCode.UILocation];
-        },
-        destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
-        async loadRevealer() {
-          return revealer;
-        },
-      });
-
-      await Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().jumpToSource(breakpointItem);
-      assert.isTrue(revealer.reveal.calledOnceWith(uiLocation));
+      assert.strictEqual(breakpointItem.status, SourcesComponents.BreakpointsView.BreakpointStatus.DISABLED);
     });
 
-    it('correctly reveals breakpoint editor', async () => {
-      const {groups, location} = await setUpTestWithOneBreakpointLocation();
-      const breakpointItem = groups[0].breakpointItems[0];
-      const revealer = sinon.createStubInstance(MockRevealer);
+    it('correctly extracts the enabled state', async () => {
+      const testData = [
+        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
+        createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),
+      ];
 
-      Common.Revealer.registerRevealer({
-        contextTypes() {
-          return [Bindings.BreakpointManager.BreakpointLocation];
-        },
-        destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
-        async loadRevealer() {
-          return revealer;
-        },
-      });
-
-      await Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().breakpointEdited(breakpointItem);
-      assert.isTrue(revealer.reveal.calledOnceWith(location));
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 1);
+      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
+      assert.strictEqual(
+          actualViewData.groups[0].breakpointItems[0].status,
+          SourcesComponents.BreakpointsView.BreakpointStatus.INDETERMINATE);
     });
 
-    describe('getUpdatedBreakpointViewData', () => {
-      it('extracts breakpoint data', async () => {
-        const testData = [
-          createLocationTestData(HELLO_JS_FILE, 3, 10),
-          createLocationTestData(TEST_JS_FILE, 1, 1),
-        ];
+    it('correctly extracts the disabled state', async () => {
+      const snippet = 'const a = x;';
+      const {groups} =
+          await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: false, snippet});
+      assert.strictEqual(groups[0].breakpointItems[0].codeSnippet, snippet);
+    });
 
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
-        const actual = await controller.getUpdatedBreakpointViewData();
-        const createExpectedBreakpointGroups = (testData: LocationTestData) => {
-          const status = testData.enabled ? SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED :
-                                            SourcesComponents.BreakpointsView.BreakpointStatus.DISABLED;
-          let type = SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT;
+    it('correctly extracts the indeterminate state', async () => {
+      const testData = [
+        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
+        createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),
+      ];
 
-          if (testData.condition) {
-            if (testData.condition.startsWith(Sources.BreakpointEditDialog.LogpointPrefix)) {
-              type = SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT;
-            } else {
-              type = SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT;
-            }
-          }
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 1);
+      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
+      assert.strictEqual(
+          actualViewData.groups[0].breakpointItems[0].status,
+          SourcesComponents.BreakpointsView.BreakpointStatus.INDETERMINATE);
+    });
 
-          return {
-            name: testData.url as string,
-            url: testData.url,
-            editable: true,
-            expanded: true,
-            breakpointItems: [
-              {
-                location: `${testData.lineNumber + 1}`,
-                codeSnippet: '',
-                isHit: false,
-                status,
-                type,
-                hoverText: testData.hoverText,
-              },
-            ],
-          };
-        };
-        const expected: SourcesComponents.BreakpointsView.BreakpointsViewData = {
-          pauseOnExceptions: false,
-          pauseOnCaughtExceptions: false,
-          groups: testData.map(createExpectedBreakpointGroups),
-        };
-        assert.deepEqual(actual, expected);
-      });
+    it('correctly extracts conditional breakpoints', async () => {
+      const condition = 'x < a';
+      const testData = [
+        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, condition),
+      ];
 
-      it('marks groups as editable based on conditional breakpoint support', async () => {
-        const testData = [
-          createLocationTestData(HELLO_JS_FILE, 3, 10),
-          createLocationTestData(TEST_JS_FILE, 1, 1),
-        ];
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 1);
+      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
+      const breakpointItem = actualViewData.groups[0].breakpointItems[0];
+      assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT);
+      assert.strictEqual(breakpointItem.hoverText, condition);
+    });
 
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
-        breakpointManager.supportsConditionalBreakpoints.returns(false);
-        for (const group of (await controller.getUpdatedBreakpointViewData()).groups) {
-          assert.isFalse(group.editable);
-        }
-        breakpointManager.supportsConditionalBreakpoints.returns(true);
-        for (const group of (await controller.getUpdatedBreakpointViewData()).groups) {
-          assert.isTrue(group.editable);
-        }
-      });
+    it('correctly extracts logpoints', async () => {
+      const logDetail = 'x';
+      const condition =
+          `${Sources.BreakpointEditDialog.LogpointPrefix}${logDetail}${Sources.BreakpointEditDialog.LogpointSuffix}`;
+      const testData = [
+        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, logDetail),
+      ];
 
-      it('groups breakpoints that are in the same file', async () => {
-        const testData = [
-          createLocationTestData(HELLO_JS_FILE, 3, 10),
-          createLocationTestData(TEST_JS_FILE, 1, 1),
-        ];
+      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
+      const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
+          {forceNew: true, breakpointManager, settings});
+      const actualViewData = await controller.getUpdatedBreakpointViewData();
+      assert.lengthOf(actualViewData.groups, 1);
+      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
+      const breakpointItem = actualViewData.groups[0].breakpointItems[0];
+      assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT);
+      assert.strictEqual(breakpointItem.hoverText, logDetail);
+    });
 
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
+    describe('breakpoint groups', () => {
+      it('are expanded by default', async () => {
+        const {controller} = await setUpTestWithOneBreakpointLocation();
         const actualViewData = await controller.getUpdatedBreakpointViewData();
-        assert.lengthOf(actualViewData.groups, 2);
-        assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
-        assert.lengthOf(actualViewData.groups[1].breakpointItems, 1);
+        assert.isTrue(actualViewData.groups[0].expanded);
       });
 
-      it('correctly sets the name of the group', async () => {
-        const {groups} = await setUpTestWithOneBreakpointLocation(
-            {file: HELLO_JS_FILE, lineNumber: 0, columnNumber: 0, enabled: false});
-        assert.strictEqual(groups[0].name, HELLO_JS_FILE);
-      });
-
-      it('only extracts the line number as location if one breakpoint is on that line', async () => {
-        const {groups} = await setUpTestWithOneBreakpointLocation(
-            {file: HELLO_JS_FILE, lineNumber: 4, columnNumber: 0, enabled: false});
-        assert.strictEqual(groups[0].breakpointItems[0].location, '5');
-      });
-
-      it('extracts the line number and column number as location if more than one breakpoint is on that line',
-         async () => {
-           const testData = [
-             createLocationTestData(HELLO_JS_FILE, 3, 10),
-             createLocationTestData(HELLO_JS_FILE, 3, 15),
-           ];
-
-           const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-           const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-               {forceNew: true, breakpointManager, settings});
-           const actualViewData = await controller.getUpdatedBreakpointViewData();
-           assert.lengthOf(actualViewData.groups, 1);
-           assert.lengthOf(actualViewData.groups[0].breakpointItems, 2);
-           assert.strictEqual(actualViewData.groups[0].breakpointItems[0].location, '4:11');
-           assert.strictEqual(actualViewData.groups[0].breakpointItems[1].location, '4:16');
-         });
-
-      it('orders breakpoints within a file by location', async () => {
-        const testData = [
-          createLocationTestData(HELLO_JS_FILE, 3, 15),
-          createLocationTestData(HELLO_JS_FILE, 3, 10),
-        ];
-
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
+      it('are collapsed if user collapses it', async () => {
+        const {controller, groups} = await setUpTestWithOneBreakpointLocation();
+        controller.expandedStateChanged(groups[0].url, false /* expanded */);
         const actualViewData = await controller.getUpdatedBreakpointViewData();
-        assert.lengthOf(actualViewData.groups, 1);
-        assert.lengthOf(actualViewData.groups[0].breakpointItems, 2);
-        assert.strictEqual(actualViewData.groups[0].breakpointItems[0].location, '4:11');
-        assert.strictEqual(actualViewData.groups[0].breakpointItems[1].location, '4:16');
+        assert.isFalse(actualViewData.groups[0].expanded);
       });
 
-      it('orders breakpoints within groups by location', async () => {
-        const testData = [
-          createLocationTestData(TEST_JS_FILE, 3, 15),
-          createLocationTestData(HELLO_JS_FILE, 3, 10),
-        ];
-
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
+      it('are expanded if user expands it', async () => {
+        const {controller, groups} = await setUpTestWithOneBreakpointLocation();
+        controller.expandedStateChanged(groups[0].url, true /* expanded */);
         const actualViewData = await controller.getUpdatedBreakpointViewData();
-        assert.lengthOf(actualViewData.groups, 2);
-        const names = actualViewData.groups.map(group => group.name);
-        assert.deepEqual(names, [HELLO_JS_FILE, TEST_JS_FILE]);
+        assert.isTrue(actualViewData.groups[0].expanded);
       });
 
-      it('merges breakpoints mapping to the same location into one', async () => {
-        const testData = [
-          createLocationTestData(TEST_JS_FILE, 3, 15),
-          createLocationTestData(TEST_JS_FILE, 3, 15),
-        ];
-
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
-        const actualViewData = await controller.getUpdatedBreakpointViewData();
-        assert.lengthOf(actualViewData.groups, 1);
-        assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
-      });
-
-      it('correctly extracts the enabled state', async () => {
-        const {groups} =
-            await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: true});
-        const breakpointItem = groups[0].breakpointItems[0];
-        assert.strictEqual(breakpointItem.status, SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED);
-      });
-
-      it('correctly extracts the enabled state', async () => {
-        const {groups} =
-            await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: false});
-        const breakpointItem = groups[0].breakpointItems[0];
-        assert.strictEqual(breakpointItem.status, SourcesComponents.BreakpointsView.BreakpointStatus.DISABLED);
-      });
-
-      it('correctly extracts the enabled state', async () => {
-        const testData = [
-          createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
-          createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),
-        ];
-
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
-        const actualViewData = await controller.getUpdatedBreakpointViewData();
-        assert.lengthOf(actualViewData.groups, 1);
-        assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
-        assert.strictEqual(
-            actualViewData.groups[0].breakpointItems[0].status,
-            SourcesComponents.BreakpointsView.BreakpointStatus.INDETERMINATE);
-      });
-
-      it('correctly extracts the disabled state', async () => {
-        const snippet = 'const a = x;';
-        const {groups} = await setUpTestWithOneBreakpointLocation(
-            {file: '', lineNumber: 0, columnNumber: 0, enabled: false, snippet});
-        assert.strictEqual(groups[0].breakpointItems[0].codeSnippet, snippet);
-      });
-
-      it('correctly extracts the indeterminate state', async () => {
-        const testData = [
-          createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
-          createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),
-        ];
-
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
-        const actualViewData = await controller.getUpdatedBreakpointViewData();
-        assert.lengthOf(actualViewData.groups, 1);
-        assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
-        assert.strictEqual(
-            actualViewData.groups[0].breakpointItems[0].status,
-            SourcesComponents.BreakpointsView.BreakpointStatus.INDETERMINATE);
-      });
-
-      it('correctly extracts conditional breakpoints', async () => {
-        const condition = 'x < a';
-        const testData = [
-          createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, condition),
-        ];
-
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
-        const actualViewData = await controller.getUpdatedBreakpointViewData();
-        assert.lengthOf(actualViewData.groups, 1);
-        assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
-        const breakpointItem = actualViewData.groups[0].breakpointItems[0];
-        assert.strictEqual(
-            breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT);
-        assert.strictEqual(breakpointItem.hoverText, condition);
-      });
-
-      it('correctly extracts logpoints', async () => {
-        const logDetail = 'x';
-        const condition =
-            `${Sources.BreakpointEditDialog.LogpointPrefix}${logDetail}${Sources.BreakpointEditDialog.LogpointSuffix}`;
-        const testData = [
-          createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, logDetail),
-        ];
-
-        const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-        const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
-            {forceNew: true, breakpointManager, settings});
-        const actualViewData = await controller.getUpdatedBreakpointViewData();
-        assert.lengthOf(actualViewData.groups, 1);
-        assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
-        const breakpointItem = actualViewData.groups[0].breakpointItems[0];
-        assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT);
-        assert.strictEqual(breakpointItem.hoverText, logDetail);
-      });
-
-      describe('breakpoint groups', () => {
-        it('are expanded by default', async () => {
-          const {controller} = await setUpTestWithOneBreakpointLocation();
-          const actualViewData = await controller.getUpdatedBreakpointViewData();
-          assert.isTrue(actualViewData.groups[0].expanded);
-        });
-
-        it('are collapsed if user collapses it', async () => {
+      it('remember the collapsed state', async () => {
+        {
           const {controller, groups} = await setUpTestWithOneBreakpointLocation();
           controller.expandedStateChanged(groups[0].url, false /* expanded */);
           const actualViewData = await controller.getUpdatedBreakpointViewData();
           assert.isFalse(actualViewData.groups[0].expanded);
-        });
+        }
 
-        it('are expanded if user expands it', async () => {
+        // A new controller is created and initialized with the expanded settings.
+        {const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
+         const settings = Common.Settings.Settings.instance();
+         const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({
+           forceNew: true,
+           breakpointManager,
+           settings,
+         });
+         const actualViewData = await controller.getUpdatedBreakpointViewData();
+         assert.isFalse(actualViewData.groups[0].expanded);}
+      });
+
+      it('remember the expanded state', async () => {
+        {
           const {controller, groups} = await setUpTestWithOneBreakpointLocation();
           controller.expandedStateChanged(groups[0].url, true /* expanded */);
           const actualViewData = await controller.getUpdatedBreakpointViewData();
           assert.isTrue(actualViewData.groups[0].expanded);
-        });
+        }
+        // A new controller is created and initialized with the expanded settings.
+        {
 
-        it('remember the collapsed state', async () => {
-          {
-            const {controller, groups} = await setUpTestWithOneBreakpointLocation();
-            controller.expandedStateChanged(groups[0].url, false /* expanded */);
-            const actualViewData = await controller.getUpdatedBreakpointViewData();
-            assert.isFalse(actualViewData.groups[0].expanded);
-          }
-
-          // A new controller is created and initialized with the expanded settings.
-          {const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
-           const settings = Common.Settings.Settings.instance();
-           const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({
-             forceNew: true,
-             breakpointManager,
-             settings,
-           });
-           const actualViewData = await controller.getUpdatedBreakpointViewData();
-           assert.isFalse(actualViewData.groups[0].expanded);}
-        });
-
-        it('remember the expanded state', async () => {
-          {
-            const {controller, groups} = await setUpTestWithOneBreakpointLocation();
-            controller.expandedStateChanged(groups[0].url, true /* expanded */);
+            const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({
+              forceNew: true,
+              breakpointManager: Bindings.BreakpointManager.BreakpointManager.instance(),
+              settings: Common.Settings.Settings.instance(),
+            });
             const actualViewData = await controller.getUpdatedBreakpointViewData();
             assert.isTrue(actualViewData.groups[0].expanded);
-          }
-          // A new controller is created and initialized with the expanded settings.
-          {
 
-              const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance({
-                forceNew: true,
-                breakpointManager: Bindings.BreakpointManager.BreakpointManager.instance(),
-                settings: Common.Settings.Settings.instance(),
-              });
-              const actualViewData = await controller.getUpdatedBreakpointViewData();
-              assert.isTrue(actualViewData.groups[0].expanded);
-
-          }
-        });
+        }
       });
     });
   });

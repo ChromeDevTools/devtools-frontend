@@ -985,11 +985,21 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const entryLevels = timelineData.entryLevels;
     const timeToPixel = this.chartViewport.timeToPixel();
 
-    const titleIndices = [];
-    const markerIndices = [];
+    // These are the event indexes of events that we are drawing onto the timeline that:
+    // 1) have text within them
+    // 2) are visually wide enough in pixels to make it worth rendering the text.
+    const titleIndices: number[] = [];
+
+    // These point to events that represent single points in the timeline, most
+    // often an event such as DCL/LCP.
+    const markerIndices: number[] = [];
+
     const textPadding = this.textPadding;
+    // How wide in pixels / long in duration an event needs to be to make it
+    // worthwhile rendering the text inside it.
     const minTextWidth = 2 * textPadding + UI.UIUtils.measureTextWidth(context, '…');
     const minTextWidthDuration = this.chartViewport.pixelToTimeOffset(minTextWidth);
+
     const minVisibleBarLevel = Math.max(
         Platform.ArrayUtilities.upperBound(visibleLevelOffsets, top, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1,
         0);
@@ -1012,9 +1022,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       }
     }
 
-    const colorBuckets = new Map<string, {
-      indexes: number[],
-    }>();
+    // As we parse each event, we bucket them into groups based on the color we
+    // will render them with. The key of this map will be a color, and all
+    // events stored in the `indexes` array for that color will be painted as
+    // such. This way, when rendering events, we can render them based on
+    // color, and ensure the minimum amount of changes to context.fillStyle.
+    const colorBuckets = new Map<string, {indexes: number[]}>();
     for (let level = minVisibleBarLevel; level < this.dataProvider.maxStackDepth(); ++level) {
       if (this.levelToOffset(level) > top + height) {
         break;
@@ -1036,11 +1049,17 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
         const entryIndex = levelIndexes[entryIndexOnLevel];
         const duration = entryTotalTimes[entryIndex];
+        // Markers are single events in time (e.g. LCP): they do not have a duration.
         if (isNaN(duration)) {
           markerIndices.push(entryIndex);
           continue;
         }
+
         if (duration >= minTextWidthDuration || (this.forceDecorationCache && this.forceDecorationCache[entryIndex])) {
+          // If the event is big enough visually to have its text rendered,
+          // or if it's in the array of event indexes that we forcibly render (as defined by the data provider)
+          // then we store its index. Later on, we'll loop through all
+          // `titleIndices` to render the text for each event.
           titleIndices.push(entryIndex);
         }
 

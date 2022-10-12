@@ -30,8 +30,8 @@ const COLOR_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
 const COMPUTED_PROPERTY_SELECTOR = 'devtools-computed-style-property';
 const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
-const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[aria-label="Show all"]';
-const COMPUTED_STYLES_GROUP_SELECTOR = '[aria-label="Group"]';
+const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[title="Show all"]';
+const COMPUTED_STYLES_GROUP_SELECTOR = '[title="Group"]';
 const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 const FONT_EDITOR_SELECTOR = '[aria-label="Font Editor"]';
 const HIDDEN_FONT_EDITOR_SELECTOR = '.font-toolbar-hidden';
@@ -733,7 +733,7 @@ export const toggleClassesPaneCheckbox = async (checkboxLabel: string) => {
   const initialValue = await getContentOfSelectedNode();
 
   const classesPane = await waitFor(CLS_PANE_SELECTOR);
-  await click(`input[aria-label="${checkboxLabel}"]`, {root: classesPane});
+  await click(`label[title="${checkboxLabel}"]`, {root: classesPane});
 
   await waitForSelectedNodeChange(initialValue);
 };

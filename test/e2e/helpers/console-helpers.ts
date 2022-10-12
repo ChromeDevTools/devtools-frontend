@@ -33,8 +33,8 @@ export const STACK_PREVIEW_CONTAINER = '.stack-preview-container';
 export const CONSOLE_MESSAGE_WRAPPER_SELECTOR = '.console-group-messages .console-message-wrapper';
 export const CONSOLE_SELECTOR = '.console-user-command-result';
 export const CONSOLE_SETTINGS_SELECTOR = '[aria-label^="Console settings"]';
-export const AUTOCOMPLETE_FROM_HISTORY_SELECTOR = '[aria-label^="Autocomplete from history"]';
-export const SHOW_CORS_ERRORS_SELECTOR = '[aria-label^="Show CORS errors in console"]';
+export const AUTOCOMPLETE_FROM_HISTORY_SELECTOR = '[title="Autocomplete from history"]';
+export const SHOW_CORS_ERRORS_SELECTOR = '[title="Show CORS errors in console"]';
 export const CONSOLE_CREATE_LIVE_EXPRESSION_SELECTOR = '[aria-label^="Create live expression"]';
 
 export async function deleteConsoleMessagesFilter(frontend: puppeteer.Page) {

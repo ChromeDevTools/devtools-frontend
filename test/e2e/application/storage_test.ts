@@ -18,7 +18,7 @@ import {
 const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';
 const STORAGE_SELECTOR = '[aria-label="Storage"]';
 const CLEAR_SITE_DATA_BUTTON_SELECTOR = '#storage-view-clear-button';
-const INCLUDE_3RD_PARTY_COOKIES_SELECTOR = '[aria-label="including third-party cookies"]';
+const INCLUDE_3RD_PARTY_COOKIES_SELECTOR = '[title="including third-party cookies"]';
 
 let DOMAIN_SELECTOR: string;
 

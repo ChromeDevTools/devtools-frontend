@@ -4760,6 +4760,27 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Show developer resources"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "Deprecated property"
+  },
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Inactive property"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "Try changing the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Try changing the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "Try removing {REASON_PROPERTY_DECLARATION_CODE} or changing its value."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "The {REASON_PROPERTY_DECLARATION_CODE} property on this element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Add new class"
   },

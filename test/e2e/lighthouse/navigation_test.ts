@@ -11,8 +11,10 @@ import {
   clickStartButton,
   getAuditsBreakdown,
   getServiceWorkerCount,
+  interceptNextFileSave,
   navigateToLighthouseTab,
   registerServiceWorker,
+  renderHtmlInIframe,
   selectCategories,
   selectDevice,
   setLegacyNavigation,
@@ -113,6 +115,27 @@ describe('Navigation', async function() {
           return selectedTabEl.textContent;
         });
         assert.strictEqual(selectedTabText, 'Performance');
+
+        await navigateToLighthouseTab();
+
+        const waitForJson = await interceptNextFileSave();
+
+        // For some reason the CDP click command doesn't work here even if the tools menu is open.
+        await reportEl.$eval('a[data-action="save-json"]', saveJsonEl => (saveJsonEl as HTMLElement).click());
+
+        const jsonContent = await waitForJson();
+        assert.strictEqual(jsonContent, JSON.stringify(lhr, null, 2));
+
+        const waitForHtml = await interceptNextFileSave();
+
+        // For some reason the CDP click command doesn't work here even if the tools menu is open.
+        await reportEl.$eval('a[data-action="save-html"]', saveHtmlEl => (saveHtmlEl as HTMLElement).click());
+
+        const htmlContent = await waitForHtml();
+        const iframeHandle = await renderHtmlInIframe(htmlContent);
+        const iframeAuditDivs = await iframeHandle.$$('.lh-audit');
+        const frontendAuditDivs = await reportEl.$$('.lh-audit');
+        assert.strictEqual(frontendAuditDivs.length, iframeAuditDivs.length);
 
         // Ensure service worker was cleared.
         assert.strictEqual(await getServiceWorkerCount(), 0);

@@ -194,7 +194,7 @@ const UIStrings = {
   /**
   *@description Manifest installability error in the Application panel
   */
-  manifestStartUrlIsNotValid: 'Manifest start `URL` is not valid',
+  manifestStartUrlIsNotValid: 'Manifest \'`start_URL`\' is not valid',
   /**
   *@description Manifest installability error in the Application panel
   */
@@ -209,12 +209,12 @@ const UIStrings = {
   *@example {100} PH1
   */
   manifestDoesNotContainASuitable:
-      'Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the `sizes` attribute must be set, and the `purpose` attribute, if set, must include `"any"`.',
+      'Manifest does not contain a suitable icon - PNG or SVG format of at least {PH1}px is required, the \'`sizes`\' attribute must be set, and the \'`purpose`\' attribute, if set, must include \'`any`\'.',
   /**
   *@description Manifest installability error in the Application panel
   */
   avoidPurposeAnyAndMaskable:
-      'Declaring an icon with `purpose: "any maskable"` is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding.',
+      'Declaring an icon with \'`purpose: "any maskable"`\' is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding.',
   /**
   *@description Manifest installability error in the Application panel
   */
@@ -225,7 +225,7 @@ const UIStrings = {
   *@example {100} PH1
   */
   noSuppliedIconIsAtLeastSpxSquare:
-      'No supplied icon is at least {PH1} pixels square in `PNG`, `SVG` or `WebP` format, with the purpose attribute unset or set to `"any"`.',
+      'No supplied icon is at least {PH1} pixels square in `PNG` or `SVG` format, with the purpose attribute unset or set to \'`any`\'.',
   /**
   *@description Manifest installability error in the Application panel
   */
@@ -269,12 +269,12 @@ const UIStrings = {
   /**
   *@description Manifest installability error in the Application panel
   */
-  manifestSpecifies: 'Manifest specifies `prefer_related_applications`: true',
+  manifestSpecifies: 'Manifest specifies \'`prefer_related_applications`: true\'',
   /**
   *@description Manifest installability error in the Application panel
   */
   preferrelatedapplicationsIsOnly:
-      '`prefer_related_applications` is only supported on `Chrome` Beta and Stable channels on `Android`.',
+      '\'`prefer_related_applications`\' is only supported on `Chrome` Beta and Stable channels on `Android`.',
   /**
   *@description Manifest installability error in the Application panel
   */
@@ -305,7 +305,7 @@ const UIStrings = {
   * be translated.
   * @example {ImageName} PH1
   */
-  sSrcIsNotSet: '{PH1} `src` is not set',
+  sSrcIsNotSet: '{PH1} \'`src`\' is not set',
   /**
   *@description Warning message for image resources from the manifest
   *@example {Screenshot} PH1

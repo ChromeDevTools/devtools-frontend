@@ -2361,7 +2361,7 @@
     "message": "A URL in the manifest contains a username, password, or port"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Declaring an icon with purpose: \"any maskable\" is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding."
+    "message": "Declaring an icon with 'purpose: \"any maskable\"' is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Background color"
@@ -2436,13 +2436,13 @@
     "message": "Manifest does not contain a 'name' or 'short_name' field"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\"."
+    "message": "Manifest does not contain a suitable icon - PNG or SVG format of at least {PH1}px is required, the 'sizes' attribute must be set, and the 'purpose' attribute, if set, must include 'any'."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "Manifest specifies prefer_related_applications: true"
+    "message": "Manifest specifies 'prefer_related_applications: true'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Manifest start URL is not valid"
+    "message": "Manifest 'start_URL' is not valid"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Name"
@@ -2463,7 +2463,7 @@
     "message": "No Play store ID provided"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG or WebP format, with the purpose attribute unset or set to \"any\"."
+    "message": "No supplied icon is at least {PH1} pixels square in PNG or SVG format, with the purpose attribute unset or set to 'any'."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Note:"
@@ -2490,7 +2490,7 @@
     "message": "Page is not served from a secure origin"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications is only supported on Chrome Beta and Stable channels on Android."
+    "message": "'prefer_related_applications' is only supported on Chrome Beta and Stable channels on Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Presentation"
@@ -2535,7 +2535,7 @@
     "message": "{PH1} {PH2} height can't be more than 2.3 times as long as the width"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src is not set"
+    "message": "{PH1} 'src' is not set"
   },
   "panels/application/AppManifestView.ts | sSShouldHaveSquareIcon": {
     "message": "Most operating systems require square icons. Please include at least one square icon in the array."

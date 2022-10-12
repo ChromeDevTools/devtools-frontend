@@ -2361,7 +2361,7 @@
     "message": "Â ÚR̂Ĺ îń t̂h́ê ḿâńîf́êśt̂ ćôńt̂áîńŝ á ûśêŕn̂ám̂é, p̂áŝśŵór̂d́, ôŕ p̂ór̂t́"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "D̂éĉĺâŕîńĝ án̂ íĉón̂ ẃît́ĥ purpose: \"any maskable\" íŝ d́îśĉóûŕâǵêd́. Ît́ îś l̂ík̂él̂ý t̂ó l̂óôḱ îńĉór̂ŕêćt̂ ón̂ śôḿê ṕl̂át̂f́ôŕm̂ś d̂úê t́ô t́ôó m̂úĉh́ ôŕ t̂óô ĺît́t̂ĺê ṕâd́d̂ín̂ǵ."
+    "message": "D̂éĉĺâŕîńĝ án̂ íĉón̂ ẃît́ĥ 'purpose: \"any maskable\"' íŝ d́îśĉóûŕâǵêd́. Ît́ îś l̂ík̂él̂ý t̂ó l̂óôḱ îńĉór̂ŕêćt̂ ón̂ śôḿê ṕl̂át̂f́ôŕm̂ś d̂úê t́ô t́ôó m̂úĉh́ ôŕ t̂óô ĺît́t̂ĺê ṕâd́d̂ín̂ǵ."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "B̂áĉḱĝŕôún̂d́ ĉól̂ór̂"
@@ -2436,13 +2436,13 @@
     "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â 'name' ór̂ 'short_name' f́îél̂d́"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â śûít̂áb̂ĺê íĉón̂ - ṔN̂Ǵ, ŜV́Ĝ ór̂ Ẃêb́P̂ f́ôŕm̂át̂ óf̂ át̂ ĺêáŝt́ {PH1}p̂x́ îś r̂éq̂úîŕêd́, t̂h́ê sizes át̂t́r̂íb̂út̂é m̂úŝt́ b̂é ŝét̂, án̂d́ t̂h́ê purpose át̂t́r̂íb̂út̂é, îf́ ŝét̂, ḿûśt̂ ín̂ćl̂úd̂é \"any\"."
+    "message": "M̂án̂íf̂éŝt́ d̂óêś n̂ót̂ ćôńt̂áîń â śûít̂áb̂ĺê íĉón̂ - ṔN̂Ǵ ôŕ ŜV́Ĝ f́ôŕm̂át̂ óf̂ át̂ ĺêáŝt́ {PH1}p̂x́ îś r̂éq̂úîŕêd́, t̂h́ê 'sizes' át̂t́r̂íb̂út̂é m̂úŝt́ b̂é ŝét̂, án̂d́ t̂h́ê 'purpose' át̂t́r̂íb̂út̂é, îf́ ŝét̂, ḿûśt̂ ín̂ćl̂úd̂é 'any'."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "M̂án̂íf̂éŝt́ ŝṕêćîf́îéŝ prefer_related_applications: t́r̂úê"
+    "message": "M̂án̂íf̂éŝt́ ŝṕêćîf́îéŝ 'prefer_related_applications: t́r̂úê'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "M̂án̂íf̂éŝt́ ŝt́âŕt̂ URL íŝ ńôt́ v̂ál̂íd̂"
+    "message": "M̂án̂íf̂éŝt́ 'start_URL' îś n̂ót̂ v́âĺîd́"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "N̂ám̂é"
@@ -2463,7 +2463,7 @@
     "message": "N̂ó P̂ĺâý ŝt́ôŕê ÍD̂ ṕr̂óv̂íd̂éd̂"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "N̂ó ŝúp̂ṕl̂íêd́ îćôń îś ât́ l̂éâśt̂ {PH1} ṕîx́êĺŝ śq̂úâŕê ín̂ PNG, SVG ór̂ WebP f́ôŕm̂át̂, ẃît́ĥ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é ûńŝét̂ ór̂ śêt́ t̂ó \"any\"."
+    "message": "N̂ó ŝúp̂ṕl̂íêd́ îćôń îś ât́ l̂éâśt̂ {PH1} ṕîx́êĺŝ śq̂úâŕê ín̂ PNG ór̂ SVG f́ôŕm̂át̂, ẃît́ĥ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é ûńŝét̂ ór̂ śêt́ t̂ó 'any'."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "N̂ót̂é:"
@@ -2490,7 +2490,7 @@
     "message": "P̂áĝé îś n̂ót̂ śêŕv̂éd̂ f́r̂óm̂ á ŝéĉúr̂é ôŕîǵîń"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications îś ôńl̂ý ŝúp̂ṕôŕt̂éd̂ ón̂ Chrome B́êt́â án̂d́ Ŝt́âb́l̂é ĉh́âńn̂él̂ś ôń Android."
+    "message": "'prefer_related_applications' îś ôńl̂ý ŝúp̂ṕôŕt̂éd̂ ón̂ Chrome B́êt́â án̂d́ Ŝt́âb́l̂é ĉh́âńn̂él̂ś ôń Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "P̂ŕêśêńt̂át̂íôń"
@@ -2535,7 +2535,7 @@
     "message": "{PH1} {PH2} ĥéîǵĥt́ ĉán̂'t́ b̂é m̂ór̂é t̂h́âń 2.3 t̂ím̂éŝ áŝ ĺôńĝ áŝ t́ĥé ŵíd̂t́ĥ"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src îś n̂ót̂ śêt́"
+    "message": "{PH1} 'src' îś n̂ót̂ śêt́"
   },
   "panels/application/AppManifestView.ts | sSShouldHaveSquareIcon": {
     "message": "M̂óŝt́ ôṕêŕât́îńĝ śŷśt̂ém̂ś r̂éq̂úîŕê śq̂úâŕê íĉón̂ś. P̂ĺêáŝé îńĉĺûd́ê át̂ ĺêáŝt́ ôńê śq̂úâŕê íĉón̂ ín̂ t́ĥé âŕr̂áŷ."

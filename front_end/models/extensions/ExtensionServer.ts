@@ -437,7 +437,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return this.status.E_EXISTS(id);
     }
 
-    const page = this.expandResourcePath(this.getExtensionOrigin(port), message.page) as string;
+    const page = ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.page);
+    if (page === undefined) {
+      return this.status.E_BADARG('page', 'Resources paths cannot point to non-extension resources');
+    }
     let persistentId = this.getExtensionOrigin(port) + message.title;
     persistentId = persistentId.replace(/\s/g, '');
     const panelView = new ExtensionServerPanelView(
@@ -469,9 +472,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!panelView || !(panelView instanceof ExtensionServerPanelView)) {
       return this.status.E_NOTFOUND(message.panel);
     }
-    const button = new ExtensionButton(
-        this, message.id, this.expandResourcePath(this.getExtensionOrigin(port), message.icon), message.tooltip,
-        message.disabled);
+    const resourcePath = ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.icon);
+    if (resourcePath === undefined) {
+      return this.status.E_BADARG('icon', 'Resources paths cannot point to non-extension resources');
+    }
+    const button = new ExtensionButton(this, message.id, resourcePath, message.tooltip, message.disabled);
     this.clientObjects.set(message.id, button);
 
     void panelView.widget().then(appendButton);
@@ -491,9 +496,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!button || !(button instanceof ExtensionButton)) {
       return this.status.E_NOTFOUND(message.id);
     }
-    button.update(
-        message.icon && this.expandResourcePath(this.getExtensionOrigin(port), message.icon), message.tooltip,
-        message.disabled);
+    const resourcePath =
+        message.icon && ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.icon);
+    if (message.icon && resourcePath === undefined) {
+      return this.status.E_BADARG('icon', 'Resources paths cannot point to non-extension resources');
+    }
+    button.update(resourcePath, message.tooltip, message.disabled);
     return this.status.OK();
   }
 
@@ -569,7 +577,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!sidebar || !(sidebar instanceof ExtensionSidebarPane)) {
       return this.status.E_NOTFOUND(message.id);
     }
-    sidebar.setPage(this.expandResourcePath(this.getExtensionOrigin(port), message.page));
+    const resourcePath = ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.page);
+    if (resourcePath === undefined) {
+      return this.status.E_BADARG('page', 'Resources paths cannot point to non-extension resources');
+    }
+    sidebar.setPage(resourcePath);
     return undefined;
   }
 
@@ -1063,9 +1075,14 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         removeLastEventListener.bind(this));
   }
 
-  private expandResourcePath(extensionPath: Platform.DevToolsPath.UrlString, resourcePath: string):
-      Platform.DevToolsPath.UrlString {
-    return extensionPath + '/' + Common.ParsedURL.normalizePath(resourcePath) as Platform.DevToolsPath.UrlString;
+  static expandResourcePath(extensionOrigin: Platform.DevToolsPath.UrlString, resourcePath: string):
+      Platform.DevToolsPath.UrlString|undefined {
+    const strippedOrigin = new URL(extensionOrigin).origin;
+    const resourceURL = new URL(Common.ParsedURL.normalizePath(resourcePath), strippedOrigin);
+    if (resourceURL.origin !== strippedOrigin) {
+      return undefined;
+    }
+    return resourceURL.href as Platform.DevToolsPath.UrlString;
   }
 
   evaluate(

@@ -11,5 +11,8 @@ ts_library("extensions") {
     "RecorderPluginManager_test.ts",
   ]
 
-  deps = [ "../../../../../front_end/models/extensions:bundle" ]
+  deps = [
+    "../../../../../front_end/models/extensions:bundle",
+    "../../helpers",
+  ]
 }

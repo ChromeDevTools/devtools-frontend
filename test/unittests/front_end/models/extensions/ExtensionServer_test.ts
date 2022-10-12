@@ -4,12 +4,17 @@
 
 import * as Extensions from '../../../../../front_end/models/extensions/extensions.js';
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 
 describe('Extensions', () => {
   function cleanup() {
-    delete (window as {chrome?: Chrome.DevTools.Chrome}).chrome;
+    try {
+      delete (window as {chrome?: Chrome.DevTools.Chrome}).chrome;
+    } catch {
+      // Eat errors in headful mode
+    }
   }
 
   beforeEach(cleanup);
@@ -56,5 +61,30 @@ describe('Extensions', () => {
     assert.strictEqual(manager.plugins()[0].getName(), 'Test');
     assert.deepStrictEqual(result, '{"name":"test","steps":[]}');
     assert.deepStrictEqual(stepResult, '{"type":"scroll"}');
+  });
+
+  it('can correctly expand resource paths', async () => {
+    // Ideally this would be a chrome-extension://, but that doesn't work with URL in chrome headless.
+    const extensionOrigin = 'chrome://abcdef' as Platform.DevToolsPath.UrlString;
+    const almostOrigin = `${extensionOrigin}/` as Platform.DevToolsPath.UrlString;
+    const expectation = `${extensionOrigin}/foo` as Platform.DevToolsPath.UrlString;
+    assert.strictEqual(
+        undefined,
+        Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'http://example.com/foo'));
+    assert.strictEqual(
+        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, expectation));
+    assert.strictEqual(
+        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, '/foo'));
+    assert.strictEqual(
+        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'foo'));
+
+    assert.strictEqual(
+        undefined,
+        Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'http://example.com/foo'));
+    assert.strictEqual(
+        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, expectation));
+    assert.strictEqual(
+        expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, '/foo'));
+    assert.strictEqual(expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'foo'));
   });
 });

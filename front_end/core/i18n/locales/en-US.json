@@ -9636,7 +9636,7 @@
     "message": "Add sources from the x_google_ignoreList field from source maps to the ignore list"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
-    "message": "Custom exclusion rules"
+    "message": "Custom exclusion rules:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Debugger will skip through the scripts and will not stop on exceptions thrown by them."
@@ -9651,7 +9651,7 @@
     "message": "Framework Ignore List"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
-    "message": "General exclusion rules"
+    "message": "General exclusion rules:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Add content scripts to ignore list"

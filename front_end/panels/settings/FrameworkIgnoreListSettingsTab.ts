@@ -45,11 +45,11 @@ const UIStrings = {
   /**
   *@description Text in Framework Ignore List Settings Tab of the Settings
   */
-  generalExclusionRules: 'General exclusion rules',
+  generalExclusionRules: 'General exclusion rules:',
   /**
   *@description Text in Framework Ignore List Settings Tab of the Settings
   */
-  customExclusionRules: 'Custom exclusion rules',
+  customExclusionRules: 'Custom exclusion rules:',
   /**
   *@description Text of the add pattern button in Framework Ignore List Settings Tab of the Settings
   */

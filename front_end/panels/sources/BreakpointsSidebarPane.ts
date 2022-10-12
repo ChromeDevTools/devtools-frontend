@@ -34,11 +34,15 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this.#breakpointsView = new SourcesComponents.BreakpointsView.BreakpointsView();
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.CheckboxToggledEvent.eventName, (event: Event) => {
-          this.#onCheckBoxToggled(event);
+          const {data: {breakpointItem, checked}} = event as SourcesComponents.BreakpointsView.CheckboxToggledEvent;
+          this.#controller.breakpointStateChanged(breakpointItem, checked);
+          event.consume();
         });
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.BreakpointSelectedEvent.eventName, (event: Event) => {
-          this.#onBreakpointSelected(event);
+          const {data: {breakpointItem}} = event as SourcesComponents.BreakpointsView.BreakpointSelectedEvent;
+          void this.#controller.jumpToSource(breakpointItem);
+          event.consume();
         });
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.BreakpointEditedEvent.eventName, (event: Event) => {
@@ -48,74 +52,39 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
         });
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.BreakpointsRemovedEvent.eventName, (event: Event) => {
-          this.#onBreakpointsRemoved(event);
+          const {data: {breakpointItems}} = event as SourcesComponents.BreakpointsView.BreakpointsRemovedEvent;
+          void this.#controller.breakpointsRemoved(breakpointItems);
+          event.consume();
         });
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.ExpandedStateChangedEvent.eventName, (event: Event) => {
-          this.#onExpandedStateChanged(event);
+          const {data: {url, expanded}} = event as SourcesComponents.BreakpointsView.ExpandedStateChangedEvent;
+          void this.#controller.expandedStateChanged(url, expanded);
+          event.consume();
         });
     this.#breakpointsView.addEventListener(
-        SourcesComponents.BreakpointsView.PauseOnExceptionsStateChangedEvent.eventName,
-        this.#onPauseOnExceptionsStateChanged.bind(this));
+        SourcesComponents.BreakpointsView.PauseOnExceptionsStateChangedEvent.eventName, (event: Event) => {
+          const {data: {checked}} = event as SourcesComponents.BreakpointsView.PauseOnExceptionsStateChangedEvent;
+          this.#controller.setPauseOnExceptions(checked);
+          event.consume();
+        });
     this.#breakpointsView.addEventListener(
-        SourcesComponents.BreakpointsView.PauseOnCaughtExceptionsStateChangedEvent.eventName,
-        this.#onPauseOnCaughtExceptionsStateChanged.bind(this));
+        SourcesComponents.BreakpointsView.PauseOnCaughtExceptionsStateChangedEvent.eventName, (event: Event) => {
+          const {data: {checked}} = event as SourcesComponents.BreakpointsView.PauseOnCaughtExceptionsStateChangedEvent;
+          this.#controller.setPauseOnCaughtExceptions(checked);
+          event.consume();
+        });
 
     this.contentElement.appendChild(this.#breakpointsView);
     this.update();
   }
 
-  async doUpdate(): Promise<void> {
-    await this.#controller.update();
+  doUpdate(): Promise<void> {
+    return this.#controller.update();
   }
 
   set data(data: SourcesComponents.BreakpointsView.BreakpointsViewData) {
     this.#breakpointsView.data = data;
-  }
-
-  #onCheckBoxToggled(event: Event): void {
-    const checkboxToggledEvent = event as SourcesComponents.BreakpointsView.CheckboxToggledEvent;
-    const {breakpointItem, checked} = checkboxToggledEvent.data;
-
-    this.#controller.breakpointStateChanged(breakpointItem, checked);
-    event.consume();
-  }
-
-  #onBreakpointSelected(event: Event): void {
-    const breakpointSelectedEvent = event as SourcesComponents.BreakpointsView.BreakpointSelectedEvent;
-    const breakpointItem = breakpointSelectedEvent.data.breakpointItem;
-
-    void this.#controller.jumpToSource(breakpointItem);
-    event.consume();
-  }
-
-  #onBreakpointsRemoved(event: Event): void {
-    const breakpointSelectedEvent = event as SourcesComponents.BreakpointsView.BreakpointsRemovedEvent;
-    const breakpointItems = breakpointSelectedEvent.data.breakpointItems;
-
-    void this.#controller.breakpointsRemoved(breakpointItems);
-    event.consume();
-  }
-
-  #onPauseOnExceptionsStateChanged(event: Event): void {
-    const {data: {checked}} = event as SourcesComponents.BreakpointsView.PauseOnExceptionsStateChangedEvent;
-
-    this.#controller.setPauseOnExceptions(checked);
-    event.consume();
-  }
-
-  #onPauseOnCaughtExceptionsStateChanged(event: Event): void {
-    const {data: {checked}} = event as SourcesComponents.BreakpointsView.PauseOnCaughtExceptionsStateChangedEvent;
-
-    this.#controller.setPauseOnCaughtExceptions(checked);
-  }
-
-  #onExpandedStateChanged(event: Event): void {
-    const breakpointSelectedEvent = event as SourcesComponents.BreakpointsView.ExpandedStateChangedEvent;
-    const {url, expanded} = breakpointSelectedEvent.data;
-
-    void this.#controller.expandedStateChanged(url, expanded);
-    event.consume();
   }
 }
 

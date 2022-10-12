@@ -234,6 +234,11 @@ button.round.small devtools-icon {
   height: 18px;
 }
 
+button.round.explicit-size devtools-icon {
+  width: unset;
+  height: unset;
+}
+
 button.toolbar.active devtools-icon,
 button.toolbar:active devtools-icon {
   --icon-color: var(--color-primary);

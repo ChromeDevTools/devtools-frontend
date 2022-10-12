@@ -10,6 +10,11 @@ await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 const testIcon = '/front_end/Images/ic_file_image.svg';
+const fileIcon = '/front_end/Images/file_icon.svg';
+const plusIcon = '/front_end/Images/plus_icon.svg';
+const minusIcon = '/front_end/Images/minus_icon.svg';
+const trashBinIcon = '/front_end/Images/trash_bin_icon.svg';
+const closeIcon = '/front_end/Images/close-icon.svg';
 
 function appendButton(button: Buttons.Button.Button): void {
   document.querySelector('#container')?.appendChild(button);
@@ -233,16 +238,26 @@ roundButtonDisabled.title = 'Disabled Round Button';
 roundButtonDisabled.onclick = () => alert('clicked');
 appendButton(roundButtonDisabled);
 
-// Small Round Button
-const smallRoundButton = new Buttons.Button.Button();
-smallRoundButton.data = {
-  variant: Buttons.Button.Variant.ROUND,
-  iconUrl: testIcon,
-  size: Buttons.Button.Size.SMALL,
-};
-smallRoundButton.title = 'Small Round Button';
-smallRoundButton.onclick = () => alert('clicked');
-appendButton(smallRoundButton);
+// Small Round Buttons
+const roundIcons = [
+  {iconUrl: testIcon},
+  {iconUrl: fileIcon, iconWidth: '16px', iconHeight: '16px'},
+  {iconUrl: plusIcon},
+  {iconUrl: minusIcon},
+  {iconUrl: trashBinIcon, iconWidth: '10px', iconHeight: '14px'},
+  {iconUrl: closeIcon, iconWidth: '10px', iconHeight: '10px'},
+];
+for (const roundIcon of roundIcons) {
+  const smallRoundButton = new Buttons.Button.Button();
+  smallRoundButton.data = {
+    variant: Buttons.Button.Variant.ROUND,
+    size: Buttons.Button.Size.SMALL,
+    ...roundIcon,
+  };
+  smallRoundButton.title = 'Small Round Button';
+  smallRoundButton.onclick = () => alert('clicked');
+  appendButton(smallRoundButton);
+}
 
 // Small Disabled Round Button
 const smallRoundButtonDisabled = new Buttons.Button.Button();

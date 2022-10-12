@@ -47,6 +47,8 @@ interface ButtonState {
   type: ButtonType;
   value?: string;
   title?: string;
+  iconWidth?: string;
+  iconHeight?: string;
 }
 
 export type ButtonData = {
@@ -59,6 +61,8 @@ export type ButtonData = {
   type?: ButtonType,
   value?: string,
   title?: string,
+  iconWidth?: string,
+  iconHeight?: string,
 }|{
   variant: Variant.PRIMARY | Variant.SECONDARY,
   iconUrl?: string,
@@ -120,6 +124,12 @@ export class Button extends HTMLElement {
     if ('size' in data && data.size) {
       this.#props.size = data.size;
     }
+    if ('iconWidth' in data && data.iconWidth) {
+      this.#props.iconWidth = data.iconWidth;
+    }
+    if ('iconHeight' in data && data.iconHeight) {
+      this.#props.iconHeight = data.iconHeight;
+    }
 
     this.#props.active = Boolean(data.active);
     this.#props.spinner = Boolean('spinner' in data ? data.spinner : false);
@@ -145,6 +155,16 @@ export class Button extends HTMLElement {
 
   set size(size: Size) {
     this.#props.size = size;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set iconWidth(iconWidth: string) {
+    this.#props.iconWidth = iconWidth;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set iconHeight(iconHeight: string) {
+    this.#props.iconHeight = iconHeight;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -242,6 +262,7 @@ export class Button extends HTMLElement {
       'only-icon': Boolean(this.#props.iconUrl) && this.#isEmpty,
       small: Boolean(this.#props.size === Size.SMALL),
       active: this.#props.active,
+      'explicit-size': Boolean(this.#props.iconHeight || this.#props.iconWidth),
     };
     const spinnerClasses = {
       primary: this.#props.variant === Variant.PRIMARY,
@@ -257,6 +278,8 @@ export class Button extends HTMLElement {
             .data=${{
               iconPath: this.#props.iconUrl,
               color: 'var(--color-background)',
+              width: this.#props.iconWidth || undefined,
+              height: this.#props.iconHeight || undefined,
             } as IconButton.Icon.IconData}
           >
           </${IconButton.Icon.Icon.litTagName}>` : ''}

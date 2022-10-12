@@ -272,10 +272,23 @@ describe('ConsoleFormat', () => {
             'tokens', [
               {type: 'style', value: `color:rgb(${i},0,0)`},
               {type: 'style', value: `color:rgb(5,${i},0)`},
-              {type: 'style', value: `background:rgb(${i},${i},${i})`},
+              {type: 'style', value: `background-color:rgb(${i},${i},${i})`},
               {type: 'style', value: ''},
             ]);
       }
+    });
+
+    it('correctly clears ANSI color and background color', () => {
+      assert.deepNestedPropertyVal(
+          Console.ConsoleFormat.format('foo \x1B[41m\x1B[37mbar\x1B[39m\x1B[49m baz', []), 'tokens', [
+            {type: 'string', value: 'foo '},
+            {type: 'style', value: 'background-color:var(--console-color-red)'},
+            {type: 'style', value: 'background-color:var(--console-color-red);color:var(--console-color-gray)'},
+            {type: 'string', value: 'bar'},
+            {type: 'style', value: 'background-color:var(--console-color-red)'},
+            {type: 'style', value: ''},
+            {type: 'string', value: ' baz'},
+          ]);
     });
 
     it('deals with ANSI colors and formatting specifiers', () => {

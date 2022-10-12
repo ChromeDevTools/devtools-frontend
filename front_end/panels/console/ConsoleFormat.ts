@@ -152,12 +152,12 @@ export const format = (fmt: string, args: SDK.RemoteObject.RemoteObject[]): {
             case 48:
               if (codes.shift() === 2) {
                 const r = codes.shift() ?? 0, g = codes.shift() ?? 0, b = codes.shift() ?? 0;
-                currentStyle.set(code === 38 ? 'color' : 'background', `rgb(${r},${g},${b})`);
+                currentStyle.set(code === 38 ? 'color' : 'background-color', `rgb(${r},${g},${b})`);
               }
               break;
             case 39:
             case 49:
-              currentStyle.delete(code === 39 ? 'color' : 'background');
+              currentStyle.delete(code === 39 ? 'color' : 'background-color');
               break;
             case 53:
               addTextDecoration('overline');

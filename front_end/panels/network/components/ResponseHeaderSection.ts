@@ -192,6 +192,16 @@ export class ResponseHeaderSection extends HTMLElement {
     this.#render();
   }
 
+  #resetEditorState(): void {
+    if (!this.#request) {
+      return;
+    }
+    this.#headerEditors =
+        this.#headerDetails.map(header => ({name: header.name, value: header.value, originalValue: header.value}));
+    this.#markOverrides();
+    this.#request.setAssociatedData(RESPONSE_HEADER_SECTION_DATA_KEY, this.#headerEditors);
+  }
+
   async #loadOverridesFileInfo(): Promise<void> {
     if (!this.#request) {
       return;
@@ -200,6 +210,8 @@ export class ResponseHeaderSection extends HTMLElement {
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().getHeadersUISourceCodeFromUrl(
             this.#request.url());
     if (!this.#uiSourceCode) {
+      this.#resetEditorState();
+      this.#render();
       return;
     }
     try {
@@ -213,11 +225,13 @@ export class ResponseHeaderSection extends HTMLElement {
       for (const header of this.#headerEditors) {
         header.valueEditable = true;
       }
-      this.#render();
     } catch (error) {
       this.#successfullyParsedOverrides = false;
       console.error(
           'Failed to parse', this.#uiSourceCode?.url() || 'source code file', 'for locally overriding headers.');
+      this.#resetEditorState();
+    } finally {
+      this.#render();
     }
   }
 

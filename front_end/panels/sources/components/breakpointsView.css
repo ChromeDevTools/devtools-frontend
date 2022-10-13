@@ -10,10 +10,11 @@
   flex-direction: column;
 }
 
-.divider {
-  height: 1px;
-  width: inherit;
+hr {
+  border: none;
   background-color: var(--color-details-hairline);
+  height: 0.5pt;
+  width: inherit;
 }
 
 .code-snippet {

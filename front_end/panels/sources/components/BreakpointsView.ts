@@ -220,7 +220,7 @@ export class BreakpointsView extends HTMLElement {
     // clang-format off
     const renderedGroups = this.#breakpointGroups.map(
         group => LitHtml.html`
-          <div class='divider'></div>
+          <hr />
           ${this.#renderBreakpointGroup(group)}
         `);
     const out = LitHtml.html`
@@ -238,7 +238,7 @@ export class BreakpointsView extends HTMLElement {
         </label>
       </div>
       ` : LitHtml.nothing}
-    ${renderedGroups}`;
+    <div role=tree>${renderedGroups}</div>`;
     // clang-format on
     LitHtml.render(out, this.#shadow, {host: this});
   }
@@ -333,9 +333,15 @@ export class BreakpointsView extends HTMLElement {
     };
     // clang-format off
     return LitHtml.html`
-      <details class=${LitHtml.Directives.classMap(classMap)} data-group='true' ?open=${group.expanded} @toggle=${toggleHandler}>
+      <details class=${LitHtml.Directives.classMap(classMap)}
+               data-group=true
+               role=group
+               aria-label='${group.name}'
+               aria-description='${group.url}'
+               ?open=${group.expanded}
+               @toggle=${toggleHandler}>
         <summary @contextmenu=${contextmenuHandler} >
-          <span class='group-header'>${this.#renderFileIcon()}<span class='group-header-title' title='${group.url}'>${group.name}</span></span>
+          <span class='group-header' aria-hidden=true>${this.#renderFileIcon()}<span class='group-header-title' title='${group.url}'>${group.name}</span></span>
           <span class='group-hover-actions'>
             ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
             ${this.#renderBreakpointCounter(group)}
@@ -418,7 +424,11 @@ export class BreakpointsView extends HTMLElement {
 
     // clang-format off
     return LitHtml.html`
-    <div class=${LitHtml.Directives.classMap(classMap)} aria-label=${breakpointItemDescription}  tabIndex=${breakpointItem.isHit ? 0 : -1} @contextmenu=${contextmenuHandler}>
+    <div class=${LitHtml.Directives.classMap(classMap)}
+         aria-label=${breakpointItemDescription}
+         role=treeitem
+         tabIndex=${breakpointItem.isHit ? 0 : -1}
+         @contextmenu=${contextmenuHandler}>
       <label class='checkbox-label'>
         <span class='type-indicator'></span>
         <input type='checkbox' aria-label=${breakpointItem.location} ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE} ?checked=${breakpointItem.status === BreakpointStatus.ENABLED} @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}>

@@ -1191,7 +1191,7 @@ export class CheckboxLabel extends HTMLSpanElement {
     element.checkboxElement.checked = Boolean(checked);
     if (title !== undefined) {
       element.textElement.textContent = title;
-      element.textElement.title = title;
+      ARIAUtils.setAccessibleName(element.checkboxElement, title);
       if (subtitle !== undefined) {
         element.textElement.createChild('div', 'dt-checkbox-subtitle').textContent = subtitle;
       }

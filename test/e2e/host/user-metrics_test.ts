@@ -332,7 +332,7 @@ describe('User Metrics', () => {
 
   it('dispatches an event when experiments are enabled and disabled', async () => {
     await openSettingsTab('Experiments');
-    const customThemeCheckbox = await waitFor('[title="Allow extensions to load custom stylesheets"]');
+    const customThemeCheckbox = await waitFor('[aria-label="Allow extensions to load custom stylesheets"]');
     // Enable the experiment
     await customThemeCheckbox.click();
     // Disable the experiment

@@ -17,7 +17,7 @@ export function parseCSSVariableNameAndFallback(cssVariableValue: string): {
   variableName: string|null,
   fallback: string|null,
 } {
-  const match = cssVariableValue.match(/^var\((--[a-zA-Z0-9-_]+)[,]?\s*(.*)\)$/);
+  const match = cssVariableValue.match(/^var\(\s*(--[a-zA-Z_\P{ASCII}][a-zA-Z0-9_\P{ASCII}-]*)[,]?\s*(.*)\s*\)$/u);
   return {variableName: match && match[1], fallback: match && match[2]};
 }
 

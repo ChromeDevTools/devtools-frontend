@@ -20,16 +20,26 @@ describe('CSSMatchedStyles', () => {
       assert.deepEqual(parseCSSVariableNameAndFallback('var(--x-y,2%)'), {variableName: '--x-y', fallback: '2%'});
     });
 
-    it('properlty rejects non-custom variables', () => {
+    it('property rejects non-custom variables', () => {
       assert.deepEqual(parseCSSVariableNameAndFallback('var(foo)'), {variableName: null, fallback: null});
       assert.deepEqual(parseCSSVariableNameAndFallback('var(foo,1px)'), {variableName: null, fallback: null});
     });
 
-    // The regexp doesnin parseCSSVariableNameAndFallback needs to be fixed.
-    it.skip('[crbug.com/1371322] correctly parses variables with special characters', () => {
-      assert.deepEqual(parseCSSVariableNameAndFallback('--🤖)'), {variableName: '--🤖', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('--foo-🤖)'), {variableName: '--foo-🤖', fallback: ''});
-      assert.deepEqual(parseCSSVariableNameAndFallback('--🤖,1px)'), {variableName: '--🤖', fallback: '1px'});
+    it('correctly parses variables with special characters', () => {
+      assert.deepEqual(parseCSSVariableNameAndFallback('var(--🤖)'), {variableName: '--🤖', fallback: ''});
+      assert.deepEqual(parseCSSVariableNameAndFallback('var(--foo-🤖)'), {variableName: '--foo-🤖', fallback: ''});
+      assert.deepEqual(parseCSSVariableNameAndFallback('var(--🤖, 1px)'), {variableName: '--🤖', fallback: '1px'});
+    });
+
+    it('correctly parses variables with escaped characters in name', () => {
+      assert.deepEqual(parseCSSVariableNameAndFallback('var(--_\x30-pink)'), {variableName: '--_0-pink', fallback: ''});
+
+      assert.deepEqual(
+          parseCSSVariableNameAndFallback('var(--_-color-blue)'), {variableName: '--_-color-blue', fallback: ''});
+      assert.deepEqual(
+          parseCSSVariableNameAndFallback('var(-\-_-color-blue)'), {variableName: '-\-_-color-blue', fallback: ''});
+      assert.deepEqual(
+          parseCSSVariableNameAndFallback('var(\--_-color-blue)'), {variableName: '\--_-color-blue', fallback: ''});
     });
   });
 });

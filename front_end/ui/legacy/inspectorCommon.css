@@ -404,6 +404,28 @@ input::placeholder {
   border-color: transparent;
 }
 
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  .chrome-select {
+    background-image: var(--image-file-chromeSelect);
+  }
+
+  .-theme-with-dark-background .chrome-select,
+  :host-context(.-theme-with-dark-background) .chrome-select {
+    background-image: var(--image-file-chromeSelect);
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  .chrome-select {
+    background-image: var(--image-file-chromeSelectDark);
+  }
+
+  .-theme-with-dark-background .chrome-select,
+  :host-context(.-theme-with-dark-background) .chrome-select {
+    background-image: var(--image-file-chromeSelectDark);
+  }
+}
+
 .-theme-with-dark-background .chrome-select:enabled:active,
 .-theme-with-dark-background .chrome-select:enabled:focus,
 .-theme-with-dark-background .chrome-select:enabled:hover,

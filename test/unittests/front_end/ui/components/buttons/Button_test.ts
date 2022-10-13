@@ -162,11 +162,12 @@ describe('Button', async () => {
   });
 
   it('sets icon size for round icon button according to passed parameters', async () => {
+    const iconUrl = new URL('../../../../../../front_end/Images/file_icon.svg', import.meta.url).toString();
     const button = await renderButton(
         {
           variant: Buttons.Button.Variant.ROUND,
           size: Buttons.Button.Size.SMALL,
-          iconUrl: '/front_end/Images/file_icon.svg',
+          iconUrl,
           iconWidth: '15px',
           iconHeight: '16px',
         },

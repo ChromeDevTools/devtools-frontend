@@ -224,23 +224,29 @@ describe('HeadersView', async () => {
     assert.isFalse(element.hasSelection());
   });
 
-  it('moves focus to the next field when pressing \'Enter\'', async () => {
+  it('handles pressing \'Enter\' key by removing focus and moving it to the next field if possible', async () => {
     const editor = await renderEditor();
     assertShadowRoot(editor.shadowRoot);
     const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    assert.strictEqual(editables.length, 8);
 
-    const first = editables[1] as HTMLSpanElement;
-    const second = editables[2] as HTMLElement;
-    assert.isFalse(first.hasSelection());
-    assert.isFalse(second.hasSelection());
+    const lastHeaderName = editables[6] as HTMLSpanElement;
+    const lastHeaderValue = editables[7] as HTMLSpanElement;
+    assert.isFalse(lastHeaderName.hasSelection());
+    assert.isFalse(lastHeaderValue.hasSelection());
 
-    first.focus();
-    assert.isTrue(isWholeElementContentSelected(first));
-    assert.isFalse(second.hasSelection());
+    lastHeaderName.focus();
+    assert.isTrue(isWholeElementContentSelected(lastHeaderName));
+    assert.isFalse(lastHeaderValue.hasSelection());
 
-    dispatchKeyDownEvent(first, {key: 'Enter', bubbles: true});
-    assert.isFalse(first.hasSelection());
-    assert.isTrue(isWholeElementContentSelected(second));
+    dispatchKeyDownEvent(lastHeaderName, {key: 'Enter', bubbles: true});
+    assert.isFalse(lastHeaderName.hasSelection());
+    assert.isTrue(isWholeElementContentSelected(lastHeaderValue));
+
+    dispatchKeyDownEvent(lastHeaderValue, {key: 'Enter', bubbles: true});
+    for (const editable of editables) {
+      assert.isFalse(editable.hasSelection());
+    }
   });
 
   it('allows adding headers', async () => {

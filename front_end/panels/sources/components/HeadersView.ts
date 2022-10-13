@@ -156,6 +156,7 @@ export class HeadersViewComponent extends HTMLElement {
     const target = event.target as HTMLElement;
     if (target.matches('.editable') && keyboardEvent.key === 'Enter') {
       event.preventDefault();
+      target.blur();
       this.#focusNext(target);
     }
   }

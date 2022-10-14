@@ -442,6 +442,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     valueElement.textContent = lengthText;
     cssLength.data = {
       lengthText,
+      overloaded: this.overloadedInternal,
     };
     cssLength.append(valueElement);
 

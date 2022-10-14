@@ -10,6 +10,10 @@
   outline: none;
 }
 
+.css-length.overloaded {
+  text-decoration: line-through;
+}
+
 .value {
   cursor: ew-resize;
 }

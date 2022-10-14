@@ -7,8 +7,9 @@ import {assertShadowRoot, renderElementIntoDOM} from '../../../../helpers/DOMHel
 
 const {assert} = chai;
 
-const initialData: InlineEditor.CSSLength.CSSLengthData = {
+const initialData = {
   lengthText: '42px',
+  overloaded: false,
 };
 
 describe('CSSLength', () => {

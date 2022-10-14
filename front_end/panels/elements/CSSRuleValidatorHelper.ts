@@ -25,6 +25,32 @@ export const isFlexContainer = (computedStyles?: Map<string, string>): boolean =
   return display === 'flex' || display === 'inline-flex';
 };
 
+export const isInlineElement = (computedStyles?: Map<string, string>): boolean => {
+  if (!computedStyles) {
+    return false;
+  }
+  return computedStyles.get('display') === 'inline';
+};
+
+// See https://html.spec.whatwg.org/multipage/rendering.html#replaced-elements
+const possiblyReplacedElements = new Set([
+  'audio',
+  'canvas',
+  'embed',
+  'iframe',
+  'img',
+  'input',
+  'object',
+  'video',
+]);
+
+export const isPossiblyReplacedElement = (nodeName?: string): boolean => {
+  if (!nodeName) {
+    return false;
+  }
+  return possiblyReplacedElements.has(nodeName);
+};
+
 export const isGridContainer = (computedStyles?: Map<string, string>): boolean => {
   if (!computedStyles) {
     return false;

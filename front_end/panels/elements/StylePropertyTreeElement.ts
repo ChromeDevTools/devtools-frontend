@@ -777,9 +777,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
+    const localName = this.node()?.localName();
     for (const validator of cssRuleValidatorsMap.get(propertyName) || []) {
-      const hint =
-          validator.getHint(propertyName, this.computedStyles || undefined, this.parentsComputedStyles || undefined);
+      const hint = validator.getHint(
+          propertyName, this.computedStyles || undefined, this.parentsComputedStyles || undefined,
+          localName?.toLowerCase());
       if (hint) {
         Host.userMetrics.cssHintShown(validator.getMetricType());
         const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');

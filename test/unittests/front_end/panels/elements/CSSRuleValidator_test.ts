@@ -175,6 +175,39 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       validator: () => new Elements.CSSRuleValidator.ZIndexValidator(),
       expectedResult: false,
     },
+    {
+      description: 'Validates width on an inline element',
+      computedStyles: new Map<string, string>([
+        ['display', 'inline'],
+        ['width', '100px'],
+      ]),
+      nodeName: 'span',
+      parentsComputedStyles: new Map<string, string>(),
+      validator: () => new Elements.CSSRuleValidator.SizingValidator(),
+      expectedResult: false,
+    },
+    {
+      description: 'Validates height on an inline element',
+      computedStyles: new Map<string, string>([
+        ['display', 'inline'],
+        ['height', '100px'],
+      ]),
+      nodeName: 'span',
+      parentsComputedStyles: new Map<string, string>(),
+      validator: () => new Elements.CSSRuleValidator.SizingValidator(),
+      expectedResult: false,
+    },
+    {
+      description: 'Does not validate width on an inline element that could be replaced',
+      computedStyles: new Map<string, string>([
+        ['display', 'inline'],
+        ['width', '100px'],
+      ]),
+      nodeName: 'input',
+      parentsComputedStyles: new Map<string, string>(),
+      validator: () => new Elements.CSSRuleValidator.SizingValidator(),
+      expectedResult: true,
+    },
   ];
 
   before(async () => {
@@ -184,7 +217,8 @@ describeWithEnvironment('CSSRuleValidator', async () => {
   for (const test of tests) {
     it(test.description, () => {
       const actualResult = test.validator().getHint(
-          test.validator().getApplicableProperties()[0], test.computedStyles, test.parentsComputedStyles);
+          test.validator().getApplicableProperties()[0], test.computedStyles, test.parentsComputedStyles,
+          test.nodeName);
       if (test.expectedResult) {
         assert.isUndefined(actualResult);
       } else {

@@ -1009,7 +1009,8 @@ export enum CSSHintType {
   Padding = 8,
   Position = 9,
   ZIndex = 10,
-  MaxValue = 11,
+  Sizing = 11,
+  MaxValue = 12,
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */

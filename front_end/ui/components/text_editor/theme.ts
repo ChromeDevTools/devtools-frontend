@@ -53,6 +53,16 @@ export const editorTheme = CM.EditorView.theme({
     backgroundColor: 'var(--color-background)',
   },
 
+  '.cm-gutters .cm-foldGutterElement': {
+    cursor: 'pointer',
+    opacity: '0%',
+    transition: 'opacity 0.2s',
+  },
+
+  '.cm-gutters .cm-foldGutterElement-folded, .cm-gutters:hover .cm-foldGutterElement': {
+    opacity: '100%',
+  },
+
   '.cm-lineNumbers': {
     overflow: 'visible',
     minWidth: '40px',

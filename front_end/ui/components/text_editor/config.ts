@@ -88,6 +88,7 @@ export const codeFolding = DynamicSetting.bool('textEditorCodeFolding', [
     markerDOM(open: boolean): HTMLElement {
       const iconName = open ? 'triangle-expanded' : 'triangle-collapsed';
       const icon = new Icon.Icon.Icon();
+      icon.setAttribute('class', open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
       icon.data = {
         iconName,
         color: 'var(--color-text-secondary)',

@@ -105,6 +105,7 @@ describeWithRealConnection('FrameDetailsView', () => {
     renderElementIntoDOM(component);
     component.data = {
       frame: frame,
+      adScriptId: null,
     };
 
     assertShadowRoot(component.shadowRoot);
@@ -125,12 +126,18 @@ describeWithRealConnection('FrameDetailsView', () => {
     const debuggerId = debuggerModel.debuggerId();
 
     const frame = makeFrame();
-    frame.adFrameType = () => Protocol.Page.AdFrameType.Root,
-    frame.getDebuggerId = () => debuggerId as Protocol.Runtime.UniqueDebuggerId;
+    frame.adFrameType = () => Protocol.Page.AdFrameType.Root;
 
     const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
     renderElementIntoDOM(component);
-    component.data = {frame, target};
+    component.data = {
+      frame,
+      target,
+      adScriptId: {
+        scriptId: 'scriptId' as Protocol.Runtime.ScriptId,
+        debuggerId: debuggerId as Protocol.Runtime.UniqueDebuggerId,
+      },
+    };
 
     assertShadowRoot(component.shadowRoot);
     await coordinator.done();

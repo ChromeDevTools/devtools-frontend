@@ -274,10 +274,12 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   async doUpdate(): Promise<void> {
-    const debuggerId = this.#frame?.getDebuggerId();
-    const debuggerModel = debuggerId ? await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(debuggerId) : null;
+    const adScriptId = await this.#frame?.parentFrame()?.getAdScriptId(this.#frame?.id);
+    const debuggerModel = adScriptId?.debuggerId ?
+        await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(adScriptId?.debuggerId) :
+        null;
     const target = debuggerModel?.target();
-    this.#reportView.data = {frame: this.#frame, target};
+    this.#reportView.data = {frame: this.#frame, target, adScriptId: adScriptId || null};
   }
 }
 
@@ -286,6 +288,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 export interface FrameDetailsReportViewData {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   target?: SDK.Target.Target;
+  adScriptId: Protocol.Page.AdScriptId|null;
 }
 
 export class FrameDetailsReportView extends HTMLElement {
@@ -298,6 +301,7 @@ export class FrameDetailsReportView extends HTMLElement {
   #permissionsPolicySectionData: PermissionsPolicySectionData = {policies: [], showDetails: false};
   #originTrialTreeView: OriginTrialTreeView = new OriginTrialTreeView();
   #linkifier = new Components.Linkifier.Linkifier();
+  #adScriptId: Protocol.Page.AdScriptId|null = null;
 
   connectedCallback(): void {
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
@@ -306,6 +310,7 @@ export class FrameDetailsReportView extends HTMLElement {
 
   set data(data: FrameDetailsReportViewData) {
     this.#frame = data.frame;
+    this.#adScriptId = data.adScriptId;
     this.#target = data.target;
     if (!this.#permissionsPolicies && this.#frame) {
       this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
@@ -589,10 +594,10 @@ export class FrameDetailsReportView extends HTMLElement {
       rows.push(LitHtml.html`<div>${this.#getAdFrameExplanationString(explanation)}</div>`);
     }
 
-    const adScriptLinkElement = this.#target ?
-        this.#linkifier.linkifyScriptLocation(
-            this.#target, this.#frame.getAdScriptId(), Platform.DevToolsPath.EmptyUrlString, undefined, undefined) :
-        null;
+    const adScriptLinkElement = this.#target ? this.#linkifier.linkifyScriptLocation(
+                                                   this.#target, this.#adScriptId?.scriptId || null,
+                                                   Platform.DevToolsPath.EmptyUrlString, undefined, undefined) :
+                                               null;
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off

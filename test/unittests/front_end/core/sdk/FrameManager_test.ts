@@ -226,15 +226,13 @@ describe('FrameManager', () => {
         },
       ],
     };
-    const adScriptId = {scriptId: 'myAdScriptId', debuggerId: 'myDebuggerId'} as Protocol.Page.AdScriptId;
 
     // step 1) frame added to existing target
-    const frameOldTarget =
-        new SDK.ResourceTreeModel.ResourceTreeFrame(mockParentModel, null, frameId, null, trace, adScriptId);
+    const frameOldTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockParentModel, null, frameId, null, trace);
     mockParentModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frameOldTarget);
 
     // step 2) frame added to new target
-    const frameNewTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockChildModel, null, frameId, null, null, null);
+    const frameNewTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockChildModel, null, frameId, null, null);
     mockChildModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frameNewTarget);
 
     // step 3) frame removed from existing target
@@ -247,8 +245,6 @@ describe('FrameManager', () => {
       const {creationStackTrace, creationStackTraceTarget} = frame.getCreationStackTraceData();
       assert.deepEqual(creationStackTrace, trace);
       assert.strictEqual(creationStackTraceTarget.id(), parentTargetId);
-      assert.strictEqual(frame.getAdScriptId(), adScriptId.scriptId);
-      assert.strictEqual(frame.getDebuggerId(), adScriptId.debuggerId);
     }
   });
 
@@ -274,11 +270,9 @@ describe('FrameManager', () => {
         },
       ],
     };
-    const adScriptId = {scriptId: 'myAdScriptId', debuggerId: 'myDebuggerId'} as Protocol.Page.AdScriptId;
 
     // step 1) frame added to existing target
-    const frameOldTarget =
-        new SDK.ResourceTreeModel.ResourceTreeFrame(mockParentModel, null, frameId, null, trace, adScriptId);
+    const frameOldTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockParentModel, null, frameId, null, trace);
     mockParentModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frameOldTarget);
 
     // step 2) frame removed from existing target
@@ -286,7 +280,7 @@ describe('FrameManager', () => {
         SDK.ResourceTreeModel.Events.FrameDetached, {frame: frameOldTarget, isSwap: true});
 
     // step 3) frame added to new target
-    const frameNewTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockChildModel, null, frameId, null, null, null);
+    const frameNewTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockChildModel, null, frameId, null, null);
     mockChildModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frameNewTarget);
 
     const frame = frameManager.getFrame(frameId);
@@ -295,8 +289,6 @@ describe('FrameManager', () => {
       const {creationStackTrace, creationStackTraceTarget} = frame.getCreationStackTraceData();
       assert.deepEqual(creationStackTrace, trace);
       assert.strictEqual(creationStackTraceTarget.id(), parentTargetId);
-      assert.strictEqual(frame.getAdScriptId(), adScriptId.scriptId);
-      assert.strictEqual(frame.getDebuggerId(), adScriptId.debuggerId);
     }
   });
 

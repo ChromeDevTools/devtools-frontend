@@ -36,8 +36,6 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   #transferringFramesDataCache = new Map<string, {
     creationStackTrace?: Protocol.Runtime.StackTrace,
     creationStackTraceTarget?: Target,
-    adScriptId?: Protocol.Runtime.ScriptId,
-    debuggerId?: Protocol.Runtime.UniqueDebuggerId,
   }>();
   #awaitedFrames: Map<string, {notInTarget?: Target, resolve: (frame: ResourceTreeFrame) => void}[]> = new Map();
 
@@ -94,8 +92,6 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       // In order to not lose the following attributes of a frame during
       // an OOPIF transfer we need to copy them to the new frame
       frame.setCreationStackTrace(frameData.frame.getCreationStackTraceData());
-      frame.setAdScriptId(frameData.frame.getAdScriptId());
-      frame.setDebuggerId(frameData.frame.getDebuggerId());
       this.#frames.set(frame.id, {frame, count: frameData.count + 1});
     } else {
       // If the transferring frame's detached event is received before its frame added
@@ -106,12 +102,6 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
           creationStackTrace: cachedFrameAttributes.creationStackTrace,
           creationStackTraceTarget: cachedFrameAttributes.creationStackTraceTarget,
         });
-      }
-      if (cachedFrameAttributes?.adScriptId) {
-        frame.setAdScriptId(cachedFrameAttributes.adScriptId);
-      }
-      if (cachedFrameAttributes?.debuggerId) {
-        frame.setDebuggerId(cachedFrameAttributes.debuggerId);
       }
       this.#frames.set(frame.id, {frame, count: 1});
       this.#transferringFramesDataCache.delete(frame.id);
@@ -138,13 +128,9 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     // so that later on the frame added event in the new target they can be reassigned.
     if (isSwap && !this.#frames.get(frame.id)) {
       const traceData = frame.getCreationStackTraceData();
-      const adScriptId = frame.getAdScriptId();
-      const debuggerId = frame.getDebuggerId();
       const cachedFrameAttributes = {
         ...(traceData.creationStackTrace && {creationStackTrace: traceData.creationStackTrace}),
         ...(traceData.creationStackTrace && {creationStackTraceTarget: traceData.creationStackTraceTarget}),
-        ...(adScriptId && {adScriptId}),
-        ...(debuggerId && {debuggerId}),
       };
       this.#transferringFramesDataCache.set(frame.id, cachedFrameAttributes);
     }

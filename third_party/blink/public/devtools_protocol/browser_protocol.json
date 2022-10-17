@@ -15253,6 +15253,7 @@
                         "ch-downlink",
                         "ch-ect",
                         "ch-prefers-color-scheme",
+                        "ch-prefers-reduced-motion",
                         "ch-rtt",
                         "ch-save-data",
                         "ch-ua",
@@ -15279,7 +15280,6 @@
                         "encrypted-media",
                         "execution-while-out-of-viewport",
                         "execution-while-not-rendered",
-                        "federated-credentials",
                         "focus-without-user-activation",
                         "fullscreen",
                         "frobulate",
@@ -15287,6 +15287,7 @@
                         "geolocation",
                         "gyroscope",
                         "hid",
+                        "identity-credentials-get",
                         "idle-detection",
                         "interest-cohort",
                         "join-ad-interest-group",
@@ -16357,7 +16358,8 @@
                         "HasEffectiveUrl",
                         "ActivatedBeforeStarted",
                         "InactivePageRestriction",
-                        "StartFailed"
+                        "StartFailed",
+                        "TimeoutBackgrounded"
                     ]
                 }
             ],
@@ -16640,8 +16642,26 @@
                     ]
                 },
                 {
+                    "name": "getAdScriptId",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "$ref": "FrameId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "adScriptId",
+                            "description": "Identifies the bottom-most script which caused the frame to be labelled\nas an ad. Only sent if frame is labelled as an ad and id is available.",
+                            "optional": true,
+                            "$ref": "AdScriptId"
+                        }
+                    ]
+                },
+                {
                     "name": "getCookies",
-                    "description": "Returns all browser cookies. Depending on the backend support, will return detailed cookie\ninformation in the `cookies` field.",
+                    "description": "Returns all browser cookies for the page and all of its subframes. Depending\non the backend support, will return detailed cookie information in the\n`cookies` field.",
                     "experimental": true,
                     "deprecated": true,
                     "redirect": "Network",
@@ -17586,8 +17606,9 @@
                         },
                         {
                             "name": "adScriptId",
-                            "description": "Identifies the bottom-most script which caused the frame to be labelled\nas an ad. Only sent if frame is labelled as an ad and id is available.",
+                            "description": "Identifies the bottom-most script which caused the frame to be labelled\nas an ad. Only sent if frame is labelled as an ad and id is available.\nDeprecated: use Page.getAdScriptId instead.",
                             "experimental": true,
+                            "deprecated": true,
                             "optional": true,
                             "$ref": "AdScriptId"
                         }
@@ -21076,7 +21097,7 @@
                         },
                         {
                             "name": "headers",
-                            "description": "If set, overrides the request headers.",
+                            "description": "If set, overrides the request headers. Note that the overrides do not\nextend to subsequent redirect hops, if a redirect happens. Another override\nmay be applied to a different request produced by a redirect.",
                             "optional": true,
                             "type": "array",
                             "items": {
@@ -21242,6 +21263,13 @@
                         {
                             "name": "networkId",
                             "description": "If the intercepted request had a corresponding Network.requestWillBeSent event fired for it,\nthen this networkId will be the same as the requestId present in the requestWillBeSent event.",
+                            "optional": true,
+                            "$ref": "Network.RequestId"
+                        },
+                        {
+                            "name": "redirectedRequestId",
+                            "description": "If the request is due to a redirect response from the server, the id of the request that\nhas caused the redirect.",
+                            "experimental": true,
                             "optional": true,
                             "$ref": "RequestId"
                         }
@@ -24218,66 +24246,6 @@
                             }
                         }
                     ]
-                },
-                {
-                    "id": "TypeObject",
-                    "description": "Describes a type collected during runtime.",
-                    "experimental": true,
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "name",
-                            "description": "Name of a type collected with type profiling.",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "id": "TypeProfileEntry",
-                    "description": "Source offset and types for a parameter or return value.",
-                    "experimental": true,
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "offset",
-                            "description": "Source offset of the parameter or end of function for return values.",
-                            "type": "integer"
-                        },
-                        {
-                            "name": "types",
-                            "description": "The types for this parameter or return value.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "TypeObject"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "id": "ScriptTypeProfile",
-                    "description": "Type profile data collected during runtime for a JavaScript script.",
-                    "experimental": true,
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "scriptId",
-                            "description": "JavaScript script id.",
-                            "$ref": "Runtime.ScriptId"
-                        },
-                        {
-                            "name": "url",
-                            "description": "JavaScript script name or url.",
-                            "type": "string"
-                        },
-                        {
-                            "name": "entries",
-                            "description": "Type profile entries for parameters and return values of the functions in the script.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "TypeProfileEntry"
-                            }
-                        }
-                    ]
                 }
             ],
             "commands": [
@@ -24347,11 +24315,6 @@
                     ]
                 },
                 {
-                    "name": "startTypeProfile",
-                    "description": "Enable type profile.",
-                    "experimental": true
-                },
-                {
                     "name": "stop",
                     "returns": [
                         {
@@ -24364,11 +24327,6 @@
                 {
                     "name": "stopPreciseCoverage",
                     "description": "Disable precise code coverage. Disabling releases unnecessary execution count records and allows\nexecuting optimized code."
-                },
-                {
-                    "name": "stopTypeProfile",
-                    "description": "Disable type profile. Disabling releases type profile data collected so far.",
-                    "experimental": true
                 },
                 {
                     "name": "takePreciseCoverage",
@@ -24386,21 +24344,6 @@
                             "name": "timestamp",
                             "description": "Monotonically increasing time (in seconds) when the coverage update was taken in the backend.",
                             "type": "number"
-                        }
-                    ]
-                },
-                {
-                    "name": "takeTypeProfile",
-                    "description": "Collect type profile.",
-                    "experimental": true,
-                    "returns": [
-                        {
-                            "name": "result",
-                            "description": "Type profile for all scripts since startTypeProfile() was turned on.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "ScriptTypeProfile"
-                            }
                         }
                     ]
                 }

@@ -2367,9 +2367,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getAppId(): Promise<Protocol.Page.GetAppIdResponse>;
 
+    invoke_getAdScriptId(params: Protocol.Page.GetAdScriptIdRequest): Promise<Protocol.Page.GetAdScriptIdResponse>;
+
     /**
-     * Returns all browser cookies. Depending on the backend support, will return detailed cookie
-     * information in the `cookies` field.
+     * Returns all browser cookies for the page and all of its subframes. Depending
+     * on the backend support, will return detailed cookie information in the
+     * `cookies` field.
      */
     invoke_getCookies(): Promise<Protocol.Page.GetCookiesResponse>;
 
@@ -3788,11 +3791,6 @@ declare namespace ProtocolProxyApi {
      */
     invoke_startPreciseCoverage(params: Protocol.Profiler.StartPreciseCoverageRequest): Promise<Protocol.Profiler.StartPreciseCoverageResponse>;
 
-    /**
-     * Enable type profile.
-     */
-    invoke_startTypeProfile(): Promise<Protocol.ProtocolResponseWithError>;
-
     invoke_stop(): Promise<Protocol.Profiler.StopResponse>;
 
     /**
@@ -3802,20 +3800,10 @@ declare namespace ProtocolProxyApi {
     invoke_stopPreciseCoverage(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Disable type profile. Disabling releases type profile data collected so far.
-     */
-    invoke_stopTypeProfile(): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
      * Collect coverage data for the current isolate, and resets execution counters. Precise code
      * coverage needs to have started.
      */
     invoke_takePreciseCoverage(): Promise<Protocol.Profiler.TakePreciseCoverageResponse>;
-
-    /**
-     * Collect type profile.
-     */
-    invoke_takeTypeProfile(): Promise<Protocol.Profiler.TakeTypeProfileResponse>;
 
   }
   export interface ProfilerDispatcher {

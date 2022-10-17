@@ -6886,10 +6886,6 @@ export const NativeFunctions = [
     signatures: [['?options']]
   },
   {
-    name: 'requestPictureInPictureWindow',
-    signatures: [['?options']]
-  },
-  {
     name: 'TextDecoderStream',
     signatures: [['?label','?options']]
   },
@@ -7251,6 +7247,10 @@ export const NativeFunctions = [
   {
     name: 'softmax',
     signatures: [['input']]
+  },
+  {
+    name: 'buildAsync',
+    signatures: [['outputs']]
   },
   {
     name: 'getFileSystemAccessTransferToken',

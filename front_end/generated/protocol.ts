@@ -10347,6 +10347,7 @@ export namespace Page {
     ChDownlink = 'ch-downlink',
     ChEct = 'ch-ect',
     ChPrefersColorScheme = 'ch-prefers-color-scheme',
+    ChPrefersReducedMotion = 'ch-prefers-reduced-motion',
     ChRtt = 'ch-rtt',
     ChSaveData = 'ch-save-data',
     ChUa = 'ch-ua',
@@ -10373,7 +10374,6 @@ export namespace Page {
     EncryptedMedia = 'encrypted-media',
     ExecutionWhileOutOfViewport = 'execution-while-out-of-viewport',
     ExecutionWhileNotRendered = 'execution-while-not-rendered',
-    FederatedCredentials = 'federated-credentials',
     FocusWithoutUserActivation = 'focus-without-user-activation',
     Fullscreen = 'fullscreen',
     Frobulate = 'frobulate',
@@ -10381,6 +10381,7 @@ export namespace Page {
     Geolocation = 'geolocation',
     Gyroscope = 'gyroscope',
     Hid = 'hid',
+    IdentityCredentialsGet = 'identity-credentials-get',
     IdleDetection = 'idle-detection',
     InterestCohort = 'interest-cohort',
     JoinAdInterestGroup = 'join-ad-interest-group',
@@ -11185,6 +11186,7 @@ export namespace Page {
     ActivatedBeforeStarted = 'ActivatedBeforeStarted',
     InactivePageRestriction = 'InactivePageRestriction',
     StartFailed = 'StartFailed',
+    TimeoutBackgrounded = 'TimeoutBackgrounded',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {
@@ -11341,6 +11343,18 @@ export namespace Page {
      * Recommendation for manifest's id attribute to match current id computed from start_url
      */
     recommendedId?: string;
+  }
+
+  export interface GetAdScriptIdRequest {
+    frameId: FrameId;
+  }
+
+  export interface GetAdScriptIdResponse extends ProtocolResponseWithError {
+    /**
+     * Identifies the bottom-most script which caused the frame to be labelled
+     * as an ad. Only sent if frame is labelled as an ad and id is available.
+     */
+    adScriptId?: AdScriptId;
   }
 
   export interface GetCookiesResponse extends ProtocolResponseWithError {
@@ -11939,6 +11953,7 @@ export namespace Page {
     /**
      * Identifies the bottom-most script which caused the frame to be labelled
      * as an ad. Only sent if frame is labelled as an ad and id is available.
+     * Deprecated: use Page.getAdScriptId instead.
      */
     adScriptId?: AdScriptId;
   }
@@ -14242,7 +14257,9 @@ export namespace Fetch {
      */
     postData?: binary;
     /**
-     * If set, overrides the request headers.
+     * If set, overrides the request headers. Note that the overrides do not
+     * extend to subsequent redirect hops, if a redirect happens. Another override
+     * may be applied to a different request produced by a redirect.
      */
     headers?: HeaderEntry[];
     /**
@@ -14360,7 +14377,12 @@ export namespace Fetch {
      * If the intercepted request had a corresponding Network.requestWillBeSent event fired for it,
      * then this networkId will be the same as the requestId present in the requestWillBeSent event.
      */
-    networkId?: RequestId;
+    networkId?: Network.RequestId;
+    /**
+     * If the request is due to a redirect response from the server, the id of the request that
+     * has caused the redirect.
+     */
+    redirectedRequestId?: RequestId;
   }
 
   /**
@@ -16243,48 +16265,6 @@ export namespace Profiler {
     functions: FunctionCoverage[];
   }
 
-  /**
-   * Describes a type collected during runtime.
-   */
-  export interface TypeObject {
-    /**
-     * Name of a type collected with type profiling.
-     */
-    name: string;
-  }
-
-  /**
-   * Source offset and types for a parameter or return value.
-   */
-  export interface TypeProfileEntry {
-    /**
-     * Source offset of the parameter or end of function for return values.
-     */
-    offset: integer;
-    /**
-     * The types for this parameter or return value.
-     */
-    types: TypeObject[];
-  }
-
-  /**
-   * Type profile data collected during runtime for a JavaScript script.
-   */
-  export interface ScriptTypeProfile {
-    /**
-     * JavaScript script id.
-     */
-    scriptId: Runtime.ScriptId;
-    /**
-     * JavaScript script name or url.
-     */
-    url: string;
-    /**
-     * Type profile entries for parameters and return values of the functions in the script.
-     */
-    entries: TypeProfileEntry[];
-  }
-
   export interface GetBestEffortCoverageResponse extends ProtocolResponseWithError {
     /**
      * Coverage data for the current isolate.
@@ -16337,13 +16317,6 @@ export namespace Profiler {
      * Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
      */
     timestamp: number;
-  }
-
-  export interface TakeTypeProfileResponse extends ProtocolResponseWithError {
-    /**
-     * Type profile for all scripts since startTypeProfile() was turned on.
-     */
-    result: ScriptTypeProfile[];
   }
 
   export interface ConsoleProfileFinishedEvent {

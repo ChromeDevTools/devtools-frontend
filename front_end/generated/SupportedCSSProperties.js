@@ -1915,6 +1915,13 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
+   "auto"
+  ],
+  "name": "hyphenate-limit-chars"
+ },
+ {
+  "inherited": true,
+  "keywords": [
    "none",
    "manual",
    "auto"
@@ -1938,6 +1945,15 @@ export const generatedProperties = [
  },
  {
   "name": "inherits"
+ },
+ {
+  "inherited": false,
+  "keywords": [
+   "drop",
+   "normal",
+   "raise"
+  ],
+  "name": "initial-letter"
  },
  {
   "name": "initial-value"
@@ -3245,6 +3261,12 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "normal"
+  ],
+  "name": "toggle-visibility"
+ },
+ {
+  "keywords": [
    "auto"
   ],
   "name": "top"
@@ -4468,6 +4490,11 @@ export const generatedPropertyValues = {
    "max-content"
   ]
  },
+ "hyphenate-limit-chars": {
+  "values": [
+   "auto"
+  ]
+ },
  "hyphens": {
   "values": [
    "none",
@@ -4482,6 +4509,13 @@ export const generatedPropertyValues = {
    "optimizequality",
    "-webkit-optimize-contrast",
    "pixelated"
+  ]
+ },
+ "initial-letter": {
+  "values": [
+   "drop",
+   "normal",
+   "raise"
   ]
  },
  "inline-size": {
@@ -5169,6 +5203,11 @@ export const generatedPropertyValues = {
  "toggle-trigger": {
   "values": [
    "none"
+  ]
+ },
+ "toggle-visibility": {
+  "values": [
+   "normal"
   ]
  },
  "top": {

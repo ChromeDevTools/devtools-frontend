@@ -2967,9 +2967,14 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: Protocol.Page.GetAppIdResponse;
     };
+    'Page.getAdScriptId': {
+      paramsType: [Protocol.Page.GetAdScriptIdRequest];
+      returnType: Protocol.Page.GetAdScriptIdResponse;
+    };
     /**
-     * Returns all browser cookies. Depending on the backend support, will return detailed cookie
-     * information in the `cookies` field.
+     * Returns all browser cookies for the page and all of its subframes. Depending
+     * on the backend support, will return detailed cookie information in the
+     * `cookies` field.
      */
     'Page.getCookies': {
       paramsType: [];
@@ -4270,13 +4275,6 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.Profiler.StartPreciseCoverageRequest?];
       returnType: Protocol.Profiler.StartPreciseCoverageResponse;
     };
-    /**
-     * Enable type profile.
-     */
-    'Profiler.startTypeProfile': {
-      paramsType: [];
-      returnType: void;
-    };
     'Profiler.stop': {
       paramsType: [];
       returnType: Protocol.Profiler.StopResponse;
@@ -4290,26 +4288,12 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Disable type profile. Disabling releases type profile data collected so far.
-     */
-    'Profiler.stopTypeProfile': {
-      paramsType: [];
-      returnType: void;
-    };
-    /**
      * Collect coverage data for the current isolate, and resets execution counters. Precise code
      * coverage needs to have started.
      */
     'Profiler.takePreciseCoverage': {
       paramsType: [];
       returnType: Protocol.Profiler.TakePreciseCoverageResponse;
-    };
-    /**
-     * Collect type profile.
-     */
-    'Profiler.takeTypeProfile': {
-      paramsType: [];
-      returnType: Protocol.Profiler.TakeTypeProfileResponse;
     };
     /**
      * Add handler to promise with given promise object id.

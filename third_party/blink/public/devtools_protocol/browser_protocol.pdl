@@ -5277,7 +5277,7 @@ domain Network
       # HTTPS DNS protocol upgrade job won a race with a normal connection and
       # an Alternate Protocol job.
       dnsAlpnH3JobWonRace
-      # When the reason is unspecified.
+      # This value is used when the reason is unknown.
       unspecifiedReason
 
   # HTTP response data.
@@ -7132,6 +7132,7 @@ domain Page
       ch-downlink
       ch-ect
       ch-prefers-color-scheme
+      ch-prefers-reduced-motion
       ch-rtt
       ch-save-data
       ch-ua
@@ -7158,7 +7159,6 @@ domain Page
       encrypted-media
       execution-while-out-of-viewport
       execution-while-not-rendered
-      federated-credentials
       focus-without-user-activation
       fullscreen
       frobulate
@@ -7166,6 +7166,7 @@ domain Page
       geolocation
       gyroscope
       hid
+      identity-credentials-get
       idle-detection
       interest-cohort
       join-ad-interest-group
@@ -7681,8 +7682,17 @@ domain Page
       # Recommendation for manifest's id attribute to match current id computed from start_url
       optional string recommendedId
 
-  # Returns all browser cookies. Depending on the backend support, will return detailed cookie
-  # information in the `cookies` field.
+  experimental command getAdScriptId
+    parameters
+      FrameId frameId
+    returns
+      # Identifies the bottom-most script which caused the frame to be labelled
+      # as an ad. Only sent if frame is labelled as an ad and id is available.
+      optional AdScriptId adScriptId
+
+  # Returns all browser cookies for the page and all of its subframes. Depending
+  # on the backend support, will return detailed cookie information in the
+  # `cookies` field.
   experimental deprecated command getCookies
     # Use 'Network.getCookies' instead
     redirect Network
@@ -8127,7 +8137,8 @@ domain Page
       optional Runtime.StackTrace stack
       # Identifies the bottom-most script which caused the frame to be labelled
       # as an ad. Only sent if frame is labelled as an ad and id is available.
-      experimental optional AdScriptId adScriptId
+      # Deprecated: use Page.getAdScriptId instead.
+      experimental deprecated optional AdScriptId adScriptId
 
   # Fired when frame no longer has a scheduled navigation.
   deprecated event frameClearedScheduledNavigation
@@ -8494,6 +8505,7 @@ domain Page
       ActivatedBeforeStarted
       InactivePageRestriction
       StartFailed
+      TimeoutBackgrounded
 
   # Fired when a prerender attempt is completed.
   experimental event prerenderAttemptCompleted
@@ -9942,7 +9954,9 @@ domain Fetch
       optional string method
       # If set, overrides the post data in the request.
       optional binary postData
-      # If set, overrides the request headers.
+      # If set, overrides the request headers. Note that the overrides do not
+      # extend to subsequent redirect hops, if a redirect happens. Another override
+      # may be applied to a different request produced by a redirect.
       optional array of HeaderEntry headers
       # If set, overrides response interception behavior for this request.
       experimental optional boolean interceptResponse
@@ -10033,7 +10047,10 @@ domain Fetch
       optional array of HeaderEntry responseHeaders
       # If the intercepted request had a corresponding Network.requestWillBeSent event fired for it,
       # then this networkId will be the same as the requestId present in the requestWillBeSent event.
-      optional RequestId networkId
+      optional Network.RequestId networkId
+      # If the request is due to a redirect response from the server, the id of the request that
+      # has caused the redirect.
+      experimental optional RequestId redirectedRequestId
 
   # Issued when the domain is enabled with handleAuthRequests set to true.
   # The request is paused until client responds with continueWithAuth.

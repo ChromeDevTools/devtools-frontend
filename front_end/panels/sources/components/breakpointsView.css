@@ -15,6 +15,7 @@ hr {
   background-color: var(--color-details-hairline);
   height: 0.5pt;
   width: inherit;
+  margin: 3px 0 0;
 }
 
 .code-snippet {
@@ -201,6 +202,10 @@ button:hover devtools-icon {
 
 .breakpoint-item:hover button {
   display: flex;
+}
+
+.pause-on-exceptions {
+  margin-top: 3px;
 }
 
 .pause-on-exceptions > .checkbox-label > input {

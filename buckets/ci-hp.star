@@ -46,6 +46,11 @@ highly_privileged_builder(
                 "cipd_log_template": "Rolling %s: %s..%s",
             },
             "subject": "Update DevTools DEPS",
+            "excludes": [
+                # `esbuild` is manually rolled; Chromium pulls our version from
+                # devtools-frontend.
+                "third_party/esbuild:infra/3pp/tools/esbuild/${platform}",
+            ],
             "reviewers": [
                 "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com",
             ],

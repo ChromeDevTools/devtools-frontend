@@ -35,7 +35,8 @@ describeWithMockConnection('StorageView', () => {
 
     const dispatcherSpy = sinon.spy(domStorageModel, 'dispatchEventToListeners');
     const spyClearDataForStorageKey = sinon.stub(target.storageAgent(), 'invoke_clearDataForStorageKey');
-    Resources.StorageView.StorageView.clearByStorageKey(target, testKey, [Protocol.Storage.StorageType.All]);
+    Resources.StorageView.StorageView.clearByStorageKey(
+        target, testKey, undefined, [Protocol.Storage.StorageType.All], false);
     // must be called 4 times, twice with DOMStorageRemoved for local and non-local storage and twice with DOMStorageAdded
     assert.isTrue(spyClearDataForStorageKey.calledOnce);
     assert.strictEqual(dispatcherSpy.callCount, 4);
@@ -54,5 +55,19 @@ describeWithMockConnection('StorageView', () => {
     const subtitle =
         view.element.shadowRoot?.querySelector('div.flex-auto')?.shadowRoot?.querySelector('div.report-subtitle');
     assert.strictEqual(subtitle?.textContent, testKey);
+  });
+
+  it('also clears cookies on clearByStorageKey', () => {
+    const testOrigin = 'test-origin';
+    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+    const cookieModel = target.model(SDK.CookieModel.CookieModel)!;
+    const clearByOriginSpy = sinon.spy(target.storageAgent(), 'invoke_clearDataForOrigin');
+    const cookieClearSpy = sinon.spy(cookieModel, 'clear');
+
+    Resources.StorageView.StorageView.clearByStorageKey(
+        target, testKey, testOrigin, [Protocol.Storage.StorageType.All], false);
+
+    assert.isTrue(clearByOriginSpy.calledOnceWithExactly({origin: testOrigin, storageTypes: 'cookies'}));
+    assert.isTrue(cookieClearSpy.calledOnceWithExactly(undefined, testOrigin));
   });
 });

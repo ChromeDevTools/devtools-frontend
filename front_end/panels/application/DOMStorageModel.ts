@@ -79,11 +79,10 @@ export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.Ev
   }
 
   get id(): Protocol.DOMStorage.StorageId {
-    // TODO(crbug.com/1313434) Prioritize storageKey once everything is ready
-    if (this.securityOriginInternal) {
-      return this.idWithSecurityOrigin;
+    if (this.storageKeyInternal) {
+      return this.idWithStorageKey;
     }
-    return this.idWithStorageKey;
+    return this.idWithSecurityOrigin;
   }
 
   get securityOrigin(): string|null {
@@ -176,16 +175,6 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
 
     this.target().registerDOMStorageDispatcher(new DOMStorageDispatcher(this));
-    if (this.securityOriginManager) {
-      this.securityOriginManager.addEventListener(
-          SDK.SecurityOriginManager.Events.SecurityOriginAdded, this.securityOriginAdded, this);
-      this.securityOriginManager.addEventListener(
-          SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this.securityOriginRemoved, this);
-
-      for (const securityOrigin of this.securityOriginManager.securityOrigins()) {
-        this.addOrigin(securityOrigin);
-      }
-    }
     if (this.storageKeyManagerInternal) {
       this.storageKeyManagerInternal.addEventListener(
           SDK.StorageKeyManager.Events.StorageKeyAdded, this.storageKeyAdded, this);
@@ -194,6 +183,16 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
       for (const storageKey of this.storageKeyManagerInternal.storageKeys()) {
         this.addStorageKey(storageKey);
+      }
+    }
+    if (this.securityOriginManager) {
+      this.securityOriginManager.addEventListener(
+          SDK.SecurityOriginManager.Events.SecurityOriginAdded, this.securityOriginAdded, this);
+      this.securityOriginManager.addEventListener(
+          SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this.securityOriginRemoved, this);
+
+      for (const securityOrigin of this.securityOriginManager.securityOrigins()) {
+        this.addOrigin(securityOrigin);
       }
     }
     void this.agent.invoke_enable();
@@ -320,13 +319,12 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   private storageKey(securityOrigin: string|undefined, storageKey: string|undefined, isLocalStorage: boolean): string {
-    // TODO(crbug.com/1313434) Prioritize storageKey once everything is ready
     console.assert(Boolean(securityOrigin) || Boolean(storageKey));
-    if (securityOrigin) {
-      return JSON.stringify(DOMStorage.storageIdWithSecurityOrigin(securityOrigin, isLocalStorage));
-    }
     if (storageKey) {
       return JSON.stringify(DOMStorage.storageIdWithStorageKey(storageKey, isLocalStorage));
+    }
+    if (securityOrigin) {
+      return JSON.stringify(DOMStorage.storageIdWithSecurityOrigin(securityOrigin, isLocalStorage));
     }
     throw new Error('Either securityOrigin or storageKey is required');
   }

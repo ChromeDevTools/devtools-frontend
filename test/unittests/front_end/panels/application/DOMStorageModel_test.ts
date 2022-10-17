@@ -20,7 +20,7 @@ describeWithMockConnection('DOMStorageModel', () => {
   beforeEach(() => {
     target = createTarget();
     domStorageModel = new Resources.DOMStorageModel.DOMStorageModel(target);
-    domStorage = new Resources.DOMStorageModel.DOMStorage(domStorageModel, '', initKey, true);
+    domStorage = new Resources.DOMStorageModel.DOMStorage(domStorageModel, 'testOrigin', initKey, true);
   });
 
   it('DOMStorage is instantiated correctly', () => {
@@ -43,5 +43,16 @@ describeWithMockConnection('DOMStorageModel', () => {
     assertNotNullOrUndefined(domStorageModel.storageForId(testId));
     manager.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyRemoved, testKey);
     assert.isUndefined(domStorageModel.storageForId(testId));
+  });
+
+  it('DOMStorage prioritises storage key over security origin if both set', () => {
+    const storageId = {storageKey: initKey, isLocalStorage: true};
+    const getItemsSpy = sinon.spy(target.domstorageAgent(), 'invoke_getDOMStorageItems');
+
+    void domStorage.getItems();
+
+    assert.isNotEmpty(domStorage.securityOrigin);
+    assert.isNotEmpty(domStorage.storageKey);
+    assert.isTrue(getItemsSpy.calledOnceWithExactly({storageId}));
   });
 });

@@ -12,6 +12,7 @@ import * as Host from '../../../core/host/host.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 
@@ -38,10 +39,16 @@ const UIStrings = {
   *@description Text for a link to the issues panel
   */
   learnMoreInTheIssuesTab: 'Learn more in the issues tab',
+  /**
+  *@description The title of a button which removes a HTTP header override.
+  */
+  removeOverride: 'Remove this header override',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/HeaderSectionRow.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const closeIconUrl = new URL('../../../Images/close-icon.svg', import.meta.url).toString();
 
 export class HeaderEditedEvent extends Event {
   static readonly eventName = 'headeredited';
@@ -50,6 +57,18 @@ export class HeaderEditedEvent extends Event {
 
   constructor(headerName: Platform.StringUtilities.LowerCaseString, headerValue: string) {
     super(HeaderEditedEvent.eventName, {});
+    this.headerName = headerName;
+    this.headerValue = headerValue;
+  }
+}
+
+export class HeaderRemovedEvent extends Event {
+  static readonly eventName = 'headerremoved';
+  headerName: Platform.StringUtilities.LowerCaseString;
+  headerValue: string;
+
+  constructor(headerName: Platform.StringUtilities.LowerCaseString, headerValue: string) {
+    super(HeaderRemovedEvent.eventName, {});
     this.headerName = headerName;
     this.headerValue = headerValue;
   }
@@ -109,7 +128,19 @@ export class HeaderSectionRow extends HTMLElement {
           class="header-value ${this.#header.headerValueIncorrect ? 'header-warning' : ''}"
           @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
         >
-          ${this.#header.valueEditable ? this.#renderEditable(this.#header.value || '') : this.#header.value || ''}
+          ${this.#header.valueEditable ? LitHtml.html`
+            ${this.#renderEditable(this.#header.value || '')}
+            <${Buttons.Button.Button.litTagName}
+              title=${i18nString(UIStrings.removeOverride)}
+              .size=${Buttons.Button.Size.TINY}
+              .iconUrl=${closeIconUrl}
+              .variant=${Buttons.Button.Variant.ROUND}
+              .iconWidth=${'10px'}
+              .iconHeight=${'10px'}
+              class="remove-header inline-button"
+              @click=${this.#onRemoveOverrideClick}
+            ></${Buttons.Button.Button.litTagName}>
+          ` : this.#header.value || ''}
           ${this.#maybeRenderHeaderValueSuffix(this.#header)}
         </div>
       </div>
@@ -244,11 +275,16 @@ export class HeaderSectionRow extends HTMLElement {
     }
   }
 
-  #onFocusOut(): void {
+  #onFocusOut(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.matches('.editable')) {
+      return;
+    }
+
     const headerNameElement = this.#shadow.querySelector('.header-name') as HTMLElement;
     const headerValueElement = this.#shadow.querySelector('.header-value') as HTMLElement;
-    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.slice(0, -1));
-    const headerValue = headerValueElement.innerText;
+    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.trim().slice(0, -1));
+    const headerValue = headerValueElement.innerText.trim();
 
     if (headerName !== '') {
       if (headerName !== this.#header?.name || headerValue !== this.#header?.value) {
@@ -265,6 +301,14 @@ export class HeaderSectionRow extends HTMLElement {
     // clear selection
     const selection = window.getSelection();
     selection?.removeAllRanges();
+  }
+
+  #onRemoveOverrideClick(): void {
+    const headerNameElement = this.#shadow.querySelector('.header-name') as HTMLElement;
+    const headerValueElement = this.#shadow.querySelector('.header-value') as HTMLElement;
+    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.trim().slice(0, -1));
+    const headerValue = headerValueElement.innerText.trim();
+    this.dispatchEvent(new HeaderRemovedEvent(headerName, headerValue));
   }
 
   #onKeyDown(event: Event): void {

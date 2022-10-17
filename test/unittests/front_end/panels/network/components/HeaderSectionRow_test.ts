@@ -330,4 +330,34 @@ describeWithEnvironment('HeaderSectionRow', () => {
     dispatchKeyDownEvent(editable, {key: 'Escape', bubbles: true});
     assert.isFalse(component.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
   });
+
+  it('allows removing a header override', async () => {
+    const headerName = Platform.StringUtilities.toLowerCaseString('some-header-name');
+    const headerValue = 'someHeaderValue';
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: headerName,
+      value: headerValue,
+      valueEditable: true,
+    };
+
+    const component = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+
+    let headerValueFromEvent = '';
+    let headerNameFromEvent = '';
+    let headerRemovedEventCount = 0;
+
+    component.addEventListener('headerremoved', event => {
+      headerRemovedEventCount++;
+      headerValueFromEvent = (event as NetworkComponents.HeaderSectionRow.HeaderRemovedEvent).headerValue;
+      headerNameFromEvent = (event as NetworkComponents.HeaderSectionRow.HeaderRemovedEvent).headerName;
+    });
+
+    const removeHeaderButton = component.shadowRoot.querySelector('.remove-header') as HTMLElement;
+    removeHeaderButton.click();
+
+    assert.strictEqual(headerRemovedEventCount, 1);
+    assert.strictEqual(headerNameFromEvent, headerName);
+    assert.strictEqual(headerValueFromEvent, headerValue);
+  });
 });

@@ -16,6 +16,7 @@ import {
   type HeaderDetailsDescriptor,
   type HeaderEditedEvent,
   type HeaderEditorDescriptor,
+  type HeaderRemovedEvent,
   HeaderSectionRow,
   type HeaderSectionRowData,
 } from './HeaderSectionRow.js';
@@ -306,6 +307,55 @@ export class ResponseHeaderSection extends HTMLElement {
     this.#updateOverrides(event.headerName, event.headerValue, index);
   }
 
+  #fileNameFromUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.RawPathString {
+    const rawPath =
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().rawPathFromUrl(url, true);
+    const lastIndexOfSlash = rawPath.lastIndexOf('/');
+    return Common.ParsedURL.ParsedURL.substring(rawPath, lastIndexOfSlash + 1);
+  }
+
+  #commitOverrides(): void {
+    this.#uiSourceCode?.setWorkingCopy(JSON.stringify(this.#overrides, null, 2));
+    this.#uiSourceCode?.commitWorkingCopy();
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().updateInterceptionPatterns();
+  }
+
+  #removeEntryFromOverrides(
+      rawFileName: Platform.DevToolsPath.RawPathString, headerName: Platform.StringUtilities.LowerCaseString,
+      headerValue: string): void {
+    for (let blockIndex = this.#overrides.length - 1; blockIndex >= 0; blockIndex--) {
+      const block = this.#overrides[blockIndex];
+      if (block.applyTo !== rawFileName) {
+        continue;
+      }
+      const foundIndex = block.headers.findIndex(header => header.name === headerName && header.value === headerValue);
+      if (foundIndex < 0) {
+        continue;
+      }
+      block.headers.splice(foundIndex, 1);
+      if (block.headers.length === 0) {
+        this.#overrides.splice(blockIndex, 1);
+      }
+      return;
+    }
+  }
+
+  #onHeaderRemoved(event: HeaderRemovedEvent): void {
+    const target = event.target as HTMLElement;
+    if (target.dataset.index === undefined || !this.#request) {
+      return;
+    }
+    const index = Number(target.dataset.index);
+    const rawFileName = this.#fileNameFromUrl(this.#request.url());
+    this.#removeEntryFromOverrides(rawFileName, event.headerName, event.headerValue);
+    this.#commitOverrides();
+    this.#headerEditors.splice(index, 1);
+    if (index < this.#headerDetails.length) {
+      this.#headerDetails.splice(index, 1);
+    }
+    this.#render();
+  }
+
   #updateOverrides(headerName: Platform.StringUtilities.LowerCaseString, headerValue: string, index: number): void {
     if (!this.#request) {
       return;
@@ -323,10 +373,7 @@ export class ResponseHeaderSection extends HTMLElement {
     const headersToUpdate = this.#headerEditors.filter(
         header => header.name === headerName && (header.value !== header.originalValue || header.isOverride));
 
-    const rawPath = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().rawPathFromUrl(
-        this.#request.url(), true);
-    const lastIndexOfSlash = rawPath.lastIndexOf('/');
-    const rawFileName = Common.ParsedURL.ParsedURL.substring(rawPath, lastIndexOfSlash + 1);
+    const rawFileName = this.#fileNameFromUrl(this.#request.url());
 
     // If the last override-block matches 'rawFileName', use this last block.
     // Otherwise just append a new block at the end. We are not using earlier
@@ -363,9 +410,7 @@ export class ResponseHeaderSection extends HTMLElement {
       block.headers.push({name: header.name, value: header.value || ''});
     }
 
-    this.#uiSourceCode?.setWorkingCopy(JSON.stringify(this.#overrides, null, 2));
-    this.#uiSourceCode?.commitWorkingCopy();
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().updateInterceptionPatterns();
+    this.#commitOverrides();
   }
 
   #onAddHeaderClick(): void {
@@ -399,7 +444,7 @@ export class ResponseHeaderSection extends HTMLElement {
       ${headerDescriptors.map((header, index) => html`
         <${HeaderSectionRow.litTagName} .data=${{
           header: header,
-        } as HeaderSectionRowData} @headeredited=${this.#onHeaderEdited} data-index=${index}></${HeaderSectionRow.litTagName}>
+        } as HeaderSectionRowData} @headeredited=${this.#onHeaderEdited} @headerremoved=${this.#onHeaderRemoved} data-index=${index}></${HeaderSectionRow.litTagName}>
       `)}
       ${this.#successfullyParsedOverrides ? html`
         <${Buttons.Button.Button.litTagName}

@@ -6884,6 +6884,9 @@
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Learn more in the issues tab"
   },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "Remove this header override"
+  },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "Learn more"
   },

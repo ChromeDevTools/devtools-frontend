@@ -18,6 +18,7 @@ import {setUpEnvironment} from '../../../helpers/OverridesHelpers.js';
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import {createWorkspaceProject} from '../../../helpers/OverridesHelpers.js';
 import * as Workspace from '../../../../../../front_end/models/workspace/workspace.js';
+import type * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -54,6 +55,16 @@ function editHeaderRow(
   assertElement(editable, HTMLSpanElement);
   editable.textContent = newValue;
   dispatchFocusOutEvent(editable, {bubbles: true});
+}
+
+function removeHeaderRow(component: NetworkComponents.ResponseHeaderSection.ResponseHeaderSection): void {
+  assertShadowRoot(component.shadowRoot);
+  const row = component.shadowRoot.querySelector('devtools-header-section-row');
+  assertElement(row, HTMLElement);
+  assertShadowRoot(row.shadowRoot);
+  const button = row.shadowRoot.querySelector('.remove-header');
+  assertElement(button, HTMLElement);
+  button.click();
 }
 
 async function setupHeaderEditing(
@@ -446,6 +457,78 @@ describeWithEnvironment('ResponseHeaderSection', () => {
         },
       ],
     }];
+    assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+  });
+
+  it('can remove header overrides', async () => {
+    const headerOverridesFileContent = `[
+      {
+        "applyTo": "index.html",
+        "headers": [
+          {
+            "name": "server",
+            "value": "overridden server"
+          },
+          {
+            "name": "cache-control",
+            "value": "max-age=9999"
+          }
+        ]
+      }
+    ]`;
+
+    const actualHeaders = [
+      {name: 'server', value: 'overridden server'},
+      {name: 'cache-control', value: 'max-age=9999'},
+    ];
+
+    const originalHeaders = [
+      {name: 'server', value: 'original server'},
+      {name: 'cache-control', value: 'max-age=600'},
+    ];
+
+    const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
+    removeHeaderRow(component);
+
+    const expected = [{
+      applyTo: 'index.html',
+      headers: [
+        {
+          name: 'cache-control',
+          value: 'max-age=9999',
+        },
+      ],
+    }];
+    assert.strictEqual(spy.callCount, 1);
+    assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+  });
+
+  it('can remove the last header override', async () => {
+    const headerOverridesFileContent = `[
+      {
+        "applyTo": "index.html",
+        "headers": [
+          {
+            "name": "server",
+            "value": "overridden server"
+          }
+        ]
+      }
+    ]`;
+
+    const actualHeaders = [
+      {name: 'server', value: 'overridden server'},
+    ];
+
+    const originalHeaders = [
+      {name: 'server', value: 'original server'},
+    ];
+
+    const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
+    removeHeaderRow(component);
+
+    const expected: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
+    assert.strictEqual(spy.callCount, 1);
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
   });
 

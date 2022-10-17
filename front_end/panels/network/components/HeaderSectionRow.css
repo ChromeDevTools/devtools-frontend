@@ -153,3 +153,19 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
 .header-editable .header-name .editable {
   color: var(--color-syntax-1);
 }
+
+.inline-button {
+  vertical-align: middle;
+}
+
+.row .inline-button {
+  opacity: 0%;
+  visibility: hidden;
+  transition: opacity 200ms;
+}
+
+.row.header-overridden:focus-within .inline-button,
+.row.header-overridden:hover .inline-button {
+  opacity: 100%;
+  visibility: visible;
+}

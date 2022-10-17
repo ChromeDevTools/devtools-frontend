@@ -6884,6 +6884,9 @@
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "L̂éâŕn̂ ḿôŕê ín̂ t́ĥé îśŝúêś t̂áb̂"
   },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "R̂ém̂óv̂é t̂h́îś ĥéâd́êŕ ôv́êŕr̂íd̂é"
+  },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },

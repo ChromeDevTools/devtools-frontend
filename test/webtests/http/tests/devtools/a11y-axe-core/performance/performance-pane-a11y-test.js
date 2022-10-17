@@ -37,8 +37,7 @@
   ];
 
   // create dummy data for test
-  const model =
-      PerformanceTestRunner.createPerformanceModelWithEvents(testData);
+  const model = await PerformanceTestRunner.createPerformanceModelWithEvents(testData);
 
   const detailsView = UI.panels.timeline.flameChart.detailsView;
 

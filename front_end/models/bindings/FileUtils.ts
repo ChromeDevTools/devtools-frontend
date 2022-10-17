@@ -163,19 +163,19 @@ export class ChunkedFileReader implements ChunkedReader {
     }
 
     if (endOfFile) {
-      this.finishRead();
+      void this.finishRead();
       return;
     }
     void this.loadChunk();
   }
 
-  private finishRead(): void {
+  private async finishRead(): Promise<void> {
     if (!this.#output) {
       return;
     }
     this.#file = null;
     this.#reader = null;
-    void this.#output.close();
+    await this.#output.close();
     this.#transferFinished(!this.#errorInternal);
   }
 

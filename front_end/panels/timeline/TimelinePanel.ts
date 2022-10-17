@@ -719,12 +719,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
-  private loadFromFile(file: File): void {
+  private async loadFromFile(file: File): Promise<void> {
     if (this.state !== State.Idle) {
       return;
     }
     this.prepareToLoadTimeline();
-    this.loader = TimelineLoader.loadFromFile(file, this);
+    this.loader = await TimelineLoader.loadFromFile(file, this);
     this.createFileSelector();
   }
 
@@ -889,8 +889,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           .then(widget => widget.stopRecording());
     }
     if (this.controller) {
-      const model = await this.controller.stopRecording();
-      this.performanceModel = model;
+      this.performanceModel = this.controller.getPerformanceModel();
+      await this.controller.stopRecording();
       this.setUIControlsEnabled(true);
       this.controller.dispose();
       this.controller = null;
@@ -963,13 +963,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.saveButton.setEnabled(this.state === state.Idle && Boolean(this.performanceModel));
   }
 
-  toggleRecording(): void {
+  async toggleRecording(): Promise<void> {
     if (this.state === State.Idle) {
       this.recordingPageReload = false;
-      void this.startRecording();
+      await this.startRecording();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.TimelineStarted);
     } else if (this.state === State.Recording) {
-      void this.stopRecording();
+      await this.stopRecording();
     }
   }
 
@@ -1148,7 +1148,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
-  loadingComplete(tracingModel: SDK.TracingModel.TracingModel|null): void {
+  async loadingComplete(tracingModel: SDK.TracingModel.TracingModel|null): Promise<void> {
     delete this.loader;
     this.setState(State.Idle);
 
@@ -1165,7 +1165,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!this.performanceModel) {
       this.performanceModel = new PerformanceModel();
     }
-    this.performanceModel.setTracingModel(tracingModel);
+
+    await this.performanceModel.setTracingModel(tracingModel);
     this.setModel(this.performanceModel);
     this.historyManager.addRecording(this.performanceModel);
 
@@ -1178,6 +1179,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
+  loadingCompleteForTest(): void {
+    // Not implemented, added only for allowing the TimelineTestRunner
+    // to be in sync when a trace load is finished.
+  }
   private showRecordingStarted(): void {
     if (this.statusPane) {
       return;
@@ -1330,7 +1335,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       if (!file) {
         return;
       }
-      this.loadFromFile(file);
+      void this.loadFromFile(file);
     }
   }
 }
@@ -1588,7 +1593,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     console.assert(panel && panel instanceof TimelinePanel);
     switch (actionId) {
       case 'timeline.toggle-recording':
-        panel.toggleRecording();
+        void panel.toggleRecording();
         return true;
       case 'timeline.record-reload':
         panel.recordReload();

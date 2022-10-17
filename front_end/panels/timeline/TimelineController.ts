@@ -142,7 +142,11 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
 
     this.client.loadingStarted();
     await this.waitForTracingToStop(true);
-    this.allSourcesFinished();
+    await this.allSourcesFinished();
+    return this.performanceModel;
+  }
+
+  getPerformanceModel(): PerformanceModel {
     return this.performanceModel;
   }
 
@@ -232,16 +236,17 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     this.tracingCompleteCallback = null;
   }
 
-  private allSourcesFinished(): void {
+  private async allSourcesFinished(): Promise<void> {
     this.client.processingStarted();
-    window.setTimeout(() => this.finalizeTrace(), 0);
+    await this.finalizeTrace();
   }
 
   private async finalizeTrace(): Promise<void> {
     this.injectCpuProfileEvents();
     await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     this.tracingModel.tracingComplete();
-    this.client.loadingComplete(this.tracingModel);
+    await this.client.loadingComplete(this.tracingModel);
+    this.client.loadingCompleteForTest();
   }
 
   private injectCpuProfileEvent(pid: number, tid: number, cpuProfile: Protocol.Profiler.Profile|null): void {
@@ -381,6 +386,7 @@ export interface Client {
   processingStarted(): void;
   loadingProgress(progress?: number): void;
   loadingComplete(tracingModel: SDK.TracingModel.TracingModel|null): void;
+  loadingCompleteForTest(): void;
 }
 export interface RecordingOptions {
   enableJSSampling?: boolean;

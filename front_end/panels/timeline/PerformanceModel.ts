@@ -71,7 +71,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.filtersInternal.every(f => f.accept(event));
   }
 
-  setTracingModel(model: SDK.TracingModel.TracingModel): void {
+  async setTracingModel(model: SDK.TracingModel.TracingModel): Promise<void> {
     this.tracingModelInternal = model;
     this.timelineModelInternal.setEvents(model);
 

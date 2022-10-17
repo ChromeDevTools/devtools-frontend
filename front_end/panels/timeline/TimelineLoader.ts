@@ -63,18 +63,17 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     this.jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(this.writeBalancedJSON.bind(this), true);
   }
 
-  static loadFromFile(file: File, client: Client): TimelineLoader {
+  static async loadFromFile(file: File, client: Client): Promise<TimelineLoader> {
     const loader = new TimelineLoader(client);
     const fileReader = new Bindings.FileUtils.ChunkedFileReader(file, TransferChunkLengthBytes);
     loader.canceledCallback = fileReader.cancel.bind(fileReader);
     loader.totalSize = file.size;
-    void fileReader.read(loader).then(success => {
-      if (!success && fileReader.error()) {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        loader.reportErrorAndCancelLoading((fileReader.error() as any).message);
-      }
-    });
+    const success = await fileReader.read(loader);
+    if (!success && fileReader.error()) {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      loader.reportErrorAndCancelLoading((fileReader.error() as any).message);
+    }
     return loader;
   }
 
@@ -247,16 +246,16 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       return;
     }
     this.client.processingStarted();
-    window.setTimeout(() => this.finalizeTrace(), 0);
+    await this.finalizeTrace();
   }
 
-  private finalizeTrace(): void {
+  private async finalizeTrace(): Promise<void> {
     if (this.state === State.LoadingCPUProfileFormat) {
       this.parseCPUProfileFormat(this.buffer);
       this.buffer = '';
     }
     (this.tracingModel as SDK.TracingModel.TracingModel).tracingComplete();
-    (this.client as Client).loadingComplete(this.tracingModel);
+    await (this.client as Client).loadingComplete(this.tracingModel);
   }
 
   private parseCPUProfileFormat(text: string): void {

@@ -14,7 +14,7 @@
 
   TestRunner.addResult('Loading a performance model.');
   const view = tabbedPane.visibleView;
-  const model = PerformanceTestRunner.createPerformanceModelWithEvents([{}]);
+  const model = await PerformanceTestRunner.createPerformanceModelWithEvents([{}]);
   view.setModel(model, PerformanceTestRunner.mainTrack());
   view.updateContents(Timeline.TimelineSelection.fromRange(
     model.timelineModel().minimumRecordTime(), model.timelineModel().maximumRecordTime()));

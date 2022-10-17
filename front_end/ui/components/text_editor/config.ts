@@ -76,7 +76,22 @@ export const autocompletion: CM.Extension = [
     icons: false,
     optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
   }),
-  CM.Prec.highest(CM.keymap.of([{key: 'ArrowRight', run: CM.acceptCompletion}])),
+  CM.Prec.highest(CM.keymap.of([{
+    key: 'ArrowRight',
+    run: (editorView: CM.EditorView): boolean => {
+      const cursorPosition = editorView.state.selection.main.head;
+      const line = editorView.state.doc.lineAt(cursorPosition);
+      const column = cursorPosition - line.from;
+      const isCursorAtEndOfLine = column >= line.length;
+      if (isCursorAtEndOfLine) {
+        return CM.acceptCompletion(editorView);
+      }
+
+      // We didn't handle this key press
+      // so it will be handled by default behavior.
+      return false;
+    },
+  }])),
 ];
 
 export const sourcesAutocompletion = DynamicSetting.bool('textEditorAutocompletion', autocompletion);

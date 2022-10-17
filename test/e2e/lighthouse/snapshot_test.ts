@@ -48,10 +48,15 @@ describe('Snapshot', async function() {
       makeTextFieldBtn.click();
     });
 
+    let numNavigations = 0;
+    target.on('framenavigated', () => ++numNavigations);
+
     await selectMode('snapshot');
     await clickStartButton();
 
     const {lhr, artifacts, reportEl} = await waitForResult();
+
+    assert.strictEqual(numNavigations, 0);
 
     assert.strictEqual(lhr.gatherMode, 'snapshot');
 

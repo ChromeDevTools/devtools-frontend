@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
-import {setDevToolsSettings, waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, setDevToolsSettings, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickStartButton,
@@ -59,9 +59,26 @@ describe('Navigation', async function() {
           'lighthouse-plugin-publisher-ads',
         ]);
 
+        let numNavigations = 0;
+        const {target} = await getBrowserAndPages();
+        target.on('framenavigated', () => ++numNavigations);
+
         await clickStartButton();
 
         const {lhr, artifacts, reportEl} = await waitForResult();
+
+        if (mode === 'legacy') {
+          // 1 initial about:blank jump
+          // 1 about:blank jump + 1 navigation for the default pass
+          // 1 about:blank jump + 1 navigation for the offline pass
+          // 1 navigation after auditing to reset state
+          assert.strictEqual(numNavigations, 6);
+        } else {
+          // 1 initial about:blank jump
+          // 1 about:blank jump + 1 navigation for the default pass
+          // 1 navigation after auditing to reset state
+          assert.strictEqual(numNavigations, 4);
+        }
 
         assert.strictEqual(lhr.lighthouseVersion, '9.6.6');
         assert.match(lhr.finalUrl, /^https:\/\/localhost:[0-9]+\/test\/e2e\/resources\/lighthouse\/hello.html/);

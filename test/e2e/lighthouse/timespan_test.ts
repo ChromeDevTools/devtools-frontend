@@ -46,10 +46,14 @@ describe('Timespan', async function() {
 
     await selectMode('timespan');
     await setThrottlingMethod('simulate');
+
+    let numNavigations = 0;
+    const {target} = await getBrowserAndPages();
+    target.on('framenavigated', () => ++numNavigations);
+
     await clickStartButton();
     await waitForTimespanStarted();
 
-    const {target} = await getBrowserAndPages();
     await target.click('button');
     await target.click('button');
     await target.click('button');
@@ -57,6 +61,8 @@ describe('Timespan', async function() {
     await endTimespan();
 
     const {lhr, artifacts, reportEl} = await waitForResult();
+
+    assert.strictEqual(numNavigations, 0);
 
     assert.strictEqual(lhr.gatherMode, 'timespan');
 

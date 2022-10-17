@@ -536,9 +536,14 @@ export class LighthousePanel extends UI.Panel.Panel {
     if (!resourceTreeModel) {
       return;
     }
-    // reload to reset the page state
-    const inspectedURL = await this.controller.getInspectedURL();
-    await resourceTreeModel.navigate(inspectedURL);
+
+    // Reload to reset page state after a navigation.
+    // We want to retain page state for timespan and snapshot modes.
+    const mode = this.currentLighthouseRun?.flags.mode;
+    if (mode === 'navigation') {
+      const inspectedURL = await this.controller.getInspectedURL();
+      await resourceTreeModel.navigate(inspectedURL);
+    }
   }
 
   wasShown(): void {

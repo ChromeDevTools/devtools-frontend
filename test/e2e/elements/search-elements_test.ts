@@ -41,18 +41,22 @@ describe('The Elements tab', async function() {
       await assertSearchResultMatchesText('1 of 1');
     });
 
-    it('search should jump to next match when Enter is pressed when the input is not changed', async () => {
-      await goToResource('elements/elements-search-test.html');
-      await summonAndWaitForSearchBox();
-      const {frontend} = getBrowserAndPages();
+    // FLaky on Mac.
+    it.skipOnPlatforms(
+        ['mac'],
+        '[crbug.com/1375160] search should jump to next match when Enter is pressed when the input is not changed',
+        async () => {
+          await goToResource('elements/elements-search-test.html');
+          await summonAndWaitForSearchBox();
+          const {frontend} = getBrowserAndPages();
 
-      await frontend.keyboard.type('two');
-      await frontend.keyboard.press('Enter');
-      await assertSearchResultMatchesText('1 of 2');
+          await frontend.keyboard.type('two');
+          await frontend.keyboard.press('Enter');
+          await assertSearchResultMatchesText('1 of 2');
 
-      await frontend.keyboard.press('Enter');
-      await assertSearchResultMatchesText('2 of 2');
-    });
+          await frontend.keyboard.press('Enter');
+          await assertSearchResultMatchesText('2 of 2');
+        });
 
     it('search should be performed with the new query when the input is changed and Enter is pressed', async () => {
       await goToResource('elements/elements-search-test.html');

@@ -5,8 +5,10 @@
 (async function() {
   TestRunner.addResult('Tests accessibility in the lighthouse start view using the axe-core linter.\n');
   await TestRunner.loadTestModule('axe_core_test_runner');
-  await TestRunner.loadTestModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
-  await AxeCoreTestRunner.runValidation(LighthouseTestRunner.getContainerElement());
+
+  const widget = await UI.viewManager.view('lighthouse').widget();
+  await AxeCoreTestRunner.runValidation(widget.contentElement);
+
   TestRunner.completeTest();
 })();

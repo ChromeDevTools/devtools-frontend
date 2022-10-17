@@ -32,3 +32,7 @@ export function keyIsArrowKey(key: string): key is ArrowKey {
 export function isEscKey(event: KeyboardEvent): boolean {
   return event.key === 'Escape';
 }
+
+export function isEnterOrSpaceKey(event: KeyboardEvent): boolean {
+  return event.key === 'Enter' || event.key === ' ';
+}

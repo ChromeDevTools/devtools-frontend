@@ -954,7 +954,7 @@ export function animateFunction(
 export class LongClickController {
   private readonly element: Element;
   private readonly callback: (arg0: Event) => void;
-  private readonly editKey: (arg0: Event) => boolean;
+  private readonly editKey: (arg0: KeyboardEvent) => boolean;
   private longClickData!: {
     mouseUp: (arg0: Event) => void,
     mouseDown: (arg0: Event) => void,
@@ -964,7 +964,8 @@ export class LongClickController {
 
   constructor(
       element: Element, callback: (arg0: Event) => void,
-      isEditKeyFunc: (arg0: Event) => boolean = (event): boolean => isEnterOrSpaceKey(event)) {
+      isEditKeyFunc: (arg0: KeyboardEvent) => boolean = (event):
+          boolean => Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
     this.element = element;
     this.callback = callback;
     this.editKey = isEditKeyFunc;
@@ -998,14 +999,14 @@ export class LongClickController {
     this.longClickData = {mouseUp: boundMouseUp, mouseDown: boundMouseDown, reset: boundReset};
 
     function keyDown(this: LongClickController, e: Event): void {
-      if (this.editKey(e)) {
+      if (this.editKey(e as KeyboardEvent)) {
         const callback = this.callback;
         this.longClickInterval = window.setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
       }
     }
 
     function keyUp(this: LongClickController, e: Event): void {
-      if (this.editKey(e)) {
+      if (this.editKey(e as KeyboardEvent)) {
         this.reset();
       }
     }
@@ -1544,7 +1545,7 @@ export function createFileSelectorElement(callback: (arg0: File) => void): HTMLI
 export const MaxLengthForDisplayedURLs = 150;
 
 export class MessageDialog {
-  static async show(message: string, where?: Element | Document): Promise<void> {
+  static async show(message: string, where?: Element|Document): Promise<void> {
     const dialog = new Dialog();
     dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);
@@ -1567,7 +1568,7 @@ export class MessageDialog {
 }
 
 export class ConfirmDialog {
-  static async show(message: string, where?: Element | Document): Promise<boolean> {
+  static async show(message: string, where?: Element|Document): Promise<boolean> {
     const dialog = new Dialog();
     dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);

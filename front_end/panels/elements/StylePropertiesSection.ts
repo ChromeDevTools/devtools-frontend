@@ -34,8 +34,10 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -230,7 +232,7 @@ export class StylePropertiesSection {
         this.onFontEditorButtonClicked();
       }, this);
       this.fontEditorButton.element.addEventListener('keydown', event => {
-        if (isEnterOrSpaceKey(event)) {
+        if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
           event.consume(true);
           this.onFontEditorButtonClicked();
         }

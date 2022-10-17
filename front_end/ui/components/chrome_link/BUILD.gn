@@ -15,6 +15,7 @@ devtools_module("chrome_link") {
   sources = [ "ChromeLink.ts" ]
 
   deps = [
+    "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../ui/lit-html:bundle",
     "../helpers:bundle",

@@ -23,7 +23,7 @@ export class XLink extends XElement {
   hrefInternal: Platform.DevToolsPath.UrlString|null;
   private clickable: boolean;
   private readonly onClick: (arg0: Event) => void;
-  private readonly onKeyDown: (arg0: Event) => void;
+  private readonly onKeyDown: (arg0: KeyboardEvent) => void;
   static create(url: string, linkText?: string, className?: string, preventClick?: boolean): HTMLElement {
     if (!linkText) {
       linkText = url;
@@ -57,8 +57,8 @@ export class XLink extends XElement {
       }
       this.dispatchEvent(new Event('x-link-invoke'));
     };
-    this.onKeyDown = (event: Event): void => {
-      if (isEnterOrSpaceKey(event)) {
+    this.onKeyDown = (event: KeyboardEvent): void => {
+      if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         event.consume(true);
         if (this.hrefInternal) {
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.hrefInternal);

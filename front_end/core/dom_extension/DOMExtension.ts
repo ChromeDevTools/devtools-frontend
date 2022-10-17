@@ -546,15 +546,11 @@ Node.prototype.getComponentRoot = function(): Document|DocumentFragment|null {
 
 self.onInvokeElement = function(element: Element, callback: (arg0: Event) => void): void {
   element.addEventListener('keydown', event => {
-    if (self.isEnterOrSpaceKey(event)) {
+    if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       callback(event);
     }
   });
   element.addEventListener('click', event => callback(event));
-};
-
-self.isEnterOrSpaceKey = function(event: Event): boolean {
-  return event.key === 'Enter' || event.key === ' ';
 };
 
 // DevTools front-end still assumes that

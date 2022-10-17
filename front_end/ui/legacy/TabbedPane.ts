@@ -637,8 +637,8 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     void menu.show();
   }
 
-  private dropDownKeydown(event: Event): void {
-    if (isEnterOrSpaceKey(event)) {
+  private dropDownKeydown(event: KeyboardEvent): void {
+    if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.dropDownButton.click();
       event.consume(true);
     }

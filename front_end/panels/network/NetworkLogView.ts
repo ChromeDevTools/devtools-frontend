@@ -982,7 +982,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         }
       }
 
-      if (isEnterOrSpaceKey(event)) {
+      if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         this.dispatchEventToListeners(Events.RequestActivated, {showPanel: true, takeFocus: true});
         event.consume(true);
       }

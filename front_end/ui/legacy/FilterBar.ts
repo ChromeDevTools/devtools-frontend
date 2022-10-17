@@ -31,11 +31,13 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Icon} from './Icon.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
+
 import {type Suggestions} from './SuggestBox.js';
 import {Events, TextPrompt} from './TextPrompt.js';
 
@@ -402,7 +404,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
       if (this.keyFocusNextBit(element, false /* selectPrevious */)) {
         event.consume(true);
       }
-    } else if (isEnterOrSpaceKey(event)) {
+    } else if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.onTypeFilterClicked(event);
     }
   }

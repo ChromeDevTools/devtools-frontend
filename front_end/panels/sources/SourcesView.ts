@@ -191,7 +191,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   private placeholderOnKeyDown(event: Event): void {
     const keyboardEvent = (event as KeyboardEvent);
-    if (isEnterOrSpaceKey(keyboardEvent)) {
+    if (Platform.KeyboardUtilities.isEnterOrSpaceKey(keyboardEvent)) {
       this.placeholderOptionArray[this.selectedIndex].handler();
       return;
     }

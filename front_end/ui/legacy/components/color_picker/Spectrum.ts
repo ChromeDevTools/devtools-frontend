@@ -482,7 +482,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private onCloseBtnKeydown(event: KeyboardEvent): void {
-    if (Platform.KeyboardUtilities.isEscKey(event) || isEnterOrSpaceKey(event)) {
+    if (Platform.KeyboardUtilities.isEscKey(event) || Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.togglePalettePanel(false);
       event.consume(true);
     }
@@ -866,8 +866,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.addColorToCustomPalette();
   }
 
-  private onAddColorKeydown(event: Event): void {
-    if (isEnterOrSpaceKey(event)) {
+  private onAddColorKeydown(event: KeyboardEvent): void {
+    if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.addColorToCustomPalette();
       event.consume(true);
     }

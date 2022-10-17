@@ -27,4 +27,33 @@ describe('KeyboardUtilities', () => {
       assert.deepEqual(keysAreNotArrowKeys, [false, false, false, false]);
     });
   });
+
+  describe('isEscKey', () => {
+    it('is true for the escape key', () => {
+      const event = new KeyboardEvent('keydown', {key: 'Escape'});
+      assert.isTrue(Platform.KeyboardUtilities.isEscKey(event));
+    });
+
+    it('is false for another key', () => {
+      const event = new KeyboardEvent('keydown', {key: 'Enter'});
+      assert.isFalse(Platform.KeyboardUtilities.isEscKey(event));
+    });
+  });
+
+  describe('isEnterOrSpaceKey', () => {
+    it('returns true for enter', () => {
+      const event = new KeyboardEvent('keydown', {key: 'Enter'});
+      assert.isTrue(Platform.KeyboardUtilities.isEnterOrSpaceKey(event));
+    });
+
+    it('returns true for space', () => {
+      const event = new KeyboardEvent('keydown', {key: ' '});
+      assert.isTrue(Platform.KeyboardUtilities.isEnterOrSpaceKey(event));
+    });
+
+    it('returns false for any other key', () => {
+      const event = new KeyboardEvent('keydown', {key: 'a'});
+      assert.isFalse(Platform.KeyboardUtilities.isEnterOrSpaceKey(event));
+    });
+  });
 });

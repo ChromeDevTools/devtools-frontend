@@ -4,6 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
@@ -351,8 +352,8 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this.deleteFontSelector(fontSelectorObject.index);
     });
-    deleteButton.element.addEventListener('keydown', (event: Event) => {
-      if (isEnterOrSpaceKey(event)) {
+    deleteButton.element.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         this.deleteFontSelector(fontSelectorObject.index);
         event.consume();
       }

@@ -99,6 +99,11 @@ button.round.small {
   width: 24px;
 }
 
+button.round.tiny {
+  height: 18px;
+  width: 18px;
+}
+
 button.primary {
   border: 1px solid var(--color-primary);
   background: var(--color-primary);
@@ -232,6 +237,11 @@ button.toolbar.small devtools-icon,
 button.round.small devtools-icon {
   width: 18px;
   height: 18px;
+}
+
+button.round.tiny devtools-icon {
+  width: 14px;
+  height: 14px;
 }
 
 button.round.explicit-size devtools-icon {

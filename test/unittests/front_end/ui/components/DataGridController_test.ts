@@ -4,7 +4,6 @@
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
-import * as IconButton from '../../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {TEXT_NODE, withMutations} from '../../helpers/MutationHelpers.js';
@@ -203,34 +202,27 @@ describe('DataGridController', () => {
   });
 
   describe('filtering rows', () => {
-    const responseIcon = new IconButton.Icon.Icon();
-    responseIcon.data = {iconName: 'ic_response', color: 'var(--color-text-disabled)', width: '16px', height: '16px'};
-
     const columns = [
       {id: 'key', title: 'Letter', sortable: true, widthWeighting: 1, visible: true, hideable: false},
       {id: 'value', title: 'Phonetic', sortable: true, widthWeighting: 1, visible: true, hideable: false},
-      {id: 'icon', title: 'Icon', sortable: true, widthWeighting: 1, visible: false, hideable: false},
     ];
     const rows = [
       {
         cells: [
           {columnId: 'key', value: 'Letter A'},
           {columnId: 'value', value: 'Alpha'},
-          {columnId: 'icon', value: responseIcon},
         ],
       },
       {
         cells: [
           {columnId: 'key', value: 'Letter B'},
           {columnId: 'value', value: 'Bravo'},
-          {columnId: 'icon', value: responseIcon},
         ],
       },
       {
         cells: [
           {columnId: 'key', value: 'Letter C'},
           {columnId: 'value', value: 'Charlie'},
-          {columnId: 'icon', value: responseIcon},
         ],
       },
     ];

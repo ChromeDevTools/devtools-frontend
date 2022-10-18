@@ -520,6 +520,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
     networkRequest.protocol = response.protocol || '';
 
+    networkRequest.alternateProtocolUsage = response.alternateProtocolUsage;
+
     if (response.serviceWorkerResponseSource) {
       networkRequest.setServiceWorkerResponseSource(response.serviceWorkerResponseSource);
     }

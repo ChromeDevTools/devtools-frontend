@@ -7160,11 +7160,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "Ûśêŕ âǵêńt̂"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Ĉh́r̂óm̂é ûśêd́ âń âĺt̂ér̂ńât́îv́ê j́ôb́ b̂éĉáûśê ít̂ ẃôń â ŕâćê ẃît́ĥ á m̂áîń ĵób̂."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Ĉh́r̂óm̂é ûśêd́ âń âĺt̂ér̂ńât́îv́ê j́ôb́ ŵít̂h́ôút̂ ŕâćîńĝ ẃît́ĥ á m̂áîń ĵób̂."
+  },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(b̂ĺôćk̂éd̂:{PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "T̂h́îś r̂éq̂úêśt̂ ẃâś b̂ĺôćk̂éd̂ d́ûé t̂ó m̂íŝćôńf̂íĝúr̂éd̂ ŕêśp̂ón̂śê h́êád̂ér̂ś, ĉĺîćk̂ t́ô v́îéŵ t́ĥé ĥéâd́êŕŝ"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Ĉh́r̂óm̂é d̂íd̂ń't̂ úŝé âń âĺt̂ér̂ńât́îv́ê j́ôb́ b̂éĉáûśê ít̂ ẃâś m̂ár̂ḱêd́ b̂ŕôḱêń."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(ĉán̂ćêĺêd́)"
@@ -7187,6 +7196,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(d̂íŝḱ ĉáĉh́ê)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Ĉh́r̂óm̂é ûśêd́ â D́N̂Ś âĺp̂ń ĵób̂ b́êćâúŝé ît́ ŵón̂ á r̂áĉé ŵít̂h́ â ḿâín̂ j́ôb́ âńd̂ án̂ ál̂t́êŕn̂át̂ív̂é ĵób̂."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Ĉh́r̂óm̂é ûśêd́ â D́N̂Ś âĺp̂ń ĵób̂ ẃît́ĥóût́ r̂áĉín̂ǵ ŵít̂h́ â ḿâín̂ j́ôb́ âńd̂ án̂ ál̂t́êŕn̂át̂ív̂é ĵób̂."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(f̂áîĺêd́)"
   },
@@ -7195,6 +7210,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "l̂év̂él̂ 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Ĉh́r̂óm̂é ûśêd́ â ḿâín̂ j́ôb́ b̂éĉáûśê ít̂ ẃôń â ŕâćê ẃît́ĥ án̂ ál̂t́êŕn̂át̂ív̂é ĵób̂ án̂d́/ôŕ â D́N̂Ś âĺp̂ń ĵób̂."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Ĉh́r̂óm̂é d̂íd̂ń't̂ úŝé âń âĺt̂ér̂ńât́îv́ê j́ôb́ b̂éĉáûśê óf̂ ḿîśŝín̂ǵ Âĺt̂ér̂ńât́ê-Ṕr̂ót̂óĉól̂ ín̂f́ôŕm̂át̂íôń."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(m̂ém̂ór̂ý ĉáĉh́ê)"

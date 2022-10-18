@@ -7160,11 +7160,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "User agent"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Chrome used an alternative job because it won a race with a main job."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Chrome used an alternative job without racing with a main job."
+  },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(blocked:{PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "This request was blocked due to misconfigured response headers, click to view the headers"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Chrome didn't use an alternative job because it was marked broken."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(canceled)"
@@ -7187,6 +7196,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(disk cache)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Chrome used a DNS alpn job because it won a race with a main job and an alternative job."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Chrome used a DNS alpn job without racing with a main job and an alternative job."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(failed)"
   },
@@ -7195,6 +7210,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "level 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Chrome used a main job because it won a race with an alternative job and/or a DNS alpn job."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Chrome didn't use an alternative job because of missing Alternate-Protocol information."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memory cache)"

@@ -454,8 +454,6 @@ export class LighthousePanel extends UI.Panel.Panel {
    * We set the device emulation on the DevTools-side for two reasons:
    * 1. To workaround some odd device metrics emulation bugs like occuluding viewports
    * 2. To get the attractive device outline
-   *
-   * We also set flags.internalDisableDeviceScreenEmulation = true to let LH only apply UA emulation
    */
   private async setupEmulationAndProtocolConnection(): Promise<void> {
     const flags = this.controller.getFlags();
@@ -475,10 +473,10 @@ export class LighthousePanel extends UI.Panel.Panel {
     };
 
     emulationModel.toolbarControlsEnabledSetting().set(false);
-    if ('emulatedFormFactor' in flags && flags.emulatedFormFactor === 'desktop') {
+    if ('formFactor' in flags && flags.formFactor === 'desktop') {
       emulationModel.enabledSetting().set(false);
       emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
-    } else if (flags.emulatedFormFactor === 'mobile') {
+    } else if (flags.formFactor === 'mobile') {
       emulationModel.enabledSetting().set(true);
       emulationModel.deviceOutlineSetting().set(true);
 

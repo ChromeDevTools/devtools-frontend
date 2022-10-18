@@ -346,21 +346,16 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   getFlags(): {
-    internalDisableDeviceScreenEmulation: boolean,
-    emulatedFormFactor: (string|undefined),
+    formFactor: (string|undefined),
     legacyNavigation: boolean,
     mode: string,
   } {
-    const flags = {
-      // DevTools handles all the emulation. This tells Lighthouse to not bother with emulation.
-      internalDisableDeviceScreenEmulation: true,
-    };
+    const flags = {};
     for (const runtimeSetting of RuntimeSettings) {
       runtimeSetting.setFlags(flags, runtimeSetting.setting.get());
     }
     return flags as {
-      internalDisableDeviceScreenEmulation: boolean,
-      emulatedFormFactor: (string | undefined),
+      formFactor: (string | undefined),
       legacyNavigation: boolean,
       mode: string,
     };
@@ -487,7 +482,7 @@ export const RuntimeSettings: RuntimeSetting[] = [
     description: i18nLazyString(UIStrings.applyMobileEmulationDuring),
     setFlags: (flags: Flags, value: string|boolean): void => {
       // See Audits.AuditsPanel._setupEmulationAndProtocolConnection()
-      flags.emulatedFormFactor = value;
+      flags.formFactor = value;
     },
     options: [
       {label: i18nLazyString(UIStrings.mobile), value: 'mobile'},

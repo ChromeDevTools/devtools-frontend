@@ -231,8 +231,10 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     const locationsGroupedById = this.#groupBreakpointLocationsById(breakpointLocations);
     const locationIdsByLineId = this.#getLocationIdsByLineId(breakpointLocations);
 
-    const content = await this.#getContent(locationsGroupedById);
-    const selectedUILocation = await this.#getHitUILocation();
+    const [content, selectedUILocation] = await Promise.all([
+      this.#getContent(locationsGroupedById),
+      this.#getHitUILocation(),
+    ]);
 
     const urlToGroup = new Map<Platform.DevToolsPath.UrlString, SourcesComponents.BreakpointsView.BreakpointGroup>();
 
@@ -247,9 +249,9 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
       const numBreakpointsOnLine = locationIdsByLineId.get(uiLocation.lineId()).size;
       const showColumn = numBreakpointsOnLine > 1;
-      const locationText = uiLocation.lineAndColumnText(showColumn);
+      const locationText = uiLocation.lineAndColumnText(showColumn) as string;
 
-      const text = (content[idx] as TextUtils.Text.Text);
+      const text = content[idx];
       const codeSnippet = text.lineAt(uiLocation.lineNumber);
 
       if (isHit && this.#collapsedFiles.has(sourceURL)) {
@@ -260,8 +262,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
       const status: SourcesComponents.BreakpointsView.BreakpointStatus = this.#getBreakpointState(locations);
       const {type, hoverText} = this.#getBreakpointTypeAndDetails(locations);
-      const item = {location: locationText, codeSnippet, isHit, status, type, hoverText} as
-          SourcesComponents.BreakpointsView.BreakpointItem;
+      const item = {id: uiLocation.id(), location: locationText, codeSnippet, isHit, status, type, hoverText};
       this.#breakpointItemToLocationMap.set(item, locations);
 
       let group = urlToGroup.get(sourceURL);

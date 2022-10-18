@@ -16,6 +16,7 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
+const PROJECT_ID = 'BreakpointsSidebarPaneProjectId';
 const HELLO_JS_FILE = 'hello.js';
 const TEST_JS_FILE = 'test.js';
 interface LocationTestData {
@@ -33,6 +34,7 @@ function createBreakpointLocations(testData: LocationTestData[]): Bindings.Break
     const mocked = setupMockedUISourceCode(data.url);
     const mockedContent = Promise.resolve({content: data.content, isEncoded: true});
     sinon.stub(mocked.sut, 'requestContent').returns(mockedContent);
+    mocked.projectStub.id.returns(PROJECT_ID);
     const uiLocation = new Workspace.UISourceCode.UILocation(mocked.sut, data.lineNumber, data.columnNumber);
     const breakpoint = sinon.createStubInstance(Bindings.BreakpointManager.Breakpoint);
     breakpoint.enabled.returns(data.enabled);
@@ -203,6 +205,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
           expanded: true,
           breakpointItems: [
             {
+              id: `${PROJECT_ID}:${testData.url}:${testData.lineNumber}:${testData.columnNumber}`,
               location: `${testData.lineNumber + 1}`,
               codeSnippet: '',
               isHit: false,

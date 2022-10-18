@@ -72,6 +72,7 @@ async function renderSingleBreakpoint(
         expanded: true,
         breakpointItems: [
           {
+            id: '1',
             location: '1',
             codeSnippet: 'const a = 0;',
             isHit: true,
@@ -108,6 +109,7 @@ async function renderMultipleBreakpoints(): Promise<{
         expanded: true,
         breakpointItems: [
           {
+            id: '1',
             type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
             location: '234',
             codeSnippet: 'const a = x;',
@@ -115,6 +117,7 @@ async function renderMultipleBreakpoints(): Promise<{
             status: SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED,
           },
           {
+            id: '2',
             type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
             location: '3:3',
             codeSnippet: 'if (x > a) {',
@@ -130,6 +133,7 @@ async function renderMultipleBreakpoints(): Promise<{
         expanded: true,
         breakpointItems: [
           {
+            id: '3',
             type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
             location: '11',
             codeSnippet: 'const y;',
@@ -145,6 +149,7 @@ async function renderMultipleBreakpoints(): Promise<{
         expanded: false,
         breakpointItems: [
           {
+            id: '4',
             type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
             location: '3',
             codeSnippet: 'if (a == 0) {',
@@ -432,6 +437,7 @@ describeWithEnvironment('BreakpointsView', () => {
           expanded: true,
           breakpointItems: [
             {
+              id: '1',
               location: '1',
               codeSnippet: 'const a = 0;',
               isHit: true,

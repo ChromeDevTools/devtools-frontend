@@ -103,6 +103,7 @@ export interface BreakpointGroup {
 }
 
 export interface BreakpointItem {
+  id: string;
   location: string;
   codeSnippet: string;
   isHit: boolean;
@@ -218,11 +219,6 @@ export class BreakpointsView extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    const renderedGroups = this.#breakpointGroups.map(
-        group => LitHtml.html`
-          <hr />
-          ${this.#renderBreakpointGroup(group)}
-        `);
     const out = LitHtml.html`
     <div class='pause-on-exceptions'>
       <label class='checkbox-label'>
@@ -238,7 +234,12 @@ export class BreakpointsView extends HTMLElement {
         </label>
       </div>
       ` : LitHtml.nothing}
-    <div role=tree>${renderedGroups}</div>`;
+    <div role=tree>
+      ${LitHtml.Directives.repeat(
+        this.#breakpointGroups,
+        group => group.url,
+        group => LitHtml.html`<hr/>${this.#renderBreakpointGroup(group)}`)}
+    </div>`;
     // clang-format on
     LitHtml.render(out, this.#shadow, {host: this});
   }
@@ -347,7 +348,10 @@ export class BreakpointsView extends HTMLElement {
             ${this.#renderBreakpointCounter(group)}
           </span>
         </summary>
-        ${group.breakpointItems.map(entry => this.#renderBreakpointEntry(entry, group.editable))}
+        ${LitHtml.Directives.repeat(
+          group.breakpointItems,
+          item => item.location,
+          item => this.#renderBreakpointEntry(item, group.editable))}
       </div>
       `;
     // clang-format on

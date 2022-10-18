@@ -17,21 +17,36 @@ sys.path.append(scripts_path)
 import test_helpers
 import devtools_paths
 
+LOG_LEVELS = ['debug', 'info', 'warn', 'error']
+
+
+def log_message(message, message_log_level, user_set_log_level):
+    if LOG_LEVELS.index(message_log_level) >= LOG_LEVELS.index(
+            user_set_log_level):
+        print(message)
+
 
 def run_tests(chrome_binary, target, no_text_coverage, no_html_coverage,
-              coverage, expanded_reporting, cwd, mocha_fgrep):
+              coverage, expanded_reporting, cwd, log_level, mocha_fgrep):
     karmaconfig_path = os.path.join(cwd, 'out', target, 'gen', 'test',
                                     'unittests', 'karma.conf.js')
 
     if not os.path.exists(karmaconfig_path):
-        print('Unable to find Karma config at ' + karmaconfig_path)
-        print('Make sure to set the --ninja-build-name argument to the folder name of "out/target"')
+        log_message('Unable to find Karma config at ' + karmaconfig_path,
+                    'error', log_level)
+        log_message(
+            'Make sure to set the --ninja-build-name argument to the folder name of "out/target"',
+            'error', log_level)
         sys.exit(1)
 
-    print('Using karma config ' + karmaconfig_path)
+    log_message('Using karma config ' + karmaconfig_path, 'info', log_level)
 
-
-    exec_command = [devtools_paths.node_path(), devtools_paths.karma_path(), 'start', test_helpers.to_platform_path_exact(karmaconfig_path)]
+    exec_command = [
+        devtools_paths.node_path(),
+        devtools_paths.karma_path(), 'start',
+        test_helpers.to_platform_path_exact(karmaconfig_path), '--log-level',
+        log_level
+    ]
 
     env = os.environ.copy()
     env['NODE_PATH'] = devtools_paths.node_path()
@@ -54,7 +69,6 @@ def run_tests(chrome_binary, target, no_text_coverage, no_html_coverage,
 
     return False
 
-
 def run_unit_tests_on_ninja_build_target(target,
                                          no_text_coverage=True,
                                          no_html_coverage=True,
@@ -62,11 +76,12 @@ def run_unit_tests_on_ninja_build_target(target,
                                          expanded_reporting=False,
                                          chrome_binary=None,
                                          cwd=None,
+                                         log_level=None,
                                          mocha_fgrep=None):
     if chrome_binary and not test_helpers.check_chrome_binary(chrome_binary):
-        print(
-            'Chrome binary argument path does not exist or is not executable, reverting to downloaded binary'
-        )
+        log_message(
+            'Chrome binary argument path does not exist or is not executable, reverting to downloaded binary',
+            'warn', log_level)
         chrome_binary = None
 
     if not chrome_binary:
@@ -77,36 +92,34 @@ def run_unit_tests_on_ninja_build_target(target,
             chrome_binary = downloaded_chrome_binary
 
     if (chrome_binary is None):
-        print('Unable to run, no Chrome binary provided')
+        log_level('Unable to run, no Chrome binary provided', 'error',
+                  log_level)
         sys.exit(1)
 
-    print('Using Chromium binary (%s)' % chrome_binary)
+    log_message('Using Chromium binary (%s)' % chrome_binary, 'info',
+                log_level)
 
     if not cwd:
         cwd = devtools_paths.devtools_root_path()
 
-    print('Running tests from %s\n' % cwd)
+    log_message('Running tests from %s\n' % cwd, 'info', log_level)
 
     errors_found = run_tests(chrome_binary, target, no_text_coverage,
                              no_html_coverage, coverage, expanded_reporting,
-                             cwd, mocha_fgrep)
+                             cwd, log_level, mocha_fgrep)
 
     if coverage and not no_html_coverage:
-        print('')
-        print(
-            '  You can see the coverage results by opening \033[1mkarma-coverage/index.html\033[0m in a browser'
-        )
-        print('')
+        log_message(
+            '\nYou can see the coverage results by opening \033[1mkarma-coverage/index.html\033[0m in a browser\n',
+            'info', log_level)
 
     if errors_found:
-        print('ERRORS DETECTED')
+        log_message('ERRORS DETECTED', 'error', log_level)
 
         if not expanded_reporting:
-            print('')
-            print(
-                '  Run with \033[1m--expanded-reporting\033[0m to get better information about why the tests failed.'
-            )
-            print('')
+            log_message(
+                '\nRun with \033[1m--expanded-reporting\033[0m to get better information about why the tests failed.\n',
+                'error', log_level)
         sys.exit(1)
 
 
@@ -141,13 +154,21 @@ def main():
     parser.add_argument('--mocha-fgrep',
                         dest='mocha_fgrep',
                         help='Run only tests that match this string.')
+    parser.add_argument(
+        '--log-level',
+        dest='log_level',
+        default='info',
+        choices=LOG_LEVELS,
+        help=
+        'Set the desired level of logging. This configures logging for the run_auto_unittests and for Karma'
+    )
     args = parser.parse_args(sys.argv[1:])
 
     run_unit_tests_on_ninja_build_target(args.target, args.no_text_coverage,
                                          args.no_html_coverage, args.coverage,
                                          args.expanded_reporting,
                                          args.chrome_binary, args.cwd,
-                                         args.mocha_fgrep)
+                                         args.log_level, args.mocha_fgrep)
 
 
 if __name__ == '__main__':

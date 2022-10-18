@@ -55,13 +55,22 @@ def main():
     parser.add_argument('--mocha-fgrep',
                         dest='mocha_fgrep',
                         help='Run only tests that match this string.')
+
+    parser.add_argument(
+        '--log-level',
+        dest='log_level',
+        default='info',
+        choices=run_unittests.LOG_LEVELS,
+        help=
+        'Set the desired level of logging. This configures logging for the run_auto_unittests and for Karma'
+    )
     args = parser.parse_args(sys.argv[1:])
 
     efficiently_recompile.recompile(args.target, 'test/unittests')
     run_unittests.run_unit_tests_on_ninja_build_target(
         args.target, args.no_text_coverage, args.no_html_coverage,
         args.coverage, args.expanded_reporting, args.chrome_binary, args.cwd,
-        args.mocha_fgrep)
+        args.log_level, args.mocha_fgrep)
 
 
 if __name__ == '__main__':

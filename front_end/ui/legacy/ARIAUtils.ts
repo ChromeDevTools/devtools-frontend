@@ -366,7 +366,10 @@ export function setActiveDescendant(element: Element, activedescendant: Element|
   }
 
   if (activedescendant.isConnected && element.isConnected) {
-    console.assert(element.hasSameShadowRoot(activedescendant), 'elements are not in the same shadow dom');
+    console.assert(
+        Platform.DOMUtilities.getEnclosingShadowRootForNode(activedescendant) ===
+            Platform.DOMUtilities.getEnclosingShadowRootForNode(element),
+        'elements are not in the same shadow dom');
   }
 
   ensureId(activedescendant);

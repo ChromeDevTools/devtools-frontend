@@ -14,3 +14,14 @@ export function deepActiveElement(doc: Document): Element|null {
   }
   return activeElement;
 }
+
+export function getEnclosingShadowRootForNode(node: Node): Node|null {
+  let parentNode = node.parentNodeOrShadowHost();
+  while (parentNode) {
+    if (parentNode instanceof ShadowRoot) {
+      return parentNode;
+    }
+    parentNode = parentNode.parentNodeOrShadowHost();
+  }
+  return null;
+}

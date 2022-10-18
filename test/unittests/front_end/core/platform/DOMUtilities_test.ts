@@ -37,4 +37,30 @@ describe('DOMUtilities', () => {
       assert.strictEqual(activeElement, component.button);
     });
   });
+
+  describe('getEnclosingShadowRootForNode', () => {
+    it('returns null if no shadow root is found up the tree', () => {
+      const parent = document.createElement('div');
+      const child = document.createElement('p');
+      parent.appendChild(child);
+      renderElementIntoDOM(parent);
+      assert.isNull(Platform.DOMUtilities.getEnclosingShadowRootForNode(child));
+    });
+
+    it('returns the shadow root in the tree', () => {
+      const div = document.createElement('div');
+
+      class TestComponent extends HTMLElement {
+        readonly #shadow = this.attachShadow({mode: 'open'});
+
+        connectedCallback() {
+          this.#shadow.appendChild(div);
+        }
+      }
+      customElements.define('shadow-root-test', TestComponent);
+      const component = new TestComponent();
+      renderElementIntoDOM(component);
+      assert.strictEqual(Platform.DOMUtilities.getEnclosingShadowRootForNode(div), component.shadowRoot);
+    });
+  });
 });

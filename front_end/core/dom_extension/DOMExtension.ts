@@ -199,20 +199,6 @@ Node.prototype.enclosingNodeOrSelfWithClassList = function(classNames: string[],
   return null;
 };
 
-Node.prototype.enclosingShadowRoot = function(): Node|null {
-  let parentNode = this.parentNodeOrShadowHost();
-  while (parentNode) {
-    if (parentNode instanceof ShadowRoot) {
-      return parentNode;
-    }
-    parentNode = parentNode.parentNodeOrShadowHost();
-  }
-  return null;
-};
-
-Node.prototype.hasSameShadowRoot = function(node: Node): boolean {
-  return this.enclosingShadowRoot() === node.enclosingShadowRoot();
-};
 Node.prototype.parentElementOrShadowHost = function(): Element|null {
   if (this.nodeType === Node.DOCUMENT_FRAGMENT_NODE && this.host) {
     return this.host as Element;

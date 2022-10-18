@@ -91,7 +91,6 @@ interface Node {
   enclosingNodeOrSelfWithClass(className: string, stayWithin?: Element): Element;
   getComponentRoot(): Document|DocumentFragment|null;
   getComponentSelection(): Selection|null;
-  hasSameShadowRoot(other: Node): boolean;
   hasSelection(): boolean;
   isAncestor(node: Node|null): boolean;
   isDescendant(node: Node|null): boolean;

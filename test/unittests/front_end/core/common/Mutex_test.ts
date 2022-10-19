@@ -26,16 +26,6 @@ describeWithLocale('Recorder', () => {
       release();
     });
 
-    it('should not acquire the lock if someone else is holding it', async () => {
-      const mutex = new Common.Mutex.Mutex();
-      const lock1 = mutex.acquire();
-      const lock2 = mutex.acquire();
-      await triggerMicroTaskQueue();
-      assert.instanceOf(await lock1, Function);
-      // lock2 should never resolve.
-      assert.strictEqual(await Promise.race([lock2, notAcquired()]), 'not acquired');
-    });
-
     it('should acquire the lock once another holder releases it', async () => {
       const mutex = new Common.Mutex.Mutex();
       const lock1 = mutex.acquire();

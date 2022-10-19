@@ -65,6 +65,7 @@ describe('ResolverBase', () => {
       });
       resolver.assertIsListening();
       assert.strictEqual(obj, null);
+      resolver.clear();
     });
 
     it('should resolve a previously unknown object when it becomes available', async () => {

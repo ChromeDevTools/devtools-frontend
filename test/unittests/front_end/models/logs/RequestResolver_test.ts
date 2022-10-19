@@ -32,6 +32,7 @@ describe('RequestResolver', () => {
       });
       assert.isTrue(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
       assert.strictEqual(request, null);
+      requestResolver.clear();
     });
 
     it('should resolve a previously unknown request when it becomes available', async () => {
@@ -48,6 +49,7 @@ describe('RequestResolver', () => {
       const request = await waitForCall;
       assert.isFalse(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
       assert.strictEqual(request, mockRequest);
+      requestResolver.clear();
     });
   });
 

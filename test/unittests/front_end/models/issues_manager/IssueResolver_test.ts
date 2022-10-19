@@ -32,6 +32,7 @@ describe('IssueResolver', () => {
       });
       assert.isTrue(issuesManager.hasEventListeners(IssuesManager.IssuesManager.Events.IssueAdded));
       assert.strictEqual(issue, null);
+      issueResolver.clear();
     });
 
     it('should resolve a previously unknown issue when it becomes available', async () => {

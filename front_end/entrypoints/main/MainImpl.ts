@@ -412,6 +412,7 @@ export class MainImpl {
       'keyboardShortcutEditor',
       'groupAndHideIssuesByKind',
       Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS,
+      'sourcesPrettyPrint',
     ]);
 
     Root.Runtime.experiments.setNonConfigurableExperiments([

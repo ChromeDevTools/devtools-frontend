@@ -604,7 +604,7 @@ export class Item {
     const item = new Item(UI.UIUtils.beautifyFunctionName(name), updateDelegate);
     await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
         frame.location(), item.update.bind(item), locationPool);
-    void SourceMapScopes.NamesResolver.resolveFrameFunctionName(frame).then(functionName => {
+    void SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(frame).then(functionName => {
       if (functionName && functionName !== name) {
         // Just update the item's title and call the update delegate directly,
         // instead of going through the update method below, since location

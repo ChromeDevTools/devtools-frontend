@@ -566,28 +566,47 @@ describeWithMockConnection('NameResolver', () => {
 
     assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 42}]);
   });
+  describe('Function name resolving', () => {
+    let scope: SDK.DebuggerModel.ScopeChainEntry;
+    beforeEach(async () => {
+      const sourceMapUrl = 'file:///tmp/example.js.min.map';
+      // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
+      const sourceMapContent = JSON.stringify({
+        'version': 3,
+        'names': ['unminified', 'par1', 'par2', 'console', 'log'],
+        'sources': ['index.js'],
+        'sourcesContent': ['function unminified(par1, par2) {\n  console.log(par1, par2);\n}\n'],
+        'mappings': 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC',
+      });
 
-  it('resolves function names at scope start', async () => {
-    const sourceMapUrl = 'file:///tmp/example.js.min.map';
-    // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
-    const sourceMapContent = JSON.stringify({
-      'version': 3,
-      'names': ['unminified', 'par1', 'par2', 'console', 'log'],
-      'sources': ['index.js'],
-      'sourcesContent': ['function unminified(par1, par2) {\n  console.log(par1, par2);\n}\n'],
-      'mappings': 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC',
+      const source = `function o(o,n){console.log(o,n)}o(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
+      const scopes = '          {                     }';
+
+      const scopeObject = backend.createSimpleRemoteObject([{name: 's', value: 42}]);
+      const initializeResult = await initializeModelAndScopes(
+          {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+      scope = initializeResult.scope;
+    });
+    it('resolves function names at scope start for a debugger frame', async () => {
+      const functionName = await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(scope.callFrame());
+      assert.strictEqual(functionName, 'unminified');
     });
 
-    const source = `function o(o,n){console.log(o,n)}o(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
-    const scopes = '          {                     }';
-
-    const scopeObject = backend.createSimpleRemoteObject([{name: 's', value: 42}]);
-    const {scope} = await initializeModelAndScopes(
-        {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
-
-    const functionName = await SourceMapScopes.NamesResolver.resolveFrameFunctionName(scope.callFrame());
-
-    assert.strictEqual(functionName, 'unminified');
+    it('resolves function names at scope start for a profiler frame', async () => {
+      const scopeLocation = scope.callFrame().location();
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      const script = debuggerModel?.scripts()[0];
+      const scriptId = script?.scriptId;
+      if (scriptId === undefined) {
+        assert.fail('Script id not found');
+        return;
+      }
+      const {lineNumber, columnNumber} = scopeLocation;
+      await script?.requestContent();
+      const functionName = await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(
+          {scriptId, columnNumber, lineNumber}, target);
+      assert.strictEqual(functionName, 'unminified');
+    });
   });
 
   it('ignores the argument name during arrow function name resolution', async () => {
@@ -608,6 +627,6 @@ describeWithMockConnection('NameResolver', () => {
     const {scope} = await initializeModelAndScopes(
         {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
 
-    assert.isNull(await SourceMapScopes.NamesResolver.resolveFrameFunctionName(scope.callFrame()));
+    assert.isNull(await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(scope.callFrame()));
   });
 });

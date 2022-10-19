@@ -33,7 +33,7 @@ export class CPUProfileNode extends ProfileNode {
   positionTicks: Protocol.Profiler.PositionTickInfo[]|undefined;
   deoptReason: string|null;
 
-  constructor(node: Protocol.Profiler.ProfileNode, sampleTime: number) {
+  constructor(node: Protocol.Profiler.ProfileNode, sampleTime: number, target: Target|null) {
     const callFrame = node.callFrame || ({
                         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
                         // @ts-expect-error
@@ -51,7 +51,7 @@ export class CPUProfileNode extends ProfileNode {
                         // @ts-expect-error
                         columnNumber: node['columnNumber'] - 1,
                       } as Protocol.Runtime.CallFrame);
-    super(callFrame);
+    super(callFrame, target);
     this.id = node.id;
     this.self = (node.hitCount || 0) * sampleTime;
     this.positionTicks = node.positionTicks;
@@ -200,7 +200,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
         Boolean(Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get());
     const root = nodes[0];
     const idMap = new Map<number, number>([[root.id, root.id]]);
-    const resultRoot = new CPUProfileNode(root, sampleTime);
+    const resultRoot = new CPUProfileNode(root, sampleTime, this.target());
     if (!root.children) {
       throw new Error('Missing children for root');
     }
@@ -215,7 +215,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       if (!sourceNode.children) {
         sourceNode.children = [];
       }
-      const targetNode = new CPUProfileNode(sourceNode, sampleTime);
+      const targetNode = new CPUProfileNode(sourceNode, sampleTime, this.target());
       if (keepNatives || !isNativeNode(sourceNode)) {
         parentNode.children.push(targetNode);
         parentNode = targetNode;
@@ -496,5 +496,12 @@ export class CPUProfileDataModel extends ProfileTreeModel {
 
   nodeByIndex(index: number): CPUProfileNode|null {
     return this.samples && this.#idToNode.get(this.samples[index]) || null;
+  }
+
+  nodes(): CPUProfileNode[]|null {
+    if (!this.#idToNode) {
+      return null;
+    }
+    return [...this.#idToNode.values()];
   }
 }

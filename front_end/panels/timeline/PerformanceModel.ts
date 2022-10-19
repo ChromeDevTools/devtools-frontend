@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
@@ -74,7 +75,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   async setTracingModel(model: SDK.TracingModel.TracingModel): Promise<void> {
     this.tracingModelInternal = model;
     this.timelineModelInternal.setEvents(model);
-
+    await this.addSourceMapListeners();
     let animationEvents: SDK.TracingModel.AsyncEvent[]|null = null;
     for (const track of this.timelineModelInternal.tracks()) {
       if (track.type === TimelineModel.TimelineModel.TrackType.Animation) {
@@ -101,6 +102,65 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
           (this.recordStartTimeInternal as number));
     }
     this.autoWindowTimes();
+  }
+
+  #cpuProfileNodes(): SDK.CPUProfileDataModel.CPUProfileNode[] {
+    return this.timelineModel().cpuProfiles().flatMap(p => p.nodes() || []);
+  }
+
+  async addSourceMapListeners(): Promise<void> {
+    const debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
+    for (const node of this.#cpuProfileNodes()) {
+      if (!node) {
+        continue;
+      }
+      const debuggerModelToListen = this.#maybeGetDebuggerModelForNode(node);
+      if (!debuggerModelToListen) {
+        continue;
+      }
+
+      debuggerModelsToListen.add(debuggerModelToListen);
+    }
+    for (const debuggerModel of debuggerModelsToListen) {
+      debuggerModel.sourceMapManager().addEventListener(
+          SDK.SourceMapManager.Events.SourceMapAttached, this.#onAttachedSourceMap, this);
+    }
+    await this.#resolveNamesFromCPUProfile();
+  }
+
+  // If a node corresponds to a script that has not been parsed or a script
+  // that has a source map, we should listen to SourceMapAttached events to
+  // attempt a function name resolving.
+  #maybeGetDebuggerModelForNode(node: SDK.CPUProfileDataModel.CPUProfileNode): SDK.DebuggerModel.DebuggerModel|null {
+    const target = node.target();
+    const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
+    if (!debuggerModel) {
+      return null;
+    }
+    const script = debuggerModel.scriptForId(String(node.callFrame.scriptId));
+    const shouldListenToSourceMap = !script || script.sourceMapURL;
+    if (shouldListenToSourceMap) {
+      return debuggerModel;
+    }
+    return null;
+  }
+
+  async #resolveNamesFromCPUProfile(): Promise<void> {
+    for (const node of this.#cpuProfileNodes()) {
+      const resolvedFunctionName =
+          await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(node.callFrame, node.target());
+      node.setFunctionName(resolvedFunctionName);
+    }
+  }
+
+  async #onAttachedSourceMap(
+      event: Common.EventTarget.EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>):
+      Promise<void> {
+    if (!this.#cpuProfileNodes().some(node => node.scriptId === event.data.client.scriptId)) {
+      return;
+    }
+    await this.#resolveNamesFromCPUProfile();
+    this.dispatchEventToListeners(Events.NamesResolved);
   }
 
   addExtensionEvents(title: string, model: SDK.TracingModel.TracingModel, timeOffset: number): void {
@@ -243,8 +303,8 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
 export enum Events {
   ExtensionDataAdded = 'ExtensionDataAdded',
   WindowChanged = 'WindowChanged',
+  NamesResolved = 'NamesResolved',
 }
-
 export interface WindowChangedEvent {
   window: Window;
   animate: boolean|undefined;
@@ -253,6 +313,7 @@ export interface WindowChangedEvent {
 export type EventTypes = {
   [Events.ExtensionDataAdded]: void,
   [Events.WindowChanged]: WindowChangedEvent,
+  [Events.NamesResolved]: void,
 };
 
 export interface Window {

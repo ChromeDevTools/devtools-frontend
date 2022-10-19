@@ -264,7 +264,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
-  private updateColorMapper(): void {
+  updateColorMapper(): void {
     this.urlToColorCache = new Map();
     if (!this.model) {
       return;

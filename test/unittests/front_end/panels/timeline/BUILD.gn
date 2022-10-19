@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("timeline") {
   testonly = true
-  sources = [ "TimelineUIUtils_test.ts" ]
+  sources = [
+    "SourceMaps_test.ts",
+    "TimelineUIUtils_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/core/sdk:bundle",

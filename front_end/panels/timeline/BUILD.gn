@@ -48,7 +48,9 @@ devtools_module("timeline") {
   deps = [
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../generated:protocol",
     "../../models/extensions:bundle",
+    "../../models/source_map_scopes:bundle",
     "../../models/timeline_model:bundle",
     "../../panels/coverage:bundle",
     "../../panels/layer_viewer:bundle",

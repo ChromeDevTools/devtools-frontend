@@ -15,21 +15,23 @@ export class ProfileNode {
   id: number;
   parent: ProfileNode|null;
   children: ProfileNode[];
+  functionName: string;
   depth!: number;
   deoptReason!: string|null;
-
-  constructor(callFrame: Protocol.Runtime.CallFrame) {
+  /**
+   * The target a node's call frame belongs to.
+   */
+  #target: Target|null;
+  constructor(callFrame: Protocol.Runtime.CallFrame, target: Target|null) {
     this.callFrame = callFrame;
     this.callUID = `${callFrame.functionName}@${callFrame.scriptId}:${callFrame.lineNumber}:${callFrame.columnNumber}`;
     this.self = 0;
     this.total = 0;
     this.id = 0;
+    this.functionName = callFrame.functionName;
     this.parent = null;
     this.children = [];
-  }
-
-  get functionName(): string {
-    return this.callFrame.functionName;
+    this.#target = target;
   }
 
   get scriptId(): Protocol.Runtime.ScriptId {
@@ -46,6 +48,17 @@ export class ProfileNode {
 
   get columnNumber(): number {
     return this.callFrame.columnNumber;
+  }
+
+  setFunctionName(name: string|null): void {
+    if (name === null) {
+      return;
+    }
+    this.functionName = name;
+  }
+
+  target(): Target|null {
+    return this.#target;
   }
 }
 

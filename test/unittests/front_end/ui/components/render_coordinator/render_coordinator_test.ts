@@ -115,29 +115,33 @@ describe('Render Coordinator', () => {
   });
 
   it('throws if there is a read-write deadlock (blocked on read)', async () => {
+    const read = () => {};
     try {
       await coordinator.write(async () => {
         // Awaiting a read block within a write should block because
         // this write can't proceed until the read has completed, but
         // the read won't start until this write has completed.
-        await coordinator.read(() => {});
+        await coordinator.read(read);
       });
     } catch (err) {
       assert.strictEqual(err.toString(), new Error('Writers took over 1500ms. Possible deadlock?').toString());
     }
+    coordinator.rejectAll([read], new Error());
   });
 
   it('throws if there is a write deadlock (blocked on write)', async () => {
+    const write = () => {};
     try {
       await coordinator.read(async () => {
         // Awaiting a write block within a read should block because
         // this read can't proceed until the write has completed, but
         // the write won't start until this read has completed.
-        await coordinator.write(() => {});
+        await coordinator.write(write);
       });
     } catch (err) {
       assert.strictEqual(err.toString(), new Error('Readers took over 1500ms. Possible deadlock?').toString());
     }
+    coordinator.rejectAll([write], new Error());
   });
 
   it('exposes the count of pending work', async () => {

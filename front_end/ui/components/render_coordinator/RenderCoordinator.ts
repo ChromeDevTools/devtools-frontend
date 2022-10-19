@@ -268,7 +268,7 @@ export class RenderCoordinator extends EventTarget {
           }),
         ]);
       } catch (err) {
-        this.#rejectAll(frame.readers, err);
+        this.rejectAll(frame.readers, err);
       }
 
       // Next do all the writers as a block.
@@ -289,7 +289,7 @@ export class RenderCoordinator extends EventTarget {
           }),
         ]);
       } catch (err) {
-        this.#rejectAll(frame.writers, err);
+        this.rejectAll(frame.writers, err);
       }
 
       // Since there may have been more work requested in
@@ -300,7 +300,7 @@ export class RenderCoordinator extends EventTarget {
     });
   }
 
-  #rejectAll(handlers: CoordinatorCallback[], error: Error): void {
+  rejectAll(handlers: CoordinatorCallback[], error: Error): void {
     for (const handler of handlers) {
       const rejector = this.#rejectors.get(handler);
       if (!rejector) {

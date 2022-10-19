@@ -73,16 +73,20 @@
 }
 /* high-contrast styles */
 @media (forced-colors: active) {
-  :host-context(.monospace.computed-properties) .computed-style-trace:hover {
+  .computed-style-trace:hover {
     forced-color-adjust: none;
     background-color: Highlight;
   }
 
-  :host-context(.monospace.computed-properties) .goto {
-    background-color: HighlightText;
+  .goto {
+    background-color: Highlight;
   }
 
-  :host-context(.monospace.computed-properties) .computed-style-trace:hover * {
+  .computed-style-trace:hover * {
     color: HighlightText;
+  }
+
+  .computed-style-trace:hover .trace-selector {
+    --override-trace-selector-color: HighlightText;
   }
 }

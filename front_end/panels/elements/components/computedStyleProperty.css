@@ -93,16 +93,16 @@
     opacity: 100%;
   }
 
-  :host-context(.monospace.computed-properties) .computed-style-property:hover {
+  .computed-style-property:hover {
     forced-color-adjust: none;
     background-color: Highlight;
   }
 
-  :host-context(.monospace.computed-properties) .computed-style-property:hover * {
+  .computed-style-property:hover * {
     color: HighlightText;
   }
 
-  :host-context(.monospace.computed-properties) .goto {
+  .goto {
     background-color: HighlightText;
   }
 }

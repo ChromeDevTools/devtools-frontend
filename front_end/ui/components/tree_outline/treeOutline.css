@@ -109,3 +109,13 @@ ul[role="tree"]:focus-within [role="treeitem"].selected > .arrow-and-key-wrapper
 .inline-icon {
   vertical-align: sub;
 }
+
+@media (forced-colors: active) {
+  .arrow-icon {
+    background-color: ButtonText;
+  }
+
+  ul[role="tree"]:focus-within [role="treeitem"].selected {
+    outline: solid 1px ButtonText;
+  }
+}

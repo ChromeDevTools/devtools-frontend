@@ -103,6 +103,12 @@ class MockRequestResolver {
     entry.resolve(result);
     this.promiseMap.delete(requestId);
   }
+
+  clear() {
+    for (const {resolve} of this.promiseMap.values()) {
+      resolve(null);
+    }
+  }
 }
 
 describeWithLocale('RequestLinkIcon', () => {
@@ -301,6 +307,7 @@ describeWithLocale('RequestLinkIcon', () => {
 
       const {label: labelAfter} = extractData(shadowRoot);
       assert.strictEqual(labelAfter, 'baz');
+      resolver.clear();
     });
   });
 

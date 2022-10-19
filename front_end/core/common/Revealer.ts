@@ -49,6 +49,9 @@ export let reveal = async function(revealable: Object|null, omitFocus?: boolean)
   const revealers =
       await Promise.all(getApplicableRegisteredRevealers(revealable).map(registration => registration.loadRevealer()));
 
+  if (!revealers.length) {
+    return Promise.reject(new Error('Can\'t reveal ' + revealable));
+  }
   return reveal(revealers);
   function reveal(revealers: Revealer[]): Promise<void> {
     const promises = [];

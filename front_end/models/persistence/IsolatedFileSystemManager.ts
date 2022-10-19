@@ -47,7 +47,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystemManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let isolatedFileSystemManagerInstance: IsolatedFileSystemManager;
+let isolatedFileSystemManagerInstance: IsolatedFileSystemManager|null;
 
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly fileSystemsInternal: Map<Platform.DevToolsPath.UrlString, PlatformFileSystem>;
@@ -127,6 +127,10 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     }
 
     return isolatedFileSystemManagerInstance;
+  }
+
+  static removeInstance(): void {
+    isolatedFileSystemManagerInstance = null;
   }
 
   private requestFileSystems(): Promise<IsolatedFileSystem[]> {

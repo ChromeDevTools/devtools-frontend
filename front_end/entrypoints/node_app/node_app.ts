@@ -34,7 +34,7 @@ const UIStrings = {
   /**
    *@description Command for showing the 'Node' tool in the Network Navigator View, which is part of the Sources tool
   */
-  showNode: 'Node',
+  showNode: 'Show Node',
 };
 
 const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/node_app.ts', UIStrings);

@@ -118,10 +118,10 @@ Enforcement of the rules regarding loading is implemented using the [ESLint] rul
 ## DevTools application entrypoints
 
 There are multiple variants of the DevTools application.
-The main DevTools application is [front_end/devtools_app.js](front_end/devtools_app/devtools_app.js), which developers can open via F12 or "Right click -> Inspect element" in their Chromium browser.
-Other application entrypoints are used when debugging via Node ([front_end/node_app.js](front_end/node_app/node_app.js)), a slimmed down V8-specific Node debugging context ([front_end/js_app.js](front_end/js_app/js_app.js)), a (service) worker context ([front_end/worker_app.js](front_end/worker_app/worker_app.js)), a standalone browser window ([front_end/toolbox.ts](front_end/toolbox/toolbox.ts)), remote debugging of (Android) devices with `chrome://inspect/#devices` ([front_end/inspector.js](front_end/inspector/inspector.js)), standalone Node debugger [ndb] ([front_end/ndb_app.js](front_end/ndb_app/ndb_app.js)) and a legacy entrypoint for Chromium layout tests ([front_end/integration_test_runner/integration_test_runner.js](front_end/integration_test_runner.js)).
+The main DevTools application is [devtools_app.ts](../front_end/entrypoints/devtools_app/devtools_app.ts), which developers can open via F12 or "Right click -> Inspect element" in their Chromium browser.
+Other application entrypoints are a dedicated tool for debugging Node on which multiple targets can be inspected ([node_app.ts](../front_end/entrypoints/node_app/node_app.ts)), a non-browser context debugger for V8 targets ([js_app.ts](../front_end/entrypoints/js_app/js_app.ts)), a (service) worker context ([worker_app.ts](../front_end/entrypoints/worker_app/worker_app.ts)), remote debugging of (Android) devices ([inspector.ts](../front_end/entrypoints/inspector/inspector.ts)) and a basic version of DevTools which was initially intended for non-browser targets but doesn't have any particular use case that differentiates it from the other variants ([ndb_app.ts](../front_end/entrypoints/ndb_app/ndb_app.ts)).
 
-Each application entrypoint has a corresponding `.html` file with the same name, that can be loaded by the Chromium DevTools backend.
+Each application entrypoint has a corresponding `.html` file with the same name, that is automatically in the frontend generated and can be loaded by the Chromium DevTools backend.
 The JavaScript files import the relevant "meta" files containing the declarations of DevTools features.
 
 ## Upfront declaration of DevTools features
@@ -402,6 +402,5 @@ The GRD file is placed in `gen/third_party/devtools-frontend/src/front_end/` in 
 [GN `visibility` rules]: https://gn.googlesource.com/gn/+/main/docs/reference.md#var_visibility
 [GN `metadata` definitions]: https://gn.googlesource.com/gn/+/main/docs/reference.md#var_metadata
 [GRIT]: https://www.chromium.org/developers/tools-we-use-in-chromium/grit/grit-users-guide
-[ndb]: https://github.com/GoogleChromeLabs/ndb
 [Ninja]: https://ninja-build.org/
 [TypeScript]: https://www.typescriptlang.org/

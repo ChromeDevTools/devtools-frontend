@@ -1227,7 +1227,7 @@
     "message": "Show Connection"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "Node"
+    "message": "Show Node"
   },
   "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
     "message": "Add connection"

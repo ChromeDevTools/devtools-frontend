@@ -36,6 +36,7 @@ function _setupTestHelpers(target) {
 
   self.TestRunner.networkManager = target.model(SDK.NetworkManager);
   self.TestRunner.securityOriginManager = target.model(SDK.SecurityOriginManager);
+  self.TestRunner.storageKeyManager = target.model(SDK.StorageKeyManager);
   self.TestRunner.resourceTreeModel = target.model(SDK.ResourceTreeModel);
   self.TestRunner.debuggerModel = target.model(SDK.DebuggerModel);
   self.TestRunner.runtimeModel = target.model(SDK.RuntimeModel);

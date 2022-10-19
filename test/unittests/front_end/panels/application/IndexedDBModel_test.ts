@@ -20,7 +20,7 @@ describeWithMockConnection('IndexedDBModel', () => {
   let indexedDBAgent: ProtocolProxyApi.IndexedDBApi;
   let manager: SDK.StorageKeyManager.StorageKeyManager|null;
   const testKey = 'test-storage-key/';
-  const testDBId = new Resources.IndexedDBModel.DatabaseId(undefined, testKey, 'test-database');
+  const testDBId = new Resources.IndexedDBModel.DatabaseId(testKey, 'test-database');
 
   beforeEach(async () => {
     target = createTarget();
@@ -105,33 +105,6 @@ describeWithMockConnection('IndexedDBModel', () => {
 
     assert.isTrue(requestDBNamesSpy.calledWithExactly({storageKey: testKey}));
     await dbRefreshedPromise;
-  });
-
-  it('doesn\'t add duplicate database for storage key if one already exists for security origin', async () => {
-    const testSecurityOrigin = testKey.slice(0, -1);
-    const testDBIDWithSecurityOrigin =
-        new Resources.IndexedDBModel.DatabaseId(testSecurityOrigin, undefined, 'test-database');
-    const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
-    const databaseAddedSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');
-    setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
-    indexedDBModel.enable();
-
-    // add security origin and refresh db names
-    securityOriginManager?.dispatchEventToListeners(
-        SDK.SecurityOriginManager.Events.SecurityOriginAdded, testSecurityOrigin);
-    await indexedDBModel.refreshDatabaseNames();
-
-    assert.isTrue(databaseAddedSpy.calledWithExactly(
-        Resources.IndexedDBModel.Events.DatabaseAdded as unknown as sinon.SinonMatcher,
-        {model: indexedDBModel, databaseId: testDBIDWithSecurityOrigin}));
-
-    // add storage key supposed to be deduplicated and refresh db names
-    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
-    await indexedDBModel.refreshDatabaseNames();
-
-    assert.isFalse(databaseAddedSpy.calledWith(
-        Resources.IndexedDBModel.Events.DatabaseAdded as unknown as sinon.SinonMatcher,
-        {model: indexedDBModel, databaseId: testDBId}));
   });
 
   it('requests database with storage key on refreshDatabase', async () => {
@@ -235,6 +208,17 @@ describeWithMockConnection('IndexedDBModel', () => {
     indexedDBModel.clearForStorageKey(testKey);
 
     assert.isEmpty(indexedDBModel.databases());
+  });
+
+  it('dispatches event with storage key on indexedDBContentUpdated when both storage key and origin are set', () => {
+    const dispatcherSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');
+
+    indexedDBModel.indexedDBContentUpdated(
+        {origin: 'test-origin', storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store'});
+
+    assert.isTrue(dispatcherSpy.calledOnceWithExactly(
+        Resources.IndexedDBModel.Events.IndexedDBContentUpdated as unknown as sinon.SinonMatcher,
+        {databaseId: testDBId, objectStoreName: 'test-store', model: indexedDBModel}));
   });
 
 });

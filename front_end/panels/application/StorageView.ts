@@ -439,15 +439,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       }
     }
 
-    if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
-      for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-        const indexedDBModel = target.model(IndexedDBModel);
-        if (indexedDBModel) {
-          indexedDBModel.clearForOrigin(securityOrigin);
-        }
-      }
-    }
-
     if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
       const storageModel = target.model(DOMStorageModel);
       if (storageModel) {

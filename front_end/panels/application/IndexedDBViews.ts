@@ -198,7 +198,7 @@ export class IDBDatabaseView extends UI.Widget.VBox {
   }
 
   private refreshDatabase(): void {
-    this.securityOriginElement.textContent = this.database.databaseId.getOriginOrStorageKey();
+    this.securityOriginElement.textContent = this.database.databaseId.storageKey;
     if (this.versionElement) {
       this.versionElement.textContent = this.database.version.toString();
     }

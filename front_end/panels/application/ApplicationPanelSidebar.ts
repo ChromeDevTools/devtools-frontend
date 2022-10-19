@@ -1198,7 +1198,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
   private view?: IDBDatabaseView;
 
   constructor(storagePanel: ResourcesPanel, model: IndexedDBModel, databaseId: DatabaseId) {
-    super(storagePanel, databaseId.name + ' - ' + databaseId.getOriginOrStorageKey(), false);
+    super(storagePanel, databaseId.name + ' - ' + databaseId.storageKey, false);
     this.model = model;
     this.databaseId = databaseId;
     this.idbObjectStoreTreeElements = new Map();
@@ -1208,8 +1208,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
   }
 
   get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'indexedDB://' + this.databaseId.getOriginOrStorageKey() + '/' + this.databaseId.name as
-        Platform.DevToolsPath.UrlString;
+    return 'indexedDB://' + this.databaseId.storageKey + '/' + this.databaseId.name as Platform.DevToolsPath.UrlString;
   }
 
   onattach(): void {
@@ -1323,8 +1322,8 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
   }
 
   get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'indexedDB://' + this.databaseId.getOriginOrStorageKey() + '/' + this.databaseId.name + '/' +
-        this.objectStore.name as Platform.DevToolsPath.UrlString;
+    return 'indexedDB://' + this.databaseId.storageKey + '/' + this.databaseId.name + '/' + this.objectStore.name as
+        Platform.DevToolsPath.UrlString;
   }
 
   onattach(): void {
@@ -1460,8 +1459,8 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
   }
 
   get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'indexedDB://' + this.databaseId.getOriginOrStorageKey() + '/' + this.databaseId.name + '/' +
-        this.objectStore.name + '/' + this.index.name as Platform.DevToolsPath.UrlString;
+    return 'indexedDB://' + this.databaseId.storageKey + '/' + this.databaseId.name + '/' + this.objectStore.name +
+        '/' + this.index.name as Platform.DevToolsPath.UrlString;
   }
 
   markNeedsRefresh(): void {

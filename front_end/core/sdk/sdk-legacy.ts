@@ -193,6 +193,9 @@ SDK.Script = SDKModule.Script.Script;
 /** @constructor */
 SDK.SecurityOriginManager = SDKModule.SecurityOriginManager.SecurityOriginManager;
 
+/** @constructor */
+SDK.StorageKeyManager = SDKModule.StorageKeyManager.StorageKeyManager;
+
 /** @enum {symbol} */
 SDK.SecurityOriginManager.Events = SDKModule.SecurityOriginManager.Events;
 

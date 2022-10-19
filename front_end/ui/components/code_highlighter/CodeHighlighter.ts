@@ -8,10 +8,10 @@ const t = CodeMirror.tags;
 
 export const highlightStyle: CodeMirror.HighlightStyle = CodeMirror.HighlightStyle.define([
   {tag: t.variableName, class: 'token-variable'},
+  {tag: t.definition(t.variableName), class: 'token-definition'},
   {tag: t.propertyName, class: 'token-property'},
   {tag: [t.typeName, t.className, t.namespace, t.macroName], class: 'token-type'},
   {tag: [t.special(t.name), t.constant(t.className)], class: 'token-variable-special'},
-  {tag: t.definition(t.name), class: 'token-definition'},
   {tag: t.standard(t.variableName), class: 'token-builtin'},
 
   {tag: [t.number, t.literal, t.unit], class: 'token-number'},

@@ -52,7 +52,7 @@ describe('Expression evaluation', () => {
   const message = '\'Hello\'';
   async function selectFunctionParameterElement() {
     const {frontend} = getBrowserAndPages();
-    const functionParameterElement = await waitFor('.token-variable');
+    const functionParameterElement = await waitFor('.token-definition');
     const parameterElementPosition = await functionParameterElement.evaluate(elem => {
       const {x, y, right} = elem.getBoundingClientRect();
       return {x, y, right};

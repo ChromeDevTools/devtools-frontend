@@ -446,6 +446,10 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     void this.#throttle.schedule(async () => this.#doUpdate());
   }
 
+  clear(): void {
+    this.#affectedResourceViews.forEach(view => view.clear());
+  }
+
   getIssueKind(): IssuesManager.Issue.IssueKind {
     return this.#issue.getKind();
   }

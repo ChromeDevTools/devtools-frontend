@@ -27,5 +27,6 @@ describeWithRealConnection('IssueView', () => {
     assert.isTrue(recordedMetricsContain(
         Host.InspectorFrontendHostAPI.EnumeratedHistogram.IssuesPanelIssueExpanded,
         Host.UserMetrics.IssueExpanded.Other));
+    view.clear();
   });
 });

@@ -27,7 +27,7 @@ describeWithLocale('PageResourceLoader', () => {
   const foo1Url = 'foo1' as Platform.DevToolsPath.UrlString;
   const foo2Url = 'foo2' as Platform.DevToolsPath.UrlString;
   const foo3Url = 'foo3' as Platform.DevToolsPath.UrlString;
-  const loads: Array<{url: string}> = [];
+  const loads: Array<{url: string, resolve?: {(_: LoadResult|PromiseLike<LoadResult>): void}}> = [];
   const load = async(url: string): Promise<LoadResult> => {
     loads.push({url});
 
@@ -89,8 +89,7 @@ describeWithLocale('PageResourceLoader', () => {
 
   it('handles the load timeout correctly', async () => {
     const load = (url: string): Promise<LoadResult> => {
-      loads.push({url});
-      return new Promise(() => {});
+      return new Promise(resolve => loads.push({url, resolve}));
     };
 
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
@@ -110,6 +109,7 @@ describeWithLocale('PageResourceLoader', () => {
         results.every(x => x === 'Load canceled due to load timeout'),
         'All loads should have a exceeded the load timeout');
     assert.deepEqual(loader.getNumberOfResources(), {loading: 0, queued: 0, resources: 3});
+    loads.forEach(l => l.resolve && l.resolve({} as LoadResult));
   });
 
   it('respects the max concurrent loads', async () => {

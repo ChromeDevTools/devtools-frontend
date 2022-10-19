@@ -46,7 +46,8 @@ export function createTarget({id, name = 'test', type = SDK.Target.Type.Frame, p
   }
   const targetManager = initializeTargetManagerIfNecessary();
   return targetManager.createTarget(
-      id, name, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget?.id(), /* suspended=*/ false,
+      id, name, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined,
+      /* suspended=*/ false,
       /* connection=*/ undefined, {subtype} as Protocol.Target.TargetInfo);
 }
 

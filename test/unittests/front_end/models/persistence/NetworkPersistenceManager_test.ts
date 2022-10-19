@@ -566,6 +566,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     assert.isTrue(networkPersistenceManager.active());
 
     targetManager.removeTarget(target);
+    target.dispose('test');
 
     assert.isFalse(networkPersistenceManager.active());
   });

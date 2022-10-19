@@ -63,6 +63,18 @@ describe('i18n', () => {
     assert.strictEqual(translatedString, uiStrings.foo);
   });
 
+  it('should fall back to the UIStrings message when the placeholder of a translation doesn\'t match the UIStrings placeholder',
+     () => {
+       i18nInstance.registerLocaleData(
+           'de-DE', {'test.ts | foo': {message: 'German message with old placeholder {PH_OLD}'}});
+       const uiStrings = {foo: 'Message with a new placeholder {PH_NEW}'};
+       const stringSet = stringSetWith('test.ts', uiStrings, 'de-DE');
+
+       const translatedString = stringSet.getLocalizedString(uiStrings.foo, {PH_NEW: 'PH_NEW'});
+
+       assert.strictEqual(translatedString, 'Message with a new placeholder PH_NEW');
+     });
+
   it('should provide the same translation for repeated calls, but substitute placeholders correctly', () => {
     i18nInstance.registerLocaleData('de-DE', {
       'test.ts | foo': {message: 'a german message'},

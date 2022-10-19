@@ -101,6 +101,28 @@ export type EventTypes = {
   [Events.EditorScroll]: void,
 };
 
+function simplifyMimeType(content: string|CodeMirror.Text, mimeType: string): string {
+  if (!mimeType) {
+    return '';
+  }
+  if (mimeType.indexOf('javascript') >= 0 || mimeType.indexOf('jscript') >= 0 || mimeType.indexOf('ecmascript') >= 0) {
+    return 'text/jsx';
+  }
+  // A hack around the fact that files with "php" extension might be either standalone or html embedded php scripts.
+  if (mimeType === 'text/x-php') {
+    const strContent = typeof content === 'string' ? content : content.sliceString(0);
+    if (strContent.match(/\<\?.*\?\>/g)) {
+      return 'application/x-httpd-php';
+    }
+  }
+  if (mimeType === 'application/wasm') {
+    // text/webassembly is not a proper MIME type, but CodeMirror uses it for WAT syntax highlighting.
+    // We generally use application/wasm, which is the correct MIME type for Wasm binary data.P
+    return 'text/webassembly';
+  }
+  return mimeType;
+}
+
 export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.View.SimpleView>(
     UI.View.SimpleView) implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable, Transformer {
   private readonly lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>;
@@ -653,37 +675,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.prettyToggle.setEnabled(true);
   }
 
-  private simplifyMimeType(content: string|CodeMirror.Text, mimeType: string): string {
-    if (!mimeType) {
-      return '';
-    }
-    // There are plenty of instances where TSX/JSX files are served with out the trailing x, i.e. JSX with a 'js' suffix
-    // which breaks the formatting. Therefore, if the mime type is TypeScript or JavaScript, we switch to the TSX/JSX
-    // superset so that we don't break formatting.
-    if (mimeType.indexOf('typescript') >= 0) {
-      return 'text/typescript-jsx';
-    }
-    if (mimeType.indexOf('javascript') >= 0 || mimeType.indexOf('jscript') >= 0 ||
-        mimeType.indexOf('ecmascript') >= 0) {
-      return 'text/jsx';
-    }
-    // A hack around the fact that files with "php" extension might be either standalone or html embedded php scripts.
-    if (mimeType === 'text/x-php') {
-      const strContent = typeof content === 'string' ? content : content.sliceString(0);
-      if (strContent.match(/\<\?.*\?\>/g)) {
-        return 'application/x-httpd-php';
-      }
-    }
-    if (mimeType === 'application/wasm') {
-      // text/webassembly is not a proper MIME type, but CodeMirror uses it for WAT syntax highlighting.
-      // We generally use application/wasm, which is the correct MIME type for Wasm binary data.
-      return 'text/webassembly';
-    }
-    return mimeType;
-  }
-
   protected async getLanguageSupport(content: string|CodeMirror.Text): Promise<CodeMirror.Extension> {
-    const mimeType = this.simplifyMimeType(content, this.contentType) || '';
+    const mimeType = simplifyMimeType(content, this.contentType) || '';
     const languageDesc = await CodeHighlighter.CodeHighlighter.languageFromMIME(mimeType);
     if (!languageDesc) {
       return [];
@@ -1187,3 +1180,7 @@ const sourceFrameTheme = CodeMirror.EditorView.theme({
     color: 'var(--legacy-accent-color)',
   },
 });
+
+export const TEST_ONLY = {
+  simplifyMimeType,
+};

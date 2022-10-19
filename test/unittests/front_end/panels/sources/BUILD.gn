@@ -10,6 +10,7 @@ ts_library("sources") {
     "BreakpointsSidebarPane_test.ts",
     "FilePathScoreFunction_test.ts",
     "ScriptSnippetFileSystem_test.ts",
+    "SourceFrame_test.ts",
     "SourcesView_test.ts",
   ]
 

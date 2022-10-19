@@ -258,23 +258,6 @@ Event.prototype.consume = function(preventDefault?: boolean): void {
   this.handled = true;
 };
 
-Text.prototype.select = function(start?: number, end?: number): Text {
-  start = start || 0;
-  end = end || this.textContent.length;
-
-  if (start < 0) {
-    start = end + start;
-  }
-
-  const selection = this.getComponentSelection();
-  selection.removeAllRanges();
-  const range = this.ownerDocument.createRange();
-  range.setStart(this, start);
-  range.setEnd(this, end);
-  selection.addRange(range);
-  return this;
-};
-
 Element.prototype.selectionLeftOffset = function(): number|null {
   // Calculate selection offset relative to the current element.
 

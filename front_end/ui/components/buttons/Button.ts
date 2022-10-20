@@ -76,6 +76,8 @@ export type ButtonData = {
   type?: ButtonType,
   value?: string,
   title?: string,
+  iconWidth?: string,
+  iconHeight?: string,
 }|{
   variant: Variant.UNIFIED_TOOLBAR_2022,
   iconUrl: string,

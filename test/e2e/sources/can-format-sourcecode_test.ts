@@ -4,23 +4,19 @@
 
 import {assert} from 'chai';
 
-import {$$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+import {$$, click, disableExperiment, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
+import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
 import {
   addBreakpointForLine,
   getSelectedSource,
   openSourceCodeEditorForFile,
+  retrieveCodeMirrorEditorContent,
   retrieveTopCallFrameScriptLocation,
   SourceFileEvents,
   waitForSourceFiles,
 } from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
-
-async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> {
-  const editor = await waitFor('[aria-label="Code editor"]');
-  return editor.evaluate(node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
-}
 
 async function prettyPrintMinifiedFile() {
   const source = await getSelectedSource();
@@ -44,6 +40,10 @@ describe('The Sources Tab', async function() {
   if (this.timeout() > 0) {
     this.timeout(10000);
   }
+
+  beforeEach(async () => {
+    await disableExperiment('sourcesPrettyPrint');
+  });
 
   it('can format a JavaScript file', async () => {
     await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');

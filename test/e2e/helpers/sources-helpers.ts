@@ -742,3 +742,9 @@ export class WasmLocationLabels {
     return Array.from(this.#mappings.values()).flat();
   }
 }
+
+export async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> {
+  const editor = await waitFor('[aria-label="Code editor"]');
+  return await editor.evaluate(
+      node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
+}

@@ -234,6 +234,29 @@ export function addSnifferPromise(receiver, methodName) {
   });
 }
 
+/**
+ * @param {Text} textNode
+ * @param {number=} start
+ * @param {number=} end
+ * @return {Text}
+ */
+export function selectTextInTextNode(textNode, start, end) {
+  start = start || 0;
+  end = end || textNode.textContent.length;
+
+  if (start < 0) {
+    start = end + start;
+  }
+
+  const selection = textNode.getComponentSelection();
+  selection.removeAllRanges();
+  const range = textNode.ownerDocument.createRange();
+  range.setStart(textNode, start);
+  range.setEnd(textNode, end);
+  selection.addRange(range);
+  return textNode;
+}
+
 const mappingForLayoutTests = new Map([
   ['panels/animation', 'animation'],
   ['panels/browser_debugger', 'browser_debugger'],
@@ -1506,5 +1529,6 @@ TestRunner.runAsyncTestSuite = runAsyncTestSuite;
 TestRunner.dumpInspectedPageElementText = dumpInspectedPageElementText;
 TestRunner.waitForPendingLiveLocationUpdates = waitForPendingLiveLocationUpdates;
 TestRunner.findLineEndingIndexes = findLineEndingIndexes;
+TestRunner.selectTextInTextNode = selectTextInTextNode;
 
 TestRunner.isScrolledToBottom = UI.UIUtils.isScrolledToBottom;

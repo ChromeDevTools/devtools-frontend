@@ -41,14 +41,6 @@ const UIStrings = {
   chooseThisOptionIfTheResourceAnd:
       'Choose this option if the resource and the document are served from the same site.',
   /**
-  *@description Default name of the HTTP header when adding a header override. Header names are lower case and cannot contain whitespace.
-  */
-  defaultHeaderName: 'header-name',
-  /**
-  *@description Default value of the HTTP header when adding a header override.
-  */
-  defaultHeaderValue: 'header value',
-  /**
   *@description Explanation text for which cross-origin policy to set.
   */
   onlyChooseThisOptionIfAn:
@@ -415,8 +407,8 @@ export class ResponseHeaderSection extends HTMLElement {
 
   #onAddHeaderClick(): void {
     this.#headerEditors.push({
-      name: Platform.StringUtilities.toLowerCaseString(i18nString(UIStrings.defaultHeaderName)),
-      value: i18nString(UIStrings.defaultHeaderValue),
+      name: Platform.StringUtilities.toLowerCaseString(i18n.i18n.lockedString('header-name')),
+      value: i18n.i18n.lockedString('header value'),
       isOverride: true,
       nameEditable: true,
       valueEditable: true,

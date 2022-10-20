@@ -269,7 +269,7 @@ describe('HeadersView', async () => {
     assert.deepEqual(rows, [
       'Apply to:*',
       'server:DevTools Unit Test Server',
-      'headerName1:headerValue',
+      'header-name-1:header value',
       'access-control-allow-origin:*',
       'Apply to:*.jpg',
       'jpg-header:only for jpg files',
@@ -317,7 +317,7 @@ describe('HeadersView', async () => {
       'Apply to:*.jpg',
       'jpg-header:only for jpg files',
       'Apply to:*',
-      'headerName:headerValue',
+      'header-name-1:header value',
     ]);
 
     const editables = editor.shadowRoot?.querySelectorAll('.editable');
@@ -366,7 +366,7 @@ describe('HeadersView', async () => {
     rows = getRowContent(editor.shadowRoot);
     assert.deepEqual(rows, [
       'Apply to:*',
-      'headerName1:headerValue',
+      'header-name-1:header value',
       'Apply to:*.jpg',
       'jpg-header:only for jpg files',
     ]);

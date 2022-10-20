@@ -193,10 +193,10 @@ export class HeadersViewComponent extends HTMLElement {
   #generateNextHeaderName(headers: Protocol.Fetch.HeaderEntry[]): string {
     const takenNames = new Set<string>(headers.map(header => header.name));
     let idx = 1;
-    while (takenNames.has('headerName' + idx)) {
+    while (takenNames.has('header-name-' + idx)) {
       idx++;
     }
-    return 'headerName' + idx;
+    return 'header-name-' + idx;
   }
 
   #onClick(e: Event): void {
@@ -207,18 +207,18 @@ export class HeadersViewComponent extends HTMLElement {
     if (target.matches('.add-header')) {
       this.#headerOverrides[blockIndex].headers.splice(
           headerIndex + 1, 0,
-          {name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: 'headerValue'});
+          {name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: 'header value'});
       this.#focusElement = {blockIndex, headerIndex: headerIndex + 1};
       this.#onHeadersChanged();
     } else if (target.matches('.remove-header')) {
       this.#headerOverrides[blockIndex].headers.splice(headerIndex, 1);
       if (this.#headerOverrides[blockIndex].headers.length === 0) {
         this.#headerOverrides[blockIndex].headers.push(
-            {name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: 'headerValue'});
+            {name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: 'header value'});
       }
       this.#onHeadersChanged();
     } else if (target.matches('.add-block')) {
-      this.#headerOverrides.push({applyTo: '*', headers: [{name: 'headerName', value: 'headerValue'}]});
+      this.#headerOverrides.push({applyTo: '*', headers: [{name: 'header-name-1', value: 'header value'}]});
       this.#focusElement = {blockIndex: this.#headerOverrides.length - 1};
       this.#onHeadersChanged();
     } else if (target.matches('.remove-block')) {

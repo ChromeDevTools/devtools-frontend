@@ -228,14 +228,14 @@ button.secondary devtools-icon {
   --icon-color: var(--color-primary);
 }
 
-button.explicit-size devtools-icon {
-  width: unset;
-  height: unset;
-}
-
 button.small devtools-icon {
   width: 14px;
   height: 14px;
+}
+
+button.explicit-size devtools-icon {
+  width: unset;
+  height: unset;
 }
 
 button.toolbar.small devtools-icon,
@@ -247,6 +247,12 @@ button.round.small devtools-icon {
 button.round.tiny devtools-icon {
   width: 14px;
   height: 14px;
+}
+
+button.toolbar.explicit-size devtools-icon,
+button.round.explicit-size devtools-icon {
+  width: unset;
+  height: unset;
 }
 
 button.toolbar.active devtools-icon,

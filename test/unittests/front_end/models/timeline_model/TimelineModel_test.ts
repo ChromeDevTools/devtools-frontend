@@ -193,6 +193,95 @@ describeWithEnvironment('TimelineModel', () => {
     timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
   });
 
+  describe('interaction events', () => {
+    it('finds all interaction events with a duration and interactionId', async () => {
+      traceWithEvents([
+        {
+          cat: 'devtools.timeline',
+          ph: 'b',
+          pid: 1537729,  // the Renderer Thread
+          tid: 1,        // CrRendererMain
+          id: '1234',
+          bind_id: '1234',
+          s: '',
+          ts: 10,
+          dur: 500,
+          scope: 'scope',
+          name: 'EventTiming',
+          args: {
+            data: {
+              'duration': 16,
+              'interactionId': 9700,
+              'nodeId': 0,
+              'processingEnd': 993,
+              'processingStart': 993,
+              'timeStamp': 985,
+              'type': 'pointerdown',
+            },
+          } as unknown as SDK.TracingManager.EventPayload['args'],
+        },
+        // Has an interactionId of 0, so should NOT be included.
+        {
+          cat: 'devtools.timeline',
+          ph: 'b',
+          pid: 1537729,  // the Renderer Thread
+          tid: 1,        // CrRendererMain
+          id: '1234',
+          bind_id: '1234',
+          s: '',
+          ts: 10,
+          dur: 500,
+          scope: 'scope',
+          name: 'EventTiming',
+          args: {
+            data: {
+              'duration': 16,
+              'interactionId': 0,
+              'nodeId': 0,
+              'processingEnd': 993,
+              'processingStart': 993,
+              'timeStamp': 985,
+              'type': 'pointerdown',
+            },
+          } as unknown as SDK.TracingManager.EventPayload['args'],
+        },
+        // Has an duration of 0, so should NOT be included.
+        {
+          cat: 'devtools.timeline',
+          ph: 'b',
+          pid: 1537729,  // the Renderer Thread
+          tid: 1,        // CrRendererMain
+          id: '1234',
+          bind_id: '1234',
+          s: '',
+          ts: 10,
+          dur: 500,
+          scope: 'scope',
+          name: 'EventTiming',
+          args: {
+            data: {
+              'duration': 0,
+              'interactionId': 0,
+              'nodeId': 0,
+              'processingEnd': 993,
+              'processingStart': 993,
+              'timeStamp': 985,
+              'type': 'pointerdown',
+            },
+          } as unknown as SDK.TracingManager.EventPayload['args'],
+        },
+      ]);
+      const interactionsTrack =
+          timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
+      if (!interactionsTrack) {
+        assert.fail('No interactions track was found.');
+        return;
+      }
+      const foundInteractions = interactionsTrack.asyncEvents;
+      assert.lengthOf(foundInteractions, 1);
+    });
+  });
+
   it('creates tracks for auction worklets', () => {
     traceWithEvents([
       {

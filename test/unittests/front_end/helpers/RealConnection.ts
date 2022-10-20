@@ -4,6 +4,7 @@
 
 import * as Common from '../../../../front_end/core/common/common.js';
 import * as Host from '../../../../front_end/core/host/host.js';
+import * as ProtocolClient from '../../../../front_end/core/protocol_client/protocol_client.js';
 import * as Root from '../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as Main from '../../../../front_end/entrypoints/main/main.js';
@@ -57,6 +58,14 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
   beforeEach(() => {
     resetHostBindingStubState();
     Common.Settings.Settings.instance().clearAll();
+  });
+
+  afterEach(async () => {
+    const runAfterPendingDispatches = ProtocolClient.InspectorBackend.test.deprecatedRunAfterPendingDispatches;
+    if (!runAfterPendingDispatches) {
+      throw new Error('Missing deprecatedRunAfterPendingDispatches');
+    }
+    await new Promise<void>(resolve => runAfterPendingDispatches(resolve));
   });
 
   describe(title, fn);

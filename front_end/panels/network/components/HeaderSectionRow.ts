@@ -128,25 +128,38 @@ export class HeaderSectionRow extends HTMLElement {
           class="header-value ${this.#header.headerValueIncorrect ? 'header-warning' : ''}"
           @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
         >
-          ${this.#header.valueEditable ? LitHtml.html`
-            ${this.#renderEditable(this.#header.value || '')}
-            <${Buttons.Button.Button.litTagName}
-              title=${i18nString(UIStrings.removeOverride)}
-              .size=${Buttons.Button.Size.TINY}
-              .iconUrl=${closeIconUrl}
-              .variant=${Buttons.Button.Variant.ROUND}
-              .iconWidth=${'10px'}
-              .iconHeight=${'10px'}
-              class="remove-header inline-button"
-              @click=${this.#onRemoveOverrideClick}
-            ></${Buttons.Button.Button.litTagName}>
-          ` : this.#header.value || ''}
-          ${this.#maybeRenderHeaderValueSuffix(this.#header)}
+          ${this.#renderHeaderValue()}
         </div>
       </div>
       ${this.#maybeRenderBlockedDetails(this.#header.blockedDetails)}
     `, this.#shadow, {host: this});
     // clang-format on
+  }
+
+  #renderHeaderValue(): LitHtml.LitTemplate {
+    if (!this.#header) {
+      return LitHtml.nothing;
+    }
+    if (!this.#header.valueEditable) {
+      return html`
+      ${this.#header.value || ''}
+      ${this.#maybeRenderHeaderValueSuffix(this.#header)}
+    `;
+    }
+    return html`
+      ${this.#renderEditable(this.#header.value || '')}
+      ${this.#maybeRenderHeaderValueSuffix(this.#header)}
+      <${Buttons.Button.Button.litTagName}
+        title=${i18nString(UIStrings.removeOverride)}
+        .size=${Buttons.Button.Size.TINY}
+        .iconUrl=${closeIconUrl}
+        .variant=${Buttons.Button.Variant.ROUND}
+        .iconWidth=${'10px'}
+        .iconHeight=${'10px'}
+        class="remove-header inline-button"
+        @click=${this.#onRemoveOverrideClick}
+      ></${Buttons.Button.Button.litTagName}>
+    `;
   }
 
   focus(): void {

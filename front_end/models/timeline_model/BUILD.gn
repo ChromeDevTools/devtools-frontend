@@ -9,7 +9,6 @@ import("../visibility.gni")
 devtools_module("timeline_model") {
   sources = [
     "TimelineFrameModel.ts",
-    "TimelineIRModel.ts",
     "TimelineJSProfile.ts",
     "TimelineModel.ts",
     "TimelineModelFilter.ts",

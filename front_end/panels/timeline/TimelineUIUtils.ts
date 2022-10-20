@@ -473,110 +473,6 @@ const UIStrings = {
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
-  keyCharacter: 'Key — Character',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  keyDown: 'Key Down',
-  /**
-  *@description Noun for the end keyboard key event in the Performance panel. 'Up' refers to the keyboard key bouncing back up after being pushed down.
-  */
-  keyUp: 'Key Up',
-  /**
-  *@description Noun for a mouse click event in the Performance panel.
-  */
-  click: 'Click',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  contextMenu: 'Context Menu',
-  /**
-  *@description Noun for the start of a mouse event in the Performance panel. Down refers to the button on the mouse being pressed down.
-  */
-  mouseDown: 'Mouse Down',
-  /**
-  *@description Noun for a mouse move event in the Performance panel.
-  */
-  mouseMove: 'Mouse Move',
-  /**
-  *@description Noun for the end of a mouse event in the Performance panel. Up refers to the button on the mouse being released.
-  */
-  mouseUp: 'Mouse Up',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  mouseWheel: 'Mouse Wheel',
-  /**
-  *@description Noun for the beginning of a mouse scroll wheel event in the Performance panel.
-  */
-  scrollBegin: 'Scroll Begin',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  scrollEnd: 'Scroll End',
-  /**
-  *@description Noun for an update of a mouse scroll wheel event in the Performance panel.
-  */
-  scrollUpdate: 'Scroll Update',
-  /**
-  *@description Noun for the beginning of a fling gesture event in the Performance panel.
-  */
-  flingStart: 'Fling Start',
-  /**
-  *@description Noun for the end of a fling gesture event in the Performance panel.
-  */
-  flingHalt: 'Fling Halt',
-  /**
-  *@description Noun for a tap event (tap on a touch screen device) in the Performance panel.
-  */
-  tap: 'Tap',
-  /**
-  *@description Noun for the end of a tap event (tap on a touch screen device) in the Performance panel.
-  */
-  tapHalt: 'Tap Halt',
-  /**
-  *@description Noun for the start of a tap event (tap on a touch screen device) in the Performance panel.
-  */
-  tapBegin: 'Tap Begin',
-  /**
-  *@description Noun for the beginning of a tap gesture event in the Performance
-  *panel. 'Down' refers to the start (downward tap direction), as opposed to up
-  *(finger leaving the touch surface).
-  */
-  tapDown: 'Tap Down',
-  /**
-   * @description Noun for the cancelation of an input touch event in the Performance panel.
-   * For example this can happen when the user touches the surface with too many fingers.
-   * This is opposed to a "Touch End" event, where the user lifts the finger from the surface.
-   */
-  touchCancel: 'Touch Cancel',
-  /**
-  *@description Noun for the end of an input touch event in the Performance panel.
-  */
-  touchEnd: 'Touch End',
-  /**
-  *@description Noun for an input touch event in the Performance panel.
-  */
-  touchMove: 'Touch Move',
-  /**
-  *@description Noun for the start of an input touch event in the Performance panel.
-  */
-  touchStart: 'Touch Start',
-  /**
-  *@description Noun for the beginning of a pinch gesture event in the Performance panel.
-  */
-  pinchBegin: 'Pinch Begin',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  pinchEnd: 'Pinch End',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  pinchUpdate: 'Pinch Update',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
   compile: 'Compile',
   /**
   *@description Text to parse something
@@ -594,23 +490,6 @@ const UIStrings = {
   *@example {div#id1} PH2
   */
   sS: '{PH1}: {PH2}',
-  /**
-  *@description Label of a field in a timeline. A Network response refers to the act of acknowledging a
-  network request. Should not be confused with answer.
-  */
-  response: 'Response',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  fling: 'Fling',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  drag: 'Drag',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
-  uncategorized: 'Uncategorized',
   /**
   *@description Details text in Timeline UIUtils of the Performance panel
   *@example {30 MB} PH1
@@ -1233,13 +1112,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let eventStylesMap: EventStylesMap;
 
-let inputEventToDisplayName: Map<TimelineModel.TimelineIRModel.InputEvents, string>;
-
-let interactionPhaseStylesMap: Map<TimelineModel.TimelineIRModel.Phases, {
-  color: string,
-  label: string,
-}>;
-
 let categories: {
   [x: string]: TimelineCategory,
 };
@@ -1404,42 +1276,6 @@ export class TimelineUIUtils {
     eventStylesMap = eventStyles;
   }
 
-  static inputEventDisplayName(inputEventType: TimelineModel.TimelineIRModel.InputEvents): string|null {
-    if (!inputEventToDisplayName) {
-      const inputEvent = TimelineModel.TimelineIRModel.InputEvents;
-
-      inputEventToDisplayName = new Map([
-        [inputEvent.Char, i18nString(UIStrings.keyCharacter)],
-        [inputEvent.KeyDown, i18nString(UIStrings.keyDown)],
-        [inputEvent.KeyDownRaw, i18nString(UIStrings.keyDown)],
-        [inputEvent.KeyUp, i18nString(UIStrings.keyUp)],
-        [inputEvent.Click, i18nString(UIStrings.click)],
-        [inputEvent.ContextMenu, i18nString(UIStrings.contextMenu)],
-        [inputEvent.MouseDown, i18nString(UIStrings.mouseDown)],
-        [inputEvent.MouseMove, i18nString(UIStrings.mouseMove)],
-        [inputEvent.MouseUp, i18nString(UIStrings.mouseUp)],
-        [inputEvent.MouseWheel, i18nString(UIStrings.mouseWheel)],
-        [inputEvent.ScrollBegin, i18nString(UIStrings.scrollBegin)],
-        [inputEvent.ScrollEnd, i18nString(UIStrings.scrollEnd)],
-        [inputEvent.ScrollUpdate, i18nString(UIStrings.scrollUpdate)],
-        [inputEvent.FlingStart, i18nString(UIStrings.flingStart)],
-        [inputEvent.FlingCancel, i18nString(UIStrings.flingHalt)],
-        [inputEvent.Tap, i18nString(UIStrings.tap)],
-        [inputEvent.TapCancel, i18nString(UIStrings.tapHalt)],
-        [inputEvent.ShowPress, i18nString(UIStrings.tapBegin)],
-        [inputEvent.TapDown, i18nString(UIStrings.tapDown)],
-        [inputEvent.TouchCancel, i18nString(UIStrings.touchCancel)],
-        [inputEvent.TouchEnd, i18nString(UIStrings.touchEnd)],
-        [inputEvent.TouchMove, i18nString(UIStrings.touchMove)],
-        [inputEvent.TouchStart, i18nString(UIStrings.touchStart)],
-        [inputEvent.PinchBegin, i18nString(UIStrings.pinchBegin)],
-        [inputEvent.PinchEnd, i18nString(UIStrings.pinchEnd)],
-        [inputEvent.PinchUpdate, i18nString(UIStrings.pinchUpdate)],
-      ]);
-    }
-    return inputEventToDisplayName.get(inputEventType) || null;
-  }
-
   static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
     if (!TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)) {
       return UI.UIUtils.beautifyFunctionName(frame.functionName);
@@ -1504,14 +1340,6 @@ export class TimelineUIUtils {
       return new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['scripting']);
     }
 
-    if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo)) {
-      /** @const */
-      const prefix = 'InputLatency::';
-      const inputEventType = event.name.startsWith(prefix) ? event.name.substr(prefix.length) : event.name;
-      const displayName =
-          TimelineUIUtils.inputEventDisplayName((inputEventType as TimelineModel.TimelineIRModel.InputEvents));
-      return new TimelineRecordStyle(displayName || inputEventType, TimelineUIUtils.categories()['scripting']);
-    }
     let result: TimelineRecordStyle = eventStyles[event.name];
     if (!result) {
       result = new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['other'], true);
@@ -1542,31 +1370,6 @@ export class TimelineUIUtils {
     return color;
   }
 
-  static eventColorByProduct(
-      model: TimelineModel.TimelineModel.TimelineModelImpl, urlToColorCache: Map<string, string>,
-      event: SDK.TracingModel.Event): string {
-    const url = TimelineUIUtils.eventURL(event) || Platform.DevToolsPath.EmptyUrlString;
-    let color = urlToColorCache.get(url);
-    if (color) {
-      return color;
-    }
-    const defaultColor = '#f2ecdc';
-    const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-    if (!parsedURL) {
-      return defaultColor;
-    }
-    const name = parsedURL.host;
-    const rootFrames = model.rootFrames();
-    if (rootFrames.some(pageFrame => new Common.ParsedURL.ParsedURL(pageFrame.url).host === name)) {
-      color = defaultColor;
-    }
-    if (!color) {
-      color = defaultColor;
-    }
-    urlToColorCache.set(url, color);
-    return color;
-  }
-
   static eventTitle(event: SDK.TracingModel.Event): string {
     const recordType = TimelineModel.TimelineModel.RecordType;
     const eventData = event.args['data'];
@@ -1591,60 +1394,6 @@ export class TimelineUIUtils {
       return i18nString(UIStrings.sS, {PH1: title, PH2: eventData['type']});
     }
     return title;
-  }
-
-  private static interactionPhaseStyles(): Map<TimelineModel.TimelineIRModel.Phases, {
-    color: string,
-    label: string,
-  }> {
-    let map: Map<TimelineModel.TimelineIRModel.Phases, {
-      color: string,
-      label: string,
-    }>|Map<TimelineModel.TimelineIRModel.Phases, {
-      color: string,
-      label: string,
-    }> = interactionPhaseStylesMap;
-    if (!map) {
-      map = new Map([
-        [TimelineModel.TimelineIRModel.Phases.Idle, {color: 'white', label: 'Idle'}],
-        [
-          TimelineModel.TimelineIRModel.Phases.Response,
-          {color: 'hsl(43, 83%, 64%)', label: i18nString(UIStrings.response)},
-        ],
-        [
-          TimelineModel.TimelineIRModel.Phases.Scroll,
-          {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.scroll)},
-        ],
-        [TimelineModel.TimelineIRModel.Phases.Fling, {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.fling)}],
-        [TimelineModel.TimelineIRModel.Phases.Drag, {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.drag)}],
-        [
-          TimelineModel.TimelineIRModel.Phases.Animation,
-          {color: 'hsl(256, 67%, 70%)', label: i18nString(UIStrings.animation)},
-        ],
-        [
-          TimelineModel.TimelineIRModel.Phases.Uncategorized,
-          {color: 'hsl(0, 0%, 87%)', label: i18nString(UIStrings.uncategorized)},
-        ],
-      ]);
-      interactionPhaseStylesMap = map;
-    }
-    return map;
-  }
-
-  static interactionPhaseColor(phase: TimelineModel.TimelineIRModel.Phases): string {
-    const interactionPhase = TimelineUIUtils.interactionPhaseStyles().get(phase);
-    if (!interactionPhase) {
-      throw new Error(`Unknown phase ${phase}`);
-    }
-    return interactionPhase.color;
-  }
-
-  static interactionPhaseLabel(phase: TimelineModel.TimelineIRModel.Phases): string {
-    const interactionPhase = TimelineUIUtils.interactionPhaseStyles().get(phase);
-    if (!interactionPhase) {
-      throw new Error(`Unknown phase ${phase}`);
-    }
-    return interactionPhase.label;
   }
 
   static isUserFrame(frame: Protocol.Runtime.CallFrame): boolean {

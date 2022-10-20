@@ -17,7 +17,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   private readonly timelineModelInternal: TimelineModel.TimelineModel.TimelineModelImpl;
   private readonly frameModelInternal: TimelineModel.TimelineFrameModel.TimelineFrameModel;
   private filmStripModelInternal: SDK.FilmStripModel.FilmStripModel|null;
-  private readonly irModel: TimelineModel.TimelineIRModel.TimelineIRModel;
   private windowInternal: Window;
   private readonly extensionTracingModels: {
     title: string,
@@ -36,7 +35,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.frameModelInternal = new TimelineModel.TimelineFrameModel.TimelineFrameModel(
         event => TimelineUIUtils.eventStyle(event).category.name);
     this.filmStripModelInternal = null;
-    this.irModel = new TimelineModel.TimelineIRModel.TimelineIRModel();
 
     this.windowInternal = {left: 0, right: Infinity};
 
@@ -76,19 +74,11 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.tracingModelInternal = model;
     this.timelineModelInternal.setEvents(model);
     await this.addSourceMapListeners();
-    let animationEvents: SDK.TracingModel.AsyncEvent[]|null = null;
-    for (const track of this.timelineModelInternal.tracks()) {
-      if (track.type === TimelineModel.TimelineModel.TrackType.Animation) {
-        animationEvents = track.asyncEvents;
-      }
-    }
-    if (animationEvents) {
-      this.irModel.populate([], animationEvents || []);
-    }
 
     const mainTracks = this.timelineModelInternal.tracks().filter(
         track => track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame &&
             track.events.length);
+
     const threadData = mainTracks.map(track => {
       const event = track.events[0];
       return {thread: event.thread, time: event.startTime};
@@ -201,10 +191,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   frameModel(): TimelineModel.TimelineFrameModel.TimelineFrameModel {
     return this.frameModelInternal;
-  }
-
-  interactionRecords(): Common.SegmentedRange.Segment<TimelineModel.TimelineIRModel.Phases>[] {
-    return this.irModel.interactionRecords();
   }
 
   extensionInfo(): {

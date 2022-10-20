@@ -1697,12 +1697,6 @@
   "models/persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Workspace"
   },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "Two flings at the same time? {PH1} vs {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "Two touches at the same time? {PH1} vs {PH2}"
-  },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread {PH1}"
   },
@@ -11309,9 +11303,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(changed \"{PH1}\"{PH2})"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "Click"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Collected"
   },
@@ -11347,9 +11338,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Consumed Cache Size"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "Context Menu"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "CPU time"
@@ -11398,9 +11386,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domGc": {
     "message": "DOM GC"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "Drag"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "Draw Frame"
@@ -11470,15 +11455,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "First Paint"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "Fling"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "Fling Halt"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "Fling Start"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Forced reflow"
@@ -11573,15 +11549,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS Frame"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "Key — Character"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "Key Down"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "Key Up"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Largest Contentful Paint"
   },
@@ -11638,18 +11605,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Module"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "Mouse Down"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "Mouse Move"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "Mouse Up"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "Mouse Wheel"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "Moved from"
@@ -11723,15 +11678,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Pending for"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "Pinch Begin"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "Pinch End"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "Pinch Update"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Pre-Paint"
   },
@@ -11795,9 +11741,6 @@
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "Resource"
   },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "Response"
-  },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Reveal"
   },
@@ -11848,15 +11791,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Scroll"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "Scroll Begin"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "Scroll End"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "Scroll Update"
   },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Self Time"
@@ -11951,18 +11885,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "System"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "Tap"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "Tap Begin"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "Tap Down"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "Tap Halt"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "Task"
   },
@@ -11990,23 +11912,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Total Time"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "Touch Cancel"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "Touch End"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "Touch Move"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "Touch Start"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Type"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "Uncategorized"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "unknown"

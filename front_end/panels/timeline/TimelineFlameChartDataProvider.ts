@@ -155,8 +155,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-type TimelineFlameChartEntry = (SDK.FilmStripModel.Frame|SDK.TracingModel.Event|
-                                TimelineModel.TimelineFrameModel.TimelineFrame|TimelineModel.TimelineIRModel.Phases);
+type TimelineFlameChartEntry =
+    (SDK.FilmStripModel.Frame|SDK.TracingModel.Event|TimelineModel.TimelineFrameModel.TimelineFrame);
 export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.FlameChart.FlameChartDataProvider {
   private readonly font: string;
@@ -185,7 +185,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private entryData!: TimelineFlameChartEntry[];
   private entryTypeByLevel!: EntryType[];
   private markers!: TimelineFlameChartMarker[];
-  private asyncColorByInteractionPhase!: Map<TimelineModel.TimelineIRModel.Phases, string>;
   private screenshotImageCache!: Map<SDK.FilmStripModel.Frame, HTMLImageElement|null>;
   private extensionInfo!: {
     title: string,
@@ -352,7 +351,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.entryIndexToTitle = [];
     this.markers = [];
     this.asyncColorByCategory = new Map();
-    this.asyncColorByInteractionPhase = new Map();
     this.extensionInfo = [];
     this.screenshotImageCache = new Map();
   }
@@ -421,7 +419,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   private processInspectorTrace(): void {
     this.appendFrames();
-    this.appendInteractionRecords();
 
     const eventEntryType = EntryType.Event;
 
@@ -753,27 +750,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return group;
   }
 
-  private appendInteractionRecords(): void {
-    if (!this.performanceModel) {
-      return;
-    }
-    const interactionRecords = this.performanceModel.interactionRecords();
-    if (!interactionRecords.length) {
-      return;
-    }
-    for (const segment of interactionRecords) {
-      const index = this.entryData.length;
-      this.entryData.push((segment.data as TimelineModel.TimelineIRModel.Phases));
-      this.entryIndexToTitle[index] = (segment.data as string);
-      if (this.timelineDataInternal) {
-        this.timelineDataInternal.entryLevels[index] = this.currentLevel;
-        this.timelineDataInternal.entryTotalTimes[index] = segment.end - segment.begin;
-        this.timelineDataInternal.entryStartTimes[index] = segment.begin;
-      }
-    }
-    this.entryTypeByLevel[this.currentLevel++] = EntryType.InteractionRecord;
-  }
-
   private appendPageMetrics(): void {
     this.entryTypeByLevel[this.currentLevel] = EntryType.Event;
 
@@ -1068,11 +1044,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
         return this.consoleColorGenerator.colorForID(event.name);
       }
-      if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo)) {
-        const phase = TimelineModel.TimelineIRModel.TimelineIRModel.phaseForEvent(event) ||
-            TimelineModel.TimelineIRModel.Phases.Uncategorized;
-        return patchColorAndCache(this.asyncColorByInteractionPhase, phase, TimelineUIUtils.interactionPhaseColor);
-      }
       const category = TimelineUIUtils.eventStyle(event).category;
       return patchColorAndCache(this.asyncColorByCategory, category, () => category.color);
     }
@@ -1219,15 +1190,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (type === entryTypes.Screenshot) {
       void this.drawScreenshot(entryIndex, context, barX, barY, barWidth, barHeight);
       return true;
-    }
-
-    if (type === entryTypes.InteractionRecord) {
-      const color = TimelineUIUtils.interactionPhaseColor((data as TimelineModel.TimelineIRModel.Phases));
-      context.fillStyle = color;
-      context.fillRect(barX, barY, barWidth - 1, 2);
-      context.fillRect(barX, barY - 3, 2, 3);
-      context.fillRect(barX + barWidth - 3, barY - 3, 2, 3);
-      return false;
     }
 
     if (type === entryTypes.Event) {
@@ -1391,8 +1353,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return this.lastSelection.entryIndex;
     }
     const index = this.entryData.indexOf(
-        (selection.object() as SDK.TracingModel.Event | TimelineModel.TimelineIRModel.Phases |
-         TimelineModel.TimelineFrameModel.TimelineFrame));
+        (selection.object() as SDK.TracingModel.Event | TimelineModel.TimelineFrameModel.TimelineFrame));
     if (index !== -1) {
       this.lastSelection = new Selection(selection, index);
     }

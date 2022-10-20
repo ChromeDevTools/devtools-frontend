@@ -25,15 +25,6 @@ TimelineModel.LayerPaintEvent = TimelineModelModule.TimelineFrameModel.LayerPain
 TimelineModel.PendingFrame = TimelineModelModule.TimelineFrameModel.PendingFrame;
 
 /** @constructor */
-TimelineModel.TimelineIRModel = TimelineModelModule.TimelineIRModel.TimelineIRModel;
-
-/** @enum {string} */
-TimelineModel.TimelineIRModel.Phases = TimelineModelModule.TimelineIRModel.Phases;
-
-/** @enum {string} */
-TimelineModel.TimelineIRModel.InputEvents = TimelineModelModule.TimelineIRModel.InputEvents;
-
-/** @constructor */
 TimelineModel.TimelineJSProfileProcessor = TimelineModelModule.TimelineJSProfile.TimelineJSProfileProcessor;
 
 /** @constructor */

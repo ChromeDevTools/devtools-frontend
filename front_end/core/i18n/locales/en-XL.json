@@ -1697,12 +1697,6 @@
   "models/persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Ŵór̂ḱŝṕâćê"
   },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "T̂ẃô f́l̂ín̂ǵŝ át̂ t́ĥé ŝám̂é t̂ím̂é? {PH1} v̂ś {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "T̂ẃô t́ôúĉh́êś ât́ t̂h́ê śâḿê t́îḿê? {PH1} v́ŝ {PH2}"
-  },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "T̂h́r̂éâd́ {PH1}"
   },
@@ -11309,9 +11303,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(ĉh́âńĝéd̂ \"{PH1}\"{PH2})"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "Ĉĺîćk̂"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Ĉól̂ĺêćt̂éd̂"
   },
@@ -11347,9 +11338,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Ĉón̂śûḿêd́ Ĉáĉh́ê Śîźê"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "Ĉón̂t́êx́t̂ Ḿêńû"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "ĈṔÛ t́îḿê"
@@ -11398,9 +11386,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domGc": {
     "message": "D̂ÓM̂ ǴĈ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "D̂ŕâǵ"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "D̂ŕâẃ F̂ŕâḿê"
@@ -11470,15 +11455,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "F̂ír̂śt̂ Ṕâín̂t́"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "F̂ĺîńĝ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "F̂ĺîńĝ H́âĺt̂"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "F̂ĺîńĝ Śt̂ár̂t́"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "F̂ór̂ćêd́ r̂éf̂ĺôẃ"
@@ -11573,15 +11549,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "ĴŚ F̂ŕâḿê"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "K̂éŷ — Ćĥár̂áĉt́êŕ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "K̂éŷ D́ôẃn̂"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "K̂éŷ Úp̂"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
   },
@@ -11638,18 +11605,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "M̂ód̂úl̂é"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "M̂óûśê D́ôẃn̂"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "M̂óûśê Ḿôv́ê"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "M̂óûśê Úp̂"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "M̂óûśê Ẃĥéêĺ"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "M̂óv̂éd̂ f́r̂óm̂"
@@ -11723,15 +11678,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "P̂én̂d́îńĝ f́ôŕ"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "P̂ín̂ćĥ B́êǵîń"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "P̂ín̂ćĥ Én̂d́"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "P̂ín̂ćĥ Úp̂d́ât́ê"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "P̂ŕê-Ṕâín̂t́"
   },
@@ -11795,9 +11741,6 @@
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "R̂éŝóûŕĉé"
   },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "R̂éŝṕôńŝé"
-  },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "R̂év̂éâĺ"
   },
@@ -11848,15 +11791,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Ŝćr̂ól̂ĺ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "Ŝćr̂ól̂ĺ B̂éĝín̂"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "Ŝćr̂ól̂ĺ Êńd̂"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "Ŝćr̂ól̂ĺ Ûṕd̂át̂é"
   },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Ŝél̂f́ T̂ím̂é"
@@ -11951,18 +11885,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "Ŝýŝt́êḿ"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "T̂áp̂"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "T̂áp̂ B́êǵîń"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "T̂áp̂ D́ôẃn̂"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "T̂áp̂ H́âĺt̂"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "T̂áŝḱ"
   },
@@ -11990,23 +11912,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "T̂ót̂ál̂ T́îḿê"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "T̂óûćĥ Ćâńĉél̂"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "T̂óûćĥ Én̂d́"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "T̂óûćĥ Ḿôv́ê"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "T̂óûćĥ Śt̂ár̂t́"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "T̂ýp̂é"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "Ûńĉát̂éĝór̂íẑéd̂"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "ûńk̂ńôẃn̂"

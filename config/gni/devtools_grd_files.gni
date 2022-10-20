@@ -798,7 +798,6 @@ grd_files_debug_sources = [
   "front_end/models/text_utils/TextRange.js",
   "front_end/models/text_utils/TextUtils.js",
   "front_end/models/timeline_model/TimelineFrameModel.js",
-  "front_end/models/timeline_model/TimelineIRModel.js",
   "front_end/models/timeline_model/TimelineJSProfile.js",
   "front_end/models/timeline_model/TimelineModel.js",
   "front_end/models/timeline_model/TimelineModelFilter.js",

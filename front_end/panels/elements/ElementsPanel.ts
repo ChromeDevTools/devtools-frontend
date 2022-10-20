@@ -811,6 +811,18 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
+  selectAndShowSidebarTab(tabId: SidebarPaneTabId): void {
+    if (!this.sidebarPaneView) {
+      return;
+    }
+
+    this.sidebarPaneView.tabbedPane().selectTab(tabId);
+
+    if (!this.isShowing()) {
+      void UI.ViewManager.ViewManager.instance().showView('elements');
+    }
+  }
+
   private updateBreadcrumbIfNeeded(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>): void {
     const nodes = event.data;
     /* If we don't have a selected node then we can tell the breadcrumbs that & bail. */
@@ -1424,6 +1436,12 @@ export class ElementsActionDelegate implements UI.ActionRegistration.ActionDeleg
       case 'elements.redo':
         void SDK.DOMModel.DOMModelUndoStack.instance().redo();
         ElementsPanel.instance().stylesWidget.forceUpdate();
+        return true;
+      case 'elements.show-styles':
+        ElementsPanel.instance().selectAndShowSidebarTab(SidebarPaneTabId.Styles);
+        return true;
+      case 'elements.show-computed':
+        ElementsPanel.instance().selectAndShowSidebarTab(SidebarPaneTabId.Computed);
         return true;
     }
     return false;

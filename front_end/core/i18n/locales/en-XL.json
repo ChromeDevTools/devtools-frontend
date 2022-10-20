@@ -4946,6 +4946,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Ŝél̂éĉt́ âń êĺêḿêńt̂ ín̂ t́ĥé p̂áĝé t̂ó îńŝṕêćt̂ ít̂"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Ŝh́ôẃ Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "Ŝh́ôẃ d̂ét̂áîĺêd́ îńŝṕêćt̂ t́ôól̂t́îṕ"
   },
@@ -4966,6 +4969,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Ŝh́ôẃ Ŝt́âćk̂ T́r̂áĉé"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Ŝh́ôẃ Ŝt́ŷĺêś"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "Ŝh́ôẃ ûśêŕ âǵêńt̂ śĥád̂óŵ DOM"

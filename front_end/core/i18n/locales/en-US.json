@@ -4946,6 +4946,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Select an element in the page to inspect it"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Show Computed Styles"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "Show detailed inspect tooltip"
   },
@@ -4966,6 +4969,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Show Stack Trace"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Show Styles"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "Show user agent shadow DOM"

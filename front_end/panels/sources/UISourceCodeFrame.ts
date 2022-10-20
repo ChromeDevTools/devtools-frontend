@@ -298,7 +298,7 @@ export class UISourceCodeFrame extends
     if (this.isClean()) {
       this.uiSourceCodeInternal.resetWorkingCopy();
     } else {
-      this.uiSourceCodeInternal.setWorkingCopyGetter(() => this.textEditor.state.doc.toString());
+      this.uiSourceCodeInternal.setWorkingCopyGetter(() => this.textEditor.state.sliceDoc());
     }
     this.muteSourceCodeEvents = false;
     if (wasPretty !== this.pretty) {

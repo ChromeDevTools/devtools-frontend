@@ -25,6 +25,7 @@ import type * as Workspace from '../../../models/workspace/workspace.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Common from '../../../core/common/common.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as Root from '../../../core/root/root.js';
 
 import responseHeaderSectionStyles from './ResponseHeaderSection.css.js';
 
@@ -93,7 +94,7 @@ export class ResponseHeaderSection extends HTMLElement {
   #headerEditors: HeaderEditorDescriptor[] = [];
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #overrides: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
-  #successfullyParsedOverrides = false;
+  #headersAreOverrideable = false;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [responseHeaderSectionStyles];
@@ -214,12 +215,13 @@ export class ResponseHeaderSection extends HTMLElement {
       if (!this.#overrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
         throw 'Type mismatch after parsing';
       }
-      this.#successfullyParsedOverrides = true;
+      this.#headersAreOverrideable = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES) &&
+          Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').get();
       for (const header of this.#headerEditors) {
-        header.valueEditable = true;
+        header.valueEditable = this.#headersAreOverrideable;
       }
     } catch (error) {
-      this.#successfullyParsedOverrides = false;
+      this.#headersAreOverrideable = false;
       console.error(
           'Failed to parse', this.#uiSourceCode?.url() || 'source code file', 'for locally overriding headers.');
       this.#resetEditorState();
@@ -438,7 +440,7 @@ export class ResponseHeaderSection extends HTMLElement {
           header: header,
         } as HeaderSectionRowData} @headeredited=${this.#onHeaderEdited} @headerremoved=${this.#onHeaderRemoved} data-index=${index}></${HeaderSectionRow.litTagName}>
       `)}
-      ${this.#successfullyParsedOverrides ? html`
+      ${this.#headersAreOverrideable ? html`
         <${Buttons.Button.Button.litTagName}
           class="add-header-button"
           .variant=${Buttons.Button.Variant.SECONDARY}

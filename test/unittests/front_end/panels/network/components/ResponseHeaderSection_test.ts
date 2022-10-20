@@ -19,6 +19,8 @@ import type * as Platform from '../../../../../../front_end/core/platform/platfo
 import {createWorkspaceProject} from '../../../helpers/OverridesHelpers.js';
 import * as Workspace from '../../../../../../front_end/models/workspace/workspace.js';
 import type * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
+import * as Root from '../../../../../../front_end/core/root/root.js';
+import * as Common from '../../../../../../front_end/core/common/common.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -131,6 +133,11 @@ function isRowFocused(
 }
 
 describeWithEnvironment('ResponseHeaderSection', () => {
+  before(() => {
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
+  });
+
   beforeEach(async () => {
     await setUpEnvironment();
   });
@@ -276,7 +283,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     checkRow(rows[11].shadowRoot, 'triplicate:', '2', true);
   });
 
-  it('sets headers as "editable" when matching ".headers" file exists', async () => {
+  it('correctly sets headers as "editable" when matching ".headers" file exists and setting is turned on', async () => {
     await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, [
       {
         name: '.headers',
@@ -313,18 +320,33 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assertShadowRoot(component.shadowRoot);
     const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
 
-    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isOverride: boolean): void => {
-      assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
-      assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
-      assert.strictEqual(shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), isOverride);
-      const editable = shadowRoot.querySelector('.editable');
-      assertElement(editable, HTMLSpanElement);
-    };
+    const checkRow =
+        (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isOverride: boolean, isEditable: boolean):
+            void => {
+              assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
+              assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
+              assert.strictEqual(shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), isOverride);
+              const editable = shadowRoot.querySelector('.editable');
+              if (isEditable) {
+                assertElement(editable, HTMLSpanElement);
+              } else {
+                assert.strictEqual(editable, null);
+              }
+            };
 
     assertShadowRoot(rows[0].shadowRoot);
-    checkRow(rows[0].shadowRoot, 'server:', 'overridden server', true);
+    checkRow(rows[0].shadowRoot, 'server:', 'overridden server', true, true);
     assertShadowRoot(rows[1].shadowRoot);
-    checkRow(rows[1].shadowRoot, 'cache-control:', 'max-age=600', false);
+    checkRow(rows[1].shadowRoot, 'cache-control:', 'max-age=600', false, true);
+
+    Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(false);
+    component.data = {request};
+    await coordinator.done();
+
+    checkRow(rows[0].shadowRoot, 'server:', 'overridden server', true, false);
+    checkRow(rows[1].shadowRoot, 'cache-control:', 'max-age=600', false, false);
+
+    Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(true);
   });
 
   it('does not set headers as "editable" when matching ".headers" file cannot be parsed correctly', async () => {

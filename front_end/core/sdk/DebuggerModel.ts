@@ -485,10 +485,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   async removeBreakpoint(breakpointId: Protocol.Debugger.BreakpointId): Promise<void> {
-    const response = await this.agent.invoke_removeBreakpoint({breakpointId});
-    if (response.getError()) {
-      console.error('Failed to remove breakpoint: ' + response.getError());
-    }
+    await this.agent.invoke_removeBreakpoint({breakpointId});
   }
 
   async getPossibleBreakpoints(startLocation: Location, endLocation: Location|null, restrictToFunction: boolean):
@@ -868,9 +865,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       callFrameId: Protocol.Debugger.CallFrameId): Promise<string|undefined> {
     const response = await this.agent.invoke_setVariableValue({scopeNumber, variableName, newValue, callFrameId});
     const error = response.getError();
-    if (error) {
-      console.error(error);
-    }
     return error;
   }
 
@@ -889,9 +883,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   async setBlackboxPatterns(patterns: string[]): Promise<boolean> {
     const response = await this.agent.invoke_setBlackboxPatterns({patterns});
     const error = response.getError();
-    if (error) {
-      console.error(error);
-    }
     return !error;
   }
 
@@ -1365,7 +1356,6 @@ export class CallFrame {
     });
     const error = response.getError();
     if (error) {
-      console.error(error);
       return {error: error};
     }
     return {object: runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails};

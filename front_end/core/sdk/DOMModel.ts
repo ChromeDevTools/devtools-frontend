@@ -1145,7 +1145,6 @@ export class DOMModel extends SDKModel<EventTypes> {
   private async requestDocumentInternal(): Promise<DOMDocument|null> {
     const response = await this.agent.invoke_getDocument({});
     if (response.getError()) {
-      console.error(response.getError());
       return null;
     }
     const {root: documentPayload} = response;

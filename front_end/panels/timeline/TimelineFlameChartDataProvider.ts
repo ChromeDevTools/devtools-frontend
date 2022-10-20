@@ -1050,9 +1050,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (type === entryTypes.Frame) {
       return 'white';
     }
-    if (type === entryTypes.InteractionRecord) {
-      return 'transparent';
-    }
     if (type === entryTypes.ExtensionEvent) {
       const event = (this.entryData[entryIndex] as SDK.TracingModel.Event);
       return this.extensionColorGenerator.colorForID(event.name);
@@ -1440,7 +1437,6 @@ export type EventTypes = {
 export enum EntryType {
   Frame = 'Frame',
   Event = 'Event',
-  InteractionRecord = 'InteractionRecord',
   ExtensionEvent = 'ExtensionEvent',
   Screenshot = 'Screenshot',
 }

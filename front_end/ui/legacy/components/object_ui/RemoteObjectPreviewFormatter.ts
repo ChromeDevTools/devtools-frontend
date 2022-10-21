@@ -43,7 +43,8 @@ export class RemoteObjectPreviewFormatter {
       if (property.name === InternalName.PromiseResult) {
         return 2;
       }
-      if (property.name === InternalName.GeneratorState || property.name === InternalName.PrimitiveValue) {
+      if (property.name === InternalName.GeneratorState || property.name === InternalName.PrimitiveValue ||
+          property.name === InternalName.WeakRefTarget) {
         return 3;
       }
       if (property.type !== Protocol.Runtime.PropertyPreviewType.Function && !property.name.startsWith('#')) {
@@ -138,6 +139,12 @@ export class RemoteObjectPreviewFormatter {
         parentElement.appendChild(this.renderDisplayName('<' + property.value + '>'));
       } else if (name === InternalName.PrimitiveValue) {
         parentElement.appendChild(this.renderPropertyPreviewOrAccessor([property]));
+      } else if (name === InternalName.WeakRefTarget) {
+        if (property.type === Protocol.Runtime.PropertyPreviewType.Undefined) {
+          parentElement.appendChild(this.renderDisplayName('<cleared>'));
+        } else {
+          parentElement.appendChild(this.renderPropertyPreviewOrAccessor([property]));
+        }
       } else {
         parentElement.appendChild(this.renderDisplayName(name));
         UI.UIUtils.createTextChild(parentElement, ': ');
@@ -306,6 +313,7 @@ const enum InternalName {
   PrimitiveValue = '[[PrimitiveValue]]',
   PromiseState = '[[PromiseState]]',
   PromiseResult = '[[PromiseResult]]',
+  WeakRefTarget = '[[WeakRefTarget]]',
 }
 
 export const createSpansForNodeTitle = function(container: Element, nodeTitle: string): void {

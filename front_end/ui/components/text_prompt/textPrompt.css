@@ -10,6 +10,10 @@
   display: flex;
 }
 
+input {
+  font-size: 14px;
+}
+
 .prefix {
   flex: none;
   color: var(--color-primary);

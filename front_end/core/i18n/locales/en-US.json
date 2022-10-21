@@ -10448,6 +10448,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "Next call frame"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "Next editor"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "None"
   },
@@ -10459,6 +10462,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "Previous call frame"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "Previous editor"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Quick source"

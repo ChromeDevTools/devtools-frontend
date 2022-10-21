@@ -10448,6 +10448,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "N̂éx̂t́ ĉál̂ĺ f̂ŕâḿê"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "N̂éx̂t́ êd́ît́ôŕ"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "N̂ón̂é"
   },
@@ -10459,6 +10462,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "P̂ŕêv́îóûś ĉál̂ĺ f̂ŕâḿê"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "P̂ŕêv́îóûś êd́ît́ôŕ"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Q̂úîćk̂ śôúr̂ćê"

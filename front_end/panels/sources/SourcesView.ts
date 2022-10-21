@@ -760,6 +760,12 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'sources.jump-to-next-location':
         sourcesView.onJumpToNextLocation();
         return true;
+      case 'sources.next-editor-tab':
+        sourcesView.editorContainer.selectNextTab();
+        return true;
+      case 'sources.previous-editor-tab':
+        sourcesView.editorContainer.selectPrevTab();
+        return true;
       case 'sources.close-editor-tab':
         return sourcesView.onCloseEditorTab();
       case 'sources.go-to-line':

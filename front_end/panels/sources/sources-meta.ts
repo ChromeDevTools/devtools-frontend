@@ -387,7 +387,14 @@ const UIStrings = {
   * @description Text for command of toggling debugger sidebar in Sources panel
   */
   toggleDebuggerSidebar: 'Toggle debugger sidebar',
-
+  /**
+   * @description Title of an action that navigates to the next editor in the Sources panel.
+   */
+  nextEditorTab: 'Next editor',
+  /**
+   * @description Title of an action that navigates to the next editor in the Sources panel.
+   */
+  previousEditorTab: 'Previous editor',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/sources-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -899,6 +906,68 @@ UI.ActionRegistration.registerActionExtension({
       platform: UI.ActionRegistration.Platforms.Windows,
       shortcut: 'Ctrl+F4',
       keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.next-editor-tab',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: i18nLazyString(UIStrings.nextEditorTab),
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+PageDown',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+PageDown',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.previous-editor-tab',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: i18nLazyString(UIStrings.previousEditorTab),
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+PageUp',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+PageUp',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },

@@ -216,6 +216,14 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     return result;
   }
 
+  selectNextTab(): void {
+    this.tabbedPane.selectNextTab();
+  }
+
+  selectPrevTab(): void {
+    this.tabbedPane.selectPrevTab();
+  }
+
   private addViewListeners(): void {
     if (!this.currentView || !(this.currentView instanceof SourceFrame.SourceFrame.SourceFrameImpl)) {
       return;

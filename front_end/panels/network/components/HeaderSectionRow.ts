@@ -290,7 +290,7 @@ export class HeaderSectionRow extends HTMLElement {
 
   #onFocusOut(event: Event): void {
     const target = event.target as HTMLElement;
-    if (!target.matches('.editable')) {
+    if (!this.#header || !target.matches('.editable')) {
       return;
     }
 
@@ -300,14 +300,16 @@ export class HeaderSectionRow extends HTMLElement {
     const headerValue = headerValueElement.innerText.trim();
 
     if (headerName !== '') {
-      if (headerName !== this.#header?.name || headerValue !== this.#header?.value) {
+      if (headerName !== this.#header.name || headerValue !== this.#header.value) {
+        this.#header.name = headerName;
+        this.#header.value = headerValue;
         this.dispatchEvent(new HeaderEditedEvent(headerName, headerValue));
       }
     } else {
       // If the header name has been edited to '', reset it to its previous value.
       const headerNameEditable = this.#shadow.querySelector('.header-name .editable');
       if (headerNameEditable) {
-        (headerNameEditable as HTMLElement).innerText = this.#header?.name || '';
+        (headerNameEditable as HTMLElement).innerText = this.#header.name || '';
       }
     }
 
@@ -363,11 +365,14 @@ export class HeaderSectionRow extends HTMLElement {
   }
 
   #markOverrideStatus(editable: HTMLElement): void {
+    if (!this.#header) {
+      return;
+    }
     // We directly add/remove classes here instead of changing HeaderSectionRowData
     // to prevent a re-render, which would mess up the current cursor position.
     const row = this.shadowRoot?.querySelector<HTMLDivElement>('.row');
     if (row) {
-      if (this.#header?.isOverride || editable.innerText !== this.#header?.originalValue) {
+      if (this.#header.isOverride || editable.innerText !== this.#header.originalValue) {
         row.classList.add('header-overridden');
         row.classList.remove('header-highlight');
       } else {

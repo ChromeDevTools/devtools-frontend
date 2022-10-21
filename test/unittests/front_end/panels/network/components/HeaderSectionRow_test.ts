@@ -156,11 +156,11 @@ describeWithEnvironment('HeaderSectionRow', () => {
   });
 
   it('allows editing header name and header value', async () => {
-    const headerName = Platform.StringUtilities.toLowerCaseString('some-header-name');
-    const headerValue = 'someHeaderValue';
+    const originalHeaderName = Platform.StringUtilities.toLowerCaseString('some-header-name');
+    const originalHeaderValue = 'someHeaderValue';
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
-      name: headerName,
-      value: headerValue,
+      name: originalHeaderName,
+      value: originalHeaderValue,
       nameEditable: true,
       valueEditable: true,
     };
@@ -179,25 +179,41 @@ describeWithEnvironment('HeaderSectionRow', () => {
       headerNameFromEvent = event.headerName;
     });
 
-    let editable = component.shadowRoot.querySelector('.header-name .editable');
-    assertElement(editable, HTMLSpanElement);
-    editable.focus();
-    editable.innerText = editedHeaderName;
-    editable.blur();
+    const nameEditable = component.shadowRoot.querySelector('.header-name .editable');
+    assertElement(nameEditable, HTMLSpanElement);
+    nameEditable.focus();
+    nameEditable.innerText = editedHeaderName;
+    nameEditable.blur();
 
     assert.strictEqual(headerEditedEventCount, 1);
     assert.strictEqual(headerNameFromEvent, editedHeaderName);
-    assert.strictEqual(headerValueFromEvent, headerValue);
+    assert.strictEqual(headerValueFromEvent, originalHeaderValue);
 
-    editable = component.shadowRoot.querySelector('.header-value .editable');
-    assertElement(editable, HTMLSpanElement);
-    editable.focus();
-    editable.innerText = editedHeaderValue;
-    editable.blur();
+    const valueEditable = component.shadowRoot.querySelector('.header-value .editable');
+    assertElement(valueEditable, HTMLSpanElement);
+    valueEditable.focus();
+    valueEditable.innerText = editedHeaderValue;
+    valueEditable.blur();
 
     assert.strictEqual(headerEditedEventCount, 2);
     assert.strictEqual(headerNameFromEvent, editedHeaderName);
     assert.strictEqual(headerValueFromEvent, editedHeaderValue);
+
+    nameEditable.focus();
+    nameEditable.innerText = originalHeaderName;
+    nameEditable.blur();
+
+    assert.strictEqual(headerEditedEventCount, 3);
+    assert.strictEqual(headerNameFromEvent, originalHeaderName);
+    assert.strictEqual(headerValueFromEvent, editedHeaderValue);
+
+    valueEditable.focus();
+    valueEditable.innerText = originalHeaderValue;
+    valueEditable.blur();
+
+    assert.strictEqual(headerEditedEventCount, 4);
+    assert.strictEqual(headerNameFromEvent, originalHeaderName);
+    assert.strictEqual(headerValueFromEvent, originalHeaderValue);
   });
 
   it('does not allow setting an emtpy header name', async () => {

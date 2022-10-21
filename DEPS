@@ -14,13 +14,13 @@ vars = {
   'checkout_reclient': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': 'f1c26309afd4500c24c238b63f3122c6cd5a8d27',
+  'build_revision': '35a14780e1f603cef56a4a7750bdde49118a215a',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': 'f45ca778b4e4c91af82921cc277662557a92310d',
+  'buildtools_revision': 'be63ea5c90ac9873b41abe4956cbdcd2b2d1ca2d',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'a7949c2545d46330ac4972ab169247a244da48e9',
+  'depot_tools_revision': '3b9552584dd763bc79a3cdae897a0cd624b2dcf5',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': 'dec7ec1932f5277b933ed8a675cc6eb7cfc36f88',
@@ -31,7 +31,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:57c352b2b03461c24b19c678c61d7aeacc6981f4',
+  'gn_version': 'git_revision:27b90626701a112217a9244022c729231ebcc3a0',
 
   # ninja CIPD package version.
   # https://chrome-infra-packages.appspot.com/p/infra/3pp/tools/ninja

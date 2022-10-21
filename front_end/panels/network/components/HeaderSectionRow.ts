@@ -293,11 +293,13 @@ export class HeaderSectionRow extends HTMLElement {
     if (!this.#header || !target.matches('.editable')) {
       return;
     }
+    target.innerText = target.innerText.trim();
+    this.#markOverrideStatus(target);
 
     const headerNameElement = this.#shadow.querySelector('.header-name') as HTMLElement;
-    const headerValueElement = this.#shadow.querySelector('.header-value') as HTMLElement;
-    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.trim().slice(0, -1));
-    const headerValue = headerValueElement.innerText.trim();
+    const headerValueElement = this.#shadow.querySelector('.header-value .editable') as HTMLElement;
+    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.slice(0, -1));
+    const headerValue = headerValueElement.innerText;
 
     if (headerName !== '') {
       if (headerName !== this.#header.name || headerValue !== this.#header.value) {
@@ -320,9 +322,9 @@ export class HeaderSectionRow extends HTMLElement {
 
   #onRemoveOverrideClick(): void {
     const headerNameElement = this.#shadow.querySelector('.header-name') as HTMLElement;
-    const headerValueElement = this.#shadow.querySelector('.header-value') as HTMLElement;
-    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.trim().slice(0, -1));
-    const headerValue = headerValueElement.innerText.trim();
+    const headerValueElement = this.#shadow.querySelector('.header-value .editable') as HTMLElement;
+    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.slice(0, -1));
+    const headerValue = headerValueElement.innerText;
     this.dispatchEvent(new HeaderRemovedEvent(headerName, headerValue));
   }
 

@@ -376,4 +376,49 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assert.strictEqual(headerNameFromEvent, headerName);
     assert.strictEqual(headerValueFromEvent, headerValue);
   });
+
+  it('removes leading/trailing whitespace when editing header names/values', async () => {
+    const originalHeaderName = Platform.StringUtilities.toLowerCaseString('some-header-name');
+    const originalHeaderValue = 'someHeaderValue';
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: originalHeaderName,
+      value: originalHeaderValue,
+      nameEditable: true,
+      valueEditable: true,
+    };
+    const editedHeaderName = ' new-header-name ';
+    const editedHeaderValue = ' new value for header ';
+
+    const component = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+
+    let headerValueFromEvent = '';
+    let headerNameFromEvent = '';
+    let headerEditedEventCount = 0;
+    component.addEventListener('headeredited', event => {
+      headerEditedEventCount++;
+      headerValueFromEvent = event.headerValue;
+      headerNameFromEvent = event.headerName;
+    });
+
+    const nameEditable = component.shadowRoot.querySelector('.header-name .editable');
+    assertElement(nameEditable, HTMLSpanElement);
+    nameEditable.focus();
+    nameEditable.innerText = editedHeaderName;
+    nameEditable.blur();
+
+    assert.strictEqual(headerEditedEventCount, 1);
+    assert.strictEqual(headerNameFromEvent, editedHeaderName.trim());
+    assert.strictEqual(headerValueFromEvent, originalHeaderValue);
+
+    const valueEditable = component.shadowRoot.querySelector('.header-value .editable');
+    assertElement(valueEditable, HTMLSpanElement);
+    valueEditable.focus();
+    valueEditable.innerText = editedHeaderValue;
+    valueEditable.blur();
+
+    assert.strictEqual(headerEditedEventCount, 2);
+    assert.strictEqual(headerNameFromEvent, editedHeaderName.trim());
+    assert.strictEqual(headerValueFromEvent, editedHeaderValue.trim());
+  });
 });

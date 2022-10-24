@@ -169,12 +169,13 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     const enabled = item.checkbox.checked;
     UI.ARIAUtils.setChecked(item.element.listItemElement, enabled);
 
-    for (const breakpoint of this.#breakpoints.keys()) {
+    for (const [breakpoint, treeItem] of this.#breakpoints) {
       if (breakpoint.category() === category) {
         const matchingBreakpoint = this.#breakpoints.get(breakpoint);
         if (matchingBreakpoint) {
           matchingBreakpoint.checkbox.checked = enabled;
           this.toggleBreakpoint(breakpoint, enabled);
+          UI.ARIAUtils.setChecked(treeItem.element.listItemElement, enabled);
         }
       }
     }

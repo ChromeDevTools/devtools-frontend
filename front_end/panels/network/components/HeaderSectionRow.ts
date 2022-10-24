@@ -175,7 +175,7 @@ export class HeaderSectionRow extends HTMLElement {
     // value of the contenteditable element and not the potentially outdated
     // value from the previous render.
     // clang-format off
-    return LitHtml.html`<span contenteditable="true" class="editable" tabindex="0" .innerText=${LitHtml.Directives.live(value)}></span>`;
+    return html`<span contenteditable="true" class="editable" tabindex="0" .innerText=${LitHtml.Directives.live(value)}></span>`;
     // clang-format on
   }
 
@@ -325,6 +325,10 @@ export class HeaderSectionRow extends HTMLElement {
     const headerValueElement = this.#shadow.querySelector('.header-value .editable') as HTMLElement;
     const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.slice(0, -1));
     const headerValue = headerValueElement.innerText;
+    const row = this.shadowRoot?.querySelector<HTMLDivElement>('.row');
+    if (row) {
+      row.classList.remove('header-overridden');
+    }
     this.dispatchEvent(new HeaderRemovedEvent(headerName, headerValue));
   }
 

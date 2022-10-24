@@ -89,7 +89,7 @@ export interface ResponseHeaderSectionData {
 export class ResponseHeaderSection extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-response-header-section`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #request?: Readonly<SDK.NetworkRequest.NetworkRequest>;
+  #request?: SDK.NetworkRequest.NetworkRequest;
   #headerDetails: HeaderDetailsDescriptor[] = [];
   #headerEditors: HeaderEditorDescriptor[] = [];
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
@@ -343,9 +343,27 @@ export class ResponseHeaderSection extends HTMLElement {
     const rawFileName = this.#fileNameFromUrl(this.#request.url());
     this.#removeEntryFromOverrides(rawFileName, event.headerName, event.headerValue);
     this.#commitOverrides();
-    this.#headerEditors.splice(index, 1);
     if (index < this.#headerDetails.length) {
-      this.#headerDetails.splice(index, 1);
+      const originalHeaders =
+          (this.#request?.originalResponseHeaders ||
+           []).filter(header => Platform.StringUtilities.toLowerCaseString(header.name) === event.headerName);
+      if (originalHeaders.length === 1) {
+        // Remove the header override and replace it with the original non-
+        // overridden header in the UI.
+        this.#headerDetails[index].value = originalHeaders[0].value;
+        this.#headerEditors[index].value = originalHeaders[0].value;
+        this.#headerEditors[index].originalValue = originalHeaders[0].value;
+        this.#headerEditors[index].isOverride = false;
+      } else {
+        // If there is no (or multiple) matching originalResonseHeader,
+        // remove the header from the UI.
+        this.#headerDetails.splice(index, 1);
+        this.#headerEditors.splice(index, 1);
+      }
+    } else {
+      // This is the branch for headers which were added via the UI after the
+      // response was received. They can simply be removed.
+      this.#headerEditors.splice(index, 1);
     }
     this.#render();
   }
@@ -353,6 +371,13 @@ export class ResponseHeaderSection extends HTMLElement {
   #updateOverrides(headerName: Platform.StringUtilities.LowerCaseString, headerValue: string, index: number): void {
     if (!this.#request) {
       return;
+    }
+    // If 'originalResponseHeaders' are not populated (because there was no
+    // request interception), fill them with a copy of 'sortedResponseHeaders'.
+    // This ensures we have access to the original values when undoing edits.
+    if (this.#request.originalResponseHeaders.length === 0) {
+      this.#request.originalResponseHeaders =
+          this.#request.sortedResponseHeaders.map(headerEntry => ({...headerEntry}));
     }
 
     const previousName = this.#headerEditors[index].name;

@@ -8,6 +8,11 @@ import * as Bindings from '../../../../../front_end/models/bindings/bindings.js'
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
+import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
+import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
+
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -158,4 +163,52 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
        // reparsed to resolve function names.
        assert.strictEqual(bottomModelNode?.functionName, AUTHORED_FUNCTION_NAME);
      });
+
+  it('resolves function names using a plugin when available', async () => {
+    const PLUGIN_FUNCTION_NAME = 'PLUGIN_FUNCTION_NAME';
+    class Plugin extends TestPlugin {
+      constructor() {
+        super('InstrumentationBreakpoints');
+      }
+
+      getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation):
+          Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles?: string[]|undefined}> {
+        return Promise.resolve({frames: [{name: PLUGIN_FUNCTION_NAME}]});
+      }
+      handleScript(_: SDK.Script.Script) {
+        return true;
+      }
+    }
+
+    const cpuProfiles = performanceModel.timelineModel().cpuProfiles();
+    const nodes = cpuProfiles[0].nodes();
+
+    Root.Runtime.experiments.setEnabled('wasmDWARFDebugging', true);
+    const pluginManager =
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().initPluginManagerForTest();
+    assertNotNullOrUndefined(pluginManager);
+    pluginManager.addPlugin(new Plugin());
+
+    const namesResolvedPromise = new Promise<void>(
+        resolve => performanceModel.addEventListener(Timeline.PerformanceModel.Events.NamesResolved, () => resolve()));
+
+    const bottomModelNode = nodes?.find(n => n.id === NODE_ID);
+
+    // Load the script into the frontend.
+    dispatchEvent(target, 'Debugger.scriptParsed', {
+      scriptId: SCRIPT_ID,
+      url: SCRIPT_URL,
+      startLine: 0,
+      startColumn: 0,
+      endLine: (SCRIPT_SOURCE.match(/^/gm)?.length ?? 1) - 1,
+      endColumn: SCRIPT_SOURCE.length - SCRIPT_SOURCE.lastIndexOf('\n') - 1,
+      executionContextId: 1,
+      hash: '',
+      hasSourceURL: false,
+      sourceMapURL: SOURCE_MAP_URL,
+    });
+    await namesResolvedPromise;
+
+    assert.strictEqual(bottomModelNode?.functionName, PLUGIN_FUNCTION_NAME);
+  });
 });

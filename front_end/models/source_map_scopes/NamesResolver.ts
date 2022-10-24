@@ -686,16 +686,25 @@ export async function resolveDebuggerFrameFunctionName(frame: SDK.DebuggerModel.
 export async function resolveProfileFrameFunctionName(
     {scriptId, lineNumber, columnNumber}: Partial<Protocol.Runtime.CallFrame>,
     target: SDK.Target.Target|null): Promise<string|null> {
-  if (!target || lineNumber === undefined || columnNumber === undefined) {
+  if (!target || lineNumber === undefined || columnNumber === undefined || scriptId === undefined) {
     return null;
   }
   const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
   const script = debuggerModel?.scriptForId(String(scriptId));
 
-  if (!script) {
+  if (!debuggerModel || !script) {
     return null;
   }
 
+  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+  const location = new SDK.DebuggerModel.Location(debuggerModel, scriptId, lineNumber, columnNumber);
+  const functionInfoFromPlugin = await debuggerWorkspaceBinding.pluginManager?.getFunctionInfo(script, location);
+  if (functionInfoFromPlugin && 'frames' in functionInfoFromPlugin) {
+    const last = functionInfoFromPlugin.frames.at(-1);
+    if (last?.name) {
+      return last.name;
+    }
+  }
   return await getFunctionNameFromScopeStart(script, lineNumber, columnNumber);
 }
 

@@ -142,16 +142,6 @@ UI.ViewManager.registerViewExtension({
   ],
 });
 
-UI.ActionRegistration.registerActionExtension({
-  actionId: 'emulation.show-sensors',
-  category: UI.ActionRegistration.ActionCategory.SENSORS,
-  async loadActionDelegate() {
-    const Sensors = await loadEmulationModule();
-    return Sensors.SensorsView.ShowActionDelegate.instance();
-  },
-  title: i18nLazyString(UIStrings.sensors),
-});
-
 Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.Synced,
   settingName: 'emulation.locations',

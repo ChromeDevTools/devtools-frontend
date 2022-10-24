@@ -69,7 +69,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     super();
 
     this.element.id = 'sources-panel-sources-view';
-    this.setMinimumAndPreferredSizes(250, 52, 250, 100);
+    this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 
     this.placeholderOptionArray = [];
     this.selectedIndex = 0;

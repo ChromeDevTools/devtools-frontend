@@ -64,37 +64,39 @@ const goToResourceAndWaitForStyleSection = async (path: string) => {
 };
 
 describe('The Styles pane', async () => {
-  it('can display the CSS properties of the selected element', async () => {
-    await goToResourceAndWaitForStyleSection('elements/simple-styled-page.html');
+  // Flaky on windows.
+  it.skipOnPlatforms(
+      ['win32'], '[crbug.com/1377761] can display the CSS properties of the selected element', async () => {
+        await goToResourceAndWaitForStyleSection('elements/simple-styled-page.html');
 
-    const onH1RuleAppeared = waitForStyleRule('h1');
+        const onH1RuleAppeared = waitForStyleRule('h1');
 
-    await waitForAndClickTreeElementWithPartialText('<h1>');
-    await onH1RuleAppeared;
+        await waitForAndClickTreeElementWithPartialText('<h1>');
+        await onH1RuleAppeared;
 
-    await waitForFunction(async () => (await getDisplayedStyleRules()).length === 4);
-    const h1Rules = await getDisplayedStyleRules();
-    // Waiting for the first h1 rule, that's the authored rule, right after the element style.
-    assert.deepEqual(h1Rules[1], {
-      selectorText: 'body h1',
-      propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
-    });
+        await waitForFunction(async () => (await getDisplayedStyleRules()).length === 4);
+        const h1Rules = await getDisplayedStyleRules();
+        // Waiting for the first h1 rule, that's the authored rule, right after the element style.
+        assert.deepEqual(h1Rules[1], {
+          selectorText: 'body h1',
+          propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+        });
 
-    const onH2RuleAppeared = waitForStyleRule('h2');
-    await waitForAndClickTreeElementWithPartialText('<h2>');
-    await onH2RuleAppeared;
+        const onH2RuleAppeared = waitForStyleRule('h2');
+        await waitForAndClickTreeElementWithPartialText('<h2>');
+        await onH2RuleAppeared;
 
-    await waitForFunction(async () => (await getDisplayedStyleRules()).length === 3);
-    // Waiting for the first h2 rule, that's the authored rule, right after the element style.
-    const h2Rules = await getDisplayedStyleRules();
-    assert.deepEqual(h2Rules[1], {
-      selectorText: 'h2',
-      propertyData: [
-        {propertyName: 'background-color', isOverLoaded: false, isInherited: false},
-        {propertyName: 'color', isOverLoaded: false, isInherited: false},
-      ],
-    });
-  });
+        await waitForFunction(async () => (await getDisplayedStyleRules()).length === 3);
+        // Waiting for the first h2 rule, that's the authored rule, right after the element style.
+        const h2Rules = await getDisplayedStyleRules();
+        assert.deepEqual(h2Rules[1], {
+          selectorText: 'h2',
+          propertyData: [
+            {propertyName: 'background-color', isOverLoaded: false, isInherited: false},
+            {propertyName: 'color', isOverLoaded: false, isInherited: false},
+          ],
+        });
+      });
 
   it('can jump to a CSS variable definition', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-variables.html');

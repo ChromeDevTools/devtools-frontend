@@ -33,7 +33,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -545,7 +544,7 @@ export function handleElementValueModifications(
   }
 
   const originalValue = element.textContent;
-  const wordRange = DOMExtension.DOMExtension.rangeOfWord(
+  const wordRange = Platform.DOMUtilities.rangeOfWord(
       selectionRange.startContainer, selectionRange.startOffset, StyleValueDelimiters, element);
   const wordString = wordRange.toString();
 

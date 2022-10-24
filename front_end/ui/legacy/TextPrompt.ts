@@ -32,7 +32,6 @@
  */
 
 import * as Common from '../../core/common/common.js';
-import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
@@ -512,7 +511,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       return;
     }
 
-    const wordQueryRange = DOMExtension.DOMExtension.rangeOfWord(
+    const wordQueryRange = Platform.DOMUtilities.rangeOfWord(
         selectionRange.startContainer, selectionRange.startOffset, this.completionStopCharacters, this.element(),
         'backward');
 

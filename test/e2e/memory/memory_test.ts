@@ -59,27 +59,29 @@ describe('The Memory Panel', async function() {
     assert.strictEqual(heapSnapShots.length, 2);
   });
 
-  it('Shows a DOM node and its JS wrapper as a single node', async () => {
-    await goToResource('memory/detached-node.html');
-    await navigateToMemoryTab();
-    await takeHeapSnapshot();
-    await waitForNonEmptyHeapSnapshotData();
-    await setSearchFilter('leaking');
-    await waitForSearchResultNumber(4);
-    await findSearchResult(async p => {
-      const el = await p.$(':scope > td > div > .object-value-function');
-      return el !== null && await el.evaluate(el => el.textContent === 'leaking()');
-    });
-    await waitForRetainerChain([
-      'Detached V8EventListener',
-      'Detached EventListener',
-      'Detached InternalNode',
-      'Detached InternalNode',
-      'Detached HTMLDivElement',
-      'Retainer',
-      'Window',
-    ]);
-  });
+  // Flaky on linux.
+  it.skipOnPlatforms(
+      ['linux'], '[crbug.com/1377772] Shows a DOM node and its JS wrapper as a single node', async () => {
+        await goToResource('memory/detached-node.html');
+        await navigateToMemoryTab();
+        await takeHeapSnapshot();
+        await waitForNonEmptyHeapSnapshotData();
+        await setSearchFilter('leaking');
+        await waitForSearchResultNumber(4);
+        await findSearchResult(async p => {
+          const el = await p.$(':scope > td > div > .object-value-function');
+          return el !== null && await el.evaluate(el => el.textContent === 'leaking()');
+        });
+        await waitForRetainerChain([
+          'Detached V8EventListener',
+          'Detached EventListener',
+          'Detached InternalNode',
+          'Detached InternalNode',
+          'Detached HTMLDivElement',
+          'Retainer',
+          'Window',
+        ]);
+      });
 
   // Flaky test
   it.skipOnPlatforms(

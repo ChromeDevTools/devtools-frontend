@@ -7,6 +7,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 copy_to_gen("console") {
   sources = [
     "CSP-blocks-eval.html",
+    "alert-toString-exception.html",
     "big-int.html",
     "built-ins.html",
     "console-filter.html",

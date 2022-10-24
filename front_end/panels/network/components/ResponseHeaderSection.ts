@@ -105,7 +105,7 @@ export class ResponseHeaderSection extends HTMLElement {
     this.#headerDetails =
         this.#request.sortedResponseHeaders.map(header => ({
                                                   name: Platform.StringUtilities.toLowerCaseString(header.name),
-                                                  value: header.value,
+                                                  value: header.value.replace(/\s/g, ' '),
                                                 }));
 
     const headersWithIssues = [];
@@ -246,9 +246,9 @@ export class ResponseHeaderSection extends HTMLElement {
       const headerName = Platform.StringUtilities.toLowerCaseString(header.name);
       const headerValues = originalHeaders.get(headerName);
       if (headerValues) {
-        headerValues.push(header.value);
+        headerValues.push(header.value.replace(/\s/g, ' '));
       } else {
-        originalHeaders.set(headerName, [header.value]);
+        originalHeaders.set(headerName, [header.value.replace(/\s/g, ' ')]);
       }
     }
 

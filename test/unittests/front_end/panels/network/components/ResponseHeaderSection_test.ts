@@ -446,6 +446,28 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
   });
 
+  it('can handle tab-character in header value', async () => {
+    const headers = [
+      {name: 'foo', value: 'syn\tax'},
+    ];
+    const {component, spy} = await setupHeaderEditing('[]', headers, headers);
+
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'syn ax');
+    assert.isTrue(spy.notCalled);
+
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'syntax');
+    const expected = [{
+      applyTo: 'index.html',
+      headers: [
+        {
+          name: 'foo',
+          value: 'syntax',
+        },
+      ],
+    }];
+    assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+  });
+
   it('can edit overridden headers', async () => {
     const headerOverridesFileContent = `[
       {

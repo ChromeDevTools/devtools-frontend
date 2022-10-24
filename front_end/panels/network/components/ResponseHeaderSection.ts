@@ -403,6 +403,9 @@ export class ResponseHeaderSection extends HTMLElement {
       block.headers.push({name: header.name, value: header.value || ''});
     }
 
+    if (block.headers.length === 0) {
+      this.#overrides.pop();
+    }
     this.#commitOverrides();
   }
 

@@ -554,6 +554,31 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
   });
 
+  it('does not generate header overrides which have "applyTo" but empty "headers" array', async () => {
+    const actualHeaders = [
+      {name: 'server', value: 'original server'},
+    ];
+    const {component, spy} = await setupHeaderEditing('[]', actualHeaders, actualHeaders);
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'overridden server');
+
+    const expected = [{
+      applyTo: 'index.html',
+      headers: [
+        {
+          name: 'server',
+          value: 'overridden server',
+        },
+      ],
+    }];
+    assert.strictEqual(spy.callCount, 1);
+    assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+
+    spy.resetHistory();
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'original server');
+    assert.strictEqual(spy.callCount, 1);
+    assert.isTrue(spy.calledOnceWith(JSON.stringify([], null, 2)));
+  });
+
   it('can add headers', async () => {
     const headerOverridesFileContent = `[
       {

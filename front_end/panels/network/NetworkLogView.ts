@@ -831,7 +831,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {
     // TODO(allada) Remove dependency on networkManager and instead use NetworkLog and PageLoad for needed data.
-    if (networkManager.target().parentTarget()) {
+    if (networkManager.target().parentTarget()?.type() === SDK.Target.Type.Frame) {
       return;
     }
     const resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -843,7 +843,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   modelRemoved(networkManager: SDK.NetworkManager.NetworkManager): void {
-    if (!networkManager.target().parentTarget()) {
+    if (networkManager.target().parentTarget()?.type() !== SDK.Target.Type.Frame) {
       const resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
       if (resourceTreeModel) {
         resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);

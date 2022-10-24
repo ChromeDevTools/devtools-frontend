@@ -10,6 +10,11 @@ import type * as Common from '../../../../front_end/core/common/common.js';
 import * as ThemeSupport from '../../../../front_end/ui/legacy/theme_support/theme_support.js';
 import {resetTestDOM} from '../helpers/DOMHelpers.js';
 import {markStaticTestsLoaded} from '../helpers/RealConnection.js';
+import {
+  startTrackingAsyncActivity,
+  stopTrackingAsyncActivity,
+  checkForPendingActivity,
+} from '../helpers/TrackAsyncOperations.js';
 
 beforeEach(resetTestDOM);
 
@@ -20,9 +25,11 @@ before(async function() {
   markStaticTestsLoaded({hasOnly: this.test.parent.hasOnly()});
 });
 
-afterEach(() => {
-  // Clear out any Sinon stubs or spies between individual tests.
+afterEach(async () => {
+  await checkForPendingActivity();
   sinon.restore();
+  stopTrackingAsyncActivity();
+  // Clear out any Sinon stubs or spies between individual tests.
 });
 
 beforeEach(() => {
@@ -34,4 +41,6 @@ beforeEach(() => {
     },
   } as Common.Settings.Setting<string>;
   ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
+
+  startTrackingAsyncActivity();
 });

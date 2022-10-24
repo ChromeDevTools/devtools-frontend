@@ -916,6 +916,10 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     const decorations = this.executionLocation ? await this.computeValueDecorations() : null;
+    // After the `await` the DebuggerPlugin could have been disposed. Re-check `this.editor`.
+    if (!this.editor) {
+      return;
+    }
     if (decorations || this.editor.state.field(valueDecorations.field).size) {
       this.editor.dispatch({effects: valueDecorations.update.of(decorations || CodeMirror.Decoration.none)});
     }
@@ -1292,7 +1296,8 @@ export class DebuggerPlugin extends Plugin {
       this.breakpoints = this.fetchBreakpoints();
       const forBreakpoints = this.breakpoints;
       const decorations = await this.computeBreakpointDecoration(this.editor.state, forBreakpoints);
-      if (this.breakpoints === forBreakpoints &&
+      // After the `await` we could have disposed of this DebuggerPlugin, so re-check `this.editor`.
+      if (this.editor && this.breakpoints === forBreakpoints &&
           (decorations.gutter.size || this.editor.state.field(breakpointMarkers, false)?.gutter.size)) {
         this.editor.dispatch({effects: setBreakpointDeco.of(decorations)});
       }
@@ -1637,6 +1642,11 @@ export class DebuggerPlugin extends Plugin {
 
     debuggerPluginForUISourceCode.delete(this.uiSourceCode);
     super.dispose();
+
+    window.clearTimeout(this.refreshBreakpointsTimeout);
+    // Clear `this.editor` to signal that we are disposed. Any function from this `DebuggerPlugin` instance
+    // still running or scheduled will early return and not do any work.
+    this.editor = undefined;
 
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
     this.liveLocationPool.disposeAll();

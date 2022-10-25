@@ -12,6 +12,8 @@ ts_library("helpers") {
     "InspectorOverlayHelpers.ts",
     "LanguagePluginHelpers.ts",
     "MockConnection.ts",
+    "MockScopeChain.ts",
+    "MockScopeChain_test.ts",
     "MutationHelpers.ts",
     "MutationHelpers_test.ts",
     "OverridesHelpers.ts",

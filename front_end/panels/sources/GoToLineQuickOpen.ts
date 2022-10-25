@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Workspace from '../../models/workspace/workspace.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -62,22 +60,32 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   #goToLineStrings: string[] = [];
 
   selectItem(_itemIndex: number|null, promptValue: string): void {
-    const uiSourceCode = this.currentUISourceCode();
-    if (!uiSourceCode) {
+    const sourceFrame = this.currentSourceFrame();
+    if (!sourceFrame) {
       return;
     }
     const position = this.parsePosition(promptValue);
     if (!position) {
       return;
     }
-    void Common.Revealer.reveal(uiSourceCode.uiLocation(position.line - 1, position.column - 1));
+    sourceFrame.revealPosition({lineNumber: position.line - 1, columnNumber: position.column - 1});
   }
 
-  updateGoToLineStrings(query: string): void {
+  itemCount(): number {
+    return this.#goToLineStrings.length;
+  }
+
+  renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void {
+    UI.UIUtils.createTextChild(titleElement, this.#goToLineStrings[itemIndex]);
+  }
+
+  rewriteQuery(_query: string): string {
+    // For Go to Line Quick Open, we don't need to filter any item, set query to empty string, so the filter regex matching will be skipped
+    return '';
+  }
+
+  queryChanged(query: string): void {
     this.#goToLineStrings = [];
-    if (!this.currentUISourceCode()) {
-      return;
-    }
     const position = this.parsePosition(query);
     const sourceFrame = this.currentSourceFrame();
     if (!position) {
@@ -87,7 +95,9 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
       }
       const editorState = sourceFrame.textEditor.state;
       const disassembly = sourceFrame.wasmDisassembly;
-      const currentLineNumber = editorState.doc.lineAt(editorState.selection.main.head).number - 1;
+      const currentLineNumber =
+          sourceFrame.editorLocationToUILocation(editorState.doc.lineAt(editorState.selection.main.head).number - 1)
+              .lineNumber;
       if (disassembly) {
         const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
@@ -99,7 +109,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
         }));
         return;
       }
-      const linesCount = editorState.doc.lines;
+      const linesCount = sourceFrame.editorLocationToUILocation(editorState.doc.lines - 1).lineNumber + 1;
       this.#goToLineStrings.push(
           i18nString(UIStrings.currentLineSTypeALineNumber, {PH1: currentLineNumber + 1, PH2: linesCount}));
       return;
@@ -119,25 +129,8 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     this.#goToLineStrings.push(i18nString(UIStrings.goToLineS, {PH1: position.line}));
   }
 
-  itemCount(): number {
-    return this.#goToLineStrings.length;
-  }
-
-  renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void {
-    UI.UIUtils.createTextChild(titleElement, this.#goToLineStrings[itemIndex]);
-  }
-
-  rewriteQuery(_query: string): string {
-    // For Go to Line Quick Open, we don't need to filter any item, set query to empty string, so the filter regex matching will be skipped
-    return '';
-  }
-
-  queryChanged(query: string): void {
-    this.updateGoToLineStrings(query);
-  }
-
   notFoundText(_query: string): string {
-    if (!this.currentUISourceCode()) {
+    if (!this.currentSourceFrame()) {
       return i18nString(UIStrings.noFileSelected);
     }
     return i18nString(UIStrings.noResultsFound);
@@ -168,14 +161,6 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
       column = parseInt(parts[2].substring(1), 10);
     }
     return {line: Math.max(line | 0, 1), column: Math.max(column | 0, 1)};
-  }
-
-  private currentUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
-    const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
-    if (!sourcesView) {
-      return null;
-    }
-    return sourcesView.currentUISourceCode();
   }
 
   private currentSourceFrame(): UISourceCodeFrame|null {

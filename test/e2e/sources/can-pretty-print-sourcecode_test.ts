@@ -4,13 +4,23 @@
 
 import {assert} from 'chai';
 
-import {click, enableExperiment, getBrowserAndPages, step, waitFor, waitForNone} from '../../shared/helper.js';
+import {
+  click,
+  enableExperiment,
+  getBrowserAndPages,
+  step,
+  typeText,
+  waitFor,
+  waitForNone,
+} from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
+import {openGoToLineQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,
   openSourceCodeEditorForFile,
   retrieveCodeMirrorEditorContent,
   retrieveTopCallFrameScriptLocation,
+  waitForHighlightedLine,
 } from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print"]';
@@ -101,5 +111,18 @@ describe('The Sources Tab', function() {
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
     assert.deepEqual(scriptLocation, 'minified-sourcecode.js:6');
+  });
+
+  it('can go to line in a pretty-printed file', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
+    await click(PRETTY_PRINT_BUTTON);
+    await waitFor(PRETTY_PRINTED_TOGGLE);
+
+    await openGoToLineQuickOpen();
+    await typeText('6');
+    await frontend.keyboard.press('Enter');
+    await waitForHighlightedLine(6);
   });
 });

@@ -66,6 +66,7 @@ used when committed.
 *   [Release Management](release_management.md)
 *   [Third-party Guidelines](third_party_guidelines.md)
 *   [Localization](l10n.md)
+*   [V8 debugger support checklist for new language features](https://goo.gle/v8-checklist)
 
 ### Testing
 *   [E2E test guide](../test/e2e/README.md)

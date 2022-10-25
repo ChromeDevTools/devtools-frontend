@@ -162,7 +162,25 @@ describeWithLocale('CSSVarSwatch', () => {
       valueTooltip: 'red',
       linkTooltip: 'red',
       isDefined: true,
-      varText: ' --test ',
+      varText: '--test ',
+    });
+  });
+
+  it('renders a var() function with spaces and fallback value', () => {
+    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    renderElementIntoDOM(component);
+    component.data = {
+      text: 'var( --f\ oo  ,  blue )',
+      computedValue: 'red',
+      fromFallback: false,
+      onLinkActivate: () => {},
+    };
+
+    assertSwatch(component, {
+      valueTooltip: 'red',
+      linkTooltip: 'red',
+      isDefined: true,
+      varText: '--f\ oo ',
     });
   });
 });

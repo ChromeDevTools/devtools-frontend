@@ -20,7 +20,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/CSS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html, Directives} = LitHtml;
 
-const VARIABLE_FUNCTION_REGEX = /(var\()(\s*--[^,)]+)(.*)/;
+const VARIABLE_FUNCTION_REGEX = /(^var\()\s*(--(?:[\s\w\P{ASCII}-]|\\.)+)(,?\s*.*)\s*(\))$/u;
 
 interface SwatchRenderData {
   text: string;
@@ -31,7 +31,8 @@ interface SwatchRenderData {
 
 interface ParsedVariableFunction {
   pre: string;
-  name: string;
+  variableName: string;
+  fallbackIncludeComma: string;
   post: string;
 }
 
@@ -90,16 +91,25 @@ export class CSSVarSwatch extends HTMLElement {
     }
 
     return {
+      // Returns `var(`
       pre: result[1],
-      name: result[2],
-      post: result[3],
+
+      // Returns the CSS variable name, e.g. `--foo`
+      variableName: result[2],
+
+      // Returns the fallback value in the CSS variable, including a comma if
+      // one is present, e.g. `,50px`
+      fallbackIncludeComma: result[3],
+
+      // Returns `)`
+      post: result[4],
     };
   }
 
   private get variableName(): string {
-    const match = this.text.match(/--[^,)]+/);
+    const match = this.text.match(VARIABLE_FUNCTION_REGEX);
     if (match) {
-      return match[0];
+      return match[2];
     }
     return '';
   }
@@ -126,12 +136,13 @@ export class CSSVarSwatch extends HTMLElement {
       return;
     }
 
-    const link = this.renderLink(functionParts.name);
+    const variableNameLink = this.renderLink(functionParts.variableName);
+    const fallbackIncludeComma = functionParts.fallbackIncludeComma ? functionParts.fallbackIncludeComma : '';
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(
-      html`<span title=${this.computedValue || ''}>${functionParts.pre}${link}${functionParts.post}</span>`,
+      html`<span title=${this.computedValue || ''}>${functionParts.pre}${variableNameLink}${fallbackIncludeComma}${functionParts.post}</span>`,
       this.shadow, { host: this });
     // clang-format on
   }

@@ -17,8 +17,8 @@ export function parseCSSVariableNameAndFallback(cssVariableValue: string): {
   variableName: string|null,
   fallback: string|null,
 } {
-  const match = cssVariableValue.match(/^var\(\s*(--[a-zA-Z_\P{ASCII}][a-zA-Z0-9_\P{ASCII}-]*)[,]?\s*(.*)\s*\)$/u);
-  return {variableName: match && match[1], fallback: match && match[2]};
+  const match = cssVariableValue.match(/var\(\s*(--(?:[\s\w\P{ASCII}-]|\\.)+),?\s*(.*)\s*\)/u);
+  return {variableName: match && match[1].trim(), fallback: match && match[2]};
 }
 
 export class CSSMatchedStyles {
@@ -579,8 +579,7 @@ export class CSSMatchedStyles {
     fromFallback: boolean,
   }|null {
     const domCascade = this.#styleToDOMCascade.get(style) || null;
-    const cssVariableValueNoSpaces = cssVariableValue.replace(/\s/g, '');
-    return domCascade ? domCascade.computeSingleVariableValue(style, cssVariableValueNoSpaces) : null;
+    return domCascade ? domCascade.computeSingleVariableValue(style, cssVariableValue) : null;
   }
 
   isInherited(style: CSSStyleDeclaration): boolean {

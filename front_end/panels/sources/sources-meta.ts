@@ -1854,7 +1854,7 @@ QuickOpen.FilteredListWidget.registerProvider({
   iconName: 'ic_command_go_to_symbol',
   async provider() {
     const Sources = await loadSourcesModule();
-    return Sources.OutlineQuickOpen.OutlineQuickOpen.instance();
+    return new Sources.OutlineQuickOpen.OutlineQuickOpen();
   },
   titlePrefix: i18nLazyString(UIStrings.goTo),
   titleSuggestion: i18nLazyString(UIStrings.symbol),
@@ -1865,7 +1865,7 @@ QuickOpen.FilteredListWidget.registerProvider({
   iconName: 'ic_command_go_to_line',
   async provider() {
     const Sources = await loadSourcesModule();
-    return Sources.GoToLineQuickOpen.GoToLineQuickOpen.instance();
+    return new Sources.GoToLineQuickOpen.GoToLineQuickOpen();
   },
   titlePrefix: i18nLazyString(UIStrings.goTo),
   titleSuggestion: i18nLazyString(UIStrings.line),
@@ -1876,7 +1876,7 @@ QuickOpen.FilteredListWidget.registerProvider({
   iconName: 'ic_command_open_file',
   async provider() {
     const Sources = await loadSourcesModule();
-    return Sources.OpenFileQuickOpen.OpenFileQuickOpen.instance();
+    return new Sources.OpenFileQuickOpen.OpenFileQuickOpen();
   },
   titlePrefix: i18nLazyString(UIStrings.open),
   titleSuggestion: i18nLazyString(UIStrings.file),

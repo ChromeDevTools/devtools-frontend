@@ -8,8 +8,6 @@ import * as UI from '../../legacy.js';
 import {getRegisteredProviders, Provider, registerProvider} from './FilteredListWidget.js';
 import {QuickOpenImpl} from './QuickOpen.js';
 
-let helpQuickOpenInstance: HelpQuickOpen;
-
 export class HelpQuickOpen extends Provider {
   private providers: {
     prefix: string,
@@ -17,20 +15,10 @@ export class HelpQuickOpen extends Provider {
     title: string,
   }[];
 
-  private constructor() {
+  constructor() {
     super();
     this.providers = [];
     getRegisteredProviders().forEach(this.addProvider.bind(this));
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): HelpQuickOpen {
-    const {forceNew} = opts;
-    if (!helpQuickOpenInstance || forceNew) {
-      helpQuickOpenInstance = new HelpQuickOpen();
-    }
-    return helpQuickOpenInstance;
   }
 
   private addProvider(extension: {
@@ -89,7 +77,7 @@ export class HelpQuickOpen extends Provider {
 registerProvider({
   prefix: '?',
   iconName: 'ic_command_help',
-  provider: () => Promise.resolve(HelpQuickOpen.instance()),
+  provider: () => Promise.resolve(new HelpQuickOpen()),
   titlePrefix: () => 'Help',
   titleSuggestion: undefined,
 });

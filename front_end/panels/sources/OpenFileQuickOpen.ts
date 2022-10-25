@@ -11,20 +11,7 @@ import {imageNameForResourceType} from '../../panels/utils/utils.js';
 import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
 import {SourcesView} from './SourcesView.js';
 
-let openFileQuickOpenInstance: OpenFileQuickOpen;
-
 export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): OpenFileQuickOpen {
-    const {forceNew} = opts;
-    if (!openFileQuickOpenInstance || forceNew) {
-      openFileQuickOpenInstance = new OpenFileQuickOpen();
-    }
-
-    return openFileQuickOpenInstance;
-  }
-
   attach(): void {
     this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
     super.attach();

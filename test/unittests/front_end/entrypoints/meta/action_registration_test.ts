@@ -79,7 +79,7 @@ describeWithEnvironment('Action registration', () => {
 
   it('executes a pre registered from the command menu', async () => {
     actionExecuted = false;
-    const commandMenuProvider = QuickOpen.CommandMenu.CommandMenuProvider.instance({forceNew: true});
+    const commandMenuProvider = new QuickOpen.CommandMenu.CommandMenuProvider();
     commandMenuProvider.attach();
     await commandMenuProvider.selectItem(0, '');
     assert.isTrue(actionExecuted, 'Action was not executed from CommandMenu');

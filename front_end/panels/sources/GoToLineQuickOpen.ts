@@ -58,20 +58,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/GoToLineQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let goToLineQuickOpenInstance: GoToLineQuickOpen;
 export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   #goToLineStrings: string[] = [];
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): GoToLineQuickOpen {
-    const {forceNew} = opts;
-    if (!goToLineQuickOpenInstance || forceNew) {
-      goToLineQuickOpenInstance = new GoToLineQuickOpen();
-    }
-
-    return goToLineQuickOpenInstance;
-  }
 
   selectItem(_itemIndex: number|null, promptValue: string): void {
     const uiSourceCode = this.currentUISourceCode();

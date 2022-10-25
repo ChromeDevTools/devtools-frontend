@@ -28,27 +28,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/OutlineQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let outlineQuickOpenInstance: OutlineQuickOpen;
-
 export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
-  private items: Formatter.FormatterWorkerPool.OutlineItem[];
-  private active: boolean;
-  private constructor() {
-    super();
-    this.items = [];
-    this.active = false;
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): OutlineQuickOpen {
-    const {forceNew} = opts;
-    if (!outlineQuickOpenInstance || forceNew) {
-      outlineQuickOpenInstance = new OutlineQuickOpen();
-    }
-
-    return outlineQuickOpenInstance;
-  }
+  private items: Formatter.FormatterWorkerPool.OutlineItem[] = [];
+  private active: boolean = false;
 
   attach(): void {
     this.items = [];

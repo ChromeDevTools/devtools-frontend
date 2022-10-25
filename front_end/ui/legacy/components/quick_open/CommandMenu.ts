@@ -199,23 +199,12 @@ export interface CreateCommandOptions {
   userActionCode?: number;
 }
 
-let commandMenuProviderInstance: CommandMenuProvider;
-
 export class CommandMenuProvider extends Provider {
   private commands: Command[];
-  private constructor() {
+
+  constructor() {
     super();
     this.commands = [];
-  }
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): CommandMenuProvider {
-    const {forceNew} = opts;
-    if (!commandMenuProviderInstance || forceNew) {
-      commandMenuProviderInstance = new CommandMenuProvider();
-    }
-
-    return commandMenuProviderInstance;
   }
 
   attach(): void {
@@ -392,7 +381,7 @@ export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate 
 registerProvider({
   prefix: '>',
   iconName: 'ic_command_run_command',
-  provider: () => Promise.resolve(CommandMenuProvider.instance()),
+  provider: () => Promise.resolve(new CommandMenuProvider()),
   titlePrefix: (): Common.UIString.LocalizedString => i18nString(UIStrings.run),
   titleSuggestion: (): Common.UIString.LocalizedString => i18nString(UIStrings.command),
 });

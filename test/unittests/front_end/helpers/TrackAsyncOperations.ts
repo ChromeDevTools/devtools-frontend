@@ -27,8 +27,8 @@ export function startTrackingAsyncActivity() {
 
 export async function checkForPendingActivity() {
   let stillPending: AsyncActivity[] = [];
-  let wait = 5;
-  let retries = 5;
+  const wait = 5;
+  let retries = 10;
   // We will perform multiple iteration of waiting and forced completions to see
   // if all promises are eventually resolved.
   while (retries > 0) {
@@ -65,7 +65,7 @@ export async function checkForPendingActivity() {
       }
       --retries;
     } catch (e) {
-      const stillPending = asyncActivity.filter(a => a.pending);
+      stillPending = asyncActivity.filter(a => a.pending);
       const newTotalCount = asyncActivity.length;
       // Something is still pending. It might get resolved by force completion
       // of new activity added during the iteration, so let's retry a couple of
@@ -73,8 +73,6 @@ export async function checkForPendingActivity() {
       if (newTotalCount === totalCount && stillPending.length === pendingCount) {
         --retries;
       }
-    } finally {
-      wait *= 2;
     }
   }
   if (stillPending.length) {

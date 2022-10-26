@@ -59,9 +59,9 @@ describe('The Memory Panel', async function() {
     assert.strictEqual(heapSnapShots.length, 2);
   });
 
-  // Flaky on linux.
-  it.skipOnPlatforms(
-      ['linux'], '[crbug.com/1377772] Shows a DOM node and its JS wrapper as a single node', async () => {
+  // Flaky on linux and mac.
+  it.skip(
+      '[crbug.com/1377772] Shows a DOM node and its JS wrapper as a single node', async () => {
         await goToResource('memory/detached-node.html');
         await navigateToMemoryTab();
         await takeHeapSnapshot();

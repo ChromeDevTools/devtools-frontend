@@ -203,6 +203,14 @@ function checkGroupNames(
   }
 }
 
+function hover(component: SourcesComponents.BreakpointsView.BreakpointsView, selector: string): Promise<void> {
+  assertShadowRoot(component.shadowRoot);
+  // Dispatch a mouse over.
+  component.shadowRoot.querySelector(selector)?.dispatchEvent(new Event('mouseover'));
+  // Wait until the re-rendering has happened.
+  return coordinator.done();
+}
+
 describeWithEnvironment('BreakpointsView', () => {
   it('correctly expands breakpoint groups', async () => {
     const {component, data} = await renderMultipleBreakpoints();
@@ -368,10 +376,7 @@ describeWithEnvironment('BreakpointsView', () => {
     const {component, data} = await renderMultipleBreakpoints();
     assertShadowRoot(component.shadowRoot);
 
-    // Dispatch a mouse over in order to show the remove button.
-    component.shadowRoot.querySelector('summary')?.dispatchEvent(new Event('mouseover'));
-    // Wait until the re-rendering has happened.
-    await coordinator.done();
+    await hover(component, 'summary');
 
     const removeFileBreakpointsButton = component.shadowRoot.querySelector(REMOVE_FILE_BREAKPOINTS_SELECTOR);
     assertElement(removeFileBreakpointsButton, HTMLButtonElement);
@@ -387,10 +392,7 @@ describeWithEnvironment('BreakpointsView', () => {
     const {component, data} = await renderMultipleBreakpoints();
     assertShadowRoot(component.shadowRoot);
 
-    // Dispatch a mouse over in order to show the remove button.
-    component.shadowRoot.querySelector(BREAKPOINT_ITEM_SELECTOR)?.dispatchEvent(new Event('mouseover'));
-    // Wait until the re-rendering has happened.
-    await coordinator.done();
+    await hover(component, BREAKPOINT_ITEM_SELECTOR);
 
     const removeFileBreakpointsButton = component.shadowRoot.querySelector(REMOVE_SINGLE_BREAKPOINT_SELECTOR);
     assertElement(removeFileBreakpointsButton, HTMLButtonElement);
@@ -406,19 +408,29 @@ describeWithEnvironment('BreakpointsView', () => {
     const {component, data} = await renderMultipleBreakpoints();
     assertShadowRoot(component.shadowRoot);
 
-    // Dispatch a mouse over in order to show the edit button.
-    component.shadowRoot.querySelector(BREAKPOINT_ITEM_SELECTOR)?.dispatchEvent(new Event('mouseover'));
-    // Wait until the re-rendering has happened.
-    await coordinator.done();
+    await hover(component, BREAKPOINT_ITEM_SELECTOR);
 
-    const removeFileBreakpointsButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
-    assertElement(removeFileBreakpointsButton, HTMLButtonElement);
+    const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
+    assertElement(editBreakpointButton, HTMLButtonElement);
 
     const eventPromise = getEventPromise<SourcesComponents.BreakpointsView.BreakpointEditedEvent>(
         component, SourcesComponents.BreakpointsView.BreakpointEditedEvent.eventName);
-    removeFileBreakpointsButton.click();
+    editBreakpointButton.click();
     const event = await eventPromise;
     assert.strictEqual(event.data.breakpointItem, data.groups[0].breakpointItems[0]);
+  });
+
+  it('shows a tooltip with edit condition on regular breakpoints', async () => {
+    const {component} =
+        await renderSingleBreakpoint(SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT);
+    assertShadowRoot(component.shadowRoot);
+
+    await hover(component, BREAKPOINT_ITEM_SELECTOR);
+
+    const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
+    assertElement(editBreakpointButton, HTMLButtonElement);
+
+    assert.strictEqual(editBreakpointButton.title, 'Edit condition');
   });
 
   it('only renders edit button for breakpoints in editable groups', async () => {
@@ -453,13 +465,10 @@ describeWithEnvironment('BreakpointsView', () => {
     await coordinator.done();
     assertShadowRoot(component.shadowRoot);
 
-    // Dispatch a mouse over in order to show the edit button.
-    component.shadowRoot.querySelector(BREAKPOINT_ITEM_SELECTOR)?.dispatchEvent(new Event('mouseover'));
-    // Wait until the re-rendering has happened.
-    await coordinator.done();
+    await hover(component, BREAKPOINT_ITEM_SELECTOR);
 
-    const removeFileBreakpointsButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
-    assert.isNull(removeFileBreakpointsButton);
+    const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
+    assert.isNull(editBreakpointButton);
   });
 
   it('renders a counter of enabled/disabled breakpoints only if breakpoint group is collapsed', async () => {
@@ -501,6 +510,19 @@ describeWithEnvironment('BreakpointsView', () => {
       assertElement(codeSnippet, HTMLSpanElement);
       assert.strictEqual(codeSnippet.title, `Condition: ${breakpointDetails}`);
     });
+
+    it('show a tooltip on editing the condition', async () => {
+      const {component} = await renderSingleBreakpoint(
+          SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
+      assertShadowRoot(component.shadowRoot);
+
+      await hover(component, BREAKPOINT_ITEM_SELECTOR);
+
+      const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
+      assertElement(editBreakpointButton, HTMLButtonElement);
+
+      assert.strictEqual(editBreakpointButton.title, 'Edit condition');
+    });
   });
 
   describe('logpoints', () => {
@@ -522,6 +544,19 @@ describeWithEnvironment('BreakpointsView', () => {
       assertNotNullOrUndefined(codeSnippet);
       assertElement(codeSnippet, HTMLSpanElement);
       assert.strictEqual(codeSnippet.title, `Logpoint: ${breakpointDetails}`);
+    });
+
+    it('show a tooltip on editing the logpoint', async () => {
+      const {component} =
+          await renderSingleBreakpoint(SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT, breakpointDetails);
+      assertShadowRoot(component.shadowRoot);
+
+      await hover(component, BREAKPOINT_ITEM_SELECTOR);
+
+      const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
+      assertElement(editBreakpointButton, HTMLButtonElement);
+
+      assert.strictEqual(editBreakpointButton.title, 'Edit logpoint');
     });
   });
 

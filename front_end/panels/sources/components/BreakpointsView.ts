@@ -52,9 +52,13 @@ const UIStrings = {
    */
   enableAllBreakpointsInFile: 'Enable all breakpoints in file',
   /**
-  *@description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint in the breakpoint sidebar of the sources panel.
+  *@description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint or conditional breakpoint in the breakpoint sidebar of the sources panel.
   */
-  editBreakpoint: 'Edit breakpoint',
+  editCondition: 'Edit condition',
+  /**
+  *@description Tooltip text that shows when hovered over an edit button that appears next to a logpoint in the breakpoint sidebar of the sources panel.
+  */
+  editLogpoint: 'Edit logpoint',
   /**
   *@description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint items.
   */
@@ -249,9 +253,11 @@ export class BreakpointsView extends HTMLElement {
       this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
       event.consume();
     };
+    const title = breakpointItem.type === BreakpointType.LOGPOINT ? i18nString(UIStrings.editLogpoint) :
+                                                                    i18nString(UIStrings.editCondition);
     // clang-format off
     return LitHtml.html`
-    <button data-edit-breakpoint @click=${clickHandler} title=${i18nString(UIStrings.editBreakpoint)}>
+    <button data-edit-breakpoint @click=${clickHandler} title=${title}>
     <${IconButton.Icon.Icon.litTagName} .data=${{
         iconName: 'edit-icon',
         width: '10px',
@@ -383,11 +389,13 @@ export class BreakpointsView extends HTMLElement {
 
   #onBreakpointEntryContextMenu(event: Event, breakpointItem: BreakpointItem, editable: boolean): void {
     const menu = new UI.ContextMenu.ContextMenu(event);
+    const editBreakpointText = breakpointItem.type === BreakpointType.LOGPOINT ? i18nString(UIStrings.editLogpoint) :
+                                                                                 i18nString(UIStrings.editCondition);
 
     menu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
       this.dispatchEvent(new BreakpointsRemovedEvent([breakpointItem]));
     });
-    menu.defaultSection().appendItem(i18nString(UIStrings.editBreakpoint), () => {
+    menu.defaultSection().appendItem(editBreakpointText, () => {
       this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
     }, !editable);
     menu.defaultSection().appendItem(i18nString(UIStrings.revealLocation), () => {

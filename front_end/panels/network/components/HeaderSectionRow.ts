@@ -134,6 +134,11 @@ export class HeaderSectionRow extends HTMLElement {
       ${this.#maybeRenderBlockedDetails(this.#header.blockedDetails)}
     `, this.#shadow, {host: this});
     // clang-format on
+
+    const editable = this.shadowRoot?.querySelector<HTMLSpanElement>('.header-value .editable');
+    if (editable) {
+      this.#markOverrideStatus(editable, /* canRemoveHighlight */ false);
+    }
   }
 
   #renderHeaderValue(): LitHtml.LitTemplate {
@@ -294,7 +299,9 @@ export class HeaderSectionRow extends HTMLElement {
       return;
     }
     target.innerText = target.innerText.trim();
-    this.#markOverrideStatus(target);
+    if (target.matches('.header-value .editable')) {
+      this.#markOverrideStatus(target);
+    }
 
     const headerNameElement = this.#shadow.querySelector('.header-name') as HTMLElement;
     const headerValueElement = this.#shadow.querySelector('.header-value .editable') as HTMLElement;
@@ -325,10 +332,6 @@ export class HeaderSectionRow extends HTMLElement {
     const headerValueElement = this.#shadow.querySelector('.header-value .editable') as HTMLElement;
     const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.slice(0, -1));
     const headerValue = headerValueElement.innerText;
-    const row = this.shadowRoot?.querySelector<HTMLDivElement>('.row');
-    if (row) {
-      row.classList.remove('header-overridden');
-    }
     this.dispatchEvent(new HeaderRemovedEvent(headerName, headerValue));
   }
 
@@ -370,20 +373,23 @@ export class HeaderSectionRow extends HTMLElement {
     }
   }
 
-  #markOverrideStatus(editable: HTMLElement): void {
+  #markOverrideStatus(editable: HTMLElement, canRemoveHighlight = true): void {
     if (!this.#header) {
       return;
     }
     // We directly add/remove classes here instead of changing HeaderSectionRowData
     // to prevent a re-render, which would mess up the current cursor position.
     const row = this.shadowRoot?.querySelector<HTMLDivElement>('.row');
-    if (row) {
-      if (this.#header.isOverride || editable.innerText !== this.#header.originalValue) {
-        row.classList.add('header-overridden');
+    if (!row) {
+      return;
+    }
+    if (this.#header.isOverride || editable.innerText !== this.#header.originalValue) {
+      row.classList.add('header-overridden');
+      if (canRemoveHighlight) {
         row.classList.remove('header-highlight');
-      } else {
-        row.classList.remove('header-overridden');
       }
+    } else {
+      row.classList.remove('header-overridden');
     }
   }
 

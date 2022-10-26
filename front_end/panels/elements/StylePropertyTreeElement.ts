@@ -110,6 +110,38 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   _lastComputedValue: string|null;
   _contextForTest!: Context|undefined;
 
+  // COHERENT BEGIN
+  // A set of shorthand properties by the definition of and supported by cohtml
+  // Add new properties to this list when it becomes outdated
+  // Used to disable _applyFreeFlowStyleTextEdit when typing shorthand properties
+  private static readonly shorthandProperties = new Set<string | undefined>([
+    // treat empty property name as a shorthand since there are complete declaration
+    // suggestions based on prop name and we don't want to setStyleTexts
+    // Example: "soli" in the name field suggests the whole declaration "border: solid"
+    "",
+    "animation",
+    "margin",
+    "padding",
+    "border-width",
+    "border-color",
+    "border-style",
+    "border-bottom",
+    "border-left",
+    "border-right",
+    "border-top",
+    "border",
+    "border-radius",
+    "border-image",
+    "mask",
+    "font",
+    "overflow",
+    "background",
+    "background-position",
+    "text-stroke",
+    "transition",
+  ]);
+  // COHERENT END
+
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       property: SDK.CSSProperty.CSSProperty, isShorthand: boolean, inherited: boolean, overloaded: boolean,
@@ -1096,6 +1128,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!this._prompt || !this._parentPane.node()) {
       return;
     }
+
+    // COHERENT BEGIN
+    if (StylePropertyTreeElement.shorthandProperties.has(context.originalProperty?.name)) {
+      return;
+    }
+    // COHERENT END
 
     const enteredText = this._prompt.text();
     if (context.isEditingName && enteredText.includes(':')) {

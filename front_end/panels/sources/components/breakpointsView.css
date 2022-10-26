@@ -118,14 +118,14 @@ button {
   display: none;
   align-items: center;
   justify-content: center;
-  margin-left: auto;
+}
+
+button + devtools-two-states-counter,
+button + span {
+  padding-left: 2px;
 }
 
 details[open] devtools-two-states-counter {
-  display: none;
-}
-
-summary:hover devtools-two-states-counter {
   display: none;
 }
 
@@ -191,13 +191,8 @@ button:hover devtools-icon {
 
 .location {
   line-height: 14px;
-  margin-left: auto;
   text-overflow: ellipsis;
   overflow: hidden;
-}
-
-.breakpoint-item:hover .location {
-  display: none;
 }
 
 .breakpoint-item:hover button {

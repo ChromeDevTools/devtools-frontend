@@ -24,9 +24,9 @@ const GROUP_NAME_SELECTOR = '.group-header-title';
 const BREAKPOINT_ITEM_SELECTOR = '.breakpoint-item';
 const HIT_BREAKPOINT_SELECTOR = BREAKPOINT_ITEM_SELECTOR + '.hit';
 const BREAKPOINT_LOCATION_SELECTOR = '.location';
-const REMOVE_FILE_BREAKPOINTS_SELECTOR = '.group-hover-actions > .remove-breakpoint-button';
-const REMOVE_SINGLE_BREAKPOINT_SELECTOR = '.breakpoint-item-location-or-actions > .remove-breakpoint-button';
-const EDIT_SINGLE_BREAKPOINT_SELECTOR = '.edit-breakpoint-button';
+const REMOVE_FILE_BREAKPOINTS_SELECTOR = '.group-hover-actions > button[data-remove-breakpoint]';
+const REMOVE_SINGLE_BREAKPOINT_SELECTOR = '.breakpoint-item-location-or-actions > button[data-remove-breakpoint]';
+const EDIT_SINGLE_BREAKPOINT_SELECTOR = 'button[data-edit-breakpoint]';
 const PAUSE_ON_EXCEPTIONS_SELECTOR = '.pause-on-exceptions';
 const PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR = '.pause-on-caught-exceptions';
 

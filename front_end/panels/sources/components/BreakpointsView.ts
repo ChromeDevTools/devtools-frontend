@@ -251,7 +251,7 @@ export class BreakpointsView extends HTMLElement {
     };
     // clang-format off
     return LitHtml.html`
-    <button class='edit-breakpoint-button' @click=${clickHandler} title=${i18nString(UIStrings.editBreakpoint)}>
+    <button data-edit-breakpoint @click=${clickHandler} title=${i18nString(UIStrings.editBreakpoint)}>
     <${IconButton.Icon.Icon.litTagName} .data=${{
         iconName: 'edit-icon',
         width: '10px',
@@ -271,7 +271,7 @@ export class BreakpointsView extends HTMLElement {
     };
     // clang-format off
     return LitHtml.html`
-    <button class='remove-breakpoint-button' @click=${clickHandler} title=${tooltipText}>
+    <button data-remove-breakpoint @click=${clickHandler} title=${tooltipText}>
     <${IconButton.Icon.Icon.litTagName} .data=${{
         iconName: 'close-icon',
         width: '7px',

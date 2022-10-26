@@ -249,16 +249,16 @@ export class BreakpointsView extends HTMLElement {
   #render(): void {
     // clang-format off
     const out = LitHtml.html`
-    <div class='pause-on-exceptions'>
+    <div class='pause-on-exceptions' tabindex=0>
       <label class='checkbox-label'>
-        <input type='checkbox' ?checked=${this.#pauseOnExceptions} @change=${this.#onPauseOnExceptionsStateChanged.bind(this)}>
+        <input type='checkbox' tabindex=-1 ?checked=${this.#pauseOnExceptions} @change=${this.#onPauseOnExceptionsStateChanged.bind(this)}>
         <span>${i18nString(UIStrings.pauseOnExceptions)}</span>
       </label>
     </div>
     ${this.#pauseOnExceptions ? LitHtml.html`
-      <div class='pause-on-caught-exceptions'>
+      <div class='pause-on-caught-exceptions' tabindex=0>
         <label class='checkbox-label'>
-          <input type='checkbox' ?checked=${this.#pauseOnCaughtExceptions} @change=${this.#onPauseOnCaughtExceptionsStateChanged.bind(this)}>
+          <input type='checkbox' tabindex=-1 ?checked=${this.#pauseOnCaughtExceptions} @change=${this.#onPauseOnCaughtExceptionsStateChanged.bind(this)}>
           <span>${i18nString(UIStrings.pauseOnCaughtExceptions)}</span>
         </label>
       </div>

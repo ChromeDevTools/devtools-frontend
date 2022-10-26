@@ -243,7 +243,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     if (target?.type() === TargetType.Tab) {
       target =
           this.targets().find(
-              t => t.parentTarget() === target && t.type() === TargetType.Frame && t.targetInfo()?.subtype === '') ||
+              t => t.parentTarget() === target && t.type() === TargetType.Frame && !t.targetInfo()?.subtype?.length) ||
           null;
     }
     return target;

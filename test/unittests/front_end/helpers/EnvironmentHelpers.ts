@@ -30,7 +30,7 @@ function initializeTargetManagerIfNecessary(): SDK.TargetManager.TargetManager {
 
 let uniqueTargetId = 0;
 
-export function createTarget({id, name = 'test', type = SDK.Target.Type.Frame, parentTarget, subtype = ''}: {
+export function createTarget({id, name = 'test', type = SDK.Target.Type.Frame, parentTarget, subtype}: {
   id?: Protocol.Target.TargetID,
   name?: string,
   type?: SDK.Target.Type,

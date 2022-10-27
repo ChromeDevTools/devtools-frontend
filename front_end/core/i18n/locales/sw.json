@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Pachika pembeni"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Tumia vitufe vya vishale vya kushoto na kulia kusogeza chaguo"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Pachika chini"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Tovuti imeomba nyenzo ndogo kutoka kwenye mtandao ambao iliweza tu kuufikia kwa sababu ya nafasi maalum ya mtandao wa watumiaji wake. Maombi haya hufichua vifaa na seva zisizo za umma kwenye intaneti, yakiongeza hatari ya mashambulio ya kughushi maombi kutoka tovuti tofauti (CSRF) na/au kuvuja kwa taarifa. Ili kukabiliana na hatari hizi, Chrome imeacha kuendesha huduma ya maombi ya nyenzo ndogo zisizo za umma zinapoanzishwa kutoka kwenye miktadha isiyo salama na itaanza kuzizuia."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 inawashwa kwa chaguomsingi na uwezo wa kuizima kwa kutumia googIPv6 unakusudiwa kuondolewa kwenye M108, baada ya hapo itapuuzwa. Tafadhali acha kutumia kizuizi hiki kilichopitwa na wakati."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS haiwezi kupakiwa kutoka kwenye URL za file: isipokuwa zikiishia kwa kiambishi cha faili ya .css."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "API ya WebSQL katika miktadha isiyo salama imeacha kufanya kazi na itaondolewa hivi karibuni. Tafadhali tumia Duka la Wavuti au Hifadhidata iliyonakiliwa katika Faharasa."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Kubainisha overflow: visible kwenye img, video na canvas kunaweza kusababisha zitoe maudhui yanayoonekana nje ya mipaka ya kipengele. Angalia https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments imeacha kuendesha huduma. Badala yake tafadhali tumia usakinishaji wa haraka kwa ajili ya kudhibiti malipo."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "Utekelezaji wako wa PaymentRequest umekwepa agizo la Sera ya Usalama wa Maudhui (CSP) ya connect-src. Njia hii ya kukwepa imeacha kuendesha huduma. Tafadhali weka kitambulishi cha njia ya kulipa kutoka API ya PaymentRequest (kwenye sehemu ya supportedMethods) katika agizo lako la Sera ya Usalama wa Maudhui (CSP) connect-src."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent imeacha kuendesha huduma. Tafadhali tumia navigator.storage ya kawaida badala yake."
@@ -2235,13 +2244,16 @@
     "message": "Faili ya Maelezo ya Programu"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Hatupendekezi kutoa taarifa kuhusu aikoni yenye purpose: \"any maskable\". Inaweza kuonekana kana kwamba si sahihi kwenye baadhi ya mifumo kwa sababu ya nafasi kubwa sana au ndogo sana."
+    "message": "Hatupendekezi ubainishaji wa aikoni yenye 'purpose: \"any maskable\".' Inaweza kuonekana haiko sahihi kwenye baadhi ya mifumo kutokana na kuwa na nafasi kubwa sana au ndogo sana."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Rangi ya mandharinyuma"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Kitambulisho cha Programu Kilichokokotolewa"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "Kitambulisho kilichopendekezwa cha {PH1} kimenakiliwa kwenye ubao wa kunakili"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Weka kwenye ubao wa kunakili"
@@ -2307,13 +2319,13 @@
     "message": "Faili ya maelezo haina sehemu ya 'name' au 'short_name'"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Faili ya maelezo haina aikoni inayofaa - inahitaji muundo wa PNG, SVG au WebP wenye angalau pikseli {PH1}, ni lazima sifa ya sizes iwekwe na sifa ya purpose, ikiwa ipo, ni lazima ijumuishe \"any\"."
+    "message": "Faili ya maelezo haina aikoni inayofaa - inatakiwa iwe na muundo wa PNG au SVG wenye angalau pikseli {PH1}, ni lazima sifa ya 'sizes' na 'purpose' iwekwe ikiwa ipo na ni lazima ijumuishe 'any.'"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "Faili ya maelezo inabainisha prefer_related_applications: ndivyo"
+    "message": "Faili ya maelezo imebainisha 'prefer_related_applications: ndivyo'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Sehemu ya kwanza ya faili ya maelezo URL si sahihi"
+    "message": "Faili ya maelezo ya 'start_URL' si sahihi"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Jina"
@@ -2334,7 +2346,7 @@
     "message": "Hujaweka kitambulisho cha Duka la Google Play"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Hamna aikoni iliyotolewa yenye angalau pikseli {PH1} mraba katika muundo wa PNG, SVG au WebP, yenye sifa ya madhumuni isiyowekwa au iliyowekwa kuwa \"any\"."
+    "message": "Hakuna aikoni iliyotolewa yenye angalau pikseli mraba {PH1} katika muundo wa PNG au SVG, yenye sifa ya madhumuni isiyowekwa au iliyowekwa kuwa 'any.'"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Dokezo:"
@@ -2361,7 +2373,7 @@
     "message": "Ukurasa haujatolewa kwenye chanzo salama"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications inaweza kutumika tu kwenye matoleo ya Beta na Vituo thabiti ya Chrome kwenye Android."
+    "message": "'prefer_related_applications' inaweza kutumika tu kwenye matoleo ya Beta na Vituo thabiti vya Chrome kwenye Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Wasilisho"
@@ -2400,7 +2412,7 @@
     "message": "Upana wa {PH1} {PH2} hauwezi kuwa zaidi ya mara 2.3 ya urefu"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src haijawekwa"
+    "message": "{PH1} 'src' haijawekwa"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "Imeshindwa kuchanganua URL ya {PH1} ''{PH2}''"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Imeanzishwa."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Imewashwa kabla ya kuanza"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Uonyeshaji wa awali wa ukurasa bado hauwezi kutumia AudioContext API."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "Hitilafu ya DidFailLoadWithError ilitokea wakati wa uonyeshaji wa awali wa ukurasa."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Njia ya API isiyoruhusiwa"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Hairuhusiwi kupakua faili ukurasa ukiwa katika hali ya uonyeshaji wa awali."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "Imeshindwa kupata matumizi ya hifadhi"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Ina URL inayofanya kazi"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "Usogezaji Unaendelea."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Kizuizi cha ukurasa kisichotumika"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "Usogezaji wa kurasa za HTTP(S) pekee unaruhusiwa kwa Uonyeshaji wa awali wa ukurasa."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Hitilafu ya cheti cha SSL."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Imeshindwa kuanza"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "Kichupo kimesitishwa."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Kigezo cha hoja au kikomo cha kidhibiti itifaki"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Weka URL"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Inakoenda"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Onyesha Nyenzo za Wasanidi Programu"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Thamani haitumiki"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Thamani isiyotumika"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Jaribu kubadilisha thamani ya {EXISTING_PARENT_ELEMENT_RULE} kwenye kipengele kikuu kuwa {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Jaribu kuweka mipangilio ya thamani ya {EXISTING_PARENT_ELEMENT_RULE} kwenye kipengele kikuu kuwa {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Thamani ya {REASON_PROPERTY_DECLARATION_CODE} kwenye kipengele kikuu inakwepa matokeo ya {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Thamani ya {REASON_PROPERTY_DECLARATION_CODE} kwenye kipengele kikuu huzuia {AFFECTED_PROPERTY_DECLARATION_CODE} kuathiriwa."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Jaribu kubadilisha thamani ya {EXISTING_PROPERTY_DECLARATION} kuwa {TARGET_PROPERTY_DECLARATION}."
+    "message": "Jaribu kuweka thamani ya {EXISTING_PROPERTY_DECLARATION} kwenye {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Jaribu kuondoa {REASON_PROPERTY_DECLARATION_CODE} au kubadilisha thamani yake."
+    "message": "Jaribu kuweka mipangilio ya {PROPERTY_NAME} sehemu nyingine tofauti na {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Thamani ya {REASON_PROPERTY_DECLARATION_CODE} katika kipengele hiki inakwepa matokeo ya {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Thamani ya {REASON_PROPERTY_DECLARATION_CODE} huzuia {AFFECTED_PROPERTY_DECLARATION_CODE} kuathiriwa."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Weka daraja jipya"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Geuza ikiwa kisikilizaji cha matukio ni tuli au kinazuia"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Futa zote"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Pakia wasifu…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Hifadhi wasifu…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Data inayoingizwa na mtumiaji"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Simamisha"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Endelea"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Onyesha Vifaa vya kuingiza data"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Anza kurekodi"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Anza kucheza tena"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Acha kurekodi"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Nyenzo Iliyozuiwa"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Onyesha Matatizo"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Utendaji"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Kichanganua matumizi ya nyenzo"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Rekodi"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Onyesha Utendaji"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Onyesha Kiweka Maelezo"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Onyesha vipindi vya rekodi za matukio ya hivi karibuni"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Anza kuchanganua na upakie ukurasa upya"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Kuanza/kuacha kurekodi"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Komesha"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Sababu za Kuchanganya"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Vichwa vya Jibu"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Onyesha ufafanuzi wa kubatilisha kichwa"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Onyesha zaidi"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Aina"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Weka kichwa"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Teua chaguo hili iwapo nyenzo na hati zimetoka kwenye tovuti moja."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "jina la kichwa"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "thamani ya kichwa"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Teua tu chaguo hili iwapo tovuti ya kawaida inayojumuisha nyenzo hii haisababishi hatari ya usalama."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Weka vyanzo kutoka sehemu ya x_google_ignoreList kwenye kipengele cha vyanzo vya ramani ili upuuze vyanzo vingine"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Hali"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Amri maalum za kutenga:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Kitatuzi kitaruka hati na hakitasimama kwenye matukio ya kutofuata kanuni kitakayokumbana nayo."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Imezimwa"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "Washa Orodha ya Vipengee Vilivyopuuzwa"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "Batilisha uteuzi ili uzime orodha yote ya vipengee vilivyopuuzwa"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Orodha ya Mifumo Iliyopuuzwa"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Orodha ya Vipengee Vilivyopuuzwa"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Amri za jumla za kutenga:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Weka hati za maudhui kwenye orodha ya vipengee vilivyopuuzwa"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Puuza hati zenye majina yanayolingana na ''{PH1}''"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Hakuna michoro ya orodha ya vipengee vilivyopuuzwa"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Mchoro"
+    "message": "Weka Ruwaza"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Mchoro huu tayari upo"
@@ -10293,7 +10317,7 @@
     "message": "Fungua katika kidirisha cha Vyanzo"
   },
   "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "Sitisha matukio ya kutofuata kanuni yakitambuliwa"
+    "message": "Simamisha matukio yasiyofuata kanuni yakitambuliwa"
   },
   "panels/sources/SourcesPanel.ts | pauseOnExceptions": {
     "message": "Sitisha wakati kuna matukio yasiofuata kanuni"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "imechaguliwa"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Hali: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Zima sehemu zote za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi katika faili"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Badilisha sehemu ya kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Washa sehemu zote za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi zilizo katika faili"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "Mseto"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Sehemu ya kumbukumbu: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Simamisha matukio yasiyofuata kanuni yakitambuliwa"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Sitisha ikiwa kuna matukio yasiyofuata kanuni"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Ondoa sehemu zote za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Ondoa sehemu zote za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi zilizo katika faili"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Ondoa sehemu ya kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Ondoa sehemu zingine za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Onyesha mahali msimbo ulipo"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "hujachagua"
@@ -11991,7 +12051,7 @@
     "message": "Onyesha Utendaji"
   },
   "panels/timeline/timeline-meta.ts | showRecentTimelineSessions": {
-    "message": "Onyesha vipindi vya hivi majuzi vya rekodi za matukio"
+    "message": "Onyesha vipindi vya rekodi za matukio ya hivi karibuni"
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "Anza kuchanganua na upakie ukurasa upya"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Funga"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "Zana za Wasanidi Programu zimepachikwa kwenye {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "Zana za Wasanidi Programu zimepachuliwa"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Pachika chini"

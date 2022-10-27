@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Страна за прикрепяне"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Използвайте клавишите със стрелки за наляво и за надясно, за да се придвижвате между опциите"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Прикрепяне в долната част"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Уебсайтът заяви подресурс от мрежа, до която успя да осъществи достъп само заради специалните разрешения на потребителите в нея. Тези заявки разкриват в интернет информация за непублични устройства и сървъри. Това повишава риска от атаки чрез фалшифициране на заявки от друг сайт (CSRF) и/или от изтичане на информация. За да намали този риск, Chrome оттегля инициираните от незащитен контекст заявки до непублични подресурси и ще започне да ги блокира."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "Протоколът IPv6 е активиран по подразбиране и възможността за деактивирането му чрез googIPv6 трябва да бъде премахната в M108, след което настройката ще се пренебрегва. Спрете да използвате предишната опция за ограничаване."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS не може да се зареди от URL адреси със схема file:, освен ако не завършват с файловото разширение .css."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Възможността за използване на WebSQL в незащитен контекст е оттеглена и скоро ще бъде премахната. Моля, използвайте уеб хранилище или индексирана база от данни."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Посочването на overflow: visible в маркери img, video и canvas може да доведе до показване на визуално съдържание извън границите на елемента. Вижте https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "Приложният програмен интерфейс paymentManager.instruments е оттеглен. Вместо него използвайте функцията за навременно инсталиране на инструменти за обработване на плащания."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "Начинът, по който извиквате PaymentRequest, заобикаля директивата connect-src на правилата за сигурност на съдържанието (CSP). Тази възможност за заобикаляне е оттеглена. От PaymentRequest API (в полето supportedMethods) добавете идентификатора на начина на плащане към директивата connect-src на CSP."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "Приложният програмен интерфейс StorageType.persistent е оттеглен. Вместо него използвайте стандартизирания navigator.storage."
@@ -2235,13 +2244,16 @@
     "message": "Манифест на приложението"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Не се препоръчва да декларирате икона чрез purpose: \"any maskable\". Вероятно няма да изглежда правилно на някои платформи заради твърде широки или твърде тесни вътрешни полета."
+    "message": "Не се препоръчва да декларирате икона чрез purpose: \"any maskable\". Тя вероятно няма да изглежда правилно на някои платформи заради твърде широки или твърде тесни вътрешни полета."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Цвят на фона"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Изчислен идентификатор на приложението"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "Предложеният идентификатор {PH1} бе копиран в буферната памет"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Копиране в буферната памет"
@@ -2307,13 +2319,13 @@
     "message": "Манифестът не съдържа поле name или short_name"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Манифестът не съдържа подходяща икона – изисква се файл във формат PNG, SVG или WebP с размер най-малко {PH1} пиксела, атрибутът sizes трябва да е зададен, а атрибутът purpose, ако е зададен, трябва да съдържа \"any\"."
+    "message": "Манифестът не съдържа подходяща икона – изисква се файл във формат PNG или SVG с поне {PH1} пиксела, атрибутът sizes трябва да е зададен, а атрибутът purpose (ако е зададен) трябва да включва any."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "В манифеста е посочено, че prefer_related_applications: true"
+    "message": "В манифеста е посочено prefer_related_applications: true"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Посоченият в манифеста URL за стартиране не е валиден"
+    "message": "Елементът start_URL в манифеста не е валиден"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Име"
@@ -2334,7 +2346,7 @@
     "message": "Не е предоставен идентификатор за Google Play Магазин"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Никоя от предоставените икони не е квадрат с размери поне {PH1} пиксела във формат PNG, SVG или WebP, за който атрибутът за предназначение не е зададен или е със стойност \"any\"."
+    "message": "Никоя от предоставените икони не е квадрат с размери поне {PH1} пиксела във формат PNG или SVG, за който атрибутът за предназначение не е зададен или е със стойност any."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Забележка:"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Активирано."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Активирано преди стартирането"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Предварителното рендериране още не поддържа приложния програмен интерфейс (API) AudioContext."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "При предварителното рендериране възникна грешка DidFailLoadWithError."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Неразрешен метод за API"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Изтеглянето не е разрешено при предварително рендериране."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "Извличането на данните за използваната памет не бе успешно"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Съдържа работещ URL адрес"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Ограничение за неактивна страница"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "За предварителното рендериране е разрешена само навигация с HTTP(S)."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Грешка в SSL сертификата."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Стартирането не бе успешно"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "Разделът е спрян."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Параметър на заявката или крайна точка за манипулатора на протоколи"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Въведете URL адрес"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Дестинация"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Показване на ресурсите за програмисти"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Оттеглено свойство"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Неактивно свойство"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Опитайте да промените на {TARGET_PARENT_ELEMENT_RULE} свойството {EXISTING_PARENT_ELEMENT_RULE} на родителския елемент."
+    "message": "Опитайте да зададете {TARGET_PARENT_ELEMENT_RULE} за свойството {EXISTING_PARENT_ELEMENT_RULE} на родителския елемент."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Свойството {REASON_PROPERTY_DECLARATION_CODE} на родителския елемент заобикаля ефекта на {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Свойството {REASON_PROPERTY_DECLARATION_CODE} на родителския елемент спира ефекта на {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Опитайте да промените на {TARGET_PROPERTY_DECLARATION} свойството {EXISTING_PROPERTY_DECLARATION}."
+    "message": "Опитайте да зададете {TARGET_PROPERTY_DECLARATION} за свойството {EXISTING_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Опитайте да премахнете свойството {REASON_PROPERTY_DECLARATION_CODE} или да промените стойността му."
+    "message": "Опитайте да зададете за {PROPERTY_NAME} стойност, различна от {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Свойството {REASON_PROPERTY_DECLARATION_CODE} на този елемент заобикаля ефекта на {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Свойството {REASON_PROPERTY_DECLARATION_CODE} спира ефекта на {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Добавяне на нов клас"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Превключване на типа на приемателя на събития – пасивен или блокиращ"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Изчистване на всички"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Зареждане на профила…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Запазване на профила…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Въвеждане"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Пауза"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Възобновяване"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Показване на инструмента за въвеждане"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Стартиране на запис"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Повторно възпроизвеждане"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Спиране на записа"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Блокиран ресурс"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Показване на инструмента за проблеми"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Ефективност"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Инструмент за анализ"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Записване"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Показване на инструмента за ефективност"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Показване на инструмента за анализ"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Показване на скорошните сесии в инструмента за хронология"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Стартиране на профилирането и презареждане на страницата"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Стартиране/спиране на записването"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Спиране"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Причини за композитинг"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Заглавки за отговор"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Показване на определенията за замяна на заглавката"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Показване на още"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Тип"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Добавяне на заглавка"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Изберете тази опция, ако ресурсът и документът се показват от един и същ сайт."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "стойност на заглавката"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Изберете тази опция само ако даден уебсайт, включващ този ресурс, не представлява риск за сигурността."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Добавяне на източниците от полето x_google_ignoreList на картите на изходния код към списъка за пренебрегване"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Поведение"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Персонализирани правила за изключване:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Инструментът за откриване и отстраняване на грешки ще пропуска постъпковото изпълнение на скриптовете и няма да спира при изключения в тях."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Деактивирано"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "Активиране на добавянето в списък за пренебрегване"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "Премахнете отметката от квадратчето, за да деактивирате добавянето в списък за пренебрегване"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Списък за пренебрегване на рамки"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Списък за пренебрегване"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Общи правила за изключване:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Добавяне на скриптове за съдържание към списъка за пренебрегване"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Пренебрегване на скриптовете, чиито имена съответстват на {PH1}"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Без образци за списъка за пренебрегване"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Образец"
+    "message": "Добавяне на образец"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Образецът вече съществува"
@@ -9741,7 +9765,7 @@
     "message": "Експерименти"
   },
   "panels/settings/settings-meta.ts | ignoreList": {
-    "message": "Списък на пренебрегнатите"
+    "message": "Списък за пренебрегване"
   },
   "panels/settings/settings-meta.ts | preferences": {
     "message": "Предпочитания"
@@ -10293,7 +10317,7 @@
     "message": "Отваряне в панела за източници"
   },
   "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "Поставяне на пауза при намерени изключения"
+    "message": "Поставяне на пауза при задействане на изключения"
   },
   "panels/sources/SourcesPanel.ts | pauseOnExceptions": {
     "message": "Поставяне на пауза при изключения"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "с отметка"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Условие: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Деактивиране на всички точки на прекъсване във файла"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Редактиране на точката на прекъсване"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Активиране на всички точки на прекъсване във файла"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "смесено"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Регистрационна точка: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Поставяне на пауза при задействане на изключения"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Поставяне на пауза при изключения"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Премахване на всички точки на прекъсване"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Премахване на всички точки на прекъсване във файла"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Премахване на точката на прекъсване"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Премахване на другите точки на прекъсване"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Показване на местоположението"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "без отметка"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Затваряне"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "Наборът от инструменти DevTools е прикрепен към {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "Наборът от инструменти DevTools вече не е прикрепен"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Прикрепяне в долната част"

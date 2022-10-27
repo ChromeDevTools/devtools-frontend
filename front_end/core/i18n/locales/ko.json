@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "도크 측"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "오른쪽/왼쪽 화살표 키를 사용하여 옵션을 탐색합니다"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "아래에 고정"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "웹사이트에서 사용자 권한이 지정된 네트워크 위치로 인해 해당 웹사이트만 액세스 가능한 네트워크의 하위 리소스를 요청했습니다. 이러한 요청은 비공개 기기 및 서버를 인터넷에 노출시켜 크로스 사이트 요청 위조(CSRF) 공격 또는 정보 유출의 위험을 높입니다. 위험을 완화하기 위해 Chrome은 안전하지 않은 컨텍스트에서 시작된 비공개 하위 리소스에 대한 요청을 사용 중지하고 차단하기 시작합니다."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6가 기본적으로 사용 설정되며 googIPv6를 통한 사용 중지 기능은 M108에서 삭제되어 이후 버전에서는 무시될 예정입니다. 이 기존 제약 조건의 사용을 중지하세요."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": ".css 파일 확장자로 끝나지 않는 CSS는 file: URL에서 로드할 수 없습니다."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "비보안 컨텍스트의 WebSQL은 지원 중단되었으며 곧 삭제됩니다. 웹 스토리지 또는 색인이 생성된 데이터베이스를 사용하세요."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "img, video, canvas 태그에 overflow: visible을(를) 지정하면 요소 경계 외부에 시각적 콘텐츠가 생성될 수 있습니다. 다음을 참고하세요. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments 지원이 중단됩니다. 대신 결제 핸들러에 적시 설치를 사용하세요."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "PaymentRequest 호출이 콘텐츠 보안 정책(CSP) connect-src 지시어를 우회했습니다. 이 우회 지원이 중단됩니다. PaymentRequest API(supportedMethods 입력란)의 결제 수단 식별자를 CSP connect-src 지시어에 추가하세요."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent은(는) 지원 중단되었습니다. 대신 표준화된 navigator.storage을(를) 사용하세요."
@@ -2235,13 +2244,16 @@
     "message": "앱 매니페스트"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "purpose: \"any maskable\"을 포함한 아이콘 선언은 권장되지 않습니다. 패딩이 너무 많거나 적어 일부 플랫폼에서 잘못 표시될 가능성이 높습니다."
+    "message": "'purpose: \"any maskable\"'을(를) 포함한 아이콘 선언은 권장되지 않습니다. 패딩이 너무 많거나 적어 일부 플랫폼에서 잘못 표시될 가능성이 높습니다."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "배경 색상"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "계산된 앱 ID"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "추천 ID({PH1})가 클립보드에 복사되었습니다."
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "클립보드에 복사"
@@ -2307,13 +2319,13 @@
     "message": "매니페스트에는 'name' 또는 'short_name' 필드가 포함되지 않습니다."
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "매니페스트에 적절한 아이콘이 포함되어 있지 않습니다. 아이콘은 최소 {PH1}px인 PNG, SVG 또는 WebP 형식으로 sizes 속성이 설정되어야 하며, purpose 속성이 설정된 경우 속성에 \"any\"를 포함해야 합니다."
+    "message": "매니페스트에 적절한 아이콘이 포함되어 있지 않습니다. 아이콘은 최소 {PH1}px인 PNG 또는 SVG 형식으로 'sizes' 속성이 설정되어야 하며, 설정된 경우 'purpose' 속성에 'any'을(를) 포함해야 합니다."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "매니페스트에서 prefer_related_applications 지정: 참"
+    "message": "매니페스트에서 'prefer_related_applications: true' 지정"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "매니페스트 시작 URL이 유효하지 않습니다."
+    "message": "‘start_URL’ 매니페스트가 잘못되었습니다"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "이름"
@@ -2334,7 +2346,7 @@
     "message": "제공된 Play 스토어 ID 없음"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "제공된 아이콘 중 최소 {PH1}픽셀인 PNG, SVG 또는 WebP 형식의 정사각형이며, 목적 속성이 설정되어 있지 않거나 \"any\"로 설정되어 있는 아이콘이 없습니다."
+    "message": "제공된 아이콘 중 최소 {PH1}픽셀인 PNG 또는 SVG 형식의 정사각형이며, 목적 속성이 설정되어 있지 않거나 'any(으)로 설정되어 있는 아이콘이 없습니다."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "참고:"
@@ -2361,7 +2373,7 @@
     "message": "페이지가 안전한 출처에서 제공되지 않았습니다."
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications 앱은 Android의 Chrome 베타 및 공개 버전 채널에서만 지원됩니다."
+    "message": "'prefer_related_applications' 앱은 Android의 Chrome 베타 및 공개 버전 채널에서만 지원됩니다."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "프레젠테이션"
@@ -2400,7 +2412,7 @@
     "message": "{PH1} {PH2} 너비는 높이의 2.3배 이상일 수 없습니다."
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src 설정되지 않음"
+    "message": "{PH1} 'src'이(가) 설정되지 않음"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "{PH1} URL(''{PH2}'')을 파싱할 수 없음"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "활성화됨"
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "시작하기 전에 활성화됨"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "사전 렌더링에서는 아직 AudioContext API를 지원하지 않습니다."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "사전 렌더링 중에 didFailLoadWithError가 발생했습니다."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "허용되지 않는 API 메서드"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "사전 렌더링에서 다운로드가 허용되지 않습니다."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "메모리 사용량을 가져올 수 없음"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "유효 URL 있음"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "비활성 페이지 제한"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "사전 렌더링에는 HTTP(S) 탐색만 허용됩니다."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL 인증서 오류"
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "시작 실패"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "탭이 중지되었습니다."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "프로토콜 핸들러의 쿼리 매개변수 또는 엔드포인트"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "URL 입력"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "대상"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "개발자 리소스 표시"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "지원 중단된 속성"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "비활성 속성"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "상위 요소의 {EXISTING_PARENT_ELEMENT_RULE} 속성을 {TARGET_PARENT_ELEMENT_RULE}(으)로 변경해 보세요."
+    "message": "상위 요소의 {EXISTING_PARENT_ELEMENT_RULE} 속성을 {TARGET_PARENT_ELEMENT_RULE}(으)로 설정해 보세요."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "상위 요소의 {REASON_PROPERTY_DECLARATION_CODE} 속성은 {AFFECTED_PROPERTY_DECLARATION_CODE}의 효과를 우회합니다."
+    "message": "상위 요소의 {REASON_PROPERTY_DECLARATION_CODE} 속성으로 인해 {AFFECTED_PROPERTY_DECLARATION_CODE}이(가) 적용되지 않습니다."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "{EXISTING_PROPERTY_DECLARATION} 속성을 {TARGET_PROPERTY_DECLARATION}(으)로 변경해 보세요."
+    "message": "{EXISTING_PROPERTY_DECLARATION} 속성을 {TARGET_PROPERTY_DECLARATION}(으)로 설정해 보세요."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "{REASON_PROPERTY_DECLARATION_CODE}을(를) 삭제하거나 값을 변경해 보세요."
+    "message": "{PROPERTY_NAME}을(를) {PROPERTY_VALUE} 이외의 속성으로 설정해 보세요."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "이 요소의 {REASON_PROPERTY_DECLARATION_CODE} 속성은 {AFFECTED_PROPERTY_DECLARATION_CODE}의 효과를 우회합니다."
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} 속성으로 인해 {AFFECTED_PROPERTY_DECLARATION_CODE}이(가) 적용되지 않습니다."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "새 클래스 추가"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "이벤트 리스너를 패시브 또는 차단 중으로 전환"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "모두 지우기"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "프로필 로드…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "프로필 저장…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "입력"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "일시중지"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "재개"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "입력 표시"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "기록 시작"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "다시보기 시작"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "기록 중지"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "차단된 리소스"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "문제 표시"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "성능"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "프로파일러"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "기록"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "성능 표시"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "프로파일러 표시"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "최근 타임라인 세션 표시"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "프로파일링 시작 및 페이지 새로고침"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "기록 시작/중지"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "중지"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "합성 이유"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "응답 헤더"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "헤더 재정의 정의 표시"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "더보기"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "유형"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "헤더 추가"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "리소스와 문서가 동일한 사이트에서 제공되는 경우 이 옵션을 선택하세요."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "헤더 값"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "이 리소스를 포함하는 임의의 웹사이트로 인해 보안 위험이 제기되지 않는 경우에만 이 옵션을 선택합니다."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "소스 맵에서 x_google_ignoreList 필드의 소스를 무시 목록에 추가"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "동작"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "맞춤 제외 규칙:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "디버거가 스크립트를 건너뛰며 스크립트로 인해 발생한 예외에서 멈추지 않습니다."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "사용 안함"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "무시 목록 사용 설정"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "모든 무시 목록을 사용 중지하려면 선택 해제하세요."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "프레임워크 무시 목록"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "무시 목록"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "일반 제외 규칙:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "무시 목록에 콘텐츠 스크립트 추가"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "이름이 ''{PH1}''인 스크립트 무시"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "무시 목록 패턴 없음"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "패턴"
+    "message": "패턴 추가"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "패턴이 이미 존재합니다."
@@ -9555,7 +9579,7 @@
     "message": "단축키 수정됨"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
-    "message": "바로가기"
+    "message": "단축키"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcutsCannotContainOnly": {
     "message": "바로가기에 특수키만 있으면 안 됩니다."
@@ -9591,7 +9615,7 @@
     "message": "설정"
   },
   "panels/settings/SettingsScreen.ts | shortcuts": {
-    "message": "바로가기"
+    "message": "단축키"
   },
   "panels/settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
     "message": "다음 실험이 특히 불안정합니다. 사용에 따른 책임은 사용자에게 있습니다."
@@ -9750,7 +9774,7 @@
     "message": "설정"
   },
   "panels/settings/settings-meta.ts | shortcuts": {
-    "message": "바로가기"
+    "message": "단축키"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "실험 표시"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "선택함"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "조건: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "파일의 모든 중단점 사용 중지"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "중단점 수정"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "파일의 모든 중단점 사용 설정"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "혼합"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "로그 지점: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "포착된 예외에서 일시중지"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "예외에서 일시중지됨"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "모든 중단점 삭제"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "파일의 모든 중단점 삭제"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "중단점 삭제"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "다른 중단점 삭제"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "위치 표시"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "선택 해제됨"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "닫기"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools가 {PH1}에 고정됨"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "DevTools가 고정 해제됨"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "아래에 고정"

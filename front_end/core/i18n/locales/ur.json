@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "ڈاک سائیڈ"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "اختیارات کو نیویگیٹ کرنے کیلئے بائیں اور دائیں تیر کے نشانات کی کلیدیں استعمال کریں"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "نیچے ڈاک کریں"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "ویب سائٹ نے ایسے نیٹ ورک سے وسائل کی درخواست کی جس تک وہ صرف اپنے صارف کے منفرد نیٹ ورک مقام کی وجہ سے رسائی کر سکتی تھی۔ یہ درخواستیں نجی آلات اور سرورز کو انٹرنیٹ پر بے نقاب کرتی ہیں، جس سے کراس سائٹ درخواست جعل سازی (CSRF) کے حملوں، اور/یا معلومات کے افشاء کا خطرہ بڑھ جاتا ہے۔ ان خطرات کو کم کرنے کے لیے، Chrome غیر محفوظ سیاق و سباق سے شروع ہونے پر غیر عوامی ذیلی وسائل کی درخواستوں کو مسترد کر دیتا ہے، اور انہیں مسدود کرنا شروع کر دے گا۔"
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 بطور ڈیفالٹ فعال ہے اور googIPv6 کا استعمال کر کے اسے غیر فعال کرنے کی اہلیت کو ورژن M108 میں ہٹانے کا ہدف بنایا گیا ہے، جس کے بعد اسے نظر انداز کر دیا جائے گا۔ براہ کرم اس پرانے ورژن کی پابندی کا استعمال بند کر دیں۔"
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS کو file: URLs سے لوڈ نہیں کیا جا سکتا جب تک کہ وہ .css فائل ایکسٹینشن کے ساتھ ختم نہ ہوں۔"
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "غیر محفوظ سیاق و سباق میں WebSQL پرانا ہو چکا ہے اور جلد ہی اسے ہٹا دیا جائے گا۔ براہ کرم ویب سٹوریج یا انڈیکس کردہ ڈیٹا بیس استعمال کریں۔"
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "img، ‏video اور canvas کے ٹیگز پر overflow: visible کی وضاحت کرنے سے ان کے لیے عنصر کی حدود سے باہر ویژوئل مواد تیار کرنے کا سبب بن سکتا ہے۔ See https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments پرانا ہو چکا ہے۔ براہ کرم اس کے بجائے ادائیگی کے ہینڈلرز کیلئے صحیح وقت پر انسٹال کریں کا استعمال کریں۔"
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "آپ کی PaymentRequest کال نے مواد سے متعلق سیکیورٹی پالیسی (CSP) connect-src ڈائریکٹیو کو بائی پاس کیا۔ یہ بائی پاس پرانا ہے۔ براہ کرم PaymentRequest API (supportedMethods فیلڈ میں) کے ادائیگی کے طریقہ شناخت کار کو اپنے CSP connect-src ڈائریکٹیو میں شامل کریں۔"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent پرانا ہو چکا ہے۔ براہ کرم اس کے بجائے معیاری navigator.storage استعمال کریں۔"
@@ -2166,7 +2175,7 @@
     "message": "سب صاف کریں"
   },
   "panels/animation/AnimationTimeline.ts | pause": {
-    "message": "روکیں"
+    "message": "موقوف کریں"
   },
   "panels/animation/AnimationTimeline.ts | pauseAll": {
     "message": "سبھی کو روکیں"
@@ -2235,13 +2244,16 @@
     "message": "ایپ مینی فیسٹ"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "اس کی تجویز نہیں کی جاتی ہے کہ purpose: \"any maskable\" کے ساتھ کسی آئیکن کا اعلان کیا جائے۔ بہت زیادہ یا بہت کم پیڈنگ کی وجہ سے کچھ پلیٹ فارمز پر اس کے غلط دکھنے کا امکان ہوتا ہے۔"
+    "message": "اس کی تجویز نہیں کی جاتی ہے کہ 'purpose: \"any maskable\"' کے ساتھ کسی آئیکن کا اعلان کیا جائے۔ بہت زیادہ یا بہت کم پیڈنگ کی وجہ سے کچھ پلیٹ فارمز پر اس کے غلط دکھنے کا امکان ہوتا ہے۔"
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "پس منظر کا رنگ"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "شمار کردہ ایپ ID"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "تجویز کردہ ID {PH1} کلپ بورڈ پر کاپی ہو گیا"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "کلپ بورڈ میں کاپی کریں"
@@ -2307,13 +2319,13 @@
     "message": "مینی فیسٹ میں name یا short_name فیلڈ شامل نہیں ہے"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "مینی فیسٹ میں ایک مناسب آئیکن شامل نہیں ہوتا ہے - کم سے کم px{PH1} کے PNG, SVG یا WebP فارمیٹ کی ضرورت ہوتی ہے، sizes انتساب سیٹ ہونا ضروری ہے، اور اگر purpose انتساب سیٹ ہو تو اس میں \"any\" شامل ہونا چاہیے۔"
+    "message": "مینی فیسٹ میں ایک مناسب آئیکن شامل نہیں ہوتا ہے - کم سے کم px{PH1} کے PNG یا SVG فارمیٹ کی ضرورت ہوتی ہے، 'sizes' انتساب سیٹ ہونا ضروری ہے، اور اگر 'purpose' انتساب سیٹ ہو تو اس میں 'any' شامل ہونا چاہیے۔"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "مینی فیسٹ prefer_related_applications کا تعین کرتا ہے: درست"
+    "message": "مینی فیسٹ 'prefer_related_applications کا تعین کرتا ہے: درست'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "مینی فیسٹ آغاز URL درست نہیں ہے"
+    "message": "مینی فیسٹ 'start_URL' درست نہیں ہے"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "نام"
@@ -2334,7 +2346,7 @@
     "message": "کوئی Play اسٹور ID فراہم نہیں کی گئی"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "\"any\" پر سیٹ یا غیر سیٹ مقصد کے انتساب سےPNG، SVG یا WebP فارمیٹ میں کم از کم {PH1} پکسلز اسکوائر کا کوئی سپلائی کیا گيا آئیکن نہیں ہے۔"
+    "message": "'any' پر سیٹ یا غیر سیٹ انتساب کے مقصد کے لیے PNG یا SVG فارمیٹ میں کم از کم {PH1} پکسلز اسکوائر کا سپلائی کردہ کوئی آئیکن نہیں ہے۔"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "نوٹ:"
@@ -2361,7 +2373,7 @@
     "message": "صفحہ ایک محفوظ اوریجن سے پیش نہیں کیا جاتا ہے"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications صرف Chrome بی ٹا اور Android پر مستحکم چینلز پر تعاون یافتہ ہے۔"
+    "message": "'prefer_related_applications' صرف Chrome بی ٹا اور Android پر مستحکم چینلز پر تعاون یافتہ ہے۔"
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "پیشکش"
@@ -2400,7 +2412,7 @@
     "message": "{PH1} {PH2} کی چوڑائی 2.3 گنا اونچائی سے زیادہ نہیں ہو سکتی ہے"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src سیٹ نہیں ہے"
+    "message": "{PH1} 'src' سیٹ نہیں ہے"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "{PH1}URL''{PH2}'' کو پارس کرنے میں ناکام"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "فعال ہے۔"
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "شروع کرنے سے پہلے فعال ہے"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "پری رینڈرنگ نے ابھی تک AudioContext API کو سپورٹ نہیں کیا ہے۔"
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "DidFailLoadWithError پری رینڈرنگ کے دوران ہوا۔"
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "API کے طریقے کی اجازت نہیں ہے"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "پری رینڈر میں ڈاؤن لوڈ کی اجازت نہیں ہے۔"
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "میموری کا استعمال حاصل کرنے میں ناکام"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "مؤثر URL ہے"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "غیر فعال صفحہ کی پابندی"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "پری رینڈر کے لیے صرف HTTP(S) نیویگیشن کی اجازت ہے۔"
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL سرٹیفیکیٹ کی خرابی۔"
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "شروع کرنا ناکام ہو گیا"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "ٹیب رک گیا ہے۔"
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "پروٹوکول ہینڈلر کے لیے استفسار کا پیرامیٹر یا اینڈ پوائنٹ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "URL درج کریں"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "منزل"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "ڈیولپرز کے وسائل دکھائیں"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "پرانی پراپرٹی"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "غیر فعال پراپرٹی"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "پیرنٹ کی {EXISTING_PARENT_ELEMENT_RULE} پراپرٹی کو {TARGET_PARENT_ELEMENT_RULE} میں تبدیل کرنے کی کوشش کریں۔"
+    "message": "{EXISTING_PARENT_ELEMENT_RULE} پراپرٹی کو {TARGET_PARENT_ELEMENT_RULE} کے پیرنٹ پر سیٹ کرنے کی کوشش کریں۔"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "پیرنٹ عنصر پر {REASON_PROPERTY_DECLARATION_CODE} پراپرٹی {AFFECTED_PROPERTY_DECLARATION_CODE} کے اثر کو نظرانداز کرتی ہے۔"
+    "message": "پیرنٹ عنصر پر {REASON_PROPERTY_DECLARATION_CODE} پراپرٹی {AFFECTED_PROPERTY_DECLARATION_CODE} کو اثر انداز ہونے سے بچاتی ہے۔"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "{EXISTING_PROPERTY_DECLARATION} پراپرٹی کو {TARGET_PROPERTY_DECLARATION} میں تبدیل کرنے کی کوشش کریں۔"
+    "message": "{EXISTING_PROPERTY_DECLARATION} پراپرٹی کو {TARGET_PROPERTY_DECLARATION} پر سیٹ کرنے کی کوشش کریں۔"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "{REASON_PROPERTY_DECLARATION_CODE} کو ہٹانے یا اس کی قدر کو تبدیل کرنے کی کوشش کریں۔"
+    "message": "{PROPERTY_VALUE} کے علاوہ کسی اور چیز پر {PROPERTY_NAME} کو سیٹ کرنے کی کوشش کریں۔"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "اس عنصر پر {REASON_PROPERTY_DECLARATION_CODE} پراپرٹی {AFFECTED_PROPERTY_DECLARATION_CODE} کے اثر کو نظرانداز کرتی ہے۔"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} پراپرٹی {AFFECTED_PROPERTY_DECLARATION_CODE} کو اثر انداز ہونے سے بچاتی ہے۔"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "نئی کلاس شامل کریں"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "ٹوگل کریں کہ کیا ایونٹ لسنر پیسیو یا مسدود کرنے والا ہے"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "سب صاف کریں"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "پروفائل لوڈ کریں…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "پروفائل محفوظ کریں…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "ان پٹس"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "روکیں"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "دوبارہ شروع کریں"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "ان پٹس دکھائيں"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "ریکارڈنگ شروع کریں"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "دوبارہ چلانا شروع کریں"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "ریکارڈنگ روکیں"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "مسدود کردہ وسیلہ"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "مسائل دکھائیں"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "کارکردگی"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "پروفائلر"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "ریکارڈ کریں"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "کارکردگی دکھائیں"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "پروفائلر دکھائیں"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "حالیہ ٹائم لائن کے سیشنز دکھائیں"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "پروفائلنگ شروع کریں اور صفحے کو دوبارہ لوڈ کریں"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "ریکارڈنگ شروع کریں/روکیں"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "روکیں"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "کمپوزیٹنگ کی وجوہات"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "جوابی ہیڈرز"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "ہیڈر اوور رائیڈ کی تعریفات دکھائیں"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "مزید دکھائیں"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "قسم"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "ہیڈر شامل کریں"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "اگر وسیلہ اور دستاویز ایک ہی سائٹ سے پیش کیے جاتے ہیں تو اس اختیار کو منتخب کریں۔"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "header value"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "یہ اختیار صرف تبھی منتخب کریں اگر اس وسیلہ سمیت بے قاعدہ ویب سائٹ سے سیکیورٹی کا خطرہ نہ ہو۔"
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "x_google_ignoreList فیلڈ سے ماخذ کے نقشوں سے ماخذ کو نظر انداز کی فہرست میں شامل کریں"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "برتاؤ"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "حسب ضرورت خارجی اصول:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "ڈیبگر اسکرپٹس کو نظر انداز کرے گا اور ان کے مستثنیات پر نہیں روکے گا۔"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "غیر فعال ہے"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "فہرست کو نظر انداز کریں کو فعال کریں"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "نظر انداز کرنے والی تمام فہرستوں کو غیر فعال کرنے کیلئے غیر نشان زد کریں"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "فریم ورک کو نظر انداز کرنے کی فہرست"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "نظر انداز کی فہرست"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "عام خارجی اصول:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "نظر انداز کرنے کی فہرست میں مواد کی اسکرپٹس شامل کریں"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "ان اسکرپٹس کو نظر انداز کریں جن کے نام ''{PH1}'' سے مماثل ہیں"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "نظر انداز کی فہرست کا کوئی پیٹرن نہیں ہے"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "پیٹرن"
+    "message": "پیٹرن شامل کریں"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "پیٹرن پہلے سے موجود ہے"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "چیک کیا گیا"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "شرط: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "فائل کے تمام بریک پوائنٹس کو غیر فعال کریں"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "بریک پوائنٹ میں ترمیم کریں"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "فائل کے سبھی بریک پوائنٹس فعال کریں"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "مخلوط"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "لاگ پوائنٹ: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "مستثنیات کے ملنے پر موقوف کریں"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "مستثنیات پر روکیں"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "سبھی بریک پوائنٹس ہٹائيں"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "فائل کے سابھی بریک پوائنٹس ہٹائیں"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "بریک پوائنٹ ہٹائیں"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "دیگر بریک پوائنٹس ہٹائيں"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "مقام دکھائیں"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "غیر نشان زد کردہ"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "بند کریں"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools کو {PH1} پر ڈاک کیا گیا"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "DevTools ڈاک سے ہٹا دئے گئے"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "نیچے ڈاک کریں"

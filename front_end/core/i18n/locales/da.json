@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Fastgør side"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Brug venstre og højre piletast til at navigere i valgmulighederne"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Fastgør til bund"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Websitet har anmodet om en underressource fra et netværk, som websitet kun havde adgang til på grund af dets brugeres privilegerede netværksposition. Disse anmodninger eksponerer ikke-offentlige enheder og servere på internettet, hvilket øger risikoen for et angreb med en forfalsket anmodning fra et andet website og/eller læk af oplysninger. For at minimere disse risici udfaser Chrome anmodninger til ikke-offentlige underressourcer, når de stammer fra usikre kontekster, og begynder at blokere dem."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 er som standard aktiveret, og muligheden for at deaktivere den ved hjælp af googIPv6 forventes fjernet i M108, hvorefter den ignoreres. Undlad at bruge denne forældede begrænsning."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS kan ikke indlæses fra webadresser med file:, medmindre de slutter med filtypen .css."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL i usikre kontekster er udfaset og fjernes snart. Du skal bruge Web Storage eller Indexed Database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Angivelse af overflow: visible i img-, video- og canvas-tags kan medføre, at de producerer visuelt indhold uden for elementgrænserne. Se https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments er udfaset. Brug just-in-time-installation for betalingshandlere i stedet."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "Dit PaymentRequest-opkald omgik Content Security Policy-direktivet connect-src (CSP). Denne omgåelse er udfaset. Føj betalingsmetodens id fra PaymentRequest API (i feltet supportedMethods) til CSP-direktivet connect-src."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent er udfaset. Brug i stedet standardiseret navigator.storage."
@@ -2235,13 +2244,16 @@
     "message": "Appmanifest"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Det anbefales ikke at deklarere et ikon med purpose: \"any maskable\". Det vil sandsynligvis se forkert ud på nogle platforme, da den indre margen vil være for stor eller for lille."
+    "message": "Vi fraråder at deklarere et ikon med \"purpose: \"any maskable\"\". Det vil sandsynligvis se forkert ud på nogle platforme, da den indre margen vil være for stor eller for lille."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Baggrundsfarve"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Beregnet app-id"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "Det foreslåede id {PH1} blev kopieret til udklipsholderen"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Kopiér til udklipsholder"
@@ -2307,13 +2319,13 @@
     "message": "Manifestet indeholder ikke feltet \"name\" eller \"short_name\""
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifestet indeholder ikke et passende ikon. Der kræves et PNG-, SVG- eller WebP-format på mindst {PH1} px, og attributten sizes skal angives. Hvis attributten purpose er angivet, skal den indeholde \"any\"."
+    "message": "Manifestet indeholder ikke et passende ikon. Der kræves et PNG- eller SVG-format på mindst {PH1} px, attributten \"sizes\" skal angives, og hvis attributten \"purpose\" er angivet, skal den indeholde \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "Manifestet angiver prefer_related_applications: Sand"
+    "message": "Manifestet angiver \"prefer_related_applications: Sand\""
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Manifestets start URL er ikke gyldig"
+    "message": "Manifestet \"start_URL\" er ikke gyldigt"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Navn"
@@ -2334,7 +2346,7 @@
     "message": "Der er ikke angivet noget Play Butik-id"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Der er ikke angivet et kvadratisk ikon med mindst {PH1} pixels i PNG-, SVG- eller WebP-format, hvor attributten for formål ikke er angivet eller er angivet som \"any\"."
+    "message": "Der er ikke angivet et kvadratisk ikon med mindst {PH1} pixels i PNG- eller SVG-format, hvor attributten for formål ikke er angivet eller er angivet som \"any\"."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Bemærk!"
@@ -2361,7 +2373,7 @@
     "message": "Siden vises ikke fra et sikkert oprindelsessted"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications understøttes kun i betaversionen af Chrome og stabile kanaler i Android."
+    "message": "prefer_related_applications understøttes kun i betakanalen og den stabile kanal for Chrome på Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Præsentation"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Aktiveret."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Aktiveret før start"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Forhåndsgengivelse understøtter endnu ikke AudioContext API."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "DidFailLoadWithError opstod under forhåndsgengivelsen."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Ikke-tilladt API-metode"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Download er ikke tilladt i en forhåndsgengivelse."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "Hukommelsesforbruget blev ikke hentet"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Har effektiv webadresse"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Inaktiv sidebegrænsning"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "Kun HTTP(S)-navigation er tilladt for forhåndsgengivelse."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Der opstod en SSL-certifikatfejl."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Start mislykkedes"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "Fanen er stoppet."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Forespørgselsparameter eller slutpunkt for protokolhandlere"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Angiv webadresse"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Destination"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Vis udviklerressourcer"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Udfaset egenskab"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Inaktiv ejendom"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Prøv at ændre egenskaben {EXISTING_PARENT_ELEMENT_RULE} for det overordnede element til {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Prøv at angive egenskaben {EXISTING_PARENT_ELEMENT_RULE} for det overordnede element som {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Egenskaben {REASON_PROPERTY_DECLARATION_CODE} på det overordnede element omgår effekten af {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Egenskaben {REASON_PROPERTY_DECLARATION_CODE} for det overordnede element forhindrer, at {AFFECTED_PROPERTY_DECLARATION_CODE} har en effekt."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Prøv at ændre egenskaben {EXISTING_PROPERTY_DECLARATION} til {TARGET_PROPERTY_DECLARATION}."
+    "message": "Prøv at angive egenskaben {EXISTING_PROPERTY_DECLARATION} som {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Prøv at fjerne {REASON_PROPERTY_DECLARATION_CODE} eller ændre dens værdi."
+    "message": "Prøv at angive {PROPERTY_NAME} som noget andet end {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Egenskaben {REASON_PROPERTY_DECLARATION_CODE} på dette element omgår effekten af {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Egenskaben {REASON_PROPERTY_DECLARATION_CODE} forhindrer, at {AFFECTED_PROPERTY_DECLARATION_CODE} har en effekt."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Tilføj et nyt hold"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Skift mellem, om hændelsesfunktioner er passive eller blokerede"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Ryd alle"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Indlæs profil…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Gem profil…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Indtastninger"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Sæt på pause"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Genoptag"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Vis inputs"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Start optagelse"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Start afspilning igen"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Stop optagelse"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokeret ressource"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Vis problemer"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Effektivitet"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profileringsværktøj"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Optag"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Vis effektivitet"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Vis profileringsværktøj"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Vis seneste tidslinjesessioner"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Start profilering, og genindlæs siden"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Start/stop optagelse"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Stop"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Årsager til sammensætning"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Svarheaders"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Vis definitioner for tilsidesættelse af header"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Se mere"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Type"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Tilføj header"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Vælg denne mulighed, hvis ressourcen og dokumentet vises via samme website."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "headerværdi"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Vælg kun denne mulighed, hvis et vilkårligt website inklusive denne ressource ikke udgør en sikkerhedsrisiko."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Føj kilder fra feltet x_google_ignoreList fra kildekortene til listen over ignorerede kilder"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Adfærd"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Tilpassede regler for eksklusion:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Debugger springer gennem scripts og stopper ikke ved undtagelser, der udløses af dem."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Deaktiveret"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "Aktivér Ignorer fortegnelse"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "Fjern markeringen for at deaktivere alle ignorerede fortegnelser"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Liste over ignorerede for rammen"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Liste over ignorerede"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Generelle regler for eksklusion:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Føj indholdsscripts til liste over ignorerede"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Ignorer scripts, hvis navne matcher \"{PH1}\""
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Ingen mønstre for liste over ignorerede"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Mønster"
+    "message": "Tilføj mønster"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Mønster eksisterer allerede"
@@ -10068,7 +10092,7 @@
     "message": "Fjern andre stoppunkter"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
-    "message": "Vis placering"
+    "message": "Vis lokation"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
     "message": "{PH1} ramt stoppunkt"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "markeret"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Betingelse: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Deaktiver alle stoppunkter i filen"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Rediger stoppunkt"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Aktivér alle stoppunkter i filen"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "blandet"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Logpoint: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Sæt registrerede undtagelser på pause"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Sæt på pause ved undtagelser"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Fjern alle stoppunkter"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Fjern alle stoppunkter i filen"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Fjern stoppunkt"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Fjern andre stoppunkter"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Vis lokation"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "ikke markeret"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Luk"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "Udviklerværktøjer er fastgjort til {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "Udviklerværktøjer er frigjort"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Fastgør til bund"

@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Ana e stacionit"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Përdor tastet e shigjetës majtas dhe djathtas për të naviguar tek opsionet"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Poziciono në fund"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Sajti i uebit kërkonte një nënburim nga një rrjet ku mund të kishte qasje vetëm për shkak të pozicionit të privilegjuar të rrjet të përdoruesve të tij. Këto kërkesa i ekspozojnë pajisjet dhe serverët jopublikë në internet, duke rritur rrezikun për një sulm me falsifikimin e një kërkese nga një sajt i jashtëm (CSRF) dhe/ose rrjedhjen e informacioneve. Për t'i minimizuar këto rreziqe, Chrome i zhvlerëson kërkesat për nënburimet jopublike kur nisen nga kontekste jo të sigurta dhe do të fillojë t'i bllokojë ato."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 aktivizohet në mënyrë të parazgjedhur dhe aftësia për ta çaktivizuar atë duke përdorur googIPv6 është planifikuar që të hiqet në M108, pas së cilit do të shpërfillet. Ndalo përdorimin e këtij kufizimi të trashëgimisë."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS nuk mund të ngarkohet nga URL-të e file: përveçse nëse përfundojnë me një shtesë skedari .css."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL në kontekste jo të sigurta është zhvlerësuar dhe do të hiqet së shpejti. Përdor hapësirën ruajtëse të uebit ose bazën e indeksuar të të dhënave."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Specifikimi i karakteristikës overflow: visible në etiketat \"img\", \"video\" dhe \"canvas\" mund të bëjë që të shfaqen përmbajtje vizuale jashtë kufijve të elementit. Shiko https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments është zhvlerësuar. Përdor më mirë instalimin në kohë për përpunuesit e pagesave."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "Thirrja jote PaymentRequest anashkaloi direktivën Content-Security-Policy (CSP) connect-src. Ky anashkalim është zhvlerësuar. Shto identifikuesin e mënyrës së pagesës nga PaymentRequest API (në fushën supportedMethods) te direktiva CSP connect-src."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent është zhvlerësuar. Përdor më mirë një version të standardizuar të navigator.storage."
@@ -2235,13 +2244,16 @@
     "message": "Manifesti i aplikacionit"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Deklarimi i një ikone me purpose: \"any maskable\" nuk rekomandohet. Me gjasë do të duket gabum në disa platforma për shkak të hapësirës së tepërt apo të pakët ndërmjetëse."
+    "message": "Deklarimi i një ikone me \"purpose: \"any maskable\"\" nuk rekomandohet. Ajo mund të duket gabim në disa platforma për shkak të mbushjes së tepërt ose të pakët."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Ngjyra e sfondit"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "ID-ja e aplikacionit të llogaritur"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "ID-ja e sugjeruar {PH1} u kopjua te kujtesa e fragmenteve"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Kopjo në kujtesën e fragmenteve"
@@ -2307,13 +2319,13 @@
     "message": "Manifesti nuk përmban një fushë \"name\" apo \"short_name\""
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifesti nuk përmban një ikonë të përshtatshme - kërkohet formati PNG, SVG ose WebP prej të paktën {PH1}px, atributi sizes duhet të jetë i caktuar dhe atributi purpose, nëse është caktuar, duhet të përfshijë \"any\"."
+    "message": "Manifesti nuk përmban një ikonë të përshtatshme - kërkohet formati PNG ose SVG me të paktën {PH1} pikselë, atributi \"sizes\" duhet të jetë i caktuar dhe atributi \"purpose\", nëse është caktuar, duhet të përfshijë \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "Manifesti specifikon prefer_related_applications: e vërtetë"
+    "message": "Manifesti specifikon \"prefer_related_applications: true\""
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Skedari nisës i manifestit URL nuk është i vlefshëm"
+    "message": "Manifesti \"start_URL\" nuk është i vlefshëm"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Emri"
@@ -2334,7 +2346,7 @@
     "message": "Nuk u dha asnjë ID e \"Dyqanit të Play\""
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Nuk ka ikonë të dhënë me të paktën {PH1} pikselë në formë katrori në PNG, SVG apo format WebP, me atriubutin e qëllimit të pacaktuar ose të caktuar në \"any\"."
+    "message": "Asnjë ikonë e dhënë nuk është të paktën {PH1} pikselë katrorë në formatin PNG ose SVG, me atributin e qëllimit të pacaktuar ose të caktuar në \"any\"."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Shënim."
@@ -2361,7 +2373,7 @@
     "message": "Faqja nuk shërbehet nga një origjinë e sigurt"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications mbështetet vetëm në kanalet Chrome Beta dhe Stable në Android."
+    "message": "\"prefer_related_applications\" mbështetet vetëm në kanalet Chrome Beta dhe Stable në Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Prezantim"
@@ -2400,7 +2412,7 @@
     "message": "Gjerësia për {PH1} {PH2} nuk mund të jetë më shumë se 2,3 herë më e madhe se gjatësia"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src nuk është caktuar"
+    "message": "{PH1} \"src\" nuk është caktuar"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "URL-ja \"{PH2}\" e {PH1} nuk u analizua"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Aktivizuar."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Aktivizuar para nisjes"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Paraqitja paraprake nuk e mbështet ende AudioContext API."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "DidFailLoadWithError ndodhi gjatë paraqitjes paraprake."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Metoda e API-së nuk lejohet"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Shkarkimi është ndaluar te paraqitësi paraprak."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "Marrja e përdorimit të memories dështoi"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Ka një URL efektive"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Kufizimi i faqes joaktive"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "Vetëm navigimi me protokollin HTTP(S) lejohet për paraqitësin paraprak"
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Gabim i certifikatës SSL."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Nisja dështoi"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "Skeda është ndaluar."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Parametri i kërkesës ose pika fundore për përpunuesin e protokollit"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Fut URL-në"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Destinacioni"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Shfaq burimet e zhvilluesit"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Karakteristikë e zhvlerësuar"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Karakteristika joaktive"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Provo ta ndryshosh karakteristikën {EXISTING_PARENT_ELEMENT_RULE} në elementin prind si {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Provo ta caktosh karakteristikën {EXISTING_PARENT_ELEMENT_RULE} në elementin prind si {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Karakteristika {REASON_PROPERTY_DECLARATION_CODE} në elementin prind shmang efektin e {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Karakteristika {REASON_PROPERTY_DECLARATION_CODE} në elementin prind parandalon efektin e {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Provo ta ndryshosh karakteristikën {EXISTING_PROPERTY_DECLARATION} si {TARGET_PROPERTY_DECLARATION}."
+    "message": "Provo ta caktosh karakteristikën {EXISTING_PROPERTY_DECLARATION} në {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Provo ta heqësh {REASON_PROPERTY_DECLARATION_CODE} ose të ndryshosh vlerën e saj."
+    "message": "Provo ta caktosh {PROPERTY_NAME} në diçka tjetër të ndryshme nga {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Karakteristika {REASON_PROPERTY_DECLARATION_CODE} në këtë element shmang efektin e {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Karakteristika {REASON_PROPERTY_DECLARATION_CODE} parandalon efektin e {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Shto klasë të re"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Aktivizo/çaktivizo nëse dëgjuesi i ngjarjeve është pasiv ose bllokues"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Pastroji të gjitha"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Ngarko profilin…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Ruaj profilin…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Hyrjet"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Vendos në pauzë"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Vazhdo"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Shfaq kontributet"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Nis regjistrimin"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Fillo riluajtjen"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Ndalo regjistrimin"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Burimi i bllokuar"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Shfaq problemet"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Performanca"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profilizuesi"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Regjistro"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Shfaq performancën"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Shfaq \"Profilizuesin\""
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Shfaq sesionet e fundit të kronologjisë"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Fillo profilizimin dhe ringarko faqen"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Fillo/ndalo regjistrimin"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Ndalo"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Arsyet e përbërjes"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Titujt e përgjigjes"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Shfaq përkufizimet për anulimet e kokave"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Shfaq më shumë"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Lloji"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Shto kokën"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Zgjidhe këtë opsion nëse burimi dhe dokumenti shërbehen nga i njëjti sajt."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "vlera e kokës"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Zgjidh këtë opsion vetëm nëse një sajt uebi arbitrar, duke përfshirë këtë burim, nuk përbën një rrezik sigurie."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Shto burime nga fusha x_google_ignoreList nga hartat e burimeve te lista e shpërfilljeve"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Sjellja"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Rregullat e personalizuara të përjashtimit:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Korrigjuesi do të kapërcejë skriptet dhe nuk do të ndalojë te përjashtimet e paraqitura prej tyre."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Joaktiv"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "Aktivizo listimin e shpërfilljeve"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "Anulo zgjedhjen për të çaktivizuar të gjitha listimet e shpërfilljeve"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Lista e shpërfilljeve të kuadrit"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Lista e shpërfilljeve"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Rregullat e përgjithshme të përjashtimit:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Shto sistemet e shkrimit të përmbajtjes në listën e shpërfilljeve"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Shpërfilli skriptet, emrat e të cilëve përputhen me \"{PH1}\""
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Nuk ka motive liste shpërfilljeje"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Motivi"
+    "message": "Shto një motiv"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Motivi tashmë ekziston"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "u përzgjodh"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Kushti: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Çaktivizo pikat e ndërprerjes në skedar"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Modifiko pikën e ndërprerjes"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Aktivizo të gjitha pikat e ndërprerjes në skedar"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "i përzier"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Pika e evidencës: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Vendos në pauzë në raste përjashtimesh të kapura"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Vendos në pauzë në raste përjashtimi"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Hiq të gjitha pikat e ndërprerjes"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Hiq të gjitha pikat e ndërprerjes në skedar"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Hiq pikën e ndërprerjes"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Hiq pikat e tjera të ndërprerjes"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Shfaq vendndodhjen"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "e pazgjedhur"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Mbyll"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools është pozicionuar {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "DevTools është hequr nga pozicioni"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Poziciono në fund"

@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Dok samping"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Gunakan tombol panah kiri dan kanan untuk melihat opsi"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Kaitkan ke bawah"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Situs meminta subresource dari jaringan yang hanya dapat diakses karena posisi jaringan istimewa penggunanya. Permintaan ini mengekspos perangkat dan server non-publik ke internet, yang meningkatkan risiko serangan pemalsuan permintaan lintas situs (CSRF), dan/atau kebocoran informasi. Untuk mengurangi risiko tersebut, Chrome menghentikan permintaan ke subresource non-publik saat dimulai dari konteks yang tidak aman, dan akan mulai memblokirnya."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 diaktifkan secara default dan kemampuan untuk menonaktifkannya menggunakan googIPv6 ditargetkan akan dihapus di M108, setelah itu akan diabaikan. Harap berhenti menggunakan batasan lama ini."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS tidak dapat dimuat dari URL file: kecuali jika diakhiri dengan ekstensi file .css."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL dalam konteks yang tidak aman tidak digunakan lagi dan akan segera dihapus. Gunakan Penyimpanan Web atau Database yang Diindeks."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Menentukan overflow: visible pada tag img, video, dan canvas dapat menyebabkannya menghasilkan konten visual di luar batas elemen. Lihat https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments tidak digunakan lagi. Sebagai gantinya, gunakan penginstalan tepat waktu untuk pengendali pembayaran."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "Panggilan PaymentRequest mengabaikan perintah connect-src Kebijakan Keamanan Konten (CSP). Pengabaian ini tidak digunakan lagi. Tambahkan ID metode pembayaran dari PaymentRequest API (di kolom supportedMethods) ke perintah connect-src CSP."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent tidak digunakan lagi. Sebagai gantinya, gunakan navigator.storage standar."
@@ -2235,13 +2244,16 @@
     "message": "Manifes Aplikasi"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Mendeklarasikan ikon dengan purpose: \"any maskable\" tidak disarankan. Kemungkinan terlihat salah pada beberapa platform karena terlalu banyak atau terlalu sedikit padding."
+    "message": "Mendeklarasikan ikon dengan 'purpose: \"any maskable\"' tidak disarankan. Kemungkinan terlihat salah pada beberapa platform karena terlalu banyak atau terlalu sedikit padding."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Warna latar belakang"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "ID Aplikasi Komputasi"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "Menyalin ID {PH1} yang disarankan ke papan klip"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Salin ke papan klip"
@@ -2307,13 +2319,13 @@
     "message": "Manifes tidak berisi kolom 'name' atau 'short_name'"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifes tidak berisi ikon yang cocok - perlu format PNG, SVG, atau WebP minimal {PH1}px, atribut sizes harus disetel, dan atribut purpose harus menyertakan \"any\" jika disetel."
+    "message": "Manifes tidak berisi ikon yang cocok - perlu format PNG atau SVG minimal {PH1} px, atribut 'sizes' harus disetel, dan atribut 'purpose', jika disetel, harus menyertakan 'any'."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "Manifes menentukan prefer_related_applications: benar (true)"
+    "message": "Manifes menentukan 'prefer_related_applications: benar (true)'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "URL mulai manifes tidak valid"
+    "message": "Manifes 'start_URL' tidak valid"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Nama"
@@ -2334,7 +2346,7 @@
     "message": "ID Play Store tidak ada"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Tidak ada ikon yang disediakan berukuran minimal {PH1} piksel persegi dalam format PNG, SVG atau WebP, dengan atribut tujuan yang tidak disetel atau disetel ke \"any\"."
+    "message": "Tidak ada ikon yang disediakan berukuran minimal {PH1} piksel persegi dalam format PNG atau SVG, dengan atribut tujuan yang tidak disetel atau disetel ke 'any'."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Catatan:"
@@ -2361,7 +2373,7 @@
     "message": "Halaman tidak ditayangkan dari asal yang aman"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications hanya didukung di saluran Beta dan Stabil Chrome di Android."
+    "message": "'prefer_related_applications' hanya didukung di saluran Beta dan Stabil Chrome di Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Presentasi"
@@ -2400,7 +2412,7 @@
     "message": "Lebar {PH1} {PH2} tidak boleh melebihi 2,3 kali lipat tingginya"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src tidak ditetapkan"
+    "message": "{PH1} 'src' tidak ditetapkan"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "URL {PH1} \"{PH2}\" gagal diuraikan"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Diaktifkan."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Diaktifkan sebelum dimulai"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Pra-rendering belum mendukung AudioContext API."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "DidFailLoadWithError terjadi selama pra-rendering."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Metode API tidak diizinkan"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Download tidak diizinkan di Pra-rendering."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "Gagal mendapatkan penggunaan memori"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Memiliki URL yang efektif"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Pembatasan halaman tidak aktif"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "Hanya navigasi HTTP(S) yang diizinkan untuk Pra-render."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Error sertifikat SSL."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Proses mulai gagal"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "Tab dihentikan."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Endpoint atau parameter kueri untuk pengendali protokol"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Masukkan URL"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Tujuan"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Tampilkan Referensi Developer"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Properti yang tidak digunakan lagi"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Properti tidak aktif"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Coba ubah properti {EXISTING_PARENT_ELEMENT_RULE} pada induk ke {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Coba tetapkan properti {EXISTING_PARENT_ELEMENT_RULE} pada induk ke {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Properti {REASON_PROPERTY_DECLARATION_CODE} pada elemen induk mengabaikan efek {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Properti {REASON_PROPERTY_DECLARATION_CODE} pada elemen induk mencegah {AFFECTED_PROPERTY_DECLARATION_CODE} berpengaruh."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Coba ubah properti {EXISTING_PROPERTY_DECLARATION} menjadi {TARGET_PROPERTY_DECLARATION}."
+    "message": "Coba tetapkan properti {EXISTING_PROPERTY_DECLARATION} ke {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Coba hapus {REASON_PROPERTY_DECLARATION_CODE} atau ubah nilainya."
+    "message": "Coba tetapkan {PROPERTY_NAME} ke selain {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Properti {REASON_PROPERTY_DECLARATION_CODE} pada elemen ini mengabaikan efek {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Properti {REASON_PROPERTY_DECLARATION_CODE} mencegah {AFFECTED_PROPERTY_DECLARATION_CODE} berpengaruh."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Tambahkan class baru"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Tombol alih jika pemroses peristiwa pasif atau memblokir"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Hapus semua"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Muat profil…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Simpan profil…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Input"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Jeda"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Lanjutkan"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Tampilkan Input"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Mulai merekam"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Mulai memutar ulang"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Berhenti merekam"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Resource yang Diblokir"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Tampilkan Masalah"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Performa"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profiler"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Rekam"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Tampilkan Performa"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Tampilkan Profiler"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Tampilkan sesi linimasa saat ini"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Mulai membuat profil dan muat ulang halaman"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Mulai/berhenti merekam"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Hentikan"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Menggabungkan Alasan"
@@ -7803,7 +7815,7 @@
     "message": "Data"
   },
   "panels/network/ResourceWebSocketFrameView.ts | enterRegex": {
-    "message": "Masukkan ekspresi reguler, misal: (web)?socket"
+    "message": "Masukkan regex, misal: (web)?socket"
   },
   "panels/network/ResourceWebSocketFrameView.ts | filter": {
     "message": "Filter"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Header Respons"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Tampilkan definisi penggantian header"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Tampilkan lainnya"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Jenis"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Tambahkan header"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Pilih opsi ini jika resource dan dokumen dikirimkan dari situs yang sama."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "nilai header"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Hanya pilih opsi ini jika situs arbitrer yang menyertakan resource ini tidak menimbulkan risiko keamanan."
@@ -8922,7 +8946,7 @@
     "message": "Menelusuri …"
   },
   "panels/search/SearchView.ts | useRegularExpression": {
-    "message": "Gunakan Ekspresi Reguler"
+    "message": "Gunakan Regular Expression"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} dengan {PH2}"
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Tambahkan sumber dari kolom x_google_ignoreList dari peta sumber ke daftar yang diabaikan"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Perilaku"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Aturan pengecualian kustom:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Debugger akan melewati skrip dan tidak akan berhenti pada pengecualian yang dilempar oleh debugger."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Nonaktif"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "Aktifkan Abaikan Listingan"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "Hapus centang untuk menonaktifkan semua listingan yang diabaikan"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Daftar Framework yang Diabaikan"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Daftar Pengabaian"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Aturan pengecualian umum:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Tambahkan skrip konten ke daftar yang diabaikan"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Abaikan skrip yang namanya cocok dengan \"{PH1}\""
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Tidak ada pola daftar pengabaian"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Pola"
+    "message": "Tambahkan Pola"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Pola sudah ada"
@@ -9516,7 +9540,7 @@
     "message": "Pola tidak boleh kosong"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
-    "message": "Pola harus berupa ekspresi reguler yang valid"
+    "message": "Pola harus berupa regular expression yang valid"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "Daftar lengkap gestur dan pintasan keyboard DevTools"
@@ -10068,7 +10092,7 @@
     "message": "Hapus titik henti sementara lainnya"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
-    "message": "Ungkap lokasi"
+    "message": "Tampilkan lokasi"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
     "message": "Hit titik henti sementara {PH1}"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "dicentang"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Kondisi: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Nonaktifkan semua titik henti sementara dalam file"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Edit titik henti sementara"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Aktifkan semua titik henti sementara dalam file"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "campuran"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Logpoint: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Jeda pada pengecualian yang tertangkap"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Dijeda pada pengecualian"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Hapus semua titik henti sementara"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Hapus semua titik henti sementara dalam file"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Hapus titik henti sementara"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Hapus titik henti sementara lainnya"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Tampilkan lokasi"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "tidak dicentang"
@@ -12290,6 +12350,12 @@
   "ui/legacy/DockController.ts | close": {
     "message": "Tutup"
   },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools dikaitkan ke {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "Kaitan DevTools dilepas"
+  },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Kaitkan ke bawah"
   },
@@ -12429,7 +12495,7 @@
     "message": "Telusuri sebelumnya"
   },
   "ui/legacy/SearchableView.ts | useRegularExpression": {
-    "message": "Gunakan Ekspresi Reguler"
+    "message": "Gunakan Regular Expression"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Satu atau beberapa setelan telah berubah sehingga perlu pemuatan ulang untuk diterapkan."

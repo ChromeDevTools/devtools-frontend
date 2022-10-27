@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "ჩამაგრება გვერდზე"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "ვარიანტებზე გადასასვლელად გამოიყენეთ ღილაკები მარცხნივ ან მარჯვნივ მიმართული ისრებით"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "ქვემოთ ჩამაგრება"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "ვებსაიტმა მოითხოვა ქვერესურსი ქსელიდან, რომელზეც მხოლოდ წვდომა შეუძლია, ქსელში მისი მომხმარებლების მიერ პრივილეგირებული პოზიციის გამო. ეს მოთხოვნები ინტერნეტში ამჟღავნებს არასაჯარო მოწყობილობებსა და სერვერებს, რაც ზრდის საიტებსშორისი მოთხოვნის გაყალბებით (CSRF) თავდასხმის ან/და ინფორმაციის გაჟონვის რისკს. ამ რისკის შემცირების მიზნით, Chrome აუქმებს არასაჯარო ქვერესურსების მიმართ იმ მოთხოვნებს, რომლებიც ინიციირებულია არაუსაფრთხო კონტექსტებიდან, და დაიწყებს მათ დაბლოკვას."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 ჩართულია ნაგულისხმევად, ხოლო googIPv6-ის მეშვეობით მისი გათიშვის შესაძლებლობა გაუქმდება M108-ში, რის შემდეგაც ის იგნორირებული იქნება. გთხოვთ, შეწყვიტოთ ამ მოძველებული შეზღუდვის გამოყენება."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS ვერ ჩაიტვირთება file: URL-ებიდან, თუ ისინი არ ბოლოვდება ფაილების .css გაფართოებით."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "დაუცველ კონტექსტებში WebSQL-ის გამოყენების შესაძლებლობა მოძველდა და მალე გაუქმდება. გამოიყენეთ ვებსაცავი ან ინდექსირებული მონაცემთა ბაზა."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "img, video და canvas თეგებისთვის „overflow: visible“-ის განსაზღვრით მათ მიერ, შესაძლოა, შეიქმნას ვიზუალური კონტენტი, რომელიც ელემენტების საზღვრებს სცდება. იხ. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments მოძველდა. გთხოვთ, სანაცვლოდ გამოიყენოთ JIT (just-in-time) ინსტალაცია გადახდის დამმუშავებლებისთვის."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "თქვენმა „PaymentRequest“ გამოძახებამ უგულებელყო Content-Security-Policy-ს (CSP) „connect-src“ დირექტივა. უგულებელყოფის ეს შესაძლებლობა მოძველდა. გთხოვთ, CSP-ში თქვენს „connect-src“ დირექტივას დაამატოთ გადახდის მეთოდის იდენტიფიკატორი PaymentRequest API-დან (ველში „supportedMethods“)."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent მოძველდა. გთხოვთ, სანაცვლოდ, გამოიყენოთ სტანდარტიზებული navigator.storage."
@@ -2235,13 +2244,16 @@
     "message": "აპის აღწერის ფაილი"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "ხატულის purpose: \"any maskable\"-ით გამოცხადება არ არის რეკომენდებული. მოსალოდნელია, რომ ის არასწორად გამოჩნდება ზოგიერთ პლატფორმაზე არასაკმარისი ან ზედმეტი დაშორების გამო."
+    "message": "ხატულის „purpose: \"any maskable\"“-ით გამოცხადება არ არის რეკომენდებული. მოსალოდნელია, რომ ის არასწორად გამოჩნდება ზოგიერთ პლატფორმაზე არასაკმარისი ან ზედმეტი დაშორების გამო."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "ფონის ფერი"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "აპის გამოთვლილი ID"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "შემოთავაზებული ID {PH1} დაკოპირდა გაცვლის ბუფერში"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "გაცვლის ბუფერში კოპირება"
@@ -2307,13 +2319,13 @@
     "message": "აღწერის ფაილი არ შეიცავს „name“ ან „short_name“ ველს"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "აღწერის ფაილი არ შეიცავს შესაფერის ხატულას — საჭიროა PNG, SVG ან WebP ფორმატი მინიმუმ {PH1} პიქსელით, ატრიბუტი „sizes“ უნდა იყოს განსაზღვრული, ხოლო ატრიბუტი „purpose“, თუ განსაზღვრულია, უნდა შეიცავდეს ატრიბუტს „\"any\"“."
+    "message": "აღწერის ფაილი არ შეიცავს შესაფერის ხატულას — საჭიროა PNG ან SVG ფორმატი მინიმუმ {PH1} პიქსელით, ატრიბუტი „sizes“ უნდა იყოს განსაზღვრული, ხოლო ატრიბუტი „purpose“ (თუ განსაზღვრულია) უნდა შეიცავდეს ატრიბუტს „any“."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "აღწერის ფაილი განსაზღვრავს prefer_related_applications:-ს true"
+    "message": "აღწერის ფაილი განსაზღვრავს „prefer_related_applications“-ს: true"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "აღწერის ფაილის დამწყები URL არასწორია"
+    "message": "აღწერის ფაილი „start_URL“ არასწორია"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "სახელი"
@@ -2334,7 +2346,7 @@
     "message": "Play Store-ის ID მოწოდებული არ არის"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "მოწოდებული ხატულებიდან არცერთი არ არის მინიმუმ {PH1}-პიქსელიანი კვადრატი PNG, SVG ან WebP ფორმატში, მიზნის განუსაზღვრელი ან \"any\" ატრიბუტით."
+    "message": "მოწოდებული ხატულებიდან არცერთი არ არის მინიმუმ {PH1}-პიქსელიანი კვადრატი PNG ან SVG ფორმატში, მიზნის განუსაზღვრელი ან „any“ ატრიბუტით."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "შენიშვნა:"
@@ -2361,7 +2373,7 @@
     "message": "გვერდი არ არის მოწოდებული დაცული წყაროდან"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications მხარდაჭერილია მხოლოდ Chrome ბეტაში და Android-ის სტაბილურ არხებში."
+    "message": "„prefer_related_applications“ მხარდაჭერილია მხოლოდ Chrome ბეტაში და Android-ის სტაბილურ არხებში."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "პრეზენტაცია"
@@ -2400,7 +2412,7 @@
     "message": "{PH1} {PH2} სიგანე არ უნდა იყოს სიმაღლეზე 2,3-ჯერ მეტით გრძელი"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src დაყენებული არ არის"
+    "message": "{PH1} „src“ განსაზღვრული არ არის"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "{PH1}ს URL „{PH2}“ ვერ გაირჩა"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "გააქტიურებულია."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "გააქტიურდა გაშვებამდე"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "წინასწარი ვიზუალიზაცია ჯერჯერობით მხარდაუჭერელია AudioContext API-ში."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "წინასწარი ვიზუალიზაციისას მოხდა DidFailLoadWithError."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "დაუშვებელი API მეთოდი"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "ჩამოტვირთვა წინასწარი ვიზუალიზაციისას დაუშვებელია."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "მეხსიერების გამოყენების მიღება ვერ მოხერხდა."
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "აქვს ეფექტური URL"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "არააქტიური გვერდების შეზღუდვა"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "წინასწარი ვიზუალიზაციისთვის დაშვებულია მხოლოდ HTTP(S) ნავიგაცია."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL სერტიფიკატის შეცდომა."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "გაშვება ვერ მოხერხა"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "ჩანართი გაჩერებულია."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "მოთხოვნის პარამეტრი ან საბოლოო წერტილი პროტოკოლების დამმუშავებლისთვის"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "შეიყვანეთ URL"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "დანიშნულების ადგილი"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "დეველოპერთა რესურსების ჩვენება"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "მოძველებული თვისება"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "უმოქმედო თვისება"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "ცადეთ, შეცვალოთ „{EXISTING_PARENT_ELEMENT_RULE}“ თვისება ზედა ელემენტზე „{TARGET_PARENT_ELEMENT_RULE}“-ით."
+    "message": "ცადეთ, ზედა ელემენტზე „{EXISTING_PARENT_ELEMENT_RULE}“ თვისების მნიშვნელობად განსაზღვროთ „{TARGET_PARENT_ELEMENT_RULE}“."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "თვისება „{REASON_PROPERTY_DECLARATION_CODE}“ ზედა ელემენტზე უგულებელყოფს „{AFFECTED_PROPERTY_DECLARATION_CODE}“-ის მოქმედებას."
+    "message": "თვისება „{REASON_PROPERTY_DECLARATION_CODE}“ ზედა ელემენტზე ძალას უკარგავს „{AFFECTED_PROPERTY_DECLARATION_CODE}“-ს."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "ცადეთ, შეცვალოთ „{EXISTING_PROPERTY_DECLARATION}“ თვისება „{TARGET_PROPERTY_DECLARATION}“-ით."
+    "message": "ცადეთ, „{EXISTING_PROPERTY_DECLARATION}“ თვისების მნიშვნელობად განსაზღვროთ „{TARGET_PROPERTY_DECLARATION}“."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "ცადეთ, ამოშალოთ {REASON_PROPERTY_DECLARATION_CODE} ან შეცვალოთ მისი მნიშვნელობა."
+    "message": "ცადეთ, „{PROPERTY_NAME}“-ისთვის აირჩიოთ „{PROPERTY_VALUE}“-ისგან განსხვავებული მნიშვნელობა."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "თვისება „{REASON_PROPERTY_DECLARATION_CODE}“ ამ ელემენტზე უგულებელყოფს „{AFFECTED_PROPERTY_DECLARATION_CODE}“-ის მოქმედებას."
+    "message": "„{REASON_PROPERTY_DECLARATION_CODE}“ თვისება ძალას უკარგავს {AFFECTED_PROPERTY_DECLARATION_CODE}-ს."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "ახალი კლასის დამატება"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "გადართვა მოვლენათა მსმენელის პასიურ ან დამბლოკავ რეჟიმებს შორის"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "ყველაფრის გასუფთავება"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "პროფილის ჩატვირთვა…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "პროფილის შენახვა…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "შენატანები"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "პაუზა"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "განახლება"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "შენატანების ჩვენება"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "ჩაწერის დაწყება"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "ხელახლა დაკვრის დაწყება"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "ჩაწერის შეწყვეტა"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "დაბლოკილი რესურსი"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "პრობლემების ჩვენება"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "წარმადობა"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "პროფაილერი"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "ჩაწერა"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "წარმადობის ჩვენება"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "პროფაილერის ჩვენება"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "ქრონოლოგიის ბოლოდროინდელი სესიების ჩვენება"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "პროფილირების დაწყება და გვერდის გადატვირთვა"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "ჩაწერის დაწყება/შეწყვეტა"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "შეწყვეტა"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "შედგენის მიზეზები"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "პასუხების ჰედერები"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "ჰედერის უგულებელყოფის განსაზღვრებების გამოჩენა"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "მეტის ჩვენება"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "ტიპი"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "ჰედერის დამატება"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "აირჩიეთ ეს ვარიანტი, თუ რესურსი და დოკუმენტი უზრუნველყოფილია ერთი და იმავე საიტიდან."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "ჰედერის სახელი"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "ჰედერის მნიშვნელობა"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "აირჩიეთ ეს ვარიანტი, თუ არბიტრარული ვებსაიტი (ამ რესურსის ჩათვლით), არ უქმნის რისკს უსაფრთხოებას."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "დაამატეთ წყაროები იგნორირებულთა სიაში წყაროების რუკების x_google_ignoreList ველიდან"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "ქცევა"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "გარიცხვის მორგებული წესები:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "შეცდომების გამმართველი გამოტოვებს სცენარებს და არ შეჩერდება მათ მიერ მითითებულ გამონაკლისებზე."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "გათიშული"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "იგნორირებულთა სიის ჩართვა"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "მოხსენით მონიშვნა, ყველა იგნორირებულთა სია რომ გათიშოთ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "გარემოს იგნორირებულთა სია"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "იგნორირებულთა სია"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "გარიცხვის ზოგადი წესები:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "კონტენტის სცენარების დამატება იგნორირებულთა სიაში"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "იმ სცენარების იგნორირება, რომელთა სახელებიც ემთხვევა „{PH1}“-ს"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "იგნორირებულთა სიის ნიმუშები არ არის"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "ნიმუში"
+    "message": "ნიმუშის დამატება"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "ნიმუში უკვე არსებობს"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "მონიშნული"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "მდგომარეობა: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "ფაილში წყვეტის ყველა წერტილის გათიშვა"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "წყვეტის წერტილის რედაქტირება"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "ფაილში წყვეტის ყველა წერტილის ჩართვა"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "შერეული"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "ჟურნალის წერტილი: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "გამოვლენილ გამონაკლისებზე დაპაუზება"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "გამონაკლისებზე დაპაუზება"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "წყვეტის ყველა წერტილის ამოშლა"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "ფაილში წყვეტის ყველა წერტილის ამოშლა"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "წყვეტის წერტილის ამოშლა"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "წყვეტის სხვა წერტილების ამოშლა"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "მდებარეობის გამოჩენა"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "მოუნიშნავი"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "დახურვა"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools ჩამაგრებულია {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "DevTools-ის ჩამაგრება მოხსნილია"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "ქვემოთ ჩამაგრება"

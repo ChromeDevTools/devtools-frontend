@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Docka sida"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Navigera mellan alternativen med vänster och höger piltangent."
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Docka längst ned"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Webbplatsen begärde en underresurs från ett nätverk som den enbart hade åtkomst till på grund av att användaren hade särskild nätverksbehörighet. Med dessa förfrågningar får enheter och servrar som inte är offentliga åtkomst till internet, vilket ökar risken för bedrägerier med begäran mellan webbplatser och/eller läckage av uppgifter. I syfte att minska dessa risker fasar Chrome ut förfrågningar till icke-offentliga underresurser som har startats i osäkra kontexter och kommer att blockera dem."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 är aktiverat som standard och möjligheten att inaktivera det med hjälp av googIPv6 tas bort i M108. Därefter ignoreras begränsningen. Sluta använda denna äldre begränsning."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS går inte att läsas in från file:-webbadresser om de inte slutar med ett .css-filnamnstillägg."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL i osäkra sammanhang har fasats ut och kommer snart att tas bort. Använd webblagring eller indexerade databaser."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Om du anger overflow: visible för img-, video- och canvas-taggar kan det leda till att visuellt innehåll visas utanför elementets gränser. Läs mer på https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments är utfasat. Använd just-in-time-installation för betalningshanterare i stället."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "PaymentRequest-anropet åsidosatte CSP-direktivet connect-src. Denna åsidosättning är utfasad. Lägg till betalningsmetodens identifierare från PaymentRequest API (i fältet supportedMethods) i CSP-direktivet connect-src."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent är utfasad. Använd navigator.storage i stället."
@@ -2243,6 +2252,9 @@
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Beräknat app-id"
   },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "Det föreslagna id:t {PH1} har kopierats till Urklipp"
+  },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Kopiera till urklipp"
   },
@@ -2307,13 +2319,13 @@
     "message": "Manifestet innehåller inte fältet name eller short_name"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest innehåller ingen lämplig ikon – PNG-, SVG- eller WebP-format på minst {PH1} px krävs, attributet sizes måste anges och om attributet purpose har angetts måste det innehålla \"any\" ."
+    "message": "Manifestet innehåller ingen lämplig ikon – PNG- eller SVG-format på minst {PH1} px krävs, sizes-attributet måste anges, och om purpose-attributet har angetts måste det innehålla any."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifestet specificerar prefer_related_applications: sant"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Manifestets start-URL är inte giltig"
+    "message": "Manifestet start_URL är inte giltigt"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Namn"
@@ -2334,7 +2346,7 @@
     "message": "Inget Play Butik-id har tillhandahållits"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Ingen av de ikoner som tillhandahålls är minst {PH1} px och i PNG-, SVG- eller WebP-format med purpose-attributet utan inställning eller inställt på \"any\"."
+    "message": "Ingen av de ikoner som tillhandahålls är minst {PH1} px och i PNG- eller SVG-format med purpose-attributet utan inställning eller inställt på any."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Obs!"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Aktiverad."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Aktiverades före start"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Förrendering har inte stöd för AudioContext API ännu."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "DidFailLoadWithError uppstod under förrendering."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Otillåten API-metod"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Nedladdning tillåts inte vid förrendering."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "Det gick inte att hämta minnesanvändningen"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Har effektiv webbadress"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Inaktiv sidbegränsning"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "Endast HTTP(S)-navigering tillåts för förrendering."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL-certifikatfel."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Det gick inte att starta"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "Fliken har stoppats."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Frågeparameter eller slutpunkt för protokollhanteraren"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Ange webbadress"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Mål"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Visa utvecklarresurser"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Utfasad egenskap"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Inaktiv egenskap"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Testa att ändra egenskapen {EXISTING_PARENT_ELEMENT_RULE} i elementet som är överordnat {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Testa att ställa in egenskapen {EXISTING_PARENT_ELEMENT_RULE} i elementet som är överordnat {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Egenskapen {REASON_PROPERTY_DECLARATION_CODE} i det överordnade elementet kringgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Egenskapen {REASON_PROPERTY_DECLARATION_CODE} i det överordnade elementet förhindrar att {AFFECTED_PROPERTY_DECLARATION_CODE} har någon effekt."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Testa att ändra egenskapen {EXISTING_PROPERTY_DECLARATION} till {TARGET_PROPERTY_DECLARATION}."
+    "message": "Testa att ställa in egenskapen {EXISTING_PROPERTY_DECLARATION} på {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Testa att ta bort {REASON_PROPERTY_DECLARATION_CODE} eller ändra dess värde."
+    "message": "Testa att ställa in {PROPERTY_NAME} på något annat än {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Egenskapen {REASON_PROPERTY_DECLARATION_CODE} i detta element kringgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Egenskapen {REASON_PROPERTY_DECLARATION_CODE} förhindrar att {AFFECTED_PROPERTY_DECLARATION_CODE} har någon effekt."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Lägg till ny klass"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Ange om händelselyssnaren är passiv eller blockerar"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Rensa alla"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Läs in profil …"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Spara profil …"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Inmatningar"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Pausa"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Återuppta"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Visa inmatningar"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Börja spela in"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Starta uppspelning igen"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Sluta spela in"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Spärrad resurs"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Visa problem"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Prestanda"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profilerare"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Spela in"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Visa prestanda"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Visa profilerare"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Visa senaste tidslinjesessioner"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Starta profilering och läs in sidan igen"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Börja/sluta spela in"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Stoppa"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Orsaker till sammansättning"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Svarshuvuden"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Visa definitioner av huvudåsidosättning"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Visa mer"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Typ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Lägg till huvud"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Välj detta alternativ om resursen och dokumentet visas från samma webbplats."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "huvudets värde"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Välj endast det här alternativet om en slumpmässig webbplats med den här resursen inte utgör en säkerhetsrisk."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Lägg till källor från fältet x_google_ignoreList i källkartorna i ignoreringslistan"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Beteende"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Anpassade undantagsregler:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Felsökningsfunktionen hoppar igenom skripten och stannar inte vid undantag från dem."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Inaktiverad"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "Aktivera Ignorera uppgifter"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "Avmarkera för att helt inaktivera Ignorera uppgifter"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Ignoreringslista för ramverk"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Ignorera lista"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Allmänna undantagsregler:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Lägg till innehållsskript om du vill ignorera lista"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Ignorera skript vars namn matchar {PH1}"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Inga mönster för ignoreringslista"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Mönster"
+    "message": "Lägg till mönster"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Mönstret finns redan"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "markerad"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Villkor: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Inaktivera alla brytpunkter i filen"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Redigera brytpunkt"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Aktivera alla brytpunkter i filen"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "blandat"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Loggpunkt: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Pausa vid påträffade undantag"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Pausa vid undantag"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Ta bort alla brytpunkter"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Ta bort alla brytpunkter i filen"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Ta bort brytpunkt"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Ta bort andra brytpunkter"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Visa plats"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "avmarkerad"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Stäng"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "Verktyg för programmerare har dockats till {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "Verktyg för programmerare har kopplats från"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Docka längst ned"

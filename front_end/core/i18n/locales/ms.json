@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Dokkan ke tepi"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Gunakan kekunci anak panah ke kiri dan ke kanan untuk menavigasi pilihan"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Dokkan ke bawah"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Laman web meminta subsumber daripada rangkaian yang hanya boleh diakses kerana kedudukan rangkaian istimewa penggunanya. Permintaan ini mendedahkan peranti bukan umum dan pelayan kepada Internet, meningkatkan risiko serangan pemalsuan permintaan rentas laman (CSRF) dan/atau kebocoran maklumat. Untuk mengurangkan risiko ini, Chrome menamatkan permintaan kepada subsumber bukan umum apabila dimulakan daripada konteks tidak selamat dan akan mula menyekatnya."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 didayakan secara lalai dan keupayaan untuk melumpuhkan IPv6 menggunakan googIPv6 disasarkan untuk dialih keluar dalam M108, yang kemudiannya akan diabaikan. Sila berhenti menggunakan kekangan lama ini."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS tidak boleh dimuatkan daripada URL file: melainkan mereka tamat dalam sambungan fail .css."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL dalam konteks tidak selamat ditamatkan dan akan dialih keluar tidak lama lagi. Sila gunakan Storan Web atau Pangkalan Data Berindeks."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Menentukan overflow: visible pada tag img, video dan kanvas boleh menyebabkan penghasilan kandungan visual di luar sempadan elemen. Lihat https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments telah ditamatkan. Sila gunakan pemasangan tepat pada masanya untuk pengendali pembayaran."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "Panggilan PaymentRequest anda telah memintas arahan connect-src Dasar Keselamatan Kandungan (CSP). Pintasan ini telah ditamatkan. Sila tambahkan pengecam kaedah pembayaran daripada API PaymentRequest (dalam medan supportedMethods) pada arahan connect-src CSP anda."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent telah ditamatkan. Sila gunakan navigator.storage standard."
@@ -2235,13 +2244,16 @@
     "message": "Manifes Apl"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Tindakan mengisytiharkan ikon dengan purpose: \"any maskable\" adalah tidak digalakkan. Ikon itu mungkin kelihatan tidak betul pada sesetengah platform kerana terlalu banyak atau terlalu sedikit pelapik."
+    "message": "Tindakan mengisytiharkan ikon dengan 'purpose: \"any maskable\"' adalah tidak digalakkan. Ikon itu mungkin kelihatan tidak betul pada sesetengah platform kerana terlalu banyak atau terlalu sedikit pelapik."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Warna latar belakang"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "ID Apl yang Dihitung"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "ID yang dicadangkan {PH1} disalin ke papan keratan"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Salin ke papan keratan"
@@ -2307,13 +2319,13 @@
     "message": "Manifes tidak mengandungi medan 'name' atau 'short_name'"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifes tidak mengandungi ikon yang sesuai - format PNG, SVG atau WebP dengan saiz sekurang-kurangnya {PH1} piksel diperlukan, atribut sizes mesti ditetapkan, dan atribut purpose, jika ditetapkan, mesti merangkumi \"any\"."
+    "message": "Manifes tidak mengandungi ikon yang sesuai - format PNG atau SVG dengan saiz sekurang-kurangnya {PH1}piksel diperlukan, atribut 'sizes' mesti ditetapkan dan atribut 'purpose', jika ditetapkan, mesti merangkumi 'any'."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "Manifes menyatakan prefer_related_applications: benar"
+    "message": "Manifes menyatakan 'prefer_related_applications: benar'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Manifes yang bermula dengan URL tidak sah"
+    "message": "Manifes 'start_URL' tidak sah"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Nama"
@@ -2334,7 +2346,7 @@
     "message": "Tiada ID Gedung Play diberikan"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Ikon yang dibekalkan hendaklah tidak bersaiz sekurang-kurangnya {PH1} piksel persegi dalam format PNG, SVG atau WebP, dengan atribut tujuan tidak ditetapkan atau ditetapkan kepada \"any\"."
+    "message": "Ikon yang dibekalkan hendaklah tidak bersaiz sekurang-kurangnya {PH1} piksel persegi dalam format PNG atau SVG dengan atribut tujuan tidak ditetapkan atau ditetapkan kepada 'any'."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Nota:"
@@ -2361,7 +2373,7 @@
     "message": "Halaman tidak disajikan daripada asalan yang selamat"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications hanya disokong pada saluran Chrome Beta dan Stabil pada Android."
+    "message": "'prefer_related_applications' hanya disokong pada saluran Chrome Beta dan Stabil pada Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Pembentangan"
@@ -2400,7 +2412,7 @@
     "message": "Lebar {PH1} {PH2} tidak boleh melebihi 2.3 kali tinggi imej ini"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src tidak ditetapkan"
+    "message": "{PH1} 'src' tidak ditetapkan"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "URL {PH1} ''{PH2}'' gagal dihuraikan"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Diaktifkan."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Diaktifkan sebelum dimulakan"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Prapemaparan belum menyokong AudioContext API lagi."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "DidFailLoadWithError berlaku semasa prapemaparan."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Kaedah API yang tidak dibenarkan"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Muat turun tidak dibenarkan dalam Prapemaparan."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "Gagal mendapatkan penggunaan memori"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Mempunyai URL yang berkesan"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Sekatan halaman tidak aktif"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "Navigasi HTTP(S) sahaja dibenarkan untuk Prapemaparan."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Ralat sijil SSL."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Permulaan gagal"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "Tab dihentikan."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Parameter pertanyaan atau titik akhir untuk pengendali protokol"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Masukkan URL"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Destinasi"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Paparkan Sumber Pembangun"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Sifat Ditamatkan"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Sifat tidak aktif"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Cuba tukarkan sifat {EXISTING_PARENT_ELEMENT_RULE} pada induk kepada {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Cuba tetapkan sifat {EXISTING_PARENT_ELEMENT_RULE} pada induk kepada {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Sifat {REASON_PROPERTY_DECLARATION_CODE} pada elemen induk memintas kesan daripada {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Sifat {REASON_PROPERTY_DECLARATION_CODE} pada elemen induk menghalang {AFFECTED_PROPERTY_DECLARATION_CODE} daripada mempunyai kesan."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Cuba tukarkan sifat {EXISTING_PROPERTY_DECLARATION} kepada {TARGET_PROPERTY_DECLARATION}."
+    "message": "Cuba tetapkan sifat {EXISTING_PROPERTY_DECLARATION} kepada {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Cuba alih keluar {REASON_PROPERTY_DECLARATION_CODE} atau ubah nilainya."
+    "message": "Cuba tetapkan {PROPERTY_NAME} kepada sesuatu selain {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Sifat {REASON_PROPERTY_DECLARATION_CODE} pada elemen memintas kesan daripada {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Sifat {REASON_PROPERTY_DECLARATION_CODE} ini menghalang {AFFECTED_PROPERTY_DECLARATION_CODE} daripada mempunyai kesan."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Tambah kelas baharu"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Togol sama ada pendengar peristiwa adalah pasif atau menyekat"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Kosongkan semua"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Muatkan profil…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Simpan profil…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Input"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Jeda"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Sambung semula"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Paparkan Input"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Mulakan rakaman"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Mulakan main semula"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Hentikan rakaman"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Sumber yang Disekat"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Paparkan Isu"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Prestasi"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Pemprofil"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Rakam"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Paparkan Prestasi"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Paparkan Pemprofil"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Paparkan sesi garis masa baru-baru ini"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Mulakan pemprofilan dan muatkan semula halaman"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Mulakan/hentikan rakaman"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Berhenti"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Sebab Penggubahan"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Pengepala Respons"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Dedahkan takrifan penggantian pengepala"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Paparkan lagi"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Taip"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Tambah pengepala"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Buat pilihan ini jika sumber dan dokumen disiarkan daripada laman yang sama."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "nama pengepala"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "nilai pengepala"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Hanya pilih pilihan ini jika laman web rambang, termasuk sumber ini tidak menimbulkan risiko keselamatan."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Tambah sumber daripada medan x_google_ignoreList daripada peta sumber kepada senarai abaikan"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Gelagat"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Peraturan pengecualian tersuai:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Penyahpepijat akan melangkau skrip dan tidak akan berhenti pada pengecualian yang dilemparkan oleh mereka."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Dilumpuhkan"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "Dayakan Abaikan Penyenaraian"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "Nyahtanda untuk melumpuhkan semua tetapan abaikan penyenaraian"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Senarai Abaikan Rangka Kerja"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Senarai Abaikan"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Peraturan pengecualian am:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Tambahkan skrip kandungan pada senarai abaikan"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Abaikan skrip yang namanya sepadan dengan ''{PH1}''"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Tiada corak senarai abaikan"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Corak"
+    "message": "Tambah Corak"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Corak sudah wujud"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "ditandai"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Keadaan: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Lumpuhkan semua titik putus dalam fail"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Edit titik putus"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Dayakan semua titik putus dalam fail"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "bercampur"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Titik log: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Jeda pada pengecualian yang ditangkap"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Jeda pada pengecualian"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Alih keluar semua titik putus"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Alih keluar semua titik putus dalam fail"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Alih keluar titik putus"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Alih keluar semua titik putus lain"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Dedahkan lokasi"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "dinyahtanda"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Tutup"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "Alatan Pembangun didok pada {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "Alatan Pembangun dinyahdok"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Dokkan ke bawah"

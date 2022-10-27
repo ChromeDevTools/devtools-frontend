@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "固定邊"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "使用向左鍵和向右鍵瀏覽選項"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "固定至底部"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "網站根據使用者具備權限的網絡位置，透過只能存取的網絡要求一個子資源。這些要求會向互聯網暴露非公開的裝置和伺服器，因而增加偽造跨網站要求 (CSRF) 攻擊和/或資料洩漏的風險。為降低風險，Chrome 會忽略不安全內容向非公開子資源發出的要求，並將開始封鎖這類要求。"
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "根據預設，系統會啟用 IPv6，且透過 googIPv6 停用 IPv6 的功能預定將在 M108 移除，其後系統將會忽略此功能。請停止使用此舊版限制。"
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "除非 CSS 以 .css 副檔名作結，否則無法從 file: 網址載入。"
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "不安全環境中的 WebSQL 已淘汰，並即將移除。請使用「網絡儲存空間」或「已加入索引的資料庫」。"
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "如果指定 img、video 和 canvas 標籤的「overflow: visible」，可能會導致這些標籤產生的視覺內容超出元素邊界。詳情請參閱 https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md。"
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "「paymentManager.instruments」已淘汰。請改用付款處理常式的即時安裝方法。"
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "您的「PaymentRequest」調用已繞過內容安全政策 (CSP)「connect-src」指令，但目前已無法再繞過。請將 PaymentRequest API 的付款方法識別碼 (位於「supportedMethods」欄位) 新增至 CSP「connect-src」指令。"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent 已淘汰。請改用標準化的 navigator.storage。"
@@ -2235,13 +2244,16 @@
     "message": "應用程式資訊清單"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "不建議聲明含有 purpose: \"any maskable\" 的圖示。由於邊框間距過寬或過窄，此圖示在某些平台上可能會顯示錯誤。"
+    "message": "不建議聲明含有「purpose: \"any maskable\"」的圖示。由於邊框間距過寬或過窄，此圖示在某些平台上可能會顯示錯誤。"
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "背景顏色"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "運算的應用程式 ID"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "將建議 ID {PH1} 複製咗去剪貼簿"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "複製到剪貼簿"
@@ -2307,13 +2319,13 @@
     "message": "資訊清單未包含「name」或「short_name」欄位"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "資訊清單未包含合適的圖示 - 必須採用至少 {PH1} 像素的 PNG、SVG 或 WebP 格式；必須設定sizes屬性；如設定purpose屬性，則必須包含「\"any\"」。"
+    "message": "資訊清單未包含合適的圖示 - 必須採用至少 {PH1}像素的 PNG 或 SVG 格式；必須設定「sizes」；如設定「purpose」格式，則必須包含「any」。"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "資訊清單指定 prefer_related_applications：true"
+    "message": "資訊清單指定「prefer_related_applications: true」"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "資訊清單起始 URL 無效"
+    "message": "資訊清單「start_URL」無效"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "名稱"
@@ -2334,7 +2346,7 @@
     "message": "沒有提供「Play 商店」ID"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "所有提供的圖示均並非至少為 {PH1} 像素的 PNG、SVG 或 WebP 格式正方形圖像，而且沒有設定目的屬性或將目的屬性設定為「\"any\"」。"
+    "message": "所有提供的圖示均並非至少為 {PH1} 像素的 PNG 或SVG 格式正方形圖像，而且沒有設定目的屬性或將目的屬性設定為「any」。"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "注意："
@@ -2361,7 +2373,7 @@
     "message": "頁面並非透過安全來源提供"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications 僅支援 Android 裝置上 Chrome 的 Beta 版本和穩定版。"
+    "message": "「prefer_related_applications」 僅適用於 Android 的 Chrome Beta 版本和穩定版。"
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "簡報"
@@ -2400,7 +2412,7 @@
     "message": "{PH1} {PH2} 的寬度不可超過高度的 2.3 倍"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src 未設定"
+    "message": "未設定「{PH1}」的「src」"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "{PH1}網址「{PH2}」無法剖析"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "已啟用。"
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "已在開始前啟動"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "預先顯示功能目前還不支援 AudioContext API。"
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "預先顯示時發生 DidFailLoadWithError。"
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "不允許的 API 方法"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "不允許在預先顯示時下載。"
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "無法取得記憶體用量"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "含有有效網址"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation。"
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "無效的頁面限制"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "預先顯示時只能使用 HTTP(S) 導覽。"
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL 憑證錯誤。"
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "無法啟動"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "分頁已停止。"
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "通訊協定處理常式嘅查詢參數或者端點"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "輸入網址"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "目的地"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "顯示開發人員資源"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "已淘汰的屬性"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "無效的屬性"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "請嘗試將父元素的 {EXISTING_PARENT_ELEMENT_RULE} 屬性變更為 {TARGET_PARENT_ELEMENT_RULE}。"
+    "message": "請嘗試將父元素上的「{EXISTING_PARENT_ELEMENT_RULE}」屬性變更為「{TARGET_PARENT_ELEMENT_RULE}」。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "父元素上的 {REASON_PROPERTY_DECLARATION_CODE} 屬性會繞過 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
+    "message": "父元素的「{REASON_PROPERTY_DECLARATION_CODE}」屬性會導致「{AFFECTED_PROPERTY_DECLARATION_CODE}」無法發揮作用。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "請嘗試將 {EXISTING_PROPERTY_DECLARATION} 屬性變更為 {TARGET_PROPERTY_DECLARATION}。"
+    "message": "請嘗試將「{EXISTING_PROPERTY_DECLARATION}」屬性設定為「{TARGET_PROPERTY_DECLARATION}」。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "請嘗試移除 {REASON_PROPERTY_DECLARATION_CODE} 或變更值。"
+    "message": "建議將「{PROPERTY_NAME}」設定為「{PROPERTY_VALUE}」以外的屬性。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "此元素上的 {REASON_PROPERTY_DECLARATION_CODE} 屬性會繞過 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
+    "message": "「{REASON_PROPERTY_DECLARATION_CODE}」屬性會導致「{AFFECTED_PROPERTY_DECLARATION_CODE}」無法發揮作用。"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "新增類別"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "切換活動監聽器狀態為被動或封鎖"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "全部清除"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "載入設定檔…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "儲存設定檔…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "輸入"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "暫停"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "恢復"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "顯示輸入工具"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "開始記錄"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "開始重播"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "停止記錄"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "已封鎖的資源"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "顯示「問題」工具"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "效能"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "效能分析"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "記錄"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "顯示「效能」工具"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "顯示效能分析"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "顯示近期的時間軸工作階段"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "開始剖析並重新載入網頁"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "開始/停止記錄"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "停止"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "正在合成原因"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "回應標題"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "顯示標題覆寫定義"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "顯示更多"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "類型"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "新增標題"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "如果資源和文件是由同一個網站提供，請選擇此選項。"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "標題數值"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "請只在任意網站 (包括此項資源) 不構成安全風險的情況下才選取此選項。"
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "從忽略清單中的來源對應新增 x_google_ignoreList 欄位中的來源"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "行為"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "自訂排除規則："
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "偵錯工具將會略過指令碼，並不會在遇到例外情況時停止。"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "已停用"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "啟用忽略清單功能"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "取消勾選即可停用所有忽略清單功能"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "框架忽略清單"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "忽略清單"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "一般排除規則："
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "新增內容指令碼至忽略清單"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "忽略名稱與「{PH1}」相符的指令碼"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "沒有忽略清單模式"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "格式"
+    "message": "加格式"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "模式已存在"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "已勾選"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "條件：{PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "停用檔案中的所有中斷點"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "編輯中斷點"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "啟用檔案中的所有中斷點"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "混合"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "記錄點：{PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "在遇到例外狀況時暫停"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "在例外情況時暫停"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "移除所有中斷點"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "移除檔案中的所有中斷點"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "移除中斷點"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "移除其他中斷點"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "顯示位置"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "冇剔到"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "關閉"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "將開發人員工具固定咗去{PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "開發人員工具已經取消固定"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "固定至底部"

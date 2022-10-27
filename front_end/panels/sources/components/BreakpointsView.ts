@@ -18,11 +18,11 @@ import {findNextNodeForKeyboardNavigation, type ElementId} from './BreakpointsVi
 
 const UIStrings = {
   /**
-  *@description Text in pausing the debugger on exceptions in the Sources panel.
+  *@description Label for a checkbox to toggle pausing on exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an exception is thrown at runtime.
   */
   pauseOnExceptions: 'Pause on exceptions',
   /**
-  *@description Text for pausing the debugger on caught exceptions in the Sources panel.
+  *@description Label for a checkbox to toggling pausing on caught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an exception is thrown, but caught (handled) at runtime.
   */
   pauseOnCaughtExceptions: 'Pause on caught exceptions',
   /**
@@ -43,7 +43,7 @@ const UIStrings = {
   */
   breakpointHit: '{PH1} breakpoint hit',
   /**
-  *@description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebarof the sources panel. Also used in the context menu for breakpoint groups.
+  *@description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint groups.
   */
   removeAllBreakpointsInFile: 'Remove all breakpoints in file',
   /**

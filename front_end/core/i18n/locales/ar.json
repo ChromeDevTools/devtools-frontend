@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "جانب الإرساء"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "للتنقّل بين الخيارات، استخدِم مفتاحَي السهمين المتّجهَين لليمين واليسار."
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "إرساء إلى أسفل علامة تبويب المتصفّح"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "طلب الموقع الإلكتروني مصدرًا فرعيًا من شبكة يمكن الوصول إليه من خلال الموقع الإلكتروني فقط بسبب موضع مستخدميه المميّز على الشبكة. تكشف هذه الطلبات الأجهزة والخوادم الخاصة على الإنترنت، ما يزيد من خطر تزوير الطلب من موقع إلكتروني مختلف (CSRF) و/أو تسرُّب المعلومات. وللحدِّ من هذه المخاطر، أوقف Chrome نهائيًا طلبات الوصول إلى مصادر فرعية خاصة، وذلك عند تقديمها من خلال سياقات غير آمنة، وسيبدأ في حظرها."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "البروتوكول IPv6 مفعَّل تلقائيًا وسيتم قريبًا إلغاء إمكانية إيقافه باستخدام googIPv6 في الإصدار M108، وبعد ذلك سيتم تجاهله. يُرجى التوقف عن استخدام هذه القيود القديمة."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "لا يمكن تحميل صفحات الأنماط المتتالية (CSS) من عناوين URL للملفات file: ما لم تنتهِ الملفات بالامتداد .css."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "تم إيقاف لغة الاستعلامات البنيوية (SQL) على الويب نهائيًا في السياقات غير الآمنة وستتم إزالتها قريبًا. يُرجى استخدام Web Storage أو Indexed Database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "في حال تحديد القيمة \"overflow: visible\" ضمن علامات img وvideo وcanvas، قد يُعرَض محتوى مرئي خارج حدود العنصر. يُرجى الاطّلاع على https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "تم إيقاف paymentManager.instruments نهائيًا. بدلاً من ذلك، يُرجى استخدام ميزة \"التثبيت في وقت التشغيل\" (JIT) مع تطبيقات معالجة الدفع."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "تجاوز طلب البيانات من واجهة برمجة التطبيقات PaymentRequest التوجيه connect-src في Content-Security-Policy (سياسة أمان المحتوى). تم إيقاف هذا التجاوز نهائيًا. يُرجى إضافة معرِّف طريقة الدفع من واجهة برمجة التطبيقات PaymentRequest (في حقل supportedMethods) إلى توجيه connect-src في سياسة أمان المحتوى (CSP)."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "تم إيقاف StorageType.persistent نهائيًا. يُرجى استخدام navigator.storage الموحّدة بدلاً منها."
@@ -2235,13 +2244,16 @@
     "message": "بيان التطبيق"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "لا ننصح بتعريف رمز من خلال purpose: \"any maskable\". من المرجّح أن يظهر بشكل غير صحيح في بعض الأنظمة الأساسية بسبب زيادة كبيرة أو نقص كبير في المساحة المتروكة."
+    "message": "لا ننصح بتعريف رمز باستخدام القيمة \"purpose: \"any maskable\"\"، لأنّ ذلك قد يؤدي على الأرجح إلى ظهور الرمز بشكل غير صحيح في بعض الأنظمة الأساسية بسبب زيادة كبيرة أو نقص كبير في المساحة المتروكة."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "لون الخلفية"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "رقم تعريف التطبيق الذي تم احتسابه"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "تم نسخ المعرِّف المقترَح \"{PH1}\" إلى الحافظة."
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "نسخ إلى الحافظة"
@@ -2307,13 +2319,13 @@
     "message": "لا يتضمّن ملف البيان حقل \"name\" أو \"short_name\"."
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "لا يتضمّن ملف البيان رمزًا مناسبًا. يجب استخدام تنسيق PNG أو SVG أو WebP بحجم {PH1} بكسل على الأقل، ويجب ضبط السمة sizes وأن تتضمّن السمة purpose القيمة \"any\" حال ضبطها."
+    "message": "لا يتضمّن ملف البيان رمزًا مناسبًا. يجب استخدام تنسيق PNG أو SVG بحجم {PH1} بكسل على الأقل، ويجب ضبط سمة \"sizes\" وأن تتضمّن سمة \"purpose\" القيمة \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "يضبط ملف البيان prefer_related_applications على: true"
+    "message": "يضبط ملف البيان سمة \"prefer_related_applications\" على \"صحيح\"."
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "بداية ملف البيان URL غير صالحة."
+    "message": "البيان \"start_URL\" غير صالح."
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "الاسم"
@@ -2334,7 +2346,7 @@
     "message": "لم يتم توفير رقم تعريف \"متجر Play\"."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "لا يتوفّر رمز بحجم {PH1} بكسل مربّع على الأقل بتنسيق PNG أو SVG أو WebP، بغرض عدم ضبط السمة أو ضبطها على \"any\"."
+    "message": "لا يتوفّر رمز بحجم {PH1} بكسل مربّع على الأقل بتنسيق PNG أو SVG، علمًا بأنّه لم يتم ضبط سمة \"purpose\" أو تم ضبطها على \"any\"."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "ملاحظة:"
@@ -2361,7 +2373,7 @@
     "message": "لا يتم عرض الصفحة من مصدر آمن."
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "لا يتوافق حقل الإدخال prefer_related_applications إلا مع الإصدار التجريبي من متصفِّح Chrome والقنوات الثابتة على Android."
+    "message": "لا تتوافق قيمة سمة \"prefer_related_applications\" إلا مع الإصدار التجريبي من Chrome والقنوات الثابتة على Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "عرض تقديمي"
@@ -2400,7 +2412,7 @@
     "message": "لا يمكن أن يكون العرض {PH1} {PH2} أكبر من الارتفاع بمقدار 2.3 مرة."
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "لم يتم ضبط {PH1} src."
+    "message": "لم يتم ضبط سمة \"src\" لصورة {PH1}."
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "تعذَّر تحليل عنوان URL الخاص بـ {PH1} \"{PH2}\"."
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "تم التفعيل."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "تم التفعيل قبل البدء."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "ميزة \"العرض المُسبق\" لا تتوافق مع AudioContext API في الوقت الحالي."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "حدث خطأ NotFailLoadWithError أثناء عملية العرض المُسبق."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "طريقة واجهة برمجة التطبيقات غير مسموح بها"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "لا يُسمح بالتنزيل في ميزة \"العرض المُسبق\"."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "تعذَّر الحصول على معلومات استخدام الذاكرة."
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "يتوفّر عنوان URL فعّال."
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "قيود الصفحة غير مفعَّلة"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "يُسمح فقط باستخدام التنقُّل بين الصفحات عبر بروتوكول HTTP(S) أثناء \"العرض المُسبق\"."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "خطأ في شهادة طبقة المقابس الآمنة (SSL)"
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "تعذَّر البدء."
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "تم إيقاف علامة التبويب."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "معلمة طلب البحث أو نقطة النهاية لمعالِج البروتوكول"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "إدخال عنوان URL"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "الوجهة"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "عرض موارد مطوّر البرامج"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "سمة متوقّفة نهائيًا"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "سمة غير نشطة"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "يُرجى محاولة تغيير سمة {EXISTING_PARENT_ELEMENT_RULE} في العنصر الرئيسي إلى {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "يُرجى محاولة ضبط سمة \"{EXISTING_PARENT_ELEMENT_RULE}\" في العنصر الرئيسي على القيمة \"{TARGET_PARENT_ELEMENT_RULE}\"."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "إنّ سمة {REASON_PROPERTY_DECLARATION_CODE} في العنصر الرئيسي تتجاوز تأثير {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "تمنع سمة \"{REASON_PROPERTY_DECLARATION_CODE}\" في العنصر الرئيسي سمة \"{AFFECTED_PROPERTY_DECLARATION_CODE}\" من إحداث أي تغيير."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "يُرجى محاولة تغيير سمة {EXISTING_PROPERTY_DECLARATION} إلى {TARGET_PROPERTY_DECLARATION}."
+    "message": "جرِّب ضبط سمة \"{EXISTING_PROPERTY_DECLARATION}\" على القيمة \"{TARGET_PROPERTY_DECLARATION}\"."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "حاوِل إزالة {REASON_PROPERTY_DECLARATION_CODE} أو تغيير قيمته."
+    "message": "يُرجى محاولة ضبط سمة \"{PROPERTY_NAME}\" على قيمة أخرى غير \"{PROPERTY_VALUE}\"."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "تُبطل سمة {REASON_PROPERTY_DECLARATION_CODE} في هذا العنصر تأثير سمة {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "تمنع سمة \"{REASON_PROPERTY_DECLARATION_CODE}\" سمة \"{AFFECTED_PROPERTY_DECLARATION_CODE}\" من إحداث أي تأثير."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "إضافة فئة جديدة"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "التبديل بين ما إذا كانت أداة معالجة الحدث سلبية أو تحظر الأحداث"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "محو الكل"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "تحميل الملف التعريفي…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "حفظ الملف التعريفي…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "الإدخالات"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "إيقاف مؤقت"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "استئناف"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "عرض الإدخالات"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "بدء التسجيل"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "بدء إعادة التشغيل"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "إيقاف التسجيل"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "الموارد المحظورة"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "عرض أداة \"المشاكل\""
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "الأداء"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "المحلّل"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "تسجيل"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "عرض أداة \"الأداء\""
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "عرض المحلِّل"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "عرض جلسات المخطط الزمني الأخيرة"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "بدء التحليل وإعادة تحميل الصفحة"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "بدء/إيقاف التسجيل"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "إيقاف"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "أسباب التركيب"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "عناوين الاستجابة"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "إظهار تعريفات تجاهل العنوان"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "عرض المزيد"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "نوع"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "إضافة عنوان"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "حدِّد هذا الخيار إذا تم عرض المورد والمستند من الموقع الإلكتروني ذاته."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "قيمة العنوان"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "لا تحدِّد هذا الخيار إذا كان الموقع الإلكتروني العشوائي الذي يتضمّن هذا المورد لا يشكِّل خطورة أمنية."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "إضافة مصادر من الحقل x_google_ignoreList من خرائط المصادر إلى قائمة التجاهل"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "السلوك"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "قواعد الاستبعاد المخصَّصة:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "يتنقّل برنامج تصحيح الأخطاء بين النصوص البرمجية ولا يتوقف عند الاستثناءات المطروحة."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "غير مفعّل"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "تفعيل قائمة التجاهل"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "إزالة العلامة من المربّع لإيقاف جميع إعدادات قائمة التجاهل"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "قائمة التجاهل لإطار العمل"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "قائمة التجاهل"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "قواعد الاستبعاد العامة:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "إضافة نصوص المحتوى البرمجية إلى قائمة التجاهل"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "تجاهل النصوص البرمجية التي تطابق أسماؤها \"{PH1}\""
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "ما مِن أنماط لقائمة التجاهل."
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "نمط"
+    "message": "إضافة نمط"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "هذا النمط متوفّر حاليًا."
@@ -10068,7 +10092,7 @@
     "message": "إزالة نقاط الإيقاف الأخرى"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
-    "message": "عرض مكان رمز المصدر"
+    "message": "إظهار مكان رمز المصدر"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
     "message": "الوصول إلى نقطة الإيقاف {PH1}"
@@ -10293,7 +10317,7 @@
     "message": "فتح في لوحة المصادر"
   },
   "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "الإيقاف مؤقتًا عند الاستثناءات التي تم رصدها"
+    "message": "الإيقاف مؤقتًا عند رصد الاستثناءات"
   },
   "panels/sources/SourcesPanel.ts | pauseOnExceptions": {
     "message": "إيقاف مؤقت عند الاستثناءات"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "هناك علامة موضوعة في المربع."
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "الشرط: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "إيقاف كل نقاط الإيقاف في الملف"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "تعديل نقطة الإيقاف"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "تفعيل جميع نقاط الإيقاف في الملف"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "مجموعة من الحالات"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "نقطة التسجيل: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "الإيقاف مؤقتًا عند رصد الاستثناءات"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "إيقاف مؤقت عند الاستثناءات"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "إزالة جميع نقاط الإيقاف"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "إزالة جميع نقاط الإيقاف في الملف"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "إزالة نقطة الإيقاف"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "إزالة نقاط الإيقاف الأخرى"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "إظهار مكان رمز المصدر"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "إزالة العلامة من المربّع"
@@ -11991,7 +12051,7 @@
     "message": "عرض أداة \"الأداء\""
   },
   "panels/timeline/timeline-meta.ts | showRecentTimelineSessions": {
-    "message": "إظهار جلسات المخطّط الزمني الأخيرة"
+    "message": "عرض جلسات المخطط الزمني الأخيرة"
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "بدء التحليل وإعادة تحميل الصفحة"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "إغلاق"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "تم إرساء أدوات مطوّري البرامج في {PH1}."
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "تم إلغاء إرساء أدوات مطوّري البرامج."
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "إرساء إلى أسفل علامة تبويب المتصفّح"

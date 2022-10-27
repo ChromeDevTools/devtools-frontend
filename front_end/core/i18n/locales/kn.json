@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "ಯಾವ ಬದಿಯಲ್ಲಿ ಡಾಕ್ ಮಾಡಬೇಕು"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "ಆಯ್ಕೆಗಳನ್ನು ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲು ಎಡ ಮತ್ತು ಬಲ ಬಾಣದ ಕೀಗಳನ್ನು ಬಳಸಿ"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "ಕೆಳಬದಿಗೆ ಡಾಕ್ ಮಾಡಿ"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "ವೆಬ್‌ಸೈಟ್ ತನ್ನ ಬಳಕೆದಾರರ ವಿಶೇಷ ನೆಟ್‌ವರ್ಕ್ ಸ್ಥಾನದ ಕಾರಣದಿಂದ ಮಾತ್ರ ಪ್ರವೇಶಿಸಬಹುದಾದ ನೆಟ್‌ವರ್ಕ್‌ನಿಂದ ಸಬ್‌ರಿಸೋರ್ಸ್ ಅನ್ನು ವಿನಂತಿಸಿದೆ. ಈ ವಿನಂತಿಗಳು ಸಾರ್ವಜನಿಕವಲ್ಲದ ಸಾಧನಗಳು ಮತ್ತು ಸರ್ವರ್‌ಗಳನ್ನು ಇಂಟರ್ನೆಟ್‌ಗೆ ಬಹಿರಂಗಪಡಿಸುತ್ತವೆ, ಕ್ರಾಸ್-ಸೈಟ್ ವಿನಂತಿಯ ಫೋರ್ಜರಿ (CSRF) ದಾಳಿಯ ಮತ್ತು/ಅಥವಾ ಮಾಹಿತಿ ಸೋರಿಕೆಯ ಅಪಾಯವನ್ನು ಹೆಚ್ಚಿಸುತ್ತವೆ. ಈ ಅಪಾಯಗಳನ್ನು ತಗ್ಗಿಸಲು, ಸುರಕ್ಷಿತವಲ್ಲದ ಕಾಂಟೆಕ್ಸ್ಟ್‌ಗಳಿಂದ ಪ್ರಾರಂಭಿಸಿದಾಗ ಸಾರ್ವಜನಿಕವಲ್ಲದ ಸಬ್‌ರಿಸೋರ್ಸ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ವಿನಂತಿಗಳನ್ನು Chrome ತಡೆಹಿಡಿಯುತ್ತದೆ ಮತ್ತು ಅವುಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲು ಪ್ರಾರಂಭಿಸುತ್ತದೆ."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 ಅನ್ನು ಡೀಫಾಲ್ಟ್ ಆಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ ಮತ್ತು googIPv6 ಅನ್ನು ಬಳಸಿಕೊಂಡು ಅದನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸುವ ಸಾಮರ್ಥ್ಯವನ್ನು M108 ನಲ್ಲಿ ತೆಗೆದುಹಾಕಲು ನಿಗದಿಪಡಿಸಲಾಗಿದೆ, ನಂತರ ಅದನ್ನು ನಿರ್ಲಕ್ಷಿಸಲಾಗುತ್ತದೆ. ಈ ಪಾರಂಪರಿಕ ನಿರ್ಬಂಧದ ಬಳಕೆಯನ್ನು ನಿಲ್ಲಿಸಿ."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "file: URL ಗಳು .css ಫೈಲ್ ವಿಸ್ತರಣೆಯಲ್ಲಿ ಕೊನೆಗೊಳ್ಳದ ಹೊರತು ಅವುಗಳಿಂದ CSS ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "ಸುರಕ್ಷಿತವಲ್ಲದ ಸನ್ನಿವೇಶಗಳಲ್ಲಿನ WebSQL ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಅದನ್ನು ಶೀಘ್ರದಲ್ಲೇ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ವೆಬ್ ಸಂಗ್ರಹಣೆ ಅಥವಾ ಇಂಡೆಕ್ಸ್ ಮಾಡಲಾದ ಡೇಟಾಬೇಸ್ ಅನ್ನು ಬಳಸಿ."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "ಚಿತ್ರ, ವೀಡಿಯೊ ಮತ್ತು ಕ್ಯಾನ್ವಾಸ್ ಟ್ಯಾಗ್‌ಗಳಲ್ಲಿ overflow: visible ಅನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸುವುದರಿಂದ ಅಂಶದ ಮಿತಿಯ ಹೊರಗೆ ದೃಶ್ಯ ವಿಷಯವನ್ನು ರಚಿಸಬಹುದು. ಇದನ್ನು ನೋಡಿ: https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪಾವತಿ ಹ್ಯಾಂಡಲರ್‌ಗಳಿಗಾಗಿ ಜಸ್ಟ್-ಇನ್-ಟೈಮ್ ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಅನ್ನು ಬಳಸಿ"
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "ನಿಮ್ಮ PaymentRequest ಕರೆಯು ವಿಷಯ-ಭದ್ರತೆ-ನೀತಿ (CSP) connect-src ನಿರ್ದೇಶನವನ್ನು ಬೈಪಾಸ್ ಮಾಡಿದೆ. ಈ ಬೈಪಾಸ್ ಅನ್ನು ಅಸಮ್ಮತಿಸಲಾಗಿದೆ. ಪಾವತಿ ವಿಧಾನದ ಗುರುತಿಸುವಿಕೆಯನ್ನು PaymentRequest API ನಿಂದ (supportedMethods ಕ್ಷೇತ್ರದಲ್ಲಿ) CSP connect-src ನಿರ್ದೇಶನಕ್ಕೆ ಸೇರಿಸಿ."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪ್ರಮಾಣಿತ navigator.storage ಅನ್ನು ಬಳಸಿ."
@@ -2235,13 +2244,16 @@
     "message": "ಆ್ಯಪ್ ಮ್ಯಾನಿಫೆಸ್ಟ್"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "ಐಕಾನ್ ಅನ್ನು purpose: \"any maskable\" ಎಂದು ಘೋಷಿಸಲು ಶಿಫಾರಸು ಮಾಡುವುದಿಲ್ಲ. ತುಂಬಾ ಹೆಚ್ಚಿರುವ ಅಥವಾ ತುಂಬಾ ಕಡಿಮೆ ಇರುವ ಪ್ಯಾಡಿಂಗ್ ಕೆಲವು ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್‌ಗಳಲ್ಲಿ ತಪ್ಪಾಗಿ ಕಾಣಿಸುವ ಸಾಧ್ಯತೆಯಿದೆ."
+    "message": "ಐಕಾನ್ ಅನ್ನು 'purpose: \"any maskable\"' ಎಂದು ಘೋಷಿಸಲು ಶಿಫಾರಸು ಮಾಡುವುದಿಲ್ಲ. ತುಂಬಾ ಹೆಚ್ಚಿರುವ ಅಥವಾ ತುಂಬಾ ಕಡಿಮೆ ಇರುವ ಪ್ಯಾಡಿಂಗ್ ಕೆಲವು ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್‌ಗಳಲ್ಲಿ ತಪ್ಪಾಗಿ ಕಾಣಿಸುವ ಸಾಧ್ಯತೆಯಿದೆ."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "ಹಿನ್ನೆಲೆ ಬಣ್ಣ"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "ಕಂಪ್ಯೂಟ್ ಮಾಡಿದ ಆ್ಯಪ್ ಐಡಿ"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "ಸೂಚಿತ ID {PH1} ಅನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲಾಗಿದೆ"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
@@ -2307,13 +2319,13 @@
     "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್ 'name' ಅಥವಾ 'short_name' ಫೀಲ್ಡ್ ಒಂದನ್ನು ಹೊಂದಿಲ್ಲ"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್‌ನಲ್ಲಿ ಸೂಕ್ತ ಐಕಾನ್ ಇಲ್ಲ - ಕನಿಷ್ಠ {PH1}px ಹೊಂದಿರುವ PNG, SVG ಅಥವಾ WebP ಫಾರ್ಮ್ಯಾಟ್‌ನ ಅಗತ್ಯವಿದೆ, the sizes ಗುಣಲಕ್ಷಣವನ್ನು ಹೊಂದಿಸಿರಬೇಕು, ಹಾಗೂ purpose ಗುಣಲಕ್ಷಣವನ್ನು ಹೊಂದಿಸಿದ್ದರೆ, ಅದರಲ್ಲಿ \"any\" ಇರಬೇಕು."
+    "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್ ಸೂಕ್ತ ಐಕಾನ್ ಅನ್ನು ಒಳಗೊಂಡಿಲ್ಲ - PNG ಅಥವಾ SVG ಫಾರ್ಮ್ಯಾಟ್ ಕನಿಷ್ಠ {PH1}ಪಿಕ್ಸೆಲ್‌ ಅನ್ನು ಹೊಂದಿರಬೇಕು, 'sizes' ಗುಣಲಕ್ಷಣವನ್ನು ಸೆಟ್ ಮಾಡಬೇಕು, ಮತ್ತು 'purpose' ಗುಣಲಕ್ಷಣ, ಸೆಟ್ ಮಾಡಿದರೆ, 'any' ಅನ್ನು ಒಳಗೊಂಡಿರಬೇಕು."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್ prefer_related_applications ಅನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸುತ್ತದೆ: ಸರಿ"
+    "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್ 'prefer_related_applications ಅನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸುತ್ತದೆ: ಸರಿ'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್ ಪ್ರಾರಂಭ URL ಮಾನ್ಯವಾಗಿಲ್ಲ"
+    "message": "'start_URL' ಮ್ಯಾನಿಫೆಸ್ಟ್ ಮಾನ್ಯವಾಗಿಲ್ಲ"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "ಹೆಸರು"
@@ -2334,7 +2346,7 @@
     "message": "ಯಾವುದೇ Play Store  ಐಡಿಯನ್ನು ಒದಗಿಸಿಲ್ಲ"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "ಪೂರೈಸಲಾದ ಯಾವುದೇ ಐಕಾನ್, PNG, SVG ಅಥವಾ WebP ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ {PH1} ಪಿಕ್ಸೆಲ್ ಸ್ಕ್ವೇರ್‍‌ಗಳಷ್ಟು ಮೌಲ್ಯವನ್ನು ಹೊಂದಿಲ್ಲ ಮತ್ತು ಉದ್ದೇಶದ ಗುಣಲಕ್ಷಣವನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ ಅಥವಾ \"any\" ಎಂಬುದಾಗಿ ಹೊಂದಿಸಲಾಗಿದೆ."
+    "message": "ಪೂರೈಸಲಾದ ಯಾವುದೇ ಐಕಾನ್, PNG ಅಥವಾ SVG ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕನಿಷ್ಠ {PH1} ಪಿಕ್ಸೆಲ್ ಸ್ಕೋರ್‌ಗಳಷ್ಟು ಮೌಲ್ಯವನ್ನು ಹೊಂದಿಲ್ಲ ಮತ್ತು ಉದ್ದೇಶದ ಗುಣಲಕ್ಷಣವನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ ಅಥವಾ any ಗೆ ಸೆಟ್ ಮಾಡಲಾಗಿದೆ."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "ಗಮನಿಸಿ:"
@@ -2361,7 +2373,7 @@
     "message": "ಪುಟವನ್ನು ಸುರಕ್ಷಿತ ಮೂಲದಿಂದ ಒದಗಿಸಲಾಗುವುದಿಲ್ಲ"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications ಅನ್ನು Chrome ಬೀಟಾ ಮತ್ತು Android ನಲ್ಲಿನ ಸ್ಥಿರ ಚಾನಲ್‌ಗಳಲ್ಲಿ ಮಾತ್ರ ಬೆಂಬಲಿಸಲಾಗುತ್ತದೆ."
+    "message": "'prefer_related_applications' ಅನ್ನು Chrome ಬೀಟಾ ಮತ್ತು Android ನಲ್ಲಿನ ಸ್ಥಿರ ಚಾನಲ್‌ಗಳಲ್ಲಿ ಮಾತ್ರ ಬೆಂಬಲಿಸಲಾಗುತ್ತದೆ."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "ಪ್ರಸ್ತುತಿ"
@@ -2400,7 +2412,7 @@
     "message": "{PH1} {PH2} ಉದ್ಧವಿರುವಷ್ಟು ಅಗಲವು 2.3 ಪಟ್ಟಿಗಿಂತ ಹೆಚ್ಚು ಇರಬಾರದು"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src ಅನ್ನು ಸೆಟ್ ಮಾಡಿಲ್ಲ"
+    "message": "{PH1} 'src' ಅನ್ನು ಸೆಟ್ ಮಾಡಿಲ್ಲ"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "{PH1} URL \"{PH2}\" ವಿಶ್ಲೇಷಣೆ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ AudioContext API ಅನ್ನು ಇನ್ನೂ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಮಾಡುವಾಗ DidFailLoadWithError ಸಂಭವಿಸಿದೆ."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "API ವಿಧಾನವನ್ನು ಅನುಮತಿಸಲಾಗಿಲ್ಲ"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "ಪ್ರೀರೆಂಡರ್‌ನಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಅನ್ನು ಅನುಮತಿಸಲಾಗಿಲ್ಲ."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "ಮೆಮೊರಿ ಬಳಕೆಯನ್ನು ಪಡೆಯಲು ವಿಫಲವಾಗಿದೆ"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "ಪರಿಣಾಮಕಾರಿ URL ಹೊಂದಿದೆ"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "ನಿಷ್ಕ್ರಿಯ ಪುಟ ನಿರ್ಬಂಧ"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "ಪ್ರೀರೆಂಡರ್‌ಗಾಗಿ HTTP(S) ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಮಾತ್ರ ಅನುಮತಿಸಲಾಗುತ್ತದೆ."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL ಪ್ರಮಾಣಪತ್ರ ದೋಷ."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "ಪ್ರಾರಂಭಿಸುವಿಕೆ ವಿಫಲವಾಗಿದೆ"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "ಟ್ಯಾಬ್ ಅನ್ನು ನಿಲ್ಲಿಸಲಾಗಿದೆ."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "ಪ್ರೊಟೊಕಾಲ್ ಹ್ಯಾಂಡ್‌ಲರ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ಕ್ವೆರಿ ಪ್ಯಾರಾಮೀಟರ್ ಅಥವಾ ಎಂಡ್‌ಪಾಯಿಂಟ್"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "URL ನಮೂದಿಸಿ"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "ಗಮ್ಯಸ್ಥಾನ"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "ಡೆವಲಪರ್ ಮಾಹಿತಿಯ ಮೂಲಗಳನ್ನು ತೋರಿಸಿ"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "ತಡೆಹಿಡಿದಿರುವ ಪ್ರಾಪರ್ಟಿ"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "ನಿಷ್ಕ್ರಿಯವಾಗಿರುವ ಪ್ರಾಪರ್ಟಿ"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "ಮೂಲ ಘಟಕದಲ್ಲಿರುವ {EXISTING_PARENT_ELEMENT_RULE} ಪ್ರಾಪರ್ಟಿಯನ್ನು {TARGET_PARENT_ELEMENT_RULE} ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
+    "message": "ಮೂಲ ಘಟಕದಲ್ಲಿರುವ {EXISTING_PARENT_ELEMENT_RULE} ಸ್ವತ್ತು ಅನ್ನು {TARGET_PARENT_ELEMENT_RULE} ಗೆ ಸೆಟ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "ಮೂಲ ಎಲಿಮೆಂಟ್‌ನ {REASON_PROPERTY_DECLARATION_CODE} ಪ್ರಾಪರ್ಟಿಯು {AFFECTED_PROPERTY_DECLARATION_CODE} ನ ಎಫೆಕ್ಟ್ ಅನ್ನು ಬೈಪಾಸ್ ಮಾಡುತ್ತದೆ."
+    "message": "ಮೂಲ ಅಂಶದ ಮೇಲಿನ {REASON_PROPERTY_DECLARATION_CODE} ಆಸ್ತಿಯು {AFFECTED_PROPERTY_DECLARATION_CODE} ಮೇಲೆ ಪರಿಣಾಮ ಬೀರುವುದನ್ನು ತಡೆಯುತ್ತದೆ."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "{EXISTING_PROPERTY_DECLARATION} ಪ್ರಾಪರ್ಟಿಯನ್ನು {TARGET_PROPERTY_DECLARATION} ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
+    "message": "{EXISTING_PROPERTY_DECLARATION} ಅನ್ನು ಸ್ವತ್ತು {TARGET_PROPERTY_DECLARATION} ಗೆ ಸೆಟ್ಟಿಂಗ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "{REASON_PROPERTY_DECLARATION_CODE} ಅನ್ನು ತೆಗೆದುಹಾಕಲು ಅಥವಾ ಅದರ ಮೌಲ್ಯವನ್ನು ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
+    "message": "{PROPERTY_NAME} ಅನ್ನು {PROPERTY_VALUE} ಹೊರತುಪಡಿಸಿ ಬೇರೆ ಯಾವುದನ್ನಾದರೂ ಸೆಟ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ಈ ಎಲಿಮೆಂಟ್‌ನಲ್ಲಿನ {REASON_PROPERTY_DECLARATION_CODE} ಪ್ರಾಪರ್ಟಿಯು {AFFECTED_PROPERTY_DECLARATION_CODE} ನ ಪರಿಣಾಮವನ್ನು ಬೈಪಾಸ್ ಮಾಡುತ್ತದೆ."
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} ಗುಣಲಕ್ಷಣವು {AFFECTED_PROPERTY_DECLARATION_CODE} ಅನ್ನು ಪರಿಣಾಮ ಬೀರದಂತೆ ತಡೆಯುತ್ತದೆ."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "ಹೊಸ ವರ್ಗವನ್ನು ಸೇರಿಸಿ"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "ಈವೆಂಟ್ ಲಿಸನರ್ ನಿಷ್ಕ್ರಿಯರಾಗಿದ್ದಾರೆಯೆ ಅಥವಾ ನಿರ್ಬಂಧಿಸುತ್ತಾರೆಯೆ ಎಂದು ಟಾಗಲ್ ಮಾಡಿ"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "ಎಲ್ಲವನ್ನು ತೆರವುಗೊಳಿಸಿ"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "ಪ್ರೊಫೈಲ್ ಲೋಡ್ ಮಾಡಿ…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "ಪ್ರೊಫೈಲ್ ಉಳಿಸಿ…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "ಇನ್‌ಪುಟ್‌ಗಳು"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "ವಿರಾಮಗೊಳಿಸಿ"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "ಪುನರಾರಂಭಿಸಿ"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "ಇನ್‌ಪುಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "ಮರುಪ್ಲೇ ಪ್ರಾರಂಭಿಸಿ"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "ರೆಕಾರ್ಡಿಂಗ್ ನಿಲ್ಲಿಸಿ"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ನಿರ್ಬಂಧಿತ ಸಂಪನ್ಮೂಲ"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "ಸಮಸ್ಯೆಗಳನ್ನು ತೋರಿಸಿ"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "ಕಾರ್ಯಕ್ಷಮತೆ"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "ಪ್ರೊಫೈಲರ್"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "ರೆಕಾರ್ಡ್"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "ಕಾರ್ಯಕ್ಷಮತೆಯನ್ನು ತೋರಿಸಿ"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "ಪ್ರೊಫೈಲರ್ ತೋರಿಸಿ"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "ಇತ್ತೀಚಿನ ಟೈಮ್‌ಲೈನ್ ಸೆಶನ್‌ಗಳನ್ನು ತೋರಿಸಿ"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "ಪ್ರೊಫೈಲಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ ಮತ್ತು ಪುಟವನ್ನು ಪುನಃ ಲೋಡ್ ಮಾಡಿ"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ/ನಿಲ್ಲಿಸಿ"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "ನಿಲ್ಲಿಸಿ"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "ಸಂಯೋಜನೆಯ ಕಾರಣಗಳು"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್‌ಗಳು"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "ಹೆಡರ್ ಓವರ್‌ರೈಡ್ ವ್ಯಾಖ್ಯಾನಗಳನ್ನು ಬಹಿರಂಗಪಡಿಸಿ"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "ಇನ್ನಷ್ಟು ತೋರಿಸಿ"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "ಪ್ರಕಾರ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "ಶಿರೋಲೇಖನವನ್ನು ಸೇರಿಸಿ"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ಮಾಹಿತಿಯ ಮೂಲ ಮತ್ತು ಡಾಕ್ಯುಮೆಂಟ್ ಅನ್ನು ಒಂದೇ ಸೈಟ್‌ನಿಂದ ಒದಗಿಸಿದ್ದರೆ ಈ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "ಹೆಡರ್-ಹೆಸರು"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "ಶಿರೋಲೇಖದ ಮೌಲ್ಯ"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "ಈ ಮಾಹಿತಿ ಮೂಲವನ್ನು ಒಳಗೊಂಡಂತೆ ಅನಿಯಂತ್ರಿತ ವೆಬ್‌ಸೈಟ್ ಒಂದರಿಂದ ಸುರಕ್ಷತಾ ಅಪಾಯ ಎದುರಾಗದಿದ್ದರೆ ಮಾತ್ರ ಈ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "ಮೂಲ ನಕ್ಷೆಯಲ್ಲಿನ x_google_ignoreList ಫೀಲ್ಡ್‌ನಿಂದ ಮೂಲಗಳನ್ನು 'ನಿರ್ಲಕ್ಷಿಸಿ' ಎಂಬ ಪಟ್ಟಿಗೆ ಸೇರಿಸಿ"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "ವರ್ತನೆ"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "ಕಸ್ಟಮ್ ಹೊರಗಿಡುವ ನಿಯಮಗಳು:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "ಡೀಬಗರ್, ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸ್ಕಿಪ್ ಮಾಡುತ್ತದೆ ಮತ್ತು ಅವುಗಳಿಂದ ಉಂಟಾದ ವಿನಾಯಿತಿಗಳನ್ನು ನಿಲ್ಲಿಸುವುದಿಲ್ಲ."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "ನಿರ್ಲಕ್ಷಿಸಬೇಕಾದ ವಿಷಯಗಳ ಲಿಸ್ಟಿಂಗ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "ನಿರ್ಲಕ್ಷಿಸಬೇಕಾದ ವಿಷಯಗಳ ಲಿಸ್ಟಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸುವಿಕೆಯನ್ನು ಅನ್‌ಚೆಕ್ ಮಾಡಿ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "ಫ್ರೇಮ್‌ವರ್ಕ್‌ ನಿರ್ಲಕ್ಷ್ಯ ಪಟ್ಟಿ"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "ನಿರ್ಲಕ್ಷಿಸಬೇಕಾದವುಗಳ ಪಟ್ಟಿ"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "ಸಾಮಾನ್ಯ ಹೊರಗಿಡುವ ನಿಯಮಗಳು:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "ಪಟ್ಟಿಯನ್ನು ನಿರ್ಲಕ್ಷಿಸಲು ಕಂಟೆಂಟ್ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "''{PH1}'' ಗೆ ಹೊಂದಾಣಿಕೆಯಾಗುವ ಹೆಸರು ಇರುವ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ನಿರ್ಲಕ್ಷಿಸಿ"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "ನಿರ್ಲಕ್ಷಿಸಬೇಕಾದವುಗಳ ಪಟ್ಟಿಯ ಪ್ಯಾಟರ್ನ್‌ಗಳಿಲ್ಲ"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "ಪ್ಯಾಟರ್ನ್"
+    "message": "ಪ್ಯಾಟರ್ನ್ ಸೇರಿಸಿ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "ಪ್ಯಾಟರ್ನ್ ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "ಪರಿಶೀಲಿಸಲಾಗಿದೆ"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "ಪರಿಸ್ಥಿತಿ: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "ಫೈಲ್‌ನಲ್ಲಿರುವ ಎಲ್ಲಾ ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್ ಎಡಿಟ್ ಮಾಡಿ"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "ಫೈಲ್‌ನಲ್ಲಿ ಎಲ್ಲಾ ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "ಮಿಶ್ರ"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "ಲಾಗ್‌ಪಾಯಿಂಟ್: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "ಸೆರೆಹಿಡಿಯಲಾದ ಎಕ್ಸ್‌ಪ್ರೆಶನ್‌ಗಳಿದ್ದರೆ ವಿರಾಮಗೊಳಿಸಿ"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "ವಿನಾಯಿತಿಗಳು ಎದುರಾದಾಗ ವಿರಾಮಗೊಳಿಸಿ"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "ಎಲ್ಲಾ ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಿ"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "ಫೈಲ್‌ನಲ್ಲಿರುವ ಎಲ್ಲಾ ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಿ"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್ ತೆಗೆದುಹಾಕಿ"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "ಇತರ ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಿ‌"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "ಸ್ಥಳವನ್ನು ಪ್ರದರ್ಶಿಸಿ"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "ಗುರುತಿಸದಿರುವುದು"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "ಮುಚ್ಚಿ"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools ಅನ್ನು {PH1} ಗೆ ಡಾಕ್ ಮಾಡಲಾಗಿದೆ"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "DevTools ಅನ್ನು ಅನ್‌ಡಾಕ್ ಮಾಡಲಾಗಿದೆ"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "ಕೆಳಬದಿಗೆ ಡಾಕ್ ಮಾಡಿ"

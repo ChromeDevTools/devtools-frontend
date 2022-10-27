@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Acobla al costat"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Fes servir les tecles de fletxa dreta i esquerra per navegar per les opcions"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Acobla a la part inferior"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "El lloc web ha sol·licitat un subrecurs des d'una xarxa a la qual només ha pogut accedir gràcies a la posició privilegiada a la xarxa dels seus usuaris. Aquestes sol·licituds exposen els dispositius i els servidors que no són públics a Internet, amb la qual cosa augmenta el risc de patir una fuita d'informació o un atac de falsificació de sol·licituds entre llocs web (CSRF). Per reduir aquests riscos, Chrome discontinua les sol·licituds a subrecursos que no són públics quan s'inicien des de contexts no segurs i comença a bloquejar-los."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "El protocol IPv6 està activat de manera predeterminada i està previst que la possibilitat de desactivar-lo mitjançant googIPv6 se suprimeixi a M108. A partir d'aquest moment, s'ignorarà. Deixa d'utilitzar aquesta restricció heretada."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "El CSS no es pot carregar des dels URL file:, tret que acabin amb l'extensió de fitxer .css."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL està obsolet en contextos no segurs i se suprimirà aviat. Utilitza Web Storage o Indexed Database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Si s'especifica \"overflow: visible\" en les etiquetes img, video i canvas, pot ser que produeixin contingut visual fora dels límits de l'element. Consulta https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments està obsoleta. Utilitza la instal·lació Just-In-Time per als gestors de pagaments."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "La crida a PaymentRequest ha omès la directiva connect-src de la política de seguretat del contingut (CSP). Aquesta omissió està obsoleta. Afegeix l'identificador de la forma de pagament de l'API PaymentRequest (al camp supportedMethods) a la directiva connect-src de la CSP."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent està obsolet. Substitueix-lo per navigator.storage estandarditzat."
@@ -2235,13 +2244,16 @@
     "message": "Manifest de l'aplicació"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "No es recomana declarar una icona amb purpose: \"any maskable\". És probable que es mostri de manera incorrecta en algunes plataformes a causa de massa o massa poc farciment."
+    "message": "No es recomana declarar una icona amb \"purpose: \"any maskable\"\". És probable que es mostri de manera incorrecta en algunes plataformes a causa de massa o massa poc farciment."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Color de fons"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Identificador d'aplicació calculat"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "S'ha copiat l'identificador suggerit {PH1} al porta-retalls"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Copia al porta-retalls"
@@ -2307,13 +2319,13 @@
     "message": "El fitxer de manifest no conté cap camp \"name\" o \"short_name\""
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "El manifest no conté cap icona adequada. Es requereix un format PNG, SVG o WebP de com a mínim {PH1} píxels, l'atribut sizes s'ha de definir, i l'atribut purpose, si es defineix, ha d'incloure \"any\"."
+    "message": "El manifest no conté cap icona adequada. Es requereix un format PNG o SVG de com a mínim {PH1} píxels, l'atribut \"sizes\" s'ha de definir, i l'atribut \"purpose\", si s'ha definit, ha d'incloure \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "El fitxer de manifest especifica prefer_related_applications: true"
+    "message": "El fitxer de manifest especifica \"prefer_related_applications: true\""
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "L'URL d'inici del manifest, URL, no és vàlid"
+    "message": "El manifest \"start_URL\" no és vàlid"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Nom"
@@ -2334,7 +2346,7 @@
     "message": "No s'ha proporcionat cap identificador de Play Store"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "No s'ha proporcionat cap icona que tingui com a mínim {PH1} píxels quadrats en format PNG, SVG o WebP i que tingui l'atribut \"purpose\" sense establir o establert en \"any\"."
+    "message": "No s'ha proporcionat cap icona que tingui com a mínim {PH1} píxels quadrats en format PNG o SVG i que tingui l'atribut \"purpose\" sense establir o establert en \"any\"."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Nota:"
@@ -2361,7 +2373,7 @@
     "message": "La pàgina no es difon des d'un origen segur"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications només s'admet a Chrome Beta i als canals estables a Android."
+    "message": "\"prefer_related_applications\" només s'admet a Chrome Beta i als canals estables a Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Presentació"
@@ -2400,7 +2412,7 @@
     "message": "{PH1} {PH2} no pot tenir una amplada 2,3 vegades més llarga que l'alçada"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src no s'ha establert"
+    "message": "{PH1} \"src\" no s'ha establert"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "No s'ha pogut analitzar l'URL de {PH1} ({PH2})"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Activat."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Activat abans de l'inici"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "La renderització prèvia encara no admet l'API AudioContext."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "S'ha produït l'error DidFailLoadWithError durant la renderització prèvia."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Mètode d'API no permès"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "No es permet baixar contingut a la renderització prèvia."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "No s'ha pogut obtenir l'ús de memòria"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Té un URL efectiu"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Restricció de pàgines inactives"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "Per a la renderització prèvia, només es permet la navegació HTTP(S)."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Error del certificat SSL."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Ha fallat l'inici"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "La pestanya està aturada."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Paràmetre de consulta o punt final per al gestor de protocols"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Introdueix l'URL"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Destinació"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Mostra els recursos per a desenvolupadors"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Propietat obsoleta"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Propietat inactiva"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Prova de canviar la propietat {EXISTING_PARENT_ELEMENT_RULE} a {TARGET_PARENT_ELEMENT_RULE} a l'element superior."
+    "message": "Prova de configurar la propietat {EXISTING_PARENT_ELEMENT_RULE} a {TARGET_PARENT_ELEMENT_RULE} a l'element superior."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "La propietat {REASON_PROPERTY_DECLARATION_CODE} a l'element superior omet l'efecte de {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "La propietat {REASON_PROPERTY_DECLARATION_CODE} de l'element superior impedeix que {AFFECTED_PROPERTY_DECLARATION_CODE} tingui cap efecte."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Prova de canviar la propietat {EXISTING_PROPERTY_DECLARATION} a {TARGET_PROPERTY_DECLARATION}."
+    "message": "Prova de configurar la propietat {EXISTING_PROPERTY_DECLARATION} en {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Prova de suprimir {REASON_PROPERTY_DECLARATION_CODE} o canviar-ne el valor."
+    "message": "Prova de definir {PROPERTY_NAME} en un número que no sigui {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "La propietat {REASON_PROPERTY_DECLARATION_CODE} a aquest element omet l'efecte de {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "La propietat {REASON_PROPERTY_DECLARATION_CODE} impedeix que {AFFECTED_PROPERTY_DECLARATION_CODE} tingui efecte."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Afegeix una classe nova"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Commuta si el detector d'esdeveniments és passiu o si pot bloquejar"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Esborra-ho tot"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Carrega el perfil…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Desa el perfil…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Entrades"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Posa en pausa"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Reprèn"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Mostra les introduccions de text"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Inicia la gravació"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Torna a iniciar la reproducció"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Atura la gravació"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Recurs bloquejat"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Mostra els problemes"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Rendiment"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Analitzador de rendiment"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Grava"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Mostra el rendiment"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Mostra l'analitzador de rendiment"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Mostra les sessions recents de la cronologia"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Inicia l'elaboració del perfil i torna a carregar la pàgina"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Inicia o atura la gravació"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Atura"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Motius de composició"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Capçaleres de resposta"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Mostra les definicions d'anul·lació de la capçalera"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Mostra'n més"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tipus"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Afegeix una capçalera"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Tria aquesta opció si el recurs i el document es difonen des del mateix lloc web."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "valor de la capçalera"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Tria aquesta opció només si un lloc web arbitrari que inclou aquest recurs no imposa un risc de seguretat."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Afegeix fonts del camp x_google_ignoreList de mapes font a la llista d'elements ignorats"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Comportament"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Regles d'exclusió personalitzades:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "El depurador passarà pels scripts i no s'aturarà a les excepcions que llancin."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Desactivat"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "Activa la llista d'elements ignorats"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "Desmarca per desactivar la llista d'elements ignorats"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Llista d'elements ignorats del marc"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Llista d'elements ignorats"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Regles d'exclusió generals:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Afegeix scripts de contingut per ignorar la llista"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Ignora scripts el noms dels quals coincideixin amb \"{PH1}\""
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Cap patró de la llista d'elements ignorats"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Patró"
+    "message": "Afegeix un patró"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "El patró ja existeix"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "marcat"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Condició: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Desactiva tots els punts de ruptura del fitxer"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Edita el punt de ruptura"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Activa tots els punts de ruptura del fitxer"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "combinats"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Punt de registre: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Posa en pausa a les excepcions preses"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "En pausa a les excepcions"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Suprimeix tots els punts de ruptura"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Suprimeix tots els punts de ruptura del fitxer"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Suprimeix el punt de ruptura"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Suprimeix els altres punts de ruptura"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Mostra la ubicació"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "desmarcada"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Tanca"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools està acoblada ({PH1})"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "DevTools està desacoblada"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Acobla a la part inferior"

@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "ភ្ជាប់ទៅចំហៀង"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "ប្រើ​គ្រាប់ចុច​ព្រួញ​ទៅ​​ឆ្វេង និង​ទៅ​ស្ដាំ ដើម្បី​រុករក​ជម្រើស​នានា"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "ភ្ជាប់ទៅ​ខាងក្រោម"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "គេហទំព័របានស្នើសុំធនធានរងពីបណ្ដាញដែលវាអាចចូលប្រើប្រាស់បានដោយសារតែទីតាំងបណ្តាញដែល​មាន​ឯកសិទ្ធិ​របស់អ្នកប្រើប្រាស់គេហទំព័រ​នេះ។ សំណើទាំងនេះបង្ហាញឧបករណ៍ និងម៉ាស៊ីនមេដែលមិនមាន​លក្ខណៈ​សាធារណៈទៅកាន់អ៊ីនធឺណិត ដែល​បង្កើន​ហានិភ័យនៃ​ការវាយប្រហារ​តាម​ការបន្លំសំណើ​ឆ្លង​គេហទំព័រ (CSRF) និង/ឬការលេចធ្លាយព័ត៌មាន។ ដើម្បីកាត់បន្ថយហានិភ័យទាំងនេះ Chrome បញ្ឈប់សំណើសុំធនធានរងដែល​មិន​មាន​លក្ខណៈ​សាធារណៈ នៅពេលចាប់ផ្តើមពីបរិបទដែលមិនមានសុវត្ថិភាព ហើយនឹងចាប់ផ្តើមទប់ស្កាត់​សំណើ​ទាំងនោះ។"
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 ត្រូវបាន​បើក​តាមលំនាំដើម ហើយ​លទ្ធភាព​ក្នុងការបិទ​វា​ដោយប្រើ googIPv6 គ្រោង​នឹង​ត្រូវ​បាន​ចេញ​នៅក្នុង M108 ហើយ​បន្ទាប់​ពីនោះ ​វា​នឹង​មិន​ត្រូវបាន​អើពើ​ទេ។ សូមឈប់ប្រើលក្ខខណ្ឌ​កំហិត​ចាស់​នេះ​ទៀត។"
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "មិន​អាច​ផ្ទុក CSS ពី URL របស់ file:​ បាន​ទេ ប្រសិន​បើ​ពួកវាមិន​បញ្ចប់ដោយកន្ទុយ​ឯកសារ .css។"
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL ក្នុង​បរិបទ​គ្មានសុវត្ថិភាព​ត្រូវបាន​បញ្ឈប់ ហើយ​នឹង​ត្រូវបាន​លុបចេញ​ឆាប់ៗនេះ។ សូមប្រើប្រាស់​ទំហំផ្ទុក​លើ​បណ្ដាញ ឬ​មូលដ្ឋានទិន្នន័យ​ដែល​បានធ្វើ​សន្ទស្សន៍។"
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "ការ​បញ្ជាក់ overflow: visible នៅលើស្លាក img, video និង canvas អាច​ធ្វើ​ឱ្យ​ពួកវា​​បង្កើត​បាន​ខ្លឹមសារ​ដែលមើល​ឃើញ​នៅ​ខាងក្រៅ​ព្រំដែនធាតុ។ សូមមើល https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md។"
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments ត្រូវបានបញ្ឈប់។ សូម​ប្រើប្រាស់​ការ​ដំឡើង​ទាន់ពេលវេលា​​សម្រាប់​ឧបករណ៍ដោះស្រាយ​ការ​ទូទាត់​ជំនួស​វិញ។"
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "ការ​ហៅ​ PaymentRequest របស់​អ្នក​បានរំលង​កា​រណែនាំ​ស្ដីពី​គោលការណ៍​សុវត្ថិភាព​លើខ្លឹមសារ (CSP) connect-src។ ការ​រំលង​នេះ​ត្រូវ​បាន​បញ្ឈប់។ សូម​បញ្ចូល​លេខកូដសម្គាល់​វិធីបង់ប្រាក់​ពី API PaymentRequest (នៅ​ក្នុងកន្លែង​បញ្ចូល supportedMethods) ទៅក្នុង​ការ​ណែនាំ CSP connect-src របស់​អ្នក។"
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ navigator.storage ស្តង់ដារ​ជំនួសវិញ។"
@@ -2235,13 +2244,16 @@
     "message": "មេនីហ្វេសថ៍​កម្មវិធី"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "ការប្រកាស​រូបតំណាង​ដោយប្រើ purpose: \"any maskable\" មិនត្រូវបាន​ណែនាំទេ។ ទំនងជា​មិនត្រឹមត្រូវ​នៅលើប្រព័ន្ធ​មួយចំនួនទេ ដោយសារ​មានព័ត៌មាន​មិនចាំបាច់​ច្រើនពេក ឬ​តិចពេក។"
+    "message": "ការប្រកាស​រូបតំណាង​ដោយប្រើ 'purpose: \"any maskable\"' មិនត្រូវបាន​ណែនាំទេ។ ទំនងជា​បង្ហាញមិនត្រឹមត្រូវ​នៅលើប្រព័ន្ធ​មួយចំនួនទេ ដោយសារ​មានចន្លោះធំពេក ឬតូចពេក។"
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "ពណ៌ផ្ទៃ​ខាងក្រោយ"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "លេខសម្គាល់​កម្មវិធី​ដែលបានគណនា"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "បាន​ចម្លង​លេខម្គាល់​ដែលបានណែនាំ {PH1} ទៅ​ឃ្លីបបត"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "ចម្លង​ទៅ​ឃ្លីបបត"
@@ -2307,13 +2319,13 @@
     "message": "មេនីហ្វេសថ៍មិនមានកន្លែងបញ្ចូល 'name' ឬ 'short_name' ទេ"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "មេនីហ្វេសថ៍​មិនមាន​រូបតំណាង​ដែលសមស្របទេ។ តម្រូវឱ្យមាន​ទម្រង់ PNG, SVG ឬ WebP ដែលមាន​យ៉ាងហោចណាស់ {PH1}px។ ត្រូវតែកំណត់​លក្ខណៈនៃ sizes និងលក្ខណៈនៃ purpose ប្រសិនបើ​កំណត់ ត្រូវតែរួមបញ្ចូល \"any\"។"
+    "message": "មេនីហ្វេសថ៍មិនមាន​រូបតំណាង​ដែល​សមស្រប​ទេ។ តម្រូវ​ឱ្យ​មាន​ទម្រង់ PNG ឬ SVG ដែល​មាន​យ៉ាងហោចណាស់ {PH1}px។ ត្រូវតែ​កំណត់​លក្ខណៈនៃ 'sizes' និង​លក្ខណៈ​នៃ 'purpose'។ ប្រសិនបើ​​កំណត់ ត្រូវតែ​រួម​បញ្ចូល 'any'។"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "មេនីហ្វេសថ៍​បញ្ជាក់ prefer_related_applications៖ ពិត"
+    "message": "មេនីហ្វេសថ៍​បញ្ជាក់ 'prefer_related_applications៖ ពិត'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "URL ចាប់ផ្ដើមមេនីហ្វេសថ៍គ្មានសុពលភាពទេ"
+    "message": "មេនីហ្វេសថ៍ 'start_URL' មិន​ត្រឹមត្រូវ​ទេ"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "ឈ្មោះ"
@@ -2334,7 +2346,7 @@
     "message": "មិនបានផ្ដល់​លេខសម្គាល់ Play store ទេ"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "មិនមាន​រូបតំណាង​ដែលបានផ្ដល់​យ៉ាងហោចណាស់ {PH1} ភីកសែល​រាងការ៉េ​ជាទម្រង់ PNG, SVG ឬ WebP ដោយបានកំណត់ ឬមិនបាន​កំណត់លក្ខណៈ​នៃគោលបំណងទៅ \"any\" ទេ។"
+    "message": "មិនមាន​រូបតំណាង​ដែលបានផ្ដល់​យ៉ាងហោចណាស់ {PH1} ភីកសែល​រាងការ៉េ​ជាទម្រង់ PNG ឬ SVG ដោយបានកំណត់ ឬមិនបាន​កំណត់លក្ខណៈ​នៃគោលបំណងទៅជា 'any'។"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "ចំណាំ៖"
@@ -2361,7 +2373,7 @@
     "message": "ទំព័រនេះមិនត្រូវបានផ្ដល់ជូនពីប្រភពដើមដែលមានសុវត្ថិភាពទេ"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "អាចប្រើ prefer_related_applications នៅលើបណ្ដាញមានស្ថិរភាព និងបេតា Chrome នៅលើ Android តែប៉ុណ្ណោះ។"
+    "message": "អាច​ប្រើ 'prefer_related_applications' តែនៅ​លើ​បណ្ដាញមាន​ស្ថិរភាព និង​បេតា Chrome នៅ​លើ Android ប៉ុណ្ណោះ។"
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "បទ​បង្ហាញ"
@@ -2400,7 +2412,7 @@
     "message": "{PH1} {PH2} ទទឹងមិនអាចលើស 2.3 ដងនៃកម្ពស់បានទេ"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src មិន​ត្រូវបាន​កំណត់"
+    "message": "{PH1} 'src' មិន​ត្រូវ​បាន​កំណត់​ទេ"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "មិនអាចញែក URL {PH1} ''{PH2}'' បានទេ"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "បាន​បើកដំណើរការ។"
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "បានបើក​ដំណើរការ​មុនពេល​ចាប់ផ្ដើម"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "ការបំប្លែង​ជាមុន​មិនទាន់ស្គាល់ AudioContext API នៅឡើយទេ។"
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "DidFailLoadWithError បានកើតឡើង​នៅពេល​កំពុង​បំប្លែង​ជាមុន។"
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "វិធី API ដែលមិន​បាន​អនុញ្ញាត"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "ការទាញយក​មិន​ត្រូវបាន​អនុញ្ញាត​នៅក្នុង​ការ​បំប្លែងជាមុន​ទេ។"
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "មិនអាចយកការប្រើប្រាស់​អង្គចងចាំបានទេ"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "មាន URL ដែលមាន​ប្រសិទ្ធភាព"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation។"
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "ការដាក់កំហិត​លើទំព័រ​អសកម្ម"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "មានតែ​ការរុករក HTTP(S) ប៉ុណ្ណោះ​ទើប​អនុញ្ញាត​សម្រាប់​ឧបករណ៍​បំប្លែងជាមុន។"
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "មាន​បញ្ហា​វិញ្ញាបនបត្រ SSL។"
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "ការចាប់ផ្ដើម​មិនបានសម្រេច​ទេ"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "ផ្ទាំង​ត្រូវបាន​បញ្ឈប់។"
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "ប៉ារ៉ាម៉ែត្រ ឬ​ចំណុចបញ្ចប់​នៃសំណួរ​សម្រាប់​ឧបករណ៍​ដោះស្រាយ​ប្រូតូកូល"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "បញ្ចូល URL"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "គោលដៅ"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "បង្ហាញ​ធនធាន​អ្នកអភិវឌ្ឍន៍"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "លក្ខណៈដែលបានបញ្ឈប់"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "លក្ខណៈអសកម្ម"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "សាកល្បងផ្លាស់ប្ដូរលក្ខណៈ {EXISTING_PARENT_ELEMENT_RULE} នៅលើធាតុមេទៅជា {TARGET_PARENT_ELEMENT_RULE}។"
+    "message": "សាកល្បងកំណត់លក្ខណៈ {EXISTING_PARENT_ELEMENT_RULE} នៅលើធាតុមេទៅជា {TARGET_PARENT_ELEMENT_RULE}។"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "លក្ខណៈ {REASON_PROPERTY_DECLARATION_CODE} នៅលើធាតុមេរំលងឥទ្ធិពលនៃ {AFFECTED_PROPERTY_DECLARATION_CODE}។"
+    "message": "លក្ខណៈ {REASON_PROPERTY_DECLARATION_CODE} នៅ​លើ​ធាតុមេ​រារាំងមិនឱ្យ​ {AFFECTED_PROPERTY_DECLARATION_CODE} មានប្រសិទ្ធភាពទេ។"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "សាកល្បងផ្លាស់ប្ដូរលក្ខណៈ {EXISTING_PROPERTY_DECLARATION} ទៅជា {TARGET_PROPERTY_DECLARATION}។"
+    "message": "សាកល្បង​កំណត់លក្ខណៈ {EXISTING_PROPERTY_DECLARATION} ​ទៅជា {TARGET_PROPERTY_DECLARATION}។"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "សាកល្បងលុប {REASON_PROPERTY_DECLARATION_CODE} ចេញ ឬផ្លាស់ប្ដូរតម្លៃរបស់វា។"
+    "message": "សាកល្បង​កំណត់ {PROPERTY_NAME} ទៅជា​អ្វី​មួយ​ក្រៅ​ពី {PROPERTY_VALUE}។"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "លក្ខណៈ {REASON_PROPERTY_DECLARATION_CODE} នៅលើ​ធាតុ​នេះ​រំលង​ឥទ្ធិពល​នៃ {AFFECTED_PROPERTY_DECLARATION_CODE}។"
+    "message": "លក្ខណៈ {REASON_PROPERTY_DECLARATION_CODE} រារាំងមិនឱ្យ {AFFECTED_PROPERTY_DECLARATION_CODE} ​មានប្រសិទ្ធភាព។"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "បញ្ចូល​ថ្នាក់​ថ្មី"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "បិទ/បើកឱ្យមុខងារស្ដាប់ព្រឹត្តិការណ៍អសកម្ម ឬទប់ស្កាត់"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "សម្អាត​ទាំងអស់"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "ផ្ទុកកម្រងព័ត៌មាន…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "រក្សាទុកកម្រងព័ត៌មាន…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "ឧបករណ៍បញ្ចូល"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "ផ្អាក"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "បន្ត"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "បង្ហាញ​ឧបករណ៍​បញ្ចូល"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "ចាប់ផ្តើមថត"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "ចាប់ផ្ដើម​ចាក់ឡើងវិញ"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "បញ្ឈប់ការថត"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ធនធានដែលបានទប់ស្កាត់"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "បង្ហាញ​បញ្ហា"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "ប្រតិបត្តិការ"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "កម្មវិធី​ប្រមូលព័ត៌មាន"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "ថត"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "បង្ហាញ​ប្រតិបត្តិការ"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "បង្ហាញ​កម្មវិធី​ប្រមូលព័ត៌មាន"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "បង្ហាញ​វគ្គ​បន្ទាត់ពេលវេលា​ថ្មីៗ"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "ចាប់ផ្ដើម​បង្កើតកម្រងព័ត៌មាន និង​ផ្ទុកទំព័រ​ឡើងវិញ"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "ចាប់ផ្ដើម/បញ្ឈប់ការថត"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "បញ្ឈប់"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "ហេតុផលនៃការរួមបញ្ចូល"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "ផ្នែកក្បាលនៃការឆ្លើយតប"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "បង្ហាញនិយមន័យលុបពីលើ​ផ្នែក​ក្បាល"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "បង្ហាញ​ច្រើនទៀត"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "ប្រភេទ"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "បញ្ចូល​ផ្នែក​ក្បាល​"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ជ្រើសរើស​ជម្រើសនេះ ប្រសិនបើ​ធនធាន និងឯកសារ​ត្រូវបានផ្ដល់​ពីគេហទំព័រតែមួយ។"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "ឈ្មោះ​​ផ្នែក​ក្បាល​"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "តម្លៃ​ផ្នែក​ក្បាល"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "ជ្រើសរើស​ជម្រើសនេះ​ តែក្នុងករណីគេហទំព័រដែល​មិនច្បាស់ រួមទាំង​ធនធាននេះ​ មិនបង្កហានិភ័យ​ផ្នែកសុវត្ថិភាពប៉ុណ្ណោះ។"
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "បញ្ចូល​ប្រភព​ពីកន្លែងបញ្ចូល x_google_ignoreList ពី​ផែនទី​ប្រភព​ទៅ​បញ្ជី​មិន​អើពើ"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "សកម្មភាព"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "វិធានមិនរួមបញ្ចូលផ្ទាល់ខ្លួន៖"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "ឧបករណ៍ជួសជុល​នឹងរំលងស្គ្រីប ហើយនឹងមិនបញ្ឈប់​ការលើកលែងដែល​បង្កើតដោយស្គ្រីប​ទាំងនោះទេ។"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "បានបិទ"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "បើក​បញ្ជី​មិនអើពើ"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "ដោះធីក ដើម្បីបិទ​បញ្ជីមិន​អើពើ​ទាំងអស់"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "បញ្ជីមិនអើពើក្របខ័ណ្ឌ"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "បញ្ជីមិនអើពើ"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "វិធាន​មិនរួមបញ្ចូល​ទូទៅ៖"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "បញ្ចូល​ស្គ្រីបខ្លឹមសារ​ទៅក្នុង​បញ្ជីមិនអើពើ"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "មិនអើពើនឹងស្គ្រីបដែលមានឈ្មោះត្រូវនឹង ''{PH1}''"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "គ្មានលំនាំបញ្ជីមិនអើពើទេ"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "លំនាំ"
+    "message": "បញ្ចូលលំនាំ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "លំនាំមានរួចហើយ"
@@ -9741,7 +9765,7 @@
     "message": "ការពិសោធ"
   },
   "panels/settings/settings-meta.ts | ignoreList": {
-    "message": "​បញ្ជីមិនអើពើ"
+    "message": "បញ្ជីមិនអើពើ"
   },
   "panels/settings/settings-meta.ts | preferences": {
     "message": "ចំណូលចិត្ត"
@@ -10065,7 +10089,7 @@
     "message": "ដក​ចំណុចឈប់​ដំណើរការចេញ"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
-    "message": "លុប​ចំណុចផ្អាក​ផ្សេងទៀត"
+    "message": "លុប​ចំណុចផ្អាក​ផ្សេងទៀតចេញ"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
     "message": "បង្ហាញ​ទីតាំង"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "បានធីក​"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "លក្ខខណ្ឌ៖ {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "បិទ​ចំណុចផ្អាក​ទាំងអស់​នៅក្នុង​ឯកសារ"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "កែ​ចំណុចផ្អាក"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "បើក​ចំណុច​ផ្អាក​ទាំងអស់​នៅ​ក្នុង​ឯកសារ"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "ចម្រុះ"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "ចំណុច​កំណត់ហេតុ៖ {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "ផ្អាក​នៅពេលមាន​ការលើកលែង​ដែលចាប់បាន"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "ផ្អាក​ពេលមាន​ការលើកលែង"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "លុប​ចំណុចផ្អាក​ទាំងអស់"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "លុប​ចំណុចផ្អាក​ទាំងអស់​ចេញ​នៅ​ក្នុង​ឯកសារ"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "លុប​ចំណុចផ្អាកចេញ"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "លុប​ចំណុចផ្អាក​ផ្សេងទៀតចេញ"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "បង្ហាញ​ទីតាំង"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "បានដោះធីក"
@@ -11994,7 +12054,7 @@
     "message": "បង្ហាញ​វគ្គ​បន្ទាត់ពេលវេលា​ថ្មីៗ"
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
-    "message": "ចាប់ផ្ដើម​ការពិនិត្យ​កម្រងព័ត៌មាន និង​ផ្ទុកទំព័រ​ឡើងវិញ"
+    "message": "ចាប់ផ្ដើម​បង្កើតកម្រងព័ត៌មាន និង​ផ្ទុកទំព័រ​ឡើងវិញ"
   },
   "panels/timeline/timeline-meta.ts | startStopRecording": {
     "message": "ចាប់ផ្ដើម/បញ្ឈប់ការថត"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "បិទ"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "ឧបករណ៍អ្នកអភិវឌ្ឍន៍ត្រូវ​បានភ្ជាប់ទៅ {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "ឧបករណ៍អ្នកអភិវឌ្ឍន៍ត្រូវ​បាន​ផ្ដាច់"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "ភ្ជាប់ទៅ​ខាងក្រោម"

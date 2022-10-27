@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Aggancia lateralmente"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Utilizza i tasti Freccia sinistra e destra per spostarti tra le opzioni"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "Aggancia in basso"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Il sito web ha richiesto una sottorisorsa da una rete a cui può accedere solo a causa della posizione di rete privilegiata dei relativi utenti. Queste richieste espongono dispositivi e servizi non pubblici a Internet, aumentando il rischio di un attacco Cross-Site Request Forgery (CSRF) e/o una fuga di informazioni. Per limitare questi rischi, Chrome depreca le richieste a sottorisorse non pubbliche quando iniziate da contesti non sicuri e le blocca."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "Gli indirizzi IPv6 sono attivati per impostazione predefinita e la possibilità di disattivarli tramite googIPv6 verrà rimossa in M108 e poi verrà ignorata. Ti invitiamo a non utilizzare più questo vincolo legacy."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "Non è possibile caricare il CSS dagli URL difile: a meno che questi non terminino in un'estensione del file .css."
   },
@@ -1461,7 +1461,16 @@
     "message": "Il tuo partner sta negoziando una versione (D)TLS obsoleta. Rivolgiti al tuo partner per correggere questo problema."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL in contesti non sicuri è deprecato e verrà rimosso a breve. Utilizza Archiviazione web o Database indicizzato."
+    "message": "WebSQL in contesti non sicuri è deprecato e verrà rimosso a breve. Utilizza Web Storage o Indexed Database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Se specifichi overflow: visible nei tag img, video e canvas, gli spettatori potrebbero produrre contenuti visivi al di fuori dei limiti dell'elemento. Vedi https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "L'API paymentManager.instruments è deprecata. Utilizza l'installazione just-in-time per i gestori dei pagamenti."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "La tua chiamata PaymentRequest ha ignorato l'istruzione connect-src dei Criteri di sicurezza del contenuto (CSP). L'esclusione è stata ritirata. Aggiungi all'istruzione CSP connect-src l'identificatore del metodo di pagamento dall'API PaymentRequest (nel campo supportedMethods)."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "L'API StorageType.persistent è deprecata. Utilizza invece il criterio navigator.storage standardizzato."
@@ -2235,13 +2244,16 @@
     "message": "Manifest dell'app"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Sconsigliamo di dichiarare un'icona con purpose: \"any maskable\". Probabilmente verrebbe visualizzata non correttamente su alcune piattaforme a causa di troppa (o troppo poca) spaziatura interna."
+    "message": "Sconsigliamo di dichiarare un'icona con \"purpose: \"any maskable\"\". Probabilmente verrebbe visualizzata non correttamente su alcune piattaforme a causa di troppa (o troppo poca) spaziatura interna."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Colore sfondo"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "ID app elaborato"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "ID suggerito {PH1} copiato negli appunti"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Copia negli appunti"
@@ -2307,13 +2319,13 @@
     "message": "Il file manifest non contiene un campo \"name'\" o \"short_name\""
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Il file manifest non contiene un'icona adatta, deve essere in formato PNG, SVG o WebP e avere una dimensione di almeno {PH1} px. L'attributo sizes deve essere impostato e l'attributo purpose, se configurato, deve includere \"any\"."
+    "message": "Il file manifest non contiene un'icona adatta, deve essere in formato PNG o SVG e avere una dimensione di almeno {PH1} px. L'attributo \"sizes\" deve essere impostato e l'attributo \"purpose\", se configurato, deve includere \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "Il file manifest specifica prefer_related_applications: true"
+    "message": "Il file manifest specifica \"prefer_related_applications\": true"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Avvio file manifest URL non valido"
+    "message": "Il manifest \"start_URL\" non è valido"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Nome"
@@ -2334,7 +2346,7 @@
     "message": "Nessun ID Play Store fornito"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Nessuna delle icone fornite è quadrata, con dimensione minima di {PH1} pixel, in formato PNG, SVG o WebP, con l'attributo purpose non impostato o impostato su \"any\"."
+    "message": "Nessuna delle icone fornite è quadrata, con dimensione minima di {PH1} pixel, in formato PNG o SVG, con l'attributo purpose non impostato o impostato su \"any\"."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Nota:"
@@ -2361,7 +2373,7 @@
     "message": "La pagina non è pubblicata da un'origine sicura"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications è supportato solo sui canali Chrome beta e stabili su Android."
+    "message": "\"prefer_related_applications\" è supportato solo sui canali Chrome beta e stabili su Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Presentazione"
@@ -2400,7 +2412,7 @@
     "message": "La larghezza dell'elemento {PH1} {PH2} non può superare di più di 2,3 volte la lunghezza"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "src {PH1} non impostato"
+    "message": "\"src\" {PH1} non impostato"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "Errore di analisi dell'URL \"{PH2}\" di {PH1}"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Attivazione eseguita."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Attivato prima dell'inizio"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Il prerendering non supporta ancora l'API AudioContext."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "DidFailLoadWithError si è verificato durante il prerendering."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Metodo API non consentito"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Il download non è consentito in prerendering."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "Impossibile recuperare memoria utilizzata"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "Ha un URL effettivo"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Limitazione di pagina non attiva"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "È consentita solo la navigazione HTTP(S) per il prerendering."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Errore certificato SSL."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Avvio non riuscito"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "La scheda è stata interrotta."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Parametro di ricerca o endpoint per il gestore di protocollo"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Inserisci URL"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Destinazione"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Mostra le risorse dello sviluppatore"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Proprietà deprecata"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Proprietà non attiva"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Prova a cambiare la proprietà {EXISTING_PARENT_ELEMENT_RULE} dell'elemento principale in {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Prova a impostare la proprietà {EXISTING_PARENT_ELEMENT_RULE} dell'elemento principale in {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "La proprietà {REASON_PROPERTY_DECLARATION_CODE} sull'elemento principale ignora l'effetto di {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "La proprietà {REASON_PROPERTY_DECLARATION_CODE} nell'elemento principale impedisce che {AFFECTED_PROPERTY_DECLARATION_CODE} abbia effetto."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Prova a cambiare la proprietà {EXISTING_PROPERTY_DECLARATION} in {TARGET_PROPERTY_DECLARATION}."
+    "message": "Prova a impostare la proprietà {EXISTING_PROPERTY_DECLARATION} su {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Prova a rimuovere {REASON_PROPERTY_DECLARATION_CODE} o a modificarne il valore."
+    "message": "Prova a impostare {PROPERTY_NAME} su un valore diverso da {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "La proprietà {REASON_PROPERTY_DECLARATION_CODE} su questo elemento ignora l'effetto di {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "La proprietà {REASON_PROPERTY_DECLARATION_CODE} impedisce a {AFFECTED_PROPERTY_DECLARATION_CODE} di avere un effetto."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Aggiungi nuova classe"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Attiva/Disattiva per indicare se il listener di eventi è passivo o blocca"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "Cancella tutto"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "Carica profilo…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "Salva profilo…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Input"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "Metti in pausa"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Riprendi"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Mostra input"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Avvia registrazione"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Avvia nuova riproduzione"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Interrompi registrazione"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Risorsa bloccata"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Mostra problemi"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Prestazioni"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profiler"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "Registra"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Mostra prestazioni"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Mostra profiler"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Mostra sessioni recenti della sequenza temporale"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Inizia profilazione e ricarica pagina"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Consente di avviare/interrompere la registrazione"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Interrompi"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Motivi di composizione"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Intestazioni della risposta"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Mostra definizioni di override intestazione"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Mostra di più"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Tipo"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Aggiungi intestazione"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Seleziona questa opzione se la risorsa e il documento vengono gestiti dallo stesso sito."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "header value"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Scegli questa opzione solo se un sito web arbitrario che include questa risorsa non comporta un rischio per la sicurezza."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Aggiungi origini dal campo x_google_ignoreList delle mappe di origine all'elenco di elementi da ignorare"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Comportamento"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Regole di esclusione personalizzate:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Il debugger salterà tutti gli script e non si interromperà in corrispondenza delle eccezioni che hanno generato."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Elemento disattivato"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "Attiva Ignora scheda"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "Deseleziona per disattivare tutte le schede da ignorare"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Elenco framework da ignorare"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Ignora elenco"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Regole di esclusione generali:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Aggiungi script di contenuti all'elenco di elementi da ignorare\n"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Ignora gli script il cui nome corrisponde a \"{PH1}\""
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Nessun pattern ignora elenco"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Pattern"
+    "message": "Aggiungi pattern"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Pattern già esistente"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "elementi selezionati"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Condizione: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "Disattiva tutti i punti di interruzione nel file"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "Modica punto di interruzione"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "Abilita tutti i punti di interruzione nel file"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "misti"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Punto di log: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Metti in pausa sulle eccezioni rilevate"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Metti in pausa sulle eccezioni"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Rimuovi tutti i punti di interruzione"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Rimuovi tutti i punti di interruzione nel file"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Rimuovi punto di interruzione"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Rimuovi altri punti di interruzione"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Mostra posizione"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "opzione non selezionata"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Chiudi"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools è collegato a {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "DevTools è sganciato"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "Aggancia in basso"

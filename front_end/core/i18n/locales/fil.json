@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Bahagi kung saan naka-dock"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "Gamitin ang mga pakaliwa at pakanang arrow key para mag-navigate sa mga opsyon"
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "I-dock sa ibaba"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Humiling ang website ng subresource mula sa isang network na maa-access lang nito dahil sa privileged na posisyon ng network ng mga user nito. Inilalantad ng mga kahilingang ito ang mga hindi pampublikong device at server sa internet, na nagpapataas sa panganib ng cross-site request forgery (CSRF) na pag-atake, at/o pag-leak ng impormasyon. Para mapigilan ang mga panganib na ito, hindi na gagamitin ng Chrome ang mga kahilingan sa mga hindi pampublikong subresource kapag sinimulan mula sa mga hindi secure na konteksto, at magsisimula itong i-block ang mga iyon."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "Naka-enable nang default ang IPv6 at malapit nang alisin ang kakayahang i-disable ito gamit ang googIPv6. Tina-target itong alisin sa M108, at pagkatapos nito ay babalewalain ito. Pakihinto ang paggamit sa legacy na paghihigpit na ito."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "Hindi ma-load ang CSS mula sa mga URL ng file: maliban kung nagtatapos ang mga ito sa file extension na .css."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Hindi na ginagamit ang WebSQL sa mga hindi secure na konteksto at malapit na itong alisin. Pakigamit ang Web Storage o Naka-index na Database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "Kapag tinukoy ang overflow: visible sa mga tag ng img, video at canvas, posibleng gumawa ang mga ito ng visual na content sa labas ng mga hangganan ng element. Tingnan ang https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "Hindi na ginagamit ang paymentManager.instruments. Gumamit na lang ng just-in-time na pag-install para sa mga tagapangasiwa ng pagbabayad."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "Na-bypass ng iyong call na PaymentRequest ang direktibang connect-src ng Content-Security-Policy (CSP). Hindi na ginagamit ang pag-bypass na ito. Magdagdag ng identifier ng paraan ng pagbabayad mula sa PaymentRequest API (sa field na supportedMethods) sa iyong direktibang connect-src ng CSP."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "Hindi na ginagamit ang StorageType.persistent. Pakigamit na lang ang standardized na navigator.storage."
@@ -2235,13 +2244,16 @@
     "message": "Manifest ng App"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "Hindi iminumungkahi ang pag-declare ng icon na may purpose: \"any maskable\". Posibleng magmukhang may mali sa ilang platform dahil sa napakarami o napakakaunting padding."
+    "message": "Hindi iminumungkahi ang pag-declare ng icon na may 'purpose: \"any maskable\".' Posibleng magmukhang may mali rito sa ilang platform dahil sa napakarami o napakakaunting padding."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Kulay ng background"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Nakalkulang App Id"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "Kinopya ang iminumungkahing ID na {PH1} sa clipboard"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Kopyahin sa clipboard"
@@ -2307,13 +2319,13 @@
     "message": "Walang lamang field na 'name' o 'short_name' ang manifest"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Walang lamang naaangkop na icon ang manifest - kinakailangang nasa format na PNG, SVG, o WebP at hindi bababa sa {PH1}px, dapat nakatakda ang attribute na sizes, at may \"any\" dapat na nakalagay sa purpose, kung nakatakda ito."
+    "message": "Walang lamang naaangkop na icon ang manifest - nire-require ang format na PNG o SVG at hindi bababa sa {PH1}px, dapat itakda ang attribute na 'sizes,' at ang attribute na 'purpose,' kung nakatakda, ay dapat may 'any'."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "Tinutukoy ng manifest ang prefer_related_applications: true"
+    "message": "Tinutukoy ng manifest ang 'prefer_related_applications: true'"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "Hindi valid ang URL ng pagsisimula ng manifest"
+    "message": "Hindi valid ang manifest na 'start_URL'"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "Pangalan"
@@ -2334,7 +2346,7 @@
     "message": "Walang ibinigay na Play store ID"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Walang ibinigay na icon na hindi bababa sa {PH1} pixels square at nasa format na PNG, SVG, o WebP, na may attribute ng layunin na naka-unset o nakatakda sa \"any\"."
+    "message": "Walang ibinigay na icon na hindi bababa sa {PH1} pixels square at nasa format na PNG o SVG, na may attribute ng layunin na hindi nakatakda o nakatakda sa 'any.'"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Tandaan:"
@@ -2361,7 +2373,7 @@
     "message": "Hindi inihahatid ang page mula sa isang secure na pinagmulan"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "Sinusuportahan lang ang prefer_related_applications sa Chrome Beta at Mga Stable na channel sa Android."
+    "message": "Sinusuportahan lang ang 'prefer_related_applications' sa Chrome Beta at Mga Stable na channel sa Android."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Presentation"
@@ -2400,7 +2412,7 @@
     "message": "Hindi puwedeng mahigit sa 2.3 beses ng taas ang lapad ng {PH1} {PH2}"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "Hindi nakatakda ang {PH1} src"
+    "message": "Hindi nakatakda ang {PH1} 'src'"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "Hindi na-parse ang URL ng {PH1} ''{PH2}''"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "Naka-activate."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "Na-activate bago sinimulan"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Hindi pa sinusuportahan ng prerendering ang AudioContext API."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "Naganap ang DidFailLoadWithError habang nagpi-prerender."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "Hindi pinapayagang API method"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "Hindi pinapayagan ang download sa Prerender."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "Hindi nakuha ang paggamit ng memory"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "May epektibong URL"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "Hindi aktibong paghihigpit sa page"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "HTTP(S) na pag-navigate lang ang pinapayagan para sa Prerender."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Error sa SSL certificate."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "Hindi nasimulan"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "Inihinto ang tab."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "Parameter ng query o endpoint para sa tagapangasiwa ng protocol"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "Ilagay ang URL"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Destinasyon"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Ipakita ang Mga Resource ng Developer"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Hindi na ginagamit na property"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "Hindi aktibong property"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Subukang baguhin ang {EXISTING_PARENT_ELEMENT_RULE} na property sa parent sa {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Subukang itakda ang property na {EXISTING_PARENT_ELEMENT_RULE} sa parent sa {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Naba-bypass ng {REASON_PROPERTY_DECLARATION_CODE} na property sa parent element ang epekto ng {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Pinipigilan ng property na {REASON_PROPERTY_DECLARATION_CODE} sa parent element na magkaroon ng epekto ang {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "Subukang gawing {TARGET_PROPERTY_DECLARATION} ang {EXISTING_PROPERTY_DECLARATION} na property."
+    "message": "Subukang itakda ang property na {EXISTING_PROPERTY_DECLARATION} sa {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Subukang alisin ang {REASON_PROPERTY_DECLARATION_CODE} o baguhin ang value nito."
+    "message": "Subukang itakda ang {PROPERTY_NAME} sa hindi {PROPERTY_VALUE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Naba-bypass ng {REASON_PROPERTY_DECLARATION_CODE} na property sa element na ito ang epekto ng {AFFECTED_PROPERTY_DECLARATION_CODE}."
+    "message": "Pinipigilan ng property na {REASON_PROPERTY_DECLARATION_CODE} na magkaroon ng epekto ang {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Magdagdag ng bagong class"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "I-toggle kung passive o nagba-block ang event listener"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "I-clear lahat"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "I-load ang profile…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "I-save ang profile…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "Mga Input"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "I-pause"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "Ituloy"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "Ipakita ang Mga Input"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "Simulang mag-record"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "Simulan ang pag-replay"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "Ihinto ang pag-record"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Na-block na Resource"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Ipakita ang Mga Isyu"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "Performance"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profiler"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "I-record"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "Ipakita ang Performance"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Ipakita ang Profiler"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "Ipakita ang mga kamakailang session sa timeline"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "Simulan ang pag-profile at i-reload ang page"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "Simulan/ihinto ang pag-record"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "Ihinto"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Mga Dahilan sa Pag-composite"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Mga Header ng Sagot"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Ipakita ang mga definition sa pag-override ng header"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "Magpakita pa"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Uri"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "Magdagdag ng header"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Piliin ang opsyong ito kung inihahatid sa iisang site ang resource at ang dokumento."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "header-name"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "value ng header"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Piliin lang ang opsyong ito kung walang banta ng panganib sa seguridad ang arbitrary na website kabilang ang resource na ito."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "Magdagdag ng mga source mula sa field na x_google_ignoreList mula sa mga mapa ng source sa listahan ng babalewalain"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "Gawi"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "Mga custom na panuntunan sa pagbubukod:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Lalaktawan ng debugger ang mga script at hindi ito hihinto sa mga exception na ibinibigay ng mga ito."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "Naka-disable"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "I-enable ang Listing ng Babalewalain"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "I-uncheck para i-disable ang lahat ng listing ng babalewalain"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Listahan ng Babalewalaing Framework"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "Listahan ng Balewalain"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "Mga pangkalahatang panuntunan sa pagbubukod:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Magdagdag ng mga script ng content sa listahan ng babalewalain"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Balewalain ang mga script na may mga pangalang tumutugma sa ''{PH1}''"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "Walang pattern ng listahan ng balewalain"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Pattern"
+    "message": "Magdagdag ng Pattern"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "May ganito nang pattern"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "na-check"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "Kundisyon: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "I-disable ang lahat ng breakpoint sa file"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "I-edit ang breakpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "I-enable ang lahat ng breakpoint sa file"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "halo-halo"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "Logpoint: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "Mag-pause sa mga na-catch na exception"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "Mag-pause sa mga exception"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "Alisin ang lahat ng breakpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "Alisin ang lahat ng breakpoint sa file"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "Alisin ang breakpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "Alisin ang iba pang breakpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "Ipakita ang lokasyon"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "naka-uncheck"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Isara"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "Naka-dock ang DevTools sa {PH1}"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "Naka-undock ang DevTools"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "I-dock sa ibaba"

@@ -1034,6 +1034,9 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "डॉक करण्याची बाजू"
   },
+  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+    "message": "पर्याय नेव्हिगेट करण्यासाठी लेफ्ट आणि राइट अ‍ॅरो की वापरा."
+  },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
     "message": "तळाशी डॉक करा"
   },
@@ -1433,9 +1436,6 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "वेबसाइटने फक्त तिच्या वापरकर्त्यांच्या विशेषाधिकार असलेल्या नेटवर्क स्थितीमुळे अ‍ॅक्सेस करता आलेल्या नेटवर्कला सबरिसोर्सची विनंती केली. या विनंत्या सार्वजनिक नसलेली डिव्हाइस आणि सर्व्हर इंटरनेटवर उघड करतात, ज्यामुळे क्रॉस-साइट विनंती बनावटीकरण (CSRF) हल्ल्याचा आणि/किंवा माहितीच्या गळतीचा धोका वाढतो. हे धोके कमी करण्यासाठी, सार्वजनिक नसलेल्या सबरिसोर्सला केलेल्या विनंत्या असुरक्षित संदर्भांवरून केल्या असताना Chrome डेप्रिकेट करते, आणि त्या ब्लॉक करणे सुरू करेल."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 हे बाय डीफॉल्ट सुरू केले आहे आणि googIPv6 वापरून ते बंद करण्याची क्षमता ही M108 मध्ये काढून टाकण्याचे लक्ष्य आहे, ज्यानंतर त्याकडे दुर्लक्ष केले जाईल. कृपया ही लेगसी मर्यादा वापरणे थांबवा."
-  },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS चा शेवट .css फाइल एक्स्टेंशनमध्ये होत नसल्यास, त्या file: URL वरून डाउनलोड केल्या जाऊ शकत नाहीत."
   },
@@ -1462,6 +1462,15 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL असुरक्षित संदर्भामध्ये डेप्रिकेट केले आहे आणि ते लवकरच काढून टाकले जाईल. कृपया वेब स्टोरेज किंवा अनुक्रमित डेटाबेस वापरा."
+  },
+  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
+    "message": "इमेज, व्हिडीओ आणि कॅन्व्हास टॅगवर overflow: visible नमूद केल्याने ते घटकांच्या मर्यादेबाहेरील व्हिज्युअल आशय तयार करू शकतात. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md पहा."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
+    "message": "paymentManager.instruments हे डेप्रिकेट केले आहे. कृपया त्याऐवजी पेमेंट हँडलरसाठी जस्ट-इन-टाइम इंस्टॉल वापरा."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
+    "message": "तुमच्या PaymentRequest कॉलने आशय सुरक्षा धोरण (CSP) connect-src डिरेक्टिव्ह बायपास केले. बायपास डेप्रिकेट केला आहे. कृपया PaymentRequest API (supportedMethods फील्डमध्ये) मधून तुमच्या CSP connect-src डिरेक्टिव्हमध्ये पेमेंट पद्धत आयडेंटिफायर जोडा."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent हे डेप्रिकेट केले आहे. कृपया त्याऐवजी मानक navigator.storage चा वापर करा."
@@ -2235,13 +2244,16 @@
     "message": "अ‍ॅप मॅनिफेस्ट"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "purpose: \"any maskable\" सह आयकन घोषित करण्याला प्रोत्साहन दिले जात नाही. ते काही प्लॅटफॉर्मवर अति जास्त किंवा खूप कमी पॅडिंगमुळे चुकीचे दिसू शकते."
+    "message": "'purpose: \"any maskable\"' सह आयकन घोषित करण्याला प्रोत्साहन दिले जात नाही. ते काही प्लॅटफॉर्मवर खूप जास्त किंवा खूप कमी पॅडिंगमुळे चुकीचे दिसू शकते."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "बॅकग्राउंड रंग"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "काँप्युट केलेला अ‍ॅप आयडी"
+  },
+  "panels/application/AppManifestView.ts | copiedToClipboard": {
+    "message": "सुचवलेला आयडी {PH1} क्लिपबोर्डवर कॉपी केला"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "क्लिपबोर्डवर कॉपी करा"
@@ -2307,13 +2319,13 @@
     "message": "मॅनिफेस्टमध्ये 'name' किंवा 'short_name' फील्ड नाही"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "मॅनिफेस्टमध्ये योग्य आयकन नाही - PNG, SVG किंवा किमान {PH1}px चा WebP फॉरमॅट आवश्यक आहे, sizes विशेषता सेट केली जाणे आवश्यक आहे आणि purpose विशेषता सेट केली असल्यास, तिच्यामध्ये \"any\" चा समावेश असावा."
+    "message": "मॅनिफेस्टमध्ये योग्य आयकन नाही - किमान {PH1} px चा PNG किंवा SVG फॉरमॅट आवश्यक आहे, sizes ॲट्रिब्यूट सेट केली जाणे आवश्यक आहे आणि 'purpose' ॲट्रिब्यूट सेट केली असल्यास, तिच्यामध्ये \"any\" चा समावेश असावा."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
-    "message": "मॅनिफेस्ट prefer_related_applications नमूद करते: सत्य"
+    "message": "मॅनिफेस्ट 'prefer_related_applications: true' नमूद करते"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "मॅनिफेस्टची सुरुवात URL वैध नाही"
+    "message": "मॅनिफेस्ट 'start_URL' वैध नाही"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "नाव"
@@ -2334,7 +2346,7 @@
     "message": "Play Store आयडी दिलेला नाही"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "पुरवलेला कोणताही आयकन, उद्देश विशेषता सेट न केलेला किंवा \"any\" वर सेट केलेला, किमान {PH1} चौरस पिक्सेलचा PNG, SVG किंवा WebP फॉरमॅटमध्ये नाही."
+    "message": "पुरवलेला कोणताही आयकन, उद्देश ॲट्रिब्यूट सेट न केलेला किंवा 'any' वर सेट केलेला, किमान {PH1} चौरस पिक्सेलचा PNG किंवा SVG फॉरमॅटमध्ये नाही."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "टीप:"
@@ -2361,7 +2373,7 @@
     "message": "पेज सुरक्षित ओरिजिनवरून दाखवलेले नाही"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applications ला फक्त Chrome बीटा आणि Android वरील स्थिर चॅनलवर सपोर्ट आहे."
+    "message": "'prefer_related_applications' ला फक्त Chrome बीटा आणि Android वरील स्टेबल चॅनलवर सपोर्ट आहे."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "प्रेझेंटेशन"
@@ -2400,7 +2412,7 @@
     "message": "{PH1} {PH2} रुंदी उंचीपेक्षा २.३ पटीने जास्त असू शकत नाही"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} src सेट केलेली नाही"
+    "message": "{PH1} 'src' सेट केलेले नाही"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
     "message": "{PH1} URL ''{PH2}'' पार्स करता आली नाही"
@@ -3746,6 +3758,9 @@
   "panels/application/components/Prerender2.ts | Activated": {
     "message": "ॲक्टिव्हेट केले."
   },
+  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
+    "message": "सुरू करण्यापूर्वी ॲक्टिव्हेट केले"
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "प्रीरेंडरिंगला अद्याप AudioContext API वर सपोर्ट नाही."
   },
@@ -3773,6 +3788,9 @@
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "प्रीरेंडरिंगच्यादरम्यान DidFailLoadWithError ही एरर आली."
   },
+  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
+    "message": "अनुमती नसलेली API पद्धत"
+  },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "प्रीरेंडर मध्ये डाउनलोड करण्यास अनुमती नाही."
   },
@@ -3785,8 +3803,14 @@
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "मेमरीचा वापर मिळवता आला नाही"
   },
+  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
+    "message": "प्रभावी URL आहे"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
+    "message": "इनॅक्टिव्ह पेज निर्बंध"
   },
   "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
     "message": "प्रीरेंडरसाठी फक्त HTTP(S) नेव्हिगेशनला अनुमती आहे."
@@ -3836,6 +3860,9 @@
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL प्रमाणपत्राशी संबंधित एरर."
   },
+  "panels/application/components/Prerender2.ts | StartFailed": {
+    "message": "सुरू करता आले नाही"
+  },
   "panels/application/components/Prerender2.ts | Stop": {
     "message": "टॅब थांबवला आहे."
   },
@@ -3871,6 +3898,9 @@
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
     "message": "प्रोटोकॉल हँडलरसाठी क्वेरी पॅरामीटर किंवा एंडपॉइंट"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
+    "message": "URL एंटर करा"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "गंतव्यस्थान"
@@ -4760,26 +4790,20 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "डेव्हलपर स्रोत दाखवा"
   },
-  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "डेप्रिकेट केलेली प्रॉपर्टी"
-  },
-  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
-    "message": "निष्क्रिय प्रॉपर्टी"
-  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "{EXISTING_PARENT_ELEMENT_RULE} प्रॉपर्टी ही मूळ {TARGET_PARENT_ELEMENT_RULE} वर बदलून पहा."
+    "message": "{EXISTING_PARENT_ELEMENT_RULE} प्रॉपर्टी ही मूळ {TARGET_PARENT_ELEMENT_RULE} वर सेट करून पहा."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "मूळ घटकावरील {REASON_PROPERTY_DECLARATION_CODE} प्रॉपर्टी {AFFECTED_PROPERTY_DECLARATION_CODE} च्या प्रभावाला बायपास करते."
+    "message": "मूळ घटकावरील {REASON_PROPERTY_DECLARATION_CODE} प्रॉपर्टी ही {AFFECTED_PROPERTY_DECLARATION_CODE} वर परिणाम होण्यापासून रोखते."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "{EXISTING_PROPERTY_DECLARATION} प्रॉपर्टी ही {TARGET_PROPERTY_DECLARATION} वर बदलून पहा."
+    "message": "{EXISTING_PROPERTY_DECLARATION} प्रॉपर्टी ही {TARGET_PROPERTY_DECLARATION} वर सेट करून पहा."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "{REASON_PROPERTY_DECLARATION_CODE} काढून टाकण्याचा किंवा तिचे मूल्य बदलण्याचा प्रयत्न करा."
+    "message": "{PROPERTY_NAME} ला {PROPERTY_VALUE} व्यतिरिक्त प्रॉपर्टीवर सेट करून पहा."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "या घटकावरील {REASON_PROPERTY_DECLARATION_CODE} प्रॉपर्टी ही {AFFECTED_PROPERTY_DECLARATION_CODE} चा इफेक्ट बायपास करते."
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} प्रॉपर्टी ही {AFFECTED_PROPERTY_DECLARATION_CODE} वर परिणाम होण्यापासून रोखते."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "नवीन वर्ग जोडा"
@@ -5531,36 +5555,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "इव्हेंट ऐकणारा पॅसिव्ह आहे किंवा ब्लॉकिंग आहे ते टॉगल करा"
   },
-  "panels/input/InputTimeline.ts | clearAll": {
-    "message": "सर्व साफ करा"
-  },
-  "panels/input/InputTimeline.ts | loadProfile": {
-    "message": "प्रोफाइल लोड करा…"
-  },
-  "panels/input/InputTimeline.ts | saveProfile": {
-    "message": "प्रोफाइल सेव्ह करा…"
-  },
-  "panels/input/input-meta.ts | inputs": {
-    "message": "इनपुट"
-  },
-  "panels/input/input-meta.ts | pause": {
-    "message": "थांबवा"
-  },
-  "panels/input/input-meta.ts | resume": {
-    "message": "पुन्हा सुरू करा"
-  },
-  "panels/input/input-meta.ts | showInputs": {
-    "message": "इनपुट दाखवा"
-  },
-  "panels/input/input-meta.ts | startRecording": {
-    "message": "रेकॉर्डिंग सुरू करा"
-  },
-  "panels/input/input-meta.ts | startReplaying": {
-    "message": "रीप्ले करणे सुरू करा"
-  },
-  "panels/input/input-meta.ts | stopRecording": {
-    "message": "रेकॉर्डिंग थांबवा"
-  },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ब्लॉक केलेले स्रोत"
   },
@@ -5969,14 +5963,32 @@
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "समस्या दाखवा"
   },
+  "panels/js_profiler/js_profiler-meta.ts | performance": {
+    "message": "परफॉर्मन्स"
+  },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "प्रोफायलर"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | record": {
+    "message": "रेकॉर्ड करा"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | showPerformance": {
+    "message": "परफॉर्मन्स दाखवा"
   },
   "panels/js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "प्रोफायलर दाखवा"
   },
+  "panels/js_profiler/js_profiler-meta.ts | showRecentTimelineSessions": {
+    "message": "अलीकडील टाइमलाइन सेशन दाखवा"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | startProfilingAndReloadPage": {
+    "message": "प्रोफायलिंग सुरू करा आणि पेज रीलोड करा"
+  },
   "panels/js_profiler/js_profiler-meta.ts | startStopRecording": {
     "message": "रेकॉर्डिंग सुरू करा/थांबवा"
+  },
+  "panels/js_profiler/js_profiler-meta.ts | stop": {
+    "message": "थांबवा"
   },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "कंपोझिटिंगची कारणे"
@@ -7979,6 +7991,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "प्रतिसाद हेडर"
   },
+  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "हेडर ओव्हरराइड व्याख्या दाखवा"
+  },
   "panels/network/components/RequestHeadersView.ts | showMore": {
     "message": "आणखी दाखवा"
   },
@@ -8036,8 +8051,17 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "प्रकार"
   },
+  "panels/network/components/ResponseHeaderSection.ts | addHeader": {
+    "message": "हेडर जोडा"
+  },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "स्रोत आणि दस्तऐवज एकाच साइटवरून डिलिव्हर केले जात असल्यास, हा पर्याय निवडा."
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
+    "message": "हेडर-नाव"
+  },
+  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
+    "message": "हेडरचे मूल्य"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "या स्रोताचा समावेश असलेली आर्बिटरी वेबसाइट सुरक्षेला धोका निर्माण करत नसेल तरच हा पर्याय निवडा."
@@ -9479,20 +9503,23 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
     "message": "x_google_ignoreList या फील्डमधून स्रोत जोडा आणि\nनकाशेवरील दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमध्ये हे जोडा"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
-    "message": "वर्तन"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
+    "message": "कस्टम वगळण्याचे नियम:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "डीबगर स्क्रिप्टमधून फक्त अंशतः घटक कॅच करत जाईल आणि त्यांनी थ्रो केलेल्या एक्सेप्शनवर थांबणार नाही."
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
-    "message": "बंद केले"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
+    "message": "दुर्लक्ष करण्याच्या गोष्टींची सूची सुरू करा"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
+    "message": "सर्व दुर्लक्ष करण्याच्या गोष्टींची सूची सुरू करण्यासाठी चौकटीतली खूण काढा"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "फ्रेमवर्कमधील दुर्लक्ष करण्याच्या गोष्टींची सूची"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
-    "message": "दुर्लक्ष करण्याच्या गोष्टींची सूची"
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
+    "message": "सामान्य वगळण्याचे नियम:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमध्ये आशय स्क्रिप्ट जोडा"
@@ -9503,11 +9530,8 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "''{PH1}'' शी जुळणारी नावे असलेल्या स्क्रिप्टकडे दुर्लक्ष करा"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
-    "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीचे पॅटर्न नाहीत"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "पॅटर्न"
+    "message": "पॅटर्न जोडा"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "पॅटर्न आधीच अस्तित्वात आहे"
@@ -10373,8 +10397,44 @@
   "panels/sources/components/BreakpointsView.ts | checked": {
     "message": "तपासलेले"
   },
+  "panels/sources/components/BreakpointsView.ts | conditionCode": {
+    "message": "स्थिती: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
+    "message": "फाइलमधील सर्व ब्रेकपॉइंट बंद करा"
+  },
+  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
+    "message": "ब्रेकपॉइंट संपादित करा"
+  },
+  "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
+    "message": "फाइलमधील सर्व ब्रेकपॉइंट सुरू करा"
+  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "मिश्र"
+  },
+  "panels/sources/components/BreakpointsView.ts | logpointCode": {
+    "message": "लॉगपॉइंट: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
+    "message": "कॅच केलेल्या एक्सेप्शनवर थांबवा"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
+    "message": "एक्सेप्शनवर थांबवा"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
+    "message": "सर्व ब्रेकपॉइंट काढून टाका"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeAllBreakpointsInFile": {
+    "message": "फाइलमधील सर्व ब्रेकपॉइंट काढून टाका"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeBreakpoint": {
+    "message": "ब्रेकपॉइंट काढून टाका"
+  },
+  "panels/sources/components/BreakpointsView.ts | removeOtherBreakpoints": {
+    "message": "इतर ब्रेकपॉइंट काढून टाका"
+  },
+  "panels/sources/components/BreakpointsView.ts | revealLocation": {
+    "message": "स्थान दाखवा"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "चौकटीतली खूण काढली"
@@ -12289,6 +12349,12 @@
   },
   "ui/legacy/DockController.ts | close": {
     "message": "बंद करा"
+  },
+  "ui/legacy/DockController.ts | devToolsDockedTo": {
+    "message": "DevTools हे {PH1} वर डॉक केले आहे"
+  },
+  "ui/legacy/DockController.ts | devtoolsUndocked": {
+    "message": "DevTools अनडॉक केले आहे"
   },
   "ui/legacy/DockController.ts | dockToBottom": {
     "message": "तळाशी डॉक करा"

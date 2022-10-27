@@ -87,21 +87,22 @@ export class _TestObserver {
    * @override
    */
   targetAdded(target) {
-    if (target.id() === 'main') {
+    if (target.id() === 'main' && target.type() === 'frame' ||
+        target.parentTarget()?.type() === 'tab' && target.type() === 'frame' && !target.targetInfo()?.subtype?.length) {
       _setupTestHelpers(target);
+      if (_startedTest) {
+        return;
+      }
+      _startedTest = true;
+      TestRunner
+          .loadHTML(`
+        <head>
+          <base href="${TestRunner.url()}">
+        </head>
+        <body>
+        </body>
+      `).then(() => _executeTestScript());
     }
-    if (_startedTest) {
-      return;
-    }
-    _startedTest = true;
-    TestRunner
-        .loadHTML(`
-      <head>
-        <base href="${TestRunner.url()}">
-      </head>
-      <body>
-      </body>
-    `).then(() => _executeTestScript());
   }
 
   /**

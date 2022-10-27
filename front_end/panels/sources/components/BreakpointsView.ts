@@ -279,12 +279,13 @@ export class BreakpointsView extends HTMLElement {
     }
 
     if (event.key === 'Home' || event.key === 'End') {
+      event.consume(true);
       return this.#handleHomeOrEndKey(event.key);
     }
     if (Platform.KeyboardUtilities.keyIsArrowKey(event.key)) {
+      event.consume(true);
       return this.#handleArrowKey(event.key, event.target);
     }
-
     return;
   }
 

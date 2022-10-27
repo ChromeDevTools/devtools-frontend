@@ -1270,6 +1270,7 @@ grd_files_debug_sources = [
   "front_end/panels/sources/breakpointEditDialog.css.js",
   "front_end/panels/sources/callStackSidebarPane.css.js",
   "front_end/panels/sources/components/BreakpointsView.js",
+  "front_end/panels/sources/components/BreakpointsViewUtils.js",
   "front_end/panels/sources/components/HeadersView.css.js",
   "front_end/panels/sources/components/HeadersView.js",
   "front_end/panels/sources/components/breakpointsView.css.js",

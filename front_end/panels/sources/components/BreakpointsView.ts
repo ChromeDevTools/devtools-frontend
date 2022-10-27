@@ -7,11 +7,14 @@ import * as Platform from '../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as TwoStatesCounter from '../../../ui/components/two_states_counter/two_states_counter.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import breakpointsViewStyles from './breakpointsView.css.js';
+
+import {findNextNodeForKeyboardNavigation, type ElementId} from './BreakpointsViewUtils.js';
 
 const UIStrings = {
   /**
@@ -88,6 +91,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/BreakpointsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const MAX_SNIPPET_LENGTH = 200;
 
@@ -207,12 +211,33 @@ export class BreakpointsView extends HTMLElement {
   #pauseOnCaughtExceptions: boolean = false;
   #breakpointsActive: boolean = true;
   #breakpointGroups: BreakpointGroup[] = [];
+  #domNodeToIdMap: WeakMap<HTMLElement, ElementId> = new WeakMap();
+  #selectedElement?: ElementId;
 
   set data(data: BreakpointsViewData) {
     this.#pauseOnExceptions = data.pauseOnExceptions;
     this.#pauseOnCaughtExceptions = data.pauseOnCaughtExceptions;
     this.#breakpointsActive = data.breakpointsActive;
     this.#breakpointGroups = data.groups;
+
+    // Check if the previously selected element still exists by looking
+    // through the ids and comparing them.
+    if (this.#selectedElement) {
+      const selectedElementExists = this.#breakpointGroups.some((group => {
+        if (this.#isSelectedElement(group.url)) {
+          return true;
+        }
+        return group.breakpointItems.some(breakpointItem => this.#isSelectedElement(breakpointItem.id));
+      }));
+      if (!selectedElementExists) {
+        // Element was removed; reset the selected element.
+        this.#selectedElement = undefined;
+      }
+    }
+
+    if (!this.#selectedElement && this.#breakpointGroups.length >= 1) {
+      this.#selectedElement = this.#breakpointGroups[0].url;
+    }
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -242,10 +267,81 @@ export class BreakpointsView extends HTMLElement {
       ${LitHtml.Directives.repeat(
         this.#breakpointGroups,
         group => group.url,
-        group => LitHtml.html`<hr/>${this.#renderBreakpointGroup(group)}`)}
+        (group, groupIndex) => LitHtml.html`<hr/>${this.#renderBreakpointGroup(group, groupIndex)}`)}
     </div>`;
     // clang-format on
     LitHtml.render(out, this.#shadow, {host: this});
+  }
+
+  async #keyDownHandler(event: KeyboardEvent): Promise<void> {
+    if (!event.target || !(event.target instanceof HTMLElement)) {
+      return;
+    }
+
+    if (event.key === 'Home' || event.key === 'End') {
+      return this.#handleHomeOrEndKey(event.key);
+    }
+    if (Platform.KeyboardUtilities.keyIsArrowKey(event.key)) {
+      return this.#handleArrowKey(event.key, event.target);
+    }
+
+    return;
+  }
+
+  async #setSelected(element: HTMLElement|null): Promise<void> {
+    if (!element) {
+      return;
+    }
+    const id = this.#domNodeToIdMap.get(element);
+    assertNotNullOrUndefined(id);
+    this.#selectedElement = id;
+    await ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    await coordinator.write('focus', () => {
+      element.focus();
+    });
+  }
+
+  #isSelectedElement(id: ElementId): boolean {
+    return id === this.#selectedElement;
+  }
+
+  async #handleArrowKey(key: Platform.KeyboardUtilities.ArrowKey, target: HTMLElement): Promise<void> {
+    if (!this.#selectedElement) {
+      throw new Error('A keyboard navigation is only valid if we have an element that is selected.');
+    }
+    const setGroupExpandedState = (detailsElement: HTMLDetailsElement, expanded: boolean): Promise<void> => {
+      if (expanded) {
+        return coordinator.write('expand', () => {
+          detailsElement.setAttribute('open', '');
+        });
+      }
+      return coordinator.write('expand', () => {
+        detailsElement.removeAttribute('open');
+      });
+    };
+    const nextNode = await findNextNodeForKeyboardNavigation(target, key, setGroupExpandedState);
+    return this.#setSelected(nextNode);
+  }
+
+  async #handleHomeOrEndKey(key: 'Home'|'End'): Promise<void> {
+    if (key === 'Home') {
+      const firstSummaryNode = this.#shadow.querySelector<HTMLElement>('[data-first-group] > summary');
+      return this.#setSelected(firstSummaryNode);
+    }
+    if (key === 'End') {
+      const numGroups = this.#breakpointGroups.length;
+      const lastGroupIndex = numGroups - 1;
+      const lastGroup = this.#breakpointGroups[lastGroupIndex];
+
+      if (lastGroup.expanded) {
+        const lastBreakpointItem =
+            this.#shadow.querySelector<HTMLElement>('[data-last-group] > [data-last-breakpoint]');
+        return this.#setSelected(lastBreakpointItem);
+      }
+      const lastGroupSummaryElement = this.#shadow.querySelector<HTMLElement>('[data-last-group] > summary');
+      return this.#setSelected(lastGroupSummaryElement);
+    }
+    return;
   }
 
   #renderEditBreakpointButton(breakpointItem: BreakpointItem): LitHtml.TemplateResult {
@@ -324,30 +420,47 @@ export class BreakpointsView extends HTMLElement {
     void menu.show();
   }
 
-  #renderBreakpointGroup(group: BreakpointGroup): LitHtml.TemplateResult {
+  #setDOMNodeForElementId(id: ElementId, domNode: Element): void {
+    if (!(domNode instanceof HTMLElement)) {
+      throw new Error('domNode is expected to an HTMLElement.');
+    }
+    this.#domNodeToIdMap.set(domNode, id);
+  }
+
+  #renderBreakpointGroup(group: BreakpointGroup, groupIndex: number): LitHtml.TemplateResult {
     const contextmenuHandler = (event: Event): void => {
       this.#onBreakpointGroupContextMenu(event, group);
       event.consume();
     };
     const toggleHandler = (event: Event): void => {
-      const {open} = event.target as HTMLDetailsElement;
-      group.expanded = open;
-      this.dispatchEvent(new ExpandedStateChangedEvent(group.url, open));
+      const htmlDetails = event.target as HTMLDetailsElement;
+      group.expanded = htmlDetails.open;
+      this.dispatchEvent(new ExpandedStateChangedEvent(group.url, group.expanded));
+    };
+    const clickHandler = async(event: Event): Promise<void> => {
+      const selected = event.currentTarget as HTMLElement;
+      await this.#setSelected(selected);
       event.consume();
     };
     const classMap = {
       active: this.#breakpointsActive,
     };
+    const tabIndex = this.#isSelectedElement(group.url) ? 0 : -1;
     // clang-format off
     return LitHtml.html`
       <details class=${LitHtml.Directives.classMap(classMap)}
-               data-group=true
+               ?data-first-group=${groupIndex === 0}
+               ?data-last-group=${groupIndex === this.#breakpointGroups.length - 1}
                role=group
                aria-label='${group.name}'
                aria-description='${group.url}'
                ?open=${group.expanded}
                @toggle=${toggleHandler}>
-        <summary @contextmenu=${contextmenuHandler} >
+          <summary @contextmenu=${contextmenuHandler}
+                   tabindex=${tabIndex}
+                   @click=${clickHandler}
+                   @keydown=${this.#keyDownHandler}
+                   track-dom-node-to-element-id=${ComponentHelpers.Directives.nodeRenderedCallback(this.#setDOMNodeForElementId.bind(this, group.url))}>
           <span class='group-header' aria-hidden=true>${this.#renderFileIcon()}<span class='group-header-title' title='${group.url}'>${group.name}</span></span>
           <span class='group-hover-actions'>
             ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
@@ -357,7 +470,7 @@ export class BreakpointsView extends HTMLElement {
         ${LitHtml.Directives.repeat(
           group.breakpointItems,
           item => item.location,
-          item => this.#renderBreakpointEntry(item, group.editable))}
+          (item, breakpointItemIndex) => this.#renderBreakpointEntry(item, group.editable, groupIndex, breakpointItemIndex))}
       </div>
       `;
     // clang-format on
@@ -415,9 +528,16 @@ export class BreakpointsView extends HTMLElement {
     void menu.show();
   }
 
-  #renderBreakpointEntry(breakpointItem: BreakpointItem, editable: boolean): LitHtml.TemplateResult {
-    const clickHandler = (event: Event): void => {
+  #renderBreakpointEntry(
+      breakpointItem: BreakpointItem, editable: boolean, groupIndex: number,
+      breakpointItemIndex: number): LitHtml.TemplateResult {
+    const codeSnippetClickHandler = (event: Event): void => {
       this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));
+      event.consume();
+    };
+    const breakpointItemClickHandler = async(event: Event): Promise<void> => {
+      const target = event.currentTarget as HTMLDivElement;
+      await this.#setSelected(target);
       event.consume();
     };
     const contextmenuHandler = (event: Event): void => {
@@ -433,19 +553,31 @@ export class BreakpointsView extends HTMLElement {
     const breakpointItemDescription = this.#getBreakpointItemDescription(breakpointItem);
     const codeSnippet = Platform.StringUtilities.trimEndWithMaxLength(breakpointItem.codeSnippet, MAX_SNIPPET_LENGTH);
     const codeSnippetTooltip = this.#getCodeSnippetTooltip(breakpointItem.type, breakpointItem.hoverText);
+    const tabIndex = this.#isSelectedElement(breakpointItem.id) ? 0 : -1;
+    const itemsInGroup = this.#breakpointGroups[groupIndex].breakpointItems;
 
     // clang-format off
     return LitHtml.html`
     <div class=${LitHtml.Directives.classMap(classMap)}
+         ?data-first-breakpoint=${breakpointItemIndex === 0}
+         ?data-last-breakpoint=${breakpointItemIndex === itemsInGroup.length - 1}
          aria-label=${breakpointItemDescription}
          role=treeitem
-         tabIndex=${breakpointItem.isHit ? 0 : -1}
-         @contextmenu=${contextmenuHandler}>
+         tabindex=${tabIndex}
+         @contextmenu=${contextmenuHandler}
+         @click=${breakpointItemClickHandler}
+         @keydown=${this.#keyDownHandler}
+         track-dom-node-to-element-id=${ComponentHelpers.Directives.nodeRenderedCallback(this.#setDOMNodeForElementId.bind(this, breakpointItem.id))}>
       <label class='checkbox-label'>
         <span class='type-indicator'></span>
-        <input type='checkbox' aria-label=${breakpointItem.location} ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE} ?checked=${breakpointItem.status === BreakpointStatus.ENABLED} @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}>
+        <input type='checkbox'
+              aria-label=${breakpointItem.location}
+              ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE}
+              ?checked=${breakpointItem.status === BreakpointStatus.ENABLED}
+              @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}
+              tabindex=-1>
       </label>
-      <span class='code-snippet' @click=${clickHandler} title=${codeSnippetTooltip}>${codeSnippet}</span>
+      <span class='code-snippet' @click=${codeSnippetClickHandler} title=${codeSnippetTooltip}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
         ${editable ? this.#renderEditBreakpointButton(breakpointItem) : LitHtml.nothing}
         ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint))}

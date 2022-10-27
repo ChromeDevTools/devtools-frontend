@@ -34,7 +34,7 @@ export async function navigateToLighthouseTab(path?: string): Promise<ElementHan
     await goToResource(path);
   }
 
-  return waitFor('.lighthouse-start-view-fr');
+  return waitFor('.lighthouse-start-view');
 }
 
 // Instead of watching the worker or controller/panel internals, we wait for the Lighthouse renderer
@@ -66,7 +66,7 @@ type CheckboxLabel = Element&{checkboxElement: HTMLInputElement};
  * @param selectedCategoryIds One of 'performance'|'accessibility'|'best-practices'|'seo'|'pwa'|'lighthouse-plugin-publisher-ads'
  */
 export async function selectCategories(selectedCategoryIds: string[]) {
-  const startViewHandle = await waitFor('.lighthouse-start-view-fr');
+  const startViewHandle = await waitFor('.lighthouse-start-view');
   const checkboxHandles = await startViewHandle.$$('[is=dt-checkbox]');
   for (const checkboxHandle of checkboxHandles) {
     await checkboxHandle.evaluate((dtCheckboxElem, selectedCategoryIds: string[]) => {
@@ -79,7 +79,7 @@ export async function selectCategories(selectedCategoryIds: string[]) {
 }
 
 export async function selectRadioOption(value: string, optionName: string) {
-  const startViewHandle = await waitFor('.lighthouse-start-view-fr');
+  const startViewHandle = await waitFor('.lighthouse-start-view');
   await startViewHandle.$eval(`input[value="${value}"][name="${optionName}"]`, radioElem => {
     (radioElem as HTMLInputElement).checked = true;
     (radioElem as HTMLInputElement)
@@ -122,18 +122,18 @@ export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools
 }
 
 export async function clickStartButton() {
-  const panel = await waitFor('.lighthouse-start-view-fr');
+  const panel = await waitFor('.lighthouse-start-view');
   const button = await waitFor('button', panel);
   await button.click();
 }
 
 export async function isGenerateReportButtonDisabled() {
-  const button = await waitFor('.lighthouse-start-view-fr .primary-button');
+  const button = await waitFor('.lighthouse-start-view .primary-button');
   return button.evaluate(element => (element as HTMLButtonElement).disabled);
 }
 
 export async function getHelpText() {
-  const helpTextHandle = await waitFor('.lighthouse-start-view-fr .lighthouse-help-text');
+  const helpTextHandle = await waitFor('.lighthouse-start-view .lighthouse-help-text');
   return helpTextHandle.evaluate(helpTextEl => helpTextEl.textContent);
 }
 

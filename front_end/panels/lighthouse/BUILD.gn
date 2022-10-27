@@ -23,7 +23,7 @@ devtools_module("lighthouse") {
     "LighthouseReportRenderer.ts",
     "LighthouseReportSelector.ts",
     "LighthouseReporterTypes.ts",
-    "LighthouseStartViewFR.ts",
+    "LighthouseStartView.ts",
     "LighthouseStatusView.ts",
     "LighthouseTimespanView.ts",
     "RadioSetting.ts",

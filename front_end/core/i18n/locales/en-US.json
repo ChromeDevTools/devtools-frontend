@@ -6326,31 +6326,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "Reports"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
     "message": "Analyze page load"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
     "message": "Analyze page state"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
+  "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "Categories"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | device": {
+  "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "Device"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
     "message": "Generate a Lighthouse report"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | learnMore": {
+  "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Learn more"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Mode"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "Plugins"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Start timespan"
   },
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {

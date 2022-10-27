@@ -10,7 +10,7 @@ import * as LighthouseProtocolService from './LighthouseProtocolService.js';
 import * as LighthouseReporterTypes from './LighthouseReporterTypes.js';
 import * as LighthouseReportRenderer from './LighthouseReportRenderer.js';
 import * as LighthouseReportSelector from './LighthouseReportSelector.js';
-import * as LighthouseStartViewFR from './LighthouseStartViewFR.js';
+import * as LighthouseStartView from './LighthouseStartView.js';
 import * as LighthouseStatusView from './LighthouseStatusView.js';
 import * as RadioSetting from './RadioSetting.js';
 
@@ -21,7 +21,7 @@ export {
   LighthouseReporterTypes,
   LighthouseReportRenderer,
   LighthouseReportSelector,
-  LighthouseStartViewFR as LighthouseStartView,
+  LighthouseStartView,
   LighthouseStatusView,
   RadioSetting,
 };

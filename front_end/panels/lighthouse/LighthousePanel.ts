@@ -25,7 +25,7 @@ import {type ReportJSON, type RunnerResultArtifacts} from './LighthouseReporterT
 import * as LighthouseReport from '../../third_party/lighthouse/report/report.js';
 import {LighthouseReportRenderer, LighthouseReportUIFeatures} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
-import {StartViewFR} from './LighthouseStartViewFR.js';
+import {StartView} from './LighthouseStartView.js';
 import {StatusView} from './LighthouseStatusView.js';
 import {TimespanView} from './LighthouseTimespanView.js';
 
@@ -68,7 +68,7 @@ type Nullable<T> = T|null;
 export class LighthousePanel extends UI.Panel.Panel {
   private readonly protocolService: ProtocolService;
   private readonly controller: LighthouseController;
-  private readonly startView: StartViewFR;
+  private readonly startView: StartView;
   private readonly statusView: StatusView;
   private readonly timespanView: TimespanView;
   private warningText: Nullable<string>;
@@ -102,7 +102,7 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     this.protocolService = new ProtocolService();
     this.controller = new LighthouseController(this.protocolService);
-    this.startView = new StartViewFR(this.controller);
+    this.startView = new StartView(this.controller);
     this.timespanView = new TimespanView(this.controller);
     this.statusView = new StatusView(this.controller);
 

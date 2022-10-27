@@ -50,10 +50,10 @@ const UIStrings = {
   device: 'Device',
 };
 
-const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseStartViewFR.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class StartViewFR extends UI.Widget.Widget {
+export class StartView extends UI.Widget.Widget {
   private controller: LighthouseController;
   private readonly settingsToolbarInternal: UI.Toolbar.Toolbar;
   private startButton!: HTMLButtonElement;
@@ -175,7 +175,7 @@ export class StartViewFR extends UI.Widget.Widget {
     this.populateStartButton(mode);
 
     const fragment = UI.Fragment.Fragment.build`
-<form class="lighthouse-start-view-fr">
+<form class="lighthouse-start-view">
   <header class="hbox">
     <div class="lighthouse-logo"></div>
     <div class="lighthouse-title">${i18nString(UIStrings.generateLighthouseReport)}</div>
@@ -284,7 +284,7 @@ export class StartViewFR extends UI.Widget.Widget {
   onResize(): void {
     const useNarrowLayout = this.contentElement.offsetWidth < 500;
     const useWideLayout = this.contentElement.offsetWidth > 800;
-    const headerEl = this.contentElement.querySelector('.lighthouse-start-view-fr header');
+    const headerEl = this.contentElement.querySelector('.lighthouse-start-view header');
     const optionsEl = this.contentElement.querySelector('.lighthouse-options');
     if (headerEl) {
       headerEl.classList.toggle('hbox', !useNarrowLayout);

@@ -5,7 +5,7 @@
  */
 /* <3 */
 
-.lighthouse-start-view-fr {
+.lighthouse-start-view {
   font-family: Roboto, sans-serif;
   font-size: var(--font-size);
   line-height: 18px;
@@ -19,7 +19,7 @@
   --report-font-family: roboto, helvetica, arial, sans-serif;
 }
 
-.lighthouse-start-view-fr header {
+.lighthouse-start-view header {
   display: flex;
   font-size: 18px;
   flex-direction: row;
@@ -37,7 +37,7 @@
   background-image: var(--image-file-lighthouse_logo);
 }
 
-.lighthouse-start-view-fr .lighthouse-logo {
+.lighthouse-start-view .lighthouse-logo {
   width: 45px;
   height: 45px;
 }
@@ -86,11 +86,11 @@ input[type="radio"]:focus {
   align-items: center;
 }
 
-.lighthouse-start-view-fr header.hbox .lighthouse-start-button-container {
+.lighthouse-start-view header.hbox .lighthouse-start-button-container {
   margin-left: auto;
 }
 
-.lighthouse-start-view-fr header.vbox .lighthouse-title {
+.lighthouse-start-view header.vbox .lighthouse-title {
   text-align: center;
 }
 

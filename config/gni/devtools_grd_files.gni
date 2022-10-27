@@ -1076,7 +1076,7 @@ grd_files_debug_sources = [
   "front_end/panels/lighthouse/LighthouseReportRenderer.js",
   "front_end/panels/lighthouse/LighthouseReportSelector.js",
   "front_end/panels/lighthouse/LighthouseReporterTypes.js",
-  "front_end/panels/lighthouse/LighthouseStartViewFR.js",
+  "front_end/panels/lighthouse/LighthouseStartView.js",
   "front_end/panels/lighthouse/LighthouseStatusView.js",
   "front_end/panels/lighthouse/LighthouseTimespanView.js",
   "front_end/panels/lighthouse/RadioSetting.js",

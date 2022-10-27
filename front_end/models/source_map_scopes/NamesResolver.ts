@@ -48,6 +48,29 @@ export class IdentifierPositions {
   }
 }
 
+const tryParseScope = async function(scopeText: string): Promise<{
+  prefixLength: number, scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode,
+}|null> {
+  const prefixSuffixToTry = [
+    // We wrap the scope in a class constructor. This handles the case where the
+    // scope is a (non-arrow) function and the case where it is a constructor
+    // (so that parsing 'super' calls succeeds).
+    {prefix: 'class DummyClass extends DummyBase { constructor', suffix: '}'},
+    // Next, we try async generator, this handles functions with yield or await keywords.
+    {prefix: 'async function* __DEVTOOLS_DUMMY__', suffix: ''},
+    // Finally, try parse as an async arrow function.
+    {prefix: 'async ', suffix: ''},
+  ];
+  for (const {prefix, suffix} of prefixSuffixToTry) {
+    const scopeTree =
+        await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText + suffix);
+    if (scopeTree) {
+      return {prefixLength: prefix.length, scopeTree};
+    }
+  }
+  return null;
+};
+
 const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeChainEntry): Promise<{
   scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode, text: TextUtils.Text.Text, slide: number,
 }|null> {
@@ -64,30 +87,17 @@ const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeCh
   if (!text) {
     return null;
   }
-
   const scopeRange = new TextUtils.TextRange.TextRange(
       functionStartLocation.lineNumber, functionStartLocation.columnNumber, functionEndLocation.lineNumber,
       functionEndLocation.columnNumber);
   const scopeText = text.extract(scopeRange);
   const scopeStart = text.toSourceRange(scopeRange).offset;
-  // We wrap the scope in a class constructor. This handles the case where the
-  // scope is a (non-arrow) function and the case where it is a constructor
-  // (so that parsing 'super' calls succeeds).
-  let prefix = 'class DummyClass extends DummyBase { constructor';
-  let suffix = '}';
-  let scopeTree =
-      await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText + suffix);
-  if (!scopeTree) {
-    // Try to parse the function as an arrow function.
-    prefix = '';
-    suffix = '';
-    scopeTree =
-        await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText + suffix);
-  }
-  if (!scopeTree) {
+  const prefixLengthAndscopeTree = await tryParseScope(scopeText);
+  if (!prefixLengthAndscopeTree) {
     return null;
   }
-  return {scopeTree, text, slide: scopeStart - prefix.length};
+  const {prefixLength, scopeTree} = prefixLengthAndscopeTree;
+  return {scopeTree, text, slide: scopeStart - prefixLength};
 };
 
 export const scopeIdentifiers = async function(

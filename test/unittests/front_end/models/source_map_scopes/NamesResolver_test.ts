@@ -155,6 +155,21 @@ describeWithMockConnection('NameResolver', () => {
       scopes: '          {                   <     B   F   F         B  > }',
     },
     {
+      name: 'computes identifiers in an async arrow function\'s nested scope',
+      source: 'const f = async (x) => { let i = 1; { let j = i + await x; return j; } }',
+      scopes: '                {                   <     B   F         F         B  > }',
+    },
+    {
+      name: 'computes identifiers in a function with yield and await',
+      source: 'async function* f(x) { return yield x + await p; }',
+      scopes: '                 {B                 B         F  }',
+    },
+    {
+      name: 'computes identifiers in a function with yield*',
+      source: 'function* f(x) { return yield* g(x) + 2; }',
+      scopes: '           {B                  F B       }',
+    },
+    {
       name: 'returns empty identifier list for scope with syntax error',
       source: 'function f(x) xx { return (i) => { let j = i; return j } }',
       scopes: '          {                                              }',

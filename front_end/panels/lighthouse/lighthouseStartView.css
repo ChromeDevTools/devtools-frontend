@@ -5,29 +5,18 @@
  */
 /* <3 */
 
-.lighthouse-start-view,
 .lighthouse-start-view-fr {
   font-family: Roboto, sans-serif;
   font-size: var(--font-size);
   line-height: 18px;
+  padding: 24px;
+  overflow: auto;
+  height: 100%;
   /* for buttons */
   --legacy-accent-color: #0535c1;
   --legacy-accent-color-hover: #17b;
   --font-size: 14px;
   --report-font-family: roboto, helvetica, arial, sans-serif;
-}
-
-.lighthouse-start-view-fr {
-  padding: 24px;
-  overflow: auto;
-  height: 100%;
-}
-
-.lighthouse-start-view header {
-  flex: 2 1;
-  padding: 16px;
-  display: grid;
-  justify-items: center;
 }
 
 .lighthouse-start-view-fr header {
@@ -53,23 +42,9 @@
   height: 45px;
 }
 
-.lighthouse-start-view-text {
-  margin: 0 40px;
-  text-align: center;
-}
-
-.lighthouse-start-view form {
-  display: contents;
-}
-
 .lighthouse-form-section {
   padding: 8px;
   flex: 1 1;
-}
-
-.lighthouse-start-view.vbox .lighthouse-form-categories {
-  border-top: 1px solid var(--color-background-elevation-2);
-  border-bottom: 1px solid var(--color-background-elevation-2);
 }
 
 .lighthouse-form-section-label {
@@ -128,10 +103,6 @@ input[type="radio"]:focus {
 
 .lighthouse-start-button-container button:disabled {
   cursor: not-allowed;
-}
-
-.lighthouse-start-view .toolbar-dropdown-arrow {
-  display: none;
 }
 
 .lighthouse-launcher-row,

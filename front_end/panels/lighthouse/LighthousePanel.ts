@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -26,7 +25,6 @@ import {type ReportJSON, type RunnerResultArtifacts} from './LighthouseReporterT
 import * as LighthouseReport from '../../third_party/lighthouse/report/report.js';
 import {LighthouseReportRenderer, LighthouseReportUIFeatures} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
-import {StartView} from './LighthouseStartView.js';
 import {StartViewFR} from './LighthouseStartViewFR.js';
 import {StatusView} from './LighthouseStatusView.js';
 import {TimespanView} from './LighthouseTimespanView.js';
@@ -70,9 +68,9 @@ type Nullable<T> = T|null;
 export class LighthousePanel extends UI.Panel.Panel {
   private readonly protocolService: ProtocolService;
   private readonly controller: LighthouseController;
-  private readonly startView: StartView;
+  private readonly startView: StartViewFR;
   private readonly statusView: StatusView;
-  private readonly timespanView: TimespanView|null;
+  private readonly timespanView: TimespanView;
   private warningText: Nullable<string>;
   private unauditableExplanation: Nullable<string>;
   private readonly cachedRenderedReports: Map<ReportJSON, HTMLElement>;
@@ -104,13 +102,8 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     this.protocolService = new ProtocolService();
     this.controller = new LighthouseController(this.protocolService);
-    if (Root.Runtime.experiments.isEnabled('lighthousePanelFR')) {
-      this.startView = new StartViewFR(this.controller);
-      this.timespanView = new TimespanView(this.controller);
-    } else {
-      this.startView = new StartView(this.controller);
-      this.timespanView = null;
-    }
+    this.startView = new StartViewFR(this.controller);
+    this.timespanView = new TimespanView(this.controller);
     this.statusView = new StatusView(this.controller);
 
     this.warningText = null;
@@ -150,13 +143,13 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   private async onLighthouseTimespanStart(): Promise<void> {
-    this.timespanView?.show(this.contentElement);
+    this.timespanView.show(this.contentElement);
     await this.startLighthouse();
-    this.timespanView?.ready();
+    this.timespanView.ready();
   }
 
   private async onLighthouseTimespanEnd(): Promise<void> {
-    this.timespanView?.hide();
+    this.timespanView.hide();
     await this.collectLighthouseResults();
   }
 
@@ -166,7 +159,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   private async onLighthouseCancel(): Promise<void> {
-    this.timespanView?.hide();
+    this.timespanView.hide();
     void this.cancelLighthouse();
   }
 

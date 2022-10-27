@@ -6323,24 +6323,6 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "Reports"
   },
-  "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "Community Plugins (beta)"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | device": {
-    "message": "Device"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "Generate report"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Identify and fix common problems that affect your site's performance, accessibility, and user experience."
-  },
-  "panels/lighthouse/LighthouseStartView.ts | learnMore": {
-    "message": "Learn more"
-  },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
     "message": "Analyze page load"
   },
@@ -6350,8 +6332,14 @@
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
     "message": "Categories"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | device": {
+    "message": "Device"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
     "message": "Generate a Lighthouse report"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | learnMore": {
+    "message": "Learn more"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mode"

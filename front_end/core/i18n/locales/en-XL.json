@@ -6323,24 +6323,6 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "R̂ép̂ór̂t́ŝ"
   },
-  "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Ĉát̂éĝór̂íêś"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "Ĉóm̂ḿûńît́ŷ Ṕl̂úĝín̂ś (b̂ét̂á)"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | device": {
-    "message": "D̂év̂íĉé"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "Ĝén̂ér̂át̂é r̂ép̂ór̂t́"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Îd́êńt̂íf̂ý âńd̂ f́îx́ ĉóm̂ḿôń p̂ŕôb́l̂ém̂ś t̂h́ât́ âf́f̂éĉt́ ŷóûŕ ŝít̂é'ŝ ṕêŕf̂ór̂ḿâńĉé, âćĉéŝśîb́îĺît́ŷ, án̂d́ ûśêŕ êx́p̂ér̂íêńĉé."
-  },
-  "panels/lighthouse/LighthouseStartView.ts | learnMore": {
-    "message": "L̂éâŕn̂ ḿôŕê"
-  },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
     "message": "Âńâĺŷźê ṕâǵê ĺôád̂"
   },
@@ -6350,8 +6332,14 @@
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
     "message": "Ĉát̂éĝór̂íêś"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | device": {
+    "message": "D̂év̂íĉé"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
     "message": "Ĝén̂ér̂át̂é â Ĺîǵĥt́ĥóûśê ŕêṕôŕt̂"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "M̂ód̂é"

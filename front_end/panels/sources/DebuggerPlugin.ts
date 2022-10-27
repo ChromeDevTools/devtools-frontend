@@ -165,6 +165,10 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // Don't scan for possible breakpoints on a line beyond this position;
 const MAX_POSSIBLE_BREAKPOINT_LINE = 2500;
 
+// Limits on inline variable view computation.
+const MAX_CODE_SIZE_FOR_VALUE_DECORATIONS = 10000;
+const MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS = 500;
+
 type BreakpointDescription = {
   position: number,
   breakpoint: Bindings.BreakpointManager.Breakpoint,
@@ -925,6 +929,18 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
+  async #rawLocationToEditorOffset(location: SDK.DebuggerModel.Location|null, url: Platform.DevToolsPath.UrlString):
+      Promise<number|null> {
+    const uiLocation = location &&
+        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(location);
+    if (!uiLocation || uiLocation.uiSourceCode.url() !== url) {
+      return null;
+    }
+    const offset = this.editor?.toOffset(
+        this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber));
+    return offset ?? null;
+  }
+
   private async computeValueDecorations(): Promise<CodeMirror.DecorationSet|null> {
     if (!this.editor) {
       return null;
@@ -940,47 +956,33 @@ export class DebuggerPlugin extends Plugin {
     if (!callFrame) {
       return null;
     }
+    const url = this.uiSourceCode.url();
 
-    const localScope = callFrame.localScope();
-    if (!localScope || !callFrame.functionLocation()) {
+    const rawLocationToEditorOffset: (location: SDK.DebuggerModel.Location|null) => Promise<number|null> = location =>
+        this.#rawLocationToEditorOffset(location, url);
+
+    const functionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.functionLocation(), url);
+    const executionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.location(), url);
+    const [functionOffset, executionOffset] = await Promise.all([functionOffsetPromise, executionOffsetPromise]);
+    if (!functionOffset || !executionOffset) {
       return null;
     }
 
-    const {properties} =
-        await SourceMapScopes.NamesResolver.resolveScopeInObject(localScope).getAllProperties(false, false);
-    if (!properties || !properties.length || properties.length > 500) {
+    if (functionOffset >= executionOffset || executionOffset - functionOffset > MAX_CODE_SIZE_FOR_VALUE_DECORATIONS) {
       return null;
     }
 
-    const functionUILocationPromise =
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
-            (callFrame.functionLocation() as SDK.DebuggerModel.Location));
-    const executionUILocationPromise =
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
-            callFrame.location());
-    const [functionUILocation, executionUILocation] =
-        await Promise.all([functionUILocationPromise, executionUILocationPromise]);
-    if (!functionUILocation || !executionUILocation ||
-        functionUILocation.uiSourceCode.url() !== this.uiSourceCode.url() ||
-        executionUILocation.uiSourceCode.url() !== this.uiSourceCode.url()) {
+    const variableNames = getVariableNamesByLine(this.editor.state, functionOffset, executionOffset);
+    if (variableNames.length === 0) {
       return null;
     }
 
-    const functionLocation =
-        this.transformer.uiLocationToEditorLocation(functionUILocation.lineNumber, functionUILocation.columnNumber);
-    const executionLocation =
-        this.transformer.uiLocationToEditorLocation(executionUILocation.lineNumber, executionUILocation.columnNumber);
-    if (functionLocation.lineNumber >= executionLocation.lineNumber ||
-        executionLocation.lineNumber - functionLocation.lineNumber > 500 || functionLocation.lineNumber < 0 ||
-        executionLocation.lineNumber >= this.editor.state.doc.lines) {
+    const scopeMappings = await computeScopeMappings(callFrame, rawLocationToEditorOffset);
+    if (scopeMappings.length === 0) {
       return null;
     }
 
-    const variableMap = new Map<string, SDK.RemoteObject.RemoteObject>(
-        properties.map(p => [p.name, p.value] as [string, SDK.RemoteObject.RemoteObject]));
-
-    const variablesByLine =
-        this.getVariablesByLine(this.editor.state, variableMap, functionLocation, executionLocation);
+    const variablesByLine = getVariableValuesByLine(scopeMappings, variableNames);
     if (!variablesByLine) {
       return null;
     }
@@ -989,54 +991,17 @@ export class DebuggerPlugin extends Plugin {
 
     for (const [line, names] of variablesByLine) {
       const prevLine = variablesByLine.get(line - 1);
-      let newNames = prevLine ? Array.from(names).filter(n => !prevLine.has(n)) : Array.from(names);
+      let newNames = prevLine ? Array.from(names).filter(n => prevLine.get(n[0]) !== n[1]) : Array.from(names);
       if (!newNames.length) {
         continue;
       }
       if (newNames.length > 10) {
         newNames = newNames.slice(0, 10);
       }
-      const pairs = newNames.map(name => [name, variableMap.get(name)] as [string, SDK.RemoteObject.RemoteObject]);
-      decorations.push(CodeMirror.Decoration.widget({widget: new ValueDecoration(pairs), side: 1})
+      decorations.push(CodeMirror.Decoration.widget({widget: new ValueDecoration(newNames), side: 1})
                            .range(this.editor.state.doc.line(line + 1).to));
     }
     return CodeMirror.Decoration.set(decorations, true);
-  }
-
-  getVariablesByLine(
-      editorState: CodeMirror.EditorState, variableMap: Map<string, unknown>,
-      fromLoc: {lineNumber: number, columnNumber: number},
-      toLoc: {lineNumber: number, columnNumber: number}): Map<number, Set<string>>|null {
-    const fromLine = editorState.doc.line(fromLoc.lineNumber + 1);
-    const fromPos = Math.min(fromLine.to, fromLine.from + fromLoc.columnNumber);
-    const toPos = editorState.doc.line(toLoc.lineNumber + 1).from;
-
-    const tree = CodeMirror.ensureSyntaxTree(editorState, toPos, 100);
-    if (!tree) {
-      return null;
-    }
-
-    const namesPerLine = new Map<number, Set<string>>();
-    let curLine = fromLine;
-    tree.iterate({
-      from: fromPos,
-      to: toPos,
-      enter: node => {
-        const varName = this.isVariableIdentifier(node.name) && editorState.sliceDoc(node.from, node.to);
-        if (varName && variableMap.has(varName)) {
-          if (node.from > curLine.to) {
-            curLine = editorState.doc.lineAt(node.from);
-          }
-          let names = namesPerLine.get(curLine.number - 1);
-          if (!names) {
-            names = new Set();
-            namesPerLine.set(curLine.number - 1, names);
-          }
-          names.add(varName);
-        }
-      },
-    });
-    return namesPerLine;
   }
 
   // Highlight the locations the debugger can continue to (when
@@ -1934,6 +1899,113 @@ class ValueDecoration extends CodeMirror.WidgetType {
 }
 
 const valueDecorations = defineStatefulDecoration();
+
+function isVariableIdentifier(tokenType: string): boolean {
+  return tokenType === 'VariableName' || tokenType === 'VariableDefinition';
+}
+
+export function getVariableNamesByLine(
+    editorState: CodeMirror.EditorState, fromPos: number, toPos: number): {line: number, from: number, id: string}[] {
+  const fromLine = editorState.doc.lineAt(fromPos);
+  fromPos = Math.min(fromLine.to, fromPos);
+  toPos = editorState.doc.lineAt(toPos).from;
+
+  const tree = CodeMirror.ensureSyntaxTree(editorState, toPos, 100);
+  if (!tree) {
+    return [];
+  }
+
+  const names: {line: number, from: number, id: string}[] = [];
+  let curLine = fromLine;
+  tree.iterate({
+    from: fromPos,
+    to: toPos,
+    enter: node => {
+      if (node.from < fromPos) {
+        return;
+      }
+      const varName = isVariableIdentifier(node.name) && editorState.sliceDoc(node.from, node.to);
+      if (!varName) {
+        return;
+      }
+      if (node.from > curLine.to) {
+        curLine = editorState.doc.lineAt(node.from);
+      }
+      names.push({line: curLine.number - 1, from: node.from, id: varName});
+    },
+  });
+  return names;
+}
+
+export async function computeScopeMappings(
+    callFrame: SDK.DebuggerModel.CallFrame,
+    rawLocationToEditorOffset: (l: SDK.DebuggerModel.Location|null) => Promise<number|null>):
+    Promise<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}[]> {
+  const scopeMappings:
+      {scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}[] = [];
+  for (const scope of callFrame.scopeChain()) {
+    const scopeStart = await rawLocationToEditorOffset(scope.startLocation());
+    if (!scopeStart) {
+      break;
+    }
+    const scopeEnd = await rawLocationToEditorOffset(scope.endLocation());
+    if (!scopeEnd) {
+      break;
+    }
+
+    const {properties} = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope).getAllProperties(false, false);
+    if (!properties || properties.length > MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS) {
+      break;
+    }
+    const variableMap = new Map<string, SDK.RemoteObject.RemoteObject>(
+        properties.map(p => [p.name, p.value] as [string, SDK.RemoteObject.RemoteObject]));
+
+    scopeMappings.push({scopeStart, scopeEnd, variableMap});
+
+    // Let us only get mappings for block scopes until we see a surrounding function (local) scope.
+    if (scope.type() === Protocol.Debugger.ScopeType.Local) {
+      break;
+    }
+  }
+  return scopeMappings;
+}
+
+export function getVariableValuesByLine(
+    scopeMappings: {scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}[],
+    variableNames: {line: number, from: number, id: string}[]): Map<number, Map<string, SDK.RemoteObject.RemoteObject>>|
+    null {
+  const namesPerLine = new Map<number, Map<string, SDK.RemoteObject.RemoteObject>>();
+  for (const {line, from, id} of variableNames) {
+    const varValue = findVariableInChain(id, from, scopeMappings);
+    if (!varValue) {
+      continue;
+    }
+    let names = namesPerLine.get(line);
+    if (!names) {
+      names = new Map();
+      namesPerLine.set(line, names);
+    }
+    names.set(id, varValue);
+  }
+  return namesPerLine;
+
+  function findVariableInChain(
+      name: string,
+      pos: number,
+      scopeMappings: {scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}[],
+      ): SDK.RemoteObject.RemoteObject|null {
+    for (const scope of scopeMappings) {
+      if (pos < scope.scopeStart || pos >= scope.scopeEnd) {
+        continue;
+      }
+      const value = scope.variableMap.get(name);
+      if (value) {
+        return value;
+      }
+    }
+    return null;
+  }
+}
 
 // Evaluated expression mark for pop-over
 

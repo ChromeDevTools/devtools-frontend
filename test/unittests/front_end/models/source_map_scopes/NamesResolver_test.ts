@@ -201,7 +201,7 @@ describeWithMockConnection('NameResolver', () => {
 
     const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 1}, {name: 'n', value: 2}]);
     const callFrame = await backend.createCallFrame(
-        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
 
     const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(callFrame.scopeChain()[0]);
     const properties = await resolvedScopeObject.getAllProperties(false, false);
@@ -226,7 +226,7 @@ describeWithMockConnection('NameResolver', () => {
 
     const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 4}]);
     const callFrame = await backend.createCallFrame(
-        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
 
     const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(callFrame.scopeChain()[0]);
     const properties = await resolvedScopeObject.getAllProperties(false, false);
@@ -251,7 +251,7 @@ describeWithMockConnection('NameResolver', () => {
 
     const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 1}, {name: 'n', value: 2}]);
     const callFrame = await backend.createCallFrame(
-        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
 
     const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(callFrame.scopeChain()[0]);
     const properties = await resolvedScopeObject.getAllProperties(false, false);
@@ -275,7 +275,7 @@ describeWithMockConnection('NameResolver', () => {
 
     const scopeObject = backend.createSimpleRemoteObject([{name: 's', value: 42}]);
     const callFrame = await backend.createCallFrame(
-        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
 
     const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(callFrame.scopeChain()[0]);
     const properties = await resolvedScopeObject.getAllProperties(false, false);
@@ -302,7 +302,7 @@ describeWithMockConnection('NameResolver', () => {
 
       const scopeObject = backend.createSimpleRemoteObject([{name: 's', value: 42}]);
       callFrame = await backend.createCallFrame(
-          target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+          target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
     });
 
     it('resolves function names at scope start for a debugger frame', async () => {
@@ -343,7 +343,7 @@ describeWithMockConnection('NameResolver', () => {
 
     const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 42}]);
     const callFrame = await backend.createCallFrame(
-        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
 
     assert.isNull(await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(callFrame));
   });

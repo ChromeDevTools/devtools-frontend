@@ -39,10 +39,9 @@ export class MockProtocolBackend {
   async addScript(target: SDK.Target.Target, script: {url: string, content: string}, sourceMap: {
     url: string,
     content: string,
-  }): Promise<SDK.Script.Script> {
+  }|null): Promise<SDK.Script.Script> {
     const scriptId = 'SCRIPTID.' + this.#nextScriptIndex++;
     this.#scriptSources.set(scriptId, script.content);
-    this.#sourceMapContents.set(sourceMap.url, sourceMap.content);
     dispatchEvent(target, 'Debugger.scriptParsed', {
       scriptId,
       url: script.url,
@@ -53,16 +52,19 @@ export class MockProtocolBackend {
       executionContextId: 1,
       hash: '',
       hasSourceURL: false,
-      sourceMapURL: sourceMap.url,
+      sourceMapURL: sourceMap?.url ?? '',
     });
 
-    // Wait until the source map loads.
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
     const scriptObject = debuggerModel.scriptForId(scriptId);
     assertNotNullOrUndefined(scriptObject);
-    const loadedSourceMap = await debuggerModel.sourceMapManager().sourceMapForClientPromise(scriptObject);
+    if (sourceMap) {
+      this.#sourceMapContents.set(sourceMap.url, sourceMap.content);
 
-    assert.strictEqual(loadedSourceMap?.url() as string, sourceMap.url);
+      // Wait until the source map loads.
+      const loadedSourceMap = await debuggerModel.sourceMapManager().sourceMapForClientPromise(scriptObject);
+      assert.strictEqual(loadedSourceMap?.url() as string, sourceMap.url);
+    }
     return scriptObject;
   }
 
@@ -95,8 +97,8 @@ export class MockProtocolBackend {
   // the descriptors to describe other assertions).
   async createCallFrame(
       target: SDK.Target.Target, script: {url: string, content: string}, scopeDescriptor: string,
-      sourceMap: {url: string, content: string},
-      scopeObject: Protocol.Runtime.RemoteObject|null = null): Promise<SDK.DebuggerModel.CallFrame> {
+      sourceMap: {url: string, content: string}|null,
+      scopeObjects: Protocol.Runtime.RemoteObject[] = []): Promise<SDK.DebuggerModel.CallFrame> {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
     const scriptObject = await this.addScript(target, script, sourceMap);
 
@@ -107,8 +109,9 @@ export class MockProtocolBackend {
             s.endColumn));
 
     const innerScope = scopeChain[0];
-    if (scopeObject) {
-      innerScope.object = scopeObject;
+    console.assert(scopeObjects.length < scopeChain.length);
+    for (let i = 0; i < scopeObjects.length; ++i) {
+      scopeChain[i].object = scopeObjects[i];
     }
 
     const payload: Protocol.Debugger.CallFrame = {

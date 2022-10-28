@@ -111,33 +111,57 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   _contextForTest!: Context|undefined;
 
   // COHERENT BEGIN
-  // A set of shorthand properties by the definition of and supported by cohtml
-  // Add new properties to this list when it becomes outdated
   // Used to disable _applyFreeFlowStyleTextEdit when typing shorthand properties
   private static readonly shorthandProperties = new Set<string | undefined>([
-    // treat empty property name as a shorthand since there are complete declaration
-    // suggestions based on prop name and we don't want to setStyleTexts
+    // Treat empty property name as a shorthand since there are complete declaration
+    // suggestions based on prop name and we don't want to setStyleTexts.
+    // This works because the property name field is not set until you are done typing it
     // Example: "soli" in the name field suggests the whole declaration "border: solid"
     "",
+    "all",
     "animation",
-    "margin",
-    "padding",
-    "border-width",
-    "border-color",
-    "border-style",
-    "border-bottom",
-    "border-left",
-    "border-right",
-    "border-top",
-    "border",
-    "border-radius",
-    "border-image",
-    "mask",
-    "font",
-    "overflow",
     "background",
-    "background-position",
-    "text-stroke",
+    "border",
+    "border-block-end",
+    "border-block-start",
+    "border-bottom",
+    "border-color",
+    "border-image",
+    "border-inline-end",
+    "border-inline-start",
+    "border-left",
+    "border-radius",
+    "border-right",
+    "border-style",
+    "border-top",
+    "border-width",
+    "column-rule",
+    "columns",
+    "contain-intrinsic-size",
+    "flex",
+    "flex-flow",
+    "font",
+    "gap",
+    "grid",
+    "grid-area",
+    "grid-column",
+    "grid-row",
+    "grid-template",
+    "list-style",
+    "margin",
+    "mask",
+    "offset",
+    "outline",
+    "overflow",
+    "padding",
+    "place-content",
+    "place-items",
+    "place-self",
+    "scroll-margin",
+    "scroll-padding",
+    "scroll-timeline",
+    "text-decoration",
+    "text-emphasis",
     "transition",
   ]);
   // COHERENT END

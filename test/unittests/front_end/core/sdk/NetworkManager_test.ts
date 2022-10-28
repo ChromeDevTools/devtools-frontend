@@ -165,6 +165,28 @@ describe('NetworkDispatcher', () => {
       assert.deepEqual(
           networkDispatcher.requestForId('mockId')?.responseHeaders, [{name: 'test-header', value: 'third'}]);
     });
+
+    it('has populated \'originalHeaders\' after receiving \'responseReceivedExtraInfo\'', () => {
+      const responseReceivedExtraInfoEvent = {
+        requestId: 'mockId' as Protocol.Network.RequestId,
+        blockedCookies: [],
+        headers: {
+          'test-header': 'first',
+          'set-cookie': 'foo=bar\ncolor=green',
+        } as Protocol.Network.Headers,
+        resourceIPAddressSpace: Protocol.Network.IPAddressSpace.Public,
+        statusCode: 200,
+      } as Protocol.Network.ResponseReceivedExtraInfoEvent;
+
+      networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
+      networkDispatcher.responseReceivedExtraInfo(responseReceivedExtraInfoEvent);
+
+      assert.deepEqual(networkDispatcher.requestForId('mockId')?.responseHeaders, [
+        {name: 'test-header', value: 'first'},
+        {name: 'set-cookie', value: 'foo=bar'},
+        {name: 'set-cookie', value: 'color=green'},
+      ]);
+    });
   });
 
   describeWithEnvironment('WebBundle requests', () => {
@@ -299,7 +321,6 @@ async function checkRequestOverride(
   await multitargetNetworkManager.requestIntercepted(interceptedRequest);
   await fulfilledRequest;
   assert.isTrue(spy.calledOnceWithExactly(expectedOverriddenResponse));
-  assert.deepEqual(networkRequest.originalResponseHeaders, responseHeaders);
 }
 
 describeWithMockConnection('InterceptedRequest', () => {

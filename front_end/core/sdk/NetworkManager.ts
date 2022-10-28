@@ -1573,16 +1573,6 @@ export class InterceptedRequest {
     this.responseHeaders = responseHeaders;
     this.requestId = requestId;
     this.networkRequest = networkRequest;
-    if (this.networkRequest && this.responseHeaders) {
-      // This populates 'NetworkRequest.originalResponseHeaders' with the
-      // response headers from CDP's 'Fetch.requestPaused'. Populating this
-      // field together with 'NetworkRequest.responseHeaders' with the info
-      // from 'Network.responseReceivedExtraInfo' would have been easier, but we
-      // are not sure whether the response headers from the 2 CDP events are
-      // always exactly the same.
-      // Creates a deep copy.
-      this.networkRequest.originalResponseHeaders = this.responseHeaders.map(headerEntry => ({...headerEntry}));
-    }
   }
 
   hasResponded(): boolean {

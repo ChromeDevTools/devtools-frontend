@@ -1407,6 +1407,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   addExtraResponseInfo(extraResponseInfo: ExtraResponseInfo): void {
     this.#blockedResponseCookiesInternal = extraResponseInfo.blockedResponseCookies;
     this.responseHeaders = extraResponseInfo.responseHeaders;
+    // We store a copy of the headers we initially received, so that after
+    // potential header overrides, we can compare actual with original headers.
+    this.originalResponseHeaders = extraResponseInfo.responseHeaders.map(headerEntry => ({...headerEntry}));
 
     if (extraResponseInfo.responseHeadersText) {
       this.responseHeadersText = extraResponseInfo.responseHeadersText;

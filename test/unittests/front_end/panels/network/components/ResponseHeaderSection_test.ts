@@ -1004,7 +1004,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'unit test');
 
     component.remove();
-    Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL = () => null;
+    sinon.stub(Workspace.Workspace.WorkspaceImpl.instance(), 'uiSourceCodeForURL').callsFake(() => null);
 
     const component2 = await renderResponseHeaderSection(request);
     assertShadowRoot(component2.shadowRoot);

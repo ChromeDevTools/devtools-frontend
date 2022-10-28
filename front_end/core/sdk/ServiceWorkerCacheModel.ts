@@ -254,6 +254,9 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   interestGroupAccessed(_event: Protocol.Storage.InterestGroupAccessedEvent): void {
   }
 
+  sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void {
+  }
+
   setThrottlerSchedulesAsSoonAsPossibleForTest(): void {
     this.#scheduleAsSoonAsPossible = true;
   }

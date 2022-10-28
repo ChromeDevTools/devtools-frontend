@@ -2801,6 +2801,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Ĉh́r̂óm̂é d̂ét̂éĉt́êd́ âń ât́t̂ém̂ṕt̂ t́ô éx̂éĉút̂é Ĵáv̂áŜćr̂íp̂t́ ŵh́îĺê ín̂ t́ĥé ĉáĉh́ê."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś d̂íŝáb̂ĺêd́ d̂úê t́ô á k̂éêṕâĺîv́ê ŕêq́ûéŝt́."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "P̂áĝéŝ t́ĥát̂ úŝé K̂éŷb́ôár̂d́ l̂óĉḱ âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
   },

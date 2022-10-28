@@ -2962,6 +2962,21 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setInterestGroupTracking(params: Protocol.Storage.SetInterestGroupTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Gets metadata for an origin's shared storage.
+     */
+    invoke_getSharedStorageMetadata(params: Protocol.Storage.GetSharedStorageMetadataRequest): Promise<Protocol.Storage.GetSharedStorageMetadataResponse>;
+
+    /**
+     * Gets the entries in an given origin's shared storage.
+     */
+    invoke_getSharedStorageEntries(params: Protocol.Storage.GetSharedStorageEntriesRequest): Promise<Protocol.Storage.GetSharedStorageEntriesResponse>;
+
+    /**
+     * Enables/disables issuing of sharedStorageAccessed events.
+     */
+    invoke_setSharedStorageTracking(params: Protocol.Storage.SetSharedStorageTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface StorageDispatcher {
     /**
@@ -2988,6 +3003,12 @@ declare namespace ProtocolProxyApi {
      * One of the interest groups was accessed by the associated page.
      */
     interestGroupAccessed(params: Protocol.Storage.InterestGroupAccessedEvent): void;
+
+    /**
+     * Shared storage was accessed by the associated page.
+     * The following parameters are included in all events.
+     */
+    sharedStorageAccessed(params: Protocol.Storage.SharedStorageAccessedEvent): void;
 
   }
 

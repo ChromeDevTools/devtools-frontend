@@ -5577,6 +5577,7 @@ export namespace HeadlessExperimental {
   export const enum ScreenshotParamsFormat {
     Jpeg = 'jpeg',
     Png = 'png',
+    Webp = 'webp',
   }
 
   /**
@@ -5591,6 +5592,10 @@ export namespace HeadlessExperimental {
      * Compression quality from range [0..100] (jpeg only).
      */
     quality?: integer;
+    /**
+     * Optimize image encoding for speed, not for resulting size (defaults to false)
+     */
+    optimizeForSpeed?: boolean;
   }
 
   export interface BeginFrameRequest {
@@ -10367,6 +10372,7 @@ export namespace Page {
     ChWidth = 'ch-width',
     ClipboardRead = 'clipboard-read',
     ClipboardWrite = 'clipboard-write',
+    ComputePressure = 'compute-pressure',
     CrossOriginIsolated = 'cross-origin-isolated',
     DirectSockets = 'direct-sockets',
     DisplayCapture = 'display-capture',
@@ -11075,6 +11081,7 @@ export namespace Page {
     OutstandingNetworkRequestDirectSocket = 'OutstandingNetworkRequestDirectSocket',
     InjectedJavascript = 'InjectedJavascript',
     InjectedStyleSheet = 'InjectedStyleSheet',
+    KeepaliveRequest = 'KeepaliveRequest',
     Dummy = 'Dummy',
     ContentSecurityHandler = 'ContentSecurityHandler',
     ContentWebAuthenticationAPI = 'ContentWebAuthenticationAPI',
@@ -11151,8 +11158,6 @@ export namespace Page {
     Activated = 'Activated',
     Destroyed = 'Destroyed',
     LowEndDevice = 'LowEndDevice',
-    CrossOriginRedirect = 'CrossOriginRedirect',
-    CrossOriginNavigation = 'CrossOriginNavigation',
     InvalidSchemeRedirect = 'InvalidSchemeRedirect',
     InvalidSchemeNavigation = 'InvalidSchemeNavigation',
     InProgressNavigation = 'InProgressNavigation',
@@ -11187,6 +11192,13 @@ export namespace Page {
     InactivePageRestriction = 'InactivePageRestriction',
     StartFailed = 'StartFailed',
     TimeoutBackgrounded = 'TimeoutBackgrounded',
+    CrossSiteRedirect = 'CrossSiteRedirect',
+    CrossSiteNavigation = 'CrossSiteNavigation',
+    SameSiteCrossOriginRedirect = 'SameSiteCrossOriginRedirect',
+    SameSiteCrossOriginNavigation = 'SameSiteCrossOriginNavigation',
+    SameSiteCrossOriginRedirectNotOptIn = 'SameSiteCrossOriginRedirectNotOptIn',
+    SameSiteCrossOriginNavigationNotOptIn = 'SameSiteCrossOriginNavigationNotOptIn',
+    ActivationNavigationParameterMismatch = 'ActivationNavigationParameterMismatch',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {
@@ -11249,6 +11261,10 @@ export namespace Page {
      * Capture the screenshot beyond the viewport. Defaults to false.
      */
     captureBeyondViewport?: boolean;
+    /**
+     * Optimize image encoding for speed, not for resulting size (defaults to false)
+     */
+    optimizeForSpeed?: boolean;
   }
 
   export interface CaptureScreenshotResponse extends ProtocolResponseWithError {
@@ -11950,12 +11966,6 @@ export namespace Page {
      * JavaScript stack trace of when frame was attached, only set if frame initiated from script.
      */
     stack?: Runtime.StackTrace;
-    /**
-     * Identifies the bottom-most script which caused the frame to be labelled
-     * as an ad. Only sent if frame is labelled as an ad and id is available.
-     * Deprecated: use Page.getAdScriptId instead.
-     */
-    adScriptId?: AdScriptId;
   }
 
   /**
@@ -12910,6 +12920,7 @@ export namespace Storage {
     Service_workers = 'service_workers',
     Cache_storage = 'cache_storage',
     Interest_groups = 'interest_groups',
+    Shared_storage = 'shared_storage',
     All = 'all',
     Other = 'other',
   }
@@ -12972,6 +12983,121 @@ export namespace Storage {
     userBiddingSignals?: string;
     ads: InterestGroupAd[];
     adComponents: InterestGroupAd[];
+  }
+
+  /**
+   * Enum of shared storage access types.
+   */
+  export const enum SharedStorageAccessType {
+    DocumentAddModule = 'documentAddModule',
+    DocumentSelectURL = 'documentSelectURL',
+    DocumentRun = 'documentRun',
+    DocumentSet = 'documentSet',
+    DocumentAppend = 'documentAppend',
+    DocumentDelete = 'documentDelete',
+    DocumentClear = 'documentClear',
+    WorkletSet = 'workletSet',
+    WorkletAppend = 'workletAppend',
+    WorkletDelete = 'workletDelete',
+    WorkletClear = 'workletClear',
+    WorkletGet = 'workletGet',
+    WorkletKeys = 'workletKeys',
+    WorkletEntries = 'workletEntries',
+    WorkletLength = 'workletLength',
+    WorkletRemainingBudget = 'workletRemainingBudget',
+  }
+
+  /**
+   * Struct for a single key-value pair in an origin's shared storage.
+   */
+  export interface SharedStorageEntry {
+    key: string;
+    value: string;
+  }
+
+  /**
+   * Details for an origin's shared storage.
+   */
+  export interface SharedStorageMetadata {
+    creationTime: Network.TimeSinceEpoch;
+    length: integer;
+    remainingBudget: number;
+  }
+
+  /**
+   * Pair of reporting metadata details for a candidate URL for `selectURL()`.
+   */
+  export interface SharedStorageReportingMetadata {
+    eventType: string;
+    reportingUrl: string;
+  }
+
+  /**
+   * Bundles a candidate URL with its reporting metadata.
+   */
+  export interface SharedStorageUrlWithMetadata {
+    /**
+     * Spec of candidate URL.
+     */
+    url: string;
+    /**
+     * Any associated reporting metadata.
+     */
+    reportingMetadata: SharedStorageReportingMetadata[];
+  }
+
+  /**
+   * Bundles the parameters for shared storage access events whose
+   * presence/absence can vary according to SharedStorageAccessType.
+   */
+  export interface SharedStorageAccessParams {
+    /**
+     * Spec of the module script URL.
+     * Present only for SharedStorageAccessType.documentAddModule.
+     */
+    scriptSourceUrl?: string;
+    /**
+     * Name of the registered operation to be run.
+     * Present only for SharedStorageAccessType.documentRun and
+     * SharedStorageAccessType.documentSelectURL.
+     */
+    operationName?: string;
+    /**
+     * The operation's serialized data in bytes (converted to a string).
+     * Present only for SharedStorageAccessType.documentRun and
+     * SharedStorageAccessType.documentSelectURL.
+     */
+    serializedData?: string;
+    /**
+     * Array of candidate URLs' specs, along with any associated metadata.
+     * Present only for SharedStorageAccessType.documentSelectURL.
+     */
+    urlsWithMetadata?: SharedStorageUrlWithMetadata[];
+    /**
+     * Key for a specific entry in an origin's shared storage.
+     * Present only for SharedStorageAccessType.documentSet,
+     * SharedStorageAccessType.documentAppend,
+     * SharedStorageAccessType.documentDelete,
+     * SharedStorageAccessType.workletSet,
+     * SharedStorageAccessType.workletAppend,
+     * SharedStorageAccessType.workletDelete, and
+     * SharedStorageAccessType.workletGet.
+     */
+    key?: string;
+    /**
+     * Value for a specific entry in an origin's shared storage.
+     * Present only for SharedStorageAccessType.documentSet,
+     * SharedStorageAccessType.documentAppend,
+     * SharedStorageAccessType.workletSet, and
+     * SharedStorageAccessType.workletAppend.
+     */
+    value?: string;
+    /**
+     * Whether or not to set an entry for a key if that key is already present.
+     * Present only for SharedStorageAccessType.documentSet and
+     * SharedStorageAccessType.workletSet.
+     */
+    ignoreIfPresent?: boolean;
   }
 
   export interface GetStorageKeyForFrameRequest {
@@ -13149,6 +13275,26 @@ export namespace Storage {
     enable: boolean;
   }
 
+  export interface GetSharedStorageMetadataRequest {
+    ownerOrigin: string;
+  }
+
+  export interface GetSharedStorageMetadataResponse extends ProtocolResponseWithError {
+    metadata: SharedStorageMetadata;
+  }
+
+  export interface GetSharedStorageEntriesRequest {
+    ownerOrigin: string;
+  }
+
+  export interface GetSharedStorageEntriesResponse extends ProtocolResponseWithError {
+    entries: SharedStorageEntry[];
+  }
+
+  export interface SetSharedStorageTrackingRequest {
+    enable: boolean;
+  }
+
   /**
    * A cache's contents have been modified.
    */
@@ -13217,6 +13363,34 @@ export namespace Storage {
     type: InterestGroupAccessType;
     ownerOrigin: string;
     name: string;
+  }
+
+  /**
+   * Shared storage was accessed by the associated page.
+   * The following parameters are included in all events.
+   */
+  export interface SharedStorageAccessedEvent {
+    /**
+     * Time of the access.
+     */
+    accessTime: Network.TimeSinceEpoch;
+    /**
+     * Enum value indicating the Shared Storage API method invoked.
+     */
+    type: SharedStorageAccessType;
+    /**
+     * DevTools Frame Token for the primary frame tree's root.
+     */
+    mainFrameId: Page.FrameId;
+    /**
+     * Serialized origin for the context that invoked the Shared Storage API.
+     */
+    ownerOrigin: string;
+    /**
+     * The sub-parameters warapped by `params` are all optional and their
+     * presence/absence depends on `type`.
+     */
+    params: SharedStorageAccessParams;
   }
 }
 

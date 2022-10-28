@@ -2801,6 +2801,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
     "message": "Chrome detected an attempt to execute JavaScript while in the cache."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "Back/forward cache is disabled due to a keepalive request."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Pages that use Keyboard lock are not currently eligible for back/forward cache."
   },

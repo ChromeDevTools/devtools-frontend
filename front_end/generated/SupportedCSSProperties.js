@@ -364,6 +364,12 @@ export const generatedProperties = [
   "name": "animation-delay"
  },
  {
+  "name": "animation-delay-end"
+ },
+ {
+  "name": "animation-delay-start"
+ },
+ {
   "keywords": [
    "normal",
    "reverse",

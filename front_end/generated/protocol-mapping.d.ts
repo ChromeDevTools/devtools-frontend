@@ -482,6 +482,11 @@ export namespace ProtocolMapping {
      */
     'Storage.interestGroupAccessed': [Protocol.Storage.InterestGroupAccessedEvent];
     /**
+     * Shared storage was accessed by the associated page.
+     * The following parameters are included in all events.
+     */
+    'Storage.sharedStorageAccessed': [Protocol.Storage.SharedStorageAccessedEvent];
+    /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
     'Target.attachedToTarget': [Protocol.Target.AttachedToTargetEvent];
@@ -3533,6 +3538,27 @@ export namespace ProtocolMapping {
      */
     'Storage.setInterestGroupTracking': {
       paramsType: [Protocol.Storage.SetInterestGroupTrackingRequest];
+      returnType: void;
+    };
+    /**
+     * Gets metadata for an origin's shared storage.
+     */
+    'Storage.getSharedStorageMetadata': {
+      paramsType: [Protocol.Storage.GetSharedStorageMetadataRequest];
+      returnType: Protocol.Storage.GetSharedStorageMetadataResponse;
+    };
+    /**
+     * Gets the entries in an given origin's shared storage.
+     */
+    'Storage.getSharedStorageEntries': {
+      paramsType: [Protocol.Storage.GetSharedStorageEntriesRequest];
+      returnType: Protocol.Storage.GetSharedStorageEntriesResponse;
+    };
+    /**
+     * Enables/disables issuing of sharedStorageAccessed events.
+     */
+    'Storage.setSharedStorageTracking': {
+      paramsType: [Protocol.Storage.SetSharedStorageTrackingRequest];
       returnType: void;
     };
     /**

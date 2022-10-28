@@ -73,6 +73,9 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<EventTypes>
 
   cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void {
   }
+
+  sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(

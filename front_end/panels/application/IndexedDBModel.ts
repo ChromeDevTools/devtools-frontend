@@ -400,6 +400,9 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
 
   interestGroupAccessed(_event: Protocol.Storage.InterestGroupAccessedEvent): void {
   }
+
+  sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});

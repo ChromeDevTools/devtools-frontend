@@ -960,11 +960,6 @@ export const NativeFunctions = [
   },
   {
     name: 'start',
-    signatures: [['?callback']],
-    receivers: ['DocumentTransition']
-  },
-  {
-    name: 'start',
     signatures: [['controller']],
     receivers: ['UnderlyingSinkBase']
   },
@@ -1144,7 +1139,7 @@ export const NativeFunctions = [
   {
     name: 'deleteRule',
     signatures: [['index']],
-    receivers: ['CSSGroupingRule','CSSStyleSheet']
+    receivers: ['CSSGroupingRule','CSSStyleSheet','CSSStyleRule']
   },
   {
     name: 'deleteRule',
@@ -5945,7 +5940,7 @@ export const NativeFunctions = [
     signatures: [['type','?eventInitDict']]
   },
   {
-    name: 'prepare',
+    name: 'startViewTransition',
     signatures: [['?callback']]
   },
   {
@@ -5975,6 +5970,10 @@ export const NativeFunctions = [
   {
     name: 'hasRedemptionRecord',
     signatures: [['issuer']]
+  },
+  {
+    name: 'ariaNotify',
+    signatures: [['announcement','?options']]
   },
   {
     name: 'DOMException',
@@ -6605,6 +6604,14 @@ export const NativeFunctions = [
     signatures: [['input','...args']]
   },
   {
+    name: 'URLPattern',
+    signatures: [['?input','?options'],['input','baseURL','?options']]
+  },
+  {
+    name: 'compareComponent',
+    signatures: [['component','left','right']]
+  },
+  {
     name: 'URLSearchParams',
     signatures: [['?init']]
   },
@@ -7157,6 +7164,10 @@ export const NativeFunctions = [
     signatures: [['crop_id']]
   },
   {
+    name: 'setFocusBehavior',
+    signatures: [['focusBehavior']]
+  },
+  {
     name: 'fromElement',
     signatures: [['element']]
   },
@@ -7655,14 +7666,6 @@ export const NativeFunctions = [
   {
     name: 'StorageEvent',
     signatures: [['type','?eventInitDict']]
-  },
-  {
-    name: 'URLPattern',
-    signatures: [['?input','?options'],['input','baseURL','?options']]
-  },
-  {
-    name: 'compareComponent',
-    signatures: [['component','left','right']]
   },
   {
     name: 'VirtualKeyboardGeometryChangeEvent',

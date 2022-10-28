@@ -994,7 +994,7 @@ export class DebuggerPlugin extends Plugin {
       return null;
     }
 
-    const variableNames = getVariableNamesByLine(this.editor.state, functionOffset, executionOffset);
+    const variableNames = getVariableNamesByLine(this.editor.state, functionOffset, executionOffset, executionOffset);
     if (variableNames.length === 0) {
       return null;
     }
@@ -1932,8 +1932,26 @@ function isVariableIdentifier(tokenType: string): boolean {
   return tokenType === 'VariableName' || tokenType === 'VariableDefinition';
 }
 
+function isVariableDefinition(tokenType: string): boolean {
+  return tokenType === 'VariableDefinition';
+}
+
+function isLetConstDefinition(tokenType: string): boolean {
+  return tokenType === 'let' || tokenType === 'const';
+}
+
+function isScopeNode(tokenType: string): boolean {
+  return tokenType === 'Block' || tokenType === 'ForSpec';
+}
+
+class SiblingScopeVariables {
+  blockList: Set<string> = new Set<string>();
+  variables: {line: number, from: number, id: string}[] = [];
+}
+
 export function getVariableNamesByLine(
-    editorState: CodeMirror.EditorState, fromPos: number, toPos: number): {line: number, from: number, id: string}[] {
+    editorState: CodeMirror.EditorState, fromPos: number, toPos: number,
+    currentPos: number): {line: number, from: number, id: string}[] {
   const fromLine = editorState.doc.lineAt(fromPos);
   fromPos = Math.min(fromLine.to, fromPos);
   toPos = editorState.doc.lineAt(toPos).from;
@@ -1943,8 +1961,21 @@ export function getVariableNamesByLine(
     return [];
   }
 
+  // Sibling scope is a scope that does not contain the current position.
+  // We will exclude variables that are defined (and used in those scopes (since we are currently outside of their lifetime).
+  function isSiblingScopeNode(node: {name: string, from: number, to: number}): boolean {
+    return isScopeNode(node.name) && (node.to < currentPos || currentPos < node.from);
+  }
+
   const names: {line: number, from: number, id: string}[] = [];
   let curLine = fromLine;
+  const siblingStack: SiblingScopeVariables[] = [];
+  let currentLetConstDefinition: CodeMirror.SyntaxNode|null = null;
+
+  function currentNames(): {line: number, from: number, id: string}[] {
+    return siblingStack.length ? siblingStack[siblingStack.length - 1].variables : names;
+  }
+
   tree.iterate({
     from: fromPos,
     to: toPos,
@@ -1952,14 +1983,45 @@ export function getVariableNamesByLine(
       if (node.from < fromPos) {
         return;
       }
+
+      if (isLetConstDefinition(node.name)) {
+        currentLetConstDefinition = node.node.nextSibling;
+        return;
+      }
+
+      if (isSiblingScopeNode(node)) {
+        siblingStack.push(new SiblingScopeVariables());
+        return;
+      }
+
       const varName = isVariableIdentifier(node.name) && editorState.sliceDoc(node.from, node.to);
       if (!varName) {
         return;
       }
+
+      if (currentLetConstDefinition && isVariableDefinition(node.name) && siblingStack.length > 0) {
+        siblingStack[siblingStack.length - 1].blockList.add(varName);
+        return;
+      }
+
       if (node.from > curLine.to) {
         curLine = editorState.doc.lineAt(node.from);
       }
-      names.push({line: curLine.number - 1, from: node.from, id: varName});
+
+      currentNames().push({line: curLine.number - 1, from: node.from, id: varName});
+    },
+    leave: node => {
+      if (currentLetConstDefinition === node.node) {
+        currentLetConstDefinition = null;
+      } else if (isSiblingScopeNode(node)) {
+        const topScope = siblingStack.pop();
+        const nameList = currentNames();
+        for (const token of topScope?.variables ?? []) {
+          if (!topScope?.blockList.has(token.id)) {
+            nameList.push(token);
+          }
+        }
+      }
     },
   });
   return names;

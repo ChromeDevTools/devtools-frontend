@@ -235,7 +235,7 @@ function makeState(doc: string, extensions: CodeMirror.Extension = []) {
 describeWithEnvironment('Inline variable view parser', () => {
   it('parses simple identifier', () => {
     const state = makeState('c', CodeMirror.javascript.javascriptLanguage);
-    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 0, 1);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 0, 1, 1);
     assert.deepEqual(variables, [{line: 0, from: 0, id: 'c'}]);
   });
 
@@ -245,8 +245,29 @@ describeWithEnvironment('Inline variable view parser', () => {
       debugger;
     }`;
     const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
-    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
     assert.deepEqual(variables, [{line: 0, from: 11, id: 'o'}, {line: 1, from: 26, id: 'a'}]);
+  });
+
+  it('parses patterns', () => {
+    const code = `function f(o) {
+      let {x: a, y: [b, c]} = {x: o, y: [1, 2]};
+      console.log(a + b + c);
+      debugger;
+    }`;
+    const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
+    assert.deepEqual(variables, [
+      {line: 0, from: 11, id: 'o'},
+      {line: 1, from: 30, id: 'a'},
+      {line: 1, from: 37, id: 'b'},
+      {line: 1, from: 40, id: 'c'},
+      {line: 1, from: 50, id: 'o'},
+      {line: 2, from: 71, id: 'console'},
+      {line: 2, from: 83, id: 'a'},
+      {line: 2, from: 87, id: 'b'},
+      {line: 2, from: 91, id: 'c'},
+    ]);
   });
 
   it('parses function with nested block', () => {
@@ -258,9 +279,142 @@ describeWithEnvironment('Inline variable view parser', () => {
       }
     }`;
     const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
-    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
     assert.deepEqual(
         variables, [{line: 0, from: 11, id: 'o'}, {line: 1, from: 26, id: 'a'}, {line: 3, from: 53, id: 'a'}]);
+  });
+
+  it('parses function variable, ignores shadowing let in sibling block', () => {
+    const code = `function f(o) {
+      let a = 1;
+      {
+        let a = 2;
+        console.log(a);
+      }
+      debugger;
+    }`;
+    const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
+    assert.deepEqual(
+        variables, [{line: 0, from: 11, id: 'o'}, {line: 1, from: 26, id: 'a'}, {line: 4, from: 68, id: 'console'}]);
+  });
+
+  it('parses function variable, ignores shadowing const in sibling block', () => {
+    const code = `function f(o) {
+      let a = 1;
+      {
+        const a = 2;
+        console.log(a);
+      }
+      debugger;
+    }`;
+    const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
+    assert.deepEqual(
+        variables, [{line: 0, from: 11, id: 'o'}, {line: 1, from: 26, id: 'a'}, {line: 4, from: 70, id: 'console'}]);
+  });
+
+  it('parses function variable, ignores shadowing typed const in sibling block', () => {
+    const code = `function f(o) {
+      let a: number = 1;
+      {
+        const a: number = 2;
+        console.log(a);
+      }
+      debugger;
+    }`;
+    const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
+    assert.deepEqual(
+        variables, [{line: 0, from: 11, id: 'o'}, {line: 1, from: 26, id: 'a'}, {line: 4, from: 86, id: 'console'}]);
+  });
+
+  it('parses function variable, reports all vars', () => {
+    const code = `function f(o) {
+      var a = 1;
+      {
+        var a = 2;
+        console.log(a);
+      }
+      debugger;
+    }`;
+    const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
+    assert.deepEqual(variables, [
+      {line: 0, from: 11, id: 'o'},
+      {line: 1, from: 26, id: 'a'},
+      {line: 3, from: 53, id: 'a'},
+      {line: 4, from: 68, id: 'console'},
+      {line: 4, from: 80, id: 'a'},
+    ]);
+  });
+
+  it('parses function variable, handles shadowing in doubly nested scopes', () => {
+    const code = `function f() {
+      let a = 1;
+      let b = 2;
+      let c = 3;
+      {
+        let b;
+        {
+          const c = 4;
+          b = 5;
+          console.log(c);
+        }
+        console.log(c);
+      }
+      debugger;
+    }`;
+    const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
+    assert.deepEqual(variables, [
+      {line: 1, from: 25, id: 'a'},
+      {line: 2, from: 42, id: 'b'},
+      {line: 3, from: 59, id: 'c'},
+      {line: 9, from: 149, id: 'console'},
+      {line: 11, from: 183, id: 'console'},
+      {line: 11, from: 195, id: 'c'},
+    ]);
+  });
+
+  it('parses function variable, handles shadowing with object pattern', () => {
+    const code = `function f() {
+      let a = 1;
+      {
+        let {x: b, y: a} = {x: 1, y: 2};
+        console.log(a + b);
+      }
+      console.log(a);
+      debugger;
+    }`;
+    const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
+    assert.deepEqual(variables, [
+      {line: 1, from: 25, id: 'a'},
+      {line: 4, from: 89, id: 'console'},
+      {line: 6, from: 123, id: 'console'},
+      {line: 6, from: 135, id: 'a'},
+    ]);
+  });
+
+  it('parses function variable, handles shadowing with array pattern', () => {
+    const code = `function f() {
+      let a = 1;
+      {
+        const [b, a] = [1, 2];
+        console.log(a + b);
+      }
+      console.log(a);
+      debugger;
+    }`;
+    const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
+    const variables = Sources.DebuggerPlugin.getVariableNamesByLine(state, 10, code.length, code.indexOf('debugger'));
+    assert.deepEqual(variables, [
+      {line: 1, from: 25, id: 'a'},
+      {line: 4, from: 79, id: 'console'},
+      {line: 6, from: 113, id: 'console'},
+      {line: 6, from: 125, id: 'a'},
+    ]);
   });
 });
 

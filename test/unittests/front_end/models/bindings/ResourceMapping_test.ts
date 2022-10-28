@@ -69,11 +69,7 @@ describeWithMockConnection('ResourceMapping', () => {
     const target = createTarget();
     const targetManager = target.targetManager();
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    resourceMapping = Bindings.ResourceMapping.ResourceMapping.instance({
-      forceNew: true,
-      targetManager,
-      workspace,
-    });
+    resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
 
     // Inject the HTML document resource.
     const frameId = 'main' as Protocol.Page.FrameId;

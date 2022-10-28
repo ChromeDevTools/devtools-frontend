@@ -98,10 +98,11 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
     await performanceModel.setTracingModel(tracingModel);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
+      resourceMapping,
       targetManager,
-      workspace,
     });
     SDK.PageResourceLoader.PageResourceLoader.instance({
       forceNew: true,

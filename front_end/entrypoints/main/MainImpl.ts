@@ -517,24 +517,24 @@ export class MainImpl {
 
     // @ts-ignore layout test global
     self.Bindings.networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(
+        SDK.TargetManager.TargetManager.instance(),
+        Workspace.Workspace.WorkspaceImpl.instance(),
+    );
     // @ts-ignore layout test global
-    self.Bindings.resourceMapping = Bindings.ResourceMapping.ResourceMapping.instance({
-      forceNew: true,
-      targetManager: SDK.TargetManager.TargetManager.instance(),
-      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
-    });
+    self.Bindings.resourceMapping = resourceMapping;
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
     // @ts-ignore layout test global
     self.Bindings.cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
       forceNew: true,
+      resourceMapping,
       targetManager: SDK.TargetManager.TargetManager.instance(),
-      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     // @ts-ignore layout test global
     self.Bindings.debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
+      resourceMapping,
       targetManager: SDK.TargetManager.TargetManager.instance(),
-      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     // @ts-ignore layout test global
     self.Bindings.breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance({

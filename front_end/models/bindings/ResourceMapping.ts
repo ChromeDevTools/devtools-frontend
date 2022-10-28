@@ -14,45 +14,22 @@ import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 import {resourceMetadata} from './ResourceUtils.js';
 
-let resourceMappingInstance: ResourceMapping|undefined;
-
 const styleSheetOffsetMap = new WeakMap<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, TextUtils.TextRange.TextRange>();
 const scriptOffsetMap = new WeakMap<SDK.Script.Script, TextUtils.TextRange.TextRange>();
 const boundUISourceCodes = new WeakSet<Workspace.UISourceCode.UISourceCode>();
 
 export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.ResourceTreeModel.ResourceTreeModel> {
-  readonly #workspace: Workspace.Workspace.WorkspaceImpl;
+  readonly workspace: Workspace.Workspace.WorkspaceImpl;
   readonly #modelToInfo: Map<SDK.ResourceTreeModel.ResourceTreeModel, ModelInfo>;
-  private constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this.#workspace = workspace;
+
+  constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
+    this.workspace = workspace;
     this.#modelToInfo = new Map();
     targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
   }
 
-  static instance(opts: {
-    forceNew: boolean|null,
-    targetManager: SDK.TargetManager.TargetManager|null,
-    workspace: Workspace.Workspace.WorkspaceImpl|null,
-  } = {forceNew: null, targetManager: null, workspace: null}): ResourceMapping {
-    const {forceNew, targetManager, workspace} = opts;
-    if (!resourceMappingInstance || forceNew) {
-      if (!targetManager || !workspace) {
-        throw new Error(
-            `Unable to create ResourceMapping: targetManager and workspace must be provided: ${new Error().stack}`);
-      }
-
-      resourceMappingInstance = new ResourceMapping(targetManager, workspace);
-    }
-
-    return resourceMappingInstance;
-  }
-
-  static removeInstance(): void {
-    resourceMappingInstance = undefined;
-  }
-
   modelAdded(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {
-    const info = new ModelInfo(this.#workspace, resourceTreeModel);
+    const info = new ModelInfo(this.workspace, resourceTreeModel);
     this.#modelToInfo.set(resourceTreeModel, info);
   }
 

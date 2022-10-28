@@ -29,9 +29,12 @@ describeWithMockConnection('JSPresentationUtils', async () => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const forceNew = true;
     const targetManager = target.targetManager();
-    const debuggerWorkspaceBinding =
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({forceNew, targetManager, workspace});
-    Bindings.ResourceMapping.ResourceMapping.instance({forceNew, targetManager, workspace});
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew,
+      resourceMapping,
+      targetManager,
+    });
     Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew, debuggerWorkspaceBinding});
     return {target, linkifier};
   }

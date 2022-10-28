@@ -28,15 +28,16 @@ describeWithEnvironment('SourceFormatter', () => {
   beforeEach(() => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
+      resourceMapping,
       targetManager,
-      workspace,
     });
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
       forceNew: true,
+      resourceMapping,
       targetManager,
-      workspace,
     });
     ({project, uiSourceCode} = createContentProviderUISourceCode({
        url: DOCUMENT_URL,

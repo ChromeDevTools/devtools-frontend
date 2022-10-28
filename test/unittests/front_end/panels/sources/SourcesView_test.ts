@@ -26,8 +26,12 @@ describe('SourcesView', () => {
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    const debuggerWorkspaceBinding =
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({forceNew: true, targetManager, workspace});
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+    });
     const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});

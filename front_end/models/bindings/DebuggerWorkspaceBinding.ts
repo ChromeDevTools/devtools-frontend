@@ -14,21 +14,22 @@ import {DefaultScriptMapping} from './DefaultScriptMapping.js';
 import {IgnoreListManager} from './IgnoreListManager.js';
 
 import {LiveLocationWithPool, type LiveLocation, type LiveLocationPool} from './LiveLocation.js';
-import {ResourceMapping} from './ResourceMapping.js';
+import {type ResourceMapping} from './ResourceMapping.js';
 
 import {ResourceScriptMapping, type ResourceScriptFile} from './ResourceScriptMapping.js';
 
 let debuggerWorkspaceBindingInstance: DebuggerWorkspaceBinding|undefined;
 
 export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
-  readonly workspace: Workspace.Workspace.WorkspaceImpl;
+  readonly resourceMapping: ResourceMapping;
   readonly #sourceMappings: DebuggerSourceMapping[];
   readonly #debuggerModelToData: Map<SDK.DebuggerModel.DebuggerModel, ModelData>;
   readonly #liveLocationPromises: Set<Promise<void|Location|StackTraceTopFrameLocation|null>>;
   pluginManager: DebuggerLanguagePluginManager|null;
   #targetManager: SDK.TargetManager.TargetManager;
-  private constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this.workspace = workspace;
+
+  private constructor(resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager) {
+    this.resourceMapping = resourceMapping;
 
     this.#sourceMappings = [];
 
@@ -43,14 +44,15 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     this.#liveLocationPromises = new Set();
 
     this.pluginManager = Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') ?
-        new DebuggerLanguagePluginManager(targetManager, workspace, this) :
+        new DebuggerLanguagePluginManager(targetManager, resourceMapping.workspace, this) :
         null;
   }
 
   initPluginManagerForTest(): DebuggerLanguagePluginManager|null {
     if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
       if (!this.pluginManager) {
-        this.pluginManager = new DebuggerLanguagePluginManager(this.#targetManager, this.workspace, this);
+        this.pluginManager =
+            new DebuggerLanguagePluginManager(this.#targetManager, this.resourceMapping.workspace, this);
       }
     } else {
       this.pluginManager = null;
@@ -60,17 +62,18 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
   static instance(opts: {
     forceNew: boolean|null,
+    resourceMapping: ResourceMapping|null,
     targetManager: SDK.TargetManager.TargetManager|null,
-    workspace: Workspace.Workspace.WorkspaceImpl|null,
-  } = {forceNew: null, targetManager: null, workspace: null}): DebuggerWorkspaceBinding {
-    const {forceNew, targetManager, workspace} = opts;
+  } = {forceNew: null, resourceMapping: null, targetManager: null}): DebuggerWorkspaceBinding {
+    const {forceNew, resourceMapping, targetManager} = opts;
     if (!debuggerWorkspaceBindingInstance || forceNew) {
-      if (!targetManager || !workspace) {
-        throw new Error(`Unable to create DebuggerWorkspaceBinding: targetManager and workspace must be provided: ${
-            new Error().stack}`);
+      if (!resourceMapping || !targetManager) {
+        throw new Error(
+            `Unable to create DebuggerWorkspaceBinding: resourceMapping and targetManager must be provided: ${
+                new Error().stack}`);
       }
 
-      debuggerWorkspaceBindingInstance = new DebuggerWorkspaceBinding(targetManager, workspace);
+      debuggerWorkspaceBindingInstance = new DebuggerWorkspaceBinding(resourceMapping, targetManager);
     }
 
     return debuggerWorkspaceBindingInstance;
@@ -305,7 +308,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   scriptFile(uiSourceCode: Workspace.UISourceCode.UISourceCode, debuggerModel: SDK.DebuggerModel.DebuggerModel):
       ResourceScriptFile|null {
     const modelData = this.#debuggerModelToData.get(debuggerModel);
-    return modelData ? modelData.getResourceMapping().scriptFile(uiSourceCode) : null;
+    return modelData ? modelData.getResourceScriptMapping().scriptFile(uiSourceCode) : null;
   }
 
   scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {
@@ -314,7 +317,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       this.pluginManager.scriptsForUISourceCode(uiSourceCode).forEach(script => scripts.add(script));
     }
     for (const modelData of this.#debuggerModelToData.values()) {
-      const resourceScriptFile = modelData.getResourceMapping().scriptFile(uiSourceCode);
+      const resourceScriptFile = modelData.getResourceScriptMapping().scriptFile(uiSourceCode);
       if (resourceScriptFile && resourceScriptFile.script) {
         scripts.add(resourceScriptFile.script);
       }
@@ -326,7 +329,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   scriptsForResource(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {
     const scripts = new Set<SDK.Script.Script>();
     for (const modelData of this.#debuggerModelToData.values()) {
-      const resourceScriptFile = modelData.getResourceMapping().scriptFile(uiSourceCode);
+      const resourceScriptFile = modelData.getResourceScriptMapping().scriptFile(uiSourceCode);
       if (resourceScriptFile && resourceScriptFile.script) {
         scripts.add(resourceScriptFile.script);
       }
@@ -371,7 +374,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     const debuggerModel = (target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
-      modelData.getResourceMapping().resetForTest();
+      modelData.getResourceScriptMapping().resetForTest();
     }
   }
 
@@ -400,18 +403,21 @@ class ModelData {
   readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
   callFrameLocations: Set<Location>;
   #defaultMapping: DefaultScriptMapping;
-  resourceMapping: ResourceScriptMapping;
+  readonly #resourceMapping: ResourceMapping;
+  #resourceScriptMapping: ResourceScriptMapping;
   readonly compilerMapping: CompilerScriptMapping;
   readonly #locations: Platform.MapUtilities.Multimap<string, Location>;
+
   constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel, debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
     this.#debuggerModel = debuggerModel;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     this.callFrameLocations = new Set();
 
-    const workspace = debuggerWorkspaceBinding.workspace;
+    const {workspace} = debuggerWorkspaceBinding.resourceMapping;
     this.#defaultMapping = new DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
-    this.resourceMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    this.#resourceMapping = debuggerWorkspaceBinding.resourceMapping;
+    this.#resourceScriptMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this.compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
     this.#locations = new Platform.MapUtilities.Multimap();
@@ -444,8 +450,8 @@ class ModelData {
 
   rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null {
     let uiLocation = this.compilerMapping.rawLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || this.resourceMapping.rawLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || ResourceMapping.instance().jsLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || this.#resourceScriptMapping.rawLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || this.#resourceMapping.jsLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this.#defaultMapping.rawLocationToUILocation(rawLocation);
     return uiLocation;
   }
@@ -457,10 +463,10 @@ class ModelData {
     let locations = this.compilerMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
-        this.resourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+        this.#resourceScriptMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
-        ResourceMapping.instance().uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber);
+        this.#resourceMapping.uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
         this.#defaultMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
@@ -474,12 +480,12 @@ class ModelData {
   dispose(): void {
     this.#debuggerModel.setBeforePausedCallback(null);
     this.compilerMapping.dispose();
-    this.resourceMapping.dispose();
+    this.#resourceScriptMapping.dispose();
     this.#defaultMapping.dispose();
   }
 
-  getResourceMapping(): ResourceScriptMapping {
-    return this.resourceMapping;
+  getResourceScriptMapping(): ResourceScriptMapping {
+    return this.#resourceScriptMapping;
   }
 }
 

@@ -12,21 +12,20 @@ import {
   type LiveLocation as LiveLocationInterface,
   type LiveLocationPool,
 } from './LiveLocation.js';
-import {ResourceMapping} from './ResourceMapping.js';
+import {type ResourceMapping} from './ResourceMapping.js';
 import {SASSSourceMapping} from './SASSSourceMapping.js';
 import {StylesSourceMapping} from './StylesSourceMapping.js';
 
 let cssWorkspaceBindingInstance: CSSWorkspaceBinding|undefined;
 
 export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
-  readonly #workspace: Workspace.Workspace.WorkspaceImpl;
+  readonly #resourceMapping: ResourceMapping;
   readonly #modelToInfo: Map<SDK.CSSModel.CSSModel, ModelInfo>;
   readonly #sourceMappings: SourceMapping[];
   readonly #liveLocationPromises: Set<Promise<unknown>>;
 
-  private constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this.#workspace = workspace;
-
+  private constructor(resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager) {
+    this.#resourceMapping = resourceMapping;
     this.#modelToInfo = new Map();
     this.#sourceMappings = [];
     targetManager.observeModels(SDK.CSSModel.CSSModel, this);
@@ -36,17 +35,17 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
 
   static instance(opts: {
     forceNew: boolean|null,
+    resourceMapping: ResourceMapping|null,
     targetManager: SDK.TargetManager.TargetManager|null,
-    workspace: Workspace.Workspace.WorkspaceImpl|null,
-  } = {forceNew: null, targetManager: null, workspace: null}): CSSWorkspaceBinding {
-    const {forceNew, targetManager, workspace} = opts;
+  } = {forceNew: null, resourceMapping: null, targetManager: null}): CSSWorkspaceBinding {
+    const {forceNew, resourceMapping, targetManager} = opts;
     if (!cssWorkspaceBindingInstance || forceNew) {
-      if (!targetManager || !workspace) {
-        throw new Error(
-            `Unable to create CSSWorkspaceBinding: targetManager and workspace must be provided: ${new Error().stack}`);
+      if (!resourceMapping || !targetManager) {
+        throw new Error(`Unable to create CSSWorkspaceBinding: resourceMapping and targetManager must be provided: ${
+            new Error().stack}`);
       }
 
-      cssWorkspaceBindingInstance = new CSSWorkspaceBinding(targetManager, workspace);
+      cssWorkspaceBindingInstance = new CSSWorkspaceBinding(resourceMapping, targetManager);
     }
 
     return cssWorkspaceBindingInstance;
@@ -65,7 +64,7 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
   }
 
   modelAdded(cssModel: SDK.CSSModel.CSSModel): void {
-    this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#workspace));
+    this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#resourceMapping));
   }
 
   modelRemoved(cssModel: SDK.CSSModel.CSSModel): void {
@@ -177,11 +176,12 @@ export interface SourceMapping {
 
 export class ModelInfo {
   readonly #eventListeners: Common.EventTarget.EventDescriptor[];
+  readonly #resourceMapping: ResourceMapping;
   #stylesSourceMapping: StylesSourceMapping;
   #sassSourceMapping: SASSSourceMapping;
   readonly #locations: Platform.MapUtilities.Multimap<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, LiveLocation>;
   readonly #unboundLocations: Platform.MapUtilities.Multimap<Platform.DevToolsPath.UrlString, LiveLocation>;
-  constructor(cssModel: SDK.CSSModel.CSSModel, workspace: Workspace.Workspace.WorkspaceImpl) {
+  constructor(cssModel: SDK.CSSModel.CSSModel, resourceMapping: ResourceMapping) {
     this.#eventListeners = [
       cssModel.addEventListener(
           SDK.CSSModel.Events.StyleSheetAdded,
@@ -197,9 +197,10 @@ export class ModelInfo {
           this),
     ];
 
-    this.#stylesSourceMapping = new StylesSourceMapping(cssModel, workspace);
+    this.#resourceMapping = resourceMapping;
+    this.#stylesSourceMapping = new StylesSourceMapping(cssModel, resourceMapping.workspace);
     const sourceMapManager = cssModel.sourceMapManager();
-    this.#sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, workspace);
+    this.#sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, resourceMapping.workspace);
 
     this.#locations = new Platform.MapUtilities.Multimap();
     this.#unboundLocations = new Platform.MapUtilities.Multimap();
@@ -275,7 +276,7 @@ export class ModelInfo {
     let uiLocation: (Workspace.UISourceCode.UILocation|null)|null = null;
     uiLocation = uiLocation || this.#sassSourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this.#stylesSourceMapping.rawLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || ResourceMapping.instance().cssLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || this.#resourceMapping.cssLocationToUILocation(rawLocation);
     return uiLocation;
   }
 
@@ -288,7 +289,7 @@ export class ModelInfo {
     if (rawLocations.length) {
       return rawLocations;
     }
-    return ResourceMapping.instance().uiLocationToCSSLocations(uiLocation);
+    return this.#resourceMapping.uiLocationToCSSLocations(uiLocation);
   }
 
   dispose(): void {

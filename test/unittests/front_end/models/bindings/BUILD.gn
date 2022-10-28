@@ -11,6 +11,7 @@ ts_library("bindings") {
     "FileUtils_test.ts",
     "LiveLocation_test.ts",
     "ResourceMapping_test.ts",
+    "ResourceUtils_test.ts",
   ]
 
   deps = [

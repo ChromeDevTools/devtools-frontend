@@ -97,7 +97,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   inspectedURL(): string {
-    const mainTarget = this.mainTarget();
+    const mainTarget = this.mainFrameTarget();
     return mainTarget ? mainTarget.inspectedURL() : '';
   }
 

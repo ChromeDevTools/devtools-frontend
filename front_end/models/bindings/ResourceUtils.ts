@@ -64,8 +64,7 @@ export function displayNameForURL(url: Platform.DevToolsPath.UrlString): string 
     return uiSourceCode.displayName();
   }
 
-  const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
-  const inspectedURL = mainTarget && mainTarget.inspectedURL();
+  const inspectedURL = SDK.TargetManager.TargetManager.instance().inspectedURL();
   if (!inspectedURL) {
     return Platform.StringUtilities.trimURL(url, '');
   }

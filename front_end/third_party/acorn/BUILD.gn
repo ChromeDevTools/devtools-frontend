@@ -37,10 +37,7 @@ devtools_entrypoint("bundle") {
     ":estree",
   ]
 
-  visibility = [
-    "../../entrypoints/formatter_worker/*",
-    "../acorn-loose/*",
-  ]
+  visibility = [ "../../entrypoints/formatter_worker/*" ]
 
   visibility += devtools_third_party_visibility
 }

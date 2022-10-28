@@ -1,6 +1,5 @@
 [
   "acorn",
-  "acorn-loose",
   "codemirror",
   "codemirror.next",
   "chromium",

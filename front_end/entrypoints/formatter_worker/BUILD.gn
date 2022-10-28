@@ -15,11 +15,9 @@ devtools_module("formatter_worker") {
     "FormattedContentBuilder.ts",
     "FormatterWorker.ts",
     "HTMLFormatter.ts",
-    "HTMLOutline.ts",
     "IdentityFormatter.ts",
     "JSONFormatter.ts",
     "JavaScriptFormatter.ts",
-    "JavaScriptOutline.ts",
     "ScopeParser.ts",
     "Substitute.ts",
   ]
@@ -30,7 +28,6 @@ devtools_module("formatter_worker") {
     "../../core/root:bundle",
     "../../models/text_utils:bundle",
     "../../third_party/acorn:bundle",
-    "../../third_party/acorn-loose:bundle",
     "../../third_party/codemirror",
   ]
 }

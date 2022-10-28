@@ -45,12 +45,22 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
     let parameters = '';
     if (cursor.name === 'ParamList' && cursor.firstChild()) {
       do {
-        if (cursor.name as string === 'VariableDefinition') {
-          parameters += state.sliceDoc(cursor.from, cursor.to);
-        } else if (cursor.name as string === 'Spread') {
-          parameters += '...';
-        } else if (cursor.name as string === ',') {
-          parameters += ', ';
+        switch (cursor.name as string) {
+          case 'ArrayPattern':
+            parameters += '[‥]';
+            break;
+          case 'ObjectPattern':
+            parameters += '{‥}';
+            break;
+          case 'VariableDefinition':
+            parameters += state.sliceDoc(cursor.from, cursor.to);
+            break;
+          case 'Spread':
+            parameters += '...';
+            break;
+          case ',':
+            parameters += ', ';
+            break;
         }
       } while (cursor.nextSibling());
     }
@@ -81,17 +91,25 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
         let prefix = '';
         cursor.firstChild();
         do {
-          if (cursor.name as string === 'async' || cursor.name as string === 'get' || cursor.name as string === 'set' ||
-              cursor.name as string === 'static') {
-            prefix = `${prefix}${cursor.name} `;
-          } else if (cursor.name as string === 'Star') {
-            prefix += '*';
-          } else if (cursor.name as string === 'PropertyDefinition' || cursor.name as string === 'VariableDefinition') {
-            const title = prefix + state.sliceDoc(cursor.from, cursor.to);
-            const {lineNumber, columnNumber} = toLineColumn(cursor.from);
-            const subtitle = subtitleFromParamList();
-            items.push({title, subtitle, lineNumber, columnNumber});
-            break;
+          switch (cursor.name as string) {
+            case 'abstract':
+            case 'async':
+            case 'get':
+            case 'set':
+            case 'static':
+              prefix = `${prefix}${cursor.name} `;
+              break;
+            case 'Star':
+              prefix += '*';
+              break;
+            case 'PropertyDefinition':
+            case 'VariableDefinition': {
+              const title = prefix + state.sliceDoc(cursor.from, cursor.to);
+              const {lineNumber, columnNumber} = toLineColumn(cursor.from);
+              const subtitle = subtitleFromParamList();
+              items.push({title, subtitle, lineNumber, columnNumber});
+              break;
+            }
           }
         } while (cursor.nextSibling());
         break;

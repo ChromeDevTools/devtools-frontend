@@ -56,6 +56,18 @@ describe('OutlineQuickOpen', () => {
       );
     });
 
+    it('for function statements with pattern parameters', () => {
+      assert.deepEqual(
+          javaScriptOutline(
+              'function foo({a, b}, c) { return a + b; }\n' +
+              'function bar(a, [b, [c]]) { return a+b; }'),
+          [
+            {title: 'foo', subtitle: '({‥}, c)', lineNumber: 0, columnNumber: 9},
+            {title: 'bar', subtitle: '(a, [‥])', lineNumber: 1, columnNumber: 9},
+          ],
+      );
+    });
+
     it('for nested function statements', () => {
       assert.deepEqual(
           javaScriptOutline('function foo(){ function bar() {} function baz(a,b ,c) { }}'),
@@ -383,6 +395,150 @@ const formatName = (name) => {
             {title: 'formatName', subtitle: '(name)', lineNumber: 8, columnNumber: 6},
           ],
       );
+    });
+  });
+
+  describe('generates a correct TypeScript outline', () => {
+    function typeScriptOutline(doc: string) {
+      const extensions = [CodeMirror.javascript.javascript({typescript: true})];
+      const state = CodeMirror.EditorState.create({doc, extensions});
+      return Sources.OutlineQuickOpen.outline(state);
+    }
+
+    it('for an empty script', () => {
+      assert.deepEqual(typeScriptOutline(''), []);
+    });
+
+    it('for function definitions with types', () => {
+      assert.deepEqual(
+          typeScriptOutline(
+              'function foo(x: T): T { return x; }\n' +
+              'async function func(param: Klass): Promise<Klass> { return param; }'),
+          [
+            {title: 'foo', subtitle: '(x)', lineNumber: 0, columnNumber: 9},
+            {title: 'async func', subtitle: '(param)', lineNumber: 1, columnNumber: 15},
+          ],
+      );
+      assert.deepEqual(
+          typeScriptOutline(
+              'const sum = (o: {a: number; b: number, c: number}) => o.a + o.b + o.c;',
+              ),
+          [
+            {title: 'sum', subtitle: '(o)', lineNumber: 0, columnNumber: 6},
+          ],
+      );
+    });
+
+    it('for variable declarations with types', () => {
+      assert.deepEqual(
+          typeScriptOutline(
+              'let foo: (a: string) => string = a => a;\n' +
+              'const bar:(x:number,y:number)=>number = function(x:number, y:number) { return x + y; }'),
+          [
+            {title: 'foo', subtitle: '(a)', lineNumber: 0, columnNumber: 4},
+            {title: 'bar', subtitle: '(x, y)', lineNumber: 1, columnNumber: 6},
+          ],
+      );
+    });
+
+    it('for classes, functions, and methods that use type parameters', () => {
+      assert.deepEqual(
+          typeScriptOutline('class Foo<Bar> {}'),
+          [{title: 'class Foo', lineNumber: 0, columnNumber: 6}],
+      );
+      assert.deepEqual(
+          typeScriptOutline(
+              'function foo<Bar>(bar: Bar): Bar { return new Bar(); }\n' +
+              'function bar<A, B, C>(): A { return a; }'),
+          [
+            {title: 'foo', subtitle: '(bar)', lineNumber: 0, columnNumber: 9},
+            {title: 'bar', subtitle: '()', lineNumber: 1, columnNumber: 9},
+          ],
+      );
+      assert.deepEqual(
+          typeScriptOutline('class A { foo<D>(d: D): D { return d; } }'),
+          [
+            {title: 'class A', lineNumber: 0, columnNumber: 6},
+            {title: 'foo', subtitle: '(d)', lineNumber: 0, columnNumber: 10},
+          ],
+      );
+    });
+
+    it('for abstract classes', () => {
+      assert.deepEqual(
+          typeScriptOutline('abstract class Foo {};'),
+          [
+            {title: 'class Foo', lineNumber: 0, columnNumber: 15},
+          ],
+      );
+    });
+
+    it('for abstract methods', () => {
+      assert.deepEqual(
+          typeScriptOutline('class Foo { abstract foo() {} abstract async bar() {} };'),
+          [
+            {title: 'class Foo', lineNumber: 0, columnNumber: 6},
+            {title: 'abstract foo', subtitle: '()', lineNumber: 0, columnNumber: 21},
+            {title: 'abstract async bar', subtitle: '()', lineNumber: 0, columnNumber: 45},
+          ],
+      );
+    });
+
+    it('for overriden methods', () => {
+      assert.deepEqual(
+          typeScriptOutline(
+              'class Foo extends Bar {\n' +
+              ' override foo() {}\n' +
+              ' override *bar() {}\n' +
+              '};'),
+          [
+            {title: 'class Foo', lineNumber: 0, columnNumber: 6},
+            {title: 'foo', subtitle: '()', lineNumber: 1, columnNumber: 10},
+            {title: '*bar', subtitle: '()', lineNumber: 2, columnNumber: 11},
+          ],
+      );
+    });
+
+    it('for classes and methods with privacy modifiers', () => {
+      assert.deepEqual(
+          typeScriptOutline(
+              'class A {\n' +
+              '  private foo() {}\n' +
+              '  public static bar(x) {}\n' +
+              '  protected async baz(){}\n' +
+              '}'),
+          [
+            {title: 'class A', lineNumber: 0, columnNumber: 6},
+            {title: 'foo', subtitle: '()', lineNumber: 1, columnNumber: 10},
+            {title: 'static bar', subtitle: '(x)', lineNumber: 2, columnNumber: 16},
+            {title: 'async baz', subtitle: '()', lineNumber: 3, columnNumber: 18},
+          ],
+      );
+    });
+
+    it('for functions and methods that use null types', () => {
+      assert.deepEqual(
+          typeScriptOutline('function foo():null { return null; }'),
+          [{title: 'foo', subtitle: '()', lineNumber: 0, columnNumber: 9}],
+      );
+      assert.deepEqual(
+          typeScriptOutline(
+              'class Klass {\n' +
+              '  foo(x:null):null { return x ?? null; }\n' +
+              '    bar():null { return null; }\n' +
+              '      baz():Klass|null { return this; }\n' +
+              '}\n'),
+          [
+            {title: 'class Klass', lineNumber: 0, columnNumber: 6},
+            {title: 'foo', subtitle: '(x)', lineNumber: 1, columnNumber: 2},
+            {title: 'bar', subtitle: '()', lineNumber: 2, columnNumber: 4},
+            {title: 'baz', subtitle: '()', lineNumber: 3, columnNumber: 6},
+          ],
+      );
+    });
+
+    it('ignoring interface declarations', () => {
+      assert.deepEqual(typeScriptOutline('interface IFoo { name(): string; }'), []);
     });
   });
 

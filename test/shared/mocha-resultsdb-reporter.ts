@@ -12,6 +12,16 @@ const {
   EVENT_TEST_PENDING,
 } = Mocha.Runner.constants;
 
+function getErrorMessage(error: Error|unknown) {
+  if (error instanceof Error) {
+    if (error.cause) {
+      return `${error.message}\n${error.cause.message}`;
+    }
+    return error.stack;
+  }
+  return `${error}`;
+}
+
 class ResultsDbReporter extends Mocha.reporters.Spec {
   private suitePrefix?: string;
 
@@ -38,7 +48,7 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
     const testResult = this.buildDefaultTestResultFrom(test);
     testResult.status = 'FAIL';
     testResult.expected = false;
-    testResult.summaryHtml = `<pre>${error instanceof Error ? error.stack : error}</pre>`;
+    testResult.summaryHtml = `<pre>${getErrorMessage(error)}</pre>`;
     ResultsDb.recordTestResult(testResult);
   }
 

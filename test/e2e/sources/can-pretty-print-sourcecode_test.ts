@@ -5,12 +5,14 @@
 import {assert} from 'chai';
 
 import {
+  $$,
   click,
   enableExperiment,
   getBrowserAndPages,
   step,
   typeText,
   waitFor,
+  waitForFunction,
   waitForNone,
 } from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
@@ -83,6 +85,30 @@ describe('The Sources Tab', function() {
 
       const updatedTextContent = await retrieveCodeMirrorEditorContent();
       assert.strictEqual(updatedTextContent.join('\n'), expectedLines.join('\n'));
+    });
+  });
+
+  it('can show error icons for pretty-printed file', async () => {
+    await openSourceCodeEditorForFile('minified-errors.js', 'minified-errors.html');
+
+    await step('shows 3 separate errors when pretty-printed', async () => {
+      await click(PRETTY_PRINT_BUTTON);
+      await waitFor(PRETTY_PRINTED_TOGGLE);
+
+      await waitForFunction(async () => {
+        const icons = await $$('devtools-icon.cm-messageIcon-error');
+        return icons.length === 3;
+      });
+    });
+
+    await step('shows 2 separate errors when un-pretty-printed', async () => {
+      await click(PRETTY_PRINT_BUTTON);
+      await waitForNone(PRETTY_PRINTED_TOGGLE);
+
+      await waitForFunction(async () => {
+        const icons = await $$('devtools-icon.cm-messageIcon-error');
+        return icons.length === 2;
+      });
     });
   });
 

@@ -297,7 +297,7 @@ interface OverriddenResponse {
 async function checkRequestOverride(
     target: SDK.Target.Target, request: Protocol.Network.Request, requestId: Protocol.Fetch.RequestId,
     responseStatusCode: number, responseHeaders: Protocol.Fetch.HeaderEntry[], responseBody: string,
-    expectedOverriddenResponse: OverriddenResponse) {
+    expectedOverriddenResponse: OverriddenResponse, expectedSetCookieHeaders: Protocol.Fetch.HeaderEntry[] = []) {
   const multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
   const fetchAgent = target.fetchAgent();
   const spy = sinon.spy(fetchAgent, 'invoke_fulfillRequest');
@@ -310,9 +310,16 @@ async function checkRequestOverride(
       requestId as unknown as Protocol.Network.RequestId, request.url as Platform.DevToolsPath.UrlString,
       request.url as Platform.DevToolsPath.UrlString, null, null, null);
 
+  networkRequest.originalResponseHeaders = responseHeaders;
+
+  // The response headers passed to 'interceptedRequest' do not contain any
+  // 'set-cookie' headers, because they originate from CDP's 'Fetch.requestPaused'
+  // which receives its header information via mojo which in turn filters out
+  // 'set-cookie' headers.
+  const filteredResponseHeaders = responseHeaders.filter(header => header.name !== 'set-cookie');
   const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
       fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, networkRequest, responseStatusCode,
-      responseHeaders);
+      filteredResponseHeaders);
   interceptedRequest.responseBody = async () => {
     return {error: null, content: responseBody, encoded: false};
   };
@@ -321,10 +328,32 @@ async function checkRequestOverride(
   await multitargetNetworkManager.requestIntercepted(interceptedRequest);
   await fulfilledRequest;
   assert.isTrue(spy.calledOnceWithExactly(expectedOverriddenResponse));
+  assert.deepEqual(networkRequest.setCookieHeaders, expectedSetCookieHeaders);
 }
 
 describeWithMockConnection('InterceptedRequest', () => {
   let target: SDK.Target.Target;
+
+  async function checkSetCookieOverride(
+      url: string, headersFromServer: Protocol.Fetch.HeaderEntry[],
+      expectedOverriddenHeaders: Protocol.Fetch.HeaderEntry[],
+      expectedPersistedSetCookieHeaders: Protocol.Fetch.HeaderEntry[]): Promise<void> {
+    const responseCode = 200;
+    const requestId = 'request_id_for_cookies' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    const networkRequest = {
+      method: 'GET',
+      url,
+    } as Protocol.Network.Request;
+    await checkRequestOverride(
+        target, networkRequest, requestId, responseCode, headersFromServer, responseBody, {
+          requestId,
+          responseCode,
+          body: responseBody,
+          responseHeaders: expectedOverriddenHeaders,
+        },
+        expectedPersistedSetCookieHeaders);
+  }
 
   beforeEach(async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
@@ -357,6 +386,39 @@ describeWithMockConnection('InterceptedRequest', () => {
                 "name": "another-header",
                 "value": "only added to specific path"
               }]
+            },
+            {
+              "applyTo": "withCookie.html",
+              "headers": [{
+                "name": "set-cookie",
+                "value": "userId=12345"
+              }]
+            },
+            {
+              "applyTo": "withCookie2.html",
+              "headers": [
+                {
+                  "name": "set-cookie",
+                  "value": "userName=DevTools"
+                },
+                {
+                  "name": "set-cookie",
+                  "value": "themeColour=dark"
+                }
+              ]
+            },
+            {
+              "applyTo": "withCookie3.html",
+              "headers": [
+                {
+                  "name": "set-cookie",
+                  "value": "userName=DevTools"
+                },
+                {
+                  "name": "set-cookie",
+                  "value": "malformed_override"
+                }
+              ]
             }
           ]`,
           },
@@ -499,5 +561,94 @@ describeWithMockConnection('InterceptedRequest', () => {
             {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
         });
+  });
+
+  it('can override \'set-cookie\' headers', async () => {
+    const headersFromServer = [{name: 'content-type', value: 'text/html; charset=utf-8'}];
+    const expectedOverriddenHeaders = [
+      {name: 'set-cookie', value: 'userId=12345'},
+      {name: 'age', value: 'overridden'},
+      {name: 'content-type', value: 'text/html; charset=utf-8'},
+    ];
+    const expectedPersistedSetCookieHeaders = [{name: 'set-cookie', value: 'userId=12345'}];
+    await checkSetCookieOverride(
+        'https://www.example.com/withCookie.html', headersFromServer, expectedOverriddenHeaders,
+        expectedPersistedSetCookieHeaders);
+  });
+
+  it('stores \'set-cookie\' headers on the request', async () => {
+    const headersFromServer = [{name: 'set-cookie', value: 'foo=bar'}];
+    const expectedOverriddenHeaders = [
+      {name: 'age', value: 'overridden'},
+    ];
+    const expectedPersistedSetCookieHeaders = [{name: 'set-cookie', value: 'foo=bar'}];
+    await checkSetCookieOverride(
+        'https://www.example.com/noCookie.html', headersFromServer, expectedOverriddenHeaders,
+        expectedPersistedSetCookieHeaders);
+  });
+
+  it('can override \'set-cookie\' headers when there server also sends \'set-cookie\' headers', async () => {
+    const headersFromServer = [{name: 'set-cookie', value: 'foo=bar'}];
+    const expectedOverriddenHeaders = [
+      {name: 'set-cookie', value: 'userId=12345'},
+      {name: 'age', value: 'overridden'},
+    ];
+    const expectedPersistedSetCookieHeaders =
+        [{name: 'set-cookie', value: 'foo=bar'}, {name: 'set-cookie', value: 'userId=12345'}];
+    await checkSetCookieOverride(
+        'https://www.example.com/withCookie.html', headersFromServer, expectedOverriddenHeaders,
+        expectedPersistedSetCookieHeaders);
+  });
+
+  it('can overwrite a cookie value from server with a cookie value from overrides', async () => {
+    const headersFromServer = [{name: 'set-cookie', value: 'userId=999'}];
+    const expectedOverriddenHeaders = [
+      {name: 'set-cookie', value: 'userId=12345'},
+      {name: 'age', value: 'overridden'},
+    ];
+    const expectedPersistedSetCookieHeaders = [{name: 'set-cookie', value: 'userId=12345'}];
+    await checkSetCookieOverride(
+        'https://www.example.com/withCookie.html', headersFromServer, expectedOverriddenHeaders,
+        expectedPersistedSetCookieHeaders);
+  });
+
+  it('correctly merges cookies from server and from overrides', async () => {
+    const headersFromServer = [
+      {name: 'set-cookie', value: 'foo=bar'},
+      {name: 'set-cookie', value: 'userName=server'},
+    ];
+    const expectedOverriddenHeaders = [
+      {name: 'set-cookie', value: 'userName=DevTools'},
+      {name: 'set-cookie', value: 'themeColour=dark'},
+      {name: 'age', value: 'overridden'},
+    ];
+    const expectedPersistedSetCookieHeaders = [
+      {name: 'set-cookie', value: 'foo=bar'},
+      {name: 'set-cookie', value: 'userName=DevTools'},
+      {name: 'set-cookie', value: 'themeColour=dark'},
+    ];
+    await checkSetCookieOverride(
+        'https://www.example.com/withCookie2.html', headersFromServer, expectedOverriddenHeaders,
+        expectedPersistedSetCookieHeaders);
+  });
+
+  it('correctly merges malformed cookies from server and from overrides', async () => {
+    const headersFromServer = [
+      {name: 'set-cookie', value: 'malformed_original'},
+      {name: 'set-cookie', value: 'userName=server'},
+    ];
+    const expectedOverriddenHeaders = [
+      {name: 'set-cookie', value: 'userName=DevTools'},
+      {name: 'set-cookie', value: 'malformed_override'},
+      {name: 'age', value: 'overridden'},
+    ];
+    const expectedPersistedSetCookieHeaders = [
+      {name: 'set-cookie', value: 'userName=DevTools'},
+      {name: 'set-cookie', value: 'malformed_original'},
+      {name: 'set-cookie', value: 'malformed_override'},
+    ];
+    await checkSetCookieOverride(
+        'https://www.example.com/withCookie3.html', headersFromServer, expectedOverriddenHeaders,
+        expectedPersistedSetCookieHeaders);
   });
 });

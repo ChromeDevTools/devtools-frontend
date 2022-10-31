@@ -238,6 +238,11 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   };
   #responseHeadersTextInternal: string;
   #originalResponseHeaders: Protocol.Fetch.HeaderEntry[];
+
+  // This field is only used when intercepting and overriding requests, because
+  // in that case 'this.responseHeaders' does not contain 'set-cookie' headers.
+  #setCookieHeaders: Protocol.Fetch.HeaderEntry[];
+
   #requestHeadersInternal: NameValue[];
   #requestHeaderValues: {
     [x: string]: string|undefined,
@@ -341,6 +346,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#responseHeaderValues = {};
     this.#responseHeadersTextInternal = '';
     this.#originalResponseHeaders = [];
+    this.#setCookieHeaders = [];
 
     this.#requestHeadersInternal = [];
     this.#requestHeaderValues = {};
@@ -950,6 +956,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   set originalResponseHeaders(headers: Protocol.Fetch.HeaderEntry[]) {
     this.#originalResponseHeaders = headers;
+  }
+
+  get setCookieHeaders(): Protocol.Fetch.HeaderEntry[] {
+    return this.#setCookieHeaders;
+  }
+
+  set setCookieHeaders(headers: Protocol.Fetch.HeaderEntry[]) {
+    this.#setCookieHeaders = headers;
   }
 
   get responseHeadersText(): string {

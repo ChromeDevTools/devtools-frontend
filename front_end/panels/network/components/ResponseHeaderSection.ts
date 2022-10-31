@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
+import * as Protocol from '../../../generated/protocol.js';
+import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
+import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import type * as SDK from '../../../core/sdk/sdk.js';
-import * as Protocol from '../../../generated/protocol.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as NetworkForward from '../../../panels/network/forward/forward.js';
-import * as Host from '../../../core/host/host.js';
-import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import {
   type HeaderDescriptor,
   type HeaderDetailsDescriptor,
@@ -102,11 +102,18 @@ export class ResponseHeaderSection extends HTMLElement {
 
   set data(data: ResponseHeaderSectionData) {
     this.#request = data.request;
-    this.#headerDetails =
-        this.#request.sortedResponseHeaders.map(header => ({
-                                                  name: Platform.StringUtilities.toLowerCaseString(header.name),
-                                                  value: header.value.replace(/\s/g, ' '),
-                                                }));
+    // If the request has been locally overridden, its 'sortedResponseHeaders'
+    // contains no 'set-cookie' headers, because they have been filtered out by
+    // the Chromium backend. DevTools therefore uses previously stored values.
+    const headers = this.#request.sortedResponseHeaders.concat(this.#request.setCookieHeaders);
+    headers.sort(function(a, b) {
+      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
+    });
+
+    this.#headerDetails = headers.map(header => ({
+                                        name: Platform.StringUtilities.toLowerCaseString(header.name),
+                                        value: header.value.replace(/\s/g, ' '),
+                                      }));
 
     const headersWithIssues = [];
     if (this.#request.wasBlocked()) {
@@ -284,12 +291,22 @@ export class ResponseHeaderSection extends HTMLElement {
     for (const headerName of actualHeaders.keys()) {
       // If the array of actual headers and the array of original headers do not
       // exactly match, mark all headers with 'headerName' as being overridden.
-      if (isDifferent(headerName, actualHeaders, originalHeaders)) {
+      if (headerName !== 'set-cookie' && isDifferent(headerName, actualHeaders, originalHeaders)) {
         this.#headerEditors.filter(header => header.name === headerName).forEach(header => {
           header.isOverride = true;
         });
       }
     }
+
+    // Special case for 'set-cookie' headers: compare each header individually
+    // and don't treat all 'set-cookie' headers as a single unit.
+    this.#headerEditors.filter(header => header.name === 'set-cookie').forEach(header => {
+      if (this.#request?.originalResponseHeaders.find(
+              originalHeader => originalHeader.name === 'set-cookie' && originalHeader.value === header.value) ===
+          undefined) {
+        header.isOverride = true;
+      }
+    });
   }
 
   #onHeaderEdited(event: HeaderEditedEvent): void {
@@ -385,11 +402,18 @@ export class ResponseHeaderSection extends HTMLElement {
     this.#headerEditors[index].name = headerName;
     this.#headerEditors[index].value = headerValue;
 
-    // If multiple headers have the same name 'foo', we treat them as a unit.
-    // If there are overrides for 'foo', all original 'foo' headers are removed
-    // and replaced with the override(s) for 'foo'.
-    const headersToUpdate = this.#headerEditors.filter(
-        header => header.name === headerName && (header.value !== header.originalValue || header.isOverride));
+    let headersToUpdate: HeaderEditorDescriptor[] = [];
+    if (headerName === 'set-cookie') {
+      // Special case for 'set-cookie' headers: each such header is treated
+      // separately without looking at other 'set-cookie' headers.
+      headersToUpdate.push({name: headerName, value: headerValue});
+    } else {
+      // If multiple headers have the same name 'foo', we treat them as a unit.
+      // If there are overrides for 'foo', all original 'foo' headers are removed
+      // and replaced with the override(s) for 'foo'.
+      headersToUpdate = this.#headerEditors.filter(
+          header => header.name === headerName && (header.value !== header.originalValue || header.isOverride));
+    }
 
     const rawFileName = this.#fileNameFromUrl(this.#request.url());
 
@@ -409,8 +433,19 @@ export class ResponseHeaderSection extends HTMLElement {
       this.#overrides.push(block);
     }
 
-    // Keep header overrides for headers with a different name.
-    block.headers = block.headers.filter(header => header.name !== headerName);
+    if (headerName === 'set-cookie') {
+      // Special case for 'set-cookie' headers: only remove the one specific
+      // header which is currently being modified, keep all other headers
+      // (including other 'set-cookie' headers).
+      const foundIndex =
+          block.headers.findIndex(header => header.name === previousName && header.value === previousValue);
+      if (foundIndex >= 0) {
+        block.headers.splice(foundIndex, 1);
+      }
+    } else {
+      // Keep header overrides for all headers with a different name.
+      block.headers = block.headers.filter(header => header.name !== headerName);
+    }
 
     // If a header name has been edited (only possible when adding headers),
     // remove the previous override entry.

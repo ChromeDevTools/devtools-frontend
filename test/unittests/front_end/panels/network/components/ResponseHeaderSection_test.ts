@@ -77,6 +77,7 @@ async function setupHeaderEditing(
   const request = {
     sortedResponseHeaders: actualHeaders,
     originalResponseHeaders: originalHeaders,
+    setCookieHeaders: [],
     blockedResponseCookies: () => [],
     wasBlocked: () => false,
     url: () => 'https://www.example.com/',
@@ -153,6 +154,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
       wasBlocked: () => true,
       blockedReason: () => Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep,
       originalResponseHeaders: [],
+      setCookieHeaders: [],
       url: () => 'https://www.example.com/',
       getAssociatedData: () => null,
       setAssociatedData: () => {},
@@ -188,6 +190,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
       }],
       wasBlocked: () => false,
       originalResponseHeaders: [],
+      setCookieHeaders: [],
       url: () => 'https://www.example.com/',
       getAssociatedData: () => null,
       setAssociatedData: () => {},
@@ -216,15 +219,15 @@ describeWithEnvironment('ResponseHeaderSection', () => {
   it('marks overridden headers', async () => {
     const request = {
       sortedResponseHeaders: [
-        {name: 'is-in-original-headers', value: 'not an override'},
-        {name: 'not-in-original-headers', value: 'is an override'},
-        {name: 'duplicate-in-actual-headers', value: 'first'},
-        {name: 'duplicate-in-actual-headers', value: 'second'},
-        {name: 'duplicate-in-original-headers', value: 'two'},
         {name: 'duplicate-both-no-mismatch', value: 'foo'},
         {name: 'duplicate-both-no-mismatch', value: 'bar'},
         {name: 'duplicate-both-with-mismatch', value: 'Chrome'},
         {name: 'duplicate-both-with-mismatch', value: 'DevTools'},
+        {name: 'duplicate-in-actual-headers', value: 'first'},
+        {name: 'duplicate-in-actual-headers', value: 'second'},
+        {name: 'duplicate-in-original-headers', value: 'two'},
+        {name: 'is-in-original-headers', value: 'not an override'},
+        {name: 'not-in-original-headers', value: 'is an override'},
         {name: 'triplicate', value: '1'},
         {name: 'triplicate', value: '2'},
         {name: 'triplicate', value: '2'},
@@ -232,18 +235,19 @@ describeWithEnvironment('ResponseHeaderSection', () => {
       blockedResponseCookies: () => [],
       wasBlocked: () => false,
       originalResponseHeaders: [
-        {name: 'is-in-original-headers', value: 'not an override'},
-        {name: 'duplicate-in-actual-headers', value: 'first'},
-        {name: 'duplicate-in-original-headers', value: 'one'},
-        {name: 'duplicate-in-original-headers', value: 'two'},
         {name: 'duplicate-both-no-mismatch', value: 'foo'},
         {name: 'duplicate-both-no-mismatch', value: 'bar'},
         {name: 'duplicate-both-with-mismatch', value: 'Chrome'},
         {name: 'duplicate-both-with-mismatch', value: 'Canary'},
+        {name: 'duplicate-in-actual-headers', value: 'first'},
+        {name: 'duplicate-in-original-headers', value: 'one'},
+        {name: 'duplicate-in-original-headers', value: 'two'},
+        {name: 'is-in-original-headers', value: 'not an override'},
         {name: 'triplicate', value: '1'},
         {name: 'triplicate', value: '1'},
         {name: 'triplicate', value: '2'},
       ],
+      setCookieHeaders: [],
       url: () => 'https://www.example.com/',
       getAssociatedData: () => null,
       setAssociatedData: () => {},
@@ -260,23 +264,23 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     };
 
     assertShadowRoot(rows[0].shadowRoot);
-    checkRow(rows[0].shadowRoot, 'is-in-original-headers:', 'not an override', false);
+    checkRow(rows[0].shadowRoot, 'duplicate-both-no-mismatch:', 'foo', false);
     assertShadowRoot(rows[1].shadowRoot);
-    checkRow(rows[1].shadowRoot, 'not-in-original-headers:', 'is an override', true);
+    checkRow(rows[1].shadowRoot, 'duplicate-both-no-mismatch:', 'bar', false);
     assertShadowRoot(rows[2].shadowRoot);
-    checkRow(rows[2].shadowRoot, 'duplicate-in-actual-headers:', 'first', true);
+    checkRow(rows[2].shadowRoot, 'duplicate-both-with-mismatch:', 'Chrome', true);
     assertShadowRoot(rows[3].shadowRoot);
-    checkRow(rows[3].shadowRoot, 'duplicate-in-actual-headers:', 'second', true);
+    checkRow(rows[3].shadowRoot, 'duplicate-both-with-mismatch:', 'DevTools', true);
     assertShadowRoot(rows[4].shadowRoot);
-    checkRow(rows[4].shadowRoot, 'duplicate-in-original-headers:', 'two', true);
+    checkRow(rows[4].shadowRoot, 'duplicate-in-actual-headers:', 'first', true);
     assertShadowRoot(rows[5].shadowRoot);
-    checkRow(rows[5].shadowRoot, 'duplicate-both-no-mismatch:', 'foo', false);
+    checkRow(rows[5].shadowRoot, 'duplicate-in-actual-headers:', 'second', true);
     assertShadowRoot(rows[6].shadowRoot);
-    checkRow(rows[6].shadowRoot, 'duplicate-both-no-mismatch:', 'bar', false);
+    checkRow(rows[6].shadowRoot, 'duplicate-in-original-headers:', 'two', true);
     assertShadowRoot(rows[7].shadowRoot);
-    checkRow(rows[7].shadowRoot, 'duplicate-both-with-mismatch:', 'Chrome', true);
+    checkRow(rows[7].shadowRoot, 'is-in-original-headers:', 'not an override', false);
     assertShadowRoot(rows[8].shadowRoot);
-    checkRow(rows[8].shadowRoot, 'duplicate-both-with-mismatch:', 'DevTools', true);
+    checkRow(rows[8].shadowRoot, 'not-in-original-headers:', 'is an override', true);
     assertShadowRoot(rows[9].shadowRoot);
     checkRow(rows[9].shadowRoot, 'triplicate:', '1', true);
     assertShadowRoot(rows[10].shadowRoot);
@@ -304,15 +308,16 @@ describeWithEnvironment('ResponseHeaderSection', () => {
 
     const request = {
       sortedResponseHeaders: [
-        {name: 'server', value: 'overridden server'},
         {name: 'cache-control', value: 'max-age=600'},
+        {name: 'server', value: 'overridden server'},
       ],
       blockedResponseCookies: () => [],
       wasBlocked: () => false,
       originalResponseHeaders: [
-        {name: 'server', value: 'original server'},
         {name: 'cache-control', value: 'max-age=600'},
+        {name: 'server', value: 'original server'},
       ],
+      setCookieHeaders: [],
       url: () => 'https://www.example.com/',
       getAssociatedData: () => null,
       setAssociatedData: () => {},
@@ -337,16 +342,16 @@ describeWithEnvironment('ResponseHeaderSection', () => {
             };
 
     assertShadowRoot(rows[0].shadowRoot);
-    checkRow(rows[0].shadowRoot, 'server:', 'overridden server', true, true);
+    checkRow(rows[0].shadowRoot, 'cache-control:', 'max-age=600', false, true);
     assertShadowRoot(rows[1].shadowRoot);
-    checkRow(rows[1].shadowRoot, 'cache-control:', 'max-age=600', false, true);
+    checkRow(rows[1].shadowRoot, 'server:', 'overridden server', true, true);
 
     Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(false);
     component.data = {request};
     await coordinator.done();
 
-    checkRow(rows[0].shadowRoot, 'server:', 'overridden server', true, false);
-    checkRow(rows[1].shadowRoot, 'cache-control:', 'max-age=600', false, false);
+    checkRow(rows[0].shadowRoot, 'cache-control:', 'max-age=600', false, false);
+    checkRow(rows[1].shadowRoot, 'server:', 'overridden server', true, false);
 
     Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(true);
   });
@@ -372,15 +377,16 @@ describeWithEnvironment('ResponseHeaderSection', () => {
 
     const request = {
       sortedResponseHeaders: [
-        {name: 'server', value: 'overridden server'},
         {name: 'cache-control', value: 'max-age=600'},
+        {name: 'server', value: 'overridden server'},
       ],
       blockedResponseCookies: () => [],
       wasBlocked: () => false,
       originalResponseHeaders: [
-        {name: 'server', value: 'original server'},
         {name: 'cache-control', value: 'max-age=600'},
+        {name: 'server', value: 'original server'},
       ],
+      setCookieHeaders: [],
       url: () => 'https://www.example.com/',
       getAssociatedData: () => null,
       setAssociatedData: () => {},
@@ -403,9 +409,9 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     };
 
     assertShadowRoot(rows[0].shadowRoot);
-    checkRow(rows[0].shadowRoot, 'server:', 'overridden server', true);
+    checkRow(rows[0].shadowRoot, 'cache-control:', 'max-age=600', false);
     assertShadowRoot(rows[1].shadowRoot);
-    checkRow(rows[1].shadowRoot, 'cache-control:', 'max-age=600', false);
+    checkRow(rows[1].shadowRoot, 'server:', 'overridden server', true);
   });
 
   it('can edit original headers', async () => {
@@ -420,17 +426,17 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     ]`;
 
     const actualHeaders = [
-      {name: 'server', value: 'overridden server'},
       {name: 'cache-control', value: 'max-age=600'},
+      {name: 'server', value: 'overridden server'},
     ];
 
     const originalHeaders = [
-      {name: 'server', value: 'original server'},
       {name: 'cache-control', value: 'max-age=600'},
+      {name: 'server', value: 'original server'},
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
-    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'max-age=9999');
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'max-age=9999');
 
     const expected = [{
       applyTo: 'index.html',
@@ -482,17 +488,17 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     ]`;
 
     const actualHeaders = [
-      {name: 'server', value: 'overridden server'},
       {name: 'cache-control', value: 'max-age=600'},
+      {name: 'server', value: 'overridden server'},
     ];
 
     const originalHeaders = [
-      {name: 'server', value: 'original server'},
       {name: 'cache-control', value: 'max-age=600'},
+      {name: 'server', value: 'original server'},
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
-    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'edited value');
+    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'edited value');
 
     const expected = [{
       applyTo: 'index.html',
@@ -528,18 +534,18 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     ]`;
 
     const actualHeaders = [
-      {name: 'server', value: 'overridden server'},
-      {name: 'cache-control', value: 'max-age=9999'},
       {name: 'added', value: 'foo'},
+      {name: 'cache-control', value: 'max-age=9999'},
+      {name: 'server', value: 'overridden server'},
     ];
 
     const originalHeaders = [
-      {name: 'server', value: 'original server'},
       {name: 'cache-control', value: 'max-age=600'},
+      {name: 'server', value: 'original server'},
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
-    await removeHeaderRow(component, 0);
+    await removeHeaderRow(component, 2);
 
     let expected = [{
       applyTo: 'index.html',
@@ -560,12 +566,12 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assertShadowRoot(component.shadowRoot);
     let rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     assert.strictEqual(rows.length, 3);
-    checkHeaderSectionRow(rows[0], 'server:', 'original server', false, false, true);
+    checkHeaderSectionRow(rows[0], 'added:', 'foo', true, false, true);
     checkHeaderSectionRow(rows[1], 'cache-control:', 'max-age=9999', true, false, true);
-    checkHeaderSectionRow(rows[2], 'added:', 'foo', true, false, true);
+    checkHeaderSectionRow(rows[2], 'server:', 'original server', false, false, true);
 
     spy.resetHistory();
-    await removeHeaderRow(component, 2);
+    await removeHeaderRow(component, 0);
 
     expected = [{
       applyTo: 'index.html',
@@ -580,8 +586,8 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
     rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     assert.strictEqual(rows.length, 2);
-    checkHeaderSectionRow(rows[0], 'server:', 'original server', false, false, true);
-    checkHeaderSectionRow(rows[1], 'cache-control:', 'max-age=9999', true, false, true);
+    checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=9999', true, false, true);
+    checkHeaderSectionRow(rows[1], 'server:', 'original server', false, false, true);
   });
 
   it('can remove the last header override', async () => {
@@ -754,29 +760,29 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     ]`;
 
     const actualHeaders = [
-      {name: 'server', value: 'overridden server'},
       {name: 'cache-control', value: 'max-age=600'},
+      {name: 'server', value: 'overridden server'},
     ];
 
     const originalHeaders = [
-      {name: 'server', value: 'original server'},
       {name: 'cache-control', value: 'max-age=600'},
+      {name: 'server', value: 'original server'},
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
-    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'edited server');
-    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'edited cache-control');
+    editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'edited cache-control');
+    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'edited server');
 
     const expected = [{
       applyTo: 'index.html',
       headers: [
         {
-          name: 'server',
-          value: 'edited server',
-        },
-        {
           name: 'cache-control',
           value: 'edited cache-control',
+        },
+        {
+          name: 'server',
+          value: 'edited server',
         },
       ],
     }];
@@ -1011,5 +1017,93 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     const rows = component2.shadowRoot.querySelectorAll('devtools-header-section-row');
     assert.strictEqual(rows.length, 1);
     checkHeaderSectionRow(rows[0], 'server:', 'overridden server', true, false, false);
+  });
+
+  it('handles rendering and editing \'set-cookie\' headers', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'https://www.example.com/index.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
+        null, null, null);
+    request.responseHeaders = [
+      {name: 'cache-control', value: 'max-age=600'},
+      {name: 'z-header', value: 'zzz'},
+    ];
+    request.originalResponseHeaders = [
+      {name: 'set-cookie', value: 'bar=original'},
+      {name: 'set-cookie', value: 'foo=original'},
+      {name: 'set-cookie', value: 'malformed'},
+      {name: 'cache-control', value: 'max-age=600'},
+      {name: 'z-header', value: 'zzz'},
+    ];
+    request.setCookieHeaders = [
+      {name: 'set-cookie', value: 'bar=original'},
+      {name: 'set-cookie', value: 'foo=overridden'},
+      {name: 'set-cookie', value: 'user=12345'},
+      {name: 'set-cookie', value: 'malformed'},
+      {name: 'set-cookie', value: 'wrong format'},
+    ];
+
+    const headerOverridesFileContent = `[
+      {
+        "applyTo": "index.html",
+        "headers": [
+          {
+            "name": "set-cookie",
+            "value": "foo=overridden"
+          },
+          {
+            "name": "set-cookie",
+            "value": "user=12345"
+          },
+          {
+            "name": "set-cookie",
+            "value": "wrong format"
+          }
+        ]
+      }
+    ]`;
+
+    const {component, spy} = await setupHeaderEditingWithRequest(headerOverridesFileContent, request);
+    assertShadowRoot(component.shadowRoot);
+    const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+    assert.strictEqual(rows.length, 7);
+    assertShadowRoot(rows[0].shadowRoot);
+    checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=600', false, false, true);
+    assertShadowRoot(rows[1].shadowRoot);
+    checkHeaderSectionRow(rows[1], 'set-cookie:', 'bar=original', false, false, true);
+    assertShadowRoot(rows[2].shadowRoot);
+    checkHeaderSectionRow(rows[2], 'set-cookie:', 'foo=overridden', true, false, true);
+    assertShadowRoot(rows[3].shadowRoot);
+    checkHeaderSectionRow(rows[3], 'set-cookie:', 'user=12345', true, false, true);
+    assertShadowRoot(rows[4].shadowRoot);
+    checkHeaderSectionRow(rows[4], 'set-cookie:', 'malformed', false, false, true);
+    assertShadowRoot(rows[5].shadowRoot);
+    checkHeaderSectionRow(rows[5], 'set-cookie:', 'wrong format', true, false, true);
+    assertShadowRoot(rows[6].shadowRoot);
+    checkHeaderSectionRow(rows[6], 'z-header:', 'zzz', false, false, true);
+
+    editHeaderRow(component, 2, HeaderAttribute.HeaderValue, 'foo=edited');
+    const expected = [{
+      applyTo: 'index.html',
+      headers: [
+        {
+          name: 'set-cookie',
+          value: 'user=12345',
+        },
+        {
+          name: 'set-cookie',
+          value: 'wrong format',
+        },
+        {
+          name: 'set-cookie',
+          value: 'foo=edited',
+        },
+      ],
+    }];
+    assert.isTrue(spy.getCall(-1).calledWith(JSON.stringify(expected, null, 2)));
+
+    editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'bar=edited');
+    expected[0].headers.push({name: 'set-cookie', value: 'bar=edited'});
+    assert.isTrue(spy.getCall(-1).calledWith(JSON.stringify(expected, null, 2)));
   });
 });

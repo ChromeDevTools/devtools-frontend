@@ -60,6 +60,7 @@ const defaultRequest = {
   wasBlocked: () => false,
   blockedResponseCookies: () => [],
   originalResponseHeaders: [],
+  setCookieHeaders: [],
   getAssociatedData: () => null,
   setAssociatedData: () => {},
 } as unknown as SDK.NetworkRequest.NetworkRequest;

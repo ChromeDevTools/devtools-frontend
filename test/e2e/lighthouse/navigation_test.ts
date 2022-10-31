@@ -30,21 +30,19 @@ describe('Navigation', async function() {
   // The tests in this suite are particularly slow
   this.timeout(60_000);
 
+  beforeEach(() => {
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=1357791
+    expectError(/Protocol Error: the message with wrong session id/);
+    expectError(/Protocol Error: the message with wrong session id/);
+    expectError(/Protocol Error: the message with wrong session id/);
+    expectError(/Protocol Error: the message with wrong session id/);
+    expectError(/Protocol Error: the message with wrong session id/);
+  });
+
   const modes = ['legacy', 'FR'];
 
   for (const mode of modes) {
     describe(`in ${mode} mode`, () => {
-      beforeEach(() => {
-        if (mode === 'FR') {
-          // https://bugs.chromium.org/p/chromium/issues/detail?id=1357791
-          expectError(/Protocol Error: the message with wrong session id/);
-          expectError(/Protocol Error: the message with wrong session id/);
-          expectError(/Protocol Error: the message with wrong session id/);
-          expectError(/Protocol Error: the message with wrong session id/);
-          expectError(/Protocol Error: the message with wrong session id/);
-        }
-      });
-
       it('successfully returns a Lighthouse report', async () => {
         await navigateToLighthouseTab('lighthouse/hello.html');
         await registerServiceWorker();
@@ -80,7 +78,7 @@ describe('Navigation', async function() {
           assert.strictEqual(numNavigations, 4);
         }
 
-        assert.strictEqual(lhr.lighthouseVersion, '9.6.6');
+        assert.strictEqual(lhr.lighthouseVersion, '9.6.8');
         assert.match(lhr.finalUrl, /^https:\/\/localhost:[0-9]+\/test\/e2e\/resources\/lighthouse\/hello.html/);
 
         assert.strictEqual(lhr.configSettings.throttlingMethod, 'simulate');

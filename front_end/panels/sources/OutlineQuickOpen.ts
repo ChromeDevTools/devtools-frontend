@@ -200,6 +200,42 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
         }
         break;
       }
+      // wast.grammar
+      case 'App': {
+        if (cursor.firstChild() && cursor.nextSibling() && state.sliceDoc(cursor.from, cursor.to) === 'module') {
+          if (cursor.nextSibling() && cursor.name as string === 'Identifier') {
+            const title = state.sliceDoc(cursor.from, cursor.to);
+            const {lineNumber, columnNumber} = toLineColumn(cursor.from);
+            items.push({title, lineNumber, columnNumber});
+          }
+          do {
+            if (cursor.name as string === 'App' && cursor.firstChild()) {
+              if (cursor.nextSibling() && state.sliceDoc(cursor.from, cursor.to) === 'func' && cursor.nextSibling() &&
+                  cursor.name as string === 'Identifier') {
+                const title = state.sliceDoc(cursor.from, cursor.to);
+                const {lineNumber, columnNumber} = toLineColumn(cursor.from);
+                const params = [];
+                while (cursor.nextSibling()) {
+                  if (cursor.name as string === 'App' && cursor.firstChild()) {
+                    if (cursor.nextSibling() && state.sliceDoc(cursor.from, cursor.to) === 'param') {
+                      if (cursor.nextSibling() && cursor.name as string === 'Identifier') {
+                        params.push(state.sliceDoc(cursor.from, cursor.to));
+                      } else {
+                        params.push(`$${params.length}`);
+                      }
+                    }
+                    cursor.parent();
+                  }
+                }
+                const subtitle = `(${params.join(', ')})`;
+                items.push({title, subtitle, lineNumber, columnNumber});
+              }
+              cursor.parent();
+            }
+          } while (cursor.nextSibling());
+        }
+        break;
+      }
       default:
         break;
     }
@@ -253,11 +289,24 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     titleElement.textContent = item.title + (item.subtitle ? item.subtitle : '');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query);
 
+    const sourceFrame = this.currentSourceFrame();
+    if (!sourceFrame) {
+      return;
+    }
+
     const tagElement = (titleElement.parentElement?.parentElement?.createChild('span', 'tag') as HTMLElement);
     if (!tagElement) {
       return;
     }
-    tagElement.textContent = `:${item.lineNumber + 1}`;
+
+    const disassembly = sourceFrame.wasmDisassembly;
+    if (disassembly) {
+      const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
+      const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
+      tagElement.textContent = `:0x${item.columnNumber.toString(16).padStart(bytecodeOffsetDigits, '0')}`;
+    } else {
+      tagElement.textContent = `:${item.lineNumber + 1}`;
+    }
   }
 
   selectItem(itemIndex: number|null, _promptValue: string): void {

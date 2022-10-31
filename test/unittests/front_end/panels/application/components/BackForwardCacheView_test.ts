@@ -15,8 +15,8 @@ import {
   dispatchClickEvent,
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import {describeWithRealConnection} from '../../../helpers/RealConnection.js';
+import {createTarget, describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection, dispatchEvent} from '../../../helpers/MockConnection.js';
 
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 
@@ -52,6 +52,65 @@ async function unpromisify(node: TreeOutline.TreeOutlineUtils.TreeNode<NodeData>
   }
   return result;
 }
+
+describeWithMockConnection('BackForwardCacheViewWrapper', () => {
+  const updatesBFCacheView = (targetFactory: () => SDK.Target.Target) => {
+    let target: SDK.Target.Target;
+    let resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
+    let wrapper: ApplicationComponents.BackForwardCacheView.BackForwardCacheViewWrapper;
+    let view: ApplicationComponents.BackForwardCacheView.BackForwardCacheView;
+    const FRAME = {
+      id: 'main',
+      loaderId: 'test',
+      url: 'http://example.com',
+      securityOrigin: 'http://example.com',
+      mimeType: 'text/html',
+    };
+
+    beforeEach(() => {
+      target = targetFactory();
+      resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
+      dispatchEvent(target, 'Page.frameNavigated', {frame: FRAME});
+      view = new ApplicationComponents.BackForwardCacheView.BackForwardCacheView();
+      wrapper = new ApplicationComponents.BackForwardCacheView.BackForwardCacheViewWrapper(view);
+      wrapper.markAsRoot();
+      wrapper.show(document.body);
+    });
+
+    afterEach(() => {
+      wrapper.detach();
+    });
+
+    it('updates BFCacheView on main frame navigation', async () => {
+      assertNotNullOrUndefined(resourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel.mainFrame);
+      resourceTreeModel.dispatchEventToListeners(
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, resourceTreeModel.mainFrame);
+
+      const data = await new Promise(resolve => sinon.stub(view, 'data').set(resolve));
+      assert.deepStrictEqual(data, {frame: resourceTreeModel.mainFrame});
+    });
+
+    it('updates BFCacheView on BFCache detail update', async () => {
+      assertNotNullOrUndefined(resourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel.mainFrame);
+      resourceTreeModel.dispatchEventToListeners(
+          SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, resourceTreeModel.mainFrame);
+
+      const data = await new Promise(resolve => sinon.stub(view, 'data').set(resolve));
+      assert.deepStrictEqual(data, {frame: resourceTreeModel.mainFrame});
+    });
+  };
+
+  describe('without tab target', () => updatesBFCacheView(() => createTarget()));
+  describe('with tab target', () => updatesBFCacheView(() => {
+                                const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+                                const frameTarget = createTarget({parentTarget: tabTarget});
+                                createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+                                return frameTarget;
+                              }));
+});
 
 describeWithEnvironment('BackForwardCacheView', () => {
   it('renders status if restored from BFCache', async () => {
@@ -192,9 +251,9 @@ describeWithEnvironment('BackForwardCacheView', () => {
   });
 });
 
-describeWithRealConnection('BackForwardCacheView', () => {
+const testBFCacheWorkflow = (targetFactory: () => SDK.Target.Target) => {
   it('can handle delayed navigation history when testing for BFcache availability', async () => {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+    const mainTarget = targetFactory();
     const resourceTreeModel = mainTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assertNotNullOrUndefined(resourceTreeModel);
 
@@ -255,4 +314,14 @@ describeWithRealConnection('BackForwardCacheView', () => {
     });
     assert.isTrue(navigateToHistoryEntrySpy.calledOnceWithExactly(entries[0]));
   });
+};
+
+describeWithMockConnection('BackForwardCacheView', () => {
+  describe('test BFCache workflow without tab taget', () => testBFCacheWorkflow(() => createTarget()));
+  describe('test BFCache workflow with tab taget', () => testBFCacheWorkflow(() => {
+                                                     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+                                                     const frameTarget = createTarget({parentTarget: tabTarget});
+                                                     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+                                                     return frameTarget;
+                                                   }));
 });

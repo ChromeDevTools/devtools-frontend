@@ -56,55 +56,65 @@ describeWithMockConnection('WebAuthn pane', () => {
     assert.isFalse(largeBlob.checked);
   });
 
-  it('adds an authenticator with large blob option', done => {
-    const target = createTarget();
-    const panel = Webauthn.WebauthnPane.WebauthnPaneImpl.instance();
-    panel.modelAdded(new SDK.WebAuthnModel.WebAuthnModel(target));
+  const largeBlobOption = (targetFactory: () => SDK.Target.Target) => {
+    it('adds an authenticator with large blob option', done => {
+      const target = targetFactory();
+      const panel = Webauthn.WebauthnPane.WebauthnPaneImpl.instance();
+      panel.modelAdded(new SDK.WebAuthnModel.WebAuthnModel(target));
 
-    const largeBlob = panel.largeBlobCheckbox;
-    const residentKeys = panel.residentKeyCheckbox;
+      const largeBlob = panel.largeBlobCheckbox;
+      const residentKeys = panel.residentKeyCheckbox;
 
-    if (!largeBlob || !residentKeys) {
-      assert.fail('Required checkbox not found');
-      return;
-    }
-    residentKeys.checked = true;
-    largeBlob.checked = true;
+      if (!largeBlob || !residentKeys) {
+        assert.fail('Required checkbox not found');
+        return;
+      }
+      residentKeys.checked = true;
+      largeBlob.checked = true;
 
-    setMockConnectionResponseHandler('WebAuthn.addVirtualAuthenticator', params => {
-      assert.isTrue(params.options.hasLargeBlob);
-      assert.isTrue(params.options.hasResidentKey);
-      done();
-      return {
-        authenticatorId: 'test',
-      };
+      setMockConnectionResponseHandler('WebAuthn.addVirtualAuthenticator', params => {
+        assert.isTrue(params.options.hasLargeBlob);
+        assert.isTrue(params.options.hasResidentKey);
+        done();
+        return {
+          authenticatorId: 'test',
+        };
+      });
+      panel.addAuthenticatorButton?.click();
     });
-    panel.addAuthenticatorButton?.click();
-  });
 
-  it('adds an authenticator without the large blob option', done => {
-    const target = createTarget();
-    const panel = Webauthn.WebauthnPane.WebauthnPaneImpl.instance();
-    panel.modelAdded(new SDK.WebAuthnModel.WebAuthnModel(target));
+    it('adds an authenticator without the large blob option', done => {
+      const target = targetFactory();
+      const panel = Webauthn.WebauthnPane.WebauthnPaneImpl.instance();
+      panel.modelAdded(new SDK.WebAuthnModel.WebAuthnModel(target));
 
-    const largeBlob = panel.largeBlobCheckbox;
-    const residentKeys = panel.residentKeyCheckbox;
+      const largeBlob = panel.largeBlobCheckbox;
+      const residentKeys = panel.residentKeyCheckbox;
 
-    if (!largeBlob || !residentKeys) {
-      assert.fail('Required checkbox not found');
-      return;
-    }
-    residentKeys.checked = true;
-    largeBlob.checked = false;
+      if (!largeBlob || !residentKeys) {
+        assert.fail('Required checkbox not found');
+        return;
+      }
+      residentKeys.checked = true;
+      largeBlob.checked = false;
 
-    setMockConnectionResponseHandler('WebAuthn.addVirtualAuthenticator', params => {
-      assert.isFalse(params.options.hasLargeBlob);
-      assert.isTrue(params.options.hasResidentKey);
-      done();
-      return {
-        authenticatorId: 'test',
-      };
+      setMockConnectionResponseHandler('WebAuthn.addVirtualAuthenticator', params => {
+        assert.isFalse(params.options.hasLargeBlob);
+        assert.isTrue(params.options.hasResidentKey);
+        done();
+        return {
+          authenticatorId: 'test',
+        };
+      });
+      panel.addAuthenticatorButton?.click();
     });
-    panel.addAuthenticatorButton?.click();
-  });
+  };
+
+  describe('without tab target', () => largeBlobOption(() => createTarget()));
+  describe('with tab target', () => largeBlobOption(() => {
+                                const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+                                const frameTarget = createTarget({parentTarget: tabTarget});
+                                createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+                                return frameTarget;
+                              }));
 });

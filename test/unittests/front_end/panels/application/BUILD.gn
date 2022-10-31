@@ -11,6 +11,7 @@ ts_library("application") {
     "IndexedDBModel_test.ts",
     "InterestGroupStorageView_test.ts",
     "ReportingApiReportsView_test.ts",
+    "ReportingApiView_test.ts",
     "ServiceWorkerUpdateCycleView_test.ts",
     "StorageView_test.ts",
   ]

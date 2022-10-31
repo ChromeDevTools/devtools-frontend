@@ -18,6 +18,7 @@ import * as InterestGroupStorageModel from './InterestGroupStorageModel.js';
 import * as InterestGroupStorageView from './InterestGroupStorageView.js';
 import * as OpenedWindowDetailsView from './OpenedWindowDetailsView.js';
 import * as ReportingApiReportsView from './ReportingApiReportsView.js';
+import * as ReportingApiView from './ReportingApiView.js';
 import * as ResourcesPanel from './ResourcesPanel.js';
 import * as ServiceWorkerCacheViews from './ServiceWorkerCacheViews.js';
 import * as ServiceWorkersView from './ServiceWorkersView.js';
@@ -42,6 +43,7 @@ export {
   InterestGroupStorageView,
   OpenedWindowDetailsView,
   ReportingApiReportsView,
+  ReportingApiView,
   ResourcesPanel,
   ServiceWorkerCacheViews,
   ServiceWorkersView,

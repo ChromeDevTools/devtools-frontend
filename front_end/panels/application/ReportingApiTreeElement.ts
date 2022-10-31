@@ -5,6 +5,7 @@
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as ApplicationComponents from './components/components.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
@@ -36,7 +37,7 @@ export class ReportingApiTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = new ReportingApiView();
+      this.view = new ReportingApiView(new ApplicationComponents.EndpointsGrid.EndpointsGrid());
     }
     this.showView(this.view);
     Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.reporting_api]);

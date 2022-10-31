@@ -130,7 +130,7 @@ PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) 
 };
 
 PerformanceTestRunner.createTimelineController = function() {
-  const controller = new Timeline.TimelineController(self.SDK.targetManager.mainTarget(), UI.panels.timeline);
+  const controller = new Timeline.TimelineController(self.SDK.targetManager.mainFrameTarget(), UI.panels.timeline);
   controller.tracingManager = TestRunner.tracingManager;
   return controller;
 };
@@ -283,7 +283,7 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
 PerformanceTestRunner.printTraceEventPropertiesWithDetails = async function(event) {
   PerformanceTestRunner.printTraceEventProperties(event);
   const details = await Timeline.TimelineUIUtils.buildDetailsTextForTraceEvent(
-      event, self.SDK.targetManager.mainTarget(), new Components.Linkifier());
+      event, self.SDK.targetManager.mainFrameTarget(), new Components.Linkifier());
   TestRunner.waitForPendingLiveLocationUpdates();
   TestRunner.addResult(`Text details for ${event.name}: ${details}`);
 

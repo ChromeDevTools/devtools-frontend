@@ -32,6 +32,43 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       expectedResult: true,
     },
     {
+      description: 'Test `justify-content`, validation passes when the element is flex containers',
+      computedStyles: new Map<string, string>([
+        ['display', 'flex'],
+        ['justify-content', 'flex-end'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),
+      expectedResult: true,
+    },
+    {
+      description: 'Test `justify-content`, validation passes when the element is grid containers',
+      computedStyles: new Map<string, string>([
+        ['display', 'grid'],
+        ['justify-content', 'center'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),
+      expectedResult: true,
+    },
+    {
+      description: 'Test `place-content`, validation passes when the element is grid containers',
+      computedStyles: new Map<string, string>([
+        ['display', 'grid'],
+        ['place-content', 'center'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),
+      expectedResult: true,
+    },
+    {
+      description:
+          'Test `place-content`, Validation does not pass when the element is not flex containers or grid containers',
+      computedStyles: new Map<string, string>([
+        ['display', 'block'],
+        ['place-content', 'center'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),
+      expectedResult: false,
+    },
+    {
       description: 'Reports a rule validation when flex properties are set to non-flex items',
       computedStyles: new Map<string, string>([
         ['flex', '1'],

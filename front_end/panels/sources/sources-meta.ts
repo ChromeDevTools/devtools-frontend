@@ -1055,10 +1055,16 @@ UI.ActionRegistration.registerActionExtension({
     {
       platform: UI.ActionRegistration.Platforms.WindowsLinux,
       shortcut: 'Ctrl+b',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+      ],
     },
     {
       platform: UI.ActionRegistration.Platforms.Mac,
       shortcut: 'Meta+b',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+      ],
     },
     {
       shortcut: 'F9',
@@ -1336,10 +1342,30 @@ UI.ActionRegistration.registerActionExtension({
     {
       platform: UI.ActionRegistration.Platforms.WindowsLinux,
       shortcut: 'Ctrl+Shift+y',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+      ],
     },
     {
       platform: UI.ActionRegistration.Platforms.Mac,
       shortcut: 'Meta+Shift+y',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+b',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Meta+b',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
     },
   ],
 });

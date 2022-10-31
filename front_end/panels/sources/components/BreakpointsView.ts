@@ -202,6 +202,9 @@ export class BreakpointsRemovedEvent extends Event {
   }
 }
 
+const PAUSE_ON_EXCEPTIONS_ELEMENT_ID = 'pause-on-exceptions';
+const PAUSE_ON_UNCAUGHT_EXCEPTIONS_ELEMENT_ID = 'pause-on-caught-exceptions';
+
 export class BreakpointsView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-breakpoint-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -220,23 +223,8 @@ export class BreakpointsView extends HTMLElement {
     this.#breakpointsActive = data.breakpointsActive;
     this.#breakpointGroups = data.groups;
 
-    // Check if the previously selected element still exists by looking
-    // through the ids and comparing them.
-    if (this.#selectedElement) {
-      const selectedElementExists = this.#breakpointGroups.some((group => {
-        if (this.#isSelectedElement(group.url)) {
-          return true;
-        }
-        return group.breakpointItems.some(breakpointItem => this.#isSelectedElement(breakpointItem.id));
-      }));
-      if (!selectedElementExists) {
-        // Element was removed; reset the selected element.
-        this.#selectedElement = undefined;
-      }
-    }
-
-    if (!this.#selectedElement && this.#breakpointGroups.length >= 1) {
-      this.#selectedElement = this.#breakpointGroups[0].url;
+    if (!this.#selectedElement) {
+      this.#selectedElement = PAUSE_ON_EXCEPTIONS_ELEMENT_ID;
     }
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -247,16 +235,31 @@ export class BreakpointsView extends HTMLElement {
   }
 
   #render(): void {
+    const clickHandler = async(event: Event): Promise<void> => {
+      const currentTarget = event.currentTarget as HTMLElement;
+      await this.#setSelected(currentTarget);
+      event.consume();
+    };
     // clang-format off
     const out = LitHtml.html`
-    <div class='pause-on-exceptions' tabindex=0>
+    <div class='pause-on-exceptions'
+         tabindex=${this.#isSelectedElement(PAUSE_ON_EXCEPTIONS_ELEMENT_ID) ? 0: -1}
+         @click=${clickHandler}
+         @keydown=${this.#keyDownHandler}
+         data-first-pause
+         track-dom-node-to-element-id=${ComponentHelpers.Directives.nodeRenderedCallback(this.#setDOMNodeForElementId.bind(this, PAUSE_ON_EXCEPTIONS_ELEMENT_ID))}>
       <label class='checkbox-label'>
         <input type='checkbox' tabindex=-1 ?checked=${this.#pauseOnExceptions} @change=${this.#onPauseOnExceptionsStateChanged.bind(this)}>
         <span>${i18nString(UIStrings.pauseOnExceptions)}</span>
       </label>
     </div>
     ${this.#pauseOnExceptions ? LitHtml.html`
-      <div class='pause-on-caught-exceptions' tabindex=0>
+      <div class='pause-on-caught-exceptions'
+           tabindex=${this.#isSelectedElement(PAUSE_ON_UNCAUGHT_EXCEPTIONS_ELEMENT_ID) ? 0: -1}
+           @click=${clickHandler}
+           @keydown=${this.#keyDownHandler}
+           data-last-pause
+           track-dom-node-to-element-id=${ComponentHelpers.Directives.nodeRenderedCallback(this.#setDOMNodeForElementId.bind(this, PAUSE_ON_UNCAUGHT_EXCEPTIONS_ELEMENT_ID))}>
         <label class='checkbox-label'>
           <input type='checkbox' tabindex=-1 ?checked=${this.#pauseOnCaughtExceptions} @change=${this.#onPauseOnCaughtExceptionsStateChanged.bind(this)}>
           <span>${i18nString(UIStrings.pauseOnCaughtExceptions)}</span>
@@ -267,7 +270,7 @@ export class BreakpointsView extends HTMLElement {
       ${LitHtml.Directives.repeat(
         this.#breakpointGroups,
         group => group.url,
-        (group, groupIndex) => LitHtml.html`<hr/>${this.#renderBreakpointGroup(group, groupIndex)}`)}
+        (group, groupIndex) => LitHtml.html`${this.#renderBreakpointGroup(group, groupIndex)}`)}
     </div>`;
     // clang-format on
     LitHtml.render(out, this.#shadow, {host: this});
@@ -326,11 +329,15 @@ export class BreakpointsView extends HTMLElement {
 
   async #handleHomeOrEndKey(key: 'Home'|'End'): Promise<void> {
     if (key === 'Home') {
-      const firstSummaryNode = this.#shadow.querySelector<HTMLElement>('[data-first-group] > summary');
-      return this.#setSelected(firstSummaryNode);
+      const pauseOnExceptionsNode = this.#shadow.querySelector<HTMLElement>('[data-first-pause]');
+      return this.#setSelected(pauseOnExceptionsNode);
     }
     if (key === 'End') {
       const numGroups = this.#breakpointGroups.length;
+      if (numGroups === 0) {
+        const lastPauseOnExceptionsNode = this.#shadow.querySelector<HTMLElement>('[data-last-pause]');
+        return this.#setSelected(lastPauseOnExceptionsNode);
+      }
       const lastGroupIndex = numGroups - 1;
       const lastGroup = this.#breakpointGroups[lastGroupIndex];
 

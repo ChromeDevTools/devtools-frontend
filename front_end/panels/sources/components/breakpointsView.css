@@ -10,14 +10,6 @@
   flex-direction: column;
 }
 
-hr {
-  border: none;
-  background-color: var(--color-details-hairline);
-  height: 0.5pt;
-  width: inherit;
-  margin: 3px 0 0;
-}
-
 .code-snippet {
   width: 100%;
   font-family: var(--source-code-font-family);
@@ -40,6 +32,10 @@ input {
   width: 12px;
   flex-shrink: 0;
   margin: 3px 0;
+}
+
+details {
+  border-top: 1px solid var(--color-details-hairline);
 }
 
 details:not(.active) {

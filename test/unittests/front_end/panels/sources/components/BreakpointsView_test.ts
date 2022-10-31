@@ -32,7 +32,7 @@ const REMOVE_SINGLE_BREAKPOINT_SELECTOR = '.breakpoint-item-location-or-actions 
 const EDIT_SINGLE_BREAKPOINT_SELECTOR = 'button[data-edit-breakpoint]';
 const PAUSE_ON_EXCEPTIONS_SELECTOR = '.pause-on-exceptions';
 const PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR = '.pause-on-caught-exceptions';
-const TREE_TABBABLE_SELECTOR = '[role=tree] [tabindex="0"]';
+const TABBABLE_SELECTOR = '[tabindex="0"]';
 const SUMMARY_SELECTOR = 'summary';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -731,32 +731,22 @@ describeWithEnvironment('BreakpointsView', () => {
       await coordinator.done();
       return {component, data};
     }
+
     it('pause on exceptions is tabbable', async () => {
       const component = await renderNoBreakpoints({pauseOnExceptions: true, pauseOnCaughtExceptions: false});
       assertShadowRoot(component.shadowRoot);
 
-      const focusableElements = component.shadowRoot.querySelectorAll('[tabindex="0"]');
-      assertElements(focusableElements, HTMLElement);
-      assert.lengthOf(focusableElements, 2);
-
-      const pauseOnExceptions = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
-      const pauseOnCaughtExceptions = component.shadowRoot.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-
-      assert.deepEqual(Array.from(focusableElements), [pauseOnExceptions, pauseOnCaughtExceptions]);
-    });
-
-    it('first summary node is tabbable', async () => {
-      const {component} = await renderBreakpointsForKeyboardNavigation();
-      assertShadowRoot(component.shadowRoot);
-      const focusableElements = component.shadowRoot.querySelectorAll(TREE_TABBABLE_SELECTOR);
+      const focusableElements = component.shadowRoot.querySelectorAll(TABBABLE_SELECTOR);
       assertElements(focusableElements, HTMLElement);
       assert.lengthOf(focusableElements, 1);
-      const firstDetailsElement = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
-      assert.strictEqual(focusableElements.item(0), firstDetailsElement);
+
+      const pauseOnExceptions = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
+
+      assert.deepEqual(focusableElements.item(0), pauseOnExceptions);
     });
 
     describe('pressing the HOME key', () => {
-      it('takes the user to the summary node of the top most group', async () => {
+      it('takes the user to the pause-on-exceptions line', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
         assertShadowRoot(component.shadowRoot);
         const secondGroupsSummary =
@@ -768,11 +758,11 @@ describeWithEnvironment('BreakpointsView', () => {
         dispatchKeyDownEvent(secondGroupsSummary, {key: 'Home', bubbles: true});
         await coordinator.done();
 
-        const selected = component.shadowRoot.querySelector(TREE_TABBABLE_SELECTOR);
+        const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         assertElement(selected, HTMLElement);
-        const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
-        assertElement(firstGroupSummary, HTMLElement);
-        assert.strictEqual(selected, firstGroupSummary);
+        const pauseOnExceptions = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
+        assertElement(pauseOnExceptions, HTMLElement);
+        assert.strictEqual(selected, pauseOnExceptions);
       });
     });
 
@@ -780,15 +770,15 @@ describeWithEnvironment('BreakpointsView', () => {
       it('takes the user to the summary node of the last group (if last group is collapsed)', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
         assertShadowRoot(component.shadowRoot);
-        const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
-        assertElement(firstGroupSummary, HTMLElement);
+        const pauseOnExceptions = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
+        assertElement(pauseOnExceptions, HTMLElement);
 
-        // Focus on first group by clicking on it, then press End key.
-        dispatchClickEvent(firstGroupSummary);
-        dispatchKeyDownEvent(firstGroupSummary, {key: 'End', bubbles: true});
+        // Focus on the pause-on-exceptions line by clicking on it, then press End key.
+        dispatchClickEvent(pauseOnExceptions);
+        dispatchKeyDownEvent(pauseOnExceptions, {key: 'End', bubbles: true});
         await coordinator.done();
 
-        const selected = component.shadowRoot.querySelector(TREE_TABBABLE_SELECTOR);
+        const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         assertElement(selected, HTMLElement);
 
         const lastGroupSummary =
@@ -813,7 +803,7 @@ describeWithEnvironment('BreakpointsView', () => {
         dispatchKeyDownEvent(firstGroupSummary, {key: 'End', bubbles: true});
         await coordinator.done();
 
-        const selected = component.shadowRoot.querySelector(TREE_TABBABLE_SELECTOR);
+        const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         assertElement(selected, HTMLElement);
 
         const breakpointItems = component.shadowRoot.querySelectorAll(BREAKPOINT_ITEM_SELECTOR);
@@ -825,6 +815,25 @@ describeWithEnvironment('BreakpointsView', () => {
     });
 
     describe('pressing the ArrowDown key', () => {
+      it('on the pause-on-uncaught-exception takes the user to the summary node of the top most details element',
+         async () => {
+           const {component} = await renderBreakpointsForKeyboardNavigation();
+           assertShadowRoot(component.shadowRoot);
+
+           const pauseOnCaughtException = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
+           assertElement(pauseOnCaughtException, HTMLElement);
+
+           // Focus on the pause on exception, and navigate one down.
+           dispatchClickEvent(pauseOnCaughtException);
+           dispatchKeyDownEvent(pauseOnCaughtException, {key: 'ArrowDown', bubbles: true});
+           await coordinator.done();
+
+           const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
+           const firstSummary = component.shadowRoot.querySelector(`${DETAILS_SELECTOR} > ${SUMMARY_SELECTOR}`);
+           assertElement(firstSummary, HTMLElement);
+           assert.strictEqual(selected, firstSummary);
+         });
+
       it('on the summary node of an expanded group takes the user to the top most breakpoint item of that group',
          async () => {
            const {component} = await renderBreakpointsForKeyboardNavigation();
@@ -835,12 +844,12 @@ describeWithEnvironment('BreakpointsView', () => {
            const collapsedGroupSummary = collapsedDetailsElement.querySelector(SUMMARY_SELECTOR);
            assertElement(collapsedGroupSummary, HTMLElement);
 
-           // Focus on the collapsed gorup and collapse it by clicking on it. Then navigate down.
+           // Focus on the collapsed group and collapse it by clicking on it. Then navigate down.
            dispatchClickEvent(collapsedGroupSummary);
            dispatchKeyDownEvent(collapsedGroupSummary, {key: 'ArrowDown', bubbles: true});
            await coordinator.done();
 
-           const selected = component.shadowRoot.querySelector(TREE_TABBABLE_SELECTOR);
+           const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
            assertElement(selected, HTMLElement);
 
            const firstBreakpointItem = collapsedDetailsElement.querySelector(BREAKPOINT_ITEM_SELECTOR);
@@ -862,7 +871,7 @@ describeWithEnvironment('BreakpointsView', () => {
         dispatchKeyDownEvent(firstGroupSummary, {key: 'ArrowDown', bubbles: true});
         await coordinator.done();
 
-        const selected = component.shadowRoot.querySelector(TREE_TABBABLE_SELECTOR);
+        const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         assertElement(selected, HTMLElement);
 
         const secondGroupSummary =
@@ -885,7 +894,7 @@ describeWithEnvironment('BreakpointsView', () => {
         dispatchKeyDownEvent(firstBreakpointItem, {key: 'ArrowDown', bubbles: true});
         await coordinator.done();
 
-        const selected = component.shadowRoot.querySelector(TREE_TABBABLE_SELECTOR);
+        const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         assertElement(selected, HTMLElement);
 
         const secondBreakpointItem = firstDetailsElement.querySelector(`${BREAKPOINT_ITEM_SELECTOR}:nth-of-type(2)`);
@@ -896,6 +905,24 @@ describeWithEnvironment('BreakpointsView', () => {
     });
 
     describe('pressing the ArrowUp key', () => {
+      it('on the first summary takes a user to the pause on exceptions', async () => {
+        const {component} = await renderBreakpointsForKeyboardNavigation();
+        assertShadowRoot(component.shadowRoot);
+        const firstSummary = component.shadowRoot.querySelector(`${DETAILS_SELECTOR} > ${SUMMARY_SELECTOR}`);
+        assertElement(firstSummary, HTMLElement);
+
+        // Focus on the summary element.
+        dispatchClickEvent(firstSummary);
+        dispatchKeyDownEvent(firstSummary, {key: 'ArrowUp', bubbles: true});
+        await coordinator.done();
+
+        const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
+        const pauseOnExceptions = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
+        assertElement(pauseOnExceptions, HTMLDivElement);
+
+        assert.strictEqual(selected, pauseOnExceptions);
+      });
+
       it('on the first breakpoint item in an expanded group takes the user to the summary node', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
         assertShadowRoot(component.shadowRoot);
@@ -910,7 +937,7 @@ describeWithEnvironment('BreakpointsView', () => {
         dispatchKeyDownEvent(firstBreakpointItem, {key: 'ArrowUp', bubbles: true});
         await coordinator.done();
 
-        const selected = component.shadowRoot.querySelector(TREE_TABBABLE_SELECTOR);
+        const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         assertElement(selected, HTMLElement);
 
         const summary = expandedDetails.querySelector(SUMMARY_SELECTOR);
@@ -934,7 +961,7 @@ describeWithEnvironment('BreakpointsView', () => {
         dispatchKeyDownEvent(lastBreakpointItem, {key: 'ArrowUp', bubbles: true});
         await coordinator.done();
 
-        const selected = component.shadowRoot.querySelector(TREE_TABBABLE_SELECTOR);
+        const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         assertElement(selected, HTMLElement);
 
         const nextToLastBreakpointItem = breakpointItems.item(breakpointItems.length - 2);
@@ -954,7 +981,7 @@ describeWithEnvironment('BreakpointsView', () => {
         dispatchKeyDownEvent(secondGroupSummary, {key: 'ArrowUp', bubbles: true});
         await coordinator.done();
 
-        const selected = component.shadowRoot.querySelector(TREE_TABBABLE_SELECTOR);
+        const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         assertElement(selected, HTMLElement);
 
         const firstDetailsElement = component.shadowRoot.querySelector(DETAILS_SELECTOR);

@@ -765,6 +765,61 @@ const sub = (x, y) => x - y;
     });
   });
 
+  describe('generates a reasonable C++ outline', () => {
+    let extensions: CodeMirror.Extension|undefined;
+
+    before(async () => {
+      const cpp = await CodeMirror.cpp();
+      extensions = [cpp.cpp()];
+    });
+
+    function cppOutline(doc: string) {
+      const state = CodeMirror.EditorState.create({doc, extensions});
+      return Sources.OutlineQuickOpen.outline(state);
+    }
+
+    it('for an empty program', () => {
+      assert.deepEqual(cppOutline(''), []);
+    });
+
+    it('for a hello world program', () => {
+      assert.deepEqual(
+          cppOutline(
+              '#include <stdio.h>\n' +
+              '\n' +
+              'int main(int argc, char** argv){\n' +
+              '  printf("Hello world!\n");\n' +
+              '  return 0;\n' +
+              '}\n'),
+          [
+            {title: 'main', lineNumber: 2, columnNumber: 4},
+          ],
+      );
+    });
+
+    it('for classes, structs, and methods', () => {
+      assert.deepEqual(
+          cppOutline(
+              'struct S {\n' +
+              '  int foo(int x) { return x; }\n' +
+              '};\n' +
+              '\n' +
+              'class K {\n' +
+              ' public:\n' +
+              '  K& bar() { return *this; }\n' +
+              '  static K*baz() { return nullptr; }\n' +
+              '};\n'),
+          [
+            {title: 'struct S', lineNumber: 0, columnNumber: 7},
+            {title: 'foo', lineNumber: 1, columnNumber: 6},
+            {title: 'class K', lineNumber: 4, columnNumber: 6},
+            {title: 'bar', lineNumber: 6, columnNumber: 5},
+            {title: 'baz', lineNumber: 7, columnNumber: 11},
+          ],
+      );
+    });
+  });
+
   describe('generates a correct WebAssembly outline', () => {
     let extensions: CodeMirror.Extension|undefined;
 

@@ -236,6 +236,28 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
         }
         break;
       }
+      // cpp.grammar
+      case 'FieldIdentifier':
+      case 'Identifier': {
+        if (cursor.matchContext(['FunctionDeclarator'])) {
+          const title = state.sliceDoc(cursor.from, cursor.to);
+          const {lineNumber, columnNumber} = toLineColumn(cursor.from);
+          items.push({title, lineNumber, columnNumber});
+        }
+        break;
+      }
+      case 'TypeIdentifier': {
+        if (cursor.matchContext(['ClassSpecifier'])) {
+          const title = `class ${state.sliceDoc(cursor.from, cursor.to)}`;
+          const {lineNumber, columnNumber} = toLineColumn(cursor.from);
+          items.push({title, lineNumber, columnNumber});
+        } else if (cursor.matchContext(['StructSpecifier'])) {
+          const title = `struct ${state.sliceDoc(cursor.from, cursor.to)}`;
+          const {lineNumber, columnNumber} = toLineColumn(cursor.from);
+          items.push({title, lineNumber, columnNumber});
+        }
+        break;
+      }
       default:
         break;
     }

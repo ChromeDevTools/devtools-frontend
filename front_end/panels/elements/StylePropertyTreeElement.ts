@@ -110,6 +110,62 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   _lastComputedValue: string|null;
   _contextForTest!: Context|undefined;
 
+  // COHERENT BEGIN
+  // Used to disable _applyFreeFlowStyleTextEdit when typing shorthand properties
+  private static readonly shorthandProperties = new Set<string | undefined>([
+    // Treat empty property name as a shorthand since there are complete declaration
+    // suggestions based on prop name and we don't want to setStyleTexts.
+    // This works because the property name field is not set until you are done typing it
+    // Example: "soli" in the name field suggests the whole declaration "border: solid"
+    "",
+    "all",
+    "animation",
+    "background",
+    "border",
+    "border-block-end",
+    "border-block-start",
+    "border-bottom",
+    "border-color",
+    "border-image",
+    "border-inline-end",
+    "border-inline-start",
+    "border-left",
+    "border-radius",
+    "border-right",
+    "border-style",
+    "border-top",
+    "border-width",
+    "column-rule",
+    "columns",
+    "contain-intrinsic-size",
+    "flex",
+    "flex-flow",
+    "font",
+    "gap",
+    "grid",
+    "grid-area",
+    "grid-column",
+    "grid-row",
+    "grid-template",
+    "list-style",
+    "margin",
+    "mask",
+    "offset",
+    "outline",
+    "overflow",
+    "padding",
+    "place-content",
+    "place-items",
+    "place-self",
+    "scroll-margin",
+    "scroll-padding",
+    "scroll-timeline",
+    "text-decoration",
+    "text-emphasis",
+    "transition",
+  ]);
+  // COHERENT END
+
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       property: SDK.CSSProperty.CSSProperty, isShorthand: boolean, inherited: boolean, overloaded: boolean,
@@ -1096,6 +1152,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!this._prompt || !this._parentPane.node()) {
       return;
     }
+
+    // COHERENT BEGIN
+    if (StylePropertyTreeElement.shorthandProperties.has(context.originalProperty?.name)) {
+      return;
+    }
+    // COHERENT END
 
     const enteredText = this._prompt.text();
     if (context.isEditingName && enteredText.includes(':')) {

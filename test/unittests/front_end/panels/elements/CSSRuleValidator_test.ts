@@ -116,6 +116,37 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       expectedResult: false,
     },
     {
+      description: 'Reports a rule validation when flex or grid item properties are set to non-flex or non-grid items',
+      computedStyles: new Map<string, string>([
+        ['align-self', 'baseline'],
+      ]),
+      parentsComputedStyles: new Map<string, string>(),
+      validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
+      expectedResult: false,
+    },
+    {
+      description: 'Passes the validation when flex or grid item properties are set to flex or grid items',
+      computedStyles: new Map<string, string>([
+        ['align-self', 'baseline'],
+      ]),
+      parentsComputedStyles: new Map<string, string>([
+        ['display', 'flex'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
+      expectedResult: true,
+    },
+    {
+      description: 'Passes the validation when flex or grid item properties are set to grid items',
+      computedStyles: new Map<string, string>([
+        ['align-self', 'baseline'],
+      ]),
+      parentsComputedStyles: new Map<string, string>([
+        ['display', 'grid'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
+      expectedResult: true,
+    },
+    {
       description: 'Passes the validation when padding is not set to table elements',
       computedStyles: new Map<string, string>([
         ['display', 'block'],

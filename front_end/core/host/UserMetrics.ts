@@ -1044,7 +1044,8 @@ export enum CSSHintType {
   Position = 9,
   ZIndex = 10,
   Sizing = 11,
-  MaxValue = 12,
+  FlexOrGridItem = 12,
+  MaxValue = 13,
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -166,7 +166,7 @@ export class FlexItemValidator extends CSSRuleValidator {
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    const targeParentPropertyDeclaration = buildPropertyDefinitionText('display', 'flex');
+    const targetParentPropertyDeclaration = buildPropertyDefinitionText('display', 'flex');
 
     return new Hint(
         i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
@@ -175,7 +175,7 @@ export class FlexItemValidator extends CSSRuleValidator {
         }),
         i18nString(UIStrings.ruleViolatedByParentElementRuleFix, {
           'EXISTING_PARENT_ELEMENT_RULE': reasonPropertyDeclaration,
-          'TARGET_PARENT_ELEMENT_RULE': targeParentPropertyDeclaration,
+          'TARGET_PARENT_ELEMENT_RULE': targetParentPropertyDeclaration,
         }),
     );
   }
@@ -294,7 +294,7 @@ export class GridItemValidator extends CSSRuleValidator {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
-    const targeParentPropertyDeclaration = buildPropertyDefinitionText('display', 'grid');
+    const targetParentPropertyDeclaration = buildPropertyDefinitionText('display', 'grid');
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
@@ -304,7 +304,49 @@ export class GridItemValidator extends CSSRuleValidator {
         }),
         i18nString(UIStrings.ruleViolatedByParentElementRuleFix, {
           'EXISTING_PARENT_ELEMENT_RULE': reasonPropertyDeclaration,
-          'TARGET_PARENT_ELEMENT_RULE': targeParentPropertyDeclaration,
+          'TARGET_PARENT_ELEMENT_RULE': targetParentPropertyDeclaration,
+        }),
+    );
+  }
+}
+
+export class FlexOrGridItemValidator extends CSSRuleValidator {
+  constructor() {
+    super([
+      'place-self',
+      'align-self',
+    ]);
+  }
+
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.FlexOrGridItem;
+  }
+
+  #isRuleValid(computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): boolean {
+    if (!parentComputedStyles) {
+      return true;
+    }
+    return isFlexContainer(parentComputedStyles) || isGridContainer(parentComputedStyles);
+  }
+
+  getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
+      |undefined {
+    if (this.#isRuleValid(computedStyles, parentComputedStyles)) {
+      return;
+    }
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
+    const targetParentPropertyDeclaration =
+        `${buildPropertyDefinitionText('display', 'flex')} or ${buildPropertyDefinitionText('display', 'grid')}`;
+    const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
+
+    return new Hint(
+        i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
+          'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
+          'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
+        }),
+        i18nString(UIStrings.ruleViolatedByParentElementRuleFix, {
+          'EXISTING_PARENT_ELEMENT_RULE': reasonPropertyDeclaration,
+          'TARGET_PARENT_ELEMENT_RULE': targetParentPropertyDeclaration,
         }),
     );
   }
@@ -316,7 +358,6 @@ export class FlexGridValidator extends CSSRuleValidator {
       'order',
       'align-content',
       'align-items',
-      'align-self',
     ]);
   }
 
@@ -585,6 +626,7 @@ const CSS_RULE_VALIDATORS = [
   FlexItemValidator,
   GridContainerValidator,
   GridItemValidator,
+  FlexOrGridItemValidator,
   SizingValidator,
   MulticolFlexGridValidator,
   PaddingValidator,

@@ -55,10 +55,9 @@ export const openFileQuickOpen = async () => {
 
 export const openGoToLineQuickOpen = async () => {
   const {frontend} = getBrowserAndPages();
-  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
-  await frontend.keyboard.down(modifierKey);
+  await frontend.keyboard.down('Control');
   await frontend.keyboard.press('G');
-  await frontend.keyboard.up(modifierKey);
+  await frontend.keyboard.up('Control');
   await waitFor(QUICK_OPEN_SELECTOR);
 };
 

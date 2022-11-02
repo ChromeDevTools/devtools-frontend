@@ -139,8 +139,7 @@ describe('The Sources Tab', function() {
     assert.deepEqual(scriptLocation, 'minified-sourcecode.js:6');
   });
 
-  // Flaky on mac.
-  it.skipOnPlatforms(['mac'], '[crbug.com/1378535] can go to line in a pretty-printed file', async () => {
+  it('can go to line in a pretty-printed file', async () => {
     const {frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');

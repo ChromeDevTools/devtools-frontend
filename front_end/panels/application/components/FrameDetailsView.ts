@@ -262,15 +262,29 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   readonly #reportView = new FrameDetailsReportView();
   readonly #frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+  #prerenderedUrl: string;
 
   constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super();
     this.#frame = frame;
+    this.#prerenderedUrl = '';
     this.contentElement.classList.add('overflow-auto');
     this.contentElement.appendChild(this.#reportView);
     this.update();
+
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetInfoChanged, this.targetChanged,
+        this);
     frame.resourceTreeModel().addEventListener(
         SDK.ResourceTreeModel.Events.PrerenderingStatusUpdated, this.update, this);
+  }
+
+  targetChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>): void {
+    const targetInfo = event.data;
+    if (targetInfo.subtype === 'prerender') {
+      this.#prerenderedUrl = targetInfo.url;
+      this.update();
+    }
   }
 
   async doUpdate(): Promise<void> {
@@ -279,7 +293,8 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
         await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(adScriptId?.debuggerId) :
         null;
     const target = debuggerModel?.target();
-    this.#reportView.data = {frame: this.#frame, target, adScriptId: adScriptId || null};
+    this.#reportView
+        .data = {frame: this.#frame, target, prerenderedUrl: this.#prerenderedUrl, adScriptId: adScriptId || null};
   }
 }
 
@@ -288,6 +303,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 export interface FrameDetailsReportViewData {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   target?: SDK.Target.Target;
+  prerenderedUrl?: string;
   adScriptId: Protocol.Page.AdScriptId|null;
 }
 
@@ -296,6 +312,7 @@ export class FrameDetailsReportView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
   #target?: SDK.Target.Target;
+  #prerenderedUrl?: string;
   #protocolMonitorExperimentEnabled = false;
   #permissionsPolicies: Promise<Protocol.Page.PermissionsPolicyFeatureState[]|null>|null = null;
   #permissionsPolicySectionData: PermissionsPolicySectionData = {policies: [], showDetails: false};
@@ -312,6 +329,8 @@ export class FrameDetailsReportView extends HTMLElement {
     this.#frame = data.frame;
     this.#adScriptId = data.adScriptId;
     this.#target = data.target;
+
+    this.#prerenderedUrl = data.prerenderedUrl;
     if (!this.#permissionsPolicies && this.#frame) {
       this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
     }
@@ -797,9 +816,24 @@ export class FrameDetailsReportView extends HTMLElement {
   }
 
   #renderPrerenderingSection(): LitHtml.LitTemplate {
+    if (this.#prerenderedUrl && this.#prerenderedUrl !== '') {
+      const status = Prerender2ReasonDescription['PrerenderingOngoing'].name() + ' ' + this.#prerenderedUrl;
+      return LitHtml.html`
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>
+      ${i18nString(UIStrings.prerendering)}</${ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.prerenderingStatus)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
+      <div class="text-ellipsis" title=${status}>${status}</div>
+      </${ReportView.ReportView.ReportValue.litTagName}>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+          ReportView.ReportView.ReportSectionDivider.litTagName}>`;
+    }
+
     if (!this.#frame || !this.#frame.prerenderFinalStatus) {
       return LitHtml.nothing;
     }
+
     const finalStatus = Prerender2ReasonDescription[this.#frame.prerenderFinalStatus].name();
 
     if (this.#frame.prerenderDisallowedApiMethod) {

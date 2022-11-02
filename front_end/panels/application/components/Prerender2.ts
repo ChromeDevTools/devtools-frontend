@@ -173,6 +173,10 @@ const UIStrings = {
     *@description  Detail section description text for Prerender2 cancellation status MojoBinderPolicy.
   */
   DisallowedApiMethod: 'Disallowed API method',
+  /**
+    *@description  Description text for Prerender2 is ongoing.
+  */
+  PrerenderingOngoing: 'Prerendering ongoing',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/Prerender2.ts', UIStrings);
@@ -221,4 +225,5 @@ export const Prerender2ReasonDescription: {[key: string]: {name: () => Platform.
   'InactivePageRestriction': {name: i18nLazyString(UIStrings.InactivePageRestriction)},
   'StartFailed': {name: i18nLazyString(UIStrings.StartFailed)},
   'DisallowedApiMethod': {name: i18nLazyString(UIStrings.DisallowedApiMethod)},
+  'PrerenderingOngoing': {name: i18nLazyString(UIStrings.PrerenderingOngoing)},
 };

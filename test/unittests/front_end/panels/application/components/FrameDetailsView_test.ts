@@ -201,4 +201,55 @@ describeWithRealConnection('FrameDetailsView', () => {
     assertNotNullOrUndefined(adScriptLink);
     assert.strictEqual(adScriptLink.textContent, '\u200b');
   });
+
+  it('renders report keys and values with on-going prerendering', async () => {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const target = targetManager.mainTarget();
+    assertNotNullOrUndefined(target);
+
+    const frame = makeFrame();
+
+    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
+    renderElementIntoDOM(component);
+    component.data = {
+      frame,
+      target,
+      adScriptId: null,
+      prerenderedUrl: 'https://example.test/',
+    };
+
+    assertShadowRoot(component.shadowRoot);
+    await coordinator.done();
+    await coordinator.done();  // 2nd call awaits async render
+
+    const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
+    assert.deepEqual(keys, [
+      'URL',
+      'Origin',
+      'Owner Element',
+      'Frame Creation Stack Trace',
+      'Secure Context',
+      'Cross-Origin Isolated',
+      'Cross-Origin Embedder Policy (COEP)',
+      'Cross-Origin Opener Policy (COOP)',
+      'SharedArrayBuffers',
+      'Measure Memory',
+      'Prerendering Status',
+    ]);
+
+    const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
+    assert.deepEqual(values, [
+      'https://www.example.com/path/page.html',
+      'https://www.example.com',
+      '<iframe>',
+      '',
+      'Yes\xA0Localhost is always a secure context',
+      'Yes',
+      'None',
+      'SameOrigin',
+      'available, transferable',
+      'available\xA0Learn more',
+      'Prerendering ongoing https://example.test/',
+    ]);
+  });
 });

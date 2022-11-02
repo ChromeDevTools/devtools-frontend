@@ -3371,6 +3371,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "Encountered a network error during prerendering."
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "Prerendering ongoing"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "The prerendered page crashed."
   },

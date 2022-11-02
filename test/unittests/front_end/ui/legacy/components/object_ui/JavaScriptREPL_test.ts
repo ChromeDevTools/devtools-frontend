@@ -13,6 +13,8 @@ describe('JavaScriptREPL', () => {
     it('wraps simple object literals in parens', () => {
       assert.strictEqual(wrapObjectLiteral('{a: 10}'), '({a: 10})');
       assert.strictEqual(wrapObjectLiteral('{a:1, b:2}'), '({a:1, b:2})');
+      assert.strictEqual(wrapObjectLiteral('{a: 10};'), '({a: 10})');
+      assert.strictEqual(wrapObjectLiteral('\n { a: 10}\n;\n  ; '), '({a: 10})');
     });
 
     it('wraps nested object literals in parens', () => {
@@ -34,9 +36,12 @@ describe('JavaScriptREPL', () => {
     });
 
     it('leaves expressions untouched', () => {
+      assert.strictEqual(wrapObjectLiteral('{} + {}'), '{} + {}');
       assert.strictEqual(wrapObjectLiteral('{} + []'), '{} + []');
       assert.strictEqual(wrapObjectLiteral('{} + 2'), '{} + 2');
+      assert.strictEqual(wrapObjectLiteral('{ a: 4 } + { a: 5 }'), '{ a: 4 } + { a: 5 }');
       assert.strictEqual(wrapObjectLiteral('{a: 1} + 2'), '{a: 1} + 2');
+      assert.strictEqual(wrapObjectLiteral('{a: 1}, {b: 2}'), '{a: 1}, {b: 2}');
     });
   });
 });

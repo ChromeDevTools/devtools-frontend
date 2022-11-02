@@ -13,12 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { initializePuppeteer } from './initializePuppeteer.js';
-export * from './common/NetworkConditions.js';
-export * from './common/QueryHandler.js';
-export * from './common/DeviceDescriptors.js';
+export * from './common/Device.js';
 export * from './common/Errors.js';
-const puppeteer = initializePuppeteer('puppeteer-core');
-export const { connect, createBrowserFetcher, defaultArgs, executablePath, launch, } = puppeteer;
+export * from './common/PredefinedNetworkConditions.js';
+export * from './common/Puppeteer.js';
+/**
+ * @deprecated Use the query handler API defined on {@link Puppeteer}
+ */
+export * from './common/QueryHandler.js';
+export * from './node/BrowserFetcher.js';
+import { PuppeteerNode } from './node/PuppeteerNode.js';
+/**
+ * @public
+ */
+const puppeteer = new PuppeteerNode({
+    isPuppeteerCore: true,
+});
+export const { connect, 
+/**
+ * @deprecated Construct {@link BrowserFetcher} manually.
+ *
+ * @public
+ */
+createBrowserFetcher, defaultArgs, executablePath, launch, } = puppeteer;
 export default puppeteer;
 //# sourceMappingURL=puppeteer-core.js.map

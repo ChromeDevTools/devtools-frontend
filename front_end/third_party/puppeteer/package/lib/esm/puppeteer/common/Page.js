@@ -25,6 +25,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _CDPPage_instances, _CDPPage_closed, _CDPPage_client, _CDPPage_target, _CDPPage_keyboard, _CDPPage_mouse, _CDPPage_timeoutSettings, _CDPPage_touchscreen, _CDPPage_accessibility, _CDPPage_frameManager, _CDPPage_emulationManager, _CDPPage_tracing, _CDPPage_pageBindings, _CDPPage_coverage, _CDPPage_javascriptEnabled, _CDPPage_viewport, _CDPPage_screenshotTaskQueue, _CDPPage_workers, _CDPPage_fileChooserPromises, _CDPPage_disconnectPromise, _CDPPage_userDragInterceptionEnabled, _CDPPage_onDetachedFromTarget, _CDPPage_onAttachedToTarget, _CDPPage_initialize, _CDPPage_onFileChooser, _CDPPage_onTargetCrashed, _CDPPage_onLogEntryAdded, _CDPPage_emitMetrics, _CDPPage_buildMetricsObject, _CDPPage_handleException, _CDPPage_onConsoleAPI, _CDPPage_onBindingCalled, _CDPPage_addConsoleMessage, _CDPPage_onDialog, _CDPPage_resetDefaultBackgroundColor, _CDPPage_setTransparentBackgroundColor, _CDPPage_sessionClosePromise, _CDPPage_go, _CDPPage_screenshotTask;
+import { Page, } from '../api/Page.js';
 import { assert } from '../util/assert.js';
 import { createDeferredPromise, } from '../util/DeferredPromise.js';
 import { isErrorLike } from '../util/ErrorLike.js';
@@ -44,7 +45,6 @@ import { TimeoutSettings } from './TimeoutSettings.js';
 import { Tracing } from './Tracing.js';
 import { createJSHandle, debugError, evaluationString, getExceptionMessage, getReadableAsBuffer, getReadableFromProtocolStream, importFS, isNumber, isString, pageBindingDeliverErrorString, pageBindingDeliverErrorValueString, pageBindingDeliverResultString, pageBindingInitString, releaseObject, valueFromRemoteObject, waitForEvent, waitWithTimeout, } from './util.js';
 import { WebWorker } from './WebWorker.js';
-import { Page, } from '../api/Page.js';
 /**
  * @internal
  */
@@ -417,39 +417,9 @@ export class CDPPage extends Page {
         __classPrivateFieldSet(this, _CDPPage_userDragInterceptionEnabled, enabled, "f");
         return __classPrivateFieldGet(this, _CDPPage_client, "f").send('Input.setInterceptDrags', { enabled });
     }
-    /**
-     * @param enabled - When `true`, enables offline mode for the page.
-     * @remarks
-     * NOTE: while this method sets the network connection to offline, it does
-     * not change the parameters used in [page.emulateNetworkConditions(networkConditions)]
-     * (#pageemulatenetworkconditionsnetworkconditions)
-     */
     setOfflineMode(enabled) {
         return __classPrivateFieldGet(this, _CDPPage_frameManager, "f").networkManager.setOfflineMode(enabled);
     }
-    /**
-     * @param networkConditions - Passing `null` disables network condition emulation.
-     * @example
-     *
-     * ```ts
-     * const puppeteer = require('puppeteer');
-     * const slow3G = puppeteer.networkConditions['Slow 3G'];
-     *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   await page.emulateNetworkConditions(slow3G);
-     *   await page.goto('https://www.google.com');
-     *   // other actions...
-     *   await browser.close();
-     * })();
-     * ```
-     *
-     * @remarks
-     * NOTE: This does not affect WebSockets and WebRTC PeerConnections (see
-     * https://crbug.com/563644). To set the page offline, you can use
-     * [page.setOfflineMode(enabled)](#pagesetofflinemodeenabled).
-     */
     emulateNetworkConditions(networkConditions) {
         return __classPrivateFieldGet(this, _CDPPage_frameManager, "f").networkManager.emulateNetworkConditions(networkConditions);
     }
@@ -1171,12 +1141,12 @@ export class CDPPage extends Page {
      */
     async waitForRequest(urlOrPredicate, options = {}) {
         const { timeout = __classPrivateFieldGet(this, _CDPPage_timeoutSettings, "f").timeout() } = options;
-        return waitForEvent(__classPrivateFieldGet(this, _CDPPage_frameManager, "f").networkManager, NetworkManagerEmittedEvents.Request, request => {
+        return waitForEvent(__classPrivateFieldGet(this, _CDPPage_frameManager, "f").networkManager, NetworkManagerEmittedEvents.Request, async (request) => {
             if (isString(urlOrPredicate)) {
                 return urlOrPredicate === request.url();
             }
             if (typeof urlOrPredicate === 'function') {
-                return !!urlOrPredicate(request);
+                return !!(await urlOrPredicate(request));
             }
             return false;
         }, timeout, __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_sessionClosePromise).call(this));
@@ -1384,40 +1354,6 @@ export class CDPPage extends Page {
      */
     async bringToFront() {
         await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.bringToFront');
-    }
-    /**
-     * Emulates given device metrics and user agent.
-     *
-     * @remarks
-     * This method is a shortcut for calling two methods:
-     * {@link Page.setUserAgent} and {@link Page.setViewport} To aid emulation,
-     * Puppeteer provides a list of device descriptors that can be obtained via
-     * {@link devices}. `page.emulate` will resize the page. A lot of websites
-     * don't expect phones to change size, so you should emulate before navigating
-     * to the page.
-     * @example
-     *
-     * ```ts
-     * const puppeteer = require('puppeteer');
-     * const iPhone = puppeteer.devices['iPhone 6'];
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   await page.emulate(iPhone);
-     *   await page.goto('https://www.google.com');
-     *   // other actions...
-     *   await browser.close();
-     * })();
-     * ```
-     *
-     * @remarks List of all available devices is available in the source code:
-     * {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
-     */
-    async emulate(options) {
-        await Promise.all([
-            this.setViewport(options.viewport),
-            this.setUserAgent(options.userAgent),
-        ]);
     }
     /**
      * @param enabled - Whether or not to enable JavaScript on the page.
@@ -2167,7 +2103,7 @@ export class CDPPage extends Page {
         return this.mainFrame().type(selector, text, options);
     }
     /**
-     * @deprecated Use `new Promise(r => setTimeout(r, milliseconds));`.
+     * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
      *
      * Causes your script to wait for the given number of milliseconds.
      *
@@ -2550,22 +2486,19 @@ async function _CDPPage_setTransparentBackgroundColor() {
     ]);
     return result[0];
 }, _CDPPage_screenshotTask = async function _CDPPage_screenshotTask(format, options = {}) {
+    var _a, _b;
     await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Target.activateTarget', {
         targetId: __classPrivateFieldGet(this, _CDPPage_target, "f")._targetId,
     });
     let clip = options.clip ? processClip(options.clip) : undefined;
-    const captureBeyondViewport = typeof options.captureBeyondViewport === 'boolean'
-        ? options.captureBeyondViewport
-        : true;
-    const fromSurface = typeof options.fromSurface === 'boolean'
-        ? options.fromSurface
-        : undefined;
+    let captureBeyondViewport = (_a = options.captureBeyondViewport) !== null && _a !== void 0 ? _a : true;
+    const fromSurface = options.fromSurface;
     if (options.fullPage) {
         const metrics = await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.getLayoutMetrics');
         // Fallback to `contentSize` in case of using Firefox.
         const { width, height } = metrics.cssContentSize || metrics.contentSize;
         // Overwrite clip for full page.
-        clip = { x: 0, y: 0, width, height, scale: 1 };
+        clip = undefined;
         if (!captureBeyondViewport) {
             const { isMobile = false, deviceScaleFactor = 1, isLandscape = false, } = __classPrivateFieldGet(this, _CDPPage_viewport, "f") || {};
             const screenOrientation = isLandscape
@@ -2580,6 +2513,9 @@ async function _CDPPage_setTransparentBackgroundColor() {
             });
         }
     }
+    else if (!clip) {
+        captureBeyondViewport = false;
+    }
     const shouldSetDefaultBackground = options.omitBackground && (format === 'png' || format === 'webp');
     if (shouldSetDefaultBackground) {
         await __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_setTransparentBackgroundColor).call(this);
@@ -2587,12 +2523,10 @@ async function _CDPPage_setTransparentBackgroundColor() {
     const result = await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.captureScreenshot', {
         format,
         quality: options.quality,
-        clip: clip
-            ? {
-                ...clip,
-                scale: clip.scale === undefined ? 1 : clip.scale,
-            }
-            : undefined,
+        clip: clip && {
+            ...clip,
+            scale: (_b = clip.scale) !== null && _b !== void 0 ? _b : 1,
+        },
         captureBeyondViewport,
         fromSurface,
     });

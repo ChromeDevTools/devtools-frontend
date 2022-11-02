@@ -22,7 +22,7 @@ import { Connection } from './Connection.js';
 import { getFetch } from './fetch.js';
 const getWebSocketTransportClass = async () => {
     return isNode
-        ? (await import('../node/NodeWebSocketTransport.js')).NodeWebSocketTransport
+        ? (await import('./NodeWebSocketTransport.js')).NodeWebSocketTransport
         : (await import('./BrowserWebSocketTransport.js'))
             .BrowserWebSocketTransport;
 };

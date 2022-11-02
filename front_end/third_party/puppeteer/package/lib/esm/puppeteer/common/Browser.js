@@ -32,7 +32,8 @@ import { Target } from './Target.js';
 import { TaskQueue } from './TaskQueue.js';
 import { ChromeTargetManager } from './ChromeTargetManager.js';
 import { FirefoxTargetManager } from './FirefoxTargetManager.js';
-import { Browser as BrowserBase, BrowserContext, WEB_PERMISSION_TO_PROTOCOL_PERMISSION, } from '../api/Browser.js';
+import { Browser as BrowserBase, WEB_PERMISSION_TO_PROTOCOL_PERMISSION, } from '../api/Browser.js';
+import { BrowserContext } from '../api/BrowserContext.js';
 /**
  * @internal
  */
@@ -438,6 +439,9 @@ export class CDPBrowserContext extends BrowserContext {
         __classPrivateFieldSet(this, _CDPBrowserContext_connection, connection, "f");
         __classPrivateFieldSet(this, _CDPBrowserContext_browser, browser, "f");
         __classPrivateFieldSet(this, _CDPBrowserContext_id, contextId, "f");
+    }
+    get id() {
+        return __classPrivateFieldGet(this, _CDPBrowserContext_id, "f");
     }
     /**
      * An array of all active targets inside the browser context.

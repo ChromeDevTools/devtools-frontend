@@ -78,7 +78,8 @@ class Coverage {
     }
     /**
      * @param options - Set of configurable options for coverage defaults to
-     * `resetOnNavigation : true, reportAnonymousScripts : false`
+     * `resetOnNavigation : true, reportAnonymousScripts : false,`
+     * `includeRawScriptCoverage : false, useBlockCoverage : true`
      * @returns Promise that resolves when coverage is started.
      *
      * @remarks
@@ -141,7 +142,7 @@ class JSCoverage {
     }
     async start(options = {}) {
         (0, assert_js_1.assert)(!__classPrivateFieldGet(this, _JSCoverage_enabled, "f"), 'JSCoverage is already enabled');
-        const { resetOnNavigation = true, reportAnonymousScripts = false, includeRawScriptCoverage = false, } = options;
+        const { resetOnNavigation = true, reportAnonymousScripts = false, includeRawScriptCoverage = false, useBlockCoverage = true, } = options;
         __classPrivateFieldSet(this, _JSCoverage_resetOnNavigation, resetOnNavigation, "f");
         __classPrivateFieldSet(this, _JSCoverage_reportAnonymousScripts, reportAnonymousScripts, "f");
         __classPrivateFieldSet(this, _JSCoverage_includeRawScriptCoverage, includeRawScriptCoverage, "f");
@@ -156,7 +157,7 @@ class JSCoverage {
             __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Profiler.enable'),
             __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Profiler.startPreciseCoverage', {
                 callCount: __classPrivateFieldGet(this, _JSCoverage_includeRawScriptCoverage, "f"),
-                detailed: true,
+                detailed: useBlockCoverage,
             }),
             __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Debugger.enable'),
             __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Debugger.setSkipAllPauses', { skip: true }),

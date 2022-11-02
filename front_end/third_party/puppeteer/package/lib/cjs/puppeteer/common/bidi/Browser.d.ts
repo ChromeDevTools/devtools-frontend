@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 /// <reference types="node" />
-import { Browser as BrowserBase, BrowserCloseCallback, BrowserContextOptions, BrowserContext as BrowserContextBase } from '../../api/Browser.js';
+import { Browser as BrowserBase, BrowserCloseCallback, BrowserContextOptions } from '../../api/Browser.js';
+import { BrowserContext as BrowserContextBase } from '../../api/BrowserContext.js';
 import { Connection } from './Connection.js';
 import { ChildProcess } from 'child_process';
 /**

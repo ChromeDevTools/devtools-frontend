@@ -2,9 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Puppeteer = void 0;
 const BrowserConnector_js_1 = require("./BrowserConnector.js");
-const DeviceDescriptors_js_1 = require("./DeviceDescriptors.js");
-const Errors_js_1 = require("./Errors.js");
-const NetworkConditions_js_1 = require("./NetworkConditions.js");
 const QueryHandler_js_1 = require("./QueryHandler.js");
 /**
  * The main Puppeteer class.
@@ -28,6 +25,49 @@ class Puppeteer {
         this.connect = this.connect.bind(this);
     }
     /**
+     * Registers a {@link CustomQueryHandler | custom query handler}.
+     *
+     * @remarks
+     * After registration, the handler can be used everywhere where a selector is
+     * expected by prepending the selection string with `<name>/`. The name is only
+     * allowed to consist of lower- and upper case latin letters.
+     *
+     * @example
+     *
+     * ```
+     * puppeteer.registerCustomQueryHandler('text', { … });
+     * const aHandle = await page.$('text/…');
+     * ```
+     *
+     * @param name - The name that the custom query handler will be registered
+     * under.
+     * @param queryHandler - The {@link CustomQueryHandler | custom query handler}
+     * to register.
+     *
+     * @public
+     */
+    static registerCustomQueryHandler(name, queryHandler) {
+        return (0, QueryHandler_js_1.registerCustomQueryHandler)(name, queryHandler);
+    }
+    /**
+     * Unregisters a custom query handler for a given name.
+     */
+    static unregisterCustomQueryHandler(name) {
+        return (0, QueryHandler_js_1.unregisterCustomQueryHandler)(name);
+    }
+    /**
+     * Gets the names of all custom query handlers.
+     */
+    static customQueryHandlerNames() {
+        return (0, QueryHandler_js_1.customQueryHandlerNames)();
+    }
+    /**
+     * Unregisters all custom query handlers.
+     */
+    static clearCustomQueryHandlers() {
+        return (0, QueryHandler_js_1.clearCustomQueryHandlers)();
+    }
+    /**
      * This method attaches Puppeteer to an existing browser instance.
      *
      * @remarks
@@ -37,83 +77,6 @@ class Puppeteer {
      */
     connect(options) {
         return (0, BrowserConnector_js_1._connectToCDPBrowser)(options);
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {devices} from 'puppeteer';
-     * ```
-     */
-    get devices() {
-        return DeviceDescriptors_js_1.devices;
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {errors} from 'puppeteer';
-     * ```
-     */
-    get errors() {
-        return Errors_js_1.errors;
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {networkConditions} from 'puppeteer';
-     * ```
-     */
-    get networkConditions() {
-        return NetworkConditions_js_1.networkConditions;
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {registerCustomQueryHandler} from 'puppeteer';
-     * ```
-     */
-    registerCustomQueryHandler(name, queryHandler) {
-        return (0, QueryHandler_js_1.registerCustomQueryHandler)(name, queryHandler);
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {unregisterCustomQueryHandler} from 'puppeteer';
-     * ```
-     */
-    unregisterCustomQueryHandler(name) {
-        return (0, QueryHandler_js_1.unregisterCustomQueryHandler)(name);
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {customQueryHandlerNames} from 'puppeteer';
-     * ```
-     */
-    customQueryHandlerNames() {
-        return (0, QueryHandler_js_1.customQueryHandlerNames)();
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {clearCustomQueryHandlers} from 'puppeteer';
-     * ```
-     */
-    clearCustomQueryHandlers() {
-        return (0, QueryHandler_js_1.clearCustomQueryHandlers)();
     }
 }
 exports.Puppeteer = Puppeteer;

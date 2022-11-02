@@ -41,7 +41,7 @@ const USKeyboardLayout_js_1 = require("./USKeyboardLayout.js");
  * {@link Keyboard.up}, and {@link Keyboard.sendCharacter}
  * to manually fire events as if they were generated from a real keyboard.
  *
- * On MacOS, keyboard shortcuts like `⌘ A` -\> Select All do not work.
+ * On macOS, keyboard shortcuts like `⌘ A` -\> Select All do not work.
  * See {@link https://github.com/puppeteer/puppeteer/issues/1313 | #1313}.
  *
  * @example
@@ -554,7 +554,7 @@ class Mouse {
     }
     /**
      * Performs a drag, dragenter, dragover, and drop in sequence.
-     * @param target - point to drag from
+     * @param start - point to drag from
      * @param target - point to drop on
      * @param options - An object of options. Accepts delay which,
      * if specified, is the time to wait between `dragover` and `drop` in milliseconds.

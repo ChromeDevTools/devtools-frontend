@@ -103,12 +103,6 @@ export class ChromeTargetManager extends EventEmitter {
                 const target = __classPrivateFieldGet(this, _ChromeTargetManager_targetFactory, "f").call(this, event.targetInfo, undefined);
                 __classPrivateFieldGet(this, _ChromeTargetManager_attachedTargetsByTargetId, "f").set(event.targetInfo.targetId, target);
             }
-            if (event.targetInfo.type === 'shared_worker') {
-                // Special case (https://crbug.com/1338156): currently, shared_workers
-                // don't get auto-attached. This should be removed once the auto-attach
-                // works.
-                await __classPrivateFieldGet(this, _ChromeTargetManager_connection, "f")._createSession(event.targetInfo, true);
-            }
         });
         _ChromeTargetManager_onTargetDestroyed.set(this, (event) => {
             const targetInfo = __classPrivateFieldGet(this, _ChromeTargetManager_discoveredTargetsByTargetId, "f").get(event.targetId);

@@ -1,7 +1,4 @@
 import { _connectToCDPBrowser, } from './BrowserConnector.js';
-import { devices } from './DeviceDescriptors.js';
-import { errors } from './Errors.js';
-import { networkConditions } from './NetworkConditions.js';
 import { clearCustomQueryHandlers, customQueryHandlerNames, registerCustomQueryHandler, unregisterCustomQueryHandler, } from './QueryHandler.js';
 /**
  * The main Puppeteer class.
@@ -25,6 +22,49 @@ export class Puppeteer {
         this.connect = this.connect.bind(this);
     }
     /**
+     * Registers a {@link CustomQueryHandler | custom query handler}.
+     *
+     * @remarks
+     * After registration, the handler can be used everywhere where a selector is
+     * expected by prepending the selection string with `<name>/`. The name is only
+     * allowed to consist of lower- and upper case latin letters.
+     *
+     * @example
+     *
+     * ```
+     * puppeteer.registerCustomQueryHandler('text', { … });
+     * const aHandle = await page.$('text/…');
+     * ```
+     *
+     * @param name - The name that the custom query handler will be registered
+     * under.
+     * @param queryHandler - The {@link CustomQueryHandler | custom query handler}
+     * to register.
+     *
+     * @public
+     */
+    static registerCustomQueryHandler(name, queryHandler) {
+        return registerCustomQueryHandler(name, queryHandler);
+    }
+    /**
+     * Unregisters a custom query handler for a given name.
+     */
+    static unregisterCustomQueryHandler(name) {
+        return unregisterCustomQueryHandler(name);
+    }
+    /**
+     * Gets the names of all custom query handlers.
+     */
+    static customQueryHandlerNames() {
+        return customQueryHandlerNames();
+    }
+    /**
+     * Unregisters all custom query handlers.
+     */
+    static clearCustomQueryHandlers() {
+        return clearCustomQueryHandlers();
+    }
+    /**
      * This method attaches Puppeteer to an existing browser instance.
      *
      * @remarks
@@ -34,83 +74,6 @@ export class Puppeteer {
      */
     connect(options) {
         return _connectToCDPBrowser(options);
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {devices} from 'puppeteer';
-     * ```
-     */
-    get devices() {
-        return devices;
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {errors} from 'puppeteer';
-     * ```
-     */
-    get errors() {
-        return errors;
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {networkConditions} from 'puppeteer';
-     * ```
-     */
-    get networkConditions() {
-        return networkConditions;
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {registerCustomQueryHandler} from 'puppeteer';
-     * ```
-     */
-    registerCustomQueryHandler(name, queryHandler) {
-        return registerCustomQueryHandler(name, queryHandler);
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {unregisterCustomQueryHandler} from 'puppeteer';
-     * ```
-     */
-    unregisterCustomQueryHandler(name) {
-        return unregisterCustomQueryHandler(name);
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {customQueryHandlerNames} from 'puppeteer';
-     * ```
-     */
-    customQueryHandlerNames() {
-        return customQueryHandlerNames();
-    }
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {clearCustomQueryHandlers} from 'puppeteer';
-     * ```
-     */
-    clearCustomQueryHandlers() {
-        return clearCustomQueryHandlers();
     }
 }
 //# sourceMappingURL=Puppeteer.js.map

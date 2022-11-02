@@ -13,11 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './common/NetworkConditions.js';
-export * from './common/QueryHandler.js';
-export * from './common/DeviceDescriptors.js';
+export { Protocol } from 'devtools-protocol';
+export * from './common/Device.js';
 export * from './common/Errors.js';
-declare const puppeteer: import("./types.js").PuppeteerNode;
-export declare const connect: (options: import("./types.js").ConnectOptions) => Promise<import("./types.js").Browser>, createBrowserFetcher: (options: import("./types.js").BrowserFetcherOptions) => import("./types.js").BrowserFetcher, defaultArgs: (options?: import("./types.js").BrowserLaunchArgumentOptions) => string[], executablePath: (channel?: string | undefined) => string, launch: (options?: import("./types.js").PuppeteerLaunchOptions) => Promise<import("./types.js").Browser>;
+export * from './common/PredefinedNetworkConditions.js';
+export * from './common/Puppeteer.js';
+/**
+ * @deprecated Use the query handler API defined on {@link Puppeteer}
+ */
+export * from './common/QueryHandler.js';
+export * from './node/BrowserFetcher.js';
+import { PuppeteerNode } from './node/PuppeteerNode.js';
+/**
+ * @public
+ */
+declare const puppeteer: PuppeteerNode;
+export declare const connect: (options: import("./common/Puppeteer.js").ConnectOptions) => Promise<import("./types.js").Browser>, 
+/**
+ * @deprecated Construct {@link BrowserFetcher} manually.
+ *
+ * @public
+ */
+createBrowserFetcher: (options: Partial<import("./node/BrowserFetcher.js").BrowserFetcherOptions>) => import("./node/BrowserFetcher.js").BrowserFetcher, defaultArgs: (options?: import("./types.js").BrowserLaunchArgumentOptions) => string[], executablePath: (channel?: import("./types.js").ChromeReleaseChannel | undefined) => string, launch: (options?: import("./node/PuppeteerNode.js").PuppeteerLaunchOptions) => Promise<import("./types.js").Browser>;
 export default puppeteer;
 //# sourceMappingURL=puppeteer-core.d.ts.map

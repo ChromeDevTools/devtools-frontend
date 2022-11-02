@@ -20,7 +20,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import devtools_paths
 
 THIRD_PARTY_NPM_PACKAGE_NAMES = [{
-    "package_name": "puppeteer",
+    "package_name": "puppeteer-core",
     "folder_name": "puppeteer",
     "package_root": "lib/esm",
 }]

@@ -51,27 +51,27 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _BrowserFetcher_instances, _BrowserFetcher_product, _BrowserFetcher_downloadsFolder, _BrowserFetcher_downloadHost, _BrowserFetcher_platform, _BrowserFetcher_getFolderPath;
+var _BrowserFetcher_instances, _BrowserFetcher_product, _BrowserFetcher_downloadPath, _BrowserFetcher_downloadHost, _BrowserFetcher_platform, _BrowserFetcher_getFolderPath;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrowserFetcher = void 0;
-const os = __importStar(require("os"));
-const fs = __importStar(require("fs"));
-const path = __importStar(require("path"));
-const util = __importStar(require("util"));
-const childProcess = __importStar(require("child_process"));
-const https = __importStar(require("https"));
-const http = __importStar(require("http"));
+const child_process_1 = require("child_process");
 const extract_zip_1 = __importDefault(require("extract-zip"));
-const Debug_js_1 = require("../common/Debug.js");
-const util_1 = require("util");
-const rimraf_1 = __importDefault(require("rimraf"));
-const URL = __importStar(require("url"));
+const fs_1 = require("fs");
+const promises_1 = require("fs/promises");
+const http = __importStar(require("http"));
+const https = __importStar(require("https"));
 const https_proxy_agent_1 = __importDefault(require("https-proxy-agent"));
+const os = __importStar(require("os"));
+const path = __importStar(require("path"));
 const proxy_from_env_1 = require("proxy-from-env");
-const assert_js_1 = require("../util/assert.js");
+const rimraf_1 = __importDefault(require("rimraf"));
 const tar_fs_1 = __importDefault(require("tar-fs"));
 const unbzip2_stream_1 = __importDefault(require("unbzip2-stream"));
-const { PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM } = process.env;
+const URL = __importStar(require("url"));
+const util = __importStar(require("util"));
+const util_1 = require("util");
+const Debug_js_1 = require("../common/Debug.js");
+const assert_js_1 = require("../util/assert.js");
 const debugFetcher = (0, Debug_js_1.debug)('puppeteer:fetcher');
 const downloadURLs = {
     chrome: {
@@ -91,13 +91,12 @@ const downloadURLs = {
 const browserConfig = {
     chrome: {
         host: 'https://storage.googleapis.com',
-        destination: '.local-chromium',
     },
     firefox: {
         host: 'https://archive.mozilla.org/pub/firefox/nightly/latest-mozilla-central',
-        destination: '.local-firefox',
     },
 };
+const exec = (0, util_1.promisify)(child_process_1.exec);
 function archiveName(product, platform, revision) {
     switch (product) {
         case 'chrome':
@@ -123,11 +122,11 @@ function downloadURL(product, platform, host, revision) {
     return url;
 }
 function handleArm64() {
-    let exists = fs.existsSync('/usr/bin/chromium-browser');
+    let exists = (0, fs_1.existsSync)('/usr/bin/chromium-browser');
     if (exists) {
         return;
     }
-    exists = fs.existsSync('/usr/bin/chromium');
+    exists = (0, fs_1.existsSync)('/usr/bin/chromium');
     if (exists) {
         return;
     }
@@ -137,57 +136,53 @@ function handleArm64() {
         '\n\n sudo apt install chromium-browser\n');
     throw new Error();
 }
-const readdirAsync = (0, util_1.promisify)(fs.readdir.bind(fs));
-const mkdirAsync = (0, util_1.promisify)(fs.mkdir.bind(fs));
-const unlinkAsync = (0, util_1.promisify)(fs.unlink.bind(fs));
-const chmodAsync = (0, util_1.promisify)(fs.chmod.bind(fs));
-function existsAsync(filePath) {
-    return new Promise(resolve => {
-        fs.access(filePath, err => {
-            return resolve(!err);
-        });
-    });
-}
 /**
- * BrowserFetcher can download and manage different versions of Chromium and Firefox.
+ * BrowserFetcher can download and manage different versions of Chromium and
+ * Firefox.
  *
  * @remarks
- * BrowserFetcher operates on revision strings that specify a precise version of Chromium, e.g. `"533271"`. Revision strings can be obtained from {@link http://omahaproxy.appspot.com/ | omahaproxy.appspot.com}.
- * In the Firefox case, BrowserFetcher downloads Firefox Nightly and
- * operates on version numbers such as `"75"`.
+ * BrowserFetcher operates on revision strings that specify a precise version of
+ * Chromium, e.g. `"533271"`. Revision strings can be obtained from
+ * {@link http://omahaproxy.appspot.com/ | omahaproxy.appspot.com}. For Firefox,
+ * BrowserFetcher downloads Firefox Nightly and operates on version numbers such
+ * as `"75"`.
+ *
+ * @remarks
+ * The default constructed fetcher will always be for Chromium unless otherwise
+ * specified.
+ *
+ * @remarks
+ * BrowserFetcher is not designed to work concurrently with other instances of
+ * BrowserFetcher that share the same downloads directory.
  *
  * @example
  * An example of using BrowserFetcher to download a specific version of Chromium
  * and running Puppeteer against it:
  *
  * ```ts
- * const browserFetcher = puppeteer.createBrowserFetcher();
+ * const browserFetcher = new BrowserFetcher({path: 'path/to/download/folder'});
  * const revisionInfo = await browserFetcher.download('533271');
  * const browser = await puppeteer.launch({
  *   executablePath: revisionInfo.executablePath,
  * });
  * ```
  *
- * **NOTE** BrowserFetcher is not designed to work concurrently with other
- * instances of BrowserFetcher that share the same downloads directory.
- *
  * @public
  */
 class BrowserFetcher {
     /**
-     * @internal
+     * Constructs a browser fetcher for the given options.
      */
-    constructor(projectRoot, options = {}) {
+    constructor(options) {
+        var _a, _b;
         _BrowserFetcher_instances.add(this);
         _BrowserFetcher_product.set(this, void 0);
-        _BrowserFetcher_downloadsFolder.set(this, void 0);
+        _BrowserFetcher_downloadPath.set(this, void 0);
         _BrowserFetcher_downloadHost.set(this, void 0);
         _BrowserFetcher_platform.set(this, void 0);
-        __classPrivateFieldSet(this, _BrowserFetcher_product, (options.product || 'chrome').toLowerCase(), "f");
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _BrowserFetcher_product, "f") === 'chrome' || __classPrivateFieldGet(this, _BrowserFetcher_product, "f") === 'firefox', `Unknown product: "${options.product}"`);
-        __classPrivateFieldSet(this, _BrowserFetcher_downloadsFolder, options.path ||
-            path.join(projectRoot, browserConfig[__classPrivateFieldGet(this, _BrowserFetcher_product, "f")].destination), "f");
-        __classPrivateFieldSet(this, _BrowserFetcher_downloadHost, options.host || browserConfig[__classPrivateFieldGet(this, _BrowserFetcher_product, "f")].host, "f");
+        __classPrivateFieldSet(this, _BrowserFetcher_product, (_a = options.product) !== null && _a !== void 0 ? _a : 'chrome', "f");
+        __classPrivateFieldSet(this, _BrowserFetcher_downloadPath, options.path, "f");
+        __classPrivateFieldSet(this, _BrowserFetcher_downloadHost, (_b = options.host) !== null && _b !== void 0 ? _b : browserConfig[__classPrivateFieldGet(this, _BrowserFetcher_product, "f")].host, "f");
         if (options.platform) {
             __classPrivateFieldSet(this, _BrowserFetcher_platform, options.platform, "f");
         }
@@ -197,7 +192,7 @@ class BrowserFetcher {
                 case 'darwin':
                     switch (__classPrivateFieldGet(this, _BrowserFetcher_product, "f")) {
                         case 'chrome':
-                            __classPrivateFieldSet(this, _BrowserFetcher_platform, os.arch() === 'arm64' && PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM
+                            __classPrivateFieldSet(this, _BrowserFetcher_platform, os.arch() === 'arm64' && options.useMacOSARMBinary
                                 ? 'mac_arm'
                                 : 'mac', "f");
                             break;
@@ -212,7 +207,7 @@ class BrowserFetcher {
                 case 'win32':
                     __classPrivateFieldSet(this, _BrowserFetcher_platform, os.arch() === 'x64' ||
                         // Windows 11 for ARM supports x64 emulation
-                        (os.arch() === 'arm64' && _isWindows11(os.release()))
+                        (os.arch() === 'arm64' && isWindows11(os.release()))
                         ? 'win64'
                         : 'win32', "f");
                     return;
@@ -276,13 +271,13 @@ class BrowserFetcher {
         const url = downloadURL(__classPrivateFieldGet(this, _BrowserFetcher_product, "f"), __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"), __classPrivateFieldGet(this, _BrowserFetcher_downloadHost, "f"), revision);
         const fileName = url.split('/').pop();
         (0, assert_js_1.assert)(fileName, `A malformed download URL was found: ${url}.`);
-        const archivePath = path.join(__classPrivateFieldGet(this, _BrowserFetcher_downloadsFolder, "f"), fileName);
+        const archivePath = path.join(__classPrivateFieldGet(this, _BrowserFetcher_downloadPath, "f"), fileName);
         const outputPath = __classPrivateFieldGet(this, _BrowserFetcher_instances, "m", _BrowserFetcher_getFolderPath).call(this, revision);
-        if (await existsAsync(outputPath)) {
+        if ((0, fs_1.existsSync)(outputPath)) {
             return this.revisionInfo(revision);
         }
-        if (!(await existsAsync(__classPrivateFieldGet(this, _BrowserFetcher_downloadsFolder, "f")))) {
-            await mkdirAsync(__classPrivateFieldGet(this, _BrowserFetcher_downloadsFolder, "f"));
+        if (!(0, fs_1.existsSync)(__classPrivateFieldGet(this, _BrowserFetcher_downloadPath, "f"))) {
+            await (0, promises_1.mkdir)(__classPrivateFieldGet(this, _BrowserFetcher_downloadPath, "f"), { recursive: true });
         }
         // Use system Chromium builds on Linux ARM devices
         if (os.platform() === 'linux' && os.arch() === 'arm64') {
@@ -294,27 +289,27 @@ class BrowserFetcher {
             await install(archivePath, outputPath);
         }
         finally {
-            if (await existsAsync(archivePath)) {
-                await unlinkAsync(archivePath);
+            if ((0, fs_1.existsSync)(archivePath)) {
+                await (0, promises_1.unlink)(archivePath);
             }
         }
         const revisionInfo = this.revisionInfo(revision);
         if (revisionInfo) {
-            await chmodAsync(revisionInfo.executablePath, 0o755);
+            await (0, promises_1.chmod)(revisionInfo.executablePath, 0o755);
         }
         return revisionInfo;
     }
     /**
      * @remarks
      * This method is affected by the current `product`.
-     * @returns A promise with a list of all revision strings (for the current `product`)
+     * @returns A list of all revision strings (for the current `product`)
      * available locally on disk.
      */
-    async localRevisions() {
-        if (!(await existsAsync(__classPrivateFieldGet(this, _BrowserFetcher_downloadsFolder, "f")))) {
+    localRevisions() {
+        if (!(0, fs_1.existsSync)(__classPrivateFieldGet(this, _BrowserFetcher_downloadPath, "f"))) {
             return [];
         }
-        const fileNames = await readdirAsync(__classPrivateFieldGet(this, _BrowserFetcher_downloadsFolder, "f"));
+        const fileNames = (0, fs_1.readdirSync)(__classPrivateFieldGet(this, _BrowserFetcher_downloadPath, "f"));
         return fileNames
             .map(fileName => {
             return parseFolderPath(__classPrivateFieldGet(this, _BrowserFetcher_product, "f"), fileName);
@@ -336,7 +331,7 @@ class BrowserFetcher {
      */
     async remove(revision) {
         const folderPath = __classPrivateFieldGet(this, _BrowserFetcher_instances, "m", _BrowserFetcher_getFolderPath).call(this, revision);
-        (0, assert_js_1.assert)(await existsAsync(folderPath), `Failed to remove: revision ${revision} is not downloaded`);
+        (0, assert_js_1.assert)((0, fs_1.existsSync)(folderPath), `Failed to remove: revision ${revision} is not downloaded`);
         await new Promise(fulfill => {
             return (0, rimraf_1.default)(folderPath, fulfill);
         });
@@ -348,39 +343,39 @@ class BrowserFetcher {
     revisionInfo(revision) {
         const folderPath = __classPrivateFieldGet(this, _BrowserFetcher_instances, "m", _BrowserFetcher_getFolderPath).call(this, revision);
         let executablePath = '';
-        if (__classPrivateFieldGet(this, _BrowserFetcher_product, "f") === 'chrome') {
-            if (__classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'mac' || __classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'mac_arm') {
-                executablePath = path.join(folderPath, archiveName(__classPrivateFieldGet(this, _BrowserFetcher_product, "f"), __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"), revision), 'Chromium.app', 'Contents', 'MacOS', 'Chromium');
-            }
-            else if (__classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'linux') {
-                executablePath = path.join(folderPath, archiveName(__classPrivateFieldGet(this, _BrowserFetcher_product, "f"), __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"), revision), 'chrome');
-            }
-            else if (__classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'win32' || __classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'win64') {
-                executablePath = path.join(folderPath, archiveName(__classPrivateFieldGet(this, _BrowserFetcher_product, "f"), __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"), revision), 'chrome.exe');
-            }
-            else {
-                throw new Error('Unsupported platform: ' + __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"));
-            }
-        }
-        else if (__classPrivateFieldGet(this, _BrowserFetcher_product, "f") === 'firefox') {
-            if (__classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'mac' || __classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'mac_arm') {
-                executablePath = path.join(folderPath, 'Firefox Nightly.app', 'Contents', 'MacOS', 'firefox');
-            }
-            else if (__classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'linux') {
-                executablePath = path.join(folderPath, 'firefox', 'firefox');
-            }
-            else if (__classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'win32' || __classPrivateFieldGet(this, _BrowserFetcher_platform, "f") === 'win64') {
-                executablePath = path.join(folderPath, 'firefox', 'firefox.exe');
-            }
-            else {
-                throw new Error('Unsupported platform: ' + __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"));
-            }
-        }
-        else {
-            throw new Error('Unsupported product: ' + __classPrivateFieldGet(this, _BrowserFetcher_product, "f"));
+        switch (__classPrivateFieldGet(this, _BrowserFetcher_product, "f")) {
+            case 'chrome':
+                switch (__classPrivateFieldGet(this, _BrowserFetcher_platform, "f")) {
+                    case 'mac':
+                    case 'mac_arm':
+                        executablePath = path.join(folderPath, archiveName(__classPrivateFieldGet(this, _BrowserFetcher_product, "f"), __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"), revision), 'Chromium.app', 'Contents', 'MacOS', 'Chromium');
+                        break;
+                    case 'linux':
+                        executablePath = path.join(folderPath, archiveName(__classPrivateFieldGet(this, _BrowserFetcher_product, "f"), __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"), revision), 'chrome');
+                        break;
+                    case 'win32':
+                    case 'win64':
+                        executablePath = path.join(folderPath, archiveName(__classPrivateFieldGet(this, _BrowserFetcher_product, "f"), __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"), revision), 'chrome.exe');
+                        break;
+                }
+                break;
+            case 'firefox':
+                switch (__classPrivateFieldGet(this, _BrowserFetcher_platform, "f")) {
+                    case 'mac':
+                    case 'mac_arm':
+                        executablePath = path.join(folderPath, 'Firefox Nightly.app', 'Contents', 'MacOS', 'firefox');
+                        break;
+                    case 'linux':
+                        executablePath = path.join(folderPath, 'firefox', 'firefox');
+                        break;
+                    case 'win32':
+                    case 'win64':
+                        executablePath = path.join(folderPath, 'firefox', 'firefox.exe');
+                        break;
+                }
         }
         const url = downloadURL(__classPrivateFieldGet(this, _BrowserFetcher_product, "f"), __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"), __classPrivateFieldGet(this, _BrowserFetcher_downloadHost, "f"), revision);
-        const local = fs.existsSync(folderPath);
+        const local = (0, fs_1.existsSync)(folderPath);
         debugFetcher({
             revision,
             executablePath,
@@ -400,8 +395,8 @@ class BrowserFetcher {
     }
 }
 exports.BrowserFetcher = BrowserFetcher;
-_BrowserFetcher_product = new WeakMap(), _BrowserFetcher_downloadsFolder = new WeakMap(), _BrowserFetcher_downloadHost = new WeakMap(), _BrowserFetcher_platform = new WeakMap(), _BrowserFetcher_instances = new WeakSet(), _BrowserFetcher_getFolderPath = function _BrowserFetcher_getFolderPath(revision) {
-    return path.resolve(__classPrivateFieldGet(this, _BrowserFetcher_downloadsFolder, "f"), `${__classPrivateFieldGet(this, _BrowserFetcher_platform, "f")}-${revision}`);
+_BrowserFetcher_product = new WeakMap(), _BrowserFetcher_downloadPath = new WeakMap(), _BrowserFetcher_downloadHost = new WeakMap(), _BrowserFetcher_platform = new WeakMap(), _BrowserFetcher_instances = new WeakSet(), _BrowserFetcher_getFolderPath = function _BrowserFetcher_getFolderPath(revision) {
+    return path.resolve(__classPrivateFieldGet(this, _BrowserFetcher_downloadPath, "f"), `${__classPrivateFieldGet(this, _BrowserFetcher_platform, "f")}-${revision}`);
 };
 function parseFolderPath(product, folderPath) {
     const name = path.basename(folderPath);
@@ -419,7 +414,7 @@ function parseFolderPath(product, folderPath) {
  * Windows 11 is identified by 10.0.22000 or greater
  * @internal
  */
-function _isWindows11(version) {
+function isWindows11(version) {
     const parts = version.split('.');
     if (parts.length > 2) {
         const major = parseInt(parts[0], 10);
@@ -452,7 +447,7 @@ function _downloadFile(url, destinationPath, progressCallback) {
             reject(error);
             return;
         }
-        const file = fs.createWriteStream(destinationPath);
+        const file = (0, fs_1.createWriteStream)(destinationPath);
         file.on('finish', () => {
             return fulfill();
         });
@@ -474,18 +469,17 @@ function _downloadFile(url, destinationPath, progressCallback) {
         progressCallback(downloadedBytes, totalBytes);
     }
 }
-function install(archivePath, folderPath) {
+async function install(archivePath, folderPath) {
     debugFetcher(`Installing ${archivePath} to ${folderPath}`);
     if (archivePath.endsWith('.zip')) {
-        return (0, extract_zip_1.default)(archivePath, { dir: folderPath });
+        await (0, extract_zip_1.default)(archivePath, { dir: folderPath });
     }
     else if (archivePath.endsWith('.tar.bz2')) {
-        return _extractTar(archivePath, folderPath);
+        await extractTar(archivePath, folderPath);
     }
     else if (archivePath.endsWith('.dmg')) {
-        return mkdirAsync(folderPath).then(() => {
-            return _installDMG(archivePath, folderPath);
-        });
+        await (0, promises_1.mkdir)(folderPath);
+        await installDMG(archivePath, folderPath);
     }
     else {
         throw new Error(`Unsupported archive format: ${archivePath}`);
@@ -494,79 +488,48 @@ function install(archivePath, folderPath) {
 /**
  * @internal
  */
-function _extractTar(tarPath, folderPath) {
+function extractTar(tarPath, folderPath) {
     return new Promise((fulfill, reject) => {
         const tarStream = tar_fs_1.default.extract(folderPath);
         tarStream.on('error', reject);
         tarStream.on('finish', fulfill);
-        const readStream = fs.createReadStream(tarPath);
+        const readStream = (0, fs_1.createReadStream)(tarPath);
         readStream.pipe((0, unbzip2_stream_1.default)()).pipe(tarStream);
     });
 }
 /**
  * @internal
  */
-function _installDMG(dmgPath, folderPath) {
-    let mountPath;
-    return new Promise((fulfill, reject) => {
-        const mountCommand = `hdiutil attach -nobrowse -noautoopen "${dmgPath}"`;
-        childProcess.exec(mountCommand, (err, stdout) => {
-            if (err) {
-                return reject(err);
-            }
-            const volumes = stdout.match(/\/Volumes\/(.*)/m);
-            if (!volumes) {
-                return reject(new Error(`Could not find volume path in ${stdout}`));
-            }
-            mountPath = volumes[0];
-            readdirAsync(mountPath)
-                .then(fileNames => {
-                const appName = fileNames.find(item => {
-                    return typeof item === 'string' && item.endsWith('.app');
-                });
-                if (!appName) {
-                    return reject(new Error(`Cannot find app in ${mountPath}`));
-                }
-                const copyPath = path.join(mountPath, appName);
-                debugFetcher(`Copying ${copyPath} to ${folderPath}`);
-                childProcess.exec(`cp -R "${copyPath}" "${folderPath}"`, err => {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        fulfill();
-                    }
-                });
-            })
-                .catch(reject);
+async function installDMG(dmgPath, folderPath) {
+    const { stdout } = await exec(`hdiutil attach -nobrowse -noautoopen "${dmgPath}"`);
+    const volumes = stdout.match(/\/Volumes\/(.*)/m);
+    if (!volumes) {
+        throw new Error(`Could not find volume path in ${stdout}`);
+    }
+    const mountPath = volumes[0];
+    try {
+        const fileNames = await (0, promises_1.readdir)(mountPath);
+        const appName = fileNames.find(item => {
+            return typeof item === 'string' && item.endsWith('.app');
         });
-    })
-        .catch(error => {
-        console.error(error);
-    })
-        .finally(() => {
-        if (!mountPath) {
-            return;
+        if (!appName) {
+            throw new Error(`Cannot find app in ${mountPath}`);
         }
-        const unmountCommand = `hdiutil detach "${mountPath}" -quiet`;
+        const mountedPath = path.join(mountPath, appName);
+        debugFetcher(`Copying ${mountedPath} to ${folderPath}`);
+        await exec(`cp -R "${mountedPath}" "${folderPath}"`);
+    }
+    finally {
         debugFetcher(`Unmounting ${mountPath}`);
-        childProcess.exec(unmountCommand, err => {
-            if (err) {
-                console.error(`Error unmounting dmg: ${err}`);
-            }
-        });
-    });
+        await exec(`hdiutil detach "${mountPath}" -quiet`);
+    }
 }
 function httpRequest(url, method, response, keepAlive = true) {
     const urlParsed = URL.parse(url);
     let options = {
         ...urlParsed,
         method,
-        headers: keepAlive
-            ? {
-                Connection: 'keep-alive',
-            }
-            : undefined,
+        headers: keepAlive ? { Connection: 'keep-alive' } : undefined,
     };
     const proxyURL = (0, proxy_from_env_1.getProxyForUrl)(url);
     if (proxyURL) {

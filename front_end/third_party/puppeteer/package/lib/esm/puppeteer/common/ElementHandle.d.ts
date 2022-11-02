@@ -148,7 +148,12 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
     /**
      * @deprecated Use {@link ElementHandle.$$} with the `xpath` prefix.
      *
+     * Example: `await elementHandle.$$('xpath/' + xpathExpression)`
+     *
      * The method evaluates the XPath expression relative to the elementHandle.
+     * If `xpath` starts with `//` instead of `.//`, the dot will be appended
+     * automatically.
+     *
      * If there are no such elements, the method will resolve to an empty array.
      * @param expression - Expression to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate | evaluate}
      */
@@ -195,6 +200,10 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
      * prefix.
      *
+     * Example: `await elementHandle.waitForSelector('xpath/' + xpathExpression)`
+     *
+     * The method evaluates the XPath expression relative to the elementHandle.
+     *
      * Wait for the `xpath` within the element. If at the moment of calling the
      * method the `xpath` already exists, the method will return immediately. If
      * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
@@ -203,7 +212,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * If `xpath` starts with `//` instead of `.//`, the dot will be appended
      * automatically.
      *
-     * This method works across navigation
+     * This method works across navigation.
      *
      * ```ts
      * const puppeteer = require('puppeteer');

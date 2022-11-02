@@ -7,24 +7,21 @@ exports.FirefoxLauncher = void 0;
 const fs_1 = __importDefault(require("fs"));
 const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
+const Browser_js_1 = require("../common/bidi/Browser.js");
+const Browser_js_2 = require("../common/Browser.js");
 const assert_js_1 = require("../util/assert.js");
-const Browser_js_1 = require("../common/Browser.js");
-const Browser_js_2 = require("../common/bidi/Browser.js");
 const BrowserFetcher_js_1 = require("./BrowserFetcher.js");
 const BrowserRunner_js_1 = require("./BrowserRunner.js");
 const ProductLauncher_js_1 = require("./ProductLauncher.js");
-const util_js_1 = require("./util.js");
 /**
  * @internal
  */
-class FirefoxLauncher {
-    constructor(projectRoot, preferredRevision, isPuppeteerCore) {
-        this._projectRoot = projectRoot;
-        this._preferredRevision = preferredRevision;
-        this._isPuppeteerCore = isPuppeteerCore;
+class FirefoxLauncher extends ProductLauncher_js_1.ProductLauncher {
+    constructor(puppeteer) {
+        super(puppeteer, 'firefox');
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, waitForInitialPage = true, debuggingPort = null, protocol = 'cdp', } = options;
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, waitForInitialPage = true, debuggingPort = null, protocol = 'cdp', } = options;
         const firefoxArguments = [];
         if (!ignoreDefaultArgs) {
             firefoxArguments.push(...this.defaultArgs(options));
@@ -68,19 +65,13 @@ class FirefoxLauncher {
             firefoxArguments.push('--profile');
             firefoxArguments.push(userDataDir);
         }
-        if (!this._isPuppeteerCore) {
-            await this._updateRevision();
-        }
-        let firefoxExecutable = executablePath;
-        if (!executablePath) {
-            const { missingText, executablePath } = (0, ProductLauncher_js_1.resolveExecutablePath)(this);
-            if (missingText) {
-                throw new Error(missingText);
-            }
+        let firefoxExecutable;
+        if (this.puppeteer._isPuppeteerCore || executablePath) {
+            (0, assert_js_1.assert)(executablePath, `An \`executablePath\` must be specified for \`puppeteer-core\``);
             firefoxExecutable = executablePath;
         }
-        if (!firefoxExecutable) {
-            throw new Error('firefoxExecutable is not found.');
+        else {
+            firefoxExecutable = this.executablePath();
         }
         const runner = new BrowserRunner_js_1.BrowserRunner(this.product, firefoxExecutable, firefoxArguments, userDataDir, isTempUserDataDir);
         runner.start({
@@ -97,9 +88,9 @@ class FirefoxLauncher {
                 const connection = await runner.setupWebDriverBiDiConnection({
                     timeout,
                     slowMo,
-                    preferredRevision: this._preferredRevision,
+                    preferredRevision: this.puppeteer.browserRevision,
                 });
-                browser = await Browser_js_2.Browser.create({
+                browser = await Browser_js_1.Browser.create({
                     connection,
                     closeCallback: runner.close.bind(runner),
                     process: runner.proc,
@@ -117,9 +108,9 @@ class FirefoxLauncher {
                 usePipe: pipe,
                 timeout,
                 slowMo,
-                preferredRevision: this._preferredRevision,
+                preferredRevision: this.puppeteer.browserRevision,
             });
-            browser = await Browser_js_1.CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
+            browser = await Browser_js_2.CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
         catch (error) {
             runner.kill();
@@ -139,25 +130,18 @@ class FirefoxLauncher {
         return browser;
     }
     executablePath() {
-        return (0, ProductLauncher_js_1.resolveExecutablePath)(this).executablePath;
-    }
-    async _updateRevision() {
         // replace 'latest' placeholder with actual downloaded revision
-        if (this._preferredRevision === 'latest') {
-            if (!this._projectRoot) {
-                throw new Error('_projectRoot is undefined. Unable to create a BrowserFetcher.');
-            }
-            const browserFetcher = new BrowserFetcher_js_1.BrowserFetcher(this._projectRoot, {
+        if (this.puppeteer.browserRevision === 'latest') {
+            const browserFetcher = new BrowserFetcher_js_1.BrowserFetcher({
                 product: this.product,
+                path: this.puppeteer.defaultDownloadPath,
             });
-            const localRevisions = await browserFetcher.localRevisions();
+            const localRevisions = browserFetcher.localRevisions();
             if (localRevisions[0]) {
-                this._preferredRevision = localRevisions[0];
+                this.puppeteer.configuration.browserRevision = localRevisions[0];
             }
         }
-    }
-    get product() {
-        return 'firefox';
+        return this.resolveExecutablePath();
     }
     defaultArgs(options = {}) {
         const { devtools = false, headless = !devtools, args = [], userDataDir = null, } = options;
@@ -374,7 +358,7 @@ class FirefoxLauncher {
         }
     }
     async _createProfile(extraPrefs) {
-        const temporaryProfilePath = await fs_1.default.promises.mkdtemp(path_1.default.join((0, util_js_1.tmpdir)(), 'puppeteer_dev_firefox_profile-'));
+        const temporaryProfilePath = await fs_1.default.promises.mkdtemp(this.getProfilePath());
         const prefs = this.defaultPreferences(extraPrefs);
         await this.writePreferences(prefs, temporaryProfilePath);
         return temporaryProfilePath;

@@ -123,24 +123,8 @@ const INTERNAL_QUERY_HANDLERS = new Map([
 ]);
 const QUERY_HANDLERS = new Map();
 /**
- * Registers a {@link CustomQueryHandler | custom query handler}.
- *
- * @remarks
- * After registration, the handler can be used everywhere where a selector is
- * expected by prepending the selection string with `<name>/`. The name is only
- * allowed to consist of lower- and upper case latin letters.
- *
- * @example
- *
- * ```
- * puppeteer.registerCustomQueryHandler('text', { … });
- * const aHandle = await page.$('text/…');
- * ```
- *
- * @param name - The name that the custom query handler will be registered
- * under.
- * @param queryHandler - The {@link CustomQueryHandler | custom query handler}
- * to register.
+ * @deprecated Import {@link Puppeteer} and use the static method
+ * {@link Puppeteer.registerCustomQueryHandler}
  *
  * @public
  */
@@ -159,7 +143,8 @@ function registerCustomQueryHandler(name, handler) {
 }
 exports.registerCustomQueryHandler = registerCustomQueryHandler;
 /**
- * @param name - The name of the query handler to unregistered.
+ * @deprecated Import {@link Puppeteer} and use the static method
+ * {@link Puppeteer.unregisterCustomQueryHandler}
  *
  * @public
  */
@@ -168,7 +153,8 @@ function unregisterCustomQueryHandler(name) {
 }
 exports.unregisterCustomQueryHandler = unregisterCustomQueryHandler;
 /**
- * @returns a list with the names of all registered custom query handlers.
+ * @deprecated Import {@link Puppeteer} and use the static method
+ * {@link Puppeteer.customQueryHandlerNames}
  *
  * @public
  */
@@ -177,7 +163,8 @@ function customQueryHandlerNames() {
 }
 exports.customQueryHandlerNames = customQueryHandlerNames;
 /**
- * Clears all registered handlers.
+ * @deprecated Import {@link Puppeteer} and use the static method
+ * {@link Puppeteer.clearCustomQueryHandlers}
  *
  * @public
  */

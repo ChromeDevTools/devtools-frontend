@@ -1,27 +1,15 @@
 import { CDPBrowser } from '../common/Browser.js';
-import { Product } from '../common/Product.js';
 import { BrowserLaunchArgumentOptions, ChromeReleaseChannel, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
 import { ProductLauncher } from './ProductLauncher.js';
+import { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
  */
-export declare class ChromeLauncher implements ProductLauncher {
-    /**
-     * @internal
-     */
-    _projectRoot: string | undefined;
-    /**
-     * @internal
-     */
-    _preferredRevision: string;
-    /**
-     * @internal
-     */
-    _isPuppeteerCore: boolean;
-    constructor(projectRoot: string | undefined, preferredRevision: string, isPuppeteerCore: boolean);
+export declare class ChromeLauncher extends ProductLauncher {
+    #private;
+    constructor(puppeteer: PuppeteerNode);
     launch(options?: PuppeteerNodeLaunchOptions): Promise<CDPBrowser>;
     defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
     executablePath(channel?: ChromeReleaseChannel): string;
-    get product(): Product;
 }
 //# sourceMappingURL=ChromeLauncher.d.ts.map

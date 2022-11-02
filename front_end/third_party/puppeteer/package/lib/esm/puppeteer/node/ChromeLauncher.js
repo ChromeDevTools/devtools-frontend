@@ -1,18 +1,24 @@
-import fs from 'fs';
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _ChromeLauncher_instances, _ChromeLauncher_executablePathForChannel;
+import { accessSync } from 'fs';
+import { mkdtemp } from 'fs/promises';
+import os from 'os';
 import path from 'path';
-import { assert } from '../util/assert.js';
 import { CDPBrowser } from '../common/Browser.js';
+import { assert } from '../util/assert.js';
 import { BrowserRunner } from './BrowserRunner.js';
-import { executablePathForChannel, resolveExecutablePath, } from './ProductLauncher.js';
-import { tmpdir } from './util.js';
+import { ProductLauncher } from './ProductLauncher.js';
 /**
  * @internal
  */
-export class ChromeLauncher {
-    constructor(projectRoot, preferredRevision, isPuppeteerCore) {
-        this._projectRoot = projectRoot;
-        this._preferredRevision = preferredRevision;
-        this._isPuppeteerCore = isPuppeteerCore;
+export class ChromeLauncher extends ProductLauncher {
+    constructor(puppeteer) {
+        super(puppeteer, 'chrome');
+        _ChromeLauncher_instances.add(this);
     }
     async launch(options = {}) {
         const { ignoreDefaultArgs = false, args = [], dumpio = false, channel, executablePath, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, debuggingPort, } = options;
@@ -47,23 +53,15 @@ export class ChromeLauncher {
         });
         if (userDataDirIndex < 0) {
             isTempUserDataDir = true;
-            chromeArguments.push(`--user-data-dir=${await fs.promises.mkdtemp(path.join(tmpdir(), 'puppeteer_dev_chrome_profile-'))}`);
+            chromeArguments.push(`--user-data-dir=${await mkdtemp(this.getProfilePath())}`);
             userDataDirIndex = chromeArguments.length - 1;
         }
         const userDataDir = chromeArguments[userDataDirIndex].split('=', 2)[1];
         assert(typeof userDataDir === 'string', '`--user-data-dir` is malformed');
         let chromeExecutable = executablePath;
-        if (channel) {
-            // executablePath is detected by channel, so it should not be specified by user.
-            assert(!chromeExecutable, '`executablePath` must not be specified when `channel` is given.');
-            chromeExecutable = executablePathForChannel(channel);
-        }
-        else if (!chromeExecutable) {
-            const { missingText, executablePath } = resolveExecutablePath(this);
-            if (missingText) {
-                throw new Error(missingText);
-            }
-            chromeExecutable = executablePath;
+        if (!chromeExecutable) {
+            assert(channel || !this.puppeteer._isPuppeteerCore, `An \`executablePath\` or \`channel\` must be specified for \`puppeteer-core\``);
+            chromeExecutable = this.executablePath(channel);
         }
         const usePipe = chromeArguments.includes('--remote-debugging-pipe');
         const runner = new BrowserRunner(this.product, chromeExecutable, chromeArguments, userDataDir, isTempUserDataDir);
@@ -81,7 +79,7 @@ export class ChromeLauncher {
                 usePipe,
                 timeout,
                 slowMo,
-                preferredRevision: this._preferredRevision,
+                preferredRevision: this.puppeteer.browserRevision,
             });
             browser = await CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
@@ -156,15 +154,77 @@ export class ChromeLauncher {
     }
     executablePath(channel) {
         if (channel) {
-            return executablePathForChannel(channel);
+            return __classPrivateFieldGet(this, _ChromeLauncher_instances, "m", _ChromeLauncher_executablePathForChannel).call(this, channel);
         }
         else {
-            const results = resolveExecutablePath(this);
-            return results.executablePath;
+            return this.resolveExecutablePath();
         }
     }
-    get product() {
-        return 'chrome';
-    }
 }
+_ChromeLauncher_instances = new WeakSet(), _ChromeLauncher_executablePathForChannel = function _ChromeLauncher_executablePathForChannel(channel) {
+    const platform = os.platform();
+    let chromePath;
+    switch (platform) {
+        case 'win32':
+            switch (channel) {
+                case 'chrome':
+                    chromePath = `${process.env['PROGRAMFILES']}\\Google\\Chrome\\Application\\chrome.exe`;
+                    break;
+                case 'chrome-beta':
+                    chromePath = `${process.env['PROGRAMFILES']}\\Google\\Chrome Beta\\Application\\chrome.exe`;
+                    break;
+                case 'chrome-canary':
+                    chromePath = `${process.env['PROGRAMFILES']}\\Google\\Chrome SxS\\Application\\chrome.exe`;
+                    break;
+                case 'chrome-dev':
+                    chromePath = `${process.env['PROGRAMFILES']}\\Google\\Chrome Dev\\Application\\chrome.exe`;
+                    break;
+            }
+            break;
+        case 'darwin':
+            switch (channel) {
+                case 'chrome':
+                    chromePath =
+                        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+                    break;
+                case 'chrome-beta':
+                    chromePath =
+                        '/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta';
+                    break;
+                case 'chrome-canary':
+                    chromePath =
+                        '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary';
+                    break;
+                case 'chrome-dev':
+                    chromePath =
+                        '/Applications/Google Chrome Dev.app/Contents/MacOS/Google Chrome Dev';
+                    break;
+            }
+            break;
+        case 'linux':
+            switch (channel) {
+                case 'chrome':
+                    chromePath = '/opt/google/chrome/chrome';
+                    break;
+                case 'chrome-beta':
+                    chromePath = '/opt/google/chrome-beta/chrome';
+                    break;
+                case 'chrome-dev':
+                    chromePath = '/opt/google/chrome-unstable/chrome';
+                    break;
+            }
+            break;
+    }
+    if (!chromePath) {
+        throw new Error(`Unable to detect browser executable path for '${channel}' on ${platform}.`);
+    }
+    // Check if Chrome exists and is accessible.
+    try {
+        accessSync(chromePath);
+    }
+    catch (error) {
+        throw new Error(`Could not find Google Chrome executable for channel '${channel}' at '${chromePath}'.`);
+    }
+    return chromePath;
+};
 //# sourceMappingURL=ChromeLauncher.js.map

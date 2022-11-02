@@ -20,7 +20,8 @@ import { Page } from '../api/Page.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
 import { TargetManager } from './TargetManager.js';
-import { Browser as BrowserBase, BrowserContext, BrowserCloseCallback, TargetFilterCallback, IsPageTargetCallback, BrowserContextOptions, WaitForTargetOptions, Permission } from '../api/Browser.js';
+import { Browser as BrowserBase, BrowserCloseCallback, TargetFilterCallback, IsPageTargetCallback, BrowserContextOptions, WaitForTargetOptions, Permission } from '../api/Browser.js';
+import { BrowserContext } from '../api/BrowserContext.js';
 /**
  * @internal
  */
@@ -197,6 +198,7 @@ export declare class CDPBrowserContext extends BrowserContext {
      * @internal
      */
     constructor(connection: Connection, browser: CDPBrowser, contextId?: string);
+    get id(): string | undefined;
     /**
      * An array of all active targets inside the browser context.
      */

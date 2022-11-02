@@ -16,9 +16,6 @@
 import { Browser } from '../api/Browser.js';
 import { BrowserConnectOptions } from './BrowserConnector.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
-import { devices } from './DeviceDescriptors.js';
-import { errors } from './Errors.js';
-import { networkConditions } from './NetworkConditions.js';
 import { CustomQueryHandler } from './QueryHandler.js';
 /**
  * Settings that are common to the Puppeteer class, regardless of environment.
@@ -47,9 +44,44 @@ export interface ConnectOptions extends BrowserConnectOptions {
  */
 export declare class Puppeteer {
     /**
+     * Registers a {@link CustomQueryHandler | custom query handler}.
+     *
+     * @remarks
+     * After registration, the handler can be used everywhere where a selector is
+     * expected by prepending the selection string with `<name>/`. The name is only
+     * allowed to consist of lower- and upper case latin letters.
+     *
+     * @example
+     *
+     * ```
+     * puppeteer.registerCustomQueryHandler('text', { … });
+     * const aHandle = await page.$('text/…');
+     * ```
+     *
+     * @param name - The name that the custom query handler will be registered
+     * under.
+     * @param queryHandler - The {@link CustomQueryHandler | custom query handler}
+     * to register.
+     *
+     * @public
+     */
+    static registerCustomQueryHandler(name: string, queryHandler: CustomQueryHandler): void;
+    /**
+     * Unregisters a custom query handler for a given name.
+     */
+    static unregisterCustomQueryHandler(name: string): void;
+    /**
+     * Gets the names of all custom query handlers.
+     */
+    static customQueryHandlerNames(): string[];
+    /**
+     * Unregisters all custom query handlers.
+     */
+    static clearCustomQueryHandlers(): void;
+    /**
      * @internal
      */
-    protected _isPuppeteerCore: boolean;
+    _isPuppeteerCore: boolean;
     /**
      * @internal
      */
@@ -67,68 +99,5 @@ export declare class Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options: ConnectOptions): Promise<Browser>;
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {devices} from 'puppeteer';
-     * ```
-     */
-    get devices(): typeof devices;
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {errors} from 'puppeteer';
-     * ```
-     */
-    get errors(): typeof errors;
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {networkConditions} from 'puppeteer';
-     * ```
-     */
-    get networkConditions(): typeof networkConditions;
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {registerCustomQueryHandler} from 'puppeteer';
-     * ```
-     */
-    registerCustomQueryHandler(name: string, queryHandler: CustomQueryHandler): void;
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {unregisterCustomQueryHandler} from 'puppeteer';
-     * ```
-     */
-    unregisterCustomQueryHandler(name: string): void;
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {customQueryHandlerNames} from 'puppeteer';
-     * ```
-     */
-    customQueryHandlerNames(): string[];
-    /**
-     * @deprecated Import directly puppeteer.
-     * @example
-     *
-     * ```ts
-     * import {clearCustomQueryHandlers} from 'puppeteer';
-     * ```
-     */
-    clearCustomQueryHandlers(): void;
 }
 //# sourceMappingURL=Puppeteer.d.ts.map

@@ -18,9 +18,9 @@
 import { Protocol } from 'devtools-protocol';
 import type { Readable } from 'stream';
 import type { Accessibility } from '../common/Accessibility.js';
-import type { Browser, BrowserContext } from './Browser.js';
 import type { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { Coverage } from '../common/Coverage.js';
+import { Device } from '../common/Device.js';
 import type { Dialog } from '../common/Dialog.js';
 import type { ElementHandle } from '../common/ElementHandle.js';
 import { EventEmitter } from '../common/EventEmitter.js';
@@ -39,6 +39,8 @@ import type { Target } from '../common/Target.js';
 import type { Tracing } from '../common/Tracing.js';
 import type { EvaluateFunc, HandleFor, NodeFor } from '../common/types.js';
 import type { WebWorker } from '../common/WebWorker.js';
+import type { Browser } from './Browser.js';
+import type { BrowserContext } from './BrowserContext.js';
 /**
  * @public
  */
@@ -563,20 +565,26 @@ export declare class Page extends EventEmitter {
      */
     setDragInterception(enabled: boolean): Promise<void>;
     /**
+     * Sets the network connection to offline.
+     *
+     * It does not change the parameters used in {@link Page.emulateNetworkConditions}
+     *
      * @param enabled - When `true`, enables offline mode for the page.
-     * @remarks
-     * NOTE: while this method sets the network connection to offline, it does
-     * not change the parameters used in [page.emulateNetworkConditions(networkConditions)]
-     * (#pageemulatenetworkconditionsnetworkconditions)
      */
     setOfflineMode(enabled: boolean): Promise<void>;
     /**
-     * @param networkConditions - Passing `null` disables network condition emulation.
+     * This does not affect WebSockets and WebRTC PeerConnections (see
+     * https://crbug.com/563644). To set the page offline, you can use
+     * {@link Page.setOfflineMode}.
+     *
+     * A list of predefined network conditions can be used by importing
+     * {@link PredefinedNetworkConditions}.
+     *
      * @example
      *
      * ```ts
-     * const puppeteer = require('puppeteer');
-     * const slow3G = puppeteer.networkConditions['Slow 3G'];
+     * import {PredefinedNetworkConditions} from 'puppeteer';
+     * const slow3G = PredefinedNetworkConditions['Slow 3G'];
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -588,10 +596,8 @@ export declare class Page extends EventEmitter {
      * })();
      * ```
      *
-     * @remarks
-     * NOTE: This does not affect WebSockets and WebRTC PeerConnections (see
-     * https://crbug.com/563644). To set the page offline, you can use
-     * [page.setOfflineMode(enabled)](#pagesetofflinemodeenabled).
+     * @param networkConditions - Passing `null` disables network condition
+     * emulation.
      */
     emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
     /**
@@ -1192,21 +1198,17 @@ export declare class Page extends EventEmitter {
     /**
      * @param urlOrPredicate - A URL or predicate to wait for
      * @param options - Optional waiting parameters
-     * @returns Promise which resolves to the matched response
+     * @returns Promise which resolves to the matched request
      * @example
      *
      * ```ts
-     * const firstResponse = await page.waitForResponse(
+     * const firstRequest = await page.waitForRequest(
      *   'https://example.com/resource'
      * );
-     * const finalResponse = await page.waitForResponse(
-     *   response =>
-     *     response.url() === 'https://example.com' && response.status() === 200
+     * const finalRequest = await page.waitForRequest(
+     *   request => request.url() === 'https://example.com'
      * );
-     * const finalResponse = await page.waitForResponse(async response => {
-     *   return (await response.text()).includes('<html>');
-     * });
-     * return finalResponse.ok();
+     * return finalRequest.response()?.ok();
      * ```
      *
      * @remarks
@@ -1338,20 +1340,25 @@ export declare class Page extends EventEmitter {
      */
     bringToFront(): Promise<void>;
     /**
-     * Emulates given device metrics and user agent.
+     * Emulates a given device's metrics and user agent.
+     *
+     * To aid emulation, Puppeteer provides a list of known devices that can be
+     * via {@link KnownDevices}.
      *
      * @remarks
      * This method is a shortcut for calling two methods:
-     * {@link Page.setUserAgent} and {@link Page.setViewport} To aid emulation,
-     * Puppeteer provides a list of device descriptors that can be obtained via
-     * {@link devices}. `page.emulate` will resize the page. A lot of websites
-     * don't expect phones to change size, so you should emulate before navigating
-     * to the page.
+     * {@link Page.setUserAgent} and {@link Page.setViewport}.
+     *
+     * @remarks
+     * This method will resize the page. A lot of websites don't expect phones to
+     * change size, so you should emulate before navigating to the page.
+     *
      * @example
      *
      * ```ts
-     * const puppeteer = require('puppeteer');
-     * const iPhone = puppeteer.devices['iPhone 6'];
+     * import {KnownDevices} from 'puppeteer';
+     * const iPhone = KnownDevices['iPhone 6'];
+     *
      * (async () => {
      *   const browser = await puppeteer.launch();
      *   const page = await browser.newPage();
@@ -1361,17 +1368,10 @@ export declare class Page extends EventEmitter {
      *   await browser.close();
      * })();
      * ```
-     *
-     * @remarks List of all available devices is available in the source code:
-     * {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
      */
-    emulate(options: {
-        viewport: Viewport;
-        userAgent: string;
-    }): Promise<void>;
+    emulate(device: Device): Promise<void>;
     /**
      * @param enabled - Whether or not to enable JavaScript on the page.
-     * @returns
      * @remarks
      * NOTE: changing this value won't affect scripts that have already been run.
      * It will take full effect on the next navigation.
@@ -1899,7 +1899,7 @@ export declare class Page extends EventEmitter {
         delay: number;
     }): Promise<void>;
     /**
-     * @deprecated Use `new Promise(r => setTimeout(r, milliseconds));`.
+     * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
      *
      * Causes your script to wait for the given number of milliseconds.
      *

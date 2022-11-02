@@ -349,8 +349,41 @@ class Page extends EventEmitter_js_1.EventEmitter {
     async bringToFront() {
         throw new Error('Not implemented');
     }
-    async emulate() {
-        throw new Error('Not implemented');
+    /**
+     * Emulates a given device's metrics and user agent.
+     *
+     * To aid emulation, Puppeteer provides a list of known devices that can be
+     * via {@link KnownDevices}.
+     *
+     * @remarks
+     * This method is a shortcut for calling two methods:
+     * {@link Page.setUserAgent} and {@link Page.setViewport}.
+     *
+     * @remarks
+     * This method will resize the page. A lot of websites don't expect phones to
+     * change size, so you should emulate before navigating to the page.
+     *
+     * @example
+     *
+     * ```ts
+     * import {KnownDevices} from 'puppeteer';
+     * const iPhone = KnownDevices['iPhone 6'];
+     *
+     * (async () => {
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   await page.emulate(iPhone);
+     *   await page.goto('https://www.google.com');
+     *   // other actions...
+     *   await browser.close();
+     * })();
+     * ```
+     */
+    async emulate(device) {
+        await Promise.all([
+            this.setUserAgent(device.userAgent),
+            this.setViewport(device.viewport),
+        ]);
     }
     async setJavaScriptEnabled() {
         throw new Error('Not implemented');

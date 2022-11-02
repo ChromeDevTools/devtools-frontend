@@ -48,7 +48,7 @@ const Connection_js_1 = require("./Connection.js");
 const fetch_js_1 = require("./fetch.js");
 const getWebSocketTransportClass = async () => {
     return environment_js_1.isNode
-        ? (await Promise.resolve().then(() => __importStar(require('../node/NodeWebSocketTransport.js')))).NodeWebSocketTransport
+        ? (await Promise.resolve().then(() => __importStar(require('./NodeWebSocketTransport.js')))).NodeWebSocketTransport
         : (await Promise.resolve().then(() => __importStar(require('./BrowserWebSocketTransport.js'))))
             .BrowserWebSocketTransport;
 };

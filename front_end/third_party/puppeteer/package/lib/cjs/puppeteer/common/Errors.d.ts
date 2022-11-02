@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 /**
+ * @deprecated Do not use.
+ *
  * @public
  */
 export declare class CustomError extends Error {
+    /**
+     * @internal
+     */
     constructor(message?: string);
 }
 /**
@@ -37,10 +42,27 @@ export declare class TimeoutError extends CustomError {
  * @public
  */
 export declare class ProtocolError extends CustomError {
-    code?: number;
-    originalMessage: string;
+    #private;
+    /**
+     * @internal
+     */
+    set code(code: number | undefined);
+    /**
+     * @public
+     */
+    get code(): number | undefined;
+    /**
+     * @internal
+     */
+    set originalMessage(originalMessage: string);
+    /**
+     * @public
+     */
+    get originalMessage(): string;
 }
 /**
+ * @deprecated Do not use.
+ *
  * @public
  */
 export interface PuppeteerErrors {
@@ -48,6 +70,8 @@ export interface PuppeteerErrors {
     ProtocolError: typeof ProtocolError;
 }
 /**
+ * @deprecated Import error classes directly.
+ *
  * Puppeteer methods might throw errors if they are unable to fulfill a request.
  * For example, `page.waitForSelector(selector[, options])` might fail if the
  * selector doesn't match any nodes during the given timeframe.
@@ -62,7 +86,7 @@ export interface PuppeteerErrors {
  * try {
  *   await page.waitForSelector('.foo');
  * } catch (e) {
- *   if (e instanceof puppeteer.errors.TimeoutError) {
+ *   if (e instanceof TimeoutError) {
  *     // Do something if this is a timeout.
  *   }
  * }

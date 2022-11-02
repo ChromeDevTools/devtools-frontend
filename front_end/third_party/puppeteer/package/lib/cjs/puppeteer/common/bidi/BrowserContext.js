@@ -28,12 +28,12 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _BrowserContext_connection;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrowserContext = void 0;
-const Browser_js_1 = require("../../api/Browser.js");
+const BrowserContext_js_1 = require("../../api/BrowserContext.js");
 const Page_js_1 = require("./Page.js");
 /**
  * @internal
  */
-class BrowserContext extends Browser_js_1.BrowserContext {
+class BrowserContext extends BrowserContext_js_1.BrowserContext {
     constructor(connection) {
         super();
         _BrowserContext_connection.set(this, void 0);

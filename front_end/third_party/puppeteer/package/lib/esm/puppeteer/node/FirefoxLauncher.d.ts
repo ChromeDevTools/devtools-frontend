@@ -1,28 +1,14 @@
 import { Browser } from '../api/Browser.js';
-import { Product } from '../common/Product.js';
 import { BrowserLaunchArgumentOptions, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
 import { ProductLauncher } from './ProductLauncher.js';
+import { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
  */
-export declare class FirefoxLauncher implements ProductLauncher {
-    /**
-     * @internal
-     */
-    _projectRoot: string | undefined;
-    /**
-     * @internal
-     */
-    _preferredRevision: string;
-    /**
-     * @internal
-     */
-    _isPuppeteerCore: boolean;
-    constructor(projectRoot: string | undefined, preferredRevision: string, isPuppeteerCore: boolean);
+export declare class FirefoxLauncher extends ProductLauncher {
+    constructor(puppeteer: PuppeteerNode);
     launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
     executablePath(): string;
-    _updateRevision(): Promise<void>;
-    get product(): Product;
     defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
     defaultPreferences(extraPrefs: {
         [x: string]: unknown;

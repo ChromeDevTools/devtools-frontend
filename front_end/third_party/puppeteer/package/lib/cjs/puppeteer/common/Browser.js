@@ -36,6 +36,7 @@ const TaskQueue_js_1 = require("./TaskQueue.js");
 const ChromeTargetManager_js_1 = require("./ChromeTargetManager.js");
 const FirefoxTargetManager_js_1 = require("./FirefoxTargetManager.js");
 const Browser_js_1 = require("../api/Browser.js");
+const BrowserContext_js_1 = require("../api/BrowserContext.js");
 /**
  * @internal
  */
@@ -430,7 +431,7 @@ _CDPBrowser_ignoreHTTPSErrors = new WeakMap(), _CDPBrowser_defaultViewport = new
 /**
  * @internal
  */
-class CDPBrowserContext extends Browser_js_1.BrowserContext {
+class CDPBrowserContext extends BrowserContext_js_1.BrowserContext {
     /**
      * @internal
      */
@@ -442,6 +443,9 @@ class CDPBrowserContext extends Browser_js_1.BrowserContext {
         __classPrivateFieldSet(this, _CDPBrowserContext_connection, connection, "f");
         __classPrivateFieldSet(this, _CDPBrowserContext_browser, browser, "f");
         __classPrivateFieldSet(this, _CDPBrowserContext_id, contextId, "f");
+    }
+    get id() {
+        return __classPrivateFieldGet(this, _CDPBrowserContext_id, "f");
     }
     /**
      * An array of all active targets inside the browser context.

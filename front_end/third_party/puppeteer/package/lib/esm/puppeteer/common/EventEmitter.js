@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import mitt from '../../vendor/mitt/src/index.js';
+import mitt from '../../third_party/mitt/index.js';
 /**
  * The EventEmitter class that many Puppeteer classes extend.
  *

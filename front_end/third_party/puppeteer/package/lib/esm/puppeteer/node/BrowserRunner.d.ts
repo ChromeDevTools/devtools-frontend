@@ -15,8 +15,8 @@
  */
 /// <reference types="node" />
 import * as childProcess from 'child_process';
-import { Connection } from '../common/Connection.js';
 import { Connection as BiDiConnection } from '../common/bidi/Connection.js';
+import { Connection } from '../common/Connection.js';
 import { Product } from '../common/Product.js';
 import { LaunchOptions } from './LaunchOptions.js';
 /**

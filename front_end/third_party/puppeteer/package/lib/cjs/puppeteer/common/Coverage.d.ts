@@ -68,6 +68,12 @@ export interface JSCoverageOptions {
      * Whether the result includes raw V8 script coverage entries.
      */
     includeRawScriptCoverage?: boolean;
+    /**
+     * Whether to collect coverage information at the block level.
+     * If true, coverage will be collected at the block level (this is the default).
+     * If false, coverage will be collected at the function level.
+     */
+    useBlockCoverage?: boolean;
 }
 /**
  * Set of configurable options for CSS coverage.
@@ -121,7 +127,8 @@ export declare class Coverage {
     constructor(client: CDPSession);
     /**
      * @param options - Set of configurable options for coverage defaults to
-     * `resetOnNavigation : true, reportAnonymousScripts : false`
+     * `resetOnNavigation : true, reportAnonymousScripts : false,`
+     * `includeRawScriptCoverage : false, useBlockCoverage : true`
      * @returns Promise that resolves when coverage is started.
      *
      * @remarks
@@ -166,6 +173,7 @@ export declare class JSCoverage {
         resetOnNavigation?: boolean;
         reportAnonymousScripts?: boolean;
         includeRawScriptCoverage?: boolean;
+        useBlockCoverage?: boolean;
     }): Promise<void>;
     stop(): Promise<JSCoverageEntry[]>;
 }

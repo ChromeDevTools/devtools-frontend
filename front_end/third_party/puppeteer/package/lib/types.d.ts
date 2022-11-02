@@ -450,6 +450,7 @@ export declare class BrowserContext extends EventEmitter {
      * Only incognito browser contexts can be closed.
      */
     close(): Promise<void>;
+    get id(): string | undefined;
 }
 
 /**
@@ -541,33 +542,44 @@ export declare const enum BrowserEmittedEvents {
 }
 
 /**
- * BrowserFetcher can download and manage different versions of Chromium and Firefox.
+ * BrowserFetcher can download and manage different versions of Chromium and
+ * Firefox.
  *
  * @remarks
- * BrowserFetcher operates on revision strings that specify a precise version of Chromium, e.g. `"533271"`. Revision strings can be obtained from {@link http://omahaproxy.appspot.com/ | omahaproxy.appspot.com}.
- * In the Firefox case, BrowserFetcher downloads Firefox Nightly and
- * operates on version numbers such as `"75"`.
+ * BrowserFetcher operates on revision strings that specify a precise version of
+ * Chromium, e.g. `"533271"`. Revision strings can be obtained from
+ * {@link http://omahaproxy.appspot.com/ | omahaproxy.appspot.com}. For Firefox,
+ * BrowserFetcher downloads Firefox Nightly and operates on version numbers such
+ * as `"75"`.
+ *
+ * @remarks
+ * The default constructed fetcher will always be for Chromium unless otherwise
+ * specified.
+ *
+ * @remarks
+ * BrowserFetcher is not designed to work concurrently with other instances of
+ * BrowserFetcher that share the same downloads directory.
  *
  * @example
  * An example of using BrowserFetcher to download a specific version of Chromium
  * and running Puppeteer against it:
  *
  * ```ts
- * const browserFetcher = puppeteer.createBrowserFetcher();
+ * const browserFetcher = new BrowserFetcher({path: 'path/to/download/folder'});
  * const revisionInfo = await browserFetcher.download('533271');
  * const browser = await puppeteer.launch({
  *   executablePath: revisionInfo.executablePath,
  * });
  * ```
  *
- * **NOTE** BrowserFetcher is not designed to work concurrently with other
- * instances of BrowserFetcher that share the same downloads directory.
- *
  * @public
  */
 export declare class BrowserFetcher {
     #private;
-    /* Excluded from this release type: __constructor */
+    /**
+     * Constructs a browser fetcher for the given options.
+     */
+    constructor(options: BrowserFetcherOptions);
     /**
      * @returns Returns the current `Platform`, which is one of `mac`, `linux`,
      * `win32` or `win64`.
@@ -605,10 +617,10 @@ export declare class BrowserFetcher {
     /**
      * @remarks
      * This method is affected by the current `product`.
-     * @returns A promise with a list of all revision strings (for the current `product`)
+     * @returns A list of all revision strings (for the current `product`)
      * available locally on disk.
      */
-    localRevisions(): Promise<string[]>;
+    localRevisions(): string[];
     /**
      * @remarks
      * This method is affected by the current `product`.
@@ -628,10 +640,38 @@ export declare class BrowserFetcher {
  * @public
  */
 export declare interface BrowserFetcherOptions {
+    /**
+     * Determines the path to download browsers to.
+     */
+    path: string;
+    /**
+     * Determines which platform the browser will be suited for.
+     *
+     * @defaultValue Auto-detected.
+     */
     platform?: Platform;
-    product?: string;
-    path?: string;
+    /**
+     * Determines which product the {@link BrowserFetcher} is for.
+     *
+     * @defaultValue `"chrome"`.
+     */
+    product?: 'chrome' | 'firefox';
+    /**
+     * Determines the host that will be used for downloading.
+     *
+     * @defaultValue Either
+     *
+     * - https://storage.googleapis.com or
+     * - https://archive.mozilla.org/pub/firefox/nightly/latest-mozilla-central
+     *
+     */
     host?: string;
+    /**
+     * Enables the use of the Chromium binary for macOS ARM.
+     *
+     * @experimental
+     */
+    useMacOSARMBinary?: boolean;
 }
 
 /**
@@ -769,7 +809,8 @@ export declare type ChromeReleaseChannel = 'chrome' | 'chrome-beta' | 'chrome-ca
 /* Excluded from this release type: ChromeTargetManager */
 
 /**
- * Clears all registered handlers.
+ * @deprecated Import {@link Puppeteer} and use the static method
+ * {@link Puppeteer.clearCustomQueryHandlers}
  *
  * @public
  */
@@ -819,6 +860,101 @@ export declare interface CommonEventEmitter {
 }
 
 /* Excluded from this release type: CommonPuppeteerSettings */
+
+/**
+ * Defines options to configure Puppeteer's behavior during installation and
+ * runtime.
+ *
+ * See individual properties for more information.
+ *
+ * @public
+ */
+export declare interface Configuration {
+    /**
+     * Specifies a certain version of the browser you'd like Puppeteer to use.
+     *
+     * Can be overridden by `PUPPETEER_BROWSER_REVISION`.
+     *
+     * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
+     * is inferred.
+     *
+     * @defaultValue A compatible-revision of the browser.
+     */
+    browserRevision?: string;
+    /**
+     * Defines the directory to be used by Puppeteer for caching.
+     *
+     * Can be overridden by `PUPPETEER_CACHE_DIR`.
+     *
+     * @defaultValue `path.join(os.homedir(), '.cache', 'puppeteer')`
+     */
+    cacheDirectory?: string;
+    /**
+     * Specifies the URL prefix that is used to download Chromium.
+     *
+     * Can be overridden by `PUPPETEER_DOWNLOAD_HOST`.
+     *
+     * @remarks
+     * This must include the protocol and may even need a path prefix.
+     *
+     * @defaultValue Either https://storage.googleapis.com or
+     * https://archive.mozilla.org/pub/firefox/nightly/latest-mozilla-central,
+     * depending on the product.
+     */
+    downloadHost?: string;
+    /**
+     * Specifies the path for the downloads folder.
+     *
+     * Can be overridden by `PUPPETEER_DOWNLOAD_PATH`.
+     *
+     * @defaultValue `<cache>/<product>` where `<cache>` is Puppeteer's cache
+     * directory and `<product>` is the name of the browser.
+     */
+    downloadPath?: string;
+    /**
+     * Specifies an executable path to be used in
+     * {@link PuppeteerNode.launch | puppeteer.launch}.
+     *
+     * Can be overridden by `PUPPETEER_EXECUTABLE_PATH`.
+     *
+     * @defaultValue Auto-computed.
+     */
+    executablePath?: string;
+    /**
+     * Specifies which browser you'd like Puppeteer to use.
+     *
+     * Can be overridden by `PUPPETEER_PRODUCT`.
+     *
+     * @defaultValue `'chrome'`
+     */
+    defaultProduct?: Product;
+    /**
+     * Defines the directory to be used by Puppeteer for creating temporary files.
+     *
+     * Can be overridden by `PUPPETEER_TMP_DIR`.
+     *
+     * @defaultValue `os.tmpdir()`
+     */
+    temporaryDirectory?: string;
+    /**
+     * Tells Puppeteer to not download during installation.
+     *
+     * Can be overridden by `PUPPETEER_SKIP_DOWNLOAD`.
+     */
+    skipDownload?: boolean;
+    /**
+     * Tells Puppeteer to log at the given level.
+     *
+     * At the moment, any option silences logging.
+     *
+     * @defaultValue `undefined`
+     */
+    logLevel?: 'silent' | 'error' | 'warn';
+    /**
+     * Defines experimental options for Puppeteer.
+     */
+    experiments?: ExperimentsConfiguration;
+}
 
 export declare const connect: (options: ConnectOptions) => Promise<Browser>;
 
@@ -1013,7 +1149,8 @@ export declare class Coverage {
     constructor(client: CDPSession);
     /**
      * @param options - Set of configurable options for coverage defaults to
-     * `resetOnNavigation : true, reportAnonymousScripts : false`
+     * `resetOnNavigation : true, reportAnonymousScripts : false,`
+     * `includeRawScriptCoverage : false, useBlockCoverage : true`
      * @returns Promise that resolves when coverage is started.
      *
      * @remarks
@@ -1071,15 +1208,23 @@ export declare interface CoverageEntry {
     }>;
 }
 
-export declare const createBrowserFetcher: (options: BrowserFetcherOptions) => BrowserFetcher;
+/**
+ * @deprecated Construct {@link BrowserFetcher} manually.
+ *
+ * @public
+ */
+export declare const /**
+ * @deprecated Construct {@link BrowserFetcher} manually.
+ *
+ * @public
+ */
+createBrowserFetcher: (options: Partial<BrowserFetcherOptions>) => BrowserFetcher;
 
 /* Excluded from this release type: createDebuggableDeferredPromise */
 
 /* Excluded from this release type: createDeferredPromise */
 
 /* Excluded from this release type: createJSHandle */
-
-/* Excluded from this release type: createLauncher */
 
 /**
  * @public
@@ -1128,10 +1273,12 @@ export declare interface CSSCoverageOptions {
  * limitations under the License.
  */
 /**
+ * @deprecated Do not use.
+ *
  * @public
  */
 export declare class CustomError extends Error {
-    constructor(message?: string);
+    /* Excluded from this release type: __constructor */
 }
 
 /**
@@ -1149,7 +1296,8 @@ export declare interface CustomQueryHandler {
 }
 
 /**
- * @returns a list with the names of all registered custom query handlers.
+ * @deprecated Import {@link Puppeteer} and use the static method
+ * {@link Puppeteer.customQueryHandlerNames}
  *
  * @public
  */
@@ -1175,65 +1323,19 @@ export declare const defaultArgs: (options?: BrowserLaunchArgumentOptions) => st
 /* Excluded from this release type: DeferredPromiseOptions */
 
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
  * @public
  */
 export declare interface Device {
-    name: string;
     userAgent: string;
-    viewport: {
-        width: number;
-        height: number;
-        deviceScaleFactor: number;
-        isMobile: boolean;
-        hasTouch: boolean;
-        isLandscape: boolean;
-    };
+    viewport: Viewport;
 }
 
 /**
- * A list of devices to be used with `page.emulate(options)`. Actual list of devices can be found in {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
- *
- * @example
- *
- * ```ts
- * const puppeteer = require('puppeteer');
- * const iPhone = puppeteer.devices['iPhone 6'];
- *
- * (async () => {
- *   const browser = await puppeteer.launch();
- *   const page = await browser.newPage();
- *   await page.emulate(iPhone);
- *   await page.goto('https://www.google.com');
- *   // other actions...
- *   await browser.close();
- * })();
- * ```
+ * @deprecated Import {@link KnownDevices}
  *
  * @public
  */
-export declare const devices: DevicesMap;
-
-/**
- * @public
- */
-export declare type DevicesMap = {
-    [name: string]: Device;
-};
+export declare const devices: Readonly<Record<"Blackberry PlayBook" | "Blackberry PlayBook landscape" | "BlackBerry Z30" | "BlackBerry Z30 landscape" | "Galaxy Note 3" | "Galaxy Note 3 landscape" | "Galaxy Note II" | "Galaxy Note II landscape" | "Galaxy S III" | "Galaxy S III landscape" | "Galaxy S5" | "Galaxy S5 landscape" | "Galaxy S8" | "Galaxy S8 landscape" | "Galaxy S9+" | "Galaxy S9+ landscape" | "Galaxy Tab S4" | "Galaxy Tab S4 landscape" | "iPad" | "iPad landscape" | "iPad (gen 6)" | "iPad (gen 6) landscape" | "iPad (gen 7)" | "iPad (gen 7) landscape" | "iPad Mini" | "iPad Mini landscape" | "iPad Pro" | "iPad Pro landscape" | "iPad Pro 11" | "iPad Pro 11 landscape" | "iPhone 4" | "iPhone 4 landscape" | "iPhone 5" | "iPhone 5 landscape" | "iPhone 6" | "iPhone 6 landscape" | "iPhone 6 Plus" | "iPhone 6 Plus landscape" | "iPhone 7" | "iPhone 7 landscape" | "iPhone 7 Plus" | "iPhone 7 Plus landscape" | "iPhone 8" | "iPhone 8 landscape" | "iPhone 8 Plus" | "iPhone 8 Plus landscape" | "iPhone SE" | "iPhone SE landscape" | "iPhone X" | "iPhone X landscape" | "iPhone XR" | "iPhone XR landscape" | "iPhone 11" | "iPhone 11 landscape" | "iPhone 11 Pro" | "iPhone 11 Pro landscape" | "iPhone 11 Pro Max" | "iPhone 11 Pro Max landscape" | "iPhone 12" | "iPhone 12 landscape" | "iPhone 12 Pro" | "iPhone 12 Pro landscape" | "iPhone 12 Pro Max" | "iPhone 12 Pro Max landscape" | "iPhone 12 Mini" | "iPhone 12 Mini landscape" | "iPhone 13" | "iPhone 13 landscape" | "iPhone 13 Pro" | "iPhone 13 Pro landscape" | "iPhone 13 Pro Max" | "iPhone 13 Pro Max landscape" | "iPhone 13 Mini" | "iPhone 13 Mini landscape" | "JioPhone 2" | "JioPhone 2 landscape" | "Kindle Fire HDX" | "Kindle Fire HDX landscape" | "LG Optimus L70" | "LG Optimus L70 landscape" | "Microsoft Lumia 550" | "Microsoft Lumia 950" | "Microsoft Lumia 950 landscape" | "Nexus 10" | "Nexus 10 landscape" | "Nexus 4" | "Nexus 4 landscape" | "Nexus 5" | "Nexus 5 landscape" | "Nexus 5X" | "Nexus 5X landscape" | "Nexus 6" | "Nexus 6 landscape" | "Nexus 6P" | "Nexus 6P landscape" | "Nexus 7" | "Nexus 7 landscape" | "Nokia Lumia 520" | "Nokia Lumia 520 landscape" | "Nokia N9" | "Nokia N9 landscape" | "Pixel 2" | "Pixel 2 landscape" | "Pixel 2 XL" | "Pixel 2 XL landscape" | "Pixel 3" | "Pixel 3 landscape" | "Pixel 4" | "Pixel 4 landscape" | "Pixel 4a (5G)" | "Pixel 4a (5G) landscape" | "Pixel 5" | "Pixel 5 landscape" | "Moto G4" | "Moto G4 landscape", Device>>;
 
 /**
  * Dialog instances are dispatched by the {@link Page} via the `dialog` event.
@@ -1287,8 +1389,6 @@ export declare class Dialog {
      */
     dismiss(): Promise<void>;
 }
-
-/* Excluded from this release type: downloadBrowser */
 
 /**
  * ElementHandle represents an in-page DOM element.
@@ -1413,7 +1513,12 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
     /**
      * @deprecated Use {@link ElementHandle.$$} with the `xpath` prefix.
      *
+     * Example: `await elementHandle.$$('xpath/' + xpathExpression)`
+     *
      * The method evaluates the XPath expression relative to the elementHandle.
+     * If `xpath` starts with `//` instead of `.//`, the dot will be appended
+     * automatically.
+     *
      * If there are no such elements, the method will resolve to an empty array.
      * @param expression - Expression to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate | evaluate}
      */
@@ -1460,6 +1565,10 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
      * prefix.
      *
+     * Example: `await elementHandle.waitForSelector('xpath/' + xpathExpression)`
+     *
+     * The method evaluates the XPath expression relative to the elementHandle.
+     *
      * Wait for the `xpath` within the element. If at the moment of calling the
      * method the `xpath` already exists, the method will return immediately. If
      * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
@@ -1468,7 +1577,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * If `xpath` starts with `//` instead of `.//`, the dot will be appended
      * automatically.
      *
-     * This method works across navigation
+     * This method works across navigation.
      *
      * ```ts
      * const puppeteer = require('puppeteer');
@@ -1679,6 +1788,8 @@ export declare type ErrorCode = 'aborted' | 'accessdenied' | 'addressunreachable
 /* Excluded from this release type: ErrorLike */
 
 /**
+ * @deprecated Import error classes directly.
+ *
  * Puppeteer methods might throw errors if they are unable to fulfill a request.
  * For example, `page.waitForSelector(selector[, options])` might fail if the
  * selector doesn't match any nodes during the given timeframe.
@@ -1693,7 +1804,7 @@ export declare type ErrorCode = 'aborted' | 'accessdenied' | 'addressunreachable
  * try {
  *   await page.waitForSelector('.foo');
  * } catch (e) {
- *   if (e instanceof puppeteer.errors.TimeoutError) {
+ *   if (e instanceof TimeoutError) {
  *     // Do something if this is a timeout.
  *   }
  * }
@@ -1787,18 +1898,36 @@ export declare class EventEmitter implements CommonEventEmitter {
     private eventListenersCount;
 }
 
-/**
- * @public
- */
 export declare type EventType = string | symbol;
 
 /* Excluded from this release type: ExceptionThrownCallback */
 
-export declare const executablePath: (channel?: string | undefined) => string;
-
-/* Excluded from this release type: executablePathForChannel */
+export declare const executablePath: (channel?: ChromeReleaseChannel | undefined) => string;
 
 /* Excluded from this release type: ExecutionContext */
+
+/**
+ * Defines experiment options for Puppeteer.
+ *
+ * See individual properties for more information.
+ *
+ * @public
+ */
+export declare interface ExperimentsConfiguration {
+    /**
+     * Require Puppeteer to download Chromium for Apple M1.
+     *
+     * On Apple M1 devices Puppeteer by default downloads the version for
+     * Intel's processor which runs via Rosetta. It works without any problems,
+     * however, with this option, you should get more efficient resource usage
+     * (CPU and RAM) that could lead to a faster execution time.
+     *
+     * Can be overridden by `PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM`.
+     *
+     * @defaultValue `false`
+     */
+    macArmChromiumEnabled?: boolean;
+}
 
 /* Excluded from this release type: FetchRequestId */
 
@@ -2084,7 +2213,11 @@ export declare class Frame {
     /**
      * @deprecated Use {@link Frame.$$} with the `xpath` prefix.
      *
+     * Example: `await frame.$$('xpath/' + xpathExpression)`
+     *
      * This method evaluates the given XPath expression and returns the results.
+     * If `xpath` starts with `//` instead of `.//`, the dot will be appended
+     * automatically.
      * @param expression - the XPath expression to evaluate.
      */
     $x(expression: string): Promise<Array<ElementHandle<Node>>>;
@@ -2126,6 +2259,12 @@ export declare class Frame {
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
      * @deprecated Use {@link Frame.waitForSelector} with the `xpath` prefix.
+     *
+     * Example: `await frame.waitForSelector('xpath/' + xpathExpression)`
+     *
+     * The method evaluates the XPath expression relative to the Frame.
+     * If `xpath` starts with `//` instead of `.//`, the dot will be appended
+     * automatically.
      *
      * Wait for the `xpath` to appear in page. If at the moment of calling the
      * method the `xpath` already exists, the method will return immediately. If
@@ -2323,7 +2462,7 @@ export declare class Frame {
         delay: number;
     }): Promise<void>;
     /**
-     * @deprecated Use `new Promise(r => setTimeout(r, milliseconds));`.
+     * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
      *
      * Causes your script to wait for the given number of milliseconds.
      *
@@ -2463,8 +2602,6 @@ export declare interface GeolocationOptions {
 
 /* Excluded from this release type: getFetch */
 
-/* Excluded from this release type: getPackageDirectory */
-
 /* Excluded from this release type: getQueryHandlerAndSelector */
 
 /* Excluded from this release type: getReadableAsBuffer */
@@ -2481,9 +2618,6 @@ export declare type HandleFor<T> = T extends Node ? ElementHandle<T> : JSHandle<
  */
 export declare type HandleOr<T> = HandleFor<T> | JSHandle<T> | T;
 
-/**
- * @public
- */
 export declare type Handler<T = any> = (event?: T) => void;
 
 /**
@@ -2834,8 +2968,6 @@ export declare class HTTPResponse {
 
     /* Excluded from this release type: importFS */
 
-    /* Excluded from this release type: initializePuppeteer */
-
     /* Excluded from this release type: InnerLazyParams */
 
     /**
@@ -2911,6 +3043,7 @@ export declare class HTTPResponse {
             resetOnNavigation?: boolean;
             reportAnonymousScripts?: boolean;
             includeRawScriptCoverage?: boolean;
+            useBlockCoverage?: boolean;
         }): Promise<void>;
         stop(): Promise<JSCoverageEntry[]>;
     }
@@ -2943,6 +3076,12 @@ export declare class HTTPResponse {
          * Whether the result includes raw V8 script coverage entries.
          */
         includeRawScriptCoverage?: boolean;
+        /**
+         * Whether to collect coverage information at the block level.
+         * If true, coverage will be collected at the block level (this is the default).
+         * If false, coverage will be collected at the function level.
+         */
+        useBlockCoverage?: boolean;
     }
 
     /**
@@ -3062,7 +3201,7 @@ export declare class HTTPResponse {
      * {@link Keyboard.up}, and {@link Keyboard.sendCharacter}
      * to manually fire events as if they were generated from a real keyboard.
      *
-     * On MacOS, keyboard shortcuts like `⌘ A` -\> Select All do not work.
+     * On macOS, keyboard shortcuts like `⌘ A` -\> Select All do not work.
      * See {@link https://github.com/puppeteer/puppeteer/issues/1313 | #1313}.
      *
      * @example
@@ -3214,6 +3353,29 @@ export declare class HTTPResponse {
      */
     export declare type KeyInput = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'Power' | 'Eject' | 'Abort' | 'Help' | 'Backspace' | 'Tab' | 'Numpad5' | 'NumpadEnter' | 'Enter' | '\r' | '\n' | 'ShiftLeft' | 'ShiftRight' | 'ControlLeft' | 'ControlRight' | 'AltLeft' | 'AltRight' | 'Pause' | 'CapsLock' | 'Escape' | 'Convert' | 'NonConvert' | 'Space' | 'Numpad9' | 'PageUp' | 'Numpad3' | 'PageDown' | 'End' | 'Numpad1' | 'Home' | 'Numpad7' | 'ArrowLeft' | 'Numpad4' | 'Numpad8' | 'ArrowUp' | 'ArrowRight' | 'Numpad6' | 'Numpad2' | 'ArrowDown' | 'Select' | 'Open' | 'PrintScreen' | 'Insert' | 'Numpad0' | 'Delete' | 'NumpadDecimal' | 'Digit0' | 'Digit1' | 'Digit2' | 'Digit3' | 'Digit4' | 'Digit5' | 'Digit6' | 'Digit7' | 'Digit8' | 'Digit9' | 'KeyA' | 'KeyB' | 'KeyC' | 'KeyD' | 'KeyE' | 'KeyF' | 'KeyG' | 'KeyH' | 'KeyI' | 'KeyJ' | 'KeyK' | 'KeyL' | 'KeyM' | 'KeyN' | 'KeyO' | 'KeyP' | 'KeyQ' | 'KeyR' | 'KeyS' | 'KeyT' | 'KeyU' | 'KeyV' | 'KeyW' | 'KeyX' | 'KeyY' | 'KeyZ' | 'MetaLeft' | 'MetaRight' | 'ContextMenu' | 'NumpadMultiply' | 'NumpadAdd' | 'NumpadSubtract' | 'NumpadDivide' | 'F1' | 'F2' | 'F3' | 'F4' | 'F5' | 'F6' | 'F7' | 'F8' | 'F9' | 'F10' | 'F11' | 'F12' | 'F13' | 'F14' | 'F15' | 'F16' | 'F17' | 'F18' | 'F19' | 'F20' | 'F21' | 'F22' | 'F23' | 'F24' | 'NumLock' | 'ScrollLock' | 'AudioVolumeMute' | 'AudioVolumeDown' | 'AudioVolumeUp' | 'MediaTrackNext' | 'MediaTrackPrevious' | 'MediaStop' | 'MediaPlayPause' | 'Semicolon' | 'Equal' | 'NumpadEqual' | 'Comma' | 'Minus' | 'Period' | 'Slash' | 'Backquote' | 'BracketLeft' | 'Backslash' | 'BracketRight' | 'Quote' | 'AltGraph' | 'Props' | 'Cancel' | 'Clear' | 'Shift' | 'Control' | 'Alt' | 'Accept' | 'ModeChange' | ' ' | 'Print' | 'Execute' | '\u0000' | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' | 'Meta' | '*' | '+' | '-' | '/' | ';' | '=' | ',' | '.' | '`' | '[' | '\\' | ']' | "'" | 'Attn' | 'CrSel' | 'ExSel' | 'EraseEof' | 'Play' | 'ZoomOut' | ')' | '!' | '@' | '#' | '$' | '%' | '^' | '&' | '(' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z' | ':' | '<' | '_' | '>' | '?' | '~' | '{' | '|' | '}' | '"' | 'SoftLeft' | 'SoftRight' | 'Camera' | 'Call' | 'EndCall' | 'VolumeDown' | 'VolumeUp';
 
+    /**
+     * A list of devices to be used with {@link Page.emulate}.
+     *
+     * @example
+     *
+     * ```ts
+     * import {KnownDevices} from 'puppeteer';
+     * const iPhone = KnownDevices['iPhone 6'];
+     *
+     * (async () => {
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   await page.emulate(iPhone);
+     *   await page.goto('https://www.google.com');
+     *   // other actions...
+     *   await browser.close();
+     * })();
+     * ```
+     *
+     * @public
+     */
+    export declare const KnownDevices: Readonly<Record<"Blackberry PlayBook" | "Blackberry PlayBook landscape" | "BlackBerry Z30" | "BlackBerry Z30 landscape" | "Galaxy Note 3" | "Galaxy Note 3 landscape" | "Galaxy Note II" | "Galaxy Note II landscape" | "Galaxy S III" | "Galaxy S III landscape" | "Galaxy S5" | "Galaxy S5 landscape" | "Galaxy S8" | "Galaxy S8 landscape" | "Galaxy S9+" | "Galaxy S9+ landscape" | "Galaxy Tab S4" | "Galaxy Tab S4 landscape" | "iPad" | "iPad landscape" | "iPad (gen 6)" | "iPad (gen 6) landscape" | "iPad (gen 7)" | "iPad (gen 7) landscape" | "iPad Mini" | "iPad Mini landscape" | "iPad Pro" | "iPad Pro landscape" | "iPad Pro 11" | "iPad Pro 11 landscape" | "iPhone 4" | "iPhone 4 landscape" | "iPhone 5" | "iPhone 5 landscape" | "iPhone 6" | "iPhone 6 landscape" | "iPhone 6 Plus" | "iPhone 6 Plus landscape" | "iPhone 7" | "iPhone 7 landscape" | "iPhone 7 Plus" | "iPhone 7 Plus landscape" | "iPhone 8" | "iPhone 8 landscape" | "iPhone 8 Plus" | "iPhone 8 Plus landscape" | "iPhone SE" | "iPhone SE landscape" | "iPhone X" | "iPhone X landscape" | "iPhone XR" | "iPhone XR landscape" | "iPhone 11" | "iPhone 11 landscape" | "iPhone 11 Pro" | "iPhone 11 Pro landscape" | "iPhone 11 Pro Max" | "iPhone 11 Pro Max landscape" | "iPhone 12" | "iPhone 12 landscape" | "iPhone 12 Pro" | "iPhone 12 Pro landscape" | "iPhone 12 Pro Max" | "iPhone 12 Pro Max landscape" | "iPhone 12 Mini" | "iPhone 12 Mini landscape" | "iPhone 13" | "iPhone 13 landscape" | "iPhone 13 Pro" | "iPhone 13 Pro landscape" | "iPhone 13 Pro Max" | "iPhone 13 Pro Max landscape" | "iPhone 13 Mini" | "iPhone 13 Mini landscape" | "JioPhone 2" | "JioPhone 2 landscape" | "Kindle Fire HDX" | "Kindle Fire HDX landscape" | "LG Optimus L70" | "LG Optimus L70 landscape" | "Microsoft Lumia 550" | "Microsoft Lumia 950" | "Microsoft Lumia 950 landscape" | "Nexus 10" | "Nexus 10 landscape" | "Nexus 4" | "Nexus 4 landscape" | "Nexus 5" | "Nexus 5 landscape" | "Nexus 5X" | "Nexus 5X landscape" | "Nexus 6" | "Nexus 6 landscape" | "Nexus 6P" | "Nexus 6P landscape" | "Nexus 7" | "Nexus 7 landscape" | "Nokia Lumia 520" | "Nokia Lumia 520 landscape" | "Nokia N9" | "Nokia N9 landscape" | "Pixel 2" | "Pixel 2 landscape" | "Pixel 2 XL" | "Pixel 2 XL landscape" | "Pixel 3" | "Pixel 3 landscape" | "Pixel 4" | "Pixel 4 landscape" | "Pixel 4a (5G)" | "Pixel 4a (5G) landscape" | "Pixel 5" | "Pixel 5 landscape" | "Moto G4" | "Moto G4 landscape", Device>>;
+
     export declare const launch: (options?: PuppeteerLaunchOptions) => Promise<Browser>;
 
     /**
@@ -3295,8 +3457,6 @@ export declare class HTTPResponse {
     /* Excluded from this release type: LazyArg */
 
     /* Excluded from this release type: LifecycleWatcher */
-
-    /* Excluded from this release type: logPolitely */
 
     /**
      * @public
@@ -3484,7 +3644,7 @@ export declare class HTTPResponse {
         drop(target: Point, data: Protocol.Input.DragData): Promise<void>;
         /**
          * Performs a drag, dragenter, dragover, and drop in sequence.
-         * @param target - point to drag from
+         * @param start - point to drag from
          * @param target - point to drop on
          * @param options - An object of options. Accepts delay which,
          * if specified, is the time to wait between `dragover` and `drop` in milliseconds.
@@ -3528,26 +3688,7 @@ export declare class HTTPResponse {
     }
 
     /**
-     * A list of network conditions to be used with
-     * `page.emulateNetworkConditions(networkConditions)`. Actual list of predefined
-     * conditions can be found in
-     * {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/NetworkConditions.ts | src/common/NetworkConditions.ts}.
-     *
-     * @example
-     *
-     * ```ts
-     * const puppeteer = require('puppeteer');
-     * const slow3G = puppeteer.networkConditions['Slow 3G'];
-     *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   await page.emulateNetworkConditions(slow3G);
-     *   await page.goto('https://www.google.com');
-     *   // other actions...
-     *   await browser.close();
-     * })();
-     * ```
+     * @deprecated Import {@link PredefinedNetworkConditions}.
      *
      * @public
      */
@@ -3790,20 +3931,26 @@ export declare class HTTPResponse {
          */
         setDragInterception(enabled: boolean): Promise<void>;
         /**
+         * Sets the network connection to offline.
+         *
+         * It does not change the parameters used in {@link Page.emulateNetworkConditions}
+         *
          * @param enabled - When `true`, enables offline mode for the page.
-         * @remarks
-         * NOTE: while this method sets the network connection to offline, it does
-         * not change the parameters used in [page.emulateNetworkConditions(networkConditions)]
-         * (#pageemulatenetworkconditionsnetworkconditions)
          */
         setOfflineMode(enabled: boolean): Promise<void>;
         /**
-         * @param networkConditions - Passing `null` disables network condition emulation.
+         * This does not affect WebSockets and WebRTC PeerConnections (see
+         * https://crbug.com/563644). To set the page offline, you can use
+         * {@link Page.setOfflineMode}.
+         *
+         * A list of predefined network conditions can be used by importing
+         * {@link PredefinedNetworkConditions}.
+         *
          * @example
          *
          * ```ts
-         * const puppeteer = require('puppeteer');
-         * const slow3G = puppeteer.networkConditions['Slow 3G'];
+         * import {PredefinedNetworkConditions} from 'puppeteer';
+         * const slow3G = PredefinedNetworkConditions['Slow 3G'];
          *
          * (async () => {
          *   const browser = await puppeteer.launch();
@@ -3815,10 +3962,8 @@ export declare class HTTPResponse {
          * })();
          * ```
          *
-         * @remarks
-         * NOTE: This does not affect WebSockets and WebRTC PeerConnections (see
-         * https://crbug.com/563644). To set the page offline, you can use
-         * [page.setOfflineMode(enabled)](#pagesetofflinemodeenabled).
+         * @param networkConditions - Passing `null` disables network condition
+         * emulation.
          */
         emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
         /**
@@ -4419,21 +4564,17 @@ export declare class HTTPResponse {
         /**
          * @param urlOrPredicate - A URL or predicate to wait for
          * @param options - Optional waiting parameters
-         * @returns Promise which resolves to the matched response
+         * @returns Promise which resolves to the matched request
          * @example
          *
          * ```ts
-         * const firstResponse = await page.waitForResponse(
+         * const firstRequest = await page.waitForRequest(
          *   'https://example.com/resource'
          * );
-         * const finalResponse = await page.waitForResponse(
-         *   response =>
-         *     response.url() === 'https://example.com' && response.status() === 200
+         * const finalRequest = await page.waitForRequest(
+         *   request => request.url() === 'https://example.com'
          * );
-         * const finalResponse = await page.waitForResponse(async response => {
-         *   return (await response.text()).includes('<html>');
-         * });
-         * return finalResponse.ok();
+         * return finalRequest.response()?.ok();
          * ```
          *
          * @remarks
@@ -4565,20 +4706,25 @@ export declare class HTTPResponse {
          */
         bringToFront(): Promise<void>;
         /**
-         * Emulates given device metrics and user agent.
+         * Emulates a given device's metrics and user agent.
+         *
+         * To aid emulation, Puppeteer provides a list of known devices that can be
+         * via {@link KnownDevices}.
          *
          * @remarks
          * This method is a shortcut for calling two methods:
-         * {@link Page.setUserAgent} and {@link Page.setViewport} To aid emulation,
-         * Puppeteer provides a list of device descriptors that can be obtained via
-         * {@link devices}. `page.emulate` will resize the page. A lot of websites
-         * don't expect phones to change size, so you should emulate before navigating
-         * to the page.
+         * {@link Page.setUserAgent} and {@link Page.setViewport}.
+         *
+         * @remarks
+         * This method will resize the page. A lot of websites don't expect phones to
+         * change size, so you should emulate before navigating to the page.
+         *
          * @example
          *
          * ```ts
-         * const puppeteer = require('puppeteer');
-         * const iPhone = puppeteer.devices['iPhone 6'];
+         * import {KnownDevices} from 'puppeteer';
+         * const iPhone = KnownDevices['iPhone 6'];
+         *
          * (async () => {
          *   const browser = await puppeteer.launch();
          *   const page = await browser.newPage();
@@ -4588,17 +4734,10 @@ export declare class HTTPResponse {
          *   await browser.close();
          * })();
          * ```
-         *
-         * @remarks List of all available devices is available in the source code:
-         * {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
          */
-        emulate(options: {
-            viewport: Viewport;
-            userAgent: string;
-        }): Promise<void>;
+        emulate(device: Device): Promise<void>;
         /**
          * @param enabled - Whether or not to enable JavaScript on the page.
-         * @returns
          * @remarks
          * NOTE: changing this value won't affect scripts that have already been run.
          * It will take full effect on the next navigation.
@@ -5126,7 +5265,7 @@ export declare class HTTPResponse {
             delay: number;
         }): Promise<void>;
         /**
-         * @deprecated Use `new Promise(r => setTimeout(r, milliseconds));`.
+         * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
          *
          * Causes your script to wait for the given number of milliseconds.
          *
@@ -5692,6 +5831,33 @@ export declare class HTTPResponse {
     /* Excluded from this release type: Poller */
 
     /**
+     * A list of network conditions to be used with
+     * {@link Page.emulateNetworkConditions}.
+     *
+     * @example
+     *
+     * ```ts
+     * import {PredefinedNetworkConditions} from 'puppeteer';
+     * const slow3G = PredefinedNetworkConditions['Slow 3G'];
+     *
+     * (async () => {
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   await page.emulateNetworkConditions(slow3G);
+     *   await page.goto('https://www.google.com');
+     *   // other actions...
+     *   await browser.close();
+     * })();
+     * ```
+     *
+     * @public
+     */
+    export declare const PredefinedNetworkConditions: Readonly<{
+        'Slow 3G': NetworkConditions;
+        'Fast 3G': NetworkConditions;
+    }>;
+
+    /**
      * @public
      */
     export declare interface PressOptions {
@@ -5728,13 +5894,19 @@ export declare class HTTPResponse {
 
     /**
      * Describes a launcher - a class that is able to create and launch a browser instance.
+     *
      * @public
      */
-    export declare interface ProductLauncher {
+    export declare class ProductLauncher {
+        #private;
+        /* Excluded from this release type: puppeteer */
+        /* Excluded from this release type: __constructor */
+        get product(): Product;
         launch(object: PuppeteerNodeLaunchOptions): Promise<Browser>;
-        executablePath: (path?: any) => string;
+        executablePath(channel?: ChromeReleaseChannel): string;
         defaultArgs(object: BrowserLaunchArgumentOptions): string[];
-        product: Product;
+        /* Excluded from this release type: getProfilePath */
+        /* Excluded from this release type: resolveExecutablePath */
     }
 
     export { Protocol }
@@ -5745,8 +5917,23 @@ export declare class HTTPResponse {
      * @public
      */
     export declare class ProtocolError extends CustomError {
-        code?: number;
-        originalMessage: string;
+        #private;
+        /**
+         * @internal
+         */
+        set code(code: number | undefined);
+        /**
+         * @public
+         */
+        get code(): number | undefined;
+        /**
+         * @internal
+         */
+        set originalMessage(originalMessage: string);
+        /**
+         * @public
+         */
+        get originalMessage(): string;
     }
 
     /**
@@ -5766,6 +5953,41 @@ export declare class HTTPResponse {
      * @public
      */
     export declare class Puppeteer {
+        /**
+         * Registers a {@link CustomQueryHandler | custom query handler}.
+         *
+         * @remarks
+         * After registration, the handler can be used everywhere where a selector is
+         * expected by prepending the selection string with `<name>/`. The name is only
+         * allowed to consist of lower- and upper case latin letters.
+         *
+         * @example
+         *
+         * ```
+         * puppeteer.registerCustomQueryHandler('text', { … });
+         * const aHandle = await page.$('text/…');
+         * ```
+         *
+         * @param name - The name that the custom query handler will be registered
+         * under.
+         * @param queryHandler - The {@link CustomQueryHandler | custom query handler}
+         * to register.
+         *
+         * @public
+         */
+        static registerCustomQueryHandler(name: string, queryHandler: CustomQueryHandler): void;
+        /**
+         * Unregisters a custom query handler for a given name.
+         */
+        static unregisterCustomQueryHandler(name: string): void;
+        /**
+         * Gets the names of all custom query handlers.
+         */
+        static customQueryHandlerNames(): string[];
+        /**
+         * Unregisters all custom query handlers.
+         */
+        static clearCustomQueryHandlers(): void;
         /* Excluded from this release type: _isPuppeteerCore */
         /* Excluded from this release type: _changedProduct */
         /* Excluded from this release type: __constructor */
@@ -5778,78 +6000,15 @@ export declare class HTTPResponse {
          * @returns Promise which resolves to browser instance.
          */
         connect(options: ConnectOptions): Promise<Browser>;
-        /**
-         * @deprecated Import directly puppeteer.
-         * @example
-         *
-         * ```ts
-         * import {devices} from 'puppeteer';
-         * ```
-         */
-        get devices(): typeof devices;
-        /**
-         * @deprecated Import directly puppeteer.
-         * @example
-         *
-         * ```ts
-         * import {errors} from 'puppeteer';
-         * ```
-         */
-        get errors(): typeof errors;
-        /**
-         * @deprecated Import directly puppeteer.
-         * @example
-         *
-         * ```ts
-         * import {networkConditions} from 'puppeteer';
-         * ```
-         */
-        get networkConditions(): typeof networkConditions;
-        /**
-         * @deprecated Import directly puppeteer.
-         * @example
-         *
-         * ```ts
-         * import {registerCustomQueryHandler} from 'puppeteer';
-         * ```
-         */
-        registerCustomQueryHandler(name: string, queryHandler: CustomQueryHandler): void;
-        /**
-         * @deprecated Import directly puppeteer.
-         * @example
-         *
-         * ```ts
-         * import {unregisterCustomQueryHandler} from 'puppeteer';
-         * ```
-         */
-        unregisterCustomQueryHandler(name: string): void;
-        /**
-         * @deprecated Import directly puppeteer.
-         * @example
-         *
-         * ```ts
-         * import {customQueryHandlerNames} from 'puppeteer';
-         * ```
-         */
-        customQueryHandlerNames(): string[];
-        /**
-         * @deprecated Import directly puppeteer.
-         * @example
-         *
-         * ```ts
-         * import {clearCustomQueryHandlers} from 'puppeteer';
-         * ```
-         */
-        clearCustomQueryHandlers(): void;
     }
 
     /* Excluded from this release type: PUPPETEER_REVISIONS */
 
     /* Excluded from this release type: PUPPETEER_WORLD */
 
-    /* Excluded from this release type: puppeteerDirname */
-
     /**
+     * @deprecated Do not use.
+     *
      * @public
      */
     export declare interface PuppeteerErrors {
@@ -5909,23 +6068,29 @@ export declare class HTTPResponse {
      */
     export declare class PuppeteerNode extends Puppeteer {
         #private;
-        /* Excluded from this release type: _preferredRevision */
+        /* Excluded from this release type: defaultBrowserRevision */
+        /* Excluded from this release type: configuration */
         /* Excluded from this release type: __constructor */
         /**
          * This method attaches Puppeteer to an existing browser instance.
          *
          * @param options - Set of configurable options to set on the browser.
          * @returns Promise which resolves to browser instance.
+         *
+         * @public
          */
         connect(options: ConnectOptions): Promise<Browser>;
-        /* Excluded from this release type: _productName */
-        /* Excluded from this release type: _productName */
         /**
-         * Launches puppeteer and launches a browser instance with given arguments and
-         * options when specified.
+         * Launches a browser instance with given arguments and options when
+         * specified.
+         *
+         * When using with `puppeteer-core`,
+         * {@link LaunchOptions.executablePath | options.executablePath} or
+         * {@link LaunchOptions.channel | options.channel} must be provided.
          *
          * @example
-         * You can use `ignoreDefaultArgs` to filter out `--mute-audio` from default arguments:
+         * You can use {@link LaunchOptions.ignoreDefaultArgs | options.ignoreDefaultArgs}
+         * to filter out `--mute-audio` from default arguments:
          *
          * ```ts
          * const browser = await puppeteer.launch({
@@ -5934,57 +6099,75 @@ export declare class HTTPResponse {
          * ```
          *
          * @remarks
-         * **NOTE** Puppeteer can also be used to control the Chrome browser, but it
-         * works best with the version of Chromium it is bundled with. There is no
-         * guarantee it will work with any other version. Use `executablePath` option
-         * with extreme caution. If Google Chrome (rather than Chromium) is preferred,
-         * a {@link https://www.google.com/chrome/browser/canary.html | Chrome Canary}
+         * Puppeteer can also be used to control the Chrome browser, but it works best
+         * with the version of Chromium downloaded by default by Puppeteer. There is
+         * no guarantee it will work with any other version. If Google Chrome (rather
+         * than Chromium) is preferred, a
+         * {@link https://www.google.com/chrome/browser/canary.html | Chrome Canary}
          * or
          * {@link https://www.chromium.org/getting-involved/dev-channel | Dev Channel}
-         * build is suggested. In `puppeteer.launch([options])`, any mention of
-         * Chromium also applies to Chrome. See
+         * build is suggested. See
          * {@link https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/ | this article}
          * for a description of the differences between Chromium and Chrome.
          * {@link https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md | This article}
          * describes some differences for Linux users.
          *
-         * @param options - Set of configurable options to set on the browser.
-         * @returns Promise which resolves to browser instance.
+         * @param options - Options to configure launching behavior.
+         *
+         * @public
          */
         launch(options?: PuppeteerLaunchOptions): Promise<Browser>;
         /**
-         * @remarks
-         * **NOTE** `puppeteer.executablePath()` is affected by the
-         * `PUPPETEER_EXECUTABLE_PATH` and `PUPPETEER_CHROMIUM_REVISION` environment
-         * variables.
+         * @returns The default executable path.
          *
-         * @returns A path where Puppeteer expects to find the bundled browser. The
-         * browser binary might not be there if the download was skipped with the
-         * `PUPPETEER_SKIP_DOWNLOAD` environment variable.
+         * @public
          */
-        executablePath(channel?: string): string;
-        /* Excluded from this release type: _launcher */
+        executablePath(channel?: ChromeReleaseChannel): string;
+        /* Excluded from this release type: browserRevision */
+        /* Excluded from this release type: defaultDownloadPath */
         /**
-         * The name of the browser that is under automation (`"chrome"` or
-         * `"firefox"`)
+         * @returns The name of the browser that was last launched.
          *
-         * @remarks
-         * The product is set by the `PUPPETEER_PRODUCT` environment variable or the
-         * `product` option in `puppeteer.launch([options])` and defaults to `chrome`.
-         * Firefox support is experimental.
+         * @public
+         */
+        get lastLaunchedProduct(): Product;
+        /**
+         * @returns The name of the browser that will be launched by default. For
+         * `puppeteer`, this is influenced by your configuration. Otherwise, it's
+         * `chrome`.
+         *
+         * @public
+         */
+        get defaultProduct(): Product;
+        /**
+         * @deprecated Do not use as this field as it does not take into account
+         * multiple browsers of different types. Use
+         * {@link PuppeteerNode.defaultProduct | defaultProduct} or
+         * {@link PuppeteerNode.lastLaunchedProduct | lastLaunchedProduct}.
+         *
+         * @returns The name of the browser that is under automation.
+         *
+         * @public
          */
         get product(): string;
         /**
          * @param options - Set of configurable options to set on the browser.
+         *
          * @returns The default flags that Chromium will be launched with.
+         *
+         * @public
          */
         defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
         /**
+         * @deprecated If you are using `puppeteer-core`, do not use this method. Just
+         * construct {@link BrowserFetcher} manually.
+         *
          * @param options - Set of configurable options to specify the settings of the
          * BrowserFetcher.
+         *
          * @returns A new BrowserFetcher instance.
          */
-        createBrowserFetcher(options: BrowserFetcherOptions): BrowserFetcher;
+        createBrowserFetcher(options: Partial<BrowserFetcherOptions>): BrowserFetcher;
     }
 
     /**
@@ -6005,24 +6188,8 @@ export declare class HTTPResponse {
     /* Excluded from this release type: RedirectInfo */
 
     /**
-     * Registers a {@link CustomQueryHandler | custom query handler}.
-     *
-     * @remarks
-     * After registration, the handler can be used everywhere where a selector is
-     * expected by prepending the selection string with `<name>/`. The name is only
-     * allowed to consist of lower- and upper case latin letters.
-     *
-     * @example
-     *
-     * ```
-     * puppeteer.registerCustomQueryHandler('text', { … });
-     * const aHandle = await page.$('text/…');
-     * ```
-     *
-     * @param name - The name that the custom query handler will be registered
-     * under.
-     * @param queryHandler - The {@link CustomQueryHandler | custom query handler}
-     * to register.
+     * @deprecated Import {@link Puppeteer} and use the static method
+     * {@link Puppeteer.registerCustomQueryHandler}
      *
      * @public
      */
@@ -6039,8 +6206,6 @@ export declare class HTTPResponse {
     }
 
     /* Excluded from this release type: removeEventListeners */
-
-    /* Excluded from this release type: resolveExecutablePath */
 
     /**
      * Resource types for HTTPRequests as perceived by the rendering engine.
@@ -6063,8 +6228,6 @@ export declare class HTTPResponse {
         contentType: string;
         body: string | Buffer;
     }
-
-    /* Excluded from this release type: rootDirname */
 
     /**
      * @public
@@ -6346,8 +6509,6 @@ export declare class HTTPResponse {
 
          /* Excluded from this release type: TimeoutSettings */
 
-         /* Excluded from this release type: tmpdir */
-
          /**
           * The Touchscreen class exposes touchscreen events.
           * @public
@@ -6409,7 +6570,8 @@ export declare class HTTPResponse {
          /* Excluded from this release type: unitToPixels */
 
          /**
-          * @param name - The name of the query handler to unregistered.
+          * @deprecated Import {@link Puppeteer} and use the static method
+          * {@link Puppeteer.unregisterCustomQueryHandler}
           *
           * @public
           */

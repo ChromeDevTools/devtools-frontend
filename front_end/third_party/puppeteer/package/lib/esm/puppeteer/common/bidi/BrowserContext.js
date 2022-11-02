@@ -25,7 +25,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _BrowserContext_connection;
-import { BrowserContext as BrowserContextBase } from '../../api/Browser.js';
+import { BrowserContext as BrowserContextBase } from '../../api/BrowserContext.js';
 import { Page } from './Page.js';
 /**
  * @internal

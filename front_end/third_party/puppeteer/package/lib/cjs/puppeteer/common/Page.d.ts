@@ -17,8 +17,10 @@
 /// <reference types="node" />
 import { Protocol } from 'devtools-protocol';
 import type { Readable } from 'stream';
+import type { Browser } from '../api/Browser.js';
+import type { BrowserContext } from '../api/BrowserContext.js';
+import { GeolocationOptions, MediaFeature, Metrics, Page, ScreenshotOptions, WaitForOptions, WaitTimeoutOptions } from '../api/Page.js';
 import { Accessibility } from './Accessibility.js';
-import type { Browser, BrowserContext } from '../api/Browser.js';
 import { CDPSession } from './Connection.js';
 import { Coverage } from './Coverage.js';
 import { ElementHandle } from './ElementHandle.js';
@@ -37,7 +39,6 @@ import { TaskQueue } from './TaskQueue.js';
 import { Tracing } from './Tracing.js';
 import { EvaluateFunc, HandleFor, NodeFor } from './types.js';
 import { WebWorker } from './WebWorker.js';
-import { Page, WaitForOptions, Metrics, ScreenshotOptions, WaitTimeoutOptions, GeolocationOptions, MediaFeature } from '../api/Page.js';
 /**
  * @internal
  */
@@ -191,37 +192,7 @@ export declare class CDPPage extends Page {
      * on the page, which can then be used to simulate drag-and-drop.
      */
     setDragInterception(enabled: boolean): Promise<void>;
-    /**
-     * @param enabled - When `true`, enables offline mode for the page.
-     * @remarks
-     * NOTE: while this method sets the network connection to offline, it does
-     * not change the parameters used in [page.emulateNetworkConditions(networkConditions)]
-     * (#pageemulatenetworkconditionsnetworkconditions)
-     */
     setOfflineMode(enabled: boolean): Promise<void>;
-    /**
-     * @param networkConditions - Passing `null` disables network condition emulation.
-     * @example
-     *
-     * ```ts
-     * const puppeteer = require('puppeteer');
-     * const slow3G = puppeteer.networkConditions['Slow 3G'];
-     *
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   await page.emulateNetworkConditions(slow3G);
-     *   await page.goto('https://www.google.com');
-     *   // other actions...
-     *   await browser.close();
-     * })();
-     * ```
-     *
-     * @remarks
-     * NOTE: This does not affect WebSockets and WebRTC PeerConnections (see
-     * https://crbug.com/563644). To set the page offline, you can use
-     * [page.setOfflineMode(enabled)](#pagesetofflinemodeenabled).
-     */
     emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
     /**
      * This setting will change the default maximum navigation time for the
@@ -966,38 +937,6 @@ export declare class CDPPage extends Page {
      */
     bringToFront(): Promise<void>;
     /**
-     * Emulates given device metrics and user agent.
-     *
-     * @remarks
-     * This method is a shortcut for calling two methods:
-     * {@link Page.setUserAgent} and {@link Page.setViewport} To aid emulation,
-     * Puppeteer provides a list of device descriptors that can be obtained via
-     * {@link devices}. `page.emulate` will resize the page. A lot of websites
-     * don't expect phones to change size, so you should emulate before navigating
-     * to the page.
-     * @example
-     *
-     * ```ts
-     * const puppeteer = require('puppeteer');
-     * const iPhone = puppeteer.devices['iPhone 6'];
-     * (async () => {
-     *   const browser = await puppeteer.launch();
-     *   const page = await browser.newPage();
-     *   await page.emulate(iPhone);
-     *   await page.goto('https://www.google.com');
-     *   // other actions...
-     *   await browser.close();
-     * })();
-     * ```
-     *
-     * @remarks List of all available devices is available in the source code:
-     * {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
-     */
-    emulate(options: {
-        viewport: Viewport;
-        userAgent: string;
-    }): Promise<void>;
-    /**
      * @param enabled - Whether or not to enable JavaScript on the page.
      * @returns
      * @remarks
@@ -1526,7 +1465,7 @@ export declare class CDPPage extends Page {
         delay: number;
     }): Promise<void>;
     /**
-     * @deprecated Use `new Promise(r => setTimeout(r, milliseconds));`.
+     * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
      *
      * Causes your script to wait for the given number of milliseconds.
      *

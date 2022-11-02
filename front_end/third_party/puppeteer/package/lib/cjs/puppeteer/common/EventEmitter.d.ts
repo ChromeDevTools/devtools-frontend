@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventType, Handler } from '../../vendor/mitt/src/index.js';
+import { EventType, Handler } from '../../third_party/mitt/index.js';
 /**
  * @public
  */

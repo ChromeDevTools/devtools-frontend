@@ -4,8 +4,6 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 
-export type ElementId = string;
-
 const SUMMARY_ELEMENT_SELECTOR = 'summary';
 
 const domNodeIsTree = (domNode: HTMLElement): boolean => {

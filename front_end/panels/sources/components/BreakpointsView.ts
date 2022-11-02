@@ -13,8 +13,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import breakpointsViewStyles from './breakpointsView.css.js';
-
-import {findNextNodeForKeyboardNavigation, type ElementId} from './BreakpointsViewUtils.js';
+import {findNextNodeForKeyboardNavigation} from './BreakpointsViewUtils.js';
 
 const UIStrings = {
   /**
@@ -202,20 +201,16 @@ export class BreakpointsRemovedEvent extends Event {
   }
 }
 
-const PAUSE_ON_EXCEPTIONS_ELEMENT_ID = 'pause-on-exceptions';
-const PAUSE_ON_UNCAUGHT_EXCEPTIONS_ELEMENT_ID = 'pause-on-caught-exceptions';
-
 export class BreakpointsView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-breakpoint-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
 
   #pauseOnExceptions: boolean = false;
   #pauseOnCaughtExceptions: boolean = false;
   #breakpointsActive: boolean = true;
   #breakpointGroups: BreakpointGroup[] = [];
-  #domNodeToIdMap: WeakMap<HTMLElement, ElementId> = new WeakMap();
-  #selectedElement?: ElementId;
+  #scheduledRender = false;
+  #enqueuedRender = false;
 
   set data(data: BreakpointsViewData) {
     this.#pauseOnExceptions = data.pauseOnExceptions;
@@ -223,31 +218,37 @@ export class BreakpointsView extends HTMLElement {
     this.#breakpointsActive = data.breakpointsActive;
     this.#breakpointGroups = data.groups;
 
-    if (!this.#selectedElement) {
-      this.#selectedElement = PAUSE_ON_EXCEPTIONS_ELEMENT_ID;
-    }
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void this.#render();
   }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [breakpointsViewStyles];
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void this.#render();
   }
 
-  #render(): void {
-    const clickHandler = async(event: Event): Promise<void> => {
-      const currentTarget = event.currentTarget as HTMLElement;
-      await this.#setSelected(currentTarget);
-      event.consume();
-    };
-    // clang-format off
+  async #render(): Promise<void> {
+    if (this.#scheduledRender) {
+      // If we are already rendering, don't render again immediately, but
+      // enqueue it to be run after we're done on our current render.
+      this.#enqueuedRender = true;
+      return;
+    }
+
+    this.#scheduledRender = true;
+
+    await coordinator.write('BreakpointsView render', () => {
+      const clickHandler = async(event: Event): Promise<void> => {
+        const currentTarget = event.currentTarget as HTMLElement;
+        await this.#setSelected(currentTarget);
+        event.consume();
+      };
+      // clang-format off
     const out = LitHtml.html`
     <div class='pause-on-exceptions'
-         tabindex=${this.#isSelectedElement(PAUSE_ON_EXCEPTIONS_ELEMENT_ID) ? 0: -1}
+         tabindex='0'
          @click=${clickHandler}
          @keydown=${this.#keyDownHandler}
-         data-first-pause
-         track-dom-node-to-element-id=${ComponentHelpers.Directives.nodeRenderedCallback(this.#setDOMNodeForElementId.bind(this, PAUSE_ON_EXCEPTIONS_ELEMENT_ID))}>
+         data-first-pause>
       <label class='checkbox-label'>
         <input type='checkbox' tabindex=-1 ?checked=${this.#pauseOnExceptions} @change=${this.#onPauseOnExceptionsStateChanged.bind(this)}>
         <span>${i18nString(UIStrings.pauseOnExceptions)}</span>
@@ -255,11 +256,10 @@ export class BreakpointsView extends HTMLElement {
     </div>
     ${this.#pauseOnExceptions ? LitHtml.html`
       <div class='pause-on-caught-exceptions'
-           tabindex=${this.#isSelectedElement(PAUSE_ON_UNCAUGHT_EXCEPTIONS_ELEMENT_ID) ? 0: -1}
+           tabindex='-1'
            @click=${clickHandler}
            @keydown=${this.#keyDownHandler}
-           data-last-pause
-           track-dom-node-to-element-id=${ComponentHelpers.Directives.nodeRenderedCallback(this.#setDOMNodeForElementId.bind(this, PAUSE_ON_UNCAUGHT_EXCEPTIONS_ELEMENT_ID))}>
+           data-last-pause>
         <label class='checkbox-label'>
           <input type='checkbox' tabindex=-1 ?checked=${this.#pauseOnCaughtExceptions} @change=${this.#onPauseOnCaughtExceptionsStateChanged.bind(this)}>
           <span>${i18nString(UIStrings.pauseOnCaughtExceptions)}</span>
@@ -272,8 +272,27 @@ export class BreakpointsView extends HTMLElement {
         group => group.url,
         (group, groupIndex) => LitHtml.html`${this.#renderBreakpointGroup(group, groupIndex)}`)}
     </div>`;
-    // clang-format on
-    LitHtml.render(out, this.#shadow, {host: this});
+      // clang-format on
+      LitHtml.render(out, this.#shadow, {host: this});
+    });
+
+    // If no element is tabbable, set the pause-on-exceptions to be tabbable. This can happen
+    // if the previously focused element was removed.
+    await coordinator.write('make pause-on-exceptions focusable', () => {
+      if (this.#shadow.querySelector('[tabindex="0"]') === null) {
+        const element = this.#shadow.querySelector<HTMLElement>('[data-first-pause]');
+        element?.setAttribute('tabindex', '0');
+      }
+    });
+
+    this.#scheduledRender = false;
+
+    // If render() was called when we were already mid-render, let's re-render
+    // to ensure we're not rendering any stale UI.
+    if (this.#enqueuedRender) {
+      this.#enqueuedRender = false;
+      return this.#render();
+    }
   }
 
   async #keyDownHandler(event: KeyboardEvent): Promise<void> {
@@ -296,23 +315,15 @@ export class BreakpointsView extends HTMLElement {
     if (!element) {
       return;
     }
-    const id = this.#domNodeToIdMap.get(element);
-    assertNotNullOrUndefined(id);
-    this.#selectedElement = id;
-    await ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-    await coordinator.write('focus', () => {
+    void coordinator.write('focus on selected element', () => {
+      const prevSelected = this.#shadow.querySelector('[tabindex="0"]');
+      prevSelected?.setAttribute('tabindex', '-1');
+      element.setAttribute('tabindex', '0');
       element.focus();
     });
   }
 
-  #isSelectedElement(id: ElementId): boolean {
-    return id === this.#selectedElement;
-  }
-
   async #handleArrowKey(key: Platform.KeyboardUtilities.ArrowKey, target: HTMLElement): Promise<void> {
-    if (!this.#selectedElement) {
-      throw new Error('A keyboard navigation is only valid if we have an element that is selected.');
-    }
     const setGroupExpandedState = (detailsElement: HTMLDetailsElement, expanded: boolean): Promise<void> => {
       if (expanded) {
         return coordinator.write('expand', () => {
@@ -428,13 +439,6 @@ export class BreakpointsView extends HTMLElement {
     void menu.show();
   }
 
-  #setDOMNodeForElementId(id: ElementId, domNode: Element): void {
-    if (!(domNode instanceof HTMLElement)) {
-      throw new Error('domNode is expected to an HTMLElement.');
-    }
-    this.#domNodeToIdMap.set(domNode, id);
-  }
-
   #renderBreakpointGroup(group: BreakpointGroup, groupIndex: number): LitHtml.TemplateResult {
     const contextmenuHandler = (event: Event): void => {
       this.#onBreakpointGroupContextMenu(event, group);
@@ -453,7 +457,6 @@ export class BreakpointsView extends HTMLElement {
     const classMap = {
       active: this.#breakpointsActive,
     };
-    const tabIndex = this.#isSelectedElement(group.url) ? 0 : -1;
     // clang-format off
     return LitHtml.html`
       <details class=${LitHtml.Directives.classMap(classMap)}
@@ -465,10 +468,9 @@ export class BreakpointsView extends HTMLElement {
                ?open=${group.expanded}
                @toggle=${toggleHandler}>
           <summary @contextmenu=${contextmenuHandler}
-                   tabindex=${tabIndex}
-                   @click=${clickHandler}
+                   tabindex='-1'
                    @keydown=${this.#keyDownHandler}
-                   track-dom-node-to-element-id=${ComponentHelpers.Directives.nodeRenderedCallback(this.#setDOMNodeForElementId.bind(this, group.url))}>
+                   @click=${clickHandler}>
           <span class='group-header' aria-hidden=true>${this.#renderFileIcon()}<span class='group-header-title' title='${group.url}'>${group.name}</span></span>
           <span class='group-hover-actions'>
             ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
@@ -561,7 +563,6 @@ export class BreakpointsView extends HTMLElement {
     const breakpointItemDescription = this.#getBreakpointItemDescription(breakpointItem);
     const codeSnippet = Platform.StringUtilities.trimEndWithMaxLength(breakpointItem.codeSnippet, MAX_SNIPPET_LENGTH);
     const codeSnippetTooltip = this.#getCodeSnippetTooltip(breakpointItem.type, breakpointItem.hoverText);
-    const tabIndex = this.#isSelectedElement(breakpointItem.id) ? 0 : -1;
     const itemsInGroup = this.#breakpointGroups[groupIndex].breakpointItems;
 
     // clang-format off
@@ -571,11 +572,10 @@ export class BreakpointsView extends HTMLElement {
          ?data-last-breakpoint=${breakpointItemIndex === itemsInGroup.length - 1}
          aria-label=${breakpointItemDescription}
          role=treeitem
-         tabindex=${tabIndex}
+         tabindex='-1'
          @contextmenu=${contextmenuHandler}
          @click=${breakpointItemClickHandler}
-         @keydown=${this.#keyDownHandler}
-         track-dom-node-to-element-id=${ComponentHelpers.Directives.nodeRenderedCallback(this.#setDOMNodeForElementId.bind(this, breakpointItem.id))}>
+         @keydown=${this.#keyDownHandler}>
       <label class='checkbox-label'>
         <span class='type-indicator'></span>
         <input type='checkbox'

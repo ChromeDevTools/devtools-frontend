@@ -465,7 +465,7 @@ export class BreakpointsView extends HTMLElement {
                role=group
                aria-label='${group.name}'
                aria-description='${group.url}'
-               ?open=${group.expanded}
+               ?open=${LitHtml.Directives.live(group.expanded)}
                @toggle=${toggleHandler}>
           <summary @contextmenu=${contextmenuHandler}
                    tabindex='-1'

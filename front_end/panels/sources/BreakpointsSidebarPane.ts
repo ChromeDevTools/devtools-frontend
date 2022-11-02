@@ -104,7 +104,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
   private constructor(
       breakpointManager: Bindings.BreakpointManager.BreakpointManager, settings: Common.Settings.Settings) {
-    this.#collapsedFilesSettings = Common.Settings.Settings.instance().createLocalSetting('collapsedFiles', []);
+    this.#collapsedFilesSettings = Common.Settings.Settings.instance().createSetting('collapsedFiles', []);
     this.#collapsedFiles = new Set(this.#collapsedFilesSettings.get());
     this.#breakpointManager = breakpointManager;
     this.#breakpointManager.addEventListener(

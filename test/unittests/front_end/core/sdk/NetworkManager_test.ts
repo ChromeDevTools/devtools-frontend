@@ -419,6 +419,32 @@ describeWithMockConnection('InterceptedRequest', () => {
                   "value": "malformed_override"
                 }
               ]
+            },
+            {
+              "applyTo": "cookies/*",
+              "headers": [
+                {
+                  "name": "set-cookie",
+                  "value": "unique=value"
+                },
+                {
+                  "name": "set-cookie",
+                  "value": "override-me=first"
+                }
+              ]
+            },
+            {
+              "applyTo": "cookies/mergeCookies.html",
+              "headers": [
+                {
+                  "name": "set-cookie",
+                  "value": "override-me=second"
+                },
+                {
+                  "name": "set-cookie",
+                  "value": "foo=bar"
+                }
+              ]
             }
           ]`,
           },
@@ -566,9 +592,9 @@ describeWithMockConnection('InterceptedRequest', () => {
   it('can override \'set-cookie\' headers', async () => {
     const headersFromServer = [{name: 'content-type', value: 'text/html; charset=utf-8'}];
     const expectedOverriddenHeaders = [
-      {name: 'set-cookie', value: 'userId=12345'},
       {name: 'age', value: 'overridden'},
       {name: 'content-type', value: 'text/html; charset=utf-8'},
+      {name: 'set-cookie', value: 'userId=12345'},
     ];
     const expectedPersistedSetCookieHeaders = [{name: 'set-cookie', value: 'userId=12345'}];
     await checkSetCookieOverride(
@@ -590,8 +616,8 @@ describeWithMockConnection('InterceptedRequest', () => {
   it('can override \'set-cookie\' headers when there server also sends \'set-cookie\' headers', async () => {
     const headersFromServer = [{name: 'set-cookie', value: 'foo=bar'}];
     const expectedOverriddenHeaders = [
-      {name: 'set-cookie', value: 'userId=12345'},
       {name: 'age', value: 'overridden'},
+      {name: 'set-cookie', value: 'userId=12345'},
     ];
     const expectedPersistedSetCookieHeaders =
         [{name: 'set-cookie', value: 'foo=bar'}, {name: 'set-cookie', value: 'userId=12345'}];
@@ -603,8 +629,8 @@ describeWithMockConnection('InterceptedRequest', () => {
   it('can overwrite a cookie value from server with a cookie value from overrides', async () => {
     const headersFromServer = [{name: 'set-cookie', value: 'userId=999'}];
     const expectedOverriddenHeaders = [
-      {name: 'set-cookie', value: 'userId=12345'},
       {name: 'age', value: 'overridden'},
+      {name: 'set-cookie', value: 'userId=12345'},
     ];
     const expectedPersistedSetCookieHeaders = [{name: 'set-cookie', value: 'userId=12345'}];
     await checkSetCookieOverride(
@@ -618,9 +644,9 @@ describeWithMockConnection('InterceptedRequest', () => {
       {name: 'set-cookie', value: 'userName=server'},
     ];
     const expectedOverriddenHeaders = [
+      {name: 'age', value: 'overridden'},
       {name: 'set-cookie', value: 'userName=DevTools'},
       {name: 'set-cookie', value: 'themeColour=dark'},
-      {name: 'age', value: 'overridden'},
     ];
     const expectedPersistedSetCookieHeaders = [
       {name: 'set-cookie', value: 'foo=bar'},
@@ -638,9 +664,9 @@ describeWithMockConnection('InterceptedRequest', () => {
       {name: 'set-cookie', value: 'userName=server'},
     ];
     const expectedOverriddenHeaders = [
+      {name: 'age', value: 'overridden'},
       {name: 'set-cookie', value: 'userName=DevTools'},
       {name: 'set-cookie', value: 'malformed_override'},
-      {name: 'age', value: 'overridden'},
     ];
     const expectedPersistedSetCookieHeaders = [
       {name: 'set-cookie', value: 'userName=DevTools'},
@@ -649,6 +675,28 @@ describeWithMockConnection('InterceptedRequest', () => {
     ];
     await checkSetCookieOverride(
         'https://www.example.com/withCookie3.html', headersFromServer, expectedOverriddenHeaders,
+        expectedPersistedSetCookieHeaders);
+  });
+
+  it('correctly merges \'set-cookie\' headers from server with multiple defined overrides', async () => {
+    const headersFromServer = [
+      {name: 'set-cookie', value: 'userName=server'},
+      {name: 'set-cookie', value: 'override-me=zero'},
+    ];
+    const expectedOverriddenHeaders = [
+      {name: 'age', value: 'overridden'},
+      {name: 'set-cookie', value: 'unique=value'},
+      {name: 'set-cookie', value: 'override-me=second'},
+      {name: 'set-cookie', value: 'foo=bar'},
+    ];
+    const expectedPersistedSetCookieHeaders = [
+      {name: 'set-cookie', value: 'userName=server'},
+      {name: 'set-cookie', value: 'override-me=second'},
+      {name: 'set-cookie', value: 'unique=value'},
+      {name: 'set-cookie', value: 'foo=bar'},
+    ];
+    await checkSetCookieOverride(
+        'https://www.example.com/cookies/mergeCookies.html', headersFromServer, expectedOverriddenHeaders,
         expectedPersistedSetCookieHeaders);
   });
 });

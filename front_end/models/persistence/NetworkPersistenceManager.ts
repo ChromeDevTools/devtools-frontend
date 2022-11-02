@@ -625,13 +625,15 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       Protocol.Fetch.HeaderEntry[] {
     const headerMap = new Platform.MapUtilities.Multimap<string, string>();
     for (const {name, value} of overrideHeaders) {
-      headerMap.set(name.toLowerCase(), value);
+      if (name.toLowerCase() !== 'set-cookie') {
+        headerMap.set(name.toLowerCase(), value);
+      }
     }
 
     const overriddenHeaderNames = new Set(headerMap.keysArray());
     for (const {name, value} of baseHeaders) {
       const lowerCaseName = name.toLowerCase();
-      if (!overriddenHeaderNames.has(lowerCaseName)) {
+      if (!overriddenHeaderNames.has(lowerCaseName) && lowerCaseName !== 'set-cookie') {
         headerMap.set(lowerCaseName, value);
       }
     }
@@ -642,6 +644,13 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         result.push({name: headerName, value: headerValue});
       }
     }
+
+    const originalSetCookieHeaders = baseHeaders.filter(header => header.name.toLowerCase() === 'set-cookie') || [];
+    const setCookieHeadersFromOverrides = overrideHeaders.filter(header => header.name.toLowerCase() === 'set-cookie');
+    const mergedHeaders = SDK.NetworkManager.InterceptedRequest.mergeSetCookieHeaders(
+        originalSetCookieHeaders, setCookieHeadersFromOverrides);
+    result.push(...mergedHeaders);
+
     return result;
   }
 

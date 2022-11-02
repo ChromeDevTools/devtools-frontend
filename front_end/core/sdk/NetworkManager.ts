@@ -1579,11 +1579,9 @@ export class InterceptedRequest {
     return this.#hasRespondedInternal;
   }
 
-  #mergeAndStoreSetCookieHeaders(responseHeaders: Protocol.Fetch.HeaderEntry[]): void {
-    const originalSetCookieHeaders =
-        this.networkRequest?.originalResponseHeaders.filter(header => header.name === 'set-cookie') || [];
-    const setCookieHeadersFromOverrides = responseHeaders.filter(header => header.name === 'set-cookie');
-
+  static mergeSetCookieHeaders(
+      originalSetCookieHeaders: Protocol.Fetch.HeaderEntry[],
+      setCookieHeadersFromOverrides: Protocol.Fetch.HeaderEntry[]): Protocol.Fetch.HeaderEntry[] {
     const malformedHeaders = new Set<string>();
     const validHeaders = new Map<string, string>();
     for (const header of originalSetCookieHeaders.concat(setCookieHeadersFromOverrides)) {
@@ -1608,10 +1606,7 @@ export class InterceptedRequest {
     for (const headerValue of malformedHeaders) {
       mergedHeaders.push({name: 'set-cookie', value: headerValue});
     }
-
-    if (this.networkRequest) {
-      this.networkRequest.setCookieHeaders = mergedHeaders;
-    }
+    return mergedHeaders;
   }
 
   async continueRequestWithContent(
@@ -1620,7 +1615,15 @@ export class InterceptedRequest {
     this.#hasRespondedInternal = true;
     const body = encoded ? await contentBlob.text() : await blobToBase64(contentBlob);
     const responseCode = isBodyOverridden ? 200 : (this.responseStatusCode || 200);
-    this.#mergeAndStoreSetCookieHeaders(responseHeaders);
+
+    if (this.networkRequest) {
+      const originalSetCookieHeaders =
+          this.networkRequest?.originalResponseHeaders.filter(header => header.name === 'set-cookie') || [];
+      const setCookieHeadersFromOverrides = responseHeaders.filter(header => header.name === 'set-cookie');
+      this.networkRequest.setCookieHeaders =
+          InterceptedRequest.mergeSetCookieHeaders(originalSetCookieHeaders, setCookieHeadersFromOverrides);
+    }
+
     void this.#fetchAgent.invoke_fulfillRequest({requestId: this.requestId, responseCode, body, responseHeaders});
     MultitargetNetworkManager.instance().dispatchEventToListeners(
         MultitargetNetworkManager.Events.RequestFulfilled, this.request.url as Platform.DevToolsPath.UrlString);

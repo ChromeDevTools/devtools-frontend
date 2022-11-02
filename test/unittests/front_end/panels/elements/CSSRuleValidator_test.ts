@@ -96,7 +96,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
     {
       description: 'Passes the validation when grid item properties are set to grid items',
       computedStyles: new Map<string, string>([
-        ['grid', '100px / 200px'],
+        ['grid-area', 'auto / auto / auto / auto'],
       ]),
       parentsComputedStyles: new Map<string, string>([
         ['display', 'grid'],
@@ -107,7 +107,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
     {
       description: 'Reports a rule validation when grid item properties are set to non-grid items',
       computedStyles: new Map<string, string>([
-        ['grid', '100px / 200px'],
+        ['grid-area', 'auto / auto / auto / auto'],
       ]),
       parentsComputedStyles: new Map<string, string>([
         ['display', 'flex'],

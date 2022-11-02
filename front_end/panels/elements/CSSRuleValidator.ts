@@ -269,6 +269,11 @@ export class GridItemValidator extends CSSRuleValidator {
       'grid-row',
       'grid-row-end',
       'grid-row-start',
+      // At the time of writing (November 2022), `justify-self` is only in effect in grid layout.
+      // There are no other browsers that support `justify-self` in other layouts.
+      // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Alignment/Box_Alignment_In_Block_Abspos_Tables
+      // TODO: move `justify-self` to other validator or change pop-over text if Chrome supports CSS Align in other layouts.
+      'justify-self',
     ]);
   }
 

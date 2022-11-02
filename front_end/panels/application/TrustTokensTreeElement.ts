@@ -40,7 +40,7 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = new TrustTokensViewWidgetWrapper();
+      this.view = new TrustTokensViewWidgetWrapper(new ApplicationComponents.TrustTokensView.TrustTokensView());
     }
     this.showView(this.view);
     Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.trust_tokens]);
@@ -49,16 +49,17 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
 }
 
 export class TrustTokensViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWidget {
-  private readonly trustTokensView = new ApplicationComponents.TrustTokensView.TrustTokensView();
+  private readonly trustTokensView: ApplicationComponents.TrustTokensView.TrustTokensView;
 
-  constructor() {
+  constructor(trustTokensView: ApplicationComponents.TrustTokensView.TrustTokensView) {
     super(/* isWebComponent */ false, REFRESH_INTERVAL_MS);
+    this.trustTokensView = trustTokensView;
     this.contentElement.appendChild(this.trustTokensView);
     this.update();
   }
 
   protected async doUpdate(): Promise<void> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
     if (!mainTarget) {
       return;
     }

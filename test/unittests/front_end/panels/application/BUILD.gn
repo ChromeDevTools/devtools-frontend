@@ -14,6 +14,7 @@ ts_library("application") {
     "ReportingApiView_test.ts",
     "ServiceWorkerUpdateCycleView_test.ts",
     "StorageView_test.ts",
+    "TrustTokensTreeElement_test.ts",
   ]
 
   deps = [

@@ -48,6 +48,7 @@
   height: var(--toolbar-height);
   border: none;
   white-space: pre;
+  overflow: hidden;
 }
 
 .toolbar-item,
@@ -57,6 +58,7 @@
 
 .toolbar-item:last-of-type {
   flex-shrink: 1;
+  justify-content: left;
 }
 
 .toolbar-shadow.vertical .toolbar-item {

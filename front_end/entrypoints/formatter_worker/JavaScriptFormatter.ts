@@ -54,6 +54,7 @@ export class JavaScriptFormatter {
     const ast = Acorn.parse(this.#content, {
       ranges: false,
       preserveParens: true,
+      allowAwaitOutsideFunction: true,
       allowImportExportEverywhere: true,
       ecmaVersion: ECMA_VERSION,
       allowHashBang: true,

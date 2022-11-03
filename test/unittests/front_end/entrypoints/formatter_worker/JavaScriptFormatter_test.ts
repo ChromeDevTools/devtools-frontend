@@ -26,6 +26,11 @@ describe('JavaScriptFormatter', () => {
 `);
   });
 
+  it('formats top-level await correctly', () => {
+    const formattedCode = formatJavaScript('const myFile=await import(\n"my-file.mjs");');
+    assert.strictEqual(formattedCode, 'const myFile = await import("my-file.mjs");\n');
+  });
+
   it('formats identifiers containing escaped characters correctly', () => {
     const formattedCode = formatJavaScript(String.raw`const x=42;let \u0275_escaped;`);
     assert.strictEqual(formattedCode, 'const x = 42;\nlet \\u0275_escaped;\n');

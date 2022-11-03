@@ -41,6 +41,24 @@ export class UserMetrics {
     this.#launchPanelName = '';
   }
 
+  breakpointWithConditionAdded(breakpointWithConditionAdded: BreakpointWithConditionAdded): void {
+    if (breakpointWithConditionAdded >= BreakpointWithConditionAdded.MaxValue) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.BreakpointWithConditionAdded, breakpointWithConditionAdded,
+        BreakpointWithConditionAdded.MaxValue);
+  }
+
+  breakpointEditDialogRevealedFrom(breakpointEditDialogRevealedFrom: BreakpointEditDialogRevealedFrom): void {
+    if (breakpointEditDialogRevealedFrom >= BreakpointEditDialogRevealedFrom.MaxValue) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.BreakpointEditDialogRevealedFrom, breakpointEditDialogRevealedFrom,
+        BreakpointEditDialogRevealedFrom.MaxValue);
+  }
+
   panelShown(panelName: string): void {
     const code = PanelCodes[panelName as keyof typeof PanelCodes] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelShown, code, PanelCodes.MaxValue);
@@ -358,7 +376,9 @@ export enum Action {
   PerfPanelTraceExported = 55,
   StackFrameRestarted = 56,
   CaptureTestProtocolClicked = 57,
-  MaxValue = 58,
+  BreakpointRemovedFromRemoveButton = 58,
+  BreakpointGroupExpandedStateChanged = 59,
+  MaxValue = 60,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -642,6 +662,21 @@ export enum DevtoolsExperiments {
   'MaxValue' = 67,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
+
+export const enum BreakpointWithConditionAdded {
+  Logpoint = 0,
+  ConditionalBreakpoint = 1,
+  MaxValue = 2,
+}
+
+export const enum BreakpointEditDialogRevealedFrom {
+  BreakpointSidebarContextMenu = 0,
+  BreakpointSidebarEditButton = 1,
+  BreakpointMarkerContextMenu = 2,
+  LineGutterContextMenu = 3,
+  KeyboardShortcut = 4,
+  MaxValue = 5,
+}
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

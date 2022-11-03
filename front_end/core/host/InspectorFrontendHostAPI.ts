@@ -350,6 +350,8 @@ export interface SyncInformation {
 // eslint-disable-next-line rulesdir/const_enum
 export enum EnumeratedHistogram {
   ActionTaken = 'DevTools.ActionTaken',
+  BreakpointWithConditionAdded = 'DevTools.BreakpointWithConditionAdded',
+  BreakpointEditDialogRevealedFrom = 'DevTools.BreakpointEditDialogRevealedFrom',
   PanelClosed = 'DevTools.PanelClosed',
   PanelShown = 'DevTools.PanelShown',
   SidebarPaneShown = 'DevTools.SidebarPaneShown',

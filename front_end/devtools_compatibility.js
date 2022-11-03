@@ -395,6 +395,8 @@
    */
   const EnumeratedHistogram = {
     ActionTaken: 'DevTools.ActionTaken',
+    BreakpointConditionEdited: 'Devtools.BreakpointConditionEdited',
+    BreakpointEditDialogRevealedFrom: 'DevTools.BreakpointEditDialogRevealedFrom',
     ConsoleShowsCorsErrors: 'DevTools.ConsoleShowsCorsErrors',
     CSSHintShown: 'DevTools.CSSHintShown',
     DeveloperResourceLoaded: 'DevTools.DeveloperResourceLoaded',

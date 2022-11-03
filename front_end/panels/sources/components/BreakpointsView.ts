@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
@@ -365,6 +366,8 @@ export class BreakpointsView extends HTMLElement {
 
   #renderEditBreakpointButton(breakpointItem: BreakpointItem): LitHtml.TemplateResult {
     const clickHandler = (event: Event): void => {
+      Host.userMetrics.breakpointEditDialogRevealedFrom(
+          Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointSidebarEditButton);
       this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
       event.consume();
     };
@@ -387,6 +390,7 @@ export class BreakpointsView extends HTMLElement {
 
   #renderRemoveBreakpointButton(breakpointItems: BreakpointItem[], tooltipText: string): LitHtml.TemplateResult {
     const clickHandler = (event: Event): void => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromRemoveButton);
       this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
       event.consume();
     };
@@ -447,6 +451,7 @@ export class BreakpointsView extends HTMLElement {
     const toggleHandler = (event: Event): void => {
       const htmlDetails = event.target as HTMLDetailsElement;
       group.expanded = htmlDetails.open;
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointGroupExpandedStateChanged);
       this.dispatchEvent(new ExpandedStateChangedEvent(group.url, group.expanded));
     };
     const clickHandler = async(event: Event): Promise<void> => {
@@ -519,6 +524,8 @@ export class BreakpointsView extends HTMLElement {
       this.dispatchEvent(new BreakpointsRemovedEvent([breakpointItem]));
     });
     menu.defaultSection().appendItem(editBreakpointText, () => {
+      Host.userMetrics.breakpointEditDialogRevealedFrom(
+          Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointSidebarContextMenu);
       this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
     }, !editable);
     menu.defaultSection().appendItem(i18nString(UIStrings.revealLocation), () => {

@@ -331,6 +331,8 @@ export class DebuggerPlugin extends Plugin {
         const breakpoint =
             this.breakpoints.find(b => b.position >= line.from && b.position <= line.to)?.breakpoint || null;
         const isLogpoint = breakpoint ? breakpoint.condition().includes(LogpointPrefix) : false;
+        Host.userMetrics.breakpointEditDialogRevealedFrom(
+            Host.UserMetrics.BreakpointEditDialogRevealedFrom.KeyboardShortcut);
         this.editBreakpointCondition(line, breakpoint, null, isLogpoint);
         return true;
       },
@@ -461,12 +463,16 @@ export class DebuggerPlugin extends Plugin {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.addBreakpoint), this.createNewBreakpoint.bind(this, line, '', true));
         if (supportsConditionalBreakpoints) {
-          contextMenu.debugSection().appendItem(
-              i18nString(UIStrings.addConditionalBreakpoint),
-              this.editBreakpointCondition.bind(this, line, null, null, false /* preferLogpoint */));
-          contextMenu.debugSection().appendItem(
-              i18nString(UIStrings.addLogpoint),
-              this.editBreakpointCondition.bind(this, line, null, null, true /* preferLogpoint */));
+          contextMenu.debugSection().appendItem(i18nString(UIStrings.addConditionalBreakpoint), () => {
+            Host.userMetrics.breakpointEditDialogRevealedFrom(
+                Host.UserMetrics.BreakpointEditDialogRevealedFrom.LineGutterContextMenu);
+            this.editBreakpointCondition(line, null, null, false /* preferLogpoint */);
+          });
+          contextMenu.debugSection().appendItem(i18nString(UIStrings.addLogpoint), () => {
+            Host.userMetrics.breakpointEditDialogRevealedFrom(
+                Host.UserMetrics.BreakpointEditDialogRevealedFrom.LineGutterContextMenu);
+            this.editBreakpointCondition(line, null, null, true /* preferLogpoint */);
+          });
           contextMenu.debugSection().appendItem(
               i18nString(UIStrings.neverPauseHere), this.createNewBreakpoint.bind(this, line, 'false', true));
         }
@@ -864,6 +870,8 @@ export class DebuggerPlugin extends Plugin {
       if (!result.committed) {
         return;
       }
+
+      recordBreakpointWithConditionAdded(breakpoint?.condition(), result.condition);
       if (breakpoint) {
         breakpoint.setCondition(result.condition);
       } else if (location) {
@@ -889,6 +897,20 @@ export class DebuggerPlugin extends Plugin {
     dialog.show(decorationElement);
     dialog.focusEditor();
     this.activeBreakpointDialog = dialog;
+
+    function recordBreakpointWithConditionAdded(oldCondition: string|undefined, newCondition: string): void {
+      const isLogpoint = newCondition.includes(LogpointPrefix);
+      const isConditionalBreakpoint = newCondition.length !== 0 && !isLogpoint;
+
+      const wasLogpoint = oldCondition && oldCondition.includes(LogpointPrefix);
+      const wasConditionalBreakpoint = oldCondition && oldCondition.length !== 0 && !wasLogpoint;
+      if (isLogpoint && !wasLogpoint) {
+        Host.userMetrics.breakpointWithConditionAdded(Host.UserMetrics.BreakpointWithConditionAdded.Logpoint);
+      } else if (isConditionalBreakpoint && !wasConditionalBreakpoint) {
+        Host.userMetrics.breakpointWithConditionAdded(
+            Host.UserMetrics.BreakpointWithConditionAdded.ConditionalBreakpoint);
+      }
+    }
   }
 
   // Create decorations to indicate the current debugging position
@@ -1316,17 +1338,23 @@ export class DebuggerPlugin extends Plugin {
     }
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (breakpoint) {
-      contextMenu.debugSection().appendItem(
-          i18nString(UIStrings.editBreakpoint),
-          this.editBreakpointCondition.bind(this, line, breakpoint, null, false /* preferLogpoint */));
+      contextMenu.debugSection().appendItem(i18nString(UIStrings.editBreakpoint), () => {
+        Host.userMetrics.breakpointEditDialogRevealedFrom(
+            Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
+        this.editBreakpointCondition(line, breakpoint, null, false /* preferLogpoint */);
+      });
     } else {
       const uiLocation = this.transformer.editorLocationToUILocation(line.number - 1, position - line.from);
-      contextMenu.debugSection().appendItem(
-          i18nString(UIStrings.addConditionalBreakpoint),
-          this.editBreakpointCondition.bind(this, line, null, uiLocation, false /* preferLogpoint */));
-      contextMenu.debugSection().appendItem(
-          i18nString(UIStrings.addLogpoint),
-          this.editBreakpointCondition.bind(this, line, null, uiLocation, true /* preferLogpoint */));
+      contextMenu.debugSection().appendItem(i18nString(UIStrings.addConditionalBreakpoint), () => {
+        Host.userMetrics.breakpointEditDialogRevealedFrom(
+            Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
+        this.editBreakpointCondition(line, null, uiLocation, false /* preferLogpoint */);
+      });
+      contextMenu.debugSection().appendItem(i18nString(UIStrings.addLogpoint), () => {
+        Host.userMetrics.breakpointEditDialogRevealedFrom(
+            Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
+        this.editBreakpointCondition(line, null, uiLocation, true /* preferLogpoint */);
+      });
 
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.neverPauseHere),

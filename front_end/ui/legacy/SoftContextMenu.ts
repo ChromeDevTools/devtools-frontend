@@ -150,8 +150,8 @@ export class SoftContextMenu {
         let firedOnce = false;
         const observer = new ResizeObserver(() => {
           if (firedOnce) {
-            // observer.disconnect();
-            // this.discard();
+            observer.disconnect();
+            this.discard();
             return;
           }
           firedOnce = true;
@@ -443,7 +443,8 @@ export class SoftContextMenu {
   private highlightPrevious(): void {
     let menuItemElement: (ChildNode|null) = this.highlightedMenuItemElement ?
         this.highlightedMenuItemElement.previousSibling :
-        this.contextMenuElement ? this.contextMenuElement.lastChild : null;
+        this.contextMenuElement ? this.contextMenuElement.lastChild :
+                                  null;
     let menuItemDetails: (ElementMenuDetails|undefined) =
         menuItemElement ? this.detailsForElementMap.get((menuItemElement as HTMLElement)) : undefined;
     while (menuItemElement && menuItemDetails &&
@@ -460,7 +461,8 @@ export class SoftContextMenu {
   private highlightNext(): void {
     let menuItemElement: (ChildNode|null) = this.highlightedMenuItemElement ?
         this.highlightedMenuItemElement.nextSibling :
-        this.contextMenuElement ? this.contextMenuElement.firstChild : null;
+        this.contextMenuElement ? this.contextMenuElement.firstChild :
+                                  null;
     let menuItemDetails: (ElementMenuDetails|undefined) =
         menuItemElement ? this.detailsForElementMap.get((menuItemElement as HTMLElement)) : undefined;
     while (menuItemElement &&

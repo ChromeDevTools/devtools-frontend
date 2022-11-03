@@ -7424,9 +7424,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Ĉóp̂ý ŝt́âćk̂ t́r̂áĉé"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "Ĉŕêát̂é r̂éŝṕôńŝé ĥéâd́êŕ ôv́êŕr̂íd̂é"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "D̂ÓM̂Ćôńt̂én̂t́L̂óâd́êd́: {PH1}"
   },
@@ -7468,6 +7465,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Ŝh́ôẃŝ ón̂ĺŷ ŕêq́ûéŝt́ŝ ẃît́ĥ ór̂íĝín̂ d́îf́f̂ér̂én̂t́ f̂ŕôḿ p̂áĝé ôŕîǵîń"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Ôv́êŕr̂íd̂é ĥéâd́êŕŝ"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "P̂ér̂f́ôŕm̂ á r̂éq̂úêśt̂ ór̂ h́ît́ {PH1} t̂ó r̂éĉór̂d́ t̂h́ê ŕêĺôád̂."

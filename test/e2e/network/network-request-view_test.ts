@@ -385,16 +385,14 @@ describe('The Network Request view', async () => {
     await navigateToNetworkTab('hello.html');
     await selectRequestByName('hello.html', {button: 'right'});
 
-    const createHeaderOverrideMenuEntry = await waitForAria('Create response header override');
+    const createHeaderOverrideMenuEntry = await waitForAria('Override headers');
     await click(createHeaderOverrideMenuEntry);
     const infoBar = await waitForAria('Select a folder to store override files in.');
     const button = await waitFor('.infobar-main-row .infobar-button', infoBar);
     await click(button);
 
-    await selectRequestByName('hello.html');
-
-    const networkView = await waitFor('.network-item-view');
-    const headersTabHeader = await waitFor('#tab-headersComponent', networkView);
+    let networkView = await waitFor('.network-item-view');
+    let headersTabHeader = await waitFor('#tab-headersComponent', networkView);
     await click(headersTabHeader);
     await waitFor('#tab-headersComponent[role=tab][aria-selected=true]', networkView);
     let responseHeaderSection = await waitFor('[aria-label="Response Headers"]', networkView);
@@ -425,6 +423,9 @@ describe('The Network Request view', async () => {
 
     await navigateToNetworkTab('hello.html');
     await selectRequestByName('hello.html');
+    networkView = await waitFor('.network-item-view');
+    headersTabHeader = await waitFor('#tab-headersComponent', networkView);
+    await click(headersTabHeader);
 
     responseHeaderSection = await waitFor('[aria-label="Response Headers"]');
     row = await waitFor('.row.header-overridden', responseHeaderSection);

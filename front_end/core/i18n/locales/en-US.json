@@ -7424,9 +7424,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Copy stack trace"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "Create response header override"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7468,6 +7465,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Shows only requests with origin different from page origin"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Override headers"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Perform a request or hit {PH1} to record the reload."

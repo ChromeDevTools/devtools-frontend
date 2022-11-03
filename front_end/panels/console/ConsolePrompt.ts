@@ -305,7 +305,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (currentExecutionContext) {
       const executionContext = currentExecutionContext;
       const message = SDK.ConsoleModel.ConsoleModel.instance().addCommandMessage(executionContext, text);
-      const expression = ObjectUI.JavaScriptREPL.JavaScriptREPL.preprocessExpression(text);
+      const expression = ObjectUI.JavaScriptREPL.JavaScriptREPL.wrapObjectLiteral(text);
       void this.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
       if (ConsolePanel.instance().isShowing()) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);

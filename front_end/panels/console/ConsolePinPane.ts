@@ -327,7 +327,7 @@ export class ConsolePin {
     const throwOnSideEffect = isEditing && text !== this.committedExpression;
     const timeout = throwOnSideEffect ? 250 : undefined;
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
-    const preprocessedExpression = ObjectUI.JavaScriptREPL.JavaScriptREPL.preprocessExpression(text);
+    const preprocessedExpression = ObjectUI.JavaScriptREPL.JavaScriptREPL.wrapObjectLiteral(text);
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
         preprocessedExpression, throwOnSideEffect, true /* replMode */, timeout, !isEditing /* allowErrors */,
         'console', true /* awaitPromise */, true /* silent */);

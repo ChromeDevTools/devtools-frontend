@@ -40,10 +40,6 @@ export class JavaScriptREPL {
     }
   }
 
-  static preprocessExpression(text: string): string {
-    return JavaScriptREPL.wrapObjectLiteral(text);
-  }
-
   static async evaluateAndBuildPreview(
       text: string, throwOnSideEffect: boolean, replMode: boolean, timeout?: number, allowErrors?: boolean,
       objectGroup?: string, awaitPromise: boolean = false, silent: boolean = false): Promise<{
@@ -56,7 +52,7 @@ export class JavaScriptREPL {
       return {preview: document.createDocumentFragment(), result: null};
     }
 
-    const expression = JavaScriptREPL.preprocessExpression(text);
+    const expression = JavaScriptREPL.wrapObjectLiteral(text);
     const options = {
       expression: expression,
       generatePreview: true,

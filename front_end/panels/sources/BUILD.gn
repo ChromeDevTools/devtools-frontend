@@ -41,7 +41,6 @@ devtools_module("sources") {
     "GoToLineQuickOpen.ts",
     "InplaceFormatterEditorAction.ts",
     "JavaScriptBreakpointsSidebarPane.ts",
-    "JavaScriptCompilerPlugin.ts",
     "NavigatorView.ts",
     "OpenFileQuickOpen.ts",
     "OutlineQuickOpen.ts",

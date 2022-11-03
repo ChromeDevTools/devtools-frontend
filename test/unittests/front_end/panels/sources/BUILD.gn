@@ -11,7 +11,6 @@ ts_library("sources") {
     "CoveragePlugin_test.ts",
     "DebuggerPlugin_test.ts",
     "FilePathScoreFunction_test.ts",
-    "JavaScriptCompilerPlugin_test.ts",
     "OutlineQuickOpen_test.ts",
     "ScriptSnippetFileSystem_test.ts",
     "SourceFrame_test.ts",

@@ -326,17 +326,6 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return [...scripts];
   }
 
-  scriptsForResource(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {
-    const scripts = new Set<SDK.Script.Script>();
-    for (const modelData of this.#debuggerModelToData.values()) {
-      const resourceScriptFile = modelData.getResourceScriptMapping().scriptFile(uiSourceCode);
-      if (resourceScriptFile && resourceScriptFile.script) {
-        scripts.add(resourceScriptFile.script);
-      }
-    }
-    return [...scripts];
-  }
-
   supportsConditionalBreakpoints(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     // DevTools traditionally supported (JavaScript) conditions
     // for breakpoints everywhere, so we keep that behavior...

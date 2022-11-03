@@ -1245,7 +1245,6 @@ grd_files_debug_sources = [
   "front_end/panels/sources/GoToLineQuickOpen.js",
   "front_end/panels/sources/InplaceFormatterEditorAction.js",
   "front_end/panels/sources/JavaScriptBreakpointsSidebarPane.js",
-  "front_end/panels/sources/JavaScriptCompilerPlugin.js",
   "front_end/panels/sources/NavigatorView.js",
   "front_end/panels/sources/OpenFileQuickOpen.js",
   "front_end/panels/sources/OutlineQuickOpen.js",

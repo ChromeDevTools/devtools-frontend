@@ -80,11 +80,6 @@ Sources.JavaScriptBreakpointsSidebarPane.retrieveLocationForElement =
     SourcesModule.JavaScriptBreakpointsSidebarPane.retrieveLocationForElement;
 
 /** @constructor */
-Sources.JavaScriptCompilerPlugin = SourcesModule.JavaScriptCompilerPlugin.JavaScriptCompilerPlugin;
-
-Sources.JavaScriptCompilerPlugin.CompileDelay = SourcesModule.JavaScriptCompilerPlugin.CompileDelay;
-
-/** @constructor */
 Sources.NavigatorView = SourcesModule.NavigatorView.NavigatorView;
 
 Sources.NavigatorView.Types = SourcesModule.NavigatorView.Types;

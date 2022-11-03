@@ -136,7 +136,8 @@ describe('Navigation', async function() {
         const waitForJson = await interceptNextFileSave();
 
         // For some reason the CDP click command doesn't work here even if the tools menu is open.
-        await reportEl.$eval('a[data-action="save-json"]', saveJsonEl => (saveJsonEl as HTMLElement).click());
+        await reportEl.$eval(
+            'a[data-action="save-json"]:not(.hidden)', saveJsonEl => (saveJsonEl as HTMLElement).click());
 
         const jsonContent = await waitForJson();
         assert.strictEqual(jsonContent, JSON.stringify(lhr, null, 2));
@@ -144,7 +145,8 @@ describe('Navigation', async function() {
         const waitForHtml = await interceptNextFileSave();
 
         // For some reason the CDP click command doesn't work here even if the tools menu is open.
-        await reportEl.$eval('a[data-action="save-html"]', saveHtmlEl => (saveHtmlEl as HTMLElement).click());
+        await reportEl.$eval(
+            'a[data-action="save-html"]:not(.hidden)', saveHtmlEl => (saveHtmlEl as HTMLElement).click());
 
         const htmlContent = await waitForHtml();
         const iframeHandle = await renderHtmlInIframe(htmlContent);

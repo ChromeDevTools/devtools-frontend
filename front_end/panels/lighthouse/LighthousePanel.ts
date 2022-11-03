@@ -317,8 +317,12 @@ export class LighthousePanel extends UI.Panel.Panel {
     });
     LighthouseReportRenderer.handleDarkMode(el);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const features = new LighthouseReportUIFeatures(dom) as any;
+    const features = new LighthouseReportUIFeatures(dom, {
+                       getStandaloneReportHTML(): string {
+                         return features.getReportHtml();
+                       },
+                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                     }) as any;
     features.setBeforePrint(this.beforePrint.bind(this));
     features.setAfterPrint(this.afterPrint.bind(this));
     LighthouseReportRenderer.addViewTraceButton(el, features, artifacts);

@@ -78,7 +78,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
         return debuggerModels[i].runtimeModel();
       }
     }
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
     return mainTarget ? mainTarget.model(SDK.RuntimeModel.RuntimeModel) : null;
   }
 

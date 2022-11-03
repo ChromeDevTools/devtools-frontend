@@ -46,7 +46,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const plusIconUrl = new URL('../../../Images/plus_icon.svg', import.meta.url).toString();
-const minusIconUrl = new URL('../../../Images/minus_icon.svg', import.meta.url).toString();
+const trashIconUrl = new URL('../../../Images/trash_bin_material_icon.svg', import.meta.url).toString();
 
 export class HeadersView extends UI.View.SimpleView {
   readonly #headersViewComponent = new HeadersViewComponent();
@@ -313,7 +313,9 @@ export class HeadersViewComponent extends HTMLElement {
         <${Buttons.Button.Button.litTagName}
         title=${i18nString(UIStrings.removeBlock)}
         .size=${Buttons.Button.Size.SMALL}
-        .iconUrl=${minusIconUrl}
+        .iconUrl=${trashIconUrl}
+        .iconWidth=${'14px'}
+        .iconHeight=${'14px'}
         .variant=${Buttons.Button.Variant.ROUND}
         class="remove-block inline-button"
       ></${Buttons.Button.Button.litTagName}>
@@ -334,13 +336,17 @@ export class HeadersViewComponent extends HTMLElement {
           title=${i18nString(UIStrings.addHeader)}
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${plusIconUrl}
+          .iconWidth=${'16px'}
+          .iconHeight=${'16px'}
           .variant=${Buttons.Button.Variant.ROUND}
           class="add-header inline-button"
         ></${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
           title=${i18nString(UIStrings.removeHeader)}
           .size=${Buttons.Button.Size.SMALL}
-          .iconUrl=${minusIconUrl}
+          .iconUrl=${trashIconUrl}
+          .iconWidth=${'14px'}
+          .iconHeight=${'14px'}
           .variant=${Buttons.Button.Variant.ROUND}
           class="remove-header inline-button"
         ></${Buttons.Button.Button.litTagName}>

@@ -48,7 +48,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/HeaderSectionRow.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const closeIconUrl = new URL('../../../Images/close-icon.svg', import.meta.url).toString();
+const trashIconUrl = new URL('../../../Images/trash_bin_material_icon.svg', import.meta.url).toString();
 
 export class HeaderEditedEvent extends Event {
   static readonly eventName = 'headeredited';
@@ -157,10 +157,10 @@ export class HeaderSectionRow extends HTMLElement {
       <${Buttons.Button.Button.litTagName}
         title=${i18nString(UIStrings.removeOverride)}
         .size=${Buttons.Button.Size.TINY}
-        .iconUrl=${closeIconUrl}
+        .iconUrl=${trashIconUrl}
         .variant=${Buttons.Button.Variant.ROUND}
-        .iconWidth=${'10px'}
-        .iconHeight=${'10px'}
+        .iconWidth=${'13px'}
+        .iconHeight=${'13px'}
         class="remove-header inline-button"
         @click=${this.#onRemoveOverrideClick}
       ></${Buttons.Button.Button.litTagName}>

@@ -152,6 +152,7 @@ devtools_svg_sources = [
   "switcherIcon.svg",
   "three_dots_menu_icon.svg",
   "trash_bin_icon.svg",
+  "trash_bin_material_icon.svg",
   "treeoutlineTriangles.svg",
   "triangle-collapsed.svg",
   "triangle-expanded.svg",

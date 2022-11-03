@@ -21,7 +21,11 @@
 
 .row devtools-button {
   line-height: 1;
-  margin-left: 0.5em;
+  margin-left: 0.1em;
+}
+
+.row devtools-button:nth-of-type(1) {
+  margin-left: 0.8em;
 }
 
 .padded {

@@ -79,7 +79,9 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
         }
       }
 
-      void target.runtimeAgent().invoke_runIfWaitingForDebugger();
+      if (type === SDK.Target.Type.Frame) {
+        void target.runtimeAgent().invoke_runIfWaitingForDebugger();
+      }
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
 
     new SourcesPanelIndicator();

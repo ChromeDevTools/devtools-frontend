@@ -125,3 +125,13 @@
 .show-mask .image-wrapper {
   background: var(--image-file-checker);
 }
+
+@media (forced-colors: active) {
+  .report-field-value .inline-icon {
+    --icon-color: ButtonText;
+  }
+
+  .report-field-value .multiline-value {
+    --icon-color: ButtonText;
+  }
+}

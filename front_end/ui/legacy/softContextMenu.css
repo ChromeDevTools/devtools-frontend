@@ -148,10 +148,20 @@
     color: canvastext;
   }
 
-  .soft-context-menu-item-mouse-over {
+  .soft-context-menu-item-mouse-over,
+  .-theme-with-dark-background .soft-context-menu-item-mouse-over,
+  :host-context(.-theme-with-dark-background) .soft-context-menu-item-mouse-over {
     background-color: Highlight;
     color: HighlightText;
     forced-color-adjust: none;
+  }
+
+  .soft-context-menu .soft-context-menu-item devtools-icon {
+    --icon-color: ButtonText;
+  }
+
+  .soft-context-menu .soft-context-menu-item-mouse-over devtools-icon {
+    --icon-color: HighlightText;
   }
 
   .soft-context-menu-shortcut {

@@ -375,14 +375,23 @@
     background-color: ButtonFace;
   }
 
-  .tabbed-pane-header-tab,
-  .tabbed-pane-header-tab.selected {
+  .tabbed-pane-header-contents .tabbed-pane-header-tabs .tabbed-pane-header-tab {
     background: ButtonFace;
     color: ButtonText;
   }
 
-  .tabbed-pane-header-tab:hover,
-  .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
+  .tabbed-pane-header-tabs .tabbed-pane-header-tab:hover,
+  .tabbed-pane-header-tabs .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .tabbed-pane-header-tab .tabbed-pane-header-tab-title {
+    color: inherit;
+  }
+
+  .tabbed-pane-header-contents .tabbed-pane-header-tabs .tabbed-pane-header-tab.selected,
+  .tabbed-pane-header-contents .tabbed-pane-header-tabs .tabbed-pane-header-tab.selected:focus-visible {
     background-color: Highlight;
     color: HighlightText;
   }
@@ -410,6 +419,15 @@
     background-color: HighlightText;
   }
 
+  .tabbed-pane-header-tabs .tabbed-pane-header-tab .preview-icon {
+    --override-tabbed-pane-preview-icon-color: ButtonText;
+  }
+
+  .tabbed-pane-header-tab.selected .preview-icon,
+  .tabbed-pane-header-tab:hover .preview-icon {
+    --override-tabbed-pane-preview-icon-color: HighlightText;
+  }
+
   .close-button {
     --tabbed-pane-close-icon-color: ButtonText;
 
@@ -421,5 +439,9 @@
     --tabbed-pane-close-icon-color: HighlightText;
 
     background-color: Highlight;
+  }
+
+  .selected .close-button {
+    --tabbed-pane-close-icon-color: HighlightText;
   }
 }

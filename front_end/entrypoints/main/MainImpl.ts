@@ -475,7 +475,9 @@ export class MainImpl {
     // Equally if the user has set to match the system and the OS preference changes
     // we perform the same change.
     const darkThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const highContrastMediaQuery = window.matchMedia('(forced-colors: active)');
     darkThemeMediaQuery.addEventListener('change', onThemeChange);
+    highContrastMediaQuery.addEventListener('change', onThemeChange);
     themeSetting.addChangeListener(onThemeChange);
 
     UI.UIUtils.installComponentRootStyles((document.body as Element));

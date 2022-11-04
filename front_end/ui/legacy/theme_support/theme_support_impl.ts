@@ -136,12 +136,10 @@ export class ThemeSupport extends EventTarget {
 
   applyTheme(document: Document): void {
     const isForcedColorsMode = window.matchMedia('(forced-colors: active)').matches;
-    if (isForcedColorsMode) {
-      return;
-    }
-
     const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
-    this.themeNameInternal = this.setting.get() === 'systemPreferred' ? systemPreferredTheme : this.setting.get();
+
+    const useSystemPreferred = this.setting.get() === 'systemPreferred' || isForcedColorsMode;
+    this.themeNameInternal = useSystemPreferred ? systemPreferredTheme : this.setting.get();
 
     const wasDarkThemed = document.documentElement.classList.contains('-theme-with-dark-background');
     document.documentElement.classList.toggle('-theme-with-dark-background', this.themeNameInternal === 'dark');

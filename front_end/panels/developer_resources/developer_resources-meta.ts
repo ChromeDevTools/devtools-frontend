@@ -40,6 +40,6 @@ UI.ViewManager.registerViewExtension({
   experiment: Root.Runtime.ExperimentName.DEVELOPER_RESOURCES_VIEW,
   async loadView() {
     const DeveloperResources = await loadDeveloperResourcesModule();
-    return DeveloperResources.DeveloperResourcesView.DeveloperResourcesView.instance();
+    return new DeveloperResources.DeveloperResourcesView.DeveloperResourcesView();
   },
 });

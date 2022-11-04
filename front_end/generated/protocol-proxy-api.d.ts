@@ -1462,13 +1462,6 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface HeadlessExperimentalDispatcher {
-    /**
-     * Issued when the target starts or stops needing BeginFrames.
-     * Deprecated. Issue beginFrame unconditionally instead and use result from
-     * beginFrame to detect whether the frames were suppressed.
-     */
-    needsBeginFramesChanged(params: Protocol.HeadlessExperimental.NeedsBeginFramesChangedEvent): void;
-
   }
 
   // eslint thinks this is us prefixing our interfaces but it's not!
@@ -2973,6 +2966,16 @@ declare namespace ProtocolProxyApi {
     invoke_getSharedStorageEntries(params: Protocol.Storage.GetSharedStorageEntriesRequest): Promise<Protocol.Storage.GetSharedStorageEntriesResponse>;
 
     /**
+     * Deletes entry for `key` (if it exists) for a given origin's shared storage.
+     */
+    invoke_deleteSharedStorageEntry(params: Protocol.Storage.DeleteSharedStorageEntryRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Clears all entries for a given origin's shared storage.
+     */
+    invoke_clearSharedStorageEntries(params: Protocol.Storage.ClearSharedStorageEntriesRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Enables/disables issuing of sharedStorageAccessed events.
      */
     invoke_setSharedStorageTracking(params: Protocol.Storage.SetSharedStorageTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
@@ -3424,6 +3427,11 @@ declare namespace ProtocolProxyApi {
      * Creates and adds a virtual authenticator.
      */
     invoke_addVirtualAuthenticator(params: Protocol.WebAuthn.AddVirtualAuthenticatorRequest): Promise<Protocol.WebAuthn.AddVirtualAuthenticatorResponse>;
+
+    /**
+     * Resets parameters isBogusSignature, isBadUV, isBadUP to false if they are not present.
+     */
+    invoke_setResponseOverrideBits(params: Protocol.WebAuthn.SetResponseOverrideBitsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Removes the given authenticator.

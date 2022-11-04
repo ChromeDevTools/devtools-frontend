@@ -6564,6 +6564,10 @@ export const NativeFunctions = [
     signatures: [['options']]
   },
   {
+    name: 'fromLiteral',
+    signatures: [['templateLiteral']]
+  },
+  {
     name: 'createPolicy',
     signatures: [['policyName','?policyOptions']]
   },

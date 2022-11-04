@@ -154,12 +154,6 @@ export namespace ProtocolMapping {
      */
     'Emulation.virtualTimeBudgetExpired': [];
     /**
-     * Issued when the target starts or stops needing BeginFrames.
-     * Deprecated. Issue beginFrame unconditionally instead and use result from
-     * beginFrame to detect whether the frames were suppressed.
-     */
-    'HeadlessExperimental.needsBeginFramesChanged': [Protocol.HeadlessExperimental.NeedsBeginFramesChangedEvent];
-    /**
      * Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to
      * restore normal drag and drop behavior.
      */
@@ -3555,6 +3549,20 @@ export namespace ProtocolMapping {
       returnType: Protocol.Storage.GetSharedStorageEntriesResponse;
     };
     /**
+     * Deletes entry for `key` (if it exists) for a given origin's shared storage.
+     */
+    'Storage.deleteSharedStorageEntry': {
+      paramsType: [Protocol.Storage.DeleteSharedStorageEntryRequest];
+      returnType: void;
+    };
+    /**
+     * Clears all entries for a given origin's shared storage.
+     */
+    'Storage.clearSharedStorageEntries': {
+      paramsType: [Protocol.Storage.ClearSharedStorageEntriesRequest];
+      returnType: void;
+    };
+    /**
      * Enables/disables issuing of sharedStorageAccessed events.
      */
     'Storage.setSharedStorageTracking': {
@@ -3886,6 +3894,13 @@ export namespace ProtocolMapping {
     'WebAuthn.addVirtualAuthenticator': {
       paramsType: [Protocol.WebAuthn.AddVirtualAuthenticatorRequest];
       returnType: Protocol.WebAuthn.AddVirtualAuthenticatorResponse;
+    };
+    /**
+     * Resets parameters isBogusSignature, isBadUV, isBadUP to false if they are not present.
+     */
+    'WebAuthn.setResponseOverrideBits': {
+      paramsType: [Protocol.WebAuthn.SetResponseOverrideBitsRequest];
+      returnType: void;
     };
     /**
      * Removes the given authenticator.

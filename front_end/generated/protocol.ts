@@ -1430,7 +1430,6 @@ export namespace Browser {
   export const enum PermissionSetting {
     Granted = 'granted',
     Denied = 'denied',
-    Prompt = 'prompt',
   }
 
   /**
@@ -5634,18 +5633,6 @@ export namespace HeadlessExperimental {
      */
     screenshotData?: binary;
   }
-
-  /**
-   * Issued when the target starts or stops needing BeginFrames.
-   * Deprecated. Issue beginFrame unconditionally instead and use result from
-   * beginFrame to detect whether the frames were suppressed.
-   */
-  export interface NeedsBeginFramesChangedEvent {
-    /**
-     * True if BeginFrames are needed, false otherwise.
-     */
-    needsBeginFrames: boolean;
-  }
 }
 
 /**
@@ -9357,6 +9344,10 @@ export namespace Network {
      * The client security state set for the request.
      */
     clientSecurityState?: ClientSecurityState;
+    /**
+     * Whether the site has partitioned cookies stored in a partition different than the current one.
+     */
+    siteHasCookieInOtherPartition?: boolean;
   }
 
   /**
@@ -11050,7 +11041,6 @@ export namespace Page {
     DedicatedWorkerOrWorklet = 'DedicatedWorkerOrWorklet',
     OutstandingNetworkRequestOthers = 'OutstandingNetworkRequestOthers',
     OutstandingIndexedDBTransaction = 'OutstandingIndexedDBTransaction',
-    RequestedNotificationsPermission = 'RequestedNotificationsPermission',
     RequestedMIDIPermission = 'RequestedMIDIPermission',
     RequestedAudioCapturePermission = 'RequestedAudioCapturePermission',
     RequestedVideoCapturePermission = 'RequestedVideoCapturePermission',
@@ -13291,6 +13281,15 @@ export namespace Storage {
     entries: SharedStorageEntry[];
   }
 
+  export interface DeleteSharedStorageEntryRequest {
+    ownerOrigin: string;
+    key: string;
+  }
+
+  export interface ClearSharedStorageEntriesRequest {
+    ownerOrigin: string;
+  }
+
   export interface SetSharedStorageTrackingRequest {
     enable: boolean;
   }
@@ -14970,6 +14969,25 @@ export namespace WebAuthn {
 
   export interface AddVirtualAuthenticatorResponse extends ProtocolResponseWithError {
     authenticatorId: AuthenticatorId;
+  }
+
+  export interface SetResponseOverrideBitsRequest {
+    authenticatorId: AuthenticatorId;
+    /**
+     * If isBogusSignature is set, overrides the signature in the authenticator response to be zero.
+     * Defaults to false.
+     */
+    isBogusSignature?: boolean;
+    /**
+     * If isBadUV is set, overrides the UV bit in the flags in the authenticator response to
+     * be zero. Defaults to false.
+     */
+    isBadUV?: boolean;
+    /**
+     * If isBadUP is set, overrides the UP bit in the flags in the authenticator response to
+     * be zero. Defaults to false.
+     */
+    isBadUP?: boolean;
   }
 
   export interface RemoveVirtualAuthenticatorRequest {

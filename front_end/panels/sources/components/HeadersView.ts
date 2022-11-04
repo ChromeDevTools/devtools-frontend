@@ -38,9 +38,9 @@ const UIStrings = {
   parsingErrorExplainer:
       'This is most likely due to a syntax error in \'\'{PH1}\'\'. Try opening this file in an external editor to fix the error or delete the file and re-create the override.',
   /**
-  *@description Button text for a button which adds an additional header override.
+  *@description Button text for a button which adds an additional header override rule.
   */
-  addHeaderOverride: 'Add header override',
+  addOverrideRule: 'Add override rule',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -283,7 +283,7 @@ export class HeadersViewComponent extends HTMLElement {
         `,
       )}
       <${Buttons.Button.Button.litTagName} .variant=${Buttons.Button.Variant.SECONDARY} class="add-block">
-        ${i18nString(UIStrings.addHeaderOverride)}
+        ${i18nString(UIStrings.addOverrideRule)}
       </${Buttons.Button.Button.litTagName}>
     `, this.#shadow, {host: this});
     // clang-format on

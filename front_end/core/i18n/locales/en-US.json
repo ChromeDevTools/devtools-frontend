@@ -9941,8 +9941,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Add a header"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "Add header override"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Add override rule"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Error when parsing ''{PH1}''."

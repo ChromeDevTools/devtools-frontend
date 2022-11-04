@@ -9941,8 +9941,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Âd́d̂ á ĥéâd́êŕ"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "Âd́d̂ h́êád̂ér̂ óv̂ér̂ŕîd́ê"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Âd́d̂ óv̂ér̂ŕîd́ê ŕûĺê"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Êŕr̂ór̂ ẃĥén̂ ṕâŕŝín̂ǵ ''{PH1}''."

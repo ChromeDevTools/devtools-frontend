@@ -125,14 +125,6 @@ export class FormatterWorkerPool {
     return this.runTask(FormatterActions.FormatterActions.FORMAT, parameters) as Promise<FormatterActions.FormatResult>;
   }
 
-  javaScriptIdentifiers(content: string): Promise<{
-    name: string,
-    offset: number,
-  }[]> {
-    return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_IDENTIFIERS, {content: content})
-        .then(ids => ids || []);
-  }
-
   javaScriptSubstitute(expression: string, mapping: Map<string, string>): Promise<string> {
     return this
         .runTask(

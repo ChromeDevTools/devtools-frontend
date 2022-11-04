@@ -5,7 +5,6 @@
 export const enum FormatterActions {
   FORMAT = 'format',
   PARSE_CSS = 'parseCSS',
-  JAVASCRIPT_IDENTIFIERS = 'javaScriptIdentifiers',
   JAVASCRIPT_SUBSTITUTE = 'javaScriptSubstitute',
   JAVASCRIPT_SCOPE_TREE = 'javaScriptScopeTree',
   EVALUATE_JAVASCRIPT_SUBSTRING = 'evaluatableJavaScriptSubstring',

@@ -39,7 +39,6 @@ import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-
 
 import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {CSSFormatter} from './CSSFormatter.js';
-import {ESTreeWalker} from './ESTreeWalker.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';
 import {type FormatResult} from './FormatterActions.js';
 import {HTMLFormatter} from './HTMLFormatter.js';
@@ -139,58 +138,6 @@ export function evaluatableJavaScriptSubstring(content: string): string {
     console.error(e);
     return '';
   }
-}
-
-export function javaScriptIdentifiers(content: string): {
-  name: (string|undefined),
-  offset: number,
-}[] {
-  let root: Acorn.ESTree.Node|null = null;
-  try {
-    root = Acorn.parse(content, {ecmaVersion: ECMA_VERSION, ranges: false}) as Acorn.ESTree.Node | null;
-  } catch (e) {
-  }
-
-  const identifiers: Acorn.ESTree.Node[] = [];
-  const walker = new ESTreeWalker(beforeVisit);
-
-  function isFunction(node: Acorn.ESTree.Node): boolean {
-    return node.type === 'FunctionDeclaration' || node.type === 'FunctionExpression' ||
-        node.type === 'ArrowFunctionExpression';
-  }
-
-  function beforeVisit(node: Acorn.ESTree.Node): Object|undefined {
-    if (isFunction(node)) {
-      if (node.id) {
-        identifiers.push(node.id);
-      }
-      return ESTreeWalker.SkipSubtree;
-    }
-
-    if (node.type !== 'Identifier') {
-      return;
-    }
-
-    if (node.parent && node.parent.type === 'MemberExpression') {
-      const parent = (node.parent as Acorn.ESTree.MemberExpression);
-      if (parent.property === node && !parent.computed) {
-        return;
-      }
-    }
-    identifiers.push(node);
-    return;
-  }
-
-  if (!root || root.type !== 'Program' || root.body.length !== 1 || !isFunction(root.body[0])) {
-    return [];
-  }
-
-  const functionNode = (root.body[0] as Acorn.ESTree.FunctionDeclaration);
-  for (const param of functionNode.params) {
-    walker.walk(param);
-  }
-  walker.walk(functionNode.body);
-  return identifiers.map(id => ({name: 'name' in id && id.name || undefined, offset: id.start}));
 }
 
 export function format(mimeType: string, text: string, indentString?: string): FormatResult {

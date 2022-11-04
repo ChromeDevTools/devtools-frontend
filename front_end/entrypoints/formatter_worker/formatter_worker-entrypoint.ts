@@ -23,9 +23,6 @@ self.onmessage = function(event: MessageEvent): void {
     case FormatterActions.PARSE_CSS:
       FormatterWorker.CSSRuleParser.parseCSS(params.content, self.postMessage);
       break;
-    case FormatterActions.JAVASCRIPT_IDENTIFIERS:
-      self.postMessage(FormatterWorker.FormatterWorker.javaScriptIdentifiers(params.content));
-      break;
     case FormatterActions.JAVASCRIPT_SUBSTITUTE: {
       const mapping = new Map<string, string>(params.mapping);
       self.postMessage(FormatterWorker.Substitute.substituteExpression(params.content, mapping));

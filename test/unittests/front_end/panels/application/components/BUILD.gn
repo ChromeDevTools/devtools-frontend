@@ -14,6 +14,7 @@ ts_library("components") {
     "OriginTrialTreeView_test.ts",
     "ProtocolHandlersView_test.ts",
     "ReportsGrid_test.ts",
+    "SharedStorageAccessGrid_test.ts",
     "StackTrace_test.ts",
     "TrustTokensView_test.ts",
   ]

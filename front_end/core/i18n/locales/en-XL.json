@@ -3437,6 +3437,30 @@
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Ŝt́ât́ûś"
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "Âĺl̂ śĥár̂éd̂ śt̂ór̂áĝé êv́êńt̂ś f̂ór̂ t́ĥíŝ ṕâǵê."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "Ôṕt̂íôńâĺ Êv́êńt̂ Ṕâŕâḿŝ"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "Êv́êńt̂ T́îḿê"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "Âćĉéŝś T̂ýp̂é"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "M̂áîń F̂ŕâḿê ÍD̂"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "N̂ó ŝh́âŕêd́ ŝt́ôŕâǵê év̂én̂t́ŝ ŕêćôŕd̂éd̂."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "Ôẃn̂ér̂ Ór̂íĝín̂"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "Ŝh́âŕêd́ Ŝt́ôŕâǵê"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Ĉán̂ńôt́ r̂én̂d́êŕ ŝt́âćk̂ t́r̂áĉé"
   },

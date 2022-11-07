@@ -16,6 +16,7 @@ import * as IndexedDBModel from './IndexedDBModel.js';
 import * as IndexedDBViews from './IndexedDBViews.js';
 import * as InterestGroupStorageModel from './InterestGroupStorageModel.js';
 import * as InterestGroupStorageView from './InterestGroupStorageView.js';
+import * as InterestGroupTreeElement from './InterestGroupTreeElement.js';
 import * as OpenedWindowDetailsView from './OpenedWindowDetailsView.js';
 import * as ReportingApiReportsView from './ReportingApiReportsView.js';
 import * as ReportingApiView from './ReportingApiView.js';
@@ -42,6 +43,7 @@ export {
   IndexedDBViews,
   InterestGroupStorageModel,
   InterestGroupStorageView,
+  InterestGroupTreeElement,
   OpenedWindowDetailsView,
   ReportingApiReportsView,
   ReportingApiView,

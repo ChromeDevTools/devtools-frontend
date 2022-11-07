@@ -10,6 +10,7 @@ ts_library("application") {
     "DOMStorageModel_test.ts",
     "IndexedDBModel_test.ts",
     "InterestGroupStorageView_test.ts",
+    "InterestGroupTreeElement_test.ts",
     "ReportingApiReportsView_test.ts",
     "ReportingApiView_test.ts",
     "ServiceWorkerUpdateCycleView_test.ts",

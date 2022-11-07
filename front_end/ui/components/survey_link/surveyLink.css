@@ -15,6 +15,7 @@
   cursor: pointer;
   font-size: var(--issue-link-font-size, 14px);
   color: var(--color-link);
+  outline-offset: 2px;
   border: none;
   background: none;
   font-family: inherit;

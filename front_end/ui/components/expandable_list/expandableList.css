@@ -48,7 +48,7 @@ div {
   color: var(--color-link);
   text-decoration: underline;
   cursor: pointer;
-  padding: 2px 0; /* adjust focus ring size */
+  outline-offset: 2px;
 }
 
 button.link {

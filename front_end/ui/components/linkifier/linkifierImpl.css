@@ -9,4 +9,5 @@
   color: var(--color-link);
   text-decoration: underline;
   cursor: pointer;
+  outline-offset: 2px;
 }

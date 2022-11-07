@@ -6,6 +6,7 @@
 
 .devtools-link {
   color: var(--color-link);
+  outline-offset: 2px;
   text-decoration: none;
 }
 

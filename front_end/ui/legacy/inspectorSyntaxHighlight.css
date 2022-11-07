@@ -89,6 +89,7 @@
 .devtools-link {
   color: var(--color-link);
   text-decoration: underline;
+  outline-offset: 2px;
 }
 
 .elements-disclosure .devtools-link {

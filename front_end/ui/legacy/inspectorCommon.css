@@ -256,6 +256,7 @@ iframe.widget {
   cursor: pointer;
   text-decoration: underline;
   color: var(--color-link);
+  outline-offset: 2px;
 }
 
 button,

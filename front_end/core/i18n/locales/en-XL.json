@@ -6872,6 +6872,9 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "D̂éĉód̂éd̂:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "Ôv́êŕr̂íd̂é ĥéâd́êŕ"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },

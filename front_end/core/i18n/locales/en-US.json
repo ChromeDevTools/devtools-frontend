@@ -6872,6 +6872,9 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Decoded:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "Override header"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Learn more"
   },

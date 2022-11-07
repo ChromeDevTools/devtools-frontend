@@ -32,6 +32,10 @@ const UIStrings = {
   */
   decoded: 'Decoded:',
   /**
+  *@description The title of a button to enable overriding a HTTP header.
+  */
+  editHeader: 'Override header',
+  /**
   *@description Text that is usually a hyperlink to more documentation
   */
   learnMore: 'Learn more',
@@ -49,6 +53,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/components/HeaderSectio
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const trashIconUrl = new URL('../../../Images/trash_bin_material_icon.svg', import.meta.url).toString();
+const editIconUrl = new URL('../../../Images/edit-icon.svg', import.meta.url).toString();
 
 export class HeaderEditedEvent extends Event {
   static readonly eventName = 'headeredited';
@@ -71,6 +76,14 @@ export class HeaderRemovedEvent extends Event {
     super(HeaderRemovedEvent.eventName, {});
     this.headerName = headerName;
     this.headerValue = headerValue;
+  }
+}
+
+export class EnableHeaderEditingEvent extends Event {
+  static readonly eventName = 'enableheaderediting';
+
+  constructor() {
+    super(EnableHeaderEditingEvent.eventName, {});
   }
 }
 
@@ -146,9 +159,24 @@ export class HeaderSectionRow extends HTMLElement {
       return LitHtml.nothing;
     }
     if (!this.#header.valueEditable) {
+      // clang-format off
       return html`
       ${this.#header.value || ''}
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
+      ${this.#header.isResponseHeader ? html`
+        <${Buttons.Button.Button.litTagName}
+          title=${i18nString(UIStrings.editHeader)}
+          .size=${Buttons.Button.Size.TINY}
+          .iconUrl=${editIconUrl}
+          .variant=${Buttons.Button.Variant.ROUND}
+          .iconWidth=${'13px'}
+          .iconHeight=${'13px'}
+          @click=${(): void => {
+            this.dispatchEvent(new EnableHeaderEditingEvent());
+          }}
+          class="enable-editing inline-button"
+        ></${Buttons.Button.Button.litTagName}>
+      ` : LitHtml.nothing}
     `;
     }
     return html`
@@ -165,6 +193,7 @@ export class HeaderSectionRow extends HTMLElement {
         @click=${this.#onRemoveOverrideClick}
       ></${Buttons.Button.Button.litTagName}>
     `;
+    // clang-format on
   }
 
   focus(): void {
@@ -433,6 +462,7 @@ export interface HeaderDetailsDescriptor {
   headerNotSet?: boolean;
   setCookieBlockedReasons?: Protocol.Network.SetCookieBlockedReason[];
   highlight?: boolean;
+  isResponseHeader?: boolean;
 }
 
 export interface HeaderEditorDescriptor {

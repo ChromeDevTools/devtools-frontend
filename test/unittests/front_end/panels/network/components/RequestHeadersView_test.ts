@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import * as NetworkComponents from '../../../../../../front_end/panels/network/components/components.js';
-import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import type * as Common from '../../../../../../front_end/core/common/common.js';
-import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import * as Common from '../../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../../front_end/core/host/host.js';
+import * as Root from '../../../../../../front_end/core/root/root.js';
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../../front_end/generated/protocol.js';
+import * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
+import * as NetworkComponents from '../../../../../../front_end/panels/network/components/components.js';
 import * as NetworkForward from '../../../../../../front_end/panels/network/forward/forward.js';
-
+import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {
   assertElement,
   assertShadowRoot,
@@ -20,14 +21,12 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import * as Root from '../../../../../../front_end/core/root/root.js';
-import {deinitializeGlobalVars} from '../../../helpers/EnvironmentHelpers.js';
-import * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
+import {deinitializeGlobalVars, describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
+
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import {createFileSystemUISourceCode} from '../../../helpers/UISourceCodeHelpers.js';
-import {setUpEnvironment} from '../../../helpers/OverridesHelpers.js';
+import {createWorkspaceProject, setUpEnvironment} from '../../../helpers/OverridesHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -105,6 +104,8 @@ const getRowHighlightStatus = (container: HTMLElement): boolean[] => {
 };
 
 describeWithMockConnection('RequestHeadersView', () => {
+  let component: HTMLElement|null|undefined = null;
+
   beforeEach(() => {
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
@@ -112,11 +113,12 @@ describeWithMockConnection('RequestHeadersView', () => {
   });
 
   afterEach(async () => {
+    component?.remove();
     await deinitializeGlobalVars();
   });
 
   it('renders the General section', async () => {
-    const component = await renderHeadersComponent(defaultRequest);
+    component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const generalCategory = component.shadowRoot.querySelector('[aria-label="General"]');
@@ -142,7 +144,7 @@ describeWithMockConnection('RequestHeadersView', () => {
   });
 
   it('renders request and response headers', async () => {
-    const component = await renderHeadersComponent(defaultRequest);
+    component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
@@ -159,7 +161,7 @@ describeWithMockConnection('RequestHeadersView', () => {
   });
 
   it('emits UMA event when a header value is being copied', async () => {
-    const component = await renderHeadersComponent(defaultRequest);
+    component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const generalCategory = component.shadowRoot.querySelector('[aria-label="General"]');
@@ -175,7 +177,7 @@ describeWithMockConnection('RequestHeadersView', () => {
   });
 
   it('can switch between source and parsed view', async () => {
-    const component = await renderHeadersComponent(defaultRequest);
+    component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
@@ -207,7 +209,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
     cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
 
-    const component = await renderHeadersComponent({
+    component = await renderHeadersComponent({
       ...defaultRequest,
       responseHeadersText: loremIpsum.repeat(10),
     } as unknown as SDK.NetworkRequest.NetworkRequest);
@@ -249,7 +251,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     view.show(div);
     await coordinator.done();
 
-    const component = view.element.querySelector('devtools-request-headers');
+    component = view.element.querySelector('devtools-request-headers');
     assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
     assertShadowRoot(component.shadowRoot);
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
@@ -285,7 +287,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     view.show(div);
     await coordinator.done();
 
-    const component = view.element.querySelector('devtools-request-headers');
+    component = view.element.querySelector('devtools-request-headers');
     assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
     assertShadowRoot(component.shadowRoot);
 
@@ -321,7 +323,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     view.show(div);
     await coordinator.done();
 
-    const component = view.element.querySelector('devtools-request-headers');
+    component = view.element.querySelector('devtools-request-headers');
     assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
     assertShadowRoot(component.shadowRoot);
 
@@ -348,7 +350,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     await Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().setProject(project);
 
-    const component = await renderHeadersComponent(defaultRequest);
+    component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
@@ -369,7 +371,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     await Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().setProject(project);
 
-    const component = await renderHeadersComponent(defaultRequest);
+    component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
@@ -378,6 +380,54 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     const linkElement = responseHeadersCategory.shadowRoot.querySelector('x-link');
     assert.isNull(linkElement);
+  });
+
+  it('allows enabling header overrides via buttons located next to each header', async () => {
+    Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(false);
+
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com/' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.responseHeaders = [
+      {name: 'foo', value: 'bar'},
+    ];
+
+    await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, [
+      {
+        name: '.headers',
+        path: 'www.example.com/',
+        content: '[]',
+      },
+    ]);
+
+    component = await renderHeadersComponent(request);
+    assertShadowRoot(component.shadowRoot);
+    const responseHeaderSection = component.shadowRoot.querySelector('devtools-response-header-section');
+    assertElement(responseHeaderSection, HTMLElement);
+    assertShadowRoot(responseHeaderSection.shadowRoot);
+    const headerRow = responseHeaderSection.shadowRoot.querySelector('devtools-header-section-row');
+    assertElement(headerRow, HTMLElement);
+    assertShadowRoot(headerRow.shadowRoot);
+
+    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isEditable: boolean): void => {
+      assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
+      assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
+      const editable = shadowRoot.querySelector('.editable');
+      if (isEditable) {
+        assertElement(editable, HTMLSpanElement);
+      } else {
+        assert.strictEqual(editable, null);
+      }
+    };
+
+    checkRow(headerRow.shadowRoot, 'foo:', 'bar', false);
+
+    const pencilButton = headerRow.shadowRoot.querySelector('.enable-editing');
+    assertElement(pencilButton, HTMLElement);
+    pencilButton.click();
+    await coordinator.done();
+
+    checkRow(headerRow.shadowRoot, 'foo:', 'bar', true);
   });
 });
 

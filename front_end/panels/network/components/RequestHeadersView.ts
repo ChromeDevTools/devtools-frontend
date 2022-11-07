@@ -185,6 +185,9 @@ export class RequestHeadersComponent extends HTMLElement {
         Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
     this.#workspace.addEventListener(
         Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('persistenceNetworkOverridesEnabled')
+        .addChangeListener(this.#render, this);
   }
 
   disconnectedCallback(): void {
@@ -192,6 +195,9 @@ export class RequestHeadersComponent extends HTMLElement {
         Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
     this.#workspace.removeEventListener(
         Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('persistenceNetworkOverridesEnabled')
+        .removeChangeListener(this.#render, this);
   }
 
   #uiSourceCodeAddedOrRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {

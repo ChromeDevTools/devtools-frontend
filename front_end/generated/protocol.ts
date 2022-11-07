@@ -2244,6 +2244,14 @@ export namespace CSS {
      * Optional name for the container.
      */
     name?: string;
+    /**
+     * Optional physical axes queried for the container.
+     */
+    physicalAxes?: DOM.PhysicalAxes;
+    /**
+     * Optional logical axes queried for the container.
+     */
+    logicalAxes?: DOM.LogicalAxes;
   }
 
   /**
@@ -3148,6 +3156,24 @@ export namespace DOM {
     QuirksMode = 'QuirksMode',
     LimitedQuirksMode = 'LimitedQuirksMode',
     NoQuirksMode = 'NoQuirksMode',
+  }
+
+  /**
+   * ContainerSelector physical axes
+   */
+  export const enum PhysicalAxes {
+    Horizontal = 'Horizontal',
+    Vertical = 'Vertical',
+    Both = 'Both',
+  }
+
+  /**
+   * ContainerSelector logical axes
+   */
+  export const enum LogicalAxes {
+    Inline = 'Inline',
+    Block = 'Block',
+    Both = 'Both',
   }
 
   /**
@@ -4067,6 +4093,8 @@ export namespace DOM {
   export interface GetContainerForNodeRequest {
     nodeId: NodeId;
     containerName?: string;
+    physicalAxes?: PhysicalAxes;
+    logicalAxes?: LogicalAxes;
   }
 
   export interface GetContainerForNodeResponse extends ProtocolResponseWithError {
@@ -13279,6 +13307,17 @@ export namespace Storage {
 
   export interface GetSharedStorageEntriesResponse extends ProtocolResponseWithError {
     entries: SharedStorageEntry[];
+  }
+
+  export interface SetSharedStorageEntryRequest {
+    ownerOrigin: string;
+    key: string;
+    value: string;
+    /**
+     * If `ignoreIfPresent` is included and true, then only sets the entry if
+     * `key` doesn't already exist.
+     */
+    ignoreIfPresent?: boolean;
   }
 
   export interface DeleteSharedStorageEntryRequest {

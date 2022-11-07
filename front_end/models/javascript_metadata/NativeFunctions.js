@@ -5940,10 +5940,6 @@ export const NativeFunctions = [
     signatures: [['type','?eventInitDict']]
   },
   {
-    name: 'startViewTransition',
-    signatures: [['?callback']]
-  },
-  {
     name: 'timeout',
     signatures: [['milliseconds']]
   },
@@ -6622,6 +6618,10 @@ export const NativeFunctions = [
   {
     name: 'URL',
     signatures: [['url','?base']]
+  },
+  {
+    name: 'startViewTransition',
+    signatures: [['?callback']]
   },
   {
     name: 'SharedWorker',

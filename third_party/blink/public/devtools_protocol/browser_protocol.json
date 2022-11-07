@@ -3312,6 +3312,18 @@
                             "description": "Optional name for the container.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "physicalAxes",
+                            "description": "Optional physical axes queried for the container.",
+                            "optional": true,
+                            "$ref": "DOM.PhysicalAxes"
+                        },
+                        {
+                            "name": "logicalAxes",
+                            "description": "Optional logical axes queried for the container.",
+                            "optional": true,
+                            "$ref": "DOM.LogicalAxes"
                         }
                     ]
                 },
@@ -4717,6 +4729,26 @@
                     ]
                 },
                 {
+                    "id": "PhysicalAxes",
+                    "description": "ContainerSelector physical axes",
+                    "type": "string",
+                    "enum": [
+                        "Horizontal",
+                        "Vertical",
+                        "Both"
+                    ]
+                },
+                {
+                    "id": "LogicalAxes",
+                    "description": "ContainerSelector logical axes",
+                    "type": "string",
+                    "enum": [
+                        "Inline",
+                        "Block",
+                        "Both"
+                    ]
+                },
+                {
                     "id": "Node",
                     "description": "DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.\nDOMNode is a base node mirror type.",
                     "type": "object",
@@ -6077,7 +6109,7 @@
                 },
                 {
                     "name": "getContainerForNode",
-                    "description": "Returns the container of the given node based on container query conditions.\nIf containerName is given, it will find the nearest container with a matching name;\notherwise it will find the nearest container regardless of its container name.",
+                    "description": "Returns the query container of the given node based on container query\nconditions: containerName, physical, and logical axes. If no axes are\nprovided, the style container is returned, which is the direct parent or the\nclosest element with a matching container-name.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -6088,6 +6120,16 @@
                             "name": "containerName",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "physicalAxes",
+                            "optional": true,
+                            "$ref": "PhysicalAxes"
+                        },
+                        {
+                            "name": "logicalAxes",
+                            "optional": true,
+                            "$ref": "LogicalAxes"
                         }
                     ],
                     "returns": [
@@ -19681,6 +19723,31 @@
                             "items": {
                                 "$ref": "SharedStorageEntry"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "setSharedStorageEntry",
+                    "description": "Sets entry with `key` and `value` for a given origin's shared storage.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "ownerOrigin",
+                            "type": "string"
+                        },
+                        {
+                            "name": "key",
+                            "type": "string"
+                        },
+                        {
+                            "name": "value",
+                            "type": "string"
+                        },
+                        {
+                            "name": "ignoreIfPresent",
+                            "description": "If `ignoreIfPresent` is included and true, then only sets the entry if\n`key` doesn't already exist.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },

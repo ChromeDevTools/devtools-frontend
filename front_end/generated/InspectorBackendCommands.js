@@ -172,6 +172,8 @@ inspectorBackend.registerCommand("Cast.stopCasting", [{"name": "sinkName", "type
 inspectorBackend.registerEnum("DOM.PseudoType", {FirstLine: "first-line", FirstLetter: "first-letter", Before: "before", After: "after", Marker: "marker", Backdrop: "backdrop", Selection: "selection", TargetText: "target-text", SpellingError: "spelling-error", GrammarError: "grammar-error", Highlight: "highlight", FirstLineInherited: "first-line-inherited", Scrollbar: "scrollbar", ScrollbarThumb: "scrollbar-thumb", ScrollbarButton: "scrollbar-button", ScrollbarTrack: "scrollbar-track", ScrollbarTrackPiece: "scrollbar-track-piece", ScrollbarCorner: "scrollbar-corner", Resizer: "resizer", InputListButton: "input-list-button", PageTransition: "page-transition", PageTransitionContainer: "page-transition-container", PageTransitionImageWrapper: "page-transition-image-wrapper", PageTransitionOutgoingImage: "page-transition-outgoing-image", PageTransitionIncomingImage: "page-transition-incoming-image"});
 inspectorBackend.registerEnum("DOM.ShadowRootType", {UserAgent: "user-agent", Open: "open", Closed: "closed"});
 inspectorBackend.registerEnum("DOM.CompatibilityMode", {QuirksMode: "QuirksMode", LimitedQuirksMode: "LimitedQuirksMode", NoQuirksMode: "NoQuirksMode"});
+inspectorBackend.registerEnum("DOM.PhysicalAxes", {Horizontal: "Horizontal", Vertical: "Vertical", Both: "Both"});
+inspectorBackend.registerEnum("DOM.LogicalAxes", {Inline: "Inline", Block: "Block", Both: "Both"});
 inspectorBackend.registerEvent("DOM.attributeModified", ["nodeId", "name", "value"]);
 inspectorBackend.registerEvent("DOM.attributeRemoved", ["nodeId", "name"]);
 inspectorBackend.registerEvent("DOM.characterDataModified", ["nodeId", "characterData"]);
@@ -235,7 +237,7 @@ inspectorBackend.registerCommand("DOM.setNodeValue", [{"name": "nodeId", "type":
 inspectorBackend.registerCommand("DOM.setOuterHTML", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "outerHTML", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("DOM.undo", [], []);
 inspectorBackend.registerCommand("DOM.getFrameOwner", [{"name": "frameId", "type": "string", "optional": false}], ["backendNodeId", "nodeId"]);
-inspectorBackend.registerCommand("DOM.getContainerForNode", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "containerName", "type": "string", "optional": true}], ["nodeId"]);
+inspectorBackend.registerCommand("DOM.getContainerForNode", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "containerName", "type": "string", "optional": true}, {"name": "physicalAxes", "type": "string", "optional": true}, {"name": "logicalAxes", "type": "string", "optional": true}], ["nodeId"]);
 inspectorBackend.registerCommand("DOM.getQueryingDescendantsForContainer", [{"name": "nodeId", "type": "number", "optional": false}], ["nodeIds"]);
 
 // DOMDebugger.
@@ -743,6 +745,7 @@ inspectorBackend.registerCommand("Storage.getInterestGroupDetails", [{"name": "o
 inspectorBackend.registerCommand("Storage.setInterestGroupTracking", [{"name": "enable", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Storage.getSharedStorageMetadata", [{"name": "ownerOrigin", "type": "string", "optional": false}], ["metadata"]);
 inspectorBackend.registerCommand("Storage.getSharedStorageEntries", [{"name": "ownerOrigin", "type": "string", "optional": false}], ["entries"]);
+inspectorBackend.registerCommand("Storage.setSharedStorageEntry", [{"name": "ownerOrigin", "type": "string", "optional": false}, {"name": "key", "type": "string", "optional": false}, {"name": "value", "type": "string", "optional": false}, {"name": "ignoreIfPresent", "type": "boolean", "optional": true}], []);
 inspectorBackend.registerCommand("Storage.deleteSharedStorageEntry", [{"name": "ownerOrigin", "type": "string", "optional": false}, {"name": "key", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Storage.clearSharedStorageEntries", [{"name": "ownerOrigin", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Storage.setSharedStorageTracking", [{"name": "enable", "type": "boolean", "optional": false}], []);

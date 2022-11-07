@@ -831,6 +831,59 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return await view.widget() as Coverage.CoverageView.CoverageView;
   }
 
+  async #evaluateInspectedURL(): Promise<Platform.DevToolsPath.UrlString> {
+    if (!this.controller) {
+      return Platform.DevToolsPath.EmptyUrlString;
+    }
+    const mainTarget = this.controller.mainTarget();
+    // target.inspectedURL is reliably populated, however it lacks any url #hash
+    const inspectedURL = mainTarget.inspectedURL();
+
+    // We'll use the navigationHistory to acquire the current URL including hash
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const navHistory = resourceTreeModel && await resourceTreeModel.navigationHistory();
+    if (!resourceTreeModel || !navHistory) {
+      return inspectedURL;
+    }
+
+    const {currentIndex, entries} = navHistory;
+    const navigationEntry = entries[currentIndex];
+    return navigationEntry.url as Platform.DevToolsPath.UrlString;
+  }
+
+  async #navigateToAboutBlank(): Promise<void> {
+    const aboutBlankNavigationComplete = new Promise<void>(async (resolve, reject) => {
+      if (!this.controller) {
+        reject('Could not find TimelineController');
+        return;
+      }
+      const target = this.controller.mainTarget();
+      const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      if (!resourceModel) {
+        reject('Could not load resourceModel');
+        return;
+      }
+
+      // To clear out the page and any state from prior test runs, we
+      // navigate to about:blank before initiating the trace recording.
+      // Once we have navigated to about:blank, we start recording and
+      // then navigate to the original page URL, to ensure we profile the
+      // page load.
+      function waitForAboutBlank(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+          void {
+        if (event.data.url === 'about:blank') {
+          resolve();
+        } else {
+          reject(`Unexpected navigation to ${event.data.url}`);
+        }
+        resourceModel?.removeEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+      }
+      resourceModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+      await resourceModel.navigate('about:blank' as Platform.DevToolsPath.UrlString);
+    });
+    await aboutBlankNavigationComplete;
+  }
+
   private async startRecording(): Promise<void> {
     console.assert(!this.statusPane, 'Status pane is already opened.');
     this.setState(State.StartPending);
@@ -863,13 +916,31 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
       this.setUIControlsEnabled(false);
       this.hideLandingPage();
+      if (!this.controller) {
+        throw new Error('Could not create Timeline controller');
+      }
+
+      const urlToTrace = await this.#evaluateInspectedURL();
+
       try {
+        // If we are doing "Reload & record", we first navigate the page to
+        // about:blank. This is to ensure any data on the timeline from any
+        // previous performance recording is lost, avoiding the problem where a
+        // timeline will show data & screenshots from a previous page load that
+        // was not relevant.
+        if (this.recordingPageReload) {
+          await this.#navigateToAboutBlank();
+        }
+        // Order is important here: we tell the controller to start recording, which enables tracing.
         const response = await this.controller.startRecording(recordingOptions, enabledTraceProviders);
         if (response.getError()) {
           throw new Error(response.getError());
-        } else {
-          this.recordingStarted();
         }
+        // Once we get here, we know tracing is active.
+        // This is when, if the user has hit "Reload & Record" that we now need to navigate to the original URL.
+        // If the user has just hit "record", we don't do any navigating.
+        const recordingConfig = this.recordingPageReload ? {navigateToUrl: urlToTrace} : undefined;
+        this.recordingStarted(recordingConfig);
       } catch (e) {
         this.recordingFailed(e.message);
       }
@@ -1071,14 +1142,23 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.updateTimelineControls();
   }
 
-  private recordingStarted(): void {
-    if (this.recordingPageReload && this.controller) {
+  private recordingStarted(config?: {navigateToUrl: Platform.DevToolsPath.UrlString}): void {
+    if (config && this.recordingPageReload && this.controller) {
+      // If the user hit "Reload & record", by this point we have:
+      // 1. Navigated to about:blank
+      // 2. Initiated tracing.
+      // We therefore now should navigate back to the original URL that the user wants to profile.
       const target = this.controller.mainTarget();
       const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      if (resourceModel) {
-        resourceModel.reloadPage();
+      if (!resourceModel) {
+        this.recordingFailed('Could not navigate to original URL');
+        return;
       }
+      // We don't need to await this because we are purposefully showing UI
+      // progress as the page loads & tracing is underway.
+      void resourceModel.navigate(config.navigateToUrl);
     }
+
     this.reset();
     this.setState(State.Recording);
     this.showRecordingStarted();

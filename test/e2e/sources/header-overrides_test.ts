@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {
-  $$,
   click,
   enableExperiment,
   goToResource,
@@ -15,7 +14,12 @@ import {
   waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToNetworkTab, selectRequestByName, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {
+  getTextFromHeadersRow,
+  navigateToNetworkTab,
+  selectRequestByName,
+  waitForSomeRequestsToAppear,
+} from '../helpers/network-helpers.js';
 import {clickOnContextMenu, enableLocalOverrides, openSourcesPanel} from '../helpers/sources-helpers.js';
 
 const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
@@ -24,8 +28,8 @@ const FILE_TREE_HEADERS_FILE_SELECTOR = '[aria-label=".headers, file"] .tree-ele
 const NETWORK_VIEW_SELECTOR = '.network-item-view';
 const HEADERS_TAB_SELECTOR = '[aria-label=Headers][role="tab"]';
 const ACTIVE_HEADERS_TAB_SELECTOR = '[aria-label=Headers][role=tab][aria-selected=true]';
-const HEADERS_VIEW_SELECTOR = '.request-headers-view';
-const HEADERS_OUTLINE_SELECTOR = '[role=treeitem]:not(.hidden)';
+const RESPONSE_HEADERS_SELECTOR = '[aria-label="Response Headers"]';
+const HEADER_ROW_SELECTOR = '.row';
 
 async function createHeaderOverride() {
   await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
@@ -73,10 +77,8 @@ describe('The Overrides Panel', async function() {
     await selectRequestByName('hello.html');
     await openHeadersTab();
 
-    const headersView = await waitFor(HEADERS_VIEW_SELECTOR);
-    const headersOutline = await $$(HEADERS_OUTLINE_SELECTOR, headersView);
-    const headersTextContents =
-        await Promise.all(headersOutline.map(line => line.evaluate(message => message.textContent || '')));
-    assert.isTrue(headersTextContents.includes('aaa: bbb'), `Cannot find overridden header in: ${headersTextContents}`);
+    const responseHeaderSection = await waitFor(RESPONSE_HEADERS_SELECTOR);
+    const row = await waitFor(HEADER_ROW_SELECTOR, responseHeaderSection);
+    assert.deepStrictEqual(await getTextFromHeadersRow(row), ['aaa:', 'bbb']);
   });
 });

@@ -26,6 +26,7 @@ import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpe
 import {triggerLocalFindDialog} from '../helpers/memory-helpers.js';
 import {
   getAllRequestNames,
+  getTextFromHeadersRow,
   navigateToNetworkTab,
   selectRequestByName,
   waitForSomeRequestsToAppear,
@@ -397,29 +398,21 @@ describe('The Network Request view', async () => {
     await waitFor('#tab-headersComponent[role=tab][aria-selected=true]', networkView);
     let responseHeaderSection = await waitFor('[aria-label="Response Headers"]', networkView);
 
-    const getTextFromRow = async (row: ElementHandle<Element>) => {
-      const headerNameElement = await waitFor('.header-name', row);
-      const headerNameText = await headerNameElement.evaluate(el => el.textContent || '');
-      const headerValueElement = await waitFor('.header-value', row);
-      const headerValueText = await headerValueElement.evaluate(el => el.textContent || '');
-      return [headerNameText.trim(), headerValueText.trim()];
-    };
-
     let row = await waitFor('.row', responseHeaderSection);
-    assert.deepStrictEqual(await getTextFromRow(row), ['cache-control:', 'max-age=3600']);
+    assert.deepStrictEqual(await getTextFromHeadersRow(row), ['cache-control:', 'max-age=3600']);
 
     await waitForFunction(async () => {
       await click('.header-name', {root: row});
       await click('.header-value', {root: row});
       await typeText('Foo');
-      return (await getTextFromRow(row))[1] === 'Foo';
+      return (await getTextFromHeadersRow(row))[1] === 'Foo';
     });
 
     await click('[title="Reveal header override definitions"]');
 
     const headersView = await waitFor('devtools-sources-headers-view');
     const headersViewRow = await waitFor('.row.padded', headersView);
-    assert.deepStrictEqual(await getTextFromRow(headersViewRow), ['cache-control', 'Foo']);
+    assert.deepStrictEqual(await getTextFromHeadersRow(headersViewRow), ['cache-control', 'Foo']);
 
     await navigateToNetworkTab('hello.html');
     await selectRequestByName('hello.html');
@@ -429,7 +422,7 @@ describe('The Network Request view', async () => {
 
     responseHeaderSection = await waitFor('[aria-label="Response Headers"]');
     row = await waitFor('.row.header-overridden', responseHeaderSection);
-    assert.deepStrictEqual(await getTextFromRow(row), ['cache-control:', 'Foo']);
+    assert.deepStrictEqual(await getTextFromHeadersRow(row), ['cache-control:', 'Foo']);
   });
 
   it('can search by headers name', async () => {

@@ -149,14 +149,15 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         'resourceViewTab', NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
 
     this.headersView = new RequestHeadersView(request);
-    this.appendTab(
-        NetworkForward.UIRequestLocation.UIRequestTabs.Headers, i18nString(UIStrings.headers), this.headersView,
-        i18nString(UIStrings.headers));
     this.headersViewComponent = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent, i18nString(UIStrings.headers),
           this.headersViewComponent, i18nString(UIStrings.headers));
+    } else {
+      this.appendTab(
+          NetworkForward.UIRequestLocation.UIRequestTabs.Headers, i18nString(UIStrings.headers), this.headersView,
+          i18nString(UIStrings.headers));
     }
 
     this.payloadView = null;

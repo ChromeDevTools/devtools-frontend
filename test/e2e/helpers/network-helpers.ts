@@ -94,3 +94,11 @@ export async function setPersistLog(persist: boolean) {
 export async function setCacheDisabled(disabled: boolean): Promise<void> {
   await setCheckBox('[aria-label="Disable cache"]', disabled);
 }
+
+export async function getTextFromHeadersRow(row: puppeteer.ElementHandle<Element>) {
+  const headerNameElement = await waitFor('.header-name', row);
+  const headerNameText = await headerNameElement.evaluate(el => el.textContent || '');
+  const headerValueElement = await waitFor('.header-value', row);
+  const headerValueText = await headerValueElement.evaluate(el => el.textContent || '');
+  return [headerNameText.trim(), headerValueText.trim()];
+}

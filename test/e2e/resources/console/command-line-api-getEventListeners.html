@@ -1,0 +1,40 @@
+<p id="foo">
+</p>
+<div id="outer">
+<div id="inner">
+</div>
+</div>
+<div id="empty">
+</div>
+<button id="button" onclick="alert(1)" onmouseover="listener2()"></button>
+<button id="invalid" onclick="Invalid JavaScript"></button>
+<script>
+    function listener1()
+    {
+    }
+    function listener2()
+    {
+    }
+
+    document.getElementById("inner").addEventListener("keydown", listener1, false);
+    document.getElementById("inner").addEventListener("keydown", listener2, true);
+    document.getElementById("inner").addEventListener("wheel", listener2, {"passive": true});
+    document.getElementById("outer").addEventListener("mousemove", listener1, false);
+    document.getElementById("outer").addEventListener("mousedown", listener2, true);
+    document.getElementById("outer").addEventListener("keydown", listener2, true);
+    document.getElementById("outer").addEventListener("keyup", listener2, {once: true});
+    window.addEventListener("popstate", listener1, false);
+
+    function innerElement() {
+      return document.getElementById("inner");
+    }
+
+    function innerListeners() {
+      return getEventListeners(innerElement());
+    }
+
+    function removeInnerListeners() {
+      innerElement().removeEventListener("keydown", innerListeners().keydown[0].listener, innerListeners().keydown[0].useCapture);
+      innerElement().removeEventListener("wheel", innerListeners().wheel[0].listener, innerListeners().wheel[0].useCapture);
+    }
+</script>

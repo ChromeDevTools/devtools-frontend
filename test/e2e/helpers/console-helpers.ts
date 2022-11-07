@@ -125,6 +125,10 @@ export async function getCurrentConsoleMessages(withAnchor = false, callback?: (
   }, selector);
 }
 
+export async function getLastConsoleMessages() {
+  return (await getCurrentConsoleMessages()).at(-1);
+}
+
 export async function maybeGetCurrentConsoleMessages(withAnchor = false, callback?: () => Promise<void>) {
   const {frontend} = getBrowserAndPages();
   const asyncScope = new AsyncScope();

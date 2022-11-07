@@ -10,6 +10,7 @@ copy_to_gen("console") {
     "alert-toString-exception.html",
     "big-int.html",
     "built-ins.html",
+    "command-line-api-getEventListeners.html",
     "console-filter.html",
     "context-selector-inner.html",
     "context-selector.html",

@@ -1002,21 +1002,23 @@ describeWithEnvironment('ResponseHeaderSection', () => {
 
     const {component} = await setupHeaderEditingWithRequest(headerOverridesFileContent, request);
     assertShadowRoot(component.shadowRoot);
-    const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
+    let addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
     assertElement(addHeaderButton, HTMLElement);
     addHeaderButton.click();
     await coordinator.done();
 
     editHeaderRow(component, 0, HeaderAttribute.HeaderValue, 'unit test');
 
-    component.remove();
     sinon.stub(Workspace.Workspace.WorkspaceImpl.instance(), 'uiSourceCodeForURL').callsFake(() => null);
 
-    const component2 = await renderResponseHeaderSection(request);
-    assertShadowRoot(component2.shadowRoot);
-    const rows = component2.shadowRoot.querySelectorAll('devtools-header-section-row');
+    component.data = {request};
+    await coordinator.done();
+
+    const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     assert.strictEqual(rows.length, 1);
     checkHeaderSectionRow(rows[0], 'server:', 'overridden server', true, false, false);
+    addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
+    assert.isNull(addHeaderButton);
   });
 
   it('handles rendering and editing \'set-cookie\' headers', async () => {

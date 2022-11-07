@@ -197,6 +197,7 @@ export class ResponseHeaderSection extends HTMLElement {
     if (!this.#request) {
       return;
     }
+    this.#headersAreOverrideable = false;
     this.#headerEditors =
         this.#headerDetails.map(header => ({name: header.name, value: header.value, originalValue: header.value}));
     this.#markOverrides();
@@ -228,7 +229,6 @@ export class ResponseHeaderSection extends HTMLElement {
         header.valueEditable = this.#headersAreOverrideable;
       }
     } catch (error) {
-      this.#headersAreOverrideable = false;
       console.error(
           'Failed to parse', this.#uiSourceCode?.url() || 'source code file', 'for locally overriding headers.');
       this.#resetEditorState();

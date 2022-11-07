@@ -38,6 +38,7 @@ group("front_end") {
     "panels/coverage",
     "panels/elements",
     "panels/issues",
+    "panels/lighthouse",
     "panels/media",
     "panels/network",
     "panels/network/components",

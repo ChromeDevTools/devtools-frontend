@@ -7772,6 +7772,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies that were sent to the server in the 'cookie' header of the request"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Learn more"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Malformed Response Cookies"
   },
@@ -7786,6 +7789,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "show filtered out request cookies"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "This site has cookies in another partition, that were not sent with this request. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "This request has no cookies."

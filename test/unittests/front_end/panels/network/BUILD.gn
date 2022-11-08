@@ -9,6 +9,7 @@ ts_library("network") {
   sources = [
     "NetworkItemView_test.ts",
     "NetworkLogView_test.ts",
+    "RequestCookiesView_test.ts",
     "RequestHeadersView_test.ts",
     "RequestPreviewView_test.ts",
   ]

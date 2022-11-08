@@ -78,6 +78,19 @@ const UIStrings = {
   */
   cookiesThatWereReceivedFromTheServer:
       'Cookies that were received from the server in the \'`set-cookie`\' header of the response but were malformed',
+
+  /**
+  * @description Informational text to explain that there were other cookies
+  * that were not used and not shown in the list.
+  * @example {Learn more} PH1
+  *
+  */
+  siteHasCookieInOtherPartition:
+      'This site has cookies in another partition, that were not sent with this request. {PH1}',
+  /**
+  * @description Title of a link to the developer documentation.
+  */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestCookiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -91,6 +104,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
   private readonly requestCookiesTable: CookieTable.CookiesTable.CookiesTable;
   private readonly responseCookiesTitle: HTMLElement;
   private readonly responseCookiesTable: CookieTable.CookiesTable.CookiesTable;
+  private readonly siteHasCookieInOtherPartition: HTMLElement;
   private readonly malformedResponseCookiesTitle: HTMLElement;
   private readonly malformedResponseCookiesList: HTMLElement;
 
@@ -126,6 +140,14 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this.requestCookiesTable = new CookieTable.CookiesTable.CookiesTable(/* renderInline */ true);
     this.requestCookiesTable.contentElement.classList.add('cookie-table', 'cookies-panel-item');
     this.requestCookiesTable.show(this.element);
+
+    this.siteHasCookieInOtherPartition =
+        this.element.createChild('div', 'cookies-panel-item site-has-cookies-in-other-partition');
+    this.siteHasCookieInOtherPartition.appendChild(
+        i18n.i18n.getFormatLocalizedString(str_, UIStrings.siteHasCookieInOtherPartition, {
+          PH1: UI.XLink.XLink.create(
+              'https://developer.chrome.com/en/docs/privacy-sandbox/chips/', i18nString(UIStrings.learnMore)),
+        }));
 
     this.responseCookiesTitle = this.element.createChild('div', 'request-cookies-title');
     this.responseCookiesTitle.textContent = i18nString(UIStrings.responseCookies);
@@ -280,6 +302,12 @@ export class RequestCookiesView extends UI.Widget.Widget {
     } else {
       this.malformedResponseCookiesTitle.classList.add('hidden');
       this.malformedResponseCookiesList.classList.add('hidden');
+    }
+
+    if (this.request.siteHasCookieInOtherPartition()) {
+      this.siteHasCookieInOtherPartition.classList.remove('hidden');
+    } else {
+      this.siteHasCookieInOtherPartition.classList.add('hidden');
     }
   }
 

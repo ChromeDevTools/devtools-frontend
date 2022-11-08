@@ -838,8 +838,9 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   requestIntercepted({}: Protocol.Network.RequestInterceptedEvent): void {
   }
 
-  requestWillBeSentExtraInfo({requestId, associatedCookies, headers, clientSecurityState, connectTiming}:
-                                 Protocol.Network.RequestWillBeSentExtraInfoEvent): void {
+  requestWillBeSentExtraInfo(
+      {requestId, associatedCookies, headers, clientSecurityState, connectTiming, siteHasCookieInOtherPartition}:
+          Protocol.Network.RequestWillBeSentExtraInfoEvent): void {
     const blockedRequestCookies: BlockedCookieWithReason[] = [];
     const includedRequestCookies = [];
     for (const {blockedReasons, cookie} of associatedCookies) {
@@ -853,8 +854,9 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       blockedRequestCookies,
       includedRequestCookies,
       requestHeaders: this.headersMapToHeadersArray(headers),
-      clientSecurityState: clientSecurityState,
+      clientSecurityState,
       connectTiming,
+      siteHasCookieInOtherPartition,
     };
     this.getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
   }

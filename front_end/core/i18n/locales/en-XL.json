@@ -7772,6 +7772,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Ĉóôḱîéŝ t́ĥát̂ ẃêŕê śêńt̂ t́ô t́ĥé ŝér̂v́êŕ îń t̂h́ê 'ćôók̂íê' h́êád̂ér̂ óf̂ t́ĥé r̂éq̂úêśt̂"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "M̂ál̂f́ôŕm̂éd̂ Ŕêśp̂ón̂śê Ćôók̂íêś"
   },
@@ -7786,6 +7789,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ŝh́ôẃ f̂íl̂t́êŕêd́ ôút̂ ŕêq́ûéŝt́ ĉóôḱîéŝ"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "T̂h́îś ŝít̂é ĥáŝ ćôók̂íêś îń âńôt́ĥér̂ ṕâŕt̂ít̂íôń, t̂h́ât́ ŵér̂é n̂ót̂ śêńt̂ ẃît́ĥ t́ĥíŝ ŕêq́ûéŝt́. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "T̂h́îś r̂éq̂úêśt̂ h́âś n̂ó ĉóôḱîéŝ."

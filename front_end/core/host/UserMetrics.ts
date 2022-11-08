@@ -658,8 +658,9 @@ export enum DevtoolsExperiments {
   'importantDOMProperties' = 64,
   'justMyCode' = 65,
   'breakpointView' = 66,
+  'timelineAsConsoleProfileResultPanel' = 67,
   // Increment this when new experiments are added.
-  'MaxValue' = 67,
+  'MaxValue' = 68,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

@@ -317,6 +317,9 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'timelineV8RuntimeCallStats', 'Timeline: V8 Runtime Call Stats on Timeline', true);
     Root.Runtime.experiments.register('timelineReplayEvent', 'Timeline: Replay input events', true);
+    Root.Runtime.experiments.register(
+        'timelineAsConsoleProfileResultPanel', 'View console.profile() results in the Performance panel for Node.js',
+        true);
 
     // Debugging
     Root.Runtime.experiments.register(

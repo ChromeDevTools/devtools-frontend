@@ -426,6 +426,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         Extensions.ExtensionServer.Events.TraceProviderAdded, this.appendExtensionsToToolbar, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.onSuspendStateChanged, this);
+    if (Root.Runtime.experiments.isEnabled('timelineAsConsoleProfileResultPanel')) {
+      const profilerModels = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel);
+      for (const model of profilerModels) {
+        for (const message of model.registeredConsoleProfileMessages) {
+          this.consoleProfileFinished(message);
+        }
+      }
+
+      SDK.TargetManager.TargetManager.instance().addModelListener(
+          SDK.CPUProfilerModel.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished,
+          event => this.consoleProfileFinished(event.data), this);
+    }
   }
 
   static instance(opts: {
@@ -947,6 +959,22 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private onSuspendStateChanged(): void {
     this.updateTimelineControls();
+  }
+
+  private consoleProfileFinished(data: SDK.CPUProfilerModel.ProfileFinishedData): void {
+    if (!isNode) {
+      return;
+    }
+
+    try {
+      const traceEvent = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
+          data.cpuProfile, /* tid */ 1, /* injectPageEvent */ true);
+      this.loadFromEvents(traceEvent);
+    } catch (e) {
+      console.error(e.stack);
+      return;
+    }
+    void UI.InspectorView.InspectorView.instance().showPanel('timeline');
   }
 
   private updateTimelineControls(): void {

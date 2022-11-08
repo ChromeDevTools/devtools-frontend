@@ -15,6 +15,7 @@ ts_library("components") {
     "ProtocolHandlersView_test.ts",
     "ReportsGrid_test.ts",
     "SharedStorageAccessGrid_test.ts",
+    "SharedStorageMetadataView_test.ts",
     "StackTrace_test.ts",
     "TrustTokensView_test.ts",
   ]

@@ -3461,6 +3461,27 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Ŝh́âŕêd́ Ŝt́ôŕâǵê"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "Ĉŕêát̂íôń"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Êńt̂ŕîéŝ"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "L̂én̂ǵt̂h́"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "M̂ét̂ád̂át̂á"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Ôŕîǵîń"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "B̂úd̂ǵêt́"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Ŝh́âŕêd́ Ŝt́ôŕâǵê"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Ĉán̂ńôt́ r̂én̂d́êŕ ŝt́âćk̂ t́r̂áĉé"
   },

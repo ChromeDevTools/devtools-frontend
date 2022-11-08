@@ -262,7 +262,15 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
       const status: SourcesComponents.BreakpointsView.BreakpointStatus = this.#getBreakpointState(locations);
       const {type, hoverText} = this.#getBreakpointTypeAndDetails(locations);
-      const item = {id: uiLocation.id(), location: locationText, codeSnippet, isHit, status, type, hoverText};
+      const item = {
+        id: fstLocation.breakpoint.breakpointStorageId(),
+        location: locationText,
+        codeSnippet,
+        isHit,
+        status,
+        type,
+        hoverText,
+      };
       this.#breakpointItemToLocationMap.set(item, locations);
 
       let group = urlToGroup.get(sourceURL);

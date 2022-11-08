@@ -484,7 +484,7 @@ export class BreakpointsView extends HTMLElement {
         </summary>
         ${LitHtml.Directives.repeat(
           group.breakpointItems,
-          item => item.location,
+          item => item.id,
           (item, breakpointItemIndex) => this.#renderBreakpointEntry(item, group.editable, groupIndex, breakpointItemIndex))}
       </div>
       `;

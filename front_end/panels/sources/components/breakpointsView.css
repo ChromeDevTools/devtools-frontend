@@ -118,7 +118,11 @@ button {
 
 button + devtools-two-states-counter,
 button + span {
-  padding-left: 2px;
+  padding-left: 6px;
+}
+
+button + button {
+  padding-left: 11px;
 }
 
 details[open] devtools-two-states-counter {

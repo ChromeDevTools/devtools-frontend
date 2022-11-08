@@ -9926,6 +9926,9 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Disable all breakpoints in file"
   },
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "Disabled breakpoints"
+  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Edit condition"
   },
@@ -9934,6 +9937,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Enable all breakpoints in file"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "Enabled breakpoints"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "mixed"

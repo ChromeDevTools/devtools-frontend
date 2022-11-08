@@ -51,9 +51,17 @@ const UIStrings = {
    */
   disableAllBreakpointsInFile: 'Disable all breakpoints in file',
   /**
+   *@description Tooltip text that shows when hovered over the number of disabled breakpoints that is next to the file name of a breakpoint group when the group is collapsed in the breakpoint sidebar of the sources panel.
+   */
+  disabledBreakpoints: 'Disabled breakpoints',
+  /**
    *@description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that enables all breakpoints in a file.
    */
   enableAllBreakpointsInFile: 'Enable all breakpoints in file',
+  /**
+   *@description Tooltip text that shows when hovered over the number of enabled breakpoints that is next to the file name of a breakpoint group when the group is collapsed in the breakpoint sidebar of the sources panel.
+   */
+  enabledBreakpoints: 'Enabled breakpoints',
   /**
   *@description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint or conditional breakpoint in the breakpoint sidebar of the sources panel.
   */
@@ -378,7 +386,7 @@ export class BreakpointsView extends HTMLElement {
     <button data-edit-breakpoint @click=${clickHandler} title=${title}>
     <${IconButton.Icon.Icon.litTagName} .data=${{
         iconName: 'edit-icon',
-        width: '10px',
+        width: '14px',
         color: 'var(--color-text-secondary)',
       } as IconButton.Icon.IconData}
       }>
@@ -399,7 +407,7 @@ export class BreakpointsView extends HTMLElement {
     <button data-remove-breakpoint @click=${clickHandler} title=${tooltipText}>
     <${IconButton.Icon.Icon.litTagName} .data=${{
         iconName: 'close-icon',
-        width: '7px',
+        width: '10px',
         color: 'var(--color-text-secondary)',
       } as IconButton.Icon.IconData}
       }>
@@ -499,7 +507,7 @@ export class BreakpointsView extends HTMLElement {
     // clang-format off
     const inactiveActiveCounter = LitHtml.html`
     <${TwoStatesCounter.TwoStatesCounter.TwoStatesCounter.litTagName} .data=${
-        {active: numActive, inactive: numInactive, width: '15px', height: '15px'} as
+        {active: numActive, inactive: numInactive, width: '15px', height: '15px', activeTitle: i18nString(UIStrings.enabledBreakpoints), inactiveTitle: i18nString(UIStrings.disabledBreakpoints)} as
         TwoStatesCounter.TwoStatesCounter.TwoStatesCounterData}>
     </${TwoStatesCounter.TwoStatesCounter.TwoStatesCounter.litTagName}>
     `;

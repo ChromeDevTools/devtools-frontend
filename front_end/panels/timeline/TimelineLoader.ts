@@ -90,8 +90,9 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     const stream = new Common.StringOutputStream.StringOutputStream();
     client.loadingStarted();
 
-    const allowFileUNCPaths = Common.Settings.Settings.instance().moduleSetting('network.enable-unc-loading').get();
-    Host.ResourceLoader.loadAsStream(url, null, stream, finishedCallback, allowFileUNCPaths);
+    const allowRemoteFilePaths =
+        Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').get();
+    Host.ResourceLoader.loadAsStream(url, null, stream, finishedCallback, allowRemoteFilePaths);
 
     function finishedCallback(
         success: boolean, _headers: {[x: string]: string},

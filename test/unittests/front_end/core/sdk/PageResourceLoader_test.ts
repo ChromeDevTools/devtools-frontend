@@ -134,6 +134,10 @@ describeWithLocale('PageResourceLoader', () => {
 // Loading via host bindings requires the settings infra to be booted.
 describeWithEnvironment('PageResourceLoader', () => {
   it('blocks UNC file paths with the default setting', async () => {
+    if (!Host.Platform.isWin()) {
+      return;
+    }
+
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
         {forceNew: true, loadOverride: null, maxConcurrentLoads: 1, loadTimeout: 30_000});
 
@@ -142,10 +146,37 @@ describeWithEnvironment('PageResourceLoader', () => {
             .loadResource('file:////127.0.0.1/share/source-map.js.map' as Platform.DevToolsPath.UrlString, initiator)
             .catch(e => e.message);
 
-    assert.include(message, 'UNC');
+    assert.include(message, 'remote file');
   });
 
-  it('allows UNC file paths with the setting enabled', async () => {
+  it('blocks remote file paths with the default setting', async () => {
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: null, maxConcurrentLoads: 1, loadTimeout: 30_000});
+
+    const message =
+        await loader.loadResource('file://host/source-map.js.map' as Platform.DevToolsPath.UrlString, initiator)
+            .catch(e => e.message);
+
+    assert.include(message, 'remote file');
+  });
+
+  it('blocks UNC file paths with a backslash on Windows with the default setting', async () => {
+    if (!Host.Platform.isWin()) {
+      return;
+    }
+
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: null, maxConcurrentLoads: 1, loadTimeout: 30_000});
+
+    const message =
+        await loader
+            .loadResource('file:///\\127.0.0.1/share/source-map.js.map' as Platform.DevToolsPath.UrlString, initiator)
+            .catch(e => e.message);
+
+    assert.include(message, 'remote file');
+  });
+
+  it('allows remote file paths with the setting enabled', async () => {
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
         {forceNew: true, loadOverride: null, maxConcurrentLoads: 1, loadTimeout: 30_000});
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource')
@@ -154,7 +185,27 @@ describeWithEnvironment('PageResourceLoader', () => {
           callback({statusCode: 200});
         });
 
-    Common.Settings.Settings.instance().moduleSetting('network.enable-unc-loading').set(true);
+    Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').set(true);
+    const response =
+        await loader.loadResource('file://host/source-map.js.map' as Platform.DevToolsPath.UrlString, initiator);
+
+    assert.strictEqual(response.content, 'content of the source map');
+  });
+
+  it('allows UNC paths on Windows with the setting enabled', async () => {
+    if (!Host.Platform.isWin()) {
+      return;
+    }
+
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: null, maxConcurrentLoads: 1, loadTimeout: 30_000});
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource')
+        .callsFake((_url, _headers, streamId, callback) => {
+          Host.ResourceLoader.streamWrite(streamId, 'content of the source map');
+          callback({statusCode: 200});
+        });
+
+    Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').set(true);
     const response = await loader.loadResource(
         'file:////127.0.0.1/share/source-map.js.map' as Platform.DevToolsPath.UrlString, initiator);
 

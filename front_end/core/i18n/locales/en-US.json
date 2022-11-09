@@ -695,8 +695,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Enable network request blocking"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "Allow DevTools to load resources, such as source maps, from Windows Shares via UNC paths. Disabled by default for security reasons."
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Allow DevTools to load resources, such as source maps, from remote file paths. Disabled by default for security reasons."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Enable WebP format"

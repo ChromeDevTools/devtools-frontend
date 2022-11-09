@@ -61,6 +61,12 @@ describeWithLocale('Linkifier', () => {
       lineNumber: 1,
       columnNumber: 50,
     };
+    // Suppress the event so that the link is not actually opened in the test
+    // runner by the global handler.
+    component.addEventListener('linkifieractivated', e => {
+      e.stopPropagation();
+      e.preventDefault();
+    });
     renderElementIntoDOM(component);
     await coordinator.done();
     assertShadowRoot(component.shadowRoot);

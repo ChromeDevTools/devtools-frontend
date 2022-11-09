@@ -36,6 +36,8 @@ copy_to_gen("sources") {
     "memory-workers.rawresponse",
     "minified-errors.html",
     "minified-errors.js",
+    "minified-sourcecode-1.html",
+    "minified-sourcecode-1.min.js",
     "minified-sourcecode.html",
     "minified-sourcecode.js",
     "multi-files-mycode.js",

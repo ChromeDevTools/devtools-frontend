@@ -196,13 +196,13 @@ export function drawGridLineNamesAndAssertLabels(
     }
 
     if (expected.type === 'column' && typeof expected.x !== 'undefined') {
-      assert.strictEqual(
-          foundLabel.x, expected.x,
+      assert.closeTo(
+          foundLabel.x, expected.x, 0.5,
           `Expected column line name label ${expected.textContent} to be positioned at ${expected.x}px`);
     }
     if (expected.type === 'row' && typeof expected.y !== 'undefined') {
-      assert.strictEqual(
-          foundLabel.y, expected.y,
+      assert.closeTo(
+          foundLabel.y, expected.y, 0.5,
           `Expected row line name label ${expected.textContent} to be positioned at ${expected.y}px`);
     }
   }

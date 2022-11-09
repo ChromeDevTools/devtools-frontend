@@ -802,7 +802,8 @@ describe('The Styles pane', async () => {
     assert.deepEqual(inspectedRules, expectedInspected1Rules);
   });
 
-  it('shows longhands with parsed values under a shorthand', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1382794] shows longhands with parsed values under a shorthand', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-shorthand-override.html');
     await waitForStyleRule('body');
 

@@ -326,13 +326,6 @@ export class BalancedJSONTokenizer {
   }
 }
 
-export interface TokenizerFactory {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createTokenizer(mimeType: string):
-      (arg0: string, arg1: (arg0: string, arg1: string|null, arg2: number, arg3: number) => void) => void;
-}
-
 export function isMinified(text: string): boolean {
   const kMaxNonMinifiedLength = 500;
   let linesToCheck = 10;

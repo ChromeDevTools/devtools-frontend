@@ -41,7 +41,4 @@ TextUtils.FilterParser = TextUtilsModule.TextUtils.FilterParser;
 /** @constructor */
 TextUtils.BalancedJSONTokenizer = TextUtilsModule.TextUtils.BalancedJSONTokenizer;
 
-/** @interface */
-TextUtils.TokenizerFactory = TextUtilsModule.TextUtils.TokenizerFactory;
-
 TextUtils.isMinified = TextUtilsModule.TextUtils.isMinified;

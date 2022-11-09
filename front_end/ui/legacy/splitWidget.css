@@ -35,7 +35,7 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  contain: size style;
+  contain: layout size style;
 }
 
 .shadow-split-widget-sidebar {

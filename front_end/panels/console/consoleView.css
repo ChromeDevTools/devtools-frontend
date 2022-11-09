@@ -86,6 +86,7 @@
   overflow-y: auto;
   word-wrap: break-word;
   user-select: text;
+  transform: translateZ(0);
   overflow-anchor: none;  /* Chrome-specific scroll-anchoring opt-out */
   background-color: var(--color-background);
 }

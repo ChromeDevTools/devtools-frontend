@@ -274,6 +274,7 @@ export function baseConfiguration(text: string|CM.Text): CM.Extension {
     CM.Prec.lowest(CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.codeEditor)})),
     text instanceof CM.Text ? [] : detectLineSeparator(text),
     CM.tooltips({
+      parent: getTooltipHost() as unknown as HTMLElement,
       tooltipSpace: getTooltipSpace,
     }),
   ];
@@ -283,6 +284,39 @@ export const closeBrackets: CM.Extension = [
   CM.closeBrackets(),
   CM.keymap.of(CM.closeBracketsKeymap),
 ];
+
+// Root editor tooltips at the top of the document, creating a special
+// element with the editor styles mounted in it for them. This is
+// annoying, but necessary because a scrollable parent node clips them
+// otherwise, `position: fixed` doesn't work due to `contain` styles,
+// and appending them directly to `document.body` doesn't work because
+// the necessary style sheets aren't available there.
+let tooltipHost: ShadowRoot|null = null;
+
+function getTooltipHost(): ShadowRoot {
+  if (!tooltipHost) {
+    const styleModules = CM.EditorState
+                             .create({
+                               extensions: [
+                                 editorTheme,
+                                 themeIsDark() ? dummyDarkTheme : [],
+                                 CM.syntaxHighlighting(CodeHighlighter.CodeHighlighter.highlightStyle),
+                                 CM.showTooltip.of({
+                                   pos: 0,
+                                   create() {
+                                     return {dom: document.createElement('div')};
+                                   },
+                                 }),
+                               ],
+                             })
+                             .facet(CM.EditorView.styleModule);
+    const host = document.body.appendChild(document.createElement('div'));
+    host.className = 'editor-tooltip-host';
+    tooltipHost = host.attachShadow({mode: 'open'});
+    CM.StyleModule.mount(tooltipHost, styleModules);
+  }
+  return tooltipHost;
+}
 
 class CompletionHint extends CM.WidgetType {
   constructor(readonly text: string) {
@@ -333,7 +367,9 @@ export const showCompletionHint = CM.ViewPlugin.fromClass(class {
     if (pos !== lineBefore.to) {
       return null;
     }
-    const partBefore = (label[0] === '\'' ? /'(\\.|[^'\\])*$/ : label[0] === '"' ? /"(\\.|[^"\\])*$/ : /#?[\w$]+$/)
+    const partBefore = (label[0] === '\''    ? /'(\\.|[^'\\])*$/ :
+                            label[0] === '"' ? /"(\\.|[^"\\])*$/ :
+                                               /#?[\w$]+$/)
                            .exec(lineBefore.text);
     if (partBefore && !label.startsWith(partBefore[0])) {
       return null;

@@ -948,7 +948,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       stylePaneWrapperElement.style.setProperty('left', `${- 1 * largeLength}px`);
       stylePaneWrapperElement.style.setProperty('padding-left', `${largeLength}px`);
       stylePaneWrapperElement.style.setProperty('width', `calc(100% + ${largeLength}px)`);
-      stylePaneWrapperElement.style.setProperty('position', 'absolute');
+      stylePaneWrapperElement.style.setProperty('position', 'fixed');
 
       stylePaneWrapperElement.window().addEventListener('blur', uninstallHackBound);
       stylePaneWrapperElement.window().addEventListener('contextmenu', uninstallHackBound, true);

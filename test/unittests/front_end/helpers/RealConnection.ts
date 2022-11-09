@@ -44,8 +44,15 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
     await import('../../../../front_end/panels/elements/elements-meta.js');
     await import('../../../../front_end/panels/sensors/sensors-meta.js');
     await import('../../../../front_end/entrypoints/inspector_main/inspector_main-meta.js');
-    const response = await fetch('/json/new');
+    let response = await fetch('/json/list');
+    const targetList = await response.json();
+    if (targetList.length !== 1) {
+      throw new Error(`Unexpected number of targets detected: expected 1, got ${targetList.length}.`);
+    }
+    const originalTargetId = targetList[0].id;
+    response = await fetch('/json/new');
     const target = await response.json();
+    await fetch('/json/activate/' + originalTargetId);
     /* This value comes from the `client.targetDir` setting in `karma.conf.js` */
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const {remoteDebuggingPort} = ((globalThis as unknown as {__karma__: KarmaConfig}).__karma__).config;

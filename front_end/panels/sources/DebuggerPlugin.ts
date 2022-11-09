@@ -343,7 +343,7 @@ export class DebuggerPlugin extends Plugin {
     // Start asynchronous actions that require access to the editor
     // instance
     this.editor = editor;
-    computeNonBreakableLines(editor.state, this.uiSourceCode).then(linePositions => {
+    computeNonBreakableLines(editor.state, this.transformer, this.uiSourceCode).then(linePositions => {
       if (linePositions.length) {
         editor.dispatch({effects: SourceFrame.SourceFrame.addNonBreakableLines.of(linePositions)});
       }
@@ -1698,11 +1698,14 @@ const infobarState = CodeMirror.StateField.define<UI.Infobar.Infobar[]>({
 // Enumerate non-breakable lines (lines without a known corresponding
 // position in the UISource).
 async function computeNonBreakableLines(
-    state: CodeMirror.EditorState, sourceCode: Workspace.UISourceCode.UISourceCode): Promise<readonly number[]> {
+    state: CodeMirror.EditorState, transformer: SourceFrame.SourceFrame.Transformer,
+    sourceCode: Workspace.UISourceCode.UISourceCode): Promise<readonly number[]> {
   const linePositions = [];
   if (Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(sourceCode).length) {
     for (let i = 0; i < state.doc.lines; i++) {
-      const lineHasMapping = Bindings.CompilerScriptMapping.CompilerScriptMapping.uiLineHasMapping(sourceCode, i);
+      const {lineNumber} = transformer.editorLocationToUILocation(i, 0);
+      const lineHasMapping =
+          Bindings.CompilerScriptMapping.CompilerScriptMapping.uiLineHasMapping(sourceCode, lineNumber);
       if (!lineHasMapping) {
         linePositions.push(state.doc.line(i + 1).from);
       }
@@ -1717,7 +1720,8 @@ async function computeNonBreakableLines(
       return [];
     }
     for (let i = 0; i < state.doc.lines; i++) {
-      if (!mappedLines.has(i)) {
+      const {lineNumber} = transformer.editorLocationToUILocation(i, 0);
+      if (!mappedLines.has(lineNumber)) {
         linePositions.push(state.doc.line(i + 1).from);
       }
     }

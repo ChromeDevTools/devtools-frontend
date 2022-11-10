@@ -119,7 +119,7 @@ export class CSSOverviewUnusedDeclarations {
   static checkForInvalidVerticalAlignment(
       unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: Protocol.DOM.BackendNodeId, strings: string[],
       displayIdx: number, verticalAlignIdx: number): void {
-    if (!strings[displayIdx] || strings[displayIdx] === 'inline' || strings[displayIdx].startsWith('table')) {
+    if (!strings[displayIdx] || strings[displayIdx].startsWith('inline') || strings[displayIdx].startsWith('table')) {
       return;
     }
 

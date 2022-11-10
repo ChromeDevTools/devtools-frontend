@@ -485,9 +485,11 @@ export class DebuggerPlugin extends Plugin {
         // Editing breakpoints only make sense for conditional breakpoints
         // and logpoints and both are currently only available for JavaScript
         // debugging.
-        contextMenu.debugSection().appendItem(
-            i18nString(UIStrings.editBreakpoint),
-            this.editBreakpointCondition.bind(this, line, breakpoints[0], null, false /* preferLogpoint */));
+        contextMenu.debugSection().appendItem(i18nString(UIStrings.editBreakpoint), () => {
+          Host.userMetrics.breakpointEditDialogRevealedFrom(
+              Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
+          this.editBreakpointCondition(line, breakpoints[0], null, false /* preferLogpoint */);
+        });
       }
       const hasEnabled = breakpoints.some(breakpoint => breakpoint.enabled());
       if (hasEnabled) {

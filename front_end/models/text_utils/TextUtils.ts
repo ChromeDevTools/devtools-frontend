@@ -326,36 +326,27 @@ export class BalancedJSONTokenizer {
   }
 }
 
-export function isMinified(text: string): boolean {
-  const kMaxNonMinifiedLength = 500;
-  let linesToCheck = 10;
-  let lastPosition = 0;
-  do {
-    let eolIndex = text.indexOf('\n', lastPosition);
+/**
+ * Heuristic to check whether a given text was likely minified. Intended to
+ * be used for HTML, CSS, and JavaScript inputs.
+ *
+ * A text is considered to be the result of minification if the average
+ * line length for the whole text is 80 characters or more.
+ *
+ * @param text The input text to check.
+ * @returns
+ */
+export const isMinified = function(text: string): boolean {
+  let lineCount = 0;
+  for (let lastIndex = 0; lastIndex < text.length; ++lineCount) {
+    let eolIndex = text.indexOf('\n', lastIndex);
     if (eolIndex < 0) {
       eolIndex = text.length;
     }
-    if (eolIndex - lastPosition > kMaxNonMinifiedLength && text.substr(lastPosition, 3) !== '//#') {
-      return true;
-    }
-    lastPosition = eolIndex + 1;
-  } while (--linesToCheck >= 0 && lastPosition < text.length);
-
-  // Check the end of the text as well
-  linesToCheck = 10;
-  lastPosition = text.length;
-  do {
-    let eolIndex = text.lastIndexOf('\n', lastPosition);
-    if (eolIndex < 0) {
-      eolIndex = 0;
-    }
-    if (lastPosition - eolIndex > kMaxNonMinifiedLength && text.substr(lastPosition, 3) !== '//#') {
-      return true;
-    }
-    lastPosition = eolIndex - 1;
-  } while (--linesToCheck >= 0 && lastPosition > 0);
-  return false;
-}
+    lastIndex = eolIndex + 1;
+  }
+  return (text.length - lineCount) / lineCount >= 80;
+};
 
 export const performSearchInContent = function(
     content: string, query: string, caseSensitive: boolean, isRegex: boolean): SearchMatch[] {

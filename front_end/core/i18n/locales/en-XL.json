@@ -5408,6 +5408,9 @@
   "panels/elements/StylesSidebarPane.ts | filterStyles": {
     "message": "F̂íl̂t́êŕ Ŝt́ŷĺêś"
   },
+  "panels/elements/StylesSidebarPane.ts | hiddenStyleCount": {
+    "message": "{n, plural, =1 {1 ĥíd̂d́êń r̂úl̂é} other {# ĥíd̂d́êń r̂úl̂éŝ}}"
+  },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Îńĉŕêḿêńt̂/d́êćr̂ém̂én̂t́ ŵít̂h́ m̂óûśêẃĥéêĺ ôŕ ûṕ/d̂óŵń k̂éŷś. {PH1}: ±100, Ŝh́îf́t̂: ±10, Ál̂t́: ±0.1"
   },

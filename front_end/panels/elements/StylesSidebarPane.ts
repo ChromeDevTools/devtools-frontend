@@ -76,6 +76,10 @@ const UIStrings = {
   */
   noMatchingSelectorOrStyle: 'No matching selector or style',
   /**
+  *@description Label text to show the number of rules hidden by the filter in the Styles Sidebar Pane of the Elements panel
+  */
+  hiddenStyleCount: '{n, plural, =1 {1 hidden rule} other {# hidden rules}}',
+  /**
   *@description Text in Styles Sidebar Pane of the Elements panel
   */
   invalidPropertyValue: 'Invalid property value',
@@ -195,6 +199,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private pendingWidgetToggle: UI.Toolbar.ToolbarToggle|null;
   private toolbar: UI.Toolbar.Toolbar|null;
   private toolbarPaneElement: HTMLElement;
+  private filterInput: Element|null;
+  private hiddenRulesElement: HTMLElement|null;
   private noMatchesElement: HTMLElement;
   private sectionsContainer: HTMLElement;
   sectionByElement: WeakMap<Node, StylePropertiesSection>;
@@ -239,11 +245,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.pendingWidget = null;
     this.pendingWidgetToggle = null;
     this.toolbar = null;
+    this.hiddenRulesElement = null;
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.computedStyleModelInternal = new ComputedStyleModel();
+    this.filterInput = null;
 
-    this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
+    this.noMatchesElement = this.contentElement.createChild('label', 'gray-info-message hidden');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingSelectorOrStyle);
+    this.noMatchesElement.setAttribute('for', 'filter-input-field');
 
     this.sectionsContainer = this.contentElement.createChild('div');
     UI.ARIAUtils.markAsList(this.sectionsContainer);
@@ -392,6 +401,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     input.type = 'search';
     input.classList.add('custom-search-input');
     input.placeholder = placeholder;
+    input.id = 'filter-input-field';
 
     function searchHandler(): void {
       const regex = input.value ? new RegExp(Platform.StringUtilities.escapeForRegExp(input.value), 'i') : null;
@@ -1148,11 +1158,23 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   private updateFilter(): void {
+    let hiddenBlockCount = 0;
     let hasAnyVisibleBlock = false;
     for (const block of this.sectionBlocks) {
-      hasAnyVisibleBlock = block.updateFilter() || hasAnyVisibleBlock;
+      const visible = block.updateFilter();
+      hasAnyVisibleBlock = visible || hasAnyVisibleBlock;
+      if (!visible) {
+        hiddenBlockCount++;
+      }
     }
+
+    // If aria-label is present, other labels won't be read by screen readers
+    this.filterInput?.removeAttribute('aria-label');
     this.noMatchesElement.classList.toggle('hidden', Boolean(hasAnyVisibleBlock));
+
+    if (this.hiddenRulesElement !== null) {
+      this.hiddenRulesElement.textContent = i18nString(UIStrings.hiddenStyleCount, {n: hiddenBlockCount});
+    }
   }
 
   willHide(): void {
@@ -1287,16 +1309,19 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const container = this.contentElement.createChild('div', 'styles-sidebar-pane-toolbar-container');
     const hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
-    const filterInput = StylesSidebarPane.createPropertyFilterElement(
+    this.filterInput = StylesSidebarPane.createPropertyFilterElement(
         i18nString(UIStrings.filter), hbox, this.onFilterChanged.bind(this));
-    UI.ARIAUtils.setAccessibleName(filterInput, i18nString(UIStrings.filterStyles));
-    filterContainerElement.appendChild(filterInput);
+    UI.ARIAUtils.setAccessibleName(this.filterInput, i18nString(UIStrings.filterStyles));
+    filterContainerElement.appendChild(this.filterInput);
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     toolbar.makeToggledGray();
     void toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');
     this.toolbar = toolbar;
     const toolbarPaneContainer = container.createChild('div', 'styles-sidebar-toolbar-pane-container');
     const toolbarPaneContent = (toolbarPaneContainer.createChild('div', 'styles-sidebar-toolbar-pane') as HTMLElement);
+
+    this.hiddenRulesElement = filterContainerElement.createChild('label', 'filter-results-matches');
+    this.hiddenRulesElement.setAttribute('for', 'filter-input-field');
 
     return toolbarPaneContent;
   }

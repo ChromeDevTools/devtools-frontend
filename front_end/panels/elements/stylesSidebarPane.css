@@ -152,6 +152,13 @@
   z-index: 2;
 }
 
+.styles-sidebar-pane-toolbar .filter-results-matches {
+  margin: auto;
+  padding: 4px;
+  flex: auto;
+  display: flex;
+}
+
 .styles-sidebar-pane-toolbar {
   border-bottom: 1px solid var(--color-details-hairline);
   flex-shrink: 0;

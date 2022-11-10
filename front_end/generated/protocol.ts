@@ -1412,6 +1412,8 @@ export namespace Browser {
     DurableStorage = 'durableStorage',
     Flash = 'flash',
     Geolocation = 'geolocation',
+    IdleDetection = 'idleDetection',
+    LocalFonts = 'localFonts',
     Midi = 'midi',
     MidiSysex = 'midiSysex',
     Nfc = 'nfc',
@@ -1420,11 +1422,12 @@ export namespace Browser {
     PeriodicBackgroundSync = 'periodicBackgroundSync',
     ProtectedMediaIdentifier = 'protectedMediaIdentifier',
     Sensors = 'sensors',
+    StorageAccess = 'storageAccess',
     VideoCapture = 'videoCapture',
     VideoCapturePanTiltZoom = 'videoCapturePanTiltZoom',
-    IdleDetection = 'idleDetection',
     WakeLockScreen = 'wakeLockScreen',
     WakeLockSystem = 'wakeLockSystem',
+    WindowManagement = 'windowManagement',
   }
 
   export const enum PermissionSetting {
@@ -3133,11 +3136,11 @@ export namespace DOM {
     ScrollbarCorner = 'scrollbar-corner',
     Resizer = 'resizer',
     InputListButton = 'input-list-button',
-    PageTransition = 'page-transition',
-    PageTransitionContainer = 'page-transition-container',
-    PageTransitionImageWrapper = 'page-transition-image-wrapper',
-    PageTransitionOutgoingImage = 'page-transition-outgoing-image',
-    PageTransitionIncomingImage = 'page-transition-incoming-image',
+    ViewTransition = 'view-transition',
+    ViewTransitionGroup = 'view-transition-group',
+    ViewTransitionImagePair = 'view-transition-image-pair',
+    ViewTransitionOld = 'view-transition-old',
+    ViewTransitionNew = 'view-transition-new',
   }
 
   /**
@@ -15815,6 +15818,7 @@ export namespace Debugger {
 
   export const enum SetPauseOnExceptionsRequestState {
     None = 'none',
+    Caught = 'caught',
     Uncaught = 'uncaught',
     All = 'all',
   }

@@ -2152,6 +2152,8 @@
                         "durableStorage",
                         "flash",
                         "geolocation",
+                        "idleDetection",
+                        "localFonts",
                         "midi",
                         "midiSysex",
                         "nfc",
@@ -2160,11 +2162,12 @@
                         "periodicBackgroundSync",
                         "protectedMediaIdentifier",
                         "sensors",
+                        "storageAccess",
                         "videoCapture",
                         "videoCapturePanTiltZoom",
-                        "idleDetection",
                         "wakeLockScreen",
-                        "wakeLockSystem"
+                        "wakeLockSystem",
+                        "windowManagement"
                     ]
                 },
                 {
@@ -4701,11 +4704,11 @@
                         "scrollbar-corner",
                         "resizer",
                         "input-list-button",
-                        "page-transition",
-                        "page-transition-container",
-                        "page-transition-image-wrapper",
-                        "page-transition-outgoing-image",
-                        "page-transition-incoming-image"
+                        "view-transition",
+                        "view-transition-group",
+                        "view-transition-image-pair",
+                        "view-transition-old",
+                        "view-transition-new"
                     ]
                 },
                 {
@@ -23590,7 +23593,7 @@
                 },
                 {
                     "name": "setPauseOnExceptions",
-                    "description": "Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions or\nno exceptions. Initial pause on exceptions state is `none`.",
+                    "description": "Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions,\nor caught exceptions, no exceptions. Initial pause on exceptions state is `none`.",
                     "parameters": [
                         {
                             "name": "state",
@@ -23598,6 +23601,7 @@
                             "type": "string",
                             "enum": [
                                 "none",
+                                "caught",
                                 "uncaught",
                                 "all"
                             ]

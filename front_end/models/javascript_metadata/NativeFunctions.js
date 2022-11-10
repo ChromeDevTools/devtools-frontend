@@ -2577,11 +2577,6 @@ export const NativeFunctions = [
     receivers: ['HTMLOrSVGElement','HTMLElement','MathMLElement','SVGElement']
   },
   {
-    name: 'focus',
-    signatures: [['focus_behavior']],
-    receivers: ['BrowserCaptureMediaStreamTrack','FocusableMediaStreamTrack']
-  },
-  {
     name: 'assign',
     signatures: [['...nodes']],
     receivers: ['HTMLSlotElement']
@@ -6296,10 +6291,6 @@ export const NativeFunctions = [
     signatures: [['...initRanges']]
   },
   {
-    name: 'convertToBlob',
-    signatures: [['?options']]
-  },
-  {
     name: 'configureHighDynamicRange',
     signatures: [['options']]
   },
@@ -6462,6 +6453,10 @@ export const NativeFunctions = [
   {
     name: 'OffscreenCanvas',
     signatures: [['width','height']]
+  },
+  {
+    name: 'convertToBlob',
+    signatures: [['?options']]
   },
   {
     name: 'setValueAndClosePopup',

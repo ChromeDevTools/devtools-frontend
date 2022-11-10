@@ -778,6 +778,7 @@
       valid_for_keyframe: false,
     },
     {
+      // TODO(futhark): Set the TreeScope on CSSAnimationData.
       name: "animation-name",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "animation",
@@ -788,7 +789,6 @@
       typedom_types: ["Keyword"],
       separator: ",",
       valid_for_marker: true,
-      tree_scoped_value: true,
       is_animation_property: true,
       valid_for_keyframe: false,
     },
@@ -1452,26 +1452,32 @@
     {
       name: "anchor-name",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal" ],
-      type_name: "AtomicString",
-      default_value: "g_null_atom",
+      include_paths: ["third_party/blink/renderer/core/style/scoped_css_name.h"],
+      type_name: "ScopedCSSName",
+      wrapper_pointer_name: "Persistent",
+      default_value: "nullptr",
       field_group: "*",
       field_template: "external",
       converter: "ConvertNoneOrCustomIdent",
       keywords: ["none"],
       typedom_types: ["Keyword"],
       runtime_flag: "CSSAnchorPositioning",
+      tree_scoped_value: true,
     },
     {
       name: "anchor-scroll",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal" ],
-      type_name: "AtomicString",
-      default_value: "g_null_atom",
+      include_paths: ["third_party/blink/renderer/core/style/scoped_css_name.h"],
+      type_name: "ScopedCSSName",
+      wrapper_pointer_name: "Persistent",
+      default_value: "nullptr",
       field_group: "*",
       field_template: "external",
       converter: "ConvertNoneOrCustomIdent",
       keywords: ["none"],
       typedom_types: ["Keyword"],
       runtime_flag: "CSSAnchorPositioning",
+      tree_scoped_value: true,
     },
     {
       name: "aspect-ratio",
@@ -2131,6 +2137,7 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "box-shadow",
@@ -2845,6 +2852,7 @@
       supports_incremental_style: true,
       valid_for_formatted_text: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "hyphenate-limit-chars",
@@ -2968,6 +2976,7 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "letter-spacing",
@@ -3249,6 +3258,7 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "max-width",
@@ -3266,6 +3276,7 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "min-height",
@@ -3282,6 +3293,7 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "min-width",
@@ -3298,6 +3310,7 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "mix-blend-mode",
@@ -3759,18 +3772,6 @@
       computable: false,
     },
     {
-      name: "page-transition-tag",
-      field_group: "*",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      converter: "ConvertPageTransitionTag",
-      type_name: "AtomicString",
-      default_value: "AtomicString()",
-      field_template: "external",
-      keywords: ["none"],
-      typedom_types: ["Keyword"],
-      runtime_flag: "ViewTransition",
-    },
-    {
       name: "paint-order",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       inherited: true,
@@ -3907,6 +3908,7 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "r",
@@ -4715,6 +4717,7 @@
     {
       name: "text-underline-offset",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      interpolable: true,
       inherited: true,
       field_group: "*",
       field_template: "<length>",
@@ -4825,6 +4828,7 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "touch-action",
@@ -4971,7 +4975,6 @@
       keywords: ["baseline", "sub", "super", "text-top", "text-bottom", "middle"],
       valid_for_first_letter: true,
       valid_for_first_line: true,
-      writable: true,
     },
     {
       name: "view-timeline-axis",
@@ -5006,6 +5009,18 @@
       converter: "ConvertViewTimelineName",
       separator: ",",
       runtime_flag: "CSSViewTimeline",
+    },
+    {
+      name: "view-transition-name",
+      field_group: "*",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      converter: "ConvertViewTransitionName",
+      type_name: "AtomicString",
+      default_value: "AtomicString()",
+      field_template: "external",
+      keywords: ["none"],
+      typedom_types: ["Keyword"],
+      runtime_flag: "ViewTransition",
     },
     {
       name: "visibility",
@@ -5734,6 +5749,7 @@
       supports_incremental_style: true,
       valid_for_formatted_text: true,
       valid_for_position_fallback: true,
+      tree_scoped_value: true,
     },
     {
       name: "will-change",

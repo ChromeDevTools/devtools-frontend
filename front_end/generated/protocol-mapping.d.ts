@@ -4173,8 +4173,8 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions or
-     * no exceptions. Initial pause on exceptions state is `none`.
+     * Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions,
+     * or caught exceptions, no exceptions. Initial pause on exceptions state is `none`.
      */
     'Debugger.setPauseOnExceptions': {
       paramsType: [Protocol.Debugger.SetPauseOnExceptionsRequest];

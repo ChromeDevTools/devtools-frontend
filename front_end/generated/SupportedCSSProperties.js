@@ -2579,12 +2579,6 @@ export const generatedProperties = [
   "name": "page-orientation"
  },
  {
-  "keywords": [
-   "none"
-  ],
-  "name": "page-transition-tag"
- },
- {
   "inherited": true,
   "keywords": [
    "normal",
@@ -3412,6 +3406,12 @@ export const generatedProperties = [
  },
  {
   "name": "view-timeline-name"
+ },
+ {
+  "keywords": [
+   "none"
+  ],
+  "name": "view-transition-name"
  },
  {
   "inherited": true,
@@ -4827,11 +4827,6 @@ export const generatedPropertyValues = {
    "auto"
   ]
  },
- "page-transition-tag": {
-  "values": [
-   "none"
-  ]
- },
  "paint-order": {
   "values": [
    "normal",
@@ -5304,6 +5299,11 @@ export const generatedPropertyValues = {
    "text-top",
    "text-bottom",
    "middle"
+  ]
+ },
+ "view-transition-name": {
+  "values": [
+   "none"
   ]
  },
  "visibility": {

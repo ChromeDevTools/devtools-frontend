@@ -9,7 +9,6 @@ import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as TwoStatesCounter from '../../../ui/components/two_states_counter/two_states_counter.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -51,17 +50,9 @@ const UIStrings = {
    */
   disableAllBreakpointsInFile: 'Disable all breakpoints in file',
   /**
-   *@description Tooltip text that shows when hovered over the number of disabled breakpoints that is next to the file name of a breakpoint group when the group is collapsed in the breakpoint sidebar of the sources panel.
-   */
-  disabledBreakpoints: 'Disabled breakpoints',
-  /**
    *@description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that enables all breakpoints in a file.
    */
   enableAllBreakpointsInFile: 'Enable all breakpoints in file',
-  /**
-   *@description Tooltip text that shows when hovered over the number of enabled breakpoints that is next to the file name of a breakpoint group when the group is collapsed in the breakpoint sidebar of the sources panel.
-   */
-  enabledBreakpoints: 'Enabled breakpoints',
   /**
   *@description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint or conditional breakpoint in the breakpoint sidebar of the sources panel.
   */
@@ -490,7 +481,6 @@ export class BreakpointsView extends HTMLElement {
           <span class='group-header' aria-hidden=true>${this.#renderFileIcon()}<span class='group-header-title' title='${group.url}'>${group.name}</span></span>
           <span class='group-hover-actions'>
             ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
-            ${this.#renderBreakpointCounter(group)}
           </span>
         </summary>
         ${LitHtml.Directives.repeat(
@@ -500,22 +490,6 @@ export class BreakpointsView extends HTMLElement {
       </div>
       `;
     // clang-format on
-  }
-
-  #renderBreakpointCounter(group: BreakpointGroup): LitHtml.TemplateResult {
-    const numActive = group.breakpointItems.reduce((previousValue: number, currentValue: BreakpointItem) => {
-      return currentValue.status === BreakpointStatus.ENABLED ? previousValue + 1 : previousValue;
-    }, 0);
-    const numInactive = group.breakpointItems.length - numActive;
-    // clang-format off
-    const inactiveActiveCounter = LitHtml.html`
-    <${TwoStatesCounter.TwoStatesCounter.TwoStatesCounter.litTagName} .data=${
-        {active: numActive, inactive: numInactive, width: '15px', height: '15px', activeTitle: i18nString(UIStrings.enabledBreakpoints), inactiveTitle: i18nString(UIStrings.disabledBreakpoints)} as
-        TwoStatesCounter.TwoStatesCounter.TwoStatesCounterData}>
-    </${TwoStatesCounter.TwoStatesCounter.TwoStatesCounter.litTagName}>
-    `;
-    // clang-format on
-    return inactiveActiveCounter;
   }
 
   #renderFileIcon(): LitHtml.TemplateResult {

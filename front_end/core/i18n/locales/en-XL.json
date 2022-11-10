@@ -9953,9 +9953,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "D̂íŝáb̂ĺê ál̂ĺ b̂ŕêák̂ṕôín̂t́ŝ ín̂ f́îĺê"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "D̂íŝáb̂ĺêd́ b̂ŕêák̂ṕôín̂t́ŝ"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Êd́ît́ ĉón̂d́ît́îón̂"
   },
@@ -9964,9 +9961,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Êńâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń f̂íl̂é"
-  },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Êńâb́l̂éd̂ b́r̂éâḱp̂óîńt̂ś"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "m̂íx̂éd̂"

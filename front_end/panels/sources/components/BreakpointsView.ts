@@ -459,12 +459,15 @@ export class BreakpointsView extends HTMLElement {
     const toggleHandler = (event: Event): void => {
       const htmlDetails = event.target as HTMLDetailsElement;
       group.expanded = htmlDetails.open;
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointGroupExpandedStateChanged);
       this.dispatchEvent(new ExpandedStateChangedEvent(group.url, group.expanded));
     };
     const clickHandler = async(event: Event): Promise<void> => {
       const selected = event.currentTarget as HTMLElement;
       await this.#setSelected(selected);
+      // Record the metric for expanding/collapsing in the click handler,
+      // as we only then get the number of expand/collapse actions that were
+      // initiated by the user.
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointGroupExpandedStateChanged);
       event.consume();
     };
     const classMap = {

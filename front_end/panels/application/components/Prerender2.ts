@@ -19,16 +19,6 @@ const UIStrings = {
     */
   LowEndDevice: 'Prerendering is not supported for low-memory devices.',
   /**
-    *@description  Description text for Prerender2 cancellation status CrossOriginRedirect.
-    */
-  CrossOriginRedirect:
-      'Attempted to prerender a URL which redirected to a cross-origin URL. Currently prerendering cross-origin pages is disallowed.',
-  /**
-    *@description  Description text for Prerender2 cancellation status CrossOriginNavigation.
-    */
-  CrossOriginNavigation:
-      'The prerendered page navigated to a cross-origin URL after loading. Currently prerendering cross-origin pages is disallowed.',
-  /**
     *@description  Description text for Prerender2 cancellation status InvalidSchemeRedirect.
     */
   InvalidSchemeRedirect:
@@ -144,7 +134,6 @@ const UIStrings = {
     *@description  Description text for Prerender2 cancellation status MemoryLimitExceeded.
     */
   MemoryLimitExceeded: 'Memory limit exceeded',
-
   /**
     *@description  Description text for Prerender2 cancellation status FailToGetMemoryUsage.
     */
@@ -177,6 +166,41 @@ const UIStrings = {
     *@description  Description text for Prerender2 is ongoing.
   */
   PrerenderingOngoing: 'Prerendering ongoing',
+  /**
+    *@description  Description text for Prerender2 cancellation status CrossSiteRedirect.
+  */
+  CrossSiteRedirect:
+      'Attempted to prerender a URL which redirected to a cross-site URL. Currently prerendering cross-site pages is disallowed.',
+  /**
+    *@description  Description text for Prerender2 cancellation status CrossSiteNavigation.
+  */
+  CrossSiteNavigation:
+      'The prerendered page navigated to a cross-site URL after loading. Currently prerendering cross-site pages is disallowed.',
+  /**
+    *@description  Description text for Prerender2 cancellation status SameSiteCrossOriginRedirect.
+  */
+  SameSiteCrossOriginRedirect:
+      'Attempted to prerender a URL which redirected to a same-site cross-origin URL. Currently prerendering cross-origin pages is disallowed.',
+  /**
+    *@description  Description text for Prerender2 cancellation status SameSiteCrossOriginNavigation.
+  */
+  SameSiteCrossOriginNavigation:
+      'The prerendered page navigated to a same-site cross-origin URL after loading. Currently prerendering cross-origin pages is disallowed.',
+  /**
+    *@description  Description text for Prerender2 cancellation status SameSiteCrossOriginRedirectNotOptIn.
+  */
+  SameSiteCrossOriginRedirectNotOptIn:
+      'Attempted to prerender a URL which redirected to a same-site cross-origin URL. This is disallowed unless the destination site sends a Supports-Loading-Mode: credentialed-prerender header.',
+  /**
+    *@description  Description text for Prerender2 cancellation status SameSiteCrossOriginNavigationNotOptIn.
+  */
+  SameSiteCrossOriginNavigationNotOptIn:
+      'The prerendered page navigated to a same-site cross-origin URL after loading. This is disallowed unless the destination site sends a Supports-Loading-Mode: credentialed-prerender header.',
+  /**
+    *@description  Description text for Prerender2 cancellation status ActivationNavigationParameterMismatch.
+  */
+  ActivationNavigationParameterMismatch:
+      'The page was prerendered, but the navigation ended up being performed differently than the original prerender, so the prerendered page could not be activated.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/Prerender2.ts', UIStrings);
@@ -186,8 +210,6 @@ export const Prerender2ReasonDescription: {[key: string]: {name: () => Platform.
   'Activated': {name: i18nLazyString(UIStrings.Activated)},
   'Destroyed': {name: i18nLazyString(UIStrings.Destroyed)},
   'LowEndDevice': {name: i18nLazyString(UIStrings.LowEndDevice)},
-  'CrossOriginRedirect': {name: i18nLazyString(UIStrings.CrossOriginRedirect)},
-  'CrossOriginNavigation': {name: i18nLazyString(UIStrings.CrossOriginNavigation)},
   'InvalidSchemeRedirect': {name: i18nLazyString(UIStrings.InvalidSchemeRedirect)},
   'InvalidSchemeNavigation': {name: i18nLazyString(UIStrings.InvalidSchemeNavigation)},
   'InProgressNavigation': {name: i18nLazyString(UIStrings.InProgressNavigation)},
@@ -226,4 +248,11 @@ export const Prerender2ReasonDescription: {[key: string]: {name: () => Platform.
   'StartFailed': {name: i18nLazyString(UIStrings.StartFailed)},
   'DisallowedApiMethod': {name: i18nLazyString(UIStrings.DisallowedApiMethod)},
   'PrerenderingOngoing': {name: i18nLazyString(UIStrings.PrerenderingOngoing)},
+  'CrossSiteRedirect': {name: i18nLazyString(UIStrings.CrossSiteRedirect)},
+  'CrossSiteNavigation': {name: i18nLazyString(UIStrings.CrossSiteNavigation)},
+  'SameSiteCrossOriginRedirect': {name: i18nLazyString(UIStrings.SameSiteCrossOriginRedirect)},
+  'SameSiteCrossOriginNavigation': {name: i18nLazyString(UIStrings.SameSiteCrossOriginNavigation)},
+  'SameSiteCrossOriginRedirectNotOptIn': {name: i18nLazyString(UIStrings.SameSiteCrossOriginRedirectNotOptIn)},
+  'SameSiteCrossOriginNavigationNotOptIn': {name: i18nLazyString(UIStrings.SameSiteCrossOriginNavigationNotOptIn)},
+  'ActivationNavigationParameterMismatch': {name: i18nLazyString(UIStrings.ActivationNavigationParameterMismatch)},
 };

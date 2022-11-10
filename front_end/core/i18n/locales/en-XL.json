@@ -3281,6 +3281,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Âćt̂ív̂át̂éd̂ b́êf́ôŕê śt̂ár̂t́êd́"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "T̂h́ê ṕâǵê ẃâś p̂ŕêŕêńd̂ér̂éd̂, b́ût́ t̂h́ê ńâv́îǵât́îón̂ én̂d́êd́ ûṕ b̂éîńĝ ṕêŕf̂ór̂ḿêd́ d̂íf̂f́êŕêńt̂ĺŷ t́ĥán̂ t́ĥé ôŕîǵîńâĺ p̂ŕêŕêńd̂ér̂, śô t́ĥé p̂ŕêŕêńd̂ér̂éd̂ ṕâǵê ćôúl̂d́ n̂ót̂ b́ê áĉt́îv́ât́êd́."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ ĥáŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ t́ĥé Âúd̂íôĆôńt̂éx̂t́ ÂṔÎ ýêt́."
   },
@@ -3293,11 +3296,11 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "T̂h́ê ṕâǵê íŝ ŕêq́ûéŝt́îńĝ ćl̂íêńt̂ ćêŕt̂, ẃĥíĉh́ îś n̂ót̂ śûít̂áb̂ĺê f́ôŕ â h́îd́d̂én̂ ṕâǵê ĺîḱê ṕr̂ér̂én̂d́êŕîńĝ."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "T̂h́ê ṕr̂ér̂én̂d́êŕêd́ p̂áĝé n̂áv̂íĝát̂éd̂ t́ô á ĉŕôśŝ-ór̂íĝín̂ ÚR̂Ĺ âf́t̂ér̂ ĺôád̂ín̂ǵ. Ĉúr̂ŕêńt̂ĺŷ ṕr̂ér̂én̂d́êŕîńĝ ćr̂óŝś-ôŕîǵîń p̂áĝéŝ íŝ d́îśâĺl̂óŵéd̂."
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "T̂h́ê ṕr̂ér̂én̂d́êŕêd́ p̂áĝé n̂áv̂íĝát̂éd̂ t́ô á ĉŕôśŝ-śît́ê ÚR̂Ĺ âf́t̂ér̂ ĺôád̂ín̂ǵ. Ĉúr̂ŕêńt̂ĺŷ ṕr̂ér̂én̂d́êŕîńĝ ćr̂óŝś-ŝít̂é p̂áĝéŝ íŝ d́îśâĺl̂óŵéd̂."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Ât́t̂ém̂ṕt̂éd̂ t́ô ṕr̂ér̂én̂d́êŕ â ÚR̂Ĺ ŵh́îćĥ ŕêd́îŕêćt̂éd̂ t́ô á ĉŕôśŝ-ór̂íĝín̂ ÚR̂Ĺ. Ĉúr̂ŕêńt̂ĺŷ ṕr̂ér̂én̂d́êŕîńĝ ćr̂óŝś-ôŕîǵîń p̂áĝéŝ íŝ d́îśâĺl̂óŵéd̂."
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Ât́t̂ém̂ṕt̂éd̂ t́ô ṕr̂ér̂én̂d́êŕ â ÚR̂Ĺ ŵh́îćĥ ŕêd́îŕêćt̂éd̂ t́ô á ĉŕôśŝ-śît́ê ÚR̂Ĺ. Ĉúr̂ŕêńt̂ĺŷ ṕr̂ér̂én̂d́êŕîńĝ ćr̂óŝś-ŝít̂é p̂áĝéŝ íŝ d́îśâĺl̂óŵéd̂."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "D̂át̂á ŝáv̂ér̂ én̂áb̂ĺêd́"
@@ -3379,6 +3382,18 @@
   },
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "T̂h́ê ŕêńd̂ér̂ér̂ ṕr̂óĉéŝś f̂ór̂ t́ĥé p̂ŕêŕêńd̂ér̂ín̂ǵ p̂áĝé ŵáŝ ḱîĺl̂éd̂."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "T̂h́ê ṕr̂ér̂én̂d́êŕêd́ p̂áĝé n̂áv̂íĝát̂éd̂ t́ô á ŝám̂é-ŝít̂é ĉŕôśŝ-ór̂íĝín̂ ÚR̂Ĺ âf́t̂ér̂ ĺôád̂ín̂ǵ. Ĉúr̂ŕêńt̂ĺŷ ṕr̂ér̂én̂d́êŕîńĝ ćr̂óŝś-ôŕîǵîń p̂áĝéŝ íŝ d́îśâĺl̂óŵéd̂."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "T̂h́ê ṕr̂ér̂én̂d́êŕêd́ p̂áĝé n̂áv̂íĝát̂éd̂ t́ô á ŝám̂é-ŝít̂é ĉŕôśŝ-ór̂íĝín̂ ÚR̂Ĺ âf́t̂ér̂ ĺôád̂ín̂ǵ. T̂h́îś îś d̂íŝál̂ĺôẃêd́ ûńl̂éŝś t̂h́ê d́êśt̂ín̂át̂íôń ŝít̂é ŝén̂d́ŝ á Ŝúp̂ṕôŕt̂ś-L̂óâd́îńĝ-Ḿôd́ê: ćr̂éd̂én̂t́îál̂éd̂-ṕr̂ér̂én̂d́êŕ ĥéâd́êŕ."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Ât́t̂ém̂ṕt̂éd̂ t́ô ṕr̂ér̂én̂d́êŕ â ÚR̂Ĺ ŵh́îćĥ ŕêd́îŕêćt̂éd̂ t́ô á ŝám̂é-ŝít̂é ĉŕôśŝ-ór̂íĝín̂ ÚR̂Ĺ. Ĉúr̂ŕêńt̂ĺŷ ṕr̂ér̂én̂d́êŕîńĝ ćr̂óŝś-ôŕîǵîń p̂áĝéŝ íŝ d́îśâĺl̂óŵéd̂."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Ât́t̂ém̂ṕt̂éd̂ t́ô ṕr̂ér̂én̂d́êŕ â ÚR̂Ĺ ŵh́îćĥ ŕêd́îŕêćt̂éd̂ t́ô á ŝám̂é-ŝít̂é ĉŕôśŝ-ór̂íĝín̂ ÚR̂Ĺ. T̂h́îś îś d̂íŝál̂ĺôẃêd́ ûńl̂éŝś t̂h́ê d́êśt̂ín̂át̂íôń ŝít̂é ŝén̂d́ŝ á Ŝúp̂ṕôŕt̂ś-L̂óâd́îńĝ-Ḿôd́ê: ćr̂éd̂én̂t́îál̂éd̂-ṕr̂ér̂én̂d́êŕ ĥéâd́êŕ."
   },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "ŜŚL̂ ćêŕt̂íf̂íĉát̂é êŕr̂ór̂."

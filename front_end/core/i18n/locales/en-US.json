@@ -3281,6 +3281,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Activated before started"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "The page was prerendered, but the navigation ended up being performed differently than the original prerender, so the prerendered page could not be activated."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Prerendering has not supported the AudioContext API yet."
   },
@@ -3293,11 +3296,11 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "The page is requesting client cert, which is not suitable for a hidden page like prerendering."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "The prerendered page navigated to a cross-origin URL after loading. Currently prerendering cross-origin pages is disallowed."
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "The prerendered page navigated to a cross-site URL after loading. Currently prerendering cross-site pages is disallowed."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Attempted to prerender a URL which redirected to a cross-origin URL. Currently prerendering cross-origin pages is disallowed."
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Attempted to prerender a URL which redirected to a cross-site URL. Currently prerendering cross-site pages is disallowed."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Data saver enabled"
@@ -3379,6 +3382,18 @@
   },
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "The renderer process for the prerendering page was killed."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "The prerendered page navigated to a same-site cross-origin URL after loading. Currently prerendering cross-origin pages is disallowed."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "The prerendered page navigated to a same-site cross-origin URL after loading. This is disallowed unless the destination site sends a Supports-Loading-Mode: credentialed-prerender header."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Attempted to prerender a URL which redirected to a same-site cross-origin URL. Currently prerendering cross-origin pages is disallowed."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Attempted to prerender a URL which redirected to a same-site cross-origin URL. This is disallowed unless the destination site sends a Supports-Loading-Mode: credentialed-prerender header."
   },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL certificate error."

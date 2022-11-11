@@ -69,12 +69,17 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     }
   }
 
-  private getBaseUrl(): Platform.DevToolsPath.UrlString {
-    let target: Target|null = this.#target;
+  private static getBaseUrl(target: Target|null): Platform.DevToolsPath.UrlString {
     while (target && target.type() !== Type.Frame) {
       target = target.parentTarget();
     }
     return target?.inspectedURL() ?? Platform.DevToolsPath.EmptyUrlString;
+  }
+
+  static resolveRelativeSourceURL(target: Target|null, url: Platform.DevToolsPath.UrlString):
+      Platform.DevToolsPath.UrlString {
+    url = Common.ParsedURL.ParsedURL.completeURL(SourceMapManager.getBaseUrl(target), url) ?? url;
+    return url;
   }
 
   private inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<Target>): void {
@@ -166,10 +171,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }|null {
     // |#sourceURL| can be a random string, but is generally an absolute path.
     // Complete it to inspected page url for relative links.
-    const resolvedSourceURL = Common.ParsedURL.ParsedURL.completeURL(this.getBaseUrl(), sourceURL);
-    if (!resolvedSourceURL) {
-      return null;
-    }
+    const resolvedSourceURL = SourceMapManager.resolveRelativeSourceURL(this.#target, sourceURL);
     const resolvedSourceMapURL = Common.ParsedURL.ParsedURL.completeURL(resolvedSourceURL, sourceMapURL);
     if (!resolvedSourceMapURL) {
       return null;

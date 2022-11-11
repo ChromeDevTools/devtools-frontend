@@ -75,4 +75,45 @@ describeWithMockConnection('SourceMapManager', () => {
     assert.deepEqual(
         sourceMap?.sourceURLs(), ['https://frame-host/original-script.js' as Platform.DevToolsPath.UrlString]);
   });
+
+  it('can handle source maps in a data URL frame', async () => {
+    SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: loadSourceMap, maxConcurrentLoads: 1, loadTimeout: 2000});
+
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'file': '/script.js',
+      'mappings': '',
+      'sources': [
+        '/original-script.js',
+      ],
+    });
+    const sourceUrl = 'script.js' as Platform.DevToolsPath.UrlString;
+    const sourceMapUrl = `data:test/html;base64,${btoa(sourceMapContent)}` as Platform.DevToolsPath.UrlString;
+    const frameSource =
+        '<script>0\n//# sourceURL=' + sourceUrl + '\n//# sourceMappingURL=' + sourceMapUrl + '</script>';
+    const frameUrl = `data:test/html;base64,${btoa(frameSource)}` as Platform.DevToolsPath.UrlString;
+    const scriptUrl = 'https://script-host/script.js' as Platform.DevToolsPath.UrlString;
+
+    const mainTarget =
+        createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.Frame});
+    mainTarget.setInspectedURL(frameUrl);
+
+    const debuggerModel = mainTarget.model(SDK.DebuggerModel.DebuggerModel);
+    assert.isNotNull(debuggerModel);
+    if (debuggerModel === null) {
+      return;
+    }
+
+    const sourceMapManager = debuggerModel.sourceMapManager();
+
+    const script = new SDK.Script.Script(
+        debuggerModel, '1' as Protocol.Runtime.ScriptId, scriptUrl, 0, 0, 0, 0, 0, '', false, false, sourceMapUrl,
+        false, 0, null, null, null, null, null, null);
+
+    sourceMapManager.attachSourceMap(script, sourceUrl, sourceMapUrl);
+
+    const sourceMap = await sourceMapManager.sourceMapForClientPromise(script);
+    assert.deepEqual(sourceMap?.sourceURLs(), ['/original-script.js' as Platform.DevToolsPath.UrlString]);
+  });
 });

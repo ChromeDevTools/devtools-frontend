@@ -30,7 +30,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -88,17 +88,6 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
       runtimeModel.target().targetManager().addEventListener(
           SDK.TargetManager.Events.InspectedURLChanged, this.inspectedURLChanged, this),
     ];
-  }
-
-  static resolveRelativeSourceURL(script: SDK.Script.Script, url: Platform.DevToolsPath.UrlString):
-      Platform.DevToolsPath.UrlString {
-    let target: SDK.Target.Target|null = script.debuggerModel.target();
-    while (target && target.type() !== SDK.Target.Type.Frame) {
-      target = target.parentTarget();
-    }
-    const baseURL = target?.inspectedURL() ?? Platform.DevToolsPath.EmptyUrlString;
-    url = Common.ParsedURL.ParsedURL.completeURL(baseURL, url) ?? url;
-    return url;
   }
 
   private project(script: SDK.Script.Script): ContentProviderBasedProject {
@@ -183,7 +172,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     if (script.hasSourceURL) {
       // Try to resolve `//# sourceURL=` annotations relative to
       // the base URL, according to the sourcemap specification.
-      url = ResourceScriptMapping.resolveRelativeSourceURL(script, url);
+      url = SDK.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(script.debuggerModel.target(), url);
     } else {
       // Ignore inline <script>s without `//# sourceURL` annotation here.
       if (script.isInlineScript()) {

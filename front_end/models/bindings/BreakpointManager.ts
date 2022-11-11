@@ -40,7 +40,6 @@ import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 
 import {LiveLocationPool, type LiveLocation} from './LiveLocation.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
-import {ResourceScriptMapping} from './ResourceScriptMapping.js';
 
 let breakpointManagerInstance: BreakpointManager;
 
@@ -185,7 +184,8 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     if (isInlineScriptWithoutSourceURL) {
       sourceURL = DefaultScriptMapping.createV8ScriptURL(script);
     } else if (hasResourceScriptMapping) {
-      sourceURL = ResourceScriptMapping.resolveRelativeSourceURL(script, script.sourceURL);
+      sourceURL = SDK.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(
+          script.debuggerModel.target(), script.sourceURL);
     }
 
     const uiSourceCode =

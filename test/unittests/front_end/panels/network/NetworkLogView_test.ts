@@ -9,7 +9,7 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 describeWithMockConnection('NetworkLogView', () => {
@@ -36,22 +36,7 @@ describeWithMockConnection('NetworkLogView', () => {
   }
 
   it('adds dividers on main frame load events', async () => {
-    sinon.stub(Common.Settings.Settings, 'instance').returns({
-      createSetting: () => ({
-        get: () => [],
-        set: () => {},
-        addChangeListener: () => {},
-        removeChangeListener: () => {},
-        setDisabled: () => {},
-      }),
-      moduleSetting: () => ({
-        get: () => [],
-        set: () => {},
-        addChangeListener: () => {},
-        removeChangeListener: () => {},
-        setDisabled: () => {},
-      }),
-    } as unknown as Common.Settings.Settings);
+    stubNoopSettings();
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
       shortcutTitleForAction: () => {},
       shortcutsForAction: () => [],

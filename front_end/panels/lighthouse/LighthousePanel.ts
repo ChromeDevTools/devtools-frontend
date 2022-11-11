@@ -97,11 +97,14 @@ export class LighthousePanel extends UI.Panel.Panel {
   private isLHAttached?: boolean;
   private currentLighthouseRun?: LighthouseRun;
 
-  private constructor() {
+  private constructor(
+      protocolService: ProtocolService,
+      controller: LighthouseController,
+  ) {
     super('lighthouse');
 
-    this.protocolService = new ProtocolService();
-    this.controller = new LighthouseController(this.protocolService);
+    this.protocolService = protocolService;
+    this.controller = controller;
     this.startView = new StartView(this.controller);
     this.timespanView = new TimespanView(this.controller);
     this.statusView = new StatusView(this.controller);
@@ -129,10 +132,13 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.controller.recomputePageAuditability();
   }
 
-  static instance(opts = {forceNew: null}): LighthousePanel {
-    const {forceNew} = opts;
-    if (!lighthousePanelInstace || forceNew) {
-      lighthousePanelInstace = new LighthousePanel();
+  static instance(opts?: {forceNew: boolean, protocolService: ProtocolService, controller: LighthouseController}):
+      LighthousePanel {
+    if (!lighthousePanelInstace || opts?.forceNew) {
+      const protocolService = opts?.protocolService ?? new ProtocolService();
+      const controller = opts?.controller ?? new LighthouseController(protocolService);
+
+      lighthousePanelInstace = new LighthousePanel(protocolService, controller);
     }
 
     return lighthousePanelInstace;
@@ -332,7 +338,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   private async waitForMainTargetLoad(): Promise<void> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
     if (!mainTarget) {
       return;
     }
@@ -523,7 +529,7 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance().update(true);
 
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
     if (!mainTarget) {
       return;
     }

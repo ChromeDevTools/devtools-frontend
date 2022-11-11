@@ -57,6 +57,25 @@ function createSettingValue(
   return {category, settingName, defaultValue, settingType};
 }
 
+export function stubNoopSettings() {
+  sinon.stub(Common.Settings.Settings, 'instance').returns({
+    createSetting: () => ({
+      get: () => [],
+      set: () => {},
+      addChangeListener: () => {},
+      removeChangeListener: () => {},
+      setDisabled: () => {},
+    }),
+    moduleSetting: () => ({
+      get: () => [],
+      set: () => {},
+      addChangeListener: () => {},
+      removeChangeListener: () => {},
+      setDisabled: () => {},
+    }),
+  } as unknown as Common.Settings.Settings);
+}
+
 const REGISTERED_EXPERIMENTS = [
   'bfcacheDisplayTree',
   'captureNodeCreationStacks',
@@ -228,11 +247,11 @@ export async function deinitializeGlobalVars() {
 
   Root.Runtime.experiments.clearForTest();
 
-  // Remove instances.
-  await deinitializeGlobalLocaleVars();
   for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
     target.dispose('deinitializeGlobalVars');
   }
+  // Remove instances.
+  await deinitializeGlobalLocaleVars();
   SDK.TargetManager.TargetManager.removeInstance();
   targetManager = null;
   Root.Runtime.Runtime.removeInstance();

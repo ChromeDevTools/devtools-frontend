@@ -149,6 +149,7 @@ module.exports = function(config) {
       {pattern: path.join(ROOT_DIRECTORY, 'front_end/**/*.ts'), served: true, included: false, watched: false},
       {pattern: path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.js.map'), served: true, included: false},
+      {pattern: path.join(GEN_DIRECTORY, 'test/unittests/fixtures/**/*'), served: true, included: false},
     ],
 
     reporters: [
@@ -200,6 +201,7 @@ module.exports = function(config) {
       '/Images': `/base/${targetDir}/front_end/Images`,
       '/locales': `/base/${targetDir}/front_end/core/i18n/locales`,
       '/json': `http://localhost:${REMOTE_DEBUGGING_PORT}/json`,
+      '/fixtures': `/base/${targetDir}/test/unittests/fixtures`,
     },
 
     coverageReporter: {

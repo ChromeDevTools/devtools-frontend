@@ -5,6 +5,8 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import {loadTraceFile} from '../../helpers/TraceHelpers.js';
+import {FakeStorage} from '../../helpers/TimelineHelpers.js';
 
 describe('TracingModel', () => {
   it('is able to determine if a phase is a nestable async phase', () => {
@@ -28,5 +30,10 @@ describe('TracingModel', () => {
         '\'m\' should not be considered a nestable async phase');
   });
 
-  // TODO continue writing tests here or use another describe block
+  it('can create events from an EventPayload[] and finds the correct number of processes', async () => {
+    const events = await loadTraceFile('basic.json.gz');
+    const model = new SDK.TracingModel.TracingModel(new FakeStorage());
+    model.addEvents(events);
+    assert.strictEqual(model.sortedProcesses().length, 4);
+  });
 });

@@ -37,6 +37,15 @@ function testHighlight(code: string, mimeType: string) {
 }
 
 describe('CodeHighlighter', () => {
+  describe('languageFromMIMEType', () => {
+    it('also supports common legacy MIME types for JavaScript', async () => {
+      for (const mimeType of ['application/ecmascript', 'application/javascript', 'text/jscript']) {
+        const language = await CodeHighlighter.CodeHighlighter.languageFromMIME(mimeType);
+        assert.isNotNull(language, `legacy MIME type '${mimeType}' not recognized`);
+      }
+    });
+  });
+
   // clang-format off
   it('can highlight JavaScript', testHighlight(`
 [keyword function] [definition foo]([definition bar]) {
@@ -78,7 +87,7 @@ it('can highlight JavaScript compatible with CodeMirror 5', testHighlight(`
  ([keyword type] [variable $t] ([keyword func] ([keyword param] [type i32])))
  ([keyword func] [variable $max] [comment (; 1 ;)] ([keyword param] [variable $0] [type i32]) ([keyword result] [type i32])
    ([keyword get_local] [variable $0])))
-`, 'text/webassembly'));
+`, 'application/wasm'));
 
   it('can highlight JSON', testHighlight(`
 {
@@ -96,6 +105,10 @@ Paragraph with [emphasis&meta *][emphasis emphasized][emphasis&meta *] text.
 [keyword def] [definition f]([variable x] = [atom True]):
   [keyword return] [variable x] [keyword *] [number 10];
 `, 'text/x-python'));
+
+it('can highlight PHP', testHighlight(`
+[meta <?] [keyword echo] [string 'Hello World!']; [meta ?>]
+`, 'application/x-httpd-php'));
 
   it('can highlight Shell code', testHighlight(`
 [builtin cat] [string "a"]

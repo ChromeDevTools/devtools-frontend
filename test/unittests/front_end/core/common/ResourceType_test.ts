@@ -407,3 +407,18 @@ describeWithEnvironment('ResourceType class', () => {
     assert.strictEqual(resourceType.canonicalMimeType(), '', 'A ping does not have an associated mime type');
   });
 });
+
+describe('ResourceType', () => {
+  describe('mimeFromExtension', () => {
+    it('returns correct MIME type for .php files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('php'), 'application/x-httpd-php');
+    });
+  });
+
+  describe('mimeFromURL', () => {
+    it('returns correct MIME type for .php files', () => {
+      const url = 'http://localhost/file.php' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'application/x-httpd-php');
+    });
+  });
+});

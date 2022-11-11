@@ -101,28 +101,6 @@ export type EventTypes = {
   [Events.EditorScroll]: void,
 };
 
-function simplifyMimeType(content: string|CodeMirror.Text, mimeType: string): string {
-  if (!mimeType) {
-    return '';
-  }
-  if (mimeType.indexOf('javascript') >= 0 || mimeType.indexOf('jscript') >= 0 || mimeType.indexOf('ecmascript') >= 0) {
-    return 'text/javascript';
-  }
-  // A hack around the fact that files with "php" extension might be either standalone or html embedded php scripts.
-  if (mimeType === 'text/x-php') {
-    const strContent = typeof content === 'string' ? content : content.sliceString(0);
-    if (strContent.match(/\<\?.*\?\>/g)) {
-      return 'application/x-httpd-php';
-    }
-  }
-  if (mimeType === 'application/wasm') {
-    // text/webassembly is not a proper MIME type, but CodeMirror uses it for WAT syntax highlighting.
-    // We generally use application/wasm, which is the correct MIME type for Wasm binary data.P
-    return 'text/webassembly';
-  }
-  return mimeType;
-}
-
 export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.View.SimpleView>(
     UI.View.SimpleView) implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable, Transformer {
   private readonly lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>;
@@ -675,13 +653,12 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.prettyToggle.setEnabled(true);
   }
 
-  protected async getLanguageSupport(content: string|CodeMirror.Text): Promise<CodeMirror.Extension> {
-    const mimeType = simplifyMimeType(content, this.contentType) || '';
-    const languageDesc = await CodeHighlighter.CodeHighlighter.languageFromMIME(mimeType);
+  protected async getLanguageSupport(): Promise<CodeMirror.Extension> {
+    const languageDesc = await CodeHighlighter.CodeHighlighter.languageFromMIME(this.contentType);
     if (!languageDesc) {
       return [];
     }
-    if (mimeType === 'text/jsx') {
+    if (this.contentType === 'text/jsx') {
       return [
         languageDesc,
         CodeMirror.javascript.javascriptLanguage.data.of({autocomplete: CodeMirror.completeAnyWord}),
@@ -690,8 +667,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     return languageDesc;
   }
 
-  async updateLanguageMode(content: string): Promise<void> {
-    const langExtension = await this.getLanguageSupport(content);
+  async updateLanguageMode(): Promise<void> {
+    const langExtension = await this.getLanguageSupport();
     this.textEditor.dispatch({effects: config.language.reconfigure(langExtension)});
   }
 
@@ -702,7 +679,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     const scrollTop = textEditor.editor.scrollDOM.scrollTop;
     this.loadedInternal = true;
 
-    const languageSupport = await this.getLanguageSupport(content);
+    const languageSupport = await this.getLanguageSupport();
     const editorState = CodeMirror.EditorState.create({
       doc: content,
       extensions: [
@@ -1180,7 +1157,3 @@ const sourceFrameTheme = CodeMirror.EditorView.theme({
     color: 'var(--legacy-accent-color)',
   },
 });
-
-export const TEST_ONLY = {
-  simplifyMimeType,
-};

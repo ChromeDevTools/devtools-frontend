@@ -66,7 +66,25 @@ export async function highlightNode(node: Element, mimeType: string): Promise<vo
 
 export async function languageFromMIME(mimeType: string): Promise<CodeMirror.LanguageSupport|null> {
   switch (mimeType) {
+    case 'application/javascript':
+    case 'application/ecmascript':
+    case 'application/x-ecmascript':
+    case 'application/x-javascript':
+    case 'text/ecmascript':
+    case 'text/javascript1.0':
+    case 'text/javascript1.1':
+    case 'text/javascript1.2':
+    case 'text/javascript1.3':
+    case 'text/javascript1.4':
+    case 'text/javascript1.5':
+    case 'text/jscript':
+    case 'text/livescript ':
+    case 'text/x-ecmascript':
+    case 'text/x-javascript':
     case 'text/javascript':
+      // The correct MIME type for JavaScript is text/javascript, but we also support
+      // the legacy JavaScript MIME types here for backwards compatibility.
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#legacy_javascript_mime_types
       return CodeMirror.javascript.javascript();
     case 'text/jsx':
       return CodeMirror.javascript.javascript({jsx: true});
@@ -85,7 +103,7 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
     case 'application/xml':
       return (await CodeMirror.xml()).xml();
 
-    case 'text/webassembly':
+    case 'application/wasm':
       return (await CodeMirror.wast()).wast();
 
     case 'text/x-c++src':

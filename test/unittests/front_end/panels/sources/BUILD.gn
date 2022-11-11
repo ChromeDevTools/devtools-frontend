@@ -13,7 +13,6 @@ ts_library("sources") {
     "FilePathScoreFunction_test.ts",
     "OutlineQuickOpen_test.ts",
     "ScriptSnippetFileSystem_test.ts",
-    "SourceFrame_test.ts",
     "SourcesView_test.ts",
   ]
 

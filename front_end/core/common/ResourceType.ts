@@ -474,7 +474,7 @@ export const mimeTypeByExtension = new Map([
   ['less', 'text/x-less'],
 
   // PHP
-  ['php', 'text/x-php'],
+  ['php', 'application/x-httpd-php'],
   ['phtml', 'application/x-httpd-php'],
 
   // Python

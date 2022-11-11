@@ -35,7 +35,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
-import * as Workspace from '../../models/workspace/workspace.js';
+import type * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import callStackSidebarPaneStyles from './callStackSidebarPane.css.js';
@@ -67,22 +67,6 @@ const UIStrings = {
   *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
   */
   copyStackTrace: 'Copy stack trace',
-  /**
-  *@description Text to stop preventing the debugger from stepping into library code
-  */
-  removeFromIgnoreList: 'Remove from ignore list',
-  /**
-  *@description Text for scripts that should not be stepped into when debugging
-  */
-  addScriptToIgnoreList: 'Add script to ignore list',
-  /**
-  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
-  */
-  removeAllContentScriptsFrom: 'Remove all content scripts from ignore list',
-  /**
-  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
-  */
-  addAllContentScriptsToIgnoreList: 'Add all content scripts to ignore list',
   /**
   *@description Text in Call Stack Sidebar Pane of the Sources panel when some call frames have warnings
   */
@@ -487,33 +471,16 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     if (binding) {
       uiSourceCode = binding.network;
     }
-    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
+
+    const menuSection = contextMenu.section('ignoreList');
+    if (menuSection.items.length > 0) {
+      // Already added menu items.
       return;
     }
-    const canIgnoreList =
-        Bindings.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiSourceCode);
-    const isIgnoreListed =
-        Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiSourceCode.url());
-    const isContentScript = uiSourceCode.project().type() === Workspace.Workspace.projectTypes.ContentScripts;
 
-    const manager = Bindings.IgnoreListManager.IgnoreListManager.instance();
-    if (canIgnoreList) {
-      if (isIgnoreListed) {
-        contextMenu.defaultSection().appendItem(
-            i18nString(UIStrings.removeFromIgnoreList), manager.unIgnoreListUISourceCode.bind(manager, uiSourceCode));
-      } else {
-        contextMenu.defaultSection().appendItem(
-            i18nString(UIStrings.addScriptToIgnoreList), manager.ignoreListUISourceCode.bind(manager, uiSourceCode));
-      }
-    }
-    if (isContentScript) {
-      if (isIgnoreListed) {
-        contextMenu.defaultSection().appendItem(
-            i18nString(UIStrings.removeAllContentScriptsFrom), manager.ignoreListContentScripts.bind(manager));
-      } else {
-        contextMenu.defaultSection().appendItem(
-            i18nString(UIStrings.addAllContentScriptsToIgnoreList), manager.unIgnoreListContentScripts.bind(manager));
-      }
+    for (const {text, callback} of Bindings.IgnoreListManager.IgnoreListManager.instance()
+             .getIgnoreListURLContextMenuItems(uiSourceCode)) {
+      menuSection.appendItem(text, callback);
     }
   }
 

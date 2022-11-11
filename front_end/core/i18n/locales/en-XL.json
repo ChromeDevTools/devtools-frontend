@@ -1280,6 +1280,18 @@
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] L̂óâd́îńĝ d́êb́ûǵ ŝým̂b́ôĺŝ f́ôŕ {PH2} (v̂íâ {PH3})..."
   },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Âd́d̂ ál̂ĺ ĉón̂t́êńt̂ śĉŕîṕt̂ś t̂ó îǵn̂ór̂é l̂íŝt́"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Âd́d̂ śĉŕîṕt̂ t́ô íĝńôŕê ĺîśt̂"
+  },
+  "models/bindings/IgnoreListManager.ts | removeAllContentScriptsFrom": {
+    "message": "R̂ém̂óv̂é âĺl̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ f́r̂óm̂ íĝńôŕê ĺîśt̂"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
+  },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit ĉóm̂ṕîĺê f́âíl̂éd̂: {PH1}"
   },
@@ -9920,12 +9932,6 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "P̂áûśê ón̂ĺŷ ẃĥén̂ t́ĥé ĉón̂d́ît́îón̂ íŝ t́r̂úê"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Âd́d̂ ál̂ĺ ĉón̂t́êńt̂ śĉŕîṕt̂ś t̂ó îǵn̂ór̂é l̂íŝt́"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Âd́d̂ śĉŕîṕt̂ t́ô íĝńôŕê ĺîśt̂"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Ŝóm̂é ĉál̂ĺ f̂ŕâḿêś ĥáv̂é ŵár̂ńîńĝś"
   },
@@ -9943,12 +9949,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "ôń îǵn̂ór̂é l̂íŝt́"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "R̂ém̂óv̂é âĺl̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ f́r̂óm̂ íĝńôŕê ĺîśt̂"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "R̂éŝt́âŕt̂ f́r̂ám̂é"

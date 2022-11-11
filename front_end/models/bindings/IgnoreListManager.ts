@@ -3,11 +3,34 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {type DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
+
+const UIStrings = {
+  /**
+  *@description Text to stop preventing the debugger from stepping into library code
+  */
+  removeFromIgnoreList: 'Remove from ignore list',
+  /**
+  *@description Text for scripts that should not be stepped into when debugging
+  */
+  addScriptToIgnoreList: 'Add script to ignore list',
+  /**
+  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+  */
+  removeAllContentScriptsFrom: 'Remove all content scripts from ignore list',
+  /**
+  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+  */
+  addAllContentScriptsToIgnoreList: 'Add all content scripts to ignore list',
+};
+
+const str_ = i18n.i18n.registerUIStrings('models/bindings/IgnoreListManager.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let ignoreListManagerInstance: IgnoreListManager;
 
@@ -343,6 +366,46 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
       prefix += '.*';
     }
     return prefix + Platform.StringUtilities.escapeForRegExp(name) + (url.endsWith(name) ? '$' : '\\b');
+  }
+
+  getIgnoreListURLContextMenuItems(uiSourceCode: Workspace.UISourceCode.UISourceCode):
+      Array<{text: string, callback: () => void}> {
+    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
+      return [];
+    }
+
+    const menuItems: Array<{text: string, callback: () => void}> = [];
+    const canIgnoreList = this.canIgnoreListUISourceCode(uiSourceCode);
+    const isIgnoreListed = this.isUserIgnoreListedURL(uiSourceCode.url());
+    const isContentScript = uiSourceCode.project().type() === Workspace.Workspace.projectTypes.ContentScripts;
+
+    if (canIgnoreList) {
+      if (isIgnoreListed) {
+        menuItems.push({
+          text: i18nString(UIStrings.removeFromIgnoreList),
+          callback: this.unIgnoreListUISourceCode.bind(this, uiSourceCode),
+        });
+      } else {
+        menuItems.push({
+          text: i18nString(UIStrings.addScriptToIgnoreList),
+          callback: this.ignoreListUISourceCode.bind(this, uiSourceCode),
+        });
+      }
+    }
+    if (isContentScript) {
+      if (isIgnoreListed) {
+        menuItems.push({
+          text: i18nString(UIStrings.removeAllContentScriptsFrom),
+          callback: this.ignoreListContentScripts.bind(this),
+        });
+      } else {
+        menuItems.push({
+          text: i18nString(UIStrings.addAllContentScriptsToIgnoreList),
+          callback: this.unIgnoreListContentScripts.bind(this),
+        });
+      }
+    }
+    return menuItems;
   }
 }
 export interface SourceRange {

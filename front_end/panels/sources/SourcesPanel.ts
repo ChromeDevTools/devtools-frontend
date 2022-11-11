@@ -914,6 +914,13 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       contextMenu.revealSection().appendItem(
           i18nString(UIStrings.revealInSidebar), this.handleContextMenuReveal.bind(this, uiSourceCode));
     }
+    // Ignore list only works for JavaScript debugging.
+    if (uiSourceCode.contentType().hasScripts() &&
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+            .scriptsForUISourceCode(uiSourceCode)
+            .every(script => script.isJavaScript())) {
+      this.callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
+    }
   }
 
   private appendUISourceCodeFrameItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {

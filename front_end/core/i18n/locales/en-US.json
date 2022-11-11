@@ -1280,6 +1280,18 @@
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Loading debug symbols for {PH2} (via {PH3})..."
   },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Add all content scripts to ignore list"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Add script to ignore list"
+  },
+  "models/bindings/IgnoreListManager.ts | removeAllContentScriptsFrom": {
+    "message": "Remove all content scripts from ignore list"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Remove from ignore list"
+  },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit compile failed: {PH1}"
   },
@@ -9920,12 +9932,6 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pause only when the condition is true"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Add all content scripts to ignore list"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Add script to ignore list"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Some call frames have warnings"
   },
@@ -9943,12 +9949,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "on ignore list"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Remove all content scripts from ignore list"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Remove from ignore list"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Restart frame"

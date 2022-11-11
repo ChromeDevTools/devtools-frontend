@@ -4,12 +4,9 @@
 
 import("../../../../../third_party/typescript/typescript.gni")
 
-ts_library("main") {
+ts_library("inspector_main") {
   testonly = true
-  sources = [
-    "ExecutionContextSelector_test.ts",
-    "MainImpl_test.ts",
-  ]
+  sources = [ "InspectorMain_test.ts" ]
 
   deps = [
     "../../../../../front_end/core/common:bundle",

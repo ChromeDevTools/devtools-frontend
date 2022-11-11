@@ -127,7 +127,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let inspectorViewInstance: InspectorView;
+let inspectorViewInstance: InspectorView|null = null;
 
 export class InspectorView extends VBox implements ViewLocationResolver {
   private readonly drawerSplitWidget: SplitWidget;
@@ -235,8 +235,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     return inspectorViewInstance;
   }
 
-  static maybeGetInspectorViewInstance(): InspectorView|undefined {
+  static maybeGetInspectorViewInstance(): InspectorView|null {
     return inspectorViewInstance;
+  }
+
+  static removeInstance(): void {
+    inspectorViewInstance = null;
   }
 
   wasShown(): void {

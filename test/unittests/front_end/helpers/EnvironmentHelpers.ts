@@ -270,6 +270,7 @@ export async function deinitializeGlobalVars() {
     UI.ViewManager.ViewManager.removeInstance();
     UI.ViewManager.resetViewRegistration();
     UI.Context.Context.removeInstance();
+    UI.InspectorView.InspectorView.removeInstance();
   }
 }
 

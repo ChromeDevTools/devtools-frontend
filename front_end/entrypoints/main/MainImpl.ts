@@ -945,7 +945,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
     }
 
     if (UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.UNDOCKED) {
-      const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+      const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
       if (mainTarget && mainTarget.type() === SDK.Target.Type.Frame) {
         contextMenu.defaultSection().appendAction('inspector_main.focus-debuggee', i18nString(UIStrings.focusDebuggee));
       }

@@ -24,6 +24,7 @@ import * as ResourceType from './ResourceType.js';
 import * as Revealer from './Revealer.js';
 import * as Runnable from './Runnable.js';
 import * as SegmentedRange from './SegmentedRange.js';
+import * as SettingRegistration from './SettingRegistration.js';
 import * as Settings from './Settings.js';
 import * as SimpleHistoryManager from './SimpleHistoryManager.js';
 import * as StringOutputStream from './StringOutputStream.js';
@@ -70,6 +71,7 @@ export {
   Runnable,
   SegmentedRange,
   Settings,
+  SettingRegistration,
   SimpleHistoryManager,
   StringOutputStream,
   TextDictionary,

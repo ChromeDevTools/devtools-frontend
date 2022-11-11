@@ -138,7 +138,7 @@ export class FocusDebuggeeActionDelegate implements UI.ActionRegistration.Action
     return focusDebuggeeActionDelegateInstance;
   }
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
     if (!mainTarget) {
       return false;
     }

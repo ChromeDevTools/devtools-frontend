@@ -166,6 +166,7 @@ export function format(mimeType: string, text: string, indentString?: string): F
         formatter.format(text, lineEndings, 0, text.length);
         break;
       }
+      case 'application/manifest+json':
       case 'application/json': {
         const formatter = new JSONFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);

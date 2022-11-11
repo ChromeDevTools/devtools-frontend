@@ -95,6 +95,7 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
       return (await CodeMirror.java()).java();
 
     case 'application/json':
+    case 'application/manifest+json':
       return (await CodeMirror.json()).json();
 
     case 'application/x-httpd-php':

@@ -217,6 +217,9 @@ export class ResourceType {
   }
 
   static fromMimeTypeOverride(mimeType: string|null): ResourceType|null {
+    if (mimeType === 'application/manifest+json') {
+      return resourceTypes.Manifest;
+    }
     if (mimeType === 'application/wasm') {
       return resourceTypes.Wasm;
     }
@@ -413,6 +416,8 @@ export const resourceTypeByExtension = new Map([
   ['tif', resourceTypes.Image],
   ['tiff', resourceTypes.Image],
 
+  ['webmanifest', resourceTypes.Manifest],
+
   ['webp', resourceTypes.Media],
 
   ['otf', resourceTypes.Font],
@@ -435,6 +440,7 @@ export const mimeTypeByExtension = new Map([
   ['xml', 'application/xml'],
   ['xsl', 'application/xml'],
   ['wasm', 'application/wasm'],
+  ['webmanifest', 'application/manifest+json'],
 
   // HTML Embedded Scripts, ASP], JSP
   ['asp', 'application/x-aspx'],

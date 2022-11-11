@@ -100,5 +100,12 @@ Paragraph with [emphasis&meta *][emphasis emphasized][emphasis&meta *] text.
   it('can highlight Shell code', testHighlight(`
 [builtin cat] [string "a"]
 `, 'text/x-sh'));
+
+  it('can highlight Web app manifests', testHighlight(`
+{
+  [property "name"]: [string "Test"],
+  [property "start_url"]: [string "."]
+}
+  `, 'application/manifest+json'));
   // clang_format on
 });

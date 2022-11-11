@@ -8,6 +8,7 @@ const {simplifyMimeType} = SourceFrame.SourceFrame.TEST_ONLY;
 
 // Special cases are tested in different tests
 const COMMON_MIME_TYPES_WITHOUT_SPECIAL_CASES = [
+  'text/javascript',
   'text/jsx',
   'text/typescript',
   'text/typescript-jsx',
@@ -31,10 +32,10 @@ const {assert} = chai;
 
 describe('SourceFrame', () => {
   describe('simplifyMimeType', () => {
-    it('should return text/jsx when given mime type contains javascript, jscript, or ecmascript', () => {
-      assert.strictEqual(simplifyMimeType('', 'text/javascript'), 'text/jsx');
-      assert.strictEqual(simplifyMimeType('', 'text/jscript'), 'text/jsx');
-      assert.strictEqual(simplifyMimeType('', 'text/ecmascript'), 'text/jsx');
+    it('should return text/javascript when given mime type contains javascript, jscript, or ecmascript', () => {
+      assert.strictEqual(simplifyMimeType('', 'text/javascript'), 'text/javascript');
+      assert.strictEqual(simplifyMimeType('', 'text/jscript'), 'text/javascript');
+      assert.strictEqual(simplifyMimeType('', 'text/ecmascript'), 'text/javascript');
     });
 
     it('should return application/x-httpd-php for PHP embedded in HTML', () => {

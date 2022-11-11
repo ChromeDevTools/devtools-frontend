@@ -106,7 +106,7 @@ function simplifyMimeType(content: string|CodeMirror.Text, mimeType: string): st
     return '';
   }
   if (mimeType.indexOf('javascript') >= 0 || mimeType.indexOf('jscript') >= 0 || mimeType.indexOf('ecmascript') >= 0) {
-    return 'text/jsx';
+    return 'text/javascript';
   }
   // A hack around the fact that files with "php" extension might be either standalone or html embedded php scripts.
   if (mimeType === 'text/x-php') {

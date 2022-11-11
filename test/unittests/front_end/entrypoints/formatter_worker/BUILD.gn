@@ -10,6 +10,7 @@ ts_library("formatter_worker") {
     "CSSFormatter_test.ts",
     "EvaluatableJavaScriptSubstring_test.ts",
     "FormattedContentBuilder_test.ts",
+    "FormatterWorker_test.ts",
     "HTMLFormatter_test.ts",
     "JSONFormatter_test.ts",
     "JavaScriptFormatter_test.ts",

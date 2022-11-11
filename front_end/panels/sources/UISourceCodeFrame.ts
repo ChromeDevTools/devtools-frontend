@@ -199,7 +199,16 @@ export class UISourceCodeFrame extends
     this.installMessageAndDecorationListeners();
     this.updateStyle();
     if (Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
-      const canPrettyPrint = ['text/html', 'text/css', 'text/javascript'].includes(this.contentType);
+      const FORMATTABLE_MIME_TYPES = [
+        'application/javascript',
+        'application/json',
+        'application/manifest+json',
+        'text/css',
+        'text/html',
+        'text/javascript',
+        'text/x-scss',
+      ];
+      const canPrettyPrint = FORMATTABLE_MIME_TYPES.includes(this.contentType);
       const autoPrettyPrint = !this.uiSourceCodeInternal.contentType().isFromSourceMap();
       this.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
     }

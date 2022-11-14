@@ -79,7 +79,7 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let settingsInstance: ConsoleModel;
+let consoleModelInstance: ConsoleModel|null;
 
 export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements Observer {
   #messagesInternal: ConsoleMessage[];
@@ -108,11 +108,15 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     forceNew: boolean|null,
   } = {forceNew: null}): ConsoleModel {
     const {forceNew} = opts;
-    if (!settingsInstance || forceNew) {
-      settingsInstance = new ConsoleModel();
+    if (!consoleModelInstance || forceNew) {
+      consoleModelInstance = new ConsoleModel();
     }
 
-    return settingsInstance;
+    return consoleModelInstance;
+  }
+
+  static removeInstance(): void {
+    consoleModelInstance = null;
   }
 
   targetAdded(target: Target): void {

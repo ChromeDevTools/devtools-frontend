@@ -253,6 +253,7 @@ export async function deinitializeGlobalVars() {
   // Remove instances.
   await deinitializeGlobalLocaleVars();
   SDK.TargetManager.TargetManager.removeInstance();
+  SDK.ConsoleModel.ConsoleModel.removeInstance();
   targetManager = null;
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();

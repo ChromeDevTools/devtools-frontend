@@ -638,61 +638,9 @@ export class DebuggerPlugin extends Plugin {
       textPosition -= 1;
     }
 
-    const textSelection = editor.state.selection.main;
-    let highlightRange: {from: number, to: number};
-
-    if (!textSelection.empty) {
-      if (textPosition < textSelection.from || textPosition > textSelection.to) {
-        return null;
-      }
-      highlightRange = textSelection;
-    } else if (this.uiSourceCode.mimeType() === 'application/wasm') {
-      const node = CodeMirror.syntaxTree(editor.state).resolveInner(textPosition, 1);
-      if (node.name !== 'Identifier') {
-        return null;
-      }
-      // For $label identifiers we can't show a meaningful preview (https://crbug.com/1155548),
-      // so we suppress them for now. Label identifiers can only appear as operands to control
-      // instructions[1].
-      //
-      // [1]: https://webassembly.github.io/spec/core/text/instructions.html#control-instructions
-      const controlInstructions = ['block', 'loop', 'if', 'else', 'end', 'br', 'br_if', 'br_table'];
-      for (let parent: CodeMirror.SyntaxNode|null = node.parent; parent; parent = parent.parent) {
-        if (parent.name === 'App') {
-          const firstChild = parent.firstChild;
-          const opName = firstChild?.name === 'Keyword' && editor.state.sliceDoc(firstChild.from, firstChild.to);
-          if (opName && controlInstructions.includes(opName)) {
-            return null;
-          }
-        }
-      }
-      highlightRange = node;
-    } else if (/^text\/(javascript|typescript|jsx)/.test(this.uiSourceCode.mimeType())) {
-      let node: CodeMirror.SyntaxNode|null = CodeMirror.syntaxTree(editor.state).resolveInner(textPosition, 1);
-      // Only do something if the cursor is over a leaf node.
-      if (node?.firstChild) {
-        return null;
-      }
-      while (
-          node && node.name !== 'this' && node.name !== 'VariableDefinition' && node.name !== 'VariableName' &&
-          node.name !== 'MemberExpression' &&
-          !(node.name === 'PropertyName' && node.parent?.name === 'PatternProperty' &&
-            node.nextSibling?.name !== ':') &&
-          !(node.name === 'PropertyDefinition' && node.parent?.name === 'Property' && node.nextSibling?.name !== ':')) {
-        node = node.parent;
-      }
-      if (!node) {
-        return null;
-      }
-      highlightRange = node;
-    } else {
-      // In other languages, just assume a token consisting entirely
-      // of identifier-like characters is an identifier.
-      const node: CodeMirror.SyntaxNode = CodeMirror.syntaxTree(editor.state).resolveInner(textPosition, 1);
-      if (node.to - node.from > 50 || /[^\w_\-$]/.test(editor.state.sliceDoc(node.from, node.to))) {
-        return null;
-      }
-      highlightRange = node;
+    const highlightRange = computePopoverHighlightRange(editor.state, this.uiSourceCode.mimeType(), textPosition);
+    if (!highlightRange) {
+      return null;
     }
 
     const highlightLine = editor.state.doc.lineAt(highlightRange.from);
@@ -710,35 +658,25 @@ export class DebuggerPlugin extends Plugin {
     const evaluationText = editor.state.sliceDoc(highlightRange.from, highlightRange.to);
 
     let objectPopoverHelper: ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper|null = null;
-
-    async function evaluate(uiSourceCode: Workspace.UISourceCode.UISourceCode, evaluationText: string): Promise<{
-      object: SDK.RemoteObject.RemoteObject,
-      exceptionDetails?: Protocol.Runtime.ExceptionDetails,
-    }|{
-      error: string,
-    }|null> {
-      const resolvedText = await SourceMapScopes.NamesResolver.resolveExpression(
-          selectedCallFrame, evaluationText, uiSourceCode, highlightLine.number - 1,
-          highlightRange.from - highlightLine.from, highlightRange.to - highlightLine.from);
-      return await selectedCallFrame.evaluate({
-        expression: resolvedText || evaluationText,
-        objectGroup: 'popover',
-        includeCommandLineAPI: false,
-        silent: true,
-        returnByValue: false,
-        generatePreview: false,
-        throwOnSideEffect: undefined,
-        timeout: undefined,
-        disableBreaks: undefined,
-        replMode: undefined,
-        allowUnsafeEvalBlockedByCSP: undefined,
-      });
-    }
-
     return {
       box,
       show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
-        const result = await evaluate(this.uiSourceCode, evaluationText);
+        const resolvedText = await SourceMapScopes.NamesResolver.resolveExpression(
+            selectedCallFrame, evaluationText, this.uiSourceCode, highlightLine.number - 1,
+            highlightRange.from - highlightLine.from, highlightRange.to - highlightLine.from);
+        const result = await selectedCallFrame.evaluate({
+          expression: resolvedText || evaluationText,
+          objectGroup: 'popover',
+          includeCommandLineAPI: false,
+          silent: true,
+          returnByValue: false,
+          generatePreview: false,
+          throwOnSideEffect: undefined,
+          timeout: undefined,
+          disableBreaks: undefined,
+          replMode: undefined,
+          allowUnsafeEvalBlockedByCSP: undefined,
+        });
         if (!result || 'error' in result || !result.object ||
             (result.object.type === 'object' && result.object.subtype === 'error')) {
           return false;
@@ -2100,6 +2038,80 @@ export function getVariableValuesByLine(
       }
     }
     return null;
+  }
+}
+
+// Pop-over
+
+export function computePopoverHighlightRange(state: CodeMirror.EditorState, mimeType: string, cursorPos: number): {
+  from: number,
+  to: number,
+}|null {
+  const {main} = state.selection;
+  if (!main.empty) {
+    if (cursorPos < main.from || main.to < cursorPos) {
+      return null;
+    }
+    return {from: main.from, to: main.to};
+  }
+
+  const node = CodeMirror.syntaxTree(state).resolveInner(cursorPos, 1);
+  // Only do something if the cursor is over a leaf node.
+  if (node.firstChild) {
+    return null;
+  }
+
+  switch (mimeType) {
+    case 'application/wasm': {
+      if (node.name !== 'Identifier') {
+        return null;
+      }
+      // For $label identifiers we can't show a meaningful preview (https://crbug.com/1155548),
+      // so we suppress them for now. Label identifiers can only appear as operands to control
+      // instructions[1].
+      //
+      // [1]: https://webassembly.github.io/spec/core/text/instructions.html#control-instructions
+      const controlInstructions = ['block', 'loop', 'if', 'else', 'end', 'br', 'br_if', 'br_table'];
+      for (let parent: CodeMirror.SyntaxNode|null = node.parent; parent; parent = parent.parent) {
+        if (parent.name === 'App') {
+          const firstChild = parent.firstChild;
+          const opName = firstChild?.name === 'Keyword' && state.sliceDoc(firstChild.from, firstChild.to);
+          if (opName && controlInstructions.includes(opName)) {
+            return null;
+          }
+        }
+      }
+      return {from: node.from, to: node.to};
+    }
+
+    case 'text/html':
+    case 'text/javascript':
+    case 'text/jsx':
+    case 'text/typescript':
+    case 'text/typescript-jsx': {
+      let current: CodeMirror.SyntaxNode|null = node;
+      while (current && current.name !== 'this' && current.name !== 'VariableDefinition' &&
+             current.name !== 'VariableName' && current.name !== 'MemberExpression' &&
+             !(current.name === 'PropertyName' && current.parent?.name === 'PatternProperty' &&
+               current.nextSibling?.name !== ':') &&
+             !(current.name === 'PropertyDefinition' && current.parent?.name === 'Property' &&
+               current.nextSibling?.name !== ':')) {
+        current = current.parent;
+      }
+      if (!current) {
+        return null;
+      }
+      return {from: current.from, to: current.to};
+    }
+
+    default: {
+      // In other languages, just assume a token consisting entirely
+      // of identifier-like characters is an identifier.
+      if (node.to - node.from > 50 || /[^\w_\-$]/.test(state.sliceDoc(node.from, node.to))) {
+        return null;
+      }
+      return {from: node.from, to: node.to};
+    }
   }
 }
 

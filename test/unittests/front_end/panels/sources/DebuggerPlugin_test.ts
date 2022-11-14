@@ -471,3 +471,80 @@ describeWithEnvironment('Inline variable view scope value resolution', () => {
     assert.strictEqual(valuesByLine?.get(10)?.get('b')?.value, 2);
   });
 });
+
+describe('DebuggerPlugin', () => {
+  describe('computePopoverHighlightRange', () => {
+    const {computePopoverHighlightRange} = Sources.DebuggerPlugin;
+
+    it('correctly returns highlight range depending on cursor position and selection', () => {
+      const doc = 'Hello World!';
+      const selection = CodeMirror.EditorSelection.create([
+        CodeMirror.EditorSelection.range(2, 5),
+      ]);
+      const state = CodeMirror.EditorState.create({doc, selection});
+      assert.isNull(computePopoverHighlightRange(state, 'text/plain', 0));
+      assert.deepEqual(computePopoverHighlightRange(state, 'text/plain', 2), {from: 2, to: 5});
+      assert.deepEqual(computePopoverHighlightRange(state, 'text/plain', 5), {from: 2, to: 5});
+      assert.isNull(computePopoverHighlightRange(state, 'text/plain', 10));
+      assert.isNull(computePopoverHighlightRange(state, 'text/plain', doc.length - 1));
+    });
+
+    describe('in JavaScript files', () => {
+      it('correctly returns highlight range for member assignments', () => {
+        const doc = 'obj.foo = 42;';
+        const extensions = [CodeMirror.javascript.javascript()];
+        const state = CodeMirror.EditorState.create({doc, extensions});
+        assert.deepEqual(computePopoverHighlightRange(state, 'text/javascript', 0), {from: 0, to: 3});
+        assert.deepEqual(computePopoverHighlightRange(state, 'text/javascript', 4), {from: 0, to: 7});
+      });
+
+      it('correctly returns highlight range for member assignments involving `this`', () => {
+        const doc = 'this.x = bar;';
+        const extensions = [CodeMirror.javascript.javascript()];
+        const state = CodeMirror.EditorState.create({doc, extensions});
+        assert.deepEqual(computePopoverHighlightRange(state, 'text/javascript', 0), {from: 0, to: 4});
+        assert.deepEqual(computePopoverHighlightRange(state, 'text/javascript', 5), {from: 0, to: 6});
+      });
+    });
+
+    describe('in HTML files', () => {
+      it('correctly returns highlight range for function variables in inline <script>s', () => {
+        const doc = `<!DOCTYPE html>
+<script type="text/javascript">
+globalThis.foo = bar + baz;
+</script>`;
+        const extensions = [CodeMirror.html.html()];
+        const state = CodeMirror.EditorState.create({doc, extensions});
+        for (const name of ['bar', 'baz']) {
+          const from = doc.indexOf(name);
+          const to = from + name.length;
+          assert.deepEqual(
+              computePopoverHighlightRange(state, 'text/html', from),
+              {from, to},
+              `did not correct highlight '${name}'`,
+          );
+        }
+      });
+    });
+
+    describe('in TSX files', () => {
+      it('correctly returns highlight range for field accesses', () => {
+        const doc = `function foo(obj: any): number {
+  return obj.x + obj.y;
+}`;
+        const extensions = [CodeMirror.javascript.tsxLanguage];
+        const state = CodeMirror.EditorState.create({doc, extensions});
+        for (const name of ['x', 'y']) {
+          const pos = doc.lastIndexOf(name);
+          const from = pos - 4;
+          const to = pos + name.length;
+          assert.deepEqual(
+              computePopoverHighlightRange(state, 'text/typescript-jsx', pos),
+              {from, to},
+              `did not correct highlight '${name}'`,
+          );
+        }
+      });
+    });
+  });
+});

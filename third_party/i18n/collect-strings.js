@@ -646,6 +646,9 @@ function collectAllStringsInDir(directory) {
       // slice out "front_end/" and use the path relative to front_end as id
       const pathRelativeToFrontend = path.relative(directory, absolutePath).replace(/\\/g, '/');
       const messageKey = `${pathRelativeToFrontend} | ${key}`;
+      if (strings[messageKey] !== undefined) {
+        throw new Error(`Duplicate message key '${messageKey}', please rename the '${key}' property.`);
+      }
       strings[messageKey] = ctc;
 
       // check for duplicates, if duplicate, add @description as @meaning to both

@@ -188,6 +188,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
         .moduleSetting('pauseOnCaughtException')
         .addChangeListener(this.pauseOnExceptionStateChanged, this);
     Common.Settings.Settings.instance()
+        .moduleSetting('pauseOnUncaughtException')
+        .addChangeListener(this.pauseOnExceptionStateChanged, this);
+    Common.Settings.Settings.instance()
         .moduleSetting('disableAsyncStackTraces')
         .addChangeListener(this.asyncStackTracesStateChanged, this);
     Common.Settings.Settings.instance()
@@ -342,15 +345,32 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   private pauseOnExceptionStateChanged(): void {
+    const pauseOnCaughtEnabled = Common.Settings.Settings.instance().moduleSetting('pauseOnCaughtException').get();
+    const breakpointViewExperimentEnabled =
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.BREAKPOINT_VIEW);
     let state: Protocol.Debugger.SetPauseOnExceptionsRequestState;
-    if (!Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get()) {
-      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.None;
-    } else if (Common.Settings.Settings.instance().moduleSetting('pauseOnCaughtException').get()) {
-      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.All;
-    } else {
-      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Uncaught;
-    }
 
+    if (breakpointViewExperimentEnabled) {
+      const pauseOnUncaughtEnabled =
+          Common.Settings.Settings.instance().moduleSetting('pauseOnUncaughtException').get();
+      if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
+        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.All;
+      } else if (pauseOnCaughtEnabled) {
+        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Caught;
+      } else if (pauseOnUncaughtEnabled) {
+        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Uncaught;
+      } else {
+        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.None;
+      }
+    } else {
+      if (!Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get()) {
+        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.None;
+      } else if (pauseOnCaughtEnabled) {
+        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.All;
+      } else {
+        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Uncaught;
+      }
+    }
     void this.agent.invoke_setPauseOnExceptions({state});
   }
 
@@ -934,6 +954,7 @@ export const _debuggerIdToModel = new Map<string, DebuggerModel>();
 export enum PauseOnExceptionsState {
   DontPauseOnExceptions = 'none',
   PauseOnAllExceptions = 'all',
+  PauseOnCaughtExceptions = 'caught',
   PauseOnUncaughtExceptions = 'uncaught',
 }
 

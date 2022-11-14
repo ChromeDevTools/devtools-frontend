@@ -98,8 +98,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
   const settings = [
     createSettingValue(Common.Settings.SettingCategory.APPEARANCE, 'disablePausedStateOverlay', false),
     createSettingValue(Common.Settings.SettingCategory.CONSOLE, 'customFormatters', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnCaughtException', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnExceptionEnabled', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnCaughtException', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'pauseOnUncaughtException', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'disableAsyncStackTraces', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'breakpointsActive', true),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'javaScriptDisabled', false),

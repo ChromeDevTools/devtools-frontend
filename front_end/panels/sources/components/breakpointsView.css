@@ -198,19 +198,21 @@ button:hover devtools-icon {
   display: flex;
 }
 
-.pause-on-exceptions {
+.pause-on-uncaught-exceptions {
   margin-top: 3px;
 }
 
-.pause-on-exceptions > .checkbox-label > input {
+/* TODO(crbug.com/1382762): Remove special casing with dependent toggles as soon as Node LTS caught up on independent pause of exception toggles. */
+input:disabled + span {
+  color: var(--color-text-disabled);
+}
+
+.pause-on-caught-exceptions > .checkbox-label > input,
+.pause-on-uncaught-exceptions > .checkbox-label > input {
   margin-left: 6px;
 }
 
-.pause-on-caught-exceptions > .checkbox-label > input {
-  margin-left: 20px;
-}
-
-.pause-on-exceptions,
+.pause-on-uncaught-exceptions,
 .pause-on-caught-exceptions {
   display: flex;
   align-items: center;
@@ -221,7 +223,7 @@ button:hover devtools-icon {
 
 details > summary:focus,
 .breakpoint-item:focus,
-.pause-on-exceptions:focus,
+.pause-on-uncaught-exceptions:focus,
 .pause-on-caught-exceptions:focus {
   background-color: var(--legacy-focus-bg-color);
   outline-width: 0;

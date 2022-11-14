@@ -1119,6 +1119,7 @@
       'networkShowPrimaryLoadWaterfall',
       'networkSidebarWidth',
       'openLinkHandler',
+      'pauseOnUncaughtException',
       'pauseOnCaughtException',
       'pauseOnExceptionEnabled',
       'preserveConsoleLog',

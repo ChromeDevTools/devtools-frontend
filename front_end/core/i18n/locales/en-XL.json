@@ -9989,8 +9989,8 @@
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "P̂áûśê ón̂ ćâúĝh́t̂ éx̂ćêṕt̂íôńŝ"
   },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "P̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "P̂áûśê ón̂ ún̂ćâúĝh́t̂ éx̂ćêṕt̂íôńŝ"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "R̂ém̂óv̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś"

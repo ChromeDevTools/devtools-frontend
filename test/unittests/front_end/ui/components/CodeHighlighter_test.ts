@@ -83,6 +83,13 @@ it('can highlight JavaScript compatible with CodeMirror 5', testHighlight(`
   ...
 </[tag html]>`, 'text/html'));
 
+it('can highlight Vue Templates', testHighlight(`
+<[tag template]>
+  <[tag Header] [attribute v-show]=[attribute-value "view"] />
+  <[tag Main] [attribute @hide]=[attribute-value "onHide"] />
+  <[tag router-view] />
+</[tag template]>`, 'text/html'));
+
   it('can highlight CSS', testHighlight(`
 [tag span].[type cls]#[atom id] {
   [property font-weight]: [atom bold];

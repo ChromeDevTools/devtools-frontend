@@ -416,6 +416,8 @@ export const resourceTypeByExtension = new Map([
   ['tif', resourceTypes.Image],
   ['tiff', resourceTypes.Image],
 
+  ['vue', resourceTypes.Document],
+
   ['webmanifest', resourceTypes.Manifest],
 
   ['webp', resourceTypes.Media],
@@ -533,4 +535,7 @@ export const mimeTypeByExtension = new Map([
   ['ttf', 'font/ttf'],
   ['woff', 'font/woff'],
   ['woff2', 'font/woff2'],
+
+  // Vue
+  ['vue', 'text/html'],
 ]);

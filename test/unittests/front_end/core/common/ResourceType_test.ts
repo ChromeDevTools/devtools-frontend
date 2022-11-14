@@ -414,6 +414,10 @@ describe('ResourceType', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('php'), 'application/x-httpd-php');
     });
 
+    it('returns correct MIME type for .vue files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('vue'), 'text/html');
+    });
+
     it('returns correct MIME type for .webmanifest files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('webmanifest'), 'application/manifest+json');
     });
@@ -423,6 +427,11 @@ describe('ResourceType', () => {
     it('returns correct MIME type for .php files', () => {
       const url = 'http://localhost/file.php' as Platform.DevToolsPath.UrlString;
       assert.strictEqual(ResourceType.mimeFromURL(url), 'application/x-httpd-php');
+    });
+
+    it('returns correct MIME type for .vue files', () => {
+      const url = 'http://localhost/App.vue' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/html');
     });
 
     it('returns correct MIME type for .webmanifest files', () => {

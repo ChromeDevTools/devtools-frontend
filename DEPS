@@ -47,6 +47,8 @@ vars = {
   'chromium_win': '1070923',
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/LAST_CHANGE
   'chromium_mac': '1070944',
+  # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac_Arm/LAST_CHANGE
+  'chromium_mac_arm': '1070944',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.
@@ -259,13 +261,25 @@ hooks = [
   {
     'name': 'download_chromium_mac',
     'pattern': '.',
-    'condition': 'host_os == "mac" and build_with_chromium == False',
+    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu != "arm64"',
     'action': [ 'python3',
                 'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/' + Var('chromium_mac') + '/chrome-mac.zip',
                 'third_party/chrome',
                 'chrome-mac/Chromium.app/Contents',
                 Var('chromium_mac'),
+    ],
+  },
+  {
+    'name': 'download_chromium_mac',
+    'pattern': '.',
+    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu == "arm64"',
+    'action': [ 'python3',
+                'scripts/deps/download_chromium.py',
+                'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac_Arm/' + Var('chromium_mac_arm') + '/chrome-mac.zip',
+                'third_party/chrome',
+                'chrome-mac/Chromium.app/Contents',
+                Var('chromium_mac_arm'),
     ],
   },
   {

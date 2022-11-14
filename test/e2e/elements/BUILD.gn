@@ -10,6 +10,7 @@ node_ts_library("elements") {
     "accessibility-tree_test.ts",
     "adornment_test.ts",
     "classes-pane_test.ts",
+    "color-picker_test.ts",
     "computed-pane-properties_test.ts",
     "css-hints_test.ts",
     "element-breadcrumbs_test.ts",

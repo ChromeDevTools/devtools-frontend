@@ -20,6 +20,9 @@ declare global {
     __pendingEvents: Map<string, Event[]>;
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    __eventHandlers: WeakMap<Element, Map<string, Promise<void>>>;
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __getRenderCoordinatorPendingFrames(): number;
   }
 }
@@ -634,6 +637,48 @@ export const getPendingEvents = function(frontend: puppeteer.Page, eventType: st
     return pendingEvents;
   }, eventType);
 };
+
+export function prepareWaitForEvent(element: puppeteer.ElementHandle, eventType: string): Promise<void> {
+  return element.evaluate((element: Element, eventType: string) => {
+    if (!('__eventHandlers' in window)) {
+      window.__eventHandlers = new WeakMap();
+    }
+
+    const eventHandlers = (() => {
+      const eventHandlers = window.__eventHandlers.get(element);
+      if (eventHandlers) {
+        return eventHandlers;
+      }
+      const newMap = new Map<string, Promise<void>>();
+      window.__eventHandlers.set(element, newMap);
+      return newMap;
+    })();
+
+    if (eventHandlers.has(eventType)) {
+      throw new Error(`Event listener for ${eventType}' has already been installed.`);
+    }
+    eventHandlers.set(eventType, new Promise<void>(resolve => {
+                        const handler = () => {
+                          element.removeEventListener(eventType, handler);
+                          resolve();
+                        };
+                        element.addEventListener(eventType, handler);
+                      }));
+  }, eventType);
+}
+
+export function waitForEvent(element: puppeteer.ElementHandle, eventType: string): Promise<void> {
+  return element.evaluate((element: Element, eventType: string) => {
+    if (!('__eventHandlers' in window)) {
+      throw new Error(`Event listener for '${eventType}' has not been installed.`);
+    }
+    const handler = window.__eventHandlers.get(element)?.get(eventType);
+    if (!handler) {
+      throw new Error(`Event listener for '${eventType}' has not been installed.`);
+    }
+    return handler;
+  }, eventType);
+}
 
 export const hasClass = async(element: puppeteer.ElementHandle<Element>, classname: string): Promise<boolean> => {
   return await element.evaluate((el, classname) => el.classList.contains(classname), classname);

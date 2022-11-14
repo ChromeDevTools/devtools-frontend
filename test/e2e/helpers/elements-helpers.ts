@@ -11,6 +11,7 @@ import {
   click,
   getBrowserAndPages,
   getTextContent,
+  goToResource,
   pressKey,
   step,
   summonSearchBox,
@@ -506,7 +507,7 @@ export const getStyleRuleWithSourcePosition = (styleSelector: string, sourcePosi
   });
 };
 
-export const getColorSwatch = async (parent: puppeteer.ElementHandle<Element>, index: number) => {
+export const getColorSwatch = async (parent: puppeteer.ElementHandle<Element>|undefined, index: number) => {
   const swatches = await $$(COLOR_SWATCH_SELECTOR, parent);
   return swatches[index];
 };
@@ -801,4 +802,12 @@ export const assertSearchResultMatchesText = async (text: string) => {
   await waitForFunction(async () => {
     return await getTextContent(SEARCH_RESULTS_MATCHES) === text;
   });
+};
+
+export const goToResourceAndWaitForStyleSection = async (path: string) => {
+  await goToResource(path);
+  await waitForElementsStyleSection();
+
+  // Check to make sure we have the correct node selected after opening a file.
+  await waitForPartialContentOfSelectedElementsNode('<body>\u200B');
 };

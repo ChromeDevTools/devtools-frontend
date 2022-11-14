@@ -10,7 +10,6 @@ import {
   assertNotNullOrUndefined,
   click,
   getBrowserAndPages,
-  goToResource,
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
@@ -24,9 +23,8 @@ import {
   getDisplayedStyleRulesCompact,
   getStyleRule,
   getStyleSectionSubtitles,
-  waitForPartialContentOfSelectedElementsNode,
+  goToResourceAndWaitForStyleSection,
   waitForContentOfSelectedElementsNode,
-  waitForElementsStyleSection,
   waitForPropertyToHighlight,
   waitForStyleRule,
   expandSelectedNodeRecursively,
@@ -53,14 +51,6 @@ const deletePropertyByBackspace = async (selector: string, root?: puppeteer.Elem
   await frontend.keyboard.press('Backspace');
   await frontend.keyboard.press('Tab');
   await waitFor('.tree-outline .child-editing', root);
-};
-
-const goToResourceAndWaitForStyleSection = async (path: string) => {
-  await goToResource(path);
-  await waitForElementsStyleSection();
-
-  // Check to make sure we have the correct node selected after opening a file.
-  await waitForPartialContentOfSelectedElementsNode('<body>\u200B');
 };
 
 describe('The Styles pane', async () => {

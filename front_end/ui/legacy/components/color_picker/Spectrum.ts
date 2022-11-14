@@ -467,6 +467,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     for (const palette of this.palettes.values()) {
       this.palettePanel.appendChild(this.createPreviewPaletteElement(palette));
     }
+    this.contentElement.scrollIntoView({block: 'end'});
   }
 
   private togglePalettePanel(show: boolean): void {

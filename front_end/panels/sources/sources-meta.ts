@@ -1829,17 +1829,11 @@ UI.Context.registerListener({
   },
   async loadListener() {
     const Sources = await loadSourcesModule();
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.BREAKPOINT_VIEW)) {
+      return Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance();
+    }
     return Sources.JavaScriptBreakpointsSidebarPane.JavaScriptBreakpointsSidebarPane.instance();
-  },
-});
 
-UI.Context.registerListener({
-  contextTypes() {
-    return [SDK.DebuggerModel.DebuggerPausedDetails];
-  },
-  async loadListener() {
-    const Sources = await loadSourcesModule();
-    return Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance();
   },
 });
 

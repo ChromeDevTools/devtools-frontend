@@ -394,6 +394,12 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
+  settingName: 'pauseOnUncaughtException',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.DEBUGGER,
   title: i18nLazyString(UIStrings.disableJavascript),
   settingName: 'javaScriptDisabled',

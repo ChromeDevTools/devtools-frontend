@@ -9,12 +9,15 @@ import * as Workspace from '../../../../../front_end/models/workspace/workspace.
 import * as SourcesComponents from '../../../../../front_end/panels/sources/components/components.js';
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {createContentProviderUISourceCode, setupMockedUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import {
+  describeWithMockConnection,
+} from '../../helpers/MockConnection.js';
 
 const HELLO_JS_FILE = 'hello.js';
 const TEST_JS_FILE = 'test.js';
@@ -110,6 +113,25 @@ class MockRevealer extends Common.Revealer.Revealer {
   async reveal(_object: Object, _omitFocus?: boolean|undefined): Promise<void> {
   }
 }
+
+describeWithMockConnection('targetSupportsIndependentPauseOnExceptionToggles', () => {
+  it('can correctly identify node targets as targets that are not supporting independent pause on exception toggles',
+     async () => {
+       const target = createTarget();
+       target.markAsNodeJSForTest();
+       const supportsIndependentPauses = Sources.BreakpointsSidebarPane.BreakpointsSidebarController
+                                             .targetSupportsIndependentPauseOnExceptionToggles();
+       assert.isFalse(supportsIndependentPauses);
+     });
+
+  it('can correctly identify non-node targets as targets that are supporting independent pause on exception toggles',
+     async () => {
+       createTarget();
+       const supportsIndependentPauses = Sources.BreakpointsSidebarPane.BreakpointsSidebarController
+                                             .targetSupportsIndependentPauseOnExceptionToggles();
+       assert.isTrue(supportsIndependentPauses);
+     });
+});
 
 describeWithEnvironment('BreakpointsSidebarController', () => {
   after(() => {
@@ -218,8 +240,9 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       };
       const expected: SourcesComponents.BreakpointsView.BreakpointsViewData = {
         breakpointsActive: true,
-        pauseOnExceptions: false,
+        pauseOnUncaughtExceptions: false,
         pauseOnCaughtExceptions: false,
+        independentPauseToggles: true,
         groups: testData.map(createExpectedBreakpointGroups),
       };
       assert.deepEqual(actual, expected);
@@ -637,15 +660,15 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
     breakpointManager.allBreakpointLocations.returns([]);
     const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
         {forceNew: true, breakpointManager, settings});
-    for (const pauseOnExceptions of [true, false]) {
+    for (const pauseOnUncaughtExceptions of [true, false]) {
       for (const pauseOnCaughtExceptions of [true, false]) {
-        controller.setPauseOnExceptions(pauseOnExceptions);
+        controller.setPauseOnUncaughtExceptions(pauseOnUncaughtExceptions);
         controller.setPauseOnCaughtExceptions(pauseOnCaughtExceptions);
 
         const data = await controller.getUpdatedBreakpointViewData();
-        assert.strictEqual(data.pauseOnExceptions, pauseOnExceptions);
+        assert.strictEqual(data.pauseOnUncaughtExceptions, pauseOnUncaughtExceptions);
         assert.strictEqual(data.pauseOnCaughtExceptions, pauseOnCaughtExceptions);
-        assert.strictEqual(settings.moduleSetting('pauseOnExceptionEnabled').get(), pauseOnExceptions);
+        assert.strictEqual(settings.moduleSetting('pauseOnUncaughtException').get(), pauseOnUncaughtExceptions);
         assert.strictEqual(settings.moduleSetting('pauseOnCaughtException').get(), pauseOnCaughtExceptions);
       }
     }

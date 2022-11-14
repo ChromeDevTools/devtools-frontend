@@ -29,7 +29,7 @@ const BREAKPOINT_LOCATION_SELECTOR = '.location';
 const REMOVE_FILE_BREAKPOINTS_SELECTOR = '.group-hover-actions > button[data-remove-breakpoint]';
 const REMOVE_SINGLE_BREAKPOINT_SELECTOR = '.breakpoint-item-location-or-actions > button[data-remove-breakpoint]';
 const EDIT_SINGLE_BREAKPOINT_SELECTOR = 'button[data-edit-breakpoint]';
-const PAUSE_ON_EXCEPTIONS_SELECTOR = '.pause-on-exceptions';
+const PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR = '.pause-on-uncaught-exceptions';
 const PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR = '.pause-on-caught-exceptions';
 const TABBABLE_SELECTOR = '[tabindex="0"]';
 const SUMMARY_SELECTOR = 'summary';
@@ -37,15 +37,17 @@ const SUMMARY_SELECTOR = 'summary';
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderNoBreakpoints(
-    {pauseOnExceptions, pauseOnCaughtExceptions}: {pauseOnExceptions: boolean, pauseOnCaughtExceptions: boolean}):
+    {pauseOnUncaughtExceptions, pauseOnCaughtExceptions, independentPauseToggles}:
+        {pauseOnUncaughtExceptions: boolean, pauseOnCaughtExceptions: boolean, independentPauseToggles: boolean}):
     Promise<SourcesComponents.BreakpointsView.BreakpointsView> {
   const component = new SourcesComponents.BreakpointsView.BreakpointsView();
   renderElementIntoDOM(component);
 
   component.data = {
     breakpointsActive: true,
-    pauseOnExceptions,
+    pauseOnUncaughtExceptions,
     pauseOnCaughtExceptions,
+    independentPauseToggles,
     groups: [],
   };
   await coordinator.done();
@@ -66,8 +68,9 @@ async function renderSingleBreakpoint(
 
   const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
     breakpointsActive: true,
-    pauseOnExceptions: false,
+    pauseOnUncaughtExceptions: false,
     pauseOnCaughtExceptions: false,
+    independentPauseToggles: true,
     groups: [
       {
         name: 'test1.js',
@@ -103,8 +106,9 @@ async function renderMultipleBreakpoints(): Promise<{
 
   const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
     breakpointsActive: true,
-    pauseOnExceptions: false,
+    pauseOnUncaughtExceptions: false,
     pauseOnCaughtExceptions: false,
+    independentPauseToggles: true,
     groups: [
       {
         name: 'test1.js',
@@ -443,8 +447,9 @@ describeWithEnvironment('BreakpointsView', () => {
 
     const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
       breakpointsActive: true,
-      pauseOnExceptions: false,
+      pauseOnUncaughtExceptions: false,
       pauseOnCaughtExceptions: false,
+      independentPauseToggles: true,
       groups: [
         {
           name: 'test1.js',
@@ -547,32 +552,37 @@ describeWithEnvironment('BreakpointsView', () => {
 
   describe('pause on exceptions', () => {
     it('state is rendered correctly when disabled', async () => {
-      const component = await renderNoBreakpoints({pauseOnExceptions: false, pauseOnCaughtExceptions: false});
+      const component = await renderNoBreakpoints(
+          {pauseOnUncaughtExceptions: false, pauseOnCaughtExceptions: false, independentPauseToggles: true});
       assertShadowRoot(component.shadowRoot);
 
-      const pauseOnExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
-      assertNotNullOrUndefined(pauseOnExceptionsItem);
+      const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
 
-      const pauseOnExceptionsCheckbox = pauseOnExceptionsItem.querySelector('input');
-      assertNotNullOrUndefined(pauseOnExceptionsCheckbox);
-      assertElement(pauseOnExceptionsCheckbox, HTMLInputElement);
-      assert.isFalse(pauseOnExceptionsCheckbox.checked);
+      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assert.isFalse(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
-      assert.isNull(pauseOnCaughtExceptionsItem, 'Pause on caught exception toggle should not be rendered');
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
+
+      const pauseOnCaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+      assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assert.isFalse(pauseOnCaughtExceptionsCheckbox.checked);
     });
 
     it('state is rendered correctly when pausing on uncaught exceptions', async () => {
-      const component = await renderNoBreakpoints({pauseOnExceptions: true, pauseOnCaughtExceptions: false});
+      const component = await renderNoBreakpoints(
+          {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: true});
       assertShadowRoot(component.shadowRoot);
 
-      const pauseOnExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
-      assertNotNullOrUndefined(pauseOnExceptionsItem);
+      const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
 
-      const pauseOnExceptionsCheckbox = pauseOnExceptionsItem.querySelector('input');
-      assertNotNullOrUndefined(pauseOnExceptionsCheckbox);
-      assertElement(pauseOnExceptionsCheckbox, HTMLInputElement);
-      assert.isTrue(pauseOnExceptionsCheckbox.checked);
+      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsCheckbox);
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assert.isTrue(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
       assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
@@ -584,16 +594,17 @@ describeWithEnvironment('BreakpointsView', () => {
     });
 
     it('state is rendered correctly when pausing on all exceptions', async () => {
-      const component = await renderNoBreakpoints({pauseOnExceptions: true, pauseOnCaughtExceptions: true});
+      const component = await renderNoBreakpoints(
+          {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: true, independentPauseToggles: true});
       assertShadowRoot(component.shadowRoot);
 
-      const pauseOnExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
-      assertNotNullOrUndefined(pauseOnExceptionsItem);
+      const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
 
-      const pauseOnExceptionsCheckbox = pauseOnExceptionsItem.querySelector('input');
-      assertNotNullOrUndefined(pauseOnExceptionsCheckbox);
-      assertElement(pauseOnExceptionsCheckbox, HTMLInputElement);
-      assert.isTrue(pauseOnExceptionsCheckbox.checked);
+      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsCheckbox);
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assert.isTrue(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
       assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
@@ -604,19 +615,97 @@ describeWithEnvironment('BreakpointsView', () => {
       assert.isTrue(pauseOnCaughtExceptionsCheckbox.checked);
     });
 
-    it('triggers an event when disabling pausing on all exceptions', async () => {
-      const component = await renderNoBreakpoints({pauseOnExceptions: true, pauseOnCaughtExceptions: false});
+    it('state is rendered correctly when toggles are dependent and only pausing on uncaught exceptions', async () => {
+      const component = await renderNoBreakpoints(
+          {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: false});
       assertShadowRoot(component.shadowRoot);
 
-      const item = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
+      const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
+
+      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsCheckbox);
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assert.isTrue(pauseOnUncaughtExceptionsCheckbox.checked);
+
+      const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
+
+      const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
+      assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assert.isFalse(pauseOnCaughtExceptionsCheckbox.disabled);
+    });
+
+    it('state is rendered correctly when toggles are dependent and not pausing on uncaught exceptions', async () => {
+      const component = await renderNoBreakpoints(
+          {pauseOnUncaughtExceptions: false, pauseOnCaughtExceptions: false, independentPauseToggles: false});
+      assertShadowRoot(component.shadowRoot);
+
+      const pauseOnUncaughtExceptionsItem = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsItem);
+
+      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+      assertNotNullOrUndefined(pauseOnUncaughtExceptionsCheckbox);
+      assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assert.isFalse(pauseOnUncaughtExceptionsCheckbox.checked);
+
+      const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
+      assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
+
+      const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
+      assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assert.isTrue(pauseOnCaughtExceptionsCheckbox.disabled);
+    });
+
+    it('state is rendered correctly when toggles are dependent and pausing on uncaught exceptions is unchecked',
+       async () => {
+         const component = await renderNoBreakpoints(
+             {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: true, independentPauseToggles: false});
+         assertShadowRoot(component.shadowRoot);
+
+         const pauseOnUncaughtExceptionsItem =
+             component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
+         assertElement(pauseOnUncaughtExceptionsItem, HTMLDivElement);
+
+         {
+           // Click on the pause on exceptions checkbox to uncheck.
+           const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+           assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+           dispatchClickEvent(pauseOnUncaughtExceptionsCheckbox);
+           await coordinator.done();
+         }
+         {
+           // Check that clicking on it actually unchecked.
+           const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+           assertElement(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+           assert.isFalse(pauseOnUncaughtExceptionsCheckbox.checked);
+         }
+
+         // Check if the pause on caught exception checkbox is unchecked and disabled as a result.
+         const pauseOnCaughtExceptionsItem = component.shadowRoot?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
+         assertNotNullOrUndefined(pauseOnCaughtExceptionsItem);
+
+         const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
+         assertElement(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+         assert.isTrue(pauseOnCaughtExceptionsCheckbox.disabled);
+         assert.isFalse(pauseOnCaughtExceptionsCheckbox.checked);
+       });
+
+    it('triggers an event when disabling pausing on all exceptions', async () => {
+      const component = await renderNoBreakpoints(
+          {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: true});
+      assertShadowRoot(component.shadowRoot);
+
+      const item = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
       assertNotNullOrUndefined(item);
 
       const checkbox = item.querySelector('input');
       assertElement(checkbox, HTMLInputElement);
       const {checked} = checkbox;
 
-      const eventPromise = getEventPromise<SourcesComponents.BreakpointsView.PauseOnExceptionsStateChangedEvent>(
-          component, SourcesComponents.BreakpointsView.PauseOnExceptionsStateChangedEvent.eventName);
+      const eventPromise =
+          getEventPromise<SourcesComponents.BreakpointsView.PauseOnUncaughtExceptionsStateChangedEvent>(
+              component, SourcesComponents.BreakpointsView.PauseOnUncaughtExceptionsStateChangedEvent.eventName);
       checkbox.click();
       const {data} = await eventPromise;
 
@@ -624,7 +713,8 @@ describeWithEnvironment('BreakpointsView', () => {
     });
 
     it('triggers an event when enabling pausing on caught exceptions', async () => {
-      const component = await renderNoBreakpoints({pauseOnExceptions: true, pauseOnCaughtExceptions: false});
+      const component = await renderNoBreakpoints(
+          {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: true});
       assertShadowRoot(component.shadowRoot);
 
       const item = component.shadowRoot.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
@@ -636,6 +726,27 @@ describeWithEnvironment('BreakpointsView', () => {
 
       const eventPromise = getEventPromise<SourcesComponents.BreakpointsView.PauseOnCaughtExceptionsStateChangedEvent>(
           component, SourcesComponents.BreakpointsView.PauseOnCaughtExceptionsStateChangedEvent.eventName);
+      checkbox.click();
+      const {data} = await eventPromise;
+
+      assert.strictEqual(data.checked, !checked);
+    });
+
+    it('triggers an event when enabling pausing on uncaught exceptions', async () => {
+      const component = await renderNoBreakpoints(
+          {pauseOnUncaughtExceptions: false, pauseOnCaughtExceptions: true, independentPauseToggles: true});
+      assertShadowRoot(component.shadowRoot);
+
+      const item = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
+      assertNotNullOrUndefined(item);
+
+      const checkbox = item.querySelector('input');
+      assertElement(checkbox, HTMLInputElement);
+      const {checked} = checkbox;
+
+      const eventPromise =
+          getEventPromise<SourcesComponents.BreakpointsView.PauseOnUncaughtExceptionsStateChangedEvent>(
+              component, SourcesComponents.BreakpointsView.PauseOnUncaughtExceptionsStateChangedEvent.eventName);
       checkbox.click();
       const {data} = await eventPromise;
 
@@ -654,8 +765,9 @@ describeWithEnvironment('BreakpointsView', () => {
 
       const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
         breakpointsActive: true,
-        pauseOnExceptions: false,
+        pauseOnUncaughtExceptions: false,
         pauseOnCaughtExceptions: false,
+        independentPauseToggles: true,
         groups: [
           {
             name: 'test1.js',
@@ -713,16 +825,17 @@ describeWithEnvironment('BreakpointsView', () => {
     }
 
     it('pause on exceptions is tabbable', async () => {
-      const component = await renderNoBreakpoints({pauseOnExceptions: true, pauseOnCaughtExceptions: false});
+      const component = await renderNoBreakpoints(
+          {pauseOnUncaughtExceptions: true, pauseOnCaughtExceptions: false, independentPauseToggles: true});
       assertShadowRoot(component.shadowRoot);
 
       const focusableElements = component.shadowRoot.querySelectorAll(TABBABLE_SELECTOR);
       assertElements(focusableElements, HTMLElement);
       assert.lengthOf(focusableElements, 1);
 
-      const pauseOnExceptions = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
+      const pauseOnUncaughtExceptions = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
 
-      assert.deepEqual(focusableElements.item(0), pauseOnExceptions);
+      assert.deepEqual(focusableElements.item(0), pauseOnUncaughtExceptions);
     });
 
     describe('pressing the HOME key', () => {
@@ -740,9 +853,9 @@ describeWithEnvironment('BreakpointsView', () => {
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
         assertElement(selected, HTMLElement);
-        const pauseOnExceptions = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
-        assertElement(pauseOnExceptions, HTMLElement);
-        assert.strictEqual(selected, pauseOnExceptions);
+        const pauseOnUncaughtExceptions = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
+        assertElement(pauseOnUncaughtExceptions, HTMLElement);
+        assert.strictEqual(selected, pauseOnUncaughtExceptions);
       });
     });
 
@@ -750,12 +863,12 @@ describeWithEnvironment('BreakpointsView', () => {
       it('takes the user to the summary node of the last group (if last group is collapsed)', async () => {
         const {component} = await renderBreakpointsForKeyboardNavigation();
         assertShadowRoot(component.shadowRoot);
-        const pauseOnExceptions = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
-        assertElement(pauseOnExceptions, HTMLElement);
+        const pauseOnUncaughtExceptions = component.shadowRoot.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
+        assertElement(pauseOnUncaughtExceptions, HTMLElement);
 
         // Focus on the pause-on-exceptions line by clicking on it, then press End key.
-        dispatchClickEvent(pauseOnExceptions);
-        dispatchKeyDownEvent(pauseOnExceptions, {key: 'End', bubbles: true});
+        dispatchClickEvent(pauseOnUncaughtExceptions);
+        dispatchKeyDownEvent(pauseOnUncaughtExceptions, {key: 'End', bubbles: true});
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
@@ -800,7 +913,7 @@ describeWithEnvironment('BreakpointsView', () => {
            const {component} = await renderBreakpointsForKeyboardNavigation();
            assertShadowRoot(component.shadowRoot);
 
-           const pauseOnCaughtException = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
+           const pauseOnCaughtException = component.shadowRoot.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
            assertElement(pauseOnCaughtException, HTMLElement);
 
            // Focus on the pause on exception, and navigate one down.
@@ -897,10 +1010,10 @@ describeWithEnvironment('BreakpointsView', () => {
         await coordinator.done();
 
         const selected = component.shadowRoot.querySelector(TABBABLE_SELECTOR);
-        const pauseOnExceptions = component.shadowRoot.querySelector(PAUSE_ON_EXCEPTIONS_SELECTOR);
-        assertElement(pauseOnExceptions, HTMLDivElement);
+        const pauseOnUncaughtExceptions = component.shadowRoot.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
+        assertElement(pauseOnUncaughtExceptions, HTMLDivElement);
 
-        assert.strictEqual(selected, pauseOnExceptions);
+        assert.strictEqual(selected, pauseOnUncaughtExceptions);
       });
 
       it('on the first breakpoint item in an expanded group takes the user to the summary node', async () => {

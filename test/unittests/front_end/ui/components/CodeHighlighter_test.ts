@@ -66,8 +66,16 @@ it('can highlight JavaScript compatible with CodeMirror 5', testHighlight(`
 }`, 'text/typescript'));
 
   it('can highlight JSX', testHighlight(`
+[keyword function] [definition App]() {
+  [keyword return] (
+    <[tag div] [attribute className]=[attribute-value "App"]>
+          Hello World!
+    </[tag div]>);
+ }`, 'text/jsx'));
+
+  it('can highlight JSX within JavaScript files', testHighlight(`
 [keyword const] [definition t] = <[tag div] [attribute disabled]>hello</[tag div]>
-`, 'text/jsx'));
+`, 'text/javascript'));
 
   it('can highlight HTML', testHighlight(`
 [meta <!doctype html>]

@@ -66,6 +66,9 @@ export async function highlightNode(node: Element, mimeType: string): Promise<vo
 
 export async function languageFromMIME(mimeType: string): Promise<CodeMirror.LanguageSupport|null> {
   switch (mimeType) {
+    // The correct MIME type for JavaScript is text/javascript, but we also support
+    // the legacy JavaScript MIME types here for backwards compatibility.
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#legacy_javascript_mime_types
     case 'application/javascript':
     case 'application/ecmascript':
     case 'application/x-ecmascript':
@@ -82,11 +85,11 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
     case 'text/x-ecmascript':
     case 'text/x-javascript':
     case 'text/javascript':
-      // The correct MIME type for JavaScript is text/javascript, but we also support
-      // the legacy JavaScript MIME types here for backwards compatibility.
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#legacy_javascript_mime_types
-      return CodeMirror.javascript.javascript();
     case 'text/jsx':
+      // We intentionally allow JSX in normal .js as well as .jsx files,
+      // because there are simply too many existing applications and
+      // examples out there that use JSX within .js files, and we don't
+      // want to break them.
       return CodeMirror.javascript.javascript({jsx: true});
     case 'text/typescript':
       return CodeMirror.javascript.javascript({typescript: true});

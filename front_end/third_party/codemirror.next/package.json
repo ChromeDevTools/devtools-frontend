@@ -24,7 +24,7 @@
     "@codemirror/view": "6.2.0",
     "@lezer/common": "1.0.0",
     "@lezer/highlight": "1.1.2",
-    "@lezer/javascript": "bmeurer/lezer-parser-javascript#80446ea171c0f1a5f530459732634e830de70481",
+    "@lezer/javascript": "lezer-parser/javascript#4e0ad7a4c88a47aae0ec1c2e2687ad7adfec2af7",
     "@lezer/lr": "1.2.1",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "rollup-plugin-dts": "^4.0.0",

@@ -496,6 +496,14 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         void cookieModel.clear(undefined, includeThirdPartyCookies ? undefined : originForCookies);
       }
     }
+
+    if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
+      const databaseModel = target.model(DatabaseModel);
+      if (databaseModel) {
+        databaseModel.disable();
+        databaseModel.enable();
+      }
+    }
   }
 
   async doUpdate(): Promise<void> {

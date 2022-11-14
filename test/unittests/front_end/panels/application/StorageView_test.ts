@@ -70,4 +70,22 @@ describeWithMockConnection('StorageView', () => {
     assert.isTrue(clearByOriginSpy.calledOnceWithExactly({origin: testOrigin, storageTypes: 'cookies'}));
     assert.isTrue(cookieClearSpy.calledOnceWithExactly(undefined, testOrigin));
   });
+
+  it('also clears WebSQL on clearByStorageKey', async () => {
+    const databaseModel = target.model(Resources.DatabaseModel.DatabaseModel);
+    assertNotNullOrUndefined(databaseModel);
+    const databaseRemoved = new Promise(resolve => {
+      databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, resolve);
+    });
+    const testDatabase = new Resources.DatabaseModel.Database(
+        databaseModel, 'test-id' as Protocol.Database.DatabaseId, 'test-domain', 'test-name', '1');
+    databaseModel.enable();
+    databaseModel.addDatabase(testDatabase);
+    assert.deepEqual(databaseModel.databases()[0], testDatabase);
+
+    Resources.StorageView.StorageView.clearByStorageKey(target, testKey, '', [Protocol.Storage.StorageType.All], false);
+
+    await databaseRemoved;
+    assert.isEmpty(databaseModel.databases());
+  });
 });

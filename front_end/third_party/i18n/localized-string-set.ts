@@ -37,9 +37,9 @@ export class RegisteredFileStrings {
       return this.localizedStringSet;
     }
 
-    const localeData = this.localizedMessages.get(locale);
+    let localeData = this.localizedMessages.get(locale);
     if (!localeData) {
-      throw new Error(`No locale data registered for '${locale}'`);
+      localeData = {}; // Fallback to builtin strings.
     }
 
     this.localizedStringSet = new LocalizedStringSet(this.filename, this.stringStructure, locale, localeData);

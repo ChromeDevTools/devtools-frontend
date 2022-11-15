@@ -18,11 +18,11 @@ describe('i18n', () => {
     return registeredStrings.getLocalizedStringSetFor(locale);
   }
 
-  it('should throw an error when no locale data is registered for the requested locale', () => {
+  it('should not throw an error when no locale data is registered for the requested locale', () => {
     const uiStrings = {key: 'string to translate'};
     const registeredStrings = i18nInstance.registerFileStrings('test.ts', uiStrings);
 
-    assert.throws(() => registeredStrings.getLocalizedStringSetFor('en-US'), /en-US/);
+    assert.doesNotThrow(() => registeredStrings.getLocalizedStringSetFor('en-US'), /en-US/);
   });
 
   it('should throw an error when a requested message is not part of the UIStrings string structure', () => {

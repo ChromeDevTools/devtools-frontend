@@ -7,6 +7,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("elements") {
   testonly = true
   sources = [
+    "CSSPropertyPrompt_test.ts",
     "CSSRuleValidator_test.ts",
     "ElementsPanel_test.ts",
     "StylePropertyTreeElement_test.ts",

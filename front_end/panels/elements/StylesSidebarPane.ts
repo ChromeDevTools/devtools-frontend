@@ -1924,8 +1924,10 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         if (computedValue) {
           const color = Common.Color.Color.parse(computedValue);
           if (color) {
-            result.subtitleRenderer = swatchRenderer.bind(null, color);
+            result.subtitleRenderer = colorSwatchRenderer.bind(null, color);
             result.isCSSVariableColor = true;
+          } else if (Common.Color.Color.canBeWideGamut(computedValue)) {
+            result.subtitleRenderer = circularColorSwatchRenderer.bind(null, computedValue);
           } else {
             result.subtitleRenderer = computedValueSubtitleRenderer.bind(null, computedValue);
           }
@@ -1942,7 +1944,13 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       }
     }
 
-    function swatchRenderer(color: Common.Color.Color): Element {
+    function circularColorSwatchRenderer(colorText: string): Element {
+      const swatch = new InlineEditor.CircularColorSwatch.CircularColorSwatch();
+      swatch.renderColor(colorText);
+      return swatch;
+    }
+
+    function colorSwatchRenderer(color: Common.Color.Color): Element {
       const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
       swatch.renderColor(color);
       swatch.style.pointerEvents = 'none';

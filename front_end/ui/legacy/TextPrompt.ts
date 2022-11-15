@@ -772,6 +772,10 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       }
     }
   }
+
+  suggestBoxForTest(): SuggestBox|undefined {
+    return this.suggestBox;
+  }
 }
 
 const DefaultAutocompletionTimeout = 250;

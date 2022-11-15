@@ -231,7 +231,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return matches;
   }
 
-  private processColor(text: string, valueChild?: Node|null): Node {
+  private renderCircularColorSwatch(text: string, valueChild?: Node|null): Node {
+    const swatch = new InlineEditor.CircularColorSwatch.CircularColorSwatch();
+    swatch.renderColor(text);
+
+    if (!valueChild) {
+      valueChild = swatch.createChild('span');
+      valueChild.textContent = text;
+    }
+    swatch.appendChild(valueChild);
+    return swatch;
+  }
+
+  private renderColorSwatch(text: string, valueChild?: Node|null): Node {
     const useUserSettingFormat = this.editable();
     const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
     const tooltip =
@@ -262,6 +274,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return swatch;
   }
 
+  private processColor(text: string, valueChild?: Node|null): Node {
+    if (Common.Color.Color.canBeWideGamut(text)) {
+      return this.renderCircularColorSwatch(text, valueChild);
+    }
+
+    return this.renderColorSwatch(text, valueChild);
+  }
+
   private processVar(text: string): Node {
     const computedSingleValue = this.matchedStylesInternal.computeSingleVariableValue(this.style, text);
     if (!computedSingleValue) {
@@ -274,7 +294,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     UI.UIUtils.createTextChild(varSwatch, text);
     varSwatch.data = {text, computedValue, fromFallback, onLinkActivate: this.handleVarDefinitionActivate.bind(this)};
 
-    if (!computedValue || !Common.Color.Color.parse(computedValue)) {
+    if (!computedValue ||
+        (!Common.Color.Color.parse(computedValue) && !Common.Color.Color.canBeWideGamut(computedValue))) {
       return varSwatch;
     }
 

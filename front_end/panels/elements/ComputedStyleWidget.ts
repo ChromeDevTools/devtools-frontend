@@ -139,7 +139,20 @@ const createTraceElement =
       return trace;
     };
 
+const renderCircularSwatch = (text: string): Node => {
+  const swatch = new InlineEditor.CircularColorSwatch.CircularColorSwatch();
+  swatch.renderColor(text);
+  const valueElement = document.createElement('span');
+  valueElement.textContent = text;
+  swatch.append(valueElement);
+  return swatch;
+};
+
 const processColor = (text: string): Node => {
+  if (Common.Color.Color.canBeWideGamut(text)) {
+    return renderCircularSwatch(text);
+  }
+
   const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
   swatch.renderColor(text, true);
   const valueElement = document.createElement('span');

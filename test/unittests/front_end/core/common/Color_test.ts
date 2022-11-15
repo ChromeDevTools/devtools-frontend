@@ -473,6 +473,24 @@ describe('Color', () => {
       assert.isNull(result);
     }
   });
+
+  describe('canBeWideGamut helper', () => {
+    it('should return true for colors defined with `color`, `lch`, `oklch`, `lab` and `oklab`', () => {
+      assert.isTrue(Common.Color.Color.canBeWideGamut('color(srgb 34% 58% 73%)'));
+      assert.isTrue(Common.Color.Color.canBeWideGamut('color(srgb-linear 34% 58% 73%)'));
+      assert.isTrue(Common.Color.Color.canBeWideGamut('lch(58% 32 241deg)'));
+      assert.isTrue(Common.Color.Color.canBeWideGamut('oklch(64% .1 233deg)'));
+      assert.isTrue(Common.Color.Color.canBeWideGamut('lab(58% -16 -30)'));
+      assert.isTrue(Common.Color.Color.canBeWideGamut('oklab(64% -.1 -.1)'));
+    });
+
+    it('should return false for colors defined with `hex`, `rgb`, `hsl` and `hwb`', () => {
+      assert.isFalse(Common.Color.Color.canBeWideGamut('#000000'));
+      assert.isFalse(Common.Color.Color.canBeWideGamut('rgb(98.23% 21.8% 0%)'));
+      assert.isFalse(Common.Color.Color.canBeWideGamut('hsl(17.25 100% 46.07%)'));
+      assert.isFalse(Common.Color.Color.canBeWideGamut('hwb(17.25 0% 7.86%)'));
+    });
+  });
 });
 
 describe('Generator', () => {

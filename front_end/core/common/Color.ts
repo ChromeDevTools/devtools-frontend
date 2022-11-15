@@ -74,6 +74,19 @@ export class Color {
     }
   }
 
+  /**
+   * Colors that can be in color spaces different than sRGB.
+   *
+   * Those colors are represented with 'lab', 'lch', 'oklab', 'oklch' or 'color'.
+   * Even though sRGB colors can be defined with `color` function, for the sake
+   * of brevity we won't special case that and act as if we don't support
+   * color picker for those colors too.
+   */
+  static canBeWideGamut(text: string): boolean {
+    const match = text.toLowerCase().match(/^\s*(?:(lab)|(lch)|(oklab)|(oklch)|(color))\((.*)\)\s*$/);
+    return Boolean(match);
+  }
+
   static parse(text: string): Color|null {
     // Simple - #hex, nickname
     const value = text.toLowerCase().replace(/\s+/g, '');
@@ -742,7 +755,7 @@ export class Color {
 }
 
 export const Regex: RegExp =
-    /((?:rgb|hsl|hwb)a?\([^)]+\)|#[0-9a-fA-F]{8}|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|\b[a-zA-Z]+\b(?!-))/g;
+    /((?:rgba?|hsla?|hwba?|lab|lch|oklab|oklch|color)\([^)]+\)|#[0-9a-fA-F]{8}|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|\b[a-zA-Z]+\b(?!-))/g;
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

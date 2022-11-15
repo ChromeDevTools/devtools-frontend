@@ -763,6 +763,25 @@ const sub = (x, y) => x - y;
           ],
       );
     });
+
+    it('for a document with <script type="text/jsx">', () => {
+      assert.deepEqual(
+          htmlOutline(
+              '<!DOCTYPE html>\n' +
+              '<html>\n' +
+              '  <head>\n' +
+              '    <script type="text/jsx">\n' +
+              '      function hello(name) { return (<h1>Hello {name}</h1>); }\n' +
+              '      function goodbye(name) { return (<h1>Goodbye, {name}, until next time!</h1>); };\n' +
+              '    </script>\n' +
+              '  </head>\n' +
+              '</html>'),
+          [
+            {title: 'hello', subtitle: '(name)', lineNumber: 4, columnNumber: 15},
+            {title: 'goodbye', subtitle: '(name)', lineNumber: 5, columnNumber: 15},
+          ],
+      );
+    });
   });
 
   describe('generates a reasonable C++ outline', () => {

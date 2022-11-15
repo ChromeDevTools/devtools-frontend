@@ -21,6 +21,7 @@ generate_css("css_files") {
     "serviceWorkerCacheViews.css",
     "serviceWorkerUpdateCycleView.css",
     "serviceWorkersView.css",
+    "sharedStorageEventsView.css",
     "storageView.css",
   ]
 }
@@ -52,6 +53,7 @@ devtools_module("application") {
     "ServiceWorkerCacheViews.ts",
     "ServiceWorkerUpdateCycleView.ts",
     "ServiceWorkersView.ts",
+    "SharedStorageEventsView.ts",
     "SharedStorageModel.ts",
     "StorageItemsView.ts",
     "StorageView.ts",

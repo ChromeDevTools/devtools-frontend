@@ -3905,6 +3905,9 @@
   "panels/application/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "Version"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Click on any shared storage event to display the event parameters."
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Clear All"
   },

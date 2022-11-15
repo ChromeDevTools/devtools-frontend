@@ -3905,6 +3905,9 @@
   "panels/application/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "V̂ér̂śîón̂"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Ĉĺîćk̂ ón̂ án̂ý ŝh́âŕêd́ ŝt́ôŕâǵê év̂én̂t́ t̂ó d̂íŝṕl̂áŷ t́ĥé êv́êńt̂ ṕâŕâḿêt́êŕŝ."
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Ĉĺêár̂ Ál̂ĺ"
   },

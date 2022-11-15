@@ -14,6 +14,7 @@ ts_library("application") {
     "ReportingApiReportsView_test.ts",
     "ReportingApiView_test.ts",
     "ServiceWorkerUpdateCycleView_test.ts",
+    "SharedStorageEventsView_test.ts",
     "SharedStorageModel_test.ts",
     "StorageView_test.ts",
     "TrustTokensTreeElement_test.ts",

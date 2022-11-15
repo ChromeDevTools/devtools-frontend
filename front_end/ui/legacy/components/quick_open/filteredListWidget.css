@@ -18,34 +18,22 @@
   --override-filtered-list-widget-highlight-text-background-color: rgb(255 255 255 / 75%);
 }
 
-.filtered-list-widget-prompt-element {
-  flex: 0 0 34px;
-  border: 0;
-  margin: 0;
-  padding: 0 6px;
-  z-index: 1;
-  font-size: inherit;
+.hbox {
+  flex: 0 0 40px;
+  align-items: center;
+}
+
+.filtered-list-widget-hint {
+  color: var(--color-text-disabled);
+  padding: 12px;
 }
 
 devtools-text-prompt {
-  flex: 0 0 40px;
+  flex-grow: 1;
   font-size: 14px;
   font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
   line-height: 16px;
   padding: 12px;
-}
-
-.filtered-list-widget-hint {
-  width: 100%;
-  flex: 0 0 30px;
-  font-size: 12px;
-  line-height: 30px;
-  padding: 0 12px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--color-text-secondary);
-  background: var(--color-background-elevation-1);
-  border-top: 1px solid var(--color-details-hairline);
 }
 
 .filtered-list-widget-progress {

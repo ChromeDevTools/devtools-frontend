@@ -67,13 +67,15 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.contentElement.addEventListener('keydown', listener, true);
     UI.ARIAUtils.markAsCombobox(this.contentElement);
 
+    const hbox = this.contentElement.createChild('div', 'hbox');
+
     this.inputBoxElement = new TextPrompt.TextPrompt.TextPrompt();
     this.inputBoxElement.data = {ariaLabel: i18nString(UIStrings.quickOpenPrompt), prefix: '', suggestion: ''};
     this.inputBoxElement.addEventListener(
         TextPrompt.TextPrompt.PromptInputEvent.eventName, this.onInput.bind(this), false);
-    this.contentElement.appendChild(this.inputBoxElement);
+    hbox.appendChild(this.inputBoxElement);
 
-    this.hintElement = this.contentElement.createChild('div', 'filtered-list-widget-hint');
+    this.hintElement = hbox.createChild('span', 'filtered-list-widget-hint');
 
     this.bottomElementsContainer = this.contentElement.createChild('div', 'vbox');
     this.progressElement = this.bottomElementsContainer.createChild('div', 'filtered-list-widget-progress');
@@ -491,6 +493,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
   }
 
   private async queryChanged(): Promise<void> {
+    this.hintElement.classList.toggle('hidden', Boolean(this.query));
     if (this.queryChangedCallback) {
       await this.queryChangedCallback(this.query);
     }

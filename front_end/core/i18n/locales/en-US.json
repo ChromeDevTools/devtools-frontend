@@ -12783,7 +12783,7 @@
     "message": "Run command"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Type '?' to see available commands"
+    "message": "Type ? to see available commands"
   },
   "ui/legacy/components/source_frame/FontView.ts | font": {
     "message": "Font"

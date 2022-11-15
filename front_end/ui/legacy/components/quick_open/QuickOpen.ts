@@ -11,7 +11,7 @@ const UIStrings = {
   /**
   * @description Text of the hint shows under Quick Open input box
   */
-  typeToSeeAvailableCommands: 'Type \'?\' to see available commands',
+  typeToSeeAvailableCommands: 'Type ? to see available commands',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/QuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

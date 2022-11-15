@@ -87,9 +87,8 @@ describeWithMockConnection('ConsoleView', () => {
     const fileManager = Workspace.FileManager.FileManager.instance();
     const fileManagerSave = sinon.stub(fileManager, 'save').resolves({fileSystemPath: FILENAME});
     const fileManagerAppendCall = new Promise<void>(
-        resolve => sinon
-                       .stub(fileManager, 'append')
-                       // .withArgs(FILENAME, 'message 1\nmessage 2\n')
+        resolve => sinon.stub(fileManager, 'append')
+                       .withArgs(FILENAME, sinon.match('message 1\nmessage 2\n'))
                        .callsFake((_1, _2) => resolve()));
     const fileManagerCloseCall =
         new Promise<void>(resolve => sinon.stub(fileManager, 'close').callsFake(_ => resolve()));

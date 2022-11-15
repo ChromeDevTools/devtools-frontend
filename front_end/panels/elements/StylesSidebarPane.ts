@@ -69,6 +69,7 @@ import {
 } from './StylePropertiesSection.js';
 
 import * as LayersWidget from './LayersWidget.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 const UIStrings = {
   /**
@@ -1592,35 +1593,42 @@ export class SectionBlock {
 export class IdleCallbackManager {
   private discarded: boolean;
   private readonly promises: Promise<void>[];
+  private readonly queue: {fn: () => void, resolve: () => void, reject: (err: unknown) => void}[];
   constructor() {
     this.discarded = false;
     this.promises = [];
+    this.queue = [];
   }
 
   discard(): void {
     this.discarded = true;
   }
 
-  schedule(fn: () => void, timeout: number = 100): void {
+  schedule(fn: () => void): void {
     if (this.discarded) {
       return;
     }
-    this.promises.push(new Promise((resolve, reject) => {
-      const run = (): void => {
-        try {
-          fn();
-          resolve();
-        } catch (err) {
-          reject(err);
+    const promise = new Promise<void>((resolve, reject) => {
+      this.queue.push({fn, resolve, reject});
+    });
+    this.promises.push(promise);
+    this.scheduleIdleCallback(/* timeout=*/ 100);
+  }
+
+  protected scheduleIdleCallback(timeout: number): void {
+    window.requestIdleCallback(() => {
+      const next = this.queue.shift();
+      assertNotNullOrUndefined(next);
+
+      try {
+        if (!this.discarded) {
+          next.fn();
         }
-      };
-      window.requestIdleCallback(() => {
-        if (this.discarded) {
-          return resolve();
-        }
-        run();
-      }, {timeout});
-    }));
+        next.resolve();
+      } catch (err) {
+        next.reject(err);
+      }
+    }, {timeout});
   }
 
   awaitDone(): Promise<void[]> {

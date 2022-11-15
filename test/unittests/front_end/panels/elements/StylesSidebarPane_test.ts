@@ -103,3 +103,41 @@ describeWithRealConnection('StylesSidebarPane', async () => {
     await stylesSidebarPane.trackURLForChanges(URL);  // Clean up diff subscription
   });
 });
+
+describe('IdleCallbackManager', () => {
+  let Elements: typeof ElementsModule;
+  before(async () => {
+    Elements = await import('../../../../../front_end/panels/elements/elements.js');
+  });
+
+  // IdleCallbackManager delegates work using requestIdleCallback, which does not generally execute requested callbacks
+  // in order. This test verifies that callbacks do happen in order even if timeouts are run out.
+  it('schedules callbacks in order', async () => {
+    // Override the default timeout with a very short one
+    class QuickIdleCallbackManager extends Elements.StylesSidebarPane.IdleCallbackManager {
+      protected scheduleIdleCallback(_: number): void {
+        super.scheduleIdleCallback(1);
+      }
+    }
+
+    const timeout = (time: number) => new Promise<void>(resolve => setTimeout(resolve, time));
+
+    const elements: number[] = [];
+
+    const callbacks = new QuickIdleCallbackManager();
+    callbacks.schedule(() => elements.push(0));
+    callbacks.schedule(() => elements.push(1));
+    callbacks.schedule(() => elements.push(2));
+    callbacks.schedule(() => elements.push(3));
+    await timeout(10);
+    callbacks.schedule(() => elements.push(4));
+    callbacks.schedule(() => elements.push(5));
+    callbacks.schedule(() => elements.push(6));
+    callbacks.schedule(() => elements.push(7));
+    await timeout(10);
+
+    await callbacks.awaitDone();
+
+    assert.deepEqual(elements, [0, 1, 2, 3, 4, 5, 6, 7]);
+  });
+});

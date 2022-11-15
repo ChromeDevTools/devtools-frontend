@@ -286,6 +286,17 @@ export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) =
   });
 }
 
+describeWithEnvironment.only = function(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
+  reset: true,
+}) {
+  // eslint-disable-next-line rulesdir/no_only
+  return describe.only(`env-${title}`, () => {
+    before(async () => await initializeGlobalVars(opts));
+    after(async () => await deinitializeGlobalVars());
+    describe(title, fn);
+  });
+};
+
 export async function initializeGlobalLocaleVars() {
   // Expose the locale.
   i18n.DevToolsLocale.DevToolsLocale.instance({

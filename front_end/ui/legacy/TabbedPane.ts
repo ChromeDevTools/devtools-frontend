@@ -235,6 +235,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     tab.setDelegate((this.delegate as TabbedPaneTabDelegate));
     console.assert(!this.tabsById.has(id), `Tabbed pane already contains a tab with id '${id}'`);
     this.tabsById.set(id, tab);
+    tab.tabElement.tabIndex = -1;
     if (index !== undefined) {
       this.tabs.splice(index, 0, tab);
     } else {
@@ -867,6 +868,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private hideTab(tab: TabbedPaneTab): void {
     tab.tabElement.removeAttribute('tabIndex');
     tab.tabElement.classList.remove('selected');
+    tab.tabElement.tabIndex = -1;
     tab.tabElement.setAttribute('aria-selected', 'false');
     tab.view.detach();
   }

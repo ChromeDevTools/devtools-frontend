@@ -12,7 +12,7 @@ module.exports = {
       category: 'Possible Errors',
     },
     fixable: 'code',
-    messages: {noOnly: 'Unexpected exlcusive mocha test'},
+    messages: {noOnly: 'Unexpected exclusive mocha test'},
     schema: []  // no options
   },
   create: function(context) {

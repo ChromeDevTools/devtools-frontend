@@ -18,9 +18,15 @@ const {assert} = chai;
 describeWithMockConnection('ConsoleView', () => {
   beforeEach(() => {
     UI.ActionRegistration.maybeRemoveActionExtension('console.clear');
+    UI.ActionRegistration.maybeRemoveActionExtension('console.clear.history');
     UI.ActionRegistration.maybeRemoveActionExtension('console.create-pin');
     UI.ActionRegistration.registerActionExtension({
       actionId: 'console.clear',
+      category: UI.ActionRegistration.ActionCategory.CONSOLE,
+      title: (): Platform.UIString.LocalizedString => 'mock' as Platform.UIString.LocalizedString,
+    });
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'console.clear.history',
       category: UI.ActionRegistration.ActionCategory.CONSOLE,
       title: (): Platform.UIString.LocalizedString => 'mock' as Platform.UIString.LocalizedString,
     });
@@ -35,6 +41,7 @@ describeWithMockConnection('ConsoleView', () => {
 
   afterEach(() => {
     UI.ActionRegistration.maybeRemoveActionExtension('console.clear');
+    UI.ActionRegistration.maybeRemoveActionExtension('console.clear.history');
     UI.ActionRegistration.maybeRemoveActionExtension('console.create-pin');
   });
 

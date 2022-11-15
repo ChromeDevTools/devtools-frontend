@@ -8,8 +8,8 @@ export class FakeStorage extends SDK.TracingModel.BackingStorage {
   appendString() {
   }
 
-  appendAccessibleString(): () => Promise<string|null> {
-    throw new Error('Not implemented yet');
+  appendAccessibleString(x: string): () => Promise<string|null> {
+    return () => Promise.resolve(x);
   }
 
   finishWriting() {

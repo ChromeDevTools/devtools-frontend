@@ -217,6 +217,36 @@ describeWithEnvironment('TimelineModel', () => {
       }));
     });
 
+    it('detects correct events for a click and keydown interaction', async () => {
+      const events = await loadTraceFile('slow-interaction-keydown.json.gz');
+      traceWithEvents(events);
+      const interactionsTrack =
+          timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
+      if (!interactionsTrack) {
+        assert.fail('No interactions track was found.');
+        return;
+      }
+      const foundInteractions = interactionsTrack.asyncEvents;
+      // We expect there to be 3 interactions:
+      // User clicks on input:
+      // 1.pointerdown, 2. pointerup, 3. click
+      // User types into input:
+      // 4. keydown, 5. keyup
+      assert.deepEqual(
+          foundInteractions.map(event => event.args.data.type),
+          ['pointerdown', 'pointerup', 'click', 'keydown', 'keyup']);
+
+      assert.deepEqual(foundInteractions.map(e => e.args.data.interactionId), [
+        // The first three events relate to the click, so they have the same InteractionID
+        7371,
+        7371,
+        7371,
+        // The final two relate to the keypress, so they have the same InteractionID
+        7378,
+        7378,
+      ]);
+    });
+
     it('finds all interaction events with a duration and interactionId', async () => {
       traceWithEvents([
         {

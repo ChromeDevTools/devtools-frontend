@@ -16,4 +16,8 @@ If you have created an example website to generate a trace, consider contributin
 
 Generated from the [long-interaction story](https://github.com/ChromeDevTools/performance-stories/tree/main/long-interaction). Contains one slow interaction which is the user clicking on a button.
 
+## slow-interaction-keydown
+
+Generated from the [long-interaction story](https://github.com/ChromeDevTools/performance-stories/tree/main/long-interaction). Contains one slow interaction which is the user typing into the input field. There is also another interaction representing the user clicking into the text field to focus it, but this is not a long interaction.
+
 

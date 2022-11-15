@@ -8,5 +8,6 @@ copy_to_gen("traces") {
   sources = [
     "basic.json.gz",
     "slow-interaction-button-click.json.gz",
+    "slow-interaction-keydown.json.gz",
   ]
 }

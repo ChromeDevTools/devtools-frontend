@@ -52,6 +52,7 @@ devtools_module("application") {
     "ServiceWorkerCacheViews.ts",
     "ServiceWorkerUpdateCycleView.ts",
     "ServiceWorkersView.ts",
+    "SharedStorageModel.ts",
     "StorageItemsView.ts",
     "StorageView.ts",
     "TrustTokensTreeElement.ts",

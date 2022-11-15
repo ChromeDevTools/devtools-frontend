@@ -235,6 +235,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   private domains: {
     [x: string]: boolean,
   };
+  // Holds main frame target.
   private target?: SDK.Target.Target;
   private databaseModel?: DatabaseModel|null;
   private previousHoveredElement?: FrameTreeElement;
@@ -408,10 +409,16 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   targetAdded(target: SDK.Target.Target): void {
+    if (target !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+      return;
+    }
+
     if (this.target) {
       return;
     }
+
     this.target = target;
+
     this.databaseModel = target.model(DatabaseModel);
     if (this.databaseModel) {
       this.databaseModel.addEventListener(DatabaseModelEvents.DatabaseAdded, this.databaseAdded, this);

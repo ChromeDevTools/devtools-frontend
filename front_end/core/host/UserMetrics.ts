@@ -300,6 +300,11 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.CSSHintShown, type, CSSHintType.MaxValue);
   }
+
+  lighthouseModeRun(type: LighthouseModeRun): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.LighthouseModeRun, type, LighthouseModeRun.MaxValue);
+  }
 }
 
 /**
@@ -1049,6 +1054,16 @@ export enum CSSHintType {
   Sizing = 11,
   FlexOrGridItem = 12,
   MaxValue = 13,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum LighthouseModeRun {
+  Navigation = 0,
+  Timespan = 1,
+  Snapshot = 2,
+  LegacyNavigation = 3,
+  MaxValue = 4,
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */

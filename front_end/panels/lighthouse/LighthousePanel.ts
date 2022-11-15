@@ -387,13 +387,33 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.buildReportUI(data as ReportJSON);
   }
 
-  private async startLighthouse(): Promise<void> {
+  private recordMetrics(flags: {mode: string, legacyNavigation: boolean}): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
 
+    switch (flags.mode) {
+      case 'navigation':
+        if (flags.legacyNavigation) {
+          Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.LegacyNavigation);
+        } else {
+          Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Navigation);
+        }
+        break;
+      case 'timespan':
+        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Timespan);
+        break;
+      case 'snapshot':
+        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Snapshot);
+        break;
+    }
+  }
+
+  private async startLighthouse(): Promise<void> {
     try {
       const inspectedURL = await this.controller.getInspectedURL({force: true});
       const categoryIDs = this.controller.getCategoryIDs();
       const flags = this.controller.getFlags();
+
+      this.recordMetrics(flags);
 
       this.currentLighthouseRun = {inspectedURL, categoryIDs, flags};
 

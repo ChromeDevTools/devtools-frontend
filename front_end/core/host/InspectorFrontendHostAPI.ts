@@ -380,4 +380,5 @@ export enum EnumeratedHistogram {
   StyleTextCopied = 'DevTools.StyleTextCopied',
   ManifestSectionSelected = 'DevTools.ManifestSectionSelected',
   CSSHintShown = 'DevTools.CSSHintShown',
+  LighthouseModeRun = 'DevTools.LighthouseModeRun',
 }

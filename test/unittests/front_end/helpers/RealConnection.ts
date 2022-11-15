@@ -46,10 +46,16 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
     await import('../../../../front_end/entrypoints/inspector_main/inspector_main-meta.js');
     let response = await fetch('/json/list');
     const targetList = await response.json();
-    if (targetList.length !== 1) {
-      throw new Error(`Unexpected number of targets detected: expected 1, got ${targetList.length}.`);
+
+    // There can be more than one target here. When debugging tests, the "main" test suite run and the debug test suite
+    // run happen in different contexts and don't share `initialized`, but the do share the same chrome instance and
+    // thus target list.
+    const mainTarget = targetList.find((t: {title: string}) => t.title === 'Karma');
+    if (!mainTarget) {
+      throw new Error('Main test target not found');
     }
-    const originalTargetId = targetList[0].id;
+
+    const originalTargetId = mainTarget.id;
     response = await fetch('/json/new');
     const target = await response.json();
     await fetch('/json/activate/' + originalTargetId);

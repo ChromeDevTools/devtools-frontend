@@ -5,5 +5,8 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("traces") {
-  sources = [ "basic.json.gz" ]
+  sources = [
+    "basic.json.gz",
+    "slow-interaction-button-click.json.gz",
+  ]
 }

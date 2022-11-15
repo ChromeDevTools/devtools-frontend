@@ -9,6 +9,7 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {loadTraceFile} from '../../helpers/TraceHelpers.js';
 import {FakeStorage} from '../../helpers/TimelineHelpers.js';
 
 // Various events listing processes and threads used by all the tests.
@@ -194,6 +195,28 @@ describeWithEnvironment('TimelineModel', () => {
   });
 
   describe('interaction events', () => {
+    it('pulls out the expected interaction events from a trace', async () => {
+      const events = await loadTraceFile('slow-interaction-button-click.json.gz');
+      traceWithEvents(events);
+      const interactionsTrack =
+          timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
+      if (!interactionsTrack) {
+        assert.fail('No interactions track was found.');
+        return;
+      }
+      const foundInteractions = interactionsTrack.asyncEvents;
+      // We expect there to be 3 interactions:
+      // 1. The pointerdown event when the user clicked.
+      // 2. The pointerup event.
+      // 3. The click event.
+      assert.lengthOf(foundInteractions, 3);
+      assert.deepEqual(foundInteractions.map(event => event.args.data.type), ['pointerdown', 'pointerup', 'click']);
+      // All interactions should have the same interactionId as they all map to the same user interaction.
+      assert.isTrue(foundInteractions.every(event => {
+        return event.args.data.interactionId === 1540;
+      }));
+    });
+
     it('finds all interaction events with a duration and interactionId', async () => {
       traceWithEvents([
         {

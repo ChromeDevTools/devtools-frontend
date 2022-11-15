@@ -12782,9 +12782,6 @@
   "ui/legacy/components/quick_open/quick_open-meta.ts | runCommand": {
     "message": "R̂ún̂ ćôḿm̂án̂d́"
   },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (P̂ŕêśŝ 'Én̂t́êŕ' t̂ó ĉón̂f́îŕm̂ ór̂ 'Éŝćâṕê' t́ô ćâńĉél̂.)"
-  },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "T̂ýp̂é '?' t̂ó ŝéê áv̂áîĺâb́l̂é ĉóm̂ḿâńd̂ś"
   },

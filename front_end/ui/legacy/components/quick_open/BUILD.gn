@@ -16,9 +16,7 @@ devtools_module("quick_open") {
     "CommandMenu.ts",
     "FilteredListWidget.ts",
     "HelpQuickOpen.ts",
-    "QuickInput.ts",
     "QuickOpen.ts",
-    "QuickPick.ts",
   ]
 
   deps = [

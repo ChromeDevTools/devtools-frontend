@@ -15,6 +15,7 @@ generate_css("css_files") {
     "frameDetailsReportView.css",
     "indexedDBViews.css",
     "interestGroupStorageView.css",
+    "preloading/preloadingView.css",
     "reportingApiReportsView.css",
     "resourcesPanel.css",
     "resourcesSidebar.css",
@@ -30,6 +31,7 @@ devtools_module("application") {
   sources = [
     "AppManifestView.ts",
     "ApplicationPanelCacheSection.ts",
+    "ApplicationPanelPreloadingSection.ts",
     "ApplicationPanelSidebar.ts",
     "ApplicationPanelTreeElement.ts",
     "BackgroundServiceModel.ts",
@@ -58,6 +60,7 @@ devtools_module("application") {
     "StorageItemsView.ts",
     "StorageView.ts",
     "TrustTokensTreeElement.ts",
+    "preloading/PreloadingView.ts",
   ]
 
   deps = [

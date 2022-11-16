@@ -400,6 +400,10 @@ export class MainImpl {
         Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES,
         'Highlight important DOM properties in the Object Properties viewer');
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, 'Enable Preloading Status Panel in Application panel',
+        true);
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
       'cssTypeComponentLength',

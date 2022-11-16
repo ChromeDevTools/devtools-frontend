@@ -2261,6 +2261,9 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "R̂éf̂ŕêśĥ Ćâćĥéŝ"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | preloadingAndPrerendering": {
+    "message": "P̂ŕêĺôád̂ín̂ǵ & P̂ŕêŕêńd̂ér̂ín̂ǵ"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Âṕp̂ĺîćât́îón̂"
   },
@@ -2314,6 +2317,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Ôṕêńêd́ Ŵín̂d́ôẃŝ"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloadingAndPrerendering": {
+    "message": "P̂ŕêĺôád̂ín̂ǵ & P̂ŕêŕêńd̂ér̂ín̂ǵ"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "R̂éf̂ŕêśĥ Ín̂d́êx́êd́D̂B́"

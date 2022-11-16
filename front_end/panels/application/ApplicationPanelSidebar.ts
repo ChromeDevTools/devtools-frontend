@@ -43,6 +43,7 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {BackForwardCacheTreeElement, ServiceWorkerCacheTreeElement} from './ApplicationPanelCacheSection.js';
+import {PreloadingTreeElement} from './ApplicationPanelPreloadingSection.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {AppManifestView} from './AppManifestView.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
@@ -107,6 +108,10 @@ const UIStrings = {
   *@description Text in Application Panel Sidebar of the Application panel
   */
   backgroundServices: 'Background Services',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  preloadingAndPrerendering: 'Preloading & Prerendering',
   /**
   *@description Text for rendering frames
   */
@@ -225,6 +230,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement|undefined;
   pushMessagingTreeElement: BackgroundServiceTreeElement|undefined;
   reportingApiTreeElement: ReportingApiTreeElement|undefined;
+  preloadingTreeElement: PreloadingTreeElement|undefined;
   private readonly resourcesSection: ResourcesSection;
   private readonly databaseTableViews: Map<DatabaseModelDatabase, {
     [x: string]: DatabaseTableView,
@@ -357,6 +363,15 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       this.reportingApiTreeElement = new ReportingApiTreeElement(panel);
       backgroundServiceTreeElement.appendChild(this.reportingApiTreeElement);
     }
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL)) {
+      const preloadingSectionTitle = i18nString(UIStrings.preloadingAndPrerendering);
+      const preloadingSectionTreeElement = this.addSidebarSection(preloadingSectionTitle);
+
+      this.preloadingTreeElement = new PreloadingTreeElement(panel);
+      preloadingSectionTreeElement.appendChild(this.preloadingTreeElement);
+    }
+
     const resourcesSectionTitle = i18nString(UIStrings.frames);
     const resourcesTreeElement = this.addSidebarSection(resourcesSectionTitle);
     this.resourcesSection = new ResourcesSection(panel, resourcesTreeElement);

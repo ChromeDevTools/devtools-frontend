@@ -2261,6 +2261,9 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Refresh Caches"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | preloadingAndPrerendering": {
+    "message": "Preloading & Prerendering"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Application"
   },
@@ -2314,6 +2317,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Opened Windows"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloadingAndPrerendering": {
+    "message": "Preloading & Prerendering"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Refresh IndexedDB"

@@ -76,6 +76,10 @@ th:focus {
   outline: var(--color-primary) auto 1px;
 }
 
+th:hover.sortable {
+  background: var(--color-background-elevation-0);
+}
+
 .cell-resize-handle {
   top: 0;
   height: 100%;
@@ -135,4 +139,14 @@ th.firstVisibleColumn {
   position: absolute;
   right: 0.5em;
   top: 0.7em;
+}
+
+@media (forced-colors: active) {
+  th.sortable {
+    outline: Highlight auto 1px;
+  }
+
+  th:hover.sortable {
+    background-color: Highlight;
+  }
 }

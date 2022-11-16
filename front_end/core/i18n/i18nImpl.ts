@@ -7,15 +7,16 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {DevToolsLocale} from './DevToolsLocale.js';
+import {BUNDLED_LOCALES as BUNDLED_LOCALES_GENERATED, DEFAULT_LOCALE, LOCALES} from './locales.js';
 
 import type * as i18nTypes from './i18nTypes.js';
 
-const i18nInstance = new I18n.I18n.I18n();
+const i18nInstance = new I18n.I18n.I18n(LOCALES, DEFAULT_LOCALE);
 
 // All the locales that are part of the DevTools bundle and should not be fetched
 // remotely. Keep this list in sync with "copied_devtools_locale_files" in
 // "all_devtools_files.gni" (except the pseudo locales).
-const BUNDLED_LOCALES = new Set<string>(['en-US', 'en-XL', 'zh']);
+const BUNDLED_LOCALES = new Set<string>([...BUNDLED_LOCALES_GENERATED, 'en-XL']);
 
 /**
  * Look up the best available locale for the requested language through these fall backs:

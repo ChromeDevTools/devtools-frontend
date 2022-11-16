@@ -82,7 +82,7 @@ describe('getLocalizedLanguageRegion', () => {
 describe('getFormatLocalizedString', () => {
   let i18nInstance: i18nRaw.I18n.I18n;
   beforeEach(() => {
-    i18nInstance = new i18nRaw.I18n.I18n();
+    i18nInstance = new i18nRaw.I18n.I18n(['en-US'], 'en-US');
     i18nInstance.registerLocaleData('en-US', {});  // Always fall back to UIStrings.
   });
 

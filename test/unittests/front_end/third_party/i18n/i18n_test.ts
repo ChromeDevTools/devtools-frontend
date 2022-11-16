@@ -9,7 +9,7 @@ import * as i18n from '../../../../../front_end/third_party/i18n/i18n.js';
 describe('i18n', () => {
   let i18nInstance: i18n.I18n.I18n;
   beforeEach(() => {
-    i18nInstance = new i18n.I18n.I18n();  // A fresh instance for each test.
+    i18nInstance = new i18n.I18n.I18n(['en-US', 'de-DE'], 'en-US');  // A fresh instance for each test.
   });
 
   function stringSetWith(

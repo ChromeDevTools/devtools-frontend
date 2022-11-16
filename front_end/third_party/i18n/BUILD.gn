@@ -8,7 +8,6 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("i18n") {
   sources = [
     "i18n-impl.ts",
-    "locales.ts",
     "localized-string-set.ts",
   ]
 

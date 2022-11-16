@@ -6,6 +6,7 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../scripts/build/ninja/minify_json.gni")
+import("../../../scripts/build/ninja/node.gni")
 
 devtools_module("i18n") {
   sources = [
@@ -16,6 +17,7 @@ devtools_module("i18n") {
   ]
 
   deps = [
+    ":locales_js",
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../third_party/i18n:bundle",
@@ -35,99 +37,132 @@ devtools_entrypoint("bundle") {
   visibility = [ "*" ]
 }
 
-remote_devtools_locale_files = [
-  "af.json",
-  "am.json",
-  "ar.json",
-  "as.json",
-  "az.json",
-  "be.json",
-  "bg.json",
-  "bn.json",
-  "bs.json",
-  "ca.json",
-  "cs.json",
-  "cy.json",
-  "da.json",
-  "de.json",
-  "el.json",
-  "en-GB.json",
-  "es-419.json",
-  "es.json",
-  "et.json",
-  "eu.json",
-  "fa.json",
-  "fi.json",
-  "fil.json",
-  "fr-CA.json",
-  "fr.json",
-  "gl.json",
-  "gu.json",
-  "he.json",
-  "hi.json",
-  "hr.json",
-  "hu.json",
-  "hy.json",
-  "id.json",
-  "is.json",
-  "it.json",
-  "ja.json",
-  "ka.json",
-  "kk.json",
-  "km.json",
-  "kn.json",
-  "ko.json",
-  "ky.json",
-  "lo.json",
-  "lt.json",
-  "lv.json",
-  "mk.json",
-  "ml.json",
-  "mn.json",
-  "mr.json",
-  "ms.json",
-  "my.json",
-  "ne.json",
-  "nl.json",
-  "no.json",
-  "or.json",
-  "pa.json",
-  "pl.json",
-  "pt-PT.json",
-  "pt.json",
-  "ro.json",
-  "ru.json",
-  "si.json",
-  "sk.json",
-  "sl.json",
-  "sq.json",
-  "sr-Latn.json",
-  "sr.json",
-  "sv.json",
-  "sw.json",
-  "ta.json",
-  "te.json",
-  "th.json",
-  "tr.json",
-  "uk.json",
-  "ur.json",
-  "uz.json",
-  "vi.json",
-  "zh-HK.json",
-  "zh-TW.json",
-  "zu.json",
+remote_devtools_locales = [
+  "af",
+  "am",
+  "ar",
+  "as",
+  "az",
+  "be",
+  "bg",
+  "bn",
+  "bs",
+  "ca",
+  "cs",
+  "cy",
+  "da",
+  "de",
+  "el",
+  "en-GB",
+  "es-419",
+  "es",
+  "et",
+  "eu",
+  "fa",
+  "fi",
+  "fil",
+  "fr-CA",
+  "fr",
+  "gl",
+  "gu",
+  "he",
+  "hi",
+  "hr",
+  "hu",
+  "hy",
+  "id",
+  "is",
+  "it",
+  "ja",
+  "ka",
+  "kk",
+  "km",
+  "kn",
+  "ko",
+  "ky",
+  "lo",
+  "lt",
+  "lv",
+  "mk",
+  "ml",
+  "mn",
+  "mr",
+  "ms",
+  "my",
+  "ne",
+  "nl",
+  "no",
+  "or",
+  "pa",
+  "pl",
+  "pt-PT",
+  "pt",
+  "ro",
+  "ru",
+  "si",
+  "sk",
+  "sl",
+  "sq",
+  "sr-Latn",
+  "sr",
+  "sv",
+  "sw",
+  "ta",
+  "te",
+  "th",
+  "tr",
+  "uk",
+  "ur",
+  "uz",
+  "vi",
+  "zh-HK",
+  "zh-TW",
+  "zu",
 ]
 
-bundled_devtools_locale_files = [
-  "en-US.json",
-  "zh.json",
+bundled_devtools_locales = [
+  "en-US",
+  "zh",
 ]
+
+devtools_default_locale = "en-US"
+
+node_action("generate_locales_js") {
+  script = "front_end/core/i18n/generate-locales-js.js"
+
+  args = [ "--target-gen-dir", rebase_path(target_gen_dir, root_build_dir) ]
+  args += [ "--remote-locales" ]
+  args += remote_devtools_locales
+
+  args += [ "--bundled-locales" ]
+  args += bundled_devtools_locales
+
+  args += [ "--default-locale", devtools_default_locale ]
+
+  outputs = [ "$target_gen_dir/locales.js" ]
+  data = outputs
+
+  if (is_debug) {
+    metadata = {
+      grd_files = outputs
+    }
+  }
+}
+
+devtools_pre_built("locales_js") {
+  sources = [
+    "locales_js-tsconfig.json",
+    "locales.d.ts",
+  ]
+
+  deps = [ ":generate_locales_js" ]
+}
 
 minify_json("i18n_locales") {
   sources = []
   foreach(locale,
-          remote_devtools_locale_files + bundled_devtools_locale_files) {
-    sources += [ "locales/$locale" ]
+          remote_devtools_locales + bundled_devtools_locales) {
+    sources += [ "locales/$locale.json" ]
   }
 }
 
@@ -136,8 +171,8 @@ group("i18n_bundled_locales") {
 
   data = []
 
-  foreach(locale, bundled_devtools_locale_files) {
-    data += [ "$target_gen_dir/locales/$locale" ]
+  foreach(locale, bundled_devtools_locales) {
+    data += [ "$target_gen_dir/locales/$locale.json" ]
   }
 
   metadata = {

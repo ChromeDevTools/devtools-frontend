@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import type * as puppeteer from 'puppeteer';
 
 import {
@@ -125,8 +127,8 @@ export async function getCurrentConsoleMessages(withAnchor = false, callback?: (
   }, selector);
 }
 
-export async function getLastConsoleMessages() {
-  return (await getCurrentConsoleMessages()).at(-1);
+export async function getLastConsoleMessages(offset: number = 0) {
+  return (await getCurrentConsoleMessages()).at(-1 - offset);
 }
 
 export async function maybeGetCurrentConsoleMessages(withAnchor = false, callback?: () => Promise<void>) {
@@ -315,4 +317,15 @@ export async function clickOnContextMenu(selectorForNode: string, ctxMenuItemNam
   await click(node, {clickOptions: {button: 'right'}});
   const copyButton = await waitForAria(ctxMenuItemName);
   await copyButton.click();
+}
+
+/**
+ * Creates a function that runs a command and checks the nth output from the
+ * bottom
+ */
+export function checkCommandResultFunction(offset: number) {
+  return async function(command: string, expected: string, message?: string) {
+    await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, command);
+    assert.strictEqual(await getLastConsoleMessages(offset), expected, message);
+  };
 }

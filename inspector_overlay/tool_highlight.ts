@@ -28,7 +28,13 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {contrastRatio, contrastRatioAPCA, getAPCAThreshold, getContrastThreshold} from '../front_end/core/common/ColorUtils.js';  // eslint-disable-line rulesdir/es_modules_import
+// eslint-disable-next-line rulesdir/es_modules_import
+import {
+  contrastRatio,
+  contrastRatioAPCA,
+  getAPCAThreshold,
+  getContrastThreshold,
+} from '../front_end/core/common/ColorUtils.js';
 
 import {
   constrainNumber,
@@ -73,7 +79,7 @@ interface ContrastInfo {
   textOpacity: number;
 }
 
-interface ElementInfo {
+export interface ElementInfo {
   contrast?: ContrastInfo;
   tagName: string;
   idValue: string;
@@ -424,7 +430,7 @@ function getElementLayoutType(elementInfo: ElementInfo): string|null {
 /**
  * Create the DOM node that displays the description of the highlighted element
  */
-function createElementDescription(elementInfo: ElementInfo, colorFormat: string): Element {
+export function createElementDescription(elementInfo: ElementInfo, colorFormat: string): Element {
   const elementInfoElement = createElement('div', 'element-info');
   const elementInfoHeaderElement = createChild(elementInfoElement, 'div', 'element-info-header');
 
@@ -465,7 +471,7 @@ function createElementDescription(elementInfo: ElementInfo, colorFormat: string)
 
   const color = style['color'];
   if (color && color !== '#00000000') {
-    addColorRow('Color', color, colorFormat);
+    addColorRow('Color', style['color-css-text'] ?? color, style['color-css-text'] ? 'original' : colorFormat);
   }
 
   const fontFamily = style['font-family'];
@@ -476,7 +482,9 @@ function createElementDescription(elementInfo: ElementInfo, colorFormat: string)
 
   const bgcolor = style['background-color'];
   if (bgcolor && bgcolor !== '#00000000') {
-    addColorRow('Background', bgcolor, colorFormat);
+    addColorRow(
+        'Background', style['background-color-css-text'] ?? bgcolor,
+        style['background-color-css-text'] ? 'original' : colorFormat);
   }
 
   const margin = style['margin'];

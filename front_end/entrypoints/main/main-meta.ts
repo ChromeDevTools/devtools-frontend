@@ -671,12 +671,6 @@ Common.Settings.registerSettingExtension({
   ],
 });
 
-// Not all locales that are supported should also be made available in the
-// settings. Filter out pseudo locales e.g.
-function filterLocalesForSettings(): string[] {
-  return i18n.i18n.getAllSupportedDevToolsLocales().filter(locale => locale !== 'en-XL');
-}
-
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
@@ -690,7 +684,7 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.browserLanguage),
       text: i18nLazyString(UIStrings.browserLanguage),
     },
-    ...filterLocalesForSettings().map(locale => createOptionForLocale(locale)),
+    ...i18n.i18n.getAllSupportedDevToolsLocales().sort().map(locale => createOptionForLocale(locale)),
   ],
   reloadRequired: true,
 });

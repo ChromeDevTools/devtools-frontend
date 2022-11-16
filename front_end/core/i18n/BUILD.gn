@@ -125,19 +125,29 @@ bundled_devtools_locales = [
   "zh",
 ]
 
+if (is_debug) {
+  bundled_devtools_locales += [ "en-XL" ]
+}
+
 devtools_default_locale = "en-US"
 
 node_action("generate_locales_js") {
   script = "front_end/core/i18n/generate-locales-js.js"
 
-  args = [ "--target-gen-dir", rebase_path(target_gen_dir, root_build_dir) ]
+  args = [
+    "--target-gen-dir",
+    rebase_path(target_gen_dir, root_build_dir),
+  ]
   args += [ "--remote-locales" ]
   args += remote_devtools_locales
 
   args += [ "--bundled-locales" ]
   args += bundled_devtools_locales
 
-  args += [ "--default-locale", devtools_default_locale ]
+  args += [
+    "--default-locale",
+    devtools_default_locale,
+  ]
 
   outputs = [ "$target_gen_dir/locales.js" ]
   data = outputs
@@ -151,8 +161,8 @@ node_action("generate_locales_js") {
 
 devtools_pre_built("locales_js") {
   sources = [
-    "locales_js-tsconfig.json",
     "locales.d.ts",
+    "locales_js-tsconfig.json",
   ]
 
   deps = [ ":generate_locales_js" ]
@@ -160,8 +170,7 @@ devtools_pre_built("locales_js") {
 
 minify_json("i18n_locales") {
   sources = []
-  foreach(locale,
-          remote_devtools_locales + bundled_devtools_locales) {
+  foreach(locale, remote_devtools_locales + bundled_devtools_locales) {
     sources += [ "locales/$locale.json" ]
   }
 }

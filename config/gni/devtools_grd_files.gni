@@ -586,6 +586,7 @@ grd_files_debug_sources = [
   "front_end/core/i18n/i18nImpl.js",
   "front_end/core/i18n/i18nTypes.js",
   "front_end/core/i18n/locales.js",
+  "front_end/core/i18n/locales/en-XL.json",
   "front_end/core/i18n/time-utilities.js",
   "front_end/core/platform/DevToolsPath.js",
   "front_end/core/platform/UIString.js",

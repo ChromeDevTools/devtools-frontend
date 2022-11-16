@@ -16,7 +16,7 @@ const i18nInstance = new I18n.I18n.I18n(LOCALES, DEFAULT_LOCALE);
 // All the locales that are part of the DevTools bundle and should not be fetched
 // remotely. Keep this list in sync with "copied_devtools_locale_files" in
 // "all_devtools_files.gni" (except the pseudo locales).
-const BUNDLED_LOCALES = new Set<string>([...BUNDLED_LOCALES_GENERATED, 'en-XL']);
+const BUNDLED_LOCALES = new Set<string>([...BUNDLED_LOCALES_GENERATED]);
 
 /**
  * Look up the best available locale for the requested language through these fall backs:

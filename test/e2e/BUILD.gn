@@ -27,7 +27,6 @@ node_ts_library("tests") {
     "emulation",
     "extensions",
     "host",
-    "i18n",
     "inline_editor",
     "issues",
     "layers",

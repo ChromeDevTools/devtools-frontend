@@ -144,11 +144,3 @@ group("i18n_bundled_locales") {
     grd_files = data
   }
 }
-
-# For locales that are only used by tests, and not in releases.
-devtools_pre_built("i18n_test_locales") {
-  sources = [
-    "i18n_test_locales-tsconfig.json",
-    "locales/en-XL.json",
-  ]
-}

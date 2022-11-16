@@ -4,25 +4,21 @@
 
 import {click, scrollElementIntoView, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 
-export const openPanelViaMoreTools = async (panelTitle: string, isLocalized = false) => {
+export const openPanelViaMoreTools = async (panelTitle: string) => {
   // Head to the triple dot menu.
-  const tripleDotMenuText = isLocalized ? 'Ĉúŝt́ôḿîźê án̂d́ ĉón̂t́r̂ól̂ D́êv́T̂óôĺŝ' : 'Customize and control DevTools';
-  const tripleDotMenu = await waitForAria(tripleDotMenuText);
+  const tripleDotMenu = await waitForAria('Customize and control DevTools');
   await click(tripleDotMenu);
 
-  const moreToolsText = isLocalized ? 'M̂ór̂é t̂óôĺŝ' : 'More tools';
   // Open the “More Tools” option.
-  const moreTools = await waitForAria(`${moreToolsText}[role="menuitem"]`);
+  const moreTools = await waitForAria('More tools[role="menuitem"]');
   await moreTools.hover();
 
   // Click the desired menu item
   const menuItem = await waitForAria(`${panelTitle}[role="menuitem"]`);
   await click(menuItem);
 
-  const panelText = isLocalized ? 'p̂án̂él̂' : 'panel';
-
   // Wait for the corresponding panel to appear.
-  await waitForAria(`${panelTitle} ${panelText}[role="tabpanel"]`);
+  await waitForAria(`${panelTitle} panel[role="tabpanel"]`);
 };
 
 export const openSettingsTab = async (tabTitle: string) => {

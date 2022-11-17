@@ -65,6 +65,8 @@ export function stubNoopSettings() {
       addChangeListener: () => {},
       removeChangeListener: () => {},
       setDisabled: () => {},
+      setTitle: () => {},
+      title: () => {},
     }),
     moduleSetting: () => ({
       get: () => [],
@@ -72,6 +74,8 @@ export function stubNoopSettings() {
       addChangeListener: () => {},
       removeChangeListener: () => {},
       setDisabled: () => {},
+      setTitle: () => {},
+      title: () => {},
     }),
   } as unknown as Common.Settings.Settings);
 }

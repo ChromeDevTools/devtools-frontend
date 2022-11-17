@@ -57,7 +57,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
   private readonly layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
   private readonly layerTreeOutline: LayerViewer.LayerTreeOutline.LayerTreeOutline;
   private readonly rightSplitWidget: UI.SplitWidget.SplitWidget;
-  private readonly layers3DView: LayerViewer.Layers3DView.Layers3DView;
+  readonly layers3DView: LayerViewer.Layers3DView.Layers3DView;
   private tabbedPane: UI.TabbedPane.TabbedPane;
   private readonly layerDetailsView: LayerViewer.LayerDetailsView.LayerDetailsView;
   private readonly paintProfilerView: LayerPaintProfilerView;
@@ -97,9 +97,8 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     this.updateThrottler = new Common.Throttler.Throttler(100);
   }
 
-  static instance(opts = {forceNew: null}): LayersPanel {
-    const {forceNew} = opts;
-    if (!layersPanelInstance || forceNew) {
+  static instance(opts?: {forceNew: boolean}): LayersPanel {
+    if (!layersPanelInstance || opts?.forceNew) {
       layersPanelInstance = new LayersPanel();
     }
 
@@ -125,7 +124,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    if (this.model) {
+    if (target !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
     this.model = target.model(LayerTreeModel);

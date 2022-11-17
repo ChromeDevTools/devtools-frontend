@@ -40,6 +40,7 @@ group("front_end") {
     "panels/css_overview",
     "panels/elements",
     "panels/issues",
+    "panels/layers",
     "panels/lighthouse",
     "panels/media",
     "panels/network",

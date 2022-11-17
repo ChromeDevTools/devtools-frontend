@@ -11,14 +11,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {CSSOverviewCompletedView, type ContrastIssue} from './CSSOverviewCompletedView.js';
-import {Events, OverviewController} from './CSSOverviewController.js';
+
+import {Events, type OverviewController} from './CSSOverviewController.js';
 
 import {CSSOverviewModel, type GlobalStyleStats} from './CSSOverviewModel.js';
 import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
 import {type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let CSSOverviewPanelInstance: CSSOverviewPanel;
 
 export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManager.Observer {
   readonly #controller: OverviewController;
@@ -26,7 +24,6 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   readonly #processingView: CSSOverviewProcessingView;
   readonly #completedView: CSSOverviewCompletedView;
   #model?: CSSOverviewModel;
-  #target?: SDK.Target.Target;
   #backgroundColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
   #textColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
   #fillColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
@@ -38,12 +35,12 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   #globalStyleStats!: GlobalStyleStats;
   #textColorContrastIssues!: Map<string, ContrastIssue[]>;
 
-  private constructor() {
+  constructor(controller: OverviewController) {
     super('css_overview');
 
     this.element.classList.add('css-overview-panel');
 
-    this.#controller = new OverviewController();
+    this.#controller = controller;
     this.#startView = new CSSOverviewComponents.CSSOverviewStartView.CSSOverviewStartView();
     this.#startView.addEventListener(
         'overviewstartrequested', () => this.#controller.dispatchEventToListeners(Events.RequestOverviewStart));
@@ -63,18 +60,10 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
     this.#reset();
   }
 
-  static instance(): CSSOverviewPanel {
-    if (!CSSOverviewPanelInstance) {
-      CSSOverviewPanelInstance = new CSSOverviewPanel();
-    }
-    return CSSOverviewPanelInstance;
-  }
-
   targetAdded(target: SDK.Target.Target): void {
-    if (this.#target) {
+    if (target !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
-    this.#target = target;
     this.#completedView.initializeModels(target);
     const [model] = SDK.TargetManager.TargetManager.instance().models(CSSOverviewModel);
     this.#model = (model as CSSOverviewModel);

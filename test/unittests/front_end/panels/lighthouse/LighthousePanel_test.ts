@@ -35,10 +35,6 @@ describeWithMockConnection('LighthousePanel', async () => {
     } as unknown as Lighthouse.LighthouseReporterTypes.RunnerResult;
 
     beforeEach(async () => {
-      // @ts-ignore layout test global
-      self.UI = self.UI || {};
-      // @ts-ignore layout test global
-      self.UI.panels = self.UI.panels || {};
       LighthouseModule = await import('../../../../../front_end/panels/lighthouse/lighthouse.js');
 
       target = targetFactory();

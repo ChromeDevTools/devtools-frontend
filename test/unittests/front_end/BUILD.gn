@@ -37,6 +37,7 @@ group("front_end") {
     "panels/application",
     "panels/console",
     "panels/coverage",
+    "panels/css_overview",
     "panels/elements",
     "panels/issues",
     "panels/lighthouse",

@@ -1,0 +1,20 @@
+# Copyright 2022 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("css_overview") {
+  testonly = true
+  sources = [ "CSSOverviewPanel_test.ts" ]
+
+  deps = [
+    "../../../../../front_end/core/common:bundle",
+    "../../../../../front_end/core/protocol_client:bundle",
+    "../../../../../front_end/core/sdk:bundle",
+    "../../../../../front_end/generated:protocol",
+    "../../../../../front_end/panels/css_overview:bundle",
+    "../../../../../front_end/ui/legacy:bundle",
+    "../../helpers",
+  ]
+}

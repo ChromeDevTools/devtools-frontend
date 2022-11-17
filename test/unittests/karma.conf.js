@@ -161,7 +161,11 @@ module.exports = function(config) {
     customLaunchers: {
       'BrowserWithArgs': {
         base: browser,
-        flags: [`--remote-debugging-port=${REMOTE_DEBUGGING_PORT}`],
+        flags: [
+          `--remote-debugging-port=${REMOTE_DEBUGGING_PORT}`,
+          '--use-mock-keychain',
+          '--disable-features=DialMediaRouteProvider',
+        ],
       }
     },
 

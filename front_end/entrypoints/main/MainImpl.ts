@@ -199,12 +199,19 @@ export class MainImpl {
     // Record the intended locale, regardless whether we are able to fetch it or not.
     Host.userMetrics.language(devToolsLocale.locale);
 
+    if (devToolsLocale.locale !== 'en-US') {
+      // Always load en-US locale data as a fallback. This is important, newly added
+      // strings won't have a translation. If fetching en-US.json fails, something
+      // is seriously wrong and the exception should bubble up.
+      await i18n.i18n.fetchAndRegisterLocaleData('en-US');
+    }
+
     try {
       await i18n.i18n.fetchAndRegisterLocaleData(devToolsLocale.locale);
     } catch (error) {
       console.warn(`Unable to fetch & register locale data for '${devToolsLocale.locale}', falling back to 'en-US'. Cause: `, error);
-      // The i18n machinery automatically falls back to use the "in-code" UIStrings directly if it doesn't find
-      // any registered locale data for `devToolsLocale.locale`.
+      // Loading the actual locale data failed, tell DevTools to use 'en-US'.
+      devToolsLocale.forceFallbackLocale();
     }
   }
 

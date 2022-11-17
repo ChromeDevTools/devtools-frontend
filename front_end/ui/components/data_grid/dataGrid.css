@@ -149,4 +149,14 @@ th.firstVisibleColumn {
   th:hover.sortable {
     background-color: Highlight;
   }
+
+  [aria-sort="ascending"]::after {
+    forced-color-adjust: none;
+    border-bottom: 0.4em solid buttonText;
+  }
+
+  [aria-sort="descending"]::after {
+    forced-color-adjust: none;
+    border-top: 0.4em solid buttonText;
+  }
 }

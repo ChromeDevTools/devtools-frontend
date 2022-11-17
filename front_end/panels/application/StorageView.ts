@@ -269,7 +269,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    if (this.target) {
+    if (target !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
     this.target = target;

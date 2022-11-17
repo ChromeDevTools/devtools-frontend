@@ -428,10 +428,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       return;
     }
 
-    if (this.target) {
-      return;
-    }
-
     this.target = target;
 
     this.databaseModel = target.model(DatabaseModel);

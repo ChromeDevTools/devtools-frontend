@@ -112,7 +112,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   static frames(): ResourceTreeFrame[] {
     const result = [];
     for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
-      result.push(...resourceTreeModel.framesInternal.values());
+      result.push(...resourceTreeModel.frames());
     }
     return result;
   }

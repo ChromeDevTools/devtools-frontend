@@ -410,21 +410,12 @@ describeWithEnvironment('ResourceType class', () => {
 
 describe('ResourceType', () => {
   describe('mimeFromExtension', () => {
-    it('returns correct MIME type for .php files', () => {
-      assert.strictEqual(ResourceType.mimeFromExtension('php'), 'application/x-httpd-php');
-    });
-
     it('returns correct MIME type for .webmanifest files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('webmanifest'), 'application/manifest+json');
     });
   });
 
   describe('mimeFromURL', () => {
-    it('returns correct MIME type for .php files', () => {
-      const url = 'http://localhost/file.php' as Platform.DevToolsPath.UrlString;
-      assert.strictEqual(ResourceType.mimeFromURL(url), 'application/x-httpd-php');
-    });
-
     it('returns correct MIME type for .webmanifest files', () => {
       const url = 'http://localhost/app.webmanifest' as Platform.DevToolsPath.UrlString;
       assert.strictEqual(ResourceType.mimeFromURL(url), 'application/manifest+json');

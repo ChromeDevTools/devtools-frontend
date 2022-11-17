@@ -1521,6 +1521,18 @@ declare class EditorState {
     /**
     Find the values for a given language data field, provided by the
     the [`languageData`](https://codemirror.net/6/docs/ref/#state.EditorState^languageData) facet.
+
+    Examples of language data fields are...
+
+    - [`"commentTokens"`](https://codemirror.net/6/docs/ref/#commands.CommentTokens) for specifying
+      comment syntax.
+    - [`"autocomplete"`](https://codemirror.net/6/docs/ref/#autocomplete.autocompletion^config.override)
+      for providing language-specific completion sources.
+    - [`"wordChars"`](https://codemirror.net/6/docs/ref/#state.EditorState.charCategorizer) for adding
+      characters that should be considered part of words in this
+      language.
+    - [`"closeBrackets"`](https://codemirror.net/6/docs/ref/#autocomplete.CloseBracketConfig) controls
+      bracket closing behavior.
     */
     languageDataAt<T>(name: string, pos: number, side?: -1 | 0 | 1): readonly T[];
     /**
@@ -2614,7 +2626,7 @@ declare class EditorView {
     know you registered a given plugin, it is recommended to check
     the return value of this method.
     */
-    plugin<T>(plugin: ViewPlugin<T>): T | null;
+    plugin<T extends PluginValue>(plugin: ViewPlugin<T>): T | null;
     /**
     The top position of the document, in screen coordinates. This
     may be negative when the editor is scrolled down. Points
@@ -2932,6 +2944,11 @@ declare class EditorView {
     functions are called _after_ the new viewport has been computed,
     and thus **must not** introduce block widgets or replacing
     decorations that cover line breaks.
+
+    If you want decorated ranges to behave like atomic units for
+    cursor motion and deletion purposes, also provide the range set
+    containing the decorations to
+    [`EditorView.atomicRanges`](https://codemirror.net/6/docs/ref/#view.EditorView^atomicRanges).
     */
     static decorations: Facet<DecorationSet | ((view: EditorView) => DecorationSet), readonly (DecorationSet | ((view: EditorView) => DecorationSet))[]>;
     /**
@@ -3092,13 +3109,18 @@ interface KeyBinding {
     command function returns `false`, further bindings will be tried
     for the key.
     */
-    run: Command;
+    run?: Command;
     /**
     When given, this defines a second binding, using the (possibly
     platform-specific) key name prefixed with `Shift-` to activate
     this command.
     */
     shift?: Command;
+    /**
+    When this property is present, the function is called for every
+    key that is not a multi-stroke prefix.
+    */
+    any?: (view: EditorView, event: KeyboardEvent) => boolean;
     /**
     By default, key bindings apply when focus is on the editor
     content (the `"editor"` scope). Some extensions, mostly those
@@ -3241,7 +3263,7 @@ declare class MatchDecorator {
         The decoration to apply to matches, either directly or as a
         function of the match.
         */
-        decoration?: Decoration | ((match: RegExpExecArray, view: EditorView, pos: number) => Decoration);
+        decoration?: Decoration | ((match: RegExpExecArray, view: EditorView, pos: number) => Decoration | null);
         /**
         Customize the way decorations are added for matches. This
         function, when given, will be called for matches and should
@@ -3316,12 +3338,7 @@ declare function tooltips(config?: {
     for showing tooltips. You can provide a function here that
     returns an alternative rectangle.
     */
-    tooltipSpace?: (view: EditorView) => {
-        top: number;
-        left: number;
-        bottom: number;
-        right: number;
-    };
+    tooltipSpace?: (view: EditorView) => Rect;
 }): Extension;
 /**
 Describes a tooltip. Values of this type, when provided through
@@ -3404,9 +3421,16 @@ interface TooltipView {
     */
     update?(update: ViewUpdate): void;
     /**
-    Called when the tooltip has been (re)positioned.
+    Called when the tooltip is removed from the editor or the editor
+    is destroyed.
     */
-    positioned?(): void;
+    destroy?(): void;
+    /**
+    Called when the tooltip has been (re)positioned. The argument is
+    the [space](https://codemirror.net/6/docs/ref/#view.tooltips^config.tooltipSpace) available to the
+    tooltip.
+    */
+    positioned?(space: Rect): void;
 }
 /**
 Facet to which an extension can add a value to show a tooltip.
@@ -5421,6 +5445,7 @@ declare function html(config?: {
     document).
     */
     matchClosingTags?: boolean;
+    selfClosingTags?: boolean;
     /**
     Determines whether [`autoCloseTags`](https://codemirror.net/6/docs/ref/#lang-html.autoCloseTags)
     is included in the support extensions. Defaults to true.

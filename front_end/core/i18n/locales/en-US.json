@@ -5429,9 +5429,6 @@
   "panels/elements/StylesSidebarPane.ts | filterStyles": {
     "message": "Filter Styles"
   },
-  "panels/elements/StylesSidebarPane.ts | hiddenStyleCount": {
-    "message": "{n, plural, =1 {1 hidden rule} other {# hidden rules}}"
-  },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, Alt: ±0.1"
   },

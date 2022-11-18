@@ -72,7 +72,6 @@ export class Toolbar {
   enabled: boolean;
   private readonly shadowRoot: ShadowRoot;
   private contentElement: Element;
-  private insertionPoint: Element;
   private compactLayout = false;
 
   constructor(className: string, parentElement?: Element) {
@@ -84,7 +83,6 @@ export class Toolbar {
     this.shadowRoot =
         Utils.createShadowRootWithCoreStyles(this.element, {cssFile: toolbarStyles, delegatesFocus: undefined});
     this.contentElement = this.shadowRoot.createChild('div', 'toolbar-shadow');
-    this.insertionPoint = this.contentElement.createChild('slot');
   }
 
   hasCompactLayout(): boolean {
@@ -324,7 +322,7 @@ export class Toolbar {
     if (!this.enabled) {
       item.applyEnabledState(false);
     }
-    this.contentElement.insertBefore(item.element, this.insertionPoint);
+    this.contentElement.appendChild(item.element);
     this.hideSeparatorDupes();
   }
 
@@ -358,7 +356,6 @@ export class Toolbar {
     }
     this.items = [];
     this.contentElement.removeChildren();
-    this.insertionPoint = this.contentElement.createChild('slot');
   }
 
   setColor(color: string): void {

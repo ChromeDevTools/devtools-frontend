@@ -56,7 +56,7 @@
   color: var(--color-text-secondary);
 }
 
-.toolbar-item:last-of-type {
+.toolbar-item:last-child {
   flex-shrink: 1;
   justify-content: left;
 }

@@ -47,6 +47,7 @@ group("front_end") {
     "panels/network/components",
     "panels/profiler",
     "panels/protocol_monitor",
+    "panels/security",
     "panels/settings/components",
     "panels/settings/emulation",
     "panels/settings/emulation/components",

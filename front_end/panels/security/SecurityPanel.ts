@@ -490,7 +490,7 @@ const SignatureSchemeStrings = new Map([
 
 export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     SDK.TargetManager.SDKModelObserver<SecurityModel> {
-  private readonly mainView: SecurityMainView;
+  readonly mainView: SecurityMainView;
   private readonly sidebarMainViewElement: SecurityPanelSidebarTreeElement;
   private readonly sidebarTree: SecurityPanelSidebarTree;
   private readonly lastResponseReceivedForLoaderId: Map<string, SDK.NetworkRequest.NetworkRequest>;
@@ -727,7 +727,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
   }
 
   modelAdded(securityModel: SecurityModel): void {
-    if (this.securityModel) {
+    if (securityModel.target() !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
 

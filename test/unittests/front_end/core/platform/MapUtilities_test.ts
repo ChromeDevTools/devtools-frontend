@@ -33,4 +33,20 @@ describe('MapUtilities', () => {
       }
     });
   });
+  describe('getWithDefault', () => {
+    it('returns the default when it has no value', () => {
+      const expected = new Set();
+      const returned = Platform.MapUtilities.getWithDefault(new Map(), 'foo', () => expected);
+
+      assert.strictEqual(expected, returned);
+    });
+
+    it('returns the same item on successive calls', () => {
+      const data = new Map<string, Set<void>>();
+      const returnedFirst = Platform.MapUtilities.getWithDefault(data, 'foo', () => new Set());
+      const returnedSecond = Platform.MapUtilities.getWithDefault(data, 'foo', () => new Set());
+
+      assert.strictEqual(returnedFirst, returnedSecond);
+    });
+  });
 });

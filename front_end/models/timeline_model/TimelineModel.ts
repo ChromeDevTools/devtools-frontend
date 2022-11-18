@@ -700,7 +700,7 @@ export class TimelineModelImpl {
   }
 
   private buildGPUEvents(tracingModel: SDK.TracingModel.TracingModel): void {
-    const thread = tracingModel.getThreadByName('GPU Process', 'CrGpuMain');
+    const thread = tracingModel.getThreadByName('Gpu', 'CrGpuMain');
     if (!thread) {
       return;
     }

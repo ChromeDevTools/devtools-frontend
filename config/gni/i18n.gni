@@ -95,3 +95,11 @@ if (is_debug) {
 }
 
 devtools_default_locale = "en-US"
+
+remote_fetch_pattern =
+    "@HOST@/remote/serve_file/@VERSION@/core/i18n/locales/@LOCALE@.json"
+
+# Path relative to i18nImpl.ts. This is because we can't make assumptions
+# wether DevTools is in hosted mode (e.g web tests/e2e tests) or non-hosted
+# mode (devtools://devtools/bundled).
+local_fetch_pattern = "./locales/@LOCALE@.json"

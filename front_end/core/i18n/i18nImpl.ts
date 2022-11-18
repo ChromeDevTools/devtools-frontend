@@ -7,15 +7,20 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {DevToolsLocale} from './DevToolsLocale.js';
-import {BUNDLED_LOCALES as BUNDLED_LOCALES_GENERATED, DEFAULT_LOCALE, LOCALES} from './locales.js';
+import {
+  BUNDLED_LOCALES as BUNDLED_LOCALES_GENERATED,
+  DEFAULT_LOCALE,
+  LOCAL_FETCH_PATTERN,
+  LOCALES,
+  REMOTE_FETCH_PATTERN,
+} from './locales.js';
 
 import type * as i18nTypes from './i18nTypes.js';
 
 const i18nInstance = new I18n.I18n.I18n(LOCALES, DEFAULT_LOCALE);
 
 // All the locales that are part of the DevTools bundle and should not be fetched
-// remotely. Keep this list in sync with "copied_devtools_locale_files" in
-// "all_devtools_files.gni" (except the pseudo locales).
+// remotely.
 const BUNDLED_LOCALES = new Set<string>([...BUNDLED_LOCALES_GENERATED]);
 
 /**
@@ -42,12 +47,16 @@ export function getAllSupportedDevToolsLocales(): string[] {
  * specific locale, as some are bundled with DevTools while others
  * have to be fetched remotely.
  */
-function getLocaleFetchUrl(locale: Intl.UnicodeBCP47LocaleIdentifier): string {
-  const remoteBase = Root.Runtime.getRemoteBase();
-  if (remoteBase && remoteBase.base && !BUNDLED_LOCALES.has(locale)) {
-    return `${remoteBase.base}core/i18n/locales/${locale}.json`;
+function getLocaleFetchUrl(locale: Intl.UnicodeBCP47LocaleIdentifier, location: string): string {
+  const remoteBase = Root.Runtime.getRemoteBase(location);
+  if (remoteBase && remoteBase.version && !BUNDLED_LOCALES.has(locale)) {
+    const url = new URL(location);
+    return REMOTE_FETCH_PATTERN.replace('@HOST@', url.origin)
+        .replace('@VERSION@', remoteBase.version)
+        .replace('@LOCALE@', locale);
   }
-  return new URL(`../../core/i18n/locales/${locale}.json`, import.meta.url).toString();
+  const path = LOCAL_FETCH_PATTERN.replace('@LOCALE@', locale);
+  return new URL(path, import.meta.url).toString();
 }
 
 /**
@@ -56,8 +65,9 @@ function getLocaleFetchUrl(locale: Intl.UnicodeBCP47LocaleIdentifier): string {
  * Depending whether a locale is present in `bundledLocales`, the data will be
  * fetched locally or remotely.
  */
-export async function fetchAndRegisterLocaleData(locale: Intl.UnicodeBCP47LocaleIdentifier): Promise<void> {
-  const localeDataTextPromise = fetch(getLocaleFetchUrl(locale)).then(result => result.json());
+export async function fetchAndRegisterLocaleData(
+    locale: Intl.UnicodeBCP47LocaleIdentifier, location = self.location.toString()): Promise<void> {
+  const localeDataTextPromise = fetch(getLocaleFetchUrl(locale, location)).then(result => result.json());
   const timeoutPromise =
       new Promise((resolve, reject) => window.setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
   const localeData = await Promise.race([timeoutPromise, localeDataTextPromise]);

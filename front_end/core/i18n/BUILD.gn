@@ -57,6 +57,16 @@ node_action("generate_locales_js") {
     devtools_default_locale,
   ]
 
+  args += [
+    "--remote-fetch-pattern",
+    remote_fetch_pattern,
+  ]
+
+  args += [
+    "--local-fetch-pattern",
+    local_fetch_pattern,
+  ]
+
   outputs = [ "$target_gen_dir/locales.js" ]
   data = outputs
 

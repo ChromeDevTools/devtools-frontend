@@ -9,3 +9,7 @@ export const LOCALES: readonly Intl.UnicodeBCP47LocaleIdentifier[];
 export const BUNDLED_LOCALES: readonly Intl.UnicodeBCP47LocaleIdentifier[];
 
 export const DEFAULT_LOCALE:  Intl.UnicodeBCP47LocaleIdentifier;
+
+export const REMOTE_FETCH_PATTERN: string;
+
+export const LOCAL_FETCH_PATTERN: string;

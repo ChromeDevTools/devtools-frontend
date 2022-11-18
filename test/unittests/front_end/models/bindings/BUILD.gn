@@ -8,6 +8,7 @@ ts_library("bindings") {
   testonly = true
   sources = [
     "BreakpointManager_test.ts",
+    "DefaultScriptMapping_test.ts",
     "FileUtils_test.ts",
     "IgnoreListManager_test.ts",
     "LiveLocation_test.ts",

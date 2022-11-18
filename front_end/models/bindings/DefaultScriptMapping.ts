@@ -82,7 +82,12 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     if (!uiSourceCode) {
       return null;
     }
-    const {lineNumber, columnNumber = 0} = rawLocation;
+    const isInlineScriptWithoutSourceUrl = !script.hasSourceURL && script.isInlineScript();
+    const lineNumber = rawLocation.lineNumber - (isInlineScriptWithoutSourceUrl ? script.lineOffset : 0);
+    let columnNumber = rawLocation.columnNumber || 0;
+    if (isInlineScriptWithoutSourceUrl && !lineNumber && columnNumber) {
+      columnNumber -= script.columnOffset;
+    }
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
 
@@ -91,6 +96,10 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     const script = this.#uiSourceCodeToScriptsMap.get(uiSourceCode);
     if (!script) {
       return [];
+    }
+    if (!script.hasSourceURL && script.isInlineScript()) {
+      return [this.#debuggerModel.createRawLocation(
+          script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset)];
     }
     return [this.#debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
   }

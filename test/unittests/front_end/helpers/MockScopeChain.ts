@@ -17,6 +17,14 @@ interface LoadResult {
   errorDescription: Host.ResourceLoader.LoadErrorDescription;
 }
 
+interface ScriptDescription {
+  url: string;
+  content: string;
+  hasSourceURL?: boolean;
+  startLine?: number;
+  startColumn?: number;
+}
+
 export class MockProtocolBackend {
   #scriptSources = new Map<string, string>();
   #sourceMapContents = new Map<string, string>();
@@ -36,22 +44,30 @@ export class MockProtocolBackend {
     });
   }
 
-  async addScript(target: SDK.Target.Target, script: {url: string, content: string}, sourceMap: {
+  async addScript(target: SDK.Target.Target, scriptDescription: ScriptDescription, sourceMap: {
     url: string,
     content: string,
   }|null): Promise<SDK.Script.Script> {
     const scriptId = 'SCRIPTID.' + this.#nextScriptIndex++;
-    this.#scriptSources.set(scriptId, script.content);
+    this.#scriptSources.set(scriptId, scriptDescription.content);
+    const startLine = scriptDescription.startLine ?? 0;
+    const startColumn = scriptDescription.startColumn ?? 0;
+    const endLine = startLine + (scriptDescription.content.match(/^/gm)?.length ?? 1) - 1;
+    let endColumn = scriptDescription.content.length - scriptDescription.content.lastIndexOf('\n') - 1;
+    if (startLine === endLine) {
+      endColumn += startColumn;
+    }
+
     dispatchEvent(target, 'Debugger.scriptParsed', {
       scriptId,
-      url: script.url,
-      startLine: 0,
-      startColumn: 0,
-      endLine: (script.content.match(/^/gm)?.length ?? 1) - 1,
-      endColumn: script.content.length - script.content.lastIndexOf('\n') - 1,
+      url: scriptDescription.url,
+      startLine,
+      startColumn,
+      endLine,
+      endColumn,
       executionContextId: 1,
       hash: '',
-      hasSourceURL: false,
+      hasSourceURL: Boolean(scriptDescription.hasSourceURL),
       sourceMapURL: sourceMap?.url ?? '',
     });
 

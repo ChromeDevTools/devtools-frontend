@@ -409,6 +409,16 @@ describeWithEnvironment('ResourceType class', () => {
 });
 
 describe('ResourceType', () => {
+  describe('hasStyleSheet', () => {
+    it('holds true for documents', () => {
+      assert.isTrue(resourceTypes.Document.hasStyleSheets());
+    });
+
+    it('holds true for stylesheets', () => {
+      assert.isTrue(resourceTypes.Stylesheet.hasStyleSheets());
+    });
+  });
+
   describe('mimeFromExtension', () => {
     it('returns correct MIME type for .php files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('php'), 'application/x-httpd-php');

@@ -7,6 +7,7 @@ import * as BreakpointEditDialog from './BreakpointEditDialog.js';
 import * as BreakpointsSidebarPane from './BreakpointsSidebarPane.js';
 import * as CallStackSidebarPane from './CallStackSidebarPane.js';
 import * as CoveragePlugin from './CoveragePlugin.js';
+import * as CSSPlugin from './CSSPlugin.js';
 import * as DebuggerPausedMessage from './DebuggerPausedMessage.js';
 import * as DebuggerPlugin from './DebuggerPlugin.js';
 import * as EditingLocationHistoryManager from './EditingLocationHistoryManager.js';
@@ -39,6 +40,7 @@ export {
   BreakpointsSidebarPane,
   CallStackSidebarPane,
   CoveragePlugin,
+  CSSPlugin,
   DebuggerPausedMessage,
   DebuggerPlugin,
   EditingLocationHistoryManager,

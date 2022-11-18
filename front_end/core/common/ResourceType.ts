@@ -288,6 +288,10 @@ export class ResourceType {
     return this.#nameInternal === 'stylesheet' || this.#nameInternal === 'sm-stylesheet';
   }
 
+  hasStyleSheets(): boolean {
+    return this.isStyleSheet() || this.isDocument();
+  }
+
   isDocument(): boolean {
     return this.#nameInternal === 'document';
   }

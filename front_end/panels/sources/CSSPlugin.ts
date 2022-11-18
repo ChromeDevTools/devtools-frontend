@@ -439,7 +439,7 @@ export class CSSPlugin extends Plugin implements SDK.TargetManager.SDKModelObser
   }
 
   static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return uiSourceCode.contentType().isStyleSheet();
+    return uiSourceCode.contentType().hasStyleSheets();
   }
 
   modelAdded(cssModel: SDK.CSSModel.CSSModel): void {

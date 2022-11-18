@@ -40,7 +40,7 @@ export const editorTheme = CM.EditorView.theme({
   },
 
   '.cm-selectionBackground': {
-    background: 'var(--color-editor-selection-selection)',
+    background: 'var(--color-editor-selection)',
   },
 
   '&.cm-focused .cm-selectionBackground': {

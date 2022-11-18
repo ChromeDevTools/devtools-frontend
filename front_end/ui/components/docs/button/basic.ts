@@ -332,13 +332,6 @@ for (let i = 0; i < 6; i++) {
   }
 }
 
-const unifiedToolbarButton = new Buttons.Button.Button();
-unifiedToolbarButton.data = {
-  variant: Buttons.Button.Variant.UNIFIED_TOOLBAR_2022,
-  iconUrl: testIcon,
-};
-document.querySelector('#unified-toolbar')?.appendChild(unifiedToolbarButton);
-
 // Submit Button
 const submitButton = new Buttons.Button.Button();
 submitButton.data = {

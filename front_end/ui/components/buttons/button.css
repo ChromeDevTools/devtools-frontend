@@ -85,15 +85,6 @@ button.toolbar.small {
   width: 18px;
 }
 
-button.unified-toolbar-2022 {
-  /* These buttons are always 16px in dimension, and don't have different
-   * sizes, hence the lack of a size class above and the use of important! to
-   * ensure no sizing classes accidentally interfere.
-   */
-  height: 16px !important; /* stylelint-disable-line declaration-no-important */
-  width: 16px !important;/* stylelint-disable-line declaration-no-important */
-}
-
 button.round.small {
   height: 24px;
   width: 24px;
@@ -209,13 +200,6 @@ button.toolbar devtools-icon,
 button.round devtools-icon {
   width: 24px;
   height: 24px;
-
-  --icon-color: var(--color-text-secondary);
-}
-
-button.unified-toolbar-2022 devtools-icon {
-  width: 16px;
-  height: 16px;
 
   --icon-color: var(--color-text-secondary);
 }

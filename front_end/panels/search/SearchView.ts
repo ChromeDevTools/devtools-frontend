@@ -139,6 +139,7 @@ export class SearchView extends UI.Widget.VBox {
     searchContainer.style.flex = 'auto';
     searchContainer.style.justifyContent = 'start';
     searchContainer.style.maxWidth = '300px';
+    searchContainer.style.overflow = 'revert';
     this.search = UI.HistoryInput.HistoryInput.create();
     this.search.addEventListener('keydown', event => {
       this.onKeyDown((event as KeyboardEvent));

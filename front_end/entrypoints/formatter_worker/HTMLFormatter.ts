@@ -232,11 +232,70 @@ export class HTMLModel {
 
   #build(text: string): void {
     const tokenizer = createTokenizer('text/html');
-    let lastOffset = 0;
+    let baseOffset = 0, lastOffset = 0;
     const lowerCaseText = text.toLowerCase();
+    let pendingToken: Token|null = null;
+
+    const pushToken = (token: Token): Object|undefined => {
+      this.#tokens.push(token);
+      this.#updateDOM(token);
+
+      const element = this.#stack[this.#stack.length - 1];
+      if (element && (element.name === 'script' || element.name === 'style') && element.openTag &&
+          element.openTag.endOffset === lastOffset) {
+        return AbortTokenization;
+      }
+
+      return;
+    };
+
+    const processToken = (
+        tokenValue: string,
+        type: string|null,
+        tokenStart: number,
+        tokenEnd: number,
+        ): Object|undefined => {
+      tokenStart += baseOffset;
+      tokenEnd += baseOffset;
+      lastOffset = tokenEnd;
+
+      const tokenType = type ? new Set<string>(type.split(' ')) : new Set<string>();
+      const token = new Token(tokenValue, tokenType, tokenStart, tokenEnd);
+
+      // This is a pretty horrible work-around for a bug in the CodeMirror 5 HTML
+      // tokenizer, which isn't easy to fix because it shares this code with the
+      // XML parser[^1], and which is also not actively maintained anymore. The
+      // real fix here is to migrate off of CodeMirror 5 also for formatting and
+      // pretty printing and use CodeMirror 6 instead, but that's a bigger
+      // project. For now we ducktape the problem by merging a '/' token
+      // following a string token in the HTML formatter, which does the trick.
+      //
+      // [^1]: https://github.com/codemirror/codemirror5/blob/742627a/mode/xml/xml.js#L137
+      //
+      if (pendingToken) {
+        if (tokenValue === '/' && type === 'attribute') {
+          token.startOffset = pendingToken.startOffset;
+          token.value = `${pendingToken.value}${tokenValue}`;
+          token.type = pendingToken.type;
+        } else if (pushToken(pendingToken) === AbortTokenization) {
+          return AbortTokenization;
+        }
+        pendingToken = null;
+      } else if (type === 'string') {
+        pendingToken = token;
+        return;
+      }
+
+      return pushToken(token);
+    };
 
     while (true) {
-      tokenizer(text.substring(lastOffset), processToken.bind(this, lastOffset));
+      baseOffset = lastOffset;
+      tokenizer(text.substring(lastOffset), processToken);
+      if (pendingToken) {
+        pushToken(pendingToken);
+        pendingToken = null;
+      }
       if (lastOffset >= text.length) {
         break;
       }
@@ -267,27 +326,6 @@ export class HTMLModel {
       }
 
       this.#popElement(new Tag(element.name, text.length, text.length, new Map(), false, false));
-    }
-
-    function processToken(
-        this: HTMLModel, baseOffset: number, tokenValue: string, type: string|null, tokenStart: number,
-        tokenEnd: number): Object|undefined {
-      tokenStart += baseOffset;
-      tokenEnd += baseOffset;
-      lastOffset = tokenEnd;
-
-      const tokenType = type ? new Set<string>(type.split(' ')) : new Set<string>();
-      const token = new Token(tokenValue, tokenType, tokenStart, tokenEnd);
-      this.#tokens.push(token);
-      this.#updateDOM(token);
-
-      const element = this.#stack[this.#stack.length - 1];
-      if (element && (element.name === 'script' || element.name === 'style') && element.openTag &&
-          element.openTag.endOffset === lastOffset) {
-        return AbortTokenization;
-      }
-
-      return;
     }
   }
 

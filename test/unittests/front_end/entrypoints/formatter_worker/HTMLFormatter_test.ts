@@ -211,4 +211,11 @@ describe('HTMLFormatter', () => {
 </html>
 `);
   });
+
+  it('formats unquoted attribute values with trailing slashes correctly', () => {
+    const code = `<link href=https://web.dev/ rel=canonical>
+<link rel=alternate hreflang=es href=https://web.dev/i18n/es/>
+`;
+    assert.strictEqual(formatHTML(code), code);
+  });
 });

@@ -40,7 +40,7 @@ import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-
 import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {CSSFormatter} from './CSSFormatter.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';
-import {type FormatResult} from './FormatterActions.js';
+import {FormattableMediaTypes, type FormatResult} from './FormatterActions.js';
 import {HTMLFormatter} from './HTMLFormatter.js';
 import {IdentityFormatter} from './IdentityFormatter.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
@@ -149,25 +149,25 @@ export function format(mimeType: string, text: string, indentString?: string): F
   const lineEndings = Platform.StringUtilities.findLineEndingIndexes(text);
   try {
     switch (mimeType) {
-      case 'text/html': {
+      case FormattableMediaTypes.TEXT_HTML: {
         const formatter = new HTMLFormatter(builder);
         formatter.format(text, lineEndings);
         break;
       }
-      case 'text/x-scss':
-      case 'text/css': {
+      case FormattableMediaTypes.TEXT_CSS:
+      case FormattableMediaTypes.TEXT_X_SCSS: {
         const formatter = new CSSFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);
         break;
       }
-      case 'text/javascript':
-      case 'application/javascript': {
+      case FormattableMediaTypes.APPLICATION_JAVASCRIPT:
+      case FormattableMediaTypes.TEXT_JAVASCRIPT: {
         const formatter = new JavaScriptFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);
         break;
       }
-      case 'application/manifest+json':
-      case 'application/json': {
+      case FormattableMediaTypes.APPLICATION_JSON:
+      case FormattableMediaTypes.APPLICATION_MANIFEST_JSON: {
         const formatter = new JSONFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);
         break;

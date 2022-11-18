@@ -11,6 +11,26 @@ export const enum FormatterActions {
   ARGUMENTS_LIST = 'argumentsList',
 }
 
+export const enum FormattableMediaTypes {
+  APPLICATION_JAVASCRIPT = 'application/javascript',
+  APPLICATION_JSON = 'application/json',
+  APPLICATION_MANIFEST_JSON = 'application/manifest+json',
+  TEXT_CSS = 'text/css',
+  TEXT_HTML = 'text/html',
+  TEXT_JAVASCRIPT = 'text/javascript',
+  TEXT_X_SCSS = 'text/x-scss',
+}
+
+export const FORMATTABLE_MEDIA_TYPES: string[] = [
+  FormattableMediaTypes.APPLICATION_JAVASCRIPT,
+  FormattableMediaTypes.APPLICATION_JSON,
+  FormattableMediaTypes.APPLICATION_MANIFEST_JSON,
+  FormattableMediaTypes.TEXT_CSS,
+  FormattableMediaTypes.TEXT_HTML,
+  FormattableMediaTypes.TEXT_JAVASCRIPT,
+  FormattableMediaTypes.TEXT_X_SCSS,
+];
+
 export interface FormatMapping {
   original: number[];
   formatted: number[];

@@ -30,6 +30,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
+import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -43,8 +44,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {CoveragePlugin} from './CoveragePlugin.js';
 import {CSSPlugin} from './CSSPlugin.js';
 import {DebuggerPlugin} from './DebuggerPlugin.js';
-import {MemoryProfilePlugin, PerformanceProfilePlugin} from './ProfilePlugin.js';
 import {type Plugin} from './Plugin.js';
+import {MemoryProfilePlugin, PerformanceProfilePlugin} from './ProfilePlugin.js';
 import {ScriptOriginPlugin} from './ScriptOriginPlugin.js';
 import {SnippetsPlugin} from './SnippetsPlugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
@@ -199,16 +200,7 @@ export class UISourceCodeFrame extends
     this.installMessageAndDecorationListeners();
     this.updateStyle();
     if (Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
-      const FORMATTABLE_MIME_TYPES = [
-        'application/javascript',
-        'application/json',
-        'application/manifest+json',
-        'text/css',
-        'text/html',
-        'text/javascript',
-        'text/x-scss',
-      ];
-      const canPrettyPrint = FORMATTABLE_MIME_TYPES.includes(this.contentType);
+      const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType);
       const autoPrettyPrint = !this.uiSourceCodeInternal.contentType().isFromSourceMap();
       this.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
     }

@@ -52,6 +52,8 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
     // thus target list.
     const mainTarget = targetList.find((t: {title: string}) => t.title === 'Karma');
     if (!mainTarget) {
+      console.error(
+          'A target could not be found. This can happen if you are accidentally running multiple instances of Karma at once. Make sure you don\'t have any debug sessions active when trying to run the unittests.');
       throw new Error('Main test target not found');
     }
 

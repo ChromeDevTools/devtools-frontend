@@ -32,13 +32,15 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
   private cssModel?: SDK.CSSModel.CSSModel;
   private cachedQueryModels?: MediaQueryUIModel[];
 
-  constructor(getWidthCallback: () => number, setWidthCallback: (arg0: number) => void) {
+  constructor(
+      getWidthCallback: () => number, setWidthCallback: (arg0: number) => void,
+      mediaThrottler: Common.Throttler.Throttler) {
     super(true);
     this.registerRequiredCSS(mediaQueryInspectorStyles);
     this.contentElement.classList.add('media-inspector-view');
     this.contentElement.addEventListener('click', this.onMediaQueryClicked.bind(this), false);
     this.contentElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-    this.mediaThrottler = new Common.Throttler.Throttler(0);
+    this.mediaThrottler = mediaThrottler;
 
     this.getWidthCallback = getWidthCallback;
     this.setWidthCallback = setWidthCallback;
@@ -54,7 +56,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
 
   modelAdded(cssModel: SDK.CSSModel.CSSModel): void {
     // FIXME: adapt this to multiple targets.
-    if (this.cssModel) {
+    if (cssModel.target() !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
     this.cssModel = cssModel;

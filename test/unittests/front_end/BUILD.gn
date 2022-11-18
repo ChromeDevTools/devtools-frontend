@@ -41,6 +41,7 @@ group("front_end") {
     "panels/coverage",
     "panels/css_overview",
     "panels/elements",
+    "panels/emulation",
     "panels/issues",
     "panels/layers",
     "panels/lighthouse",

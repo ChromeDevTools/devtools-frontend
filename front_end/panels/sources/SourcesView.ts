@@ -92,12 +92,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.historyManager = new EditingLocationHistoryManager(this);
 
     this.toolbarContainerElementInternal = this.element.createChild('div', 'sources-toolbar');
-    if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
-      const toolbarEditorActions = new UI.Toolbar.Toolbar('', this.toolbarContainerElementInternal);
-      for (const action of getRegisteredEditorActions()) {
-        toolbarEditorActions.appendToolbarItem(action.getOrCreateButton(this));
-      }
-    }
     this.scriptViewToolbar = new UI.Toolbar.Toolbar('', this.toolbarContainerElementInternal);
     this.scriptViewToolbar.element.style.flex = 'auto';
     this.bottomToolbarInternal = new UI.Toolbar.Toolbar('', this.toolbarContainerElementInternal);
@@ -349,6 +343,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (view instanceof UI.View.SimpleView) {
       void view.toolbarItems().then(items => {
         this.scriptViewToolbar.removeToolbarItems();
+        for (const action of getRegisteredEditorActions()) {
+          this.scriptViewToolbar.appendToolbarItem(action.getOrCreateButton(this));
+        }
         items.map(item => this.scriptViewToolbar.appendToolbarItem(item));
       });
     }

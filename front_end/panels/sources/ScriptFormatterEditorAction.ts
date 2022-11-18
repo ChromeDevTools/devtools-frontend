@@ -5,6 +5,7 @@
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as FormatterModule from '../../models/formatter/formatter.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -109,6 +110,9 @@ export class ScriptFormatterEditorAction implements EditorAction {
   }
 
   private isFormattableScript(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): boolean {
+    if (Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
+      return false;
+    }
     if (!uiSourceCode) {
       return false;
     }

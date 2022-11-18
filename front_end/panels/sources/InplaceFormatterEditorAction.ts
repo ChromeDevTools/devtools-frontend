@@ -93,10 +93,10 @@ export class InplaceFormatterEditorAction implements EditorAction {
     if (uiSourceCode.project().canSetFileContent()) {
       return true;
     }
-    if (Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode)) {
+    if (Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode) !== null) {
       return true;
     }
-    return uiSourceCode.contentType().isStyleSheet();
+    return false;
   }
 
   private formatSourceInPlace(): void {

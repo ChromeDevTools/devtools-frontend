@@ -2124,7 +2124,7 @@ const evalExpression = defineStatefulDecoration();
 // Styling for plugin-local elements
 
 const theme = CodeMirror.EditorView.baseTheme({
-  '.cm-lineNumbers .cm-gutterElement': {
+  '.cm-gutters .cm-gutter.cm-lineNumbers .cm-gutterElement': {
     '&:hover, &.cm-breakpoint': {
       borderStyle: 'solid',
       borderWidth: '1px 4px 1px 1px',
@@ -2160,7 +2160,7 @@ const theme = CodeMirror.EditorView.baseTheme({
       },
     },
   },
-  '&dark .cm-lineNumbers .cm-gutterElement': {
+  '&dark .cm-gutters .cm-gutter.cm-lineNumbers .cm-gutterElement': {
     '&:hover': {
       WebkitBorderImage: lineNumberArrow('#3c4043', '#3c4043'),
     },
@@ -2174,7 +2174,7 @@ const theme = CodeMirror.EditorView.baseTheme({
       WebkitBorderImage: lineNumberArrow('#E54D9B', '#d01884'),
     },
   },
-  ':host-context(.breakpoints-deactivated) & .cm-lineNumbers .cm-gutterElement.cm-breakpoint, .cm-lineNumbers .cm-gutterElement.cm-breakpoint-disabled':
+  ':host-context(.breakpoints-deactivated) & .cm-gutters .cm-gutter.cm-lineNumbers .cm-gutterElement.cm-breakpoint, .cm-gutters .cm-gutter.cm-lineNumbers .cm-gutterElement.cm-breakpoint-disabled':
       {
         color: '#1a73e8',
         WebkitBorderImage: lineNumberArrow('#d9e7fd', '#1a73e8'),
@@ -2187,7 +2187,7 @@ const theme = CodeMirror.EditorView.baseTheme({
           WebkitBorderImage: lineNumberArrow('#fdd7ec', '#f439a0'),
         },
       },
-  ':host-context(.breakpoints-deactivated) &dark .cm-lineNumbers .cm-gutterElement.cm-breakpoint, &dark .cm-lineNumbers .cm-gutterElement.cm-breakpoint-disabled':
+  ':host-context(.breakpoints-deactivated) &dark .cm-gutters .cm-gutter.cm-lineNumbers .cm-gutterElement.cm-breakpoint, &dark .cm-gutters .cm-gutter.cm-lineNumbers .cm-gutterElement.cm-breakpoint-disabled':
       {
         WebkitBorderImage: lineNumberArrow('#2a384e', '#1a73e8'),
         '&.cm-breakpoint-conditional': {

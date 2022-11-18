@@ -340,7 +340,7 @@ select.toolbar-item:disabled {
   opacity: 50%;
 }
 
-button.soft-dropdown.toolbar-item:focus-visible,
+button.toolbar-item:focus-visible,
 select.toolbar-item:focus-visible {
   background: var(--color-background-elevation-2);
   border-radius: 2px;
@@ -438,6 +438,7 @@ select.toolbar-item:focus-visible > * {
 }
 
 input[is="history-input"] {
+  margin: 0 1px;
   border: 1px solid transparent;
   line-height: 16px;
   padding: 1px;

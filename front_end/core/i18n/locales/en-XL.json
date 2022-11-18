@@ -2270,6 +2270,9 @@
   "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
     "message": "Âṕp̂ĺîćât́îón̂ ṕâńêĺ ŝíd̂éb̂ár̂"
   },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "Âṕp̂ Ḿâńîf́êśt̂"
+  },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "B̂áĉḱĝŕôún̂d́ Ŝér̂v́îćêś"
   },
@@ -2308,6 +2311,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "M̂án̂íf̂éŝt́"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "N̂ó m̂án̂íf̂éŝt́ d̂ét̂éĉt́êd́"
   },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Ŝćr̂ól̂ĺêd́ t̂ó {PH1}"
@@ -2365,9 +2371,6 @@
   },
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} îś n̂ót̂ śp̂éĉíf̂íêd́ îń t̂h́ê ḿâńîf́êśt̂, {PH3} íŝ úŝéd̂ ín̂śt̂éâd́. T̂ó ŝṕêćîf́ŷ án̂ Áp̂ṕ Îd́ t̂h́ât́ m̂át̂ćĥéŝ t́ĥé ĉúr̂ŕêńt̂ íd̂én̂t́ît́ŷ, śêt́ t̂h́ê {PH4} f́îél̂d́ t̂ó {PH5} {PH6}."
-  },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Âṕp̂ Ḿâńîf́êśt̂"
   },
   "panels/application/AppManifestView.ts | aUrlInTheManifestContainsA": {
     "message": "Â ÚR̂Ĺ îń t̂h́ê ḿâńîf́êśt̂ ćôńt̂áîńŝ á ûśêŕn̂ám̂é, p̂áŝśŵór̂d́, ôŕ p̂ór̂t́"
@@ -2464,9 +2467,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "N̂éŵ ńôt́ê ÚR̂Ĺ"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "N̂ó m̂án̂íf̂éŝt́ d̂ét̂éĉt́êd́"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "N̂ó m̂át̂ćĥín̂ǵ service worker d̂ét̂éĉt́êd́. Ŷóû ḿâý n̂éêd́ t̂ó r̂él̂óâd́ t̂h́ê ṕâǵê, ór̂ ćĥéĉḱ t̂h́ât́ t̂h́ê śĉóp̂é ôf́ t̂h́ê service worker f́ôŕ t̂h́ê ćûŕr̂én̂t́ p̂áĝé êńĉĺôśêś t̂h́ê śĉóp̂é âńd̂ śt̂ár̂t́ ÛŔL̂ f́r̂óm̂ t́ĥé m̂án̂íf̂éŝt́."

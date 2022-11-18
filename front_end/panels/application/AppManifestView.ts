@@ -21,14 +21,6 @@ const UIStrings = {
   /**
   *@description Text in App Manifest View of the Application panel
   */
-  noManifestDetected: 'No manifest detected',
-  /**
-  *@description Text in App Manifest View of the Application panel
-  */
-  appManifest: 'App Manifest',
-  /**
-  *@description Text in App Manifest View of the Application panel
-  */
   errorsAndWarnings: 'Errors and warnings',
   /**
   *@description Text in App Manifest View of the Application panel
@@ -435,7 +427,9 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   private resourceTreeModel?: SDK.ResourceTreeModel.ResourceTreeModel|null;
   private serviceWorkerManager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   private protocolHandlersView: ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView;
-  constructor() {
+  constructor(
+      emptyView: UI.EmptyWidget.EmptyWidget, reportView: UI.ReportView.ReportView,
+      throttler: Common.Throttler.Throttler) {
     super(true);
 
     this.contentElement.classList.add('manifest-container');
@@ -444,14 +438,13 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         .moduleSetting('colorFormat')
         .addChangeListener(this.updateManifest.bind(this, true));
 
-    this.emptyView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noManifestDetected));
+    this.emptyView = emptyView;
     this.emptyView.appendLink('https://web.dev/add-manifest/' as Platform.DevToolsPath.UrlString);
 
     this.emptyView.show(this.contentElement);
     this.emptyView.hideWidget();
 
-    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
+    this.reportView = reportView;
 
     this.reportView.element.classList.add('manifest-view-header');
     this.reportView.show(this.contentElement);
@@ -496,7 +489,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
 
     this.newNoteUrlField = this.presentationSection.appendField(i18nString(UIStrings.newNoteUrl));
 
-    this.throttler = new Common.Throttler.Throttler(1000);
+    this.throttler = throttler;
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.registeredListeners = [];
   }
@@ -510,7 +503,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    if (this.target) {
+    if (target !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
     this.target = target;

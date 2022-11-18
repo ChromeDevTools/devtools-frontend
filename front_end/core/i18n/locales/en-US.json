@@ -2270,6 +2270,9 @@
   "panels/application/ApplicationPanelSidebar.ts | applicationSidebarPanel": {
     "message": "Application panel sidebar"
   },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "App Manifest"
+  },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Background Services"
   },
@@ -2308,6 +2311,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "No manifest detected"
   },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Scrolled to {PH1}"
@@ -2365,9 +2371,6 @@
   },
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} is not specified in the manifest, {PH3} is used instead. To specify an App Id that matches the current identity, set the {PH4} field to {PH5} {PH6}."
-  },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "App Manifest"
   },
   "panels/application/AppManifestView.ts | aUrlInTheManifestContainsA": {
     "message": "A URL in the manifest contains a username, password, or port"
@@ -2464,9 +2467,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "New note URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "No manifest detected"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "No matching service worker detected. You may need to reload the page, or check that the scope of the service worker for the current page encloses the scope and start URL from the manifest."

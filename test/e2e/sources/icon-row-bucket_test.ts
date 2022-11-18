@@ -5,7 +5,15 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {$$, click, goToResource, waitFor, waitForFunction, waitForWithTries} from '../../shared/helper.js';
+import {
+  $$,
+  click,
+  disableExperiment,
+  goToResource,
+  waitFor,
+  waitForFunction,
+  waitForWithTries,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToIssuesTab} from '../helpers/issues-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
@@ -70,6 +78,11 @@ describe('The row\'s icon bucket', async function() {
   if (this.timeout()) {
     this.timeout(10000);
   }
+
+  // TODO(crbug.com/1382752): These tests currently don't interact well with pretty-printing.
+  beforeEach(async () => {
+    await disableExperiment('sourcesPrettyPrint');
+  });
 
   it('should display error messages', async () => {
     await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');

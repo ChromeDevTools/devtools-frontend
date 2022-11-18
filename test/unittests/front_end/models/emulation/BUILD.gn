@@ -11,5 +11,10 @@ ts_library("emulation") {
     "EmulatedDevices_test.ts",
   ]
 
-  deps = [ "../../../../../front_end/models/emulation:bundle" ]
+  deps = [
+    "../../../../../front_end/core/platform:bundle",
+    "../../../../../front_end/core/sdk:bundle",
+    "../../../../../front_end/models/emulation:bundle",
+    "../../helpers",
+  ]
 }

@@ -2,7 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as EmulationModel from '../../../../../front_end/models/emulation/emulation.js';
+import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 describe('Insets', () => {
   it('can be instantiated without issues', () => {
@@ -71,4 +76,42 @@ describe('Rect', () => {
     assert.strictEqual(result.width, 7, 'width value was not set correctly');
     assert.strictEqual(result.height, 8, 'height value was not set correctly');
   });
+});
+
+describeWithMockConnection('DeviceModeModel', () => {
+  const tests = (targetFactory: () => SDK.Target.Target) => {
+    let target: SDK.Target.Target;
+
+    beforeEach(() => {
+      Root.Runtime.experiments.register('dualScreenSupport', '', undefined, '');
+      stubNoopSettings();
+      target = targetFactory();
+    });
+
+    it('shows hinge on main frame resize', () => {
+      EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
+      const setShowHinge = sinon.spy(target.overlayAgent(), 'invoke_setShowHinge');
+      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameResized);
+      assert.isTrue(setShowHinge.calledOnce);
+    });
+
+    it('shows hinge on main frame navigation', () => {
+      EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
+      const setShowHinge = sinon.spy(target.overlayAgent(), 'invoke_setShowHinge');
+      resourceTreeModel.dispatchEventToListeners(
+          SDK.ResourceTreeModel.Events.FrameNavigated, {} as SDK.ResourceTreeModel.ResourceTreeFrame);
+      assert.isTrue(setShowHinge.calledOnce);
+    });
+  };
+
+  describe('without tab target', () => tests(createTarget));
+  describe('with tab target', () => tests(() => {
+                                const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+                                createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+                                return createTarget({parentTarget: tabTarget});
+                              }));
 });

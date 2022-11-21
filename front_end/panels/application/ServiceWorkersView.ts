@@ -184,7 +184,7 @@ export const setThrottleDisabledForDebugging = (enable: boolean): void => {
 
 export class ServiceWorkersView extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
-  private currentWorkersView: UI.ReportView.ReportView;
+  currentWorkersView: UI.ReportView.ReportView;
   private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly sections: Map<SDK.ServiceWorkerManager.ServiceWorkerRegistration, Section>;
   private manager: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
@@ -277,7 +277,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
   }
 
   modelAdded(serviceWorkerManager: SDK.ServiceWorkerManager.ServiceWorkerManager): void {
-    if (this.manager) {
+    if (serviceWorkerManager.target() !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
     this.manager = serviceWorkerManager;

@@ -274,6 +274,15 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return swatch;
   }
 
+  private processAnimationName(text: string): Node {
+    const swatch = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+    UI.UIUtils.createTextChild(swatch, text);
+    const isDefined = Boolean(this.matchedStylesInternal.keyframes().find(kf => kf.name().text === text));
+    swatch.data = {text, isDefined, onLinkActivate: this.handleAnimationNameDefinitionActivate.bind(this)};
+
+    return swatch;
+  }
+
   private processColor(text: string, valueChild?: Node|null): Node {
     if (Common.Color.Color.canBeWideGamut(text)) {
       return this.renderCircularColorSwatch(text, valueChild);
@@ -290,7 +299,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const {computedValue, fromFallback} = computedSingleValue;
 
-    const varSwatch = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
     UI.UIUtils.createTextChild(varSwatch, text);
     varSwatch.data = {text, computedValue, fromFallback, onLinkActivate: this.handleVarDefinitionActivate.bind(this)};
 
@@ -300,6 +309,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     return this.processColor(computedValue, varSwatch);
+  }
+
+  private handleAnimationNameDefinitionActivate(animationName: string): void {
+    this.parentPaneInternal.jumpToSectionBlock(`@keyframes ${animationName}`);
   }
 
   private handleVarDefinitionActivate(variableName: string): void {
@@ -677,6 +690,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         new StylesSidebarPropertyRenderer(this.style.parentRule, this.node(), this.name, this.value);
     if (this.property.parsedOk) {
       propertyRenderer.setVarHandler(this.processVar.bind(this));
+      propertyRenderer.setAnimationNameHandler(this.processAnimationName.bind(this));
       propertyRenderer.setColorHandler(this.processColor.bind(this));
       propertyRenderer.setBezierHandler(this.processBezier.bind(this));
       propertyRenderer.setFontHandler(this.processFont.bind(this));
@@ -713,7 +727,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.listItemElement.appendChild(this.expandElement);
       }
       this.listItemElement.appendChild(this.valueElement);
-      UI.UIUtils.createTextChild(this.listItemElement, ';');
+      const semicolon = this.listItemElement.createChild('span', 'styles-semicolon');
+      semicolon.textContent = ';';
+      semicolon.onmouseup = this.mouseUp.bind(this);
       if (this.property.disabled) {
         UI.UIUtils.createTextChild(this.listItemElement.createChild('span', 'styles-clipboard-only'), ' */');
       }
@@ -1040,7 +1056,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     if (selectElement) {
       selectElement = selectElement.enclosingNodeOrSelfWithClass('webkit-css-property') ||
-          selectElement.enclosingNodeOrSelfWithClass('value');
+          selectElement.enclosingNodeOrSelfWithClass('value') ||
+          selectElement.enclosingNodeOrSelfWithClass('styles-semicolon');
     }
     if (!selectElement) {
       selectElement = this.nameElement;
@@ -1056,6 +1073,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.valueElement.textContent = restoreGridIndents(this.value);
       }
       this.valueElement.textContent = restoreURLs(this.valueElement.textContent || '', this.value);
+      selectElement = this.valueElement;
     }
 
     function restoreGridIndents(value: string): string {

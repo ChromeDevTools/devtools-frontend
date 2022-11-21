@@ -93,6 +93,7 @@ const REGISTERED_EXPERIMENTS = [
   'timelineInvalidationTracking',
   'ignoreListJSFramesOnTimeline',
   'instrumentationBreakpoints',
+  'cssTypeComponentLength',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

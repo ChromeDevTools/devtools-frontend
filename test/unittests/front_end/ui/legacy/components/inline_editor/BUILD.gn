@@ -10,11 +10,11 @@ ts_library("inline_editor") {
     "BezierUI_test.ts",
     "CSSAngle_test.ts",
     "CSSLength_test.ts",
-    "CSSVarSwatch_test.ts",
     "CircularColorSwatch_test.ts",
     "ColorSwatch_test.ts",
     "FontEditorUnitConverter_test.ts",
     "FontEditorUtils_test.ts",
+    "LinkSwatch_test.ts",
   ]
 
   deps = [

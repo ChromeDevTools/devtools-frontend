@@ -10,6 +10,7 @@ ts_library("elements") {
     "CSSPropertyPrompt_test.ts",
     "CSSRuleValidator_test.ts",
     "ElementsPanel_test.ts",
+    "StylePropertyHighlighter_test.ts",
     "StylePropertyTreeElement_test.ts",
     "StylePropertyUtils_test.ts",
     "StylesSidebarPane_test.ts",

@@ -597,7 +597,7 @@ describe('User Metrics for CSS custom properties in the Styles pane', () => {
     await frontend.keyboard.press('ArrowRight');
     await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
-    await click('.css-var-link');
+    await click('.link-swatch-link');
     await assertHistogramEventsInclude([
       {
         actionName: 'DevTools.ActionTaken',

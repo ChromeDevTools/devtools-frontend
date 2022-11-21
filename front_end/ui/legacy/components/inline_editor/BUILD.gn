@@ -20,8 +20,8 @@ generate_css("css_files") {
     "cssLength.css",
     "cssShadowEditor.css",
     "cssShadowSwatch.css",
-    "cssVarSwatch.css",
     "fontEditor.css",
+    "linkSwatch.css",
     "swatchPopover.css",
   ]
 }
@@ -38,13 +38,13 @@ devtools_module("inline_editor") {
     "CSSLengthUtils.ts",
     "CSSShadowEditor.ts",
     "CSSShadowModel.ts",
-    "CSSVarSwatch.ts",
     "CircularColorSwatch.ts",
     "ColorSwatch.ts",
     "FontEditor.ts",
     "FontEditorUnitConverter.ts",
     "FontEditorUtils.ts",
     "InlineEditorUtils.ts",
+    "LinkSwatch.ts",
     "SwatchPopoverHelper.ts",
     "Swatches.ts",
   ]

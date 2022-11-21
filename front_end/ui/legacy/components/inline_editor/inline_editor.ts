@@ -12,11 +12,11 @@ import * as CSSLength from './CSSLength.js';
 import * as CSSLengthUtils from './CSSLengthUtils.js';
 import * as CSSShadowEditor from './CSSShadowEditor.js';
 import * as CSSShadowModel from './CSSShadowModel.js';
-import * as CSSVarSwatch from './CSSVarSwatch.js';
 import * as FontEditor from './FontEditor.js';
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
 import * as FontEditorUtils from './FontEditorUtils.js';
 import * as InlineEditorUtils from './InlineEditorUtils.js';
+import * as LinkSwatch from './LinkSwatch.js';
 import * as Swatches from './Swatches.js';
 import * as SwatchPopoverHelper from './SwatchPopoverHelper.js';
 
@@ -31,11 +31,11 @@ export {
   CSSLengthUtils,
   CSSShadowEditor,
   CSSShadowModel,
-  CSSVarSwatch,
   FontEditor,
   FontEditorUnitConverter,
   FontEditorUtils,
   InlineEditorUtils,
+  LinkSwatch,
   Swatches,
   SwatchPopoverHelper,
 };

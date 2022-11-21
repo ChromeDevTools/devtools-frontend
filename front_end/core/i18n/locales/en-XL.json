@@ -12560,9 +12560,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Ŷ óf̂f́ŝét̂"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} îś n̂ót̂ d́êf́îńêd́"
-  },
   "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
     "message": "ĈŚŜ Ṕr̂óp̂ér̂t́îéŝ"
   },
@@ -12622,6 +12619,9 @@
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Ûńît́ŝ"
+  },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} îś n̂ót̂ d́êf́îńêd́"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Ŝh́ôẃ âś Ĵáv̂áŜćr̂íp̂t́ ôb́ĵéĉt́"

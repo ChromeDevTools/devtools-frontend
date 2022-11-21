@@ -9,7 +9,7 @@ import {describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
-function assertSwatch(swatch: InlineEditor.CSSVarSwatch.CSSVarSwatch, expected: {
+function assertSwatch(swatch: InlineEditor.LinkSwatch.CSSVarSwatch, expected: {
   valueTooltip: string|null,
   linkTooltip: string,
   isDefined: boolean,
@@ -19,8 +19,11 @@ function assertSwatch(swatch: InlineEditor.CSSVarSwatch.CSSVarSwatch, expected: 
   assertShadowRoot(swatch.shadowRoot);
   const container = swatch.shadowRoot.querySelector('span');
   assertNotNullOrUndefined(container);
+  const linkSwatch = container.querySelector('devtools-link-swatch');
+  assertNotNullOrUndefined(linkSwatch);
 
-  const link = container.querySelector('.css-var-link');
+  assertShadowRoot(linkSwatch.shadowRoot);
+  const link = linkSwatch.shadowRoot.querySelector('.link-swatch-link');
   assertNotNullOrUndefined(link);
 
   assert.strictEqual(
@@ -34,14 +37,14 @@ function assertSwatch(swatch: InlineEditor.CSSVarSwatch.CSSVarSwatch, expected: 
 
 describeWithLocale('CSSVarSwatch', () => {
   it('can be instantiated successfully', () => {
-    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
 
     assert.instanceOf(component, HTMLElement, 'The swatch is an instance of HTMLElement');
   });
 
   it('renders a simple var function', () => {
-    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var(--test)',
@@ -59,7 +62,7 @@ describeWithLocale('CSSVarSwatch', () => {
   });
 
   it('renders a var function with an undefined property', () => {
-    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var(--undefined)',
@@ -77,7 +80,7 @@ describeWithLocale('CSSVarSwatch', () => {
   });
 
   it('renders a var function with an undefined property but a fallback value', () => {
-    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var(--undefined, 3px)',
@@ -95,7 +98,7 @@ describeWithLocale('CSSVarSwatch', () => {
   });
 
   it('renders a var() function with an color property but a fallback value', () => {
-    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var(--undefined-color, green)',
@@ -113,7 +116,7 @@ describeWithLocale('CSSVarSwatch', () => {
   });
 
   it('render the var() function and the fallback value contains spaces', () => {
-    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var(--undefined-color,    green   )',
@@ -131,7 +134,7 @@ describeWithLocale('CSSVarSwatch', () => {
   });
 
   it('renders a var() function with an color property', () => {
-    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var(--test, green)',
@@ -149,7 +152,7 @@ describeWithLocale('CSSVarSwatch', () => {
   });
 
   it('renders a var() function with spaces', () => {
-    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var( --test     )',
@@ -167,7 +170,7 @@ describeWithLocale('CSSVarSwatch', () => {
   });
 
   it('renders a var() function with spaces and fallback value', () => {
-    const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var( --f\ oo  ,  blue )',
@@ -182,5 +185,90 @@ describeWithLocale('CSSVarSwatch', () => {
       isDefined: true,
       varText: '--f\ oo ',
     });
+  });
+});
+
+function assertAnimationNameSwatch(swatch: InlineEditor.LinkSwatch.AnimationNameSwatch, expected: {
+  animationName: string|null,
+  title: string|null,
+  isDefined: boolean,
+}) {
+  assertShadowRoot(swatch.shadowRoot);
+  const container = swatch.shadowRoot.querySelector('span');
+  assertNotNullOrUndefined(container);
+  const linkSwatch = container.querySelector('devtools-link-swatch');
+  assertNotNullOrUndefined(linkSwatch);
+
+  assertShadowRoot(linkSwatch.shadowRoot);
+  const link = linkSwatch.shadowRoot.querySelector('.link-swatch-link');
+  assertNotNullOrUndefined(link);
+
+  assert.strictEqual(
+      container.getAttribute('title'), expected.animationName, 'The animation name appears as a tooltip');
+  assert.strictEqual(
+      link.classList.contains('undefined'), !expected.isDefined,
+      'The link only has the class undefined when the property is undefined');
+  assert.strictEqual(link.getAttribute('title'), expected.title, 'The link has the right tooltip');
+  assert.strictEqual(link.textContent, expected.animationName, 'The link has the right text content');
+}
+
+describeWithLocale('AnimationNameSwatch', () => {
+  it('can be instantiated successfully', () => {
+    const component = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+    renderElementIntoDOM(component);
+
+    assert.instanceOf(component, HTMLElement, 'The swatch is an instance of HTMLElement');
+  });
+
+  it('renders a simple animation name', () => {
+    const component = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+    component.data = {
+      text: 'test',
+      isDefined: true,
+      onLinkActivate: () => {},
+    };
+    renderElementIntoDOM(component);
+
+    assertAnimationNameSwatch(component, {
+      animationName: 'test',
+      title: 'test',
+      isDefined: true,
+    });
+  });
+
+  it('renders a missing animation name', () => {
+    const component = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+    component.data = {
+      text: 'test',
+      isDefined: false,
+      onLinkActivate: () => {},
+    };
+    renderElementIntoDOM(component);
+
+    assertAnimationNameSwatch(component, {
+      animationName: 'test',
+      title: 'test is not defined',
+      isDefined: false,
+    });
+  });
+
+  it('calls the onLinkActivate callback', async () => {
+    const component = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+    let callbackCalled = false;
+    component.data = {
+      text: 'testHandler',
+      isDefined: true,
+      onLinkActivate: () => {
+        callbackCalled = true;
+      },
+    };
+
+    const element = renderElementIntoDOM(component)
+                        ?.shadowRoot?.querySelector('devtools-link-swatch')
+                        ?.shadowRoot?.querySelector('.link-swatch-link');
+    assertNotNullOrUndefined(element);
+    element.dispatchEvent(new MouseEvent('mousedown'));
+
+    assert.isTrue(callbackCalled);
   });
 });

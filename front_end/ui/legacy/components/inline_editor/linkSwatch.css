@@ -4,22 +4,22 @@
  * found in the LICENSE file.
  */
 
-.css-var-link:not(.undefined) {
+.link-swatch-link:not(.undefined) {
   cursor: pointer;
   text-underline-offset: 2px;
   color: var(--color-link);
 }
 
-.css-var-link:hover:not(.undefined) {
+.link-swatch-link:hover:not(.undefined) {
   text-decoration: underline;
 }
 
-.css-var-link:focus:not(:focus-visible) {
+.link-swatch-link:focus:not(:focus-visible) {
   outline: none;
 }
 
-.css-var-link.undefined {
-  --override-css-var-link-undefined-color: rgb(102 102 102);
+.link-swatch-link.undefined {
+  --override-link-swatch-link-undefined-color: rgb(102 102 102);
 
-  color: var(--override-css-var-link-undefined-color);
+  color: var(--override-link-swatch-link-undefined-color);
 }

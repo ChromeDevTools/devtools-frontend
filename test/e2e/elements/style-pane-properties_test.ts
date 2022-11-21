@@ -140,7 +140,7 @@ describe('The Styles pane', async () => {
 
     const propertiesSection = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR);
     const propertyValue = await waitFor(FIRST_PROPERTY_VALUE_SELECTOR, propertiesSection);
-    const link = await $$('.css-var-link', propertyValue);
+    const link = await $$('.link-swatch-link', propertyValue);
     assert.strictEqual(link.length, 1, 'The expected var link was not created');
   });
 

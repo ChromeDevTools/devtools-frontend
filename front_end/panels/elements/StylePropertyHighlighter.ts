@@ -37,6 +37,16 @@ export class StylePropertyHighlighter {
     }
   }
 
+  findAndHighlightSectionBlock(sectionBlockName: string): void {
+    const block = this.styleSidebarPane.getSectionBlockByName(sectionBlockName);
+    if (!block || block.sections.length === 0) {
+      return;
+    }
+    const [section] = block.sections;
+    section.showAllItems();
+    highlightElement(block.titleElement() as HTMLElement);
+  }
+
   /**
    * Find the first non-overridden property that matches the provided name, scroll to it and highlight it.
    */

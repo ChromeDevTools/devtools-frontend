@@ -1,0 +1,27 @@
+/*
+ * Copyright 2022 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+/* This style matches the cssVar style */
+
+.animation-name-link:not(.undefined) {
+  cursor: pointer;
+  text-underline-offset: 2px;
+  color: var(--color-link);
+}
+
+.animation-name-link:hover:not(.undefined) {
+  text-decoration: underline;
+}
+
+.animation-name-link:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.animation-name-link.undefined {
+  --override-animation-name-link-undefined-color: rgb(102 102 102);
+
+  color: var(--override-animation-name-link-undefined-color);
+}

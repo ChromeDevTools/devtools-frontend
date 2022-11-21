@@ -16,7 +16,6 @@
   white-space: nowrap;
   height: var(--toolbar-height);
   overflow: hidden;
-  z-index: 12;
   display: flex;
   flex: none;
   align-items: center;

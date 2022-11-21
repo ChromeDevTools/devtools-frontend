@@ -498,7 +498,8 @@ export const mimeTypeByExtension = new Map([
   // Google Stylesheets (GSS)
   ['gss', 'text/x-gss'],
 
-  // SCSS
+  // SASS (.sass & .scss)
+  ['sass', 'text/x-sass'],
   ['scss', 'text/x-scss'],
 
   // Video Text Tracks.

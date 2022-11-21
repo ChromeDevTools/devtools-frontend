@@ -14,6 +14,8 @@ const path = require('path');
 const tsc = require('typescript');
 const {collectAndBakeCtcStrings} = require('./bake-ctc-to-lhl.js');
 
+const {writeIfChanged} = require('../../scripts/build/ninja/write-if-changed.js');
+
 const OUTPUT_ROOT = path.join(process.cwd(), 'front_end');
 const UISTRINGS_REGEX = /UIStrings = .*?\};\n/s;
 
@@ -683,7 +685,7 @@ function writeStringsToCtcFiles(locale, strings) {
     output[key] = defn;
   }
 
-  fs.writeFileSync(fullPath, JSON.stringify(output, null, 2) + '\n');
+  writeIfChanged(fullPath, JSON.stringify(output, null, 2) + '\n');
 }
 
 // @ts-ignore Test if called from the CLI or as a module.

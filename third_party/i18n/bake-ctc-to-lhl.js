@@ -11,6 +11,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const {writeIfChanged} = require('../../scripts/build/ninja/write-if-changed.js');
+
 /**
  * @typedef CtcMessage
  * @property {string} message the message that is being translated
@@ -112,7 +114,7 @@ function loadCtcStrings(file) {
  * @param {Record<string, LhlMessage>} localeStrings
  */
 function saveLhlStrings(path, localeStrings) {
-  fs.writeFileSync(path, JSON.stringify(localeStrings, null, 2) + '\n');
+  writeIfChanged(path, JSON.stringify(localeStrings, null, 2) + '\n');
 }
 
 /**

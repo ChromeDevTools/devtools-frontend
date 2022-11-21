@@ -97,7 +97,6 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
       return CodeMirror.javascript.javascript({typescript: true, jsx: true});
 
     case 'text/css':
-    case 'text/x-scss':
       return CodeMirror.css.css();
 
     case 'text/html':
@@ -142,6 +141,9 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
 
     case 'text/x-less':
       return new CodeMirror.LanguageSupport(await CodeMirror.less());
+
+    case 'text/x-scss':
+      return new CodeMirror.LanguageSupport(await CodeMirror.scss());
 
     default:
       return null;

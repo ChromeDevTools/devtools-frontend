@@ -114,6 +114,16 @@ it('can highlight Vue Templates', testHighlight(`
 }
 `, 'text/x-less'));
 
+  it('can highlight SCSS', testHighlight(`
+[definition $width]: [number 10px];
+[definition $height]: [variable $width] + [number 10px];
+
+[builtin #header] {
+  [property width]: [variable $width];
+  [property height]: [variable $height];
+}
+`, 'text/x-scss'));
+
   it('can highlight WAST', testHighlight(`
 ([keyword module]
  ([keyword type] [variable $t] ([keyword func] ([keyword param] [type i32])))

@@ -432,6 +432,10 @@ describe('ResourceType', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('php'), 'application/x-httpd-php');
     });
 
+    it('returns correct MIME type for .scss files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('scss'), 'text/x-scss');
+    });
+
     it('returns correct MIME type for .vue files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('vue'), 'text/html');
     });
@@ -455,6 +459,11 @@ describe('ResourceType', () => {
     it('returns correct MIME type for .php files', () => {
       const url = 'http://localhost/file.php' as Platform.DevToolsPath.UrlString;
       assert.strictEqual(ResourceType.mimeFromURL(url), 'application/x-httpd-php');
+    });
+
+    it('returns correct MIME type for .scss files', () => {
+      const url = 'https://staging.server.com/styles.scss' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x-scss');
     });
 
     it('returns correct MIME type for .vue files', () => {

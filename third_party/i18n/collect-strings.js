@@ -593,6 +593,7 @@ const strings = {};
 /**
  * Collects all LHL messsages defined in UIString from Javascript files in dir,
  * and converts them into CTC.
+ * @param {string} directory
  * @return {Record<string, CtcMessage>}
  */
 function collectAllStringsInDir(directory) {
@@ -600,12 +601,12 @@ function collectAllStringsInDir(directory) {
   // *all* paths will be ignored. To avoid this, make the directory relative to
   // CWD.
   directory = path.relative(process.cwd(), directory)
-  // Globs require UNIX path separators, even on Windows
-  const globPattern = path.join(directory, '/**/*.{js,ts}').replace(/\\/g, '/');
-  const files = glob.sync(globPattern, {
+  const files = glob.sync('**/*.{js,ts}', {
+    cwd: directory,
     ignore: ignoredPathComponents,
   });
-  for (const absolutePath of files) {
+  for (const pathRelativeToDirectory of files) {
+    const absolutePath = path.join(directory, pathRelativeToDirectory);
     const content = fs.readFileSync(absolutePath, 'utf8');
     const regexMatch = content.match(UISTRINGS_REGEX);
 
@@ -643,9 +644,7 @@ function collectAllStringsInDir(directory) {
         description,
         placeholders,
       };
-      // slice out "front_end/" and use the path relative to front_end as id
-      const pathRelativeToFrontend = path.relative(directory, absolutePath).replace(/\\/g, '/');
-      const messageKey = `${pathRelativeToFrontend} | ${key}`;
+      const messageKey = `${pathRelativeToDirectory} | ${key}`;
       if (strings[messageKey] !== undefined) {
         throw new Error(`Duplicate message key '${messageKey}', please rename the '${key}' property.`);
       }

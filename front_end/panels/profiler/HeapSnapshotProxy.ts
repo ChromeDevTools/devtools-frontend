@@ -103,7 +103,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     this.postMessage({callId: callId, disposition: 'evaluateForTest', source: script});
   }
 
-  callFactoryMethod<T>(
+  callFactoryMethod<T extends Object>(
       callback: ((...arg0: unknown[]) => void)|null, objectId: string, methodName: string,
       proxyConstructor: new(...arg1: unknown[]) => T): Object|null {
     const callId = this.nextCallId++;

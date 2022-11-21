@@ -71,15 +71,6 @@ export type ButtonData = {
   iconHeight?: string,
 };
 
-interface ButtonElementInternals extends ElementInternals {
-  readonly form: HTMLFormElement|null;
-  readonly validity: ValidityState;
-  readonly willValidate: boolean;
-  readonly validationMessage: string;
-  checkValidity(): void;
-  reportValidity(): void;
-}
-
 export class Button extends HTMLElement {
   static formAssociated = true;
   static readonly litTagName = LitHtml.literal`devtools-button`;
@@ -94,7 +85,7 @@ export class Button extends HTMLElement {
     type: 'button',
   };
   #isEmpty = true;
-  #internals = this.attachInternals() as ButtonElementInternals;
+  #internals = this.attachInternals();
 
   constructor() {
     super();
@@ -310,10 +301,10 @@ export class Button extends HTMLElement {
   get willValidate(): boolean {
     return this.#internals.willValidate;
   }
-  checkValidity(): void {
+  checkValidity(): boolean {
     return this.#internals.checkValidity();
   }
-  reportValidity(): void {
+  reportValidity(): boolean {
     return this.#internals.reportValidity();
   }
 }

@@ -96,7 +96,7 @@ describeWithEnvironment('Action registration', () => {
 
   it('does not find a pre registered action as available when its context types are not in the current context flavors',
      () => {
-       UI.Context.Context.instance().setFlavor(MockContextType, undefined);
+       UI.Context.Context.instance().setFlavor(MockContextType, null);
        const availableActions =
            UI.ActionRegistry.ActionRegistry.instance().availableActions().map(action => action.id());
        assert.strictEqual(availableActions.indexOf(actionId), -1);

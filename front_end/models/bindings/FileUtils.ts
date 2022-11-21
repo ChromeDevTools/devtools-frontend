@@ -55,7 +55,7 @@ export class ChunkedFileReader implements ChunkedReader {
   #file: File|null;
   readonly #fileSizeInternal: number;
   #loadedSizeInternal: number;
-  #streamReader: ReadableStreamReader<Uint8Array>|null;
+  #streamReader: ReadableStreamDefaultReader<Uint8Array>|null;
   readonly #chunkSize: number;
   readonly #chunkTransferredCallback: ((arg0: ChunkedReader) => void)|undefined;
   readonly #decoder: TextDecoder;
@@ -83,7 +83,11 @@ export class ChunkedFileReader implements ChunkedReader {
     }
 
     if (this.#file?.type.endsWith('gzip')) {
-      const stream = this.decompressStream(this.#file.stream());
+      // TypeScript can't tell if to use @types/node or lib.webworker.d.ts
+      // types, so we force it to here.
+      // crbug.com/1392092
+      const fileStream = this.#file.stream() as unknown as ReadableStream<Uint8Array>;
+      const stream = this.decompressStream(fileStream);
       this.#streamReader = stream.getReader();
     } else {
       this.#reader = new FileReader();

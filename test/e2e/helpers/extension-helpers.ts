@@ -54,9 +54,7 @@ export async function loadExtension(name: string, startPage?: string) {
         extensionInfo);
 
     function declareChrome() {
-      if (!('chrome' in window)) {
-        (window.chrome as unknown) = {};
-      }
+      window.chrome = window.chrome || {};
     }
 
     const extensionScriptId = guid();

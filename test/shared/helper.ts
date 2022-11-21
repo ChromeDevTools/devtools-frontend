@@ -613,9 +613,7 @@ export const scrollElementIntoView = async (selector: string, root?: puppeteer.J
 
 export const installEventListener = function(frontend: puppeteer.Page, eventType: string) {
   return frontend.evaluate(eventType => {
-    if (!('__pendingEvents' in window)) {
-      window.__pendingEvents = new Map();
-    }
+    window.__pendingEvents = window.__pendingEvents || new Map();
     window.addEventListener(eventType, (e: Event) => {
       let events = window.__pendingEvents.get(eventType);
       if (!events) {
@@ -640,9 +638,7 @@ export const getPendingEvents = function(frontend: puppeteer.Page, eventType: st
 
 export function prepareWaitForEvent(element: puppeteer.ElementHandle, eventType: string): Promise<void> {
   return element.evaluate((element: Element, eventType: string) => {
-    if (!('__eventHandlers' in window)) {
-      window.__eventHandlers = new WeakMap();
-    }
+    window.__eventHandlers = window.__eventHandlers || new WeakMap();
 
     const eventHandlers = (() => {
       const eventHandlers = window.__eventHandlers.get(element);

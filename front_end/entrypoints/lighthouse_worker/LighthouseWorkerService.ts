@@ -244,7 +244,6 @@ async function onFrontendMessage(event: MessageEvent): Promise<void> {
       if (result && typeof result === 'object') {
         // Report isn't used upstream.
         if ('report' in result) {
-          // @ts-expect-error
           delete result.report;
         }
 

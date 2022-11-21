@@ -465,7 +465,7 @@ export const mimeTypeByExtension = new Map([
   ['coffee', 'text/x-coffeescript'],
 
   // Dart
-  ['dart', 'text/javascript'],
+  ['dart', 'application/vnd.dart'],
 
   // TypeScript
   ['ts', 'text/typescript'],

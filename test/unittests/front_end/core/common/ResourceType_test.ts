@@ -420,6 +420,10 @@ describe('ResourceType', () => {
   });
 
   describe('mimeFromExtension', () => {
+    it('returns correct MIME type for .dart files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('dart'), 'application/vnd.dart');
+    });
+
     it('returns correct MIME type for .php files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('php'), 'application/x-httpd-php');
     });
@@ -434,6 +438,11 @@ describe('ResourceType', () => {
   });
 
   describe('mimeFromURL', () => {
+    it('returns correct MIME type for .dart files', () => {
+      const url = 'http://localhost/example.dart' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'application/vnd.dart');
+    });
+
     it('returns correct MIME type for .php files', () => {
       const url = 'http://localhost/file.php' as Platform.DevToolsPath.UrlString;
       assert.strictEqual(ResourceType.mimeFromURL(url), 'application/x-httpd-php');

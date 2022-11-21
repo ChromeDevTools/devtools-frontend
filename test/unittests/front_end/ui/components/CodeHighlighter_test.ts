@@ -136,6 +136,12 @@ it('can highlight PHP', testHighlight(`
 [builtin cat] [string "a"]
 `, 'text/x-sh'));
 
+  it('can highlight Dart code', testHighlight(`
+[builtin void] [variable main]() {
+  [variable print]([string 'Hello, World!']);
+}
+`, 'application/vnd.dart'));
+
   it('can highlight Web app manifests', testHighlight(`
 {
   [property "name"]: [string "Test"],

@@ -137,6 +137,9 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
     case 'text/x-clojure':
       return new CodeMirror.LanguageSupport(await CodeMirror.clojure());
 
+    case 'application/vnd.dart':
+      return new CodeMirror.LanguageSupport(await CodeMirror.dart());
+
     default:
       return null;
   }

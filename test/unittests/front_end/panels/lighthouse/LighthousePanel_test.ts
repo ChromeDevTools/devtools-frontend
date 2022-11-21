@@ -91,8 +91,7 @@ describeWithMockConnection('LighthousePanel', async () => {
   describe('without tab taget', () => tests(() => createTarget()));
   describe('with tab taget', () => tests(() => {
                                const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                               const frameTarget = createTarget({parentTarget: tabTarget});
                                createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                               return frameTarget;
+                               return createTarget({parentTarget: tabTarget});
                              }));
 });

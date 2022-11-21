@@ -106,9 +106,8 @@ describeWithMockConnection('BackForwardCacheViewWrapper', () => {
   describe('without tab target', () => updatesBFCacheView(() => createTarget()));
   describe('with tab target', () => updatesBFCacheView(() => {
                                 const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                const frameTarget = createTarget({parentTarget: tabTarget});
                                 createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                return frameTarget;
+                                return createTarget({parentTarget: tabTarget});
                               }));
 });
 
@@ -320,8 +319,7 @@ describeWithMockConnection('BackForwardCacheView', () => {
   describe('test BFCache workflow without tab taget', () => testBFCacheWorkflow(() => createTarget()));
   describe('test BFCache workflow with tab taget', () => testBFCacheWorkflow(() => {
                                                      const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                                     const frameTarget = createTarget({parentTarget: tabTarget});
                                                      createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                                     return frameTarget;
+                                                     return createTarget({parentTarget: tabTarget});
                                                    }));
 });

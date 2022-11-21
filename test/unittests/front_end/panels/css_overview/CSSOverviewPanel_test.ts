@@ -43,8 +43,7 @@ describeWithMockConnection('CSSOverviewPanel', () => {
   describe('without tab target', () => tests(() => createTarget()));
   describe('with tab target', () => tests(() => {
                                 const tabTaget = createTarget({type: SDK.Target.Type.Tab});
-                                const frameTarget = createTarget({parentTarget: tabTaget});
                                 createTarget({parentTarget: tabTaget, subtype: 'prerender'});
-                                return frameTarget;
+                                return createTarget({parentTarget: tabTaget});
                               }));
 });

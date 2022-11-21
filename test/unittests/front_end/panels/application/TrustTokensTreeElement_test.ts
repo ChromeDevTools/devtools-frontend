@@ -61,8 +61,7 @@ describeWithMockConnection('TrustTokensViewWidgetWrapper', () => {
   describe('without tab target', () => tests(() => createTarget()));
   describe('with tab target', () => tests(() => {
                                 const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                const frameTarget = createTarget({parentTarget: tabTarget});
                                 createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                return frameTarget;
+                                return createTarget({parentTarget: tabTarget});
                               }));
 });

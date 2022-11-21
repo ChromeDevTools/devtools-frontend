@@ -113,8 +113,7 @@ describeWithMockConnection('WebAuthn pane', () => {
   describe('without tab target', () => largeBlobOption(() => createTarget()));
   describe('with tab target', () => largeBlobOption(() => {
                                 const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                const frameTarget = createTarget({parentTarget: tabTarget});
                                 createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                return frameTarget;
+                                return createTarget({parentTarget: tabTarget});
                               }));
 });

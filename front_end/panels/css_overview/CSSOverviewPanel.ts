@@ -65,7 +65,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
       return;
     }
     this.#completedView.initializeModels(target);
-    const [model] = SDK.TargetManager.TargetManager.instance().models(CSSOverviewModel);
+    const model = target.model(CSSOverviewModel);
     this.#model = (model as CSSOverviewModel);
   }
 

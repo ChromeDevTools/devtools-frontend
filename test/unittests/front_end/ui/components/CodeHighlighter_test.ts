@@ -104,6 +104,14 @@ it('can highlight Vue Templates', testHighlight(`
   [property width]: [number 4px];
 }`, 'text/css'));
 
+  it('can highlight GSS', testHighlight(`
+[definition @component] {
+  [tag foo] {
+    [property color]: [keyword black];
+  }
+}
+`, 'text/x-gss'));
+
   it('can highlight LESS', testHighlight(`
 [definition @width]: [number 10px];
 [definition @height]: [variable @width] + [number 10px];

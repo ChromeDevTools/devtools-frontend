@@ -495,6 +495,9 @@ export const mimeTypeByExtension = new Map([
   // Shell
   ['sh', 'text/x-sh'],
 
+  // Google Stylesheets (GSS)
+  ['gss', 'text/x-gss'],
+
   // SCSS
   ['scss', 'text/x-scss'],
 

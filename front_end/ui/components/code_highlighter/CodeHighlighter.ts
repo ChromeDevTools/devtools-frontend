@@ -139,6 +139,9 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
     case 'application/vnd.dart':
       return new CodeMirror.LanguageSupport(await CodeMirror.dart());
 
+    case 'text/x-gss':
+      return new CodeMirror.LanguageSupport(await CodeMirror.gss());
+
     case 'text/x-less':
       return new CodeMirror.LanguageSupport(await CodeMirror.less());
 

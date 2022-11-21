@@ -28,8 +28,8 @@ devtools_module("i18n") {
 
   public_deps = [
     ":collect_strings",
-    ":i18n_bundled_locales",
-    ":i18n_locales",
+    "./locales:i18n_bundled_locales",
+    "./locales:i18n_locales",
   ]
 }
 
@@ -104,25 +104,4 @@ devtools_pre_built("locales_js") {
   ]
 
   deps = [ ":generate_locales_js" ]
-}
-
-minify_json("i18n_locales") {
-  sources = []
-  foreach(locale, remote_devtools_locales + bundled_devtools_locales) {
-    sources += [ "locales/$locale.json" ]
-  }
-}
-
-group("i18n_bundled_locales") {
-  public_deps = [ ":i18n_locales" ]
-
-  data = []
-
-  foreach(locale, bundled_devtools_locales) {
-    data += [ "$target_gen_dir/locales/$locale.json" ]
-  }
-
-  metadata = {
-    grd_files = data
-  }
 }

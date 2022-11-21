@@ -1,0 +1,28 @@
+# Copyright 2022 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/minify_json.gni")
+
+import("//$devtools_root_location/config/gni/i18n.gni")
+
+minify_json("i18n_locales") {
+  sources = []
+  foreach(locale, remote_devtools_locales + bundled_devtools_locales) {
+    sources += [ "$locale.json" ]
+  }
+}
+
+group("i18n_bundled_locales") {
+  public_deps = [ ":i18n_locales" ]
+
+  data = []
+
+  foreach(locale, bundled_devtools_locales) {
+    data += [ "$target_gen_dir/$locale.json" ]
+  }
+
+  metadata = {
+    grd_files = data
+  }
+}

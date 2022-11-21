@@ -3703,6 +3703,10 @@ declare class Language {
         [name: string]: any;
     }>;
     /**
+    A language name.
+    */
+    readonly name: string;
+    /**
     The extension value to install this as the document language.
     */
     readonly extension: Extension;
@@ -3725,7 +3729,11 @@ declare class Language {
     */
     data: Facet<{
         [name: string]: any;
-    }>, parser: Parser, extraExtensions?: Extension[]);
+    }>, parser: Parser, extraExtensions?: Extension[],
+    /**
+    A language name.
+    */
+    name?: string);
     /**
     Query whether this language is active at the given position.
     */
@@ -3758,6 +3766,10 @@ declare class LRLanguage extends Language {
     */
     static define(spec: {
         /**
+        The [name](https://codemirror.net/6/docs/ref/#Language.name) of the language.
+        */
+        name?: string;
+        /**
         The parser to use. Should already have added editor-relevant
         node props (and optionally things like dialect and top rule)
         configured.
@@ -3773,9 +3785,9 @@ declare class LRLanguage extends Language {
     }): LRLanguage;
     /**
     Create a new instance of this language with a reconfigured
-    version of its parser.
+    version of its parser and optionally a new name.
     */
-    configure(options: ParserConfig): LRLanguage;
+    configure(options: ParserConfig, name?: string): LRLanguage;
     get allowsNesting(): boolean;
 }
 /**
@@ -4098,6 +4110,10 @@ A highlight style associates CSS styles with higlighting
 */
 declare class HighlightStyle implements Highlighter {
     /**
+    The tag styles used to create this highlight style.
+    */
+    readonly specs: readonly TagStyle[];
+    /**
     A style module holding the CSS rules for this highlight style.
     When using
     [`highlightTree`](https://lezer.codemirror.net/docs/ref#highlight.highlightTree)
@@ -4360,6 +4376,10 @@ about the current context.
 */
 interface StreamParser<State> {
     /**
+    A name for this language.
+    */
+    name?: string;
+    /**
     Produce a start state for the parser.
     */
     startState?(indentUnit: number): State;
@@ -4486,7 +4506,8 @@ interface CompletionConfig {
     completion, and should produce a DOM node to show. `position`
     determines where in the DOM the result appears, relative to
     other added widgets and the standard content. The default icons
-    have position 20, the label position 50, and the detail position 70.
+    have position 20, the label position 50, and the detail position
+    80.
     */
     addToOptions?: {
         render: (completion: Completion, state: EditorState) => Node | null;
@@ -4498,6 +4519,13 @@ interface CompletionConfig {
     [`localeCompare`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare).
     */
     compareCompletions?: (a: Completion, b: Completion) => number;
+    /**
+    By default, commands relating to an open completion only take
+    effect 75 milliseconds after the completion opened, so that key
+    presses made before the user is aware of the tooltip don't go to
+    the tooltip. This option can be used to configure that delay.
+    */
+    interactionDelay?: number;
 }
 
 /**
@@ -4857,6 +4885,16 @@ declare namespace _codemirror_lang_wast {
 }
 
 /**
+Completion source that looks up locally defined names in
+Python code.
+*/
+declare function localCompletionSource$1(context: CompletionContext): CompletionResult | null;
+/**
+Autocompletion for built-in Python globals and keywords.
+*/
+declare const globalCompletion: CompletionSource;
+
+/**
 A language provider based on the [Lezer Python
 parser](https://github.com/lezer-parser/python), extended with
 highlighting and indentation information.
@@ -4867,9 +4905,12 @@ Python language support.
 */
 declare function python$1(): LanguageSupport;
 
+declare const _codemirror_lang_python_globalCompletion: typeof globalCompletion;
 declare const _codemirror_lang_python_pythonLanguage: typeof pythonLanguage;
 declare namespace _codemirror_lang_python {
   export {
+    _codemirror_lang_python_globalCompletion as globalCompletion,
+    localCompletionSource$1 as localCompletionSource,
     python$1 as python,
     _codemirror_lang_python_pythonLanguage as pythonLanguage,
   };
@@ -5529,10 +5570,10 @@ value of this function can be passed to [`linter`](https://codemirror.net/6/docs
 to create a JavaScript linting extension.
 
 Note that ESLint targets node, and is tricky to run in the
-browser. The [eslint4b](https://github.com/mysticatea/eslint4b)
-and
-[eslint4b-prebuilt](https://github.com/marijnh/eslint4b-prebuilt/)
-packages may help with that.
+browser. The
+[eslint-linter-browserify](https://github.com/UziTech/eslint-linter-browserify)
+package may help with that (see
+[example](https://github.com/UziTech/eslint-linter-browserify/blob/master/example/script.js)).
 */
 declare function esLint(eslint: any, config?: any): (view: EditorView) => Diagnostic[];
 
@@ -5541,24 +5582,49 @@ Completion source that looks up locally defined names in
 JavaScript code.
 */
 declare function localCompletionSource(context: CompletionContext): CompletionResult | null;
+/**
+Helper function for defining JavaScript completion sources. It
+returns the completable name and object path for a completion
+context, or null if no name/property completion should happen at
+that position. For example, when completing after `a.b.c` it will
+return `{path: ["a", "b"], name: "c"}`. When completing after `x`
+it will return `{path: [], name: "x"}`. When not in a property or
+name, it will return null if `context.explicit` is false, and
+`{path: [], name: ""}` otherwise.
+*/
+declare function completionPath(context: CompletionContext): {
+    path: readonly string[];
+    name: string;
+} | null;
+/**
+Defines a [completion source](https://codemirror.net/6/docs/ref/#autocomplete.CompletionSource) that
+completes from the given scope object (for example `globalThis`).
+Will enter properties of the object when completing properties on
+a directly-named path.
+*/
+declare function scopeCompletionSource(scope: any): CompletionSource;
 
 declare const index_d_autoCloseTags: typeof autoCloseTags;
+declare const index_d_completionPath: typeof completionPath;
 declare const index_d_esLint: typeof esLint;
 declare const index_d_javascript: typeof javascript;
 declare const index_d_javascriptLanguage: typeof javascriptLanguage;
 declare const index_d_jsxLanguage: typeof jsxLanguage;
 declare const index_d_localCompletionSource: typeof localCompletionSource;
+declare const index_d_scopeCompletionSource: typeof scopeCompletionSource;
 declare const index_d_snippets: typeof snippets;
 declare const index_d_tsxLanguage: typeof tsxLanguage;
 declare const index_d_typescriptLanguage: typeof typescriptLanguage;
 declare namespace index_d {
   export {
     index_d_autoCloseTags as autoCloseTags,
+    index_d_completionPath as completionPath,
     index_d_esLint as esLint,
     index_d_javascript as javascript,
     index_d_javascriptLanguage as javascriptLanguage,
     index_d_jsxLanguage as jsxLanguage,
     index_d_localCompletionSource as localCompletionSource,
+    index_d_scopeCompletionSource as scopeCompletionSource,
     index_d_snippets as snippets,
     index_d_tsxLanguage as tsxLanguage,
     index_d_typescriptLanguage as typescriptLanguage,

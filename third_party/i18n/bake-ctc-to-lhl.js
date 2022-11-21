@@ -11,8 +11,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const SRC_ROOT = path.join(__dirname, '../../');
-
 /**
  * @typedef CtcMessage
  * @property {string} message the message that is being translated
@@ -126,12 +124,11 @@ function collectAndBakeCtcStrings(dir, outputDir) {
   const lhlFilenames = [];
   for (const filename of fs.readdirSync(dir)) {
     const fullPath = path.join(dir, filename);
-    const relativePath = path.relative(SRC_ROOT, fullPath);
 
     if (filename.endsWith('.ctc.json')) {
       const ctcStrings = loadCtcStrings(fullPath);
       const strings = bakePlaceholders(ctcStrings);
-      const outputFile = outputDir + path.basename(filename).replace('.ctc', '');
+      const outputFile = path.join(outputDir, path.basename(filename).replace('.ctc', ''));
       saveLhlStrings(outputFile, strings);
       lhlFilenames.push(path.basename(filename));
     }

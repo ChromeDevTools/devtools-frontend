@@ -19,7 +19,8 @@ export default [{
       }
       throw new Error('Failed to determine a chunk name for ' + Object.keys(info.modules));
     },
-    entryFileNames: 'codemirror.next.js'
+    entryFileNames: 'codemirror.next.js',
+    sourcemap: true,
   },
   plugins: [
     nodeResolve(),

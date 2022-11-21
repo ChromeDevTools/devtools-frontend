@@ -26,7 +26,6 @@ export { bracketMatching,
   ensureSyntaxTree, foldGutter, foldKeymap, HighlightStyle, indentOnInput, indentUnit,Language, LanguageSupport,
   StreamLanguage, StreamParser, StringStream
 , syntaxHighlighting, syntaxTree, TagStyle} from '@codemirror/language';
-export {} from '@codemirror/rangeset';
 export { highlightSelectionMatches,selectNextOccurrence} from '@codemirror/search';
 export {
   Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Compartment,
@@ -35,7 +34,6 @@ export {
   SelectionRange, StateEffect, StateEffectType, StateField, Text, TextIterator
 , Transaction,
   TransactionSpec} from '@codemirror/state';
-export {} from '@codemirror/stream-parser';
 export {
   Command, Decoration, DecorationSet, drawSelection, EditorView,
   gutter, GutterMarker, gutters,

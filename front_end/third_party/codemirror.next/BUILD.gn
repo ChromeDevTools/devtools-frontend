@@ -14,16 +14,27 @@ group("bundle") {
 devtools_pre_built("codemirror.next-sources") {
   sources = [
     "chunk/codemirror.js",
+    "chunk/codemirror.js.map",
     "chunk/cpp.js",
+    "chunk/cpp.js.map",
     "chunk/java.js",
+    "chunk/java.js.map",
     "chunk/json.js",
+    "chunk/json.js.map",
     "chunk/legacy.js",
+    "chunk/legacy.js.map",
     "chunk/markdown.js",
+    "chunk/markdown.js.map",
     "chunk/php.js",
+    "chunk/php.js.map",
     "chunk/python.js",
+    "chunk/python.js.map",
     "chunk/wast.js",
+    "chunk/wast.js.map",
     "chunk/xml.js",
+    "chunk/xml.js.map",
     "codemirror.next.js",
+    "codemirror.next.js.map",
   ]
 }
 

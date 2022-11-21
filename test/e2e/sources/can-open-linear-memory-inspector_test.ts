@@ -11,9 +11,10 @@ import {
   addBreakpointForLine,
   inspectMemory,
   openSourceCodeEditorForFile,
-  PAUSE_BUTTON,
+  PAUSE_INDICATOR_SELECTOR,
   reloadPageAndWaitForSourceFile,
   RESUME_BUTTON,
+  retrieveTopCallFrameWithoutResuming,
 } from '../helpers/sources-helpers.js';
 
 const LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR = '#tab-linear-memory-inspector';
@@ -64,8 +65,7 @@ describe('Scope View', async () => {
     });
   });
 
-  // Times out
-  it.skip('[crbug.com/1169143] opens one linear memory inspector per ArrayBuffer', async () => {
+  it('opens one linear memory inspector per ArrayBuffer', async () => {
     const {frontend} = getBrowserAndPages();
 
     await step('navigate to a page', async () => {
@@ -120,16 +120,14 @@ describe('Scope View', async () => {
       assert.strictEqual(tabs.length, 2);
     });
 
-    await step('switch to other worker', async () => {
-      const elements = await $$('.thread-item-title');
-      const workerNames = await Promise.all(elements.map(x => x.evaluate(y => y.textContent)));
-      const workerIndex = 1 + workerNames.indexOf('memory-worker1.rawresponse');
-      // Click on worker
-      await click(`.thread-item[aria-posinset="${workerIndex}"]`);
-      // Pause the worker
-      await click(PAUSE_BUTTON);
-      // Wait for it to be paused
-      await waitFor(RESUME_BUTTON);
+    await step('resume and pause in other worker (hitting a debugger statement)', async () => {
+      // Continue execution in this worker.
+      await click(RESUME_BUTTON);
+
+      // Wait until we pause in the other worker.
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+      const scriptLocation = await retrieveTopCallFrameWithoutResuming();
+      assert.deepEqual(scriptLocation, 'memory-worker1.rawresponse:1');
     });
 
     await step('open other buffer in other worker', async () => {

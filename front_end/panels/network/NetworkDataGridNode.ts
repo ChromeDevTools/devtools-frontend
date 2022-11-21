@@ -243,31 +243,36 @@ const UIStrings = {
   /**
   *@description Tooltip text giving the reason why a specific HTTP transport protocol has been used
   */
-  alternativeJobWonWithoutRace: 'Chrome used an alternative job without racing with a main job.',
+  alternativeJobWonWithoutRace:
+      '`Chrome` used a `HTTP/3` connection induced by an \'`Alt-Svc`\' header without racing against establishing a connection using a different `HTTP` version.',
   /**
   *@description Tooltip text giving the reason why a specific HTTP transport protocol has been used
   */
-  alternativeJobWonRace: 'Chrome used an alternative job because it won a race with a main job.',
+  alternativeJobWonRace:
+      '`Chrome` used a `HTTP/3` connection induced by an \'`Alt-Svc`\' header because it won a race against establishing a connection using a different `HTTP` version.',
   /**
   *@description Tooltip text giving the reason why a specific HTTP transport protocol has been used
   */
-  mainJobWonRace: 'Chrome used a main job because it won a race with an alternative job and/or a DNS alpn job.',
+  mainJobWonRace: '`Chrome` used this protocol because it won a race against establishing a `HTTP/3` connection.',
   /**
   *@description Tooltip text giving the reason why a specific HTTP transport protocol has been used
   */
-  mappingMissing: 'Chrome didn\'t use an alternative job because of missing Alternate-Protocol information.',
+  mappingMissing:
+      '`Chrome` did not use an alternative `HTTP` version because no alternative protocol information was available when the request was issued, but an \'`Alt-Svc`\' header was present in the response.',
   /**
   *@description Tooltip text giving the reason why a specific HTTP transport protocol has been used
   */
-  broken: 'Chrome didn\'t use an alternative job because it was marked broken.',
+  broken: '`Chrome` did not try to establish a `HTTP/3` connection because it was marked as broken.',
   /**
   *@description Tooltip text giving the reason why a specific HTTP transport protocol has been used
   */
-  dnsAlpnH3JobWonWithoutRace: 'Chrome used a DNS alpn job without racing with a main job and an alternative job.',
+  dnsAlpnH3JobWonWithoutRace:
+      '`Chrome` used a `HTTP/3` connection due to the `DNS record` indicating `HTTP/3` support. There was no race against establishing a connection using a different `HTTP` version.',
   /**
   *@description Tooltip text giving the reason why a specific HTTP transport protocol has been used
   */
-  dnsAlpnH3JobWonRace: 'Chrome used a DNS alpn job because it won a race with a main job and an alternative job.',
+  dnsAlpnH3JobWonRace:
+      '`Chrome` used a `HTTP/3` connection due to the `DNS record` indicating `HTTP/3` support, which won a race against establishing a connection using a different `HTTP` version.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -7233,10 +7233,10 @@
     "message": "User agent"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome used an alternative job because it won a race with a main job."
+    "message": "Chrome used a HTTP/3 connection induced by an 'Alt-Svc' header because it won a race against establishing a connection using a different HTTP version."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome used an alternative job without racing with a main job."
+    "message": "Chrome used a HTTP/3 connection induced by an 'Alt-Svc' header without racing against establishing a connection using a different HTTP version."
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(blocked:{PH1})"
@@ -7245,7 +7245,7 @@
     "message": "This request was blocked due to misconfigured response headers, click to view the headers"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome didn't use an alternative job because it was marked broken."
+    "message": "Chrome did not try to establish a HTTP/3 connection because it was marked as broken."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(canceled)"
@@ -7269,10 +7269,10 @@
     "message": "(disk cache)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome used a DNS alpn job because it won a race with a main job and an alternative job."
+    "message": "Chrome used a HTTP/3 connection due to the DNS record indicating HTTP/3 support, which won a race against establishing a connection using a different HTTP version."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome used a DNS alpn job without racing with a main job and an alternative job."
+    "message": "Chrome used a HTTP/3 connection due to the DNS record indicating HTTP/3 support. There was no race against establishing a connection using a different HTTP version."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(failed)"
@@ -7284,10 +7284,10 @@
     "message": "level 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome used a main job because it won a race with an alternative job and/or a DNS alpn job."
+    "message": "Chrome used this protocol because it won a race against establishing a HTTP/3 connection."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome didn't use an alternative job because of missing Alternate-Protocol information."
+    "message": "Chrome did not use an alternative HTTP version because no alternative protocol information was available when the request was issued, but an 'Alt-Svc' header was present in the response."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memory cache)"

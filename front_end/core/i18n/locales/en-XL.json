@@ -7233,10 +7233,10 @@
     "message": "Ûśêŕ âǵêńt̂"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Ĉh́r̂óm̂é ûśêd́ âń âĺt̂ér̂ńât́îv́ê j́ôb́ b̂éĉáûśê ít̂ ẃôń â ŕâćê ẃît́ĥ á m̂áîń ĵób̂."
+    "message": "Chrome ûśêd́ â HTTP/3 ćôńn̂éĉt́îón̂ ín̂d́ûćêd́ b̂ý âń 'Alt-Svc' ĥéâd́êŕ b̂éĉáûśê ít̂ ẃôń â ŕâćê áĝáîńŝt́ êśt̂áb̂ĺîśĥín̂ǵ â ćôńn̂éĉt́îón̂ úŝín̂ǵ â d́îf́f̂ér̂én̂t́ HTTP v̂ér̂śîón̂."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Ĉh́r̂óm̂é ûśêd́ âń âĺt̂ér̂ńât́îv́ê j́ôb́ ŵít̂h́ôút̂ ŕâćîńĝ ẃît́ĥ á m̂áîń ĵób̂."
+    "message": "Chrome ûśêd́ â HTTP/3 ćôńn̂éĉt́îón̂ ín̂d́ûćêd́ b̂ý âń 'Alt-Svc' ĥéâd́êŕ ŵít̂h́ôút̂ ŕâćîńĝ áĝáîńŝt́ êśt̂áb̂ĺîśĥín̂ǵ â ćôńn̂éĉt́îón̂ úŝín̂ǵ â d́îf́f̂ér̂én̂t́ HTTP v̂ér̂śîón̂."
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(b̂ĺôćk̂éd̂:{PH1})"
@@ -7245,7 +7245,7 @@
     "message": "T̂h́îś r̂éq̂úêśt̂ ẃâś b̂ĺôćk̂éd̂ d́ûé t̂ó m̂íŝćôńf̂íĝúr̂éd̂ ŕêśp̂ón̂śê h́êád̂ér̂ś, ĉĺîćk̂ t́ô v́îéŵ t́ĥé ĥéâd́êŕŝ"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Ĉh́r̂óm̂é d̂íd̂ń't̂ úŝé âń âĺt̂ér̂ńât́îv́ê j́ôb́ b̂éĉáûśê ít̂ ẃâś m̂ár̂ḱêd́ b̂ŕôḱêń."
+    "message": "Chrome d̂íd̂ ńôt́ t̂ŕŷ t́ô éŝt́âb́l̂íŝh́ â HTTP/3 ćôńn̂éĉt́îón̂ b́êćâúŝé ît́ ŵáŝ ḿâŕk̂éd̂ áŝ b́r̂ók̂én̂."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(ĉán̂ćêĺêd́)"
@@ -7269,10 +7269,10 @@
     "message": "(d̂íŝḱ ĉáĉh́ê)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Ĉh́r̂óm̂é ûśêd́ â D́N̂Ś âĺp̂ń ĵób̂ b́êćâúŝé ît́ ŵón̂ á r̂áĉé ŵít̂h́ â ḿâín̂ j́ôb́ âńd̂ án̂ ál̂t́êŕn̂át̂ív̂é ĵób̂."
+    "message": "Chrome ûśêd́ â HTTP/3 ćôńn̂éĉt́îón̂ d́ûé t̂ó t̂h́ê DNS record ín̂d́îćât́îńĝ HTTP/3 śûṕp̂ór̂t́, ŵh́îćĥ ẃôń â ŕâćê áĝáîńŝt́ êśt̂áb̂ĺîśĥín̂ǵ â ćôńn̂éĉt́îón̂ úŝín̂ǵ â d́îf́f̂ér̂én̂t́ HTTP v̂ér̂śîón̂."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Ĉh́r̂óm̂é ûśêd́ â D́N̂Ś âĺp̂ń ĵób̂ ẃît́ĥóût́ r̂áĉín̂ǵ ŵít̂h́ â ḿâín̂ j́ôb́ âńd̂ án̂ ál̂t́êŕn̂át̂ív̂é ĵób̂."
+    "message": "Chrome ûśêd́ â HTTP/3 ćôńn̂éĉt́îón̂ d́ûé t̂ó t̂h́ê DNS record ín̂d́îćât́îńĝ HTTP/3 śûṕp̂ór̂t́. T̂h́êŕê ẃâś n̂ó r̂áĉé âǵâín̂śt̂ éŝt́âb́l̂íŝh́îńĝ á ĉón̂ńêćt̂íôń ûśîńĝ á d̂íf̂f́êŕêńt̂ HTTP v́êŕŝíôń."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(f̂áîĺêd́)"
@@ -7284,10 +7284,10 @@
     "message": "l̂év̂él̂ 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Ĉh́r̂óm̂é ûśêd́ â ḿâín̂ j́ôb́ b̂éĉáûśê ít̂ ẃôń â ŕâćê ẃît́ĥ án̂ ál̂t́êŕn̂át̂ív̂é ĵób̂ án̂d́/ôŕ â D́N̂Ś âĺp̂ń ĵób̂."
+    "message": "Chrome ûśêd́ t̂h́îś p̂ŕôt́ôćôĺ b̂éĉáûśê ít̂ ẃôń â ŕâćê áĝáîńŝt́ êśt̂áb̂ĺîśĥín̂ǵ â HTTP/3 ćôńn̂éĉt́îón̂."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Ĉh́r̂óm̂é d̂íd̂ń't̂ úŝé âń âĺt̂ér̂ńât́îv́ê j́ôb́ b̂éĉáûśê óf̂ ḿîśŝín̂ǵ Âĺt̂ér̂ńât́ê-Ṕr̂ót̂óĉól̂ ín̂f́ôŕm̂át̂íôń."
+    "message": "Chrome d̂íd̂ ńôt́ ûśê án̂ ál̂t́êŕn̂át̂ív̂é HTTP v̂ér̂śîón̂ b́êćâúŝé n̂ó âĺt̂ér̂ńât́îv́ê ṕr̂ót̂óĉól̂ ín̂f́ôŕm̂át̂íôń ŵáŝ áv̂áîĺâb́l̂é ŵh́êń t̂h́ê ŕêq́ûéŝt́ ŵáŝ íŝśûéd̂, b́ût́ âń 'Alt-Svc' ĥéâd́êŕ ŵáŝ ṕr̂éŝén̂t́ îń t̂h́ê ŕêśp̂ón̂śê."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(m̂ém̂ór̂ý ĉáĉh́ê)"

@@ -86,6 +86,12 @@ export class UserMetrics {
     this.panelShown('settings-' + settingsViewId);
   }
 
+  sourcesPanelFileOpened(mediaType?: string): void {
+    const code = (mediaType && MediaTypes[mediaType as keyof typeof MediaTypes]) || MediaTypes.Unknown;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.SourcesPanelFileOpened, code, MediaTypes.MaxValue);
+  }
+
   actionTaken(action: Action): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ActionTaken, action, Action.MaxValue);
   }
@@ -470,6 +476,41 @@ export enum SidebarPaneCodes {
   'elements.domProperties' = 6,
   'accessibility.view' = 7,
   MaxValue = 8,
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+/* eslint-disable @typescript-eslint/naming-convention */
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum MediaTypes {
+  Unknown = 0,
+  'text/javascript' = 1,
+  'text/css' = 2,
+  'text/html' = 3,
+  'application/xml' = 4,
+  'application/wasm' = 5,
+  'application/manifest+json' = 6,
+  'application/x-aspx' = 7,
+  'application/jsp' = 8,
+  'text/x-c++src' = 9,
+  'text/x-coffeescript' = 10,
+  'application/vnd.dart' = 11,
+  'text/typescript' = 12,
+  'text/typescript-jsx' = 13,
+  'application/json' = 14,
+  'text/x-csharp' = 15,
+  'text/x-java' = 16,
+  'text/x-less' = 17,
+  'application/x-httpd-php' = 18,
+  'text/x-python' = 19,
+  'text/x-sh' = 20,
+  'text/x-gss' = 21,
+  'text/x-sass' = 22,
+  'text/x-scss' = 23,
+  'text/markdown' = 24,
+  'text/x-clojure' = 25,
+  'text/jsx' = 26,
+  MaxValue = 27,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

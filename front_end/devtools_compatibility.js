@@ -423,6 +423,7 @@
     RecordingReplayStarted: 'DevTools.RecordingReplayStarted',
     RecordingToggled: 'DevTools.RecordingToggled',
     SidebarPaneShown: 'DevTools.SidebarPaneShown',
+    SourcesPanelFileOpened: 'DevTools.SourcesPanelFileOpened',
     StyleTextCopied: 'DevTools.StyleTextCopied',
     SyncSetting: 'DevTools.SyncSetting',
   };

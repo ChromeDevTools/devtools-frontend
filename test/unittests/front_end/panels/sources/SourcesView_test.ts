@@ -8,6 +8,7 @@ import * as Bindings from '../../../../../front_end/models/bindings/bindings.js'
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
+import * as Host from '../../../../../front_end/core/host/host.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as SourceFrame from '../../../../../front_end/ui/legacy/components/source_frame/source_frame.js';
@@ -91,5 +92,18 @@ describe('SourcesView', () => {
         Common.ResourceType.resourceTypes.Document);
     sourcesView.viewForFile(uiSourceCode);
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourcesComponents.HeadersView.HeadersView);
+  });
+
+  describe('viewForFile', () => {
+    it('records the correct media type in the DevTools.SourcesPanelFileOpened metric', async () => {
+      const sourcesView = new Sources.SourcesView.SourcesView();
+      const {uiSourceCode} = createFileSystemUISourceCode({
+        url: 'file:///path/to/project/example.ts' as Platform.DevToolsPath.UrlString,
+        mimeType: 'text/typescript',
+      });
+      const sourcesPanelFileOpenedSpy = sinon.spy(Host.userMetrics, 'sourcesPanelFileOpened');
+      sourcesView.viewForFile(uiSourceCode);
+      assert.isTrue(sourcesPanelFileOpenedSpy.calledWithExactly('text/typescript'));
+    });
   });
 });

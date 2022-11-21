@@ -219,7 +219,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   modelAdded(serviceWorkerManager: SDK.ServiceWorkerManager.ServiceWorkerManager): void {
-    if (this.manager) {
+    if (serviceWorkerManager.target() !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
 

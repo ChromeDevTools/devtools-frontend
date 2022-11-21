@@ -1,0 +1,15 @@
+# Copyright 2022 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("performance_monitor") {
+  testonly = true
+  sources = [ "PerformanceMonitor_test.ts" ]
+
+  deps = [
+    "../../../../../front_end/panels/performance_monitor:bundle",
+    "../../helpers",
+  ]
+}

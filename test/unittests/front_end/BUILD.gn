@@ -45,6 +45,7 @@ group("front_end") {
     "panels/media",
     "panels/network",
     "panels/network/components",
+    "panels/performance_monitor",
     "panels/profiler",
     "panels/protocol_monitor",
     "panels/security",

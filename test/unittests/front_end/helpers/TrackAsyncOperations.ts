@@ -19,9 +19,8 @@ export function startTrackingAsyncActivity() {
   stub('setTimeout', trackingSetTimeout);
   stub('cancelAnimationFrame', id => cancelTrackingActivity('a' + id));
   stub('clearTimeout', id => cancelTrackingActivity('t' + id));
-  stub('setInterval', (_1, _2) => {
-    assert.fail();
-  });
+  stub('setInterval', trackingSetInterval);
+  stub('clearInterval', id => cancelTrackingActivity('i' + id));
   stub('Promise', TrackingPromise);
 }
 
@@ -127,6 +126,24 @@ function trackingSetTimeout(arg: TimerHandler, time?: number, ...params: unknown
     activity.id = 't' + id;
     activity.cancelDelayed = () => {
       original(clearTimeout)(id);
+      activity.pending = false;
+      resolve();
+    };
+  });
+  asyncActivity.push(activity);
+  return id;
+}
+
+function trackingSetInterval(arg: TimerHandler, time?: number, ...params: unknown[]) {
+  const activity: AsyncActivity = {
+    pending: true,
+  };
+  let id = 0;
+  activity.promise = new (original(Promise<void>))(resolve => {
+    id = original(setInterval)(arg, time, ...params);
+    activity.id = 'i' + id;
+    activity.cancelDelayed = () => {
+      original(clearInterval)(id);
       activity.pending = false;
       resolve();
     };

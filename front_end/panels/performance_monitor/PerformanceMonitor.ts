@@ -76,7 +76,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   private startTimestamp?: number;
   private pollTimer?: number;
 
-  constructor() {
+  constructor(pollIntervalMs: number) {
     super(true);
 
     this.contentElement.classList.add('perfmon-pane');
@@ -84,7 +84,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     /** @const */
     this.pixelsPerMs = 10 / 1000;
     /** @const */
-    this.pollIntervalMs = 500;
+    this.pollIntervalMs = pollIntervalMs;
     /** @const */
     this.scaleHeight = 16;
     /** @const */
@@ -104,7 +104,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   static instance(opts = {forceNew: null}): PerformanceMonitorImpl {
     const {forceNew} = opts;
     if (!performanceMonitorImplInstance || forceNew) {
-      performanceMonitorImplInstance = new PerformanceMonitorImpl();
+      performanceMonitorImplInstance = new PerformanceMonitorImpl(500);
     }
 
     return performanceMonitorImplInstance;
@@ -140,7 +140,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   }
 
   modelAdded(model: SDK.PerformanceMetricsModel.PerformanceMetricsModel): void {
-    if (this.model) {
+    if (model.target() !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
     this.model = model;

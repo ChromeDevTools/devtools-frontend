@@ -62,6 +62,9 @@ export function cpp() {
 export async function dart() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).dart);
 }
+export async function gss() {
+  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/css')).gss);
+}
 export function java() {
   return import('@codemirror/lang-java');
 }

@@ -59,6 +59,9 @@ export async function coffeescript() {
 export function cpp() {
   return import('@codemirror/lang-cpp');
 }
+export async function dart() {
+  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).dart);
+}
 export function java() {
   return import('@codemirror/lang-java');
 }

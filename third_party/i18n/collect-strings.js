@@ -673,11 +673,12 @@ function collectAllStringsInDir(directory) {
 }
 
 /**
+ * @param {string} directory
  * @param {string} locale
  * @param {Record<string, CtcMessage>} strings
  */
-function writeStringsToCtcFiles(locale, strings) {
-  const fullPath = path.join(OUTPUT_ROOT, `core/i18n/locales/${locale}.ctc.json`);
+function writeStringsToCtcFiles(directory, locale, strings) {
+  const fullPath = path.join(directory, `${locale}.ctc.json`);
   /** @type {Record<string, CtcMessage>} */
   const output = {};
   const sortedEntries = Object.entries(strings).sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
@@ -703,9 +704,10 @@ if (require.main === module) {
     console.log(`Collected from ${directory}!`);
   }
 
-  writeStringsToCtcFiles('en-US', collectedStrings);
+  const outputDirectory = path.join(OUTPUT_ROOT, 'core/i18n/locales');
+  writeStringsToCtcFiles(outputDirectory, 'en-US', collectedStrings);
   // Generate local pseudolocalized files for debugging while translating
-  writeStringsToCtcFiles('en-XL', createPsuedoLocaleStrings(collectedStrings));
+  writeStringsToCtcFiles(outputDirectory, 'en-XL', createPsuedoLocaleStrings(collectedStrings));
 
   // Bake the ctc en-US and en-XL files into en-US and en-XL LHL format
   const lhl = collectAndBakeCtcStrings(
@@ -716,4 +718,7 @@ module.exports = {
   parseUIStrings,
   createPsuedoLocaleStrings,
   convertMessageToCtc,
+  collectAllStringsInDir,
+  collectAndBakeCtcStrings,
+  writeStringsToCtcFiles,
 };

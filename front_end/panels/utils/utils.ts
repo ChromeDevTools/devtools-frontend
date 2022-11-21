@@ -122,3 +122,14 @@ async function buildStyleRuleMaps(content: string): Promise<{
   }
   return {declarationIDToStyleRule, styleRuleIDToStyleRule};
 }
+
+export function highlightElement(element: HTMLElement): void {
+  element.scrollIntoViewIfNeeded();
+  element.animate(
+      [
+        {offset: 0, backgroundColor: 'rgba(255, 255, 0, 0.2)'},
+        {offset: 0.1, backgroundColor: 'rgba(255, 255, 0, 0.7)'},
+        {offset: 1, backgroundColor: 'transparent'},
+      ],
+      {duration: 2000, easing: 'cubic-bezier(0, 0, 0.2, 1)'});
+}

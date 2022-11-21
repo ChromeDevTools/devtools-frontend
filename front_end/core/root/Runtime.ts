@@ -310,6 +310,7 @@ export enum ExperimentName {
   JUST_MY_CODE = 'justMyCode',
   BREAKPOINT_VIEW = 'breakpointView',
   PRELOADING_STATUS_PANEL = 'preloadingStatusPanel',
+  DISABLE_COLOR_FORMAT_SETTING = 'disableColorFormatSetting',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

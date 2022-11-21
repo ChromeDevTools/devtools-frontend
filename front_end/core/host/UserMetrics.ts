@@ -707,8 +707,9 @@ export enum DevtoolsExperiments {
   'breakpointView' = 66,
   'timelineAsConsoleProfileResultPanel' = 67,
   'preloadingStatusPanel' = 68,
+  'disableColorFormatSetting' = 69,
   // Increment this when new experiments are added.
-  'MaxValue' = 69,
+  'MaxValue' = 70,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

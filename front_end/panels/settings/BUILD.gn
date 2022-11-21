@@ -30,6 +30,7 @@ devtools_module("settings") {
     "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../utils:bundle",
     "./components:bundle",
   ]
 }

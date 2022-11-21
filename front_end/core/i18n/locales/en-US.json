@@ -13094,6 +13094,9 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Use Regular Expression"
   },
+  "ui/legacy/SettingsUI.ts | colorFormatSettingDisabled": {
+    "message": "This setting is deprecated because it is incompatible with modern color spaces. To reenable it, you can disable the according experiment."
+  },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "One or more settings have changed which requires a reload to take effect."
   },

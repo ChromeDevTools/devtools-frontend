@@ -13094,6 +13094,9 @@
   "ui/legacy/SearchableView.ts | useRegularExpression": {
     "message": "Ûśê Ŕêǵûĺâŕ Êx́p̂ŕêśŝíôń"
   },
+  "ui/legacy/SettingsUI.ts | colorFormatSettingDisabled": {
+    "message": "T̂h́îś ŝét̂t́îńĝ íŝ d́êṕr̂éĉát̂éd̂ b́êćâúŝé ît́ îś îńĉóm̂ṕât́îb́l̂é ŵít̂h́ m̂ód̂ér̂ń ĉól̂ór̂ śp̂áĉéŝ. T́ô ŕêén̂áb̂ĺê ít̂, ýôú ĉán̂ d́îśâb́l̂é t̂h́ê áĉćôŕd̂ín̂ǵ êx́p̂ér̂ím̂én̂t́."
+  },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Ôńê ór̂ ḿôŕê śêt́t̂ín̂ǵŝ h́âv́ê ćĥán̂ǵêd́ ŵh́îćĥ ŕêq́ûír̂éŝ á r̂él̂óâd́ t̂ó t̂ák̂é êf́f̂éĉt́."
   },

@@ -5,7 +5,10 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("settings") {
-  sources = [ "shortcut_settings_test.ts" ]
+  sources = [
+    "Preferences_test.ts",
+    "shortcut_settings_test.ts",
+  ]
 
   deps = [
     "../../shared",

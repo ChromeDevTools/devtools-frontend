@@ -41,6 +41,7 @@ import * as PanelComponents from './components/components.js';
 import settingsScreenStyles from './settingsScreen.css.js';
 
 import {type KeybindsSettingsTab} from './KeybindsSettingsTab.js';
+import {highlightElement} from '../utils/utils.js';
 
 const UIStrings = {
   /**
@@ -391,6 +392,7 @@ let experimentsSettingsTabInstance: ExperimentsSettingsTab;
 export class ExperimentsSettingsTab extends SettingsTab {
   private experimentsSection: HTMLElement|undefined;
   private unstableExperimentsSection: HTMLElement|undefined;
+  private readonly experimentToControl = new Map<Root.Runtime.Experiment, HTMLElement>();
 
   constructor() {
     super(i18nString(UIStrings.experiments), 'experiments-tab-content');
@@ -472,6 +474,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
     input.addEventListener('click', listener, false);
 
     const p = document.createElement('p');
+    this.experimentToControl.set(experiment, p);
     p.classList.add('settings-experiment');
     if (experiment.unstable && !experiment.isEnabled()) {
       p.classList.add('settings-experiment-unstable');
@@ -500,6 +503,13 @@ export class ExperimentsSettingsTab extends SettingsTab {
     }
 
     return p;
+  }
+
+  highlight(experiment: Root.Runtime.Experiment): void {
+    const element = this.experimentToControl.get(experiment);
+    if (element) {
+      highlightElement(element);
+    }
   }
 }
 
@@ -542,6 +552,13 @@ export class Revealer implements Common.Revealer.Revealer {
   }
 
   reveal(object: Object): Promise<void> {
+    if (object instanceof Root.Runtime.Experiment) {
+      // Ideally we would also highlight the specific experiments, but there isn't a straightforward way to find the controls after they've been created.
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
+      void SettingsScreen.showSettingsScreen({name: 'experiments'})
+          .then(() => ExperimentsSettingsTab.instance().highlight(object));
+      return Promise.resolve();
+    }
     console.assert(object instanceof Common.Settings.Setting);
     const setting = object as Common.Settings.Setting<string>;
     let success = false;

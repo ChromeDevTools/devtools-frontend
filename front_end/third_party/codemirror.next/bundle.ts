@@ -83,6 +83,9 @@ export function php() {
 export function python() {
   return import('@codemirror/lang-python');
 }
+export async function sass() {
+  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/sass')).sass);
+}
 export async function scss() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/css')).sCSS);
 }

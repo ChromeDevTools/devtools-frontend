@@ -68,6 +68,9 @@ export function java() {
 export function json() {
   return import('@codemirror/lang-json');
 }
+export async function less() {
+  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/css')).less);
+}
 export function markdown() {
   return import('@codemirror/lang-markdown');
 }

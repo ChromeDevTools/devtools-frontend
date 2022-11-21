@@ -104,6 +104,16 @@ it('can highlight Vue Templates', testHighlight(`
   [property width]: [number 4px];
 }`, 'text/css'));
 
+  it('can highlight LESS', testHighlight(`
+[definition @width]: [number 10px];
+[definition @height]: [variable @width] + [number 10px];
+
+[builtin #header] {
+  [property width]: [variable @width];
+  [property height]: [variable @height];
+}
+`, 'text/x-less'));
+
   it('can highlight WAST', testHighlight(`
 ([keyword module]
  ([keyword type] [variable $t] ([keyword func] ([keyword param] [type i32])))

@@ -424,6 +424,10 @@ describe('ResourceType', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('dart'), 'application/vnd.dart');
     });
 
+    it('returns correct MIME type for .less files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('less'), 'text/x-less');
+    });
+
     it('returns correct MIME type for .php files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('php'), 'application/x-httpd-php');
     });
@@ -441,6 +445,11 @@ describe('ResourceType', () => {
     it('returns correct MIME type for .dart files', () => {
       const url = 'http://localhost/example.dart' as Platform.DevToolsPath.UrlString;
       assert.strictEqual(ResourceType.mimeFromURL(url), 'application/vnd.dart');
+    });
+
+    it('returns correct MIME type for .less files', () => {
+      const url = 'https://staging.server.com/styles.less' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x-less');
     });
 
     it('returns correct MIME type for .php files', () => {

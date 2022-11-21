@@ -15,10 +15,9 @@ template("minify_json") {
     _dest = rebase_path(target_gen_dir, root_build_dir)
 
     args = [
-      _src,
-      _dest,
-      string_join(",", sources),
-    ]
+             _src,
+             _dest,
+           ] + sources
 
     outputs = []
     foreach(_input, sources) {

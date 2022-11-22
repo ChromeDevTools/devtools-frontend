@@ -27,6 +27,7 @@
     "auto-unittest": "scripts/test/run_auto_unittests.py --no-text-coverage",
     "auto-unittest-coverage": "scripts/test/run_auto_unittests.py --no-text-coverage --coverage",
     "prebuild": "gn gen out/Default",
+    "bake-strings": "vpython third_party/node/node.py --output third_party/i18n/bake-strings.js front_end/core/i18n/locales",
     "build": "autoninja -C out/Default",
     "build-release": "autoninja -C out/Release",
     "check": "npm run check-lint && npm run check-loc",

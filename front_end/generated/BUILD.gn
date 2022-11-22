@@ -19,6 +19,8 @@ devtools_module("generated") {
     "../../test/e2e/network:*",
     "../core/protocol_client:*",
     "../core/sdk:*",
+    "../models/trace:*",
+    "../models/trace/*",
     "../panels/accessibility:*",
     "../panels/elements:*",
   ]

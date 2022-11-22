@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
+import type * as TraceModel from '../../../../front_end/models/trace/trace.js';
 
 interface CompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
 interface DecompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
@@ -32,7 +33,13 @@ function decodeGzipBuffer(buffer: ArrayBuffer): Promise<ArrayBuffer> {
   return codec(buffer, new DecompressionStream('gzip'));
 }
 
-export async function loadTraceFile(name: string): Promise<Array<SDK.TracingManager.EventPayload>> {
+// We use this function to load traces in for unit tests. It returns the same
+// data, but depending on if you're testing the old data engine or the new one,
+// you need a different return type. Therefore we enforce that this function is
+// called with a generic that sets the return type. In the future once the data
+// engine work is complete, this will not be required.
+type TraceFileType = SDK.TracingManager.EventPayload|TraceModel.Types.TraceEvents.TraceEventData;
+export async function loadTraceFile<T extends TraceFileType>(name: string): Promise<Array<T>> {
   const url = `/fixtures/traces/${name}`;
   const response = await fetch(url);
   if (response.status !== 200) {
@@ -46,5 +53,5 @@ export async function loadTraceFile(name: string): Promise<Array<SDK.TracingMana
     buffer = await decodeGzipBuffer(buffer);
   }
   const decoder = new TextDecoder('utf-8');
-  return JSON.parse(decoder.decode(buffer));
+  return JSON.parse(decoder.decode(buffer)) as T[];
 }

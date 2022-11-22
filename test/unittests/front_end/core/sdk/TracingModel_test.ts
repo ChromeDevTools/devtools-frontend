@@ -31,7 +31,7 @@ describe('TracingModel', () => {
   });
 
   it('can create events from an EventPayload[] and finds the correct number of processes', async () => {
-    const events = await loadTraceFile('basic.json.gz');
+    const events = await loadTraceFile<SDK.TracingManager.EventPayload>('basic.json.gz');
     const model = new SDK.TracingModel.TracingModel(new FakeStorage());
     model.addEvents(events);
     assert.strictEqual(model.sortedProcesses().length, 4);

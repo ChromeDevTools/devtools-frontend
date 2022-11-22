@@ -42,6 +42,7 @@ ts_library("helpers") {
     "../../../../front_end/models/bindings:bundle",
     "../../../../front_end/models/issues_manager:bundle",
     "../../../../front_end/models/text_utils:bundle",
+    "../../../../front_end/models/trace:bundle",
     "../../../../front_end/models/workspace:bundle",
     "../../../../front_end/panels/elements:meta",
     "../../../../front_end/panels/sensors:meta",

@@ -196,7 +196,7 @@ describeWithEnvironment('TimelineModel', () => {
 
   describe('interaction events', () => {
     it('pulls out the expected interaction events from a trace', async () => {
-      const events = await loadTraceFile('slow-interaction-button-click.json.gz');
+      const events = await loadTraceFile<SDK.TracingManager.EventPayload>('slow-interaction-button-click.json.gz');
       traceWithEvents(events);
       const interactionsTrack =
           timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
@@ -218,7 +218,7 @@ describeWithEnvironment('TimelineModel', () => {
     });
 
     it('detects correct events for a click and keydown interaction', async () => {
-      const events = await loadTraceFile('slow-interaction-keydown.json.gz');
+      const events = await loadTraceFile<SDK.TracingManager.EventPayload>('slow-interaction-keydown.json.gz');
       traceWithEvents(events);
       const interactionsTrack =
           timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);

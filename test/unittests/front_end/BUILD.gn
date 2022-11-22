@@ -31,6 +31,7 @@ group("front_end") {
     "models/source_map_scopes",
     "models/text_utils",
     "models/timeline_model",
+    "models/trace",
     "models/workspace",
     "models/workspace_diff",
     "panels/animation",

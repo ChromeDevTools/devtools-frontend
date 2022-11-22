@@ -1,0 +1,35 @@
+# Copyright 2022 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
+
+devtools_module("trace") {
+  sources = [
+    "ModelImpl.ts",
+    "TraceProcessor.ts",
+  ]
+
+  deps = [
+    "../../core/platform:bundle",
+    "handlers:bundle",
+    "types:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "trace.ts"
+
+  deps = [ ":trace" ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/helpers/*",
+    "../../../test/unittests/front_end/models/trace/*",
+    "../../panels/timeline/*",
+  ]
+
+  visibility += devtools_models_visibility
+}

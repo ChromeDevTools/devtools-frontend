@@ -108,7 +108,7 @@ export class StartView extends UI.Widget.Widget {
     if (runtimeSetting.learnMore) {
       const link =
           UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
-      link.style.padding = '5px';
+      link.style.margin = '5px';
       control.element.appendChild(link);
     }
   }
@@ -132,7 +132,7 @@ export class StartView extends UI.Widget.Widget {
     if (runtimeSetting.learnMore) {
       const link =
           UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
-      link.style.padding = '5px';
+      link.style.margin = '5px';
       control.element.appendChild(link);
     }
   }

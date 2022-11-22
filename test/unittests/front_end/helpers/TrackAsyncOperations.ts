@@ -17,10 +17,12 @@ export function startTrackingAsyncActivity() {
   // the test.
   stub('requestAnimationFrame', trackingRequestAnimationFrame);
   stub('setTimeout', trackingSetTimeout);
+  stub('setInterval', trackingSetInterval);
+  stub('requestIdleCallback', trackingRequestIdleCallback);
   stub('cancelAnimationFrame', id => cancelTrackingActivity('a' + id));
   stub('clearTimeout', id => cancelTrackingActivity('t' + id));
-  stub('setInterval', trackingSetInterval);
   stub('clearInterval', id => cancelTrackingActivity('i' + id));
+  stub('cancelIdleCallback', id => cancelTrackingActivity('d' + id));
   stub('Promise', TrackingPromise);
 }
 
@@ -99,6 +101,27 @@ function trackingRequestAnimationFrame(fn: FrameRequestCallback) {
     activity.id = 'a' + id;
     activity.cancelDelayed = () => {
       original(cancelAnimationFrame)(id);
+      activity.pending = false;
+      resolve();
+    };
+  });
+  asyncActivity.push(activity);
+  return id;
+}
+
+function trackingRequestIdleCallback(fn: IdleRequestCallback, opts?: IdleRequestOptions): number {
+  const activity: AsyncActivity = {pending: true};
+  let id = 0;
+  activity.promise = new (original(Promise<void>))(resolve => {
+    activity.runImmediate = (idleDeadline?: IdleDeadline) => {
+      fn(idleDeadline ?? {didTimeout: true, timeRemaining: () => 0} as IdleDeadline);
+      activity.pending = false;
+      resolve();
+    };
+    id = original(requestIdleCallback)(activity.runImmediate, opts);
+    activity.id = 'd' + id;
+    activity.cancelDelayed = () => {
+      original(cancelIdleCallback)(id);
       activity.pending = false;
       resolve();
     };

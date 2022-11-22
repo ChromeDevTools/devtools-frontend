@@ -3,8 +3,28 @@
 # found in the LICENSE file.
 
 import("../../../../scripts/build/ninja/minify_json.gni")
+import("../../../../scripts/build/ninja/node.gni")
 
 import("//$devtools_root_location/config/gni/i18n.gni")
+
+node_action("collect_strings") {
+  script = "front_end/core/i18n/collect-ui-strings.js"
+
+  args = [ "--input-directories" ]
+  foreach(dir, devtools_collection_directories) {
+    args += [ rebase_path(dir, root_build_dir) ]
+  }
+  args += [
+    "--output-directory",
+    rebase_path("$target_gen_dir/generated"),
+  ]
+
+  outputs = [ "$target_gen_dir/generated/en-US.json" ]
+  if (include_en_xl) {
+    args += [ "--include-en-xl" ]
+    outputs += [ "$target_gen_dir/generated/en-XL.json" ]
+  }
+}
 
 minify_json("i18n_locales") {
   sources = []

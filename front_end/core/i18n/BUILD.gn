@@ -26,7 +26,7 @@ devtools_module("i18n") {
   ]
 
   public_deps = [
-    ":collect_strings",
+    "./locales:collect_strings",
     "./locales:i18n_bundled_locales",
     "./locales:i18n_locales",
   ]
@@ -74,25 +74,6 @@ node_action("generate_locales_js") {
     metadata = {
       grd_files = outputs
     }
-  }
-}
-
-node_action("collect_strings") {
-  script = "front_end/core/i18n/collect-ui-strings.js"
-
-  args = [ "--input-directories" ]
-  foreach(dir, devtools_collection_directories) {
-    args += [ rebase_path(dir, root_build_dir) ]
-  }
-  args += [
-    "--output-directory",
-    rebase_path("$target_gen_dir/locales/generated"),
-  ]
-
-  outputs = [ "$target_gen_dir/locales/generated/en-US.json" ]
-  if (include_en_xl) {
-    args += [ "--include-en-xl" ]
-    outputs += [ "$target_gen_dir/locales/generated/en-XL.json" ]
   }
 }
 

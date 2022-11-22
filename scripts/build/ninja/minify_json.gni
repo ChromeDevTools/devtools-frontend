@@ -11,17 +11,18 @@ template("minify_json") {
 
     script = "scripts/build/ninja/minify-json-files.js"
 
-    _src = rebase_path(".", root_build_dir)
     _dest = rebase_path(target_gen_dir, root_build_dir)
 
-    args = [
-             _src,
-             _dest,
-           ] + sources
-
+    args = [ _dest ]
     outputs = []
+
     foreach(_input, sources) {
-      outputs += [ "$target_gen_dir/$_input" ]
+      args += [ rebase_path(_input, root_build_dir) ]
+
+      # Input can be from anywhere but all minified json files land in
+      # $target_gen_dir.
+      filename = get_path_info(_input, "file")
+      outputs += [ "$target_gen_dir/$filename" ]
     }
   }
 }

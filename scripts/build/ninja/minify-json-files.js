@@ -6,14 +6,14 @@ const fs = require('fs');
 const path = require('path');
 const {writeIfChanged} = require('./write-if-changed.js');
 
-const [, , src, dest, ...files] = process.argv;
+const [, , dest, ...files] = process.argv;
 
 for (const file of files) {
-  const srcPath = path.join(src, file);
-  const destPath = path.join(dest, file);
+  const filename = path.basename(file);
+  const destPath = path.join(dest, filename);
 
   // Minifying JSON is straight-forward as JSON.stringify omits whitespace.
-  const srcContents = fs.readFileSync(srcPath);
+  const srcContents = fs.readFileSync(file);
   const destContents = JSON.stringify(JSON.parse(srcContents));
   writeIfChanged(destPath, destContents);
 }

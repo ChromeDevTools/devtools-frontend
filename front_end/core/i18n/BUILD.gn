@@ -5,7 +5,6 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
-import("../../../scripts/build/ninja/minify_json.gni")
 import("../../../scripts/build/ninja/node.gni")
 
 import("//$devtools_root_location/config/gni/i18n.gni")

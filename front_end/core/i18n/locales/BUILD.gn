@@ -26,11 +26,22 @@ node_action("collect_strings") {
   }
 }
 
+generated_locales = [ "en-US" ]
+if (include_en_xl) {
+  generated_locales += [ "en-XL" ]
+}
+
 minify_json("i18n_locales") {
   sources = []
-  foreach(locale, remote_devtools_locales + bundled_devtools_locales) {
+  foreach(
+      locale,
+      remote_devtools_locales + bundled_devtools_locales - generated_locales) {
     sources += [ "$locale.json" ]
   }
+
+  sources += get_target_outputs(":collect_strings")
+
+  deps = [ ":collect_strings" ]
 }
 
 group("i18n_bundled_locales") {

@@ -7,7 +7,11 @@ import("./vars.gni")
 
 template("minify_json") {
   node_action(target_name) {
-    forward_variables_from(invoker, [ "sources" ])
+    forward_variables_from(invoker,
+                           [
+                             "deps",
+                             "sources",
+                           ])
 
     script = "scripts/build/ninja/minify-json-files.js"
 

@@ -26,7 +26,6 @@ devtools_module("i18n") {
   ]
 
   public_deps = [
-    "./locales:collect_strings",
     "./locales:i18n_bundled_locales",
     "./locales:i18n_locales",
   ]

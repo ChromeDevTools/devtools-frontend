@@ -16,7 +16,7 @@ import {
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
-  CONSOLE_FIRST_MESSAGES_SELECTOR,
+  CONSOLE_ALL_MESSAGES_SELECTOR,
   focusConsolePrompt,
   getConsoleMessages,
   getCurrentConsoleMessages,
@@ -333,7 +333,7 @@ describe('The Console Tab', async () => {
           }
           return result;
         }));
-      }, CONSOLE_FIRST_MESSAGES_SELECTOR, styles);
+      }, CONSOLE_ALL_MESSAGES_SELECTOR, styles);
     }
 
     async function waitForConsoleMessages(count: number): Promise<void> {

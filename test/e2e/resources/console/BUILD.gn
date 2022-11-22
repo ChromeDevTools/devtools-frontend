@@ -11,6 +11,7 @@ copy_to_gen("console") {
     "big-int.html",
     "built-ins.html",
     "command-line-api-getEventListeners.html",
+    "console-fetch-logging.html",
     "console-filter.html",
     "context-selector-inner.html",
     "context-selector.html",
@@ -29,6 +30,7 @@ copy_to_gen("console") {
     "navigation/write-to-console.html",
     "navigation/write-to-console2.html",
     "onunhandledrejection.html",
+    "post-target.rawresponse",
     "primitives.html",
     "prototypes.html",
     "resource-errors-iframe.html",
@@ -40,5 +42,6 @@ copy_to_gen("console") {
     "structured-objects.html",
     "uncaught-promise.html",
     "worker-pause.js",
+    "xhr-exists.html",
   ]
 }

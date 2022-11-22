@@ -18,6 +18,7 @@ node_ts_library("console") {
     "console-eval-fake_test.ts",
     "console-eval-global_test.ts",
     "console-expand-recursively_test.ts",
+    "console-fetch-logging_test.ts",
     "console-filter_test.ts",
     "console-last-result_test.ts",
     "console-live-expressions_test.ts",

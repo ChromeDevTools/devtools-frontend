@@ -1,0 +1,44 @@
+<script>
+  function makeFetch(url, requestInitializer) {
+    return fetch(url, requestInitializer).then(res => {
+      res.text();
+      return res;
+    }).catch(e => e);
+  }
+
+  function requestHelper(method, url, callback) {
+    // Delay invoking callback to let didFinishLoading() a chance to fire and log
+    // console message.
+    function delayCallback() {
+      setTimeout(callback, 0);
+    }
+    makeFetch(url, { method: method }).then(delayCallback);
+  }
+
+  function makeRequests() {
+    var callback;
+    var promise = new Promise((fulfill) => callback = fulfill);
+    step1();
+    return promise;
+
+    function step1() {
+      // Page that exists.
+      requestHelper("GET", "xhr-exists.html", step2);
+    }
+
+    function step2() {
+      // Page that doesn't exist.
+      requestHelper("GET", "xhr-does-not-exist.html", step3);
+    }
+
+    function step3() {
+      // POST to a page.
+      requestHelper("POST", "post-target.rawresponse", step4);
+    }
+
+    function step4() {
+      // (Failed) cross-origin request
+      requestHelper("GET", "http://localhost:8000/devtools/resources/xhr-exists.html", callback);
+    }
+  }
+</script>

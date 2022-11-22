@@ -146,10 +146,8 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
       const warning = document.createElement('span');
       const clsLink = UI.XLink.XLink.create('https://web.dev/tbt/', i18nString(UIStrings.learnMore));
-      // crbug.com/1103188: In dark mode the focus ring is hidden by the surrounding
-      // container of this link. For some additional spacing on the right to make
-      // sure the ring is fully visible.
-      clsLink.style.marginRight = '2px';
+      // Prevent focus ring from being cut off.
+      clsLink.style.margin = '3px';
       warning.appendChild(clsLink);
 
       this.additionalMetricsToolbar.appendText(message);

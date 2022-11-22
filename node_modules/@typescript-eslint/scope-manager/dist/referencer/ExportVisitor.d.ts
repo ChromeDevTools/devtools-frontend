@@ -1,7 +1,7 @@
-import { TSESTree } from '@typescript-eslint/types';
-import { Referencer } from './Referencer';
+import type { TSESTree } from '@typescript-eslint/types';
+import type { Referencer } from './Referencer';
 import { Visitor } from './Visitor';
-declare type ExportNode = TSESTree.ExportAllDeclaration | TSESTree.ExportDefaultDeclaration | TSESTree.ExportNamedDeclaration;
+type ExportNode = TSESTree.ExportAllDeclaration | TSESTree.ExportDefaultDeclaration | TSESTree.ExportNamedDeclaration;
 declare class ExportVisitor extends Visitor {
     #private;
     constructor(node: ExportNode, referencer: Referencer);

@@ -1,6 +1,6 @@
-import { TSESTree } from '@typescript-eslint/types';
-import { DefinitionType } from './DefinitionType';
+import type { TSESTree } from '@typescript-eslint/types';
 import { DefinitionBase } from './DefinitionBase';
+import { DefinitionType } from './DefinitionType';
 declare class TSEnumNameDefinition extends DefinitionBase<DefinitionType.TSEnumName, TSESTree.TSEnumDeclaration, null, TSESTree.Identifier> {
     constructor(name: TSESTree.Identifier, node: TSEnumNameDefinition['node']);
     readonly isTypeDefinition = true;

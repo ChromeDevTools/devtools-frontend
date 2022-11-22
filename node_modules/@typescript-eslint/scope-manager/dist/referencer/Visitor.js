@@ -13,9 +13,9 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
 var _Visitor_options;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VisitorBase = exports.Visitor = void 0;
+const PatternVisitor_1 = require("./PatternVisitor");
 const VisitorBase_1 = require("./VisitorBase");
 Object.defineProperty(exports, "VisitorBase", { enumerable: true, get: function () { return VisitorBase_1.VisitorBase; } });
-const PatternVisitor_1 = require("./PatternVisitor");
 class Visitor extends VisitorBase_1.VisitorBase {
     constructor(optionsOrVisitor) {
         super(optionsOrVisitor instanceof Visitor

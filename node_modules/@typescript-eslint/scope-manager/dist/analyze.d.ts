@@ -1,5 +1,5 @@
-import { TSESTree, EcmaVersion, Lib } from '@typescript-eslint/types';
-import { ReferencerOptions } from './referencer';
+import type { EcmaVersion, Lib, TSESTree } from '@typescript-eslint/types';
+import type { ReferencerOptions } from './referencer';
 import { ScopeManager } from './ScopeManager';
 interface AnalyzeOptions {
     /**

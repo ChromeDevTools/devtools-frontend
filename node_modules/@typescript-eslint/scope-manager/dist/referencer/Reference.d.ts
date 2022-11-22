@@ -1,6 +1,6 @@
-import { TSESTree } from '@typescript-eslint/types';
-import { Scope } from '../scope';
-import { Variable } from '../variable';
+import type { TSESTree } from '@typescript-eslint/types';
+import type { Scope } from '../scope';
+import type { Variable } from '../variable';
 declare enum ReferenceFlag {
     Read = 1,
     Write = 2,

@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.analyze = void 0;
 const visitor_keys_1 = require("@typescript-eslint/visitor-keys");
+const lib_1 = require("./lib");
 const referencer_1 = require("./referencer");
 const ScopeManager_1 = require("./ScopeManager");
-const lib_1 = require("./lib");
 const DEFAULT_OPTIONS = {
     childVisitorKeys: visitor_keys_1.visitorKeys,
     ecmaVersion: 2018,

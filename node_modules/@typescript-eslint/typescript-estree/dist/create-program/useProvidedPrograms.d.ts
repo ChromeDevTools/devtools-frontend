@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
-import { Extra } from '../parser-options';
-import { ASTAndProgram } from './shared';
-declare function useProvidedPrograms(programInstances: Iterable<ts.Program>, extra: Extra): ASTAndProgram | undefined;
+import type { ParseSettings } from '../parseSettings';
+import type { ASTAndProgram } from './shared';
+declare function useProvidedPrograms(programInstances: Iterable<ts.Program>, parseSettings: ParseSettings): ASTAndProgram | undefined;
 /**
  * Utility offered by parser to help consumers construct their own program instance.
  *

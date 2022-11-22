@@ -1,15 +1,16 @@
-import { TSESTree } from '@typescript-eslint/types';
-import { FunctionScope } from './FunctionScope';
-import { GlobalScope } from './GlobalScope';
-import { ScopeType } from './ScopeType';
-import { ScopeManager } from '../ScopeManager';
-import { Scope } from './Scope';
-import { ModuleScope } from './ModuleScope';
-import { Definition } from '../definition';
-import { Reference, ReferenceFlag, ReferenceImplicitGlobal } from '../referencer/Reference';
+import type { TSESTree } from '@typescript-eslint/types';
+import type { Definition } from '../definition';
+import type { ReferenceImplicitGlobal } from '../referencer/Reference';
+import { Reference, ReferenceFlag } from '../referencer/Reference';
+import type { ScopeManager } from '../ScopeManager';
 import { Variable } from '../variable';
-import { TSModuleScope } from './TSModuleScope';
-declare type VariableScope = GlobalScope | FunctionScope | ModuleScope | TSModuleScope;
+import type { FunctionScope } from './FunctionScope';
+import type { GlobalScope } from './GlobalScope';
+import type { ModuleScope } from './ModuleScope';
+import type { Scope } from './Scope';
+import { ScopeType } from './ScopeType';
+import type { TSModuleScope } from './TSModuleScope';
+type VariableScope = GlobalScope | FunctionScope | ModuleScope | TSModuleScope;
 declare abstract class ScopeBase<TType extends ScopeType, TBlock extends TSESTree.Node, TUpper extends Scope | null> {
     #private;
     /**

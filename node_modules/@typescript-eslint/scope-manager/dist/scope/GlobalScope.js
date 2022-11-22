@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GlobalScope = void 0;
 const types_1 = require("@typescript-eslint/types");
-const ScopeBase_1 = require("./ScopeBase");
-const ScopeType_1 = require("./ScopeType");
 const assert_1 = require("../assert");
 const ImplicitGlobalVariableDefinition_1 = require("../definition/ImplicitGlobalVariableDefinition");
 const variable_1 = require("../variable");
+const ScopeBase_1 = require("./ScopeBase");
+const ScopeType_1 = require("./ScopeType");
 class GlobalScope extends ScopeBase_1.ScopeBase {
     constructor(scopeManager, block) {
         super(scopeManager, ScopeType_1.ScopeType.global, null, block, false);

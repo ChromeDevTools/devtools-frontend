@@ -1,5 +1,5 @@
-import { TSESTree } from './ts-estree';
-declare type SimpleTraverseOptions = {
+import type { TSESTree } from './ts-estree';
+type SimpleTraverseOptions = {
     enter: (node: TSESTree.Node, parent: TSESTree.Node | undefined) => void;
 } | {
     [key: string]: (node: TSESTree.Node, parent: TSESTree.Node | undefined) => void;

@@ -1,4 +1,4 @@
-import { TSESTree } from '@typescript-eslint/types';
+import type { TSESTree } from '@typescript-eslint/types';
 import { VisitorKeys } from '@typescript-eslint/visitor-keys';
 interface VisitorOptions {
     childVisitorKeys?: VisitorKeys | null;

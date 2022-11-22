@@ -1,5 +1,5 @@
-import { TSESTree } from '@typescript-eslint/types';
-import { Referencer } from './Referencer';
+import type { TSESTree } from '@typescript-eslint/types';
+import type { Referencer } from './Referencer';
 import { Visitor } from './Visitor';
 declare class ImportVisitor extends Visitor {
     #private;

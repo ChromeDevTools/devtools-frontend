@@ -1,7 +1,7 @@
-import { TSESTree } from '@typescript-eslint/types';
-import { Definition } from '../definition';
-import { Reference } from '../referencer/Reference';
-import { Scope } from '../scope';
+import type { TSESTree } from '@typescript-eslint/types';
+import type { Definition } from '../definition';
+import type { Reference } from '../referencer/Reference';
+import type { Scope } from '../scope';
 declare class VariableBase {
     /**
      * A unique ID for this instance - primarily used to help debugging and testing

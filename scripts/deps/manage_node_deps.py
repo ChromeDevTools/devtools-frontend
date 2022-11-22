@@ -49,7 +49,7 @@ DEPS = {
     "@types/istanbul-lib-source-maps": "4.0.1",
     "@types/istanbul-reports": "3.0.1",
     "@types/karma-chai-sinon": "0.1.16",
-    "@types/node": "17.0.8",
+    "@types/node": "18.11.9",
     "@types/marked": "4.0.1",
     "@types/mocha": "9.0.0",
     "@types/rimraf": "3.0.2",

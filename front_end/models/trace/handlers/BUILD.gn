@@ -8,12 +8,15 @@ import("../../visibility.gni")
 
 devtools_module("handlers") {
   sources = [
+    "MetaHandler.ts",
     "ModelHandlers.ts",
-    "TestHandler.ts",
     "types.ts",
   ]
 
-  deps = []
+  deps = [
+    "../../../core/platform:bundle",
+    "../types:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {

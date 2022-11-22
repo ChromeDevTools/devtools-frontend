@@ -6,7 +6,7 @@ import * as TraceModel from '../../../../../front_end/models/trace/trace.js';
 
 const {assert} = chai;
 
-import {loadTraceFile} from '../../helpers/TraceHelpers.js';
+import {loadEventsFromTraceFile} from '../../helpers/TraceHelpers.js';
 
 describe('TraceModel', async () => {
   it('dispatches start and end events when parsing model data', function(done) {
@@ -36,13 +36,12 @@ describe('TraceModel', async () => {
       }
     });
 
-    void loadTraceFile<TraceModel.Types.TraceEvents.TraceEventData>('basic.json.gz')
-        .then(events => model.parse(events));
+    void loadEventsFromTraceFile('basic.json.gz').then(events => model.parse(events));
   });
 
   it('can use a trace processor', async () => {
     const processor = new TraceModel.TraceProcessor.TraceProcessor(TraceModel.Handlers.ModelHandlers);
-    const file = await loadTraceFile<TraceModel.Types.TraceEvents.TraceEventData>('basic.json.gz');
+    const file = await loadEventsFromTraceFile('basic.json.gz');
 
     // Check parsing after instantiation.
     assert.isNull(processor.data);
@@ -108,8 +107,8 @@ describe('TraceModel', async () => {
 
   it('supports parsing multiple traces', async () => {
     const model = new TraceModel.TraceModel.Model();
-    const file1 = await loadTraceFile<TraceModel.Types.TraceEvents.TraceEventData>('basic.json.gz');
-    const file2 = await loadTraceFile<TraceModel.Types.TraceEvents.TraceEventData>('slow-interaction-keydown.json.gz');
+    const file1 = await loadEventsFromTraceFile('basic.json.gz');
+    const file2 = await loadEventsFromTraceFile('slow-interaction-keydown.json.gz');
 
     await model.parse(file1);
     model.reset();
@@ -123,8 +122,8 @@ describe('TraceModel', async () => {
 
   it('supports deleting traces', async () => {
     const model = new TraceModel.TraceModel.Model();
-    const file1 = await loadTraceFile<TraceModel.Types.TraceEvents.TraceEventData>('basic.json.gz');
-    const file2 = await loadTraceFile<TraceModel.Types.TraceEvents.TraceEventData>('slow-interaction-keydown.json.gz');
+    const file1 = await loadEventsFromTraceFile('basic.json.gz');
+    const file2 = await loadEventsFromTraceFile('slow-interaction-keydown.json.gz');
 
     await model.parse(file1);
     model.reset();

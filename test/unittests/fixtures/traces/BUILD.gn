@@ -7,7 +7,14 @@ import("../../../../scripts/build/ninja/copy.gni")
 copy_to_gen("traces") {
   sources = [
     "basic.json.gz",
+    "forced-layouts-and-no-gpu.json.gz",
+    "missing-process-data.json.gz",
+    "missing-tracing-start.json.gz",
+    "multiple-top-level-renderers.json.gz",
+    "reload-and-trace-page.json.gz",
     "slow-interaction-button-click.json.gz",
     "slow-interaction-keydown.json.gz",
+    "threejs-gpu.json.gz",
+    "web-dev.json.gz",
   ]
 }

@@ -5,6 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 
 import * as Handlers from './handlers/handlers.js';
+import {extractOriginFromTrace} from './Helpers.js';
 import {TraceProcessor} from './TraceProcessor.js';
 
 import type * as Types from './types/types.js';
@@ -168,23 +169,6 @@ export class ModelUpdateEvent extends Event {
   constructor(public data: ModelUpdateEventData) {
     super(ModelUpdateEvent.eventName);
   }
-}
-
-// TODO(jacktfranklin): this should really be moved into the helpers folder.
-export function extractOriginFromTrace(_trace: Handlers.Types.TraceParseData): string|null {
-  // TODO: Enable proper implementation once Meta handler has been implemented. [crbug.com/1386092]
-  return null;
-  // const firstNavigation = trace.Meta.mainFrameURL;
-  // const url = Common.ParsedURL.ParsedURL.fromString(firstNavigation);
-  // if (url) {
-  //   // We do this to save some space in the toolbar - seeing the `www` is less
-  //   // useful than seeing `foo.com` if it's truncated at narrow widths
-  //   if (url.host.startsWith('www.')) {
-  //     return url.host.slice(4);
-  //   }
-  //   return url.host;
-  // }
-  // return null;
 }
 
 export function isModelUpdateEventDataGlobal(object: ModelUpdateEventData): object is ModelUpdateEventGlobalData {

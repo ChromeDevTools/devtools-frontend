@@ -68,4 +68,12 @@ A trace containing a lot of GPU activity.
 
 A trace that contains a button that, when clicked, will iterate over 30 paragraphs and increment their width to the width of a div. This causes a forced layout event for each one. Additionally this trace contains no GPU thread.
 
+### multiple-navigations.json
+
+This is a trace that includes multiple navigations:
+
+* Starts on google.com
+* Navigates to Google Images search (google.com/imghp)
+* Search for "dogs" (https://www.google.com/search?q=dogs&...)
+
 

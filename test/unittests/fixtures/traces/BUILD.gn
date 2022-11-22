@@ -10,6 +10,7 @@ copy_to_gen("traces") {
     "forced-layouts-and-no-gpu.json.gz",
     "missing-process-data.json.gz",
     "missing-tracing-start.json.gz",
+    "multiple-navigations.json.gz",
     "multiple-top-level-renderers.json.gz",
     "reload-and-trace-page.json.gz",
     "slow-interaction-button-click.json.gz",

@@ -141,49 +141,27 @@ describe('TraceModel', async () => {
     assert.isNull(model.traceParsedData(0));
   });
 
-  // TODO: re-enable once MetaHandler has landed. [crbug.com/1386092]
-  // it('names traces using their origin and defaults to "Trace n" when no origin is found', async () => {
-  //   const model = new TraceModel.TraceModel.Model();
-  //   const traceFiles = [
-  //     await readTraceEventsFromURL('/traces/threejs-gpu.json.gz'),
-  //     await readTraceEventsFromURL('/traces/blank-web-dev.json.gz'),
-  //     await readTraceEventsFromURL('/traces/load-simple.json.gz'),
-  //     // Process the previous trace again to test the trace sequencing
-  //     await readTraceEventsFromURL('/traces/load-simple.json.gz'),
-  //     await readTraceEventsFromURL('/traces/basic.json.gz'),
-  //   ];
-  //   for (const traceFile of traceFiles) {
-  //     await model.parse(traceFile);
-  //     model.reset();
-  //   }
-  //   const expectedResults = [
-  //     'threejs.org (1)',
-  //     'Trace 2',
-  //     'localhost (1)',
-  //     'localhost (2)',
-  //     'Trace 5',
-  //   ];
-  //   assert.deepEqual(model.getRecordingsAvailable(), expectedResults);
-  // });
-
-  // TODO: re-enable once MetaHandler has landed. [crbug.com/1386092]
-  // describe('extractOriginFromTrace', () => {
-  //   it('extracts the origin of a parsed trace correctly', async () => {
-  //     const traceEvents = await loadModelDataFromURL('load-simple.json.gz');
-  //     const origin = TraceModel.TraceModel.extractOriginFromTrace(traceEvents);
-  //     assert.strictEqual(origin, 'localhost');
-  //   });
-
-  //   it('will remove the `www` if it is present', async () => {
-  //     const traceEvents = await loadModelDataFromURL('multiple-navigations.json.gz');
-  //     const origin = TraceModel.TraceModel.extractOriginFromTrace(traceEvents);
-  //     assert.strictEqual(origin, 'google.com');
-  //   });
-
-  //   it('returns null when no origin is found', async () => {
-  //     const traceEvents = await loadModelDataFromURL('basic.json.gz');
-  //     const origin = TraceModel.TraceModel.extractOriginFromTrace(traceEvents);
-  //     assert.isNull(origin);
-  //   });
-  // });
+  it('names traces using their origin and defaults to "Trace n" when no origin is found', async () => {
+    const model = new TraceModel.TraceModel.Model();
+    const traceFiles = [
+      await loadEventsFromTraceFile('threejs-gpu.json.gz'),
+      await loadEventsFromTraceFile('web-dev.json.gz'),
+      // Process the previous trace again to test the trace sequencing
+      await loadEventsFromTraceFile('web-dev.json.gz'),
+      await loadEventsFromTraceFile('multiple-navigations.json.gz'),
+      await loadEventsFromTraceFile('basic.json.gz'),
+    ];
+    for (const traceFile of traceFiles) {
+      await model.parse(traceFile);
+      model.reset();
+    }
+    const expectedResults = [
+      'threejs.org (1)',
+      'web.dev (1)',
+      'web.dev (2)',
+      'google.com (1)',
+      'Trace 5',
+    ];
+    assert.deepEqual(model.getRecordingsAvailable(), expectedResults);
+  });
 });

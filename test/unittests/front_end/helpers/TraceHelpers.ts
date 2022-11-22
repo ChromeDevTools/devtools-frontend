@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
-import type * as TraceModel from '../../../../front_end/models/trace/trace.js';
+import * as TraceModel from '../../../../front_end/models/trace/trace.js';
 
 interface CompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
 interface DecompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
@@ -63,5 +63,48 @@ export async function loadEventsFromTraceFile(name: string):
   if ('traceEvents' in trace) {
     return trace.traceEvents;
   }
+  return trace;
+}
+
+async function generateModelDataForTraceFile(name: string, emulateFreshRecording = false): Promise<{
+  metadata: TraceModel.TraceModel.TraceFileMetaData,
+  traceParsedData: TraceModel.Handlers.Types.TraceParseData,
+}> {
+  const traceEvents = await loadEventsFromTraceFile(name);
+
+  return new Promise((resolve, reject) => {
+    const model = new TraceModel.TraceModel.Model();
+    model.addEventListener(TraceModel.TraceModel.ModelUpdateEvent.eventName, (event: Event) => {
+      const {data} = event as TraceModel.TraceModel.ModelUpdateEvent;
+
+      // When we receive the final update from the model, update the recording
+      // state back to waiting.
+      if (TraceModel.TraceModel.isModelUpdateEventDataGlobal(data) && data.data === 'done') {
+        const metadata = model.metadata(0);
+        const traceParsedData = model.traceParsedData(0);
+        if (metadata && traceParsedData) {
+          const result = {
+            metadata,
+            traceParsedData,
+          };
+          resolve(result);
+        } else {
+          reject(new Error('Unable to load trace'));
+        }
+      }
+    });
+
+    void model.parse(traceEvents, {}, emulateFreshRecording).catch(e => console.error(e));
+  });
+}
+
+export async function loadModelDataFromTraceFile(name: string): Promise<TraceModel.Handlers.Types.TraceParseData> {
+  let trace: TraceModel.Handlers.Types.TraceParseData;
+  try {
+    trace = (await generateModelDataForTraceFile(name)).traceParsedData;
+  } catch (error) {
+    throw new Error(`Failed to load trace file: ${name}. Is it in test/unittests/fixtures/traces?`);
+  }
+
   return trace;
 }

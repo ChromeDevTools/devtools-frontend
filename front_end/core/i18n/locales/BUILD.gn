@@ -16,7 +16,7 @@ node_action("collect_strings") {
   }
   args += [
     "--output-directory",
-    rebase_path("$target_gen_dir/generated"),
+    rebase_path("$target_gen_dir/generated", root_build_dir),
   ]
 
   outputs = [ "$target_gen_dir/generated/en-US.json" ]

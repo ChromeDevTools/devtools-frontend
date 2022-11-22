@@ -461,28 +461,25 @@ def _CheckGeneratedFiles(input_api, output_api):
     return _ExecuteSubProcess(input_api, output_api, generate_protocol_resources_path, [], results)
 
 
-def _CollectStrings(input_api, output_api):
+def _CheckL10nStrings(input_api, output_api):
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
     script_path = input_api.os_path.join(devtools_root, 'third_party', 'i18n',
-                                         'collect-strings.js')
+                                         'check-strings.js')
     affected_front_end_files = _getAffectedFiles(
         input_api, [devtools_front_end, script_path], [], ['.js', '.ts'])
     if len(affected_front_end_files) == 0:
         return [
             output_api.PresubmitNotifyResult(
-                'No affected files to run collect-strings')
+                'No affected files to run check-strings')
         ]
 
     results = [
-        output_api.PresubmitNotifyResult('Collecting strings from front_end:')
+        output_api.PresubmitNotifyResult('Checking UI strings from front_end:')
     ]
     results.extend(
         _checkWithNodeScript(input_api, output_api, script_path,
                              [devtools_front_end]))
-    results.append(
-        output_api.PresubmitNotifyResult(
-            'Please commit en-US.json/en-XL.json if changes are generated.'))
     return results
 
 
@@ -595,7 +592,7 @@ def _SideEffectChecks(input_api, output_api):
 def CheckChangeOnUpload(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
-    results.extend(_CollectStrings(input_api, output_api))
+    results.extend(_CheckL10nStrings(input_api, output_api))
     # Run checks that rely on output from other DevTool checks
     results.extend(_SideEffectChecks(input_api, output_api))
     results.extend(_CheckBugAssociation(input_api, output_api, False))
@@ -605,7 +602,7 @@ def CheckChangeOnUpload(input_api, output_api):
 def CheckChangeOnCommit(input_api, output_api):
     results = []
     results.extend(_CommonChecks(input_api, output_api))
-    results.extend(_CollectStrings(input_api, output_api))
+    results.extend(_CheckL10nStrings(input_api, output_api))
     # Run checks that rely on output from other DevTool checks
     results.extend(_SideEffectChecks(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasDescription(input_api, output_api))

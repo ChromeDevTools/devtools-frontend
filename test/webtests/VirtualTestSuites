@@ -7,7 +7,8 @@
         ],
         "args": [
             "--enable-threaded-compositing"
-        ]
+        ],
+        "expires": "Jul 1, 2023"
     },
     {
         "prefix": "site-isolated-code-cache",
@@ -18,7 +19,8 @@
         "args": [
             "--enable-features=IsolatedCodeCache",
             "--site-per-process"
-        ]
+        ],
+        "expires": "Jul 1, 2023"
     },
     {
         "prefix": "wasm-site-isolated-code-cache",
@@ -30,7 +32,8 @@
             "--enable-features=IsolatedCodeCache,WasmCodeCache",
             "--disable-features=WebAssemblyBaseline",
             "--site-per-process"
-        ]
+        ],
+        "expires": "Jul 1, 2023"
     },
     {
         "prefix": "split-http-cache-not-site-per-process",
@@ -41,7 +44,8 @@
         "args": [
             "--enable-features=SplitCacheByNetworkIsolationKey",
             "--disable-site-isolation-trials"
-        ]
+        ],
+        "expires": "Jul 1, 2023"
     },
     {
         "prefix": "not-split-http-cache-not-site-per-process",
@@ -52,7 +56,8 @@
         "args": [
             "--disable-features=SplitCacheByNetworkIsolationKey",
             "--disable-site-isolation-trials"
-        ]
+        ],
+        "expires": "Jul 1, 2023"
     },
     {
         "prefix": "not-site-per-process",
@@ -63,6 +68,7 @@
         ],
         "args": [
             "--disable-site-isolation-trials"
-        ]
+        ],
+        "expires": "Jul 1, 2023"
     }
 ]

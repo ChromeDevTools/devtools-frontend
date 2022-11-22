@@ -205,6 +205,12 @@ label {
   margin-left: 4px;
 }
 
+.tabbed-pane-content slot::slotted(.widget) {
+  /* '!important' in order to overwrite the slotted widget's 'overflow-auto' class.
+  This prevents the focus-ring of selectable elements from being cut off. */
+  overflow: visible !important; /* stylelint-disable-line declaration-no-important */
+}
+
 @media (forced-colors: active) {
   .settings-window-title {
     color: canvastext;

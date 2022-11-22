@@ -236,12 +236,12 @@
   flex: 0 0 auto;
   flex-direction: column;
   padding-top: 10px;
-  padding-right: 8px;
+  padding-right: 4px;
   overflow: hidden;
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-content {
-  padding: 10px 10px 10px 0;
+  padding: 10px 10px 10px 4px;
   overflow-x: hidden;
 }
 

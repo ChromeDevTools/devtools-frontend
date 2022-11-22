@@ -19,7 +19,9 @@ ts_library("sources") {
   ]
 
   deps = [
+    "../../../../../front_end/core/platform:bundle",
     "../../../../../front_end/panels/sources:bundle",
+    "../../../../../front_end/third_party/codemirror.next:bundle",
     "../../../../../front_end/ui/components/text_editor:bundle",
     "../../helpers",
     "./components",

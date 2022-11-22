@@ -443,7 +443,7 @@ export class CSSPlugin extends Plugin implements SDK.TargetManager.SDKModelObser
   }
 
   modelAdded(cssModel: SDK.CSSModel.CSSModel): void {
-    if (this.#cssModel) {
+    if (cssModel.target() !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
       return;
     }
     this.#cssModel = cssModel;

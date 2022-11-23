@@ -1547,6 +1547,7 @@ export const generatedProperties = [
    "font-variant-caps",
    "font-variant-numeric",
    "font-variant-east-asian",
+   "font-variant-alternates",
    "font-weight",
    "font-stretch",
    "font-size",
@@ -1681,10 +1682,18 @@ export const generatedProperties = [
   "longhands": [
    "font-variant-ligatures",
    "font-variant-caps",
+   "font-variant-alternates",
    "font-variant-numeric",
    "font-variant-east-asian"
   ],
   "name": "font-variant"
+ },
+ {
+  "inherited": true,
+  "keywords": [
+   "normal"
+  ],
+  "name": "font-variant-alternates"
  },
  {
   "inherited": true,
@@ -1745,6 +1754,15 @@ export const generatedProperties = [
    "slashed-zero"
   ],
   "name": "font-variant-numeric"
+ },
+ {
+  "inherited": true,
+  "keywords": [
+   "normal",
+   "sub",
+   "super"
+  ],
+  "name": "font-variant-position"
  },
  {
   "inherited": true,
@@ -4361,6 +4379,11 @@ export const generatedPropertyValues = {
    "none"
   ]
  },
+ "font-variant-alternates": {
+  "values": [
+   "normal"
+  ]
+ },
  "font-variant-caps": {
   "values": [
    "normal",
@@ -4411,6 +4434,13 @@ export const generatedPropertyValues = {
    "stacked-fractions",
    "ordinal",
    "slashed-zero"
+  ]
+ },
+ "font-variant-position": {
+  "values": [
+   "normal",
+   "sub",
+   "super"
   ]
  },
  "font-variation-settings": {

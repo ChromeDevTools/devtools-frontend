@@ -50,6 +50,13 @@ describeWithEnvironment('CSSProperty', () => {
     it('formats declaration with unknown property that contains a function correctly', async () => {
       assert.strictEqual(await formatStyle('unknownProperty: rgba(0,0,0,0);;', '', ''), 'unknownProperty: rgba(0,0,0,0);');
     });
+    // Regression test for crbug/1392813
+    it('formats complex CSS variable declaration', async () => {
+      assert.strictEqual(
+        await formatStyle('--_name: background var(--another-name)', '', ''),
+        '--_name: background var(--another-name)',
+      );
+    });
   });
 
   it('should correctly construct new CSSProperty', () => {

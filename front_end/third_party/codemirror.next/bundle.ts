@@ -91,7 +91,7 @@ export async function shell() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/shell')).shell);
 }
 export async function cssStreamParser() {
-  return (await import('@codemirror/legacy-modes/mode/css') as any).sCSS;
+  return (await import('@codemirror/legacy-modes/mode/css') as any).css;
 }
 export function wast() {
   return import('@codemirror/lang-wast');

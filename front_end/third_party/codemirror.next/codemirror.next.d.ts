@@ -41,7 +41,7 @@ interface Input {
     readonly lineChunks: boolean;
     read(from: number, to: number): string;
 }
-declare type ParseWrapper = (inner: PartialParse, input: Input, fragments: readonly TreeFragment[], ranges: readonly {
+type ParseWrapper = (inner: PartialParse, input: Input, fragments: readonly TreeFragment[], ranges: readonly {
     from: number;
     to: number;
 }[]) => PartialParse;
@@ -75,7 +75,7 @@ declare class MountedTree {
         to: number;
     }[] | null, parser: Parser);
 }
-declare type NodePropSource = (type: NodeType) => null | [NodeProp<any>, any];
+type NodePropSource = (type: NodeType) => null | [NodeProp<any>, any];
 declare class NodeType {
     readonly name: string;
     readonly id: number;
@@ -135,7 +135,7 @@ declare class Tree {
     }): Tree;
     static build(data: BuildData): Tree;
 }
-declare type BuildData = {
+type BuildData = {
     buffer: BufferCursor | readonly number[];
     nodeSet: NodeSet;
     topID: number;

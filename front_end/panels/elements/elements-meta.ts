@@ -140,6 +140,10 @@ const UIStrings = {
   * @description Command for showing the 'Styles' tool. Displays CSS styles in Elements sidebar.
   */
   showStyles: 'Show Styles',
+  /**
+  * @description Command for toggling the eye dropper when the color picker is open
+  */
+  toggleEyeDropper: 'Toggle eye dropper',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/elements-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -260,6 +264,24 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'H',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'elements.toggle-eye-dropper',
+  category: UI.ActionRegistration.ActionCategory.ELEMENTS,
+  title: i18nLazyString(UIStrings.toggleEyeDropper),
+  async loadActionDelegate() {
+    const Elements = await loadElementsModule();
+    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Elements => [Elements.ColorSwatchPopoverIcon.ColorSwatchPopoverIcon]);
+  },
+  bindings: [
+    {
+      shortcut: 'c',
     },
   ],
 });

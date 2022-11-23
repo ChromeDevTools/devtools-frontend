@@ -62,6 +62,7 @@ import {
   StylesSidebarPane,
   type StylesUpdateCompletedEvent,
 } from './StylesSidebarPane.js';
+import {ColorSwatchPopoverIcon} from './ColorSwatchPopoverIcon.js';
 
 const UIStrings = {
   /**
@@ -1443,6 +1444,14 @@ export class ElementsActionDelegate implements UI.ActionRegistration.ActionDeleg
       case 'elements.show-computed':
         ElementsPanel.instance().selectAndShowSidebarTab(SidebarPaneTabId.Computed);
         return true;
+      case 'elements.toggle-eye-dropper': {
+        const colorSwatchPopoverIcon = UI.Context.Context.instance().flavor(ColorSwatchPopoverIcon);
+        if (!colorSwatchPopoverIcon) {
+          return false;
+        }
+
+        void colorSwatchPopoverIcon.toggleEyeDropper();
+      }
     }
     return false;
   }

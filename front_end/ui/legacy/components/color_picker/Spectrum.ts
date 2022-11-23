@@ -48,8 +48,9 @@ import spectrumStyles from './spectrum.css.js';
 const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over largeicon eyedropper button in Spectrum of the Color Picker
+  * @example {c} PH1
   */
-  toggleColorPicker: 'Toggle color picker',
+  toggleColorPicker: 'Eye dropper [{PH1}]',
   /**
   *@description Aria label for hue slider in Color Picker
   */
@@ -184,6 +185,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private colorNameInternal?: string;
   private colorStringInternal?: string;
   private colorFormat?: string;
+  private eyeDropperAbortController: AbortController|null = null;
   constructor(contrastInfo?: ContrastInfo|null) {
     super(true);
 
@@ -203,8 +205,13 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
     const toolsContainer: HTMLElement = this.contentElement.createChild('div', 'spectrum-tools') as HTMLElement;
     const toolbar = new UI.Toolbar.Toolbar('spectrum-eye-dropper', toolsContainer);
-    this.colorPickerButton =
-        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleColorPicker), 'largeicon-eyedropper');
+    const toggleEyeDropperShortcut =
+        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('elements.toggle-eye-dropper');
+    const definedShortcutKey =
+        toggleEyeDropperShortcut[0]?.descriptors.flatMap(descriptor => descriptor.name.split(' + '))[0];
+
+    this.colorPickerButton = new UI.Toolbar.ToolbarToggle(
+        i18nString(UIStrings.toggleColorPicker, {PH1: definedShortcutKey || ''}), 'largeicon-eyedropper');
     this.colorPickerButton.setToggled(true);
     this.colorPickerButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this.toggleColorPicker.bind(this, undefined));
@@ -1189,7 +1196,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
   }
 
-  private async toggleColorPicker(enabled?: boolean): Promise<void> {
+  async toggleColorPicker(enabled?: boolean): Promise<void> {
     const eyeDropperExperimentEnabled = this.eyeDropperExperimentEnabled;
 
     if (enabled === undefined) {
@@ -1220,16 +1227,22 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       // https://github.com/microsoft/TypeScript/issues/48638
       /* eslint-disable  @typescript-eslint/no-explicit-any */
       const eyeDropper = new (<any>window).EyeDropper();
+      this.eyeDropperAbortController = new AbortController();
 
       try {
-        const hexColor = await eyeDropper.open();
+        const hexColor = await eyeDropper.open({signal: this.eyeDropperAbortController.signal});
         const color = Common.Color.Color.parse(hexColor.sRGBHex);
         this.innerSetColor(color?.hsva(), '', undefined /* colorName */, undefined, ChangeSource.Other);
       } catch (error) {
-        console.error(error);
+        if (error.name !== 'AbortError') {
+          console.error(error);
+        }
       }
 
       this.colorPickerButton.setToggled(false);
+    } else if (eyeDropperExperimentEnabled && !enabled) {
+      this.eyeDropperAbortController?.abort();
+      this.eyeDropperAbortController = null;
     }
   }
 

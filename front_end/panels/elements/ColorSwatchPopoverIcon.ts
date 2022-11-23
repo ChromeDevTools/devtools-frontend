@@ -163,6 +163,10 @@ export class ColorSwatchPopoverIcon {
     this.showPopover();
   }
 
+  async toggleEyeDropper(): Promise<void> {
+    await this.spectrum?.toggleColorPicker();
+  }
+
   showPopover(): void {
     if (this.swatchPopoverHelper.isShowing()) {
       this.swatchPopoverHelper.hide(true);
@@ -197,6 +201,8 @@ export class ColorSwatchPopoverIcon {
     if (uiLocation) {
       void Common.Revealer.reveal(uiLocation, true /* omitFocus */);
     }
+
+    UI.Context.Context.instance().setFlavor(ColorSwatchPopoverIcon, this);
   }
 
   private spectrumResized(): void {
@@ -240,6 +246,8 @@ export class ColorSwatchPopoverIcon {
     void this.treeElement.applyStyleText(propertyText, true);
     this.treeElement.parentPane().setEditingStyle(false);
     delete this.originalPropertyText;
+
+    UI.Context.Context.instance().setFlavor(ColorSwatchPopoverIcon, null);
   }
 }
 

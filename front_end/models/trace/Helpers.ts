@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import type * as Handlers from './handlers/handlers.js';
 import * as Common from '../../core/common/common.js';
+import * as Types from './types/types.js';
 
 export function extractOriginFromTrace(trace: Handlers.Types.TraceParseData): string|null {
   const firstNavigation = trace.Meta.mainFrameURL;
@@ -17,3 +18,12 @@ export function extractOriginFromTrace(trace: Handlers.Types.TraceParseData): st
   }
   return null;
 }
+
+export const millisecondsToMicroseconds = (value: Types.Timing.MilliSeconds): Types.Timing.MicroSeconds =>
+    Types.Timing.MicroSeconds(value * 1000);
+
+export const secondsToMilliseconds = (value: Types.Timing.Seconds): Types.Timing.MilliSeconds =>
+    Types.Timing.MilliSeconds(value * 1000);
+
+export const secondsToMicroseconds = (value: Types.Timing.Seconds): Types.Timing.MicroSeconds =>
+    millisecondsToMicroseconds(secondsToMilliseconds(value));

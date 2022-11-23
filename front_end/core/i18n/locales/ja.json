@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ネットワーク リクエストのブロックを有効にする"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "DevTools が UNC パスを介して Windows Share からソースマップなどのリソースを読み込むことを許可します。セキュリティ上の理由により、デフォルトで無効になっています。"
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Allow DevTools to load resources, such as source maps, from remote file paths. Disabled by default for security reasons."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP 形式を有効にする"
@@ -1239,7 +1239,7 @@
     "message": "接続"
   },
   "entrypoints/node_app/node_app.ts | networkTitle": {
-    "message": "ノード"
+    "message": "Node"
   },
   "entrypoints/node_app/node_app.ts | node": {
     "message": "ノード"
@@ -1248,7 +1248,7 @@
     "message": "接続を表示"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "ノード"
+    "message": "Show Node"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "メイン"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "ワークスペース"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "同時に 2 回フリングしましたか？{PH1} 対 {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "同時に 2 回タップしましたか？{PH1} 対 {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "スレッド {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "内部エラーが発生しました。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "Back/forward cache is disabled due to a keepalive request."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "キーボード ロックを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
   },
@@ -3684,10 +3681,10 @@
     "message": "すべてのインタレスト グループのストレージ イベント。"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
-    "message": "イベント時間"
+    "message": "Event Time"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
-    "message": "アクセスタイプ"
+    "message": "Access Type"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
     "message": "名前"
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "事前レンダリング中にネットワーク エラーが発生しました。"
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "Prerendering ongoing"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "事前レンダリングされたページで問題が発生しました。"
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "ステータス"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "All shared storage events for this page."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "Optional Event Params"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "Event Time"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "Access Type"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "Main Frame ID"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "No shared storage events recorded."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "Owner Origin"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "Shared Storage"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "Creation"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Entries"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "Length"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "オリジン"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "Budget"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Shared Storage"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "スタック トレースをレンダリングできません"
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "ページ内の要素を選択して検査"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Show Computed Styles"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "詳細な検査ツールチップを表示"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "スタック トレースを表示"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Show Styles"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "ユーザー エージェント　シャドウ DOM を表示"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "レポート"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "ページ読み込みを分析"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "ページの状態を分析"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "カテゴリ"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "コミュニティ プラグイン（ベータ版）"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "デバイス"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "レポートを作成"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "サイトのパフォーマンス、ユーザー補助、ユーザー エクスペリエンスに影響する一般的な問題を特定し、修正します。"
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "Lighthouse レポートの生成"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "詳細"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "ページ読み込みを分析"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "ページの状態を分析"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "カテゴリ"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Lighthouse レポートの生成"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "モード"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "プラグイン"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "測定期間を開始"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "ユーザー エージェント"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Chrome used an alternative job because it won a race with a main job."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Chrome used an alternative job without racing with a main job."
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "このリクエストは、レスポンス ヘッダーの設定が誤っていたためブロックされました（クリックすると、ヘッダーが表示されます）"
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "（ブロック: {PH1}）"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Chrome didn't use an alternative job because it was marked broken."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "（キャンセル済み）"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "（ディスク キャッシュ）"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Chrome used a DNS alpn job because it won a race with a main job and an alternative job."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Chrome used a DNS alpn job without racing with a main job and an alternative job."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "（失敗）"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "レベル 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Chrome used a main job because it won a race with an alternative job and/or a DNS alpn job."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Chrome didn't use an alternative job because of missing Alternate-Protocol information."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "（メモリ キャッシュ）"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "スタック トレースをコピー"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "レスポンス ヘッダーのオーバーライドを作成"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "ページと異なるオリジンのリクエストのみを表示します"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Override headers"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "リクエストを行うか、{PH1} を押して再読み込みを記録します。"
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "リクエストの「cookie」ヘッダーのサーバーに送信された Cookie"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Learn more"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "形式が正しくないレスポンス Cookie"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "除外したリクエスト Cookie を表示"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "This site has cookies in another partition, that were not sent with this request. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "このリクエストには Cookie がありりません。"
@@ -7821,7 +7887,7 @@
     "message": "フィルタ"
   },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "長さ"
+    "message": "Length"
   },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "なし"
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "デコード済み:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "Override header"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "詳細"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "詳しくは問題タブをご覧ください"
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "Remove this header override"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "詳細"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "リソースとドキュメントが同じサイトから配信されている場合は、このオプションを選択してください。"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "header-name"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "ヘッダー値"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "このオプションは、このリソースが含まれたウェブサイトにセキュリティ上のリスクがない場合のみ選択してください。"
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ファイル内のブレークポイントをすべて無効にする"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "ブレークポイントを編集"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "Disabled breakpoints"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "Edit condition"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "Edit logpoint"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ファイル内のブレークポイントをすべて有効にする"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "Enabled breakpoints"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "混合"
@@ -10416,10 +10491,10 @@
     "message": "ログポイント: {PH1}"
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
-    "message": "キャッチされた例外で一時停止"
+    "message": "Pause on caught exceptions"
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "例外で一時停止"
+    "message": "Pause on exceptions"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "ブレークポイントをすべて削除"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "ヘッダーを追加"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "ヘッダーのオーバーライドを追加"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Add override rule"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "「{PH1}」の解析中にエラーが発生しました。"
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "次の呼び出しフレーム"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "Next editor"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "なし"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "前の呼び出しフレーム"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "Previous editor"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "クイックソース"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "（\"{PH1}\"{PH2} を変更）"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "クリック"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "収集済み"
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "消費キャッシュ サイズ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "コンテキスト メニュー"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "CPU 時間"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "DOMContentLoaded イベント"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "ドラッグ"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "フレームを描画"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "First Paint"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "フリング"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "フリング停止"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "フリング開始"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "強制リフロー"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS フレーム"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "キー - 文字"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "キーダウン"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "キーアップ"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Largest Contentful Paint"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "モジュール"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "マウスダウン"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "マウス移動"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "マウスアップ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "マウスホイール"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "移動元"
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "保留"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "ピンチ開始"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "ピンチ終了"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "ピンチ更新"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "プリペイント"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "リソース"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "レスポンス"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "表示"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "スクロール"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "スクロール開始"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "スクロール終了"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "スクロール更新"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "セルフ時間"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "システム"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "タップ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "タップ開始"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "タップダウン"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "タップ停止"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "タスク"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "合計時間"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "タップ キャンセル"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "タップ終了"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "タップ移動"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "タップ開始"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "タイプ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "その他"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "不明"

@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്യൽ പ്രവർത്തനക്ഷമമാക്കുക"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "UNC പാതകളിലൂടെ Windows Shares-ൽ നിന്ന് സോഴ്‌സ് മാപ്പുകൾ പോലുള്ള ഉറവിടങ്ങൾ ലോഡ് ചെയ്യാൻ DevTools എന്നതിനെ അനുവദിക്കുക. സുരക്ഷാ കാരണങ്ങളാൽ ഡിഫോൾട്ടായി പ്രവർത്തനരഹിതമാക്കി."
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "വിദൂര ഫയൽ പാതകളിൽ നിന്ന് സോഴ്‌സ് മാപ്പുകൾ പോലുള്ള ഉറവിടങ്ങൾ ലോഡ് ചെയ്യാൻ DevTools എന്നതിനെ അനുവദിക്കുക. സുരക്ഷാ കാരണങ്ങളാൽ ഡിഫോൾട്ടായി പ്രവർത്തനരഹിതമാക്കി."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ഫോർമാറ്റ് പ്രവർത്തനക്ഷമമാക്കുക"
@@ -1248,7 +1248,7 @@
     "message": "കണക്ഷൻ കാണിക്കുക"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "നോഡ്"
+    "message": "നോഡ് കാണിക്കുക"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "പ്രധാനപ്പെട്ടത്"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Workspace"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "ഒരേ സമയം രണ്ട് ഫ്ലിംഗുകളോ? {PH1} vs {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "ഒരേ സമയം രണ്ട് സ്‌പർശനങ്ങളോ? {PH1} vs {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "ത്രെഡ് {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "ആന്തരിക പിശക്."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "സജീവമായി നിലനിർത്താനുള്ള അഭ്യർത്ഥന കാരണം ബാക്ക്/ഫോർവേഡ് കാഷെ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "കീബോർഡ് ലോക്ക് ഉപയോഗിക്കുന്ന പേജുകൾക്ക് നിലവിൽ ബാക്ക്/ഫോർവേഡ് കാഷെയ്ക്കുള്ള യോഗ്യതയില്ല."
   },
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "പ്രീറെൻഡറിംഗ് സമയത്ത് ഒരു നെറ്റ്‌വർക്ക് പിശക് നേരിട്ടു."
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "പ്രീറെൻഡറിംഗ് നടന്നുകൊണ്ടിരിക്കുന്നു"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "പ്രീറെൻഡർ ചെയ്ത പേജ് ക്രാഷായി."
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "നില"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "ഈ പേജിനായുള്ള എല്ലാ പങ്കിട്ട സ്റ്റോറേജ് ഇവന്റുകളും."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "ഓപ്ഷണൽ ഇവന്റ് പാരാമീറ്ററുകൾ"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "ഇവന്റ് സമയം"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "ആക്‌സസ് തരം"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "പ്രധാന ഫ്രെയിം ID"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "പങ്കിട്ട സ്റ്റോറേജ് ഇവന്റുകളൊന്നും റെക്കോർഡ് ചെയ്തിട്ടില്ല."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "ഉടമയുടെ ഉറവിടം"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "പങ്കിട്ട സ്റ്റോറേജ്"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "സൃഷ്‌ടിച്ചത്"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "എൻട്രികൾ"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "ദൈർഘ്യം"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "മെറ്റാഡാറ്റ"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "ഉറവിടം"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "ബജറ്റ്"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "പങ്കിട്ട സ്റ്റോറേജ്"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "സ്റ്റാക്ക് ട്രെയ്‌സ് റെൻഡർ ചെയ്യാനാകുന്നില്ല"
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "പരിശോധിക്കുന്നതിന് പേജിലെ ഒരു എലമെന്റ് തിരഞ്ഞെടുക്കുക"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "കമ്പ്യൂട്ട് ചെയ്ത സ്റ്റൈലുകൾ കാണിക്കുക"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "വിശദമായ പരിശോധനാ ടൂൾടിപ്പ് കാണിക്കുക"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "സ്റ്റാക്ക് ട്രെയ്സ് കാണിക്കുക"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "സ്റ്റൈലുകൾ കാണിക്കുക"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "ഉപയോക്തൃ ഏജന്റ് ഷാഡോ DOM കാണിക്കുക"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "റിപ്പോർട്ടുകൾ"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "പേജ് ലോഡ് വിശകലനം ചെയ്യുക"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "പേജ് നില വിശകലനം ചെയ്യുക"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "വിഭാഗങ്ങൾ"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "കമ്മ്യൂണിറ്റി പ്ലഗിന്നുകൾ (ബീറ്റ)"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "ഉപകരണം"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "റിപ്പോർട്ട് സൃഷ്ടിക്കുക"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "നിങ്ങളുടെ സൈറ്റിന്റെ പ്രകടനത്തെയും ഉപയോഗസഹായിയെയും ഉപയോക്തൃ അനുഭവത്തെയും ബാധിക്കുന്ന പൊതുവായ പ്രശ്‌നങ്ങൾ കണ്ടെത്തി പരിഹരിക്കുക."
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "Lighthouse റിപ്പോർട്ട് സൃഷ്ടിക്കുക"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "കൂടുതലറിയുക"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "പേജ് ലോഡ് വിശകലനം ചെയ്യുക"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "പേജ് നില വിശകലനം ചെയ്യുക"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "വിഭാഗങ്ങൾ"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Lighthouse റിപ്പോർട്ട് സൃഷ്ടിക്കുക"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "മോഡ്"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "പ്ലഗിനുകൾ"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "ടൈംസ്‌പാൻ ആരംഭിക്കുക"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "ഉപയോക്തൃ ഏജന്‍റ്"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "പ്രധാന ജോബുമായുള്ള റേസിൽ വിജയിച്ചതിനാൽ Chrome ഒരു ഇതര ജോബ് ഉപയോഗിച്ചു."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "പ്രധാന ജോബുമായി റേസ് ചെയ്യാതെ Chrome ഒരു ഇതര ജോബ് ഉപയോഗിച്ചു."
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "തെറ്റായി കോൺഫിഗർ ചെയ്ത പ്രതികരണ ഹെഡ്ഡറുകളെ തുടർന്ന് ഈ അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്തു, ഹെഡ്ഡറുകൾ കാണാൻ ക്ലിക്ക് ചെയ്യുക"
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(ബ്ലോക്ക് ചെയ്‌തിരിക്കുന്നു:{PH1})"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "തകരാറുണ്ട് എന്ന് അടയാളപ്പെടുത്തിയതിനാൽ Chrome ഇതര ജോബ് ഉപയോഗിച്ചില്ല."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(റദ്ദാക്കി)"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(ഡിസ്‌ക് കാഷെ)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "പ്രധാന ജോബുമായും ഇതര ജോബുമായുള്ള റേസിൽ വിജയിച്ചതിനാൽ Chrome ഒരു DNS alpn ജോബ് ഉപയോഗിച്ചു."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "പ്രധാന ജോബുമായും ഇതര ജോബുമായും റേസ് ചെയ്യാതെ Chrome ഒരു DNS alpn ജോബ് ഉപയോഗിച്ചു."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(പരാജയപ്പെട്ടു)"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "ലെവൽ 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "ഒരു ഇതര ജോബ് ഒപ്പം/അല്ലെങ്കിൽ DNS alpn ജോബുമായുള്ള റേസിൽ വിജയിച്ചതിനാൽ Chrome പ്രധാന ജോബ് ഉപയോഗിച്ചു."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "ഇതര പ്രോട്ടോക്കോളിനെക്കുറിച്ചുള്ള വിവരങ്ങൾ വിട്ടുപോയിരിക്കുന്നതിനാൽ Chrome ഇതര ജോബ് ഉപയോഗിച്ചില്ല."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(മെമ്മറി കാഷെ)"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "സ്റ്റാക്ക് ട്രെയ്സ് പകർത്തുക"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "പ്രതികരണ ഹെഡ്ഡർ അസാധുവാക്കൽ സൃഷ്ടിക്കുക"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "പേജ് ഒറിജിനിൽ നിന്ന് വ്യത്യസ്‌തമായ ഒറിജിനുള്ള അഭ്യർത്ഥനകൾ മാത്രം കാണിക്കുന്നു"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "അസാധുവാക്കൽ ഹെഡ്ഡറുകൾ"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "വീണ്ടും ലോഡ് ചെയ്യുന്നത് റെക്കോർഡ് ചെയ്യാൻ അഭ്യർത്ഥന നടത്തുകയോ {PH1} അമർത്തുകയോ ചെയ്യുക."
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "അഭ്യർത്ഥനയുടെ 'കുക്കി' ഹെഡറിലെ സെർവറിലേക്ക് അയച്ച കുക്കികൾ"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "കൂടുതലറിയുക"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "തകരാറുള്ള പ്രതികരണ കുക്കികൾ"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ഫിൽട്ടർ ചെയ്‌ത അഭ്യർത്ഥനാ കുക്കികൾ കാണിക്കുക"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "ഈ സൈറ്റിന് മറ്റൊരു പാർട്ടീഷനിൽ കുക്കികളുണ്ട്, അവ ഈ അഭ്യർത്ഥനയ്‌ക്കൊപ്പം അയച്ചിട്ടില്ല. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "ഈ അഭ്യർത്ഥനയ്‌ക്ക് കുക്കികൾ ഇല്ല."
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "ഡീകോഡ് ചെയ്‌തു:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "അസാധുവാക്കൽ ഹെഡ്ഡർ"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "കൂടുതലറിയുക"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "പ്രശ്നങ്ങളുടെ ടാബിൽ കൂടുതലറിയുക"
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "ഈ ഹെഡ്ഡർ അസാധുവാക്കൽ നീക്കം ചെയ്യുക"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "കൂടുതലറിയുക"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ഉറവിടവും ഡോക്യുമെന്റും ഒരേ സൈറ്റിൽ നിന്നാണ് നൽകുന്നതെങ്കിൽ ഈ ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക."
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "ഹെഡ്ഡറിന്റെ പേര്"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "ഹെഡ്ഡർ മൂല്യം"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "ഈ ഉറവിടം ഉൾക്കൊള്ളുന്ന ആർബിട്രറി വെബ്‌സൈറ്റ് സുരക്ഷാ വെല്ലുവിളിയുണ്ടാക്കുന്നില്ലെങ്കിൽ മാത്രം ഈ ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക."
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ഫയലിലെ എല്ലാ ബ്രേക്ക്പോയിന്റുകളും പ്രവർത്തനരഹിതമാക്കുക"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "ബ്രേക്ക്‌പോയിന്റ് എഡിറ്റ് ചെയ്യുക"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "പ്രവർത്തനരഹിതമാക്കിയ ബ്രേക്ക്‌പോയിന്റുകൾ"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "കണ്ടീഷൻ എഡിറ്റ് ചെയ്യുക"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "ലോഗ് പോയിന്റ് എഡിറ്റ് ചെയ്യുക"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ഫയലിലെ എല്ലാ ബ്രേക്ക്‌പോയിന്റുകളും പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "പ്രവർത്തനക്ഷമമാക്കിയ ബ്രേക്ക്പോയിന്റുകൾ"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "മിക്‌സഡ്"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "ഒരു ഹെഡ്ഡർ ചേർക്കുക"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "ഹെഡ്ഡർ ഓവർറൈഡ് ചേർക്കുക"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "അസാധുവാക്കൽ നയം ചേർക്കുക"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "''{PH1}'' വിശകലനം ചെയ്യുന്നതിൽ പിശക്."
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "അടുത്ത കോൾ ഫ്രെയിം"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "അടുത്ത എഡിറ്റർ"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "ഒന്നുമില്ല"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "മുമ്പത്തെ കോൾ ഫ്രെയിം"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "മുമ്പത്തെ എഡിറ്റർ"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "ദ്രുത ഉറവിടം"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(\"{PH1}\"{PH2} മാറ്റി)"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "ക്ലിക്ക് ചെയ്യുക"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "ശേഖരിച്ചു"
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "ഉപയോഗിച്ച കാഷെ വലുപ്പം"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "സന്ദർഭ മെനു"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "CPU സമയം"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "DOMContentLoaded ഇവന്റ്"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "വലിച്ചിടുക"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "ഫ്രെയിം ഡ്രോ ചെയ്യുക"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "ഫസ്റ്റ് പെയിന്റ്"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "ഫ്ലിംഗ്"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "ഫ്ലിംഗ് നിർത്തൽ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "ഫ്ലിംഗ് ആരംഭിക്കൽ"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "റീഫ്ലോ നിർബന്ധമാക്കി"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS ഫ്രെയിം"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "കീ — ക്യാരക്റ്റർ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "കീ ഡൗൺ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "കീ അപ്പ്"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "ലാർജസ്റ്റ് കണ്ടെന്റ്ഫുൾ പെയിന്റ്"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "മൊഡ്യൂൾ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "മൗസ് ഡൗൺ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "മൗസ് ചലനം"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "മൗസ് മുകളിലേക്ക്"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "മൗസ് വീൽ"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "ഇതിൽ നിന്ന് നീക്കി"
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "തീർച്ചപ്പെടുത്തിയിട്ടില്ല"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "പിഞ്ച് ചെയ്യാൻ ആരംഭിക്കൽ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "അവസാന ഭാഗത്തേക്ക് പിഞ്ച് ചെയ്യുക"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "പിഞ്ച് അപ്ഡേറ്റ് ചെയ്യുക"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "പ്രീ-പെയിന്റ്"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "ഉറവിടം"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "പ്രതികരണം"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "വെളിപ്പെടുത്തുക"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "സ്‌ക്രോൾ ചെയ്യുക"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "സ്‌ക്രോൾ ചെയ്യാൻ ആരംഭിക്കുക"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "അവസാന ഭാഗത്തേക്ക് സ്ക്രോൾ ചെയ്യുക"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "അപ്ഡേറ്റ് സ്ക്രോൾ ചെയ്യുക"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "സെൽഫ് ടെെം"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "സിസ്റ്റം"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "ടാപ്പ് ചെയ്യുക"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "ആരംഭിക്കുക ടാപ്പ് ചെയ്യുക"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "താഴേക്ക് ടാപ്പ് ചെയ്യുക"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "ടാപ്പ് ചെയ്യൽ നിർത്തുക"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "ടാസ്‌ക്"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "ആകെ സമയം"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "റദ്ദാക്കുക സ്‌പർശിക്കുക"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "ടച്ച് അവസാനിപ്പിക്കുക"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "ടച്ച് ചലനം"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "ആരംഭിക്കുക സ്‌പർശിക്കുക"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "തരം"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "തരം തിരിക്കാത്തത്"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "അജ്ഞാതം"

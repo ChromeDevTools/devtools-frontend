@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "تفعيل حظر طلبات الشبكة"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "يسمح هذا الإعداد لـ DevTools بتحميل الموارد، مثل خرائط المصدر، من شبكات خوادم مشاركة الملفات في Windows عبر مسارات UNC. يكون هذا الإعداد غير مفعَّل بشكل تلقائي لأسباب تتعلق بالأمان."
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Allow DevTools to load resources, such as source maps, from remote file paths. Disabled by default for security reasons."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "تفعيل التنسيق WebP"
@@ -1239,7 +1239,7 @@
     "message": "الاتصال"
   },
   "entrypoints/node_app/node_app.ts | networkTitle": {
-    "message": "عقدة"
+    "message": "Node"
   },
   "entrypoints/node_app/node_app.ts | node": {
     "message": "عقدة"
@@ -1248,7 +1248,7 @@
     "message": "عرض أداة الاتصال"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "عقدة"
+    "message": "Show Node"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "الهدف الرئيسي"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Google Workspace"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "هل تريد إجراء إيماءتين في الوقت نفسه؟ {PH1} ضد {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "هل تم النقر على موضعين على الشاشة في الوقت نفسه؟ {PH1} ضد {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "سلسلة محادثات {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "حدث خطأ داخلي."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "Back/forward cache is disabled due to a keepalive request."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "الصفحات التي تستخدِم قفل لوحة المفاتيح يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
   },
@@ -3684,10 +3681,10 @@
     "message": "جميع أحداث التخزين المرتبطة بالمجموعات ذات الاهتمامات المشتركة"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
-    "message": "وقت الحدث"
+    "message": "Event Time"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
-    "message": "نوع مستوى الوصول"
+    "message": "Access Type"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
     "message": "الاسم"
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "حدث خطأ في الشبكة أثناء عملية العرض المُسبق."
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "Prerendering ongoing"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "تعطّلت الصفحة المعروضة مسبقًا."
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "الحالة"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "All shared storage events for this page."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "Optional Event Params"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "Event Time"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "Access Type"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "Main Frame ID"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "No shared storage events recorded."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "Owner Origin"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "Shared Storage"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "Creation"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Entries"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "Length"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "المصدر"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "Budget"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Shared Storage"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "يتعذّر عرض تتبُّع تسلسل استدعاء الدوال البرمجية."
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "اختيار عنصر في الصفحة لفحصه"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Show Computed Styles"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "إظهار تلميح الفحص المفصّل"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "عرض تتبُّع تسلسل استدعاء الدوال البرمجية"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Show Styles"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "عرض ظل وكيل المستخدم DOM"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "التقارير"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "تحليل أداء تحميل الصفحة"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "تحليل حالة الصفحة"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "الفئات"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "المكونات الإضافية للمنتديات (ميزة تجريبية)"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "جهاز"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "إنشاء تقرير"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "تحديد وحلّ المشاكل الشائعة التي تؤثر في أداء الموقع الإلكتروني وسهولة استخدامه وتجربة المستخدم"
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "إنشاء تقرير Lighthouse"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "مزيد من المعلومات"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "تحليل أداء تحميل الصفحة"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "تحليل حالة الصفحة"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "الفئات"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "إنشاء تقرير Lighthouse"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "الوضع"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "المكونات الإضافية"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "بدء فترة الفحص"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "وكيل المستخدم"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Chrome used an alternative job because it won a race with a main job."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Chrome used an alternative job without racing with a main job."
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "تم حظر هذا الطلب بسبب إعداد عناوين الاستجابة بشكلٍ غير صحيح، انقر للاطّلاع على العناوين."
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(العقدة المحظورة: {PH1})"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Chrome didn't use an alternative job because it was marked broken."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(تم الإلغاء)"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(ذاكرة التخزين المؤقت للقرص)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Chrome used a DNS alpn job because it won a race with a main job and an alternative job."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Chrome used a DNS alpn job without racing with a main job and an alternative job."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(تعذّر تنفيذ الإجراء)"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "المستوى 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Chrome used a main job because it won a race with an alternative job and/or a DNS alpn job."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Chrome didn't use an alternative job because of missing Alternate-Protocol information."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(ذاكرة التخزين المؤقت)"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "نسْخ تتبُّع تسلسل استدعاء الدوال البرمجية"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "إنشاء تجاوز لعنوان الاستجابة"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "لا يعرض هذا الفلتر سوى الطلبات التي تتضمّن أصلاً يختلف عن أصل الصفحة."
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Override headers"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "نفِّذ طلبًا أو انقر على {PH1} لتسجيل إعادة التحميل."
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "ملفات تعريف الارتباط التي تم إرسالها إلى الخادم في العنوان \"ملف تعريف الارتباط\" للطلب"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Learn more"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "ملفات تعريف ارتباط الاستجابة غير صالحة"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "عرض ملفات تعريف الارتباط للطلب التي تمت فلترتها"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "This site has cookies in another partition, that were not sent with this request. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "لا يتضمّن هذا الطلب ملفات تعريف الارتباط."
@@ -7821,7 +7887,7 @@
     "message": "فلتر"
   },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "المدّة"
+    "message": "Length"
   },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "غير متوفّر"
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "العناوين التي تم فك ترميزها:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "Override header"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "مزيد من المعلومات"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "مزيد من المعلومات في علامة تبويب \"المشاكل\""
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "Remove this header override"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "مزيد من المعلومات"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "حدِّد هذا الخيار إذا تم عرض المورد والمستند من الموقع الإلكتروني ذاته."
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "header-name"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "قيمة العنوان"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "لا تحدِّد هذا الخيار إذا كان الموقع الإلكتروني العشوائي الذي يتضمّن هذا المورد لا يشكِّل خطورة أمنية."
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "إيقاف كل نقاط الإيقاف في الملف"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "تعديل نقطة الإيقاف"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "Disabled breakpoints"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "Edit condition"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "Edit logpoint"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "تفعيل جميع نقاط الإيقاف في الملف"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "Enabled breakpoints"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "مجموعة من الحالات"
@@ -10416,10 +10491,10 @@
     "message": "نقطة التسجيل: {PH1}"
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
-    "message": "الإيقاف مؤقتًا عند رصد الاستثناءات"
+    "message": "Pause on caught exceptions"
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "إيقاف مؤقت عند الاستثناءات"
+    "message": "Pause on exceptions"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "إزالة جميع نقاط الإيقاف"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "إضافة عنوان"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "إضافة تجاوز العنوان"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Add override rule"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "حدث خطأ أثناء تحليل ''{PH1}''."
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "إطار الاتصال التالي"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "Next editor"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "بدون اسم"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "إطار الاتصال السابق"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "Previous editor"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "المصدر السريع"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(عنصر \"{PH1}\"{PH2} معدَّل)"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "النقر"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "تمّ التجميع."
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "الحجم المستهلَك من ذاكرة التخزين المؤقت"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "قائمة السياقات"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "وقت وحدة المعالجة المركزية"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "الحدث DOMContentLoaded"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "السحب"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "إطار الرسم"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "سرعة عرض الصفحة"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "تنقُّل سريع"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "تعليق التنقُّل السريع"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "بداية التنقُّل السريع"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "إعادة التدفق الإلزامية"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "إطار JavaScript"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "مفتاح — حرف"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "المفتاح مضغوط"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "حدث رفع الإصبع عن المفتاح"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "سرعة عرض أكبر جزء من المحتوى على الصفحة"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "الوحدة"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "حدث الضغط على زر الماوس"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "حركة بالماوس"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "حدث رفع الإصبع عن زر الماوس"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "عجلة التمرير في الماوس"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "تم النقل من"
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "في انتظار"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "بداية التكبير أو التصغير بإصبعين"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "نهاية حدث التكبير أو التصغير بإصبعين"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "تعديل التكبير أو التصغير بإصبعين"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "إعدادات ما قبل عرض محتوى الصفحة"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "المورد"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "الاستجابة"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "عرض"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "التمرير"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "بداية التمرير"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "نهاية التمرير"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "تعديل حدث التمرير بالماوس"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "وقت النشاط الفردي"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "النظام"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "النقر"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "بداية النقر"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "بداية حدث النقر"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "توقّف حدث النقر"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "المهمّة"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "الوقت الإجمالي"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "إلغاء اللمس"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "نهاية اللمس"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "حركة باللمس"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "بداية اللمس"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "نوع"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "بلا فئة"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "غير معروف"

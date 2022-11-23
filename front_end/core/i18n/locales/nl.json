@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Blokkeren van netwerkverzoeken aanzetten"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "Toestaan dat DevTools bronnen, zoals bronkaarten, laadt vanuit Windows-shares via UNC-paden. Standaard uitgezet wegens beveiligingsredenen."
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Geef DevTools toestemming om bronnen, zoals bronkaarten, te laden vanuit externe bestandspaden. Standaard uitgezet wegens beveiligingsredenen."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP-indeling aanzetten"
@@ -1248,7 +1248,7 @@
     "message": "Verbinding tonen"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "Node"
+    "message": "Node tonen"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Algemeen"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Werkruimte"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "2 flings tegelijkertijd? {PH1} versus {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "2 tikken tegelijkertijd? {PH1} versus {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Interne fout."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "Back-Forward Cache is uitgezet vanwege een keepalive-verzoek."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Pagina's die toetsenbordvergrendeling gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
   },
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "Er is een netwerkfout opgetreden tijdens pre-rendering."
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "Pre-rendering wordt uitgevoerd"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "De vooraf gerenderde pagina is gecrasht."
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Status"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "Alle gebeurtenissen voor gedeelde opslag voor deze pagina."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "Optionele gebeurtenisparameters"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "Tijd van gebeurtenis"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "Toegangstype"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "ID van hoofdframe"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "Geen gebeurtenissen voor gedeelde opslag geregistreerd."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "Oorsprong van eigenaar"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "Gedeelde opslag"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "Aanmaakdatum"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Items"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "Lengte"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Oorsprong"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "Budget"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Gedeelde opslag"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Kan geen stacktrace renderen"
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Selecteer een element op de pagina om het te inspecteren"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Berekende stijlen bekijken"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "Gedetailleerde inspectiehulp bekijken"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Stacktrace bekijken"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Stijlen tonen"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "Schaduw-DOM van user-agent bekijken"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "Rapporten"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "Laden van pagina analyseren"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "Paginastatus analyseren"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "Categorieën"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "Communityplug-ins (bèta)"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "Apparaat"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "Rapport maken"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Identificeer en verhelp algemene problemen die van invloed zijn op de prestaties, toegankelijkheid en gebruikerservaring van je site."
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "Een Lighthouse-rapport genereren"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Meer informatie"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Laden van pagina analyseren"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Paginastatus analyseren"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categorieën"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Een Lighthouse-rapport genereren"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Modus"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "Plug-ins"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Tijdsduur starten"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "User-agent"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Chrome heeft een alternatieve taak gebruikt omdat deze een race met een hoofdtaak heeft gewonnen."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Chrome heeft een alternatieve taak gebruikt zonder met een hoofdtaak te racen."
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Dit verzoek is geblokkeerd vanwege onjuist ingestelde reactieheaders. Klik om de headers te bekijken."
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(geblokkeerd:{PH1})"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Chrome heeft geen alternatieve taak gebruikt omdat deze is gemarkeerd als beschadigd."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(geannuleerd)"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(schijfcache)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Chrome heeft een DNS alpn-taak gebruikt omdat deze een race met een hoofdtaak en een alternatieve taak heeft gewonnen."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Chrome heeft een DNS alpn-taak gebruikt zonder met een hoofdtaak en een alternatieve taak te racen."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(mislukt)"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "niveau 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Chrome heeft een hoofdtaak gebruikt omdat deze een race met een alternatieve taak en/of een DNS alpn-taak heeft gewonnen."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Chrome heeft geen alternatieve taak gebruikt vanwege ontbrekende informatie over het alternatieve protocol."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(geheugencache)"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Stacktrace kopiëren"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "Overschrijving voor kop van reactie maken"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Toont alleen verzoeken waarvan de oorsprong verschilt van de oorsprong van de pagina"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Headers overschrijven"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Voer een verzoek uit of selecteer {PH1} om het herladen op te nemen."
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies die naar de server zijn gestuurd in de cookie-header van het verzoek"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Meer informatie"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Onjuist gevormde reactiecookies"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "weggefilterde aanvraagcookies tonen"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Deze site heeft cookies in een andere partitie die niet zijn meegestuurd met dit verzoek. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Dit verzoek bevat geen cookies."
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Gedecodeerd:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "Header overschrijven"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Meer informatie"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Meer informatie op het tabblad Problemen"
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "Deze headeroverschrijving verwijderen"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "Meer informatie"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Kies deze optie als de resource en het document afkomstig zijn van dezelfde site."
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "headernaam"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "headerwaarde"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Kies deze optie alleen als een willekeurige website die deze resource bevat geen beveiligingsrisico inhoudt."
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Alle breakpoints in bestand uitzetten"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "Breakpoint bewerken"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "Breakpoints die zijn uitgezet"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "Voorwaarde bewerken"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "Logboekpunt bewerken"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Alle breakpoints in bestand aanzetten"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "Breakpoints die zijn aangezet"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "gemengd"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Een kop toevoegen"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "Overschrijving van kop toevoegen"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Overschrijvingsregel toevoegen"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Fout bij parseren van {PH1}."
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "Frame van volgende aanroep"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "Volgende editor"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "Geen"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "Frame van vorige aanroep"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "Vorige editor"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Snelle bron"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "('{PH1}'{PH2} gewijzigd)"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "Klikken"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Opgehaald"
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Gebruikte cachegrootte"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "Contextmenu"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "CPU-tijd"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "DOMContentLoaded-gebeurtenis"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "Slepen"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "Frame tekenen"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "Eerste weergave"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "Zwaaien"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "Stoppen met zwaaien"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "Starten met zwaaien"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Gedwongen dynamische aanpassing"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JavaScript-frame"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "Toets — teken"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "Toets omlaag"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "Toets omhoog"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Grootste weergave met content (LCP)"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Module"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "Muis omlaag"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "Bewegen met muis"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "Muis omhoog"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "Muiswiel"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "Verplaatst van"
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Wachten op"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "Begin van knijpen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "Einde van knijpen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "Updaten door te knijpen"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Voorafgaand aan weergave"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "Resource"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "Reactie"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Weergeven"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Scrollen"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "Begin van scrollen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "Einde van scrollen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "Updaten tijdens scrollen"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Zelftijd"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "Systeem"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "Tikken"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "Begin van tikken"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "Naar beneden tikken"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "Tikken stoppen"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "Taak"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Totale tijd"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "Tikken annuleren"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "Einde van tikken"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "Tikbeweging"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "Begin van tikken"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Type"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "Geen categorie"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "onbekend"

@@ -112,6 +112,7 @@ export class TextEditor extends HTMLElement {
 
     if (this.#activeEditor) {
       this.#activeEditor.setState(state);
+      this.#ensureSettingListeners();
     }
   }
 

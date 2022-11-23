@@ -518,7 +518,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
       if (error) {
         this.loadError = true;
-        this.textEditor.editor.setState(this.placeholderEditorState(error));
+        this.textEditor.state = this.placeholderEditorState(error);
         this.prettyToggle.setEnabled(false);
       } else {
         if (this.shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(content || '')) {
@@ -690,7 +690,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       ],
     });
     this.baseDoc = editorState.doc;
-    textEditor.editor.setState(editorState);
+    textEditor.state = editorState;
     if (wasLoaded) {
       textEditor.editor.scrollDOM.scrollTop = scrollTop;
     }

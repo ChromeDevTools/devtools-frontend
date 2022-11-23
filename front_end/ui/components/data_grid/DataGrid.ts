@@ -257,10 +257,8 @@ export class DataGrid extends HTMLElement {
     return cell;
   }
 
-  async #focusTableCellInDOM(cell: HTMLTableCellElement): Promise<void> {
-    await coordinator.write(() => {
-      cell.focus();
-    });
+  #focusTableCellInDOM(cell: HTMLTableCellElement): void {
+    cell.focus();
   }
 
   #focusCellIfRequired([newColumnIndex, newRowIndex]: CellPosition): void {
@@ -283,7 +281,7 @@ export class DataGrid extends HTMLElement {
      * add arrow key support, so in the case where we're programatically moving the
      * focus, ensure we actually focus the cell.
      */
-    void this.#focusTableCellInDOM(tableCell);
+    this.#focusTableCellInDOM(tableCell);
   }
 
   #onTableKeyDown(event: KeyboardEvent): void {
@@ -850,7 +848,7 @@ export class DataGrid extends HTMLElement {
     const currentlyFocusedRowIndex = tabbableCell[1];
     const tabbableCellElement = this.#getTableElementForCellUserHasFocused();
     if (this.#userHasFocusInDataGrid && currentlyFocusedRowIndex > 0 && tabbableCellElement) {
-      void this.#focusTableCellInDOM(tabbableCellElement);
+      this.#focusTableCellInDOM(tabbableCellElement);
     }
     this.#scrollToBottomIfRequired();
     this.#engageResizeObserver();

@@ -107,4 +107,8 @@ remote_fetch_pattern =
 # mode (devtools://devtools/bundled).
 local_fetch_pattern = "./locales/@LOCALE@.json"
 
+# Paths from which to collect UI strings
 devtools_collection_directories = [ "//$devtools_location/front_end" ]
+
+# Paths where to find the translated UI string JSON files.
+devtools_locale_directory = "//$devtools_location/front_end/core/i18n/locales"

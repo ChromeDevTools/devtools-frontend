@@ -36,7 +36,7 @@ minify_json("i18n_locales") {
   foreach(
       locale,
       remote_devtools_locales + bundled_devtools_locales - generated_locales) {
-    sources += [ "$locale.json" ]
+    sources += [ "$devtools_locale_directory/$locale.json" ]
   }
 
   sources += get_target_outputs(":collect_strings")

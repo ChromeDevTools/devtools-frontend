@@ -706,12 +706,6 @@ if (require.main === module) {
 
   const outputDirectory = path.join(OUTPUT_ROOT, 'core/i18n/locales');
   writeStringsToCtcFiles(outputDirectory, 'en-US', collectedStrings);
-  // Generate local pseudolocalized files for debugging while translating
-  writeStringsToCtcFiles(outputDirectory, 'en-XL', createPsuedoLocaleStrings(collectedStrings));
-
-  // Bake the ctc en-US and en-XL files into en-US and en-XL LHL format
-  const lhl = collectAndBakeCtcStrings(
-      path.join(OUTPUT_ROOT, 'core/i18n/locales/'), path.join(OUTPUT_ROOT, 'core/i18n/locales/'));
 }
 
 module.exports = {

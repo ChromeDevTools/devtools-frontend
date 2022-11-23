@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Включить блокировку сетевых запросов"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "Позволить DevTools загружать ресурсы, например карты исходного кода, при предоставлении доступа в Windows через пути UNC. По умолчанию эта функция отключена из соображений безопасности."
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Разрешить DevTools загружать ресурсы, например карты исходного кода, из удаленных (не локальных) источников. По умолчанию этот параметр отключен из соображений безопасности."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Включить формат WebP"
@@ -1248,7 +1248,7 @@
     "message": "Показать \"Соединение\""
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "Узел"
+    "message": "Показать инструмент \"Узел\""
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Основная"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Рабочая область"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "Два смахивания в одно и то же время? {PH1} – {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "Два касания в одно и то же время? {PH1} – {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Поток {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Внутренняя ошибка."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "Возвратный кеш отключен из-за запроса keepalive."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Страницы, которые используют блокировку клавиатуры, в настоящее время нельзя добавить в возвратный кеш."
   },
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "Во время предварительной отрисовки произошла ошибка сети."
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "В процессе предварительной отрисовки"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "Произошел сбой предварительно отрисованной страницы."
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Статус"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "Все события общего хранилища для этой страницы"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "Необязательные параметры события"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "Время события"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "Тип доступа"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "Идентификатор главного фрейма"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "Нет записанных событий общего хранилища."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "Источник-владелец"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "Общее хранилище"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "Время создания"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Записи"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "Длина"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Метаданные"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Источник"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "Бюджет"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Общее хранилище"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Не удается показать трассировку стека."
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Выбирать элемент на странице для проверки"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Показать панель вычисленных стилей"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "Показывать подробности проверки"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Показать трассировку стека"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Показать панель \"Стили\""
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "Показывать тень DOM для агента пользователя"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "Отчеты"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "Анализ загрузки страницы"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "Анализировать состояние страницы"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "Категории"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "Плагины сообщества (бета)"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "Устройство"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "Создать отчет"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Выявляйте и исправляйте распространенные проблемы, которые влияют на удобство использования, производительность и доступность сайта."
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "Создание отчета Lighthouse"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Подробнее…"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Анализ загрузки страницы"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Анализировать состояние страницы"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Категории"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Создание отчета Lighthouse"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Режим"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "Плагины"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Запустить анализ временного диапазона"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "Агент пользователя"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Браузер Chrome выполнил запрос, используя альтернативный протокол вместо основного из-за более быстрого ответа сервера"
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Браузер Chrome выполнил запрос, используя альтернативный протокол вместо основного. Скорость получения ответа от сервера не сравнивалась."
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Запрос заблокирован из-за недопустимых заголовков ответа. Нажмите, чтобы посмотреть заголовки."
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(заблокировано: {PH1})"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Браузер Chrome не использовал для запроса альтернативный протокол, поскольку этот протокол был помечен как работающий некорректно"
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(отменено)"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(кеш диска)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Браузер Chrome выполнил запрос, используя протокол DNS с расширением ALPN вместо основного и альтернативного протоколов из-за более быстрого ответа сервера"
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Браузер Chrome выполнил запрос, используя протокол DNS с расширением ALPN вместо основного и альтернативного протоколов. Скорость получения ответа от сервера не сравнивалась."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(ошибка)"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "уровень 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Браузер Chrome выполнил запрос, используя основной протокол вместо альтернативного и протокола DNS с расширением ALPN из-за более быстрого ответа сервера"
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Браузер Chrome не использовал для запроса альтернативный протокол из-за отсутствия информации об этом протоколе"
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(кеш памяти)"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Копировать трассировку стека"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "Переопределить заголовок ответа"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Показывать только те запросы, источники которых отличаются от источника страницы"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Переопределить заголовки"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Чтобы записать перезагрузку, выполните запрос или нажмите {PH1}."
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Файлы cookie, которые были отправлены на сервер в заголовке cookie запроса"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Подробнее…"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Неверные файлы cookie ответов"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "Показать отфильтрованные файлы cookie запроса"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "В другом сегменте этого сайта сохранены файлы cookie, которые не были отправлены с этим запросом. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "У этого запроса нет файлов cookie."
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Декодировано:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "Переопределить заголовок"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Подробнее…"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Узнайте больше на вкладке \"Проблемы\""
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "Удалить переопределение заголовка"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "Подробнее…"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Выберите этот вариант, если ресурс и документ находятся на одном и том же сайте."
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "header-name"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "header value"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Выбирайте этот параметр, только если случайный сайт, включая этот ресурс, не представляет угрозу безопасности."
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Отключить все точки останова в файле"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "Изменить точку останова"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "Отключенные точки останова"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "Изменить условие"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "Изменить точку записи"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Включить все точки останова в файле"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "Включенные точки останова"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "смешанные"
@@ -10416,10 +10491,10 @@
     "message": "Точка записи: {PH1}"
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
-    "message": "Приостановка на обнаруженных исключениях"
+    "message": "Приостанавливать на обнаруженных исключениях"
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Приостановка на исключениях"
+    "message": "Приостанавливать на исключениях"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Удалить все точки останова"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Добавить заголовок"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "Добавить переопределение заголовка"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Добавить правило переопределения"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Ошибка синтаксического анализа элемента ''{PH1}''."
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "Следующий фрейм вызова"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "Перейти к следующему редактору"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "Нет"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "Предыдущий фрейм вызова"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "Перейти к предыдущему редактору"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Быстрый исходный код"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(элемент {PH1} {PH2} изменен)"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "Клик"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Собрано"
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Размер использованного кеша"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "Контекстное меню"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "Процессорное время"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "Событие DOMContentLoaded"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "Перетаскивание"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "Рисование фрейма"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "Первое отображение"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "Касание"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "Остановка жеста"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "Начало жеста"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Принудительная компоновка"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "Фрейм JS"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "Клавиша – символ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "Клавиша нажата"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "Клавиша вверх"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Самое крупное существенное отображение"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Модуль"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "Нажатие кнопки мыши"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "Движение мыши"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "Кнопка мыши отпущена"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "Колесо мыши"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "Откуда перемещено:"
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Ожидание:"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "Начало сжатия"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "Окончание сжатия"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "Обновление сжатия"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Предварительная отрисовка"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "Ресурс"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "Ответ"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Показать"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Прокрутка"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "Начало прокрутки"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "Окончание прокрутки"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "Обновление прокрутки"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Время одного действия"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "Система"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "Нажатие"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "Начало нажатия"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "Нажать \"Вниз\""
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "Окончание нажатия"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "Задача"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Общее время"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "Отмена касания"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "Окончание касания"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "Движение после касания"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "Начало касания"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Тип"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "Без категории"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "неизвестно"

@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Увімкнути блокування запитів мережі"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "Дозволити DevTools завантажувати ресурси, як-от карти джерел, із загальних ресурсів Windows через шляхи UNC. За умовчанням цю опцію вимкнено з міркувань безпеки."
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Дозволити DevTools завантажувати ресурси, як-от карти джерел, із віддалених шляхів до файлів. За умовчанням цю опцію вимкнено з міркувань безпеки."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Увімкнути формат WebP"
@@ -1248,7 +1248,7 @@
     "message": "Показати з'єднання"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "Вузол"
+    "message": "Показати вузол"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Основна"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Робоча область"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "Два гортання одночасно? {PH1} – {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "Два дотики одночасно? {PH1} – {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Потік {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Внутрішня помилка."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "Зворотний кеш вимкнено через запит повідомлення keepalive."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Сторінки, які використовують блокування клавіатури, наразі не підходять для зворотного кешу."
   },
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "Під час попередньої відрисовки сталася помилка мережі."
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "Триває попереднє завантаження"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "Попередньо відрисована сторінка аварійно завершила роботу."
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Статус"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "Усі події спільного сховища для цієї сторінки."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "Необов’язкові параметри подій"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "Час події"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "Тип доступу"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "Ідентифікатор основного фрейму"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "Події спільного сховища не записано."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "Джерело власника"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "Спільне сховище"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "Дата створення"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Записи"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "Довжина"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Метадані"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Джерело"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "Бюджет"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Спільне сховище"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Не вдається відобразити трасування стека"
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Виберіть елемент на сторінці, щоб перевірити його"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Показати обчислені стилі"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "Показати детальну підказку для перевірки"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Показати трасування стека"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Показати стилі"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "Показати тіньові вузли DOM агента користувача"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "Звіти"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "Аналізувати завантаження сторінки"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "Аналізувати стан сторінки"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "Категорії"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "Плагіни спільноти (бета-версія)"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "Пристрій"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "Створити звіт"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Визначайте та виправляйте розповсюджені проблеми, що впливають на роботу сайту, доступність і взаємодію з користувачем."
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "Створіть звіт Lighthouse"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Докладніше"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Аналізувати завантаження сторінки"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Аналізувати стан сторінки"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Категорії"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Створіть звіт Lighthouse"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Режим"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "Плагіни"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Розпочати період часу"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "Агент користувача"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "У Chrome використовується альтернативне завдання, оскільки воно виграло змагання з основним завданням."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "У Chrome використовується альтернативне завдання (змагання з основним завданням не проводилось)."
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Цей запит заблоковано через неправильно налаштовані заголовки відповіді. Натисніть, щоб переглянути заголовки"
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(заблоковано: {PH1})"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "У Chrome не використовується альтернативне завдання, оскільки воно позначено як пошкоджене."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(скасовано)"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(кеш диска)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "У Chrome використовується завдання DNS alpn, оскільки воно виграло змагання з основним і альтернативним завданнями."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "У Chrome використовується завдання DNS alpn (змагання з основним або альтернативним завданнями не проводилось)."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(помилка)"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "рівень 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "У Chrome використовується основне завдання, оскільки воно виграло змагання з альтернативним завданням і/або завданням DNS alpn."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "У Chrome не використовується альтернативне завдання, оскільки відсутня інформація про Alternate-Protocol."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(кеш пам'яті)"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Копіювати трасування стека"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "Створити перевизначення заголовка відповіді"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Показує лише запити, джерело яких відрізняється від джерела сторінки"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Перевизначити заголовки"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Виконайте запит або натисніть {PH1}, щоб записати оновлення сторінки."
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Файли cookie, надіслані на сервер у заголовку запиту \"cookie\""
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Докладніше"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Неправильні файли cookie відповіді"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "показати відфільтровані файли cookie запиту"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Сайт має файли cookie в іншому розділенні, які не було надіслано в цьому запиті. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Цей запит не містить файлів cookie."
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Розкодовано:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "Перевизначити заголовок"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Докладніше"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Докладніше на вкладці \"Проблеми\""
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "Вилучити перевизначення заголовка"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "Докладніше"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Виберіть цей варіант, якщо ресурс і документ розміщено на одному сайті."
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "header-name"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "header value"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Вибирайте цей варіант, лише якщо довільний веб-сайт, зокрема цей ресурс, не загрожує безпеці."
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Вимкнути всі точки зупину у файлі"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "Змінити точку зупину"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "Вимкнені точки зупину"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "Змінити умову"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "Змінити точку запису в журналі"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Увімкнути всі точки зупину у файлі"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "Увімкнені точки зупину"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "комбінація"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Додати заголовок"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "Додати перевизначення заголовка"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Додати правило перевизначення"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Під час виконання синтаксичного аналізу файлу \"{PH1}\" сталася помилка."
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "Фрейм наступного виклику"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "Наступний редактор"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "Ні"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "Фрейм попереднього виклику"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "Попередній редактор"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Швидке джерело"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(змінено \"{PH1}\"{PH2})"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "Натискання"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Зібрано"
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Розмір зайнятого кешу"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "Контекстне меню"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "Процесорний час"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "Подія DOMContentLoaded"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "Перетягування"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "Малювання фрейму"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "Перша візуалізація"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "Швидке гортання"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "Кінець швидкого гортання"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "Початок швидкого гортання"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Примусове перекомпонування"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "Фрейм JS"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "Клавіша – символ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "Клавішу натиснуто"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "Клавішу відпущено"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Візуалізація великого контенту"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Модуль"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "Кнопку миші натиснуто"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "Рух миші"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "Кнопку миші відпущено"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "Коліщатко миші"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "Звідки переміщено"
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Очікує"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "Початок стискання"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "Кінець стискання"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "Зміна стану стискання"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Попередня візуалізація"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "Ресурс"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "Відповідь"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Показати"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Прокручувати"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "Початок прокручування"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "Кінець прокручування"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "Зміна стану прокручування"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Власний час"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "Система"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "Натискання"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "Початок натискання"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "Початок натискання"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "Кінець натискання"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "Завдання"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Загальний час"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "Скасування дотику"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "Кінець дотику"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "Рух дотику"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "Початок дотику"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Тип"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "Без категорії"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "невідомо"

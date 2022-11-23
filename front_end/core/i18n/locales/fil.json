@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "I-enable ang pag-block ng kahilingan sa network"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "Payagan ang DevTools na mag-load ng mga resource, tulad ng mga source map, mula sa Windows Shares sa pamamagitan ng mga UNC na path. Naka-disable bilang default para sa mga layuning panseguridad."
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Payagan ang DevTools na mag-load ng mga resource, tulad ng mga source map, mula sa mga remote na path ng file. Naka-disable bilang default para sa mga layuning panseguridad."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "I-enable ang format na WebP"
@@ -1248,7 +1248,7 @@
     "message": "Ipakita ang Koneksyon"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "Node"
+    "message": "Ipakita ang Node"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Pangunahin"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Workspace"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "Dalawang fling nang sabay? {PH1} vs {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "Dalawang pagpindot nang sabay? {PH1} vs {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread na {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Internal na error."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na kahilingan."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Kasalukuyang hindi available para sa back/forward cache ang mag page na gumagamit ng KeyboardLock."
   },
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "May na-encounter na error sa network habang nagpi-prerender."
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "Kasalukuyang nagpi-prerender"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "Nag-crash ang na-prerender na page."
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Status"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "Lahat ng event na naka-share na storage para sa page na ito."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "Mga Opsyonal na Parameter ng Event"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "Oras ng Event"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "Uri ng Access"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "Main Frame ID"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "Walang na-record na event ng naka-share na storage."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "Origin ng May-ari"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "Naka-share na Storage"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "Paggawa"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Mga Entry"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "Haba"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "Badyet"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Naka-share na Storage"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Hindi ma-render ang stack trace"
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Pumili ng element sa page para suriin ito"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Ipakita ang Mga Na-compute na Istilo"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "Ipakita ang detalyadong tooltip sa pagsiyasat"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Ipakita ang Stack Trace"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Ipakita ang Mga Istilo"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "Ipakita ang shadow ng user agent na DOM"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "Mga Ulat"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "Suriin ang pag-load ng page"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "Suriin ang status ng page"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "Mga Kategorya"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "Mga Plugin sa Komunidad (beta)"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "Device"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "Bumuo ng ulat"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Tukuyin at ayusin ang mga karaniwang problemang nakakaapekto sa performance, accessibility, at karanasan ng user ng iyong site."
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "Bumuo ng ulat sa Lighthouse"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Matuto pa"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Suriin ang pag-load ng page"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Suriin ang status ng page"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Mga Kategorya"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Bumuo ng ulat sa Lighthouse"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Mode"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "Mga Plugin"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Simulan ang tagal ng panahon"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "User agent"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Gumamit ang Chrome ng alternatibong trabaho dahil naunahan nito ang isang pangunahing trabaho."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Gumamit ang Chrome ng alternatibong trabaho nang hindi inuunahan ang isang pangunahing trabaho."
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Na-block ang kahilingang ito dahil sa mga header ng sagot na mali ang pagkaka-configure, i-click para makita ang mga header"
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(na-block:{PH1})"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Hindi gumamit ang Chrome ng alternatibong trabaho dahil minarkahan itong sira."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(kinansela)"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(cache ng disk)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Gumamit ang Chrome ng DNS alpn job dahil naunahan nito ang isang pangunahing trabaho at alternatibong trabaho."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Gumamit ang Chrome ng DNS alpn job nang hindi inuunahan ang isang pangunahing trabaho at alternatibong trabaho."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(hindi naisagawa)"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "antas 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Gumamit ang Chrome ng pangunahing trabaho dahil naunahan nito ang isang alternatibong trabaho at/o DNS alpn job."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Hindi gumamit ang Chrome ng alternatibong trabaho dahil sa kulang na impormasyon ng Alternatibong Protocol."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(cache ng memory)"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Kopyahin ang stack trace"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "Gumawa ng pag-override ng header ng sagot"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Ipapakita lang ang mga kahilingang may origin na iba mula sa origin ng page"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Mag-override ng mga header"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Magsagawa ng kahilingan o pindutin ang {PH1} para ma-record ang pag-reload."
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies na ipinadala sa server sa 'cookie' na header ng kahilingan"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Matuto pa"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Mali ang Cookies ng Sagot"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ipakita ang na-filter na cookies ng kahilingan"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "May cookies ang site na ito sa ibang partition na hindi naipadala kasama ng kahilingang ito. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Walang cookies ang kahilingang ito."
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Na-decode:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "I-override ang header"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Matuto pa"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Matuto pa sa tab na mga isyu"
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "Alisin ang pag-override ng header na ito"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "Matuto pa"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Piliin ang opsyong ito kung inihahatid sa iisang site ang resource at ang dokumento."
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "header-name"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "value ng header"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Piliin lang ang opsyong ito kung walang banta ng panganib sa seguridad ang arbitrary na website kabilang ang resource na ito."
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "I-disable ang lahat ng breakpoint sa file"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "I-edit ang breakpoint"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "Mga naka-disable na breakpoint"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "I-edit ang kundisyon"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "I-edit ang logpoint"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "I-enable ang lahat ng breakpoint sa file"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "Mga naka-enable na breakpoint"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "halo-halo"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Magdagdag ng header"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "Magdagdag ng override ng header"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Magdagdag ng panuntunan sa pag-override"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Nagka-error noong pina-parse ang ''{PH1}''."
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "Susunod na call frame"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "Susunod na editor"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "Wala"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "Nakaraang call frame"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "Nakaraang editor"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Mabilisang source"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(binago ang \"{PH1}\"{PH2})"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "Pag-click"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Nakolekta"
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Laki ng Nagamit na Cache"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "Menu ng Konteksto"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "Oras ng CPU"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "DOMContentLoaded na Event"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "Pag-drag"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "Pagguhit ng Frame"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "First Paint"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "Pag-fling"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "Paghinto ng Pag-fling"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "Simula ng Pag-fling"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Sapilitang reflow"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "Frame ng JS"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "Key — Character"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "Pagpindot sa Key"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "Pag-release sa Key"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Largest Contentful Paint"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Module"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "Pag-pindot sa Mouse"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "Paggalaw ng Mouse"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "Pagbitaw sa Mouse"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "Mouse Wheel"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "Inilipat mula sa"
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Nakabinbin para sa"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "Simula ng Pag-pinch"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "Katapusan ng Pag-pinch"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "Update sa Pag-pinch"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Pre-Paint"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "Resource"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "Sagot"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Ipakita"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Mag-scroll"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "Simula ng Pag-scroll"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "Katapusan ng Pag-scroll"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "Update sa Pag-scroll"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Oras ng Isang Aktibidad"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "System"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "Pag-tap"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "Pag-tap sa Magsimula"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "Pag-tap"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "Pag-tap sa Ihinto"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "Gawain"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Kabuuang Oras"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "Pag-pindot sa Kanselahin"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "Katapusan ng Pagpindot"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "Paglipat ng Pagpindot"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "Simula ng Pagpindot"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Uri"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "Di-nakategorya"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "hindi alam"

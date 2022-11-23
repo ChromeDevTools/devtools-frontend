@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Ενεργοποίηση αποκλεισμού αιτημάτων δικτύου"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "Να επιτρέπεται στο DevTools η φόρτωση πόρων, όπως αντιστοιχίσεις πηγής, από κοινόχρηστα στοιχεία των Windows μέσω διαδρομών UNC. Απενεργοποιημένο από προεπιλογή για λόγος ασφαλείας."
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Να επιτρέπεται στο DevTools η φόρτωση πόρων, όπως αντιστοιχίσεων πηγών, από απομακρυσμένες διαδρομές αρχείων. Απενεργοποιημένο από προεπιλογή για λόγος ασφαλείας."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Ενεργοποίηση μορφής WebP"
@@ -1248,7 +1248,7 @@
     "message": "Εμφάνιση Σύνδεσης"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "Κόμβος"
+    "message": "Εμφάνιση κόμβου"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Κύριο"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Χώρος εργασίας"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "Δύο τινάγματα ταυτόχρονα; {PH1} εναντίον {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "Δύο αγγίγματα ταυτόχρονα; {PH1} εναντίον {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Νήμα {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Εσωτερικό σφάλμα."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη λόγω αιτήματος μηνύματος keepalive."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Οι σελίδες που χρησιμοποιούν το κλείδωμα πληκτρολογίου δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
   },
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "Παρουσιάστηκε σφάλμα δικτύου κατά την προαπόδοση."
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "Προαπόδοση σε εξέλιξη"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "Η σελίδα που προαποδόθηκε παρουσίασε σφάλμα."
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Κατάσταση"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "Όλα τα συμβάντα κοινόχρηστου αποθηκευτικού χώρου για αυτήν τη σελίδα."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "Προαιρετικές παράμετροι συμβάντος"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "Ώρα συμβάντος"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "Τύπος πρόσβασης"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "Αναγνωριστικό κύριου πλαισίου"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "Δεν έχουν καταγραφεί συμβάντα κοινόχρηστου αποθηκευτικού χώρου."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "Προέλευση κατόχου"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "Κοινόχρηστος αποθηκευτικός χώρος"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "Δημιουργία"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Καταχωρίσεις"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "Μήκος"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Μεταδεδομένα"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Προέλευση"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "Προϋπολογισμός"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Κοινόχρηστος αποθηκευτικός χώρος"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Δεν είναι δυνατή η απόδοση της ιχνηλάτησης στοίβας."
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Επιλέξτε ένα στοιχείο στη σελίδα για να το επιθεωρήσετε"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Εμφάνιση υπολογισμένων στιλ"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "Εμφάνιση λεπτομερούς επεξήγησης εργαλείου επιθεώρησης"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Εμφάνιση εργαλείου ιχνηλάτησης στοίβας"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Εμφάνιση στιλ"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "Εμφάνιση σκιάς παράγοντα χρήστη DOM"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "Αναφορές"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "Ανάλυση φόρτωσης σελίδας"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "Ανάλυση κατάστασης σελίδας"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "Κατηγορίες"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "Προσθήκες κοινότητας (beta)"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "Συσκευή"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "Δημιουργία αναφοράς"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Προσδιορίστε και διορθώστε συνήθη προβλήματα που επηρεάζουν την απόδοση του ιστοτόπου, την προσβασιμότητα και την εμπειρία χρήστη."
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "Δημιουργία αναφοράς Lighthouse"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Μάθετε περισσότερα"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Ανάλυση φόρτωσης σελίδας"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Ανάλυση κατάστασης σελίδας"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Κατηγορίες"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Δημιουργία αναφοράς Lighthouse"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Λειτουργία"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "Προσθήκες"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Έναρξη χρονικού διαστήματος"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "Παράγοντας χρήστη"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Το Chrome χρησιμοποίησε μια εναλλακτική εργασία επειδή επικράτησε στον ανταγωνισμό έναντι μιας κύριας εργασίας."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Το Chrome χρησιμοποίησε μια εναλλακτική εργασία χωρίς να ανταγωνιστεί μια κύρια εργασία."
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Αυτό το αίτημα αποκλείστηκε λόγω εσφαλμένης διαμόρφωσης κεφαλίδων απόκρισης. Κάντε κλικ για να δείτε τις κεφαλίδες."
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(αποκλείστηκαν:{PH1})"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Το Chrome δεν χρησιμοποίησε μια εναλλακτική εργασία επειδή επισημάνθηκε ως κατεστραμμένη."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(ακυρώθηκε)"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(κρυφή μνήμη δίσκου)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Το Chrome χρησιμοποίησε μια εργασία DNS alpn, επειδή επικράτησε στον ανταγωνισμό έναντι μιας κύριας και μιας εναλλακτικής εργασίας."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Το Chrome χρησιμοποίησε μια εργασία DNS alpn χωρίς να ανταγωνιστεί με κύρια και με εναλλακτική εργασία."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(απέτυχε)"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "επίπεδο 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Το Chrome χρησιμοποίησε μια κύρια εργασία επειδή επικράτησε στον ανταγωνισμό έναντι μιας εναλλακτικής εργασίας ή/και μιας εργασίας DNS alpn."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Το Chrome δεν χρησιμοποίησε εναλλακτική εργασία λόγω της απουσίας πληροφοριών Alternate-Protocol."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(κρυφή μνήμη)"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Αντιγραφή ιχνηλάτησης στοίβας"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "Δημιουργία παράκαμψης κεφαλίδας απόκρισης"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Εμφανίζει μόνο αιτήματα με προέλευση διαφορετική από την προέλευση της σελίδας"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Παράκαμψη κεφαλίδων"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Υποβάλετε αίτημα ή πατήστε {PH1} για την εγγραφή της επανάληψης φόρτωσης."
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Τα cookie που στάλθηκαν στον διακομιστή στην κεφαλίδα cookie του αιτήματος"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Μάθετε περισσότερα"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Cookie απόκρισης με λανθασμένη μορφή"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "εμφάνιση φιλτραρισμένων cookie αιτημάτων"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Αυτός ο ιστότοπος έχει cookie σε ένα άλλο διαμέρισμα, τα οποία δεν στάλθηκαν με αυτό το αίτημα. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Αυτό το αίτημα δεν έχει cookie."
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Αποκωδικοποιημένες:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "Παράκαμψη κεφαλίδας"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Μάθετε περισσότερα"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Μάθετε περισσότερα στην καρτέλα προβλημάτων"
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "Κατάργηση αυτής της παράκαμψης κεφαλίδων"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "Μάθετε περισσότερα"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Ορίστε αυτήν την επιλογή εάν ο πόρος και το έγγραφο παρέχονται από τον ίδιο ιστότοπο."
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "header-name"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "τιμή κεφαλίδας"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Ορίστε αυτήν την επιλογή μόνο αν ένας αυθαίρετος ιστότοπος που περιλαμβάνει αυτόν τον πόρο δεν αποτελεί κίνδυνο για την ασφάλεια."
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Απενεργοποίηση όλων των σημείων διακοπής στο αρχείο"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "Επεξεργασία σημείου διακοπής"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "Απενεργοποιημένα σημεία διακοπής"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "Επεξεργασία κατάστασης"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "Επεξεργασία σημείου καταγραφής"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Ενεργοποίηση όλων των σημείων διακοπής στο αρχείο"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "Ενεργοποιημένα σημεία διακοπής"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "συνδυαστική"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Προσθήκη κεφαλίδας"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "Προσθήκη παράκαμψης κεφαλίδας"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Προσθήκη κανόνα παράκαμψης"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Σφάλμα κατά την ανάλυση του αρχείου {PH1}."
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "Πλαίσιο επόμενης κλήσης"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "Επόμενος συντάκτης"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "Κανένας"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "Πλαίσιο προηγούμενης κλήσης"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "Προηγούμενος συντάκτης"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Γρήγορη πηγή"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(έγινε αλλαγή του \"{PH1}\"{PH2})"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "Κλικ"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Συλλέχθηκε"
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Μέγεθος κρυφής μνήμης που καταναλώθηκε"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "Μενού περιβάλλοντος"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "Χρόνος CPU"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "Συμβάν DOMContentLoaded"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "Μεταφορά"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "Σχεδίαση πλαισίου"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "Πρώτη σχεδίαση (FP)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "Κίνηση"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "Διακοπή κίνησης"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "Έναρξη κίνησης"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Επανάληψη ροής υπό επιβολή"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "Πλαίσιο JS"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "Πλήκτρο — Χαρακτήρας"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "Πάτημα πλήκτρου"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "Αποδέσμευση πλήκτρου"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Μεγαλύτερη σχεδίαση με περιεχόμενο"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Λειτουργική μονάδα"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "Πάτημα κουμπιού ποντικιού"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "Κίνηση ποντικιού"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "Αποδέσμευση κουμπιού ποντικιού"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "Τροχός κύλισης ποντικιού"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "Μετακινήθηκαν από"
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Σε εκκρεμότητα για"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "Έναρξη πλησιάσματος"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "Τέλος πλησιάσματος"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "Ενημέρωση πλησιάσματος"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Πριν από τη σχεδίαση"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "Πόρος"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "Απόκριση"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Αποκάλυψη"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Κύλιση"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "Έναρξη κύλισης"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "Τέλος κύλισης"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "Ενημέρωση κύλισης"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Χρόνος μεμονωμένης δραστηριότητας"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "Σύστημα"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "Πάτημα"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "Έναρξη πατήματος"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "Έναρξη πατήματος"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "Διακοπή πατήματος"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "Εργασία"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Συνολικός χρόνος"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "Ακύρωση αγγίγματος"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "Τέλος αγγίγματος"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "Μετακίνηση με αφή"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "Έναρξη αγγίγματος"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Τύπος"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "Μη κατηγοριοποιημένο"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "άγνωστη"

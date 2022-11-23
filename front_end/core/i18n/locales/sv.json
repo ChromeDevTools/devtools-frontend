@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktivera blockering av nätverksbegäran"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "Tillåt att DevTools läser in resurser, till exempel källkartor, från filresurser i Windows-nätverk via sökvägar i UNC. Inaktiverat som standard av säkerhetsskäl."
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Tillåt att DevTools läser in resurser, till exempel källkartor, från fjärrsökvägar. Inaktiverat som standard av säkerhetsskäl."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivera WebP-format"
@@ -1248,7 +1248,7 @@
     "message": "Visa anslutning"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "Nod"
+    "message": "Visa nod"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Primär"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Arbetsyta"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "Två svep samtidigt? {PH1} mot {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "Två tryck samtidigt? {PH1} mot {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Tråd {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Internt fel."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "Vilocacheminnet har inaktiverats på grund av en keepalive-begäran."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Sidor som använder tangentbordslås kan för närvarande inte placeras i vilocacheminnet."
   },
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "Ett nätverksfel uppstod under förrenderingen."
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "Förrendering pågår"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "Den förrenderade sidan kraschade."
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Status"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "Alla händelser för det delade lagringsutrymmet för den här sidan."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "Valfria händelseparametrar"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "Tid för händelsen"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "Åtkomsttyp"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "Huvudram-id"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "Inga händelser har registrerats för det delade lagringsutrymmet."
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "Ägarens ursprung"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "Delat lagringsutrymme"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "Skapad"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Poster"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "Längd"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Ursprung"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "Budget"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Delat lagringsutrymme"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Det gick inte att rendera stackspårning"
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Välj ett element på sidan för att granska det"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "Visa beräknade format"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "Visa detaljerad beskrivning i granskningsläget"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Visa stackspårning"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "Visa format"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "Visa skugg-DOM för användaragent"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "Rapporter"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "Analysera sidhämtning"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "Analysera sidans status"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "Kategorier"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "Plugin från gruppen (beta)"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "Enhet"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "Generera rapport"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Identifiera och åtgärda vanliga problem som påverkar webbplatsens prestanda, tillgänglighet och användarupplevelse."
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "Generera en Lighthouse-rapport"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Läs mer"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analysera sidhämtning"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analysera sidans status"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Kategorier"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generera en Lighthouse-rapport"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "Läge"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "Plugin"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "Påbörja tidsintervall"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "Användaragent"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Chrome använde ett alternativt jobb eftersom det vann mot ett huvudjobb."
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Chrome använde ett alternativt jobb utan att tävla mot ett huvudjobb."
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Denna begäran blockerades på grund av felkonfigurerade svarshuvuden. Klicka för att visa svarshuvudena"
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "(blockerad: {PH1})"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Chrome använde inte ett alternativt jobb eftersom det var markerat som trasigt."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(avbröts)"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(diskcache)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Chrome använde ett DNS alpn-jobb eftersom det vann mot ett huvudjobb och ett alternativt jobb."
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Chrome använde ett DNS alpn-jobb utan att tävla mot ett huvudjobb eller ett alternativt jobb."
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(misslyckades)"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "nivå 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Chrome använde ett huvudjobb eftersom det vann mot ett alternativt jobb och/eller ett DNS alpn-jobb."
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Chrome använde inte ett alternativt jobb eftersom information om det alternativa protokollet saknades."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(minnescache)"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Kopiera stackspårning"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "Skapa åsidosättande av svarshuvud"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Visa endast förfrågningar med ett annat ursprung än sidans"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "Åsidosätt huvuden"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Utför en begäran eller tryck på {PH1} om du vill spela in den nya inläsningen."
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies som skickades till servern i huvudet cookie för begäran"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Läs mer"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Svarscookies har fel format"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "visa bortfiltrerade cookies för begäran"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Den här webbplatsen har cookies i en annan partition som inte skickades med denna begäran. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Begäran har inga cookies."
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Avkodat:"
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "Åsidosätt huvud"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Läs mer"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Läs mer på fliken Problem"
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "Ta bort detta åsidosättande av huvud"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "Läs mer"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Välj detta alternativ om resursen och dokumentet visas från samma webbplats."
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "header-name"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "huvudets värde"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "Välj endast det här alternativet om en slumpmässig webbplats med den här resursen inte utgör en säkerhetsrisk."
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Inaktivera alla brytpunkter i filen"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "Redigera brytpunkt"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "Inaktiverade brytpunkter"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "Redigera villkor"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "Redigera loggpunkt"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Aktivera alla brytpunkter i filen"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "Aktiverade brytpunkter"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "blandat"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Lägg till ett huvud"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "Lägg till åsidosättande av huvud"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "Lägg till regel för åsidosättande"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Det gick inte att analysera {PH1}."
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "Nästa anropsram"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "Nästa redigerare"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "Inga"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "Tidigare anropsram"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "Föregående redigerare"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Snabbkälla"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "(ändrade {PH1}{PH2})"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "Klick"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Hämtad"
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Använd storlek i cacheminnet"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "Snabbmeny"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "CPU-tid"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "DOMContentLoaded-händelse"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "Tryck och dra"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "Uppritning av bildruta"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "Första renderingen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "Snärta med fingret"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "Stoppa när användaren snärtar med fingret"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "Starta när användaren snärtar med fingret"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Framtvingad flödesomformning"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS-bildruta"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "Tangent – tecken"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "Tangent ned"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "Tangent upp"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Största uppritningen av innehåll"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Modul"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "Mus ned"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "Musrörelse"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "Mus upp"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "Mushjul"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "Flyttades från"
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Väntar på"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "Börja vid nyp"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "Avsluta vid nyp"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "Uppdatering vid nyp"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "Förberedelse inför uppritning"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "Resurs"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "Svar"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "Visa"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Scrolla"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "Börja vid scrollning"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "Scrollningsslut"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "Uppdatering vid scrollning"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Tid för aktiviteten"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "System"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "Tryck"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "Tryck på Börja"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "Tryck nedåt"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "Stoppa vid tryck"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "Uppgift"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "Total tid"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "Avbryt tryck"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "Avsluta vid tryck"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "Tryck på Flytta."
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "Start vid tryck"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "Typ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "Okategoriserad"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "okänd"

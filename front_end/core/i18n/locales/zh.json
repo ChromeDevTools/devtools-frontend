@@ -758,8 +758,8 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "启用网络请求屏蔽功能"
   },
-  "core/sdk/sdk-meta.ts | enableUNCLoading": {
-    "message": "允许DevTools通过 UNC 路径从 Windows 共享区加载资源（比如来源映射关系）。为安全起见，此功能默认处于停用状态。"
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "允许 DevTools 从远程文件路径加载资源（比如源映射关系）。为安全起见，此功能默认处于停用状态。"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "启用 WebP 格式"
@@ -1248,7 +1248,7 @@
     "message": "显示“连接”"
   },
   "entrypoints/node_app/node_app.ts | showNode": {
-    "message": "节点"
+    "message": "显示节点"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "主要"
@@ -1696,12 +1696,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "工作区"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
-    "message": "同时快滑两次？{PH1}与 {PH2}"
-  },
-  "models/timeline_model/TimelineIRModel.ts | twoTouchesAtTheSameTimeSVsS": {
-    "message": "同时轻触两次？{PH1}与 {PH2}"
   },
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "线程 {PH1}"
@@ -3284,6 +3278,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "内部出错了。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
+    "message": "往返缓存已被停用，因为这是一项 keepalive 请求。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "使用“键盘锁定”功能的网页目前无法储存至往返缓存。"
   },
@@ -3851,6 +3848,9 @@
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
     "message": "在预渲染过程中遇到了网络连接错误。"
   },
+  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
+    "message": "正在进行预渲染"
+  },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "预渲染的网页崩溃了。"
   },
@@ -3913,6 +3913,51 @@
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "状态"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
+    "message": "此网页的所有共享存储空间事件。"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
+    "message": "可选事件参数"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
+    "message": "事件时间"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
+    "message": "权限类型"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
+    "message": "主框架 ID"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
+    "message": "未记录任何共享存储空间事件。"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
+    "message": "所有者源"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
+    "message": "共享存储空间"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
+    "message": "创建"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "条目"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | length": {
+    "message": "长度"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "元数据"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "源"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
+    "message": "预算"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "共享存储空间"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "无法渲染堆栈轨迹"
@@ -5348,6 +5393,9 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "选择网页中的相应元素即可进行检查"
   },
+  "panels/elements/elements-meta.ts | showComputedStyles": {
+    "message": "显示计算出的样式"
+  },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
     "message": "显示详细检查提示"
   },
@@ -5368,6 +5416,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "显示“堆栈轨迹”工具"
+  },
+  "panels/elements/elements-meta.ts | showStyles": {
+    "message": "显示样式"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "显示用户代理 Shadow DOM"
@@ -6320,43 +6371,31 @@
   "panels/lighthouse/LighthouseReportSelector.ts | reports": {
     "message": "报告"
   },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
+    "message": "分析网页加载情况"
+  },
+  "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
+    "message": "分析网页状态"
+  },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
     "message": "类别"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
-    "message": "社区插件（Beta 版）"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
     "message": "设备"
   },
-  "panels/lighthouse/LighthouseStartView.ts | generateReport": {
-    "message": "生成报告"
-  },
-  "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "识别并修正影响网站性能、无障碍功能和用户体验的常见问题。"
+  "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
+    "message": "生成 Lighthouse 报告"
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "了解详情"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "分析网页加载情况"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "分析网页状态"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "类别"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "生成 Lighthouse 报告"
-  },
-  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+  "panels/lighthouse/LighthouseStartView.ts | mode": {
     "message": "模式"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+  "panels/lighthouse/LighthouseStartView.ts | plugins": {
     "message": "插件"
   },
-  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+  "panels/lighthouse/LighthouseStartView.ts | startTimespan": {
     "message": "启用时间跨度模式"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
@@ -6920,11 +6959,20 @@
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "用户代理"
   },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
+    "message": "Chrome 使用了替代作业，因为该作业在与主作业的竞争中获胜。"
+  },
+  "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
+    "message": "Chrome 使用了替代作业，但该作业并未与主作业竞争。"
+  },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "此请求因配置有误的响应标头而被屏蔽，点击即可查看这些标头"
   },
   "panels/network/NetworkDataGridNode.ts | blockeds": {
     "message": "（已屏蔽：{PH1}）"
+  },
+  "panels/network/NetworkDataGridNode.ts | broken": {
+    "message": "Chrome 未使用替代作业，因为它被标记为已损坏。"
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "（已取消）"
@@ -6947,6 +6995,12 @@
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(disk cache)"
   },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
+    "message": "Chrome 使用了 DNS ALPN 作业，因为该作业在与主作业和替代作业的竞争中获胜。"
+  },
+  "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
+    "message": "Chrome 使用了 DNS ALPN 作业，但该作业并未与主作业和替代作业竞争。"
+  },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "（失败）"
   },
@@ -6955,6 +7009,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "级别 1"
+  },
+  "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
+    "message": "Chrome 使用了主作业，因为该作业在与替代作业和/或 DNS ALPN 作业的竞争中获胜。"
+  },
+  "panels/network/NetworkDataGridNode.ts | mappingMissing": {
+    "message": "Chrome 未使用替代作业，因为缺少备用协议 (Alternate-Protocol) 信息。"
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "（内存缓存）"
@@ -7175,9 +7235,6 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "复制堆栈轨迹"
   },
-  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
-    "message": "创建响应标头替换值"
-  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded：{PH1}"
   },
@@ -7219,6 +7276,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "仅显示不是由网页源发出的请求"
+  },
+  "panels/network/NetworkLogView.ts | overrideHeaders": {
+    "message": "替换标头"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "执行某项请求或按 {PH1} 即可记录重新加载。"
@@ -7475,6 +7535,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "请求的“cookie”标头中已发送到服务器的 Cookie"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "了解详情"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "格式不正确的响应 Cookie"
   },
@@ -7489,6 +7552,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "显示滤除的请求 Cookie"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "此网站在另一个分区中有 Cookie，这些 Cookie 不是随该请求发送的。{PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "此请求不含任何 Cookie。"
@@ -7928,11 +7994,17 @@
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "已解码："
   },
+  "panels/network/components/HeaderSectionRow.ts | editHeader": {
+    "message": "替换标头"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "了解详情"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "前往“问题”标签页了解详情"
+  },
+  "panels/network/components/HeaderSectionRow.ts | removeOverride": {
+    "message": "移除此标头替换值"
   },
   "panels/network/components/RequestHeaderSection.ts | learnMore": {
     "message": "了解详情"
@@ -8056,12 +8128,6 @@
   },
   "panels/network/components/ResponseHeaderSection.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "如果资源和文档由同一网站提供，请选择此选项。"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderName": {
-    "message": "标头名称"
-  },
-  "panels/network/components/ResponseHeaderSection.ts | defaultHeaderValue": {
-    "message": "标头值"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
     "message": "仅当包括此资源在内的任意网站不会带来安全风险时，才可选择此选项。"
@@ -10403,11 +10469,20 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "停用文件内所有断点"
   },
-  "panels/sources/components/BreakpointsView.ts | editBreakpoint": {
-    "message": "修改断点"
+  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
+    "message": "已停用的断点"
+  },
+  "panels/sources/components/BreakpointsView.ts | editCondition": {
+    "message": "修改条件"
+  },
+  "panels/sources/components/BreakpointsView.ts | editLogpoint": {
+    "message": "修改日志点"
   },
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "启用文件内所有断点"
+  },
+  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
+    "message": "已启用的断点"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "混合"
@@ -10442,8 +10517,8 @@
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "添加标题"
   },
-  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
-    "message": "添加标题替换"
+  "panels/sources/components/HeadersView.ts | addOverrideRule": {
+    "message": "添加替换规则"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "解析“{PH1}”时出错。"
@@ -10601,6 +10676,9 @@
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "下一个调用帧"
   },
+  "panels/sources/sources-meta.ts | nextEditorTab": {
+    "message": "下一个编辑器"
+  },
   "panels/sources/sources-meta.ts | none": {
     "message": "无"
   },
@@ -10612,6 +10690,9 @@
   },
   "panels/sources/sources-meta.ts | previousCallFrame": {
     "message": "上一个调用帧"
+  },
+  "panels/sources/sources-meta.ts | previousEditorTab": {
+    "message": "上一个编辑器"
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "快速来源"
@@ -11225,9 +11306,6 @@
   "panels/timeline/TimelineUIUtils.ts | changedSs": {
     "message": "（已更改“{PH1}”{PH2}）"
   },
-  "panels/timeline/TimelineUIUtils.ts | click": {
-    "message": "点击"
-  },
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "已回收"
   },
@@ -11263,9 +11341,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "已使用的缓存大小"
-  },
-  "panels/timeline/TimelineUIUtils.ts | contextMenu": {
-    "message": "上下文菜单"
   },
   "panels/timeline/TimelineUIUtils.ts | cpuTime": {
     "message": "CPU 时间"
@@ -11314,9 +11389,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "DOMContentLoaded 事件"
-  },
-  "panels/timeline/TimelineUIUtils.ts | drag": {
-    "message": "拖动"
   },
   "panels/timeline/TimelineUIUtils.ts | drawFrame": {
     "message": "绘制帧"
@@ -11386,15 +11458,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
     "message": "首次绘制"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fling": {
-    "message": "快滑"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingHalt": {
-    "message": "停止快滑"
-  },
-  "panels/timeline/TimelineUIUtils.ts | flingStart": {
-    "message": "开始快滑"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "已强制自动重排"
@@ -11477,15 +11540,6 @@
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS 帧"
   },
-  "panels/timeline/TimelineUIUtils.ts | keyCharacter": {
-    "message": "按键 - 字符"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyDown": {
-    "message": "按下按键"
-  },
-  "panels/timeline/TimelineUIUtils.ts | keyUp": {
-    "message": "释放按键"
-  },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Largest Contentful Paint"
   },
@@ -11542,18 +11596,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "模块"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseDown": {
-    "message": "按下鼠标"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseMove": {
-    "message": "移动鼠标"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseUp": {
-    "message": "松开鼠标"
-  },
-  "panels/timeline/TimelineUIUtils.ts | mouseWheel": {
-    "message": "鼠标滚轮"
   },
   "panels/timeline/TimelineUIUtils.ts | movedFrom": {
     "message": "来自："
@@ -11627,15 +11669,6 @@
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "等待"
   },
-  "panels/timeline/TimelineUIUtils.ts | pinchBegin": {
-    "message": "双指张合开始"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchEnd": {
-    "message": "双指张合结束"
-  },
-  "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
-    "message": "双指张合更新"
-  },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
     "message": "预先绘制"
   },
@@ -11698,9 +11731,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | resource": {
     "message": "资源"
-  },
-  "panels/timeline/TimelineUIUtils.ts | response": {
-    "message": "响应"
   },
   "panels/timeline/TimelineUIUtils.ts | reveal": {
     "message": "显示"
@@ -11792,15 +11822,6 @@
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "滚动"
   },
-  "panels/timeline/TimelineUIUtils.ts | scrollBegin": {
-    "message": "开始滚动"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollEnd": {
-    "message": "滚动结束"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
-    "message": "滚动更新"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "自身耗时"
   },
@@ -11852,18 +11873,6 @@
   "panels/timeline/TimelineUIUtils.ts | system": {
     "message": "系统"
   },
-  "panels/timeline/TimelineUIUtils.ts | tap": {
-    "message": "点按"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapBegin": {
-    "message": "点按开始"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapDown": {
-    "message": "向下点按"
-  },
-  "panels/timeline/TimelineUIUtils.ts | tapHalt": {
-    "message": "点按停止"
-  },
   "panels/timeline/TimelineUIUtils.ts | task": {
     "message": "任务"
   },
@@ -11891,23 +11900,8 @@
   "panels/timeline/TimelineUIUtils.ts | totalTime": {
     "message": "总时间"
   },
-  "panels/timeline/TimelineUIUtils.ts | touchCancel": {
-    "message": "轻触取消"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchEnd": {
-    "message": "轻触结束"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchMove": {
-    "message": "轻触移动"
-  },
-  "panels/timeline/TimelineUIUtils.ts | touchStart": {
-    "message": "轻触开始"
-  },
   "panels/timeline/TimelineUIUtils.ts | type": {
     "message": "类型"
-  },
-  "panels/timeline/TimelineUIUtils.ts | uncategorized": {
-    "message": "未分类"
   },
   "panels/timeline/TimelineUIUtils.ts | unknown": {
     "message": "未知"

@@ -5,7 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 
 import * as Handlers from './handlers/handlers.js';
-import {extractOriginFromTrace} from './Helpers.js';
+import * as Helpers from './helpers/helpers.js';
 import {TraceProcessor} from './TraceProcessor.js';
 
 import type * as Types from './types/types.js';
@@ -53,7 +53,7 @@ export class Model extends EventTarget {
       let recordingName = `Trace ${this.#lastRecordingIndex}`;
       let origin: string|null = null;
       if (file.traceParsedData) {
-        origin = extractOriginFromTrace(file.traceParsedData);
+        origin = Helpers.Trace.extractOriginFromTrace(file.traceParsedData.Meta.mainFrameURL);
         if (origin) {
           const nextSequenceForDomain = Platform.MapUtilities.getWithDefault(this.#nextNumberByDomain, origin, () => 1);
           recordingName = `${origin} (${nextSequenceForDomain})`;

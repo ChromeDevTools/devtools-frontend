@@ -6,23 +6,21 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../visibility.gni")
 
-devtools_module("handlers") {
+devtools_module("helpers") {
   sources = [
-    "MetaHandler.ts",
-    "ModelHandlers.ts",
-    "types.ts",
+    "Timing.ts",
+    "Trace.ts",
   ]
 
   deps = [
-    "../../../core/platform:bundle",
-    "../helpers:bundle",
+    "../../../core/common:bundle",
     "../types:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "handlers.ts"
-  deps = [ ":handlers" ]
+  entrypoint = "helpers.ts"
+  deps = [ ":helpers" ]
   visibility = [
     ":*",
     "../*",

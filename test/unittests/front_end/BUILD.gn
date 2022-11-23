@@ -33,6 +33,7 @@ group("front_end") {
     "models/timeline_model",
     "models/trace",
     "models/trace/handlers",
+    "models/trace/helpers",
     "models/workspace",
     "models/workspace_diff",
     "panels/animation",

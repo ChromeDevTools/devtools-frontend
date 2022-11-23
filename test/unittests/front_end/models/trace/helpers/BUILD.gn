@@ -4,9 +4,12 @@
 
 import("../../../../../../third_party/typescript/typescript.gni")
 
-ts_library("handlers") {
+ts_library("helpers") {
   testonly = true
-  sources = [ "MetaHandler_test.ts" ]
+  sources = [
+    "Timing_test.ts",
+    "Trace_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/core/platform:bundle",

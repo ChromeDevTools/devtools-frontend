@@ -8,7 +8,6 @@ import("../visibility.gni")
 
 devtools_module("trace") {
   sources = [
-    "Helpers.ts",
     "ModelImpl.ts",
     "TraceProcessor.ts",
   ]
@@ -17,6 +16,7 @@ devtools_module("trace") {
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "handlers:bundle",
+    "helpers:bundle",
     "types:bundle",
   ]
 }

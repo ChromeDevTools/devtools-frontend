@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Handlers from './handlers/handlers.js';
-import * as Helpers from './Helpers.js';
+import * as Helpers from './helpers/helpers.js';
 import * as TraceModel from './ModelImpl.js';
 import * as TraceProcessor from './TraceProcessor.js';
 import * as Types from './types/types.js';

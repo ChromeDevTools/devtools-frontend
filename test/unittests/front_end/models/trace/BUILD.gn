@@ -6,10 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("trace") {
   testonly = true
-  sources = [
-    "Helpers_test.ts",
-    "ModelImpl_test.ts",
-  ]
+  sources = [ "ModelImpl_test.ts" ]
 
   deps = [
     "../../../../../front_end/models/trace:bundle",

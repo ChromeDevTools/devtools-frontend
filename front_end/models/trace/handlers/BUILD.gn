@@ -8,6 +8,7 @@ import("../../visibility.gni")
 
 devtools_module("handlers") {
   sources = [
+    "GPUHandler.ts",
     "MetaHandler.ts",
     "ModelHandlers.ts",
     "types.ts",

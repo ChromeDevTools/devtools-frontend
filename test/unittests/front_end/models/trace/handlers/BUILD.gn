@@ -6,7 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("handlers") {
   testonly = true
-  sources = [ "MetaHandler_test.ts" ]
+  sources = [
+    "GPUHandler_test.ts",
+    "MetaHandler_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/core/platform:bundle",

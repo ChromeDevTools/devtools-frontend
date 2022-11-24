@@ -23,9 +23,12 @@ import {AsyncScope} from '../../shared/async-scope.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
 export const CONSOLE_MESSAGES_SELECTOR = '.console-group-messages';
-export const CONSOLE_ALL_MESSAGES_SELECTOR = '.source-code .console-message-text';
-export const CONSOLE_INFO_MESSAGES_SELECTOR = `.console-info-level ${CONSOLE_ALL_MESSAGES_SELECTOR}`;
-export const CONSOLE_ERROR_MESSAGES_SELECTOR = `.console-error-level ${CONSOLE_ALL_MESSAGES_SELECTOR}`;
+export const CONSOLE_MESSAGES_TEXT_SELECTOR = '.source-code .console-message-text';
+export const CONSOLE_ALL_MESSAGES_SELECTOR = `${CONSOLE_MESSAGES_SELECTOR} ${CONSOLE_MESSAGES_TEXT_SELECTOR}`;
+export const CONSOLE_INFO_MESSAGES_SELECTOR =
+    `${CONSOLE_MESSAGES_SELECTOR} .console-info-level ${CONSOLE_MESSAGES_TEXT_SELECTOR}`;
+export const CONSOLE_ERROR_MESSAGES_SELECTOR =
+    `${CONSOLE_MESSAGES_SELECTOR} .console-error-level ${CONSOLE_MESSAGES_TEXT_SELECTOR}`;
 export const CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR = '.console-group-messages .source-code';
 export const LOG_LEVELS_SELECTOR = '[aria-label^="Log level: "]';
 export const LOG_LEVELS_VERBOSE_OPTION_SELECTOR = '[aria-label^="Verbose"]';

@@ -9,6 +9,7 @@ ts_library("common") {
   sources = [
     "Base64_test.ts",
     "CharacterIdMap_test.ts",
+    "ColorConverter_test.ts",
     "ColorUtils_test.ts",
     "Color_test.ts",
     "Console_test.ts",

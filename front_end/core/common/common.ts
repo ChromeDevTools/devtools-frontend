@@ -7,6 +7,7 @@ import * as AppProvider from './AppProvider.js';
 import * as Base64 from './Base64.js';
 import * as CharacterIdMap from './CharacterIdMap.js';
 import * as Color from './Color.js';
+import * as ColorConverter from './ColorConverter.js';
 import * as ColorUtils from './ColorUtils.js';
 import * as Console from './Console.js';
 import * as Debouncer from './Debouncer.js';
@@ -54,6 +55,7 @@ export {
   CharacterIdMap,
   Color,
   ColorUtils,
+  ColorConverter,
   Console,
   Debouncer,
   EventTarget,

@@ -550,6 +550,7 @@ grd_files_debug_sources = [
   "front_end/core/common/Base64.js",
   "front_end/core/common/CharacterIdMap.js",
   "front_end/core/common/Color.js",
+  "front_end/core/common/ColorConverter.js",
   "front_end/core/common/ColorUtils.js",
   "front_end/core/common/Console.js",
   "front_end/core/common/Debouncer.js",

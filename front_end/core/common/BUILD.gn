@@ -16,6 +16,7 @@ devtools_module("common") {
     "Base64.ts",
     "CharacterIdMap.ts",
     "Color.ts",
+    "ColorConverter.ts",
     "Console.ts",
     "Debouncer.ts",
     "EventTarget.ts",

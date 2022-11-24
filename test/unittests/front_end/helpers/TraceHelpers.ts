@@ -40,7 +40,15 @@ export async function loadTraceEventsLegacyEventPayload(name: string): Promise<A
   return events as unknown as Array<SDK.TracingManager.EventPayload>;
 }
 
+// The contents of the trace files do not get modified at all, so in tests we
+// are safe to cache their contents once we've loaded them once.
+const traceFileCache = new Map<string, TraceModel.TraceModel.TraceFileContents>();
+
 export async function loadTraceFile(name: string): Promise<TraceModel.TraceModel.TraceFileContents> {
+  const cachedFile = traceFileCache.get(name);
+  if (cachedFile) {
+    return cachedFile;
+  }
   const url = `/fixtures/traces/${name}`;
   const response = await fetch(url);
   if (response.status !== 200) {
@@ -54,7 +62,9 @@ export async function loadTraceFile(name: string): Promise<TraceModel.TraceModel
     buffer = await decodeGzipBuffer(buffer);
   }
   const decoder = new TextDecoder('utf-8');
-  return JSON.parse(decoder.decode(buffer));
+  const contents = JSON.parse(decoder.decode(buffer)) as TraceModel.TraceModel.TraceFileContents;
+  traceFileCache.set(name, contents);
+  return contents;
 }
 
 export async function loadEventsFromTraceFile(name: string):
@@ -66,10 +76,16 @@ export async function loadEventsFromTraceFile(name: string):
   return trace;
 }
 
-async function generateModelDataForTraceFile(name: string, emulateFreshRecording = false): Promise<{
-  metadata: TraceModel.TraceModel.TraceFileMetaData,
-  traceParsedData: TraceModel.Handlers.Types.TraceParseData,
-}> {
+interface ModelDataResult {
+  metadata: TraceModel.TraceModel.TraceFileMetaData;
+  traceParsedData: TraceModel.Handlers.Types.TraceParseData;
+}
+const modelDataCache = new Map<string, ModelDataResult>();
+async function generateModelDataForTraceFile(name: string, emulateFreshRecording = false): Promise<ModelDataResult> {
+  const cachedData = modelDataCache.get(name);
+  if (cachedData) {
+    return cachedData;
+  }
   const traceEvents = await loadEventsFromTraceFile(name);
 
   return new Promise((resolve, reject) => {
@@ -83,10 +99,11 @@ async function generateModelDataForTraceFile(name: string, emulateFreshRecording
         const metadata = model.metadata(0);
         const traceParsedData = model.traceParsedData(0);
         if (metadata && traceParsedData) {
-          const result = {
+          const result: ModelDataResult = {
             metadata,
             traceParsedData,
           };
+          modelDataCache.set(name, result);
           resolve(result);
         } else {
           reject(new Error('Unable to load trace'));

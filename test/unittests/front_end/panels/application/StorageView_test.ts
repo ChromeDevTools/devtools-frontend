@@ -151,6 +151,40 @@ describeWithMockConnection('StorageView', () => {
       await databaseRemoved;
       assert.isEmpty(databaseModel.databases());
     });
+
+    it('clears cache on clearByStorageKey', async () => {
+      const cacheStorageModel = target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
+      assertNotNullOrUndefined(cacheStorageModel);
+      let caches = [
+        {
+          cacheId: 'id1' as Protocol.CacheStorage.CacheId,
+          securityOrigin: '',
+          storageKey: testKey,
+          cacheName: 'test-cache-1',
+        },
+        {
+          cacheId: 'id2' as Protocol.CacheStorage.CacheId,
+          securityOrigin: '',
+          storageKey: testKey,
+          cacheName: 'test-cache-2',
+        },
+      ];
+      sinon.stub(target.cacheStorageAgent(), 'invoke_requestCacheNames').resolves({caches, getError: () => undefined});
+      cacheStorageModel.enable();
+      const cacheAddedPromise = new Promise<void>(resolve => {
+        cacheStorageModel.addEventListener(SDK.ServiceWorkerCacheModel.Events.CacheAdded, () => {
+          resolve();
+        });
+      });
+      storageKeyManager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+      await cacheAddedPromise;
+      caches = [];
+
+      Resources.StorageView.StorageView.clearByStorageKey(
+          target, testKey, '', [Protocol.Storage.StorageType.Cache_storage], false);
+
+      assert.isEmpty(cacheStorageModel.caches());
+    });
   };
 
   describe('without tab target', () => tests(createTarget));

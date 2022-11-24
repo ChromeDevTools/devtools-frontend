@@ -504,6 +504,14 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         databaseModel.enable();
       }
     }
+
+    if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
+      const target = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+      const model = target && target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
+      if (model) {
+        model.clearForStorageKey(storageKey);
+      }
+    }
   }
 
   async doUpdate(): Promise<void> {

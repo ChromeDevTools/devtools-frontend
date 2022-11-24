@@ -3431,6 +3431,12 @@ interface TooltipView {
     tooltip.
     */
     positioned?(space: Rect): void;
+    /**
+    By default, the library will restrict the size of tooltips so
+    that they don't stick out of the available space. Set this to
+    false to disable that.
+    */
+    resize?: boolean;
 }
 /**
 Facet to which an extension can add a value to show a tooltip.

@@ -9,6 +9,7 @@ ts_library("handlers") {
   sources = [
     "GPUHandler_test.ts",
     "MetaHandler_test.ts",
+    "UserTimingsHandler_test.ts",
   ]
 
   deps = [

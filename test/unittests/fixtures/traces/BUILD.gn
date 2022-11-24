@@ -16,6 +16,7 @@ copy_to_gen("traces") {
     "slow-interaction-button-click.json.gz",
     "slow-interaction-keydown.json.gz",
     "threejs-gpu.json.gz",
+    "user-timings.json.gz",
     "web-dev.json.gz",
   ]
 }

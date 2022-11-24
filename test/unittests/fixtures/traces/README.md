@@ -39,16 +39,16 @@ Generated from the [long-interaction story](https://github.com/ChromeDevTools/pe
 
 ## Example trace files
 
-### basic.json
+### basic
 
 A barebones trace file with the main details about processes and threads but
 little else.
 
-### reload-and-trace-page.json
+### reload-and-trace-page
 
 This trace is a trace of example.com which was recorded via the OPP's "Start profiling and reload the page" button.
 
-### web-dev.json
+### web-dev
 
 A trace of web.dev being loaded.
 
@@ -68,12 +68,16 @@ A trace containing a lot of GPU activity.
 
 A trace that contains a button that, when clicked, will iterate over 30 paragraphs and increment their width to the width of a div. This causes a forced layout event for each one. Additionally this trace contains no GPU thread.
 
-### multiple-navigations.json
+### multiple-navigations
 
 This is a trace that includes multiple navigations:
 
 * Starts on google.com
 * Navigates to Google Images search (google.com/imghp)
 * Search for "dogs" (https://www.google.com/search?q=dogs&...)
+
+### user-timings
+
+Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/user-timings
 
 

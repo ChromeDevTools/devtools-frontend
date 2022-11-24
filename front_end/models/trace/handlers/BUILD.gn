@@ -11,6 +11,7 @@ devtools_module("handlers") {
     "GPUHandler.ts",
     "MetaHandler.ts",
     "ModelHandlers.ts",
+    "UserTimingsHandler.ts",
     "types.ts",
   ]
 

@@ -4,3 +4,4 @@
 
 export * as GPU from './GPUHandler.js';
 export * as Meta from './MetaHandler.js';
+export * as UserTimings from './UserTimingsHandler.js';

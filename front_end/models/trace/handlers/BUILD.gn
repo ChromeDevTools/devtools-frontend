@@ -9,6 +9,8 @@ import("../../visibility.gni")
 devtools_module("handlers") {
   sources = [
     "GPUHandler.ts",
+    "LargestImagePaintHandler.ts",
+    "LargestTextPaintHandler.ts",
     "MetaHandler.ts",
     "ModelHandlers.ts",
     "UserTimingsHandler.ts",
@@ -17,6 +19,7 @@ devtools_module("handlers") {
 
   deps = [
     "../../../core/platform:bundle",
+    "../../../generated",
     "../helpers:bundle",
     "../types:bundle",
   ]

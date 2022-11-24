@@ -80,4 +80,12 @@ This is a trace that includes multiple navigations:
 
 Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/user-timings
 
+### lcp-web-font
+
+Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-web-font
+
+### lcp-images
+
+Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-large-image
+
 

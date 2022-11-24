@@ -8,12 +8,15 @@ ts_library("handlers") {
   testonly = true
   sources = [
     "GPUHandler_test.ts",
+    "LargestImagePaintHandler_test.ts",
+    "LargestTextPaintHandler_test.ts",
     "MetaHandler_test.ts",
     "UserTimingsHandler_test.ts",
   ]
 
   deps = [
     "../../../../../../front_end/core/platform:bundle",
+    "../../../../../../front_end/generated",
     "../../../../../../front_end/models/trace:bundle",
     "../../../helpers",
   ]

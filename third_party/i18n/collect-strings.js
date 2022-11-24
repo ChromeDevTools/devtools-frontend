@@ -23,7 +23,7 @@ const UISTRINGS_REGEX = /UIStrings = .*?\};\n/s;
 /** @typedef {Required<Pick<CtcMessage, 'message'|'placeholders'>>} IncrementalCtc */
 /** @typedef {{message: string, description: string, examples: Record<string, string>}} ParsedUIString */
 
-const ignoredPathComponents = [
+const IGNORED_PATH_COMPONENTS = [
   '**/.git/**',
   '**/*_test_runner/**',
   '**/third_party/**',
@@ -605,7 +605,7 @@ function collectAllStringsInDir(directory) {
   directory = path.relative(process.cwd(), directory)
   const files = glob.sync('**/*.{js,ts}', {
     cwd: directory,
-    ignore: ignoredPathComponents,
+    ignore: IGNORED_PATH_COMPONENTS,
   });
   for (const pathRelativeToDirectory of files) {
     const absolutePath = path.join(directory, pathRelativeToDirectory);
@@ -715,4 +715,5 @@ module.exports = {
   collectAllStringsInDir,
   collectAndBakeCtcStrings,
   writeStringsToCtcFiles,
+  IGNORED_PATH_COMPONENTS,
 };

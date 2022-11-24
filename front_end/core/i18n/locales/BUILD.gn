@@ -24,6 +24,8 @@ node_action("collect_strings") {
     args += [ "--include-en-xl" ]
     outputs += [ "$target_gen_dir/generated/en-XL.json" ]
   }
+
+  depfile = "$target_gen_dir/generated/collected-ui-strings.d"
 }
 
 generated_locales = [ "en-US" ]

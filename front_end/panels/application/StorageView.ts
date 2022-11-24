@@ -455,7 +455,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
-      const target = SDK.TargetManager.TargetManager.instance().mainTarget();
+      const target = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
       const model = target && target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       if (model) {
         model.clearForOrigin(securityOrigin);
@@ -627,7 +627,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 
   private handleClear(includeThirdPartyCookies: boolean): boolean {
-    const target = SDK.TargetManager.TargetManager.instance().mainTarget();
+    const target = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
     if (!target) {
       return false;
     }

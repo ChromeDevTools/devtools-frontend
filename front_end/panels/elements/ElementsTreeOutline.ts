@@ -1240,7 +1240,7 @@ export class ElementsTreeOutline extends
       visibleChildren.push(templateContent);
     }
 
-    visibleChildren.push(...node.pageTransitionPseudoElements());
+    visibleChildren.push(...node.viewTransitionPseudoElements());
 
     const markerPseudoElement = node.markerPseudoElement();
     if (markerPseudoElement) {

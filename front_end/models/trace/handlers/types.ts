@@ -32,12 +32,12 @@ export type TraceEventHandlerName = keyof typeof ModelHandlers;
 export type HandlerData<T extends {[key: string]: TraceEventHandler}> = {
   // For every key in the object, look up the TraceEventHandler's data function
   // and use its return type as the value for the object.
-  [K in keyof T]: ReturnType<T[K]['data']>;
+  [K in keyof T]: Readonly<ReturnType<T[K]['data']>>;
 };
 
 import type * as ModelHandlers from './ModelHandlers.js';
 
-export type TraceParseData = HandlerData<typeof ModelHandlers>;
+export type TraceParseData = Readonly<HandlerData<typeof ModelHandlers>>;
 
 export type Handlers = typeof ModelHandlers;
 

@@ -119,7 +119,7 @@ export class TracingModel {
     return this.#devToolsMetadataEventsInternal;
   }
 
-  addEvents(events: EventPayload[]): void {
+  addEvents(events: readonly EventPayload[]): void {
     for (let i = 0; i < events.length; ++i) {
       this.addEvent(events[i]);
     }

@@ -33,7 +33,8 @@ function decodeGzipBuffer(buffer: ArrayBuffer): Promise<ArrayBuffer> {
   return codec(buffer, new DecompressionStream('gzip'));
 }
 
-export async function loadTraceEventsLegacyEventPayload(name: string): Promise<Array<SDK.TracingManager.EventPayload>> {
+export async function loadTraceEventsLegacyEventPayload(name: string):
+    Promise<readonly SDK.TracingManager.EventPayload[]> {
   const events = await loadEventsFromTraceFile(name);
   // Convince TypeScript that these are really EventPayload events, so they can
   // be used when testing OPP code that expects EventPayload events.
@@ -68,7 +69,7 @@ export async function loadTraceFile(name: string): Promise<TraceModel.TraceModel
 }
 
 export async function loadEventsFromTraceFile(name: string):
-    Promise<Array<TraceModel.Types.TraceEvents.TraceEventData>> {
+    Promise<readonly TraceModel.Types.TraceEvents.TraceEventData[]> {
   const trace = await loadTraceFile(name);
   if ('traceEvents' in trace) {
     return trace.traceEvents;

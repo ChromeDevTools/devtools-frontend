@@ -8,7 +8,7 @@ const {assert} = chai;
 
 import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
 
-function removeEventWithName(events: TraceModel.Types.TraceEvents.TraceEventData[], filteredName: string) {
+function removeEventWithName(events: readonly TraceModel.Types.TraceEvents.TraceEventData[], filteredName: string) {
   return events.filter((event: TraceModel.Types.TraceEvents.TraceEventData) => {
     const args = event.args as {name?: string};
     if (!('name' in args)) {
@@ -30,7 +30,7 @@ const defaultTraceEvent: TraceModel.Types.TraceEvents.TraceEventData = {
 describe('MetaHandler', () => {
   let baseEvents: TraceModel.Types.TraceEvents.TraceEventData[];
   beforeEach(async () => {
-    let defaultTraceEvents: TraceModel.Types.TraceEvents.TraceEventData[];
+    let defaultTraceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       defaultTraceEvents = await loadEventsFromTraceFile('basic.json.gz');
     } catch (error) {
@@ -180,7 +180,7 @@ describe('MetaHandler', () => {
     });
 
     it('throws if the PID is not present', async () => {
-      let traceEvents: TraceModel.Types.TraceEvents.TraceEventData[];
+      let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
       try {
         traceEvents = await loadEventsFromTraceFile('missing-process-data.json.gz');
       } catch (error) {
@@ -281,7 +281,7 @@ describe('MetaHandler', () => {
   });
 
   it('obtains renderer process IDs when there are no navigations', async () => {
-    let traceEvents: TraceModel.Types.TraceEvents.TraceEventData[];
+    let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       traceEvents = await loadEventsFromTraceFile('threejs-gpu.json.gz');
     } catch (error) {
@@ -319,7 +319,7 @@ describe('MetaHandler', () => {
   });
 
   it('handles multiple renderers from navigations', async () => {
-    let traceEvents: TraceModel.Types.TraceEvents.TraceEventData[];
+    let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       traceEvents = await loadEventsFromTraceFile('multiple-top-level-renderers.json.gz');
     } catch (error) {
@@ -377,7 +377,7 @@ describe('MetaHandler', () => {
   });
 
   it('calculates trace bounds correctly', async () => {
-    let traceEvents: TraceModel.Types.TraceEvents.TraceEventData[];
+    let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       traceEvents = await loadEventsFromTraceFile('basic.json.gz');
     } catch (error) {
@@ -406,7 +406,7 @@ describe('MetaHandler', () => {
   });
 
   it('ignores ::UMA Events', async () => {
-    let traceEvents: TraceModel.Types.TraceEvents.TraceEventData[];
+    let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       // This file contains UMA events which need to be ignored.
       traceEvents = await loadEventsFromTraceFile('web-dev.json.gz');
@@ -479,13 +479,7 @@ describe('MetaHandler', () => {
 
   describe('Unsupported files', () => {
     it('throws when TracingStartedInBrowser is missing', async () => {
-      let traceEvents: TraceModel.Types.TraceEvents.TraceEventData[];
-      try {
-        traceEvents = await loadEventsFromTraceFile('missing-tracing-start.json.gz');
-      } catch (error) {
-        assert.fail(error);
-        return;
-      }
+      const traceEvents = await loadEventsFromTraceFile('missing-tracing-start.json.gz');
 
       TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();

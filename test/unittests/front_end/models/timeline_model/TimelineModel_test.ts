@@ -183,7 +183,7 @@ describeWithEnvironment('TimelineModel', () => {
   let tracingModel: SDK.TracingModel.TracingModel;
   let timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
 
-  function traceWithEvents(events: SDK.TracingManager.EventPayload[]) {
+  function traceWithEvents(events: readonly SDK.TracingManager.EventPayload[]) {
     tracingModel.addEvents((preamble as unknown as SDK.TracingManager.EventPayload[]).concat(events));
     tracingModel.tracingComplete();
     timelineModel.setEvents(tracingModel);

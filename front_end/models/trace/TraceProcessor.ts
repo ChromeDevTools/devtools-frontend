@@ -41,7 +41,7 @@ export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types
     this.#status = Status.IDLE;
   }
 
-  async parse(traceEvents: Types.TraceEvents.TraceEventData[], freshRecording = false): Promise<void> {
+  async parse(traceEvents: readonly Types.TraceEvents.TraceEventData[], freshRecording = false): Promise<void> {
     if (this.#status !== Status.IDLE) {
       throw new Error('Trace processor can\'t start parsing when not idle.');
     }
@@ -55,7 +55,7 @@ export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types
     }
   }
 
-  async #parse(traceEvents: Types.TraceEvents.TraceEventData[], freshRecording: boolean): Promise<void> {
+  async #parse(traceEvents: readonly Types.TraceEvents.TraceEventData[], freshRecording: boolean): Promise<void> {
     // This iterator steps through all events, periodically yielding back to the
     // main thread to avoid blocking execution. It uses `dispatchEvent` to
     // provide status update events, and other various bits of config like the
@@ -169,7 +169,7 @@ class TraceEventIterator {
   #time: number;
 
   constructor(
-      private traceEvents: Types.TraceEvents.TraceEventData[], private pauseDuration: number,
+      private traceEvents: readonly Types.TraceEvents.TraceEventData[], private pauseDuration: number,
       private pauseFrequencyMs: number) {
     this.#time = performance.now();
   }

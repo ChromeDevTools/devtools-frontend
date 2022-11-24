@@ -23,7 +23,7 @@ export class Model extends EventTarget {
   #lastRecordingIndex = 0;
 
   async parse(
-      traceEvents: Types.TraceEvents.TraceEventData[], metadata: TraceFileMetaData = {},
+      traceEvents: readonly Types.TraceEvents.TraceEventData[], metadata: TraceFileMetaData = {},
       freshRecording = false): Promise<void> {
     // During parsing, periodically update any listeners on each processors'
     // progress (if they have any updates).
@@ -97,7 +97,7 @@ export class Model extends EventTarget {
     return this.#traces[index].metadata;
   }
 
-  traceEvents(index: number): Types.TraceEvents.TraceEventData[]|null {
+  traceEvents(index: number): readonly Types.TraceEvents.TraceEventData[]|null {
     if (!this.#traces[index]) {
       return null;
     }
@@ -187,7 +187,7 @@ export class TraceParseEvent extends Event {
 }
 
 export type TraceFile = {
-  traceEvents: Types.TraceEvents.TraceEventData[],
+  traceEvents: readonly Types.TraceEvents.TraceEventData[],
   metadata: TraceFileMetaData,
 };
 

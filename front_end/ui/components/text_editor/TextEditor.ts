@@ -243,11 +243,20 @@ export class TextEditor extends HTMLElement {
     const line = view.state.doc.lineAt(selection.main.head);
     const effects: CodeMirror.StateEffect<unknown>[] = [];
     if (highlight) {
-      effects.push(
-          view.state.field(highlightState, false) ?
-              setHighlightLine.of(line.from) :
-              CodeMirror.StateEffect.appendConfig.of(highlightState.init(() => highlightDeco(line.from))));
+      // Lazily register the highlight line state.
+      if (!view.state.field(highlightedLineState, false)) {
+        view.dispatch({effects: CodeMirror.StateEffect.appendConfig.of(highlightedLineState)});
+      } else {
+        // Always clear the previous highlight line first. This cannot be done
+        // in combination with the other effects, as it wouldn't restart the CSS
+        // highlight line animation.
+        view.dispatch({effects: clearHighlightedLine.of(null)});
+      }
+
+      // Here we finally start the actual highlight line effects.
+      effects.push(setHighlightedLine.of(line.from));
     }
+
     const editorRect = view.scrollDOM.getBoundingClientRect();
     const targetPos = view.coordsAtPos(selection.main.head);
     if (!targetPos || targetPos.top < editorRect.top || targetPos.bottom > editorRect.bottom) {
@@ -259,16 +268,6 @@ export class TextEditor extends HTMLElement {
       effects,
       userEvent: 'select.reveal',
     });
-    if (highlight) {
-      const {id} = view.state.field(highlightState);
-      // Reset the highlight state if, after 2 seconds (the animation
-      // duration) it is still showing this highlight.
-      window.setTimeout(() => {
-        if (view === this.#activeEditor && view.state.field(highlightState).id === id) {
-          view.dispatch({effects: setHighlightLine.of(null)});
-        }
-      }, 2000);
-    }
   }
 
   createSelection(head: {lineNumber: number, columnNumber: number}, anchor?: {
@@ -291,27 +290,27 @@ export class TextEditor extends HTMLElement {
 
 ComponentHelpers.CustomElements.defineComponent('devtools-text-editor', TextEditor);
 
-const setHighlightLine = CodeMirror.StateEffect.define<number|null>(
-    {map: (value, mapping) => value === null ? null : mapping.mapPos(value)});
+// Line highlighting
 
-function highlightDeco(position: number): {deco: CodeMirror.DecorationSet, id: number} {
-  const deco = CodeMirror.Decoration.set(
-      [CodeMirror.Decoration.line({attributes: {class: 'cm-highlightedLine'}}).range(position)]);
-  return {deco, id: Math.floor(Math.random() * 0xfffff)};
-}
+const clearHighlightedLine = CodeMirror.StateEffect.define<null>();
+const setHighlightedLine = CodeMirror.StateEffect.define<number>();
 
-const highlightState = CodeMirror.StateField.define<{deco: CodeMirror.DecorationSet, id: number}>({
-  create: () => ({deco: CodeMirror.Decoration.none, id: 0}),
+const highlightedLineState = CodeMirror.StateField.define<CodeMirror.DecorationSet>({
+  create: () => CodeMirror.Decoration.none,
   update(value, tr) {
-    if (!tr.changes.empty && value.deco.size) {
-      value = {deco: value.deco.map(tr.changes), id: value.id};
+    if (!tr.changes.empty && value.size) {
+      value = value.map(tr.changes);
     }
     for (const effect of tr.effects) {
-      if (effect.is(setHighlightLine)) {
-        value = effect.value === null ? {deco: CodeMirror.Decoration.none, id: 0} : highlightDeco(effect.value);
+      if (effect.is(clearHighlightedLine)) {
+        value = CodeMirror.Decoration.none;
+      } else if (effect.is(setHighlightedLine)) {
+        value = CodeMirror.Decoration.set([
+          CodeMirror.Decoration.line({attributes: {class: 'cm-highlightedLine'}}).range(effect.value),
+        ]);
       }
     }
     return value;
   },
-  provide: field => CodeMirror.EditorView.decorations.from(field, value => value.deco),
+  provide: field => CodeMirror.EditorView.decorations.from(field, value => value),
 });

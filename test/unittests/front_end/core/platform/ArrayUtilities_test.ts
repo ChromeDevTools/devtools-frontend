@@ -215,4 +215,278 @@ describe('ArrayUtilities', () => {
       }
     });
   });
+
+  describe('Nearest', () => {
+    describe('Finding the last item where predicate is true', () => {
+      it('works with an even number of entries', () => {
+        const ascEntries = [{a: 1}, {a: 3}, {a: 3}, {a: 12}, {a: 13}, {a: 18}, {a: 23}, {a: 24}];
+        let nearest = Platform.ArrayUtilities.nearestIndexFromEnd(ascEntries, value => value.a < 7);
+
+        assert.strictEqual(nearest, 2);
+
+        const descEntries = [{a: 23}, {a: 18}, {a: 13}, {a: 12}, {a: 12}, {a: 3}, {a: 1}, {a: 0}];
+        nearest = Platform.ArrayUtilities.nearestIndexFromEnd(descEntries, value => value.a > 7);
+
+        assert.strictEqual(nearest, 4);
+      });
+
+      it('works with an odd number of entries', () => {
+        const ascEntries = [
+          {a: 1},
+          {a: 3},
+          {a: 12},
+          {a: 13},
+          {a: 18},
+          {a: 23},
+          {a: 23},
+          {a: 32},
+          {a: 33},
+        ];
+        let nearest = Platform.ArrayUtilities.nearestIndexFromEnd(ascEntries, value => value.a < 31);
+        assert.strictEqual(nearest, 6);
+
+        const descEntries = [
+          {a: 32},
+          {a: 23},
+          {a: 18},
+          {a: 13},
+          {a: 12},
+          {a: 3},
+          {a: 3},
+          {a: 1},
+        ];
+        nearest = Platform.ArrayUtilities.nearestIndexFromEnd(descEntries, value => value.a > 2);
+        assert.strictEqual(nearest, 6);
+      });
+
+      it('returns null if there are no matches at all', () => {
+        const ascEntries = [
+          {a: 1},
+          {a: 3},
+          {a: 12},
+          {a: 13},
+          {a: 18},
+          {a: 23},
+          {a: 32},
+        ];
+        let zeroth = Platform.ArrayUtilities.nearestIndexFromEnd(ascEntries, value => value.a < 0);
+        assert.isNull(zeroth);
+
+        const descEntries = [
+          {a: 32},
+          {a: 23},
+          {a: 18},
+          {a: 13},
+          {a: 12},
+          {a: 3},
+          {a: 1},
+        ];
+        zeroth = Platform.ArrayUtilities.nearestIndexFromEnd(descEntries, value => value.a > 40);
+        assert.isNull(zeroth);
+      });
+
+      it('works when the result is the last item', () => {
+        const ascEntries = [
+          {a: 1},
+          {a: 3},
+          {a: 12},
+          {a: 13},
+          {a: 18},
+          {a: 23},
+          {a: 32},
+          {a: 32},
+        ];
+        let last = Platform.ArrayUtilities.nearestIndexFromEnd(ascEntries, value => value.a < 40);
+        assert.strictEqual(last, ascEntries.length - 1);
+
+        const descEntries = [
+          {a: 32},
+          {a: 23},
+          {a: 18},
+          {a: 13},
+          {a: 12},
+          {a: 3},
+          {a: 1},
+          {a: 1},
+        ];
+        last = Platform.ArrayUtilities.nearestIndexFromEnd(descEntries, value => value.a > 0);
+        assert.strictEqual(last, descEntries.length - 1);
+      });
+
+      it('works on exact values', () => {
+        const ascEntries = [
+          {a: 1},
+          {a: 2},
+          {a: 3},
+          {a: 3},
+          {a: 4},
+          {a: 5},
+          {a: 6},
+        ];
+        const predicateFunc = (value: {a: number}) => value.a <= 3;
+
+        // Odd number of entries.
+        // Note that the predicate is allowing an the exact match.
+        let nearest = Platform.ArrayUtilities.nearestIndexFromEnd(ascEntries, predicateFunc);
+        assert.strictEqual(nearest, 3);
+
+        // Even number of entries.
+        ascEntries.push({a: 7});
+        nearest = Platform.ArrayUtilities.nearestIndexFromEnd(ascEntries, predicateFunc);
+        assert.strictEqual(nearest, 3);
+
+        const descEntries = [
+          {a: 6},
+          {a: 5},
+          {a: 4},
+          {a: 3},
+          {a: 3},
+          {a: 2},
+          {a: 1},
+        ];
+        // Note that the predicate is allowing an the exact match.
+        const gePredicate = (value: {a: number}) => value.a >= 3;
+
+        // Odd number of entries.
+        nearest = Platform.ArrayUtilities.nearestIndexFromEnd(descEntries, gePredicate);
+        assert.strictEqual(nearest, 4);
+
+        // Even number of entries.
+        descEntries.push({a: 7});
+        nearest = Platform.ArrayUtilities.nearestIndexFromEnd(descEntries, gePredicate);
+        assert.strictEqual(nearest, 4);
+      });
+    });
+    describe('Finding the first item in the array where predicate is true', () => {
+      it('works with an even number of entries', () => {
+        const ascEntries = [{a: 1}, {a: 3}, {a: 12}, {a: 12}, {a: 13}, {a: 18}, {a: 23}, {a: 24}];
+        let nearest = Platform.ArrayUtilities.nearestIndexFromBeginning(ascEntries, value => value.a > 7);
+        assert.strictEqual(nearest, 2);
+
+        const descEntries = [{a: 23}, {a: 18}, {a: 13}, {a: 12}, {a: 12}, {a: 3}, {a: 1}, {a: 0}];
+        nearest = Platform.ArrayUtilities.nearestIndexFromBeginning(descEntries, value => value.a < 13);
+        assert.strictEqual(nearest, 3);
+      });
+
+      it('works with an odd number of entries', () => {
+        const ascEntries = [
+          {a: 1},
+          {a: 3},
+          {a: 12},
+          {a: 13},
+          {a: 18},
+          {a: 23},
+          {a: 32},
+          {a: 32},
+          {a: 33},
+        ];
+        let nearest = Platform.ArrayUtilities.nearestIndexFromBeginning(ascEntries, value => value.a > 31);
+        assert.strictEqual(nearest, 6);
+
+        const descEntries = [
+          {a: 33},
+          {a: 32},
+          {a: 23},
+          {a: 23},
+          {a: 18},
+          {a: 23},
+          {a: 32},
+          {a: 3},
+          {a: 1},
+        ];
+        nearest = Platform.ArrayUtilities.nearestIndexFromBeginning(descEntries, value => value.a < 32);
+        assert.strictEqual(nearest, 2);
+      });
+
+      it('returns null if there are no matches at all', () => {
+        const entries = [
+          {a: 1},
+          {a: 3},
+          {a: 12},
+          {a: 13},
+          {a: 18},
+          {a: 23},
+          {a: 32},
+        ];
+        const predicate = (value: {a: number}) => value.a > 33;
+        const nearest = Platform.ArrayUtilities.nearestIndexFromBeginning(entries, predicate);
+        assert.isNull(nearest);
+      });
+
+      it('works when the result is the first item', () => {
+        const ascEntries = [
+          {a: 1},
+          {a: 1},
+          {a: 3},
+          {a: 12},
+          {a: 13},
+          {a: 18},
+          {a: 23},
+          {a: 32},
+        ];
+        const greaterThanPredicate = (value: {a: number}) => value.a > 0;
+        let first = Platform.ArrayUtilities.nearestIndexFromBeginning(ascEntries, greaterThanPredicate);
+        assert.strictEqual(first, 0);
+
+        const descEntries = [
+          {a: 32},
+          {a: 32},
+          {a: 23},
+          {a: 18},
+          {a: 13},
+          {a: 12},
+          {a: 5},
+          {a: 5},
+        ];
+        const predicate = (value: {a: number}) => value.a < 64;
+        first = Platform.ArrayUtilities.nearestIndexFromBeginning(descEntries, predicate);
+        assert.strictEqual(first, 0);
+      });
+
+      it('works on exact values', () => {
+        const ascEntries = [
+          {a: 1},
+          {a: 2},
+          {a: 3},
+          {a: 3},
+          {a: 4},
+          {a: 5},
+          {a: 6},
+        ];
+        // Note that the predicate is allowing an the exact match.
+        const gePredicate = (value: {a: number}) => value.a >= 3;
+
+        // Even number of entries.
+        let nearest = Platform.ArrayUtilities.nearestIndexFromBeginning(ascEntries, gePredicate);
+        assert.strictEqual(nearest, 2);
+
+        // Odd number of entries.
+        ascEntries.push({a: 7});
+        nearest = Platform.ArrayUtilities.nearestIndexFromBeginning(ascEntries, gePredicate);
+        assert.strictEqual(nearest, 2);
+
+        const descEntries = [
+          {a: 6},
+          {a: 5},
+          {a: 4},
+          {a: 3},
+          {a: 3},
+          {a: 2},
+          {a: 1},
+        ];
+        // Note that the predicate is allowing an the exact match.
+        const predicateFunc = (value: {a: number}) => value.a <= 3;
+
+        // Even number of entries.
+        nearest = Platform.ArrayUtilities.nearestIndexFromBeginning(descEntries, predicateFunc);
+        assert.strictEqual(nearest, 3);
+
+        // Odd number of entries.
+        descEntries.push({a: 7});
+        nearest = Platform.ArrayUtilities.nearestIndexFromBeginning(descEntries, predicateFunc);
+
+        assert.strictEqual(nearest, 3);
+      });
+    });
+  });
 });

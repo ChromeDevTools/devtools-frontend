@@ -49,6 +49,13 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   readonly #workspace: Workspace.Workspace.WorkspaceImpl;
   readonly targetManager: SDK.TargetManager.TargetManager;
   readonly debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
+  // For each source code, we remember the list or breakpoints that refer to that UI source code as
+  // their home UI source code. This is necessary to correctly remove the UI source code from
+  // breakpoints upon receiving the UISourceCodeRemoved event.
+  readonly #breakpointsForHomeUISourceCode: Map<Workspace.UISourceCode.UISourceCode, Set<Breakpoint>>;
+  // Mapping of UI source codes to all the current breakpoint UI locations. For bound breakpoints,
+  // this is all the locations where the breakpoints was bound. For the unbound breakpoints,
+  // this is the default locations in the home UI source codes.
   readonly #breakpointsForUISourceCode: Map<Workspace.UISourceCode.UISourceCode, Map<string, BreakpointLocation>>;
   readonly #breakpointByStorageId: Map<string, Breakpoint>;
   #updateBindingsCallbacks: ((uiSourceCode: Workspace.UISourceCode.UISourceCode) => Promise<void>)[];
@@ -63,6 +70,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     this.#breakpointsForUISourceCode = new Map();
+    this.#breakpointsForHomeUISourceCode = new Map();
     this.#breakpointByStorageId = new Map();
 
     this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
@@ -252,8 +260,8 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   private removeUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const breakpoints = this.breakpointLocationsForUISourceCode(uiSourceCode);
-    breakpoints.forEach(bp => bp.breakpoint.removeUISourceCode(uiSourceCode));
+    const breakpoints = this.#getAllBreakpointsForUISourceCode(uiSourceCode);
+    breakpoints.forEach(bp => bp.removeUISourceCode(uiSourceCode));
   }
 
   async setBreakpoint(
@@ -290,6 +298,26 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   findBreakpoint(uiLocation: Workspace.UISourceCode.UILocation): BreakpointLocation|null {
     const breakpoints = this.#breakpointsForUISourceCode.get(uiLocation.uiSourceCode);
     return breakpoints ? (breakpoints.get(uiLocation.id())) || null : null;
+  }
+
+  addHomeUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode, breakpoint: Breakpoint): void {
+    let breakpoints = this.#breakpointsForHomeUISourceCode.get(uiSourceCode);
+    if (!breakpoints) {
+      breakpoints = new Set();
+      this.#breakpointsForHomeUISourceCode.set(uiSourceCode, breakpoints);
+    }
+    breakpoints.add(breakpoint);
+  }
+
+  removeHomeUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode, breakpoint: Breakpoint): void {
+    const breakpoints = this.#breakpointsForHomeUISourceCode.get(uiSourceCode);
+    if (!breakpoints) {
+      return;
+    }
+    breakpoints.delete(breakpoint);
+    if (breakpoints.size === 0) {
+      this.#breakpointsForHomeUISourceCode.delete(uiSourceCode);
+    }
   }
 
   async possibleBreakpoints(
@@ -366,6 +394,11 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   breakpointLocationsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): BreakpointLocation[] {
     const breakpoints = this.#breakpointsForUISourceCode.get(uiSourceCode);
     return breakpoints ? Array.from(breakpoints.values()) : [];
+  }
+
+  #getAllBreakpointsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): Breakpoint[] {
+    const uiBreakpoints = this.breakpointLocationsForUISourceCode(uiSourceCode).map(b => b.breakpoint);
+    return uiBreakpoints.concat(Array.from(this.#breakpointsForHomeUISourceCode.get(uiSourceCode) ?? []));
   }
 
   allBreakpointLocations(): BreakpointLocation[] {
@@ -537,6 +570,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   addUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     if (!this.uiSourceCodes.has(uiSourceCode)) {
       this.uiSourceCodes.add(uiSourceCode);
+      this.breakpointManager.addHomeUISourceCode(uiSourceCode, this);
       if (!this.bound()) {
         this.breakpointManager.uiLocationAdded(this, this.defaultUILocation(uiSourceCode));
       }
@@ -547,12 +581,15 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     if (!this.bound()) {
       this.removeAllUnboundLocations();
     }
-    this.uiSourceCodes.clear();
+    for (const uiSourceCode of this.uiSourceCodes) {
+      this.removeUISourceCode(uiSourceCode);
+    }
   }
 
   removeUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     if (this.uiSourceCodes.has(uiSourceCode)) {
       this.uiSourceCodes.delete(uiSourceCode);
+      this.breakpointManager.removeHomeUISourceCode(uiSourceCode, this);
       if (!this.bound()) {
         this.breakpointManager.uiLocationRemoved(this, this.defaultUILocation(uiSourceCode));
       }

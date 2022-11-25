@@ -11,6 +11,7 @@ ts_library("handlers") {
     "LargestImagePaintHandler_test.ts",
     "LargestTextPaintHandler_test.ts",
     "MetaHandler_test.ts",
+    "SamplesHandler_test.ts",
     "UserTimingsHandler_test.ts",
   ]
 

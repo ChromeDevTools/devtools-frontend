@@ -6,4 +6,5 @@ export * as GPU from './GPUHandler.js';
 export * as LargestImagePaint from './LargestImagePaintHandler.js';
 export * as LargestTextPaint from './LargestTextPaintHandler.js';
 export * as Meta from './MetaHandler.js';
+export * as Samples from './SamplesHandler.js';
 export * as UserTimings from './UserTimingsHandler.js';

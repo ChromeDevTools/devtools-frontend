@@ -6,7 +6,7 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 
 const {assert} = chai;
 
-import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {loadEventsFromTraceFile, defaultTraceEvent} from '../../../helpers/TraceHelpers.js';
 
 function removeEventWithName(events: readonly TraceModel.Types.TraceEvents.TraceEventData[], filteredName: string) {
   return events.filter((event: TraceModel.Types.TraceEvents.TraceEventData) => {
@@ -18,14 +18,6 @@ function removeEventWithName(events: readonly TraceModel.Types.TraceEvents.Trace
     return args.name !== filteredName;
   });
 }
-const defaultTraceEvent: TraceModel.Types.TraceEvents.TraceEventData = {
-  name: 'process_name',
-  tid: TraceModel.Types.TraceEvents.ThreadID(0),
-  pid: TraceModel.Types.TraceEvents.ProcessID(0),
-  ts: TraceModel.Types.Timing.MicroSeconds(0),
-  cat: 'test',
-  ph: TraceModel.Types.TraceEvents.TraceEventPhase.METADATA,
-};
 
 describe('MetaHandler', () => {
   let baseEvents: TraceModel.Types.TraceEvents.TraceEventData[];

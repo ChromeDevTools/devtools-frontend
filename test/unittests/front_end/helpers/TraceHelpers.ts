@@ -126,3 +126,14 @@ export async function loadModelDataFromTraceFile(name: string): Promise<TraceMod
 
   return trace;
 }
+
+// We create here a cross-test base trace event. It is assumed that each
+// test will import this default event and copy-override properties at will.
+export const defaultTraceEvent: TraceModel.Types.TraceEvents.TraceEventData = {
+  name: 'process_name',
+  tid: TraceModel.Types.TraceEvents.ThreadID(0),
+  pid: TraceModel.Types.TraceEvents.ProcessID(0),
+  ts: TraceModel.Types.Timing.MicroSeconds(0),
+  cat: 'test',
+  ph: TraceModel.Types.TraceEvents.TraceEventPhase.METADATA,
+};

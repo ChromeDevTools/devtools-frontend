@@ -88,4 +88,19 @@ Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/l
 
 Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-large-image
 
+### recursive-blocking-js
 
+A trace that contains 3 invocations of a JS function, spaced 1 second apart,
+which recurses 10 times, and blocks for one second in total with performance.now.
+
+### recursive-counting-js
+
+A trace that contains 3 invocations of a JS function, spaced 1 second apart,
+which recurses 3 times, and blocks for one second in total by summing over all
+integers until 1_000_000_000.
+
+### multiple-navigations-with-iframes.json
+
+This trace loads `index.html`, with an iframe to load `example.com`. It then
+loads `page2.html`, which also loads `example.com` in an iFrame. This trace is
+used to make sure we filter out events in iFrames (such as MarkDOMContent).

@@ -71,4 +71,31 @@ describe('TraceModel helpers', async () => {
       assert.deepEqual(eventMap.get(pid(1))?.get(tid(1)), [event, newEvent]);
     });
   });
+
+  describe('sortTraceEventsInPlace', () => {
+    function makeFakeEvent(ts: number, dur: number): TraceModel.Types.TraceEvents.TraceEventData {
+      return {
+        ts: TraceModel.Types.Timing.MicroSeconds(ts),
+        dur: TraceModel.Types.Timing.MicroSeconds(dur),
+      } as unknown as TraceModel.Types.TraceEvents.TraceEventData;
+    }
+
+    it('sorts by start time in ASC order', () => {
+      const event1 = makeFakeEvent(1, 1);
+      const event2 = makeFakeEvent(2, 1);
+      const event3 = makeFakeEvent(3, 1);
+      const events = [event3, event1, event2];
+      TraceModel.Helpers.Trace.sortTraceEventsInPlace(events);
+      assert.deepEqual(events, [event1, event2, event3]);
+    });
+
+    it('sorts by longest duration if the timestamps are the same', () => {
+      const event1 = makeFakeEvent(1, 1);
+      const event2 = makeFakeEvent(1, 2);
+      const event3 = makeFakeEvent(1, 3);
+      const events = [event1, event2, event3];
+      TraceModel.Helpers.Trace.sortTraceEventsInPlace(events);
+      assert.deepEqual(events, [event3, event2, event1]);
+    });
+  });
 });

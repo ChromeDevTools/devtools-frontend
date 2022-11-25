@@ -544,6 +544,9 @@ export const mimeTypeByExtension = new Map([
   ['woff', 'font/woff'],
   ['woff2', 'font/woff2'],
 
+  // Svelte
+  ['svelte', 'text/html'],
+
   // Vue
   ['vue', 'text/html'],
 ]);

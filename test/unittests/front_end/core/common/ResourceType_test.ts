@@ -441,6 +441,10 @@ describe('ResourceType', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('scss'), 'text/x-scss');
     });
 
+    it('returns correct MIME type for .svelte files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('svelte'), 'text/html');
+    });
+
     it('returns correct MIME type for .vue files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('vue'), 'text/html');
     });
@@ -478,6 +482,11 @@ describe('ResourceType', () => {
       assert.strictEqual(
           ResourceType.mimeFromURL('https://staging.server.com/styles.scss' as Platform.DevToolsPath.UrlString),
           'text/x-scss');
+    });
+
+    it('returns correct MIME type for .svelte files', () => {
+      const url = 'http://localhost/App.svelte' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/html');
     });
 
     it('returns correct MIME type for .vue files', () => {

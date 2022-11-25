@@ -9,6 +9,7 @@
   console.log(NaN);
   console.log({});
   console.log([function() {}]);
+  console.log(["test"]);
   console.log(Number.POSITIVE_INFINITY);
   console.log(Number.NEGATIVE_INFINITY);
 
@@ -21,8 +22,10 @@
   const negZero = 1 / Number.NEGATIVE_INFINITY;
   console.log(negZero);
 
-  const string = 'test';
-  console.log(string);
+  const string1 = 'test';
+  const string2 = "test named \"test\"";
+  console.log(string1);
+  console.log(string2);
 
   const linkify = 'https://chromium.org';
   console.log(linkify);

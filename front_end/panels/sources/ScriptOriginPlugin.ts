@@ -27,7 +27,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/ScriptOriginPlugin.ts',
 
 export class ScriptOriginPlugin extends Plugin {
   static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return uiSourceCode.contentType().hasScripts() || Boolean(ScriptOriginPlugin.script(uiSourceCode));
+    return uiSourceCode.contentType().hasScripts();
   }
 
   async rightToolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {

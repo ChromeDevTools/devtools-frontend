@@ -831,7 +831,7 @@ export class DebuggerPlugin extends Plugin {
                                            }(),
                                                                                   side: 1,
                                          })
-                                         .range(line.from)])))),
+                                         .range(line.to)])))),
     });
     dialog.markAsExternallyManaged();
     dialog.show(decorationElement);

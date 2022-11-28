@@ -63,13 +63,19 @@ const {writeIfChanged} = require('../../scripts/build/ninja/write-if-changed.js'
  * value in the placeholders object, or vice versa.
  *
  * @param {Record<string, CtcMessage>} messages
+ * @param {Set<string>=} allowedKeys Only include messages where keys are present in this set.
  * @return {Record<string, LhlMessage>}
  */
-function bakePlaceholders(messages) {
+function bakePlaceholders(messages, allowedKeys) {
   /** @type {Record<string, LhlMessage>} */
   const bakedMessages = {};
 
   for (const [key, defn] of Object.entries(messages)) {
+    if (allowedKeys && !allowedKeys.has(key)) {
+      // Only filter keys if `allowedKeys` is present.
+      continue;
+    }
+
     let message = defn.message;
     const placeholders = defn.placeholders;
 
@@ -120,16 +126,17 @@ function saveLhlStrings(path, localeStrings) {
 /**
  * @param {string} dir
  * @param {string} outputDir
+ * @param {Set<string>=} allowedKeys Only include messages where keys are present in this set.
  * @return {Array<string>}
  */
-function collectAndBakeCtcStrings(dir, outputDir) {
+function collectAndBakeCtcStrings(dir, outputDir, allowedKeys) {
   const lhlFilenames = [];
   for (const filename of fs.readdirSync(dir)) {
     const fullPath = path.join(dir, filename);
 
     if (filename.endsWith('.ctc.json')) {
       const ctcStrings = loadCtcStrings(fullPath);
-      const strings = bakePlaceholders(ctcStrings);
+      const strings = bakePlaceholders(ctcStrings, allowedKeys);
       const outputFile = path.join(outputDir, path.basename(filename).replace('.ctc', ''));
       saveLhlStrings(outputFile, strings);
       lhlFilenames.push(path.basename(filename));

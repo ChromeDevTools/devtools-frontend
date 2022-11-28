@@ -8,10 +8,26 @@
  */
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const {collectAndBakeCtcStrings} = require('./collect-strings.js');
 
 const [, , directory] = process.argv;
 
+/**
+ * Load the message keys from en-US.ctc.json. We'll bake only
+ * the messages that are present here. The others are not needed.
+ * @param {string} directory
+ * @returns {Set<string>} All keys currently in use.
+ */
+function loadReferenceKeys(directory) {
+  const referenceCtc = path.join(directory, 'en-US.ctc.json');
+  const rawdata = fs.readFileSync(referenceCtc, 'utf8');
+  const referenceMessages = JSON.parse(rawdata);
+  return new Set(Object.keys(referenceMessages));
+}
+
 // Convert all the .ctc.json files in `directory` to JSON files in the LHL
 // format in `directory`.
-collectAndBakeCtcStrings(directory, directory);
+const allowedKeys = loadReferenceKeys(directory);
+collectAndBakeCtcStrings(directory, directory, allowedKeys);

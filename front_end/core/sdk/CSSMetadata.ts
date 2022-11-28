@@ -148,6 +148,10 @@ export class CSSMetadata {
     return this.#values;
   }
 
+  aliasesFor(): Map<string, string> {
+    return this.#aliasesFor;
+  }
+
   nameValuePresets(includeSVG?: boolean): string[] {
     return includeSVG ? this.#nameValuePresetsIncludingSVG : this.#nameValuePresetsInternal;
   }

@@ -1811,6 +1811,29 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     const anywhereResults: Array<CompletionResult> = [];
     if (!editingVariable) {
       this.cssCompletions.forEach(completion => filterCompletions.call(this, completion, false /* variable */));
+      // When and only when editing property names, we also include aliases for autocomplete.
+      if (this.isEditingName) {
+        SDK.CSSMetadata.cssMetadata().aliasesFor().forEach((canonicalProperty, alias) => {
+          const index = alias.toLowerCase().indexOf(lowerQuery);
+          if (index !== 0) {
+            return;
+          }
+          const aliasResult: CompletionResult = {
+            text: alias,
+            priority: SDK.CSSMetadata.cssMetadata().propertyUsageWeight(alias),
+            isCSSVariableColor: false,
+          };
+          const canonicalPropertyResult: CompletionResult = {
+            text: canonicalProperty,
+            priority: SDK.CSSMetadata.cssMetadata().propertyUsageWeight(canonicalProperty),
+            subtitle: `= ${alias}`,  // This explains why this canonicalProperty is prompted.
+            isCSSVariableColor: false,
+          };
+          // We add aliasResult *before* the canonicalProperty one because we want to prompt
+          // the alias one first, since it corresponds to what the user has typed.
+          prefixResults.push(aliasResult, canonicalPropertyResult);
+        });
+      }
     }
     const node = this.treeElement.node();
     if (this.isEditingName && node) {

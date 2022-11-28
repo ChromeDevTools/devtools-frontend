@@ -82,5 +82,20 @@ describeWithLocale('CSSPropertyPrompt', () => {
       const renderedElement = colorCompletions?.[0].subtitleRenderer?.();
       assert.instanceOf(renderedElement, InlineEditor.CircularColorSwatch.CircularColorSwatch);
     });
+
+    it('shows autocomplete property names for CSS aliases', async () => {
+      const attachedElement = document.createElement('div');
+      renderElementIntoDOM(attachedElement);
+      const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, true);
+
+      cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+      const spyObj = sinon.spy(cssPropertyPrompt.suggestBoxForTest());
+      cssPropertyPrompt.setText('word-wra');
+      await cssPropertyPrompt.complete(true);
+      const completions = spyObj?.updateSuggestions.firstCall.args[1];
+      assert.strictEqual(completions?.[0].text, 'word-wrap');
+      assert.strictEqual(completions?.[1].text, 'overflow-wrap');
+      assert.strictEqual(completions?.[1].subtitle, '= word-wrap');
+    });
   });
 });

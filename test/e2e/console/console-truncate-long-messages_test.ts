@@ -15,9 +15,11 @@ import {
 // to check the output before the last one.
 const checkCommandResult = checkCommandResultFunction(1);
 
-describe('The Console Tab', async () => {
-  // Flakily fails on all platforms.
-  it.skip('[crbug.com/1393892] Truncates large messages', async () => {
+describe('The Console Tab', async function() {
+  // This test takes longer than usual because each command is typed and
+  // checked individually.
+  this.timeout(20000);
+  it('Truncates large messages', async () => {
     await goToResource('../resources/console/command-line-api-getEventListeners.html');
     await navigateToConsoleTab();
     const overMaxLength = 10001;

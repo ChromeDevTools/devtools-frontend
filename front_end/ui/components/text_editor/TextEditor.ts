@@ -184,6 +184,7 @@ export class TextEditor extends HTMLElement {
 
   disconnectedCallback(): void {
     if (this.#activeEditor) {
+      this.#activeEditor.dispatch({effects: clearHighlightedLine.of(null)});
       this.#pendingState = this.#activeEditor.state;
       this.#devtoolsResizeObserver.disconnect();
       window.removeEventListener('resize', this.#resizeListener);

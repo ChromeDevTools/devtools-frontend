@@ -1958,8 +1958,6 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
           if (color) {
             result.subtitleRenderer = colorSwatchRenderer.bind(null, color);
             result.isCSSVariableColor = true;
-          } else if (Common.Color.Color.canBeWideGamut(computedValue)) {
-            result.subtitleRenderer = circularColorSwatchRenderer.bind(null, computedValue);
           } else {
             result.subtitleRenderer = computedValueSubtitleRenderer.bind(null, computedValue);
           }
@@ -1974,12 +1972,6 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       } else if (index > -1) {
         anywhereResults.push(result);
       }
-    }
-
-    function circularColorSwatchRenderer(colorText: string): Element {
-      const swatch = new InlineEditor.CircularColorSwatch.CircularColorSwatch();
-      swatch.renderColor(colorText);
-      return swatch;
     }
 
     function colorSwatchRenderer(color: Common.Color.Color): Element {

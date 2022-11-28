@@ -795,7 +795,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   #colorsToFragment(section: string, color: string): UI.Fragment.Fragment|undefined {
     const blockFragment = UI.Fragment.Fragment.build`<li>
       <button data-type="color" data-color="${color}" data-section="${section}" class="block" $="color"></button>
-      <div class="block-title color-text">${color}</div>
+      <div class="block-title color-text" title=${color}>${color}</div>
     </li>`;
 
     const block = (blockFragment.$('color') as HTMLElement);

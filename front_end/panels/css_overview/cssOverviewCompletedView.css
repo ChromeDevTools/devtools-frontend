@@ -91,13 +91,18 @@
   padding-top: 4px;
   font-size: 12px;
   color: var(--color-text-primary);
-  text-transform: uppercase;
   letter-spacing: 0;
+  text-transform: uppercase;
 }
 
-.color-text {
+.block-title.color-text {
+  text-transform: none;
+  max-width: 65px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   cursor: text;
   user-select: text;
+  overflow: hidden;
 }
 
 .results-section {

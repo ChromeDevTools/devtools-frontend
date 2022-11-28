@@ -22,6 +22,7 @@ const deepCloseTo = (actual: number[], expected: number[], delta: number, messag
 };
 
 const tolerance = 0.0001;
+const colorSpaceConversionTolerance = 0.001;
 
 describe('Color', () => {
   it('can be instantiated without issues', () => {
@@ -172,6 +173,148 @@ describe('Color', () => {
     const colorSix = Color.Color.parse('hwb(240deg 0% 0% / 90%)');
     assertNotNullOrUndefined(colorSix);
     deepCloseTo(colorSix.rgba(), [0, 0, 1, 0.9], tolerance);
+  });
+
+  it('parses lch values', () => {
+    // White in sRGB
+    const colorOne = Color.Color.parse('lch(100 0.09 312)');
+    assertNotNullOrUndefined(colorOne);
+    deepCloseTo(colorOne.rgba(), [1, 1, 1, 1], colorSpaceConversionTolerance);
+
+    // Parses out of sRGB gamut values too
+    const colorTwo = Color.Color.parse('lch(100 112 312)');
+    assertNotNullOrUndefined(colorTwo);
+    deepCloseTo(colorTwo.rgba(), [1.3014, 0.7735, 1.6512, 1], colorSpaceConversionTolerance);
+
+    // Parses none values too
+    const colorThree = Color.Color.parse('lch(100 112 none)');
+    assertNotNullOrUndefined(colorThree);
+    deepCloseTo(colorThree.rgba(), [1.7272, 0.4992, 1.025, 1], colorSpaceConversionTolerance);
+
+    // Parses syntax from Color Syntax mega list https://cdpn.io/pen/debug/RwyOyeq
+    const colorCases = [
+      ['lch(58% 32 241deg)', [0.2830, 0.5834, 0.7366, 1]],
+      ['lch(58 32 241deg)', [0.2830, 0.5834, 0.7366, 1]],
+      ['lch(58 32 241)', [0.2830, 0.5834, 0.7366, 1]],
+      ['lch(58% 32 241 / 50%)', [0.2830, 0.5834, 0.7366, 0.5]],
+      ['lch(58% 32 241 / .5)', [0.2830, 0.5834, 0.7366, 0.5]],
+      ['lch(100% 0 0)', [0.9999, 1.0001, 1.0000, 1]],
+      ['lch(100 0 0)', [0.9999, 1.0001, 1.0000, 1]],
+      ['lch(100 none none)', [0.9999, 1.0001, 1.0000, 1]],
+      ['lch(0% 0 0)', [0, 0, 0, 1]],
+      ['lch(0 0 0)', [0, 0, 0, 1]],
+      ['lch(none none none)', [0, 0, 0, 1]],
+    ];
+
+    for (const [syntax, expectedRgba] of colorCases) {
+      const color = Color.Color.parse(syntax as string);
+      assertNotNullOrUndefined(color);
+      deepCloseTo(
+          color.rgba(), expectedRgba as number[], colorSpaceConversionTolerance,
+          'LCH parsing from syntax list is not correct');
+    }
+  });
+
+  // TODO(ergunsh): Add tests for `oklch` after clearing situation
+  it('parses lab values', () => {
+    // White in sRGB
+    const colorOne = Color.Color.parse('lab(100 0 0)');
+    assertNotNullOrUndefined(colorOne);
+    deepCloseTo(colorOne.rgba(), [1, 1, 1, 1], colorSpaceConversionTolerance);
+
+    // Parses out of sRGB gamut values too
+    const colorTwo = Color.Color.parse('lab(100 58 64)');
+    assertNotNullOrUndefined(colorTwo);
+    deepCloseTo(colorTwo.rgba(), [1.48, 0.805, 0.519, 1], colorSpaceConversionTolerance);
+
+    // Parses none values too
+    const colorThree = Color.Color.parse('lch(100 none none)');
+    assertNotNullOrUndefined(colorThree);
+    deepCloseTo(colorThree.rgba(), [1, 1, 1, 1], colorSpaceConversionTolerance);
+
+    // Parses syntax from Color Syntax mega list https://cdpn.io/pen/debug/RwyOyeq
+    const colorCases = [
+      ['lab(58% -16 -30)', [0.2585, 0.5848, 0.7505, 1]],
+      ['lab(58 -16 -30)', [0.2585, 0.5848, 0.7505, 1]],
+      ['lab(58% -16 -30 / 50%)', [0.2585, 0.5848, 0.7505, 0.5]],
+      ['lab(58% -16 -30 / .5)', [0.2585, 0.5848, 0.7505, 0.5]],
+      ['lab(100% 0 0)', [1, 1, 1, 1]],
+      ['lab(100 0 0)', [1, 1, 1, 1]],
+      ['lab(100 none none)', [1, 1, 1, 1]],
+      ['lab(0% 0 0)', [0, 0, 0, 1]],
+      ['lab(0 0 0)', [0, 0, 0, 1]],
+      ['lab(none none none)', [0, 0, 0, 1]],
+    ];
+
+    for (const [syntax, expectedRgba] of colorCases) {
+      const color = Color.Color.parse(syntax as string);
+      assertNotNullOrUndefined(color);
+      deepCloseTo(
+          color.rgba(), expectedRgba as number[], colorSpaceConversionTolerance,
+          'lab() parsing from syntax list is not correct');
+    }
+  });
+
+  // TODO(ergunsh): Add tests for `oklab` after clearing situation
+  it('parses color() values', () => {
+    // White in sRGB
+    const colorOne = Color.Color.parse('color(srgb 100% 100% 100% / 50%)');
+    assertNotNullOrUndefined(colorOne);
+    deepCloseTo(colorOne.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
+
+    // Does not parse invalid syntax
+    const invalidSyntaxes = [
+      // Not known color space
+      'color(not-known-color-space)',
+      // Contains comma
+      'color(srgb, 100%)',
+      // Alpha is not at the end
+      'color(srgb / 50% 100%)',
+    ];
+
+    for (const invalidSyntax of invalidSyntaxes) {
+      assert.isNull(Color.Color.parse(invalidSyntax));
+    }
+
+    // All defined color spaces are parsed
+    // srgb | srgb-linear | display-p3 | a98-rgb | prophoto-rgb | rec2020 | xyz | xyz-d50 | xyz-d65
+    const colorSpaceCases = [
+      'color(srgb)',
+      'color(srgb-linear)',
+      'color(display-p3)',
+      'color(a98-rgb)',
+      'color(prophoto-rgb)',
+      'color(rec2020)',
+      'color(xyz-d50)',
+      'color(xyz-d65)',
+    ];
+    for (const colorSpaceCase of colorSpaceCases) {
+      const color = Color.Color.parse(colorSpaceCase);
+      assertNotNullOrUndefined(color);
+    }
+
+    // Parses correctly from syntax list
+    const colorCases = [
+      ['color(display-p3 34% 58% 73%)', [0.246, 0.587, 0.745, 1]],
+      ['color(display-p3 1 0.71 0.73)', [1.051, 0.694, 0.725, 1]],
+      ['color(display-p3 34% / 50%)', [0.3748, -0.0505, -0.0239, 0.5]],
+      ['color(rec2020 34% 58% 73%)', [-0.169, 0.641, 0.774, 1]],
+      ['color(rec2020 .34 .58 .73 / .5)', [-0.169, 0.641, 0.774, 0.5]],
+      ['color(a98-rgb 34% 58% 73% / 50%)', [0.1, 0.585, 0.741, 0.5]],
+      ['color(a98-rgb none none none)', [0, 0, 0, 1]],
+      ['color(a98-rgb 0)', [0, 0, 0, 1]],
+      ['color(xyz-d50 .22 .26 .53)', [0.0929, 0.584, 0.855, 1]],
+      ['color(xyz 100% 100% 100%)', [1.085, 0.977, 0.959, 1]],
+      ['color(xyz-d65 100% 100% 100%)', [1.085, 0.977, 0.959, 1]],
+    ];
+
+    for (const [syntax, expectedRgba] of colorCases) {
+      const color = Color.Color.parse(syntax as string);
+      assertNotNullOrUndefined(color);
+      deepCloseTo(
+          color.rgba(), expectedRgba as number[], colorSpaceConversionTolerance,
+          'color() parsing from syntax list is not correct');
+    }
   });
 
   it('handles invalid values', () => {
@@ -472,24 +615,6 @@ describe('Color', () => {
       const result = Common.Color.Color.findFgColorForContrastAPCA(fg, bg, test.requiredContrast);
       assert.isNull(result);
     }
-  });
-
-  describe('canBeWideGamut helper', () => {
-    it('should return true for colors defined with `color`, `lch`, `oklch`, `lab` and `oklab`', () => {
-      assert.isTrue(Common.Color.Color.canBeWideGamut('color(srgb 34% 58% 73%)'));
-      assert.isTrue(Common.Color.Color.canBeWideGamut('color(srgb-linear 34% 58% 73%)'));
-      assert.isTrue(Common.Color.Color.canBeWideGamut('lch(58% 32 241deg)'));
-      assert.isTrue(Common.Color.Color.canBeWideGamut('oklch(64% .1 233deg)'));
-      assert.isTrue(Common.Color.Color.canBeWideGamut('lab(58% -16 -30)'));
-      assert.isTrue(Common.Color.Color.canBeWideGamut('oklab(64% -.1 -.1)'));
-    });
-
-    it('should return false for colors defined with `hex`, `rgb`, `hsl` and `hwb`', () => {
-      assert.isFalse(Common.Color.Color.canBeWideGamut('#000000'));
-      assert.isFalse(Common.Color.Color.canBeWideGamut('rgb(98.23% 21.8% 0%)'));
-      assert.isFalse(Common.Color.Color.canBeWideGamut('hsl(17.25 100% 46.07%)'));
-      assert.isFalse(Common.Color.Color.canBeWideGamut('hwb(17.25 0% 7.86%)'));
-    });
   });
 });
 

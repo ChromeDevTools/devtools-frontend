@@ -34,6 +34,18 @@
 import * as Platform from '../platform/platform.js';
 
 import {
+  adobeRGBToXyzd50,
+  displayP3ToXyzd50,
+  labToXyzd50,
+  lchToLab,
+  oklabToXyzd65,
+  proPhotoToXyzd50,
+  rec2020ToXyzd50,
+  srgbLinearToXyzd50,
+  xyzd50ToSrgb,
+  xyzd65ToD50,
+} from './ColorConverter.js';
+import {
   blendColors,
   contrastRatioAPCA,
   desiredLuminanceAPCA,
@@ -42,6 +54,160 @@ import {
   rgbaToHsla,
   rgbaToHwba,
 } from './ColorUtils.js';
+
+// Parses angle in the form of
+// `<angle>deg`, `<angle>turn`, `<angle>grad and `<angle>rad`
+// and returns the canonicalized `degree`.
+function parseAngle(angleText: string): number|null {
+  const angle = angleText.replace(/(deg|g?rad|turn)$/, '');
+  // @ts-ignore: isNaN can accept strings
+  if (isNaN(angle) || angleText.match(/\s+(deg|g?rad|turn)/)) {
+    return null;
+  }
+
+  const number = parseFloat(angle);
+  if (angleText.includes('turn')) {
+    // 1turn === 360deg
+    return number * 360;
+  }
+
+  if (angleText.includes('grad')) {
+    // 1grad === 0.9deg
+    return number * 9 / 10;
+  }
+
+  if (angleText.includes('rad')) {
+    // πrad === 180deg
+    return number * 180 / Math.PI;
+  }
+
+  // 1deg === 1deg ^_^
+  return number;
+}
+
+// Returns the `ColorSpace` equivalent from the color space text
+function getColorSpace(colorSpaceText: string): ColorSpace|null {
+  // We need to assert that this is a string array for `includes` call to not complain
+  if ((COLOR_SPACES_FOR_COLOR_FUNCTION as string[]).includes(colorSpaceText)) {
+    return colorSpaceText as ColorSpace;
+  }
+
+  return null;
+}
+
+/**
+ * Percents in color spaces are mapped to ranges.
+ * These ranges change based on the syntax.
+ * For example, for 'C' in lch() c: 0% = 0, 100% = 150.
+ * See: https://www.w3.org/TR/css-color-4/#funcdef-lch
+ * Some percentage values can be negative
+ * though their ranges don't change depending on the sign
+ * (for now, according to spec).
+ * @param percent % value of the number. 42 for 42%.
+ * @param range Range of [min, max]. Including `min` and `max`.
+ */
+function mapPercentToRange(percent: number, range: [number, number]): number {
+  const sign = Math.sign(percent);
+  const absPercent = Math.abs(percent);
+  const [outMin, outMax] = range;
+
+  return sign * (absPercent * (outMax - outMin) / 100 + outMin);
+}
+
+/**
+ * Parses given `color()` function definition and returns the `Color` object.
+ * We want to special case its parsing here because it's a bit different
+ * than other color functions: rgb, lch etc. accepts 3 arguments with
+ * optional alpha. This accepts 4 arguments with optional alpha.
+ *
+ * Instead of making `splitColorFunctionParameters` work for this case too
+ * I've decided to implement it specifically.
+ * @param originalText Original definition of the color with `color`
+ * @param parametersText Inside of the `color()` function. ex, `display-p3 0.1 0.2 0.3 / 0%`
+ * @returns `Color` object
+ */
+function parseColorFunction(originalText: string, parametersText: string): Color|null {
+  const parameters = parametersText.trim().split(/\s+/);
+  const [colorSpaceText, ...remainingParams] = parameters;
+  const colorSpace = getColorSpace(colorSpaceText);
+  // Color space is not known to us, do not parse the Color.
+  if (!colorSpace) {
+    return null;
+  }
+
+  // `color(<color-space>)` is a valid syntax
+  if (remainingParams.length === 0) {
+    // TODO(ergunsh): Pass ColorSpace to know initially supplied space
+    return new Color([0, 0, 0], Format.COLOR);
+  }
+
+  // Check if it contains `/ <alpha>` part, if so, it should be at the end
+  const alphaSeparatorIndex = remainingParams.indexOf('/');
+  const containsAlpha = alphaSeparatorIndex !== -1;
+  if (containsAlpha && alphaSeparatorIndex !== remainingParams.length - 2) {
+    // Invalid syntax: like `color(<space> / <alpha> <number>)`
+    return null;
+  }
+
+  if (containsAlpha) {
+    // Since we know that the last value is <alpha>
+    // we can safely remove the alpha separator
+    // and only leave the numbers (if given correctly)
+    remainingParams.splice(alphaSeparatorIndex, 1);
+  }
+
+  // `color` cannot contain more than 4 parameters when there is alpha
+  // and cannot contain more than 3 parameters when there isn't alpha
+  const maxLength = containsAlpha ? 4 : 3;
+  if (remainingParams.length > maxLength) {
+    return null;
+  }
+
+  // Replace `none`s with 0s
+  const nonesReplacesParams = remainingParams.map(param => param === 'none' ? '0' : param);
+
+  // At this point, we know that all the values are there so we can
+  // safely try to parse all the values as number or percentage
+  const values = nonesReplacesParams.map(param => Color.parsePercentOrNumber(param, [0, 1]));
+  const containsNull = values.includes(null);
+  // At least one value is malformatted (not a number or percentage)
+  if (containsNull) {
+    return null;
+  }
+
+  let alphaValue = 1;
+  if (containsAlpha) {
+    // We know that `alphaValue` exists at this point.
+    // See the above lines for deciding on `containsAlpha`.
+    alphaValue = values[values.length - 1] as number;
+    // We get rid of the `alpha` from the list
+    // so that all the values map to `r, g, b` from the start
+    values.pop();
+  }
+
+  // Depending on the color space
+  // this either reflects `rgb` parameters in that color space
+  // or `xyz` parameters in the given `xyz` space.
+  const rgbOrXyz: [number, number, number] = [
+    values[0] ?? 0,
+    values[1] ?? 0,
+    values[2] ?? 0,
+  ];
+
+  // Now we need to convert these values from given color space to
+  // sRGB since that's how we store the base color in `Color` object.
+  const srgb = COLOR_SPACE_TO_SRGB_CONVERTER[colorSpace](...rgbOrXyz);
+  return new Color([...srgb, alphaValue], Format.COLOR, originalText);
+}
+
+function canFormatBeWideGamut(format: Format): boolean {
+  return POSSIBLE_WIDE_GAMUT_FORMATS.includes(format);
+}
+
+interface SplitColorFunctionParametersOptions {
+  allowCommas: boolean;
+  convertNoneToZero: boolean;
+}
 
 export class Color {
   #hslaInternal: number[]|undefined;
@@ -58,33 +224,22 @@ export class Color {
     this.#originalText = originalText || null;
     this.#originalTextIsValid = Boolean(this.#originalText);
     this.#formatInternal = format;
+
     if (typeof this.#rgbaInternal[3] === 'undefined') {
       this.#rgbaInternal[3] = 1;
     }
 
     for (let i = 0; i < 4; ++i) {
-      if (this.#rgbaInternal[i] < 0) {
+      // Do not clamp formats that can result in wide-gamut colors
+      if (this.#rgbaInternal[i] < 0 && !canFormatBeWideGamut(format)) {
         this.#rgbaInternal[i] = 0;
         this.#originalTextIsValid = false;
       }
-      if (this.#rgbaInternal[i] > 1) {
+      if (this.#rgbaInternal[i] > 1 && !canFormatBeWideGamut(format)) {
         this.#rgbaInternal[i] = 1;
         this.#originalTextIsValid = false;
       }
     }
-  }
-
-  /**
-   * Colors that can be in color spaces different than sRGB.
-   *
-   * Those colors are represented with 'lab', 'lch', 'oklab', 'oklch' or 'color'.
-   * Even though sRGB colors can be defined with `color` function, for the sake
-   * of brevity we won't special case that and act as if we don't support
-   * color picker for those colors too.
-   */
-  static canBeWideGamut(text: string): boolean {
-    const match = text.toLowerCase().match(/^\s*(?:(lab)|(lch)|(oklab)|(oklch)|(color))\((.*)\)\s*$/);
-    return Boolean(match);
   }
 
   static parse(text: string): Color|null {
@@ -133,17 +288,37 @@ export class Color {
       return null;
     }
 
-    // rgb/rgba(), hsl/hsla(), hwb/hwba()
-    match = text.toLowerCase().match(/^\s*(?:(rgba?)|(hsla?)|(hwba?))\((.*)\)\s*$/);
+    // rgb/rgba(), hsl/hsla(), hwb/hwba(), lch(), oklch(), lab(), oklab() and color()
+    match = text.toLowerCase().match(/^\s*(?:(rgba?)|(hsla?)|(hwba?)|(lch)|(oklch)|(lab)|(oklab)|(color))\((.*)\)\s*$/);
     if (match) {
-      // hwb(a) must have white space delimiters between its parameters.
-      const values = this.splitColorFunctionParameters(match[4], !match[3]);
+      const isRgbaMatch = Boolean(match[1]);   // rgb/rgba()
+      const isHslaMatch = Boolean(match[2]);   // hsl/hsla()
+      const isHwbaMatch = Boolean(match[3]);   // hwb/hwba()
+      const isLchMatch = Boolean(match[4]);    // lch()
+      const isOklchMatch = Boolean(match[5]);  // oklch()
+      const isLabMatch = Boolean(match[6]);    // lab()
+      const isOklabMatch = Boolean(match[7]);  // oklab()
+      const isColorMatch = Boolean(match[8]);  // color()
+      const valuesText = match[9];
+
+      // Parse color function first because extracting values for
+      // this function is not the same as the other ones
+      // so, we're not using any of the logic below.
+      if (isColorMatch) {
+        return parseColorFunction(text, valuesText);
+      }
+
+      const isOldSyntax = isRgbaMatch || isHslaMatch || isHwbaMatch;
+      const allowCommas = isRgbaMatch || isHslaMatch;
+      const convertNoneToZero = !isOldSyntax;  // Convert 'none' keyword to zero in new syntaxes
+
+      const values = this.splitColorFunctionParameters(valuesText, {allowCommas, convertNoneToZero});
       if (!values) {
         return null;
       }
       const hasAlpha = (values[3] !== undefined);
 
-      if (match[1]) {  // rgb/rgba
+      if (isRgbaMatch) {
         const rgba = [
           Color.parseRgbNumeric(values[0]),
           Color.parseRgbNumeric(values[1]),
@@ -156,7 +331,7 @@ export class Color {
         return new Color((rgba as number[]), hasAlpha ? Format.RGBA : Format.RGB, text);
       }
 
-      if (match[2] || match[3]) {  // hsl/hsla or hwb/hwba
+      if (isHslaMatch || isHwbaMatch) {
         const parameters = [
           Color.parseHueNumeric(values[0]),
           Color.parseSatLightNumeric(values[1]),
@@ -167,12 +342,76 @@ export class Color {
           return null;
         }
         const rgba: number[] = [];
-        if (match[2]) {
+        if (isHslaMatch) {
           Color.hsl2rgb((parameters as number[]), rgba);
           return new Color(rgba, hasAlpha ? Format.HSLA : Format.HSL, text);
         }
         Color.hwb2rgb((parameters as number[]), rgba);
         return new Color(rgba, hasAlpha ? Format.HWBA : Format.HWB, text);
+      }
+
+      if (isLchMatch) {
+        const parameters = [
+          Color.parsePercentOrNumber(values[0], [0, 100]),
+          Color.parsePercentOrNumber(values[1], [0, 150]),
+          parseAngle(values[2]),
+          hasAlpha ? Color.parsePercentOrNumber(values[3], [0, 1]) : 1,
+        ];
+
+        if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
+          return null;
+        }
+
+        const srgb = FORMAT_TO_SRGB_CONVERTER[Format.LCH](parameters[0], parameters[1], parameters[2]);
+        return new Color([...srgb, parameters[3]], Format.LCH, text);
+      }
+
+      if (isOklchMatch) {
+        const parameters = [
+          Color.parsePercentOrNumber(values[0], [0, 1]),
+          Color.parsePercentOrNumber(values[1], [0, 0.4]),
+          parseAngle(values[2]),
+          hasAlpha ? Color.parsePercentOrNumber(values[3], [0, 1]) : 1,
+        ];
+
+        if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
+          return null;
+        }
+
+        const srgb = FORMAT_TO_SRGB_CONVERTER[Format.OKLCH](parameters[0], parameters[1], parameters[2]);
+        return new Color([...srgb, parameters[3]], Format.OKLCH, text);
+      }
+
+      if (isLabMatch) {
+        const parameters = [
+          Color.parsePercentOrNumber(values[0], [0, 100]),
+          Color.parsePercentOrNumber(values[1], [0, 125]),
+          Color.parsePercentOrNumber(values[2], [0, 125]),
+          hasAlpha ? Color.parsePercentOrNumber(values[3], [0, 1]) : 1,
+        ];
+
+        if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
+          return null;
+        }
+
+        const srgb = FORMAT_TO_SRGB_CONVERTER[Format.LAB](parameters[0], parameters[1], parameters[2]);
+        return new Color([...srgb, parameters[3]], Format.LAB, text);
+      }
+
+      if (isOklabMatch) {
+        const parameters = [
+          Color.parsePercentOrNumber(values[0], [0, 1]),
+          Color.parsePercentOrNumber(values[1], [0, 0.4]),
+          Color.parsePercentOrNumber(values[2], [0, 0.4]),
+          hasAlpha ? Color.parsePercentOrNumber(values[3], [0, 1]) : 1,
+        ];
+
+        if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
+          return null;
+        }
+
+        const srgb = FORMAT_TO_SRGB_CONVERTER[Format.OKLAB](parameters[0], parameters[1], parameters[2]);
+        return new Color([...srgb, parameters[3]], Format.OKLAB, text);
       }
     }
 
@@ -192,7 +431,8 @@ export class Color {
   /**
    * Split the color parameters of (e.g.) rgb(a), hsl(a), hwb(a) functions.
    */
-  static splitColorFunctionParameters(content: string, allowCommas: boolean): string[]|null {
+  static splitColorFunctionParameters(
+      content: string, {allowCommas, convertNoneToZero}: SplitColorFunctionParametersOptions): string[]|null {
     const components = content.trim();
     let values: string[] = [];
 
@@ -218,10 +458,25 @@ export class Color {
     if (values.length !== 3 && values.length !== 4 || values.indexOf('') > -1) {
       return null;
     }
+
+    // Question: what should we do with `alpha` being none?
+    if (convertNoneToZero) {
+      return values.map(value => value === 'none' ? '0' : value);
+    }
+
     return values;
   }
 
-  static parsePercentOrNumber(value: string): number|null {
+  /**
+   *
+   * @param value Text value to be parsed in the form of 'number|percentage'.
+   * @param range Range to map the percentage.
+   * @returns If it is not percentage, returns number directly; otherwise,
+   * maps the percentage to the range. For example:
+   * - 30% in range [0, 100] is 30
+   * - 20% in range [0, 1] is 0.5
+   */
+  static parsePercentOrNumber(value: string, range: [number, number] = [0, 1]): number|null {
     // @ts-ignore: isNaN can accept strings
     if (isNaN(value.replace('%', ''))) {
       return null;
@@ -232,7 +487,7 @@ export class Color {
       if (value.indexOf('%') !== value.length - 1) {
         return null;
       }
-      return parsed / 100;
+      return mapPercentToRange(parsed, range);
     }
     return parsed;
   }
@@ -511,6 +766,10 @@ export class Color {
     return this.#formatInternal;
   }
 
+  canBeWideGamut(): boolean {
+    return canFormatBeWideGamut(this.format());
+  }
+
   /** HSLA with components within [0..1]
      */
   hsla(): number[] {
@@ -576,6 +835,12 @@ export class Color {
   }
 
   asString(format?: string|null): string|null {
+    // For now, we'll return always in `originalText` for wide gamut colors.
+    // TODO(ergunsh): Handle conversions to different representations later.
+    if (this.canBeWideGamut()) {
+      return this.#originalText;
+    }
+
     if (format === this.#formatInternal && this.#originalTextIsValid) {
       return this.#originalText;
     }
@@ -772,7 +1037,62 @@ export enum Format {
   HSLA = 'hsla',
   HWB = 'hwb',
   HWBA = 'hwba',
+  // Colors defined with 'lch()' function
+  LCH = 'lch',
+  // Colors defined with 'oklch()' function
+  OKLCH = 'oklch',
+  // Colors defined with 'lab()' function
+  LAB = 'lab',
+  // Colors defined with 'oklab()' function
+  OKLAB = 'oklab',
+  // Colors defined with 'color()' function
+  COLOR = 'color',
 }
+
+// TODO(crbug.com/1167717): Make this a const enum
+// eslint-disable-next-line rulesdir/const_enum
+enum ColorSpace {
+  SRGB = 'srgb',
+  SRGB_LINEAR = 'srgb-linear',
+  DISPLAY_P3 = 'display-p3',
+  A98_RGB = 'a98-rgb',
+  PROPHOTO_RGB = 'prophoto-rgb',
+  REC_2020 = 'rec2020',
+  // It's the same space with `xyz-d50`
+  XYZ = 'xyz',
+  XYZ_D50 = 'xyz-d50',
+  XYZ_D65 = 'xyz-d65',
+}
+
+// Formats that the color defined in can be out-of-gamut of sRGB
+const POSSIBLE_WIDE_GAMUT_FORMATS = [Format.LCH, Format.OKLCH, Format.LAB, Format.OKLAB, Format.COLOR];
+// All the color spaces that can be specified in `color()` function.
+const COLOR_SPACES_FOR_COLOR_FUNCTION = Object.values(ColorSpace);
+
+// Converts from selected color space to sRGB
+const COLOR_SPACE_TO_SRGB_CONVERTER:
+    Record<ColorSpace, (param1: number, param2: number, param3: number) => [number, number, number]> = {
+      [ColorSpace.SRGB]: (...params) => params,
+      [ColorSpace.SRGB_LINEAR]: (r: number, g: number, b: number) => xyzd50ToSrgb(...srgbLinearToXyzd50(r, g, b)),
+      [ColorSpace.DISPLAY_P3]: (r: number, g: number, b: number) => xyzd50ToSrgb(...displayP3ToXyzd50(r, g, b)),
+      [ColorSpace.A98_RGB]: (r: number, g: number, b: number) => xyzd50ToSrgb(...adobeRGBToXyzd50(r, g, b)),
+      [ColorSpace.PROPHOTO_RGB]: (r: number, g: number, b: number) => xyzd50ToSrgb(...proPhotoToXyzd50(r, g, b)),
+      [ColorSpace.REC_2020]: (r: number, g: number, b: number) => xyzd50ToSrgb(...rec2020ToXyzd50(r, g, b)),
+      [ColorSpace.XYZ]: (r: number, g: number, b: number) => xyzd50ToSrgb(...xyzd65ToD50(r, g, b)),
+      [ColorSpace.XYZ_D50]: (r: number, g: number, b: number) => xyzd50ToSrgb(r, g, b),
+      [ColorSpace.XYZ_D65]: (r: number, g: number, b: number) => xyzd50ToSrgb(...xyzd65ToD50(r, g, b)),
+    };
+
+// Converts from lch, lab etc. to sRGB
+const FORMAT_TO_SRGB_CONVERTER: Record<
+    Format.LCH|Format.LAB|Format.OKLCH|Format.OKLAB,
+    (param1: number, param2: number, param3: number) => [number, number, number]> = {
+  [Format.LCH]: (r: number, g: number, b: number) => xyzd50ToSrgb(...labToXyzd50(...lchToLab(r, g, b))),
+  [Format.LAB]: (r: number, g: number, b: number) => xyzd50ToSrgb(...labToXyzd50(r, g, b)),
+  [Format.OKLCH]: (r: number, g: number, b: number) =>
+      xyzd50ToSrgb(...xyzd65ToD50(...oklabToXyzd65(...lchToLab(r, g, b)))),
+  [Format.OKLAB]: (r: number, g: number, b: number) => xyzd50ToSrgb(...xyzd65ToD50(...oklabToXyzd65(r, g, b))),
+};
 
 const COLOR_TO_RGBA_ENTRIES: Array<readonly[string, number[]]> = [
   ['aliceblue', [240, 248, 255]],

@@ -244,3 +244,8 @@ export function nearestIndexFromBeginning<T>(arr: T[], predicate: (arrayItem: T)
 export function nearestIndexFromEnd<T>(arr: T[], predicate: (arrayItem: T) => boolean): number|null {
   return nearestIndex(arr, predicate, NearestSearchStart.END);
 }
+
+// Type guard for ensuring that `arr` does not contain null or undefined
+export function arrayDoesNotContainNullOrUndefined<T>(arr: (T|null|undefined)[]): arr is T[] {
+  return !arr.includes(null) && !arr.includes(undefined);
+}

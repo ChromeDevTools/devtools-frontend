@@ -12,7 +12,6 @@ generate_css("css_files") {
   sources = [
     "bezierEditor.css",
     "bezierSwatch.css",
-    "circularColorSwatch.css",
     "colorSwatch.css",
     "cssAngle.css",
     "cssAngleEditor.css",
@@ -38,7 +37,6 @@ devtools_module("inline_editor") {
     "CSSLengthUtils.ts",
     "CSSShadowEditor.ts",
     "CSSShadowModel.ts",
-    "CircularColorSwatch.ts",
     "ColorSwatch.ts",
     "FontEditor.ts",
     "FontEditorUnitConverter.ts",

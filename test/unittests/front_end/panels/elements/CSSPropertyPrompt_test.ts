@@ -68,7 +68,7 @@ describeWithLocale('CSSPropertyPrompt', () => {
       assert.instanceOf(renderedElement, InlineEditor.ColorSwatch.ColorSwatch);
     });
 
-    it('shows autocomplete item with circular color swatch for CSS variables with wide gamut color', async () => {
+    it('shows autocomplete item with color swatch for CSS variables with wide gamut color', async () => {
       const attachedElement = document.createElement('div');
       renderElementIntoDOM(attachedElement);
       const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
@@ -80,7 +80,7 @@ describeWithLocale('CSSPropertyPrompt', () => {
 
       const colorCompletions = spyObj?.updateSuggestions.firstCall.args[1];
       const renderedElement = colorCompletions?.[0].subtitleRenderer?.();
-      assert.instanceOf(renderedElement, InlineEditor.CircularColorSwatch.CircularColorSwatch);
+      assert.instanceOf(renderedElement, InlineEditor.ColorSwatch.ColorSwatch);
     });
 
     it('shows autocomplete property names for CSS aliases', async () => {

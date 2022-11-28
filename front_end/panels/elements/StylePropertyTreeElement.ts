@@ -231,18 +231,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return matches;
   }
 
-  private renderCircularColorSwatch(text: string, valueChild?: Node|null): Node {
-    const swatch = new InlineEditor.CircularColorSwatch.CircularColorSwatch();
-    swatch.renderColor(text);
-
-    if (!valueChild) {
-      valueChild = swatch.createChild('span');
-      valueChild.textContent = text;
-    }
-    swatch.appendChild(valueChild);
-    return swatch;
-  }
-
   private renderColorSwatch(text: string, valueChild?: Node|null): Node {
     const useUserSettingFormat = this.editable();
     const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
@@ -284,10 +272,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private processColor(text: string, valueChild?: Node|null): Node {
-    if (Common.Color.Color.canBeWideGamut(text)) {
-      return this.renderCircularColorSwatch(text, valueChild);
-    }
-
     return this.renderColorSwatch(text, valueChild);
   }
 
@@ -303,8 +287,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     UI.UIUtils.createTextChild(varSwatch, text);
     varSwatch.data = {text, computedValue, fromFallback, onLinkActivate: this.handleVarDefinitionActivate.bind(this)};
 
-    if (!computedValue ||
-        (!Common.Color.Color.parse(computedValue) && !Common.Color.Color.canBeWideGamut(computedValue))) {
+    if (!computedValue || !Common.Color.Color.parse(computedValue)) {
       return varSwatch;
     }
 

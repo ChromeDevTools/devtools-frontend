@@ -205,4 +205,17 @@ describeWithLocale('ColorSwatch', () => {
 
     swatch.removeEventListener(InlineEditor.ColorSwatch.FormatChangedEvent.eventName, onClick);
   });
+
+  it('shows a circular color swatch for a wide gamut color', () => {
+    const swatch = createSwatch(Common.Color.Color.parse('lch(1 1 1)') as Common.Color.Color);
+    assertNotNullOrUndefined(swatch.shadowRoot);
+
+    // It should have `circular` and `read-only` classes
+    const swatchEl = swatch.shadowRoot.querySelector('.color-swatch.circular.read-only');
+    // It should have 'circular' class
+    const innerSwatchEl = swatch.shadowRoot.querySelector('.color-swatch-inner.circular');
+
+    assertNotNullOrUndefined(swatchEl);
+    assertNotNullOrUndefined(innerSwatchEl);
+  });
 });

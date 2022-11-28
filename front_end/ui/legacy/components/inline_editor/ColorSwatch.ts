@@ -105,12 +105,35 @@ export class ColorSwatch extends HTMLElement {
       this.tooltip = tooltip;
     }
 
-    this.render();
+    if (this.color.canBeWideGamut()) {
+      this.renderCircularColorSwatch();
+    } else {
+      this.render();
+    }
   }
 
   private renderTextOnly(): void {
     // Non-color values can be passed to the component (like 'none' from border style).
     LitHtml.render(this.text, this.shadow, {host: this});
+  }
+
+  private renderCircularColorSwatch(): void {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    // Note that we use a <slot> with a default value here to display the color text. Consumers of this component are
+    // free to append any content to replace what is being shown here.
+    // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
+    // re-format the HTML code.
+    LitHtml.render(
+      LitHtml.html`<span class="color-swatch circular read-only">
+          <span class="color-swatch-inner circular"
+          style="background-color: ${this.text};"
+          @click=${this.consume}
+          @mousedown=${this.consume}
+          @dblclick=${this.consume}></span>
+        </span><slot><span>${this.text}</span></slot>`,
+      this.shadow, {host: this});
+    // clang-format on
   }
 
   private render(): void {

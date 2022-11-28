@@ -489,4 +489,16 @@ describe('ArrayUtilities', () => {
       });
     });
   });
+
+  describe('arrayDoesNotContainNullOrUndefined', () => {
+    it('should return false when array contains null', () => {
+      assert.isFalse(Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined([1, null, 2]));
+    });
+    it('should return false when array contains undefined', () => {
+      assert.isFalse(Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined([1, undefined, 2]));
+    });
+    it('should return true when array does not contain undefined and null', () => {
+      assert.isTrue(Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined([1, 2]));
+    });
+  });
 });

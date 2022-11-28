@@ -36,6 +36,16 @@
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
+.color-swatch.circular {
+  border-radius: 100%;
+  background-position: center;
+}
+
+.color-swatch-inner.circular {
+  border-radius: 100%;
+  cursor: initial;
+}
+
 @media (forced-colors: active) {
   .color-swatch {
     forced-color-adjust: none;

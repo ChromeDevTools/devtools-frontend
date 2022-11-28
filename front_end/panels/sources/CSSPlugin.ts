@@ -94,7 +94,7 @@ function findColorsAndCurves(
     from: number,
     to: number,
     // TODO(crbug/1385379): Remove `null` from here and use `color` after implementing changes in Color class
-    onColor: (pos: number, parsedColor: Common.Color.Color|null, text: string) => void,
+    onColor: (pos: number, parsedColor: Common.Color.Color, text: string) => void,
     onCurve: (pos: number, curve: UI.Geometry.CubicBezier, text: string) => void,
     ): void {
   let line = state.doc.lineAt(from);
@@ -123,7 +123,7 @@ function findColorsAndCurves(
       }
       if (content) {
         const parsedColor = Common.Color.Color.parse(content);
-        if (parsedColor || Common.Color.Color.canBeWideGamut(content)) {
+        if (parsedColor) {
           onColor(node.from, parsedColor, content);
         } else {
           const parsedCurve = UI.Geometry.CubicBezier.parse(content);
@@ -163,29 +163,6 @@ class ColorSwatchWidget extends CodeMirror.WidgetType {
         }),
       });
     });
-    return swatch;
-  }
-
-  ignoreEvent(): boolean {
-    return true;
-  }
-}
-
-class CircularColorSwatchWidget extends CodeMirror.WidgetType {
-  constructor(readonly wideGamutColorText: string) {
-    super();
-  }
-
-  eq(other: CircularColorSwatchWidget): boolean {
-    return this.wideGamutColorText === other.wideGamutColorText;
-  }
-
-  toDOM(): HTMLElement {
-    const swatch = new InlineEditor.CircularColorSwatch.CircularColorSwatch();
-    swatch.renderColor(this.wideGamutColorText);
-    const value = swatch.createChild('span');
-    value.textContent = this.wideGamutColorText;
-    value.setAttribute('hidden', 'true');
     return swatch;
   }
 
@@ -342,13 +319,7 @@ function computeSwatchDeco(state: CodeMirror.EditorState, from: number, to: numb
   findColorsAndCurves(
       state, from, to,
       (pos, parsedColor, colorText) => {
-        // `parsedColor` can only be `null` when it is a wide gamut color
-        if (parsedColor) {
-          builder.add(pos, pos, CodeMirror.Decoration.widget({widget: new ColorSwatchWidget(parsedColor, colorText)}));
-          return;
-        }
-
-        builder.add(pos, pos, CodeMirror.Decoration.widget({widget: new CircularColorSwatchWidget(colorText)}));
+        builder.add(pos, pos, CodeMirror.Decoration.widget({widget: new ColorSwatchWidget(parsedColor, colorText)}));
       },
       (pos, curve, text) => {
         builder.add(pos, pos, CodeMirror.Decoration.widget({widget: new CurveSwatchWidget(curve, text)}));

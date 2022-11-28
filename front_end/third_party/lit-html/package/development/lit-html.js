@@ -7,6 +7,9 @@ var _a, _b, _c, _d;
 const DEV_MODE = true;
 const ENABLE_EXTRA_SECURITY_HOOKS = true;
 const ENABLE_SHADYDOM_NOPATCH = true;
+const NODE_MODE = false;
+// Use window for browser builds because IE11 doesn't have globalThis.
+const global = NODE_MODE ? globalThis : window;
 /**
  * Useful for visualizing and logging insights into what the Lit template system is doing.
  *
@@ -14,12 +17,12 @@ const ENABLE_SHADYDOM_NOPATCH = true;
  */
 const debugLogEvent = DEV_MODE
     ? (event) => {
-        const shouldEmit = window
+        const shouldEmit = global
             .emitLitDebugLogEvents;
         if (!shouldEmit) {
             return;
         }
-        window.dispatchEvent(new CustomEvent('lit-debug', {
+        global.dispatchEvent(new CustomEvent('lit-debug', {
             detail: event,
         }));
     }
@@ -28,33 +31,27 @@ const debugLogEvent = DEV_MODE
 // renders when errors are thrown preventing an endRender event from being
 // called.
 let debugLogRenderId = 0;
-/**
- * `true` if we're building for google3 with temporary back-compat helpers.
- * This export is not present in prod builds.
- * @internal
- */
-export const INTERNAL = true;
 let issueWarning;
 if (DEV_MODE) {
-    (_a = globalThis.litIssuedWarnings) !== null && _a !== void 0 ? _a : (globalThis.litIssuedWarnings = new Set());
+    (_a = global.litIssuedWarnings) !== null && _a !== void 0 ? _a : (global.litIssuedWarnings = new Set());
     // Issue a warning, if we haven't already.
     issueWarning = (code, warning) => {
         warning += code
             ? ` See https://lit.dev/msg/${code} for more information.`
             : '';
-        if (!globalThis.litIssuedWarnings.has(warning)) {
+        if (!global.litIssuedWarnings.has(warning)) {
             console.warn(warning);
-            globalThis.litIssuedWarnings.add(warning);
+            global.litIssuedWarnings.add(warning);
         }
     };
     issueWarning('dev-mode', `Lit is in dev mode. Not recommended for production!`);
 }
 const wrap = ENABLE_SHADYDOM_NOPATCH &&
-    ((_b = window.ShadyDOM) === null || _b === void 0 ? void 0 : _b.inUse) &&
-    ((_c = window.ShadyDOM) === null || _c === void 0 ? void 0 : _c.noPatch) === true
-    ? window.ShadyDOM.wrap
+    ((_b = global.ShadyDOM) === null || _b === void 0 ? void 0 : _b.inUse) &&
+    ((_c = global.ShadyDOM) === null || _c === void 0 ? void 0 : _c.noPatch) === true
+    ? global.ShadyDOM.wrap
     : (node) => node;
-const trustedTypes = globalThis.trustedTypes;
+const trustedTypes = global.trustedTypes;
 /**
  * Our TrustedTypePolicy for HTML which is declared using the html template
  * tag function.
@@ -103,17 +100,20 @@ const markerMatch = '?' + marker;
 // Text used to insert a comment marker node. We use processing instruction
 // syntax because it's slightly smaller, but parses as a comment node.
 const nodeMarker = `<${markerMatch}>`;
-const d = document;
+const d = NODE_MODE && global.document === undefined
+    ? {
+        createTreeWalker() {
+            return {};
+        },
+    }
+    : document;
 // Creates a dynamic marker. We never have to search for these in the DOM.
 const createMarker = (v = '') => d.createComment(v);
 const isPrimitive = (value) => value === null || (typeof value != 'object' && typeof value != 'function');
 const isArray = Array.isArray;
-const isIterable = (value) => {
-    var _a;
-    return isArray(value) ||
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        typeof ((_a = value) === null || _a === void 0 ? void 0 : _a[Symbol.iterator]) === 'function';
-};
+const isIterable = (value) => isArray(value) ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    typeof (value === null || value === void 0 ? void 0 : value[Symbol.iterator]) === 'function';
 const SPACE_CHAR = `[ \t\n\f\r]`;
 const ATTR_VALUE_CHAR = `[^ \t\n\f\r"'\`<>=]`;
 const NAME_CHAR = `[^\\s"'>=/]`;
@@ -277,71 +277,13 @@ export const nothing = Symbol.for('lit-nothing');
  * path for rendering.
  */
 const templateCache = new WeakMap();
-/**
- * Renders a value, usually a lit-html TemplateResult, to the container.
- * @param value
- * @param container
- * @param options
- */
-export const render = (value, container, options) => {
-    var _a, _b, _c;
-    const renderId = DEV_MODE ? debugLogRenderId++ : 0;
-    const partOwnerNode = (_a = options === null || options === void 0 ? void 0 : options.renderBefore) !== null && _a !== void 0 ? _a : container;
-    // This property needs to remain unminified.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let part = partOwnerNode['_$litPart$'];
-    debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
-        kind: 'begin render',
-        id: renderId,
-        value,
-        container,
-        options,
-        part,
-    });
-    if (part === undefined) {
-        const endNode = (_b = options === null || options === void 0 ? void 0 : options.renderBefore) !== null && _b !== void 0 ? _b : null;
-        // Internal modification: don't clear container to match lit-html 2.0
-        if (INTERNAL &&
-            ((_c = options) === null || _c === void 0 ? void 0 : _c.clearContainerForLit2MigrationOnly) ===
-                true) {
-            let n = container.firstChild;
-            // Clear only up to the `endNode` aka `renderBefore` node.
-            while (n && n !== endNode) {
-                const next = n.nextSibling;
-                n.remove();
-                n = next;
-            }
-        }
-        // This property needs to remain unminified.
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        partOwnerNode['_$litPart$'] = part = new ChildPart(container.insertBefore(createMarker(), endNode), endNode, undefined, options !== null && options !== void 0 ? options : {});
-    }
-    part._$setValue(value);
-    debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
-        kind: 'end render',
-        id: renderId,
-        value,
-        container,
-        options,
-        part,
-    });
-    return part;
-};
-if (ENABLE_EXTRA_SECURITY_HOOKS) {
-    render.setSanitizer = setSanitizer;
-    render.createSanitizer = createSanitizer;
-    if (DEV_MODE) {
-        render._testOnlyClearSanitizerFactoryDoNotCallOrElse =
-            _testOnlyClearSanitizerFactoryDoNotCallOrElse;
-    }
-}
 const walker = d.createTreeWalker(d, 129 /* NodeFilter.SHOW_{ELEMENT|COMMENT} */, null, false);
 let sanitizerFactoryInternal = noopSanitizer;
 /**
  * Returns an HTML string for the given TemplateStringsArray and result type
  * (HTML or SVG), along with the case-sensitive bound attribute names in
- * template order. The HTML contains comment comment markers denoting the
- * `ChildPart`s and suffixes on bound attributes denoting the `AttributeParts`.
+ * template order. The HTML contains comment markers denoting the `ChildPart`s
+ * and suffixes on bound attributes denoting the `AttributeParts`.
  *
  * @param strings template strings array
  * @param type HTML or SVG
@@ -497,11 +439,20 @@ const getTemplateHtml = (strings, type) => {
     if (!Array.isArray(strings) || !strings.hasOwnProperty('raw')) {
         let message = 'invalid template strings array';
         if (DEV_MODE) {
-            message =
-                `Internal Error: expected template strings to be an array ` +
-                    `with a 'raw' field. Please file a bug at ` +
-                    `https://github.com/lit/lit/issues/new?template=bug_report.md ` +
-                    `and include information about your build tooling, if any.`;
+            message = `
+          Internal Error: expected template strings to be an array
+          with a 'raw' field. Faking a template strings array by
+          calling html or svg like an ordinary function is effectively
+          the same as calling unsafeHtml and can lead to major security
+          issues, e.g. opening your code up to XSS attacks.
+
+          If you're using the html or svg tagged template functions normally
+          and and still seeing this error, please file a bug at
+          https://github.com/lit/lit/issues/new?template=bug_report.md
+          and include information about your build tooling, if any.
+        `
+                .trim()
+                .replace(/\n */g, '\n');
         }
         throw new Error(message);
     }
@@ -865,6 +816,7 @@ class ChildPart {
         return this._$endNode;
     }
     _$setValue(value, directiveParent = this) {
+        var _a;
         if (DEV_MODE && this.parentNode === null) {
             throw new Error(`This \`ChildPart\` has no \`parentNode\` and therefore cannot accept a value. This likely means the element containing the part was manipulated in an unsupported way outside of Lit's control such that the part's marker nodes were ejected from DOM. For example, setting the element's \`innerHTML\` or \`textContent\` can do this.`);
         }
@@ -895,6 +847,12 @@ class ChildPart {
             this._commitTemplateResult(value);
         }
         else if (value.nodeType !== undefined) {
+            if (DEV_MODE && ((_a = this.options) === null || _a === void 0 ? void 0 : _a.host) === value) {
+                this._commitText(`[probable mistake: rendered a template's host in itself ` +
+                    `(commonly caused by writing \${this} in a template]`);
+                console.warn(`Attempted to render the template host`, value, `inside itself. This is almost always a mistake, and in dev mode `, `we render some warning text. In production however, we'll `, `render it, which will usually result in an error, and sometimes `, `in the element disappearing from the DOM.`);
+                return;
+            }
             this._commitNode(value);
         }
         else if (isIterable(value)) {
@@ -1435,14 +1393,86 @@ export const _$LH = {
 };
 // Apply polyfills if available
 const polyfillSupport = DEV_MODE
-    ? window.litHtmlPolyfillSupportDevMode
-    : window.litHtmlPolyfillSupport;
+    ? global.litHtmlPolyfillSupportDevMode
+    : global.litHtmlPolyfillSupport;
 polyfillSupport === null || polyfillSupport === void 0 ? void 0 : polyfillSupport(Template, ChildPart);
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for lit-html usage.
-((_d = globalThis.litHtmlVersions) !== null && _d !== void 0 ? _d : (globalThis.litHtmlVersions = [])).push('2.2.1');
-if (DEV_MODE && globalThis.litHtmlVersions.length > 1) {
+((_d = global.litHtmlVersions) !== null && _d !== void 0 ? _d : (global.litHtmlVersions = [])).push('2.4.0');
+if (DEV_MODE && global.litHtmlVersions.length > 1) {
     issueWarning('multiple-versions', `Multiple versions of Lit loaded. ` +
         `Loading multiple versions is not recommended.`);
+}
+/**
+ * Renders a value, usually a lit-html TemplateResult, to the container.
+ *
+ * This example renders the text "Hello, Zoe!" inside a paragraph tag, appending
+ * it to the container `document.body`.
+ *
+ * ```js
+ * import {html, render} from 'lit';
+ *
+ * const name = "Zoe";
+ * render(html`<p>Hello, ${name}!</p>`, document.body);
+ * ```
+ *
+ * @param value Any [renderable
+ *   value](https://lit.dev/docs/templates/expressions/#child-expressions),
+ *   typically a {@linkcode TemplateResult} created by evaluating a template tag
+ *   like {@linkcode html} or {@linkcode svg}.
+ * @param container A DOM container to render to. The first render will append
+ *   the rendered value to the container, and subsequent renders will
+ *   efficiently update the rendered value if the same result type was
+ *   previously rendered there.
+ * @param options See {@linkcode RenderOptions} for options documentation.
+ * @see
+ * {@link https://lit.dev/docs/libraries/standalone-templates/#rendering-lit-html-templates| Rendering Lit HTML Templates}
+ */
+export const render = (value, container, options) => {
+    var _a, _b;
+    if (DEV_MODE && container == null) {
+        // Give a clearer error message than
+        //     Uncaught TypeError: Cannot read properties of null (reading
+        //     '_$litPart$')
+        // which reads like an internal Lit error.
+        throw new TypeError(`The container to render into may not be ${container}`);
+    }
+    const renderId = DEV_MODE ? debugLogRenderId++ : 0;
+    const partOwnerNode = (_a = options === null || options === void 0 ? void 0 : options.renderBefore) !== null && _a !== void 0 ? _a : container;
+    // This property needs to remain unminified.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let part = partOwnerNode['_$litPart$'];
+    debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+        kind: 'begin render',
+        id: renderId,
+        value,
+        container,
+        options,
+        part,
+    });
+    if (part === undefined) {
+        const endNode = (_b = options === null || options === void 0 ? void 0 : options.renderBefore) !== null && _b !== void 0 ? _b : null;
+        // This property needs to remain unminified.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        partOwnerNode['_$litPart$'] = part = new ChildPart(container.insertBefore(createMarker(), endNode), endNode, undefined, options !== null && options !== void 0 ? options : {});
+    }
+    part._$setValue(value);
+    debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+        kind: 'end render',
+        id: renderId,
+        value,
+        container,
+        options,
+        part,
+    });
+    return part;
+};
+if (ENABLE_EXTRA_SECURITY_HOOKS) {
+    render.setSanitizer = setSanitizer;
+    render.createSanitizer = createSanitizer;
+    if (DEV_MODE) {
+        render._testOnlyClearSanitizerFactoryDoNotCallOrElse =
+            _testOnlyClearSanitizerFactoryDoNotCallOrElse;
+    }
 }
 //# sourceMappingURL=lit-html.js.map

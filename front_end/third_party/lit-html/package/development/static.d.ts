@@ -4,6 +4,32 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import { html as coreHtml, svg as coreSvg, TemplateResult } from './lit-html.js';
+export interface StaticValue {
+    /** The value to interpolate as-is into the template. */
+    _$litStatic$: string;
+    /**
+     * A value that can't be decoded from ordinary JSON, make it harder for
+     * a attacker-controlled data that goes through JSON.parse to produce a valid
+     * StaticValue.
+     */
+    r: typeof brand;
+}
+/**
+ * Prevents JSON injection attacks.
+ *
+ * The goals of this brand:
+ *   1) fast to check
+ *   2) code is small on the wire
+ *   3) multiple versions of Lit in a single page will all produce mutually
+ *      interoperable StaticValues
+ *   4) normal JSON.parse (without an unusual reviver) can not produce a
+ *      StaticValue
+ *
+ * Symbols satisfy (1), (2), and (4). We use Symbol.for to satisfy (3), but
+ * we don't care about the key, so we break ties via (2) and use the empty
+ * string.
+ */
+declare const brand: unique symbol;
 /**
  * Wraps a string so that it behaves like part of the static template
  * strings instead of a dynamic value.
@@ -18,9 +44,7 @@ import { html as coreHtml, svg as coreSvg, TemplateResult } from './lit-html.js'
  * Static values can be changed, but they will cause a complete re-render
  * since they effectively create a new template.
  */
-export declare const unsafeStatic: (value: string) => {
-    _$litStatic$: string;
-};
+export declare const unsafeStatic: (value: string) => StaticValue;
 /**
  * Tags a string literal so that it behaves like part of the static template
  * strings instead of a dynamic value.
@@ -35,9 +59,7 @@ export declare const unsafeStatic: (value: string) => {
  * Static values can be changed, but they will cause a complete re-render since
  * they effectively create a new template.
  */
-export declare const literal: (strings: TemplateStringsArray, ...values: unknown[]) => {
-    _$litStatic$: unknown;
-};
+export declare const literal: (strings: TemplateStringsArray, ...values: unknown[]) => StaticValue;
 /**
  * Wraps a lit-html template tag (`html` or `svg`) to add static value support.
  */
@@ -56,4 +78,5 @@ export declare const html: (strings: TemplateStringsArray, ...values: unknown[])
  * Includes static value support from `lit-html/static.js`.
  */
 export declare const svg: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult;
+export {};
 //# sourceMappingURL=static.d.ts.map

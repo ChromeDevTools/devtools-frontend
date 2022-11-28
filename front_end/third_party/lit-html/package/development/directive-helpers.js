@@ -25,25 +25,22 @@ export const TemplateResultType = {
 /**
  * Tests if a value is a TemplateResult.
  */
-export const isTemplateResult = (value, type) => {
-    var _a, _b;
-    return type === undefined
-        ? // This property needs to remain unminified.
-            ((_a = value) === null || _a === void 0 ? void 0 : _a['_$litType$']) !== undefined
-        : ((_b = value) === null || _b === void 0 ? void 0 : _b['_$litType$']) === type;
-};
+export const isTemplateResult = (value, type) => type === undefined
+    ? // This property needs to remain unminified.
+        (value === null || value === void 0 ? void 0 : value['_$litType$']) !== undefined
+    : (value === null || value === void 0 ? void 0 : value['_$litType$']) === type;
 /**
  * Tests if a value is a DirectiveResult.
  */
-export const isDirectiveResult = (value) => { var _a; 
+export const isDirectiveResult = (value) => 
 // This property needs to remain unminified.
-return ((_a = value) === null || _a === void 0 ? void 0 : _a['_$litDirective$']) !== undefined; };
+(value === null || value === void 0 ? void 0 : value['_$litDirective$']) !== undefined;
 /**
  * Retrieves the Directive class for a DirectiveResult
  */
-export const getDirectiveClass = (value) => { var _a; 
+export const getDirectiveClass = (value) => 
 // This property needs to remain unminified.
-return (_a = value) === null || _a === void 0 ? void 0 : _a['_$litDirective$']; };
+value === null || value === void 0 ? void 0 : value['_$litDirective$'];
 /**
  * Tests whether a part has only a single-expression with no strings to
  * interpolate between.

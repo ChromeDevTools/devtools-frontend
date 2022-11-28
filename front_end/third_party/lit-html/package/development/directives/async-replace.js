@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import { noChange } from '../lit-html.js';
-import { directive } from '../directive.js';
-import { AsyncDirective } from '../async-directive.js';
+import { AsyncDirective, directive, } from '../async-directive.js';
 import { Pauser, PseudoWeakRef, forAwaitOf } from './private-async-helpers.js';
 export class AsyncReplaceDirective extends AsyncDirective {
     constructor() {

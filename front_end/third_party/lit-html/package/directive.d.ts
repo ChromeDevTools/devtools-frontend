@@ -3,8 +3,8 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { Disconnectable, Part } from './lit-html';
-export { AttributePart, BooleanAttributePart, ChildPart, ElementPart, EventPart, Part, PropertyPart, } from './lit-html';
+import { Disconnectable, Part } from './lit-html.js';
+export { AttributePart, BooleanAttributePart, ChildPart, ElementPart, EventPart, Part, PropertyPart, } from './lit-html.js';
 export interface DirectiveClass {
     new (part: PartInfo): Directive;
 }

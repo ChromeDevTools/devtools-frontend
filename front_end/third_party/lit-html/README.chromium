@@ -1,7 +1,7 @@
 Name: Lit-HTML
 Short Name: lit-html
-URL: https://github.com/polymer/lit-html
-Version: 2.2.1
+URL: https://github.com/lit/lit/tree/main/packages/lit-html
+Version: 2.4.0
 License: BSD-3
 License File: package/LICENSE
 Security Critical: no

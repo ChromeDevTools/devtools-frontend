@@ -5,7 +5,7 @@
  */
 import { isSingleExpression } from './directive-helpers.js';
 import { Directive, PartType } from './directive.js';
-export { directive } from './directive.js';
+export * from './directive.js';
 const DEV_MODE = true;
 /**
  * Recursively walks down the tree of Parts/TemplateInstances/Directives to set

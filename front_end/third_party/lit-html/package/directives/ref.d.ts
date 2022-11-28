@@ -24,7 +24,7 @@ export declare type RefOrCallback = Ref | ((el: Element | undefined) => void);
 declare class RefDirective extends AsyncDirective {
     private _element?;
     private _ref?;
-    private _context;
+    private _context?;
     render(_ref: RefOrCallback): symbol;
     update(part: ElementPart, [ref]: Parameters<this['render']>): symbol;
     private _updateRefValue;

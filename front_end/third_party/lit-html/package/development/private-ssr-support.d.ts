@@ -22,7 +22,7 @@ export declare const _$LH: {
     marker: string;
     markerMatch: string;
     HTML_RESULT: number;
-    getTemplateHtml: (strings: TemplateStringsArray, type: 1 | 2) => [import("trusted-types/lib").TrustedHTML, (string | undefined)[]];
+    getTemplateHtml: (strings: TemplateStringsArray, type: 1 | 2) => [import("trusted-types/lib/index.js").TrustedHTML, (string | undefined)[]];
     overrideDirectiveResolve: (directiveClass: new (part: PartInfo) => Directive & {
         render(): unknown;
     }, resolveOverrideFn: (directive: Directive, values: unknown[]) => unknown) => {
@@ -42,7 +42,7 @@ export declare const _$LH: {
     };
     setDirectiveClass(value: DirectiveResult, directiveClass: DirectiveClass): void;
     getAttributePartCommittedValue: (part: AttributePart, value: unknown, index: number | undefined) => unknown;
-    connectedDisconnectable: (props?: object | undefined) => Disconnectable;
+    connectedDisconnectable: (props?: object) => Disconnectable;
     resolveDirective: (part: import("./lit-html.js").ChildPart | AttributePart | import("./lit-html.js").ElementPart, value: unknown, parent?: import("./lit-html.js").DirectiveParent, attributeIndex?: number | undefined) => unknown;
     AttributePart: typeof AttributePart;
     PropertyPart: typeof import("./lit-html.js").PropertyPart;

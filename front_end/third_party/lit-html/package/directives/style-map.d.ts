@@ -13,32 +13,33 @@ import { Directive, DirectiveParameters, PartInfo } from '../directive.js';
  * for CSSStyleDeclaration like `backgroundColor`.
  */
 export interface StyleInfo {
-    readonly [name: string]: string | undefined | null;
+    [name: string]: string | undefined | null;
 }
 declare class StyleMapDirective extends Directive {
     _previousStyleProperties?: Set<string>;
     constructor(partInfo: PartInfo);
-    render(styleInfo: StyleInfo): string;
+    render(styleInfo: Readonly<StyleInfo>): string;
     update(part: AttributePart, [styleInfo]: DirectiveParameters<this>): string | typeof noChange;
 }
 /**
  * A directive that applies CSS properties to an element.
  *
  * `styleMap` can only be used in the `style` attribute and must be the only
- * expression in the attribute. It takes the property names in the `styleInfo`
- * object and adds the property values as CSS properties. Property names with
- * dashes (`-`) are assumed to be valid CSS property names and set on the
- * element's style object using `setProperty()`. Names without dashes are
- * assumed to be camelCased JavaScript property names and set on the element's
- * style object using property assignment, allowing the style object to
- * translate JavaScript-style names to CSS property names.
+ * expression in the attribute. It takes the property names in the
+ * {@link StyleInfo styleInfo} object and adds the property values as CSS
+ * properties. Property names with dashes (`-`) are assumed to be valid CSS
+ * property names and set on the element's style object using `setProperty()`.
+ * Names without dashes are assumed to be camelCased JavaScript property names
+ * and set on the element's style object using property assignment, allowing the
+ * style object to translate JavaScript-style names to CSS property names.
  *
  * For example `styleMap({backgroundColor: 'red', 'border-top': '5px', '--size':
  * '0'})` sets the `background-color`, `border-top` and `--size` properties.
  *
  * @param styleInfo
+ * @see {@link https://lit.dev/docs/templates/directives/#stylemap styleMap code samples on Lit.dev}
  */
-export declare const styleMap: (styleInfo: StyleInfo) => import("../directive.js").DirectiveResult<typeof StyleMapDirective>;
+export declare const styleMap: (styleInfo: Readonly<StyleInfo>) => import("../directive.js").DirectiveResult<typeof StyleMapDirective>;
 /**
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.

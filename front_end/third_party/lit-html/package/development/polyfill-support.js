@@ -117,7 +117,7 @@ var polyfillSupport = function (Template, ChildPart) {
      */
     var setValue = childPartProto._$setValue;
     childPartProto._$setValue = function (value, directiveParent) {
-        var _a, _b, _c;
+        var _a, _b;
         if (directiveParent === void 0) { directiveParent = this; }
         var container = wrap(this._$startNode).parentNode;
         var scope = (_a = this.options) === null || _a === void 0 ? void 0 : _a.scope;
@@ -142,14 +142,14 @@ var polyfillSupport = function (Template, ChildPart) {
             // Get the template for this result or create a dummy one if a result
             // is not being rendered.
             // This property needs to remain unminified.
-            var template = ((_b = value) === null || _b === void 0 ? void 0 : _b['_$litType$'])
+            var template = (value === null || value === void 0 ? void 0 : value['_$litType$'])
                 ? this._$committedValue._$template.el
                 : document.createElement('template');
             prepareStyles(scope, template);
             // Note, this is the temporary startNode.
             renderContainer.removeChild(renderContainerMarker);
             // When using native Shadow DOM, include prepared style in shadowRoot.
-            if ((_c = window.ShadyCSS) === null || _c === void 0 ? void 0 : _c.nativeShadow) {
+            if ((_b = window.ShadyCSS) === null || _b === void 0 ? void 0 : _b.nativeShadow) {
                 var style = template.content.querySelector('style');
                 if (style !== null) {
                     renderContainer.appendChild(style.cloneNode(true));

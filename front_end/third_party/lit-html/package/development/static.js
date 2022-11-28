@@ -7,6 +7,29 @@
 // `packages/lit/src/index.all.ts`.
 import { html as coreHtml, svg as coreSvg } from './lit-html.js';
 /**
+ * Prevents JSON injection attacks.
+ *
+ * The goals of this brand:
+ *   1) fast to check
+ *   2) code is small on the wire
+ *   3) multiple versions of Lit in a single page will all produce mutually
+ *      interoperable StaticValues
+ *   4) normal JSON.parse (without an unusual reviver) can not produce a
+ *      StaticValue
+ *
+ * Symbols satisfy (1), (2), and (4). We use Symbol.for to satisfy (3), but
+ * we don't care about the key, so we break ties via (2) and use the empty
+ * string.
+ */
+const brand = Symbol.for('');
+/** Safely extracts the string part of a StaticValue. */
+const unwrapStaticValue = (value) => {
+    if ((value === null || value === void 0 ? void 0 : value.r) !== brand) {
+        return undefined;
+    }
+    return value === null || value === void 0 ? void 0 : value['_$litStatic$'];
+};
+/**
  * Wraps a string so that it behaves like part of the static template
  * strings instead of a dynamic value.
  *
@@ -22,6 +45,7 @@ import { html as coreHtml, svg as coreSvg } from './lit-html.js';
  */
 export const unsafeStatic = (value) => ({
     ['_$litStatic$']: value,
+    r: brand,
 });
 const textFromStatic = (value) => {
     if (value['_$litStatic$'] !== undefined) {
@@ -48,13 +72,13 @@ const textFromStatic = (value) => {
  */
 export const literal = (strings, ...values) => ({
     ['_$litStatic$']: values.reduce((acc, v, idx) => acc + textFromStatic(v) + strings[idx + 1], strings[0]),
+    r: brand,
 });
 const stringsCache = new Map();
 /**
  * Wraps a lit-html template tag (`html` or `svg`) to add static value support.
  */
 export const withStatic = (coreTag) => (strings, ...values) => {
-    var _a;
     const l = values.length;
     let staticValue;
     let dynamicValue;
@@ -70,8 +94,7 @@ export const withStatic = (coreTag) => (strings, ...values) => {
         // a single template string.
         while (i < l &&
             ((dynamicValue = values[i]),
-                (staticValue = (_a = dynamicValue) === null || _a === void 0 ? void 0 : _a['_$litStatic$'])) !==
-                undefined) {
+                (staticValue = unwrapStaticValue(dynamicValue))) !== undefined) {
             s += staticValue + strings[++i];
             hasStatics = true;
         }

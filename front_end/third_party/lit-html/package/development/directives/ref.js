@@ -16,8 +16,10 @@ class Ref {
 }
 // When callbacks are used for refs, this map tracks the last value the callback
 // was called with, for ensuring a directive doesn't clear the ref if the ref
-// has already been rendered to a new spot
-const lastElementForCallback = new WeakMap();
+// has already been rendered to a new spot. It is double-keyed on both the
+// context (`options.host`) and the callback, since we auto-bind class methods
+// to `options.host`.
+const lastElementForContextAndCallback = new WeakMap();
 class RefDirective extends AsyncDirective {
     render(_ref) {
         return nothing;
@@ -40,13 +42,23 @@ class RefDirective extends AsyncDirective {
         return nothing;
     }
     _updateRefValue(element) {
+        var _a;
         if (typeof this._ref === 'function') {
             // If the current ref was called with a previous value, call with
             // `undefined`; We do this to ensure callbacks are called in a consistent
             // way regardless of whether a ref might be moving up in the tree (in
             // which case it would otherwise be called with the new value before the
             // previous one unsets it) and down in the tree (where it would be unset
-            // before being set)
+            // before being set). Note that element lookup is keyed by
+            // both the context and the callback, since we allow passing unbound
+            // functions that are called on options.host, and we want to treat
+            // these as unique "instances" of a function.
+            const context = (_a = this._context) !== null && _a !== void 0 ? _a : globalThis;
+            let lastElementForCallback = lastElementForContextAndCallback.get(context);
+            if (lastElementForCallback === undefined) {
+                lastElementForCallback = new WeakMap();
+                lastElementForContextAndCallback.set(context, lastElementForCallback);
+            }
             if (lastElementForCallback.get(this._ref) !== undefined) {
                 this._ref.call(this._context, undefined);
             }
@@ -61,10 +73,11 @@ class RefDirective extends AsyncDirective {
         }
     }
     get _lastElementForRef() {
-        var _a;
+        var _a, _b, _c;
         return typeof this._ref === 'function'
-            ? lastElementForCallback.get(this._ref)
-            : (_a = this._ref) === null || _a === void 0 ? void 0 : _a.value;
+            ? (_b = lastElementForContextAndCallback
+                .get((_a = this._context) !== null && _a !== void 0 ? _a : globalThis)) === null || _b === void 0 ? void 0 : _b.get(this._ref)
+            : (_c = this._ref) === null || _c === void 0 ? void 0 : _c.value;
     }
     disconnected() {
         // Only clear the box if our element is still the one in it (i.e. another

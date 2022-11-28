@@ -424,6 +424,7 @@
     RecordingToggled: 'DevTools.RecordingToggled',
     SidebarPaneShown: 'DevTools.SidebarPaneShown',
     SourcesPanelFileOpened: 'DevTools.SourcesPanelFileOpened',
+    NetworkPanelResponsePreviewOpened: 'DevTools.NetworkPanelResponsePreviewOpened',
     StyleTextCopied: 'DevTools.StyleTextCopied',
     SyncSetting: 'DevTools.SyncSetting',
   };

@@ -92,6 +92,12 @@ export class UserMetrics {
         EnumeratedHistogram.SourcesPanelFileOpened, code, MediaTypes.MaxValue);
   }
 
+  networkPanelResponsePreviewOpened(mediaType: string): void {
+    const code = (mediaType && MediaTypes[mediaType as keyof typeof MediaTypes]) || MediaTypes.Unknown;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.NetworkPanelResponsePreviewOpened, code, MediaTypes.MaxValue);
+  }
+
   actionTaken(action: Action): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ActionTaken, action, Action.MaxValue);
   }

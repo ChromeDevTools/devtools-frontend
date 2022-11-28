@@ -46,7 +46,7 @@ minify_json("i18n_locales") {
   deps = [ ":collect_strings" ]
 }
 
-group("i18n_bundled_locales") {
+group("locales") {
   public_deps = [ ":i18n_locales" ]
 
   data = []

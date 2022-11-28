@@ -24,11 +24,6 @@ devtools_module("i18n") {
     "../../third_party/i18n:bundle",
     "../../third_party/intl-messageformat:bundle",
   ]
-
-  public_deps = [
-    "./locales:i18n_bundled_locales",
-    "./locales:i18n_locales",
-  ]
 }
 
 devtools_entrypoint("bundle") {

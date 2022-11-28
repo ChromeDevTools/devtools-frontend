@@ -15,6 +15,7 @@ group("front_end") {
     ":integration_test_runner",
     ":legacy_entrypoints",
     "Images",
+    "core/i18n/locales",
     "entrypoints/device_mode_emulation_frame",
     "entrypoints/devtools_app:entrypoint",
     "entrypoints/formatter_worker:worker_entrypoint",

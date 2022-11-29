@@ -13,6 +13,7 @@ devtools_module("handlers") {
     "LargestTextPaintHandler.ts",
     "MetaHandler.ts",
     "ModelHandlers.ts",
+    "RendererHandler.ts",
     "SamplesHandler.ts",
     "ScreenshotsHandler.ts",
     "UserInteractionsHandler.ts",

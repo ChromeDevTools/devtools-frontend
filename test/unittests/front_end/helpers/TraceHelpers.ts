@@ -137,3 +137,154 @@ export const defaultTraceEvent: TraceModel.Types.TraceEvents.TraceEventData = {
   cat: 'test',
   ph: TraceModel.Types.TraceEvents.TraceEventPhase.METADATA,
 };
+
+/**
+ * Gets the tree in a thread.
+ * @see RendererHandler.ts
+ */
+export function getTree(thread: TraceModel.Handlers.ModelHandlers.Renderer.RendererThread):
+    TraceModel.Handlers.ModelHandlers.Renderer.RendererEventTree {
+  const tree = thread.tree;
+  if (!tree) {
+    assert(false, `Couldn't get tree in thread ${thread.name}`);
+    return null as never;
+  }
+  return tree;
+}
+
+/**
+ * Gets the n-th root from a tree in a thread.
+ * @see RendererHandler.ts
+ */
+export function getRootAt(thread: TraceModel.Handlers.ModelHandlers.Renderer.RendererThread, index: number):
+    TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode {
+  const tree = getTree(thread);
+  const nodeId = [...tree.roots][index];
+  if (nodeId === undefined) {
+    assert(false, `Couldn't get the id of the root at index ${index} in thread ${thread.name}`);
+    return null as never;
+  }
+  return getNodeFor(thread, nodeId);
+}
+
+/**
+ * Gets the node with an id from a tree in a thread.
+ * @see RendererHandler.ts
+ */
+export function getNodeFor(
+    thread: TraceModel.Handlers.ModelHandlers.Renderer.RendererThread,
+    nodeId: TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNodeId):
+    TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode {
+  const tree = getTree(thread);
+  const node = tree.nodes.get(nodeId);
+  if (!node) {
+    assert(false, `Couldn't get the node with id ${nodeId} in thread ${thread.name}`);
+    return null as never;
+  }
+  return node;
+}
+
+/**
+ * Gets the event for a node from a tree in a thread.
+ * @see RendererHandler.ts
+ */
+export function getEventFor(
+    thread: TraceModel.Handlers.ModelHandlers.Renderer.RendererThread,
+    node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode):
+    TraceModel.Handlers.ModelHandlers.Renderer.RendererEvent {
+  const event = thread.events[node.eventIndex];
+  if (!event) {
+    assert(false, `Couldn't get the event at index ${node.eventIndex} for node in thread ${thread.name}`);
+    return null as never;
+  }
+  return event;
+}
+
+/**
+ * Gets all the `events` for the `nodes` with `ids`.
+ */
+export function getEventsIn(
+    ids: IterableIterator<TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNodeId>,
+    nodes:
+        Map<TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNodeId,
+            TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode>,
+    events: TraceModel.Types.TraceEvents.TraceEventData[]): TraceModel.Types.TraceEvents.TraceEventData[] {
+  return [...ids].map(id => nodes.get(id)).flatMap(node => node ? [events[node.eventIndex]] : []);
+}
+/**
+ * Pretty-prints the tree in a thread.
+ */
+export function prettyPrint(
+    thread: TraceModel.Handlers.ModelHandlers.Renderer.RendererThread,
+    nodes: Set<TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNodeId>,
+    predicate: (
+        node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode,
+        event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEvent) => boolean = () => true,
+    indentation: number = 2, delimiter: string = ' ', prefix: string = '-', newline: string = '\n',
+    out: string = ''): string {
+  let skipped = false;
+  for (const nodeId of nodes) {
+    const node = getNodeFor(thread, nodeId);
+    const event = getEventFor(thread, node);
+    if (!predicate(node, event)) {
+      out += `${!skipped ? newline : ''}.`;
+      skipped = true;
+      continue;
+    }
+    skipped = false;
+    const spacing = new Array(node.depth * indentation).fill(delimiter).join('');
+    const type = TraceModel.Types.TraceEvents.isTraceEventDispatch(event) ? `(${event.args.data?.type})` : false;
+    const duration = TraceModel.Types.TraceEvents.isTraceEventInstant(event) ? '[I]' : `[${event.dur / 1000}ms]`;
+    const info = [type, duration].filter(Boolean);
+    out += `${newline}${spacing}${prefix}${event.name} ${info.join(' ')}`;
+    out = prettyPrint(thread, node.childrenIds, predicate, indentation, delimiter, prefix, newline, out);
+  }
+
+  return out;
+}
+
+/**
+ * Builds a mock TraceEventComplete.
+ */
+export function makeCompleteEvent(
+    name: string, ts: number, dur: number, cat: string = '*', pid: number = 0,
+    tid: number = 0): TraceModel.Types.TraceEvents.TraceEventComplete {
+  return {
+    args: {},
+    cat,
+    name,
+    ph: TraceModel.Types.TraceEvents.TraceEventPhase.COMPLETE,
+    pid: TraceModel.Types.TraceEvents.ProcessID(pid),
+    tid: TraceModel.Types.TraceEvents.ThreadID(tid),
+    ts: TraceModel.Types.Timing.MicroSeconds(ts),
+    dur: TraceModel.Types.Timing.MicroSeconds(dur),
+  };
+}
+
+export function makeCompleteEventInMilliseconds(
+    name: string, tsMillis: number, durMillis: number, cat: string = '*', pid: number = 0,
+    tid: number = 0): TraceModel.Types.TraceEvents.TraceEventComplete {
+  return makeCompleteEvent(
+      name, TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(tsMillis)),
+      TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(durMillis)), cat, pid,
+      tid);
+}
+
+/**
+ * Builds a mock TraceEventInstant.
+ */
+export function makeInstantEvent(
+    name: string, ts: number, cat: string = '', pid: number = 0, tid: number = 0,
+    s: TraceModel.Types.TraceEvents.TraceEventScope =
+        TraceModel.Types.TraceEvents.TraceEventScope.THREAD): TraceModel.Types.TraceEvents.TraceEventInstant {
+  return {
+    args: {},
+    cat,
+    name,
+    ph: TraceModel.Types.TraceEvents.TraceEventPhase.INSTANT,
+    pid: TraceModel.Types.TraceEvents.ProcessID(pid),
+    tid: TraceModel.Types.TraceEvents.ThreadID(tid),
+    ts: TraceModel.Types.Timing.MicroSeconds(ts),
+    s,
+  };
+}

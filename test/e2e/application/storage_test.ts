@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {expectError} from '../../conductor/events.js';
 import {click, getBrowserAndPages, getTestServerPort, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -28,6 +29,7 @@ describe('The Application Tab', async () => {
   });
 
   afterEach(async () => {
+    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     const {target} = getBrowserAndPages();
     const cookies = await target.cookies();
     await target.deleteCookie(...cookies);

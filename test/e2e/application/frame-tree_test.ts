@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {expectError} from '../../conductor/events.js';
 import {
   $$,
   click,
@@ -54,6 +55,7 @@ declare global {
 }
 describe('The Application Tab', async () => {
   afterEach(async () => {
+    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     const {target} = getBrowserAndPages();
     await target.evaluate(async () => {
       const registrations = await navigator.serviceWorker.getRegistrations();

@@ -411,6 +411,7 @@
     KeybindSetSettingChanged: 'DevTools.KeybindSetSettingChanged',
     KeyboardShortcutFired: 'DevTools.KeyboardShortcutFired',
     Language: 'DevTools.Language',
+    LighthouseModeRun: 'DevTools.LighthouseModeRun',
     LinearMemoryInspectorRevealedFrom: 'DevTools.LinearMemoryInspector.RevealedFrom',
     LinearMemoryInspectorTarget: 'DevTools.LinearMemoryInspector.Target',
     ManifestSectionSelected: 'DevTools.ManifestSectionSelected',

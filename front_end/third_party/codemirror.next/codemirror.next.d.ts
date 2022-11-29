@@ -5472,6 +5472,18 @@ declare function htmlCompletionSourceWith(config: {
     extraGlobalAttributes?: Record<string, null | readonly string[]>;
 }): (context: CompletionContext) => CompletionResult | null;
 
+declare type NestedLang = {
+    tag: "script" | "style" | "textarea";
+    attrs?: (attrs: {
+        [attr: string]: string;
+    }) => boolean;
+    parser: Parser;
+};
+declare type NestedAttr = {
+    name: string;
+    tagName?: string;
+    parser: Parser;
+};
 /**
 A language provider based on the [Lezer HTML
 parser](https://github.com/lezer-parser/html), extended with the
@@ -5506,6 +5518,17 @@ declare function html(config?: {
     Add additional completable attributes to all tags.
     */
     extraGlobalAttributes?: Record<string, null | readonly string[]>;
+    /**
+    Register additional languages to parse the content of script,
+    style, or textarea tags. If given, `attrs` should be a function
+    that, given an object representing the tag's attributes, returns
+    `true` if this language applies.
+    */
+    nestedLanguages?: NestedLang[];
+    /**
+    Register additional languages to parse attribute values with.
+    */
+    nestedAttributes?: NestedAttr[];
 }): LanguageSupport;
 /**
 Extension that will automatically insert close tags when a `>` or

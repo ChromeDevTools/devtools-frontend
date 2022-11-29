@@ -3,10 +3,12 @@
 # Copyright 2019 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+
 """
 Helper to manage DEPS. Use this script to update node_modules instead of
 running npm install manually. To upgrade a dependency, change the version
-number in DEPS below and run this script.
+number in DEPS below and run this script, which can be done with `npm run
+install-deps` locally.
 """
 
 import os

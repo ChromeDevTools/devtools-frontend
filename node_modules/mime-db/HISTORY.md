@@ -1,3 +1,52 @@
+1.52.0 / 2022-02-21
+===================
+
+  * Add extensions from IANA for more `image/*` types
+  * Add extension `.asc` to `application/pgp-keys`
+  * Add extensions to various XML types
+  * Add new upstream MIME types
+
+1.51.0 / 2021-11-08
+===================
+
+  * Add new upstream MIME types
+  * Mark `image/vnd.microsoft.icon` as compressible
+  * Mark `image/vnd.ms-dds` as compressible
+
+1.50.0 / 2021-09-15
+===================
+
+  * Add deprecated iWorks mime types and extensions
+  * Add new upstream MIME types
+
+1.49.0 / 2021-07-26
+===================
+
+  * Add extension `.trig` to `application/trig`
+  * Add new upstream MIME types
+
+1.48.0 / 2021-05-30
+===================
+
+  * Add extension `.mvt` to `application/vnd.mapbox-vector-tile`
+  * Add new upstream MIME types
+  * Mark `text/yaml` as compressible
+
+1.47.0 / 2021-04-01
+===================
+
+  * Add new upstream MIME types
+  * Remove ambigious extensions from IANA for `application/*+xml` types
+  * Update primary extension to `.es` for `application/ecmascript`
+
+1.46.0 / 2021-02-13
+===================
+
+  * Add extension `.amr` to `audio/amr`
+  * Add extension `.m4s` to `video/iso.segment`
+  * Add extension `.opus` to `audio/ogg`
+  * Add new upstream MIME types
+
 1.45.0 / 2020-09-22
 ===================
 

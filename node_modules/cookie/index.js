@@ -22,7 +22,6 @@ exports.serialize = serialize;
 
 var decode = decodeURIComponent;
 var encode = encodeURIComponent;
-var pairSplitRegExp = /; */;
 
 /**
  * RegExp to match field-content in RFC 7230 sec 3.2
@@ -53,28 +52,29 @@ function parse(str, options) {
 
   var obj = {}
   var opt = options || {};
-  var pairs = str.split(pairSplitRegExp);
+  var pairs = str.split(';')
   var dec = opt.decode || decode;
 
   for (var i = 0; i < pairs.length; i++) {
     var pair = pairs[i];
-    var eq_idx = pair.indexOf('=');
+    var index = pair.indexOf('=')
 
     // skip things that don't look like key=value
-    if (eq_idx < 0) {
+    if (index < 0) {
       continue;
     }
 
-    var key = pair.substr(0, eq_idx).trim()
-    var val = pair.substr(++eq_idx, pair.length).trim();
-
-    // quoted values
-    if ('"' == val[0]) {
-      val = val.slice(1, -1);
-    }
+    var key = pair.substring(0, index).trim()
 
     // only assign once
     if (undefined == obj[key]) {
+      var val = pair.substring(index + 1, pair.length).trim()
+
+      // quoted values
+      if (val[0] === '"') {
+        val = val.slice(1, -1)
+      }
+
       obj[key] = tryDecode(val, dec);
     }
   }

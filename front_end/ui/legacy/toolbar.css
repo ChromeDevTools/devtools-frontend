@@ -19,6 +19,7 @@
   display: flex;
   flex: none;
   align-items: center;
+  z-index: 0;
 }
 
 .toolbar-shadow.wrappable {

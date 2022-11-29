@@ -369,7 +369,6 @@ export enum EnumeratedHistogram {
   LinearMemoryInspectorRevealedFrom = 'DevTools.LinearMemoryInspector.RevealedFrom',
   LinearMemoryInspectorTarget = 'DevTools.LinearMemoryInspector.Target',
   Language = 'DevTools.Language',
-  ConsoleShowsCorsErrors = 'DevTools.ConsoleShowsCorsErrors',
   SyncSetting = 'DevTools.SyncSetting',
   RecordingEdited = 'DevTools.RecordingEdited',
   RecordingExported = 'DevTools.RecordingExported',

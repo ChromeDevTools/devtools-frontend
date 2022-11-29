@@ -20,7 +20,6 @@ import {
   waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {toggleShowCorsErrors} from '../helpers/console-helpers.js';
 import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 import {
   editCSSProperty,
@@ -126,30 +125,6 @@ describe('User Metrics', () => {
       {
         actionName: 'DevTools.KeyboardShortcutFired',
         actionCode: 17,  // main.toggle-drawer
-      },
-    ]);
-  });
-
-  it('dispatches a metric event for show CORS errors console settings', async () => {
-    const {frontend} = getBrowserAndPages();
-
-    await frontend.keyboard.press('Escape');
-    await frontend.waitForSelector('.console-view');
-    await toggleShowCorsErrors();
-    await toggleShowCorsErrors();
-
-    await assertHistogramEventsInclude([
-      {
-        actionName: 'DevTools.PanelShown',
-        actionCode: 10,  // drawer-console-view.
-      },
-      {
-        actionName: 'DevTools.ConsoleShowsCorsErrors',
-        actionCode: 0,  // disabled
-      },
-      {
-        actionName: 'DevTools.ConsoleShowsCorsErrors',
-        actionCode: 1,  // enabled
       },
     ]);
   });

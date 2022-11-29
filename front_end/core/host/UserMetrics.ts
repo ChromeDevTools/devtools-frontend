@@ -245,12 +245,6 @@ export class UserMetrics {
         EnumeratedHistogram.Language, languageCode, Language.MaxValue);
   }
 
-  showCorsErrorsSettingChanged(show: boolean): void {
-    const consoleShowsCorsErrors = ConsoleShowsCorsErrors[String(show) as keyof typeof ConsoleShowsCorsErrors];
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.ConsoleShowsCorsErrors, consoleShowsCorsErrors, ConsoleShowsCorsErrors.MaxValue);
-  }
-
   syncSetting(devtoolsSyncSettingEnabled: boolean): void {
     InspectorFrontendHostInstance.getSyncInformation(syncInfo => {
       let settingValue = SyncSetting.ChromeSyncDisabled;

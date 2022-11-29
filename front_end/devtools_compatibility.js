@@ -397,7 +397,6 @@
     ActionTaken: 'DevTools.ActionTaken',
     BreakpointWithConditionAdded: 'DevTools.BreakpointWithConditionAdded',
     BreakpointEditDialogRevealedFrom: 'DevTools.BreakpointEditDialogRevealedFrom',
-    ConsoleShowsCorsErrors: 'DevTools.ConsoleShowsCorsErrors',
     CSSHintShown: 'DevTools.CSSHintShown',
     DeveloperResourceLoaded: 'DevTools.DeveloperResourceLoaded',
     DeveloperResourceScheme: 'DevTools.DeveloperResourceScheme',

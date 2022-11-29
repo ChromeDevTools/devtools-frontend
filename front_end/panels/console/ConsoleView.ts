@@ -394,10 +394,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
 
     this.showCorsErrorsSetting = Common.Settings.Settings.instance().moduleSetting('consoleShowsCorsErrors');
-    this.showCorsErrorsSetting.addChangeListener(() => {
-      Host.userMetrics.showCorsErrorsSettingChanged(this.showCorsErrorsSetting.get());
-      this.updateMessageList();
-    });
+    this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
 
     const toolbar = new UI.Toolbar.Toolbar('console-main-toolbar', this.consoleToolbarContainer);
     toolbar.makeWrappable(true);

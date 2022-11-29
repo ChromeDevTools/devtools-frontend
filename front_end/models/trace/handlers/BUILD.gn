@@ -15,6 +15,7 @@ devtools_module("handlers") {
     "ModelHandlers.ts",
     "SamplesHandler.ts",
     "ScreenshotsHandler.ts",
+    "UserInteractionsHandler.ts",
     "UserTimingsHandler.ts",
     "types.ts",
   ]

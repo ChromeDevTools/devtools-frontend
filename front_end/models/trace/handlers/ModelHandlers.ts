@@ -8,4 +8,5 @@ export * as LargestTextPaint from './LargestTextPaintHandler.js';
 export * as Meta from './MetaHandler.js';
 export * as Samples from './SamplesHandler.js';
 export * as Screenshots from './ScreenshotsHandler.js';
+export * as UserInteractions from './UserInteractionsHandler.js';
 export * as UserTimings from './UserTimingsHandler.js';

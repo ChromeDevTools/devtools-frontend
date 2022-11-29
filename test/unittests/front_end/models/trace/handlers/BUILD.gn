@@ -13,6 +13,7 @@ ts_library("handlers") {
     "MetaHandler_test.ts",
     "SamplesHandler_test.ts",
     "ScreenshotsHandler_test.ts",
+    "UserInteractionsHandler_test.ts",
     "UserTimingsHandler_test.ts",
   ]
 

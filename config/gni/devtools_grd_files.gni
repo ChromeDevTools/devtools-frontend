@@ -853,6 +853,7 @@ grd_files_debug_sources = [
   "front_end/panels/application/ServiceWorkerUpdateCycleView.js",
   "front_end/panels/application/ServiceWorkersView.js",
   "front_end/panels/application/SharedStorageEventsView.js",
+  "front_end/panels/application/SharedStorageItemsView.js",
   "front_end/panels/application/SharedStorageModel.js",
   "front_end/panels/application/StorageItemsView.js",
   "front_end/panels/application/StorageView.js",

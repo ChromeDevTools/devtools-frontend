@@ -18,6 +18,7 @@ ts_library("application") {
     "ServiceWorkerUpdateCycleView_test.ts",
     "ServiceWorkersView_test.ts",
     "SharedStorageEventsView_test.ts",
+    "SharedStorageItemsView_test.ts",
     "SharedStorageModel_test.ts",
     "StorageView_test.ts",
     "TrustTokensTreeElement_test.ts",

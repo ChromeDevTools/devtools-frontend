@@ -33,11 +33,11 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/StorageItemsView.ts
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StorageItemsView extends UI.Widget.VBox {
   private filterRegex: RegExp|null;
-  private readonly refreshButton: UI.Toolbar.ToolbarButton;
+  readonly refreshButton: UI.Toolbar.ToolbarButton;
   private readonly mainToolbar: UI.Toolbar.Toolbar;
-  private readonly filterItem: UI.Toolbar.ToolbarInput;
-  private readonly deleteAllButton: UI.Toolbar.ToolbarButton;
-  private readonly deleteSelectedButton: UI.Toolbar.ToolbarButton;
+  readonly filterItem: UI.Toolbar.ToolbarInput;
+  readonly deleteAllButton: UI.Toolbar.ToolbarButton;
+  readonly deleteSelectedButton: UI.Toolbar.ToolbarButton;
 
   constructor(_title: string, _filterName: string) {
     super(false);

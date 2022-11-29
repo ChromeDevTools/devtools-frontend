@@ -56,6 +56,7 @@ devtools_module("application") {
     "ServiceWorkerUpdateCycleView.ts",
     "ServiceWorkersView.ts",
     "SharedStorageEventsView.ts",
+    "SharedStorageItemsView.ts",
     "SharedStorageModel.ts",
     "StorageItemsView.ts",
     "StorageView.ts",

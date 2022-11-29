@@ -25,6 +25,7 @@ import * as ServiceWorkerCacheViews from './ServiceWorkerCacheViews.js';
 import * as ServiceWorkersView from './ServiceWorkersView.js';
 import * as ServiceWorkerUpdateCycleView from './ServiceWorkerUpdateCycleView.js';
 import * as SharedStorageEventsView from './SharedStorageEventsView.js';
+import * as SharedStorageItemsView from './SharedStorageItemsView.js';
 import * as SharedStorageModel from './SharedStorageModel.js';
 import * as StorageItemsView from './StorageItemsView.js';
 import * as StorageView from './StorageView.js';
@@ -54,6 +55,7 @@ export {
   ServiceWorkersView,
   ServiceWorkerUpdateCycleView,
   SharedStorageEventsView,
+  SharedStorageItemsView,
   SharedStorageModel,
   StorageItemsView,
   StorageView,

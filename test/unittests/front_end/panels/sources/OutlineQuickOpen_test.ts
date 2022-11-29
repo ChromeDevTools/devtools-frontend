@@ -540,6 +540,54 @@ const formatName = (name) => {
     it('ignoring interface declarations', () => {
       assert.deepEqual(typeScriptOutline('interface IFoo { name(): string; }'), []);
     });
+
+    describe('when using decorators', () => {
+      it('on classes', () => {
+        assert.deepEqual(
+            typeScriptOutline(
+                '@Simple @Something.Complex({x: 1}) class A {\n' +
+                '  constructor() {}\n' +
+                '}\n'),
+            [
+              {title: 'class A', lineNumber: 0, columnNumber: 41},
+              {title: 'constructor', subtitle: '()', lineNumber: 1, columnNumber: 2},
+            ],
+        );
+      });
+
+      it('on methods', () => {
+        assert.deepEqual(
+            typeScriptOutline(
+                'new (class {\n' +
+                '  @Simple @Something.Complex({x: 1}) onInit(x, y) {}\n' +
+                '})\n'),
+            [
+              {title: 'onInit', subtitle: '(x, y)', lineNumber: 1, columnNumber: 37},
+            ],
+        );
+      });
+
+      it('on function parameters', () => {
+        assert.deepEqual(
+            typeScriptOutline('function foo(@Simple xyz, @Something.Complex({x: 1}) abc) {}'),
+            [
+              {title: 'foo', subtitle: '(xyz, abc)', lineNumber: 0, columnNumber: 9},
+            ],
+        );
+      });
+
+      it('on method parameters', () => {
+        assert.deepEqual(
+            typeScriptOutline(
+                'new (class {\n' +
+                '  onInit(@Simple y, @Something.Complex({x: 1}) x) {}\n' +
+                '})\n'),
+            [
+              {title: 'onInit', subtitle: '(y, x)', lineNumber: 1, columnNumber: 2},
+            ],
+        );
+      });
+    });
   });
 
   describe('generates a correct CSS outline', () => {

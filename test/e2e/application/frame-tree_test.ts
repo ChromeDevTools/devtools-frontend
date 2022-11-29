@@ -47,7 +47,6 @@ const ensureApplicationPanel = async () => {
     });
   }
 };
-
 declare global {
   interface Window {
     iFrameWindow: Window|null|undefined;
@@ -55,7 +54,6 @@ declare global {
 }
 describe('The Application Tab', async () => {
   afterEach(async () => {
-    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     const {target} = getBrowserAndPages();
     await target.evaluate(async () => {
       const registrations = await navigator.serviceWorker.getRegistrations();
@@ -103,6 +101,7 @@ describe('The Application Tab', async () => {
   });
 
   it('shows stack traces for OOPIF', async () => {
+    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     await goToResource('application/js-oopif.html');
     await ensureApplicationPanel();
     await waitForFunction(async () => {
@@ -162,6 +161,7 @@ describe('The Application Tab', async () => {
   });
 
   it('shows dedicated workers in the frame tree', async () => {
+    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     const {target} = getBrowserAndPages();
     await goToResource('application/frame-tree.html');
     await click('#tab-resources');
@@ -190,6 +190,7 @@ describe('The Application Tab', async () => {
   });
 
   it('shows service workers in the frame tree', async () => {
+    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     await goToResource('application/service-worker-network.html');
     await click('#tab-resources');
     await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
@@ -215,6 +216,7 @@ describe('The Application Tab', async () => {
 
   // Update and reactivate when the whole FrameDetailsView is a custom component
   it('can handle when JS writes to frame', async () => {
+    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     const {target} = getBrowserAndPages();
     await goToResource('application/main-frame.html');
     await click('#tab-resources');

@@ -83,14 +83,22 @@ it('can highlight JavaScript compatible with CodeMirror 5', testHighlight(`
   ...
 </[tag html]>`, 'text/html'));
 
-it('can highlight HTML with <script type="text/jsx"> blocks', testHighlight(`
+  it('can highlight HTML with <script type="text/jsx"> blocks', testHighlight(`
 [meta <!DOCTYPE html>]
 <[tag script] [attribute type]=[attribute-value "text/jsx"]>
   [keyword const] [definition app] = [variable document].[property getElementById]([string 'app']);
   [variable ReactDOM].[property render](<[tag h1]>Develop. Preview. Ship. 🚀</[tag h1]>, [variable app]);
 </[tag script]>`, 'text/html'));
 
-it('can highlight Vue Templates', testHighlight(`
+  it('can highlight HTML with onclick inline JavaScript', testHighlight(`
+[meta <!DOCTYPE html>]
+<[tag button] [attribute onclick]=[variable handleClick]()>Click me</[tag button]>`, 'text/html'));
+
+  it('can highlight HTML with element style', testHighlight(`
+[meta <!DOCTYPE html>]
+<[tag button] [attribute style]=[property color]:[atom green]]>Don't click me</[tag button]>`, 'text/html'));
+
+  it('can highlight Vue Templates', testHighlight(`
 <[tag template]>
   <[tag Header] [attribute v-show]=[attribute-value "view"] />
   <[tag Main] [attribute @hide]=[attribute-value "onHide"] />

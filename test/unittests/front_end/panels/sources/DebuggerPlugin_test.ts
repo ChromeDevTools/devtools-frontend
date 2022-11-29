@@ -508,7 +508,7 @@ describe('DebuggerPlugin', () => {
     });
 
     describe('in HTML files', () => {
-      it('correctly returns highlight range for function variables in inline <script>s', () => {
+      it('correctly returns highlight range for variables in inline <script>s', () => {
         const doc = `<!DOCTYPE html>
 <script type="text/javascript">
 globalThis.foo = bar + baz;
@@ -516,6 +516,22 @@ globalThis.foo = bar + baz;
         const extensions = [CodeMirror.html.html()];
         const state = CodeMirror.EditorState.create({doc, extensions});
         for (const name of ['bar', 'baz']) {
+          const from = doc.indexOf(name);
+          const to = from + name.length;
+          assert.deepEqual(
+              computePopoverHighlightRange(state, 'text/html', from),
+              {from, to},
+              `did not correct highlight '${name}'`,
+          );
+        }
+      });
+
+      it('correctly returns highlight range for variables in inline event handlers', () => {
+        const doc = `<!DOCTYPE html>
+<button onclick="foo(bar, baz)">Click me!</button>`;
+        const extensions = [CodeMirror.html.html()];
+        const state = CodeMirror.EditorState.create({doc, extensions});
+        for (const name of ['foo', 'bar', 'baz']) {
           const from = doc.indexOf(name);
           const to = from + name.length;
           assert.deepEqual(

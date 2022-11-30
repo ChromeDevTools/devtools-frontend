@@ -3467,6 +3467,11 @@ export const NativeFunctions = [
     signatures: [['offset']]
   },
   {
+    name: 'getCurrentTime',
+    signatures: [['?rangeName']],
+    receivers: ['AnimationTimeline']
+  },
+  {
     name: 'setStdDeviation',
     signatures: [['stdDeviationX','stdDeviationY']]
   },
@@ -6004,6 +6009,10 @@ export const NativeFunctions = [
   },
   {
     name: 'hasTrustToken',
+    signatures: [['issuer']]
+  },
+  {
+    name: 'hasPrivateStateToken',
     signatures: [['issuer']]
   },
   {

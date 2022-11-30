@@ -1321,6 +1321,10 @@ export namespace BackgroundService {
      * A list of event-specific information.
      */
     eventMetadata: EventMetadata[];
+    /**
+     * Storage key this event belongs to.
+     */
+    storageKey: string;
   }
 
   export interface StartObservingRequest {
@@ -11116,6 +11120,7 @@ export namespace Page {
     InjectedStyleSheet = 'InjectedStyleSheet',
     KeepaliveRequest = 'KeepaliveRequest',
     Dummy = 'Dummy',
+    AuthorizationHeader = 'AuthorizationHeader',
     ContentSecurityHandler = 'ContentSecurityHandler',
     ContentWebAuthenticationAPI = 'ContentWebAuthenticationAPI',
     ContentFileChooser = 'ContentFileChooser',
@@ -14300,8 +14305,8 @@ export namespace Tracing {
   }
 
   /**
-   * Contains an bucket of collected trace events. When tracing is stopped collected events will be
-   * send as a sequence of dataCollected events followed by tracingComplete event.
+   * Contains a bucket of collected trace events. When tracing is stopped collected events will be
+   * sent as a sequence of dataCollected events followed by tracingComplete event.
    */
   export interface DataCollectedEvent {
     value: any[];

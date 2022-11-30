@@ -1997,6 +1997,11 @@
                             "items": {
                                 "$ref": "EventMetadata"
                             }
+                        },
+                        {
+                            "name": "storageKey",
+                            "description": "Storage key this event belongs to.",
+                            "type": "string"
                         }
                     ]
                 }
@@ -16288,6 +16293,7 @@
                         "InjectedStyleSheet",
                         "KeepaliveRequest",
                         "Dummy",
+                        "AuthorizationHeader",
                         "ContentSecurityHandler",
                         "ContentWebAuthenticationAPI",
                         "ContentFileChooser",
@@ -21190,7 +21196,7 @@
                 },
                 {
                     "name": "dataCollected",
-                    "description": "Contains an bucket of collected trace events. When tracing is stopped collected events will be\nsend as a sequence of dataCollected events followed by tracingComplete event.",
+                    "description": "Contains a bucket of collected trace events. When tracing is stopped collected events will be\nsent as a sequence of dataCollected events followed by tracingComplete event.",
                     "parameters": [
                         {
                             "name": "value",

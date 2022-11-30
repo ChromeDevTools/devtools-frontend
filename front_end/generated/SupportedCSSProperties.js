@@ -4,6 +4,20 @@
 
 export const generatedProperties = [
  {
+  "longhands": [
+   "animation-duration",
+   "animation-timing-function",
+   "animation-delay",
+   "animation-iteration-count",
+   "animation-direction",
+   "animation-fill-mode",
+   "animation-play-state",
+   "animation-name",
+   "animation-timeline"
+  ],
+  "name": "-alternative-animation"
+ },
+ {
   "inherited": true,
   "name": "-webkit-border-horizontal-spacing"
  },
@@ -355,8 +369,7 @@ export const generatedProperties = [
    "animation-direction",
    "animation-fill-mode",
    "animation-play-state",
-   "animation-name",
-   "animation-timeline"
+   "animation-name"
   ],
   "name": "animation"
  },
@@ -5441,6 +5454,10 @@ export const generatedAliasesFor = new Map([
  [
   "-webkit-align-self",
   "align-self"
+ ],
+ [
+  "-webkit-alternative-animation",
+  "-alternative-animation"
  ],
  [
   "-webkit-animation",

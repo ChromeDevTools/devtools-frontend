@@ -514,6 +514,10 @@ const UIStrings = {
  *  @description Description text for not restored reason KeepaliveRequest.
  */
   keepaliveRequest: 'Back/forward cache is disabled due to a keepalive request.',
+  /**
+ *  @description Empty string to roll protocol.
+ */
+  authorizationHeader: 'Back/forward cache is disabled due to a keepalive request.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheStrings.ts', UIStrings);
@@ -653,4 +657,5 @@ export const NotRestoredReasonDescription = {
   'ErrorDocument': {name: i18nLazyString(UIStrings.errorDocument)},
   'FencedFramesEmbedder': {name: i18nLazyString(UIStrings.fencedFramesEmbedder)},
   'KeepaliveRequest': {name: i18nLazyString(UIStrings.keepaliveRequest)},
+  'AuthorizationHeader': {name: i18nLazyString(UIStrings.authorizationHeader)},
 };

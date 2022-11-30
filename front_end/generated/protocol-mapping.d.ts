@@ -517,8 +517,8 @@ export namespace ProtocolMapping {
     'Tethering.accepted': [Protocol.Tethering.AcceptedEvent];
     'Tracing.bufferUsage': [Protocol.Tracing.BufferUsageEvent];
     /**
-     * Contains an bucket of collected trace events. When tracing is stopped collected events will be
-     * send as a sequence of dataCollected events followed by tracingComplete event.
+     * Contains a bucket of collected trace events. When tracing is stopped collected events will be
+     * sent as a sequence of dataCollected events followed by tracingComplete event.
      */
     'Tracing.dataCollected': [Protocol.Tracing.DataCollectedEvent];
     /**

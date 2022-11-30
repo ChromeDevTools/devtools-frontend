@@ -22,8 +22,7 @@ import lighthousePanelStyles from './lighthousePanel.css.js';
 import {ProtocolService, type LighthouseRun} from './LighthouseProtocolService.js';
 
 import {type ReportJSON, type RunnerResultArtifacts} from './LighthouseReporterTypes.js';
-import * as LighthouseReport from '../../third_party/lighthouse/report/report.js';
-import {LighthouseReportRenderer, LighthouseReportUIFeatures} from './LighthouseReportRenderer.js';
+import {LighthouseReportRenderer} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';
 import {StatusView} from './LighthouseStatusView.js';
@@ -304,49 +303,12 @@ export class LighthousePanel extends UI.Panel.Panel {
       return;
     }
 
-    const reportContainer = this.auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
-    // @ts-ignore Expose LHR on DOM for e2e tests
-    reportContainer._lighthouseResultForTesting = lighthouseResult;
-    // @ts-ignore Expose Artifacts on DOM for e2e tests
-    reportContainer._lighthouseArtifactsForTesting = artifacts;
-
-    const dom = new LighthouseReport.DOM(this.auditResultsElement.ownerDocument as Document, reportContainer);
-    const renderer = new LighthouseReportRenderer(dom) as LighthouseReport.ReportRenderer;
-
-    const el = renderer.renderReport(lighthouseResult, reportContainer);
-    // Linkifying requires the target be loaded. Do not block the report
-    // from rendering, as this is just an embellishment and the main target
-    // could take awhile to load.
-    void this.waitForMainTargetLoad().then(() => {
-      void LighthouseReportRenderer.linkifyNodeDetails(el);
-      void LighthouseReportRenderer.linkifySourceLocationDetails(el);
+    const reportContainer = LighthouseReportRenderer.renderLighthouseReport(lighthouseResult, artifacts, {
+      beforePrint: this.beforePrint.bind(this),
+      afterPrint: this.afterPrint.bind(this),
     });
-    LighthouseReportRenderer.handleDarkMode(el);
-
-    const features = new LighthouseReportUIFeatures(dom, {
-                       getStandaloneReportHTML(): string {
-                         return features.getReportHtml();
-                       },
-                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                     }) as any;
-    features.setBeforePrint(this.beforePrint.bind(this));
-    features.setAfterPrint(this.afterPrint.bind(this));
-    LighthouseReportRenderer.addViewTraceButton(el, features, artifacts);
-    features.initFeatures(lighthouseResult);
 
     this.cachedRenderedReports.set(lighthouseResult, reportContainer);
-  }
-
-  private async waitForMainTargetLoad(): Promise<void> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
-    if (!mainTarget) {
-      return;
-    }
-    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    if (!resourceTreeModel) {
-      return;
-    }
-    await resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
   }
 
   private buildReportUI(lighthouseResult: ReportJSON, artifacts?: RunnerResultArtifacts): void {

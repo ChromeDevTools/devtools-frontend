@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
-import {getBrowserAndPages} from '../../shared/helper.js';
+import {$textContent, getBrowserAndPages} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickStartButton,
@@ -88,8 +88,10 @@ describe('Snapshot', async function() {
     assert.strictEqual(lhr.audits['label'].details.items.length, 3);
 
     // No trace was collected in snapshot mode.
-    const viewTrace = await reportEl.$('.lh-button--trace');
+    const viewTrace = await $textContent('View Trace', reportEl);
     assert.strictEqual(viewTrace, null);
+    const viewOriginalTrace = await $textContent('View Original Trace', reportEl);
+    assert.strictEqual(viewOriginalTrace, null);
 
     // Ensure service worker is not cleared in snapshot mode.
     assert.strictEqual(await getServiceWorkerCount(), 1);

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
-import {getBrowserAndPages} from '../../shared/helper.js';
+import {$textContent, getBrowserAndPages} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickStartButton,
@@ -93,10 +93,10 @@ describe('Timespan', async function() {
 
     // Trace was collected in timespan mode.
     // Timespan mode can only do DevTools throttling so the text will be "View Trace".
-    const viewTraceText = await reportEl.$eval('.lh-button--trace', viewTraceEl => {
-      return viewTraceEl.textContent;
-    });
-    assert.strictEqual(viewTraceText, 'View Trace');
+    const viewTraceButton = await $textContent('View Trace', reportEl);
+    if (!viewTraceButton) {
+      throw new Error('Could not find view trace button');
+    }
 
     // Ensure service worker is not cleared in timespan mode.
     assert.strictEqual(await getServiceWorkerCount(), 1);

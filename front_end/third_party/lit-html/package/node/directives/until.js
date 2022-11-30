@@ -1,7 +1,0 @@
-import{noChange as t}from"../lit-html.js";import{isPrimitive as s}from"../directive-helpers.js";import{AsyncDirective as i}from"../async-directive.js";import{PseudoWeakRef as r,Pauser as e}from"./private-async-helpers.js";import{directive as o}from"../directive.js";
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const n=t=>!s(t)&&"function"==typeof t.then;class h extends i{constructor(){super(...arguments),this._$Cwt=1073741823,this._$Cyt=[],this._$CK=new r(this),this._$CX=new e}render(...s){var i;return null!==(i=s.find((t=>!n(t))))&&void 0!==i?i:t}update(s,i){const r=this._$Cyt;let e=r.length;this._$Cyt=i;const o=this._$CK,h=this._$CX;this.isConnected||this.disconnected();for(let t=0;t<i.length&&!(t>this._$Cwt);t++){const s=i[t];if(!n(s))return this._$Cwt=t,s;t<e&&s===r[t]||(this._$Cwt=1073741823,e=0,Promise.resolve(s).then((async t=>{for(;h.get();)await h.get();const i=o.deref();if(void 0!==i){const r=i._$Cyt.indexOf(s);r>-1&&r<i._$Cwt&&(i._$Cwt=r,i.setValue(t))}})))}return t}disconnected(){this._$CK.disconnect(),this._$CX.pause()}reconnected(){this._$CK.reconnect(this),this._$CX.resume()}}const c=o(h);export{h as UntilDirective,c as until};
-//# sourceMappingURL=until.js.map

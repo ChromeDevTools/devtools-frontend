@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [
+    "lib/lit.js",
+    "lib/directive.js",
+    "lib/directives.js"
+  ]
+}

@@ -9,7 +9,7 @@ import("./visibility.gni")
 devtools_module("lit-html") {
   sources = [ "static.ts" ]
 
-  deps = [ "../../third_party/lit-html:bundle" ]
+  deps = [ "../../third_party/lit:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

@@ -7,7 +7,7 @@
   "i18n",
   "intl-messageformat",
   "lighthouse",
-  "lit-html",
+  "lit",
   "marked",
   "puppeteer",
   "wasmparser"

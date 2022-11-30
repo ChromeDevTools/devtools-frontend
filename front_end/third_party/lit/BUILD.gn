@@ -1,0 +1,37 @@
+# Copyright 2022 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../visibility.gni")
+
+devtools_pre_built("lit") {
+  sources_are_release = false
+
+  sources = [
+    "lib/directive.d.ts",
+    "lib/directive.js",
+    "lib/directive.js.map",
+    "lib/directives.d.ts",
+    "lib/directives.js",
+    "lib/directives.js.map",
+    "lib/lit.d.ts",
+    "lib/lit.js",
+    "lib/lit.js.map",
+    "lit-tsconfig.json",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "lit.ts"
+
+  deps = [ ":lit" ]
+
+  visibility = [
+    # Only visible to the indirect form of Lit that is used by components.
+    "../../ui/lit-html/*",
+  ]
+
+  visibility += devtools_third_party_visibility
+}

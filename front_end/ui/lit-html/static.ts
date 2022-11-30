@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as Lit from '../../third_party/lit/lit.js';
 
 export interface Static {
   value: unknown;
@@ -50,12 +50,12 @@ export function flattenTemplate(strings: TemplateStringsArray, ...values: Templa
   return {strings: newStrings as unknown as TemplateStringsArray, valueMap};
 }
 
-export function html(strings: TemplateStringsArray, ...values: TemplateValues[]): LitHtml.TemplateResult {
+export function html(strings: TemplateStringsArray, ...values: TemplateValues[]): Lit.TemplateResult {
   if (values.some(value => isStaticLiteral(value))) {
     return htmlWithStatics(strings, ...values);
   }
 
-  return LitHtml.html(strings, ...values);
+  return Lit.html(strings, ...values);
 }
 
 export function literal(value: TemplateStringsArray): Static {
@@ -70,7 +70,7 @@ function isStaticLiteral(item: TemplateValues|unknown): item is Static {
 }
 
 const flattenedTemplates = new WeakMap<TemplateStringsArray, FlattenedTemplateValues>();
-function htmlWithStatics(strings: TemplateStringsArray, ...values: TemplateValues[]): LitHtml.TemplateResult {
+function htmlWithStatics(strings: TemplateStringsArray, ...values: TemplateValues[]): Lit.TemplateResult {
   // Check to see if we've already converted this before.
   const existing = flattenedTemplates.get(strings);
   if (existing) {
@@ -83,7 +83,7 @@ function htmlWithStatics(strings: TemplateStringsArray, ...values: TemplateValue
     });
 
     // Pass through to Lit.
-    return LitHtml.html(existing.strings, ...filteredValues);
+    return Lit.html(existing.strings, ...filteredValues);
   }
 
   flattenedTemplates.set(strings, flattenTemplate(strings, ...values));

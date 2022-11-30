@@ -175,6 +175,17 @@ def _CheckExperimentTelemetry(input_api, output_api):
     return results
 
 
+def _CheckESBuildVersion(input_api, output_api):
+    results = [
+        output_api.PresubmitNotifyResult('Running ESBuild version check:')
+    ]
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                         'scripts',
+                                         'check_esbuild_versions.js')
+    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
+    return results
+
+
 def _CheckFormat(input_api, output_api):
     node_modules_affected_files = _getAffectedFiles(input_api, [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules'),
@@ -567,6 +578,7 @@ def _CommonChecks(input_api, output_api):
         input_api, output_api))
 
     results.extend(_CheckFormat(input_api, output_api))
+    results.extend(_CheckESBuildVersion(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     # Run the canned checks from `depot_tools` after the custom DevTools checks.
     # The canned checks for example check that lines have line endings. The

@@ -29,6 +29,9 @@ export class MockProtocolBackend {
   #scriptSources = new Map<string, string>();
   #sourceMapContents = new Map<string, string>();
   #objectProperties = new Map<string, {name: string, value: number}[]>();
+  #breakpointResponses = new Map<
+      string,
+      {response: Promise<Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>>, callback: () => void}>();
   #nextObjectIndex = 0;
   #nextScriptIndex = 0;
 
@@ -36,6 +39,9 @@ export class MockProtocolBackend {
     // One time setup of the response handlers.
     setMockConnectionResponseHandler('Debugger.getScriptSource', this.#getScriptSourceHandler.bind(this));
     setMockConnectionResponseHandler('Runtime.getProperties', this.#getPropertiesHandler.bind(this));
+    setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', this.#setBreakpointByUrlHandler.bind(this));
+    setMockConnectionResponseHandler('Page.getResourceTree', this.#getResourceTreeHandler.bind(this));
+    setMockConnectionResponseHandler('Storage.getStorageKeyForFrame', () => ({storageKey: 'test-key'}));
     SDK.PageResourceLoader.PageResourceLoader.instance({
       forceNew: true,
       loadOverride: async (url: string) => this.#loadSourceMap(url),
@@ -145,6 +151,28 @@ export class MockProtocolBackend {
     return new SDK.DebuggerModel.CallFrame(debuggerModel, scriptObject, payload, 0);
   }
 
+  #getBreakpointKey(url: string, lineNumber: number): string {
+    return url + '@:' + lineNumber;
+  }
+
+  responderToBreakpointByUrlRequest(url: string, lineNumber: number):
+      (response: Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>) => Promise<void> {
+    let requestCallback: () => void = () => {};
+    let responseCallback: (response: Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>) => void;
+    const responsePromise = new Promise<Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>>(resolve => {
+      responseCallback = resolve;
+    });
+    const requestPromise = new Promise<void>(resolve => {
+      requestCallback = resolve;
+    });
+    const key = this.#getBreakpointKey(url, lineNumber);
+    this.#breakpointResponses.set(key, {response: responsePromise, callback: requestCallback});
+    return async (response: Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>) => {
+      responseCallback(response);
+      await requestPromise;
+    };
+  }
+
   #getScriptSourceHandler(request: Protocol.Debugger.GetScriptSourceRequest):
       Protocol.Debugger.GetScriptSourceResponse {
     const scriptSource = this.#scriptSources.get(request.scriptId);
@@ -162,6 +190,28 @@ export class MockProtocolBackend {
         return 'Unknown script';
       },
     };
+  }
+
+  #setBreakpointByUrlHandler(request: Protocol.Debugger.SetBreakpointByUrlRequest):
+      Promise<Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>> {
+    const key = this.#getBreakpointKey(request.url ?? '', request.lineNumber);
+    const responseCallback = this.#breakpointResponses.get(key);
+    if (responseCallback) {
+      this.#breakpointResponses.delete(key);
+      // Announce to the client that the breakpoint request arrived.
+      responseCallback.callback();
+      // Return the response promise.
+      return responseCallback.response;
+    }
+    console.error('Unexpected setBreakpointByUrl request', request);
+    const response = {
+      breakpointId: 'INVALID' as Protocol.Debugger.BreakpointId,
+      locations: [],
+      getError() {
+        return 'Unknown breakpoint';
+      },
+    };
+    return Promise.resolve(response);
   }
 
   #getPropertiesHandler(request: Protocol.Runtime.GetPropertiesRequest): Protocol.Runtime.GetPropertiesResponse {
@@ -192,6 +242,28 @@ export class MockProtocolBackend {
     }
     return {
       result,
+      getError() {
+        return undefined;
+      },
+    };
+  }
+
+  #getResourceTreeHandler(): Protocol.Page.GetResourceTreeResponse {
+    return {
+      frameTree: {
+        frame: {
+          id: 'main' as Protocol.Page.FrameId,
+          loaderId: 'test' as Protocol.Network.LoaderId,
+          url: 'http://example.com',
+          securityOrigin: 'http://example.com',
+          mimeType: 'text/html',
+          domainAndRegistry: 'example.com',
+          secureContextType: Protocol.Page.SecureContextType.Secure,
+          crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
+          gatedAPIFeatures: [],
+        },
+        resources: [],
+      },
       getError() {
         return undefined;
       },

@@ -12,6 +12,9 @@ import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 
+import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import {
   createContentProviderUISourceCode,
@@ -66,7 +69,7 @@ describeWithRealConnection('BreakpointManager', () => {
   }
 
   function createFakeScriptMapping(
-      debuggerModel: TestDebuggerModel, uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      debuggerModel: SDK.DebuggerModel.DebuggerModel, uiSourceCode: Workspace.UISourceCode.UISourceCode,
       SCRIPT_ID: Protocol.Runtime.ScriptId): Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping {
     const sdkLocation = new SDK.DebuggerModel.Location(debuggerModel, SCRIPT_ID as Protocol.Runtime.ScriptId, 13);
     const uiLocation = new Workspace.UISourceCode.UILocation(uiSourceCode, 42);
@@ -78,7 +81,6 @@ describeWithRealConnection('BreakpointManager', () => {
     };
     return mapping;
   }
-
   // Tests if a breakpoint set on a filesystem file was successfully moved to the network file when we expect it.
   async function runBreakpointMovedTest(fileSystem: {
     uiSourceCode: Workspace.UISourceCode.UISourceCode,
@@ -484,5 +486,158 @@ describeWithRealConnection('BreakpointManager', () => {
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
     });
+  });
+});
+
+describeWithMockConnection('BreakpointManager (mock backend)', () => {
+  const URL_HTML = 'http://site/index.html' as Platform.DevToolsPath.UrlString;
+  const INLINE_SCRIPT_START = 41;
+  const BREAKPOINT_UI_LINE = 1;
+  const BREAKPOINT_RAW_LINE = BREAKPOINT_UI_LINE + INLINE_SCRIPT_START;
+  const BREAKPOINT_RESULT_COLUMN = 5;
+  const inlineScriptDescription = {
+    url: URL_HTML,
+    content: 'console.log(1);\nconsole.log(2);\n',
+    startLine: INLINE_SCRIPT_START,
+    startColumn: 0,
+    hasSourceURL: false,
+  };
+
+  let target: SDK.Target.Target;
+  let backend: MockProtocolBackend;
+  let breakpointManager: Bindings.BreakpointManager.BreakpointManager;
+  let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+  beforeEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+    });
+    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
+    backend = new MockProtocolBackend();
+    target = createTarget();
+    breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+  });
+
+  async function uiSourceCodeFromScript(debuggerModel: SDK.DebuggerModel.DebuggerModel, script: SDK.Script.Script):
+      Promise<Workspace.UISourceCode.UISourceCode|null> {
+    const rawLocation = debuggerModel.createRawLocation(script, 0, 0);
+    const uiLocation = await breakpointManager.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    return uiLocation?.uiSourceCode ?? null;
+  }
+
+  it('can set breakpoints in inline scripts', async () => {
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    // Create an inline script and get a UI source code instance for it.
+    const inlineScript = await backend.addScript(target, inlineScriptDescription, null);
+    const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, inlineScript);
+    assertNotNullOrUndefined(uiSourceCode);
+
+    // Register our interest in the breakpoint request.
+    const breakpointResponder = backend.responderToBreakpointByUrlRequest(URL_HTML, BREAKPOINT_RAW_LINE);
+
+    // Set the breakpoint.
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, BREAKPOINT_UI_LINE, 2, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+
+    // Await the breakpoint request at the mock backend and send a CDP response once the request arrives.
+    // Concurrently, enforce update of the breakpoint in the debugger.
+    await Promise.all([
+      breakpointResponder({
+        breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+        locations: [
+          {scriptId: inlineScript.scriptId, lineNumber: BREAKPOINT_RAW_LINE, columnNumber: BREAKPOINT_RESULT_COLUMN},
+        ],
+      }),
+      breakpoint.refreshInDebugger(),
+    ]);
+
+    // Check that the breakpoint was set at the correct location?
+    const locations = breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
+    assert.strictEqual(1, locations.length);
+    assert.strictEqual(1, locations[0].uiLocation.lineNumber);
+    assert.strictEqual(5, locations[0].uiLocation.columnNumber);
+  });
+
+  it('can restore breakpoints in inline scripts', async () => {
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    // Create an inline script and get a UI source code instance for it.
+    const inlineScript = await backend.addScript(target, inlineScriptDescription, null);
+    const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, inlineScript);
+    assertNotNullOrUndefined(uiSourceCode);
+
+    // Register our interest in the breakpoint request.
+    const breakpointResponder = backend.responderToBreakpointByUrlRequest(URL_HTML, BREAKPOINT_RAW_LINE);
+
+    // Set the breakpoint on the front-end/model side.
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, BREAKPOINT_UI_LINE, 2, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [uiSourceCode]);
+
+    // Await the breakpoint request at the mock backend and send a CDP response once the request arrives.
+    // Concurrently, enforce update of the breakpoint in the debugger.
+    await Promise.all([
+      breakpointResponder({
+        breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+        locations: [
+          {scriptId: inlineScript.scriptId, lineNumber: BREAKPOINT_RAW_LINE, columnNumber: BREAKPOINT_RESULT_COLUMN},
+        ],
+      }),
+      breakpoint.refreshInDebugger(),
+    ]);
+
+    // Disconnect from the target. This will also unload the script.
+    breakpointManager.targetManager.removeTarget(target);
+
+    // Make sure the source code for the script was removed from the breakpoint.
+    assert.strictEqual(breakpoint.getUiSourceCodes().size, 0);
+
+    // Create a new target.
+    target = createTarget();
+
+    const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(reloadedDebuggerModel);
+
+    // Load the same inline script (with a different script id!) into the new target.
+    // Once the model loads the script, it wil try to restore the breakpoint. Let us make sure the backend
+    // will be ready to produce a response before adding the script.
+    const reloadedBreakpointResponder = backend.responderToBreakpointByUrlRequest(URL_HTML, BREAKPOINT_RAW_LINE);
+    const reloadedInlineScript = await backend.addScript(target, inlineScriptDescription, null);
+
+    const reloadedUiSourceCode = await uiSourceCodeFromScript(reloadedDebuggerModel, reloadedInlineScript);
+    assertNotNullOrUndefined(reloadedUiSourceCode);
+
+    // Verify the breakpoint was restored at the oriignal unbound location (before the backend binds it).
+    const unboundLocations = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
+    assert.strictEqual(1, unboundLocations.length);
+    assert.strictEqual(1, unboundLocations[0].uiLocation.lineNumber);
+    assert.strictEqual(2, unboundLocations[0].uiLocation.columnNumber);
+
+    // Wait for the breakpoint request for the reloaded script and for the breakpoint update.
+    await Promise.all([
+      reloadedBreakpointResponder({
+        breakpointId: 'RELOADED_BREAK_ID' as Protocol.Debugger.BreakpointId,
+        locations: [{
+          scriptId: reloadedInlineScript.scriptId,
+          lineNumber: BREAKPOINT_RAW_LINE,
+          columnNumber: BREAKPOINT_RESULT_COLUMN,
+        }],
+      }),
+      breakpoint.refreshInDebugger(),
+    ]);
+
+    // Verify the restored position.
+    const boundLocations = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
+    assert.strictEqual(1, boundLocations.length);
+    assert.strictEqual(1, boundLocations[0].uiLocation.lineNumber);
+    assert.strictEqual(5, boundLocations[0].uiLocation.columnNumber);
   });
 });

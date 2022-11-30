@@ -73,6 +73,34 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     return scripts ? scripts.values().next().value : null;
   }
 
+  static rawLineColumnToScriptLineColumn(
+      script: SDK.Script.Script, rawLineNumber: number,
+      rawColumnNumber: number|undefined): {lineNumber: number, columnNumber: number|undefined} {
+    const isInlineScriptWithoutSourceUrl = !script.hasSourceURL && script.isInlineScript();
+    const lineNumber = rawLineNumber - (isInlineScriptWithoutSourceUrl ? script.lineOffset : 0);
+    let columnNumber = rawColumnNumber;
+    if (isInlineScriptWithoutSourceUrl && !lineNumber && columnNumber) {
+      columnNumber -= script.columnOffset;
+    }
+    return {lineNumber, columnNumber};
+  }
+
+  static scriptLineColumnToRawLineColumn(
+      script: SDK.Script.Script, scriptLineNumber: number,
+      scriptColumnNumber: number|undefined): {lineNumber: number, columnNumber: number|undefined} {
+    let lineNumber = scriptLineNumber;
+    let columnNumber = scriptColumnNumber;
+    const isInlineScriptWithoutSourceUrl = !script.hasSourceURL && script.isInlineScript();
+    if (isInlineScriptWithoutSourceUrl) {
+      if (lineNumber === 0 && columnNumber !== undefined) {
+        columnNumber += script.columnOffset;
+      }
+      lineNumber += script.lineOffset;
+    }
+
+    return {lineNumber, columnNumber};
+  }
+
   rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null {
     const script = rawLocation.script();
     if (!script) {
@@ -82,26 +110,21 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     if (!uiSourceCode) {
       return null;
     }
-    const isInlineScriptWithoutSourceUrl = !script.hasSourceURL && script.isInlineScript();
-    const lineNumber = rawLocation.lineNumber - (isInlineScriptWithoutSourceUrl ? script.lineOffset : 0);
-    let columnNumber = rawLocation.columnNumber || 0;
-    if (isInlineScriptWithoutSourceUrl && !lineNumber && columnNumber) {
-      columnNumber -= script.columnOffset;
-    }
+    const {lineNumber, columnNumber} =
+        DefaultScriptMapping.rawLineColumnToScriptLineColumn(script, rawLocation.lineNumber, rawLocation.columnNumber);
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
 
-  uiLocationToRawLocations(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number):
-      SDK.DebuggerModel.Location[] {
+  uiLocationToRawLocations(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number,
+      columnNumber: number|undefined): SDK.DebuggerModel.Location[] {
     const script = this.#uiSourceCodeToScriptsMap.get(uiSourceCode);
     if (!script) {
       return [];
     }
-    if (!script.hasSourceURL && script.isInlineScript()) {
-      return [this.#debuggerModel.createRawLocation(
-          script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset)];
-    }
-    return [this.#debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
+    ({lineNumber, columnNumber} =
+         DefaultScriptMapping.scriptLineColumnToRawLineColumn(script, lineNumber, columnNumber));
+    return [this.#debuggerModel.createRawLocation(script, lineNumber, columnNumber ?? 0)];
   }
 
   private parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {

@@ -227,8 +227,62 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     return breakpointItems.length > 0;
   }
 
+  static getScriptForInlineUiSourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script|null {
+    const script = DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
+    if (script && script.isInlineScript() && !script.hasSourceURL) {
+      return script;
+    }
+    return null;
+  }
+
+  // For inline scripts, this function translates the line-column coordinates into the coordinates
+  // of the ebedding document. For other scripts, it just returns unchanged line-column.
+  static breakpointLocationFromUiLocation(uiLocation: Workspace.UISourceCode.UILocation):
+      {lineNumber: number, columnNumber: number|undefined} {
+    const uiSourceCode = uiLocation.uiSourceCode;
+    const script = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode);
+    const {lineNumber, columnNumber} = script ?
+        DefaultScriptMapping.scriptLineColumnToRawLineColumn(script, uiLocation.lineNumber, uiLocation.columnNumber) :
+        uiLocation;
+    return {lineNumber, columnNumber};
+  }
+
+  // For inline scripts, this function translates the line-column coordinates of the embedding
+  // document into the coordinates of the script. Other UI source code coordinated are not
+  // affected.
+  static uiLocationFromBreakpointLocation(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number,
+      columnNumber: number|undefined): Workspace.UISourceCode.UILocation {
+    const script = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode);
+    if (script) {
+      ({lineNumber, columnNumber} =
+           DefaultScriptMapping.rawLineColumnToScriptLineColumn(script, lineNumber, columnNumber));
+    }
+    return uiSourceCode.uiLocation(lineNumber, columnNumber);
+  }
+
+  // Returns true for if the given (raw) position is within the script or if the script
+  // is null. This is used to filter breakpoints if a script is known.
+  static isValidPositionInScript(lineNumber: number, columnNumber: number|undefined, script: SDK.Script.Script|null):
+      boolean {
+    if (!script) {
+      return true;
+    }
+    if (lineNumber < script.lineOffset || lineNumber > script.endLine) {
+      return false;
+    }
+    if (lineNumber === script.lineOffset && columnNumber && columnNumber < script.columnOffset) {
+      return false;
+    }
+    if (lineNumber === script.endLine && (!columnNumber || columnNumber >= script.endColumn)) {
+      return false;
+    }
+    return true;
+  }
+
   private restoreBreakpoints(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const url = uiSourceCode.url();
+    const script = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode);
+    const url = script?.sourceURL ?? uiSourceCode.url();
     if (!url) {
       return;
     }
@@ -236,8 +290,13 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.storage.mute();
     const breakpointItems = this.storage.breakpointItems(url);
     for (const item of breakpointItems) {
+      const lineNumber = item.lineNumber;
+      const columnNumber = item.columnNumber;
+      if (!BreakpointManager.isValidPositionInScript(lineNumber, columnNumber, script)) {
+        continue;
+      }
       this.innerSetBreakpoint(
-          uiSourceCode, item.lineNumber, item.columnNumber, item.condition, item.enabled, BreakpointOrigin.OTHER);
+          uiSourceCode, lineNumber, columnNumber, item.condition, item.enabled, BreakpointOrigin.OTHER);
     }
     this.storage.unmute();
   }
@@ -274,14 +333,17 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       void Common.Revealer.reveal(normalizedLocation);
       uiLocation = normalizedLocation;
     }
+    const breakpointLocation = BreakpointManager.breakpointLocationFromUiLocation(uiLocation);
     return this.innerSetBreakpoint(
-        uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, condition, enabled, origin);
+        uiLocation.uiSourceCode, breakpointLocation.lineNumber, breakpointLocation.columnNumber, condition, enabled,
+        origin);
   }
 
   private innerSetBreakpoint(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number|undefined,
       condition: string, enabled: boolean, origin: BreakpointOrigin): Breakpoint {
-    const itemId = BreakpointManager.breakpointStorageId(uiSourceCode.url(), lineNumber, columnNumber);
+    const url = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode)?.sourceURL ?? uiSourceCode.url();
+    const itemId = BreakpointManager.breakpointStorageId(url, lineNumber, columnNumber);
     let breakpoint = this.#breakpointByStorageId.get(itemId);
     if (breakpoint) {
       breakpoint.updateState(condition, enabled);
@@ -289,8 +351,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       void breakpoint.updateBreakpoint();
       return breakpoint;
     }
-    breakpoint =
-        new Breakpoint(this, uiSourceCode, uiSourceCode.url(), lineNumber, columnNumber, condition, enabled, origin);
+    breakpoint = new Breakpoint(this, uiSourceCode, url, lineNumber, columnNumber, condition, enabled, origin);
     this.#breakpointByStorageId.set(itemId, breakpoint);
     return breakpoint;
   }
@@ -502,7 +563,8 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     this.#origin = origin;
 
     this.#uiLocations = new Set();   // Bound locations
-    this.uiSourceCodes = new Set();  // All known UISourceCodes with this url
+    this.uiSourceCodes = new Set();  // All known UISourceCodes with this url. This also includes uiSourceCodes
+                                     // for the inline scripts embedded in a resource with this URL.
 
     this.currentState = null;
 
@@ -717,7 +779,8 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   }
 
   private defaultUILocation(uiSourceCode: Workspace.UISourceCode.UISourceCode): Workspace.UISourceCode.UILocation {
-    return uiSourceCode.uiLocation(this.#lineNumberInternal, this.#columnNumberInternal);
+    return BreakpointManager.uiLocationFromBreakpointLocation(
+        uiSourceCode, this.#lineNumberInternal, this.#columnNumberInternal);
   }
 
   private removeAllUnboundLocations(): void {
@@ -831,8 +894,10 @@ export class ModelBreakpoint {
     if (!this.#breakpoint.getIsRemoved() && this.#breakpoint.enabled() && !this.scriptDiverged()) {
       let debuggerLocations: SDK.DebuggerModel.Location[] = [];
       for (const uiSourceCode of this.#breakpoint.getUiSourceCodes()) {
-        const locations =
-            await DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+        const {lineNumber: uiLineNumber, columnNumber: uiColumnNumber} =
+            BreakpointManager.uiLocationFromBreakpointLocation(uiSourceCode, lineNumber, columnNumber);
+        const locations = await DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
+            uiSourceCode, uiLineNumber, uiColumnNumber);
         debuggerLocations = locations.filter(location => location.debuggerModel === this.#debuggerModel);
         if (debuggerLocations.length) {
           break;

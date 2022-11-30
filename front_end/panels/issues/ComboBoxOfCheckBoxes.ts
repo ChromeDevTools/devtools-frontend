@@ -59,7 +59,7 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
     });
 
     for (const {title, callback} of this.#headers) {
-      contextMenu.headerSection().appendCheckboxItem(title, () => callback());
+      contextMenu.headerSection().appendItem(title, () => callback());
     }
     for (const [index, {title, enabled}] of this.#options.entries()) {
       contextMenu.defaultSection().appendCheckboxItem(title, () => {

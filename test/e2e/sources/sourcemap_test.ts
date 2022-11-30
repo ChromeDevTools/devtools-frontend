@@ -15,7 +15,6 @@ import {
   waitFor,
   waitForElementWithTextContent,
   waitForFunction,
-  waitForFunctionWithTries,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
@@ -43,6 +42,7 @@ import {
   STEP_INTO_BUTTON,
   STEP_OUT_BUTTON,
   STEP_OVER_BUTTON,
+  waitForStackTopMatch,
 } from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async function() {
@@ -62,17 +62,6 @@ describe('The Sources Tab', async function() {
       assert.deepEqual(scriptLocation, 'sourcemap-codesplit.ts:3');
     }
   });
-
-  async function waitForStackTopMatch(matcher: RegExp) {
-    // The call stack is updated asynchronously, so let us wait until we see the correct one
-    // (or report the last one we have seen before timeout).
-    let stepLocation = '<no call stack>';
-    await waitForFunctionWithTries(async () => {
-      stepLocation = await retrieveTopCallFrameWithoutResuming() ?? '<invalid>';
-      return stepLocation?.match(matcher);
-    }, {tries: 10});
-    return stepLocation;
-  }
 
   it('steps over a source line mapping to a range with several statements', async () => {
     const {target, frontend} = getBrowserAndPages();

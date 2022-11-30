@@ -36,7 +36,10 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Formatter from '../../models/formatter/formatter.js';
+import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
@@ -330,33 +333,48 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.expressionInternal;
   }
 
+  async #evaluateExpression(executionContext: SDK.RuntimeModel.ExecutionContext, expression: string):
+      Promise<SDK.RuntimeModel.EvaluationResult> {
+    if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps')) {
+      const callFrame = executionContext.debuggerModel.selectedCallFrame();
+      if (callFrame) {
+        const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
+        try {
+          expression =
+              await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);
+        } catch {
+        }
+      }
+    }
+
+    return executionContext.evaluate(
+        {
+          expression,
+          objectGroup: WatchExpression.watchObjectGroupId,
+          includeCommandLineAPI: false,
+          silent: true,
+          returnByValue: false,
+          generatePreview: false,
+          allowUnsafeEvalBlockedByCSP: undefined,
+          disableBreaks: undefined,
+          replMode: undefined,
+          throwOnSideEffect: undefined,
+          timeout: undefined,
+        },
+        /* userGesture */ false,
+        /* awaitPromise */ false);
+  }
+
   update(): void {
     const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (currentExecutionContext && this.expressionInternal) {
-      void currentExecutionContext
-          .evaluate(
-              {
-                expression: this.expressionInternal,
-                objectGroup: WatchExpression.watchObjectGroupId,
-                includeCommandLineAPI: false,
-                silent: true,
-                returnByValue: false,
-                generatePreview: false,
-                allowUnsafeEvalBlockedByCSP: undefined,
-                disableBreaks: undefined,
-                replMode: undefined,
-                throwOnSideEffect: undefined,
-                timeout: undefined,
-              },
-              /* userGesture */ false,
-              /* awaitPromise */ false)
-          .then(result => {
-            if ('object' in result) {
-              this.createWatchExpression(result.object, result.exceptionDetails);
-            } else {
-              this.createWatchExpression();
-            }
-          });
+      void this.#evaluateExpression(currentExecutionContext, this.expressionInternal).then(result => {
+        if ('object' in result) {
+          this.createWatchExpression(result.object, result.exceptionDetails);
+        } else {
+          this.createWatchExpression();
+        }
+      });
     } else {
       this.createWatchExpression();
     }
@@ -511,6 +529,8 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       if (event.key === 'Enter' && !this.isEditing()) {
         this.startEditing();
         event.consume(true);
+      } else if (event.key === 'Delete' && !this.isEditing()) {
+        this.deleteWatchExpression(event);
       }
     });
   }

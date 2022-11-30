@@ -27,6 +27,7 @@ import {
   typeText,
   waitFor,
   waitForFunction,
+  waitForFunctionWithTries,
 } from '../../shared/helper.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
@@ -321,6 +322,17 @@ export async function retrieveTopCallFrameWithoutResuming() {
   const scriptLocation = await locationHandle.evaluate(location => location.textContent);
 
   return scriptLocation;
+}
+
+export async function waitForStackTopMatch(matcher: RegExp) {
+  // The call stack is updated asynchronously, so let us wait until we see the correct one
+  // (or report the last one we have seen before timeout).
+  let stepLocation = '<no call stack>';
+  await waitForFunctionWithTries(async () => {
+    stepLocation = await retrieveTopCallFrameWithoutResuming() ?? '<invalid>';
+    return stepLocation?.match(matcher);
+  }, {tries: 10});
+  return stepLocation;
 }
 
 declare global {

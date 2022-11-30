@@ -37,6 +37,7 @@ node_ts_library("sources") {
     "sources-list_test.ts",
     "sourceurl_test.ts",
     "syntax-highlighting_test.ts",
+    "watch-expressions_test.ts",
     "worker-relative-sourcemap_test.ts",
   ]
 

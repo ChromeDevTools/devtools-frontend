@@ -442,7 +442,7 @@ describe('ResourceType', () => {
     });
 
     it('returns correct MIME type for .svelte files', () => {
-      assert.strictEqual(ResourceType.mimeFromExtension('svelte'), 'text/html');
+      assert.strictEqual(ResourceType.mimeFromExtension('svelte'), 'text/x.svelte');
     });
 
     it('returns correct MIME type for .vue files', () => {
@@ -486,7 +486,7 @@ describe('ResourceType', () => {
 
     it('returns correct MIME type for .svelte files', () => {
       const url = 'http://localhost/App.svelte' as Platform.DevToolsPath.UrlString;
-      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/html');
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x.svelte');
     });
 
     it('returns correct MIME type for .vue files', () => {

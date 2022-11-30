@@ -220,6 +220,14 @@ export async function registerServiceWorker() {
   assert.strictEqual(await getServiceWorkerCount(), 1);
 }
 
+export async function unregisterAllServiceWorkers() {
+  const {target} = await getBrowserAndPages();
+  await target.evaluate(async () => {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map(r => r.unregister()));
+  });
+}
+
 export async function interceptNextFileSave(): Promise<() => Promise<string>> {
   const {frontend} = await getBrowserAndPages();
   await frontend.evaluate(() => {

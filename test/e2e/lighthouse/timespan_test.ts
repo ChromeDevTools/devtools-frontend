@@ -17,6 +17,7 @@ import {
   selectDevice,
   selectMode,
   setThrottlingMethod,
+  unregisterAllServiceWorkers,
   waitForResult,
   waitForTimespanStarted,
 } from '../helpers/lighthouse-helpers.js';
@@ -35,6 +36,10 @@ describe('Timespan', async function() {
     expectError(/Protocol Error: the message with wrong session id/);
     expectError(/Protocol Error: the message with wrong session id/);
     expectError(/Protocol Error: the message with wrong session id/);
+  });
+
+  afterEach(async () => {
+    await unregisterAllServiceWorkers();
   });
 
   it('successfully returns a Lighthouse report for user interactions', async () => {

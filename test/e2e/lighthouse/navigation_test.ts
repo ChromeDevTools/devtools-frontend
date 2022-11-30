@@ -20,6 +20,7 @@ import {
   setLegacyNavigation,
   setThrottlingMethod,
   setToolbarCheckboxWithText,
+  unregisterAllServiceWorkers,
   waitForResult,
 } from '../helpers/lighthouse-helpers.js';
 
@@ -37,6 +38,10 @@ describe('Navigation', async function() {
     expectError(/Protocol Error: the message with wrong session id/);
     expectError(/Protocol Error: the message with wrong session id/);
     expectError(/Protocol Error: the message with wrong session id/);
+  });
+
+  afterEach(async () => {
+    await unregisterAllServiceWorkers();
   });
 
   const modes = ['legacy', 'FR'];

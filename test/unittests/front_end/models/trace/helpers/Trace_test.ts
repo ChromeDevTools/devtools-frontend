@@ -98,4 +98,36 @@ describe('TraceModel helpers', async () => {
       assert.deepEqual(events, [event3, event2, event1]);
     });
   });
+
+  describe('getNavigationForTraceEvent', () => {
+    it('returns the correct navigation for a request', async () => {
+      const {NetworkRequests, Meta} = await loadModelDataFromTraceFile('multiple-navigations.json.gz');
+      const request1 = NetworkRequests.byTime[0];
+      const navigationForFirstRequest = TraceModel.Helpers.Trace.getNavigationForTraceEvent(
+          request1, request1.args.data.frame, Meta.navigationsByFrameId);
+      assert.isUndefined(navigationForFirstRequest?.ts);
+
+      const request2 = NetworkRequests.byTime[1];
+      const navigationForSecondRequest = TraceModel.Helpers.Trace.getNavigationForTraceEvent(
+          request2, request2.args.data.frame, Meta.navigationsByFrameId);
+      assert.strictEqual(navigationForSecondRequest?.ts, TraceModel.Types.Timing.MicroSeconds(636471400029));
+    });
+
+    // TODO(jacktfranklin): re-enable once PageLoadMetrics handler is implemented.
+    // it('returns the correct navigation for a page load event', async () => {
+    //   const {PageLoadMetrics, Meta} = await loadModelDataFromTraceFile('multiple-navigations.json.gz');
+    //   const firstNavigationId = Meta.navigationsByNavigationId.keys().next().value;
+
+    //   const fcp = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId)
+    //                   ?.get(firstNavigationId)
+    //                   ?.get(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP);
+    //   if (!fcp || !fcp.event) {
+    //     assert.fail('FCP not found');
+    //     return;
+    //   }
+    //   const navigationForFirstRequest =
+    //       TraceModel.Helpers.Trace.getNavigationForTraceEvent(fcp.event, Meta.mainFrameId, Meta.navigationsByFrameId);
+    //   assert.strictEqual(navigationForFirstRequest?.args.data?.navigationId, firstNavigationId);
+    // });
+  });
 });

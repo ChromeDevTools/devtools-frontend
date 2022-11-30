@@ -4,6 +4,7 @@
 
 import type * as Types from '../types/types.js';
 import * as Common from '../../../core/common/common.js';
+import * as Platform from '../../../core/platform/platform.js';
 
 export function extractOriginFromTrace(firstNavigationURL: string): string|null {
   const url = Common.ParsedURL.ParsedURL.fromString(firstNavigationURL);
@@ -66,4 +67,26 @@ export function sortTraceEventsInPlace(events: Types.TraceEvents.TraceEventData[
     }
     return 0;
   });
+}
+
+export function getNavigationForTraceEvent(
+    event: Types.TraceEvents.TraceEventData,
+    eventFrameId: string,
+    navigationsByFrameId: Map<string, Types.TraceEvents.TraceEventNavigationStart[]>,
+    ): Types.TraceEvents.TraceEventNavigationStart|null {
+  const navigations = navigationsByFrameId.get(eventFrameId);
+  if (!navigations || eventFrameId === '') {
+    // This event's navigation has been filtered out by the meta handler as a noise event
+    // or contains an empty frameId.
+    return null;
+  }
+
+  const eventNavigationIndex =
+      Platform.ArrayUtilities.nearestIndexFromEnd(navigations, navigation => navigation.ts <= event.ts);
+
+  if (eventNavigationIndex === null) {
+    // This event's navigation has been filtered out by the meta handler as a noise event.
+    return null;
+  }
+  return navigations[eventNavigationIndex];
 }

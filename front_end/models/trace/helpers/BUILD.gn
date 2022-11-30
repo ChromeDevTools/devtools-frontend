@@ -14,6 +14,7 @@ devtools_module("helpers") {
 
   deps = [
     "../../../core/common:bundle",
+    "../../../core/platform:bundle",
     "../types:bundle",
   ]
 }

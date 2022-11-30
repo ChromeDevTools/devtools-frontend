@@ -29,6 +29,8 @@ devtools_pre_built("codemirror.next-sources") {
     "chunk/php.js.map",
     "chunk/python.js",
     "chunk/python.js.map",
+    "chunk/svelte.js",
+    "chunk/svelte.js.map",
     "chunk/wast.js",
     "chunk/wast.js.map",
     "chunk/xml.js",

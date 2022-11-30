@@ -90,6 +90,9 @@ export async function scss() {
 export async function shell() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/shell')).shell);
 }
+export async function svelte() {
+  return import('@replit/codemirror-lang-svelte');
+}
 export async function cssStreamParser() {
   return (await import('@codemirror/legacy-modes/mode/css') as any).css;
 }

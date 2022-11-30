@@ -12,10 +12,13 @@ export default [{
     },
     chunkFileNames(info) {
       for (let mod of Object.keys(info.modules)) {
-        let name = (/@codemirror\/([\w-]+)/.exec(mod) || [])[1];
-        if (name === 'view') return 'chunk/codemirror.js';
-        if (/^lang-/.test(name)) return `chunk/${name.slice(5)}.js`;
-        if (name === 'legacy-modes') return 'chunk/legacy.js';
+        const match = /(@codemirror\/|@replit\/codemirror-)(?<name>[\w-]+)/.exec(mod);
+        if (match) {
+          const {name} = match.groups;
+          if (name === 'view') return 'chunk/codemirror.js';
+          if (/lang-/.test(name)) return `chunk/${name.slice(5)}.js`;
+          if (name === 'legacy-modes') return 'chunk/legacy.js';
+        }
       }
       throw new Error('Failed to determine a chunk name for ' + Object.keys(info.modules));
     },

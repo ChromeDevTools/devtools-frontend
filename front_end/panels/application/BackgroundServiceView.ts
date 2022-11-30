@@ -55,6 +55,10 @@ const UIStrings = {
   */
   showEventsFromOtherDomains: 'Show events from other domains',
   /**
+  *@description Text of a checkbox to show events for other dtorage keys
+  */
+  showEventsForOtherStorageKeys: 'Show events from other storage partitions',
+  /**
   *@description Title of an action under the Background Services category that can be invoked through the Command Menu
   */
   stopRecordingEvents: 'Stop recording events',
@@ -74,6 +78,10 @@ const UIStrings = {
   *@description Text for the origin of something
   */
   origin: 'Origin',
+  /**
+  *@description Text for the storage key of something
+  */
+  storageKey: 'Storage Key',
   /**
   *@description Text in Background Service View of the Application panel. The Scope is a URL associated with the Service Worker, which limits which pages/sites the Service Worker operates on.
   */
@@ -126,9 +134,11 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   private readonly model: BackgroundServiceModel;
   private readonly serviceWorkerManager: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   private readonly securityOriginManager: SDK.SecurityOriginManager.SecurityOriginManager;
+  private readonly storageKeyManager: SDK.StorageKeyManager.StorageKeyManager;
   private recordAction: UI.ActionRegistration.Action;
   private recordButton!: UI.Toolbar.ToolbarToggle;
   private originCheckbox!: UI.Toolbar.ToolbarCheckbox;
+  private storageKeyCheckbox!: UI.Toolbar.ToolbarCheckbox;
   private saveButton!: UI.Toolbar.ToolbarButton;
   private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly splitWidget: UI.SplitWidget.SplitWidget;
@@ -175,6 +185,15 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     }
     this.securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, () => this.onOriginChanged());
+
+    this.storageKeyManager =
+        this.model.target().model(SDK.StorageKeyManager.StorageKeyManager) as SDK.StorageKeyManager.StorageKeyManager;
+    if (!this.storageKeyManager) {
+      throw new Error('StorageKeyManager instance is missing');
+    }
+    this.storageKeyManager.addEventListener(
+        SDK.StorageKeyManager.Events.MainStorageKeyChanged, () => this.onStorageKeyChanged());
+
     this.recordAction =
         (UI.ActionRegistry.ActionRegistry.instance().action('background-service.toggle-recording') as
          UI.ActionRegistration.Action);
@@ -203,6 +222,10 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.showPreview(null);
   }
 
+  getDataGrid(): DataGrid.DataGrid.DataGridImpl<EventData> {
+    return this.dataGrid;
+  }
+
   /**
    * Creates the toolbar UI element.
    */
@@ -229,6 +252,11 @@ export class BackgroundServiceView extends UI.Widget.VBox {
         i18nString(UIStrings.showEventsFromOtherDomains), i18nString(UIStrings.showEventsFromOtherDomains),
         () => this.refreshView());
     this.toolbar.appendToolbarItem(this.originCheckbox);
+
+    this.storageKeyCheckbox = new UI.Toolbar.ToolbarCheckbox(
+        i18nString(UIStrings.showEventsForOtherStorageKeys), i18nString(UIStrings.showEventsForOtherStorageKeys),
+        () => this.refreshView());
+    this.toolbar.appendToolbarItem(this.storageKeyCheckbox);
   }
 
   /**
@@ -304,6 +332,13 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.refreshView();
   }
 
+  private onStorageKeyChanged(): void {
+    if (this.storageKeyCheckbox.checked()) {
+      return;
+    }
+    this.refreshView();
+  }
+
   private addEvent(serviceEvent: Protocol.BackgroundService.BackgroundServiceEvent): void {
     const data = this.createEventData(serviceEvent);
     const dataNode = new EventDataNode(data, serviceEvent.eventMetadata);
@@ -318,11 +353,12 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   private createDataGrid(): DataGrid.DataGrid.DataGridImpl<EventData> {
     const columns = ([
       {id: 'id', title: '#', weight: 1},
-      {id: 'timestamp', title: i18nString(UIStrings.timestamp), weight: 8},
-      {id: 'eventName', title: i18nString(UIStrings.event), weight: 10},
-      {id: 'origin', title: i18nString(UIStrings.origin), weight: 10},
-      {id: 'swScope', title: i18nString(UIStrings.swScope), weight: 5},
-      {id: 'instanceId', title: i18nString(UIStrings.instanceId), weight: 10},
+      {id: 'timestamp', title: i18nString(UIStrings.timestamp), weight: 7},
+      {id: 'eventName', title: i18nString(UIStrings.event), weight: 8},
+      {id: 'origin', title: i18nString(UIStrings.origin), weight: 8},
+      {id: 'storageKey', title: i18nString(UIStrings.storageKey), weight: 8},
+      {id: 'swScope', title: i18nString(UIStrings.swScope), weight: 4},
+      {id: 'instanceId', title: i18nString(UIStrings.instanceId), weight: 8},
     ] as DataGrid.DataGrid.ColumnDescriptor[]);
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.backgroundServices),
@@ -357,6 +393,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       id: this.dataGrid.rootNode().children.length + 1,
       timestamp: UI.UIUtils.formatTimestamp(serviceEvent.timestamp * 1000, /* full= */ true),
       origin: serviceEvent.origin,
+      storageKey: serviceEvent.storageKey,
       swScope,
       eventName: serviceEvent.eventName,
       instanceId: serviceEvent.instanceId,
@@ -371,14 +408,16 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       return false;
     }
 
-    if (this.originCheckbox.checked()) {
+    if (this.originCheckbox.checked() || this.storageKeyCheckbox.checked()) {
       return true;
     }
 
     // Trim the trailing '/'.
     const origin = event.origin.substr(0, event.origin.length - 1);
+    const storageKey = event.storageKey;
 
-    return this.securityOriginManager.securityOrigins().includes(origin);
+    return this.securityOriginManager.securityOrigins().includes(origin) ||
+        this.storageKeyManager.storageKeys().includes(storageKey);
   }
 
   private createLearnMoreLink(): Element {
@@ -550,6 +589,7 @@ export interface EventData {
   id: number;
   timestamp: string;
   origin: string;
+  storageKey: string;
   swScope: string;
   eventName: string;
   instanceId: string;

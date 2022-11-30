@@ -9,6 +9,7 @@ ts_library("application") {
   sources = [
     "AppManifestView_test.ts",
     "ApplicationPanelSidebar_test.ts",
+    "BackgroundServiceView_test.ts",
     "DOMStorageModel_test.ts",
     "IndexedDBModel_test.ts",
     "InterestGroupStorageView_test.ts",

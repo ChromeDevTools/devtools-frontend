@@ -1,6 +1,6 @@
 import {nodeResolve} from '@rollup/plugin-node-resolve';
+import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
-import {terser} from 'rollup-plugin-terser';
 
 export default [{
   input: './bundle.js',

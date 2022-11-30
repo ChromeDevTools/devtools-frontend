@@ -120,6 +120,7 @@ deps = {
       }
     ],
     'dep_type': 'cipd',
+    'condition': 'build_with_chromium == False',
   },
 }
 

@@ -55,7 +55,7 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
     topPanel.contentElement.appendChild(this.#sharedStorageEventGrid);
     this.#sharedStorageEventGrid.addEventListener('cellfocused', this.#onFocus.bind(this));
 
-    this.#getMainResourceTreeModel()?.addEventListener(
+    this.#getMainFrameResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.MainFrameNavigated, this.clearEvents, this);
 
     this.#noDisplayView.contentElement.classList.add('placeholder');
@@ -63,13 +63,13 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
     noDisplayDiv.textContent = i18nString(UIStrings.clickToDisplayBody);
   }
 
-  #getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
-    return mainTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel) || null;
+  #getMainFrameResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {
+    const mainFrameTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+    return mainFrameTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel) || null;
   }
 
   #getMainFrame(): SDK.ResourceTreeModel.ResourceTreeFrame|null {
-    return this.#getMainResourceTreeModel()?.mainFrame || null;
+    return this.#getMainFrameResourceTreeModel()?.mainFrame || null;
   }
 
   get id(): Protocol.Page.FrameId {

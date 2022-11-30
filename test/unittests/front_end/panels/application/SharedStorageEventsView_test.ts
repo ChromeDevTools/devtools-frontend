@@ -17,56 +17,120 @@ describeWithMockConnection('SharedStorageEventsView', () => {
   const TEST_ORIGIN_B = 'http://b.test';
   const TEST_ORIGIN_C = 'http://c.test';
 
-  const ID = 'AA' as Protocol.Page.FrameId;
+  const ID_A = 'AA' as Protocol.Page.FrameId;
+  const ID_B = 'BB' as Protocol.Page.FrameId;
+  const EMPTY_ID = '' as Protocol.Page.FrameId;
 
   const EVENTS = [
     {
       accessTime: 0,
       type: Protocol.Storage.SharedStorageAccessType.DocumentAppend,
-      mainFrameId: ID,
+      mainFrameId: ID_A,
       ownerOrigin: TEST_ORIGIN_A,
       params: {key: 'key0', value: 'value0'} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 10,
       type: Protocol.Storage.SharedStorageAccessType.WorkletGet,
-      mainFrameId: ID,
+      mainFrameId: ID_A,
       ownerOrigin: TEST_ORIGIN_A,
       params: {key: 'key0'} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 15,
       type: Protocol.Storage.SharedStorageAccessType.WorkletLength,
-      mainFrameId: ID,
+      mainFrameId: ID_A,
       ownerOrigin: TEST_ORIGIN_B,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 20,
       type: Protocol.Storage.SharedStorageAccessType.DocumentClear,
-      mainFrameId: ID,
+      mainFrameId: ID_A,
       ownerOrigin: TEST_ORIGIN_B,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 100,
       type: Protocol.Storage.SharedStorageAccessType.WorkletSet,
-      mainFrameId: ID,
+      mainFrameId: ID_A,
       ownerOrigin: TEST_ORIGIN_C,
       params: {key: 'key0', value: 'value1', ignoreIfPresent: true} as Protocol.Storage.SharedStorageAccessParams,
     },
     {
       accessTime: 150,
       type: Protocol.Storage.SharedStorageAccessType.WorkletRemainingBudget,
-      mainFrameId: ID,
+      mainFrameId: ID_A,
       ownerOrigin: TEST_ORIGIN_C,
+      params: {} as Protocol.Storage.SharedStorageAccessParams,
+    },
+  ];
+
+  const MULTI_PAGE_EVENTS = [
+    {
+      accessTime: 0,
+      type: Protocol.Storage.SharedStorageAccessType.DocumentAppend,
+      mainFrameId: ID_A,
+      ownerOrigin: TEST_ORIGIN_A,
+      params: {key: 'key0', value: 'value0'} as Protocol.Storage.SharedStorageAccessParams,
+    },
+    {
+      accessTime: 10,
+      type: Protocol.Storage.SharedStorageAccessType.WorkletGet,
+      mainFrameId: ID_B,
+      ownerOrigin: TEST_ORIGIN_A,
+      params: {key: 'key0'} as Protocol.Storage.SharedStorageAccessParams,
+    },
+    {
+      accessTime: 15,
+      type: Protocol.Storage.SharedStorageAccessType.WorkletLength,
+      mainFrameId: ID_A,
+      ownerOrigin: TEST_ORIGIN_B,
+      params: {} as Protocol.Storage.SharedStorageAccessParams,
+    },
+    {
+      accessTime: 20,
+      type: Protocol.Storage.SharedStorageAccessType.DocumentClear,
+      mainFrameId: EMPTY_ID,
+      ownerOrigin: TEST_ORIGIN_B,
+      params: {} as Protocol.Storage.SharedStorageAccessParams,
+    },
+    {
+      accessTime: 100,
+      type: Protocol.Storage.SharedStorageAccessType.WorkletSet,
+      mainFrameId: EMPTY_ID,
+      ownerOrigin: TEST_ORIGIN_C,
+      params: {key: 'key0', value: 'value1', ignoreIfPresent: true} as Protocol.Storage.SharedStorageAccessParams,
+    },
+    {
+      accessTime: 150,
+      type: Protocol.Storage.SharedStorageAccessType.WorkletRemainingBudget,
+      mainFrameId: ID_B,
+      ownerOrigin: TEST_ORIGIN_C,
+      params: {} as Protocol.Storage.SharedStorageAccessParams,
+    },
+  ];
+
+  const PAGE_A_EVENTS = [
+    {
+      accessTime: 0,
+      type: Protocol.Storage.SharedStorageAccessType.DocumentAppend,
+      mainFrameId: ID_A,
+      ownerOrigin: TEST_ORIGIN_A,
+      params: {key: 'key0', value: 'value0'} as Protocol.Storage.SharedStorageAccessParams,
+    },
+    {
+      accessTime: 15,
+      type: Protocol.Storage.SharedStorageAccessType.WorkletLength,
+      mainFrameId: ID_A,
+      ownerOrigin: TEST_ORIGIN_B,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
     },
   ];
 
   it('records events', () => {
     const view = new View.SharedStorageEventsView();
-    view.setDefaultIdForTesting(ID);
+    view.setDefaultIdForTesting(ID_A);
     for (const event of EVENTS) {
       view.addEvent(event);
     }
@@ -75,7 +139,7 @@ describeWithMockConnection('SharedStorageEventsView', () => {
 
   it('ignores duplicates', () => {
     const view = new View.SharedStorageEventsView();
-    view.setDefaultIdForTesting(ID);
+    view.setDefaultIdForTesting(ID_A);
     for (const event of EVENTS) {
       view.addEvent(event);
     }
@@ -91,7 +155,7 @@ describeWithMockConnection('SharedStorageEventsView', () => {
 
   it('updates sidebarWidget upon receiving cellFocusedEvent', async () => {
     const view = new View.SharedStorageEventsView();
-    view.setDefaultIdForTesting(ID);
+    view.setDefaultIdForTesting(ID_A);
     for (const event of EVENTS) {
       view.addEvent(event);
     }
@@ -115,7 +179,7 @@ describeWithMockConnection('SharedStorageEventsView', () => {
 
   it('clears sidebarWidget upon clearEvents', async () => {
     const view = new View.SharedStorageEventsView();
-    view.setDefaultIdForTesting(ID);
+    view.setDefaultIdForTesting(ID_A);
     for (const event of EVENTS) {
       view.addEvent(event);
     }
@@ -139,5 +203,14 @@ describeWithMockConnection('SharedStorageEventsView', () => {
     assert.isTrue(spy.calledTwice);
     assert.notDeepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
     assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('Click'));
+  });
+
+  it('records events only from the target page', () => {
+    const view = new View.SharedStorageEventsView();
+    view.setDefaultIdForTesting(ID_A);
+    for (const event of MULTI_PAGE_EVENTS) {
+      view.addEvent(event);
+    }
+    assert.deepEqual(view.getEventsForTesting(), PAGE_A_EVENTS);
   });
 });

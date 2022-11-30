@@ -821,7 +821,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     const cellElement = getCellElementFromNodeAndColumnId(view.dataGrid, selectedNode, 'key');
     assertNotNullOrUndefined(cellElement);
 
-    //  Editing a key will cause `deleteEntry()`, `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
+    // Editing a key will cause `deleteEntry()`, `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const editedPromise = itemsListener.waitForItemsEditedTotal(1);
     cellElement.textContent = 'key1';
     dispatchKeyDownEvent(cellElement, {key: 'Enter'});
@@ -840,6 +840,9 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.deepEqual(itemsListener.editedEvents, [
       {columnIdentifier: 'key', oldText: 'key2', newText: 'key1'} as View.SharedStorageItemsDispatcher.ItemEditedEvent,
     ]);
+
+    // Verify that the preview loads.
+    assert.instanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
 
     view.detach();
   });
@@ -904,7 +907,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     const cellElement = getCellElementFromNodeAndColumnId(view.dataGrid, selectedNode, 'value');
     assertNotNullOrUndefined(cellElement);
 
-    //  Editing a value will cause `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
+    // Editing a value will cause `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const editedPromise = itemsListener.waitForItemsEditedTotal(1);
     cellElement.textContent = 'd';
     dispatchKeyDownEvent(cellElement, {key: 'Enter'});
@@ -923,6 +926,9 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.deepEqual(itemsListener.editedEvents, [
       {columnIdentifier: 'value', oldText: 'b', newText: 'd'} as View.SharedStorageItemsDispatcher.ItemEditedEvent,
     ]);
+
+    // Verify that the preview loads.
+    assert.instanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
 
     view.detach();
   });
@@ -987,7 +993,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     const cellElement = getCellElementFromNodeAndColumnId(view.dataGrid, selectedNode, 'key');
     assertNotNullOrUndefined(cellElement);
 
-    //  Editing a key will cause `deleteEntry()`, `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
+    // Editing a key will cause `deleteEntry()`, `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const editedPromise = itemsListener.waitForItemsEditedTotal(1);
     cellElement.textContent = 'key4';
     dispatchKeyDownEvent(cellElement, {key: 'Enter'});
@@ -1006,6 +1012,78 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.deepEqual(itemsListener.editedEvents, [
       {columnIdentifier: 'key', oldText: '', newText: 'key4'} as View.SharedStorageItemsDispatcher.ItemEditedEvent,
     ]);
+
+    // Verify that the preview loads.
+    assert.instanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
+
+    view.detach();
+  });
+
+  it('attempting to edit key of selected entry to an empty key cancels the edit', async () => {
+    assertNotNullOrUndefined(sharedStorageModel);
+    const getMetadataSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata').resolves({
+      metadata: METADATA,
+      getError: () => undefined,
+    });
+    const getEntriesSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageEntries').resolves({
+      entries: ENTRIES,
+      getError: () => undefined,
+    });
+    const deleteEntrySpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_deleteSharedStorageEntry').resolves({
+      getError: () => undefined,
+    });
+    const setEntrySpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageEntry').resolves({
+      getError: () => undefined,
+    });
+
+    // Creating will cause `getMetadata()` to be called.
+    const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
+
+    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
+    const refreshedPromise1 = itemsListener.waitForItemsRefreshed();
+
+    // Showing will cause `getMetadata()` and `getEntries()` to be called.
+    view.markAsRoot();
+    view.show(document.body);
+    await refreshedPromise1;
+
+    assert.isTrue(getMetadataSpy.calledTwice);
+    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
+    assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
+
+    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+
+    // Select the second row.
+    const node = selectNodeByKey(view.dataGrid, 'key2');
+    assertNotNullOrUndefined(node);
+    await raf();
+
+    const selectedNode = node as DataGrid.DataGrid.DataGridNode<Protocol.Storage.SharedStorageEntry>;
+    view.dataGrid.startEditingNextEditableColumnOfDataGridNode(selectedNode, 'key', true);
+
+    const cellElement = getCellElementFromNodeAndColumnId(view.dataGrid, selectedNode, 'key');
+    assertNotNullOrUndefined(cellElement);
+
+    // Editing a key with the edit canceled will cause `getMetadata()` and `getEntries()` to be called.
+    itemsListener.resetRefreshed();
+    const refreshedPromise2 = itemsListener.waitForItemsRefreshed();
+    cellElement.textContent = '';
+    dispatchKeyDownEvent(cellElement, {key: 'Enter'});
+    await raf();
+    await refreshedPromise2;
+
+    assert.isTrue(deleteEntrySpy.notCalled);
+    assert.isTrue(setEntrySpy.notCalled);
+    assert.isTrue(getMetadataSpy.calledThrice);
+    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
+    assert.isTrue(getEntriesSpy.calledTwice);
+    assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
+
+    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+
+    // Verify that the preview loads.
+    assert.instanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
 
     view.detach();
   });

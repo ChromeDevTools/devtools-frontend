@@ -53,6 +53,10 @@ const UIStrings = {
    */
   sharedStorageItemEdited: 'The storage item was edited.',
   /**
+   *@description Text for announcing a Shared Storage key/value item edit request has been canceled
+   */
+  sharedStorageItemEditCanceled: 'The storage item edit was canceled.',
+  /**
    *@description Text for announcing number of entries after filtering
    *@example {5} PH1
    */
@@ -234,6 +238,12 @@ export class SharedStorageItemsView extends StorageItemsView {
   async #editingCallback(
       editingNode: DataGrid.DataGrid.DataGridNode<Protocol.Storage.SharedStorageEntry>, columnIdentifier: string,
       oldText: string, newText: string): Promise<void> {
+    if (columnIdentifier === 'key' && newText === '') {
+      // The Shared Storage backend does not currently allow '' as a key, so we only set a new entry with a new key if its new key is nonempty.
+      await this.refreshItems();
+      UI.ARIAUtils.alert(i18nString(UIStrings.sharedStorageItemEditCanceled));
+      return;
+    }
     if (columnIdentifier === 'key') {
       await this.#sharedStorage.deleteEntry(oldText);
       await this.#sharedStorage.setEntry(newText, editingNode.data.value || '', false);
@@ -288,7 +298,7 @@ export class SharedStorageItemsView extends StorageItemsView {
   async #previewEntry(entry: DataGrid.DataGrid.DataGridNode<Protocol.Storage.SharedStorageEntry>|null): Promise<void> {
     const key = entry?.data?.key;
     const value = entry?.data?.value;
-    const wrappedEntry = key && value && {key: key as string, value: value as string} as WrappedEntry;
+    const wrappedEntry = key && {key: key as string, value: value as string || ''} as WrappedEntry;
     if (wrappedEntry) {
       const preview = SourceFrame.JSONView.JSONView.createViewSync(wrappedEntry);
 

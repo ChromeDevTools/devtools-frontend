@@ -21,7 +21,9 @@ ts_library("application") {
     "ServiceWorkersView_test.ts",
     "SharedStorageEventsView_test.ts",
     "SharedStorageItemsView_test.ts",
+    "SharedStorageListTreeElement_test.ts",
     "SharedStorageModel_test.ts",
+    "SharedStorageTreeElement_test.ts",
     "StorageView_test.ts",
     "TrustTokensTreeElement_test.ts",
   ]

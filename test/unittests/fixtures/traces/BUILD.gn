@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("traces") {
   sources = [
+    "animation.json.gz",
     "basic.json.gz",
     "forced-layouts-and-no-gpu.json.gz",
     "lcp-images.json.gz",

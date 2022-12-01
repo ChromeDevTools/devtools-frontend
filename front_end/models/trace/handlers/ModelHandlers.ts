@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+export * as Animation from './AnimationHandler.js';
 export * as GPU from './GPUHandler.js';
 export * as LargestImagePaint from './LargestImagePaintHandler.js';
 export * as LargestTextPaint from './LargestTextPaintHandler.js';

@@ -7,6 +7,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("handlers") {
   testonly = true
   sources = [
+    "AnimationHandler_test.ts",
     "GPUHandler_test.ts",
     "LargestImagePaintHandler_test.ts",
     "LargestTextPaintHandler_test.ts",

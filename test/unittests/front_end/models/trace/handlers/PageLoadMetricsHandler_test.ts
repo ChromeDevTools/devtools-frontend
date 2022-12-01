@@ -107,8 +107,7 @@ describeWithMockConnection('PageLoadMetricsHandler', () => {
       }
     });
 
-    // Need to rewrite the implementation to talk to the SDK directly. Doing this in a follow-up CL.
-    it.skip('[crbug.com/1394997]fetches DOM Nodes from the backend for all LCP events', async () => {
+    it('fetches DOM Nodes from the backend for all LCP events', async () => {
       const target = createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);
       if (!domModel) {
@@ -117,7 +116,7 @@ describeWithMockConnection('PageLoadMetricsHandler', () => {
       }
       const documentNode = {nodeId: 1 as Protocol.DOM.NodeId};
       const domNode = new SDK.DOMModel.DOMNode(domModel);
-      domNode.id = 22 as Protocol.DOM.NodeId;  // 22 is the node from the trace file for the LCP event.
+      domNode.id = 125 as Protocol.DOM.NodeId;  // 125 is the node from the trace file for the LCP event.
 
       // Set related CDP methods responses to return our mock document and node.
       setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: [domNode.id]}));
@@ -127,7 +126,7 @@ describeWithMockConnection('PageLoadMetricsHandler', () => {
       await domModel.requestDocument();
       domModel.registerNode(domNode);
 
-      const {PageLoadMetrics, Meta} = await loadModelDataFromTraceFile('slow-lcp-large-image.json.gz');
+      const {PageLoadMetrics, Meta} = await loadModelDataFromTraceFile('lcp-images.json.gz');
       const pageLoadEventsForMainFrame = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId);
       if (!pageLoadEventsForMainFrame) {
         assert.fail('Page load events for main frame were unexpectedly null.');

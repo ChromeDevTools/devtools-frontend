@@ -4,7 +4,7 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 
 import * as Helpers from '../helpers/helpers.js';
 import {KnownEventName, type TraceEventHandlerName, type HandlerData, type Handlers} from './types.js';
@@ -27,7 +27,7 @@ const metricScoresByFrameId = new Map<string, Map<string, Map<MetricName, Metric
  * Node, so that we can use it to show more information.
  * An LCP event will have a args.data.nodeId property which is the key for this map.
  */
-const lcpEventNodeIdToDOMNodeMap = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>();
+let lcpEventNodeIdToDOMNodeMap = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>();
 
 export function reset(): void {
   metricScoresByFrameId.clear();
@@ -457,12 +457,15 @@ export function scoreClassificationForTotalBlockingTime(tbtTimeInMicroseconds: T
   return scoreClassification;
 }
 
-async function fetchSDKDOMNodeForLCPEvents(_lcpNodeBackendIds: Set<Protocol.DOM.BackendNodeId>): Promise<void> {
-  // TODO(jacktfranklin): re-implement this using SDK directly.
-  // const domServiceModule = await import('../../../../../services/dom/dom.js');
-  // const domNodesMap =
-  //     await domServiceModule.SDKDOMService.SDKDOMService.instance().getDomNodesByBackendIds(lcpNodeBackendIds);
-  // lcpEventNodeIdToDOMNodeMap = domNodesMap || new Map();
+async function fetchSDKDOMNodeForLCPEvents(lcpNodeBackendIds: Set<Protocol.DOM.BackendNodeId>): Promise<void> {
+  const target = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+  const domModel = target?.model(SDK.DOMModel.DOMModel);
+  if (!domModel) {
+    return;
+  }
+
+  const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(lcpNodeBackendIds);
+  lcpEventNodeIdToDOMNodeMap = domNodesMap || new Map();
 }
 
 export async function finalize(): Promise<void> {

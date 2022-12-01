@@ -158,6 +158,12 @@ export class SoftContextMenu {
         });
         observer.observe(devToolsElem);
       }
+
+      // focus on the first menu item
+      if (this.contextMenuElement.children) {
+        const focusElement = this.contextMenuElement.children[0] as HTMLElement;
+        this.highlightMenuItem(focusElement, /* scheduleSubMenu */ false);
+      }
     }
   }
 
@@ -437,6 +443,10 @@ export class SoftContextMenu {
         detailsForElement.subMenuTimer =
             window.setTimeout(this.showSubMenu.bind(this, this.highlightedMenuItemElement), 150);
       }
+    }
+
+    if (this.contextMenuElement) {
+      ARIAUtils.setActiveDescendant(this.contextMenuElement, menuItemElement);
     }
   }
 

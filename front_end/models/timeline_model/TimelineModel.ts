@@ -700,14 +700,18 @@ export class TimelineModelImpl {
   }
 
   private buildGPUEvents(tracingModel: SDK.TracingModel.TracingModel): void {
-    const thread = tracingModel.getThreadByName('Gpu', 'CrGpuMain');
+    const thread =
+        tracingModel.getThreadByName('Gpu', 'CrGpuMain') || tracingModel.getThreadByName('GPU Process', 'CrGpuMain');
     if (!thread) {
       return;
     }
+
     const gpuEventName = RecordType.GPUTask;
     const track = this.ensureNamedTrack(TrackType.GPU);
     track.thread = thread;
-    track.events = thread.events().filter(event => event.name === gpuEventName);
+    track.events = Root.Runtime.experiments.isEnabled('timelineShowAllEvents') ?
+        thread.events() :
+        thread.events().filter(event => event.name === gpuEventName);
   }
 
   private buildLoadingEvents(tracingModel: SDK.TracingModel.TracingModel, events: SDK.TracingModel.Event[]): void {

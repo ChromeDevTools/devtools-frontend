@@ -13,6 +13,7 @@ node_ts_library("application") {
     "service-worker-network_test.ts",
     "service-worker-update_test.ts",
     "session-storage_test.ts",
+    "shared-storage_test.ts",
     "storage_test.ts",
     "websql-database_test.ts",
   ]

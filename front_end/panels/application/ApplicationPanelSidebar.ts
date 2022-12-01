@@ -71,6 +71,15 @@ import {InterestGroupTreeElement} from './InterestGroupTreeElement.js';
 import {OpenedWindowDetailsView, WorkerDetailsView} from './OpenedWindowDetailsView.js';
 import {type ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkersView} from './ServiceWorkersView.js';
+
+import {SharedStorageListTreeElement} from './SharedStorageListTreeElement.js';
+import {
+  SharedStorageModel,
+  Events as SharedStorageModelEvents,
+  type SharedStorageForOrigin,
+} from './SharedStorageModel.js';
+import {SharedStorageTreeElement} from './SharedStorageTreeElement.js';
+
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';
 import {ReportingApiTreeElement} from './ReportingApiTreeElement.js';
@@ -217,6 +226,22 @@ function assertNotMainTarget(targetId: Protocol.Target.TargetID|'main'): asserts
   }
 }
 
+export namespace SharedStorageTreeElementDispatcher {
+  // TODO(crbug.com/1167717): Make this a const enum.
+  // eslint-disable-next-line rulesdir/const_enum
+  export enum Events {
+    SharedStorageTreeElementAdded = 'SharedStorageTreeElementAdded',
+  }
+
+  export interface SharedStorageTreeElementAddedEvent {
+    origin: string;
+  }
+
+  export type EventTypes = {
+    [Events.SharedStorageTreeElementAdded]: SharedStorageTreeElementAddedEvent,
+  };
+}
+
 export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.TargetManager.Observer {
   panel: ResourcesPanel;
   private readonly sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
@@ -230,6 +255,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   cookieListTreeElement: ExpandableApplicationPanelTreeElement;
   trustTokensTreeElement: TrustTokensTreeElement;
   cacheStorageListTreeElement: ServiceWorkerCacheTreeElement;
+  sharedStorageListTreeElement: SharedStorageListTreeElement;
   private backForwardCacheListTreeElement?: BackForwardCacheTreeElement;
   backgroundFetchTreeElement: BackgroundServiceTreeElement|undefined;
   backgroundSyncTreeElement: BackgroundServiceTreeElement|undefined;
@@ -246,6 +272,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   private databaseQueryViews: Map<DatabaseModelDatabase, DatabaseQueryView>;
   private readonly databaseTreeElements: Map<DatabaseModelDatabase, DatabaseTreeElement>;
   private domStorageTreeElements: Map<DOMStorage, DOMStorageTreeElement>;
+  private sharedStorageTreeElements: Map<string, SharedStorageTreeElement>;
   private domains: {
     [x: string]: boolean,
   };
@@ -253,6 +280,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   private target?: SDK.Target.Target;
   private databaseModel?: DatabaseModel|null;
   private previousHoveredElement?: FrameTreeElement;
+  readonly sharedStorageTreeElementDispatcher:
+      Common.ObjectWrapper.ObjectWrapper<SharedStorageTreeElementDispatcher.EventTypes>;
 
   constructor(panel: ResourcesPanel) {
     super();
@@ -331,6 +360,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.interestGroupTreeElement = new InterestGroupTreeElement(panel);
     storageTreeElement.appendChild(this.interestGroupTreeElement);
 
+    this.sharedStorageListTreeElement = new SharedStorageListTreeElement(panel);
+    storageTreeElement.appendChild(this.sharedStorageListTreeElement);
+
     const cacheSectionTitle = i18nString(UIStrings.cache);
     const cacheTreeElement = this.addSidebarSection(cacheSectionTitle);
     this.cacheStorageListTreeElement = new ServiceWorkerCacheTreeElement(panel);
@@ -388,6 +420,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.databaseQueryViews = new Map();
     this.databaseTreeElements = new Map();
     this.domStorageTreeElements = new Map();
+    this.sharedStorageTreeElements = new Map();
     this.domains = {};
 
     this.sidebarTree.contentElement.addEventListener('mousemove', this.onmousemove.bind(this), false);
@@ -415,6 +448,16 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       modelAdded: (model: InterestGroupStorageModel): void => this.interestGroupModelAdded(model),
       modelRemoved: (model: InterestGroupStorageModel): void => this.interestGroupModelRemoved(model),
     });
+    SDK.TargetManager.TargetManager.instance().observeModels(SharedStorageModel, {
+      modelAdded: (model: SharedStorageModel): Promise<void> => this.sharedStorageModelAdded(model).catch(err => {
+        console.error(err);
+      }),
+      modelRemoved: (model: SharedStorageModel): void => this.sharedStorageModelRemoved(model),
+    });
+
+    this.sharedStorageTreeElementDispatcher =
+        new Common.ObjectWrapper.ObjectWrapper<SharedStorageTreeElementDispatcher.EventTypes>();
+
     // Work-around for crbug.com/1152713: Something is wrong with custom scrollbars and size containment.
     // @ts-ignore
     this.contentElement.style.contain = 'layout style';
@@ -554,6 +597,26 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     model.removeEventListener(InterestGroupModelEvents.InterestGroupAccess, this.interestGroupAccess, this);
   }
 
+  private async sharedStorageModelAdded(model: SharedStorageModel): Promise<void> {
+    await model.enable();
+    for (const storage of model.storages()) {
+      await this.addSharedStorage(storage);
+    }
+    model.addEventListener(SharedStorageModelEvents.SharedStorageAdded, this.sharedStorageAdded, this);
+    model.addEventListener(SharedStorageModelEvents.SharedStorageRemoved, this.sharedStorageRemoved, this);
+    model.addEventListener(SharedStorageModelEvents.SharedStorageAccess, this.sharedStorageAccess, this);
+  }
+
+  private sharedStorageModelRemoved(model: SharedStorageModel): void {
+    model.disable();
+    for (const storage of model.storages()) {
+      this.removeSharedStorage(storage);
+    }
+    model.removeEventListener(SharedStorageModelEvents.SharedStorageAdded, this.sharedStorageAdded, this);
+    model.removeEventListener(SharedStorageModelEvents.SharedStorageRemoved, this.sharedStorageRemoved, this);
+    model.removeEventListener(SharedStorageModelEvents.SharedStorageAccess, this.sharedStorageAccess, this);
+  }
+
   private resetWithFrames(): void {
     this.resourcesSection.reset();
     this.reset();
@@ -687,6 +750,50 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       }
     }
     this.domStorageTreeElements.delete(domStorage);
+  }
+
+  private async sharedStorageAdded(event: Common.EventTarget.EventTargetEvent<SharedStorageForOrigin>): Promise<void> {
+    await this.addSharedStorage(event.data);
+  }
+
+  private async addSharedStorage(sharedStorage: SharedStorageForOrigin): Promise<void> {
+    const sharedStorageTreeElement = await SharedStorageTreeElement.createElement(this.panel, sharedStorage);
+
+    // A tree element for `sharedStorage.securityOrigin` may have been added while we were waiting for `sharedStorageTreeElement` to be created.
+    if (this.sharedStorageTreeElements.has(sharedStorage.securityOrigin)) {
+      return;
+    }
+    this.sharedStorageTreeElements.set(sharedStorage.securityOrigin, sharedStorageTreeElement);
+    this.sharedStorageListTreeElement.appendChild(sharedStorageTreeElement);
+    this.sharedStorageTreeElementDispatcher.dispatchEventToListeners(
+        SharedStorageTreeElementDispatcher.Events.SharedStorageTreeElementAdded,
+        {origin: sharedStorage.securityOrigin});
+  }
+
+  private sharedStorageRemoved(event: Common.EventTarget.EventTargetEvent<SharedStorageForOrigin>): void {
+    this.removeSharedStorage(event.data);
+  }
+
+  private removeSharedStorage(sharedStorage: SharedStorageForOrigin): void {
+    const treeElement = this.sharedStorageTreeElements.get(sharedStorage.securityOrigin);
+    if (!treeElement) {
+      return;
+    }
+    const wasSelected = treeElement.selected;
+    const parentListTreeElement = treeElement.parent;
+    if (parentListTreeElement) {
+      parentListTreeElement.removeChild(treeElement);
+      parentListTreeElement.setExpandable(parentListTreeElement.childCount() > 0);
+      if (wasSelected) {
+        parentListTreeElement.select();
+      }
+    }
+    this.sharedStorageTreeElements.delete(sharedStorage.securityOrigin);
+  }
+
+  private sharedStorageAccess(event: Common.EventTarget.EventTargetEvent<Protocol.Storage.SharedStorageAccessedEvent>):
+      void {
+    this.sharedStorageListTreeElement.addEvent(event.data);
   }
 
   selectDatabase(database: DatabaseModelDatabase): void {

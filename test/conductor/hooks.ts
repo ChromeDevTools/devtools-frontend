@@ -59,7 +59,14 @@ const envChromeFeatures = getTestRunnerConfigSetting<string>('chrome-features', 
 
 function launchChrome() {
   // Use port 0 to request any free port.
-  const enabledFeatures = ['Portals', 'PortalsCrossOrigin', 'PartitionedCookies', 'DevToolsTabTarget'];
+  const enabledFeatures = [
+    'Portals',
+    'PortalsCrossOrigin',
+    'PartitionedCookies',
+    'SharedStorageAPI',
+    'FencedFrames',
+    'PrivacySandboxAdsAPIsOverride',
+  ];
   const launchArgs = [
     '--remote-debugging-port=0', '--enable-experimental-web-platform-features',
     // This fingerprint may be generated from the certificate using

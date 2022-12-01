@@ -29,6 +29,9 @@
   width: 160px;
   flex-shrink: 0;
   text-transform: capitalize;
+  display: flex;
+
+  --override-contenteditable-text-color: var(--color-syntax-1);
 }
 
 .header-editable .header-name {
@@ -37,6 +40,7 @@
 
 .header-value {
   word-break: break-all;
+  display: flex;
 }
 
 .header-badge-text {
@@ -127,31 +131,6 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
   background-color: var(--override-header-highlight-background-color);
   border-left: 3px solid var(--color-accent-green);
   padding-left: 5px;
-}
-
-.editable {
-  cursor: text;
-  color: var(--color-text-primary);
-  overflow-wrap: anywhere;
-  min-height: 18px;
-  line-height: 18px;
-  min-width: 0.5em;
-  background: transparent;
-  border: none;
-  outline: none;
-  display: inline-block;
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-}
-
-.editable:hover,
-.editable:focus {
-  box-shadow: 0 0 0 1px var(--color-details-hairline);
-  border-radius: 2px;
-}
-
-.header-editable .header-name .editable {
-  color: var(--color-syntax-1);
 }
 
 .inline-button {

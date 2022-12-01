@@ -9,7 +9,6 @@ import * as Coordinator from '../../../../../../front_end/ui/components/render_c
 import {
   assertElement,
   assertShadowRoot,
-  dispatchFocusOutEvent,
   getCleanTextContentFromElements,
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
@@ -51,12 +50,15 @@ function editHeaderRow(
   assert.isTrue(rows.length >= index + 1, 'Trying to edit row with index greater than # of rows.');
   const row = rows[index];
   assertShadowRoot(row.shadowRoot);
-  const selector =
-      headerAttribute === HeaderAttribute.HeaderName ? '.header-name .editable' : '.header-value .editable';
-  const editable = row.shadowRoot.querySelector(selector);
+  const selector = headerAttribute === HeaderAttribute.HeaderName ? '.header-name' : '.header-value';
+  const editableComponent = row.shadowRoot.querySelector(`${selector} devtools-editable-span`);
+  assertElement(editableComponent, HTMLElement);
+  assertShadowRoot(editableComponent.shadowRoot);
+  const editable = editableComponent.shadowRoot.querySelector('.editable');
   assertElement(editable, HTMLSpanElement);
-  editable.textContent = newValue;
-  dispatchFocusOutEvent(editable, {bubbles: true});
+  editable.focus();
+  editable.innerText = newValue;
+  editable.blur();
 }
 
 async function removeHeaderRow(
@@ -118,13 +120,35 @@ function checkHeaderSectionRow(
     row: NetworkComponents.HeaderSectionRow.HeaderSectionRow, headerName: string, headerValue: string,
     isOverride: boolean, isNameEditable: boolean, isValueEditable: boolean): void {
   assertShadowRoot(row.shadowRoot);
-  assert.strictEqual(row.shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
-  assert.strictEqual(row.shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
   assert.strictEqual(row.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), isOverride);
-  const nameEditable = row.shadowRoot.querySelector('.header-name .editable');
-  assert.strictEqual(Boolean(nameEditable), isNameEditable);
-  const valueEditable = row.shadowRoot.querySelector('.header-value .editable');
-  assert.strictEqual(Boolean(valueEditable), isValueEditable);
+
+  const nameEditableComponent =
+      row.shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>('.header-name devtools-editable-span');
+  if (isNameEditable) {
+    assertElement(nameEditableComponent, HTMLElement);
+    assertShadowRoot(nameEditableComponent.shadowRoot);
+    const nameEditable = nameEditableComponent.shadowRoot.querySelector('.editable');
+    assertElement(nameEditable, HTMLSpanElement);
+    const textContent =
+        nameEditable.textContent?.trim() + (row.shadowRoot.querySelector('.header-name')?.textContent || '').trim();
+    assert.strictEqual(textContent, headerName);
+  } else {
+    assert.strictEqual(nameEditableComponent, null);
+    assert.strictEqual(row.shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
+  }
+
+  const valueEditableComponent =
+      row.shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>('.header-value devtools-editable-span');
+  if (isValueEditable) {
+    assertElement(valueEditableComponent, HTMLElement);
+    assertShadowRoot(valueEditableComponent.shadowRoot);
+    const valueEditable = valueEditableComponent.shadowRoot.querySelector('.editable');
+    assertElement(valueEditable, HTMLSpanElement);
+    assert.strictEqual(valueEditable.textContent?.trim(), headerValue);
+  } else {
+    assert.strictEqual(valueEditableComponent, null);
+    assert.strictEqual(row.shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
+  }
 }
 
 function isRowFocused(
@@ -327,31 +351,15 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assertShadowRoot(component.shadowRoot);
     const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
 
-    const checkRow =
-        (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isOverride: boolean, isEditable: boolean):
-            void => {
-              assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
-              assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
-              assert.strictEqual(shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), isOverride);
-              const editable = shadowRoot.querySelector('.editable');
-              if (isEditable) {
-                assertElement(editable, HTMLSpanElement);
-              } else {
-                assert.strictEqual(editable, null);
-              }
-            };
-
-    assertShadowRoot(rows[0].shadowRoot);
-    checkRow(rows[0].shadowRoot, 'cache-control:', 'max-age=600', false, true);
-    assertShadowRoot(rows[1].shadowRoot);
-    checkRow(rows[1].shadowRoot, 'server:', 'overridden server', true, true);
+    checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=600', false, false, true);
+    checkHeaderSectionRow(rows[1], 'server:', 'overridden server', true, false, true);
 
     Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(false);
     component.data = {request};
     await coordinator.done();
 
-    checkRow(rows[0].shadowRoot, 'cache-control:', 'max-age=600', false, false);
-    checkRow(rows[1].shadowRoot, 'server:', 'overridden server', true, false);
+    checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=600', false, false, false);
+    checkHeaderSectionRow(rows[1], 'server:', 'overridden server', true, false, false);
 
     Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(true);
   });
@@ -400,18 +408,10 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assertShadowRoot(component.shadowRoot);
     const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
 
-    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isOverride: boolean): void => {
-      assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
-      assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
-      assert.strictEqual(shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), isOverride);
-      const editable = shadowRoot.querySelector('.editable');
-      assert.isNull(editable);
-    };
-
     assertShadowRoot(rows[0].shadowRoot);
-    checkRow(rows[0].shadowRoot, 'cache-control:', 'max-age=600', false);
+    checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=600', false, false, false);
     assertShadowRoot(rows[1].shadowRoot);
-    checkRow(rows[1].shadowRoot, 'server:', 'overridden server', true);
+    checkHeaderSectionRow(rows[1], 'server:', 'overridden server', true, false, false);
   });
 
   it('can edit original headers', async () => {

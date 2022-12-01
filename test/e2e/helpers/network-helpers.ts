@@ -98,7 +98,14 @@ export async function setCacheDisabled(disabled: boolean): Promise<void> {
 export async function getTextFromHeadersRow(row: puppeteer.ElementHandle<Element>) {
   const headerNameElement = await waitFor('.header-name', row);
   const headerNameText = await headerNameElement.evaluate(el => el.textContent || '');
+
   const headerValueElement = await waitFor('.header-value', row);
-  const headerValueText = await headerValueElement.evaluate(el => el.textContent || '');
-  return [headerNameText.trim(), headerValueText.trim()];
+  let headerValueText = (await headerValueElement.evaluate(el => el.textContent || '')).trim();
+  if (headerValueText === '') {
+    const headerValueEditableSpanComponent = await waitFor('.header-value devtools-editable-span', row);
+    const editableSpan = await waitFor('.editable', headerValueEditableSpanComponent);
+    headerValueText = (await editableSpan.evaluate(el => el.textContent || '')).trim();
+  }
+
+  return [headerNameText.trim(), headerValueText];
 }

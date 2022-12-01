@@ -1147,6 +1147,8 @@ grd_files_debug_sources = [
   "front_end/panels/network/SignedExchangeInfoView.js",
   "front_end/panels/network/binaryResourceView.css.js",
   "front_end/panels/network/blockedURLsPane.css.js",
+  "front_end/panels/network/components/EditableSpan.css.js",
+  "front_end/panels/network/components/EditableSpan.js",
   "front_end/panels/network/components/HeaderSectionRow.css.js",
   "front_end/panels/network/components/HeaderSectionRow.js",
   "front_end/panels/network/components/RequestHeaderSection.css.js",

@@ -411,12 +411,17 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isEditable: boolean): void => {
       assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
-      assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
-      const editable = shadowRoot.querySelector('.editable');
+      const valueEditableComponent =
+          shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>('.header-value devtools-editable-span');
       if (isEditable) {
-        assertElement(editable, HTMLSpanElement);
+        assertElement(valueEditableComponent, HTMLElement);
+        assertShadowRoot(valueEditableComponent.shadowRoot);
+        const valueEditable = valueEditableComponent.shadowRoot.querySelector('.editable');
+        assertElement(valueEditable, HTMLSpanElement);
+        assert.strictEqual(valueEditable.textContent?.trim(), headerValue);
       } else {
-        assert.strictEqual(editable, null);
+        assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
+        assert.strictEqual(valueEditableComponent, null);
       }
     };
 

@@ -14,6 +14,7 @@ import * as ClientVariations from '../../../third_party/chromium/client-variatio
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 
+import {EditableSpan, type EditableSpanData} from './EditableSpan.js';
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 
 const {render, html} = LitHtml;
@@ -96,18 +97,16 @@ export class HeaderSectionRow extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #header: HeaderDescriptor|null = null;
   readonly #boundRender = this.#render.bind(this);
+  #isHeaderValueEdited = false;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [headerSectionRowStyles];
-    this.#shadow.addEventListener('focusin', this.#onFocusIn.bind(this));
-    this.#shadow.addEventListener('focusout', this.#onFocusOut.bind(this));
-    this.#shadow.addEventListener('keydown', this.#onKeyDown.bind(this));
-    this.#shadow.addEventListener('paste', this.#onPaste.bind(this));
-    this.#shadow.addEventListener('input', this.#onInput.bind(this));
   }
 
   set data(data: HeaderSectionRowData) {
     this.#header = data.header;
+    this.#isHeaderValueEdited =
+        this.#header.originalValue !== undefined && this.#header.value !== this.#header.originalValue;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -123,7 +122,7 @@ export class HeaderSectionRow extends HTMLElement {
     const rowClasses = LitHtml.Directives.classMap({
       row: true,
       'header-highlight': Boolean(this.#header.highlight),
-      'header-overridden': Boolean(this.#header.isOverride),
+      'header-overridden': Boolean(this.#header.isOverride) || this.#isHeaderValueEdited,
       'header-editable': Boolean(this.#header.valueEditable),
     });
 
@@ -135,7 +134,13 @@ export class HeaderSectionRow extends HTMLElement {
           ${this.#header.headerNotSet ?
             html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div> ` :
             LitHtml.nothing
-          }${this.#header.nameEditable ? this.#renderEditable(this.#header.name) : this.#header.name}:
+          }${this.#header.nameEditable ?
+            html`<${EditableSpan.litTagName}
+              @focusout=${this.#onHeaderNameFocusOut}
+              @keydown=${this.#onKeyDown}
+              .data=${{value: this.#header.name} as EditableSpanData}
+            ></${EditableSpan.litTagName}>` :
+            this.#header.name}:
         </div>
         <div
           class="header-value ${this.#header.headerValueIncorrect ? 'header-warning' : ''}"
@@ -147,11 +152,6 @@ export class HeaderSectionRow extends HTMLElement {
       ${this.#maybeRenderBlockedDetails(this.#header.blockedDetails)}
     `, this.#shadow, {host: this});
     // clang-format on
-
-    const editable = this.shadowRoot?.querySelector<HTMLSpanElement>('.header-value .editable');
-    if (editable) {
-      this.#markOverrideStatus(editable, /* canRemoveHighlight */ false);
-    }
   }
 
   #renderHeaderValue(): LitHtml.LitTemplate {
@@ -180,7 +180,13 @@ export class HeaderSectionRow extends HTMLElement {
     `;
     }
     return html`
-      ${this.#renderEditable(this.#header.value || '')}
+      <${EditableSpan.litTagName}
+        @focusout=${this.#onHeaderValueFocusOut}
+        @input=${this.#onHeaderValueEdit}
+        @paste=${this.#onHeaderValueEdit}
+        @keydown=${this.#onKeyDown}
+        .data=${{value: this.#header.value || ''} as EditableSpanData}
+      ></${EditableSpan.litTagName}>
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
       <${Buttons.Button.Button.litTagName}
         title=${i18nString(UIStrings.removeOverride)}
@@ -198,19 +204,9 @@ export class HeaderSectionRow extends HTMLElement {
 
   focus(): void {
     requestAnimationFrame(() => {
-      const editableName = this.#shadow.querySelector<HTMLElement>('.header-name .editable');
+      const editableName = this.#shadow.querySelector<HTMLElement>('.header-name devtools-editable-span');
       editableName?.focus();
     });
-  }
-
-  #renderEditable(value: string): LitHtml.TemplateResult {
-    // This uses LitHtml's `live`-directive, so that when checking whether to
-    // update during re-render, `value` is compared against the actual live DOM
-    // value of the contenteditable element and not the potentially outdated
-    // value from the previous render.
-    // clang-format off
-    return html`<span contenteditable="true" class="editable" tabindex="0" .innerText=${LitHtml.Directives.live(value)}></span>`;
-    // clang-format on
   }
 
   #maybeRenderHeaderValueSuffix(header: HeaderDescriptor): LitHtml.LitTemplate {
@@ -307,125 +303,75 @@ export class HeaderSectionRow extends HTMLElement {
     return LitHtml.nothing;
   }
 
-  #selectAllText(target: HTMLElement): void {
-    const selection = window.getSelection();
-    const range = document.createRange();
-    range.selectNodeContents(target);
-    selection?.removeAllRanges();
-    selection?.addRange(range);
-  }
-
-  #onFocusIn(e: Event): void {
-    const target = e.target as HTMLElement;
-    if (target.matches('.editable')) {
-      this.#selectAllText(target);
-    }
-  }
-
-  #onFocusOut(event: Event): void {
-    const target = event.target as HTMLElement;
-    if (!this.#header || !target.matches('.editable')) {
+  #onHeaderValueFocusOut(event: Event): void {
+    const target = event.target as EditableSpan;
+    if (!this.#header) {
       return;
     }
-    target.innerText = target.innerText.trim();
-    if (target.matches('.header-value .editable')) {
-      this.#markOverrideStatus(target);
+    const headerValue = target.value.trim();
+    if (headerValue !== this.#header.value) {
+      this.#header.value = headerValue;
+      this.dispatchEvent(new HeaderEditedEvent(this.#header.name, headerValue));
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
     }
 
-    const headerNameElement = this.#shadow.querySelector('.header-name') as HTMLElement;
-    const headerValueElement = this.#shadow.querySelector('.header-value .editable') as HTMLElement;
-    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.slice(0, -1));
-    const headerValue = headerValueElement.innerText;
+    // Clear selection (needed when pressing 'enter' in editable span).
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+  }
 
-    if (headerName !== '') {
-      if (headerName !== this.#header.name || headerValue !== this.#header.value) {
-        this.#header.name = headerName;
-        this.#header.value = headerValue;
-        this.dispatchEvent(new HeaderEditedEvent(headerName, headerValue));
-      }
-    } else {
-      // If the header name has been edited to '', reset it to its previous value.
-      const headerNameEditable = this.#shadow.querySelector('.header-name .editable');
-      if (headerNameEditable) {
-        (headerNameEditable as HTMLElement).innerText = this.#header.name || '';
-      }
+  #onHeaderNameFocusOut(event: Event): void {
+    const target = event.target as EditableSpan;
+    if (!this.#header) {
+      return;
+    }
+    const headerName = Platform.StringUtilities.toLowerCaseString(target.value.trim());
+    // If the header name has been edited to '', reset it to its previous value.
+    if (headerName === '') {
+      target.value = this.#header.name;
+    } else if (headerName !== this.#header.name) {
+      this.#header.name = headerName;
+      this.dispatchEvent(new HeaderEditedEvent(headerName, this.#header.value || ''));
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
     }
 
-    // clear selection
+    // Clear selection (needed when pressing 'enter' in editable span).
     const selection = window.getSelection();
     selection?.removeAllRanges();
   }
 
   #onRemoveOverrideClick(): void {
-    const headerNameElement = this.#shadow.querySelector('.header-name') as HTMLElement;
-    const headerValueElement = this.#shadow.querySelector('.header-value .editable') as HTMLElement;
-    const headerName = Platform.StringUtilities.toLowerCaseString(headerNameElement.innerText.slice(0, -1));
-    const headerValue = headerValueElement.innerText;
-    this.dispatchEvent(new HeaderRemovedEvent(headerName, headerValue));
+    if (!this.#header) {
+      return;
+    }
+    const headerValueElement = this.#shadow.querySelector('.header-value devtools-editable-span') as EditableSpan;
+    if (this.#header.originalValue) {
+      headerValueElement.value = this.#header?.originalValue;
+    }
+    this.dispatchEvent(new HeaderRemovedEvent(this.#header.name, this.#header.value || ''));
   }
 
   #onKeyDown(event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
-    const target = event.target as HTMLElement;
+    const target = event.target as EditableSpan;
     if (keyboardEvent.key === 'Escape') {
       event.consume();
-      if (target.matches('.header-name .editable')) {
-        target.innerText = this.#header?.name || '';
-      } else if (target.matches('.header-value .editable')) {
-        target.innerText = this.#header?.value || '';
-        this.#markOverrideStatus(target);
+      if (target.matches('.header-name devtools-editable-span')) {
+        target.value = this.#header?.name || '';
+      } else if (target.matches('.header-value devtools-editable-span')) {
+        target.value = this.#header?.value || '';
+        this.#onHeaderValueEdit(event);
       }
       target.blur();
     }
-    if (keyboardEvent.key === 'Enter') {
-      event.preventDefault();
-      target.blur();
-    }
   }
 
-  #onPaste(event: Event): void {
-    const clipboardEvent = event as ClipboardEvent;
-    event.preventDefault();
-    if (clipboardEvent.clipboardData) {
-      const text = clipboardEvent.clipboardData.getData('text/plain');
-
-      const selection = this.#shadow.getSelection();
-      if (!selection) {
-        return;
-      }
-      selection.deleteFromDocument();
-      selection.getRangeAt(0).insertNode(document.createTextNode(text));
-    }
-    const target = event.target as HTMLElement;
-    if (target.matches('.header-value .editable')) {
-      this.#markOverrideStatus(target);
-    }
-  }
-
-  #markOverrideStatus(editable: HTMLElement, canRemoveHighlight = true): void {
-    if (!this.#header) {
-      return;
-    }
-    // We directly add/remove classes here instead of changing HeaderSectionRowData
-    // to prevent a re-render, which would mess up the current cursor position.
-    const row = this.shadowRoot?.querySelector<HTMLDivElement>('.row');
-    if (!row) {
-      return;
-    }
-    if (this.#header.isOverride || editable.innerText !== this.#header.originalValue) {
-      row.classList.add('header-overridden');
-      if (canRemoveHighlight) {
-        row.classList.remove('header-highlight');
-      }
-    } else {
-      row.classList.remove('header-overridden');
-    }
-  }
-
-  #onInput(event: Event): void {
-    const target = event.target as HTMLElement;
-    if (target.matches('.header-value .editable')) {
-      this.#markOverrideStatus(target);
+  #onHeaderValueEdit(event: Event): void {
+    const editable = event.target as EditableSpan;
+    const isEdited = this.#header?.originalValue !== undefined && this.#header?.originalValue !== editable.value;
+    if (this.#isHeaderValueEdited !== isEdited) {
+      this.#isHeaderValueEdited = isEdited;
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
     }
   }
 }
@@ -435,6 +381,7 @@ ComponentHelpers.CustomElements.defineComponent('devtools-header-section-row', H
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-header-section-row': HeaderSectionRow;
+    'devtools-editable-span': EditableSpan;
   }
 
   interface HTMLElementEventMap {

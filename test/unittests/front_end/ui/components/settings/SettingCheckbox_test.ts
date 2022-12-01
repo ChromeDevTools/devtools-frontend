@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../../front_end/core/root/root.js';
 import * as Settings from '../../../../../../front_end/ui/components/settings/settings.js';
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import {createFakeSetting} from '../../../helpers/EnvironmentHelpers.js';
@@ -20,6 +23,13 @@ function renderSettingCheckbox(data: Settings.SettingCheckbox.SettingCheckboxDat
 }
 
 describe('SettingCheckbox', () => {
+  beforeEach(() => {
+    Root.Runtime.experiments.clearForTest();
+  });
+  afterEach(() => {
+    Root.Runtime.experiments.clearForTest();
+  });
+
   it('renders the checkbox ticked when the setting is enabled', () => {
     const setting = createFakeSetting<boolean>('setting', true);
     const {checkbox} = renderSettingCheckbox({setting});
@@ -70,5 +80,77 @@ describe('SettingCheckbox', () => {
     checkbox.click();
 
     assert.isFalse(setting.get());
+  });
+
+  it('is disabled for a disabled deprecated settings', () => {
+    const setting = createFakeSetting<boolean>('setting', false);
+    setting.setRegistration({
+      settingName: 'setting',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      deprecationNotice: {
+        warning: () => 'Setting deprecated' as Platform.UIString.LocalizedString,
+        disabled: true,
+      },
+    });
+
+    const {checkbox} = renderSettingCheckbox({setting});
+    assert.isTrue(checkbox.disabled);
+  });
+
+  it('is enabled for a disabled deprecated settings with enabled experiment', () => {
+    const experiment = 'testExperiment';
+    Root.Runtime.experiments.register(experiment, experiment);
+    Root.Runtime.experiments.setEnabled(experiment, true);
+    const setting = createFakeSetting<boolean>('setting', false);
+    setting.setRegistration({
+      settingName: 'setting',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      deprecationNotice: {
+        warning: () => 'Setting deprecated' as Platform.UIString.LocalizedString,
+        disabled: true,
+        experiment,
+      },
+    });
+
+    const {checkbox} = renderSettingCheckbox({setting});
+    assert.isTrue(checkbox.disabled);
+  });
+
+  it('is enabled for a disabled deprecated settings with disabled experiment', () => {
+    const experiment = 'testExperiment';
+    Root.Runtime.experiments.register(experiment, experiment);
+    Root.Runtime.experiments.setEnabled(experiment, false);
+    const setting = createFakeSetting<boolean>('setting', false);
+    setting.setRegistration({
+      settingName: 'setting',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      deprecationNotice: {
+        warning: () => 'Setting deprecated' as Platform.UIString.LocalizedString,
+        disabled: true,
+        experiment,
+      },
+    });
+
+    const {checkbox} = renderSettingCheckbox({setting});
+    assert.isFalse(checkbox.disabled);
+  });
+
+  it('is disabled for an enabled deprecated settings', () => {
+    const setting = createFakeSetting<boolean>('setting', false);
+    setting.setRegistration({
+      settingName: 'setting',
+      settingType: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+      deprecationNotice: {
+        warning: () => 'Setting deprecated' as Platform.UIString.LocalizedString,
+        disabled: false,
+      },
+    });
+
+    const {checkbox} = renderSettingCheckbox({setting});
+    assert.isFalse(checkbox.disabled);
   });
 });

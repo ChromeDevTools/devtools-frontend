@@ -130,6 +130,21 @@ devtools-text-prompt {
   flex-shrink: 0;
 }
 
+.filtered-list-widget-item-wrapper .deprecated-tag {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.filtered-list-widget-item-wrapper.selected .deprecated-tag {
+  color: var(--color-background);
+}
+
+.-theme-with-dark-background .filtered-list-widget-item-wrapper.selected .deprecated-tag,
+:host-context(.-theme-with-dark-background) .filtered-list-widget-item-wrapper.selected .deprecated-tag {
+  color: var(--color-background);
+  opacity: 80%;
+}
+
 .filtered-list-widget-item-wrapper.selected .filtered-list-widget-item span.highlight {
   color: var(--color-background);
   background-color: var(--override-filtered-list-widget-highlight-text-background-color);

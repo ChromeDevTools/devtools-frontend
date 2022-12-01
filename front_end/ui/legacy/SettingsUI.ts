@@ -30,8 +30,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
-import * as IconButton from '../components/icon_button/icon_button.js';
 import * as Settings from '../components/settings/settings.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -48,11 +46,6 @@ const UIStrings = {
   *@description Message to display if a setting change requires a reload of DevTools
   */
   oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
-  /**
-  *@description Tooltip for the colorFormat setting to inform of its deprecation
-  */
-  colorFormatSettingDisabled:
-      'This setting is deprecated because it is incompatible with modern color spaces. To reenable it, you can disable the according experiment.',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SettingsUI.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -79,7 +72,7 @@ export const createSettingCheckbox = function(
 
 const createSettingSelect = function(
     name: string, options: Common.Settings.SimpleSettingOption[], requiresReload: boolean|null,
-    setting: Common.Settings.Setting<unknown>, subtitle?: string): Element {
+    setting: Common.Settings.Setting<unknown>, subtitle?: string): HTMLElement {
   const container = document.createElement('div');
   const settingSelectElement = container.createChild('p');
   settingSelectElement.classList.add('settings-select');
@@ -105,24 +98,11 @@ const createSettingSelect = function(
     ARIAUtils.markAsAlert(reloadWarning);
   }
 
-  // The color format setting is deprecated and is going to be removed. Hence, handling it as a special case here
-  // instead of introducing more general special handling of settings controls.
-  // TODO(chromium:1392054) Remove.
-  if (setting.name === 'colorFormat') {
-    const experiment = Root.Runtime.experiments.allConfigurableExperiments().find(
-        e => e.name === Root.Runtime.ExperimentName.DISABLE_COLOR_FORMAT_SETTING);
-    if (experiment && experiment.isEnabled()) {
-      setting.set(setting.defaultValue);
-      setting.setDisabled(true);
-      const icon = new IconButton.Icon.Icon();
-      icon.style.cursor = 'pointer';
-      icon.title = i18nString(UIStrings.colorFormatSettingDisabled);
-      icon.data = {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'};
-      icon.onclick = (): void => {
-        void Common.Revealer.reveal(experiment);
-      };
-      label.appendChild(icon);
-    }
+  const {deprecation} = setting;
+  if (deprecation) {
+    const warning = new Settings.SettingDeprecationWarning.SettingDeprecationWarning();
+    warning.data = deprecation;
+    label.appendChild(warning);
   }
 
   setting.addChangeListener(settingChanged);
@@ -178,26 +158,26 @@ export const createCustomSetting = function(name: string, element: Element): Ele
   return p;
 };
 
-export const createControlForSetting = function(setting: Common.Settings.Setting<unknown>, subtitle?: string): Element|
-    null {
-      const uiTitle = setting.title();
-      switch (setting.type()) {
-        case Common.Settings.SettingType.BOOLEAN: {
-          const component = new Settings.SettingCheckbox.SettingCheckbox();
-          component.data = {setting: setting as Common.Settings.Setting<boolean>};
-          return component;
-        }
-        case Common.Settings.SettingType.ENUM:
-          if (Array.isArray(setting.options())) {
-            return createSettingSelect(uiTitle, setting.options(), setting.reloadRequired(), setting, subtitle);
-          }
-          console.error('Enum setting defined without options');
-          return null;
-        default:
-          console.error('Invalid setting type: ' + setting.type());
-          return null;
+export const createControlForSetting = function(
+    setting: Common.Settings.Setting<unknown>, subtitle?: string): HTMLElement|null {
+  const uiTitle = setting.title();
+  switch (setting.type()) {
+    case Common.Settings.SettingType.BOOLEAN: {
+      const component = new Settings.SettingCheckbox.SettingCheckbox();
+      component.data = {setting: setting as Common.Settings.Setting<boolean>};
+      return component;
+    }
+    case Common.Settings.SettingType.ENUM:
+      if (Array.isArray(setting.options())) {
+        return createSettingSelect(uiTitle, setting.options(), setting.reloadRequired(), setting, subtitle);
       }
-    };
+      console.error('Enum setting defined without options');
+      return null;
+    default:
+      console.error('Invalid setting type: ' + setting.type());
+      return null;
+  }
+};
 
 export interface SettingUI {
   settingElement(): Element|null;

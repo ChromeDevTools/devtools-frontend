@@ -6,7 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("settings") {
   testonly = true
-  sources = [ "SettingCheckbox_test.ts" ]
+  sources = [
+    "SettingCheckbox_test.ts",
+    "SettingDeprecationWarning_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/core/common:bundle",

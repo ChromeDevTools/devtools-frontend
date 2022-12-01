@@ -79,6 +79,7 @@ group("front_end") {
     "ui/legacy/components/inline_editor",
     "ui/legacy/components/object_ui",
     "ui/legacy/components/perf_ui",
+    "ui/legacy/components/quick_open",
     "ui/legacy/components/utils",
     "ui/legacy/theme_support",
     "ui/lit-html",

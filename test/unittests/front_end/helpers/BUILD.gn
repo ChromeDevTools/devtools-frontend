@@ -19,6 +19,7 @@ ts_library("helpers") {
     "MutationHelpers_test.ts",
     "OverridesHelpers.ts",
     "RealConnection.ts",
+    "RevealerHelpers.ts",
     "SourceMapEncoder.ts",
     "SourceMapEncoder_test.ts",
     "TimelineHelpers.ts",

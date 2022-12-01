@@ -269,6 +269,14 @@ export interface SettingRegistration {
    * property and in that case the behaviour of the setting's availability will be inverted.
    */
   condition?: Root.Runtime.ConditionName;
+
+  /**
+   * If a setting is deprecated, define this notice to show an appropriate warning according to the `warning` propertiy.
+   * If `disabled` is set, the setting will be disabled in the settings UI. In that case, `experiment` optionally can be
+   * set to link to an experiment (by experiment name). The information icon in the settings UI can then be clicked to
+   * jump to the experiment. If a setting is not disabled, the experiment entry will be ignored.
+   */
+  deprecationNotice?: {disabled: boolean, warning: () => Platform.UIString.LocalizedString, experiment?: string};
 }
 interface LocalizedSettingExtensionOption {
   value: boolean|string;

@@ -20,6 +20,7 @@ import * as Workspace from '../../../../../../front_end/models/workspace/workspa
 import type * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
 import * as Root from '../../../../../../front_end/core/root/root.js';
 import * as Common from '../../../../../../front_end/core/common/common.js';
+import * as NetworkForward from '../../../../../../front_end/panels/network/forward/forward.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -35,7 +36,10 @@ async function renderResponseHeaderSection(request: SDK.NetworkRequest.NetworkRe
   const component = new NetworkComponents.ResponseHeaderSection.ResponseHeaderSection();
   renderElementIntoDOM(component);
   Object.setPrototypeOf(request, SDK.NetworkRequest.NetworkRequest.prototype);
-  component.data = {request};
+  component.data = {
+    request,
+    toReveal: {section: NetworkForward.UIRequestLocation.UIHeaderSection.Response, header: 'highlighted-header'},
+  };
   await coordinator.done();
   assertElement(component, HTMLElement);
   assertShadowRoot(component.shadowRoot);
@@ -118,9 +122,11 @@ async function setupHeaderEditingWithRequest(
 
 function checkHeaderSectionRow(
     row: NetworkComponents.HeaderSectionRow.HeaderSectionRow, headerName: string, headerValue: string,
-    isOverride: boolean, isNameEditable: boolean, isValueEditable: boolean): void {
+    isOverride: boolean, isNameEditable: boolean, isValueEditable: boolean, isHighlighted: boolean = false): void {
   assertShadowRoot(row.shadowRoot);
-  assert.strictEqual(row.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), isOverride);
+  const rowElement = row.shadowRoot.querySelector('.row');
+  assert.strictEqual(rowElement?.classList.contains('header-overridden'), isOverride);
+  assert.strictEqual(rowElement?.classList.contains('header-highlight'), isHighlighted);
 
   const nameEditableComponent =
       row.shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>('.header-name devtools-editable-span');
@@ -518,8 +524,8 @@ describeWithEnvironment('ResponseHeaderSection', () => {
         "applyTo": "index.html",
         "headers": [
           {
-            "name": "server",
-            "value": "overridden server"
+            "name": "highlighted-header",
+            "value": "overridden highlighted-header"
           },
           {
             "name": "cache-control",
@@ -536,15 +542,21 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     const actualHeaders = [
       {name: 'added', value: 'foo'},
       {name: 'cache-control', value: 'max-age=9999'},
-      {name: 'server', value: 'overridden server'},
+      {name: 'highlighted-header', value: 'overridden highlighted-header'},
     ];
 
     const originalHeaders = [
       {name: 'cache-control', value: 'max-age=600'},
-      {name: 'server', value: 'original server'},
+      {name: 'highlighted-header', value: 'original highlighted-header'},
     ];
 
     const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
+    assertShadowRoot(component.shadowRoot);
+    let rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+    assert.strictEqual(rows.length, 3);
+    checkHeaderSectionRow(rows[0], 'added:', 'foo', true, false, true);
+    checkHeaderSectionRow(rows[1], 'cache-control:', 'max-age=9999', true, false, true);
+    checkHeaderSectionRow(rows[2], 'highlighted-header:', 'overridden highlighted-header', true, false, true, true);
     await removeHeaderRow(component, 2);
 
     let expected = [{
@@ -563,12 +575,11 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.strictEqual(spy.callCount, 1);
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
 
-    assertShadowRoot(component.shadowRoot);
-    let rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+    rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     assert.strictEqual(rows.length, 3);
     checkHeaderSectionRow(rows[0], 'added:', 'foo', true, false, true);
     checkHeaderSectionRow(rows[1], 'cache-control:', 'max-age=9999', true, false, true);
-    checkHeaderSectionRow(rows[2], 'server:', 'original server', false, false, true);
+    checkHeaderSectionRow(rows[2], 'highlighted-header:', 'original highlighted-header', false, false, true, false);
 
     spy.resetHistory();
     await removeHeaderRow(component, 0);
@@ -587,7 +598,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     assert.strictEqual(rows.length, 2);
     checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=9999', true, false, true);
-    checkHeaderSectionRow(rows[1], 'server:', 'original server', false, false, true);
+    checkHeaderSectionRow(rows[1], 'highlighted-header:', 'original highlighted-header', false, false, true);
   });
 
   it('can remove the last header override', async () => {

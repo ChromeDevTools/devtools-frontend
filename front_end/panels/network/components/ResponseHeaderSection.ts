@@ -373,6 +373,7 @@ export class ResponseHeaderSection extends HTMLElement {
         this.#headerEditors[index].value = originalHeaders[0].value;
         this.#headerEditors[index].originalValue = originalHeaders[0].value;
         this.#headerEditors[index].isOverride = false;
+        this.#headerDetails[index].highlight = false;
       } else {
         // If there is no (or multiple) matching originalResonseHeader,
         // remove the header from the UI.

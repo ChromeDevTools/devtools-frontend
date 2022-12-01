@@ -353,18 +353,22 @@ describeWithEnvironment('HeaderSectionRow', () => {
       value: 'someHeaderValue',
       originalValue: 'someHeaderValue',
       valueEditable: true,
+      highlight: true,
     };
 
     const {component, valueEditable} = await renderHeaderSectionRow(headerData);
     assertShadowRoot(component.shadowRoot);
     assertElement(valueEditable, HTMLElement);
-    assert.isFalse(component.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
+    const row = component.shadowRoot.querySelector('.row');
+    assert.isFalse(row?.classList.contains('header-overridden'));
+    assert.isTrue(row?.classList.contains('header-highlight'));
 
     valueEditable.focus();
     valueEditable.innerText = 'a';
     dispatchInputEvent(valueEditable, {inputType: 'insertText', data: 'a', bubbles: true, composed: true});
     await coordinator.done();
-    assert.isTrue(component.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
+    assert.isTrue(row?.classList.contains('header-overridden'));
+    assert.isFalse(row?.classList.contains('header-highlight'));
 
     dispatchKeyDownEvent(valueEditable, {key: 'Escape', bubbles: true, composed: true});
     await coordinator.done();

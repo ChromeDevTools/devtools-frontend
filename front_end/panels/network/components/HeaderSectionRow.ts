@@ -371,6 +371,9 @@ export class HeaderSectionRow extends HTMLElement {
     const isEdited = this.#header?.originalValue !== undefined && this.#header?.originalValue !== editable.value;
     if (this.#isHeaderValueEdited !== isEdited) {
       this.#isHeaderValueEdited = isEdited;
+      if (this.#header) {
+        this.#header.highlight = false;
+      }
       void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
     }
   }

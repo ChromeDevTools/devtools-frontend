@@ -66,7 +66,7 @@ DEPS = {
     "convert-source-map": "1.8.0",
 
     # This should be match with esbuild in DEPS.
-    "esbuild": "0.15.16",
+    "esbuild": "0.14.13",
     "escodegen": "2.0.0",
     "eslint": "8.19.0",
     "eslint-plugin-import": "2.25.4",

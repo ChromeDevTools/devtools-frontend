@@ -59,6 +59,7 @@ import * as PageLoad from './PageLoad.js';
 import * as PageResourceLoader from './PageResourceLoader.js';
 import * as PaintProfiler from './PaintProfiler.js';
 import * as PerformanceMetricsModel from './PerformanceMetricsModel.js';
+import * as PrerenderingModel from './PrerenderingModel.js';
 import * as ProfileTreeModel from './ProfileTreeModel.js';
 import * as RemoteObject from './RemoteObject.js';
 import * as Resource from './Resource.js';
@@ -130,6 +131,7 @@ export {
   PageResourceLoader,
   PaintProfiler,
   PerformanceMetricsModel,
+  PrerenderingModel,
   ProfileTreeModel,
   RemoteObject,
   Resource,

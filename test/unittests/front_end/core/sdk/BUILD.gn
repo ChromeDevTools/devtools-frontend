@@ -27,6 +27,7 @@ ts_library("sdk") {
     "OverlayColorGenerator_test.ts",
     "OverlayPersistentHighlighter_test.ts",
     "PageResourceLoader_test.ts",
+    "PrerenderingModel_test.ts",
     "RemoteObject_test.ts",
     "ResourceTreeModel_test.ts",
     "RuntimeModel_test.ts",

@@ -657,6 +657,7 @@ grd_files_debug_sources = [
   "front_end/core/sdk/PageResourceLoader.js",
   "front_end/core/sdk/PaintProfiler.js",
   "front_end/core/sdk/PerformanceMetricsModel.js",
+  "front_end/core/sdk/PrerenderingModel.js",
   "front_end/core/sdk/ProfileTreeModel.js",
   "front_end/core/sdk/RemoteObject.js",
   "front_end/core/sdk/Resource.js",

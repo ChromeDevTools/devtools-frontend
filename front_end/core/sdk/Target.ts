@@ -112,6 +112,14 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     return this.#nameInternal || this.#inspectedURLName;
   }
 
+  setName(name: string): void {
+    if (this.#nameInternal === name) {
+      return;
+    }
+    this.#nameInternal = name;
+    this.#targetManagerInternal.onNameChange(this);
+  }
+
   type(): Type {
     return this.#typeInternal;
   }

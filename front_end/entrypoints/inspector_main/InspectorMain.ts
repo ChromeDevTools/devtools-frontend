@@ -24,6 +24,13 @@ const UIStrings = {
   */
   main: 'Main',
   /**
+  * @description Text that refers to the tab target. The tab target is the Chrome tab that
+  * DevTools is connected to. This text is used in various places in the UI as a label/name to inform
+  * the user which target they are currently connected to, as DevTools may connect to multiple
+  * targets at the same time in some scenarios.
+  */
+  tab: 'Tab',
+  /**
   * @description A warning shown to the user when JavaScript is disabled on the webpage that
   * DevTools is connected to.
   */
@@ -58,9 +65,19 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
       // TODO(crbug.com/1348385): support waiting for debugger with tab target.
       const waitForDebuggerInPage =
           type === SDK.Target.Type.Frame && Root.Runtime.Runtime.queryParam('panel') === 'sources';
+      const name = type === SDK.Target.Type.Frame ? i18nString(UIStrings.main) : i18nString(UIStrings.tab);
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
-          'main', i18nString(UIStrings.main), type, null, undefined, waitForDebuggerInPage);
+          'main', name, type, null, undefined, waitForDebuggerInPage);
 
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      targetManager.observeTargets({
+        targetAdded: (target: SDK.Target.Target) => {
+          if (target === targetManager.mainFrameTarget()) {
+            target.setName(i18nString(UIStrings.main));
+          }
+        },
+        targetRemoved: (_: unknown) => {},
+      });
       // Only resume target during the first connection,
       // subsequent connections are due to connection hand-over,
       // there is no need to pause in debugger.
@@ -79,7 +96,7 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
         }
       }
 
-      if (type === SDK.Target.Type.Frame) {
+      if (type !== SDK.Target.Type.Tab) {
         void target.runtimeAgent().invoke_runIfWaitingForDebugger();
       }
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);

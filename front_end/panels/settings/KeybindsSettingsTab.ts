@@ -333,7 +333,8 @@ export class ShortcutListItem {
     this.shortcutInputs.clear();
 
     this.element.classList.toggle('keybinds-editing', this.isEditing);
-    this.element.createChild('div', 'keybinds-action-name keybinds-list-text').textContent = this.item.title();
+    this.element.createChild('div', 'keybinds-action-name keybinds-list-text').createChild('div').textContent =
+        this.item.title();
     this.shortcuts.forEach(this.createShortcutRow, this);
     if (this.shortcuts.length === 0) {
       this.createEmptyInfo();

@@ -63,10 +63,19 @@ h1 {
   grid-column: 1 / span 1;
 }
 
+.keybinds-action-name div {
+  margin-top: 4px;
+}
+
 .keybinds-shortcut,
 .keybinds-info {
   grid-row: auto;
   grid-column: 3 / span 1;
+}
+
+.keybinds-shortcut.devtools-link {
+  align-items: center;
+  margin-left: 3px;
 }
 
 .keybinds-info .devtools-link {

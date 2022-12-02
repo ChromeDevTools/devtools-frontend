@@ -1255,7 +1255,7 @@ export class HeapSnapshotProfileType extends
       optionsContainer.appendChild(exposeInternalsInHeapSnapshotCheckbox);
     }
     const captureNumericValueCheckbox = UI.SettingsUI.createSettingCheckbox(
-        UIStrings.captureNumericValue, this.captureNumericValue, omitParagraphElement);
+        i18nString(UIStrings.captureNumericValue), this.captureNumericValue, omitParagraphElement);
     optionsContainer.appendChild(captureNumericValueCheckbox);
     this.customContentInternal = optionsContainer;
     return optionsContainer;

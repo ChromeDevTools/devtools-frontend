@@ -5,7 +5,7 @@
  */
 
 :host {
-  display: block;
+  display: inline;
 }
 
 .editable {

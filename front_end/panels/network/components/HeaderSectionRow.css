@@ -29,7 +29,6 @@
   width: 160px;
   flex-shrink: 0;
   text-transform: capitalize;
-  display: flex;
 
   --override-contenteditable-text-color: var(--color-syntax-1);
 }
@@ -40,7 +39,6 @@
 
 .header-value {
   word-break: break-all;
-  display: flex;
 }
 
 .header-badge-text {

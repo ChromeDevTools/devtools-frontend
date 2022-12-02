@@ -72,6 +72,20 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
     return IssueCategory.AttributionReporting;
   }
 
+  getHeaderValidatorLink(name: string): {link: string, linkTitle: string} {
+    const url = new URL('https://wicg.github.io/attribution-reporting-api/validate-headers');
+    url.searchParams.set('header', name);
+
+    if (this.issueDetails.invalidParameter) {
+      url.searchParams.set('json', this.issueDetails.invalidParameter);
+    }
+
+    return {
+      link: url.toString(),
+      linkTitle: 'Header Validator',
+    };
+  }
+
   getDescription(): MarkdownIssueDescription|null {
     switch (this.code()) {
       case IssueCode.PermissionPolicyDisabled:
@@ -97,17 +111,20 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.InvalidRegisterSourceHeader:
         return {
           file: 'arInvalidRegisterSourceHeader.md',
-          links: [],
+          links: [this.getHeaderValidatorLink('source')],
         };
       case IssueCode.InvalidRegisterTriggerHeader:
         return {
           file: 'arInvalidRegisterTriggerHeader.md',
-          links: [],
+          links: [this.getHeaderValidatorLink('trigger')],
         };
       case IssueCode.InvalidEligibleHeader:
         return {
           file: 'arInvalidEligibleHeader.md',
-          links: [structuredHeaderLink],
+          links: [
+            this.getHeaderValidatorLink('eligible'),
+            structuredHeaderLink,
+          ],
         };
       case IssueCode.TooManyConcurrentRequests:
         return {

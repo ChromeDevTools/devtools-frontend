@@ -44,7 +44,7 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
     await import('../../../../front_end/panels/elements/elements-meta.js');
     await import('../../../../front_end/panels/sensors/sensors-meta.js');
     await import('../../../../front_end/entrypoints/inspector_main/inspector_main-meta.js');
-    let response = await fetch('/json/list');
+    let response = await fetch('/json/list', {method: 'PUT'});
     const targetList = await response.json();
 
     // There can be more than one target here. When debugging tests, the "main" test suite run and the debug test suite
@@ -58,9 +58,9 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
     }
 
     const originalTargetId = mainTarget.id;
-    response = await fetch('/json/new');
+    response = await fetch('/json/new', {method: 'PUT'});
     const target = await response.json();
-    await fetch('/json/activate/' + originalTargetId);
+    await fetch('/json/activate/' + originalTargetId, {method: 'PUT'});
     /* This value comes from the `client.targetDir` setting in `karma.conf.js` */
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const {remoteDebuggingPort} = ((globalThis as unknown as {__karma__: KarmaConfig}).__karma__).config;

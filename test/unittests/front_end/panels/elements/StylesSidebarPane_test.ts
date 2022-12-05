@@ -132,6 +132,21 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
     const node = renderer.renderValue();
     assert.deepEqual(node.textContent, nodeContents);
   });
+
+  it('does not call bezier handler when color() value contains srgb-linear color space in a variable definition',
+     () => {
+       const colorHandler = sinon.fake.returns(document.createTextNode('colorHandler'));
+       const bezierHandler = sinon.fake.returns(document.createTextNode('bezierHandler'));
+       const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
+           null, null, '--color', 'color(srgb-linear 1 0.55 0.72)');
+       renderer.setColorHandler(colorHandler);
+       renderer.setBezierHandler(bezierHandler);
+
+       renderer.renderValue();
+
+       assert.isTrue(colorHandler.called);
+       assert.isFalse(bezierHandler.called);
+     });
 });
 
 describe('IdleCallbackManager', () => {

@@ -2121,13 +2121,20 @@ export class StylesSidebarPropertyRenderer {
 
     const regexes = [SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex];
     const processors = [this.varHandler, this.processURL.bind(this)];
-    if (this.bezierHandler && metadata.isBezierAwareProperty(this.propertyName)) {
-      regexes.push(UI.Geometry.CubicBezier.Regex);
-      processors.push(this.bezierHandler);
-    }
+    // Handle `color` properties before handling other ones
+    // because color Regex is fairly narrow to only select real colors.
+    // However, some other Regexes like Bezier is very wide (text that
+    // contains keyword 'linear'. So, we're handling the narrowly matching
+    // handler first so that we will reduce the possibility of wrong matches.
+    // i.e. color(srgb-linear ...) matching as a bezier curve (because
+    // of the `linear` keyword)
     if (this.colorHandler && metadata.isColorAwareProperty(this.propertyName)) {
       regexes.push(Common.Color.Regex);
       processors.push(this.colorHandler);
+    }
+    if (this.bezierHandler && metadata.isBezierAwareProperty(this.propertyName)) {
+      regexes.push(UI.Geometry.CubicBezier.Regex);
+      processors.push(this.bezierHandler);
     }
     if (this.angleHandler && metadata.isAngleAwareProperty(this.propertyName)) {
       // TODO(changhaohan): crbug.com/1138628 refactor this to handle unitless 0 cases

@@ -95,13 +95,13 @@ export class MockProtocolBackend {
   }
 
   #createProtocolScope(
-      type: Protocol.Debugger.ScopeType, object: Protocol.Runtime.RemoteObject, scriptId: string, startColumn: number,
-      endColumn: number) {
+      type: Protocol.Debugger.ScopeType, object: Protocol.Runtime.RemoteObject, scriptId: string, startLine: number,
+      startColumn: number, endLine: number, endColumn: number) {
     return {
       type,
       object,
-      startLocation: this.#createProtocolLocation(scriptId, 0, startColumn),
-      endLocation: this.#createProtocolLocation(scriptId, 0, endColumn),
+      startLocation: this.#createProtocolLocation(scriptId, startLine, startColumn),
+      endLocation: this.#createProtocolLocation(scriptId, endLine, endColumn),
     };
   }
 
@@ -127,8 +127,8 @@ export class MockProtocolBackend {
     const parsedScopes = parseScopeChain(scopeDescriptor);
     const scopeChain = parsedScopes.map(
         s => this.#createProtocolScope(
-            s.type, {type: Protocol.Runtime.RemoteObjectType.Object}, scriptObject.scriptId, s.startColumn,
-            s.endColumn));
+            s.type, {type: Protocol.Runtime.RemoteObjectType.Object}, scriptObject.scriptId, s.startLine, s.startColumn,
+            s.endLine, s.endColumn));
 
     const innerScope = scopeChain[0];
     console.assert(scopeObjects.length < scopeChain.length);
@@ -288,8 +288,26 @@ export class MockProtocolBackend {
   }
 }
 
-export function parseScopeChain(scopeDescriptor: string):
-    {type: Protocol.Debugger.ScopeType, startColumn: number, endColumn: number}[] {
+interface ScopePosition {
+  type: Protocol.Debugger.ScopeType;
+  startLine: number;
+  startColumn: number;
+  endLine: number;
+  endColumn: number;
+}
+
+function scopePositionFromOffsets(
+    descriptor: string, type: Protocol.Debugger.ScopeType, startOffset: number, endOffset: number): ScopePosition {
+  return {
+    type,
+    startLine: descriptor.substring(0, startOffset).replace(/[^\n]/g, '').length,
+    endLine: descriptor.substring(0, endOffset).replace(/[^\n]/g, '').length,
+    startColumn: startOffset - descriptor.lastIndexOf('\n', startOffset - 1) - 1,
+    endColumn: endOffset - descriptor.lastIndexOf('\n', endOffset - 1) - 1,
+  };
+}
+
+export function parseScopeChain(scopeDescriptor: string): ScopePosition[] {
   // Identify function scope.
   const functionStart = scopeDescriptor.indexOf('{');
   if (functionStart < 0) {
@@ -301,7 +319,7 @@ export function parseScopeChain(scopeDescriptor: string):
   }
 
   const scopeChain =
-      [{type: Protocol.Debugger.ScopeType.Local, startColumn: functionStart, endColumn: functionEnd + 1}];
+      [scopePositionFromOffsets(scopeDescriptor, Protocol.Debugger.ScopeType.Local, functionStart, functionEnd + 1)];
 
   // Find the block scope.
   const blockScopeStart = scopeDescriptor.indexOf('<');
@@ -310,8 +328,8 @@ export function parseScopeChain(scopeDescriptor: string):
     if (blockScopeEnd < 0) {
       throw new Error('Test descriptor must contain matching "." for "<"');
     }
-    scopeChain.unshift(
-        {type: Protocol.Debugger.ScopeType.Block, startColumn: blockScopeStart, endColumn: blockScopeEnd + 1});
+    scopeChain.unshift(scopePositionFromOffsets(
+        scopeDescriptor, Protocol.Debugger.ScopeType.Block, blockScopeStart, blockScopeEnd + 1));
   }
 
   return scopeChain;

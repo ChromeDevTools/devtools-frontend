@@ -97,9 +97,13 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
     const scopeMappings =
         await Sources.DebuggerPlugin.computeScopeMappings(callFrame, l => toOffsetWithSourceMap(sourceMap, l));
 
+    const text = new TextUtils.Text.Text(originalSource);
     assert.strictEqual(scopeMappings.length, 1);
-    assert.strictEqual(scopeMappings[0].scopeStart, expectedOffsets[0].startColumn);
-    assert.strictEqual(scopeMappings[0].scopeEnd, expectedOffsets[0].endColumn);
+    assert.strictEqual(
+        scopeMappings[0].scopeStart,
+        text.offsetFromPosition(expectedOffsets[0].startLine, expectedOffsets[0].startColumn));
+    assert.strictEqual(
+        scopeMappings[0].scopeEnd, text.offsetFromPosition(expectedOffsets[0].endLine, expectedOffsets[0].endColumn));
     assert.strictEqual(scopeMappings[0].variableMap.get('par1')?.value, 42);
     assert.strictEqual(scopeMappings[0].variableMap.get('par2')?.value, 1);
   });
@@ -117,7 +121,7 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
     const originalSource =
         'function f(n) {\n  const c = console.log.bind(console);\n  for (let i = 0; i < n; i++) c(i);\n}\nf(10);\n';
     const originalScopes =
-        '         {     \n                                      \n  <                                > }';
+        '         {     \n                                      \n  <                                >\n }';
     const expectedOffsets = parseScopeChain(originalScopes);
 
     const sourceMapContent = {
@@ -143,13 +147,20 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
     const scopeMappings =
         await Sources.DebuggerPlugin.computeScopeMappings(callFrame, l => toOffsetWithSourceMap(sourceMap, l));
 
+    const text = new TextUtils.Text.Text(originalSource);
     assert.strictEqual(scopeMappings.length, 2);
-    assert.strictEqual(scopeMappings[0].scopeStart, expectedOffsets[0].startColumn);
-    assert.strictEqual(scopeMappings[0].scopeEnd, expectedOffsets[0].endColumn);
+    assert.strictEqual(
+        scopeMappings[0].scopeStart,
+        text.offsetFromPosition(expectedOffsets[0].startLine, expectedOffsets[0].startColumn));
+    assert.strictEqual(
+        scopeMappings[0].scopeEnd, text.offsetFromPosition(expectedOffsets[0].endLine, expectedOffsets[0].endColumn));
     assert.strictEqual(scopeMappings[0].variableMap.get('i')?.value, 5);
     assert.strictEqual(scopeMappings[0].variableMap.size, 1);
-    assert.strictEqual(scopeMappings[1].scopeStart, expectedOffsets[1].startColumn);
-    assert.strictEqual(scopeMappings[1].scopeEnd, expectedOffsets[1].endColumn);
+    assert.strictEqual(
+        scopeMappings[1].scopeStart,
+        text.offsetFromPosition(expectedOffsets[1].startLine, expectedOffsets[1].startColumn));
+    assert.strictEqual(
+        scopeMappings[1].scopeEnd, text.offsetFromPosition(expectedOffsets[1].endLine, expectedOffsets[1].endColumn));
     assert.strictEqual(scopeMappings[1].variableMap.get('n')?.value, 10);
     assert.strictEqual(scopeMappings[1].variableMap.get('c')?.value, 1234);
     assert.strictEqual(scopeMappings[1].variableMap.size, 2);

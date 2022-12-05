@@ -299,6 +299,59 @@ describeWithMockConnection('NameResolver', () => {
 
     assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 42}]);
   });
+
+  it('resolves inner scope clashing names from let -> var transpilation', async () => {
+    // This tests the  behavior where the TypeScript compiler renames a variable when transforming let-variables
+    // to var-variables to avoid clash, and DevTools then (somewhat questionably) deobfuscates the var variables
+    // back to the original names in the function scope (as opposed to the original block scopes). Ideally, DevTools
+    // would do some scoping inference rather than relying on the pruned scope chain from V8.
+    const sourceMapUrl = 'file:///tmp/index.js.map';
+    // The source map was obtained with 'tsc --target es5 --sourceMap --inlineSources index.ts'.
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'file': 'index.js',
+      'sourceRoot': '',
+      'sources': ['index.ts'],
+      'names': [],
+      'mappings': 'AAAA,SAAS,CAAC;IACR,IAAI,GAAG,GAAG,EAAE,CAAC;' +
+          'IACb,KAAK,IAAI,KAAG,GAAG,CAAC,EAAE,KAAG,GAAG,CAAC,EAAE,KAAG,EAAE,EAAE;' +
+          'QAChC,OAAO,CAAC,GAAG,CAAC,KAAG,CAAC,CAAC;KAClB;' +
+          'AACH,CAAC;' +
+          'AACD,CAAC,EAAE,CAAC',
+      'sourcesContent': [
+        'function f() {\n  let pos = 10;\n  for (let pos = 0; pos < 5; pos++) {\n    console.log(pos);\n  }\n}\nf();\n',
+      ],
+    });
+
+    const source: string[] = [];
+    const scopes: string[] = [];
+    source[0] = 'function f() {';
+    scopes[0] = '          {';  // Mark for scope start.
+    source[1] = '    var pos = 10;';
+    source[2] = '    for (var pos_1 = 0; pos_1 < 5; pos_1++) {';
+    source[3] = '        console.log(pos_1);';
+    source[4] = '    }';
+    source[5] = '}';
+    scopes[5] = '}';  // Mark for scope end.
+    source[6] = 'f();';
+    source[7] = `//# sourceMappingURL=${sourceMapUrl}`;
+
+    for (let i = 0; i < source.length; i++) {
+      scopes[i] ??= '';
+    }
+
+    const scopeObject = backend.createSimpleRemoteObject([{name: 'pos', value: 10}, {name: 'pos_1', value: 4}]);
+    const callFrame = await backend.createCallFrame(
+        target, {url: URL, content: source.join('\n')}, scopes.join('\n'),
+        {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+
+    const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(callFrame.scopeChain()[0]);
+    const properties = await resolvedScopeObject.getAllProperties(false, false);
+    const namesAndValues = properties.properties?.map(p => ({name: p.name, value: p.value?.value})) ?? [];
+
+    assert.deepEqual(namesAndValues, [{name: 'pos', value: 10}, {name: 'pos', value: 4}]);
+  });
+
   describe('Function name resolving', () => {
     let callFrame: SDK.DebuggerModel.CallFrame;
 

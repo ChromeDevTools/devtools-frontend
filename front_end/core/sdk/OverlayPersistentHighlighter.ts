@@ -64,10 +64,10 @@ export class OverlayPersistentHighlighter {
   }
 
   private buildGridHighlightConfig(nodeId: Protocol.DOM.NodeId): Protocol.Overlay.GridHighlightConfig {
-    const mainColor = this.colorOfGrid(nodeId);
-    const background = mainColor.setAlpha(0.1);
-    const gapBackground = mainColor.setAlpha(0.3);
-    const gapHatch = mainColor.setAlpha(0.8);
+    const mainColor = this.colorOfGrid(nodeId).asLegacyColor();
+    const background = mainColor.setAlpha(0.1).asLegacyColor();
+    const gapBackground = mainColor.setAlpha(0.3).asLegacyColor();
+    const gapHatch = mainColor.setAlpha(0.8).asLegacyColor();
 
     const showGridExtensionLines = (this.#extendGridLinesSetting.get() as boolean);
     const showPositiveLineNumbers = this.#showGridLineLabelsSetting.get() === 'lineNumbers';
@@ -97,7 +97,7 @@ export class OverlayPersistentHighlighter {
 
   private buildFlexContainerHighlightConfig(nodeId: Protocol.DOM.NodeId):
       Protocol.Overlay.FlexContainerHighlightConfig {
-    const mainColor = this.colorOfFlex(nodeId);
+    const mainColor = this.colorOfFlex(nodeId).asLegacyColor();
     return {
       containerBorder: {color: mainColor.toProtocolRGBA(), pattern: Protocol.Overlay.LineStylePattern.Dashed},
       itemSeparator: {color: mainColor.toProtocolRGBA(), pattern: Protocol.Overlay.LineStylePattern.Dotted},

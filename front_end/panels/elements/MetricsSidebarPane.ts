@@ -250,7 +250,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       Common.Color.PageHighlight.Padding,
       Common.Color.PageHighlight.Border,
       Common.Color.PageHighlight.Margin,
-      Common.Color.Color.fromRGBA([0, 0, 0, 0]),
+      Common.Color.Legacy.fromRGBA([0, 0, 0, 0]),
     ];
     const boxLabels = ['content', 'padding', 'border', 'margin', 'position'];
     let previousBox: HTMLDivElement|null = null;

@@ -183,8 +183,8 @@ export type NodeStyleStats = Map<string, Set<number>>;
 export interface ContrastIssue {
   nodeId: Protocol.DOM.BackendNodeId;
   contrastRatio: number;
-  textColor: Common.Color.Color;
-  backgroundColor: Common.Color.Color;
+  textColor: Common.Color.Legacy;
+  backgroundColor: Common.Color.Legacy;
   thresholdsViolated: {
     aa: boolean,
     aaa: boolean,
@@ -211,7 +211,7 @@ export interface OverviewData {
 
 export type FontInfo = Map<string, Map<string, Map<string, number[]>>>;
 
-function getBorderString(color: Common.Color.Color): string {
+function getBorderString(color: Common.Color.Legacy): string {
   let [h, s, l] = color.hsla();
   h = Math.round(h * 360);
   s = Math.round(s * 100);
@@ -801,7 +801,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     const block = (blockFragment.$('color') as HTMLElement);
     block.style.backgroundColor = color;
 
-    const borderColor = Common.Color.Color.parse(color);
+    const borderColor = Common.Color.parse(color)?.asLegacyColor();
     if (!borderColor) {
       return;
     }
@@ -812,8 +812,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
   #sortColorsByLuminance(srcColors: Map<string, Set<number>>): string[] {
     return Array.from(srcColors.keys()).sort((colA, colB) => {
-      const colorA = Common.Color.Color.parse(colA);
-      const colorB = Common.Color.Color.parse(colB);
+      const colorA = Common.Color.parse(colA)?.asLegacyColor();
+      const colorB = Common.Color.parse(colB)?.asLegacyColor();
       if (!colorA || !colorB) {
         return 0;
       }

@@ -41,6 +41,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../../../test/unittests/front_end/ui/legacy/components/color_picker/*",
     "../../../../panels/css_overview/*",
     "../../../../panels/elements/*",
     "../../../../panels/sources/*",

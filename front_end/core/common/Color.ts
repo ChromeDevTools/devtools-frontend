@@ -137,8 +137,7 @@ function parseColorFunction(originalText: string, parametersText: string): Color
 
   // `color(<color-space>)` is a valid syntax
   if (remainingParams.length === 0) {
-    // TODO(ergunsh): Pass ColorSpace to know initially supplied space
-    return new Color([0, 0, 0], Format.COLOR);
+    return new ColorFunction(colorSpace, [0, 0, 0, undefined], originalText);
   }
 
   // Check if it contains `/ <alpha>` part, if so, it should be at the end
@@ -168,7 +167,7 @@ function parseColorFunction(originalText: string, parametersText: string): Color
 
   // At this point, we know that all the values are there so we can
   // safely try to parse all the values as number or percentage
-  const values = nonesReplacesParams.map(param => Color.parsePercentOrNumber(param, [0, 1]));
+  const values = nonesReplacesParams.map(param => parsePercentOrNumber(param, [0, 1]));
   const containsNull = values.includes(null);
   // At least one value is malformatted (not a number or percentage)
   if (containsNull) {
@@ -188,16 +187,14 @@ function parseColorFunction(originalText: string, parametersText: string): Color
   // Depending on the color space
   // this either reflects `rgb` parameters in that color space
   // or `xyz` parameters in the given `xyz` space.
-  const rgbOrXyz: [number, number, number] = [
+  const rgbOrXyza: [number, number, number, number] = [
     values[0] ?? 0,
     values[1] ?? 0,
     values[2] ?? 0,
+    alphaValue,
   ];
 
-  // Now we need to convert these values from given color space to
-  // sRGB since that's how we store the base color in `Color` object.
-  const srgb = COLOR_SPACE_TO_SRGB_CONVERTER[colorSpace](...rgbOrXyz);
-  return new Color([...srgb, alphaValue], Format.COLOR, originalText);
+  return new ColorFunction(colorSpace, rgbOrXyza, originalText);
 }
 
 function canFormatBeWideGamut(format: Format): boolean {
@@ -209,7 +206,677 @@ interface SplitColorFunctionParametersOptions {
   convertNoneToZero: boolean;
 }
 
-export class Color {
+export function parse(text: string): Color|null {
+  // Simple - #hex, nickname
+  const value = text.toLowerCase().replace(/\s+/g, '');
+  const simple = /^(?:#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|(\w+))$/i;
+  let match = value.match(simple);
+  if (match) {
+    if (match[1]) {
+      return Legacy.fromHex(match[1], text);
+    }
+
+    if (match[2]) {
+      return Legacy.fromName(match[2], text);
+    }
+
+    return null;
+  }
+
+  // rgb/rgba(), hsl/hsla(), hwb/hwba(), lch(), oklch(), lab(), oklab() and color()
+  match = text.toLowerCase().match(/^\s*(?:(rgba?)|(hsla?)|(hwba?)|(lch)|(oklch)|(lab)|(oklab)|(color))\((.*)\)\s*$/);
+  if (match) {
+    const isRgbaMatch = Boolean(match[1]);   // rgb/rgba()
+    const isHslaMatch = Boolean(match[2]);   // hsl/hsla()
+    const isHwbaMatch = Boolean(match[3]);   // hwb/hwba()
+    const isLchMatch = Boolean(match[4]);    // lch()
+    const isOklchMatch = Boolean(match[5]);  // oklch()
+    const isLabMatch = Boolean(match[6]);    // lab()
+    const isOklabMatch = Boolean(match[7]);  // oklab()
+    const isColorMatch = Boolean(match[8]);  // color()
+    const valuesText = match[9];
+
+    // Parse color function first because extracting values for
+    // this function is not the same as the other ones
+    // so, we're not using any of the logic below.
+    if (isColorMatch) {
+      return parseColorFunction(text, valuesText);
+    }
+
+    const isOldSyntax = isRgbaMatch || isHslaMatch || isHwbaMatch;
+    const allowCommas = isRgbaMatch || isHslaMatch;
+    const convertNoneToZero = !isOldSyntax;  // Convert 'none' keyword to zero in new syntaxes
+
+    const values = splitColorFunctionParameters(valuesText, {allowCommas, convertNoneToZero});
+    if (!values) {
+      return null;
+    }
+    const spec: ColorParameterSpec = [values[0], values[1], values[2], values[3]];
+    if (isRgbaMatch) {
+      return Legacy.fromRGBAFunction(values[0], values[1], values[2], values[3], text);
+    }
+
+    if (isHslaMatch) {
+      return Legacy.fromHSLA(values[0], values[1], values[2], values[3], text);
+    }
+
+    if (isHwbaMatch) {
+      return Legacy.fromHWB(values[0], values[1], values[2], values[3], text);
+    }
+
+    if (isLchMatch) {
+      return LCH.fromSpec(spec, text);
+    }
+
+    if (isOklchMatch) {
+      return Oklch.fromSpec(spec, text);
+    }
+
+    if (isLabMatch) {
+      return Lab.fromSpec(spec, text);
+    }
+
+    if (isOklabMatch) {
+      return Oklab.fromSpec(spec, text);
+    }
+  }
+
+  return null;
+}
+
+/**
+   * Split the color parameters of (e.g.) rgb(a), hsl(a), hwb(a) functions.
+   */
+function splitColorFunctionParameters(
+    content: string, {allowCommas, convertNoneToZero}: SplitColorFunctionParametersOptions): string[]|null {
+  const components = content.trim();
+  let values: string[] = [];
+
+  if (allowCommas) {
+    values = components.split(/\s*,\s*/);
+  }
+  if (!allowCommas || values.length === 1) {
+    values = components.split(/\s+/);
+    if (values[3] === '/') {
+      values.splice(3, 1);
+      if (values.length !== 4) {
+        return null;
+      }
+    } else if (
+        (values.length > 2 && values[2].indexOf('/') !== -1) || (values.length > 3 && values[3].indexOf('/') !== -1)) {
+      const alpha = values.slice(2, 4).join('');
+      values = values.slice(0, 2).concat(alpha.split(/\//)).concat(values.slice(4));
+    } else if (values.length >= 4) {
+      return null;
+    }
+  }
+  if (values.length !== 3 && values.length !== 4 || values.indexOf('') > -1) {
+    return null;
+  }
+
+  // Question: what should we do with `alpha` being none?
+  if (convertNoneToZero) {
+    return values.map(value => value === 'none' ? '0' : value);
+  }
+
+  return values;
+}
+
+function clamp(value: number|null, {min, max}: {min?: number, max?: number}): number|null {
+  if (value === null) {
+    return null;
+  }
+  if (min) {
+    value = Math.max(value, min);
+  }
+  if (max) {
+    value = Math.min(value, max);
+  }
+  return value;
+}
+
+function parsePercentage(value: string, range: [number, number]): number|null {
+  if (!value.endsWith('%')) {
+    return null;
+  }
+  const percentage = parseFloat(value.substr(0, value.length - 1));
+  return isNaN(percentage) ? null : mapPercentToRange(percentage, range);
+}
+
+function parseNumber(value: string): number|null {
+  const number = parseFloat(value);
+  return isNaN(number) ? null : number;
+}
+
+function parseAlpha(value: string|undefined): number|null {
+  if (value === undefined) {
+    return null;
+  }
+  return clamp(parsePercentage(value, [0, 1]) ?? parseNumber(value), {min: 0, max: 1});
+}
+
+/**
+ *
+ * @param value Text value to be parsed in the form of 'number|percentage'.
+ * @param range Range to map the percentage.
+ * @returns If it is not percentage, returns number directly; otherwise,
+ * maps the percentage to the range. For example:
+ * - 30% in range [0, 100] is 30
+ * - 20% in range [0, 1] is 0.5
+ */
+function parsePercentOrNumber(value: string, range: [number, number] = [0, 1]): number|null {
+  // @ts-ignore: isNaN can accept strings
+  if (isNaN(value.replace('%', ''))) {
+    return null;
+  }
+  const parsed = parseFloat(value);
+
+  if (value.indexOf('%') !== -1) {
+    if (value.indexOf('%') !== value.length - 1) {
+      return null;
+    }
+    return mapPercentToRange(parsed, range);
+  }
+  return parsed;
+}
+
+function parseRgbNumeric(value: string): number|null {
+  const parsed = parsePercentOrNumber(value);
+  if (parsed === null) {
+    return null;
+  }
+
+  if (value.indexOf('%') !== -1) {
+    return parsed;
+  }
+  return parsed / 255;
+}
+
+function parseHueNumeric(value: string): number|null {
+  const angle = value.replace(/(deg|g?rad|turn)$/, '');
+  // @ts-ignore: isNaN can accept strings
+  if (isNaN(angle) || value.match(/\s+(deg|g?rad|turn)/)) {
+    return null;
+  }
+  const number = parseFloat(angle);
+
+  if (value.indexOf('turn') !== -1) {
+    return number % 1;
+  }
+  if (value.indexOf('grad') !== -1) {
+    return (number / 400) % 1;
+  }
+  if (value.indexOf('rad') !== -1) {
+    return (number / (2 * Math.PI)) % 1;
+  }
+  return (number / 360) % 1;
+}
+
+function parseSatLightNumeric(value: string): number|null {
+  // @ts-ignore: isNaN can accept strings
+  if (value.indexOf('%') !== value.length - 1 || isNaN(value.replace('%', ''))) {
+    return null;
+  }
+  const parsed = parseFloat(value);
+  return Math.min(1, parsed / 100);
+}
+
+function parseAlphaNumeric(value: string): number|null {
+  return parsePercentOrNumber(value);
+}
+
+// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function hsva2hsla(hsva: number[], out_hsla: number[]): void {
+  const h = hsva[0];
+  let s: 0|number = hsva[1];
+  const v = hsva[2];
+
+  const t = (2 - s) * v;
+  if (v === 0 || s === 0) {
+    s = 0;
+  } else {
+    s *= v / (t < 1 ? t : 2 - t);
+  }
+
+  out_hsla[0] = h;
+  out_hsla[1] = s;
+  out_hsla[2] = t / 2;
+  out_hsla[3] = hsva[3];
+}
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function hsl2rgb(hsl: number[], out_rgb: number[]): void {
+  const h = hsl[0];
+  let s: 0|number = hsl[1];
+  const l = hsl[2];
+
+  function hue2rgb(p: number, q: number, h: number): number {
+    if (h < 0) {
+      h += 1;
+    } else if (h > 1) {
+      h -= 1;
+    }
+
+    if ((h * 6) < 1) {
+      return p + (q - p) * h * 6;
+    }
+    if ((h * 2) < 1) {
+      return q;
+    }
+    if ((h * 3) < 2) {
+      return p + (q - p) * ((2 / 3) - h) * 6;
+    }
+    return p;
+  }
+
+  if (s < 0) {
+    s = 0;
+  }
+
+  let q;
+  if (l <= 0.5) {
+    q = l * (1 + s);
+  } else {
+    q = l + s - (l * s);
+  }
+
+  const p = 2 * l - q;
+
+  const tr = h + (1 / 3);
+  const tg = h;
+  const tb = h - (1 / 3);
+
+  out_rgb[0] = hue2rgb(p, q, tr);
+  out_rgb[1] = hue2rgb(p, q, tg);
+  out_rgb[2] = hue2rgb(p, q, tb);
+  out_rgb[3] = hsl[3];
+}
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function hwb2rgb(hwb: number[], out_rgb: number[]): void {
+  const h = hwb[0];
+  const w = hwb[1];
+  const b = hwb[2];
+
+  if (w + b >= 1) {
+    out_rgb[0] = out_rgb[1] = out_rgb[2] = w / (w + b);
+    out_rgb[3] = hwb[3];
+  } else {
+    hsl2rgb([h, 1, 0.5, hwb[3]], out_rgb);
+    for (let i = 0; i < 3; ++i) {
+      out_rgb[i] += w - (w + b) * out_rgb[i];
+    }
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function hsva2rgba(hsva: number[], out_rgba: number[]): void {
+  const tmpHSLA = [0, 0, 0, 0];
+  hsva2hsla(hsva, tmpHSLA);
+  hsl2rgb(tmpHSLA, out_rgba);
+}
+
+/**
+ * Compute a desired luminance given a given luminance and a desired contrast
+ * ratio.
+ */
+export function desiredLuminance(luminance: number, contrast: number, lighter: boolean): number {
+  function computeLuminance(): number {
+    if (lighter) {
+      return (luminance + 0.05) * contrast - 0.05;
+    }
+    return (luminance + 0.05) / contrast - 0.05;
+  }
+  let desiredLuminance = computeLuminance();
+  if (desiredLuminance < 0 || desiredLuminance > 1) {
+    lighter = !lighter;
+    desiredLuminance = computeLuminance();
+  }
+  return desiredLuminance;
+}
+
+/**
+ * Approach a value of the given component of `candidateHSVA` such that the
+ * calculated luminance of `candidateHSVA` approximates `desiredLuminance`.
+ */
+export function approachColorValue(
+    candidateHSVA: number[], bgRGBA: number[], index: number, desiredLuminance: number,
+    candidateLuminance: (arg0: Array<number>) => number): number|null {
+  const epsilon = 0.0002;
+
+  let x = candidateHSVA[index];
+  let multiplier = 1;
+  let dLuminance: number = candidateLuminance(candidateHSVA) - desiredLuminance;
+  let previousSign = Math.sign(dLuminance);
+
+  for (let guard = 100; guard; guard--) {
+    if (Math.abs(dLuminance) < epsilon) {
+      candidateHSVA[index] = x;
+      return x;
+    }
+
+    const sign = Math.sign(dLuminance);
+    if (sign !== previousSign) {
+      // If `x` overshoots the correct value, halve the step size.
+      multiplier /= 2;
+      previousSign = sign;
+    } else if (x < 0 || x > 1) {
+      // If there is no overshoot and `x` is out of bounds, there is no
+      // acceptable value for `x`.
+      return null;
+    }
+
+    // Adjust `x` by a multiple of `dLuminance` to decrease step size as
+    // the computed luminance converges on `desiredLuminance`.
+    x += multiplier * (index === 2 ? -dLuminance : dLuminance);
+
+    candidateHSVA[index] = x;
+
+    dLuminance = candidateLuminance(candidateHSVA) - desiredLuminance;
+  }
+
+  return null;
+}
+
+export function findFgColorForContrast(fgColor: Legacy, bgColor: Legacy, requiredContrast: number): Legacy|null {
+  const candidateHSVA = fgColor.hsva();
+  const bgRGBA = bgColor.rgba();
+
+  const candidateLuminance = (candidateHSVA: number[]): number => {
+    return luminance(blendColors(Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
+  };
+
+  const bgLuminance = luminance(bgColor.rgba());
+  const fgLuminance = candidateLuminance(candidateHSVA);
+  const fgIsLighter = fgLuminance > bgLuminance;
+
+  const desired = desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
+
+  const saturationComponentIndex = 1;
+  const valueComponentIndex = 2;
+
+  if (approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desired, candidateLuminance)) {
+    return Legacy.fromHSVA(candidateHSVA);
+  }
+
+  candidateHSVA[valueComponentIndex] = 1;
+  if (approachColorValue(candidateHSVA, bgRGBA, saturationComponentIndex, desired, candidateLuminance)) {
+    return Legacy.fromHSVA(candidateHSVA);
+  }
+
+  return null;
+}
+
+export function findFgColorForContrastAPCA(fgColor: Legacy, bgColor: Legacy, requiredContrast: number): Legacy|null {
+  const candidateHSVA = fgColor.hsva();
+  const bgRGBA = bgColor.rgba();
+
+  const candidateLuminance = (candidateHSVA: number[]): number => {
+    return luminanceAPCA(Legacy.fromHSVA(candidateHSVA).rgba());
+  };
+
+  const bgLuminance = luminanceAPCA(bgColor.rgba());
+  const fgLuminance = candidateLuminance(candidateHSVA);
+  const fgIsLighter = fgLuminance >= bgLuminance;
+  const desiredLuminance = desiredLuminanceAPCA(bgLuminance, requiredContrast, fgIsLighter);
+
+  const saturationComponentIndex = 1;
+  const valueComponentIndex = 2;
+
+  if (approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desiredLuminance, candidateLuminance)) {
+    const candidate = Legacy.fromHSVA(candidateHSVA);
+    if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
+      return candidate;
+    }
+  }
+
+  candidateHSVA[valueComponentIndex] = 1;
+  if (approachColorValue(candidateHSVA, bgRGBA, saturationComponentIndex, desiredLuminance, candidateLuminance)) {
+    const candidate = Legacy.fromHSVA(candidateHSVA);
+    if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
+type ColorParameterSpec = [string, string, string, string | undefined];
+
+export interface Color {
+  equal(color: Color): boolean;
+  asString(format?: string): string|null;
+  setAlpha(alpha: number): Color;
+  format(): Format;
+  asLegacyColor(): Legacy;
+}
+
+export class Lab implements Color {
+  #l: number;
+  #a: number;
+  #b: number;
+  #alpha: number;
+  #text: string;
+  constructor(l: number, a: number, b: number, alpha: number, text: string) {
+    this.#l = l;
+    this.#a = a;
+    this.#b = b;
+    this.#alpha = alpha;
+    this.#text = text;
+  }
+  asLegacyColor(): Legacy {
+    const srgb = FORMAT_TO_SRGB_CONVERTER[Format.LAB](this.#l, this.#a, this.#b);
+    return new Legacy([...srgb, this.#alpha], Format.LAB, this.#text);
+  }
+  equal(color: Color): boolean {
+    return this.asLegacyColor().equal(color.asLegacyColor());
+  }
+  format(): Format {
+    return Format.LAB;
+  }
+  setAlpha(alpha: number): Color {
+    return this.asLegacyColor().setAlpha(alpha);
+  }
+  asString(format: string): string|null {
+    return this.asLegacyColor().asString(format);
+  }
+
+  static fromSpec(spec: ColorParameterSpec, text: string): Lab|null {
+    const L = clamp(parsePercentage(spec[0], [0, 100]) ?? parseNumber(spec[0]), {min: 0, max: 100});
+    if (L === null) {
+      return null;
+    }
+    const a = parsePercentage(spec[1], [0, 125]) ?? parseNumber(spec[1]);
+    if (a === null) {
+      return null;
+    }
+    const b = parsePercentage(spec[2], [0, 125]) ?? parseNumber(spec[2]);
+    if (b === null) {
+      return null;
+    }
+    const alpha = parseAlpha(spec[3]) ?? 1;
+
+    return new Lab(L, a, b, alpha, text);
+  }
+}
+
+export class LCH implements Color {
+  #l: number;
+  #c: number;
+  #h: number;
+  #alpha: number;
+  #text: string;
+  constructor(l: number, c: number, h: number, alpha: number, text: string) {
+    this.#l = l;
+    this.#c = c;
+    this.#h = h;
+    this.#alpha = alpha;
+    this.#text = text;
+  }
+  asLegacyColor(): Legacy {
+    const srgb = FORMAT_TO_SRGB_CONVERTER[Format.LCH](this.#l, this.#c, this.#h);
+    return new Legacy([...srgb, this.#alpha], Format.LCH, this.#text);
+  }
+  equal(color: Color): boolean {
+    return this.asLegacyColor().equal(color.asLegacyColor());
+  }
+  format(): Format {
+    return Format.LCH;
+  }
+  setAlpha(alpha: number): Color {
+    return this.asLegacyColor().setAlpha(alpha);
+  }
+  asString(format: string): string|null {
+    return this.asLegacyColor().asString(format);
+  }
+
+  static fromSpec(spec: ColorParameterSpec, text: string): LCH|null {
+    const L = clamp(parsePercentage(spec[0], [0, 100]) ?? parseNumber(spec[0]), {min: 0, max: 100});
+    if (L === null) {
+      return null;
+    }
+    const c = clamp(parsePercentage(spec[1], [0, 150]) ?? parseNumber(spec[1]), {min: 0});
+    if (c === null) {
+      return null;
+    }
+    const h = parseAngle(spec[2]);
+    if (h === null) {
+      return null;
+    }
+    const alpha = parseAlpha(spec[3]) ?? 1;
+
+    return new LCH(L, c, h, alpha, text);
+  }
+}
+
+export class Oklab implements Color {
+  #l: number;
+  #a: number;
+  #b: number;
+  #alpha: number;
+  #text: string;
+  constructor(l: number, a: number, b: number, alpha: number, text: string) {
+    this.#l = l;
+    this.#a = a;
+    this.#b = b;
+    this.#alpha = alpha;
+    this.#text = text;
+  }
+  asLegacyColor(): Legacy {
+    const srgb = FORMAT_TO_SRGB_CONVERTER[Format.OKLAB](this.#l, this.#a, this.#b);
+    return new Legacy([...srgb, this.#alpha], Format.OKLAB, this.#text);
+  }
+  equal(color: Color): boolean {
+    return this.asLegacyColor().equal(color.asLegacyColor());
+  }
+  format(): Format {
+    return Format.OKLAB;
+  }
+  setAlpha(alpha: number): Color {
+    return this.asLegacyColor().setAlpha(alpha);
+  }
+  asString(format: string): string|null {
+    return this.asLegacyColor().asString(format);
+  }
+
+  static fromSpec(spec: ColorParameterSpec, text: string): Oklab|null {
+    const L = clamp(parsePercentage(spec[0], [0, 1]) ?? parseNumber(spec[0]), {min: 0, max: 1});
+    if (L === null) {
+      return null;
+    }
+    const a = parsePercentage(spec[1], [0, 0.4]) ?? parseNumber(spec[1]);
+    if (a === null) {
+      return null;
+    }
+    const b = parsePercentage(spec[1], [0, 0.4]) ?? parseNumber(spec[1]);
+    if (b === null) {
+      return null;
+    }
+    const alpha = parseAlpha(spec[3]) ?? 1;
+
+    return new Oklab(L, a, b, alpha, text);
+  }
+}
+
+export class Oklch implements Color {
+  #l: number;
+  #c: number;
+  #h: number;
+  #alpha: number;
+  #text: string;
+  constructor(l: number, c: number, h: number, alpha: number, text: string) {
+    this.#l = l;
+    this.#c = c;
+    this.#h = h;
+    this.#alpha = alpha;
+    this.#text = text;
+  }
+  asLegacyColor(): Legacy {
+    const srgb = FORMAT_TO_SRGB_CONVERTER[Format.OKLCH](this.#l, this.#c, this.#h);
+    return new Legacy([...srgb, this.#alpha], Format.OKLCH, this.#text);
+  }
+  equal(color: Color): boolean {
+    return this.asLegacyColor().equal(color.asLegacyColor());
+  }
+  format(): Format {
+    return Format.OKLCH;
+  }
+  setAlpha(alpha: number): Color {
+    return this.asLegacyColor().setAlpha(alpha);
+  }
+  asString(format: string): string|null {
+    return this.asLegacyColor().asString(format);
+  }
+
+  static fromSpec(spec: ColorParameterSpec, text: string): Oklch|null {
+    const L = clamp(parsePercentage(spec[0], [0, 1]) ?? parseNumber(spec[0]), {min: 0, max: 1});
+    if (L === null) {
+      return null;
+    }
+    const c = clamp(parsePercentage(spec[1], [0, 0.4]) ?? parseNumber(spec[1]), {min: 0});
+    if (c === null) {
+      return null;
+    }
+    const h = parseAngle(spec[2]);
+    if (h === null) {
+      return null;
+    }
+    const alpha = parseAlpha(spec[3]) ?? 1;
+
+    return new Oklch(L, c, h, alpha, text);
+  }
+}
+
+export class ColorFunction implements Color {
+  #spec: [number, number, number, number|undefined];
+  #colorSpace: ColorSpace;
+  #text: string;
+  constructor(colorSpace: ColorSpace, rgbOrXyz: [number, number, number, number|undefined], text: string) {
+    this.#colorSpace = colorSpace;
+    this.#spec = rgbOrXyz;
+    this.#text = text;
+  }
+  asLegacyColor(): Legacy {
+    const [xr, yg, zb, alpha] = this.#spec;
+    const srgb = COLOR_SPACE_TO_SRGB_CONVERTER[this.#colorSpace](xr, yg, zb);
+    return new Legacy([...srgb, alpha ?? 1], Format.COLOR, this.#text);
+  }
+  equal(color: Color): boolean {
+    return this.asLegacyColor().equal(color.asLegacyColor());
+  }
+  format(): Format {
+    return Format.COLOR;
+  }
+  setAlpha(alpha: number): Color {
+    return this.asLegacyColor().setAlpha(alpha);
+  }
+  asString(format: string): string|null {
+    return this.asLegacyColor().asString(format);
+  }
+}
+
+export class Legacy implements Color {
   #hslaInternal: number[]|undefined;
   #hwbaInternal: number[]|undefined;
   #rgbaInternal: number[];
@@ -242,524 +909,99 @@ export class Color {
     }
   }
 
-  static parse(text: string): Color|null {
-    // Simple - #hex, nickname
-    const value = text.toLowerCase().replace(/\s+/g, '');
-    const simple = /^(?:#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|(\w+))$/i;
-    let match = value.match(simple);
-    if (match) {
-      if (match[1]) {  // hex
-        let hex = match[1].toLowerCase();
-        let format;
-        if (hex.length === 3) {
-          format = Format.ShortHEX;
-          hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
-        } else if (hex.length === 4) {
-          format = Format.ShortHEXA;
-          hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2) +
-              hex.charAt(3) + hex.charAt(3);
-        } else if (hex.length === 6) {
-          format = Format.HEX;
-        } else {
-          format = Format.HEXA;
-        }
-        const r = parseInt(hex.substring(0, 2), 16);
-        const g = parseInt(hex.substring(2, 4), 16);
-        const b = parseInt(hex.substring(4, 6), 16);
-        let a = 1;
-        if (hex.length === 8) {
-          a = parseInt(hex.substring(6, 8), 16) / 255;
-        }
-        return new Color([r / 255, g / 255, b / 255, a], format, text);
-      }
-
-      if (match[2]) {  // nickname
-        const nickname = match[2].toLowerCase();
-        const rgba = Nicknames.get(nickname);
-        if (rgba !== undefined) {
-          const color = Color.fromRGBA(rgba);
-          color.#formatInternal = Format.Nickname;
-          color.#originalText = text;
-          return color;
-        }
-        return null;
-      }
-
-      return null;
+  static fromHex(hex: string, text: string): Legacy {
+    hex = hex.toLowerCase();
+    let format;
+    if (hex.length === 3) {
+      format = Format.ShortHEX;
+      hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
+    } else if (hex.length === 4) {
+      format = Format.ShortHEXA;
+      hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2) +
+          hex.charAt(3) + hex.charAt(3);
+    } else if (hex.length === 6) {
+      format = Format.HEX;
+    } else {
+      format = Format.HEXA;
     }
-
-    // rgb/rgba(), hsl/hsla(), hwb/hwba(), lch(), oklch(), lab(), oklab() and color()
-    match = text.toLowerCase().match(/^\s*(?:(rgba?)|(hsla?)|(hwba?)|(lch)|(oklch)|(lab)|(oklab)|(color))\((.*)\)\s*$/);
-    if (match) {
-      const isRgbaMatch = Boolean(match[1]);   // rgb/rgba()
-      const isHslaMatch = Boolean(match[2]);   // hsl/hsla()
-      const isHwbaMatch = Boolean(match[3]);   // hwb/hwba()
-      const isLchMatch = Boolean(match[4]);    // lch()
-      const isOklchMatch = Boolean(match[5]);  // oklch()
-      const isLabMatch = Boolean(match[6]);    // lab()
-      const isOklabMatch = Boolean(match[7]);  // oklab()
-      const isColorMatch = Boolean(match[8]);  // color()
-      const valuesText = match[9];
-
-      // Parse color function first because extracting values for
-      // this function is not the same as the other ones
-      // so, we're not using any of the logic below.
-      if (isColorMatch) {
-        return parseColorFunction(text, valuesText);
-      }
-
-      const isOldSyntax = isRgbaMatch || isHslaMatch || isHwbaMatch;
-      const allowCommas = isRgbaMatch || isHslaMatch;
-      const convertNoneToZero = !isOldSyntax;  // Convert 'none' keyword to zero in new syntaxes
-
-      const values = this.splitColorFunctionParameters(valuesText, {allowCommas, convertNoneToZero});
-      if (!values) {
-        return null;
-      }
-      const hasAlpha = (values[3] !== undefined);
-
-      if (isRgbaMatch) {
-        const rgba = [
-          Color.parseRgbNumeric(values[0]),
-          Color.parseRgbNumeric(values[1]),
-          Color.parseRgbNumeric(values[2]),
-          hasAlpha ? Color.parseAlphaNumeric(values[3]) : 1,
-        ];
-        if (rgba.indexOf(null) > -1) {
-          return null;
-        }
-        return new Color((rgba as number[]), hasAlpha ? Format.RGBA : Format.RGB, text);
-      }
-
-      if (isHslaMatch || isHwbaMatch) {
-        const parameters = [
-          Color.parseHueNumeric(values[0]),
-          Color.parseSatLightNumeric(values[1]),
-          Color.parseSatLightNumeric(values[2]),
-          hasAlpha ? Color.parseAlphaNumeric(values[3]) : 1,
-        ];
-        if (parameters.indexOf(null) > -1) {
-          return null;
-        }
-        const rgba: number[] = [];
-        if (isHslaMatch) {
-          Color.hsl2rgb((parameters as number[]), rgba);
-          return new Color(rgba, hasAlpha ? Format.HSLA : Format.HSL, text);
-        }
-        Color.hwb2rgb((parameters as number[]), rgba);
-        return new Color(rgba, hasAlpha ? Format.HWBA : Format.HWB, text);
-      }
-
-      if (isLchMatch) {
-        const parameters = [
-          Color.parsePercentOrNumber(values[0], [0, 100]),
-          Color.parsePercentOrNumber(values[1], [0, 150]),
-          parseAngle(values[2]),
-          hasAlpha ? Color.parsePercentOrNumber(values[3], [0, 1]) : 1,
-        ];
-
-        if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
-          return null;
-        }
-
-        const srgb = FORMAT_TO_SRGB_CONVERTER[Format.LCH](parameters[0], parameters[1], parameters[2]);
-        return new Color([...srgb, parameters[3]], Format.LCH, text);
-      }
-
-      if (isOklchMatch) {
-        const parameters = [
-          Color.parsePercentOrNumber(values[0], [0, 1]),
-          Color.parsePercentOrNumber(values[1], [0, 0.4]),
-          parseAngle(values[2]),
-          hasAlpha ? Color.parsePercentOrNumber(values[3], [0, 1]) : 1,
-        ];
-
-        if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
-          return null;
-        }
-
-        const srgb = FORMAT_TO_SRGB_CONVERTER[Format.OKLCH](parameters[0], parameters[1], parameters[2]);
-        return new Color([...srgb, parameters[3]], Format.OKLCH, text);
-      }
-
-      if (isLabMatch) {
-        const parameters = [
-          Color.parsePercentOrNumber(values[0], [0, 100]),
-          Color.parsePercentOrNumber(values[1], [0, 125]),
-          Color.parsePercentOrNumber(values[2], [0, 125]),
-          hasAlpha ? Color.parsePercentOrNumber(values[3], [0, 1]) : 1,
-        ];
-
-        if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
-          return null;
-        }
-
-        const srgb = FORMAT_TO_SRGB_CONVERTER[Format.LAB](parameters[0], parameters[1], parameters[2]);
-        return new Color([...srgb, parameters[3]], Format.LAB, text);
-      }
-
-      if (isOklabMatch) {
-        const parameters = [
-          Color.parsePercentOrNumber(values[0], [0, 1]),
-          Color.parsePercentOrNumber(values[1], [0, 0.4]),
-          Color.parsePercentOrNumber(values[2], [0, 0.4]),
-          hasAlpha ? Color.parsePercentOrNumber(values[3], [0, 1]) : 1,
-        ];
-
-        if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
-          return null;
-        }
-
-        const srgb = FORMAT_TO_SRGB_CONVERTER[Format.OKLAB](parameters[0], parameters[1], parameters[2]);
-        return new Color([...srgb, parameters[3]], Format.OKLAB, text);
-      }
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    let a = 1;
+    if (hex.length === 8) {
+      a = parseInt(hex.substring(6, 8), 16) / 255;
     }
+    return new Legacy([r / 255, g / 255, b / 255, a], format, text);
+  }
 
+  static fromName(name: string, text: string): Legacy|null {
+    const nickname = name.toLowerCase();
+    const rgba = Nicknames.get(nickname);
+    if (rgba !== undefined) {
+      const color = Legacy.fromRGBA(rgba);
+      color.#formatInternal = Format.Nickname;
+      color.#originalText = text;
+      return color;
+    }
     return null;
   }
 
-  static fromRGBA(rgba: number[]): Color {
-    return new Color([rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], Format.RGBA);
+  static fromRGBAFunction(r: string, g: string, b: string, alpha: string|undefined, text: string): Legacy|null {
+    const rgba = [
+      parseRgbNumeric(r),
+      parseRgbNumeric(g),
+      parseRgbNumeric(b),
+      alpha ? parseAlphaNumeric(alpha) : 1,
+    ];
+
+    if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(rgba)) {
+      return null;
+    }
+    return new Legacy(rgba, alpha ? Format.RGBA : Format.RGB, text);
   }
 
-  static fromHSVA(hsva: number[]): Color {
+  static fromHSLA(h: string, s: string, l: string, alpha: string|undefined, text: string): Legacy|null {
+    const parameters = [
+      parseHueNumeric(h),
+      parseSatLightNumeric(s),
+      parseSatLightNumeric(l),
+      alpha ? parseAlphaNumeric(alpha) : 1,
+    ];
+    if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
+      return null;
+    }
     const rgba: number[] = [];
-    Color.hsva2rgba(hsva, rgba);
-    return new Color(rgba, Format.HSLA);
+    hsl2rgb(parameters, rgba);
+    return new Legacy(rgba, alpha ? Format.HSLA : Format.HSL, text);
   }
 
-  /**
-   * Split the color parameters of (e.g.) rgb(a), hsl(a), hwb(a) functions.
-   */
-  static splitColorFunctionParameters(
-      content: string, {allowCommas, convertNoneToZero}: SplitColorFunctionParametersOptions): string[]|null {
-    const components = content.trim();
-    let values: string[] = [];
-
-    if (allowCommas) {
-      values = components.split(/\s*,\s*/);
-    }
-    if (!allowCommas || values.length === 1) {
-      values = components.split(/\s+/);
-      if (values[3] === '/') {
-        values.splice(3, 1);
-        if (values.length !== 4) {
-          return null;
-        }
-      } else if (
-          (values.length > 2 && values[2].indexOf('/') !== -1) ||
-          (values.length > 3 && values[3].indexOf('/') !== -1)) {
-        const alpha = values.slice(2, 4).join('');
-        values = values.slice(0, 2).concat(alpha.split(/\//)).concat(values.slice(4));
-      } else if (values.length >= 4) {
-        return null;
-      }
-    }
-    if (values.length !== 3 && values.length !== 4 || values.indexOf('') > -1) {
+  static fromHWB(h: string, w: string, b: string, alpha: string|undefined, text: string): Legacy|null {
+    const parameters = [
+      parseHueNumeric(h),
+      parseSatLightNumeric(w),
+      parseSatLightNumeric(b),
+      alpha ? parseAlphaNumeric(alpha) : 1,
+    ];
+    if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(parameters)) {
       return null;
     }
-
-    // Question: what should we do with `alpha` being none?
-    if (convertNoneToZero) {
-      return values.map(value => value === 'none' ? '0' : value);
-    }
-
-    return values;
+    const rgba: number[] = [];
+    hwb2rgb(parameters, rgba);
+    return new Legacy(rgba, alpha ? Format.HWBA : Format.HWB, text);
   }
 
-  /**
-   *
-   * @param value Text value to be parsed in the form of 'number|percentage'.
-   * @param range Range to map the percentage.
-   * @returns If it is not percentage, returns number directly; otherwise,
-   * maps the percentage to the range. For example:
-   * - 30% in range [0, 100] is 30
-   * - 20% in range [0, 1] is 0.5
-   */
-  static parsePercentOrNumber(value: string, range: [number, number] = [0, 1]): number|null {
-    // @ts-ignore: isNaN can accept strings
-    if (isNaN(value.replace('%', ''))) {
-      return null;
-    }
-    const parsed = parseFloat(value);
-
-    if (value.indexOf('%') !== -1) {
-      if (value.indexOf('%') !== value.length - 1) {
-        return null;
-      }
-      return mapPercentToRange(parsed, range);
-    }
-    return parsed;
+  static fromRGBA(rgba: number[]): Legacy {
+    return new Legacy([rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], Format.RGBA);
   }
 
-  static parseRgbNumeric(value: string): number|null {
-    const parsed = Color.parsePercentOrNumber(value);
-    if (parsed === null) {
-      return null;
-    }
-
-    if (value.indexOf('%') !== -1) {
-      return parsed;
-    }
-    return parsed / 255;
+  static fromHSVA(hsva: number[]): Legacy {
+    const rgba: number[] = [];
+    hsva2rgba(hsva, rgba);
+    return new Legacy(rgba, Format.HSLA);
   }
 
-  static parseHueNumeric(value: string): number|null {
-    const angle = value.replace(/(deg|g?rad|turn)$/, '');
-    // @ts-ignore: isNaN can accept strings
-    if (isNaN(angle) || value.match(/\s+(deg|g?rad|turn)/)) {
-      return null;
-    }
-    const number = parseFloat(angle);
-
-    if (value.indexOf('turn') !== -1) {
-      return number % 1;
-    }
-    if (value.indexOf('grad') !== -1) {
-      return (number / 400) % 1;
-    }
-    if (value.indexOf('rad') !== -1) {
-      return (number / (2 * Math.PI)) % 1;
-    }
-    return (number / 360) % 1;
-  }
-
-  static parseSatLightNumeric(value: string): number|null {
-    // @ts-ignore: isNaN can accept strings
-    if (value.indexOf('%') !== value.length - 1 || isNaN(value.replace('%', ''))) {
-      return null;
-    }
-    const parsed = parseFloat(value);
-    return Math.min(1, parsed / 100);
-  }
-
-  static parseAlphaNumeric(value: string): number|null {
-    return Color.parsePercentOrNumber(value);
-  }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static hsva2hsla(hsva: number[], out_hsla: number[]): void {
-    const h = hsva[0];
-    let s: 0|number = hsva[1];
-    const v = hsva[2];
-
-    const t = (2 - s) * v;
-    if (v === 0 || s === 0) {
-      s = 0;
-    } else {
-      s *= v / (t < 1 ? t : 2 - t);
-    }
-
-    out_hsla[0] = h;
-    out_hsla[1] = s;
-    out_hsla[2] = t / 2;
-    out_hsla[3] = hsva[3];
-  }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static hsl2rgb(hsl: number[], out_rgb: number[]): void {
-    const h = hsl[0];
-    let s: 0|number = hsl[1];
-    const l = hsl[2];
-
-    function hue2rgb(p: number, q: number, h: number): number {
-      if (h < 0) {
-        h += 1;
-      } else if (h > 1) {
-        h -= 1;
-      }
-
-      if ((h * 6) < 1) {
-        return p + (q - p) * h * 6;
-      }
-      if ((h * 2) < 1) {
-        return q;
-      }
-      if ((h * 3) < 2) {
-        return p + (q - p) * ((2 / 3) - h) * 6;
-      }
-      return p;
-    }
-
-    if (s < 0) {
-      s = 0;
-    }
-
-    let q;
-    if (l <= 0.5) {
-      q = l * (1 + s);
-    } else {
-      q = l + s - (l * s);
-    }
-
-    const p = 2 * l - q;
-
-    const tr = h + (1 / 3);
-    const tg = h;
-    const tb = h - (1 / 3);
-
-    out_rgb[0] = hue2rgb(p, q, tr);
-    out_rgb[1] = hue2rgb(p, q, tg);
-    out_rgb[2] = hue2rgb(p, q, tb);
-    out_rgb[3] = hsl[3];
-  }
-
-  // See https://drafts.csswg.org/css-color-4/#hwb-to-rgb for formula reference.
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static hwb2rgb(hwb: number[], out_rgb: number[]): void {
-    const h = hwb[0];
-    const w = hwb[1];
-    const b = hwb[2];
-
-    if (w + b >= 1) {
-      out_rgb[0] = out_rgb[1] = out_rgb[2] = w / (w + b);
-      out_rgb[3] = hwb[3];
-    } else {
-      Color.hsl2rgb([h, 1, 0.5, hwb[3]], out_rgb);
-      for (let i = 0; i < 3; ++i) {
-        out_rgb[i] += w - (w + b) * out_rgb[i];
-      }
-    }
-  }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static hsva2rgba(hsva: number[], out_rgba: number[]): void {
-    Color.hsva2hsla(hsva, _tmpHSLA);
-    Color.hsl2rgb(_tmpHSLA, out_rgba);
-
-    for (let i = 0; i < _tmpHSLA.length; i++) {
-      _tmpHSLA[i] = 0;
-    }
-  }
-
-  /**
-   * Compute a desired luminance given a given luminance and a desired contrast
-   * ratio.
-   */
-  static desiredLuminance(luminance: number, contrast: number, lighter: boolean): number {
-    function computeLuminance(): number {
-      if (lighter) {
-        return (luminance + 0.05) * contrast - 0.05;
-      }
-      return (luminance + 0.05) / contrast - 0.05;
-    }
-    let desiredLuminance = computeLuminance();
-    if (desiredLuminance < 0 || desiredLuminance > 1) {
-      lighter = !lighter;
-      desiredLuminance = computeLuminance();
-    }
-    return desiredLuminance;
-  }
-
-  /**
-   * Approach a value of the given component of `candidateHSVA` such that the
-   * calculated luminance of `candidateHSVA` approximates `desiredLuminance`.
-   */
-  static approachColorValue(
-      candidateHSVA: number[], bgRGBA: number[], index: number, desiredLuminance: number,
-      candidateLuminance: (arg0: Array<number>) => number): number|null {
-    const epsilon = 0.0002;
-
-    let x = candidateHSVA[index];
-    let multiplier = 1;
-    let dLuminance: number = candidateLuminance(candidateHSVA) - desiredLuminance;
-    let previousSign = Math.sign(dLuminance);
-
-    for (let guard = 100; guard; guard--) {
-      if (Math.abs(dLuminance) < epsilon) {
-        candidateHSVA[index] = x;
-        return x;
-      }
-
-      const sign = Math.sign(dLuminance);
-      if (sign !== previousSign) {
-        // If `x` overshoots the correct value, halve the step size.
-        multiplier /= 2;
-        previousSign = sign;
-      } else if (x < 0 || x > 1) {
-        // If there is no overshoot and `x` is out of bounds, there is no
-        // acceptable value for `x`.
-        return null;
-      }
-
-      // Adjust `x` by a multiple of `dLuminance` to decrease step size as
-      // the computed luminance converges on `desiredLuminance`.
-      x += multiplier * (index === 2 ? -dLuminance : dLuminance);
-
-      candidateHSVA[index] = x;
-
-      dLuminance = candidateLuminance(candidateHSVA) - desiredLuminance;
-    }
-
-    return null;
-  }
-
-  static findFgColorForContrast(fgColor: Color, bgColor: Color, requiredContrast: number): Color|null {
-    const candidateHSVA = fgColor.hsva();
-    const bgRGBA = bgColor.rgba();
-
-    const candidateLuminance = (candidateHSVA: number[]): number => {
-      return luminance(blendColors(Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
-    };
-
-    const bgLuminance = luminance(bgColor.rgba());
-    const fgLuminance = candidateLuminance(candidateHSVA);
-    const fgIsLighter = fgLuminance > bgLuminance;
-
-    const desiredLuminance = Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
-
-    const saturationComponentIndex = 1;
-    const valueComponentIndex = 2;
-
-    if (Color.approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desiredLuminance, candidateLuminance)) {
-      return Color.fromHSVA(candidateHSVA);
-    }
-
-    candidateHSVA[valueComponentIndex] = 1;
-    if (Color.approachColorValue(
-            candidateHSVA, bgRGBA, saturationComponentIndex, desiredLuminance, candidateLuminance)) {
-      return Color.fromHSVA(candidateHSVA);
-    }
-
-    return null;
-  }
-
-  static findFgColorForContrastAPCA(fgColor: Color, bgColor: Color, requiredContrast: number): Color|null {
-    const candidateHSVA = fgColor.hsva();
-    const bgRGBA = bgColor.rgba();
-
-    const candidateLuminance = (candidateHSVA: number[]): number => {
-      return luminanceAPCA(Color.fromHSVA(candidateHSVA).rgba());
-    };
-
-    const bgLuminance = luminanceAPCA(bgColor.rgba());
-    const fgLuminance = candidateLuminance(candidateHSVA);
-    const fgIsLighter = fgLuminance >= bgLuminance;
-    const desiredLuminance = desiredLuminanceAPCA(bgLuminance, requiredContrast, fgIsLighter);
-
-    const saturationComponentIndex = 1;
-    const valueComponentIndex = 2;
-
-    if (Color.approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desiredLuminance, candidateLuminance)) {
-      const candidate = Color.fromHSVA(candidateHSVA);
-      if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
-        return candidate;
-      }
-    }
-
-    candidateHSVA[valueComponentIndex] = 1;
-    if (Color.approachColorValue(
-            candidateHSVA, bgRGBA, saturationComponentIndex, desiredLuminance, candidateLuminance)) {
-      const candidate = Color.fromHSVA(candidateHSVA);
-      if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
-        return candidate;
-      }
-    }
-
-    return null;
+  asLegacyColor(): Legacy {
+    return this;
   }
 
   format(): Format {
@@ -771,7 +1013,7 @@ export class Color {
   }
 
   /** HSLA with components within [0..1]
-     */
+    */
   hsla(): number[] {
     if (this.#hslaInternal) {
       return this.#hslaInternal;
@@ -786,7 +1028,7 @@ export class Color {
   }
 
   /** HSVA with components within [0..1]
-     */
+    */
   hsva(): number[] {
     const hsla = this.hsla();
     const h = hsla[0];
@@ -798,7 +1040,7 @@ export class Color {
   }
 
   /** HWBA with components within [0..1]
-     */
+    */
   hwba(): number[] {
     if (this.#hwbaInternal) {
       return this.#hwbaInternal;
@@ -834,7 +1076,7 @@ export class Color {
     return hasAlpha ? cf.HEXA : cf.HEX;
   }
 
-  asString(format?: string|null): string|null {
+  asString(format?: string): string|null {
     // For now, we'll return always in `originalText` for wide gamut colors.
     // TODO(ergunsh): Handle conversions to different representations later.
     if (this.canBeWideGamut()) {
@@ -983,37 +1225,37 @@ export class Color {
     return result;
   }
 
-  invert(): Color {
+  invert(): Legacy {
     const rgba = [];
     rgba[0] = 1 - this.#rgbaInternal[0];
     rgba[1] = 1 - this.#rgbaInternal[1];
     rgba[2] = 1 - this.#rgbaInternal[2];
     rgba[3] = this.#rgbaInternal[3];
-    return new Color(rgba, Format.RGBA);
+    return new Legacy(rgba, Format.RGBA);
   }
 
-  setAlpha(alpha: number): Color {
+  setAlpha(alpha: number): Legacy {
     const rgba = this.#rgbaInternal.slice();
     rgba[3] = alpha;
-    return new Color(rgba, Format.RGBA);
+    return new Legacy(rgba, Format.RGBA);
   }
 
-  blendWith(fgColor: Color): Color {
+  blendWith(fgColor: Legacy): Legacy {
     const rgba: number[] = blendColors(fgColor.#rgbaInternal, this.#rgbaInternal);
-    return new Color(rgba, Format.RGBA);
+    return new Legacy(rgba, Format.RGBA);
   }
 
-  blendWithAlpha(alpha: number): Color {
+  blendWithAlpha(alpha: number): Legacy {
     const rgba = this.#rgbaInternal.slice();
     rgba[3] *= alpha;
-    return new Color(rgba, Format.RGBA);
+    return new Legacy(rgba, Format.RGBA);
   }
 
   setFormat(format: Format): void {
     this.#formatInternal = format;
   }
 
-  equal(other: Color): boolean {
+  equal(other: Legacy): boolean {
     return this.#rgbaInternal.every((v, i) => v === other.#rgbaInternal[i]) &&
         this.#formatInternal === other.#formatInternal;
   }
@@ -1262,35 +1504,35 @@ const RGBAToNickname = new Map(
 const LAYOUT_LINES_HIGHLIGHT_COLOR = [127, 32, 210];
 
 export const PageHighlight = {
-  Content: Color.fromRGBA([111, 168, 220, .66]),
-  ContentLight: Color.fromRGBA([111, 168, 220, .5]),
-  ContentOutline: Color.fromRGBA([9, 83, 148]),
-  Padding: Color.fromRGBA([147, 196, 125, .55]),
-  PaddingLight: Color.fromRGBA([147, 196, 125, .4]),
-  Border: Color.fromRGBA([255, 229, 153, .66]),
-  BorderLight: Color.fromRGBA([255, 229, 153, .5]),
-  Margin: Color.fromRGBA([246, 178, 107, .66]),
-  MarginLight: Color.fromRGBA([246, 178, 107, .5]),
-  EventTarget: Color.fromRGBA([255, 196, 196, .66]),
-  Shape: Color.fromRGBA([96, 82, 177, 0.8]),
-  ShapeMargin: Color.fromRGBA([96, 82, 127, .6]),
-  CssGrid: Color.fromRGBA([0x4b, 0, 0x82, 1]),
-  LayoutLine: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
-  GridBorder: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
-  GapBackground: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .3]),
-  GapHatch: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .8]),
-  GridAreaBorder: Color.fromRGBA([26, 115, 232, 1]),
+  Content: Legacy.fromRGBA([111, 168, 220, .66]),
+  ContentLight: Legacy.fromRGBA([111, 168, 220, .5]),
+  ContentOutline: Legacy.fromRGBA([9, 83, 148]),
+  Padding: Legacy.fromRGBA([147, 196, 125, .55]),
+  PaddingLight: Legacy.fromRGBA([147, 196, 125, .4]),
+  Border: Legacy.fromRGBA([255, 229, 153, .66]),
+  BorderLight: Legacy.fromRGBA([255, 229, 153, .5]),
+  Margin: Legacy.fromRGBA([246, 178, 107, .66]),
+  MarginLight: Legacy.fromRGBA([246, 178, 107, .5]),
+  EventTarget: Legacy.fromRGBA([255, 196, 196, .66]),
+  Shape: Legacy.fromRGBA([96, 82, 177, 0.8]),
+  ShapeMargin: Legacy.fromRGBA([96, 82, 127, .6]),
+  CssGrid: Legacy.fromRGBA([0x4b, 0, 0x82, 1]),
+  LayoutLine: Legacy.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
+  GridBorder: Legacy.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
+  GapBackground: Legacy.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .3]),
+  GapHatch: Legacy.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .8]),
+  GridAreaBorder: Legacy.fromRGBA([26, 115, 232, 1]),
 };
 
 export const SourceOrderHighlight = {
-  ParentOutline: Color.fromRGBA([224, 90, 183, 1]),
-  ChildOutline: Color.fromRGBA([0, 120, 212, 1]),
+  ParentOutline: Legacy.fromRGBA([224, 90, 183, 1]),
+  ChildOutline: Legacy.fromRGBA([0, 120, 212, 1]),
 };
 
 export const IsolationModeHighlight = {
-  Resizer: Color.fromRGBA([222, 225, 230, 1]),  // --color-background-elevation-2
-  ResizerHandle: Color.fromRGBA([166, 166, 166, 1]),
-  Mask: Color.fromRGBA([248, 249, 249, 1]),
+  Resizer: Legacy.fromRGBA([222, 225, 230, 1]),  // --color-background-elevation-2
+  ResizerHandle: Legacy.fromRGBA([166, 166, 166, 1]),
+  Mask: Legacy.fromRGBA([248, 249, 249, 1]),
 };
 
 export class Generator {
@@ -1382,7 +1624,3 @@ export class Generator {
     return space.min + Math.floor(index / (count - 1) * (space.max - space.min));
   }
 }
-
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _tmpHSLA = [0, 0, 0, 0];

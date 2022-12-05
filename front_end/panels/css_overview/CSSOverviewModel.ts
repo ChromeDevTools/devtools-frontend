@@ -107,7 +107,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
       includeBlendedBackgroundColors: true,
     };
 
-    const formatColor = (color: Common.Color.Color): string|null => {
+    const formatColor = (color: Common.Color.Legacy): string|null => {
       return color.hasAlpha() ? color.asString(Common.Color.Format.HEXA) : color.asString(Common.Color.Format.HEX);
     };
 
@@ -122,7 +122,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
         return;
       }
 
-      const color = Common.Color.Color.parse(colorText);
+      const color = Common.Color.parse(colorText)?.asLegacyColor();
       if (!color || color.rgba()[3] === 0) {
         return;
       }
@@ -264,7 +264,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
 
         const blendedBackgroundColor =
             textColor && layout.blendedBackgroundColors && layout.blendedBackgroundColors[idx] !== -1 ?
-            Common.Color.Color.parse(strings[layout.blendedBackgroundColors[idx]]) :
+            Common.Color.parse(strings[layout.blendedBackgroundColors[idx]]) :
             null;
         if (textColor && blendedBackgroundColor) {
           const contrastInfo = new ColorPicker.ContrastInfo.ContrastInfo({
@@ -273,10 +273,10 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
             computedFontWeight: fontWeightIdx !== -1 ? strings[fontWeightIdx] : '',
           });
           const blendedTextColor =
-              textColor.blendWithAlpha(layout.textColorOpacities ? layout.textColorOpacities[idx] : 1);
+              textColor.asLegacyColor().blendWithAlpha(layout.textColorOpacities ? layout.textColorOpacities[idx] : 1);
           contrastInfo.setColor(blendedTextColor);
           const formattedTextColor = formatColor(blendedTextColor);
-          const formattedBackgroundColor = formatColor(blendedBackgroundColor);
+          const formattedBackgroundColor = formatColor(blendedBackgroundColor.asLegacyColor());
           const key = `${formattedTextColor}_${formattedBackgroundColor}`;
           if (Root.Runtime.experiments.isEnabled('APCA')) {
             const contrastRatio = contrastInfo.contrastRatioAPCA();

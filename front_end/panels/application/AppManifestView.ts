@@ -669,14 +669,13 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     }
 
     this.themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
-    const themeColor =
-        Common.Color.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.Color.parse('white');
+    const themeColor = Common.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.parse('white');
     if (themeColor) {
       this.themeColorSwatch.renderColor(themeColor, true);
     }
     this.backgroundColorSwatch.classList.toggle('hidden', !stringProperty('background_color'));
     const backgroundColor =
-        Common.Color.Color.parse(stringProperty('background_color') || 'white') || Common.Color.Color.parse('white');
+        Common.Color.parse(stringProperty('background_color') || 'white') || Common.Color.parse('white');
     if (backgroundColor) {
       this.backgroundColorSwatch.renderColor(backgroundColor, true);
     }
@@ -688,7 +687,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     const hasDarkThemeColor = typeof darkThemeColorString === 'string';
     this.darkThemeColorField.parentElement?.classList.toggle('hidden', !hasDarkThemeColor);
     if (hasDarkThemeColor) {
-      const darkThemeColor = Common.Color.Color.parse(darkThemeColorString);
+      const darkThemeColor = Common.Color.parse(darkThemeColorString);
       if (darkThemeColor) {
         this.darkThemeColorSwatch.renderColor(darkThemeColor, true);
       }
@@ -697,7 +696,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     const hasDarkBackgroundColor = typeof darkBackgroundColorString === 'string';
     this.darkBackgroundColorField.parentElement?.classList.toggle('hidden', !hasDarkBackgroundColor);
     if (hasDarkBackgroundColor) {
-      const darkBackgroundColor = Common.Color.Color.parse(darkBackgroundColorString);
+      const darkBackgroundColor = Common.Color.parse(darkBackgroundColorString);
       if (darkBackgroundColor) {
         this.darkBackgroundColorSwatch.renderColor(darkBackgroundColor, true);
       }

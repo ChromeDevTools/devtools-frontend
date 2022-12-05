@@ -243,7 +243,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!valueChild) {
       valueChild = swatch.createChild('span');
       const color = swatch.getColor();
-      valueChild.textContent = color ? color.asString(swatch.getFormat()) : text;
+      valueChild.textContent = color ? color.asString(swatch.getFormat() ?? undefined) : text;
     }
     swatch.appendChild(valueChild);
 
@@ -287,7 +287,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     UI.UIUtils.createTextChild(varSwatch, text);
     varSwatch.data = {text, computedValue, fromFallback, onLinkActivate: this.handleVarDefinitionActivate.bind(this)};
 
-    if (!computedValue || !Common.Color.Color.parse(computedValue)) {
+    if (!computedValue || !Common.Color.parse(computedValue)) {
       return varSwatch;
     }
 

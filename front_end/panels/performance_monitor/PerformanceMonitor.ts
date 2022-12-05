@@ -265,17 +265,18 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
       });
     }
     const backgroundColor =
-        Common.Color.Color.parse(ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'));
+        Common.Color.parse(ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'))
+            ?.asLegacyColor();
 
     if (backgroundColor) {
       for (const path of paths.reverse()) {
         const color = path.color;
         ctx.save();
-        const parsedColor = Common.Color.Color.parse(color);
+        const parsedColor = Common.Color.parse(color);
         if (!parsedColor) {
           continue;
         }
-        ctx.fillStyle = backgroundColor.blendWith(parsedColor.setAlpha(0.2)).asString(null) || '';
+        ctx.fillStyle = backgroundColor.blendWith(parsedColor.setAlpha(0.2).asLegacyColor()).asString() || '';
         ctx.fill(path.path);
         ctx.strokeStyle = color;
         ctx.lineWidth = 0.5;

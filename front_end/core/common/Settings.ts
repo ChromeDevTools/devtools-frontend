@@ -31,7 +31,7 @@
 import type * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {Format, type Color} from './Color.js';
+import {Format, Legacy, type Color} from './Color.js';
 import {Console} from './Console.js';
 import {type GenericEvents, type EventDescriptor, type EventTargetEvent} from './EventTarget.js';
 import {ObjectWrapper} from './Object.js';
@@ -1154,6 +1154,9 @@ export function settingForTest(settingName: string): Setting<unknown> {
 
 export function detectColorFormat(color: Color): Format {
   const cf = Format;
+  if (!(color instanceof Legacy)) {
+    return cf.Original;
+  }
   let format;
   const formatSetting = Settings.instance().moduleSetting('colorFormat').get();
   if (formatSetting === cf.Original) {

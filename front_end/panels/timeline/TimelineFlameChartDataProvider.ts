@@ -1011,7 +1011,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (color) {
         return color;
       }
-      const parsedColor = Common.Color.Color.parse(lookupColor(key));
+      const parsedColor = Common.Color.parse(lookupColor(key));
       if (!parsedColor) {
         throw new Error('Could not parse color from entry');
       }

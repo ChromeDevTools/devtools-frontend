@@ -1360,11 +1360,11 @@ export class TimelineUIUtils {
     // This event is considered idle time but still rendered as a scripting event here
     // to connect the StreamingCompileScriptParsing events it belongs to.
     if (event.name === TimelineModel.TimelineModel.RecordType.StreamingCompileScriptWaiting) {
-      const color = Common.Color.Color.parse(TimelineUIUtils.categories().scripting.color);
+      const color = Common.Color.parse(TimelineUIUtils.categories().scripting.color);
       if (!color) {
         throw new Error('Unable to parse color from TimelineUIUtils.categories().scripting.color');
       }
-      return color.setAlpha(0.3).asString(null) as string;
+      return color.setAlpha(0.3).asString() as string;
     }
 
     return color;

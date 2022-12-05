@@ -507,7 +507,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     if (!color) {
       return 'transparent';
     }
-    return Common.Color.Color.fromRGBA([color.r, color.g, color.b, color.a !== undefined ? color.a : 1])
+    return Common.Color.Legacy.fromRGBA([color.r, color.g, color.b, color.a !== undefined ? color.a : 1])
                .asString(Common.Color.Format.RGBA) ||
         '';
   }

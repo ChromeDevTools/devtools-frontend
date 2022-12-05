@@ -168,24 +168,24 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     return [waitingStyleMap, downloadingStyleMap];
 
     function toBorderColor(color: string): string|null {
-      const parsedColor = Common.Color.Color.parse(color);
+      const parsedColor = Common.Color.parse(color)?.asLegacyColor();
       if (!parsedColor) {
         return '';
       }
       const hsla = parsedColor.hsla();
       hsla[1] /= 2;
       hsla[2] -= Math.min(hsla[2], 0.2);
-      return parsedColor.asString(null);
+      return parsedColor.asString();
     }
 
     function toWaitingColor(color: string): string|null {
-      const parsedColor = Common.Color.Color.parse(color);
+      const parsedColor = Common.Color.parse(color)?.asLegacyColor();
       if (!parsedColor) {
         return '';
       }
       const hsla = parsedColor.hsla();
       hsla[2] *= 1.1;
-      return parsedColor.asString(null);
+      return parsedColor.asString();
     }
   }
 

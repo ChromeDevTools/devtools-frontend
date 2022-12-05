@@ -118,7 +118,7 @@ export class ContrastRatioLineBuilder {
     const fgIsLighter = fgLuminance > bgLuminance;
     const desiredLuminance = isAPCA ?
         Common.ColorUtils.desiredLuminanceAPCA(bgLuminance, requiredContrast, fgIsLighter) :
-        Common.Color.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
+        Common.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
 
     if (isAPCA &&
         Math.abs(Math.round(Common.ColorUtils.contrastRatioByLuminanceAPCA(desiredLuminance, bgLuminance))) <
@@ -131,19 +131,19 @@ export class ContrastRatioLineBuilder {
     const candidateHSVA = [fgHSVA[H], 0, 0, fgHSVA[A]];
     let pathBuilder: string[] = [];
     const candidateRGBA: number[] = [];
-    Common.Color.Color.hsva2rgba(candidateHSVA, candidateRGBA);
+    Common.Color.hsva2rgba(candidateHSVA, candidateRGBA);
     blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
 
     let candidateLuminance: ((candidateHSVA: number[]) => number)|((candidateHSVA: number[]) => number) =
         (candidateHSVA: number[]): number => {
           return Common.ColorUtils.luminance(
-              Common.ColorUtils.blendColors(Common.Color.Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
+              Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
         };
 
     if (Root.Runtime.experiments.isEnabled('APCA')) {
       candidateLuminance = (candidateHSVA: number[]): number => {
         return Common.ColorUtils.luminanceAPCA(
-            Common.ColorUtils.blendColors(Common.Color.Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
+            Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
       };
     }
 
@@ -159,7 +159,7 @@ export class ContrastRatioLineBuilder {
       // gradient of the curve.
       candidateHSVA[V] = lastV + currentSlope * dS;
 
-      const v = Common.Color.Color.approachColorValue(candidateHSVA, bgRGBA, V, desiredLuminance, candidateLuminance);
+      const v = Common.Color.approachColorValue(candidateHSVA, bgRGBA, V, desiredLuminance, candidateLuminance);
       if (v === null) {
         break;
       }
@@ -178,7 +178,7 @@ export class ContrastRatioLineBuilder {
     if (s < 1 + dS) {
       s -= dS;
       candidateHSVA[V] = 1;
-      s = Common.Color.Color.approachColorValue(candidateHSVA, bgRGBA, S, desiredLuminance, candidateLuminance);
+      s = Common.Color.approachColorValue(candidateHSVA, bgRGBA, S, desiredLuminance, candidateLuminance);
       if (s !== null) {
         pathBuilder = pathBuilder.concat(['L', (s * width).toFixed(2), '-0.1']);
       }

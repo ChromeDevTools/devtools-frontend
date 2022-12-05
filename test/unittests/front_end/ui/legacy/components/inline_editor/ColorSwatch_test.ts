@@ -62,14 +62,14 @@ describeWithLocale('ColorSwatch', () => {
   });
 
   it('accepts colors as color objects', () => {
-    const swatch = createSwatch(Common.Color.Color.parse('red') as Common.Color.Color);
+    const swatch = createSwatch(Common.Color.parse('red') as Common.Color.Color);
 
     assertSwatch(swatch, {
       backgroundColor: 'red',
       colorTextInSlot: 'red',
     });
 
-    swatch.renderColor(new Common.Color.Color([1, .5, .2, .5], Common.Color.Format.RGBA));
+    swatch.renderColor(new Common.Color.Legacy([1, .5, .2, .5], Common.Color.Format.RGBA));
 
     assertSwatch(swatch, {
       backgroundColor: 'rgba(255, 128, 51, 0.5)',
@@ -90,7 +90,7 @@ describeWithLocale('ColorSwatch', () => {
     const swatch = createSwatch('red', Common.Color.Format.RGB);
     assertSwatch(swatch, {colorTextInSlot: 'rgb(255 0 0)'});
 
-    swatch.renderColor(new Common.Color.Color([1, .5, .2, .5], Common.Color.Format.HSLA), Common.Color.Format.RGB);
+    swatch.renderColor(new Common.Color.Legacy([1, .5, .2, .5], Common.Color.Format.HSLA), Common.Color.Format.RGB);
     assertSwatch(swatch, {colorTextInSlot: 'rgb(255 128 51 / 50%)'});
   });
 
@@ -207,7 +207,7 @@ describeWithLocale('ColorSwatch', () => {
   });
 
   it('shows a circular color swatch for a wide gamut color', () => {
-    const swatch = createSwatch(Common.Color.Color.parse('lch(1 1 1)') as Common.Color.Color);
+    const swatch = createSwatch(Common.Color.parse('lch(1 1 1)') as Common.Color.Color);
     assertNotNullOrUndefined(swatch.shadowRoot);
 
     // It should have `circular` and `read-only` classes

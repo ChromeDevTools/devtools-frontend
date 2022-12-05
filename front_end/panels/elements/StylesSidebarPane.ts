@@ -1954,7 +1954,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         const computedValue =
             this.treeElement.matchedStyles().computeCSSVariable(this.treeElement.property.ownerStyle, completion);
         if (computedValue) {
-          const color = Common.Color.Color.parse(computedValue);
+          const color = Common.Color.parse(computedValue);
           if (color) {
             result.subtitleRenderer = colorSwatchRenderer.bind(null, color);
             result.isCSSVariableColor = true;

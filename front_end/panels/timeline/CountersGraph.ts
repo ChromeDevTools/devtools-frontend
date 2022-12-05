@@ -412,7 +412,7 @@ export class CounterUI {
     this.setting.setTitle(title);
     this.filter = new UI.Toolbar.ToolbarSettingCheckbox(this.setting, title);
     this.filter.inputElement.classList.add('-theme-preserve-input');
-    const parsedColor = Common.Color.Color.parse(graphColor);
+    const parsedColor = Common.Color.parse(graphColor);
     if (parsedColor) {
       const colorWithAlpha = parsedColor.setAlpha(0.5).asString(Common.Color.Format.RGBA);
       const htmlElement = (this.filter.element as HTMLElement);

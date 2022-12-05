@@ -67,7 +67,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private readonly toggleMainColorPicker:
       (arg0?: boolean|undefined, arg1?: Common.EventTarget.EventTargetEvent<unknown>|undefined) => void;
   private readonly expandedChangedCallback: () => void;
-  private readonly colorSelectedCallback: (arg0: Common.Color.Color) => void;
+  private readonly colorSelectedCallback: (arg0: Common.Color.Legacy) => void;
   private expandedInternal: boolean;
   private passesAA: boolean;
   private contrastUnknown: boolean;
@@ -94,7 +94,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       contrastInfo: ContrastInfo, contentElement: Element,
       toggleMainColorPickerCallback:
           (arg0?: boolean|undefined, arg1?: Common.EventTarget.EventTargetEvent<unknown>|undefined) => void,
-      expandedChangedCallback: () => void, colorSelectedCallback: (arg0: Common.Color.Color) => void) {
+      expandedChangedCallback: () => void, colorSelectedCallback: (arg0: Common.Color.Legacy) => void) {
     super();
     this.contrastInfo = contrastInfo;
     this.elementInternal = contentElement.createChild('div', 'spectrum-contrast-details collapsed') as HTMLElement;
@@ -185,7 +185,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.noContrastInfoAvailable.classList.add('hidden');
   }
 
-  private computeSuggestedColor(threshold: string): Common.Color.Color|null|undefined {
+  private computeSuggestedColor(threshold: string): Common.Color.Legacy|null|undefined {
     const fgColor = this.contrastInfo.color();
     const bgColor = this.contrastInfo.bgColor();
     if (!fgColor || !bgColor) {
@@ -198,7 +198,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         return;
       }
       // We add 1% to the min required contrast to make sure we are over the limit.
-      return Common.Color.Color.findFgColorForContrastAPCA(fgColor, bgColor, requiredContrast + 1);
+      return Common.Color.findFgColorForContrastAPCA(fgColor, bgColor, requiredContrast + 1);
     }
 
     const requiredContrast = this.contrastInfo.contrastRatioThreshold(threshold);
@@ -207,7 +207,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     // We add a bit to the required contrast to make sure we are over the limit.
-    return Common.Color.Color.findFgColorForContrast(fgColor, bgColor, requiredContrast + 0.1);
+    return Common.Color.findFgColorForContrast(fgColor, bgColor, requiredContrast + 0.1);
   }
 
   private onSuggestColor(threshold: string): void {
@@ -453,7 +453,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     data: rgbColor,
   }: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.EyeDropperPickedColorEvent>): void {
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
-    const color = Common.Color.Color.fromRGBA(rgba);
+    const color = Common.Color.Legacy.fromRGBA(rgba);
     this.contrastInfo.setBgColor(color);
     this.toggleBackgroundColorPickerInternal(false);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
@@ -481,7 +481,7 @@ export class Swatch {
     this.textPreview.textContent = 'Aa';
   }
 
-  setColors(fgColor: Common.Color.Color, bgColor: Common.Color.Color): void {
+  setColors(fgColor: Common.Color.Legacy, bgColor: Common.Color.Legacy): void {
     this.textPreview.style.color = fgColor.asString(Common.Color.Format.RGBA) as string;
     this.swatchInnerElement.style.backgroundColor = bgColor.asString(Common.Color.Format.RGBA) as string;
     // Show border if the swatch is white.

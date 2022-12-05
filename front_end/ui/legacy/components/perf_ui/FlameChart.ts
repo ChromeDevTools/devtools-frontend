@@ -1323,9 +1323,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           context.fillStyle =
               ThemeSupport.ThemeSupport.instance().getComputedValue('--selected-group-background', this.contentElement);
         } else {
-          const parsedColor = Common.Color.Color.parse(group.style.backgroundColor);
+          const parsedColor = Common.Color.parse(group.style.backgroundColor);
           if (parsedColor) {
-            context.fillStyle = (parsedColor.setAlpha(0.8).asString(null) as string);
+            context.fillStyle = (parsedColor.setAlpha(0.8).asString() as string);
           }
         }
 

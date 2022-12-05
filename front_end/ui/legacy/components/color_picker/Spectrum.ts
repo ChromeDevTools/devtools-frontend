@@ -822,7 +822,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private paletteColorSelected(colorText: string, colorName: string|undefined, matchUserFormat: boolean): void {
-    const color = Common.Color.Color.parse(colorText);
+    const color = Common.Color.parse(colorText)?.asLegacyColor();
     if (!color) {
       return;
     }
@@ -917,7 +917,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.showPalette(palette, false);
   }
 
-  setColor(color: Common.Color.Color, colorFormat: string): void {
+  setColor(color: Common.Color.Legacy, colorFormat: string): void {
     this.originalFormat = colorFormat;
     this.innerSetColor(color.hsva(), '', undefined /* colorName */, colorFormat, ChangeSource.Model);
     const colorValues = this.color().canonicalHSLA();
@@ -925,7 +925,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
   }
 
-  colorSelected(color: Common.Color.Color): void {
+  colorSelected(color: Common.Color.Legacy): void {
     this.innerSetColor(color.hsva(), '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
   }
 
@@ -957,7 +957,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
 
     if (this.contrastInfo) {
-      this.contrastInfo.setColor(Common.Color.Color.fromHSVA(this.hsv), this.colorFormat);
+      this.contrastInfo.setColor(Common.Color.Legacy.fromHSVA(this.hsv), this.colorFormat);
     }
 
     this.updateHelperLocations();
@@ -971,8 +971,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
   }
 
-  private color(): Common.Color.Color {
-    return Common.Color.Color.fromHSVA(this.hsv);
+  private color(): Common.Color.Legacy {
+    return Common.Color.Legacy.fromHSVA(this.hsv);
   }
 
   colorName(): string|undefined {
@@ -1084,7 +1084,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private updateUI(): void {
-    const h = Common.Color.Color.fromHSVA([this.hsv[0], 1, 1, 1]);
+    const h = Common.Color.Legacy.fromHSVA([this.hsv[0], 1, 1, 1]);
     this.colorElement.style.backgroundColor = h.asString(Common.Color.Format.RGB) as string;
     if (this.contrastOverlay) {
       this.contrastOverlay.setDimensions(this.dragWidth, this.dragHeight);
@@ -1092,7 +1092,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
     this.swatch.setColor(this.color(), this.colorString());
     this.colorDragElement.style.backgroundColor = this.color().asString(Common.Color.Format.RGBA) as string;
-    const noAlpha = Common.Color.Color.fromHSVA(this.hsv.slice(0, 3).concat(1));
+    const noAlpha = Common.Color.Legacy.fromHSVA(this.hsv.slice(0, 3).concat(1));
     this.alphaElementBackground.style.backgroundImage = Platform.StringUtilities.sprintf(
         'linear-gradient(to right, rgba(0,0,0,0), %s)', noAlpha.asString(Common.Color.Format.RGB));
   }
@@ -1118,7 +1118,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       return;
     }
     const text = event.clipboardData.getData('text');
-    const color = Common.Color.Color.parse(text);
+    const color = Common.Color.parse(text)?.asLegacyColor();
     if (!color) {
       return;
     }
@@ -1150,7 +1150,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       colorString = Platform.StringUtilities.sprintf('%s(%s)', this.colorFormat, [values, alpha].join(' / '));
     }
 
-    const color = Common.Color.Color.parse(colorString);
+    const color = Common.Color.parse(colorString)?.asLegacyColor();
     if (!color) {
       return;
     }
@@ -1231,7 +1231,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
       try {
         const hexColor = await eyeDropper.open({signal: this.eyeDropperAbortController.signal});
-        const color = Common.Color.Color.parse(hexColor.sRGBHex);
+        const color = Common.Color.parse(hexColor.sRGBHex)?.asLegacyColor();
+
         this.innerSetColor(color?.hsva(), '', undefined /* colorName */, undefined, ChangeSource.Other);
       } catch (error) {
         if (error.name !== 'AbortError') {
@@ -1250,7 +1251,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     data: rgbColor,
   }: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.EyeDropperPickedColorEvent>): void {
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
-    const color = Common.Color.Color.fromRGBA(rgba);
+    const color = Common.Color.Legacy.fromRGBA(rgba);
     this.innerSetColor(color.hsva(), '', undefined /* colorName */, undefined, ChangeSource.Other);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
   }
@@ -1303,8 +1304,8 @@ export class PaletteGenerator {
 
   private finish(): void {
     function hueComparator(a: string, b: string): number {
-      const hsva = (paletteColors.get(a) as Common.Color.Color).hsva();
-      const hsvb = (paletteColors.get(b) as Common.Color.Color).hsva();
+      const hsva = (paletteColors.get(a) as Common.Color.Legacy).hsva();
+      const hsvb = (paletteColors.get(b) as Common.Color.Legacy).hsva();
 
       // First trim the shades of gray
       if (hsvb[1] < 0.12 && hsva[1] < 0.12) {
@@ -1327,11 +1328,11 @@ export class PaletteGenerator {
 
     let colors: string[]|string[] = [...this.frequencyMap.keys()];
     colors = colors.sort(this.frequencyComparator.bind(this));
-    const paletteColors = new Map<string, Common.Color.Color>();
+    const paletteColors = new Map<string, Common.Color.Legacy>();
     const colorsPerRow = 24;
     while (paletteColors.size < colorsPerRow && colors.length) {
       const colorText = colors.shift() as string;
-      const color = Common.Color.Color.parse(colorText);
+      const color = Common.Color.parse(colorText)?.asLegacyColor();
       if (!color || color.nickname() === 'white' || color.nickname() === 'black') {
         continue;
       }
@@ -1466,7 +1467,7 @@ export class Swatch {
     UI.ARIAUtils.setAccessibleName(this.swatchOverlayElement, this.swatchCopyIcon.title);
   }
 
-  setColor(color: Common.Color.Color, colorString?: string): void {
+  setColor(color: Common.Color.Legacy, colorString?: string): void {
     this.swatchInnerElement.style.backgroundColor = color.asString(Common.Color.Format.RGBA) as string;
     // Show border if the swatch is white.
     this.swatchInnerElement.classList.toggle('swatch-inner-white', color.hsla()[2] > 0.9);

@@ -81,7 +81,7 @@ export class ColorSwatch extends HTMLElement {
    */
   renderColor(color: Common.Color.Color|string, formatOrUseUserSetting?: string|boolean, tooltip?: string): void {
     if (typeof color === 'string') {
-      this.color = Common.Color.Color.parse(color);
+      this.color = Common.Color.parse(color);
       this.text = color;
       if (!this.color) {
         this.renderTextOnly();
@@ -105,7 +105,7 @@ export class ColorSwatch extends HTMLElement {
       this.tooltip = tooltip;
     }
 
-    if (this.color.canBeWideGamut()) {
+    if (!(this.color instanceof Common.Color.Legacy) || this.color.canBeWideGamut()) {
       this.renderCircularColorSwatch();
     } else {
       this.render();
@@ -176,7 +176,7 @@ export class ColorSwatch extends HTMLElement {
 
     let currentValue;
     do {
-      this.format = nextColorFormat(this.color, this.format);
+      this.format = nextColorFormat(this.color.asLegacyColor(), this.format);
       currentValue = this.color.asString(this.format);
     } while (currentValue === this.text);
 
@@ -202,7 +202,7 @@ declare global {
   }
 }
 
-function nextColorFormat(color: Common.Color.Color, curFormat: string): string {
+function nextColorFormat(color: Common.Color.Legacy, curFormat: string): string {
   // The format loop is as follows:
   // * original
   // * rgb(a)

@@ -76,6 +76,7 @@ group("front_end") {
     "ui/components/settings",
     "ui/components/two_states_counter",
     "ui/legacy",
+    "ui/legacy/components/color_picker",
     "ui/legacy/components/inline_editor",
     "ui/legacy/components/object_ui",
     "ui/legacy/components/perf_ui",

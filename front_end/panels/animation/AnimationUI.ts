@@ -487,14 +487,14 @@ export const Options = {
 };
 
 export const Colors = new Map<string, Common.Color.Color|null>([
-  ['Purple', Common.Color.Color.parse('#9C27B0')],
-  ['Light Blue', Common.Color.Color.parse('#03A9F4')],
-  ['Deep Orange', Common.Color.Color.parse('#FF5722')],
-  ['Blue', Common.Color.Color.parse('#5677FC')],
-  ['Lime', Common.Color.Color.parse('#CDDC39')],
-  ['Blue Grey', Common.Color.Color.parse('#607D8B')],
-  ['Pink', Common.Color.Color.parse('#E91E63')],
-  ['Green', Common.Color.Color.parse('#0F9D58')],
-  ['Brown', Common.Color.Color.parse('#795548')],
-  ['Cyan', Common.Color.Color.parse('#00BCD4')],
+  ['Purple', Common.Color.parse('#9C27B0')],
+  ['Light Blue', Common.Color.parse('#03A9F4')],
+  ['Deep Orange', Common.Color.parse('#FF5722')],
+  ['Blue', Common.Color.parse('#5677FC')],
+  ['Lime', Common.Color.parse('#CDDC39')],
+  ['Blue Grey', Common.Color.parse('#607D8B')],
+  ['Pink', Common.Color.parse('#E91E63')],
+  ['Green', Common.Color.parse('#0F9D58')],
+  ['Brown', Common.Color.parse('#795548')],
+  ['Cyan', Common.Color.parse('#00BCD4')],
 ]);

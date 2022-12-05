@@ -94,7 +94,7 @@ function findColorsAndCurves(
     from: number,
     to: number,
     // TODO(crbug/1385379): Remove `null` from here and use `color` after implementing changes in Color class
-    onColor: (pos: number, parsedColor: Common.Color.Color, text: string) => void,
+    onColor: (pos: number, parsedColor: Common.Color.Legacy, text: string) => void,
     onCurve: (pos: number, curve: UI.Geometry.CubicBezier, text: string) => void,
     ): void {
   let line = state.doc.lineAt(from);
@@ -122,7 +122,7 @@ function findColorsAndCurves(
         content = state.sliceDoc(node.from, (node.node.parent as CodeMirror.SyntaxNode).to);
       }
       if (content) {
-        const parsedColor = Common.Color.Color.parse(content);
+        const parsedColor = Common.Color.parse(content)?.asLegacyColor();
         if (parsedColor) {
           onColor(node.from, parsedColor, content);
         } else {
@@ -137,7 +137,7 @@ function findColorsAndCurves(
 }
 
 class ColorSwatchWidget extends CodeMirror.WidgetType {
-  constructor(readonly color: Common.Color.Color, readonly text: string) {
+  constructor(readonly color: Common.Color.Legacy, readonly text: string) {
     super();
   }
 
@@ -214,7 +214,7 @@ type ActiveTooltip = {
   type: TooltipType.Color,
   pos: number,
   text: string,
-  color: Common.Color.Color,
+  color: Common.Color.Legacy,
   swatch: InlineEditor.ColorSwatch.ColorSwatch,
 }|{
   type: TooltipType.Curve,

@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as Common from '../../../../../front_end/core/common/common.js';
+import type * as Common from '../../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 describe('OverlayColorGenerator', () => {
@@ -13,9 +13,8 @@ describe('OverlayColorGenerator', () => {
     let prevColor: Common.Color.Color|undefined;
     for (let i = 0; i < 100; i++) {
       const color = generator.next();
-      assert(color instanceof Common.Color.Color);
       if (prevColor) {
-        assert(color.asString() !== prevColor.asString());
+        assert.notDeepEqual(color.asString(), prevColor.asString());
       }
       prevColor = color;
     }

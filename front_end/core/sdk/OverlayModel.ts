@@ -405,7 +405,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     if (!this.#persistentHighlighter) {
       return;
     }
-    const color = Common.Color.Color.parse(colorStr);
+    const color = Common.Color.parse(colorStr);
     if (!color) {
       return;
     }
@@ -424,7 +424,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     if (!this.#persistentHighlighter) {
       return;
     }
-    const color = Common.Color.Color.parse(colorStr);
+    const color = Common.Color.parse(colorStr);
     if (!color) {
       return;
     }

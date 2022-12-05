@@ -115,6 +115,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     if (this.#parentTargetId === targetInfo.targetId) {
       return;
     }
+    let type = Type.Browser;
     let targetName = '';
     if (targetInfo.type === 'worker' && targetInfo.title && targetInfo.title !== targetInfo.url) {
       targetName = targetInfo.title;
@@ -122,9 +123,11 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       const parsedURL = Common.ParsedURL.ParsedURL.fromString(targetInfo.url);
       targetName =
           parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++ChildTargetManager.lastAnonymousTargetId);
+      if (parsedURL?.scheme === 'devtools' && targetInfo.type === 'other') {
+        type = Type.Frame;
+      }
     }
 
-    let type = Type.Browser;
     if (targetInfo.type === 'iframe' || targetInfo.type === 'webview') {
       type = Type.Frame;
     }

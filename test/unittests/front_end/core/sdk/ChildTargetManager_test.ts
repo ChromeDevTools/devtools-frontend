@@ -64,9 +64,30 @@ describeWithMockConnection('ChildTargetManager', () => {
         targetInfo: createTargetInfo(undefined, protocolType),
         waitingForDebugger: false,
       });
-      const [target] = childTargetManager.childTargets().slice(-1);
-      assert.strictEqual(target.type(), sdkType);
+      const [subtarget] = childTargetManager.childTargets().slice(-1);
+      assert.strictEqual(subtarget.type(), sdkType);
     }
+  });
+
+  it('sets subtarget to frame for devtools scheme if type is other', async () => {
+    const target = createTarget();
+    const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(target);
+    assert.strictEqual(childTargetManager.childTargets().length, 0);
+    await childTargetManager.attachedToTarget({
+      sessionId: createSessionId(),
+      targetInfo: createTargetInfo(undefined, 'other', 'devtools://foo/bar'),
+      waitingForDebugger: false,
+    });
+    let [subtarget] = childTargetManager.childTargets().slice(-1);
+    assert.strictEqual(subtarget.type(), SDK.Target.Type.Frame);
+
+    await childTargetManager.attachedToTarget({
+      sessionId: createSessionId(),
+      targetInfo: createTargetInfo(undefined, 'worker', 'devtools://foo/bar'),
+      waitingForDebugger: false,
+    });
+    [subtarget] = childTargetManager.childTargets().slice(-1);
+    assert.strictEqual(subtarget.type(), SDK.Target.Type.Worker);
   });
 
   it('sets worker target name to the target title', async () => {

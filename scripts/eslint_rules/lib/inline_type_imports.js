@@ -29,7 +29,7 @@ module.exports = {
     // Takes the node that represents an import ("Foo", "Foo as Bar") and
     // return the literal text.
     function getTextForImportSpecifier(specifier) {
-      // import {Foo as Bar} from 'foo';
+      // => import {Foo as Bar} from 'foo';
       // Foo = imported name
       // Bar = local name
       const localName = specifier.local.name;
@@ -97,17 +97,17 @@ module.exports = {
         // 3: Any side-effect imports (import './foo.js') are irrelevant.
 
         if (!node.specifiers || node.specifiers.length < 1) {
-          // import './foo.js';
+          // => import './foo.js';
           return;
         }
 
         if (node.specifiers[0].type === 'ImportDefaultSpecifier') {
-          // import Foo from './foo.js';
+          // => import Foo from './foo.js';
           return;
         }
 
         if (node.specifiers[0].type === 'ImportNamespaceSpecifier') {
-          // import * as Foo from './foo.js';
+          // => import * as Foo from './foo.js';
           return;
         }
 

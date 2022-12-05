@@ -43,7 +43,7 @@ function computeTopLevelFolder(fileName) {
 }
 
 function checkImportExtension(importPath, importPathForErrorMessage, context, node) {
-  // import * as fs from 'fs';
+  // detect import * as fs from 'fs';
   if (!importPath.startsWith('.')) {
     return;
   }
@@ -151,10 +151,9 @@ module.exports = {
         checkImportExtension(node.source.value, importPathForErrorMessage, context, node);
 
         // Accidental relative URL:
-        // import * as Root from 'front_end/root/root.js';
+        // e.g.: import * as Root from 'front_end/root/root.js';
         //
-        // Should ignore named imports:
-        // import * as fs from 'fs';
+        // Should ignore named imports import * as fs from 'fs';
         //
         // Don't use `importPath` here, as `path.normalize` removes
         // the `./` from same-folder import paths.

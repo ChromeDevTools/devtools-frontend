@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// clang-format off
+
 const path = require('path');
 const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, 'scripts', 'eslint_rules', 'lib');
@@ -120,6 +122,9 @@ module.exports = {
     // Try to spot '// console.log()' left over from debugging
     'rulesdir/commented_out_console': 2,
 
+    // Prevent imports being commented out rather than deleted.
+    'rulesdir/commented_out_import': 2,
+
     // DevTools specific rules
     'rulesdir/es_modules_import': 2,
     'rulesdir/check_license_header': 2,
@@ -180,3 +185,5 @@ module.exports = {
     }
   }]
 };
+
+// clang-format on

@@ -15,6 +15,7 @@ ts_library("components") {
     "ComputedStyleProperty_test.ts",
     "ComputedStyleTrace_test.ts",
     "ElementsBreadcrumbs_test.ts",
+    "ElementsTreeExpandButton_test.ts",
     "LayoutPane_test.ts",
     "QueryContainer_test.ts",
     "StylePropertyEditor_test.ts",

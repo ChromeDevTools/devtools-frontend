@@ -16,6 +16,7 @@ generate_css("css_files") {
     "cssQuery.css",
     "elementsBreadcrumbs.css",
     "elementsPanelLink.css",
+    "elementsTreeExpandButton.css",
     "queryContainer.css",
     "stylePropertyEditor.css",
   ]
@@ -34,6 +35,7 @@ devtools_module("components") {
     "ElementsBreadcrumbs.ts",
     "ElementsBreadcrumbsUtils.ts",
     "ElementsPanelLink.ts",
+    "ElementsTreeExpandButton.ts",
     "Helper.ts",
     "LayoutPane.ts",
     "LayoutPaneUtils.ts",

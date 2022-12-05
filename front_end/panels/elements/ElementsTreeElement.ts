@@ -1708,8 +1708,20 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
         if (this.isExpandable()) {
           if (!this.expanded) {
-            const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node bogus');
-            textNodeElement.textContent = '…';
+            const expandButton = new ElementsComponents.ElementsTreeExpandButton.ElementsTreeExpandButton();
+            expandButton.data = {
+              clickHandler: () => this.expand(),
+            };
+            titleDOM.appendChild(expandButton);
+
+            // This hidden span with … is for blink layout tests.
+            // The method dumpElementsTree(front_end/legacy_test_runner/elements_test_runner/ElementsTestRunner.js)
+            // dumps … to identify expandable element.
+            const hidden = document.createElement('span');
+            hidden.textContent = '…';
+            hidden.style.fontSize = '0';
+            titleDOM.appendChild(hidden);
+
             UI.UIUtils.createTextChild(titleDOM, '\u200B');
             this.buildTagDOM(titleDOM, tagName, true, false, updateRecord);
           }

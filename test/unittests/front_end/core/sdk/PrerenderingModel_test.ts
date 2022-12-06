@@ -5,6 +5,12 @@
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {
+  describeWithMockConnection,
+  dispatchEvent,
+} from '../../helpers/MockConnection.js';
 
 const {assert} = chai;
 
@@ -49,7 +55,7 @@ describe('PrerenderingRegistry', () => {
         id: 'PrerenderingAttempt:0',
         attempt: {
           prerenderingAttemptId: '0',
-          startedAt: startedAt,
+          startedAt,
           trigger: {
             kind: 'PrerenderingTriggerSpecRules',
             rule: {
@@ -72,7 +78,7 @@ describe('PrerenderingRegistry', () => {
             id: 'PrerenderingAttempt:0',
             attempt: {
               prerenderingAttemptId: '0',
-              startedAt: startedAt,
+              startedAt,
               trigger: {
                 kind: 'PrerenderingTriggerSpecRules',
                 rule: {
@@ -87,7 +93,7 @@ describe('PrerenderingRegistry', () => {
             id: 'PrerenderingAttempt:1',
             attempt: {
               prerenderingAttemptId: '1',
-              startedAt: startedAt,
+              startedAt,
               trigger: {
                 kind: 'PrerenderingTriggerSpecRules',
                 rule: {
@@ -118,7 +124,7 @@ describe('PrerenderingRegistry', () => {
         id: 'PrerenderingAttempt:0',
         attempt: {
           prerenderingAttemptId: '0',
-          startedAt: startedAt,
+          startedAt,
           trigger: {
             kind: 'PrerenderingTriggerSpecRules',
             rule: {
@@ -133,7 +139,7 @@ describe('PrerenderingRegistry', () => {
         id: 'PrerenderingAttempt:1',
         attempt: {
           prerenderingAttemptId: '1',
-          startedAt: startedAt,
+          startedAt,
           trigger: {
             kind: 'PrerenderingTriggerSpecRules',
             rule: {
@@ -178,7 +184,7 @@ describe('PrerenderingRegistry', () => {
         id: 'PrerenderingAttempt:1',
         attempt: {
           prerenderingAttemptId: '1',
-          startedAt: startedAt,
+          startedAt,
           trigger: {
             kind: 'PrerenderingTriggerSpecRules',
             rule: {
@@ -190,5 +196,215 @@ describe('PrerenderingRegistry', () => {
         },
       },
     ]);
+  });
+});
+
+describeWithMockConnection('PrerenderingModel', () => {
+  beforeEach(async () => {
+    SDK.ChildTargetManager.ChildTargetManager.install();
+  });
+
+  it('records activated prerendering', () => {
+    const target = createTarget({id: 'targetId' as Protocol.Target.TargetID});
+    const model = target.model(SDK.PrerenderingModel.PrerenderingModel);
+    assertNotNullOrUndefined(model);
+
+    const prerenderedFrameId = '1';
+    const preloadingId = 'PrerenderingAttempt-opaque:1';
+
+    dispatchEvent(target, 'Page.frameNavigated', {
+      frame: {
+        id: 'main',
+        loaderId: 'foo',
+        url: 'https://example.com/',
+        domainAndRegistry: 'example.com',
+        securityOrigin: 'https://example.com/',
+        mimeType: 'text/html',
+        secureContextType: Protocol.Page.SecureContextType.Secure,
+        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
+        gatedAPIFeatures: [],
+      },
+    });
+    dispatchEvent(target, 'Target.targetInfoChanged', {
+      targetInfo: {
+        targetId: prerenderedFrameId,
+        type: 'frame',
+        subtype: 'prerender',
+        url: 'https://example.com/prerendered.html',
+        title: '',
+        attached: true,
+        canAccessOpener: true,
+      },
+    });
+    const startedAt = model.getById(preloadingId)?.startedAt;
+    assertNotNullOrUndefined(startedAt);
+    assert.deepEqual(model.getAll(), [
+      {
+        id: preloadingId,
+        attempt: {
+          prerenderingAttemptId: prerenderedFrameId,
+          startedAt,
+          trigger: {
+            kind: 'PrerenderingTriggerOpaque',
+          },
+          url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+          status: SDK.PrerenderingModel.PrerenderingStatus.Prerendering,
+        },
+      },
+    ]);
+    dispatchEvent(
+        target,
+        'Page.prerenderAttemptCompleted',
+        {
+          'initiatingFrameId': prerenderedFrameId,
+          'prerenderingUrl': 'https://example.com/prerendered.html',
+          'finalStatus': Protocol.Page.PrerenderFinalStatus.Activated,
+        },
+    );
+    assert.deepEqual(model.getAll(), [
+      {
+        id: preloadingId,
+        attempt: {
+          prerenderingAttemptId: prerenderedFrameId,
+          startedAt,
+          trigger: {
+            kind: 'PrerenderingTriggerOpaque',
+          },
+          url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+          status: SDK.PrerenderingModel.PrerenderingStatus.Activated,
+          discardedReason: null,
+        },
+      },
+    ]);
+  });
+
+  it('records cancelled prerendering', () => {
+    const target = createTarget({id: 'targetId' as Protocol.Target.TargetID});
+    const model = target.model(SDK.PrerenderingModel.PrerenderingModel);
+    assertNotNullOrUndefined(model);
+
+    const prerenderedFrameId = '1';
+    const preloadingId = 'PrerenderingAttempt-opaque:1';
+
+    dispatchEvent(target, 'Page.frameNavigated', {
+      frame: {
+        id: 'main',
+        loaderId: 'foo',
+        url: 'https://example.com/',
+        domainAndRegistry: 'example.com',
+        securityOrigin: 'https://example.com/',
+        mimeType: 'text/html',
+        secureContextType: Protocol.Page.SecureContextType.Secure,
+        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
+        gatedAPIFeatures: [],
+      },
+    });
+    dispatchEvent(target, 'Target.targetInfoChanged', {
+      targetInfo: {
+        targetId: prerenderedFrameId,
+        type: 'frame',
+        subtype: 'prerender',
+        url: 'https://example.com/prerendered.html',
+        title: '',
+        attached: true,
+        canAccessOpener: true,
+      },
+    });
+    const startedAt = model.getById(preloadingId)?.startedAt;
+    assertNotNullOrUndefined(startedAt);
+    assert.deepEqual(model.getAll(), [
+      {
+        id: preloadingId,
+        attempt: {
+          prerenderingAttemptId: prerenderedFrameId,
+          startedAt,
+          trigger: {
+            kind: 'PrerenderingTriggerOpaque',
+          },
+          url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+          status: SDK.PrerenderingModel.PrerenderingStatus.Prerendering,
+        },
+      },
+    ]);
+    dispatchEvent(
+        target,
+        'Page.prerenderAttemptCompleted',
+        {
+          'initiatingFrameId': prerenderedFrameId,
+          'prerenderingUrl': 'https://example.com/prerendered.html',
+          'finalStatus': Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy,
+          'disallowedApiMethod': 'device.mojom.GamepadMonitor',
+        },
+    );
+    assert.deepEqual(model.getAll(), [
+      {
+        id: preloadingId,
+        attempt: {
+          prerenderingAttemptId: prerenderedFrameId,
+          startedAt,
+          trigger: {
+            kind: 'PrerenderingTriggerOpaque',
+          },
+          url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+          status: SDK.PrerenderingModel.PrerenderingStatus.Discarded,
+          discardedReason: Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy,
+        },
+      },
+    ]);
+  });
+
+  it('clears not ongoing attempts', () => {
+    const target = createTarget({id: 'targetId' as Protocol.Target.TargetID});
+    const model = target.model(SDK.PrerenderingModel.PrerenderingModel);
+    assertNotNullOrUndefined(model);
+
+    const prerenderedFrameId = '1';
+
+    dispatchEvent(target, 'Page.frameNavigated', {
+      frame: {
+        id: 'main',
+        loaderId: 'foo',
+        url: 'https://example.com/',
+        domainAndRegistry: 'example.com',
+        securityOrigin: 'https://example.com/',
+        mimeType: 'text/html',
+        secureContextType: Protocol.Page.SecureContextType.Secure,
+        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
+        gatedAPIFeatures: [],
+      },
+    });
+    dispatchEvent(target, 'Target.targetInfoChanged', {
+      targetInfo: {
+        targetId: prerenderedFrameId,
+        type: 'frame',
+        subtype: 'prerender',
+        url: 'https://example.com/prerendered.html',
+        title: '',
+        attached: true,
+        canAccessOpener: true,
+      },
+    });
+
+    // Ongoing attempt is not cleared.
+    assert.strictEqual(model.getAll().length, 1);
+    assert.strictEqual(model.getAll()[0].attempt.status, SDK.PrerenderingModel.PrerenderingStatus.Prerendering);
+    model.clearNotOngoing();
+    assert.strictEqual(model.getAll().length, 1);
+
+    dispatchEvent(
+        target,
+        'Page.prerenderAttemptCompleted',
+        {
+          'initiatingFrameId': prerenderedFrameId,
+          'prerenderingUrl': 'https://example.com/prerendered.html',
+          'finalStatus': Protocol.Page.PrerenderFinalStatus.Activated,
+        },
+    );
+
+    // Activated attempt is cleared.
+    assert.strictEqual(model.getAll().length, 1);
+    assert.strictEqual(model.getAll()[0].attempt.status, SDK.PrerenderingModel.PrerenderingStatus.Activated);
+    model.clearNotOngoing();
+    assert.strictEqual(model.getAll().length, 0);
   });
 });

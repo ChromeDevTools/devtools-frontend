@@ -602,6 +602,8 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     } else {
       this.#pendingPrerenderAttemptCompletedEvents.add(event);
     }
+
+    this.dispatchEventToListeners(Events.PrerenderAttemptCompleted, event);
   }
 
   processPendingEvents(frame: ResourceTreeFrame): void {
@@ -652,6 +654,7 @@ export enum Events {
   InterstitialHidden = 'InterstitialHidden',
   BackForwardCacheDetailsUpdated = 'BackForwardCacheDetailsUpdated',
   PrerenderingStatusUpdated = 'PrerenderingStatusUpdated',
+  PrerenderAttemptCompleted = 'PrerenderAttemptCompleted',
 }
 
 export type EventTypes = {
@@ -673,6 +676,7 @@ export type EventTypes = {
   [Events.InterstitialHidden]: void,
   [Events.BackForwardCacheDetailsUpdated]: ResourceTreeFrame,
   [Events.PrerenderingStatusUpdated]: ResourceTreeFrame,
+  [Events.PrerenderAttemptCompleted]: Protocol.Page.PrerenderAttemptCompletedEvent,
 };
 
 export class ResourceTreeFrame {

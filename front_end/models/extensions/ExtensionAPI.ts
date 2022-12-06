@@ -1272,7 +1272,8 @@ self.injectedExtensionAPI = function(
     // This is a workaround for crbug.com/923338.
     const focused = document.activeElement;
     if (focused) {
-      const isInput = focused.nodeName === 'INPUT' || focused.nodeName === 'TEXTAREA';
+      const isInput =
+          focused.nodeName === 'INPUT' || focused.nodeName === 'TEXTAREA' || (focused as HTMLElement).isContentEditable;
       if (isInput && !(event.ctrlKey || event.altKey || event.metaKey)) {
         return;
       }

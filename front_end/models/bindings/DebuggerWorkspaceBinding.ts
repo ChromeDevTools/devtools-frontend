@@ -6,7 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Workspace from '../workspace/workspace.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
@@ -14,6 +14,7 @@ import {DefaultScriptMapping} from './DefaultScriptMapping.js';
 import {IgnoreListManager} from './IgnoreListManager.js';
 
 import {LiveLocationWithPool, type LiveLocation, type LiveLocationPool} from './LiveLocation.js';
+import {NetworkProject} from './NetworkProject.js';
 import {type ResourceMapping} from './ResourceMapping.js';
 
 import {ResourceScriptMapping, type ResourceScriptFile} from './ResourceScriptMapping.js';
@@ -266,6 +267,27 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       return null;
     }
     return modelData.compilerMapping.uiSourceCodeForURL(url, isContentScript);
+  }
+
+  async uiSourceCodeForSourceMapSourceURLPromise(
+      debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString,
+      isContentScript: boolean): Promise<Workspace.UISourceCode.UISourceCode> {
+    const uiSourceCode = this.uiSourceCodeForSourceMapSourceURL(debuggerModel, url, isContentScript);
+    return uiSourceCode || this.waitForUISourceCodeAdded(url, debuggerModel.target());
+  }
+
+  waitForUISourceCodeAdded(url: Platform.DevToolsPath.UrlString, target: SDK.Target.Target):
+      Promise<Workspace.UISourceCode.UISourceCode> {
+    return new Promise(resolve => {
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+      const descriptor = workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, event => {
+        const uiSourceCode = event.data;
+        if (uiSourceCode.url() === url && NetworkProject.targetForUISourceCode(uiSourceCode) === target) {
+          workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, descriptor.listener);
+          resolve(uiSourceCode);
+        }
+      });
+    });
   }
 
   async uiLocationToRawLocations(

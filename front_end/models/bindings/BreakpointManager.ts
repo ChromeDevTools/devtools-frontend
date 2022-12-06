@@ -141,18 +141,19 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       return;
     }
 
-    const debuggerModel = script.debuggerModel;
     const uiSourceCode = await this.getUISourceCodeWithUpdatedBreakpointInfo(script);
     if (this.#hasBreakpointsForUrl(script.sourceURL)) {
       await this.#restoreBreakpointsForUrl(uiSourceCode);
     }
 
+    const debuggerModel = script.debuggerModel;
     // Handle source maps and the original sources.
     const sourceMap = await debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
     if (sourceMap) {
       for (const sourceURL of sourceMap.sourceURLs()) {
         if (this.#hasBreakpointsForUrl(sourceURL)) {
-          const uiSourceCode = await Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURLPromise(sourceURL);
+          const uiSourceCode = await this.debuggerWorkspaceBinding.uiSourceCodeForSourceMapSourceURLPromise(
+              debuggerModel, sourceURL, script.isContentScript());
           await this.#restoreBreakpointsForUrl(uiSourceCode);
         }
       }

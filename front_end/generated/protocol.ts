@@ -1438,6 +1438,7 @@ export namespace Browser {
   export const enum PermissionSetting {
     Granted = 'granted',
     Denied = 'denied',
+    Prompt = 'prompt',
   }
 
   /**
@@ -12994,6 +12995,7 @@ export namespace Storage {
     Join = 'join',
     Leave = 'leave',
     Update = 'update',
+    Loaded = 'loaded',
     Bid = 'bid',
     Win = 'win',
   }
@@ -15115,6 +15117,22 @@ export namespace WebAuthn {
   export interface SetAutomaticPresenceSimulationRequest {
     authenticatorId: AuthenticatorId;
     enabled: boolean;
+  }
+
+  /**
+   * Triggered when a credential is added to an authenticator.
+   */
+  export interface CredentialAddedEvent {
+    authenticatorId: AuthenticatorId;
+    credential: Credential;
+  }
+
+  /**
+   * Triggered when a credential is used in a webauthn assertion.
+   */
+  export interface CredentialAssertedEvent {
+    authenticatorId: AuthenticatorId;
+    credential: Credential;
   }
 }
 

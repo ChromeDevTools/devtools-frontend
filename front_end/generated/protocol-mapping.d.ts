@@ -593,6 +593,14 @@ export namespace ProtocolMapping {
      */
     'WebAudio.nodeParamDisconnected': [Protocol.WebAudio.NodeParamDisconnectedEvent];
     /**
+     * Triggered when a credential is added to an authenticator.
+     */
+    'WebAuthn.credentialAdded': [Protocol.WebAuthn.CredentialAddedEvent];
+    /**
+     * Triggered when a credential is used in a webauthn assertion.
+     */
+    'WebAuthn.credentialAsserted': [Protocol.WebAuthn.CredentialAssertedEvent];
+    /**
      * This can be called multiple times, and can be used to set / override /
      * remove player properties. A null propValue indicates removal.
      */

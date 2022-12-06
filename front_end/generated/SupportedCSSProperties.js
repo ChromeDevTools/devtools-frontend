@@ -7,7 +7,8 @@ export const generatedProperties = [
   "longhands": [
    "animation-duration",
    "animation-timing-function",
-   "animation-delay",
+   "animation-delay-start",
+   "animation-delay-end",
    "animation-iteration-count",
    "animation-direction",
    "animation-fill-mode",
@@ -16,6 +17,13 @@ export const generatedProperties = [
    "animation-timeline"
   ],
   "name": "-alternative-animation"
+ },
+ {
+  "longhands": [
+   "animation-delay-start",
+   "animation-delay-end"
+  ],
+  "name": "-alternative-animation-delay"
  },
  {
   "inherited": true,
@@ -5458,6 +5466,10 @@ export const generatedAliasesFor = new Map([
  [
   "-webkit-alternative-animation",
   "-alternative-animation"
+ ],
+ [
+  "-webkit-alternative-animation-delay",
+  "-alternative-animation-delay"
  ],
  [
   "-webkit-animation",

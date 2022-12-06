@@ -88,7 +88,7 @@ inspectorBackend.registerCommand("BackgroundService.clearEvents", [{"name": "ser
 // Browser.
 inspectorBackend.registerEnum("Browser.WindowState", {Normal: "normal", Minimized: "minimized", Maximized: "maximized", Fullscreen: "fullscreen"});
 inspectorBackend.registerEnum("Browser.PermissionType", {AccessibilityEvents: "accessibilityEvents", AudioCapture: "audioCapture", BackgroundSync: "backgroundSync", BackgroundFetch: "backgroundFetch", ClipboardReadWrite: "clipboardReadWrite", ClipboardSanitizedWrite: "clipboardSanitizedWrite", DisplayCapture: "displayCapture", DurableStorage: "durableStorage", Flash: "flash", Geolocation: "geolocation", IdleDetection: "idleDetection", LocalFonts: "localFonts", Midi: "midi", MidiSysex: "midiSysex", Nfc: "nfc", Notifications: "notifications", PaymentHandler: "paymentHandler", PeriodicBackgroundSync: "periodicBackgroundSync", ProtectedMediaIdentifier: "protectedMediaIdentifier", Sensors: "sensors", StorageAccess: "storageAccess", VideoCapture: "videoCapture", VideoCapturePanTiltZoom: "videoCapturePanTiltZoom", WakeLockScreen: "wakeLockScreen", WakeLockSystem: "wakeLockSystem", WindowManagement: "windowManagement"});
-inspectorBackend.registerEnum("Browser.PermissionSetting", {Granted: "granted", Denied: "denied"});
+inspectorBackend.registerEnum("Browser.PermissionSetting", {Granted: "granted", Denied: "denied", Prompt: "prompt"});
 inspectorBackend.registerEnum("Browser.BrowserCommandId", {OpenTabSearch: "openTabSearch", CloseTabSearch: "closeTabSearch"});
 inspectorBackend.registerEvent("Browser.downloadWillBegin", ["frameId", "guid", "url", "suggestedFilename"]);
 inspectorBackend.registerEnum("Browser.DownloadProgressEventState", {InProgress: "inProgress", Completed: "completed", Canceled: "canceled"});
@@ -717,7 +717,7 @@ inspectorBackend.registerCommand("ServiceWorker.updateRegistration", [{"name": "
 
 // Storage.
 inspectorBackend.registerEnum("Storage.StorageType", {Appcache: "appcache", Cookies: "cookies", File_systems: "file_systems", Indexeddb: "indexeddb", Local_storage: "local_storage", Shader_cache: "shader_cache", Websql: "websql", Service_workers: "service_workers", Cache_storage: "cache_storage", Interest_groups: "interest_groups", Shared_storage: "shared_storage", All: "all", Other: "other"});
-inspectorBackend.registerEnum("Storage.InterestGroupAccessType", {Join: "join", Leave: "leave", Update: "update", Bid: "bid", Win: "win"});
+inspectorBackend.registerEnum("Storage.InterestGroupAccessType", {Join: "join", Leave: "leave", Update: "update", Loaded: "loaded", Bid: "bid", Win: "win"});
 inspectorBackend.registerEnum("Storage.SharedStorageAccessType", {DocumentAddModule: "documentAddModule", DocumentSelectURL: "documentSelectURL", DocumentRun: "documentRun", DocumentSet: "documentSet", DocumentAppend: "documentAppend", DocumentDelete: "documentDelete", DocumentClear: "documentClear", WorkletSet: "workletSet", WorkletAppend: "workletAppend", WorkletDelete: "workletDelete", WorkletClear: "workletClear", WorkletGet: "workletGet", WorkletKeys: "workletKeys", WorkletEntries: "workletEntries", WorkletLength: "workletLength", WorkletRemainingBudget: "workletRemainingBudget"});
 inspectorBackend.registerEvent("Storage.cacheStorageContentUpdated", ["origin", "storageKey", "cacheName"]);
 inspectorBackend.registerEvent("Storage.cacheStorageListUpdated", ["origin", "storageKey"]);
@@ -848,6 +848,8 @@ inspectorBackend.registerCommand("WebAudio.getRealtimeData", [{"name": "contextI
 inspectorBackend.registerEnum("WebAuthn.AuthenticatorProtocol", {U2f: "u2f", Ctap2: "ctap2"});
 inspectorBackend.registerEnum("WebAuthn.Ctap2Version", {Ctap2_0: "ctap2_0", Ctap2_1: "ctap2_1"});
 inspectorBackend.registerEnum("WebAuthn.AuthenticatorTransport", {Usb: "usb", Nfc: "nfc", Ble: "ble", Cable: "cable", Internal: "internal"});
+inspectorBackend.registerEvent("WebAuthn.credentialAdded", ["authenticatorId", "credential"]);
+inspectorBackend.registerEvent("WebAuthn.credentialAsserted", ["authenticatorId", "credential"]);
 inspectorBackend.registerCommand("WebAuthn.enable", [{"name": "enableUI", "type": "boolean", "optional": true}], []);
 inspectorBackend.registerCommand("WebAuthn.disable", [], []);
 inspectorBackend.registerCommand("WebAuthn.addVirtualAuthenticator", [{"name": "options", "type": "object", "optional": false}], ["authenticatorId"]);

@@ -3494,6 +3494,16 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface WebAuthnDispatcher {
+    /**
+     * Triggered when a credential is added to an authenticator.
+     */
+    credentialAdded(params: Protocol.WebAuthn.CredentialAddedEvent): void;
+
+    /**
+     * Triggered when a credential is used in a webauthn assertion.
+     */
+    credentialAsserted(params: Protocol.WebAuthn.CredentialAssertedEvent): void;
+
   }
 
   export interface MediaApi {

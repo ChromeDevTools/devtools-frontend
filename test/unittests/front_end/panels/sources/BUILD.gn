@@ -13,6 +13,7 @@ ts_library("sources") {
     "DebuggerPlugin_test.ts",
     "FilePathScoreFunction_test.ts",
     "OutlineQuickOpen_test.ts",
+    "ResourceOriginPlugin_test.ts",
     "ScriptSnippetFileSystem_test.ts",
     "SourcesNavigator_test.ts",
     "SourcesView_test.ts",

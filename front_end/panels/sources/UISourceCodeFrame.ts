@@ -46,7 +46,7 @@ import {CSSPlugin} from './CSSPlugin.js';
 import {DebuggerPlugin} from './DebuggerPlugin.js';
 import {type Plugin} from './Plugin.js';
 import {MemoryProfilePlugin, PerformanceProfilePlugin} from './ProfilePlugin.js';
-import {ScriptOriginPlugin} from './ScriptOriginPlugin.js';
+import {ResourceOriginPlugin} from './ResourceOriginPlugin.js';
 import {SnippetsPlugin} from './SnippetsPlugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
 
@@ -57,7 +57,7 @@ function sourceFramePlugins(): (typeof Plugin)[] {
     CSSPlugin,
     DebuggerPlugin,
     SnippetsPlugin,
-    ScriptOriginPlugin,
+    ResourceOriginPlugin,
     CoveragePlugin,
     MemoryProfilePlugin,
     PerformanceProfilePlugin,

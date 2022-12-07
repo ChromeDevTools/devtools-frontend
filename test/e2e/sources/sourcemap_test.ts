@@ -31,6 +31,7 @@ import {
   getBreakpointDecorators,
   getCallFrameNames,
   getValuesForScope,
+  openFileInEditor,
   openSourceCodeEditorForFile,
   openSourcesPanel,
   PAUSE_INDICATOR_SELECTOR,
@@ -355,39 +356,38 @@ describe('The Sources Tab', async function() {
   });
 
   // TODO(crbug.com/1346228) Flaky - timeouts.
-  it.skip(
-      '[crbug.com/1346228] automatically ignore-lists third party code from source maps', async function() {
-        const {target} = getBrowserAndPages();
-        await openSourceCodeEditorForFile('webpack-main.js', 'webpack-index.html');
+  it.skip('[crbug.com/1346228] automatically ignore-lists third party code from source maps', async function() {
+    const {target} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('webpack-main.js', 'webpack-index.html');
 
-        let scriptEvaluation: Promise<unknown>;
-        const breakLocationOuterRegExp = /index\.js:12$/;
+    let scriptEvaluation: Promise<unknown>;
+    const breakLocationOuterRegExp = /index\.js:12$/;
 
-        await step('Run to breakpoint', async () => {
-          scriptEvaluation = target.evaluate('window.foo()');
+    await step('Run to breakpoint', async () => {
+      scriptEvaluation = target.evaluate('window.foo()');
 
-          const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp);
-          assert.match(scriptLocation, breakLocationOuterRegExp);
-          assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
-        });
+      const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp);
+      assert.match(scriptLocation, breakLocationOuterRegExp);
+      assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
+    });
 
-        await step('Toggle to show ignore-listed frames', async () => {
-          await click('.ignore-listed-message-label');
-          await waitFor('.ignore-listed-call-frame:not(.hidden)');
-          assert.deepEqual(await getCallFrameNames(), ['baz', 'vendor', 'bar', 'foo', '(anonymous)']);
-        });
+    await step('Toggle to show ignore-listed frames', async () => {
+      await click('.ignore-listed-message-label');
+      await waitFor('.ignore-listed-call-frame:not(.hidden)');
+      assert.deepEqual(await getCallFrameNames(), ['baz', 'vendor', 'bar', 'foo', '(anonymous)']);
+    });
 
-        await step('Toggle back off', async () => {
-          await click('.ignore-listed-message-label');
-          await waitFor('.ignore-listed-call-frame.hidden');
-          assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
-        });
+    await step('Toggle back off', async () => {
+      await click('.ignore-listed-message-label');
+      await waitFor('.ignore-listed-call-frame.hidden');
+      assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
+    });
 
-        await step('Resume execution', async () => {
-          await click(RESUME_BUTTON);
-          await scriptEvaluation;
-        });
-      });
+    await step('Resume execution', async () => {
+      await click(RESUME_BUTTON);
+      await scriptEvaluation;
+    });
+  });
 
   it('updates decorators for removed breakpoints in case of code-splitting (crbug.com/1251675)', async () => {
     const {frontend} = getBrowserAndPages();
@@ -399,36 +399,50 @@ describe('The Sources Tab', async function() {
     assert.deepEqual(await getBreakpointDecorators(), []);
   });
 
-  it(
-      'reliably hits breakpoints on worker with source map', async () => {
-        await enableExperiment('instrumentationBreakpoints');
-        const {target, frontend} = getBrowserAndPages();
-        await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-breakpoint.html');
+  it('reliably hits breakpoints on worker with source map', async () => {
+    await enableExperiment('instrumentationBreakpoints');
+    const {target, frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-breakpoint.html');
 
-        await step('Add a breakpoint at first line of function multiline', async () => {
-          await addBreakpointForLine(frontend, 4);
-        });
+    await step('Add a breakpoint at first line of function multiline', async () => {
+      await addBreakpointForLine(frontend, 4);
+    });
 
-        await step('Navigate to a different site to refresh devtools and remove back-end state', async () => {
-          await refreshDevToolsAndRemoveBackendState(target);
-        });
+    await step('Navigate to a different site to refresh devtools and remove back-end state', async () => {
+      await refreshDevToolsAndRemoveBackendState(target);
+    });
 
-        await step('Navigate back to test page', () => {
-          void goToResource('sources/sourcemap-breakpoint.html');
-        });
+    await step('Navigate back to test page', () => {
+      void goToResource('sources/sourcemap-breakpoint.html');
+    });
 
-        await step('wait for pause and check if we stopped at line 4', async () => {
-          await waitFor(PAUSE_INDICATOR_SELECTOR);
-          await waitForFunction(async () => {
-            const topCallFrame = await retrieveTopCallFrameWithoutResuming();
-            return topCallFrame === 'sourcemap-stepping-source.js:4';
-          });
-        });
-
-        await step('Resume', async () => {
-          await click(RESUME_BUTTON);
-        });
+    await step('wait for pause and check if we stopped at line 4', async () => {
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+      await waitForFunction(async () => {
+        const topCallFrame = await retrieveTopCallFrameWithoutResuming();
+        return topCallFrame === 'sourcemap-stepping-source.js:4';
       });
+    });
+
+    await step('Resume', async () => {
+      await click(RESUME_BUTTON);
+    });
+  });
+
+  it('links to the correct origins for source-mapped resources', async () => {
+    await goToResource('sources/sourcemap-origin.html');
+    await openSourcesPanel();
+
+    await step('Check origin of source-mapped JavaScript', async () => {
+      await openFileInEditor('sourcemap-origin.js');
+      await waitFor('.toolbar-item > .devtools-link[title$="sourcemap-origin.min.js"]');
+    });
+
+    await step('Check origin of source-mapped SASS', async () => {
+      await openFileInEditor('sourcemap-origin.scss');
+      await waitFor('.toolbar-item > .devtools-link[title$="sourcemap-origin.css"]');
+    });
+  });
 });
 
 describe('The Elements Tab', async () => {

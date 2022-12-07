@@ -13,25 +13,29 @@ import {Plugin} from './Plugin.js';
 
 const UIStrings = {
   /**
-  *@description Text in Script Origin Plugin of the Sources panel
+  *@description Text in Resource Origin Plugin of the Sources panel
   *@example {example.com} PH1
   */
   sourceMappedFromS: '(source mapped from {PH1})',
   /**
-  *@description Text in Script Origin Plugin of the Sources panel
+  *@description Text in Resource Origin Plugin of the Sources panel
   *@example {http://localhost/file.wasm} PH1
   */
   providedViaDebugInfoByS: '(provided via debug info by {PH1})',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/sources/ScriptOriginPlugin.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/sources/ResourceOriginPlugin.ts', UIStrings);
 
-export class ScriptOriginPlugin extends Plugin {
+export class ResourceOriginPlugin extends Plugin {
   static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return uiSourceCode.contentType().hasScripts();
+    const contentType = uiSourceCode.contentType();
+    return contentType.hasScripts() || contentType.isFromSourceMap();
   }
 
   async rightToolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    const originURLs = Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this.uiSourceCode);
+    const originURLs = [
+      ...Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this.uiSourceCode),
+      ...Bindings.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(this.uiSourceCode),
+    ];
     if (originURLs.length) {
       return originURLs.map(originURL => {
         const item = i18n.i18n.getFormatLocalizedString(
@@ -53,7 +57,7 @@ export class ScriptOriginPlugin extends Plugin {
     }
 
     // Handle anonymous scripts with an originStackTrace.
-    const script = await ScriptOriginPlugin.script(this.uiSourceCode);
+    const script = await ResourceOriginPlugin.script(this.uiSourceCode);
     if (!script || !script.originStackTrace) {
       return [];
     }

@@ -951,7 +951,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // so the total time will be amplified.
       // Multiple targets problem might happen when you inspect multiple node servers on different port at same time,
       // or when you let DevTools listen to both locolhost:9229 & 127.0.0.1:9229.
-      this.cpuProfiler = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel)[0];
+      const firstNodeTarget =
+          SDK.TargetManager.TargetManager.instance().targets().find(target => target.type() === SDK.Target.Type.Node);
+      if (firstNodeTarget) {
+        this.cpuProfiler = firstNodeTarget.model(SDK.CPUProfilerModel.CPUProfilerModel);
+      }
       if (this.cpuProfiler) {
         this.setUIControlsEnabled(false);
         this.hideLandingPage();

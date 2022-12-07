@@ -169,34 +169,31 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
             ])) {
           let title = state.sliceDoc(cursor.from, cursor.to);
           const {lineNumber, columnNumber} = toLineColumn(cursor.from);
-          cursor.next();
-          do {
-            if (cursor.name as string === 'ArrowFunction' || cursor.name as string === 'FunctionExpression') {
-              cursor.firstChild();
-              let prefix = '';
-              while (cursor.name as string !== 'ParamList') {
-                if (cursor.name as string === 'async') {
-                  prefix = `async ${prefix}`;
-                } else if (cursor.name as string === 'Star') {
-                  prefix += '*';
-                }
-                if (!cursor.nextSibling()) {
-                  break;
-                }
+          while (cursor.name as string !== 'Equals' && cursor.next()) {
+          }
+          if (!cursor.nextSibling()) {
+            break;
+          }
+          if (cursor.name as string === 'ArrowFunction' || cursor.name as string === 'FunctionExpression') {
+            cursor.firstChild();
+            let prefix = '';
+            while (cursor.name as string !== 'ParamList') {
+              if (cursor.name as string === 'async') {
+                prefix = `async ${prefix}`;
+              } else if (cursor.name as string === 'Star') {
+                prefix += '*';
               }
-              title = prefix + title;
-              const subtitle = subtitleFromParamList();
-              items.push({title, subtitle, lineNumber, columnNumber});
-              break;
-            } else if (cursor.name as string === 'ClassExpression') {
-              title = `class ${title}`;
-              items.push({title, lineNumber, columnNumber});
-              break;
-            } else if (cursor.name as string === 'ObjectExpression' || cursor.name as string === 'VariableDefinition') {
-              cursor.prevSibling();
-              break;
+              if (!cursor.nextSibling()) {
+                break;
+              }
             }
-          } while (cursor.nextSibling());
+            title = prefix + title;
+            const subtitle = subtitleFromParamList();
+            items.push({title, subtitle, lineNumber, columnNumber});
+          } else if (cursor.name as string === 'ClassExpression') {
+            title = `class ${title}`;
+            items.push({title, lineNumber, columnNumber});
+          }
         }
         break;
       }

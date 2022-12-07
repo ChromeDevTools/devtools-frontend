@@ -364,6 +364,28 @@ function bar(eee) {
           ],
       );
     });
+
+    it('for ES5-style class definitions', () => {
+      assert.deepEqual(
+          javaScriptOutline(`var Klass = (function(_super) {
+  function Klass() {
+    _super.apply(this, arguments);
+  }
+
+  Klass.prototype.initialize = function(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  return Klass;
+})(BaseKlass);
+`),
+          [
+            {title: 'Klass', subtitle: '()', lineNumber: 1, columnNumber: 11},
+            {title: 'initialize', subtitle: '(x, y)', lineNumber: 5, columnNumber: 18},
+          ],
+      );
+    });
   });
 
   describe('generates a correct JSX outline', () => {

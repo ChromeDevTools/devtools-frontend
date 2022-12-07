@@ -88,6 +88,9 @@ export function python() {
 export async function sass() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/sass')).sass);
 }
+export async function scala() {
+  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).scala);
+}
 export async function scss() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/css')).sCSS);
 }

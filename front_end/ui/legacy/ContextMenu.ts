@@ -449,6 +449,9 @@ export class ContextMenu extends SubMenu {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       this.softMenu = new SoftContextMenu(
           (menuObject as SoftContextMenuDescriptor[]), this.itemSelected.bind(this), undefined, this.onSoftMenuClosed);
+      // let soft context menu focus on the first item when the event is triggered by a non-mouse event
+      const isMouseEvent = (this.event as PointerEvent).pointerType === 'mouse';
+      this.softMenu.setFocusOnTheFirstItem(!isMouseEvent);
       this.softMenu.show((ownerDocument as Document), new AnchorBox(this.x, this.y, 0, 0));
       if (this.contextMenuLabel) {
         this.softMenu.setContextMenuElementLabel(this.contextMenuLabel);

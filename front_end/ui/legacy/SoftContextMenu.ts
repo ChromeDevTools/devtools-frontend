@@ -80,6 +80,7 @@ export class SoftContextMenu {
   private activeSubMenuElement?: HTMLElement;
   private subMenu?: SoftContextMenu;
   private onMenuClosed?: () => void;
+  private focusOnTheFirstItem = true;
 
   constructor(
       items: SoftContextMenuDescriptor[], itemSelectedCallback: (arg0: number) => void, parentMenu?: SoftContextMenu,
@@ -160,7 +161,7 @@ export class SoftContextMenu {
       }
 
       // focus on the first menu item
-      if (this.contextMenuElement.children) {
+      if (this.contextMenuElement.children && this.focusOnTheFirstItem) {
         const focusElement = this.contextMenuElement.children[0] as HTMLElement;
         this.highlightMenuItem(focusElement, /* scheduleSubMenu */ false);
       }
@@ -570,6 +571,10 @@ export class SoftContextMenu {
         ARIAUtils.markAsMenuItemCheckBox(child);
       }
     }
+  }
+
+  setFocusOnTheFirstItem(focusOnTheFirstItem: boolean): void {
+    this.focusOnTheFirstItem = focusOnTheFirstItem;
   }
 }
 export interface SoftContextMenuDescriptor {

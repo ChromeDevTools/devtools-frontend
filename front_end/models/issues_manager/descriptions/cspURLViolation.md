@@ -2,7 +2,7 @@
 
 Some resources are blocked because their origin is not listed in your site's Content Security Policy (CSP). Your site's CSP is allowlist-based, so resources must be listed in the allowlist in order to be accessed.
 
-A site's Content Security Policy is set either as via an HTTP header (recommended), or via a meta HTML tag.
+A site's Content Security Policy is set either via an HTTP header (recommended), or via a meta HTML tag.
 
 To fix this issue do one of the following:
 

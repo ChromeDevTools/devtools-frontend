@@ -202,6 +202,16 @@ it('can highlight PHP', testHighlight(`
 }
 `, 'application/vnd.dart'));
 
+  it('can highlight Go code', testHighlight(`
+[keyword package] [variable main]
+
+[keyword import] [string "fmt"]
+
+[keyword func] [variable main]() {
+  [variable fmt][number .][variable Println]([string "hello world"])
+}
+`, 'text/x-go'));
+
   it('can highlight Kotlin code', testHighlight(`
 [keyword fun] [definition main]([variable args] : [variable Array]<[type String]>) {
     [variable println]([string "Hello, World!"])

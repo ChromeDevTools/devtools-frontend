@@ -111,6 +111,9 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
     case 'text/x-c++src':
       return (await CodeMirror.cpp()).cpp();
 
+    case 'text/x-go':
+      return new CodeMirror.LanguageSupport(await CodeMirror.go());
+
     case 'text/x-java':
       return (await CodeMirror.java()).java();
 

@@ -424,6 +424,10 @@ describe('ResourceType', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('dart'), 'application/vnd.dart');
     });
 
+    it('returns correct MIME type for Go files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('go'), 'text/x-go');
+    });
+
     it('returns correct MIME type for .gss files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('gss'), 'text/x-gss');
     });
@@ -466,6 +470,11 @@ describe('ResourceType', () => {
     it('returns correct MIME type for .dart files', () => {
       const url = 'http://localhost/example.dart' as Platform.DevToolsPath.UrlString;
       assert.strictEqual(ResourceType.mimeFromURL(url), 'application/vnd.dart');
+    });
+
+    it('returns correct MIME type for Go files', () => {
+      const url = 'https://staging.server.com/main.go' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x-go');
     });
 
     it('returns correct MIME type for .gss files', () => {

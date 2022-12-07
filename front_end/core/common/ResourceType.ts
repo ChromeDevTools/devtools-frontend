@@ -479,6 +479,9 @@ export const mimeTypeByExtension = new Map([
   // C#
   ['cs', 'text/x-csharp'],
 
+  // Go
+  ['go', 'text/x-go'],
+
   // Java
   ['java', 'text/x-java'],
 

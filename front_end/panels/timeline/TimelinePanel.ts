@@ -315,7 +315,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private showSettingsPaneSetting!: Common.Settings.Setting<boolean>;
   private settingsPane!: UI.Widget.Widget;
   private controller!: TimelineController|null;
-  private cpuProfilers!: SDK.CPUProfilerModel.CPUProfilerModel[]|null;
+  private cpuProfiler!: SDK.CPUProfilerModel.CPUProfilerModel|null;
   private clearButton!: UI.Toolbar.ToolbarButton;
   private loadButton!: UI.Toolbar.ToolbarButton;
   private saveButton!: UI.Toolbar.ToolbarButton;
@@ -946,15 +946,21 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
     } else {
       this.showRecordingStarted();
+      // Only profile the first target devtools connects to. If we profile all target, but this will cause some bugs
+      // like time for the function is calculated wrong, because the profiles will be concated and sorted together,
+      // so the total time will be amplified.
+      // Multiple targets problem might happen when you inspect multiple node servers on different port at same time,
+      // or when you let DevTools listen to both locolhost:9229 & 127.0.0.1:9229.
+      this.cpuProfiler = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel)[0];
+      if (this.cpuProfiler) {
+        this.setUIControlsEnabled(false);
+        this.hideLandingPage();
 
-      this.cpuProfilers = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel);
-      this.setUIControlsEnabled(false);
-      this.hideLandingPage();
+        await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
+        await this.cpuProfiler.startRecording();
 
-      await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
-      await Promise.all(this.cpuProfilers.map(model => model.startRecording()));
-
-      this.recordingStarted();
+        this.recordingStarted();
+      }
     }
   }
 
@@ -979,15 +985,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.controller = null;
       return;
     }
-    if (this.cpuProfilers) {
-      const profiles = await Promise.all(this.cpuProfilers.map(model => model.stopRecording()));
+    if (this.cpuProfiler) {
+      const profile = await this.cpuProfiler.stopRecording();
       let traceEvents: SDK.TracingManager.EventPayload[] = [];
       try {
-        for (const profile of profiles) {
-          const traceEvent = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
-              profile, /* tid */ 1, /* injectPageEvent */ true);
-          traceEvents = traceEvents.concat(traceEvent);
-        }
+        traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
+            profile, /* tid */ 1, /* injectPageEvent */ true);
       } catch (e) {
         console.error(e.stack);
         return;
@@ -996,8 +999,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.loadFromEvents(traceEvents);
 
       this.setUIControlsEnabled(true);
-      this.cpuProfilers.map(model => model.dispose());
-      this.cpuProfilers = null;
+      this.cpuProfiler = null;
 
       await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     }

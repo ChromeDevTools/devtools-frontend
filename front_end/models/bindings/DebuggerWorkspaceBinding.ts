@@ -94,6 +94,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     }
   }
 
+  getCompilerScriptMappingForTest(debuggerModel: SDK.DebuggerModel.DebuggerModel): CompilerScriptMapping|null {
+    const model = this.#debuggerModelToData.get(debuggerModel);
+    if (!model) {
+      return null;
+    }
+    return model.compilerMapping;
+  }
+
   private async computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame):
       Promise<RawLocationRange[]> {
     function contained(location: SDK.DebuggerModel.Location, range: RawLocationRange): boolean {

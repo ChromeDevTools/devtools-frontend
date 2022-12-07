@@ -70,6 +70,9 @@ export function java() {
 export function json() {
   return import('@codemirror/lang-json');
 }
+export async function kotlin() {
+  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).kotlin);
+}
 export async function less() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/css')).less);
 }

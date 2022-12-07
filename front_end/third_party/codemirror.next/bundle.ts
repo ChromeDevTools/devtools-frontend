@@ -7,10 +7,11 @@
 import {StreamLanguage} from "@codemirror/language";
 
 export {
-  acceptCompletion, autocompletion, closeBrackets, closeBracketsKeymap
-, closeCompletion, completeAnyWord,
-  Completion, CompletionContext, CompletionResult, CompletionSource, currentCompletions,
-  ifNotIn, moveCompletionSelection, selectedCompletion, startCompletion} from '@codemirror/autocomplete';
+  acceptCompletion, autocompletion, closeBrackets, closeBracketsKeymap,
+  closeCompletion, completeAnyWord, Completion, CompletionContext, CompletionResult,
+  CompletionSource, completionStatus, currentCompletions, ifNotIn,
+  moveCompletionSelection, selectedCompletion, selectedCompletionIndex, startCompletion
+} from '@codemirror/autocomplete';
 export {
   cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward,
   history, historyKeymap,

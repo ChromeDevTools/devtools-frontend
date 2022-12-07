@@ -4768,6 +4768,13 @@ Returns an extension that enables autocompletion.
 */
 declare function autocompletion(config?: CompletionConfig): Extension;
 /**
+Get the current completion status. When completions are available,
+this will return `"active"`. When completions are pending (in the
+process of being queried), this returns `"pending"`. Otherwise, it
+returns `null`.
+*/
+declare function completionStatus(state: EditorState): null | "active" | "pending";
+/**
 Returns the available completions as an array.
 */
 declare function currentCompletions(state: EditorState): readonly Completion[];
@@ -4775,6 +4782,11 @@ declare function currentCompletions(state: EditorState): readonly Completion[];
 Return the currently selected completion, if any.
 */
 declare function selectedCompletion(state: EditorState): Completion | null;
+/**
+Returns the currently selected position in the active completion
+list, or null if no completions are active.
+*/
+declare function selectedCompletionIndex(state: EditorState): number | null;
 
 /**
 Describes an element in your XML document schema.
@@ -5461,6 +5473,10 @@ interface TagSpec {
     */
     attrs?: Record<string, null | readonly string[]>;
     /**
+    When set to false, don't complete global attributes on this tag.
+    */
+    globalAttrs?: boolean;
+    /**
     Can be used to specify a list of child tags that are valid
     inside this tag. The default is to allow any tag.
     */
@@ -5727,4 +5743,4 @@ declare function cssStreamParser(): Promise<any>;
 declare function wast(): Promise<typeof _codemirror_lang_wast>;
 declare function xml(): Promise<typeof _codemirror_lang_xml>;
 
-export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, cpp, index_d$2 as css, cssStreamParser, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, index_d as javascript, json, keymap, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scrollPastEnd, scss, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, selectedCompletion, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, wast, xml };
+export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, index_d$2 as css, cssStreamParser, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, index_d as javascript, json, keymap, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scrollPastEnd, scss, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, wast, xml };

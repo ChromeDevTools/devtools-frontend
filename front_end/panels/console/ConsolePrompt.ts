@@ -85,6 +85,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         CodeMirror.EditorView.updateListener.of(update => this.editorUpdate(update)),
         argumentHints,
         TextEditor.JavaScript.completion(),
+        TextEditor.Config.conservativeCompletion,
         TextEditor.Config.showCompletionHint,
         CodeMirror.javascript.javascript(),
         TextEditor.Config.baseConfiguration(this.initialText),

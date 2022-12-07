@@ -75,6 +75,7 @@ export const autocompletion: CM.Extension = [
   CM.autocompletion({
     icons: false,
     optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
+    defaultKeymap: false,
   }),
   CM.Prec.highest(CM.keymap.of([
     {
@@ -93,10 +94,39 @@ export const autocompletion: CM.Extension = [
         return false;
       },
     },
+    {key: 'Ctrl-Space', run: CM.startCompletion},
+    {key: 'Escape', run: CM.closeCompletion},
+    {key: 'ArrowDown', run: CM.moveCompletionSelection(true)},
+    {key: 'ArrowUp', run: CM.moveCompletionSelection(false)},
     {mac: 'Ctrl-n', run: CM.moveCompletionSelection(true)},
     {mac: 'Ctrl-p', run: CM.moveCompletionSelection(false)},
+    {key: 'PageDown', run: CM.moveCompletionSelection(true, 'page')},
+    {key: 'PageUp', run: CM.moveCompletionSelection(false, 'page')},
+    {key: 'Enter', run: acceptCompletionIfNotConservative},
   ])),
 ];
+
+// When enabled, this suppresses the behavior of showCompletionHint
+// and accepting of completions with Enter until the user selects a
+// completion beyond the initially selected one. Used in the console.
+export const conservativeCompletion = CM.StateField.define<boolean>({
+  create() {
+    return true;
+  },
+  update(value, tr) {
+    if (CM.completionStatus(tr.state) !== 'active') {
+      return true;
+    }
+    if ((CM.selectedCompletionIndex(tr.startState) ?? 0) !== (CM.selectedCompletionIndex(tr.state) ?? 0)) {
+      return false;
+    }
+    return value;
+  },
+});
+
+function acceptCompletionIfNotConservative(view: CM.EditorView): boolean {
+  return !view.state.field(conservativeCompletion, false) && CM.acceptCompletion(view);
+}
 
 export const sourcesAutocompletion = DynamicSetting.bool('textEditorAutocompletion', autocompletion);
 

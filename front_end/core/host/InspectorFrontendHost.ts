@@ -73,6 +73,15 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   recordedPerformanceHistograms: {histogramName: string, duration: number}[] = [];
 
   constructor() {
+    this.#urlsBeingSaved = new Map();
+
+    // Guard against errors should this file ever be imported at the top level
+    // within a worker - in which case this constructor is run. If there's no
+    // document, we can early exit.
+    if (typeof document === 'undefined') {
+      return;
+    }
+
     function stopEventPropagation(this: InspectorFrontendHostAPI, event: KeyboardEvent): void {
       // Let browser handle Ctrl+/Ctrl- shortcuts in hosted mode.
       const zoomModifier = this.platform() === 'mac' ? event.metaKey : event.ctrlKey;
@@ -80,10 +89,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         event.stopPropagation();
       }
     }
+
     document.addEventListener('keydown', event => {
       stopEventPropagation.call(this, (event as KeyboardEvent));
     }, true);
-    this.#urlsBeingSaved = new Map();
   }
 
   platform(): string {
@@ -404,7 +413,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
 
 // @ts-ignore Global injected by devtools-compatibility.js
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export let InspectorFrontendHostInstance: InspectorFrontendHostStub = window.InspectorFrontendHost;
+export let InspectorFrontendHostInstance: InspectorFrontendHostStub = globalThis.InspectorFrontendHost;
 
 class InspectorFrontendAPIImpl {
   constructor() {
@@ -451,7 +460,7 @@ function initializeInspectorFrontendHost(): void {
   if (!InspectorFrontendHostInstance) {
     // Instantiate stub for web-hosted mode if necessary.
     // @ts-ignore Global injected by devtools-compatibility.js
-    window.InspectorFrontendHost = InspectorFrontendHostInstance = new InspectorFrontendHostStub();
+    globalThis.InspectorFrontendHost = InspectorFrontendHostInstance = new InspectorFrontendHostStub();
   } else {
     // Otherwise add stubs for missing methods that are declared in the interface.
     proto = InspectorFrontendHostStub.prototype;
@@ -478,7 +487,7 @@ function initializeInspectorFrontendHost(): void {
 // so the host instance should not be initialized there.
 initializeInspectorFrontendHost();
 // @ts-ignore Global injected by devtools-compatibility.js
-window.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
+globalThis.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
 })();
 
 export function isUnderTest(prefs?: {

@@ -32,5 +32,6 @@ ts_library("application") {
     "../../../../../front_end/core/sdk:bundle",
     "../../../../../front_end/panels/application:bundle",
     "./components",
+    "./preloading/components",
   ]
 }

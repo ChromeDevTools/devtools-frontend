@@ -792,8 +792,7 @@ interface HeaderOverrideWithRegex {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isHeaderOverride(arg: any): arg is HeaderOverride {
-  if (!(arg && arg.applyTo && typeof arg.applyTo === 'string' && arg.headers && arg.headers.length &&
-        Array.isArray(arg.headers))) {
+  if (!(arg && typeof arg.applyTo === 'string' && arg.headers && arg.headers.length && Array.isArray(arg.headers))) {
     return false;
   }
   return arg.headers.every(

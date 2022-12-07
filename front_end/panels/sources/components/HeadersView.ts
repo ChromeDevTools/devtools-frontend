@@ -184,7 +184,18 @@ export class HeadersViewComponent extends HTMLElement {
     }
   }
 
-  #onFocusOut(): void {
+  #onFocusOut(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target.innerHTML === '') {
+      const rowElement = target.closest('.row') as HTMLElement;
+      const blockIndex = Number(rowElement.dataset.blockIndex);
+      if (target.matches('.apply-to')) {
+        target.innerHTML = '*';
+        this.#headerOverrides[blockIndex].applyTo = '*';
+        this.#onHeadersChanged();
+      }
+    }
+
     // clear selection
     const selection = window.getSelection();
     selection?.removeAllRanges();

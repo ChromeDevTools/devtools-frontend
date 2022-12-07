@@ -335,6 +335,14 @@ export function describeWithLocale(title: string, fn: (this: Mocha.Suite) => voi
     describe(title, fn);
   });
 }
+describeWithLocale.only = function(title: string, fn: (this: Mocha.Suite) => void) {
+  // eslint-disable-next-line rulesdir/no_only
+  return describe.only(`locale-${title}`, () => {
+    before(async () => await initializeGlobalLocaleVars());
+    after(deinitializeGlobalLocaleVars);
+    describe(title, fn);
+  });
+};
 
 export function createFakeSetting<T>(name: string, defaultValue: T): Common.Settings.Setting<T> {
   const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');

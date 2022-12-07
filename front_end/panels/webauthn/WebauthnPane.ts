@@ -142,7 +142,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/webauthn/WebauthnPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const TIMEOUT = 1000;
 
 const enum Events {
   ExportCredential = 'ExportCredential',
@@ -237,7 +236,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.WebAuthnModel.WebAuthnModel> {
   #activeAuthId: Protocol.WebAuthn.AuthenticatorId|null = null;
   #hasBeenEnabled = false;
-  readonly #dataGrids = new Map<Protocol.WebAuthn.AuthenticatorId, DataGrid.DataGrid.DataGridImpl<DataGridNode>>();
+  readonly dataGrids = new Map<Protocol.WebAuthn.AuthenticatorId, DataGrid.DataGrid.DataGridImpl<DataGridNode>>();
   #enableCheckbox!: UI.Toolbar.ToolbarCheckbox;
   readonly #availableAuthenticatorSetting: Common.Settings.Setting<AvailableAuthenticatorOptions[]>;
   #model?: SDK.WebAuthnModel.WebAuthnModel;
@@ -274,7 +273,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#updateVisibility(false);
   }
 
-  static instance(opts = {forceNew: null}): WebauthnPaneImpl {
+  static instance(opts = {forceNew: false}): WebauthnPaneImpl {
     const {forceNew} = opts;
     if (!webauthnPaneImplInstance || forceNew) {
       webauthnPaneImplInstance = new WebauthnPaneImpl();
@@ -377,8 +376,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     dataGrid.setStriped(true);
     dataGrid.addEventListener(Events.ExportCredential, this.#handleExportCredential, this);
     dataGrid.addEventListener(Events.RemoveCredential, this.#handleRemoveCredential.bind(this, authenticatorId));
+    dataGrid.rootNode().appendChild(new EmptyDataGridNode());
 
-    this.#dataGrids.set(authenticatorId, dataGrid);
+    this.dataGrids.set(authenticatorId, dataGrid);
 
     return dataGrid;
   }
@@ -393,35 +393,33 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     void this.#removeCredential(authenticatorId, credential.credentialId);
   }
 
-  async #updateCredentials(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<void> {
-    const dataGrid = this.#dataGrids.get(authenticatorId);
+  #addCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, {
+    data: event,
+  }: Common.EventTarget.EventTargetEvent<Protocol.WebAuthn.CredentialAddedEvent>): void {
+    const dataGrid = this.dataGrids.get(authenticatorId);
     if (!dataGrid) {
       return;
     }
-
-    if (this.#model) {
-      const credentials = await this.#model.getCredentials(authenticatorId);
-
-      dataGrid.rootNode().removeChildren();
-      for (const credential of credentials) {
-        const node = new DataGridNode(credential);
-        dataGrid.rootNode().appendChild(node);
-      }
-
-      this.#maybeAddEmptyNode(dataGrid);
+    const emptyNode = dataGrid.rootNode().children.find(node => !Object.keys(node.data).length);
+    if (emptyNode) {
+      dataGrid.rootNode().removeChild(emptyNode);
     }
-
-    // TODO(crbug.com/1112528): Add back-end events for credential creation and removal to avoid polling.
-    window.setTimeout(this.#updateCredentials.bind(this, authenticatorId), TIMEOUT);
+    const node = new DataGridNode(event.credential);
+    dataGrid.rootNode().appendChild(node);
   }
 
-  #maybeAddEmptyNode(dataGrid: DataGrid.DataGrid.DataGridImpl<DataGridNode>): void {
-    if (dataGrid.rootNode().children.length) {
+  #updateCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, {
+    data: event,
+  }: Common.EventTarget.EventTargetEvent<Protocol.WebAuthn.CredentialAssertedEvent>): void {
+    const dataGrid = this.dataGrids.get(authenticatorId);
+    if (!dataGrid) {
       return;
     }
-
-    const node = new EmptyDataGridNode();
-    dataGrid.rootNode().appendChild(node);
+    const node = dataGrid.rootNode().children.find(node => node.data?.credentialId === event.credential.credentialId);
+    if (!node) {
+      return;
+    }
+    node.data = event.credential;
   }
 
   async #setVirtualAuthEnvEnabled(enable: boolean): Promise<void> {
@@ -454,10 +452,10 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
   #removeAuthenticatorSections(): void {
     this.#authenticatorsView.innerHTML = '';
-    for (const dataGrid of this.#dataGrids.values()) {
+    for (const dataGrid of this.dataGrids.values()) {
       dataGrid.asWidget().detach();
     }
-    this.#dataGrids.clear();
+    this.dataGrids.clear();
   }
 
   #handleCheckboxToggle(e: MouseEvent): void {
@@ -686,8 +684,12 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
     const dataGrid = this.#createCredentialsDataGrid(authenticatorId);
     dataGrid.asWidget().show(section);
-
-    void this.#updateCredentials(authenticatorId);
+    if (this.#model) {
+      this.#model.addEventListener(
+          SDK.WebAuthnModel.Events.CredentialAdded, this.#addCredential.bind(this, authenticatorId));
+      this.#model.addEventListener(
+          SDK.WebAuthnModel.Events.CredentialAsserted, this.#updateCredential.bind(this, authenticatorId));
+    }
 
     return section;
   }
@@ -706,7 +708,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   }
 
   async #removeCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, credentialId: string): Promise<void> {
-    const dataGrid = this.#dataGrids.get(authenticatorId);
+    const dataGrid = this.dataGrids.get(authenticatorId);
     if (!dataGrid) {
       return;
     }
@@ -716,7 +718,10 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
         .children
         .find((n: DataGrid.DataGrid.DataGridNode<DataGridNode>): boolean => n.data.credentialId === credentialId)
         .remove();
-    this.#maybeAddEmptyNode(dataGrid);
+
+    if (!dataGrid.rootNode().children.length) {
+      dataGrid.rootNode().appendChild(new EmptyDataGridNode());
+    }
 
     if (this.#model) {
       await this.#model.removeCredential(authenticatorId, credentialId);
@@ -791,10 +796,10 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
         child.remove();
       }
     }
-    const dataGrid = this.#dataGrids.get(authenticatorId);
+    const dataGrid = this.dataGrids.get(authenticatorId);
     if (dataGrid) {
       dataGrid.asWidget().detach();
-      this.#dataGrids.delete(authenticatorId);
+      this.dataGrids.delete(authenticatorId);
     }
 
     if (this.#model) {
@@ -807,7 +812,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#availableAuthenticatorSetting.set(newAvailableAuthenticators);
 
     if (this.#activeAuthId === authenticatorId) {
-      const availableAuthenticatorIds = Array.from(this.#dataGrids.keys());
+      const availableAuthenticatorIds = Array.from(this.dataGrids.keys());
       if (availableAuthenticatorIds.length) {
         void this.#setActiveAuthenticator(availableAuthenticatorIds[0]);
       } else {

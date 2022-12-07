@@ -881,6 +881,10 @@ export class TargetBase {
     this.registerDispatcher('WebAudio', dispatcher);
   }
 
+  registerWebAuthnDispatcher(dispatcher: ProtocolProxyApi.WebAuthnDispatcher): void {
+    this.registerDispatcher('WebAuthn', dispatcher);
+  }
+
   getNeedsNodeJSPatching(): boolean {
     return this.needsNodeJSPatching;
   }

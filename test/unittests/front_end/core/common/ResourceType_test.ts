@@ -428,6 +428,10 @@ describe('ResourceType', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('gss'), 'text/x-gss');
     });
 
+    it('returns correct MIME type for .kt files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('kt'), 'text/x-kotlin');
+    });
+
     it('returns correct MIME type for .less files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('less'), 'text/x-less');
     });
@@ -463,6 +467,11 @@ describe('ResourceType', () => {
     it('returns correct MIME type for .gss files', () => {
       const url = 'https://staging.server.com/styles.gss' as Platform.DevToolsPath.UrlString;
       assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x-gss');
+    });
+
+    it('returns correct MIME type for .kt files', () => {
+      const url = 'https://staging.server.com/Main.kt' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x-kotlin');
     });
 
     it('returns correct MIME type for .less files', () => {

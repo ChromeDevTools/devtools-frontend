@@ -114,6 +114,9 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
     case 'text/x-java':
       return (await CodeMirror.java()).java();
 
+    case 'text/x-kotlin':
+      return new CodeMirror.LanguageSupport(await CodeMirror.kotlin());
+
     case 'application/json':
     case 'application/manifest+json':
       return (await CodeMirror.json()).json();

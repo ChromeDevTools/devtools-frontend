@@ -202,6 +202,12 @@ it('can highlight PHP', testHighlight(`
 }
 `, 'application/vnd.dart'));
 
+  it('can highlight Kotlin code', testHighlight(`
+[keyword fun] [definition main]([variable args] : [variable Array]<[type String]>) {
+    [variable println]([string "Hello, World!"])
+}
+`, 'text/x-kotlin'));
+
   it('can highlight Web app manifests', testHighlight(`
 {
   [property "name"]: [string "Test"],

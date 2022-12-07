@@ -485,6 +485,9 @@ export const mimeTypeByExtension = new Map([
   // Kotlin
   ['kt', 'text/x-kotlin'],
 
+  // Scala
+  ['scala', 'text/x-scala'],
+
   // Less
   ['less', 'text/x-less'],
 

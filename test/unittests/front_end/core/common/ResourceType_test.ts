@@ -445,6 +445,10 @@ describe('ResourceType', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('scss'), 'text/x-scss');
     });
 
+    it('returns correct MIME type for Scala files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('scala'), 'text/x-scala');
+    });
+
     it('returns correct MIME type for .svelte files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('svelte'), 'text/x.svelte');
     });
@@ -491,6 +495,11 @@ describe('ResourceType', () => {
       assert.strictEqual(
           ResourceType.mimeFromURL('https://staging.server.com/styles.scss' as Platform.DevToolsPath.UrlString),
           'text/x-scss');
+    });
+
+    it('returns correct MIME type for Scala files', () => {
+      const url = 'http://localhost/App.scala' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x-scala');
     });
 
     it('returns correct MIME type for .svelte files', () => {

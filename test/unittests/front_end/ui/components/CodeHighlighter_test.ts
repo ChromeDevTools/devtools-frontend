@@ -208,6 +208,12 @@ it('can highlight PHP', testHighlight(`
 }
 `, 'text/x-kotlin'));
 
+  it('can highlight Scala code', testHighlight(`
+[keyword object] [definition HelloWord] [keyword extends] [type App] {
+  [keyword println]([string "Hello, world"])
+}
+`, 'text/x-scala'));
+
   it('can highlight Web app manifests', testHighlight(`
 {
   [property "name"]: [string "Test"],

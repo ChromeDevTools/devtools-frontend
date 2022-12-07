@@ -151,6 +151,9 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
     case 'text/x-sass':
       return new CodeMirror.LanguageSupport(await CodeMirror.sass());
 
+    case 'text/x-scala':
+      return new CodeMirror.LanguageSupport(await CodeMirror.scala());
+
     case 'text/x-scss':
       return new CodeMirror.LanguageSupport(await CodeMirror.scss());
 

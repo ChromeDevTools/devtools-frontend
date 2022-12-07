@@ -93,7 +93,10 @@ class MockConnection extends ProtocolClient.InspectorBackend.Connection {
         return;
       }
 
-      const result = (await handler.call(undefined, outgoingMessage.params)) || {};
+      let result = handler.call(undefined, outgoingMessage.params) || {};
+      if ('then' in result) {
+        result = await result;
+      }
 
       // Since we allow the test author to omit the getError call, we
       // need to add it in here on their behalf so that the calling code

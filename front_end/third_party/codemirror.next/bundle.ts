@@ -64,6 +64,9 @@ export async function dart() {
 export async function gss() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/css')).gss);
 }
+export async function go() {
+  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/go')).go);
+}
 export function java() {
   return import('@codemirror/lang-java');
 }

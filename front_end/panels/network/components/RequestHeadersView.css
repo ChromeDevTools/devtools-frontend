@@ -69,8 +69,8 @@ div.raw-headers-row {
 }
 
 .header-name {
-  color: var(--color-primary);
-  font-weight: 500;
+  color: var(--color-text-primary);
+  font-weight: 400;
   width: 160px;
   flex-shrink: 0;
   text-transform: capitalize;

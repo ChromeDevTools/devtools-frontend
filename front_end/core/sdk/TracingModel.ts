@@ -12,6 +12,7 @@ type IgnoreListArgs = {
 
 export class TracingModel {
   #backingStorageInternal: BackingStorage;
+  readonly #shouldSaveToFile: boolean;
   #firstWritePending: boolean;
   readonly #processById: Map<string|number, Process>;
   readonly #processByName: Map<string, Process>;
@@ -25,8 +26,9 @@ export class TracingModel {
   readonly #parsedCategories: Map<string, Set<string>>;
   readonly #mainFrameNavStartTimes: Map<string, Event>;
 
-  constructor(backingStorage: BackingStorage) {
+  constructor(backingStorage: BackingStorage, shouldSaveToFile = true) {
     this.#backingStorageInternal = backingStorage;
+    this.#shouldSaveToFile = shouldSaveToFile;
     // Avoid extra reset of the storage as it's expensive.
     this.#firstWritePending = true;
     this.#processById = new Map();
@@ -127,9 +129,11 @@ export class TracingModel {
 
   tracingComplete(): void {
     this.processPendingAsyncEvents();
-    this.#backingStorageInternal.appendString(this.#firstWritePending ? '[]' : ']');
-    this.#backingStorageInternal.finishWriting();
-    this.#firstWritePending = false;
+    if (this.#shouldSaveToFile) {
+      this.#backingStorageInternal.appendString(this.#firstWritePending ? '[]' : ']');
+      this.#backingStorageInternal.finishWriting();
+      this.#firstWritePending = false;
+    }
     for (const process of this.#processById.values()) {
       for (const thread of process.threads.values()) {
         thread.tracingComplete();
@@ -138,7 +142,7 @@ export class TracingModel {
   }
 
   dispose(): void {
-    if (!this.#firstWritePending) {
+    if (!this.#firstWritePending && this.#shouldSaveToFile) {
       this.#backingStorageInternal.reset();
     }
   }
@@ -172,17 +176,20 @@ export class TracingModel {
     }
 
     const phase = Phase;
-    const eventsDelimiter = ',\n';
-    this.#backingStorageInternal.appendString(this.#firstWritePending ? '[' : eventsDelimiter);
-    this.#firstWritePending = false;
-    const stringPayload = JSON.stringify(payload);
-    const isAccessible = payload.ph === phase.SnapshotObject;
+
     let backingStorage: (() => Promise<string|null>)|null = null;
-    const keepStringsLessThan = 10000;
-    if (isAccessible && stringPayload.length > keepStringsLessThan) {
-      backingStorage = this.#backingStorageInternal.appendAccessibleString(stringPayload);
-    } else {
-      this.#backingStorageInternal.appendString(stringPayload);
+    if (this.#shouldSaveToFile) {
+      const eventsDelimiter = ',\n';
+      this.#backingStorageInternal.appendString(this.#firstWritePending ? '[' : eventsDelimiter);
+      this.#firstWritePending = false;
+      const stringPayload = JSON.stringify(payload);
+      const isAccessible = payload.ph === phase.SnapshotObject;
+      const keepStringsLessThan = 10000;
+      if (isAccessible && stringPayload.length > keepStringsLessThan) {
+        backingStorage = this.#backingStorageInternal.appendAccessibleString(stringPayload);
+      } else {
+        this.#backingStorageInternal.appendString(stringPayload);
+      }
     }
 
     const timestamp = payload.ts / 1000;

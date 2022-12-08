@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
@@ -48,11 +49,11 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private loadedBytes: number;
   private totalSize!: number;
   private readonly jsonTokenizer: TextUtils.TextUtils.BalancedJSONTokenizer;
-  constructor(client: Client) {
+  constructor(client: Client, shouldSaveTraceEventsToFile: boolean) {
     this.client = client;
 
     this.backingStorage = new Bindings.TempFile.TempFileBackingStorage();
-    this.tracingModel = new SDK.TracingModel.TracingModel(this.backingStorage);
+    this.tracingModel = new SDK.TracingModel.TracingModel(this.backingStorage, shouldSaveTraceEventsToFile);
 
     this.canceledCallback = null;
     this.state = State.Initial;
@@ -64,7 +65,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   }
 
   static async loadFromFile(file: File, client: Client): Promise<TimelineLoader> {
-    const loader = new TimelineLoader(client);
+    const loader = new TimelineLoader(client, /* shouldSaveTraceEventsToFile= */ true);
     const fileReader = new Bindings.FileUtils.ChunkedFileReader(file, TransferChunkLengthBytes);
     loader.canceledCallback = fileReader.cancel.bind(fileReader);
     loader.totalSize = file.size;
@@ -78,15 +79,34 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   }
 
   static loadFromEvents(events: SDK.TracingManager.EventPayload[], client: Client): TimelineLoader {
-    const loader = new TimelineLoader(client);
+    const loader = new TimelineLoader(client, /* shouldSaveTraceEventsToFile= */ true);
     window.setTimeout(async () => {
       void loader.addEvents(events);
     });
     return loader;
   }
 
+  static loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, client: Client): TimelineLoader {
+    const loader = new TimelineLoader(client, /* shouldSaveTraceEventsToFile= */ false);
+
+    try {
+      const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
+          profile, /* tid */ 1, /* injectPageEvent */ true);
+
+      loader.backingStorage.appendString(JSON.stringify(profile));
+      loader.backingStorage.finishWriting();
+
+      window.setTimeout(async () => {
+        void loader.addEvents(events);
+      });
+    } catch (e) {
+      console.error(e.stack);
+    }
+    return loader;
+  }
+
   static loadFromURL(url: Platform.DevToolsPath.UrlString, client: Client): TimelineLoader {
-    const loader = new TimelineLoader(client);
+    const loader = new TimelineLoader(client, /* shouldSaveTraceEventsToFile= */ true);
     const stream = new Common.StringOutputStream.StringOutputStream();
     client.loadingStarted();
 

@@ -72,6 +72,7 @@ import {TimelineLoader} from './TimelineLoader.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -479,6 +480,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.loader = TimelineLoader.loadFromEvents(events, this);
   }
 
+  private loadFromCpuProfile(profile: Protocol.Profiler.Profile|null): void {
+    if (this.state !== State.Idle) {
+      return;
+    }
+    this.prepareToLoadTimeline();
+    this.loader = TimelineLoader.loadFromCpuProfile(profile, this);
+  }
+
   private onOverviewWindowChanged(
       event: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.WindowChangedEvent>): void {
     if (!this.performanceModel) {
@@ -679,6 +688,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     contextMenu.appendItemsAtLocation('timelineMenu');
     void contextMenu.show();
   }
+
   async saveToFile(): Promise<void> {
     if (this.state !== State.Idle) {
       return;
@@ -688,9 +698,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
-    const now = new Date();
-    const fileName =
-        'Profile-' + Platform.DateUtilities.toISO8601Compact(now) + '.json' as Platform.DevToolsPath.RawPathString;
+    const now = Platform.DateUtilities.toISO8601Compact(new Date());
+    let fileName: Platform.DevToolsPath.RawPathString;
+    if (isNode) {
+      fileName = `CPU-${now}.cpuprofile` as Platform.DevToolsPath.RawPathString;
+    } else {
+      fileName = `Profile-${now}.json` as Platform.DevToolsPath.RawPathString;
+    }
     const stream = new Bindings.FileUtils.FileOutputStream();
 
     const accepted = await stream.open(fileName);
@@ -991,16 +1005,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     if (this.cpuProfiler) {
       const profile = await this.cpuProfiler.stopRecording();
-      let traceEvents: SDK.TracingManager.EventPayload[] = [];
-      try {
-        traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
-            profile, /* tid */ 1, /* injectPageEvent */ true);
-      } catch (e) {
-        console.error(e.stack);
-        return;
-      }
       this.setState(State.Idle);
-      this.loadFromEvents(traceEvents);
+      this.loadFromCpuProfile(profile);
 
       this.setUIControlsEnabled(true);
       this.cpuProfiler = null;
@@ -1043,14 +1049,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
-    try {
-      const traceEvent = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
-          data.cpuProfile, /* tid */ 1, /* injectPageEvent */ true);
-      this.loadFromEvents(traceEvent);
-    } catch (e) {
-      console.error(e.stack);
-      return;
-    }
+    this.loadFromCpuProfile(data.cpuProfile);
     void UI.InspectorView.InspectorView.instance().showPanel('timeline');
   }
 

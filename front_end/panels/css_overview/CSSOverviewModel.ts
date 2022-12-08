@@ -69,13 +69,13 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
   }
 
   async getNodeStyleStats(): Promise<NodeStyleStats> {
-    const backgroundColors = new Map();
-    const textColors = new Map();
-    const textColorContrastIssues = new Map();
-    const fillColors = new Map();
-    const borderColors = new Map();
-    const fontInfo = new Map();
-    const unusedDeclarations = new Map();
+    const backgroundColors: Map<string, Set<Protocol.DOM.BackendNodeId>> = new Map();
+    const textColors: Map<string, Set<Protocol.DOM.BackendNodeId>> = new Map();
+    const textColorContrastIssues: Map<string, ContrastIssue[]> = new Map();
+    const fillColors: Map<string, Set<Protocol.DOM.BackendNodeId>> = new Map();
+    const borderColors: Map<string, Set<Protocol.DOM.BackendNodeId>> = new Map();
+    const fontInfo: Map<string, Map<string, Map<string, Protocol.DOM.BackendNodeId[]>>> = new Map();
+    const unusedDeclarations: Map<string, UnusedDeclaration[]> = new Map();
     const snapshotConfig = {
       computedStyles: [
         'background-color',
@@ -282,7 +282,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
             const contrastRatio = contrastInfo.contrastRatioAPCA();
             const threshold = contrastInfo.contrastRatioAPCAThreshold();
             const passes = contrastRatio && threshold ? Math.abs(contrastRatio) >= threshold : false;
-            if (!passes) {
+            if (!passes && contrastRatio) {
               const issue = {
                 nodeId,
                 contrastRatio,
@@ -295,7 +295,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
                 },
               };
               if (textColorContrastIssues.has(key)) {
-                textColorContrastIssues.get(key).push(issue);
+                (textColorContrastIssues.get(key) as ContrastIssue[]).push(issue);
               } else {
                 textColorContrastIssues.set(key, [issue]);
               }
@@ -317,7 +317,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
                 },
               };
               if (textColorContrastIssues.has(key)) {
-                textColorContrastIssues.get(key).push(issue);
+                (textColorContrastIssues.get(key) as ContrastIssue[]).push(issue);
               } else {
                 textColorContrastIssues.set(key, [issue]);
               }

@@ -183,8 +183,8 @@ export type NodeStyleStats = Map<string, Set<number>>;
 export interface ContrastIssue {
   nodeId: Protocol.DOM.BackendNodeId;
   contrastRatio: number;
-  textColor: Common.Color.Legacy;
-  backgroundColor: Common.Color.Legacy;
+  textColor: Common.Color.Color;
+  backgroundColor: Common.Color.Color;
   thresholdsViolated: {
     aa: boolean,
     aaa: boolean,
@@ -787,7 +787,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     const block = (blockFragment.$('color') as HTMLElement);
     block.style.backgroundColor = backgroundColor;
     block.style.color = color;
-    block.style.border = getBorderString(minContrastIssue.backgroundColor);
+    block.style.border = getBorderString(minContrastIssue.backgroundColor.asLegacyColor());
 
     return blockFragment;
   }

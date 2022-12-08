@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as PreloadingDetailsReportView from './PreloadingDetailsReportView.js';
 import * as PreloadingGrid from './PreloadingGrid.js';
 
 export {
+  PreloadingDetailsReportView,
   PreloadingGrid,
 };

@@ -6,7 +6,10 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("components") {
   testonly = true
-  sources = [ "PreloadingGrid_test.ts" ]
+  sources = [
+    "PreloadingDetailsReportView_test.ts",
+    "PreloadingGrid_test.ts",
+  ]
 
   deps = [
     "../../../../../../../front_end/panels/application/preloading/components:bundle",

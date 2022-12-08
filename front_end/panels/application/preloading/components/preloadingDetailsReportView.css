@@ -1,0 +1,27 @@
+/*
+ * Copyright 2022 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.preloading-noselected {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  width: 100%;
+  background-color: var(--color-background);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.preloading-noselected > div {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.preloading-noselected > div > p {
+  white-space: pre-line;
+}

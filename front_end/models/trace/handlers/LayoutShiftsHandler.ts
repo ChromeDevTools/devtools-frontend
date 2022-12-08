@@ -11,7 +11,7 @@ import {ScoreClassification} from './PageLoadMetricsHandler.js';
 import {data as metaHandlerData} from './MetaHandler.js';
 import {data as screenshotsHandlerData} from './ScreenshotsHandler.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as SDK from '../../../core/sdk/sdk.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Platform from '../../../core/platform/platform.js';
 
 import * as Types from '../types/types.js';
@@ -50,7 +50,6 @@ interface LayoutShifts {
   prePaintEvents: Types.TraceEvents.TraceEventPrePaint[];
   layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidation[];
   styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidation[];
-  collectedDomNodes: Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>;
   scoreRecords: ScoreRecord[];
 }
 
@@ -86,8 +85,6 @@ let sessionMaxScore = 0;
 
 let clsWindowID = -1;
 
-let viewportScale: number|null = null;
-
 const clusters: LayoutShiftCluster[] = [];
 
 // Represents a point in time in which a  LS score change
@@ -102,23 +99,19 @@ type ScoreRecord = {
 const scoreRecords: ScoreRecord[] = [];
 
 // nodeIds coming from trace events are gathered and resolved into SDK.DOMModel.DOMNode objects.
-let domNodeByBackendId: Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>|undefined = undefined;
 const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
 
 let handlerState = HandlerState.UNINITIALIZED;
-let isFreshRecording = false;
 
-export function initialize(freshRecording = false): void {
+export function initialize(): void {
   if (handlerState !== HandlerState.UNINITIALIZED) {
     throw new Error('LayoutShifts Handler was not reset');
   }
-  isFreshRecording = freshRecording;
   handlerState = HandlerState.INITIALIZED;
 }
 
 export function reset(): void {
   handlerState = HandlerState.UNINITIALIZED;
-  domNodeByBackendId = undefined;
   layoutShiftEvents.length = 0;
   layoutInvalidationEvents.length = 0;
   prePaintEvents.length = 0;
@@ -201,64 +194,6 @@ function buildScoreRecords(): void {
   }
 }
 
-/**
- * Resolves backend node ids coming from LayoutShift and LayoutInvalidation
- * events to SDK.DOMNodes.
- */
-async function collectNodes(): Promise<void> {
-  // Collect the node ids present in the shifts.
-  for (const layoutShift of layoutShiftEvents) {
-    if (!layoutShift.args.data?.impacted_nodes) {
-      return;
-    }
-    for (const node of layoutShift.args.data.impacted_nodes) {
-      backendNodeIds.add(node.node_id);
-    }
-  }
-
-  // Collect the node ids present in LayoutInvalidation events.
-  for (const layoutInvalidation of layoutInvalidationEvents) {
-    if (!layoutInvalidation.args.data?.nodeId) {
-      continue;
-    }
-    backendNodeIds.add(layoutInvalidation.args.data.nodeId);
-  }
-  const target = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
-  const domModel = target?.model(SDK.DOMModel.DOMModel);
-  if (!domModel) {
-    return;
-  }
-
-  const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(backendNodeIds);
-  if (domNodesMap) {
-    domNodeByBackendId = domNodesMap;
-  }
-}
-
-function createLayoutShiftsSourcesData(): void {
-  for (const cluster of clusters) {
-    for (const shift of cluster.events) {
-      if (!shift.args.data?.impacted_nodes) {
-        return;
-      }
-      const impactedNodes = shift.args.data.impacted_nodes;
-      for (const impactedNode of impactedNodes) {
-        const domNode = domNodeByBackendId?.get(impactedNode.node_id as Protocol.DOM.BackendNodeId);
-        if (!domNode) {
-          continue;
-        }
-        shift.domNodeSources.push({
-          previousRect: new DOMRect(
-              impactedNode.old_rect[0], impactedNode.old_rect[1], impactedNode.old_rect[2], impactedNode.old_rect[3]),
-          currentRect: new DOMRect(
-              impactedNode.new_rect[0], impactedNode.new_rect[1], impactedNode.new_rect[2], impactedNode.new_rect[3]),
-          node: domNode,
-        });
-      }
-    }
-  }
-}
-
 function drawScreenshotOverlays(): void {
   const viewport = metaHandlerData().viewportRect;
   const canvas = document.createElement('canvas');
@@ -325,53 +260,9 @@ export async function finalize(): Promise<void> {
   // is important.
   await buildLayoutShiftsClusters();
   buildScoreRecords();
-  await collectNodes();
-  createLayoutShiftsSourcesData();
   drawScreenshotOverlays();
   handlerState = HandlerState.FINALIZED;
 }
-
-/**
- * The Layout Instability API in Blink, which reports the LayoutShift trace
- * events, is not based on CSS pixels but physical pixels. As such the values
- * in the impacted_nodes field need to be normalized to CSS units in order
- * to map them to the viewport dimensions, which we get in CSS pixels. That's
- * what this function does.
- * See https://crbug.com/1300309
- */
-export async function normalizeLayoutShiftImpactedNodes(layoutShift: Types.TraceEvents.TraceEventLayoutShift):
-    Promise<void> {
-  const impactedNodes = layoutShift.args?.data?.impacted_nodes;
-
-  if (layoutShift.normalized || !impactedNodes) {
-    return;
-  }
-
-  if (viewportScale === null) {
-    const target = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
-    // Get the CSS-to-physical pixel ratio of the device the inspected
-    // target is running at.
-    const evaluateResult = await target?.runtimeAgent().invoke_evaluate({expression: 'window.devicePixelRatio'});
-    if (evaluateResult?.result.type === 'number') {
-      viewportScale = evaluateResult?.result.value ?? null;
-    }
-  }
-
-  if (viewportScale !== null) {
-    for (let i = 0; i < impactedNodes.length; i++) {
-      const impactedNode = impactedNodes[i];
-      for (let j = 0; j < impactedNode.old_rect.length; j++) {
-        impactedNode.old_rect[j] /= viewportScale;
-      }
-      for (let j = 0; j < impactedNode.new_rect.length; j++) {
-        impactedNode.new_rect[j] /= viewportScale;
-      }
-    }
-  }
-  // Mark the trace event as normalized
-  layoutShift.normalized = true;
-}
-
 async function buildLayoutShiftsClusters(): Promise<void> {
   const {navigationsByFrameId, mainFrameId, traceBounds} = metaHandlerData();
   const navigations = navigationsByFrameId.get(mainFrameId) || [];
@@ -388,12 +279,6 @@ async function buildLayoutShiftsClusters(): Promise<void> {
   // and ending it (dropping the line back to 0) when the window ends according to the
   // thresholds (MAX_CLUSTER_DURATION, MAX_SHIFT_TIME_DELTA).
   for (const event of layoutShiftEvents) {
-    // Since we need access to the inspected target to normalize
-    // only do it if it's a fresh recording.
-    if (isFreshRecording) {
-      await normalizeLayoutShiftImpactedNodes(event);
-    }
-
     // First detect if either the cluster duration or the #time between this and
     // the last shift has been exceeded.
     const clusterDurationExceeded = event.ts - firstShiftTime > MAX_CLUSTER_DURATION;
@@ -559,7 +444,6 @@ export function data(): LayoutShifts {
     prePaintEvents: [...prePaintEvents],
     layoutInvalidationEvents: [...layoutInvalidationEvents],
     styleRecalcInvalidationEvents: [],
-    collectedDomNodes: new Map(domNodeByBackendId || []),
     scoreRecords: [...scoreRecords],
   };
 }

@@ -3,15 +3,6 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
-import {
-  clearAllMockConnectionResponseHandlers,
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../../helpers/MockConnection.js';
-
-import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
 
 async function processTrace(url: string): Promise<void> {
@@ -36,7 +27,7 @@ async function processTrace(url: string): Promise<void> {
   await TraceModel.Handlers.ModelHandlers.LayoutShifts.finalize();
 }
 
-describeWithMockConnection('LayoutShiftsHandler', () => {
+describe('LayoutShiftsHandler', () => {
   beforeEach(async () => {
     // The layout shifts handler stores by process, so to make life easier we
     // run the meta handler here, too, so that later on we can get the IDs of
@@ -45,43 +36,6 @@ describeWithMockConnection('LayoutShiftsHandler', () => {
     TraceModel.Handlers.ModelHandlers.Meta.initialize();
 
     TraceModel.Handlers.ModelHandlers.LayoutShifts.reset();
-  });
-
-  it('extracts the affected elements (impacted nodes) from LayoutShift events correctly', async () => {
-    // Create a mock target, dom model, document and node.
-    const target = createTarget();
-    const domModel = target.model(SDK.DOMModel.DOMModel);
-    if (!domModel) {
-      assert.fail('DOM model not found.');
-    }
-    const documentNode = {nodeId: 1 as Protocol.DOM.NodeId};
-    const domNode = new SDK.DOMModel.DOMNode(domModel);
-    domNode.id = 2 as Protocol.DOM.NodeId;
-
-    // Set related CDP methods responses to return our mock document and node.
-    setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: [domNode.id]}));
-    setMockConnectionResponseHandler('DOM.getDocument', () => ({root: documentNode}));
-
-    // Register the mock document and node in DOMModel, these use the mock responses set above.
-    await domModel.requestDocument();
-    domModel.registerNode(domNode);
-
-    // Process the trace and invoke the extraction of the node_ids into actual SDK.DOMNodes.
-    await processTrace('cls-cluster-navigation.json.gz');
-
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
-
-    // Make sure the extraction is correct by comparing the result with the mock node created
-    // above.
-    const cluster = layoutShifts.clusters[0];
-    for (const shift of cluster.events) {
-      const impactedNodes = shift.args.data?.impacted_nodes;
-      if (!impactedNodes || impactedNodes.length < 1) {
-        continue;
-      }
-      assert.strictEqual(shift.domNodeSources.length, 1);
-      assert.strictEqual(shift.domNodeSources[0].node, domNode);
-    }
   });
 
   it('clusters a single frame correctly', async () => {
@@ -287,62 +241,6 @@ describeWithMockConnection('LayoutShiftsHandler', () => {
           assert.isBelow(screenshots[screenshotIndex - 1].ts, shift.ts);
         }
       }
-    });
-  });
-  describe('normalizeLayoutShiftImpactedNodes', () => {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    let impacted_nodes: TraceModel.Types.TraceEvents.TraceImpactedNode[];
-
-    beforeEach(() => {
-      // Even though we don't use the target directly in the test, we still
-      // need to create one so we can stub responses for it.
-      createTarget();
-      setMockConnectionResponseHandler('Runtime.evaluate', () => ({result: {value: 4, type: 'number'}}));
-      impacted_nodes = [
-        {
-          new_rect: [0, 0, 40, 80],
-          node_id: 1 as Protocol.DOM.BackendNodeId,
-          old_rect: [20, 20, 40, 80],
-        },
-        {
-          new_rect: [10, 10, 10, 10],
-          node_id: 1 as Protocol.DOM.BackendNodeId,
-          old_rect: [0, 0, 10, 10],
-        },
-      ];
-    });
-    afterEach(() => {
-      clearAllMockConnectionResponseHandlers();
-    });
-    it('normalizes the impacted nodes DOM rects to CSS values', async () => {
-      const expectedNormalizedNodes: TraceModel.Types.TraceEvents.TraceImpactedNode[] = [
-        {
-          new_rect: [0, 0, 10, 20],
-          node_id: 1 as Protocol.DOM.BackendNodeId,
-          old_rect: [5, 5, 10, 20],
-        },
-        {
-          new_rect: [2.5, 2.5, 2.5, 2.5],
-          node_id: 1 as Protocol.DOM.BackendNodeId,
-          old_rect: [0, 0, 2.5, 2.5],
-        },
-      ];
-      const mockShift = {args: {data: {impacted_nodes}}} as TraceModel.Types.TraceEvents.TraceEventLayoutShift;
-
-      await TraceModel.Handlers.ModelHandlers.LayoutShifts.normalizeLayoutShiftImpactedNodes(mockShift);
-
-      const expectedResult = {
-        args: {data: {impacted_nodes: expectedNormalizedNodes}},
-        normalized: true,
-      } as TraceModel.Types.TraceEvents.TraceEventLayoutShift;
-
-      assert.deepEqual(mockShift, expectedResult);
-    });
-    it('does not normalize a layout shift that has already been normalized', async () => {
-      const mockShift = {args: {data: {impacted_nodes}}, normalized: true} as
-          TraceModel.Types.TraceEvents.TraceEventLayoutShift;
-      await TraceModel.Handlers.ModelHandlers.LayoutShifts.normalizeLayoutShiftImpactedNodes(mockShift);
-      assert.deepEqual(mockShift, mockShift);
     });
   });
 });

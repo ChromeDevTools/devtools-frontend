@@ -510,7 +510,11 @@ export enum MediaTypes {
   'text/markdown' = 24,
   'text/x-clojure' = 25,
   'text/jsx' = 26,
-  MaxValue = 27,
+  'text/x-go' = 27,
+  'text/x-kotlin' = 28,
+  'text/x-scala' = 29,
+  'text/x.svelte' = 30,
+  MaxValue = 31,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

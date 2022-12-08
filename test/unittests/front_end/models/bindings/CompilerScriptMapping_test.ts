@@ -7,22 +7,16 @@ import * as Bindings from '../../../../../front_end/models/bindings/bindings.js'
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import type * as Host from '../../../../../front_end/core/host/host.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
+import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
 
 describeWithMockConnection('CompilerScriptMapping', () => {
   let target: SDK.Target.Target;
   let backend: MockProtocolBackend;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
-
-  interface LoadResult {
-    success: boolean;
-    content: string;
-    errorDescription: Host.ResourceLoader.LoadErrorDescription;
-  }
 
   const sourceMapContent = JSON.stringify({
     'version': 3,
@@ -32,14 +26,6 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       '/original-script.js',
     ],
   });
-
-  const loadSourceMap = async(_url: string): Promise<LoadResult> => {
-    return {
-      success: true,
-      content: sourceMapContent,
-      errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
-    };
-  };
 
   const getScript = (debuggerModel: SDK.DebuggerModel.DebuggerModel): SDK.Script.Script => {
     const scripts = debuggerModel.scripts();
@@ -85,8 +71,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('creates and returns separate uiSourceCodes for separate targets', async () => {
-    SDK.PageResourceLoader.PageResourceLoader.instance(
-        {forceNew: true, loadOverride: loadSourceMap, maxConcurrentLoads: 1, loadTimeout: 2000});
+    setupPageResourceLoaderForSourceMap(sourceMapContent);
 
     // Create a second target for the same script.
     const workerTarget = createTarget({

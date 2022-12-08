@@ -2,20 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Host from '../../../../../front_end/core/host/host.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
 
 const {assert} = chai;
-
-interface LoadResult {
-  success: boolean;
-  content: string;
-  errorDescription: Host.ResourceLoader.LoadErrorDescription;
-}
 
 describeWithMockConnection('SourceMapManager', () => {
   const sourceMapContent = JSON.stringify({
@@ -27,18 +21,8 @@ describeWithMockConnection('SourceMapManager', () => {
     ],
   });
 
-  const loadSourceMap = async(_url: string): Promise<LoadResult> => {
-    return {
-      success: true,
-      content: sourceMapContent,
-      errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
-    };
-  };
-
   it('uses url for a worker\'s source maps from frame', async () => {
-    SDK.PageResourceLoader.PageResourceLoader.instance(
-        {forceNew: true, loadOverride: loadSourceMap, maxConcurrentLoads: 1, loadTimeout: 2000});
-
+    setupPageResourceLoaderForSourceMap(sourceMapContent);
     const frameUrl = 'https://frame-host/index.html' as Platform.DevToolsPath.UrlString;
     const scriptUrl = 'https://script-host/script.js' as Platform.DevToolsPath.UrlString;
     const sourceUrl = 'script.js' as Platform.DevToolsPath.UrlString;
@@ -77,9 +61,6 @@ describeWithMockConnection('SourceMapManager', () => {
   });
 
   it('can handle source maps in a data URL frame', async () => {
-    SDK.PageResourceLoader.PageResourceLoader.instance(
-        {forceNew: true, loadOverride: loadSourceMap, maxConcurrentLoads: 1, loadTimeout: 2000});
-
     const sourceMapContent = JSON.stringify({
       'version': 3,
       'file': '/script.js',
@@ -88,6 +69,7 @@ describeWithMockConnection('SourceMapManager', () => {
         '/original-script.js',
       ],
     });
+    setupPageResourceLoaderForSourceMap(sourceMapContent);
     const sourceUrl = 'script.js' as Platform.DevToolsPath.UrlString;
     const sourceMapUrl = `data:test/html;base64,${btoa(sourceMapContent)}` as Platform.DevToolsPath.UrlString;
     const frameSource =

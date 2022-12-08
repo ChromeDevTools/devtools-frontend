@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Host from '../../../../front_end/core/host/host.js';
 import {assertNotNullOrUndefined} from '../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../front_end/generated/protocol.js';
@@ -10,12 +9,7 @@ import {
   dispatchEvent,
   setMockConnectionResponseHandler,
 } from './MockConnection.js';
-
-interface LoadResult {
-  success: boolean;
-  content: string;
-  errorDescription: Host.ResourceLoader.LoadErrorDescription;
-}
+import {type LoadResult} from './SourceMapHelpers.js';
 
 interface ScriptDescription {
   url: string;

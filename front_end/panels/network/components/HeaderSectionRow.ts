@@ -37,6 +37,10 @@ const UIStrings = {
   */
   editHeader: 'Override header',
   /**
+  *@description Description of which letters the name of an HTTP header may contain (a-z, A-Z, 0-9, '-', or '_').
+  */
+  headerNamesOnlyLetters: 'Header names should contain only letters, digits, dashes or underscores',
+  /**
   *@description Text that is usually a hyperlink to more documentation
   */
   learnMore: 'Learn more',
@@ -55,6 +59,10 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const trashIconUrl = new URL('../../../Images/trash_bin_material_icon.svg', import.meta.url).toString();
 const editIconUrl = new URL('../../../Images/edit-icon.svg', import.meta.url).toString();
+
+export const isValidHeaderName = (headerName: string): boolean => {
+  return /^[a-z0-9_\-]+$/i.test(headerName);
+};
 
 export class HeaderEditedEvent extends Event {
   static readonly eventName = 'headeredited';
@@ -98,6 +106,7 @@ export class HeaderSectionRow extends HTMLElement {
   #header: HeaderDescriptor|null = null;
   readonly #boundRender = this.#render.bind(this);
   #isHeaderValueEdited = false;
+  #isValidHeaderName = true;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [headerSectionRowStyles];
@@ -107,6 +116,7 @@ export class HeaderSectionRow extends HTMLElement {
     this.#header = data.header;
     this.#isHeaderValueEdited =
         this.#header.originalValue !== undefined && this.#header.value !== this.#header.originalValue;
+    this.#isValidHeaderName = isValidHeaderName(this.#header.name);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -134,10 +144,21 @@ export class HeaderSectionRow extends HTMLElement {
           ${this.#header.headerNotSet ?
             html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div> ` :
             LitHtml.nothing
-          }${this.#header.nameEditable ?
+          }
+          ${!this.#isValidHeaderName ?
+            html`<${IconButton.Icon.Icon.litTagName} class="inline-icon disallowed-characters" title=${UIStrings.headerNamesOnlyLetters} .data=${{
+              iconName: 'error_icon',
+              width: '12px',
+              height: '12px',
+            } as IconButton.Icon.IconData}>
+            </${IconButton.Icon.Icon.litTagName}>` : LitHtml.nothing
+          }
+          ${this.#header.nameEditable ?
             html`<${EditableSpan.litTagName}
               @focusout=${this.#onHeaderNameFocusOut}
               @keydown=${this.#onKeyDown}
+              @input=${this.#onHeaderNameEdit}
+              @paste=${this.#onHeaderNameEdit}
               .data=${{value: this.#header.name} as EditableSpanData}
             ></${EditableSpan.litTagName}>` :
             this.#header.name}:
@@ -358,11 +379,21 @@ export class HeaderSectionRow extends HTMLElement {
       event.consume();
       if (target.matches('.header-name devtools-editable-span')) {
         target.value = this.#header?.name || '';
+        this.#onHeaderNameEdit(event);
       } else if (target.matches('.header-value devtools-editable-span')) {
         target.value = this.#header?.value || '';
         this.#onHeaderValueEdit(event);
       }
       target.blur();
+    }
+  }
+
+  #onHeaderNameEdit(event: Event): void {
+    const editable = event.target as EditableSpan;
+    const isValidName = isValidHeaderName(editable.value);
+    if (this.#isValidHeaderName !== isValidName) {
+      this.#isValidHeaderName = isValidName;
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
     }
   }
 

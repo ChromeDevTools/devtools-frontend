@@ -197,8 +197,8 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assertElement(row, HTMLElement);
     assertShadowRoot(row.shadowRoot);
 
-    assert.strictEqual(
-        row.shadowRoot.querySelector('.header-name')?.textContent?.trim(), 'not-set cross-origin-resource-policy:');
+    const regex = /^\s*not-set\s*cross-origin-resource-policy:\s*$/;
+    assert.isTrue(regex.test(row.shadowRoot.querySelector('.header-name')?.textContent || ''));
     assert.strictEqual(row.shadowRoot.querySelector('.header-value')?.textContent?.trim(), '');
     assert.strictEqual(
         getCleanTextContentFromElements(row.shadowRoot, '.call-to-action')[0],

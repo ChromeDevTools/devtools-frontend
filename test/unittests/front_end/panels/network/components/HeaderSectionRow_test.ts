@@ -102,7 +102,8 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
     const headerName = component.shadowRoot.querySelector('.header-name');
     assertElement(headerName, HTMLDivElement);
-    assert.strictEqual(headerName.textContent?.trim(), 'not-set cross-origin-resource-policy:');
+    const regex = /^\s*not-set\s*cross-origin-resource-policy:\s*$/;
+    assert.isTrue(regex.test(headerName.textContent || ''));
 
     const headerValue = component.shadowRoot.querySelector('.header-value');
     assertElement(headerValue, HTMLDivElement);
@@ -373,6 +374,41 @@ describeWithEnvironment('HeaderSectionRow', () => {
     dispatchKeyDownEvent(valueEditable, {key: 'Escape', bubbles: true, composed: true});
     await coordinator.done();
     assert.isFalse(component.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
+  });
+
+  it('shows error-icon when header name contains disallowed characters', async () => {
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
+      value: 'someHeaderValue',
+      originalValue: 'someHeaderValue',
+      nameEditable: true,
+      valueEditable: true,
+    };
+
+    const {component, nameEditable} = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+    assertElement(nameEditable, HTMLElement);
+    const row = component.shadowRoot.querySelector('.row');
+    assertElement(row, HTMLDivElement);
+    assert.strictEqual(row.querySelector('devtools-icon.disallowed-characters'), null);
+
+    nameEditable.focus();
+    nameEditable.innerText = '*';
+    dispatchInputEvent(nameEditable, {inputType: 'insertText', data: '*', bubbles: true, composed: true});
+    await coordinator.done();
+    assertElement(row.querySelector('devtools-icon.disallowed-characters'), HTMLElement);
+
+    dispatchKeyDownEvent(nameEditable, {key: 'Escape', bubbles: true, composed: true});
+    await coordinator.done();
+    assert.strictEqual(row.querySelector('devtools-icon.disallowed-characters'), null);
+  });
+
+  it('recoginzes only alphanumeric characters, dashes, and underscores as valid in header names', () => {
+    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('AlphaNumeric123'), true);
+    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('Alpha Numeric'), false);
+    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('AlphaNumeric123!'), false);
+    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('With-dashes_and_underscores'), true);
+    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('no*'), false);
   });
 
   it('allows removing a header override', async () => {

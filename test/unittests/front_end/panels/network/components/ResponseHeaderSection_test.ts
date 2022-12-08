@@ -759,6 +759,47 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     checkHeaderSectionRow(rows[0], 'server:', 'original server', false, false, true);
   });
 
+  it('renders headers as (not) editable depending on overall overrides setting', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'https://www.example.com/index.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
+        null, null, null);
+    request.responseHeaders = [{name: 'server', value: 'overridden server'}];
+    request.originalResponseHeaders = [{name: 'server', value: 'original server'}];
+
+    const {component} = await setupHeaderEditingWithRequest('[]', request);
+    assertShadowRoot(component.shadowRoot);
+    const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
+    assertElement(addHeaderButton, HTMLElement);
+    addHeaderButton.click();
+    await coordinator.done();
+
+    let rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+    assert.strictEqual(rows.length, 2);
+    checkHeaderSectionRow(rows[0], 'server:', 'overridden server', true, false, true);
+    checkHeaderSectionRow(rows[1], 'header-name:', 'header value', true, true, true);
+
+    component.remove();
+    Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(false);
+    const component2 = await renderResponseHeaderSection(request);
+    assertShadowRoot(component2.shadowRoot);
+
+    rows = component2.shadowRoot.querySelectorAll('devtools-header-section-row');
+    assert.strictEqual(rows.length, 2);
+    checkHeaderSectionRow(rows[0], 'server:', 'overridden server', true, false, false);
+    checkHeaderSectionRow(rows[1], 'header-name:', 'header value', true, false, false);
+
+    component2.remove();
+    Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(true);
+    const component3 = await renderResponseHeaderSection(request);
+    assertShadowRoot(component3.shadowRoot);
+
+    rows = component3.shadowRoot.querySelectorAll('devtools-header-section-row');
+    assert.strictEqual(rows.length, 2);
+    checkHeaderSectionRow(rows[0], 'server:', 'overridden server', true, false, true);
+    checkHeaderSectionRow(rows[1], 'header-name:', 'header value', true, true, true);
+  });
+
   it('can edit multiple headers', async () => {
     const headerOverridesFileContent = `[
       {

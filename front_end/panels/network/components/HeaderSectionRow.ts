@@ -136,6 +136,11 @@ export class HeaderSectionRow extends HTMLElement {
       'header-editable': Boolean(this.#header.valueEditable),
     });
 
+    // The header name is only editable when the header value is editable as well.
+    // This ensures the header name's editability reacts correctly to enabling or
+    // disabling local overrides.
+    const isHeaderNameEditable = this.#header.nameEditable && this.#header.valueEditable;
+
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -153,7 +158,7 @@ export class HeaderSectionRow extends HTMLElement {
             } as IconButton.Icon.IconData}>
             </${IconButton.Icon.Icon.litTagName}>` : LitHtml.nothing
           }
-          ${this.#header.nameEditable ?
+          ${isHeaderNameEditable ?
             html`<${EditableSpan.litTagName}
               @focusout=${this.#onHeaderNameFocusOut}
               @keydown=${this.#onKeyDown}

@@ -3,10 +3,21 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../../front_end/core/root/root.js';
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
+import * as Bindings from '../../../../../../front_end/models/bindings/bindings.js';
+import * as Workspace from '../../../../../../front_end/models/workspace/workspace.js';
 import * as CodeMirror from '../../../../../../front_end/third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../../../../../front_end/ui/components/text_editor/text_editor.js';
+import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {TestPlugin} from '../../../helpers/LanguagePluginHelpers.js';
+import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
+import {MockExecutionContext} from '../../../helpers/MockExecutionContext.js';
 
 const {assert} = chai;
 
@@ -233,5 +244,58 @@ describeWithEnvironment('TextEditor', () => {
       await testQueryType('x["foo" + "bar', 14);
       await testQueryType('// comment', 10);
     });
+  });
+});
+
+describeWithMockConnection('TextEditor autocompletion', () => {
+  it('does not complete on language plugin frames', async () => {
+    const executionContext = new MockExecutionContext(createTarget());
+    const {debuggerModel} = executionContext;
+    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+
+    Root.Runtime.experiments.setEnabled('wasmDWARFDebugging', true);
+    const pluginManager = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding
+                              .instance({forceNew: true, targetManager, resourceMapping})
+                              .initPluginManagerForTest();
+    assertNotNullOrUndefined(pluginManager);
+
+    const testScript = debuggerModel.parsedScriptSource(
+        '1' as Protocol.Runtime.ScriptId, 'script://1' as Platform.DevToolsPath.UrlString, 0, 0, 0, 0,
+        executionContext.id, '', undefined, false, undefined, false, false, 0, null, null, null, null, null, null);
+    const payload: Protocol.Debugger.CallFrame = {
+      callFrameId: '0' as Protocol.Debugger.CallFrameId,
+      functionName: 'test',
+      functionLocation: undefined,
+      location: {
+        scriptId: testScript.scriptId,
+        lineNumber: 0,
+        columnNumber: 0,
+      },
+      url: 'test-url',
+      scopeChain: [],
+      this: {type: 'object'} as Protocol.Runtime.RemoteObject,
+      returnValue: undefined,
+      canBeRestarted: false,
+    };
+    const callframe = new SDK.DebuggerModel.CallFrame(debuggerModel, testScript, payload);
+
+    executionContext.debuggerModel.setSelectedCallFrame(callframe);
+    pluginManager.addPlugin(new class extends TestPlugin {
+      constructor() {
+        super('TextEditorTestPlugin');
+      }
+
+      handleScript(script: SDK.Script.Script) {
+        return script === testScript;
+      }
+    }());
+
+    const state = makeState('c', CodeMirror.javascript.javascriptLanguage);
+    const result =
+        await TextEditor.JavaScript.javascriptCompletionSource(new CodeMirror.CompletionContext(state, 1, false));
+    assert.isNull(result);
   });
 });

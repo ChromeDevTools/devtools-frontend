@@ -1244,7 +1244,7 @@ export class DebuggerLanguagePluginManager implements
 
     for (const plugin of this.#plugins) {
       if (!plugin.handleScript(script)) {
-        return;
+        continue;
       }
       const rawModuleId = rawModuleIdForScript(script);
       let rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);

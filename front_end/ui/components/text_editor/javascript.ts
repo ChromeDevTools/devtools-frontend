@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Formatter from '../../../models/formatter/formatter.js';
 import * as JavaScriptMetaData from '../../../models/javascript_metadata/javascript_metadata.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
@@ -172,6 +173,12 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
     Promise<CodeMirror.CompletionResult|null> {
   const query = getQueryType(CodeMirror.syntaxTree(cx.state), cx.pos, cx.state.doc);
   if (!query || query.from === undefined && !cx.explicit && query.type === QueryType.Expression) {
+    return null;
+  }
+
+  const script = getExecutionContext()?.debuggerModel.selectedCallFrame()?.script;
+  if (script &&
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager?.hasPluginForScript(script)) {
     return null;
   }
 

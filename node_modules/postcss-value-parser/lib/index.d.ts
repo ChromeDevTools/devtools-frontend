@@ -1,9 +1,14 @@
 declare namespace postcssValueParser {
   interface BaseNode {
     /**
-     * The offset inside the CSS value at which the node starts
+     * The offset, inclusive, inside the CSS value at which the node starts.
      */
     sourceIndex: number;
+
+    /**
+     * The offset, exclusive, inside the CSS value at which the node ends.
+     */
+    sourceEndIndex: number;
 
     /**
      * The node's characteristic value

@@ -50,6 +50,7 @@ module.exports = function(input) {
         after = token;
       } else if (prev && prev.type === "div") {
         prev.after = token;
+        prev.sourceEndIndex += token.length;
       } else if (
         code === comma ||
         code === colon ||
@@ -63,6 +64,7 @@ module.exports = function(input) {
         tokens.push({
           type: "space",
           sourceIndex: pos,
+          sourceEndIndex: next,
           value: token
         });
       }
@@ -94,22 +96,25 @@ module.exports = function(input) {
         }
       } while (escape);
       token.value = value.slice(pos + 1, next);
-
+      token.sourceEndIndex = token.unclosed ? next : next + 1;
       tokens.push(token);
       pos = next + 1;
       code = value.charCodeAt(pos);
 
       // Comments
     } else if (code === slash && value.charCodeAt(pos + 1) === star) {
+      next = value.indexOf("*/", pos);
+
       token = {
         type: "comment",
-        sourceIndex: pos
+        sourceIndex: pos,
+        sourceEndIndex: next + 2
       };
 
-      next = value.indexOf("*/", pos);
       if (next === -1) {
         token.unclosed = true;
         next = value.length;
+        token.sourceEndIndex = next;
       }
 
       token.value = value.slice(pos + 2, next);
@@ -129,6 +134,7 @@ module.exports = function(input) {
       tokens.push({
         type: "word",
         sourceIndex: pos - before.length,
+        sourceEndIndex: pos + token.length,
         value: token
       });
       pos += 1;
@@ -141,6 +147,7 @@ module.exports = function(input) {
       tokens.push({
         type: "div",
         sourceIndex: pos - before.length,
+        sourceEndIndex: pos + token.length,
         value: token,
         before: before,
         after: ""
@@ -196,6 +203,7 @@ module.exports = function(input) {
               {
                 type: "word",
                 sourceIndex: pos,
+                sourceEndIndex: whitespacePos + 1,
                 value: value.slice(pos, whitespacePos + 1)
               }
             ];
@@ -207,21 +215,25 @@ module.exports = function(input) {
             token.nodes.push({
               type: "space",
               sourceIndex: whitespacePos + 1,
+              sourceEndIndex: next,
               value: value.slice(whitespacePos + 1, next)
             });
           } else {
             token.after = value.slice(whitespacePos + 1, next);
+            token.sourceEndIndex = next;
           }
         } else {
           token.after = "";
           token.nodes = [];
         }
         pos = next + 1;
+        token.sourceEndIndex = token.unclosed ? next : pos;
         code = value.charCodeAt(pos);
         tokens.push(token);
       } else {
         balanced += 1;
         token.after = "";
+        token.sourceEndIndex = pos + 1;
         tokens.push(token);
         stack.push(token);
         tokens = token.nodes = [];
@@ -235,8 +247,10 @@ module.exports = function(input) {
       code = value.charCodeAt(pos);
 
       parent.after = after;
+      parent.sourceEndIndex += after.length;
       after = "";
       balanced -= 1;
+      stack[stack.length - 1].sourceEndIndex = pos;
       stack.pop();
       parent = stack[balanced];
       tokens = parent.nodes;
@@ -282,12 +296,14 @@ module.exports = function(input) {
         tokens.push({
           type: "unicode-range",
           sourceIndex: pos,
+          sourceEndIndex: next,
           value: token
         });
       } else {
         tokens.push({
           type: "word",
           sourceIndex: pos,
+          sourceEndIndex: next,
           value: token
         });
       }
@@ -298,6 +314,7 @@ module.exports = function(input) {
 
   for (pos = stack.length - 1; pos; pos -= 1) {
     stack[pos].unclosed = true;
+    stack[pos].sourceEndIndex = value.length;
   }
 
   return stack[0].nodes;

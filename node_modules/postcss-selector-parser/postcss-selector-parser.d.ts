@@ -339,8 +339,16 @@ declare namespace parser {
     function selector(opts: ContainerOptions): Selector;
     function isSelector(node: any): node is Selector;
 
+    interface CombinatorRaws {
+        value?: string;
+        spaces?: {
+            before?: string;
+            after?: string;
+        };
+    }
     interface Combinator extends Base {
-        type: "combinator"
+        type: "combinator";
+        raws?: CombinatorRaws;
     }
     function combinator(opts: NodeOptions): Combinator;
     function isCombinator(node: any): node is Combinator;

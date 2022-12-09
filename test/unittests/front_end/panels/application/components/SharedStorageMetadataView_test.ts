@@ -60,17 +60,17 @@ describeWithLocale('SharedStorageMetadataView', () => {
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
       'Origin',
-      'Creation',
-      'Budget',
-      'Length',
+      'Creation Time',
+      'Number of Entries',
+      'Entropy Budget for Fenced Frames',
     ]);
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
     assert.deepEqual(values, [
       'a.test',
       (new Date(10 * 1e3)).toLocaleString(),
-      '8.3',
       '4',
+      '8.3',
     ]);
   });
 
@@ -86,15 +86,15 @@ describeWithLocale('SharedStorageMetadataView', () => {
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
       'Origin',
-      'Creation',
-      'Budget',
-      'Length',
+      'Creation Time',
+      'Number of Entries',
+      'Entropy Budget for Fenced Frames',
     ]);
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
     assert.deepEqual(values, [
       '',
-      '',
+      'Not yet created',
       '0',
       '0',
     ]);

@@ -313,17 +313,64 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     const keys = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
       'Origin',
-      'Creation',
-      'Budget',
-      'Length',
+      'Creation Time',
+      'Number of Entries',
+      'Entropy Budget for Fenced Frames',
     ]);
 
     const values = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-value');
     assert.deepEqual(values, [
       TEST_ORIGIN,
       (new Date(100 * 1e3)).toLocaleString(),
-      '2.5',
       '3',
+      '2.5',
+    ]);
+
+    view.detach();
+  });
+
+  it('displays metadata with placeholder message if origin is not using API', async () => {
+    assertNotNullOrUndefined(sharedStorageModel);
+    sinon.stub(sharedStorage, 'getMetadata').resolves(null);
+    sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageEntries')
+        .withArgs({ownerOrigin: TEST_ORIGIN})
+        .resolves({
+          entries: [],
+          getError: () => undefined,
+        });
+
+    const view = await View.SharedStorageItemsView.createView(sharedStorage);
+
+    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
+    const refreshedPromise = itemsListener.waitForItemsRefreshed();
+
+    view.markAsRoot();
+    view.show(document.body);
+    await refreshedPromise;
+
+    assert.strictEqual(view.getEntriesForTesting().length, 0);
+
+    const metadataView = view.innerSplitWidget.sidebarWidget()?.contentElement.firstChild as
+        ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataReportView;
+    assertNotNullOrUndefined(metadataView);
+
+    assertShadowRoot(metadataView.shadowRoot);
+    await coordinator.done();
+
+    const keys = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-key');
+    assert.deepEqual(keys, [
+      'Origin',
+      'Creation Time',
+      'Number of Entries',
+      'Entropy Budget for Fenced Frames',
+    ]);
+
+    const values = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-value');
+    assert.deepEqual(values, [
+      TEST_ORIGIN,
+      'Not yet created',
+      '0',
+      '0',
     ]);
 
     view.detach();

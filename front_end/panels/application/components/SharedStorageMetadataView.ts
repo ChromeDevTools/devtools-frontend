@@ -9,6 +9,7 @@ import * as Coordinator from '../../../ui/components/render_coordinator/render_c
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 
 import sharedStorageMetadataViewStyles from './sharedStorageMetadataView.css.js';
 
@@ -29,15 +30,23 @@ const UIStrings = {
   /**
   *@description The time when the origin most recently created its shared storage database
   */
-  creationTime: 'Creation',
+  creation: 'Creation Time',
+  /**
+  *@description The placeholder text if there is no creation time because the origin is not yet using shared storage.
+  */
+  notYetCreated: 'Not yet created',
   /**
   *@description The number of entries currently in the origin's database
   */
-  length: 'Length',
+  numEntries: 'Number of Entries',
   /**
   *@description The number of bits remaining in the origin's shared storage privacy budget
   */
-  remainingBudget: 'Budget',
+  entropyBudget: 'Entropy Budget for Fenced Frames',
+  /**
+  *@description Hover text for `entropyBudget` giving a more detailed explanation
+  */
+  budgetExplanation: 'Remaining data leakage allowed within a 24-hour period for this origin in bits of entropy',
   /**
   *@description Section header above Entries
   */
@@ -130,17 +139,20 @@ export class SharedStorageMetadataReportView extends HTMLElement {
       <${ReportView.ReportView.ReportValue.litTagName}>
           <div class="text-ellipsis" title=${this.#origin}>${this.#origin}</div>
       </${ReportView.ReportView.ReportValue.litTagName}>
-     <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.creationTime)}</${
+     <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.creation)}</${
         ReportView.ReportView.ReportKey.litTagName}>
      <${ReportView.ReportView.ReportValue.litTagName}>
-      ${this.#renderDateForCreationTime()}</${ReportView.ReportView.ReportValue.litTagName}>
-     <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.remainingBudget)}</${
-        ReportView.ReportView.ReportKey.litTagName}>
-     <${ReportView.ReportView.ReportValue.litTagName}>${this.#remainingBudget}</${
-        ReportView.ReportView.ReportValue.litTagName}>
-     <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.length)}
+     ${this.#renderDateForCreationTime()}</${ReportView.ReportView.ReportValue.litTagName}>
+     <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.numEntries)}
      </${ReportView.ReportView.ReportKey.litTagName}>
      <${ReportView.ReportView.ReportValue.litTagName}>${this.#length}</${ReportView.ReportView.ReportValue.litTagName}>
+     <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.entropyBudget)}<${
+        IconButton.Icon.Icon.litTagName} class="info-icon" title=${i18nString(UIStrings.budgetExplanation)}
+          .data=${
+        {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as IconButton.Icon.IconWithName}>
+        </${IconButton.Icon.Icon.litTagName}></${ReportView.ReportView.ReportKey.litTagName}><${
+        ReportView.ReportView.ReportValue.litTagName}>${this.#remainingBudget}</${
+        ReportView.ReportView.ReportValue.litTagName}>
       <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
         ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;
@@ -148,7 +160,7 @@ export class SharedStorageMetadataReportView extends HTMLElement {
 
   #renderDateForCreationTime(): LitHtml.LitTemplate {
     if (!this.#creationTime) {
-      return LitHtml.nothing;
+      return LitHtml.html`${i18nString(UIStrings.notYetCreated)}`;
     }
     const date = new Date(1e3 * (this.#creationTime as number));
     return LitHtml.html`${date.toLocaleString()}`;

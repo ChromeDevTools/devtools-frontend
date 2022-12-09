@@ -101,12 +101,6 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       },
     ];
 
-    const METADATA = {
-      creationTime: 100 as Protocol.Network.TimeSinceEpoch,
-      length: 4,
-      remainingBudget: 2.5,
-    } as Protocol.Storage.SharedStorageMetadata;
-
     beforeEach(() => {
       stubNoopSettings();
       target = targetFactory();
@@ -161,20 +155,12 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       const setTrackingSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageTracking').resolves({
         getError: () => undefined,
       });
-      const getMetadataSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata').resolves({
-        metadata: METADATA,
-        getError: () => undefined,
-      });
-      getMetadataSpy.withArgs({ownerOrigin: TEST_ORIGIN_B}).resolves({
-        metadata: METADATA,
-        getError: () => 'origin does not exist in database',
-      });
 
       Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
       const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
 
       const listener = new SharedStorageTreeElementListener(sidebar);
-      const addedPromise = listener.waitForElementsAdded(2);
+      const addedPromise = listener.waitForElementsAdded(3);
 
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel);
@@ -183,9 +169,12 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
 
       assert.isTrue(setTrackingSpy.calledOnceWithExactly({enable: true}));
 
-      assert.strictEqual(sidebar.sharedStorageListTreeElement.childCount(), 2);
-      assert.deepStrictEqual(
-          sidebar.sharedStorageListTreeElement.children().map(e => e.title), [TEST_ORIGIN_A, TEST_ORIGIN_C]);
+      assert.strictEqual(sidebar.sharedStorageListTreeElement.childCount(), 3);
+      assert.deepStrictEqual(sidebar.sharedStorageListTreeElement.children().map(e => e.title), [
+        TEST_ORIGIN_A,
+        TEST_ORIGIN_B,
+        TEST_ORIGIN_C,
+      ]);
 
       sidebar.sharedStorageListTreeElement.view.setDefaultIdForTesting(ID);
       for (const event of EVENTS) {

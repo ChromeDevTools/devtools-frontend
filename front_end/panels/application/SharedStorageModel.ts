@@ -128,10 +128,10 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
   }
 
   #securityOriginAdded(event: Common.EventTarget.EventTargetEvent<string>): void {
-    void this.#maybeAddOrigin(event.data);
+    this.#maybeAddOrigin(event.data);
   }
 
-  async #maybeAddOrigin(securityOrigin: string): Promise<void> {
+  #maybeAddOrigin(securityOrigin: string): void {
     const parsedSecurityOrigin = new Common.ParsedURL.ParsedURL(securityOrigin);
     // These are "opaque" origins which are not supposed to support shared storage.
     if (!parsedSecurityOrigin.isValid || parsedSecurityOrigin.scheme === 'data' ||
@@ -141,12 +141,6 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
 
     // Only add origin if it's not already added.
     if (this.#storages.has(securityOrigin)) {
-      return;
-    }
-
-    // Only add origin if we are able to confirm that it's using shared storage.
-    const metadataResponse = await this.storageAgent.invoke_getSharedStorageMetadata({ownerOrigin: securityOrigin});
-    if (typeof metadataResponse.getError() !== 'undefined') {
       return;
     }
 

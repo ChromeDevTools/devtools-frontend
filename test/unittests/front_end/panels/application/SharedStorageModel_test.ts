@@ -235,10 +235,6 @@ describeWithMockConnection('SharedStorageModel', () => {
   });
 
   it('adds/removes SharedStorageForOrigin on SecurityOrigin events', async () => {
-    const getMetadataSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata').resolves({
-      metadata: METADATA,
-      getError: () => undefined,
-    });
     const setTrackingSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageTracking').resolves({
       getError: () => undefined,
     });
@@ -256,7 +252,6 @@ describeWithMockConnection('SharedStorageModel', () => {
     manager.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, TEST_ORIGIN_A);
     await addedPromise;
 
-    assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN_A}));
     assertNotNullOrUndefined(sharedStorageModel.storageForOrigin(TEST_ORIGIN_A));
 
     manager.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginRemoved, TEST_ORIGIN_A);
@@ -264,10 +259,6 @@ describeWithMockConnection('SharedStorageModel', () => {
   });
 
   it('does not add SharedStorageForOrigin if origin invalid', async () => {
-    const getMetadataSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata').resolves({
-      metadata: METADATA,
-      getError: () => undefined,
-    });
     const setTrackingSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageTracking').resolves({
       getError: () => undefined,
     });
@@ -282,36 +273,9 @@ describeWithMockConnection('SharedStorageModel', () => {
 
     manager.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, 'invalid');
     assert.isEmpty(sharedStorageModel.storages());
-    assert.isTrue(getMetadataSpy.notCalled);
-  });
-
-  it('does not add SharedStorageForOrigin if origin not using API', async () => {
-    const getMetadataSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata').resolves({
-      metadata: METADATA,
-      getError: () => 'origin does not exist in database',
-    });
-    const setTrackingSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageTracking').resolves({
-      getError: () => undefined,
-    });
-
-    await sharedStorageModel.enable();
-    assert.isTrue(setTrackingSpy.calledOnceWithExactly({enable: true}));
-
-    assert.isEmpty(sharedStorageModel.storages());
-
-    const manager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
-    assertNotNullOrUndefined(manager);
-
-    manager.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, TEST_ORIGIN_A);
-    assert.isEmpty(sharedStorageModel.storages());
-    assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN_A}));
   });
 
   it('does not add SharedStorageForOrigin if origin already added', async () => {
-    const getMetadataSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata').resolves({
-      metadata: METADATA,
-      getError: () => undefined,
-    });
     const setTrackingSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageTracking').resolves({
       getError: () => undefined,
     });
@@ -328,21 +292,15 @@ describeWithMockConnection('SharedStorageModel', () => {
 
     manager.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, TEST_ORIGIN_A);
     await addedPromise;
-    assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN_A}));
 
     assertNotNullOrUndefined(sharedStorageModel.storageForOrigin(TEST_ORIGIN_A));
     assert.strictEqual(1, sharedStorageModel.numStoragesForTesting());
 
     manager.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, TEST_ORIGIN_A);
     assert.strictEqual(1, sharedStorageModel.numStoragesForTesting());
-    assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN_A}));
   });
 
   it('adds/removes SecurityOrigins when model is enabled/disabled', async () => {
-    const getMetadataSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata').resolves({
-      metadata: METADATA,
-      getError: () => undefined,
-    });
     const setTrackingSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageTracking').resolves({
       getError: () => undefined,
     });
@@ -362,11 +320,6 @@ describeWithMockConnection('SharedStorageModel', () => {
     await addedPromise;
     assert.strictEqual(3, sharedStorageModel.numStoragesForTesting());
 
-    assert.isTrue(getMetadataSpy.calledThrice);
-    assert.isTrue(getMetadataSpy.calledWithExactly({ownerOrigin: TEST_ORIGIN_A}));
-    assert.isTrue(getMetadataSpy.calledWithExactly({ownerOrigin: TEST_ORIGIN_B}));
-    assert.isTrue(getMetadataSpy.calledWithExactly({ownerOrigin: TEST_ORIGIN_C}));
-
     assertNotNullOrUndefined(sharedStorageModel.storageForOrigin(TEST_ORIGIN_A));
     assertNotNullOrUndefined(sharedStorageModel.storageForOrigin(TEST_ORIGIN_B));
     assertNotNullOrUndefined(sharedStorageModel.storageForOrigin(TEST_ORIGIN_C));
@@ -376,10 +329,6 @@ describeWithMockConnection('SharedStorageModel', () => {
   });
 
   it('dispatches SharedStorageAccess events to listeners', async () => {
-    const getMetadataSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata').resolves({
-      metadata: METADATA,
-      getError: () => undefined,
-    });
     const setTrackingSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageTracking').resolves({
       getError: () => undefined,
     });
@@ -395,18 +344,9 @@ describeWithMockConnection('SharedStorageModel', () => {
     }
 
     assert.deepEqual(EVENTS, listener.accessEvents);
-
-    assert.isTrue(getMetadataSpy.calledThrice);
-    assert.isTrue(getMetadataSpy.calledWithExactly({ownerOrigin: TEST_ORIGIN_A}));
-    assert.isTrue(getMetadataSpy.calledWithExactly({ownerOrigin: TEST_ORIGIN_B}));
-    assert.isTrue(getMetadataSpy.calledWithExactly({ownerOrigin: TEST_ORIGIN_C}));
   });
 
   it('dispatches SharedStorageChanged events to listeners', async () => {
-    const getMetadataSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_getSharedStorageMetadata').resolves({
-      metadata: METADATA,
-      getError: () => undefined,
-    });
     const setTrackingSpy = sinon.stub(sharedStorageModel.storageAgent, 'invoke_setSharedStorageTracking').resolves({
       getError: () => undefined,
     });
@@ -425,11 +365,6 @@ describeWithMockConnection('SharedStorageModel', () => {
       sharedStorageModel.sharedStorageAccessed(event);
     }
     await addedPromise;
-
-    assert.isTrue(getMetadataSpy.calledThrice);
-    assert.isTrue(getMetadataSpy.calledWithExactly({ownerOrigin: TEST_ORIGIN_A}));
-    assert.isTrue(getMetadataSpy.calledWithExactly({ownerOrigin: TEST_ORIGIN_B}));
-    assert.isTrue(getMetadataSpy.calledWithExactly({ownerOrigin: TEST_ORIGIN_C}));
 
     assert.strictEqual(3, sharedStorageModel.numStoragesForTesting());
     assert.deepEqual(EVENTS, listener.accessEvents);

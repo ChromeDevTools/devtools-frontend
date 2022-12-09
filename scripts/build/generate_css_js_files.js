@@ -3,16 +3,22 @@
 // found in the LICENSE file.
 const fs = require('fs');
 const path = require('path');
-const CleanCSS = require('clean-css');
 const {writeIfChanged} = require('./ninja/write-if-changed.js');
+const postcss = require('postcss');
+const cssnano = require('cssnano');
 
-const cleanCSS = new CleanCSS();
+async function runCSSMinification(input, fileName) {
+  // postcss needs to be given a fileName, even though it doesn't read from it nor write to it.
+  // So we pass in the correct name, even though it has no impact on the resulting code.
+  const result = await postcss([cssnano({preset: 'default'})]).process(input, {from: fileName});
+  return result.css;
+}
 
-function codeForFile({fileName, input, isDebug, isLegacy = false, buildTimestamp}) {
+async function codeForFile({fileName, input, isDebug, isLegacy = false, buildTimestamp}) {
   input = input.replace(/\`/g, '\\\'');
   input = input.replace(/\\/g, '\\\\');
 
-  const stylesheetContents = isDebug ? input : cleanCSS.minify(input).styles;
+  const stylesheetContents = isDebug ? input : await runCSSMinification(input, fileName);
 
   let exportStatement;
   if (isLegacy) {
@@ -42,7 +48,7 @@ ${exportStatement}
 // Exported only so it can be unit tested.
 exports.codeForFile = codeForFile;
 
-function runMain() {
+async function runMain() {
   const [, , buildTimestamp, isDebugString, legacyString, targetName, srcDir, targetGenDir, files] = process.argv;
 
   const filenames = files.split(',');
@@ -52,7 +58,7 @@ function runMain() {
 
   for (const fileName of filenames) {
     const contents = fs.readFileSync(path.join(srcDir, fileName), {encoding: 'utf8', flag: 'r'});
-    const newContents = codeForFile({fileName, isDebug, input: contents, isLegacy, buildTimestamp});
+    const newContents = await codeForFile({fileName, isDebug, input: contents, isLegacy, buildTimestamp});
     const generatedFileName = `${fileName}${isLegacy ? '.legacy' : ''}.js`;
     const generatedFileLocation = path.join(targetGenDir, generatedFileName);
 

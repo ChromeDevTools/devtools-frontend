@@ -16,7 +16,7 @@ template("generate_css") {
     _dest = rebase_path(target_gen_dir, root_build_dir)
 
     inputs +=
-        [ devtools_location_prepend + "node_modules/clean-css/package.json" ]
+        [ devtools_location_prepend + "node_modules/cssnano/package.json" ]
 
     args = [
       build_timestamp,

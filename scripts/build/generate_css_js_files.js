@@ -5,20 +5,14 @@ const fs = require('fs');
 const path = require('path');
 const CleanCSS = require('clean-css');
 const {writeIfChanged} = require('./ninja/write-if-changed.js');
-const [, , buildTimestamp, isDebugString, legacyString, targetName, srcDir, targetGenDir, files] = process.argv;
 
-const filenames = files.split(',');
-const configFiles = [];
 const cleanCSS = new CleanCSS();
-const isDebug = isDebugString === 'true';
-const isLegacy = legacyString === 'true';
 
-for (const fileName of filenames) {
-  let output = fs.readFileSync(path.join(srcDir, fileName), {encoding: 'utf8', flag: 'r'});
-  output = output.replace(/\`/g, '\\\'');
-  output = output.replace(/\\/g, '\\\\');
+function codeForFile({fileName, input, isDebug, isLegacy = false, buildTimestamp}) {
+  input = input.replace(/\`/g, '\\\'');
+  input = input.replace(/\\/g, '\\\\');
 
-  const stylesheetContents = isDebug ? output : cleanCSS.minify(output).styles;
+  const stylesheetContents = isDebug ? input : cleanCSS.minify(input).styles;
 
   let exportStatement;
   if (isLegacy) {
@@ -34,8 +28,6 @@ styles.replaceSync(
 export default styles;`;
   }
 
-  const generatedFileName = `${fileName}${isLegacy ? '.legacy' : ''}.js`;
-  const generatedFileLocation = path.join(targetGenDir, generatedFileName);
   const newContents = `// Copyright ${
       new Date(Number(buildTimestamp) * 1000).getUTCFullYear()} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -44,13 +36,32 @@ export default styles;`;
 /* istanbul ignore file */
 ${exportStatement}
 `;
-
-  writeIfChanged(generatedFileLocation, newContents);
-
-  configFiles.push(`\"${generatedFileName}\"`);
+  return newContents;
 }
 
-writeIfChanged(path.join(targetGenDir, `${targetName}-tsconfig.json`), `{
+// Exported only so it can be unit tested.
+exports.codeForFile = codeForFile;
+
+function runMain() {
+  const [, , buildTimestamp, isDebugString, legacyString, targetName, srcDir, targetGenDir, files] = process.argv;
+
+  const filenames = files.split(',');
+  const configFiles = [];
+  const isDebug = isDebugString === 'true';
+  const isLegacy = legacyString === 'true';
+
+  for (const fileName of filenames) {
+    const contents = fs.readFileSync(path.join(srcDir, fileName), {encoding: 'utf8', flag: 'r'});
+    const newContents = codeForFile({fileName, isDebug, input: contents, isLegacy, buildTimestamp});
+    const generatedFileName = `${fileName}${isLegacy ? '.legacy' : ''}.js`;
+    const generatedFileLocation = path.join(targetGenDir, generatedFileName);
+
+    writeIfChanged(generatedFileLocation, newContents);
+
+    configFiles.push(`\"${generatedFileName}\"`);
+  }
+
+  writeIfChanged(path.join(targetGenDir, `${targetName}-tsconfig.json`), `{
     "compilerOptions": {
         "composite": true,
         "outDir": "."
@@ -60,3 +71,8 @@ writeIfChanged(path.join(targetGenDir, `${targetName}-tsconfig.json`), `{
     ]
 }
 `);
+}
+
+if (require.main === module) {
+  runMain();
+}

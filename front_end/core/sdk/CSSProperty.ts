@@ -49,9 +49,8 @@ export class CSSProperty {
 
     if (longhandProperties && longhandProperties.length > 0) {
       for (const property of longhandProperties) {
-        this.#longhandProperties.push(new CSSProperty(
-            ownerStyle, this.#longhandProperties.length, property.name, property.value, important, disabled, parsedOk,
-            true));
+        this.#longhandProperties.push(
+            new CSSProperty(ownerStyle, ++index, property.name, property.value, important, disabled, parsedOk, true));
       }
     } else {
       // Blink would not parse shorthands containing 'var()' functions:
@@ -60,8 +59,8 @@ export class CSSProperty {
       // and fills its longhand components with empty values.
       const longhandNames = cssMetadata().getLonghands(name);
       for (const longhandName of longhandNames || []) {
-        this.#longhandProperties.push(new CSSProperty(
-            ownerStyle, this.#longhandProperties.length, longhandName, '', important, disabled, parsedOk, true));
+        this.#longhandProperties.push(
+            new CSSProperty(ownerStyle, ++index, longhandName, '', important, disabled, parsedOk, true));
       }
     }
   }

@@ -13,6 +13,7 @@ ts_library("sdk") {
     "CSSMatchedStyles_test.ts",
     "CSSPropertyParser_test.ts",
     "CSSProperty_test.ts",
+    "CSSStyleDeclaration_test.ts",
     "ChildTargetManager_test.ts",
     "ConsoleModel_test.ts",
     "CookieModel_test.ts",

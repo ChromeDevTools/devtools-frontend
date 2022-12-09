@@ -63,16 +63,24 @@ export class CSSStyleDeclaration {
     if (payload.cssText && this.range) {
       const cssText = new TextUtils.Text.Text(payload.cssText);
       let start = {line: this.range.startLine, column: this.range.startColumn};
+
+      const longhands = [];
       for (const cssProperty of payload.cssProperties) {
         const range = cssProperty.range;
-        if (range) {
-          parseUnusedText.call(this, cssText, start.line, start.column, range.startLine, range.startColumn);
-          start = {line: range.endLine, column: range.endColumn};
+        if (!range) {
+          continue;
         }
-        // TODO(changhaohan): we should try not including longhand properties anymore, because
-        // they are already included in the longhandProperties field in a shorthand property.
-        this.#allPropertiesInternal.push(
-            CSSProperty.parsePayload(this, this.#allPropertiesInternal.length, cssProperty));
+        parseUnusedText.call(this, cssText, start.line, start.column, range.startLine, range.startColumn);
+        start = {line: range.endLine, column: range.endColumn};
+        const parsedProperty = CSSProperty.parsePayload(this, this.#allPropertiesInternal.length, cssProperty);
+        this.#allPropertiesInternal.push(parsedProperty);
+        for (const longhand of parsedProperty.getLonghandProperties()) {
+          longhands.push(longhand);
+        }
+      }
+      for (const longhand of longhands) {
+        longhand.index = this.#allPropertiesInternal.length;
+        this.#allPropertiesInternal.push(longhand);
       }
       parseUnusedText.call(this, cssText, start.line, start.column, this.range.endLine, this.range.endColumn);
     } else {
@@ -85,6 +93,8 @@ export class CSSStyleDeclaration {
     this.generateSyntheticPropertiesIfNeeded();
     this.computeInactiveProperties();
 
+    // TODO(changhaohan): verify if this #activePropertyMap is still necessary, or if it is
+    // providing different information against the activeness in allPropertiesInternal.
     this.#activePropertyMap = new Map();
     for (const property of this.#allPropertiesInternal) {
       if (!property.activeInStyle()) {
@@ -241,37 +251,36 @@ export class CSSStyleDeclaration {
 
   private computeInactiveProperties(): void {
     const activeProperties = new Map<string, CSSProperty>();
-    for (let i = 0; i < this.#allPropertiesInternal.length; ++i) {
-      const property = this.#allPropertiesInternal[i];
+    // The order of the properties are:
+    // 1. regular property, including shorthands
+    // 2. longhand components from shorthands, in the order of their shorthands.
+    const processedLonghands = new Set();
+    for (const property of this.#allPropertiesInternal) {
       if (property.disabled || !property.parsedOk) {
         property.setActive(false);
         continue;
       }
+      if (processedLonghands.has(property)) {
+        continue;
+      }
       const metadata = cssMetadata();
       const canonicalName = metadata.canonicalPropertyName(property.name);
-      const longhands = metadata.getLonghands(canonicalName);
-      if (longhands) {
-        for (const longhand of longhands) {
-          const activeLonghand = activeProperties.get(longhand);
-          if (activeLonghand && activeLonghand.range && (!activeLonghand.important || property.important)) {
-            activeLonghand.setActive(false);
-            activeProperties.delete(longhand);
-          }
+      for (const longhand of property.getLonghandProperties()) {
+        const activeLonghand = activeProperties.get(longhand.name);
+        if (!activeLonghand) {
+          activeProperties.set(longhand.name, longhand);
+        } else if (!activeLonghand.important || longhand.important) {
+          activeLonghand.setActive(false);
+          activeProperties.set(longhand.name, longhand);
+        } else {
+          longhand.setActive(false);
         }
+        processedLonghands.add(longhand);
       }
+
       const activeProperty = activeProperties.get(canonicalName);
       if (!activeProperty) {
         activeProperties.set(canonicalName, property);
-      } else if (!property.range) {
-        // For some -webkit- properties, the backend returns also the canonical
-        // property. e.g. if you set in the css only the property
-        // -webkit-background-clip, the backend will return
-        // -webkit-background-clip and background-clip.
-        // This behavior will invalidate -webkit-background-clip (only visually,
-        // the property will be correctly applied)
-        // So this is checking if the property is visible or not in the
-        // styles panel and if not, it will not deactivate the "activeProperty".
-        property.setActive(false);
       } else if (!activeProperty.important || property.important) {
         activeProperty.setActive(false);
         activeProperties.set(canonicalName, property);

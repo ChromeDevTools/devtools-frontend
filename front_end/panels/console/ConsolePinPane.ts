@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -226,46 +227,46 @@ export class ConsolePin {
     });
   }
 
-  createEditor(expression: string, parent: HTMLElement): TextEditor.TextEditor.TextEditor {
-    const editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
-      doc: expression,
-      extensions: [
-        CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.liveExpressionEditor)}),
-        CodeMirror.EditorView.lineWrapping,
-        CodeMirror.javascript.javascriptLanguage,
-        TextEditor.JavaScript.completion(),
-        TextEditor.Config.showCompletionHint,
-        CodeMirror.placeholder(i18nString(UIStrings.expression)),
-        CodeMirror.keymap.of([
-          {
-            key: 'Escape',
-            run: (view: CodeMirror.EditorView): boolean => {
-              view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
-              this.focusOut();
-              return true;
-            },
+  createEditor(doc: string, parent: HTMLElement): TextEditor.TextEditor.TextEditor {
+    const extensions = [
+      CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.liveExpressionEditor)}),
+      CodeMirror.EditorView.lineWrapping,
+      CodeMirror.javascript.javascriptLanguage,
+      TextEditor.Config.showCompletionHint,
+      CodeMirror.placeholder(i18nString(UIStrings.expression)),
+      CodeMirror.keymap.of([
+        {
+          key: 'Escape',
+          run: (view: CodeMirror.EditorView): boolean => {
+            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
+            this.focusOut();
+            return true;
           },
-          {
-            key: 'Enter',
-            run: (): boolean => {
-              this.focusOut();
-              return true;
-            },
+        },
+        {
+          key: 'Enter',
+          run: (): boolean => {
+            this.focusOut();
+            return true;
           },
-          {
-            key: 'Mod-Enter',
-            run: (): boolean => {
-              this.focusOut();
-              return true;
-            },
+        },
+        {
+          key: 'Mod-Enter',
+          run: (): boolean => {
+            this.focusOut();
+            return true;
           },
-        ]),
-        CodeMirror.EditorView.domEventHandlers({blur: (_e, view) => this.onBlur(view)}),
-        TextEditor.Config.baseConfiguration(expression),
-        TextEditor.Config.closeBrackets,
-        TextEditor.Config.autocompletion,
-      ],
-    }));
+        },
+      ]),
+      CodeMirror.EditorView.domEventHandlers({blur: (_e, view) => this.onBlur(view)}),
+      TextEditor.Config.baseConfiguration(doc),
+      TextEditor.Config.closeBrackets,
+      TextEditor.Config.autocompletion,
+    ];
+    if (Root.Runtime.Runtime.queryParam('noJavaScriptCompletion') !== 'true') {
+      extensions.push(TextEditor.JavaScript.completion());
+    }
+    const editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({doc, extensions}));
     parent.appendChild(editor);
     return editor;
   }

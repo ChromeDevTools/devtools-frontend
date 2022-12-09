@@ -78,27 +78,28 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const argumentHints = TextEditor.JavaScript.argumentHints();
     this.#argumentHintsState = argumentHints[0];
 
-    const editorState = CodeMirror.EditorState.create({
-      doc: this.initialText,
-      extensions: [
-        CodeMirror.keymap.of(this.editorKeymap()),
-        CodeMirror.EditorView.updateListener.of(update => this.editorUpdate(update)),
-        argumentHints,
-        TextEditor.JavaScript.completion(),
-        TextEditor.Config.conservativeCompletion,
-        TextEditor.Config.showCompletionHint,
-        CodeMirror.javascript.javascript(),
-        TextEditor.Config.baseConfiguration(this.initialText),
-        TextEditor.Config.autocompletion,
-        CodeMirror.javascript.javascriptLanguage.data.of({
-          autocomplete: (context: CodeMirror.CompletionContext): CodeMirror.CompletionResult | null =>
-              this.historyCompletions(context),
-        }),
-        CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.consolePrompt)}),
-        CodeMirror.EditorView.lineWrapping,
-        CodeMirror.autocompletion({aboveCursor: true}),
-      ],
-    });
+    const extensions = [
+      CodeMirror.keymap.of(this.editorKeymap()),
+      CodeMirror.EditorView.updateListener.of(update => this.editorUpdate(update)),
+      argumentHints,
+      TextEditor.Config.conservativeCompletion,
+      TextEditor.Config.showCompletionHint,
+      CodeMirror.javascript.javascript(),
+      TextEditor.Config.baseConfiguration(this.initialText),
+      TextEditor.Config.autocompletion,
+      CodeMirror.javascript.javascriptLanguage.data.of({
+        autocomplete: (context: CodeMirror.CompletionContext): CodeMirror.CompletionResult | null =>
+            this.historyCompletions(context),
+      }),
+      CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.consolePrompt)}),
+      CodeMirror.EditorView.lineWrapping,
+      CodeMirror.autocompletion({aboveCursor: true}),
+    ];
+    if (Root.Runtime.Runtime.queryParam('noJavaScriptCompletion') !== 'true') {
+      extensions.push(TextEditor.JavaScript.completion());
+    }
+    const doc = this.initialText;
+    const editorState = CodeMirror.EditorState.create({doc, extensions});
 
     this.editor = new TextEditor.TextEditor.TextEditor(editorState);
     this.editor.addEventListener('keydown', (event): void => {

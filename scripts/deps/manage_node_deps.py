@@ -62,7 +62,6 @@ DEPS = {
     "@web/rollup-plugin-import-meta-assets": "1.0.7",
     "chai": "4.3.4",
     "chokidar": "3.5.2",
-    "clean-css": "5.2.2",
     "convert-source-map": "1.8.0",
 
     # This should be match with esbuild in DEPS.

@@ -55,8 +55,8 @@ export class EditableSpan extends HTMLElement {
     this.#value = (event.target as HTMLElement).innerText;
   }
 
-  #selectAllText(e: Event): void {
-    const target = e.target as HTMLElement;
+  #selectAllText(event: Event): void {
+    const target = event.target as HTMLElement;
     const selection = window.getSelection();
     const range = document.createRange();
     range.selectNodeContents(target);

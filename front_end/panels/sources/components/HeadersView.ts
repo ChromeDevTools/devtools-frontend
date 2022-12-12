@@ -177,8 +177,8 @@ export class HeadersViewComponent extends HTMLElement {
     selection?.addRange(range);
   }
 
-  #onFocusIn(e: Event): void {
-    const target = e.target as HTMLElement;
+  #onFocusIn(event: Event): void {
+    const target = event.target as HTMLElement;
     if (target.matches('.editable')) {
       this.#selectAllText(target);
     }
@@ -210,8 +210,8 @@ export class HeadersViewComponent extends HTMLElement {
     return 'header-name-' + idx;
   }
 
-  #onClick(e: Event): void {
-    const target = e.target as HTMLButtonElement;
+  #onClick(event: Event): void {
+    const target = event.target as HTMLButtonElement;
     const rowElement = target.closest('.row') as HTMLElement | null;
     const blockIndex = Number(rowElement?.dataset.blockIndex || 0);
     const headerIndex = Number(rowElement?.dataset.headerIndex || 0);
@@ -238,8 +238,8 @@ export class HeadersViewComponent extends HTMLElement {
     }
   }
 
-  #onInput(e: Event): void {
-    const target = e.target as HTMLButtonElement;
+  #onInput(event: Event): void {
+    const target = event.target as HTMLButtonElement;
     const rowElement = target.closest('.row') as HTMLElement;
     const blockIndex = Number(rowElement.dataset.blockIndex);
     const headerIndex = Number(rowElement.dataset.headerIndex);

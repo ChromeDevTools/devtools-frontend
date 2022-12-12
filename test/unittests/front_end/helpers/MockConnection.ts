@@ -25,9 +25,15 @@ type Message = {
   sessionId: string,
 };
 
+type OutgoingMessageListenerEntry = {
+  promise: Promise<void>,
+  resolve: Function,
+};
+
 // Note that we can't set the Function to the correct handler on the basis
 // that we don't know which ProtocolCommand will be stored.
 const responseMap = new Map<ProtocolCommand, Function>();
+const outgoingMessageListenerEntryMap = new Map<ProtocolCommand, OutgoingMessageListenerEntry>();
 export function setMockConnectionResponseHandler<C extends ProtocolCommand>(
     command: C, handler: ProtocolCommandHandler<C>) {
   if (responseMap.get(command)) {
@@ -47,6 +53,19 @@ export function clearMockConnectionResponseHandler(method: ProtocolCommand) {
 
 export function clearAllMockConnectionResponseHandlers() {
   responseMap.clear();
+}
+
+export function registerListenerOnOutgoingMessage(method: ProtocolCommand): Promise<void> {
+  let outgoingMessageListenerEntry = outgoingMessageListenerEntryMap.get(method);
+  if (!outgoingMessageListenerEntry) {
+    let resolve = () => {};
+    const promise = new Promise<void>(r => {
+      resolve = r;
+    });
+    outgoingMessageListenerEntry = {promise, resolve};
+    outgoingMessageListenerEntryMap.set(method, outgoingMessageListenerEntry);
+  }
+  return outgoingMessageListenerEntry.promise;
 }
 
 export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
@@ -88,6 +107,12 @@ class MockConnection extends ProtocolClient.InspectorBackend.Connection {
   sendRawMessage(message: string) {
     void (async () => {
       const outgoingMessage = JSON.parse(message) as Message;
+
+      const entry = outgoingMessageListenerEntryMap.get(outgoingMessage.method);
+      if (entry) {
+        outgoingMessageListenerEntryMap.delete(outgoingMessage.method);
+        entry.resolve();
+      }
       const handler = responseMap.get(outgoingMessage.method);
       if (!handler) {
         return;
@@ -112,6 +137,9 @@ class MockConnection extends ProtocolClient.InspectorBackend.Connection {
 }
 
 async function disable() {
+  if (outgoingMessageListenerEntryMap.size > 0) {
+    throw new Error('MockConnection still has pending listeners. All promises should be awaited.');
+  }
   await deinitializeGlobalVars();
   // @ts-ignore Setting back to undefined as a hard reset.
   ProtocolClient.InspectorBackend.Connection.setFactory(undefined);

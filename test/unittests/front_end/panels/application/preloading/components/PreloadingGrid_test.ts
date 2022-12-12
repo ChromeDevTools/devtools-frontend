@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
 import * as DataGrid from '../../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
@@ -30,19 +31,16 @@ const renderPreloadingGrid =
   return datagrid;
 };
 
-const getHeaderText = (cell: HTMLTableCellElement): string|null => {
-  return cell.textContent?.trim() ||
-      cell.querySelector('devtools-resources-reports-grid-status-header')?.shadowRoot?.textContent?.trim() || null;
-};
-
 describeWithEnvironment('PreloadingGrid', async () => {
   it('renders header', async () => {
     const dataGrid = await renderPreloadingGrid([]);
     assertShadowRoot(dataGrid.shadowRoot);
 
-    const headerCells = getHeaderCells(dataGrid.shadowRoot);
-    const values = Array.from(headerCells, getHeaderText);
-    assert.deepEqual(values, ['Started at', 'Type', 'Trigger', 'URL', 'Status']);
+    const header = Array.from(getHeaderCells(dataGrid.shadowRoot), cell => {
+      assertNotNullOrUndefined(cell.textContent);
+      return cell.textContent.trim();
+    });
+    assert.deepEqual(header, ['Started at', 'Type', 'Trigger', 'URL', 'Status']);
   });
 
   it('renders grid with content', async () => {

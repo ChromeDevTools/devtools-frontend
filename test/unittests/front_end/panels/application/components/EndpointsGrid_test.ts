@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
@@ -32,11 +33,6 @@ const renderEndpointsGrid =
   const datagrid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
   assertShadowRoot(datagrid.shadowRoot);
   return datagrid;
-};
-
-const getHeaderText = (cell: HTMLTableCellElement): string|null => {
-  return cell.textContent?.trim() ||
-      cell.querySelector('devtools-resources-endpoints-grid-status-header')?.shadowRoot?.textContent?.trim() || null;
 };
 
 describeWithLocale('EndpointsGrid', async () => {
@@ -71,9 +67,12 @@ describeWithLocale('EndpointsGrid', async () => {
     const dataGrid = await renderEndpointsGrid(data);
     assertShadowRoot(dataGrid.shadowRoot);
 
-    const headerCells = getHeaderCells(dataGrid.shadowRoot);
-    const values = Array.from(headerCells, getHeaderText);
-    assert.deepEqual(values, ['Origin', 'Name', 'URL']);
+    const header = Array.from(getHeaderCells(dataGrid.shadowRoot), cell => {
+      assertNotNullOrUndefined(cell.textContent);
+      return cell.textContent.trim();
+    });
+
+    assert.deepEqual(header, ['Origin', 'Name', 'URL']);
 
     const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
     assert.strictEqual(rowValues.length, 3);

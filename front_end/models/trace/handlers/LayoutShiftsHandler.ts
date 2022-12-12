@@ -10,8 +10,6 @@ import {ScoreClassification} from './PageLoadMetricsHandler.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
 import {data as screenshotsHandlerData} from './ScreenshotsHandler.js';
-import type * as Protocol from '../../../generated/protocol.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Platform from '../../../core/platform/platform.js';
 
 import * as Types from '../types/types.js';
@@ -98,9 +96,6 @@ type ScoreRecord = {
 // Includes drops to 0 when session windows end.
 const scoreRecords: ScoreRecord[] = [];
 
-// nodeIds coming from trace events are gathered and resolved into SDK.DOMModel.DOMNode objects.
-const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
-
 let handlerState = HandlerState.UNINITIALIZED;
 
 export function initialize(): void {
@@ -119,7 +114,6 @@ export function reset(): void {
   sessionMaxScore = 0;
   scoreRecords.length = 0;
   clsWindowID = -1;
-  backendNodeIds.clear();
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
@@ -194,62 +188,6 @@ function buildScoreRecords(): void {
   }
 }
 
-function drawScreenshotOverlays(): void {
-  const viewport = metaHandlerData().viewportRect;
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  if (!ctx || !viewport) {
-    return;
-  }
-  for (const cluster of clusters) {
-    for (const shift of cluster.events) {
-      const screenshot = shift.screenshot;
-      if (!screenshot || !shift.normalized) {
-        continue;
-      }
-      let affectedElementsCurrentRects = shift.domNodeSources.map(node => node.currentRect);
-      if (!affectedElementsCurrentRects.length) {
-        // If nodes haven't been collected from the backend and, thus,
-        // the domNodeSources array is empty, try to use the rect
-        // values from the trace event. This happens when running in
-        // tests environments where the relevant CDP methods aren't
-        // mocked.
-        const impactedNodes = shift.args.data?.impacted_nodes;
-        if (!impactedNodes || !impactedNodes.length) {
-          continue;
-        }
-        affectedElementsCurrentRects = impactedNodes.map(
-            node => new DOMRect(node.new_rect[0], node.new_rect[1], node.new_rect[2], node.new_rect[3]));
-      }
-
-      canvas.width = screenshot.width;
-      canvas.height = screenshot.height;
-      ctx.save();
-      ctx.drawImage(screenshot, 0, 0, screenshot.width, screenshot.height);
-
-      for (const currentRect of affectedElementsCurrentRects) {
-        ctx.beginPath();
-
-        // Map the node's dimensions and coordinates from the viewport
-        // dimensions to the screenshot dimensions.
-        const mappedRectX = currentRect.x * canvas.width / viewport.width;
-        const mappedRectY = currentRect.y * canvas.height / viewport.height;
-        const mappedRectWidth = currentRect.width * canvas.width / viewport.width;
-        const mappedRectHeight = currentRect.height * canvas.height / viewport.height;
-        ctx.fillStyle = 'rgba(132, 48, 206, 0.5)';
-        ctx.strokeStyle = 'rgb(132, 48, 206)';
-        ctx.lineWidth = 2;
-
-        ctx.fillRect(mappedRectX, mappedRectY, mappedRectWidth, mappedRectHeight);
-        ctx.strokeRect(mappedRectX, mappedRectY, mappedRectWidth, mappedRectHeight);
-        ctx.restore();
-      }
-      shift.screenshot = new Image();
-      shift.screenshot.src = canvas.toDataURL();
-    }
-  }
-}
-
 export async function finalize(): Promise<void> {
   // Ensure the events are sorted by #time ascending.
   layoutShiftEvents.sort((a, b) => a.ts - b.ts);
@@ -260,7 +198,6 @@ export async function finalize(): Promise<void> {
   // is important.
   await buildLayoutShiftsClusters();
   buildScoreRecords();
-  drawScreenshotOverlays();
   handlerState = HandlerState.FINALIZED;
 }
 async function buildLayoutShiftsClusters(): Promise<void> {
@@ -343,7 +280,6 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       ...event,
       screenshot: findNextScreenshot(event.ts),
       timeFromNavigation,
-      domNodeSources: [],
       cumulativeWeightedScoreInWindow: currentCluster.clusterCumulativeScore,
       // The score of the session window is temporarily set to 0 just
       // to initialize it. Since we need to get the score of all shifts
@@ -465,12 +401,6 @@ export function stateForLayoutShiftScore(score: number): ScoreClassification {
   return state;
 }
 
-export interface LayoutShiftSource {
-  previousRect: DOMRect;
-  currentRect: DOMRect;
-  node: SDK.DOMModel.DOMNode;
-}
-
 interface LayoutShiftSessionWindowData {
   // The sum of the weighted score of all the shifts
   // that belong to a session window.
@@ -482,7 +412,6 @@ interface LayoutShiftSessionWindowData {
 interface LayoutShiftData {
   screenshot?: HTMLImageElement;
   timeFromNavigation?: Types.Timing.MicroSeconds;
-  domNodeSources: LayoutShiftSource[];
   // The sum of the weighted scores of the shifts that
   // belong to a session window up until this shift
   // (inclusive).

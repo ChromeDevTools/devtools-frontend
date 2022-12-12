@@ -8,8 +8,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import {forNodeId} from './DOMNodeLookup.js';
 
 const layoutShiftSourcesCache = new Map<
-    Handlers.Types.TraceParseData,
-    Map<Types.TraceEvents.TraceEventLayoutShift, readonly Handlers.ModelHandlers.LayoutShifts.LayoutShiftSource[]>>();
+    Handlers.Types.TraceParseData, Map<Types.TraceEvents.TraceEventLayoutShift, readonly LayoutShiftSource[]>>();
 
 const normalizedNodesCache = new Map<
     Handlers.Types.TraceParseData,
@@ -21,9 +20,15 @@ export function _TEST_clearCache(): void {
   normalizedNodesCache.clear();
 }
 
+export interface LayoutShiftSource {
+  previousRect: DOMRect;
+  currentRect: DOMRect;
+  node: SDK.DOMModel.DOMNode;
+}
+
 export async function sourcesForLayoutShift(
-    modelData: Handlers.Types.TraceParseData, event: Types.TraceEvents.TraceEventLayoutShift):
-    Promise<readonly Handlers.ModelHandlers.LayoutShifts.LayoutShiftSource[]> {
+    modelData: Handlers.Types.TraceParseData,
+    event: Types.TraceEvents.TraceEventLayoutShift): Promise<readonly LayoutShiftSource[]> {
   const fromCache = layoutShiftSourcesCache.get(modelData)?.get(event);
   if (fromCache) {
     return fromCache;
@@ -32,7 +37,7 @@ export async function sourcesForLayoutShift(
   if (!impactedNodes) {
     return [];
   }
-  const sources: Handlers.ModelHandlers.LayoutShifts.LayoutShiftSource[] = [];
+  const sources: LayoutShiftSource[] = [];
   await Promise.all(impactedNodes.map(async node => {
     const domNode = await forNodeId(modelData, node.node_id);
     if (domNode) {
@@ -43,8 +48,8 @@ export async function sourcesForLayoutShift(
       });
     }
   }));
-  const cacheForModel = layoutShiftSourcesCache.get(modelData) ||
-      new Map<Types.TraceEvents.TraceEventLayoutShift, Handlers.ModelHandlers.LayoutShifts.LayoutShiftSource[]>();
+  const cacheForModel =
+      layoutShiftSourcesCache.get(modelData) || new Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftSource[]>();
   cacheForModel.set(event, sources);
   layoutShiftSourcesCache.set(modelData, cacheForModel);
   return sources;

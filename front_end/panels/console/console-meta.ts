@@ -109,6 +109,14 @@ const UIStrings = {
   *@description Title of a setting under the Console category that can be invoked through the Command Menu
   */
   doNotTreatEvaluationAsUser: 'Do not treat evaluation as user activation',
+  /**
+   * @description Title of a setting under the Console category in Settings that controls whether `console.trace()` messages appear expanded by default.
+   */
+  expandConsoleTraceMessagesByDefault: 'Expand `console.trace()` messages by default',
+  /**
+   * @description Title of a setting under the Console category in Settings that controls whether `console.trace()` messages appear collapsed by default.
+   */
+  collapseConsoleTraceMessagesByDefault: 'Collapse `console.trace()` messages by default',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/console-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -371,6 +379,25 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.doNotTreatEvaluationAsUser),
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
+  title: i18nLazyString(UIStrings.expandConsoleTraceMessagesByDefault),
+  settingName: 'consoleTraceExpand',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.expandConsoleTraceMessagesByDefault),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.collapseConsoleTraceMessagesByDefault),
     },
   ],
 });

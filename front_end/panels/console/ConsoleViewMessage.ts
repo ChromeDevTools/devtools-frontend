@@ -534,7 +534,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     };
 
     clickableElement.addEventListener('click', toggleStackTrace, false);
-    if (this.message.type === Protocol.Runtime.ConsoleAPICalledEventType.Trace) {
+    if (this.message.type === Protocol.Runtime.ConsoleAPICalledEventType.Trace &&
+        Common.Settings.Settings.instance().moduleSetting('consoleTraceExpand').get()) {
       this.expandTrace(true);
     }
 

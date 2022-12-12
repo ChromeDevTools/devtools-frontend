@@ -29,8 +29,6 @@
   width: 160px;
   flex-shrink: 0;
   text-transform: capitalize;
-
-  --override-contenteditable-text-color: var(--color-syntax-1);
 }
 
 .header-editable .header-name {

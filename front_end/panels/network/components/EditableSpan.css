@@ -10,7 +10,6 @@
 
 .editable {
   cursor: text;
-  color: var(--override-contenteditable-text-color, --color-text-primary);
   overflow-wrap: anywhere;
   min-height: 18px;
   line-height: 18px;

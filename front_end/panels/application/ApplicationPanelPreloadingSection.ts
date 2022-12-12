@@ -4,8 +4,10 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as SDK from '../../core/sdk/sdk.js';
+import type * as Platform from '../../core/platform/platform.js';
 
-import {ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
+import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {type ResourcesPanel} from './ResourcesPanel.js';
 
 import {PreloadingView} from './preloading/PreloadingView.js';
@@ -19,11 +21,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelPreloadingSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class PreloadingTreeElement extends ExpandableApplicationPanelTreeElement {
+export class PreloadingTreeElement extends ApplicationPanelTreeElement {
+  private model?: SDK.PrerenderingModel.PrerenderingModel;
   private view?: PreloadingView;
 
   constructor(resourcesPanel: ResourcesPanel) {
-    super(resourcesPanel, i18nString(UIStrings.preloadingAndPrerendering), 'Preloading & Prerendering');
+    super(resourcesPanel, i18nString(UIStrings.preloadingAndPrerendering), false);
 
     const icon = UI.Icon.Icon.create('mediumicon-fetch', 'resource-tree-item');
     this.setLeadingIcons([icon]);
@@ -31,15 +34,26 @@ export class PreloadingTreeElement extends ExpandableApplicationPanelTreeElement
     // TODO(https://crbug.com/1384419): Set link
   }
 
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'preloading://' as Platform.DevToolsPath.UrlString;
+  }
+
+  initialize(model: SDK.PrerenderingModel.PrerenderingModel): void {
+    this.model = model;
+  }
+
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
 
+    if (!this.model) {
+      return false;
+    }
+
     if (!this.view) {
-      this.view = new PreloadingView();
+      this.view = new PreloadingView(this.model);
     }
 
     this.showView(this.view);
-
     // TODO(https://crbug.com/1384419): Report metrics when the panel shown.
 
     return false;

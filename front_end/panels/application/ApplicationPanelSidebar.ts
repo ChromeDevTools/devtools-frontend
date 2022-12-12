@@ -572,6 +572,15 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         this.pushMessagingTreeElement.initialize(backgroundServiceModel);
       }
     }
+
+    // The condition is equivalent to
+    // `Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL)`.
+    if (this.preloadingTreeElement) {
+      const prerenderingModel = this.target?.model(SDK.PrerenderingModel.PrerenderingModel);
+      if (prerenderingModel) {
+        this.preloadingTreeElement.initialize(prerenderingModel);
+      }
+    }
   }
 
   private domStorageModelAdded(model: DOMStorageModel): void {

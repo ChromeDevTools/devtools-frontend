@@ -26,6 +26,7 @@ ts_library("application") {
     "SharedStorageTreeElement_test.ts",
     "StorageView_test.ts",
     "TrustTokensTreeElement_test.ts",
+    "preloading/PreloadingView_test.ts",
   ]
 
   deps = [

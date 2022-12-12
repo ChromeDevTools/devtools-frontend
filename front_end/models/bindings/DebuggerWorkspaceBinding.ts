@@ -276,6 +276,16 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return uiSourceCode || this.waitForUISourceCodeAdded(url, debuggerModel.target());
   }
 
+  async uiSourceCodeForDebuggerLanguagePluginSourceURLPromise(
+      debuggerModel: SDK.DebuggerModel.DebuggerModel,
+      url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode|null> {
+    if (this.pluginManager) {
+      const uiSourceCode = this.pluginManager.uiSourceCodeForURL(debuggerModel, url);
+      return uiSourceCode || this.waitForUISourceCodeAdded(url, debuggerModel.target());
+    }
+    return null;
+  }
+
   waitForUISourceCodeAdded(url: Platform.DevToolsPath.UrlString, target: SDK.Target.Target):
       Promise<Workspace.UISourceCode.UISourceCode> {
     return new Promise(resolve => {

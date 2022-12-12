@@ -40,6 +40,7 @@ import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 
 import {LiveLocationPool, type LiveLocation} from './LiveLocation.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 let breakpointManagerInstance: BreakpointManager;
 
@@ -167,7 +168,9 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
         for (const sourceURL of sourceUrls) {
           if (this.#hasBreakpointsForUrl(sourceURL)) {
             const uiSourceCode =
-                await Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURLPromise(sourceURL);
+                await this.debuggerWorkspaceBinding.uiSourceCodeForDebuggerLanguagePluginSourceURLPromise(
+                    debuggerModel, sourceURL);
+            assertNotNullOrUndefined(uiSourceCode);
             await this.#restoreBreakpointsForUrl(uiSourceCode);
           }
         }
@@ -402,7 +405,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
         return uiLocations;
       }
     }
-    const startLocationsPromise = DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
+    const startLocationsPromise = this.debuggerWorkspaceBinding.uiLocationToRawLocations(
         uiSourceCode, textRange.startLine, textRange.startColumn);
     const endLocationsPromise = DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
         uiSourceCode, textRange.endLine, textRange.endColumn);

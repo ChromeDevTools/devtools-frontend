@@ -134,6 +134,12 @@ describe('HeadersView', async () => {
     });
   }
 
+  function getSingleRowContent(shadowRoot: ShadowRoot, rowIndex: number): string {
+    const rows = Array.from(shadowRoot.querySelectorAll('.row'));
+    assert.isTrue(rows.length > rowIndex);
+    return Array.from(rows[rowIndex].querySelectorAll('div, .editable')).map(element => element.textContent).join('');
+  }
+
   function isWholeElementContentSelected(element: HTMLElement): boolean {
     const textContent = element.textContent;
     if (!textContent || textContent.length < 1 || !element.hasSelection()) {
@@ -194,6 +200,38 @@ describe('HeadersView', async () => {
       'Apply to:*.jpg',
       'jpg-header:is image',
     ]);
+  });
+
+  it('resets edited value to previous state on Escape key', async () => {
+    const editor = await renderEditor();
+    assertShadowRoot(editor.shadowRoot);
+    assert.deepEqual(getSingleRowContent(editor.shadowRoot, 1), 'server:DevTools Unit Test Server');
+
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
+    assert.strictEqual(editables.length, 8);
+    const headerValue = editables[2] as HTMLElement;
+    headerValue.focus();
+    headerValue.innerText = 'discard_me';
+    assert.deepEqual(getSingleRowContent(editor.shadowRoot, 1), 'server:discard_me');
+
+    dispatchKeyDownEvent(headerValue, {
+      key: 'Escape',
+      bubbles: true,
+    });
+    await coordinator.done();
+    assert.deepEqual(getSingleRowContent(editor.shadowRoot, 1), 'server:DevTools Unit Test Server');
+
+    const headerName = editables[1] as HTMLElement;
+    headerName.focus();
+    headerName.innerText = 'discard_me_2';
+    assert.deepEqual(getSingleRowContent(editor.shadowRoot, 1), 'discard_me_2:DevTools Unit Test Server');
+
+    dispatchKeyDownEvent(headerName, {
+      key: 'Escape',
+      bubbles: true,
+    });
+    await coordinator.done();
+    assert.deepEqual(getSingleRowContent(editor.shadowRoot, 1), 'server:DevTools Unit Test Server');
   });
 
   it('selects the whole content when clicking on an editable field', async () => {

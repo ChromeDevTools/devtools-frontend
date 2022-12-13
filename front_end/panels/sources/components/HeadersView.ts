@@ -128,6 +128,7 @@ export class HeadersViewComponent extends HTMLElement {
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #parsingError = false;
   #focusElement: {blockIndex: number, headerIndex?: number}|null = null;
+  #textOnFocusIn = '';
 
   constructor() {
     super();
@@ -152,12 +153,20 @@ export class HeadersViewComponent extends HTMLElement {
   // 'Enter' key should not create a new line in the contenteditable. Focus
   // on the next contenteditable instead.
   #onKeyDown(event: Event): void {
-    const keyboardEvent = event as KeyboardEvent;
     const target = event.target as HTMLElement;
-    if (target.matches('.editable') && keyboardEvent.key === 'Enter') {
+    if (!target.matches('.editable')) {
+      return;
+    }
+    const keyboardEvent = event as KeyboardEvent;
+    if (keyboardEvent.key === 'Enter') {
       event.preventDefault();
       target.blur();
       this.#focusNext(target);
+    } else if (keyboardEvent.key === 'Escape') {
+      event.consume();
+      target.innerText = this.#textOnFocusIn;
+      target.blur();
+      this.#onInput(event);
     }
   }
 
@@ -181,6 +190,7 @@ export class HeadersViewComponent extends HTMLElement {
     const target = event.target as HTMLElement;
     if (target.matches('.editable')) {
       this.#selectAllText(target);
+      this.#textOnFocusIn = target.innerText;
     }
   }
 
@@ -239,7 +249,7 @@ export class HeadersViewComponent extends HTMLElement {
   }
 
   #onInput(event: Event): void {
-    const target = event.target as HTMLButtonElement;
+    const target = event.target as HTMLElement;
     const rowElement = target.closest('.row') as HTMLElement;
     const blockIndex = Number(rowElement.dataset.blockIndex);
     const headerIndex = Number(rowElement.dataset.headerIndex);

@@ -71,41 +71,6 @@ export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', [], 
   shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
 }]));
 
-export const autocompletion: CM.Extension = [
-  CM.autocompletion({
-    icons: false,
-    optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
-    defaultKeymap: false,
-  }),
-  CM.Prec.highest(CM.keymap.of([
-    {
-      key: 'ArrowRight',
-      run: (editorView: CM.EditorView): boolean => {
-        const cursorPosition = editorView.state.selection.main.head;
-        const line = editorView.state.doc.lineAt(cursorPosition);
-        const column = cursorPosition - line.from;
-        const isCursorAtEndOfLine = column >= line.length;
-        if (isCursorAtEndOfLine) {
-          return CM.acceptCompletion(editorView);
-        }
-
-        // We didn't handle this key press
-        // so it will be handled by default behavior.
-        return false;
-      },
-    },
-    {key: 'Ctrl-Space', run: CM.startCompletion},
-    {key: 'Escape', run: CM.closeCompletion},
-    {key: 'ArrowDown', run: CM.moveCompletionSelection(true)},
-    {key: 'ArrowUp', run: CM.moveCompletionSelection(false)},
-    {mac: 'Ctrl-n', run: CM.moveCompletionSelection(true)},
-    {mac: 'Ctrl-p', run: CM.moveCompletionSelection(false)},
-    {key: 'PageDown', run: CM.moveCompletionSelection(true, 'page')},
-    {key: 'PageUp', run: CM.moveCompletionSelection(false, 'page')},
-    {key: 'Enter', run: acceptCompletionIfNotConservative},
-  ])),
-];
-
 // When enabled, this suppresses the behavior of showCompletionHint
 // and accepting of completions with Enter until the user selects a
 // completion beyond the initially selected one. Used in the console.
@@ -128,7 +93,42 @@ function acceptCompletionIfNotConservative(view: CM.EditorView): boolean {
   return !view.state.field(conservativeCompletion, false) && CM.acceptCompletion(view);
 }
 
-export const sourcesAutocompletion = DynamicSetting.bool('textEditorAutocompletion', autocompletion);
+export const autocompletion = new DynamicSetting<boolean>(
+    'textEditorAutocompletion',
+    (activateOnTyping: boolean): CM.Extension =>
+        [CM.autocompletion({
+          activateOnTyping,
+          icons: false,
+          optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
+          defaultKeymap: false,
+        }),
+         CM.Prec.highest(CM.keymap.of([
+           {
+             key: 'ArrowRight',
+             run: (editorView: CM.EditorView): boolean => {
+               const cursorPosition = editorView.state.selection.main.head;
+               const line = editorView.state.doc.lineAt(cursorPosition);
+               const column = cursorPosition - line.from;
+               const isCursorAtEndOfLine = column >= line.length;
+               if (isCursorAtEndOfLine) {
+                 return CM.acceptCompletion(editorView);
+               }
+
+               // We didn't handle this key press
+               // so it will be handled by default behavior.
+               return false;
+             },
+           },
+           {key: 'Ctrl-Space', run: CM.startCompletion},
+           {key: 'Escape', run: CM.closeCompletion},
+           {key: 'ArrowDown', run: CM.moveCompletionSelection(true)},
+           {key: 'ArrowUp', run: CM.moveCompletionSelection(false)},
+           {mac: 'Ctrl-n', run: CM.moveCompletionSelection(true)},
+           {mac: 'Ctrl-p', run: CM.moveCompletionSelection(false)},
+           {key: 'PageDown', run: CM.moveCompletionSelection(true, 'page')},
+           {key: 'PageUp', run: CM.moveCompletionSelection(false, 'page')},
+           {key: 'Enter', run: acceptCompletionIfNotConservative},
+         ]))]);
 
 export const bracketMatching = DynamicSetting.bool('textEditorBracketMatching', CM.bracketMatching());
 

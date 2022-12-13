@@ -1059,7 +1059,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         ]),
         TextEditor.Config.baseConfiguration(initialValue),
         TextEditor.Config.closeBrackets,
-        TextEditor.Config.autocompletion,
+        TextEditor.Config.autocompletion.instance(),
         CodeMirror.html.html(),
         TextEditor.Config.domWordWrap.instance(),
         CodeMirror.EditorView.theme({

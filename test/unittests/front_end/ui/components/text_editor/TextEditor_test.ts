@@ -27,7 +27,7 @@ function makeState(doc: string, extensions: CodeMirror.Extension = []) {
     extensions: [
       extensions,
       TextEditor.Config.baseConfiguration(doc),
-      TextEditor.Config.autocompletion,
+      TextEditor.Config.autocompletion.instance(),
     ],
   });
 }

@@ -86,7 +86,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       TextEditor.Config.showCompletionHint,
       CodeMirror.javascript.javascript(),
       TextEditor.Config.baseConfiguration(this.initialText),
-      TextEditor.Config.autocompletion,
+      TextEditor.Config.autocompletion.instance(),
       CodeMirror.javascript.javascriptLanguage.data.of({
         autocomplete: (context: CodeMirror.CompletionContext): CodeMirror.CompletionResult | null =>
             this.historyCompletions(context),

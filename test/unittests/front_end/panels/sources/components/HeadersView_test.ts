@@ -11,6 +11,7 @@ import {
   dispatchFocusOutEvent,
   dispatchInputEvent,
   dispatchKeyDownEvent,
+  dispatchPasteEvent,
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../../helpers/EnvironmentHelpers.js';
@@ -130,14 +131,18 @@ describe('HeadersView', async () => {
   function getRowContent(shadowRoot: ShadowRoot): string[] {
     const rows = Array.from(shadowRoot.querySelectorAll('.row'));
     return rows.map(row => {
-      return Array.from(row.querySelectorAll('div, .editable')).map(element => element.textContent).join('');
+      return Array.from(row.querySelectorAll('div, .editable'))
+          .map(element => (element as HTMLElement).innerText)
+          .join('');
     });
   }
 
   function getSingleRowContent(shadowRoot: ShadowRoot, rowIndex: number): string {
     const rows = Array.from(shadowRoot.querySelectorAll('.row'));
     assert.isTrue(rows.length > rowIndex);
-    return Array.from(rows[rowIndex].querySelectorAll('div, .editable')).map(element => element.textContent).join('');
+    return Array.from(rows[rowIndex].querySelectorAll('div, .editable'))
+        .map(element => (element as HTMLElement).innerText)
+        .join('');
   }
 
   function isWholeElementContentSelected(element: HTMLElement): boolean {
@@ -484,5 +489,22 @@ describe('HeadersView', async () => {
       'Apply to:*.jpg',
       'jpg-header:only for jpg files',
     ]);
+  });
+
+  it('removes formatting for pasted content', async () => {
+    const editor = await renderEditor();
+    assertShadowRoot(editor.shadowRoot);
+    const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    assert.strictEqual(editables.length, 8);
+    assert.deepEqual(getSingleRowContent(editor.shadowRoot, 2), 'access-control-allow-origin:*');
+
+    const headerValue = editables[4] as HTMLSpanElement;
+    headerValue.focus();
+    const dt = new DataTransfer();
+    dt.setData('text/plain', 'foo\nbar');
+    dt.setData('text/html', 'This is <b>bold</b>');
+    dispatchPasteEvent(headerValue, {clipboardData: dt, bubbles: true});
+    await coordinator.done();
+    assert.deepEqual(getSingleRowContent(editor.shadowRoot, 2), 'access-control-allow-origin:foo bar');
   });
 });

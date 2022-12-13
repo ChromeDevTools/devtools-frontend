@@ -137,6 +137,7 @@ export class HeadersViewComponent extends HTMLElement {
     this.#shadow.addEventListener('click', this.#onClick.bind(this));
     this.#shadow.addEventListener('input', this.#onInput.bind(this));
     this.#shadow.addEventListener('keydown', this.#onKeyDown.bind(this));
+    this.#shadow.addEventListener('paste', this.#onPaste.bind(this));
   }
 
   connectedCallback(): void {
@@ -281,6 +282,30 @@ export class HeadersViewComponent extends HTMLElement {
 
   #onHeadersChanged(): void {
     this.#uiSourceCode?.setWorkingCopy(JSON.stringify(this.#headerOverrides, null, 2));
+  }
+
+  #onPaste(event: Event): void {
+    const clipboardEvent = event as ClipboardEvent;
+    event.preventDefault();
+    if (clipboardEvent.clipboardData) {
+      const text = clipboardEvent.clipboardData.getData('text/plain');
+      const range = this.#shadow.getSelection()?.getRangeAt(0);
+      if (!range) {
+        return;
+      }
+      range.deleteContents();
+
+      const textNode = document.createTextNode(text);
+      range.insertNode(textNode);
+      range.selectNodeContents(textNode);
+      range.collapse(false);
+
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+
+      this.#onInput(event);
+    }
   }
 
   #render(): void {

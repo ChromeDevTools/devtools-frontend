@@ -51,6 +51,7 @@ button {
   padding: 5px 12px;
   justify-content: center;
   width: 100%;
+  white-space: nowrap;
 }
 
 button.small {

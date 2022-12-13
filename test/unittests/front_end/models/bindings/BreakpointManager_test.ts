@@ -171,78 +171,6 @@ describeWithRealConnection('BreakpointManager', () => {
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
   });
 
-  it('allows awaiting the restoration of breakpoints with language plugins', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
-
-    const pluginManager =
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().initPluginManagerForTest();
-    assertNotNullOrUndefined(pluginManager);
-
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assertNotNullOrUndefined(debuggerModel);
-
-    const {uiSourceCode, project} =
-        createContentProviderUISourceCode({url: 'test.cc' as Platform.DevToolsPath.UrlString, mimeType: JS_MIME_TYPE});
-    assertNotNullOrUndefined(uiSourceCode);
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
-
-    // Make sure that we await all updates that are triggered by adding the model.
-    await breakpoint.updateBreakpoint();
-
-    // Retrieve the ModelBreakpoint that is linked to our DebuggerModel.
-    const modelBreakpoint = breakpoint.modelBreakpoint(debuggerModel);
-    assertNotNullOrUndefined(modelBreakpoint);
-
-    // Make sure that we do not have a linked script yet.
-    assert.isNull(modelBreakpoint.currentState);
-
-    class Plugin extends TestPlugin {
-      constructor() {
-        super('InstrumentationBreakpoints');
-      }
-
-      handleScript(script: SDK.Script.Script) {
-        return script.scriptId === SCRIPT_ID;
-      }
-
-      async sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
-          Promise<Chrome.DevTools.RawLocationRange[]> {
-        const {rawModuleId, columnNumber, lineNumber, sourceFileURL} = sourceLocation;
-        if (lineNumber === 0 && columnNumber === 0 && sourceFileURL === 'test.cc') {
-          return [{rawModuleId, startOffset: 0, endOffset: 0}];
-        }
-        return [];
-      }
-
-      async addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
-          Promise<string[]> {
-        return ['test.cc'];  // need to return something to get the script associated with the plugin.
-      }
-    }
-    // Create a plugin that is able to produce a mapping for our script.
-    pluginManager.addPlugin(new Plugin());
-
-    const script = debuggerModel.parsedScriptSource(
-        SCRIPT_ID, URL, 0, 0, 0, 0, 0, '', undefined, false, undefined, false, false, 0, null, null, null, null, null,
-        null);
-    await pluginManager.getSourcesForScript(script);  // wait for plugin source setup to finish.
-
-    await breakpointManager.restoreBreakpointsForScript(script);
-    assertNotNullOrUndefined(modelBreakpoint.currentState);
-    assert.lengthOf(modelBreakpoint.currentState.positions, 1);
-    assert.strictEqual(modelBreakpoint.currentState.positions[0].url, URL);
-
-    // Clean up.
-    await breakpoint.remove(false);
-    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
-    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
-    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().initPluginManagerForTest();
-    debuggerModel.globalObjectCleared();
-  });
-
   it('allows awaiting on scheduled update in debugger', async () => {
     const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
 
@@ -354,41 +282,6 @@ describeWithRealConnection('BreakpointManager', () => {
   });
 
   describe('Breakpoints', () => {
-    it('are removed after a location clash', async () => {
-      const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
-      // Use TestDebuggerModel, which always returns the same location to create a location crash.
-      const debuggerModel = new TestDebuggerModel(target);
-
-      // Create first breakpoint that resolves to that location.
-      const breakpoint = await breakpointManager.setBreakpoint(
-          uiSourceCode, 42, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
-      breakpoint.modelAdded(debuggerModel);
-      assert.isFalse(breakpoint.getIsRemoved());
-
-      // Create second breakpoint that will resolve to the same location.
-      const slidingBreakpoint = await breakpointManager.setBreakpoint(
-          uiSourceCode, 43, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
-      const removedSpy = sinon.spy(slidingBreakpoint, 'remove');
-      slidingBreakpoint.modelAdded(debuggerModel);
-
-      const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, 42, SCRIPT_ID);
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
-
-      await breakpoint.updateBreakpoint();
-      await slidingBreakpoint.updateBreakpoint();
-
-      // First breakpoint is kept, while second is removed.
-      assert.isFalse(breakpoint.getIsRemoved());
-      assert.isTrue(slidingBreakpoint.getIsRemoved());
-
-      // Breakpoint was removed and is not kept in storage.
-      assert.isTrue(removedSpy.calledOnceWith(true));
-
-      await breakpoint.remove(false);
-      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
-    });
-
     it('are removed and kept in storage after a back-end error', async () => {
       const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
 
@@ -909,6 +802,54 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
 
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
+  });
+
+  it('removes breakpoints that reoslve to the same uiLocation as a previous breakpoint', async () => {
+    const scriptInfo = {url: URL, content: 'console.log(\'hello\');'};
+    const script = await backend.addScript(target, scriptInfo, null);
+
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    // Set the breakpoint response for our upcoming requests. Both breakpoints should resolve
+    // to the same raw location in order to have a clash.
+    void backend.responderToBreakpointByUrlRequest(URL, 0)({
+      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+      locations: [{
+        scriptId: script.scriptId,
+        lineNumber: 0,
+        columnNumber: 0,
+      }],
+    });
+
+    void backend.responderToBreakpointByUrlRequest(URL, 2)({
+      breakpointId: 'SLIDING_BREAK_ID' as Protocol.Debugger.BreakpointId,
+      locations: [{
+        scriptId: script.scriptId,
+        lineNumber: 0,
+        columnNumber: 0,
+      }],
+    });
+
+    const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
+    assertNotNullOrUndefined(uiSourceCode);
+
+    // Set the breakpoint on the front-end/model side.
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+
+    // This breakpoint will slide to lineNumber: 0, columnNumber: 0 and thus
+    // clash with the previous breakpoint.
+    const slidingBreakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 2, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+
+    // Wait until both breakpoints have run their updates.
+    await breakpoint.refreshInDebugger();
+    await slidingBreakpoint.refreshInDebugger();
+
+    // The first breakpoint is kept on a clash, the second one should be removed.
+    assert.isFalse(breakpoint.isRemoved);
+    assert.isTrue(slidingBreakpoint.isRemoved);
   });
 });
 

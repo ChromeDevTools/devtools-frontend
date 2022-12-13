@@ -167,11 +167,6 @@ const UIStrings = {
   */
   disableAvifImageFormat: 'Disable `AVIF` image format',
   /**
-  * @description The name of a checkbox setting in the Rendering tool. This setting disables the
-  * page from loading images with the JPEG XL format.
-  */
-  disableJpegXlImageFormat: 'Disable `JPEG XL` image format',
-  /**
   * @description Explanation text for both the 'Disable AVIF image format' and 'Disable WebP image
   * format' settings in the Rendering tool.
   */
@@ -203,17 +198,6 @@ const supportsPrefersReducedData = (): boolean => {
 const supportsPrefersContrast = (): boolean => {
   const query = '(prefers-contrast)';
   return window.matchMedia(query).media === query;
-};
-
-const supportsJpegXl = async(): Promise<boolean> => {
-  const JPEG_XL_IMAGE_URL = 'data:image/jxl;base64,/wr/BwiDBAwASyAY';
-  const promise = new Promise<boolean>((resolve): void => {
-    const img = document.createElement('img');
-    img.onload = (): void => resolve(true);
-    img.onerror = (): void => resolve(false);
-    img.src = JPEG_XL_IMAGE_URL;
-  });
-  return promise;
 };
 
 let renderingOptionsViewInstance: RenderingOptionsView;
@@ -292,20 +276,11 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         i18nString(UIStrings.disableAvifImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled'));
 
-    const webpCheckbox = this.#appendCheckbox(
+    this.#appendCheckbox(
         i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
-
-    void supportsJpegXl().then(hasSupport => {
-      if (!hasSupport) {
-        return;
-      }
-      webpCheckbox.before(this.#createCheckbox(
-          i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
-          Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled')));
-    });
   }
 
   static instance(opts: {

@@ -49,11 +49,11 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private loadedBytes: number;
   private totalSize!: number;
   private readonly jsonTokenizer: TextUtils.TextUtils.BalancedJSONTokenizer;
-  constructor(client: Client, shouldSaveTraceEventsToFile: boolean) {
+  constructor(client: Client, shouldSaveTraceEventsToFile: boolean, title?: string) {
     this.client = client;
 
     this.backingStorage = new Bindings.TempFile.TempFileBackingStorage();
-    this.tracingModel = new SDK.TracingModel.TracingModel(this.backingStorage, shouldSaveTraceEventsToFile);
+    this.tracingModel = new SDK.TracingModel.TracingModel(this.backingStorage, shouldSaveTraceEventsToFile, title);
 
     this.canceledCallback = null;
     this.state = State.Initial;
@@ -86,8 +86,8 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
-  static loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, client: Client): TimelineLoader {
-    const loader = new TimelineLoader(client, /* shouldSaveTraceEventsToFile= */ false);
+  static loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, client: Client, title?: string): TimelineLoader {
+    const loader = new TimelineLoader(client, /* shouldSaveTraceEventsToFile= */ false, title);
 
     try {
       const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(

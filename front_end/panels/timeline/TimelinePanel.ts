@@ -480,12 +480,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.loader = TimelineLoader.loadFromEvents(events, this);
   }
 
-  private loadFromCpuProfile(profile: Protocol.Profiler.Profile|null): void {
+  private loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, title?: string): void {
     if (this.state !== State.Idle) {
       return;
     }
     this.prepareToLoadTimeline();
-    this.loader = TimelineLoader.loadFromCpuProfile(profile, this);
+    this.loader = TimelineLoader.loadFromCpuProfile(profile, this, title);
   }
 
   private onOverviewWindowChanged(
@@ -1048,8 +1048,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!isNode) {
       return;
     }
-
-    this.loadFromCpuProfile(data.cpuProfile);
+    this.loadFromCpuProfile(data.cpuProfile, data.title);
     void UI.InspectorView.InspectorView.instance().showPanel('timeline');
   }
 

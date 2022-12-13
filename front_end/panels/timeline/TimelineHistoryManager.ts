@@ -228,15 +228,17 @@ export class TimelineHistoryManager {
   private buildPreview(performanceModel: PerformanceModel): HTMLDivElement {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
     const domain = parsedURL ? parsedURL.host : '';
-    const sequenceNumber = this.nextNumberByDomain.get(domain) || 1;
-    const title = i18nString(UIStrings.sD, {PH1: domain, PH2: sequenceNumber});
-    this.nextNumberByDomain.set(domain, sequenceNumber + 1);
+    const title = performanceModel.tracingModel().title() || domain;
+
+    const sequenceNumber = this.nextNumberByDomain.get(title) || 1;
+    const titleWithSequenceNumber = i18nString(UIStrings.sD, {PH1: title, PH2: sequenceNumber});
+    this.nextNumberByDomain.set(title, sequenceNumber + 1);
     const timeElement = document.createElement('span');
 
     const preview = document.createElement('div');
     preview.classList.add('preview-item');
     preview.classList.add('vbox');
-    const data = {preview: preview, title: title, time: timeElement, lastUsed: Date.now()};
+    const data = {preview, title: titleWithSequenceNumber, time: timeElement, lastUsed: Date.now()};
     modelToPerformanceData.set(performanceModel, data);
 
     preview.appendChild(this.buildTextDetails(performanceModel, title, timeElement));

@@ -13,6 +13,7 @@ type IgnoreListArgs = {
 export class TracingModel {
   #backingStorageInternal: BackingStorage;
   readonly #shouldSaveToFile: boolean;
+  readonly #title: string|undefined;
   #firstWritePending: boolean;
   readonly #processById: Map<string|number, Process>;
   readonly #processByName: Map<string, Process>;
@@ -26,9 +27,10 @@ export class TracingModel {
   readonly #parsedCategories: Map<string, Set<string>>;
   readonly #mainFrameNavStartTimes: Map<string, Event>;
 
-  constructor(backingStorage: BackingStorage, shouldSaveToFile = true) {
+  constructor(backingStorage: BackingStorage, shouldSaveToFile = true, title?: string) {
     this.#backingStorageInternal = backingStorage;
     this.#shouldSaveToFile = shouldSaveToFile;
+    this.#title = title;
     // Avoid extra reset of the storage as it's expensive.
     this.#firstWritePending = true;
     this.#processById = new Map();
@@ -440,6 +442,10 @@ export class TracingModel {
 
   backingStorage(): BackingStorage {
     return this.#backingStorageInternal;
+  }
+
+  title(): string|undefined {
+    return this.#title;
   }
 
   parsedCategoriesForString(str: string): Set<string> {

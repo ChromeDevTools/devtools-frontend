@@ -306,6 +306,40 @@ describe('HeadersView', async () => {
     assert.strictEqual(applyTo.innerHTML, '*');
   });
 
+  it('removes the entire header when the header name is deleted', async () => {
+    const editor = await renderEditorWithinWrapper();
+    assertShadowRoot(editor.shadowRoot);
+    let rows = getRowContent(editor.shadowRoot);
+    assert.deepEqual(rows, [
+      'Apply to:*',
+      'server:DevTools Unit Test Server',
+      'access-control-allow-origin:*',
+      'Apply to:*.jpg',
+      'jpg-header:only for jpg files',
+    ]);
+
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
+    assert.strictEqual(editables.length, 8);
+
+    const headerName = editables[1] as HTMLSpanElement;
+    assert.strictEqual(headerName.innerHTML, 'server');
+
+    headerName.innerText = '';
+    dispatchInputEvent(headerName, {inputType: 'deleteContentBackward', data: null, bubbles: true});
+    assert.strictEqual(headerName.innerHTML, '');
+
+    dispatchFocusOutEvent(headerName, {bubbles: true});
+    await coordinator.done();
+
+    rows = getRowContent(editor.shadowRoot);
+    assert.deepEqual(rows, [
+      'Apply to:*',
+      'access-control-allow-origin:*',
+      'Apply to:*.jpg',
+      'jpg-header:only for jpg files',
+    ]);
+  });
+
   it('allows adding headers', async () => {
     const editor = await renderEditorWithinWrapper();
     await coordinator.done();

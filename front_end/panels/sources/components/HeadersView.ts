@@ -158,7 +158,12 @@ export class HeadersViewComponent extends HTMLElement {
       return;
     }
     const keyboardEvent = event as KeyboardEvent;
-    if (keyboardEvent.key === 'Enter') {
+    if (target.matches('.header-name') && target.innerText === '' &&
+        (keyboardEvent.key === 'Enter' || keyboardEvent.key === 'Tab')) {
+      // onFocusOut will remove the header -> blur instead of focusing on next editable
+      event.preventDefault();
+      target.blur();
+    } else if (keyboardEvent.key === 'Enter') {
       event.preventDefault();
       target.blur();
       this.#focusNext(target);
@@ -196,13 +201,16 @@ export class HeadersViewComponent extends HTMLElement {
 
   #onFocusOut(event: Event): void {
     const target = event.target as HTMLElement;
-    if (target.innerHTML === '') {
+    if (target.innerText === '') {
       const rowElement = target.closest('.row') as HTMLElement;
       const blockIndex = Number(rowElement.dataset.blockIndex);
+      const headerIndex = Number(rowElement.dataset.headerIndex);
       if (target.matches('.apply-to')) {
-        target.innerHTML = '*';
+        target.innerText = '*';
         this.#headerOverrides[blockIndex].applyTo = '*';
         this.#onHeadersChanged();
+      } else if (target.matches('.header-name')) {
+        this.#removeHeader(blockIndex, headerIndex);
       }
     }
 
@@ -232,12 +240,7 @@ export class HeadersViewComponent extends HTMLElement {
       this.#focusElement = {blockIndex, headerIndex: headerIndex + 1};
       this.#onHeadersChanged();
     } else if (target.matches('.remove-header')) {
-      this.#headerOverrides[blockIndex].headers.splice(headerIndex, 1);
-      if (this.#headerOverrides[blockIndex].headers.length === 0) {
-        this.#headerOverrides[blockIndex].headers.push(
-            {name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: 'header value'});
-      }
-      this.#onHeadersChanged();
+      this.#removeHeader(blockIndex, headerIndex);
     } else if (target.matches('.add-block')) {
       this.#headerOverrides.push({applyTo: '*', headers: [{name: 'header-name-1', value: 'header value'}]});
       this.#focusElement = {blockIndex: this.#headerOverrides.length - 1};
@@ -246,6 +249,15 @@ export class HeadersViewComponent extends HTMLElement {
       this.#headerOverrides.splice(blockIndex, 1);
       this.#onHeadersChanged();
     }
+  }
+
+  #removeHeader(blockIndex: number, headerIndex: number): void {
+    this.#headerOverrides[blockIndex].headers.splice(headerIndex, 1);
+    if (this.#headerOverrides[blockIndex].headers.length === 0) {
+      this.#headerOverrides[blockIndex].headers.push(
+          {name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: 'header value'});
+    }
+    this.#onHeadersChanged();
   }
 
   #onInput(event: Event): void {

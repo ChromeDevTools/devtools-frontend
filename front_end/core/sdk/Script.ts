@@ -203,6 +203,10 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     const {streamId, functionBodyOffsets, chunk: {lines, bytecodeOffsets}} = result;
     const lineChunks = [];
     const bytecodeOffsetChunks = [];
+    let totalLength = lines.reduce<number>((sum, line) => sum + line.length + 1, 0);
+    const truncationMessage = '<truncated>';
+    // This is a magic number used in code mirror which, when exceeded, sends it into an infinite loop.
+    const cmSizeLimit = 1000000000 - truncationMessage.length;
     if (streamId) {
       while (true) {
         const result = await this.debuggerModel.target().debuggerAgent().invoke_nextWasmDisassemblyChunk({streamId});
@@ -212,9 +216,16 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
         }
 
         const {chunk: {lines: linesChunk, bytecodeOffsets: bytecodeOffsetsChunk}} = result;
+        totalLength += linesChunk.reduce<number>((sum, line) => sum + line.length + 1, 0);
         if (linesChunk.length === 0) {
           break;
         }
+        if (totalLength >= cmSizeLimit) {
+          lineChunks.push([truncationMessage]);
+          bytecodeOffsetChunks.push([0]);
+          break;
+        }
+
         lineChunks.push(linesChunk);
         bytecodeOffsetChunks.push(bytecodeOffsetsChunk);
       }

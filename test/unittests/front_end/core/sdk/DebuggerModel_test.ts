@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {
@@ -12,6 +14,7 @@ import {
   dispatchEvent,
   setMockConnectionResponseHandler,
 } from '../../helpers/MockConnection.js';
+import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
 
 const {assert} = chai;
 
@@ -19,11 +22,6 @@ const SCRIPT_ID_ONE = '1' as Protocol.Runtime.ScriptId;
 const SCRIPT_ID_TWO = '2' as Protocol.Runtime.ScriptId;
 
 describeWithMockConnection('DebuggerModel', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
   describe('createRawLocationFromURL', () => {
     it('yields correct location in the presence of multiple scripts with the same URL', async () => {
       const target = createTarget();
@@ -140,7 +138,7 @@ describeWithMockConnection('DebuggerModel', () => {
   describe('Scope', () => {
     it('Scope.typeName covers every enum value', async () => {
       const target = createTarget();
-      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDKModule.DebuggerModel.DebuggerModel;
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
       const scriptUrl = 'https://script-host/script.js' as Platform.DevToolsPath.UrlString;
       const script = new SDK.Script.Script(
           debuggerModel, SCRIPT_ID_ONE, scriptUrl, 0, 0, 0, 0, 0, '', false, false, undefined, false, 0, null, null,
@@ -182,14 +180,37 @@ describeWithMockConnection('DebuggerModel', () => {
       }
     });
   });
+
+  describe('pause', () => {
+    let target: SDK.Target.Target;
+    let backend: MockProtocolBackend;
+    let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+
+    beforeEach(() => {
+      target = createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.Frame});
+      const targetManager = target.targetManager();
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+      debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
+          {forceNew: false, resourceMapping, targetManager});
+      backend = new MockProtocolBackend();
+      Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: false, debuggerWorkspaceBinding});
+    });
+
+    it('with empty call frame list will invoke plain step-into', async () => {
+      const stepIntoRequestPromise = new Promise<void>(resolve => {
+        setMockConnectionResponseHandler('Debugger.stepInto', () => {
+          resolve();
+          return {};
+        });
+      });
+      backend.dispatchDebuggerPauseWithNoCallFrames(target, Protocol.Debugger.PausedEventReason.Other);
+      await stepIntoRequestPromise;
+    });
+  });
 });
 
 describeWithEnvironment('LocationRanges', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
   function createRange(
       scriptId: Protocol.Runtime.ScriptId, startLine: number, startColumn: number, endLine: number, endColumn: number) {
     return new SDK.DebuggerModel.LocationRange(
@@ -197,15 +218,15 @@ describeWithEnvironment('LocationRanges', () => {
         new SDK.DebuggerModel.ScriptPosition(endLine, endColumn));
   }
 
-  function sort(locationRange: SDKModule.DebuggerModel.LocationRange[]) {
+  function sort(locationRange: SDK.DebuggerModel.LocationRange[]) {
     return locationRange.concat().sort(SDK.DebuggerModel.LocationRange.comparator);
   }
 
-  function sortAndMerge(locationRange: SDKModule.DebuggerModel.LocationRange[]) {
+  function sortAndMerge(locationRange: SDK.DebuggerModel.LocationRange[]) {
     return SDK.DebuggerModel.sortAndMergeRanges(locationRange.concat());
   }
 
-  function checkIsMaximallyMerged(locationRange: SDKModule.DebuggerModel.LocationRange[]) {
+  function checkIsMaximallyMerged(locationRange: SDK.DebuggerModel.LocationRange[]) {
     for (let i = 1; i < locationRange.length; ++i) {
       assert.isTrue(locationRange[i - 1].compareTo(locationRange[i]) < 0);
     }

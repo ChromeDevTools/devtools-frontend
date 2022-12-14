@@ -399,7 +399,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       start: Location,
       end: Location,
     }[] = [];
-    if (this.#computeAutoStepRangesCallback && this.#debuggerPausedDetailsInternal) {
+    if (this.#computeAutoStepRangesCallback && this.#debuggerPausedDetailsInternal &&
+        this.#debuggerPausedDetailsInternal.callFrames.length > 0) {
       const [callFrame] = this.#debuggerPausedDetailsInternal.callFrames;
       ranges = await this.#computeAutoStepRangesCallback.call(null, mode, callFrame);
     }

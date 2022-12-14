@@ -75,6 +75,17 @@ export class MockProtocolBackend {
     );
   }
 
+  dispatchDebuggerPauseWithNoCallFrames(target: SDK.Target.Target, reason: Protocol.Debugger.PausedEventReason): void {
+    dispatchEvent(
+        target,
+        'Debugger.paused',
+        {
+          callFrames: [],
+          reason,
+        },
+    );
+  }
+
   async addScript(target: SDK.Target.Target, scriptDescription: ScriptDescription, sourceMap: {
     url: string,
     content: string,

@@ -172,7 +172,7 @@ export class HeadersViewComponent extends HTMLElement {
       event.consume();
       target.innerText = this.#textOnFocusIn;
       target.blur();
-      this.#onInput(event);
+      this.#onChange(target);
     }
   }
 
@@ -262,7 +262,10 @@ export class HeadersViewComponent extends HTMLElement {
   }
 
   #onInput(event: Event): void {
-    const target = event.target as HTMLElement;
+    this.#onChange(event.target as HTMLElement);
+  }
+
+  #onChange(target: HTMLElement): void {
     const rowElement = target.closest('.row') as HTMLElement;
     const blockIndex = Number(rowElement.dataset.blockIndex);
     const headerIndex = Number(rowElement.dataset.headerIndex);
@@ -304,7 +307,7 @@ export class HeadersViewComponent extends HTMLElement {
       selection?.removeAllRanges();
       selection?.addRange(range);
 
-      this.#onInput(event);
+      this.#onChange(event.target as HTMLElement);
     }
   }
 

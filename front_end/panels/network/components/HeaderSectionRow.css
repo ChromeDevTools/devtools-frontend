@@ -36,6 +36,7 @@
 }
 
 .header-value {
+  display: flex;
   word-break: break-all;
 }
 

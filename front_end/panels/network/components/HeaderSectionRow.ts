@@ -242,7 +242,7 @@ export class HeaderSectionRow extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       return html`
-        <${IconButton.Icon.Icon.litTagName} class="inline-icon" title=${titleText} .data=${{
+        <${IconButton.Icon.Icon.litTagName} class="row-flex-icon" title=${titleText} .data=${{
             iconName: 'clear-warning_icon',
             width: '12px',
             height: '12px',

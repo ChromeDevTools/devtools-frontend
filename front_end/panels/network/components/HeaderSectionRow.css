@@ -100,6 +100,10 @@
   vertical-align: middle;
 }
 
+.row-flex-icon {
+  margin: 4px 5px 0;
+}
+
 .header-value code {
   display: block;
   white-space: pre-wrap;

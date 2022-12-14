@@ -82,6 +82,7 @@
 .styles-section .styles-section-subtitle .devtools-link {
   color: var(--color-text-primary);
   text-decoration-color: hsl(0deg 0% 60%);
+  outline-offset: 0;
 }
 
 .styles-section .selector {

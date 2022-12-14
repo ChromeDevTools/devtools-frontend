@@ -3038,6 +3038,11 @@ declare namespace ProtocolProxyApi {
     invoke_getInfo(): Promise<Protocol.SystemInfo.GetInfoResponse>;
 
     /**
+     * Returns information about the feature state.
+     */
+    invoke_getFeatureState(params: Protocol.SystemInfo.GetFeatureStateRequest): Promise<Protocol.SystemInfo.GetFeatureStateResponse>;
+
+    /**
      * Returns information about all running processes.
      */
     invoke_getProcessInfo(): Promise<Protocol.SystemInfo.GetProcessInfoResponse>;

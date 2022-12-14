@@ -838,14 +838,14 @@ experimental domain Audits
     enum
       ShouldEmbargo
       TooManyRequests
-      ManifestListHttpNotFound
-      ManifestListNoResponse
-      ManifestListInvalidResponse
-      ManifestNotInManifestList
-      ManifestListTooBig
-      ManifestHttpNotFound
-      ManifestNoResponse
-      ManifestInvalidResponse
+      WellKnownHttpNotFound
+      WellKnownNoResponse
+      WellKnownInvalidResponse
+      ConfigNotInWellKnown
+      WellKnownTooBig
+      ConfigHttpNotFound
+      ConfigNoResponse
+      ConfigInvalidResponse
       ClientMetadataHttpNotFound
       ClientMetadataNoResponse
       ClientMetadataInvalidResponse
@@ -3897,7 +3897,6 @@ domain Emulation
   experimental type DisabledImageType extends string
     enum
       avif
-      jxl
       webp
 
   experimental command setDisabledImageTypes
@@ -7220,6 +7219,7 @@ domain Page
       serial
       shared-autofill
       shared-storage
+      smart-card
       storage-access
       sync-xhr
       trust-token-redemption
@@ -8547,6 +8547,8 @@ domain Page
       SameSiteCrossOriginRedirectNotOptIn
       SameSiteCrossOriginNavigationNotOptIn
       ActivationNavigationParameterMismatch
+      ActivatedInBackground
+      EmbedderHostDisallowed
 
   # Fired when a prerender attempt is completed.
   experimental event prerenderAttemptCompleted
@@ -9568,6 +9570,13 @@ experimental domain SystemInfo
       # The command line string used to launch the browser. Will be the empty string if not
       # supported.
       string commandLine
+
+  # Returns information about the feature state.
+  command getFeatureState
+    parameters
+      string featureState
+    returns
+      boolean featureEnabled
 
   # Returns information about all running processes.
   command getProcessInfo

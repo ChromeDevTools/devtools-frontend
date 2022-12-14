@@ -606,6 +606,14 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "auto",
+   "first",
+   "last"
+  ],
+  "name": "baseline-source"
+ },
+ {
+  "keywords": [
    "auto"
   ],
   "name": "block-size"
@@ -1569,6 +1577,7 @@ export const generatedProperties = [
    "font-variant-numeric",
    "font-variant-east-asian",
    "font-variant-alternates",
+   "font-variant-position",
    "font-weight",
    "font-stretch",
    "font-size",
@@ -1705,7 +1714,8 @@ export const generatedProperties = [
    "font-variant-caps",
    "font-variant-alternates",
    "font-variant-numeric",
-   "font-variant-east-asian"
+   "font-variant-east-asian",
+   "font-variant-position"
   ],
   "name": "font-variant"
  },
@@ -2099,10 +2109,6 @@ export const generatedProperties = [
    "normal"
   ],
   "name": "line-height"
- },
- {
-  "inherited": true,
-  "name": "line-height-step"
  },
  {
   "inherited": true,
@@ -3793,6 +3799,13 @@ export const generatedPropertyValues = {
    "baseline",
    "sub",
    "super"
+  ]
+ },
+ "baseline-source": {
+  "values": [
+   "auto",
+   "first",
+   "last"
   ]
  },
  "block-size": {

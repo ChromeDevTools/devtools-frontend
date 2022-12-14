@@ -1660,14 +1660,14 @@
                     "enum": [
                         "ShouldEmbargo",
                         "TooManyRequests",
-                        "ManifestListHttpNotFound",
-                        "ManifestListNoResponse",
-                        "ManifestListInvalidResponse",
-                        "ManifestNotInManifestList",
-                        "ManifestListTooBig",
-                        "ManifestHttpNotFound",
-                        "ManifestNoResponse",
-                        "ManifestInvalidResponse",
+                        "WellKnownHttpNotFound",
+                        "WellKnownNoResponse",
+                        "WellKnownInvalidResponse",
+                        "ConfigNotInWellKnown",
+                        "WellKnownTooBig",
+                        "ConfigHttpNotFound",
+                        "ConfigNoResponse",
+                        "ConfigInvalidResponse",
                         "ClientMetadataHttpNotFound",
                         "ClientMetadataNoResponse",
                         "ClientMetadataInvalidResponse",
@@ -8060,7 +8060,6 @@
                     "type": "string",
                     "enum": [
                         "avif",
-                        "jxl",
                         "webp"
                     ]
                 }
@@ -15372,6 +15371,7 @@
                         "serial",
                         "shared-autofill",
                         "shared-storage",
+                        "smart-card",
                         "storage-access",
                         "sync-xhr",
                         "trust-token-redemption",
@@ -16432,7 +16432,9 @@
                         "SameSiteCrossOriginNavigation",
                         "SameSiteCrossOriginRedirectNotOptIn",
                         "SameSiteCrossOriginNavigationNotOptIn",
-                        "ActivationNavigationParameterMismatch"
+                        "ActivationNavigationParameterMismatch",
+                        "ActivatedInBackground",
+                        "EmbedderHostDisallowed"
                     ]
                 }
             ],
@@ -20248,6 +20250,22 @@
                             "name": "commandLine",
                             "description": "The command line string used to launch the browser. Will be the empty string if not\nsupported.",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "getFeatureState",
+                    "description": "Returns information about the feature state.",
+                    "parameters": [
+                        {
+                            "name": "featureState",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "featureEnabled",
+                            "type": "boolean"
                         }
                     ]
                 },

@@ -1111,14 +1111,14 @@ export namespace Audits {
   export const enum FederatedAuthRequestIssueReason {
     ShouldEmbargo = 'ShouldEmbargo',
     TooManyRequests = 'TooManyRequests',
-    ManifestListHttpNotFound = 'ManifestListHttpNotFound',
-    ManifestListNoResponse = 'ManifestListNoResponse',
-    ManifestListInvalidResponse = 'ManifestListInvalidResponse',
-    ManifestNotInManifestList = 'ManifestNotInManifestList',
-    ManifestListTooBig = 'ManifestListTooBig',
-    ManifestHttpNotFound = 'ManifestHttpNotFound',
-    ManifestNoResponse = 'ManifestNoResponse',
-    ManifestInvalidResponse = 'ManifestInvalidResponse',
+    WellKnownHttpNotFound = 'WellKnownHttpNotFound',
+    WellKnownNoResponse = 'WellKnownNoResponse',
+    WellKnownInvalidResponse = 'WellKnownInvalidResponse',
+    ConfigNotInWellKnown = 'ConfigNotInWellKnown',
+    WellKnownTooBig = 'WellKnownTooBig',
+    ConfigHttpNotFound = 'ConfigHttpNotFound',
+    ConfigNoResponse = 'ConfigNoResponse',
+    ConfigInvalidResponse = 'ConfigInvalidResponse',
     ClientMetadataHttpNotFound = 'ClientMetadataHttpNotFound',
     ClientMetadataNoResponse = 'ClientMetadataNoResponse',
     ClientMetadataInvalidResponse = 'ClientMetadataInvalidResponse',
@@ -5307,7 +5307,6 @@ export namespace Emulation {
    */
   export const enum DisabledImageType {
     Avif = 'avif',
-    Jxl = 'jxl',
     Webp = 'webp',
   }
 
@@ -10444,6 +10443,7 @@ export namespace Page {
     Serial = 'serial',
     SharedAutofill = 'shared-autofill',
     SharedStorage = 'shared-storage',
+    SmartCard = 'smart-card',
     StorageAccess = 'storage-access',
     SyncXhr = 'sync-xhr',
     TrustTokenRedemption = 'trust-token-redemption',
@@ -11238,6 +11238,8 @@ export namespace Page {
     SameSiteCrossOriginRedirectNotOptIn = 'SameSiteCrossOriginRedirectNotOptIn',
     SameSiteCrossOriginNavigationNotOptIn = 'SameSiteCrossOriginNavigationNotOptIn',
     ActivationNavigationParameterMismatch = 'ActivationNavigationParameterMismatch',
+    ActivatedInBackground = 'ActivatedInBackground',
+    EmbedderHostDisallowed = 'EmbedderHostDisallowed',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {
@@ -13689,6 +13691,14 @@ export namespace SystemInfo {
      * supported.
      */
     commandLine: string;
+  }
+
+  export interface GetFeatureStateRequest {
+    featureState: string;
+  }
+
+  export interface GetFeatureStateResponse extends ProtocolResponseWithError {
+    featureEnabled: boolean;
   }
 
   export interface GetProcessInfoResponse extends ProtocolResponseWithError {

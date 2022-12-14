@@ -3607,6 +3607,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.SystemInfo.GetInfoResponse;
     };
     /**
+     * Returns information about the feature state.
+     */
+    'SystemInfo.getFeatureState': {
+      paramsType: [Protocol.SystemInfo.GetFeatureStateRequest];
+      returnType: Protocol.SystemInfo.GetFeatureStateResponse;
+    };
+    /**
      * Returns information about all running processes.
      */
     'SystemInfo.getProcessInfo': {

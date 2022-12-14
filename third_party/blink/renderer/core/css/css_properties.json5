@@ -1364,6 +1364,7 @@
       font: true,
       name_for_methods: "VariantPosition",
       type_name: "FontDescription::FontVariantPosition",
+      converter: "ConvertFontVariantPosition",
       priority: "High",
       keywords: ["normal", "sub", "super"],
       typedom_types: ["Keyword"],
@@ -1805,6 +1806,16 @@
       style_builder_custom_functions: ["inherit", "value"],
       keywords: ["baseline", "sub", "super"],
       typedom_types: ["Keyword", "Percentage", "Length"],
+    },
+    {
+      name: "baseline-source",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      field_group: "box",
+      field_template: "keyword",
+      default_value: "auto",
+      keywords: ["auto", "first", "last"],
+      typedom_types: ["Keyword"],
+      runtime_flag: "CSSBaselineSource",
     },
     {
       name: "border-bottom-color",
@@ -3118,18 +3129,6 @@
       valid_for_first_line: true,
       valid_for_cue: true,
       valid_for_marker: true,
-    },
-    {
-      name: "line-height-step",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      inherited: true,
-      runtime_flag: "CSSSnapSize",
-      field_group: "*",
-      field_template: "primitive",
-      default_value: "0",
-      type_name: "uint8_t",
-      converter: "ConvertComputedLength<uint8_t>",
-      typedom_types: ["Length"],
     },
     {
       name: "list-style-image",
@@ -6794,16 +6793,18 @@
       name: "font",
       longhands: [
         "font-style", "font-variant-ligatures", "font-variant-caps",
-        "font-variant-numeric", "font-variant-east-asian", "font-variant-alternates", "font-weight",
-        "font-stretch", "font-size", "line-height", "font-family"
+        "font-variant-numeric", "font-variant-east-asian", "font-variant-alternates",
+        "font-variant-position", "font-weight", "font-stretch", "font-size",
+        "line-height", "font-family"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
     },
     {
       name: "font-variant",
       longhands: [
-        "font-variant-ligatures", "font-variant-caps", "font-variant-alternates",
-        "font-variant-numeric", "font-variant-east-asian"
+        "font-variant-ligatures", "font-variant-caps",
+        "font-variant-alternates", "font-variant-numeric",
+        "font-variant-east-asian", "font-variant-position"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       is_descriptor: true,

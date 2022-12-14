@@ -29,6 +29,7 @@
   width: 160px;
   flex-shrink: 0;
   text-transform: capitalize;
+  overflow-wrap: break-word;
 }
 
 .header-editable .header-name {
@@ -37,7 +38,7 @@
 
 .header-value {
   display: flex;
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .header-badge-text {

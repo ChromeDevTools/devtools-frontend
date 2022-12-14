@@ -93,6 +93,20 @@ function acceptCompletionIfNotConservative(view: CM.EditorView): boolean {
   return !view.state.field(conservativeCompletion, false) && CM.acceptCompletion(view);
 }
 
+function acceptCompletionIfAtEndOfLine(view: CM.EditorView): boolean {
+  const cursorPosition = view.state.selection.main.head;
+  const line = view.state.doc.lineAt(cursorPosition);
+  const column = cursorPosition - line.from;
+  const isCursorAtEndOfLine = column >= line.length;
+  if (isCursorAtEndOfLine) {
+    return CM.acceptCompletion(view);
+  }
+
+  // We didn't handle this key press
+  // so it will be handled by default behavior.
+  return false;
+}
+
 export const autocompletion = new DynamicSetting<boolean>(
     'textEditorAutocompletion',
     (activateOnTyping: boolean): CM.Extension =>
@@ -103,22 +117,8 @@ export const autocompletion = new DynamicSetting<boolean>(
           defaultKeymap: false,
         }),
          CM.Prec.highest(CM.keymap.of([
-           {
-             key: 'ArrowRight',
-             run: (editorView: CM.EditorView): boolean => {
-               const cursorPosition = editorView.state.selection.main.head;
-               const line = editorView.state.doc.lineAt(cursorPosition);
-               const column = cursorPosition - line.from;
-               const isCursorAtEndOfLine = column >= line.length;
-               if (isCursorAtEndOfLine) {
-                 return CM.acceptCompletion(editorView);
-               }
-
-               // We didn't handle this key press
-               // so it will be handled by default behavior.
-               return false;
-             },
-           },
+           {key: 'End', run: acceptCompletionIfAtEndOfLine},
+           {key: 'ArrowRight', run: acceptCompletionIfAtEndOfLine},
            {key: 'Ctrl-Space', run: CM.startCompletion},
            {key: 'Escape', run: CM.closeCompletion},
            {key: 'ArrowDown', run: CM.moveCompletionSelection(true)},
@@ -254,7 +254,6 @@ function detectLineSeparator(text: string): CM.Extension {
 
 const baseKeymap = CM.keymap.of([
   {key: 'Tab', run: CM.acceptCompletion},
-  {key: 'End', run: CM.acceptCompletion},
   {key: 'Ctrl-m', run: CM.cursorMatchingBracket, shift: CM.selectMatchingBracket},
   {key: 'Mod-/', run: CM.toggleComment},
   {key: 'Mod-d', run: CM.selectNextOccurrence},

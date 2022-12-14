@@ -4,12 +4,11 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
-import * as Formatter from '../../../models/formatter/formatter.js';
 import * as JavaScriptMetaData from '../../../models/javascript_metadata/javascript_metadata.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
 
-import {type ArgumentHintsTooltip, closeTooltip, cursorTooltip} from './cursor_tooltip.js';
+import {closeTooltip, cursorTooltip, type ArgumentHintsTooltip} from './cursor_tooltip.js';
 
 export function completion(): CodeMirror.Extension {
   return CodeMirror.javascript.javascriptLanguage.data.of({
@@ -219,7 +218,9 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
   return {
     from: query.from ?? cx.pos,
     options: result.completions,
-    validFor: !quote ? SPAN_IDENT : quote === '\'' ? SPAN_SINGLE_QUOTE : SPAN_DOUBLE_QUOTE,
+    validFor: !quote   ? SPAN_IDENT :
+        quote === '\'' ? SPAN_SINGLE_QUOTE :
+                         SPAN_DOUBLE_QUOTE,
   };
 }
 
@@ -531,6 +532,84 @@ async function getArgumentsForExpression(
       .finally(() => context.runtimeModel.releaseObjectGroup('argumentsHint'));
 }
 
+export function argumentsList(input: string): string[] {
+  function parseParamList(input: string, cursor: CodeMirror.TreeCursor): string[] {
+    while (cursor.name !== 'ParamList' && cursor.nextSibling()) {
+    }
+    const parameters = [];
+    if (cursor.name === 'ParamList' && cursor.firstChild()) {
+      let prefix = '';
+      do {
+        switch (cursor.name as string) {
+          case 'ArrayPattern':
+            parameters.push(prefix + 'arr');
+            prefix = '';
+            break;
+          case 'ObjectPattern':
+            parameters.push(prefix + 'obj');
+            prefix = '';
+            break;
+          case 'VariableDefinition':
+            parameters.push(prefix + input.slice(cursor.from, cursor.to));
+            prefix = '';
+            break;
+          case 'Spread':
+            prefix = '...';
+            break;
+        }
+      } while (cursor.nextSibling());
+    }
+    return parameters;
+  }
+  function tryParseAsExpression(expression: string): string[]|null {
+    const input = `(${expression})`;
+    const cursor = CodeMirror.javascript.javascriptLanguage.parser.parse(input).cursor();
+    if (cursor.name !== 'Script' || !cursor.firstChild() || cursor.name as string !== 'ExpressionStatement' ||
+        !cursor.firstChild() || cursor.name as string !== 'ParenthesizedExpression' || !cursor.firstChild() ||
+        cursor.name as string !== '(' || !cursor.nextSibling()) {
+      return null;
+    }
+    if ((cursor.name as string === 'ArrowFunction' || cursor.name as string === 'FunctionExpression') &&
+        cursor.firstChild()) {
+      return parseParamList(input, cursor);
+    }
+    if (cursor.name as string === 'ClassExpression' && cursor.firstChild()) {
+      while (cursor.nextSibling() && cursor.name as string !== 'ClassBody') {
+      }
+      if (cursor.name as string === 'ClassBody' && cursor.firstChild()) {
+        do {
+          if (cursor.name as string === 'MethodDeclaration' && cursor.firstChild()) {
+            if (cursor.name as string === 'PropertyDefinition' &&
+                input.slice(cursor.from, cursor.to) === 'constructor') {
+              return parseParamList(input, cursor);
+            }
+            cursor.parent();
+          }
+        } while (cursor.nextSibling());
+      }
+      return [];
+    }
+    return null;
+  }
+  function tryParseAsMethod(method: string): string[]|null {
+    const input = `({${method}})`;
+    const cursor = CodeMirror.javascript.javascriptLanguage.parser.parse(input).cursor();
+    if (cursor.name !== 'Script' || !cursor.firstChild() || cursor.name as string !== 'ExpressionStatement' ||
+        !cursor.firstChild() || cursor.name as string !== 'ParenthesizedExpression' || !cursor.firstChild() ||
+        cursor.name as string !== '(' || !cursor.nextSibling()) {
+      return null;
+    }
+    if (cursor.name as string === 'ObjectExpression' && cursor.firstChild() && cursor.name as string === '{' &&
+        cursor.nextSibling() && cursor.name as string === 'Property' && cursor.firstChild()) {
+      return parseParamList(input, cursor);
+    }
+    return null;
+  }
+  // First if the |input| can be parsed as a method (by embedding it into an object literal),
+  // otherwise fall back to parsing as an expression (by putting parens around it).
+  return tryParseAsMethod(input) || tryParseAsExpression(input) || [];
+}
+
 async function getArgumentsForFunctionValue(
     object: SDK.RemoteObject.RemoteObject,
     receiverObjGetter: () => Promise<SDK.RemoteObject.RemoteObject|null>,
@@ -541,7 +620,7 @@ async function getArgumentsForFunctionValue(
     return null;
   }
   if (!description.endsWith('{ [native code] }')) {
-    return [await Formatter.FormatterWorkerPool.formatterWorkerPool().argumentsList(description)];
+    return [argumentsList(description)];
   }
 
   // Check if this is a bound function.

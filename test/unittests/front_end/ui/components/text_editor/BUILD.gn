@@ -6,7 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("text_editor") {
   testonly = true
-  sources = [ "TextEditor_test.ts" ]
+  sources = [
+    "TextEditor_test.ts",
+    "javascript_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/core/common:bundle",

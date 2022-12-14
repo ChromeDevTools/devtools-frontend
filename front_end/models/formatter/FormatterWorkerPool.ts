@@ -153,10 +153,6 @@ export class FormatterWorkerPool {
       callback(isLastChunk, rules);
     }
   }
-
-  argumentsList(content: string): Promise<string[]> {
-    return this.runTask(FormatterActions.FormatterActions.ARGUMENTS_LIST, {content}) as Promise<string[]>;
-  }
 }
 
 class Task {

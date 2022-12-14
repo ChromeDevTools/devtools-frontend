@@ -450,7 +450,9 @@ export class ContextMenu extends SubMenu {
       this.softMenu = new SoftContextMenu(
           (menuObject as SoftContextMenuDescriptor[]), this.itemSelected.bind(this), undefined, this.onSoftMenuClosed);
       // let soft context menu focus on the first item when the event is triggered by a non-mouse event
-      const isMouseEvent = (this.event as PointerEvent).pointerType === 'mouse';
+      // add another check of button value to differentiate mouse event with 'shift + f10' keyboard event
+      const isMouseEvent =
+          (this.event as PointerEvent).pointerType === 'mouse' && (this.event as PointerEvent).button >= 0;
       this.softMenu.setFocusOnTheFirstItem(!isMouseEvent);
       this.softMenu.show((ownerDocument as Document), new AnchorBox(this.x, this.y, 0, 0));
       if (this.contextMenuLabel) {

@@ -191,7 +191,7 @@ describe('HeadersView', async () => {
       'jpg-header:only for jpg files',
     ]);
 
-    const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
     await changeEditable(editables[0] as HTMLElement, 'index.html');
     await changeEditable(editables[1] as HTMLElement, 'content-type');
     await changeEditable(editables[4] as HTMLElement, 'example.com');
@@ -242,7 +242,7 @@ describe('HeadersView', async () => {
   it('selects the whole content when clicking on an editable field', async () => {
     const editor = await renderEditor();
     assertShadowRoot(editor.shadowRoot);
-    const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
 
     let element = editables[0] as HTMLElement;
     element.focus();
@@ -260,7 +260,7 @@ describe('HeadersView', async () => {
   it('un-selects the content when an editable field loses focus', async () => {
     const editor = await renderEditor();
     assertShadowRoot(editor.shadowRoot);
-    const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
 
     const element = editables[0] as HTMLElement;
     element.focus();
@@ -272,7 +272,7 @@ describe('HeadersView', async () => {
   it('handles pressing \'Enter\' key by removing focus and moving it to the next field if possible', async () => {
     const editor = await renderEditor();
     assertShadowRoot(editor.shadowRoot);
-    const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
     assert.strictEqual(editables.length, 8);
 
     const lastHeaderName = editables[6] as HTMLSpanElement;
@@ -297,7 +297,7 @@ describe('HeadersView', async () => {
   it('sets empty \'ApplyTo\' to \'*\'', async () => {
     const editor = await renderEditor();
     assertShadowRoot(editor.shadowRoot);
-    const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
     assert.strictEqual(editables.length, 8);
 
     const applyTo = editables[5] as HTMLSpanElement;
@@ -371,7 +371,7 @@ describe('HeadersView', async () => {
       'jpg-header:only for jpg files',
     ]);
 
-    const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
     await changeEditable(editables[3] as HTMLElement, 'cache-control');
     await changeEditable(editables[4] as HTMLElement, 'max-age=1000');
 
@@ -416,7 +416,7 @@ describe('HeadersView', async () => {
       'header-name-1:header value',
     ]);
 
-    const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
     await changeEditable(editables[8] as HTMLElement, 'articles/*');
     await changeEditable(editables[9] as HTMLElement, 'cache-control');
     await changeEditable(editables[10] as HTMLElement, 'max-age=1000');
@@ -494,7 +494,7 @@ describe('HeadersView', async () => {
   it('removes formatting for pasted content', async () => {
     const editor = await renderEditor();
     assertShadowRoot(editor.shadowRoot);
-    const editables = editor.shadowRoot?.querySelectorAll('.editable');
+    const editables = editor.shadowRoot.querySelectorAll('.editable');
     assert.strictEqual(editables.length, 8);
     assert.deepEqual(getSingleRowContent(editor.shadowRoot, 2), 'access-control-allow-origin:*');
 

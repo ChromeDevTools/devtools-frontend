@@ -563,6 +563,14 @@ const formatName = (name) => {
       assert.deepEqual(typeScriptOutline('interface IFoo { name(): string; }'), []);
     });
 
+    it('for class expressions after extends', () => {
+      const outline = typeScriptOutline('class A extends class { foo() } { bar() }');
+      assert.lengthOf(outline, 3);
+      assert.strictEqual(outline[0].title, 'class A');
+      assert.strictEqual(outline[1].title, 'foo');
+      assert.strictEqual(outline[2].title, 'bar');
+    });
+
     describe('when using decorators', () => {
       it('on classes', () => {
         assert.deepEqual(

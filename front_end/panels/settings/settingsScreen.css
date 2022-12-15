@@ -189,6 +189,7 @@ label {
 .settings-experiment .devtools-link {
   display: flex !important; /* stylelint-disable-line declaration-no-important */
   align-items: center;
+  min-width: min-content;
 }
 
 .settings-experiment .link-icon {

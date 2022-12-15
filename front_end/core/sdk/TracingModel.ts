@@ -198,7 +198,7 @@ export class TracingModel {
     // We do allow records for unrelated threads to arrive out-of-order,
     // so there's a chance we're getting records from the past.
     if (timestamp && timestamp < this.#minimumRecordTimeInternal &&
-        (payload.ph === phase.Begin || payload.ph === phase.Complete || payload.ph === phase.Instant) &&
+        eventPhasesOfInterestForTraceBounds.has(payload.ph) &&
         // UMA related events are ignored when calculating the minimumRecordTime because they might
         // be related to previous navigations that happened before the current trace started and
         // will currently not be displayed anyways.
@@ -231,8 +231,10 @@ export class TracingModel {
       }
     }
 
-    const endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
-    this.#maximumRecordTimeInternal = Math.max(this.#maximumRecordTimeInternal, endTimeStamp);
+    if (eventPhasesOfInterestForTraceBounds.has(payload.ph)) {
+      const endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
+      this.#maximumRecordTimeInternal = Math.max(this.#maximumRecordTimeInternal, endTimeStamp);
+    }
     const event = process.addEvent(payload);
     if (!event) {
       return;
@@ -482,6 +484,13 @@ export enum Phase {
   SnapshotObject = 'O',
   DeleteObject = 'D',
 }
+
+export const eventPhasesOfInterestForTraceBounds: Set<string> = new Set([
+  Phase.Begin,
+  Phase.End,
+  Phase.Complete,
+  Phase.Instant,
+]);
 
 export const MetadataEvent = {
   ProcessSortIndex: 'process_sort_index',

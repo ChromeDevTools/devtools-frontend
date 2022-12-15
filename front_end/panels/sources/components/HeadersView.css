@@ -40,7 +40,7 @@
 .editable {
   cursor: text;
   color: var(--color-text-primary);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   min-height: 18px;
   line-height: 18px;
   min-width: 0.5em;
@@ -97,4 +97,9 @@
 
 .add-block {
   margin-top: 3px;
+}
+
+.header-name,
+.header-value {
+  min-width: min-content;
 }

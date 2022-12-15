@@ -4496,6 +4496,11 @@ interface CompletionConfig {
     */
     aboveCursor?: boolean;
     /**
+    When given, this may return an additional CSS class to add to
+    the completion dialog element.
+    */
+    tooltipClass?: (state: EditorState) => string;
+    /**
     This can be used to add additional CSS classes to completion
     options.
     */

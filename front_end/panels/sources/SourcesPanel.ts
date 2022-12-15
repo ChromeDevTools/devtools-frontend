@@ -1063,7 +1063,12 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   private showFunctionDefinition(remoteObject: SDK.RemoteObject.RemoteObject): void {
-    void remoteObject.debuggerModel().functionDetailsPromise(remoteObject).then(this.didGetFunctionDetails.bind(this));
+    void SDK.RemoteObject.RemoteFunction.objectAsFunction(remoteObject)
+        .targetFunction()
+        .then(
+            targetFunction => targetFunction.debuggerModel()
+                                  .functionDetailsPromise(targetFunction)
+                                  .then(this.didGetFunctionDetails.bind(this)));
   }
 
   private async didGetFunctionDetails(response: {

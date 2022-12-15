@@ -742,9 +742,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return section.element;
   }
 
-  private formatParameterAsFunction(func: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
+  private formatParameterAsFunction(originalFunction: SDK.RemoteObject.RemoteObject, includePreview?: boolean):
+      HTMLElement {
     const result = document.createElement('span');
-    void SDK.RemoteObject.RemoteFunction.objectAsFunction(func).targetFunction().then(formatTargetFunction.bind(this));
+    void SDK.RemoteObject.RemoteFunction.objectAsFunction(originalFunction)
+        .targetFunction()
+        .then(formatTargetFunction.bind(this));
     return result;
 
     function formatTargetFunction(this: ConsoleViewMessage, targetFunction: SDK.RemoteObject.RemoteObject): void {
@@ -752,11 +755,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const promise = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.formatObjectAsFunction(
           targetFunction, functionElement, true, includePreview);
       result.appendChild(functionElement);
-      if (targetFunction !== func) {
+      if (targetFunction !== originalFunction) {
         const note = result.createChild('span', 'object-state-note info-note');
         UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.functionWasResolvedFromBound));
       }
-      result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, targetFunction), false);
+      result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, originalFunction), false);
       void promise.then(() => this.formattedParameterAsFunctionForTest());
     }
   }

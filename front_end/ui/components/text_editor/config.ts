@@ -114,6 +114,9 @@ export const autocompletion = new DynamicSetting<boolean>(
           activateOnTyping,
           icons: false,
           optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
+          tooltipClass: (state: CM.EditorState): string => {
+            return state.field(conservativeCompletion, false) ? 'cm-conservativeCompletion' : '';
+          },
           defaultKeymap: false,
         }),
          CM.Prec.highest(CM.keymap.of([

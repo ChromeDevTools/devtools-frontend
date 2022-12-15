@@ -139,9 +139,13 @@ export const editorTheme = CM.EditorView.theme({
     backgroundColor: 'var(--color-background)',
     maxHeight: '25em',
     minWidth: '16em',
+    '& > li': {
+      border: '1px solid var(--color-background)',
+    },
     '& > li.cm-secondaryCompletion': {
       display: 'flex',
       backgroundColor: 'var(--color-background-elevation-1)',
+      borderColor: 'var(--color-background-elevation-1)',
       justifyContent: 'space-between',
       '&::before': {
         content: '">"',
@@ -155,9 +159,18 @@ export const editorTheme = CM.EditorView.theme({
     },
     '& > li[aria-selected]': {
       backgroundColor: 'var(--color-selected-option-background)',
+      borderColor: 'var(--color-selected-option-background)',
       '&, &.cm-secondaryCompletion::before': {
         color: 'var(--color-selected-option)',
       },
+    },
+  },
+
+  '.cm-tooltip.cm-tooltip-autocomplete.cm-conservativeCompletion > ul > li[aria-selected]': {
+    backgroundColor: 'var(--color-background)',
+    border: '1px dotted var(--color-text-primary)',
+    '&, &.cm-secondaryCompletion::before': {
+      color: 'var(--color-text-primary)',
     },
   },
 

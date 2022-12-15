@@ -1534,7 +1534,8 @@
                     "id": "GenericIssueErrorType",
                     "type": "string",
                     "enum": [
-                        "CrossOriginPortalPostMessageError"
+                        "CrossOriginPortalPostMessageError",
+                        "FormLabelForNameError"
                     ]
                 },
                 {
@@ -1551,6 +1552,11 @@
                             "name": "frameId",
                             "optional": true,
                             "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "violatingNodeId",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
                         }
                     ]
                 },

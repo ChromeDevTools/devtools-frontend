@@ -1012,6 +1012,7 @@ export namespace Audits {
 
   export const enum GenericIssueErrorType {
     CrossOriginPortalPostMessageError = 'CrossOriginPortalPostMessageError',
+    FormLabelForNameError = 'FormLabelForNameError',
   }
 
   /**
@@ -1023,6 +1024,7 @@ export namespace Audits {
      */
     errorType: GenericIssueErrorType;
     frameId?: Page.FrameId;
+    violatingNodeId?: DOM.BackendNodeId;
   }
 
   export const enum DeprecationIssueType {

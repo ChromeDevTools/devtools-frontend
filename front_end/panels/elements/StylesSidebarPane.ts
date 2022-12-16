@@ -77,6 +77,11 @@ const UIStrings = {
   */
   noMatchingSelectorOrStyle: 'No matching selector or style',
   /**
+  /**
+  *@description Text to announce the result of the filter input in the Styles Sidebar Pane of the Elements panel
+  */
+  visibleSelectors: '{n, plural, =1 {# visible selector listed below} other {# visible selectors listed below}}',
+  /**
   *@description Text in Styles Sidebar Pane of the Elements panel
   */
   invalidPropertyValue: 'Invalid property value',
@@ -168,6 +173,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylesSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+// Number of ms elapsed with no keypresses to determine is the input is finished, to announce results
+const FILTER_IDLE_PERIOD = 500;
+
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific
 // highlighting mode on the current element.
 const HIGHLIGHTABLE_PROPERTIES = [
@@ -196,6 +204,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private pendingWidgetToggle: UI.Toolbar.ToolbarToggle|null;
   private toolbar: UI.Toolbar.Toolbar|null;
   private toolbarPaneElement: HTMLElement;
+  private lastFilterChange: number|null;
+  private visibleSections: number|null;
   private noMatchesElement: HTMLElement;
   private sectionsContainer: HTMLElement;
   sectionByElement: WeakMap<Node, StylePropertiesSection>;
@@ -244,6 +254,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.pendingWidget = null;
     this.pendingWidgetToggle = null;
     this.toolbar = null;
+    this.lastFilterChange = null;
+    this.visibleSections = null;
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.computedStyleModelInternal = new ComputedStyleModel();
 
@@ -583,9 +595,20 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   private onFilterChanged(regex: RegExp|null): void {
+    this.lastFilterChange = Date.now();
     this.filterRegexInternal = regex;
     this.updateFilter();
     this.resetFocus();
+    setTimeout(() => {
+      if (this.lastFilterChange) {
+        const stillTyping = Date.now() - this.lastFilterChange < FILTER_IDLE_PERIOD;
+        if (!stillTyping) {
+          UI.ARIAUtils.alert(
+              this.visibleSections ? i18nString(UIStrings.visibleSelectors, {n: this.visibleSections}) :
+                                     i18nString(UIStrings.noMatchingSelectorOrStyle));
+        }
+      }
+    }, FILTER_IDLE_PERIOD);
   }
 
   refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void {
@@ -1176,10 +1199,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   private updateFilter(): void {
     let hasAnyVisibleBlock = false;
+    let visibleSections = 0;
     for (const block of this.sectionBlocks) {
-      hasAnyVisibleBlock = block.updateFilter() || hasAnyVisibleBlock;
+      visibleSections += block.updateFilter();
+      hasAnyVisibleBlock = Boolean(visibleSections) || hasAnyVisibleBlock;
     }
     this.noMatchesElement.classList.toggle('hidden', Boolean(hasAnyVisibleBlock));
+
+    this.visibleSections = visibleSections;
   }
 
   willHide(): void {
@@ -1583,15 +1610,17 @@ export class SectionBlock {
     return new SectionBlock(separatorElement);
   }
 
-  updateFilter(): boolean {
+  updateFilter(): number {
     let hasAnyVisibleSection = false;
+    let numVisibleSections = 0;
     for (const section of this.sections) {
+      numVisibleSections += section.updateFilter() ? 1 : 0;
       hasAnyVisibleSection = section.updateFilter() || hasAnyVisibleSection;
     }
     if (this.titleElementInternal) {
       this.titleElementInternal.classList.toggle('hidden', !hasAnyVisibleSection);
     }
-    return Boolean(hasAnyVisibleSection);
+    return numVisibleSections;
   }
 
   titleElement(): Element|null {

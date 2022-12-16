@@ -716,6 +716,9 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, stopId: StopId, type: string, typeName: string, icon: string|undefined,
       plugin: DebuggerLanguagePlugin) {
+    if (icon && new URL(icon).protocol !== 'data:') {
+      throw new Error('The icon must be a data:-URL');
+    }
     this.#callFrameInternal = callFrame;
     this.#typeInternal = type;
     this.#typeNameInternal = typeName;

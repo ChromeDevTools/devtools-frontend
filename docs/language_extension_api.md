@@ -84,9 +84,9 @@ names incase the variable has a fully qualified name.
 
 The scope property returns the name of the scope that the variable lives in. Additional information on a scope can be
 provided by name via the `getScopeInfo` function, which returns an object with string properties `type`, `typeName`, and
-optionally `icon` which contains a URL to an icon for DevTools to show for the scope entry. The scope type is expected
-to be identical to the scope name, whereas `typeName` is expected to contain a human readable name or description for
-the scope.
+optionally `icon` which contains a data URL encoding an icon for DevTools to show for the scope entry. The scope type is
+expected to be identical to the scope name, whereas `typeName` is expected to contain a human readable name or
+description for the scope.
 
 In order to display the value of variables or the result of an expression, DevTools will call the `evaluate` function,
 whose arguments are the expression, the context raw location, and a `stopId` which is an opaque identifier denoting the

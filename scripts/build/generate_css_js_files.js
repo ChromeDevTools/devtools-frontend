@@ -4,21 +4,21 @@
 const fs = require('fs');
 const path = require('path');
 const {writeIfChanged} = require('./ninja/write-if-changed.js');
-// const postcss = require('postcss');
-// const cssnano = require('cssnano');
+const postcss = require('postcss');
+const cssnano = require('cssnano');
 
-// async function runCSSMinification(input, fileName) {
-//   // postcss needs to be given a fileName, even though it doesn't read from it nor write to it.
-//   // So we pass in the correct name, even though it has no impact on the resulting code.
-//   const result = await postcss([cssnano({preset: 'default'})]).process(input, {from: fileName});
-//   return result.css;
-// }
+async function runCSSMinification(input, fileName) {
+  // postcss needs to be given a fileName, even though it doesn't read from it nor write to it.
+  // So we pass in the correct name, even though it has no impact on the resulting code.
+  const result = await postcss([cssnano({preset: require('cssnano-preset-lite')})]).process(input, {from: fileName});
+  return result.css;
+}
 
 async function codeForFile({fileName, input, isDebug, isLegacy = false, buildTimestamp}) {
   input = input.replace(/\`/g, '\\\'');
   input = input.replace(/\\/g, '\\\\');
 
-  const stylesheetContents = input;
+  const stylesheetContents = isDebug ? input : await runCSSMinification(input, fileName);
 
   let exportStatement;
   if (isLegacy) {

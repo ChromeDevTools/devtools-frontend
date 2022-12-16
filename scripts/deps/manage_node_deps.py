@@ -87,6 +87,7 @@ DEPS = {
     "mocha": "9.1.3",
     "postcss": "8.4.5",
     "cssnano": "5.1.14",
+    "cssnano-preset-lite": "2.1.3",
     "puppeteer": "14.0.0",
     "recast": "0.20.5",
     "rimraf": "3.0.2",

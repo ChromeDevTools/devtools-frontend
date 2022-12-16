@@ -5,7 +5,7 @@
 const {assert} = require('chai');
 const {codeForFile} = require('../generate_css_js_files.js');
 
-describe.skip('generating CSS JS files', () => {
+describe('generating CSS JS files', () => {
   it('minifies code when not in debug mode', async () => {
     const css = `div {
       height: 20px;

@@ -11,6 +11,8 @@ import {type DOMNode} from './DOMModel.js';
 
 export class CSSContainerQuery extends CSSQuery {
   name?: string;
+  physicalAxes?: Protocol.DOM.PhysicalAxes;
+  logicalAxes?: Protocol.DOM.LogicalAxes;
 
   static parseContainerQueriesPayload(cssModel: CSSModel, payload: Protocol.CSS.CSSContainerQuery[]):
       CSSContainerQuery[] {
@@ -27,6 +29,8 @@ export class CSSContainerQuery extends CSSQuery {
     this.range = payload.range ? TextUtils.TextRange.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
     this.name = payload.name;
+    this.physicalAxes = payload.physicalAxes;
+    this.logicalAxes = payload.logicalAxes;
   }
 
   active(): boolean {
@@ -34,7 +38,8 @@ export class CSSContainerQuery extends CSSQuery {
   }
 
   async getContainerForNode(nodeId: Protocol.DOM.NodeId): Promise<CSSContainerQueryContainer|undefined> {
-    const containerNode = await this.cssModel.domModel().getContainerForNode(nodeId, this.name);
+    const containerNode =
+        await this.cssModel.domModel().getContainerForNode(nodeId, this.name, this.physicalAxes, this.logicalAxes);
     if (!containerNode) {
       return;
     }

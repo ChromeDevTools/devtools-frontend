@@ -1521,8 +1521,11 @@ export class DOMModel extends SDKModel<EventTypes> {
     return this.nodeForId(response.nodeId);
   }
 
-  async getContainerForNode(nodeId: Protocol.DOM.NodeId, containerName?: string): Promise<DOMNode|null> {
-    const {nodeId: containerNodeId} = await this.agent.invoke_getContainerForNode({nodeId, containerName});
+  async getContainerForNode(
+      nodeId: Protocol.DOM.NodeId, containerName?: string, physicalAxes?: Protocol.DOM.PhysicalAxes,
+      logicalAxes?: Protocol.DOM.LogicalAxes): Promise<DOMNode|null> {
+    const {nodeId: containerNodeId} =
+        await this.agent.invoke_getContainerForNode({nodeId, containerName, physicalAxes, logicalAxes});
     if (!containerNodeId) {
       return null;
     }

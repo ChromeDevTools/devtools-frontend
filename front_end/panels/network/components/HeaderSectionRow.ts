@@ -49,6 +49,10 @@ const UIStrings = {
   */
   learnMoreInTheIssuesTab: 'Learn more in the issues tab',
   /**
+  *@description Hover text prompting the user to reload the whole page or refresh the particular request, so that the changes they made take effect.
+  */
+  reloadPrompt: 'Refresh the page/request for these changes to take effect',
+  /**
   *@description The title of a button which removes a HTTP header override.
   */
   removeOverride: 'Remove this header override',
@@ -114,8 +118,11 @@ export class HeaderSectionRow extends HTMLElement {
 
   set data(data: HeaderSectionRowData) {
     this.#header = data.header;
-    this.#isHeaderValueEdited =
-        this.#header.originalValue !== undefined && this.#header.value !== this.#header.originalValue;
+    // The header name is only editable for headers which were just now added by the user.
+    // The other case is where there is a mismatch between original header value and
+    // current header value.
+    this.#isHeaderValueEdited = this.#header.nameEditable ||
+        (this.#header.originalValue !== undefined && this.#header.value !== this.#header.originalValue);
     this.#isValidHeaderName = isValidHeaderName(this.#header.name);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -174,6 +181,14 @@ export class HeaderSectionRow extends HTMLElement {
         >
           ${this.#renderHeaderValue()}
         </div>
+        ${this.#isHeaderValueEdited ?
+          html`<${IconButton.Icon.Icon.litTagName} class="row-flex-icon flex-right" title=${UIStrings.reloadPrompt} .data=${{
+            iconName: 'info-icon',
+            width: '12px',
+            height: '12px',
+          } as IconButton.Icon.IconData}>
+          </${IconButton.Icon.Icon.litTagName}>` : LitHtml.nothing
+        }
       </div>
       ${this.#maybeRenderBlockedDetails(this.#header.blockedDetails)}
     `, this.#shadow, {host: this});

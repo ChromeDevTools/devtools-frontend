@@ -57,6 +57,11 @@ async function renderHeaderSectionRow(header: NetworkComponents.HeaderSectionRow
   return {component, nameEditable, valueEditable};
 }
 
+const hasReloadPrompt = (shadowRoot: ShadowRoot): boolean => {
+  return Boolean(
+      shadowRoot.querySelector('devtools-icon[title="Refresh the page/request for these changes to take effect"]'));
+};
+
 describeWithEnvironment('HeaderSectionRow', () => {
   it('emits UMA event when a header value is being copied', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
@@ -363,6 +368,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     const row = component.shadowRoot.querySelector('.row');
     assert.isFalse(row?.classList.contains('header-overridden'));
     assert.isTrue(row?.classList.contains('header-highlight'));
+    assert.isFalse(hasReloadPrompt(component.shadowRoot));
 
     valueEditable.focus();
     valueEditable.innerText = 'a';
@@ -370,6 +376,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     await coordinator.done();
     assert.isTrue(row?.classList.contains('header-overridden'));
     assert.isFalse(row?.classList.contains('header-highlight'));
+    assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
     dispatchKeyDownEvent(valueEditable, {key: 'Escape', bubbles: true, composed: true});
     await coordinator.done();
@@ -391,16 +398,19 @@ describeWithEnvironment('HeaderSectionRow', () => {
     const row = component.shadowRoot.querySelector('.row');
     assertElement(row, HTMLDivElement);
     assert.strictEqual(row.querySelector('devtools-icon.disallowed-characters'), null);
+    assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
     nameEditable.focus();
     nameEditable.innerText = '*';
     dispatchInputEvent(nameEditable, {inputType: 'insertText', data: '*', bubbles: true, composed: true});
     await coordinator.done();
     assertElement(row.querySelector('devtools-icon.disallowed-characters'), HTMLElement);
+    assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
     dispatchKeyDownEvent(nameEditable, {key: 'Escape', bubbles: true, composed: true});
     await coordinator.done();
     assert.strictEqual(row.querySelector('devtools-icon.disallowed-characters'), null);
+    assert.isTrue(hasReloadPrompt(component.shadowRoot));
   });
 
   it('recoginzes only alphanumeric characters, dashes, and underscores as valid in header names', () => {

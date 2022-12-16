@@ -155,3 +155,7 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
   opacity: 100%;
   visibility: visible;
 }
+
+.flex-right {
+  margin-left: auto;
+}

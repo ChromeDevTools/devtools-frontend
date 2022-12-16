@@ -162,6 +162,7 @@ module.exports = function(config) {
       'BrowserWithArgs': {
         base: browser,
         flags: [
+          '--remote-allow-origins=*',
           `--remote-debugging-port=${REMOTE_DEBUGGING_PORT}`,
           '--use-mock-keychain',
           '--disable-features=DialMediaRouteProvider',

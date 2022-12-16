@@ -348,6 +348,9 @@ export class DebuggerPlugin extends Plugin {
         editor.dispatch({effects: SourceFrame.SourceFrame.addNonBreakableLines.of(linePositions)});
       }
     }, console.error);
+    if (this.ignoreListInfobar) {
+      this.attachInfobar(this.ignoreListInfobar);
+    }
     if (this.missingDebugInfoBar) {
       this.attachInfobar(this.missingDebugInfoBar);
     }

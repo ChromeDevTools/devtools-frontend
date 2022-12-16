@@ -630,6 +630,45 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
   });
 
+  it('can handle non-breaking spaces when removing header overrides', async () => {
+    const headerOverridesFileContent = `[
+      {
+        "applyTo": "index.html",
+        "headers": [
+          {
+            "name": "added",
+            "value": "space\xa0between"
+          }
+        ]
+      }
+    ]`;
+
+    const actualHeaders = [
+      {name: 'added', value: 'space between'},
+      {name: 'cache-control', value: 'max-age=600'},
+    ];
+
+    const originalHeaders = [
+      {name: 'cache-control', value: 'max-age=600'},
+    ];
+
+    const {component, spy} = await setupHeaderEditing(headerOverridesFileContent, actualHeaders, originalHeaders);
+    assertShadowRoot(component.shadowRoot);
+    let rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+    assert.strictEqual(rows.length, 2);
+    checkHeaderSectionRow(rows[0], 'added:', 'space between', true, false, true);
+    checkHeaderSectionRow(rows[1], 'cache-control:', 'max-age=600', false, false, true);
+    await removeHeaderRow(component, 0);
+
+    const expected: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
+    assert.strictEqual(spy.callCount, 1);
+    assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+
+    rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+    assert.strictEqual(rows.length, 1);
+    checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=600', false, false, true);
+  });
+
   it('does not generate header overrides which have "applyTo" but empty "headers" array', async () => {
     const actualHeaders = [
       {name: 'server', value: 'original server'},

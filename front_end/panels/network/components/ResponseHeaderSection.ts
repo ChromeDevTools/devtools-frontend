@@ -14,6 +14,7 @@ import * as Sources from '../../../panels/sources/sources.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import {
+  compareHeaders,
   type HeaderDescriptor,
   type HeaderDetailsDescriptor,
   type HeaderEditedEvent,
@@ -176,9 +177,10 @@ export class ResponseHeaderSection extends HTMLElement {
     }
 
     if (data.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response) {
-      this.#headerDetails.filter(header => header.name === data.toReveal?.header?.toLowerCase()).forEach(header => {
-        header.highlight = true;
-      });
+      this.#headerDetails.filter(header => compareHeaders(header.name, data.toReveal?.header?.toLowerCase()))
+          .forEach(header => {
+            header.highlight = true;
+          });
     }
 
     const dataAssociatedWithRequest = this.#request.getAssociatedData(RESPONSE_HEADER_SECTION_DATA_KEY);
@@ -283,7 +285,7 @@ export class ResponseHeaderSection extends HTMLElement {
           actual.sort();
           original.sort();
           for (let i = 0; i < actual.length; i++) {
-            if (actual[i] !== original[i]) {
+            if (!compareHeaders(actual[i], original[i])) {
               return true;
             }
           }
@@ -294,7 +296,7 @@ export class ResponseHeaderSection extends HTMLElement {
       // If the array of actual headers and the array of original headers do not
       // exactly match, mark all headers with 'headerName' as being overridden.
       if (headerName !== 'set-cookie' && isDifferent(headerName, actualHeaders, originalHeaders)) {
-        this.#headerEditors.filter(header => header.name === headerName).forEach(header => {
+        this.#headerEditors.filter(header => compareHeaders(header.name, headerName)).forEach(header => {
           header.isOverride = true;
         });
       }
@@ -304,8 +306,8 @@ export class ResponseHeaderSection extends HTMLElement {
     // and don't treat all 'set-cookie' headers as a single unit.
     this.#headerEditors.filter(header => header.name === 'set-cookie').forEach(header => {
       if (this.#request?.originalResponseHeaders.find(
-              originalHeader => originalHeader.name === 'set-cookie' && originalHeader.value === header.value) ===
-          undefined) {
+              originalHeader => originalHeader.name === 'set-cookie' &&
+                  compareHeaders(originalHeader.value, header.value)) === undefined) {
         header.isOverride = true;
       }
     });
@@ -341,7 +343,8 @@ export class ResponseHeaderSection extends HTMLElement {
       if (block.applyTo !== rawFileName) {
         continue;
       }
-      const foundIndex = block.headers.findIndex(header => header.name === headerName && header.value === headerValue);
+      const foundIndex = block.headers.findIndex(
+          header => compareHeaders(header.name, headerName) && compareHeaders(header.value, headerValue));
       if (foundIndex < 0) {
         continue;
       }
@@ -364,8 +367,9 @@ export class ResponseHeaderSection extends HTMLElement {
     this.#commitOverrides();
     if (index < this.#headerDetails.length) {
       const originalHeaders =
-          (this.#request?.originalResponseHeaders ||
-           []).filter(header => Platform.StringUtilities.toLowerCaseString(header.name) === event.headerName);
+          (this.#request?.originalResponseHeaders || [])
+              .filter(
+                  header => compareHeaders(Platform.StringUtilities.toLowerCaseString(header.name), event.headerName));
       if (originalHeaders.length === 1) {
         // Remove the header override and replace it with the original non-
         // overridden header in the UI.
@@ -415,7 +419,8 @@ export class ResponseHeaderSection extends HTMLElement {
       // If there are overrides for 'foo', all original 'foo' headers are removed
       // and replaced with the override(s) for 'foo'.
       headersToUpdate = this.#headerEditors.filter(
-          header => header.name === headerName && (header.value !== header.originalValue || header.isOverride));
+          header => compareHeaders(header.name, headerName) &&
+              (!compareHeaders(header.value, header.originalValue) || header.isOverride));
     }
 
     const rawFileName = this.#fileNameFromUrl(this.#request.url());
@@ -440,21 +445,22 @@ export class ResponseHeaderSection extends HTMLElement {
       // Special case for 'set-cookie' headers: only remove the one specific
       // header which is currently being modified, keep all other headers
       // (including other 'set-cookie' headers).
-      const foundIndex =
-          block.headers.findIndex(header => header.name === previousName && header.value === previousValue);
+      const foundIndex = block.headers.findIndex(
+          header => compareHeaders(header.name, previousName) && compareHeaders(header.value, previousValue));
       if (foundIndex >= 0) {
         block.headers.splice(foundIndex, 1);
       }
     } else {
       // Keep header overrides for all headers with a different name.
-      block.headers = block.headers.filter(header => header.name !== headerName);
+      block.headers = block.headers.filter(header => !compareHeaders(header.name, headerName));
     }
 
     // If a header name has been edited (only possible when adding headers),
     // remove the previous override entry.
-    if (this.#headerEditors[index].name !== previousName) {
+    if (!compareHeaders(this.#headerEditors[index].name, previousName)) {
       for (let i = 0; i < block.headers.length; ++i) {
-        if (block.headers[i].name === previousName && block.headers[i].value === previousValue) {
+        if (compareHeaders(block.headers[i].name, previousName) &&
+            compareHeaders(block.headers[i].value, previousValue)) {
           block.headers.splice(i, 1);
           break;
         }

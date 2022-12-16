@@ -68,6 +68,14 @@ export const isValidHeaderName = (headerName: string): boolean => {
   return /^[a-z0-9_\-]+$/i.test(headerName);
 };
 
+export const compareHeaders = (first: string|null|undefined, second: string|null|undefined): boolean => {
+  // Replaces non-breaking spaces(NBSPs) with regular spaces.
+  // When working with contenteditables, their content can contain (non-obvious) NBSPs.
+  // It would be tricky to get rid of NBSPs during editing and saving, so we just
+  // handle them after reading them in.
+  return first?.replaceAll('\xa0', ' ') === second?.replaceAll('\xa0', ' ');
+};
+
 export class HeaderEditedEvent extends Event {
   static readonly eventName = 'headeredited';
   headerName: Platform.StringUtilities.LowerCaseString;
@@ -350,7 +358,7 @@ export class HeaderSectionRow extends HTMLElement {
       return;
     }
     const headerValue = target.value.trim();
-    if (headerValue !== this.#header.value) {
+    if (!compareHeaders(headerValue, this.#header.value?.trim())) {
       this.#header.value = headerValue;
       this.dispatchEvent(new HeaderEditedEvent(this.#header.name, headerValue));
       void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -370,7 +378,7 @@ export class HeaderSectionRow extends HTMLElement {
     // If the header name has been edited to '', reset it to its previous value.
     if (headerName === '') {
       target.value = this.#header.name;
-    } else if (headerName !== this.#header.name) {
+    } else if (!compareHeaders(headerName, this.#header.name.trim())) {
       this.#header.name = headerName;
       this.dispatchEvent(new HeaderEditedEvent(headerName, this.#header.value || ''));
       void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);

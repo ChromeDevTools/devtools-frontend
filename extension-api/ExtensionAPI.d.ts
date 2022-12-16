@@ -273,7 +273,8 @@ export namespace Chrome {
       }>;
 
       /**
-       * Find locations in source files from a location in a raw module
+       * Retrieve function name(s) for the function(s) containing the rawLocation. This returns more than one entry if
+       * the location is inside of an inlined function with the innermost function at index 0.
        */
       getFunctionInfo(rawLocation: RawLocation):
           Promise<{frames: Array<FunctionInfo>}|{missingSymbolFiles: Array<string>}>;

@@ -647,6 +647,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
           },
           compact: true,
+          accessibleName: i18nString(UIStrings.copyToClipboard),
         };
 
         suggestedIdNote.appendChild(i18n.i18n.getFormatLocalizedString(

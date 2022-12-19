@@ -332,7 +332,6 @@ export class ResponseHeaderSection extends HTMLElement {
   #commitOverrides(): void {
     this.#uiSourceCode?.setWorkingCopy(JSON.stringify(this.#overrides, null, 2));
     this.#uiSourceCode?.commitWorkingCopy();
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().updateInterceptionPatterns();
   }
 
   #removeEntryFromOverrides(

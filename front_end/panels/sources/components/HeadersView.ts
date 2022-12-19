@@ -91,7 +91,6 @@ export class HeadersView extends UI.View.SimpleView {
 
   commitEditing(): void {
     this.#uiSourceCode.commitWorkingCopy();
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().updateInterceptionPatterns();
   }
 
   #onWorkingCopyChanged(): void {

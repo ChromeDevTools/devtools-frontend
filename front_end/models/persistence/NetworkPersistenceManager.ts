@@ -375,6 +375,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   private onUISourceCodeWorkingCopyCommitted(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     void this.saveUISourceCodeForOverrides(uiSourceCode);
+    this.updateInterceptionPatterns();
   }
 
   canSaveUISourceCodeForOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {

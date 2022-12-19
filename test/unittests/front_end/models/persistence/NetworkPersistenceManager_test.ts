@@ -740,4 +740,38 @@ describe('NetworkPersistenceManager', () => {
     );
     assert.deepEqual(actualMapping, expectedMapping);
   });
+
+  it('updates interception patterns upon edit of .headers file', async () => {
+    const {networkPersistenceManager} = setUpEnvironment();
+    const headers = `[
+      {
+        "applyTo": "index.html",
+        "headers": [{
+          "name": "foo",
+          "value": "bar"
+        }]
+      }
+    ]`;
+
+    const {uiSourceCode} = createFileSystemUISourceCode({
+      url: 'file:///path/to/overrides/www.example.com/.headers' as Platform.DevToolsPath.UrlString,
+      content: headers,
+      mimeType: 'text/plain',
+      fileSystemPath: 'file:///path/to/overrides',
+    });
+    const spy = sinon.spy(networkPersistenceManager, 'updateInterceptionPatterns');
+    assert.isTrue(spy.notCalled);
+
+    uiSourceCode.setWorkingCopy(`[
+      {
+        "applyTo": "index.html",
+        "headers": [{
+          "name": "foo2",
+          "value": "bar2"
+        }]
+      }
+    ]`);
+    uiSourceCode.commitWorkingCopy();
+    assert.isTrue(spy.calledOnce);
+  });
 });

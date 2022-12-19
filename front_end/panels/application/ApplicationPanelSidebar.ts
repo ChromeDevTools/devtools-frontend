@@ -120,7 +120,7 @@ const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */
-  preloadingAndPrerendering: 'Preloading & Prerendering',
+  preloading: 'Preloading',
   /**
   *@description Text for rendering frames
   */
@@ -405,7 +405,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     }
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL)) {
-      const preloadingSectionTitle = i18nString(UIStrings.preloadingAndPrerendering);
+      const preloadingSectionTitle = i18nString(UIStrings.preloading);
       const preloadingSectionTreeElement = this.addSidebarSection(preloadingSectionTitle);
 
       this.preloadingTreeElement = new PreloadingTreeElement(panel);

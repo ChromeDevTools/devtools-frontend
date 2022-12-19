@@ -16,7 +16,7 @@ const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */
-  preloadingAndPrerendering: 'Preloading & Prerendering',
+  prefetchingAndPrerendering: 'Prefetching & Prerendering',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelPreloadingSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -26,7 +26,7 @@ export class PreloadingTreeElement extends ApplicationPanelTreeElement {
   private view?: PreloadingView;
 
   constructor(resourcesPanel: ResourcesPanel) {
-    super(resourcesPanel, i18nString(UIStrings.preloadingAndPrerendering), false);
+    super(resourcesPanel, i18nString(UIStrings.prefetchingAndPrerendering), false);
 
     const icon = UI.Icon.Icon.create('mediumicon-fetch', 'resource-tree-item');
     this.setLeadingIcons([icon]);

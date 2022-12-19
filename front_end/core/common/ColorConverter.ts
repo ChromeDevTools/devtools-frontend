@@ -264,7 +264,7 @@ function xyzd50ToLab(x: number, y: number, z: number): [number, number, number] 
 }
 
 function oklabToXyzd65(l: number, a: number, b: number): [number, number, number] {
-  const labInput = new Vector3([l / 100, a, b]);
+  const labInput = new Vector3([l, a, b]);
   const lmsIntermediate = OKLAB_TO_LMS_MATRIX.multiply(labInput);
   lmsIntermediate.values[0] = lmsIntermediate.values[0] * lmsIntermediate.values[0] * lmsIntermediate.values[0];
   lmsIntermediate.values[1] = lmsIntermediate.values[1] * lmsIntermediate.values[1] * lmsIntermediate.values[1];
@@ -282,7 +282,7 @@ function xyzd65ToOklab(x: number, y: number, z: number): [number, number, number
   lmsIntermediate.values[2] = Math.pow(lmsIntermediate.values[2], 1.0 / 3.0);
 
   const labOutput = LMS_TO_OKLAB_MATRIX.multiply(lmsIntermediate);
-  return [labOutput.values[0] * 100.0, labOutput.values[1], labOutput.values[2]];
+  return [labOutput.values[0], labOutput.values[1], labOutput.values[2]];
 }
 
 function lchToLab(l: number, c: number, h: number|undefined): [number, number, number] {
@@ -397,6 +397,18 @@ function xyzd50ToSrgb(x: number, y: number, z: number): [number, number, number]
       NAMED_TRANSFER_FN.sRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
 }
 
+function oklchToXyzd50(lInput: number, c: number, h: number): [number, number, number] {
+  const [l, a, b] = lchToLab(lInput, c, h);
+  const [x65, y65, z65] = oklabToXyzd65(l, a, b);
+  return xyzd65ToD50(x65, y65, z65);
+}
+
+function xyzd50ToOklch(x: number, y: number, z: number): [number, number, number] {
+  const [x65, y65, z65] = xyzd50ToD65(x, y, z);
+  const [l, a, b] = xyzd65ToOklab(x65, y65, z65);
+  return labToLch(l, a, b);
+}
+
 export {
   labToXyzd50,
   xyzd50ToLab,
@@ -419,4 +431,6 @@ export {
   srgbLinearToXyzd50,
   srgbToXyzd50,
   xyzd50ToSrgb,
+  oklchToXyzd50,
+  xyzd50ToOklch,
 };

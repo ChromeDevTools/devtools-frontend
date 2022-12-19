@@ -4,7 +4,6 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 
 import * as Helpers from '../helpers/helpers.js';
 import {KnownEventName, type TraceEventHandlerName, type HandlerData, type Handlers} from './types.js';
@@ -22,16 +21,8 @@ import {data as rendererHandlerData} from './RendererHandler.js';
  */
 const metricScoresByFrameId = new Map<string, Map<string, Map<MetricName, MetricScore>>>();
 
-/**
- * For LCP events we talk to the backend to try to get a reference to the DOM
- * Node, so that we can use it to show more information.
- * An LCP event will have a args.data.nodeId property which is the key for this map.
- */
-let lcpEventNodeIdToDOMNodeMap = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>();
-
 export function reset(): void {
   metricScoresByFrameId.clear();
-  lcpEventNodeIdToDOMNodeMap.clear();
   pageLoadEventsArray = [];
   selectedLCPCandidateEvents.clear();
 }
@@ -219,11 +210,6 @@ function getFrameIdForPageLoadEvent(event: Types.TraceEvents.PageLoadEvent): str
     return frameId;
   }
   Platform.assertNever(event, `Unexpected event type: ${event}`);
-  // This return will never run but is needed to satisfy TS. If we do have an
-  // unexpected event, TS should catch it at compile time, but if it gets to
-  // runtime, the above function will throw an Error. Therefore this return can
-  // never execute.
-  return '';
 }
 
 function getNavigationForPageLoadEvent(event: Types.TraceEvents.PageLoadEvent):
@@ -457,17 +443,6 @@ export function scoreClassificationForTotalBlockingTime(tbtTimeInMicroseconds: T
   return scoreClassification;
 }
 
-async function fetchSDKDOMNodeForLCPEvents(lcpNodeBackendIds: Set<Protocol.DOM.BackendNodeId>): Promise<void> {
-  const target = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
-  const domModel = target?.model(SDK.DOMModel.DOMModel);
-  if (!domModel) {
-    return;
-  }
-
-  const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(lcpNodeBackendIds);
-  lcpEventNodeIdToDOMNodeMap = domNodesMap || new Map();
-}
-
 export async function finalize(): Promise<void> {
   pageLoadEventsArray.sort((a, b) => a.ts - b.ts);
 
@@ -488,16 +463,13 @@ export async function finalize(): Promise<void> {
       lcpNodeIds.add(lcpEvent.args.data.nodeId);
     }
   }
-  await fetchSDKDOMNodeForLCPEvents(lcpNodeIds);
 }
 
 export function data(): {
   metricScoresByFrameId: Map<string, Map<string, Map<MetricName, MetricScore>>>,
-  lcpEventNodeIdToDOMNodeMap: typeof lcpEventNodeIdToDOMNodeMap,
 } {
   return {
     metricScoresByFrameId: new Map(metricScoresByFrameId),
-    lcpEventNodeIdToDOMNodeMap: new Map(lcpEventNodeIdToDOMNodeMap),
   };
 }
 

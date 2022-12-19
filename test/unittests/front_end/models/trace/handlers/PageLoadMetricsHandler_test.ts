@@ -5,13 +5,6 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../../helpers/MockConnection.js';
-import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
-import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
 
 function countMetricOcurrences(
@@ -27,8 +20,7 @@ function countMetricOcurrences(
   }, 0);
 }
 
-// Need the mock connection to fake the communication to the backend to fetch DOM Nodes.
-describeWithMockConnection('PageLoadMetricsHandler', () => {
+describe('PageLoadMetricsHandler', () => {
   describe('contentful paints', () => {
     it('obtains all the FCP and LCP events for all frames', async () => {
       const {Meta, PageLoadMetrics} = await loadModelDataFromTraceFile('multiple-navigations-with-iframes.json.gz');
@@ -104,45 +96,6 @@ describeWithMockConnection('PageLoadMetricsHandler', () => {
       const allFoundMetricScoresForMainFrame = events ? Array.from(events.values()) : [];
       for (const score of allFoundMetricScoresForMainFrame) {
         assert.strictEqual(score.navigation, navigationBeforeMetrics);
-      }
-    });
-
-    it('fetches DOM Nodes from the backend for all LCP events', async () => {
-      const target = createTarget();
-      const domModel = target.model(SDK.DOMModel.DOMModel);
-      if (!domModel) {
-        assert.fail('DOM model not found.');
-        return;
-      }
-      const documentNode = {nodeId: 1 as Protocol.DOM.NodeId};
-      const domNode = new SDK.DOMModel.DOMNode(domModel);
-      domNode.id = 125 as Protocol.DOM.NodeId;  // 125 is the node from the trace file for the LCP event.
-
-      // Set related CDP methods responses to return our mock document and node.
-      setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: [domNode.id]}));
-      setMockConnectionResponseHandler('DOM.getDocument', () => ({root: documentNode}));
-
-      // Register the mock document and node in DOMModel, these use the mock responses set above.
-      await domModel.requestDocument();
-      domModel.registerNode(domNode);
-
-      const {PageLoadMetrics, Meta} = await loadModelDataFromTraceFile('lcp-images.json.gz');
-      const pageLoadEventsForMainFrame = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId);
-      if (!pageLoadEventsForMainFrame) {
-        assert.fail('Page load events for main frame were unexpectedly null.');
-        return;
-      }
-      const allLCPMetrics = Array.from(pageLoadEventsForMainFrame.values()).map(eventMap => {
-        return eventMap.get(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
-      });
-
-      for (const metric of allLCPMetrics) {
-        if (metric && metric.event &&
-            TraceModel.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(metric.event) &&
-            metric.event.args.data) {
-          const matchingDOMNode = PageLoadMetrics.lcpEventNodeIdToDOMNodeMap.get(metric.event.args.data?.nodeId);
-          assert.isNotNull(matchingDOMNode, 'Did not find expected DOM node for LCP event');
-        }
       }
     });
   });

@@ -27,7 +27,6 @@ devtools_module("handlers") {
 
   deps = [
     "../../../core/platform:bundle",
-    "../../../core/sdk:bundle",
     "../../../generated",
     "../helpers:bundle",
     "../types:bundle",

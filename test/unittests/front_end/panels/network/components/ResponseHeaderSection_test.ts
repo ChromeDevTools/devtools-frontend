@@ -122,11 +122,13 @@ async function setupHeaderEditingWithRequest(
 
 function checkHeaderSectionRow(
     row: NetworkComponents.HeaderSectionRow.HeaderSectionRow, headerName: string, headerValue: string,
-    isOverride: boolean, isNameEditable: boolean, isValueEditable: boolean, isHighlighted: boolean = false): void {
+    isOverride: boolean, isNameEditable: boolean, isValueEditable: boolean, isHighlighted: boolean = false,
+    isDeleted: boolean = false): void {
   assertShadowRoot(row.shadowRoot);
   const rowElement = row.shadowRoot.querySelector('.row');
   assert.strictEqual(rowElement?.classList.contains('header-overridden'), isOverride);
   assert.strictEqual(rowElement?.classList.contains('header-highlight'), isHighlighted);
+  assert.strictEqual(rowElement?.classList.contains('header-deleted'), isDeleted);
 
   const nameEditableComponent =
       row.shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>('.header-name devtools-editable-span');
@@ -579,7 +581,8 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.strictEqual(rows.length, 3);
     checkHeaderSectionRow(rows[0], 'added:', 'foo', true, false, true);
     checkHeaderSectionRow(rows[1], 'cache-control:', 'max-age=9999', true, false, true);
-    checkHeaderSectionRow(rows[2], 'highlighted-header:', 'original highlighted-header', false, false, true, false);
+    checkHeaderSectionRow(
+        rows[2], 'highlighted-header:', 'overridden highlighted-header', true, false, false, true, true);
 
     spy.resetHistory();
     await removeHeaderRow(component, 0);
@@ -596,9 +599,11 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.strictEqual(spy.callCount, 1);
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
     rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
-    assert.strictEqual(rows.length, 2);
-    checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=9999', true, false, true);
-    checkHeaderSectionRow(rows[1], 'highlighted-header:', 'original highlighted-header', false, false, true);
+    assert.strictEqual(rows.length, 3);
+    checkHeaderSectionRow(rows[0], 'added:', 'foo', true, false, false, false, true);
+    checkHeaderSectionRow(rows[1], 'cache-control:', 'max-age=9999', true, false, true);
+    checkHeaderSectionRow(
+        rows[2], 'highlighted-header:', 'overridden highlighted-header', true, false, false, true, true);
   });
 
   it('can remove the last header override', async () => {
@@ -665,8 +670,9 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
 
     rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
-    assert.strictEqual(rows.length, 1);
-    checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=600', false, false, true);
+    assert.strictEqual(rows.length, 2);
+    checkHeaderSectionRow(rows[0], 'added:', 'space between', true, false, false, false, true);
+    checkHeaderSectionRow(rows[1], 'cache-control:', 'max-age=600', false, false, true);
   });
 
   it('does not generate header overrides which have "applyTo" but empty "headers" array', async () => {
@@ -794,8 +800,9 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.strictEqual(spy.callCount, 1);
     assert.isTrue(spy.calledOnceWith(JSON.stringify([], null, 2)));
     rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
-    assert.strictEqual(rows.length, 1);
+    assert.strictEqual(rows.length, 2);
     checkHeaderSectionRow(rows[0], 'server:', 'original server', false, false, true);
+    checkHeaderSectionRow(rows[1], 'header-name:', 'header value', true, false, false, false, true);
   });
 
   it('renders headers as (not) editable depending on overall overrides setting', async () => {

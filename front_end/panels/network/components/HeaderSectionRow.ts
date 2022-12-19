@@ -126,10 +126,12 @@ export class HeaderSectionRow extends HTMLElement {
 
   set data(data: HeaderSectionRowData) {
     this.#header = data.header;
-    // The header name is only editable for headers which were just now added by the user.
-    // The other case is where there is a mismatch between original header value and
-    // current header value.
-    this.#isHeaderValueEdited = this.#header.nameEditable ||
+    // Case 1: Headers which were just now added via the 'Add header button'.
+    //         'nameEditable' is true only for such headers.
+    // Case 2: Headers for which the user clicked the 'remove' button.
+    // Case 3: Headers for which there is a mismatch between original header
+    //         value and current header value.
+    this.#isHeaderValueEdited = this.#header.nameEditable || this.#header.isDeleted ||
         (this.#header.originalValue !== undefined && this.#header.value !== this.#header.originalValue);
     this.#isValidHeaderName = isValidHeaderName(this.#header.name);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -149,6 +151,7 @@ export class HeaderSectionRow extends HTMLElement {
       'header-highlight': Boolean(this.#header.highlight),
       'header-overridden': Boolean(this.#header.isOverride) || this.#isHeaderValueEdited,
       'header-editable': Boolean(this.#header.valueEditable),
+      'header-deleted': Boolean(this.#header.isDeleted),
     });
 
     // The header name is only editable when the header value is editable as well.
@@ -173,7 +176,7 @@ export class HeaderSectionRow extends HTMLElement {
             } as IconButton.Icon.IconData}>
             </${IconButton.Icon.Icon.litTagName}>` : LitHtml.nothing
           }
-          ${isHeaderNameEditable ?
+          ${isHeaderNameEditable && !this.#header.isDeleted ?
             html`<${EditableSpan.litTagName}
               @focusout=${this.#onHeaderNameFocusOut}
               @keydown=${this.#onKeyDown}
@@ -207,12 +210,12 @@ export class HeaderSectionRow extends HTMLElement {
     if (!this.#header) {
       return LitHtml.nothing;
     }
-    if (!this.#header.valueEditable) {
+    if (this.#header.isDeleted || !this.#header.valueEditable) {
       // clang-format off
       return html`
       ${this.#header.value || ''}
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
-      ${this.#header.isResponseHeader ? html`
+      ${this.#header.isResponseHeader && !this.#header.isDeleted ? html`
         <${Buttons.Button.Button.litTagName}
           title=${i18nString(UIStrings.editHeader)}
           .size=${Buttons.Button.Size.TINY}
@@ -481,6 +484,7 @@ export interface HeaderEditorDescriptor {
   isOverride?: boolean;
   valueEditable?: boolean;
   nameEditable?: boolean;
+  isDeleted?: boolean;
 }
 
 export type HeaderDescriptor = HeaderDetailsDescriptor&HeaderEditorDescriptor;

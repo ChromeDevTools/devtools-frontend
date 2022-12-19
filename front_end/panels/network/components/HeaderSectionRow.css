@@ -36,6 +36,10 @@
   color: var(--color-syntax-1);
 }
 
+.row.header-deleted .header-name {
+  color: var(--color-text-secondary);
+}
+
 .header-value {
   display: flex;
   overflow-wrap: anywhere;
@@ -127,6 +131,13 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
   background-color: var(--color-accent-green-background);
   border-left: 3px solid var(--color-accent-green);
   padding-left: 5px;
+}
+
+.header-deleted {
+  background-color: var(--color-error-background);
+  border-left: 3px solid var(--color-accent-red);
+  color: var(--color-text-secondary);
+  text-decoration: line-through;
 }
 
 .header-highlight.header-overridden {

@@ -45,9 +45,9 @@ describe('argumentsList', () => {
     assert.deepEqual(argumentsList('function *bar(x = 1, y){}'), ['x', 'y']);
     assert.deepEqual(argumentsList('async function bar(x = {window}, y = [document]){}'), ['x', 'y']);
     assert.deepEqual(argumentsList('function([x, y], z){}'), ['arr', 'z']);
-    assert.deepEqual(argumentsList('async function *foo([x, [y: something]], z){}'), ['arr', 'z']);
+    assert.deepEqual(argumentsList('async function *foo([x, [y]], z){}'), ['arr', 'z']);
     assert.deepEqual(argumentsList('function *bar({x, y}, z){}'), ['obj', 'z']);
-    assert.deepEqual(argumentsList('async function({x, {y: something}}, z){}'), ['obj', 'z']);
+    assert.deepEqual(argumentsList('async function({x, y: {something}}, z){}'), ['obj', 'z']);
   });
 
   it('handles arrow functions with simple parameters', () => {
@@ -65,9 +65,9 @@ describe('argumentsList', () => {
     assert.deepEqual(argumentsList('(x = 1, y)=>{}'), ['x', 'y']);
     assert.deepEqual(argumentsList('async(x = {window}, y = [document]) => {}'), ['x', 'y']);
     assert.deepEqual(argumentsList('([x, y], z) => z'), ['arr', 'z']);
-    assert.deepEqual(argumentsList('async([x, [y: something]], z) => {}'), ['arr', 'z']);
+    assert.deepEqual(argumentsList('async([x, [something]], z) => {}'), ['arr', 'z']);
     assert.deepEqual(argumentsList('({x, y}, z) => {}'), ['obj', 'z']);
-    assert.deepEqual(argumentsList('async ({x, {y: something}}, z)=>z+x'), ['obj', 'z']);
+    assert.deepEqual(argumentsList('async ({x, y: {something}}, z)=>z+x'), ['obj', 'z']);
   });
 
   it('handles classes with implicit constructors correctly', () => {
@@ -108,5 +108,16 @@ describe('argumentsList', () => {
     assert.deepEqual(argumentsList('async ["some name"](x){}'), ['x']);
     assert.deepEqual(argumentsList('[x => x](z,y){}'), ['z', 'y']);
     assert.deepEqual(argumentsList('async [x => x](z,y){}'), ['z', 'y']);
+  });
+
+  it('handles private methods correctly', () => {
+    assert.deepEqual(argumentsList('#foo(){}'), []);
+    assert.deepEqual(argumentsList('#foo(x){}'), ['x']);
+    assert.deepEqual(argumentsList('*#foo(){}'), []);
+    assert.deepEqual(argumentsList('*#foo(x){}'), ['x']);
+    assert.deepEqual(argumentsList('async #foo(){}'), []);
+    assert.deepEqual(argumentsList('async #foo(x = 1, y){}'), ['x', 'y']);
+    assert.deepEqual(argumentsList('async *#foo(){}'), []);
+    assert.deepEqual(argumentsList('async *#foo(abc, [def]){}'), ['abc', 'arr']);
   });
 });

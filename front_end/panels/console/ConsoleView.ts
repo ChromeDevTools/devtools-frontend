@@ -776,20 +776,14 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   private scheduleViewportRefresh(): void {
     if (this.muteViewportUpdates) {
       this.maybeDirtyWhileMuted = true;
-      this.scheduleViewportRefreshForTest(true);
       return;
     }
-    this.scheduleViewportRefreshForTest(false);
 
     this.scheduledRefreshPromiseForTest = this.viewportThrottler.schedule(this.invalidateViewport.bind(this));
   }
 
   getScheduledRefreshPromiseForTest(): Promise<void>|undefined {
     return this.scheduledRefreshPromiseForTest;
-  }
-
-  private scheduleViewportRefreshForTest(_muted: boolean): void {
-    // This functions is sniffed in tests.
   }
 
   private immediatelyScrollToBottom(): void {

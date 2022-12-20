@@ -655,6 +655,7 @@ export enum Events {
   BackForwardCacheDetailsUpdated = 'BackForwardCacheDetailsUpdated',
   PrerenderingStatusUpdated = 'PrerenderingStatusUpdated',
   PrerenderAttemptCompleted = 'PrerenderAttemptCompleted',
+  JavaScriptDialogOpening = 'JavaScriptDialogOpening',
 }
 
 export type EventTypes = {
@@ -677,6 +678,7 @@ export type EventTypes = {
   [Events.BackForwardCacheDetailsUpdated]: ResourceTreeFrame,
   [Events.PrerenderingStatusUpdated]: ResourceTreeFrame,
   [Events.PrerenderAttemptCompleted]: Protocol.Page.PrerenderAttemptCompletedEvent,
+  [Events.JavaScriptDialogOpening]: Protocol.Page.JavascriptDialogOpeningEvent,
 };
 
 export class ResourceTreeFrame {
@@ -1154,8 +1156,9 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
     this.#resourceTreeModel.dispatchEventToListeners(Events.FrameResized);
   }
 
-  javascriptDialogOpening({hasBrowserHandler}: Protocol.Page.JavascriptDialogOpeningEvent): void {
-    if (!hasBrowserHandler) {
+  javascriptDialogOpening(event: Protocol.Page.JavascriptDialogOpeningEvent): void {
+    this.#resourceTreeModel.dispatchEventToListeners(Events.JavaScriptDialogOpening, event);
+    if (!event.hasBrowserHandler) {
       void this.#resourceTreeModel.agent.invoke_handleJavaScriptDialog({accept: false});
     }
   }

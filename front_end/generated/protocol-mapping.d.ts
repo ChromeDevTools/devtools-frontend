@@ -3593,6 +3593,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Resets the budget for `ownerOrigin` by clearing all budget withdrawals.
+     */
+    'Storage.resetSharedStorageBudget': {
+      paramsType: [Protocol.Storage.ResetSharedStorageBudgetRequest];
+      returnType: void;
+    };
+    /**
      * Enables/disables issuing of sharedStorageAccessed events.
      */
     'Storage.setSharedStorageTracking': {

@@ -279,6 +279,7 @@ function getDetailedTextForStatusCode(status: Protocol.Network.TrustTokenOperati
     case Protocol.Network.TrustTokenOperationDoneEventStatus.FailedPrecondition:
     case Protocol.Network.TrustTokenOperationDoneEventStatus.Unavailable:
     case Protocol.Network.TrustTokenOperationDoneEventStatus.InternalError:
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.Unauthorized:
     case Protocol.Network.TrustTokenOperationDoneEventStatus.UnknownError:
       return i18nString(UIStrings.theOperationFailedForAnUnknown);
   }

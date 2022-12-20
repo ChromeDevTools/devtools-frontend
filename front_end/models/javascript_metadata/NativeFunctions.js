@@ -1042,6 +1042,11 @@ export const NativeFunctions = [
     receivers: ['AudioNode']
   },
   {
+    name: 'disconnect',
+    signatures: [['?disposition']],
+    receivers: ['SmartCardConnection']
+  },
+  {
     name: 'cancelAndHoldAtTime',
     signatures: [['cancelTime'],['startTime']]
   },
@@ -3066,7 +3071,7 @@ export const NativeFunctions = [
   {
     name: 'lookupNamespaceURI',
     signatures: [['?prefix']],
-    receivers: ['XPathNSResolver']
+    receivers: ['NativeXPathNSResolver']
   },
   {
     name: 'lookupPrefix',
@@ -3198,12 +3203,29 @@ export const NativeFunctions = [
     signatures: [['?measureName']]
   },
   {
+    name: 'getEntries',
+    signatures: [['?includeFrames']],
+    receivers: ['Performance']
+  },
+  {
     name: 'getEntriesByName',
-    signatures: [['name','?type'],['name','?entryType']]
+    signatures: [['name','?type'],['name','?entryType','?includeFrames']],
+    receivers: ['Performance']
+  },
+  {
+    name: 'getEntriesByName',
+    signatures: [['name','?type'],['name','?entryType']],
+    receivers: ['PerformanceObserverEntryList']
   },
   {
     name: 'getEntriesByType',
-    signatures: [['type'],['entryType']]
+    signatures: [['type'],['entryType','?includeFrames']],
+    receivers: ['Performance']
+  },
+  {
+    name: 'getEntriesByType',
+    signatures: [['type'],['entryType']],
+    receivers: ['PerformanceObserverEntryList']
   },
   {
     name: 'mark',
@@ -5178,12 +5200,7 @@ export const NativeFunctions = [
   {
     name: 'next',
     signatures: [['...args']],
-    receivers: ['Generator','AsyncIterator','AsyncGenerator']
-  },
-  {
-    name: 'next',
-    signatures: [['...args'],['?value']],
-    receivers: ['Iterator']
+    receivers: ['Generator','Iterator','AsyncIterator','AsyncGenerator']
   },
   {
     name: 'return',
@@ -6017,12 +6034,12 @@ export const NativeFunctions = [
     signatures: [['issuer']]
   },
   {
-    name: 'hasPrivateStateToken',
-    signatures: [['issuer']]
+    name: 'hasPrivateToken',
+    signatures: [['issuer','type']]
   },
   {
     name: 'hasRedemptionRecord',
-    signatures: [['issuer']]
+    signatures: [['issuer','type']]
   },
   {
     name: 'ariaNotify',
@@ -6118,6 +6135,10 @@ export const NativeFunctions = [
   },
   {
     name: 'AnimationPlaybackEvent',
+    signatures: [['type','?eventInitDict']]
+  },
+  {
+    name: 'BeforeToggleEvent',
     signatures: [['type','?eventInitDict']]
   },
   {
@@ -6365,7 +6386,7 @@ export const NativeFunctions = [
     signatures: [['event']]
   },
   {
-    name: 'FencedFrameInnerConfig',
+    name: 'FencedFrameConfig',
     signatures: [['url']]
   },
   {
@@ -6383,6 +6404,10 @@ export const NativeFunctions = [
   {
     name: 'SubmitEvent',
     signatures: [['type','?eventInitDict']]
+  },
+  {
+    name: 'togglePopover',
+    signatures: [['?force']]
   },
   {
     name: 'Image',
@@ -6896,6 +6921,10 @@ export const NativeFunctions = [
     signatures: [['?logout_requests']]
   },
   {
+    name: 'getUserInfo',
+    signatures: [['config']]
+  },
+  {
     name: 'PasswordCredential',
     signatures: [['data'],['form']]
   },
@@ -7315,6 +7344,10 @@ export const NativeFunctions = [
   {
     name: 'softmax',
     signatures: [['input']]
+  },
+  {
+    name: 'sigmoid',
+    signatures: [['?input']]
   },
   {
     name: 'buildAsync',

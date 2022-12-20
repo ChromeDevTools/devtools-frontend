@@ -13938,6 +13938,7 @@
                                 "ResourceExhausted",
                                 "AlreadyExists",
                                 "Unavailable",
+                                "Unauthorized",
                                 "BadResponse",
                                 "InternalError",
                                 "UnknownError",
@@ -16299,6 +16300,7 @@
                         "InjectedJavascript",
                         "InjectedStyleSheet",
                         "KeepaliveRequest",
+                        "IndexedDBEvent",
                         "Dummy",
                         "AuthorizationHeader",
                         "ContentSecurityHandler",
@@ -19835,6 +19837,17 @@
                     ]
                 },
                 {
+                    "name": "resetSharedStorageBudget",
+                    "description": "Resets the budget for `ownerOrigin` by clearing all budget withdrawals.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "ownerOrigin",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "name": "setSharedStorageTracking",
                     "description": "Enables/disables issuing of sharedStorageAccessed events.",
                     "experimental": true,
@@ -20589,6 +20602,13 @@
                         {
                             "name": "background",
                             "description": "Whether to create the target in background or foreground (chrome-only,\nfalse by default).",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "forTab",
+                            "description": "Whether to create the target of type \"tab\".",
+                            "experimental": true,
                             "optional": true,
                             "type": "boolean"
                         }

@@ -9444,6 +9444,7 @@ export namespace Network {
     ResourceExhausted = 'ResourceExhausted',
     AlreadyExists = 'AlreadyExists',
     Unavailable = 'Unavailable',
+    Unauthorized = 'Unauthorized',
     BadResponse = 'BadResponse',
     InternalError = 'InternalError',
     UnknownError = 'UnknownError',
@@ -11122,6 +11123,7 @@ export namespace Page {
     InjectedJavascript = 'InjectedJavascript',
     InjectedStyleSheet = 'InjectedStyleSheet',
     KeepaliveRequest = 'KeepaliveRequest',
+    IndexedDBEvent = 'IndexedDBEvent',
     Dummy = 'Dummy',
     AuthorizationHeader = 'AuthorizationHeader',
     ContentSecurityHandler = 'ContentSecurityHandler',
@@ -13370,6 +13372,10 @@ export namespace Storage {
     ownerOrigin: string;
   }
 
+  export interface ResetSharedStorageBudgetRequest {
+    ownerOrigin: string;
+  }
+
   export interface SetSharedStorageTrackingRequest {
     enable: boolean;
   }
@@ -13893,6 +13899,10 @@ export namespace Target {
      * false by default).
      */
     background?: boolean;
+    /**
+     * Whether to create the target of type "tab".
+     */
+    forTab?: boolean;
   }
 
   export interface CreateTargetResponse extends ProtocolResponseWithError {

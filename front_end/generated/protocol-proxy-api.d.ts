@@ -2992,6 +2992,11 @@ declare namespace ProtocolProxyApi {
     invoke_clearSharedStorageEntries(params: Protocol.Storage.ClearSharedStorageEntriesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Resets the budget for `ownerOrigin` by clearing all budget withdrawals.
+     */
+    invoke_resetSharedStorageBudget(params: Protocol.Storage.ResetSharedStorageBudgetRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Enables/disables issuing of sharedStorageAccessed events.
      */
     invoke_setSharedStorageTracking(params: Protocol.Storage.SetSharedStorageTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;

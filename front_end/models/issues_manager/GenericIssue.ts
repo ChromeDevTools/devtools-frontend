@@ -80,11 +80,17 @@ export const genericCrossOriginPortalPostMessageError = {
   }],
 };
 
-export const genericCrossOriginPortalPostMessageCode = [
-  Protocol.Audits.InspectorIssueCode.GenericIssue,
-  Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError,
-].join('::');
+export const genericFormLabelForNameError = {
+  file: 'genericFormLabelForNameError.md',
+  links: [{
+    link: 'https://html.spec.whatwg.org/multipage/forms.html#attr-label-for',
+    // Since the link points to a page with the same title, the 'HTML Standard'
+    // string doesn't need to be translated.
+    linkTitle: i18n.i18n.lockedLazyString('HTML Standard'),
+  }],
+};
 
 const issueDescriptions: Map<Protocol.Audits.GenericIssueErrorType, LazyMarkdownIssueDescription> = new Map([
   [Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError, genericCrossOriginPortalPostMessageError],
+  [Protocol.Audits.GenericIssueErrorType.FormLabelForNameError, genericFormLabelForNameError],
 ]);

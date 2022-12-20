@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -17,6 +18,10 @@ const UIStrings = {
   *@description Title for the 'Frame' column.
   */
   frameId: 'Frame',
+  /**
+  *@description Label for the violating node link in the issue view.
+  */
+  violatingNode: 'Violating node',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/issues/GenericIssueDetailsView.ts', UIStrings);
@@ -39,12 +44,12 @@ export class GenericIssueDetailsView extends AffectedResourcesView {
     let count = 0;
     for (const genericIssue of genericIssues) {
       count++;
-      this.#appendDetail(genericIssue);
+      void this.#appendDetail(genericIssue);
     }
     this.updateAffectedResourceCount(count);
   }
 
-  #appendDetail(genericIssue: IssuesManager.GenericIssue.GenericIssue): void {
+  async #appendDetail(genericIssue: IssuesManager.GenericIssue.GenericIssue): Promise<void> {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
@@ -52,8 +57,25 @@ export class GenericIssueDetailsView extends AffectedResourcesView {
     if (details.frameId) {
       element.appendChild(this.createFrameCell(details.frameId, genericIssue.getCategory()));
     }
+    if (details.violatingNodeId) {
+      const target = genericIssue.model()?.target() || null;
+      element.appendChild(await this.createElementCell(
+          {backendNodeId: details.violatingNodeId, nodeName: this.violatingNodeIdName(details.errorType), target},
+          genericIssue.getCategory()));
+    }
 
     this.affectedResources.appendChild(element);
+  }
+
+  private violatingNodeIdName(errorType: Protocol.Audits.GenericIssueErrorType): Platform.UIString.LocalizedString {
+    switch (errorType) {
+      case Protocol.Audits.GenericIssueErrorType.FormLabelForNameError:
+        // Since the error is referencing the <label> tag, this string doesn't
+        // need to be translated.
+        return i18n.i18n.lockedString('Label');
+      default:
+        return i18nString(UIStrings.violatingNode);
+    }
   }
 
   update(): void {

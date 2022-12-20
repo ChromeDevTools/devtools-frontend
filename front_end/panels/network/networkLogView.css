@@ -155,10 +155,10 @@
 .network-log-grid.data-grid tr.selected.network-error-row,
 .network-log-grid.data-grid tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid tr.selected.network-error-row .network-dim-cell,
-.network-log-grid.data-grid:focus tr.selected.network-error-row .devtools-link,
-.network-log-grid.data-grid:focus tr.selected.network-error-row,
-.network-log-grid.data-grid:focus tr.selected.network-error-row .network-cell-subtitle,
-.network-log-grid.data-grid:focus tr.selected.network-error-row .network-dim-cell {
+.network-log-grid.data-grid:focus-within tr.selected.network-error-row .devtools-link,
+.network-log-grid.data-grid:focus-within tr.selected.network-error-row,
+.network-log-grid.data-grid:focus-within tr.selected.network-error-row .network-cell-subtitle,
+.network-log-grid.data-grid:focus-within tr.selected.network-error-row .network-dim-cell {
   color: var(--color-accent-red);
 }
 
@@ -227,11 +227,11 @@
   margin-right: 3px;
 }
 
-.network-log-grid.data-grid:focus .data-grid-data-grid-node.selected img.icon {
+.network-log-grid.data-grid:focus-within .data-grid-data-grid-node.selected img.icon {
   filter: brightness(0) invert(1);
 }
 
-.network-log-grid.data-grid:focus .data-grid-data-grid-node.selected [is="ui-icon"].icon-mask {
+.network-log-grid.data-grid:focus-within .data-grid-data-grid-node.selected [is="ui-icon"].icon-mask {
   --network-grid-selected-color: #dadce0;
   --override-icon-mask-background-color: var(--network-grid-selected-color);
 }
@@ -398,10 +398,10 @@
    extracted out. */
   /* stylelint-disable no-descending-specificity */
   .network-log-grid.data-grid tbody tr.revealed.selected,
-  .network-log-grid.data-grid:focus tbody tr.revealed.selected,
-  .network-log-grid.data-grid:focus tr.selected .network-dim-cell,
+  .network-log-grid.data-grid:focus-within tbody tr.revealed.selected,
+  .network-log-grid.data-grid:focus-within tr.selected .network-dim-cell,
   .network-log-grid.data-grid tr.selected .network-dim-cell,
-  .network-log-grid.data-grid:focus tr.selected .initiator-column .devtools-link,
+  .network-log-grid.data-grid:focus-within tr.selected .initiator-column .devtools-link,
   .network-log-grid.data-grid tr.selected .initiator-column .devtools-link,
   .network-waterfall-header:hover * {
     color: HighlightText;

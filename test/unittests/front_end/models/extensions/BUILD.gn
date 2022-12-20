@@ -9,6 +9,7 @@ ts_library("extensions") {
   sources = [
     "ExtensionServer_test.ts",
     "RecorderPluginManager_test.ts",
+    "helpers.ts",
   ]
 
   deps = [

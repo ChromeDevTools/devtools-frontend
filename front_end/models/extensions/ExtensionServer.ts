@@ -147,7 +147,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(PrivateAPI.Commands.GetWasmOp, this.onGetWasmOp.bind(this));
     this.registerHandler(
         PrivateAPI.Commands.RegisterRecorderExtensionPlugin, this.registerRecorderExtensionEndpoint.bind(this));
-    window.addEventListener('message', this.onWindowMessage.bind(this), false);  // Only for main window.
+    window.addEventListener('message', this.onWindowMessage, false);  // Only for main window.
 
     const existingTabId =
         window.DevToolsAPI && window.DevToolsAPI.getInspectedTabId && window.DevToolsAPI.getInspectedTabId();
@@ -160,19 +160,36 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     this.initExtensions();
 
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
-      const themeName = ThemeSupport.ThemeSupport.instance().themeName();
-      for (const port of this.themeChangeHandlers.values()) {
-        port.postMessage({command: PrivateAPI.Events.ThemeChange, themeName});
-      }
-    });
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
   }
+
+  dispose(): void {
+    ThemeSupport.ThemeSupport.instance().removeEventListener(
+        ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
+
+    // Set up by this.initExtensions in the constructor.
+    SDK.TargetManager.TargetManager.instance().removeEventListener(
+        SDK.TargetManager.Events.InspectedURLChanged, this.inspectedURLChanged, this);
+
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
+
+    window.removeEventListener('message', this.onWindowMessage, false);
+  }
+
+  #onThemeChange = (): void => {
+    const themeName = ThemeSupport.ThemeSupport.instance().themeName();
+    for (const port of this.themeChangeHandlers.values()) {
+      port.postMessage({command: PrivateAPI.Events.ThemeChange, themeName});
+    }
+  };
 
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): ExtensionServer {
     const {forceNew} = opts;
     if (!extensionServerInstance || forceNew) {
+      extensionServerInstance?.dispose();
       extensionServerInstance = new ExtensionServer();
     }
 
@@ -999,11 +1016,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     port.start();
   }
 
-  private onWindowMessage(event: MessageEvent): void {
+  private onWindowMessage = (event: MessageEvent): void => {
     if (event.data === 'registerExtension') {
       this.registerExtension(event.origin as Platform.DevToolsPath.UrlString, event.ports[0]);
     }
-  }
+  };
 
   private async onmessage(event: MessageEvent): Promise<void> {
     const message = event.data;

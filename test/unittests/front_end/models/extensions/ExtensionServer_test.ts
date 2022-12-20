@@ -3,36 +3,15 @@
 // found in the LICENSE file.
 
 import * as Extensions from '../../../../../front_end/models/extensions/extensions.js';
-import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 
-describe('Extensions', () => {
-  function cleanup() {
-    try {
-      delete (window as {chrome?: Chrome.DevTools.Chrome}).chrome;
-    } catch {
-      // Eat errors in headful mode
-    }
-  }
+import {describeWithDummyExtension} from './helpers.js';
 
-  beforeEach(cleanup);
-  afterEach(cleanup);
-
+describeWithDummyExtension('Extensions', context => {
   it('can register a recorder extension', async () => {
-    const server = Extensions.ExtensionServer.ExtensionServer.instance({forceNew: true});
-    const extensionDescriptor = {
-      startPage: 'blank.html',
-      name: 'TestExtension',
-      exposeExperimentalAPIs: true,
-    };
-    server.addExtensionForTest(extensionDescriptor, window.location.origin);
-    const chrome: Partial<Chrome.DevTools.Chrome> = {};
-    (window as {chrome?: Partial<Chrome.DevTools.Chrome>}).chrome = chrome;
-
-    self.injectedExtensionAPI(extensionDescriptor, 'main', 'dark', [], () => {}, 1, window);
-
     class RecorderPlugin {
       async stringify(recording: object) {
         return JSON.stringify(recording);
@@ -41,7 +20,8 @@ describe('Extensions', () => {
         return JSON.stringify(step);
       }
     }
-    await chrome.devtools?.recorder.registerRecorderExtensionPlugin(new RecorderPlugin(), 'Test', 'text/javascript');
+    await context.chrome.devtools?.recorder.registerRecorderExtensionPlugin(
+        new RecorderPlugin(), 'Test', 'text/javascript');
 
     const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
     assert.strictEqual(manager.plugins().length, 1);
@@ -62,7 +42,9 @@ describe('Extensions', () => {
     assert.deepStrictEqual(result, '{"name":"test","steps":[]}');
     assert.deepStrictEqual(stepResult, '{"type":"scroll"}');
   });
+});
 
+describe('ExtensionServer', () => {
   it('can correctly expand resource paths', async () => {
     // Ideally this would be a chrome-extension://, but that doesn't work with URL in chrome headless.
     const extensionOrigin = 'chrome://abcdef' as Platform.DevToolsPath.UrlString;

@@ -175,6 +175,8 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
     UI.ARIAUtils.setDescription(optionElement, profileType.description);
     const customContent = profileType.customContent();
     if (customContent) {
+      customContent.setAttribute('role', 'group');
+      customContent.setAttribute('aria-labelledby', `${optionElement.id}`);
       this.profileTypeSelectorForm.createChild('p').appendChild(customContent);
       profileType.setCustomContentEnabled(false);
     }

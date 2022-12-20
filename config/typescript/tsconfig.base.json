@@ -13,6 +13,8 @@
     "noFallthroughCasesInSwitch": true,
     "useUnknownInCatchVariables": false,
 
+    "experimentalDecorators": true,
+
     "composite": true,
     "declaration": true,
 

@@ -2,7 +2,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import dts from "rollup-plugin-dts";
 import { terser } from "rollup-plugin-terser";
 
-export default ['directive', 'directives', 'lit'].flatMap(filename => ([
+export default ['directive', 'directives', 'decorators', 'lit'].flatMap(filename => ([
   {
     input: `./src/${filename}.js`,
     output: {

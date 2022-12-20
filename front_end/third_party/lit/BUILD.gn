@@ -10,6 +10,9 @@ devtools_pre_built("lit") {
   sources_are_release = false
 
   sources = [
+    "lib/decorators.d.ts",
+    "lib/decorators.js",
+    "lib/decorators.js.map",
     "lib/directive.d.ts",
     "lib/directive.js",
     "lib/directive.js.map",

@@ -1370,6 +1370,7 @@ grd_files_debug_sources = [
   "front_end/third_party/intl-messageformat/package/intl-messageformat.esm.js",
   "front_end/third_party/lighthouse/report-assets/report-generator.mjs",
   "front_end/third_party/lighthouse/report/bundle.js",
+  "front_end/third_party/lit/lib/decorators.js",
   "front_end/third_party/lit/lib/directive.js",
   "front_end/third_party/lit/lib/directives.js",
   "front_end/third_party/lit/lib/lit.js",

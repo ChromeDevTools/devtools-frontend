@@ -554,4 +554,58 @@ declare class UntilDirective extends AsyncDirective {
  */
 declare const until: (...values: unknown[]) => DirectiveResult<typeof UntilDirective>;
 
-export { ClassInfo, ClassMapDirective, ItemTemplate, KeyFn, LiveDirective, RepeatDirective, RepeatDirectiveFn, StyleInfo, StyleMapDirective, UnsafeHTMLDirective, UntilDirective, classMap, ifDefined, live, repeat, styleMap, unsafeHTML, until };
+/**
+ * Creates a new Ref object, which is container for a reference to an element.
+ */
+declare const createRef: <T = Element>() => Ref<T>;
+/**
+ * An object that holds a ref value.
+ */
+declare class Ref<T = Element> {
+    /**
+     * The current Element value of the ref, or else `undefined` if the ref is no
+     * longer rendered.
+     */
+    readonly value?: T;
+}
+
+declare type RefOrCallback = Ref | ((el: Element | undefined) => void);
+declare class RefDirective extends AsyncDirective {
+    private _element?;
+    private _ref?;
+    private _context?;
+    render(_ref: RefOrCallback): symbol;
+    update(part: ElementPart, [ref]: Parameters<this['render']>): symbol;
+    private _updateRefValue;
+    private get _lastElementForRef();
+    disconnected(): void;
+    reconnected(): void;
+}
+/**
+ * Sets the value of a Ref object or calls a ref callback with the element it's
+ * bound to.
+ *
+ * A Ref object acts as a container for a reference to an element. A ref
+ * callback is a function that takes an element as its only argument.
+ *
+ * The ref directive sets the value of the Ref object or calls the ref callback
+ * during rendering, if the referenced element changed.
+ *
+ * Note: If a ref callback is rendered to a different element position or is
+ * removed in a subsequent render, it will first be called with `undefined`,
+ * followed by another call with the new element it was rendered to (if any).
+ *
+ * ```js
+ * // Using Ref object
+ * const inputRef = createRef();
+ * render(html`<input ${ref(inputRef)}>`, container);
+ * inputRef.value.focus();
+ *
+ * // Using callback
+ * const callback = (inputElement) => inputElement.focus();
+ * render(html`<input ${ref(callback)}>`, container);
+ * ```
+ */
+declare const ref: (_ref: RefOrCallback) => DirectiveResult<typeof RefDirective>;
+
+export { ClassInfo, ClassMapDirective, ItemTemplate, KeyFn, LiveDirective, Ref, RefDirective, RefOrCallback, RepeatDirective, RepeatDirectiveFn, StyleInfo, StyleMapDirective, UnsafeHTMLDirective, UntilDirective, classMap, createRef, ifDefined, live, ref, repeat, styleMap, unsafeHTML, until };

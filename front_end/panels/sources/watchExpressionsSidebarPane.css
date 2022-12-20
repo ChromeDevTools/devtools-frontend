@@ -142,4 +142,8 @@ li.watch-expression-editing::before {
   li.watch-expression-tree-item:hover * {
     color: HighlightText;
   }
+
+  li.watch-expression-tree-item:hover .watch-expression-delete-button {
+    background-color: HighlightText;
+  }
 }

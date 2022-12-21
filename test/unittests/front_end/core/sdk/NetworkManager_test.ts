@@ -488,6 +488,32 @@ describeWithMockConnection('InterceptedRequest', () => {
         });
   });
 
+  it('does not intercept OPTIONS requests', async () => {
+    const requestId = 'request_id_1' as Protocol.Fetch.RequestId;
+    const request = {
+      method: 'OPTIONS',
+      url: 'https://www.example.com/styles.css',
+    } as Protocol.Network.Request;
+    const fetchAgent = target.fetchAgent();
+    const fulfillRequestSpy = sinon.spy(fetchAgent, 'invoke_fulfillRequest');
+    const continueRequestSpy = sinon.spy(fetchAgent, 'invoke_continueRequest');
+
+    const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
+        requestId as unknown as Protocol.Network.RequestId, request.url as Platform.DevToolsPath.UrlString,
+        request.url as Platform.DevToolsPath.UrlString, null, null, null);
+
+    const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
+        fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, networkRequest);
+    interceptedRequest.responseBody = async () => {
+      return {error: null, content: 'interceptedRequest content', encoded: false};
+    };
+
+    assert.isTrue(continueRequestSpy.notCalled);
+    await SDK.NetworkManager.MultitargetNetworkManager.instance().requestIntercepted(interceptedRequest);
+    assert.isTrue(fulfillRequestSpy.notCalled);
+    assert.isTrue(continueRequestSpy.calledOnce);
+  });
+
   it('can override headers and content for a status 200 request', async () => {
     const responseCode = 200;
     const requestId = 'request_id_2' as Protocol.Fetch.RequestId;

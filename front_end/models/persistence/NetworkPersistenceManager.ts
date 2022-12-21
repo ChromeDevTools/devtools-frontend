@@ -691,7 +691,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   private async interceptionHandler(interceptedRequest: SDK.NetworkManager.InterceptedRequest): Promise<void> {
     const method = interceptedRequest.request.method;
-    if (!this.activeInternal || (method !== 'GET' && method !== 'POST')) {
+    if (!this.activeInternal || (method === 'OPTIONS')) {
       return;
     }
     const proj = this.projectInternal as FileSystem;

@@ -26,24 +26,24 @@ const colorSpaceConversionTolerance = 0.001;
 
 describe('Color', () => {
   it('can be instantiated without issues', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
     assert.deepEqual(color.rgba(), [0.5, 0.5, 0.5, 0.5], 'RGBA array was not set correctly');
     assert.strictEqual(color.asString(), 'testColor', 'original text was not set correctly');
-    assert.strictEqual(color.format(), Color.Format.Original, 'format was not set correctly');
+    assert.strictEqual(color.format(), Color.Format.RGBA, 'format was not set correctly');
   });
 
   it('defaults RGBA value to 0 if the RGBA initializing value given was negative', () => {
-    const color = new Color.Legacy([-0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
-    assert.deepEqual(color.rgba(), [0, 0.5, 0.5, 0.5], 'RGBA array was not set correctly');
+    const color = new Color.Legacy([-0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
+    assert.deepEqual(color.rgba(), [-0.5, 0.5, 0.5, 0.5], 'RGBA array was not set correctly');
     assert.strictEqual(color.asString(), 'testColor', 'original text was not set correctly');
-    assert.strictEqual(color.format(), Color.Format.Original, 'format was not set correctly');
+    assert.strictEqual(color.format(), Color.Format.RGBA, 'format was not set correctly');
   });
 
   it('defaults RGBA value to 1 if the RGBA initializing value given was above one', () => {
-    const color = new Color.Legacy([1.1, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([1.1, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
     assert.deepEqual(color.rgba(), [1, 0.5, 0.5, 0.5], 'RGBA array was not set correctly');
     assert.strictEqual(color.asString(), 'testColor', 'original text was not set correctly');
-    assert.strictEqual(color.format(), Color.Format.Original, 'format was not set correctly');
+    assert.strictEqual(color.format(), Color.Format.RGBA, 'format was not set correctly');
   });
 
   it('is able to create a color class from an HSVA value', () => {
@@ -54,7 +54,7 @@ describe('Color', () => {
   });
 
   it('is able to return the HSVA value of a color', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
     const hsva = color.hsva();
     assert.deepEqual(hsva, [0, 0, 0.5, 0.5], 'HSVA was not calculated correctly');
   });
@@ -75,13 +75,13 @@ describe('Color', () => {
   });
 
   it('is able to return canonical HSLA for a color', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
     const result = color.canonicalHSLA();
     assert.deepEqual(result, [0, 0, 50, 0.5], 'canonical HSLA was not calculated correctly');
   });
 
   it('is able to return canonical HWBA for a color', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColorGray');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColorGray');
     const result = color.canonicalHWBA();
     deepCloseTo(result, [0, 50, 50, 0.5], tolerance, 'canonical HWBA was not calculated correctly');
   });
@@ -166,12 +166,12 @@ describe('Color', () => {
     // Parses out of sRGB gamut values too
     const colorTwo = parseAndAssertNotNull('lch(100 112 312)');
     assertNotNullOrUndefined(colorTwo);
-    deepCloseTo(colorTwo.rgba(), [1.3014, 0.7735, 1.6512, 1], colorSpaceConversionTolerance);
+    deepCloseTo(colorTwo.rgba(), [1, 0.7735, 1, 1], colorSpaceConversionTolerance);
 
     // Parses none values too
     const colorThree = parseAndAssertNotNull('lch(100 112 none)');
     assertNotNullOrUndefined(colorThree);
-    deepCloseTo(colorThree.rgba(), [1.7272, 0.4992, 1.025, 1], colorSpaceConversionTolerance);
+    deepCloseTo(colorThree.rgba(), [1, 0.4992, 1, 1], colorSpaceConversionTolerance);
 
     // Parses syntax from Color Syntax mega list https://cdpn.io/pen/debug/RwyOyeq
     const colorCases = [
@@ -207,7 +207,7 @@ describe('Color', () => {
     // Parses out of sRGB gamut values too
     const colorTwo = parseAndAssertNotNull('lab(100 58 64)');
     assertNotNullOrUndefined(colorTwo);
-    deepCloseTo(colorTwo.rgba(), [1.48, 0.805, 0.519, 1], colorSpaceConversionTolerance);
+    deepCloseTo(colorTwo.rgba(), [1, 0.805, 0.519, 1], colorSpaceConversionTolerance);
 
     // Parses none values too
     const colorThree = parseAndAssertNotNull('lch(100 none none)');
@@ -278,7 +278,7 @@ describe('Color', () => {
     // Parses correctly from syntax list
     const colorCases = [
       ['color(display-p3 34% 58% 73%)', [0.246, 0.587, 0.745, 1]],
-      ['color(display-p3 1 0.71 0.73)', [1.051, 0.694, 0.725, 1]],
+      ['color(display-p3 1 0.71 0.73)', [1, 0.694, 0.725, 1]],
       ['color(display-p3 34% / 50%)', [0.3748, -0.0505, -0.0239, 0.5]],
       ['color(rec2020 34% 58% 73%)', [-0.169, 0.641, 0.774, 1]],
       ['color(rec2020 .34 .58 .73 / .5)', [-0.169, 0.641, 0.774, 0.5]],
@@ -286,8 +286,8 @@ describe('Color', () => {
       ['color(a98-rgb none none none)', [0, 0, 0, 1]],
       ['color(a98-rgb 0)', [0, 0, 0, 1]],
       ['color(xyz-d50 .22 .26 .53)', [0.0929, 0.584, 0.855, 1]],
-      ['color(xyz 100% 100% 100%)', [1.085, 0.977, 0.959, 1]],
-      ['color(xyz-d65 100% 100% 100%)', [1.085, 0.977, 0.959, 1]],
+      ['color(xyz 100% 100% 100%)', [1, 0.977, 0.959, 1]],
+      ['color(xyz-d65 100% 100% 100%)', [1, 0.977, 0.959, 1]],
     ];
 
     for (const [syntax, expectedRgba] of colorCases) {
@@ -314,158 +314,158 @@ describe('Color', () => {
   });
 
   it('is able to return whether or not the color has an alpha value', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
     assert.isTrue(color.hasAlpha(), 'the color should be considered to have an alpha value');
   });
 
   it('is able to detect the HEX format of a color with an alpha value', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
     const result = color.detectHEXFormat();
     assert.strictEqual(result, 'hexa', 'format was not detected correctly');
   });
 
   it('is able to detect the HEX format of a color without an alpha value', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 1], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 1], Color.Format.RGBA, 'testColor');
     const result = color.detectHEXFormat();
     assert.strictEqual(result, 'hex', 'format was not detected correctly');
   });
 
   it('is able to return the canonical RGBA of a color', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
     const result = color.canonicalRGBA();
     assert.deepEqual(result, [128, 128, 128, 0.5], 'canonical RGBA was not returned correctly');
   });
 
   it('is able to return the nickname of a color', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGBA, 'testColor');
     const result = color.nickname();
     assert.strictEqual(result, 'red', 'nickname was not returned correctly');
   });
 
   it('returns null as a nickname if the color was not recognized', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
     const result = color.nickname();
     assert.isNull(result, 'nickname should be returned as Null');
   });
 
   it('is able to convert the color to a protocol RGBA', () => {
-    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
     const result = color.toProtocolRGBA();
     assert.deepEqual(result, {r: 128, g: 128, b: 128, a: 0.5}, 'conversion to protocol RGBA was not correct');
   });
 
   it('is able to invert a color', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGBA, 'testColor');
     const result = color.invert().rgba();
     assert.deepEqual(result, [0, 1, 1, 1], 'inversion was not successful');
   });
 
   it('is able to set the alpha value of a color', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGBA, 'testColor');
     const result = color.setAlpha(0.5).rgba();
     assert.deepEqual(result, [1, 0, 0, 0.5], 'alpha value was not set correctly');
   });
 
   it('can blend with another color', () => {
-    const color = new Color.Legacy([1, 0, 0, 0.5], Color.Format.Original, 'testColor');
-    const otherColor = new Color.Legacy([0, 0, 1, 0.5], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 0.5], Color.Format.RGBA, 'testColor');
+    const otherColor = new Color.Legacy([0, 0, 1, 0.5], Color.Format.RGBA, 'testColor');
     const result = color.blendWith(otherColor).rgba();
     assert.deepEqual(result, [0.5, 0, 0.5, 0.75], 'color was not blended correctly');
   });
 
   it('returns the original text when turned into a string if its format was "original"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.Original, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGBA, 'testColor');
     const result = color.asString();
     assert.strictEqual(result, 'testColor', 'color was not converted to a string correctly');
   });
 
   it('returns the nickname when turned into a string if its format was "nickname"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.Nickname, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.Nickname);
     const result = color.asString();
     assert.strictEqual(result, 'red', 'color was not converted to a string correctly');
   });
 
   it('returns the HEX value when turned into a string if its format was "hex"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HEX, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HEX);
     const result = color.asString();
     assert.strictEqual(result, '#ff0000', 'color was not converted to a string correctly');
   });
 
   it('returns the short HEX value when turned into a string if its format was "shorthex"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.ShortHEX, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.ShortHEX);
     const result = color.asString();
     assert.strictEqual(result, '#f00', 'color was not converted to a string correctly');
   });
 
   it('returns the HEXA value when turned into a string if its format was "hexa"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HEXA, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HEXA);
     const result = color.asString();
     assert.strictEqual(result, '#ff0000ff', 'color was not converted to a string correctly');
   });
 
   it('returns the short HEXA value when turned into a string if its format was "shorthexa"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.ShortHEXA, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.ShortHEXA);
     const result = color.asString();
     assert.strictEqual(result, '#f00f', 'color was not converted to a string correctly');
   });
 
   it('returns the RGB value when turned into a string if its format was "rgb"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGB, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGB);
     const result = color.asString();
     assert.strictEqual(result, 'rgb(255 0 0)', 'color was not converted to a string correctly');
   });
 
   it('returns the RGBA value when turned into a string if its format was "rgba"', () => {
-    const color = new Color.Legacy([1, 0, 0, 0.42], Color.Format.RGBA, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 0.42], Color.Format.RGBA);
     const result = color.asString();
     assert.strictEqual(result, 'rgb(255 0 0 / 42%)', 'color was not converted to a string correctly');
   });
 
   it('omits the alpha value when it’s 100% if its format was "rgba"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGBA, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGBA);
     const result = color.asString();
     assert.strictEqual(result, 'rgb(255 0 0)', 'color was not converted to a string correctly');
   });
 
   it('returns the HSL value when turned into a string if its format was "hsl"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HSL, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HSL);
     const result = color.asString();
     assert.strictEqual(result, 'hsl(0deg 100% 50%)', 'color was not converted to a string correctly');
   });
 
   it('returns the HSLA value when turned into a string if its format was "hsla"', () => {
-    const color = new Color.Legacy([1, 0, 0, 0.42], Color.Format.HSLA, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 0.42], Color.Format.HSLA);
     const result = color.asString();
     assert.strictEqual(result, 'hsl(0deg 100% 50% / 42%)', 'color was not converted to a string correctly');
   });
 
   it('omits the alpha value when it’s 100% if its format was "hsla"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HSLA, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HSLA);
     const result = color.asString();
     assert.strictEqual(result, 'hsl(0deg 100% 50%)', 'color was not converted to a string correctly');
   });
 
   it('returns the HWB value when turned into a string if its format was "hwb"', () => {
-    const color = new Color.Legacy([0, 0, 1, 1], Color.Format.HWB, 'testColor');
+    const color = new Color.Legacy([0, 0, 1, 1], Color.Format.HWB);
     const result = color.asString();
     assert.strictEqual(result, 'hwb(240deg 0% 0%)', 'color was not converted to a string correctly');
   });
 
   it('returns the HWB value when turned into a string if its format was "hwba"', () => {
-    const color = new Color.Legacy([1, 0, 0, 0.42], Color.Format.HWBA, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 0.42], Color.Format.HWBA);
     const result = color.asString();
     assert.strictEqual(result, 'hwb(0deg 0% 0% / 42%)', 'color was not converted to a string correctly');
   });
 
   it('omits the alpha value when it’s 100% if its format was "hwba"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HWBA, 'testColor');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HWBA);
     const result = color.asString();
     assert.strictEqual(result, 'hwb(0deg 0% 0%)', 'color was not converted to a string correctly');
   });
 
   it('is able to return a color in a different format than the one the color was originally set with', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGB, 'testColor');
-    const result = color.asString('nickname');
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGB);
+    const result = color.asString(Color.Format.Nickname);
     assert.strictEqual(result, 'red', 'color was not converted to a string correctly');
   });
 
@@ -591,6 +591,204 @@ describe('Color', () => {
       const bg = parseAndAssertNotNull(test.bgColor);
       const result = Common.Color.findFgColorForContrastAPCA(fg, bg, test.requiredContrast);
       assert.isNull(result);
+    }
+  });
+
+  it('returns the original string when stringified', () => {
+    const lime: {[key in Common.Color.Format]: string} = {
+      [Common.Color.Format.Nickname]: 'lime',
+      [Common.Color.Format.HEX]: '#00ff00',
+      [Common.Color.Format.ShortHEX]: '#0f0',
+      [Common.Color.Format.HEXA]: '#00ff00ff',
+      [Common.Color.Format.ShortHEXA]: '#0f0f',
+      [Common.Color.Format.RGB]: 'rgb(0 255 0)',
+      [Common.Color.Format.RGBA]: 'rgba(0 255 0 / 100%)',
+      [Common.Color.Format.HSL]: 'hsl(120deg 100% 50%)',
+      [Common.Color.Format.HSLA]: 'hsl(120deg 100% 50% / 100%)',
+      [Common.Color.Format.HWB]: 'hwb(120deg 0% 0%)',
+      [Common.Color.Format.HWBA]: 'hwb(120deg 0% 0% / 100%)',
+      [Common.Color.Format.LCH]: 'lch(87.82 113.32 134.38)',
+      [Common.Color.Format.OKLCH]: 'oklch(0.87 0.29 142.49)',
+      [Common.Color.Format.LAB]: 'lab(87.82 -79.26 80.99)',
+      [Common.Color.Format.OKLAB]: 'oklab(0.87 -0.23 0.18)',
+      [Common.Color.Format.SRGB]: 'color(srgb 0 1 0)',
+      [Common.Color.Format.SRGB_LINEAR]: 'color(srgb-linear 0 1 0)',
+      [Common.Color.Format.DISPLAY_P3]: 'color(display-p3 0.46 0.99 0.3)',
+      [Common.Color.Format.A98_RGB]: 'color(a98-rgb 0.57 1 0.23)',
+      [Common.Color.Format.PROPHOTO_RGB]: 'color(prophoto-rgb 0.54 0.93 0.3)',
+      [Common.Color.Format.REC_2020]: 'color(rec2020 0.57 0.96 0.27)',
+      [Common.Color.Format.XYZ_D50]: 'color(xyz-d50 0.39 0.72 0.1)',
+      [Common.Color.Format.XYZ_D65]: 'color(xyz-d65 0.36 0.72 0.12)',
+      [Common.Color.Format.XYZ]: 'color(xyz 0.36 0.72 0.12)',
+    };
+
+    for (const format in lime) {
+      const spec = lime[format as Common.Color.Format];
+      const color = Common.Color.parse(spec);
+      assertNotNullOrUndefined(color);
+      assert.deepEqual(color?.asString(), spec);
+      assert.deepEqual(color?.format(), format);
+    }
+  });
+
+  it('prints the correct color when stringified with format', () => {
+    const lime: {[key in Common.Color.Format]: string} = {
+      [Common.Color.Format.Nickname]: 'lime',
+      [Common.Color.Format.HEX]: '#00ff00',
+      [Common.Color.Format.ShortHEX]: '#0f0',
+      [Common.Color.Format.HEXA]: '#00ff00ff',
+      [Common.Color.Format.ShortHEXA]: '#0f0f',
+      [Common.Color.Format.RGB]: 'rgb(0 255 0)',
+      [Common.Color.Format.RGBA]: 'rgb(0 255 0)',  // no alpha here because it is ignored at 100%
+      [Common.Color.Format.HSL]: 'hsl(120deg 100% 50%)',
+      [Common.Color.Format.HSLA]: 'hsl(120deg 100% 50%)',
+      [Common.Color.Format.HWB]: 'hwb(120deg 0% 0%)',
+      [Common.Color.Format.HWBA]: 'hwb(120deg 0% 0%)',
+      [Common.Color.Format.LCH]: 'lch(87.82 113.32 134.38)',
+      [Common.Color.Format.OKLCH]: 'oklch(0.87 0.29 142.49)',
+      [Common.Color.Format.LAB]: 'lab(87.82 -79.26 80.99)',
+      [Common.Color.Format.OKLAB]: 'oklab(0.87 -0.23 0.18)',
+      [Common.Color.Format.SRGB]: 'color(srgb 0 1 0)',
+      [Common.Color.Format.SRGB_LINEAR]: 'color(srgb-linear 0 1 0)',
+      [Common.Color.Format.DISPLAY_P3]: 'color(display-p3 0.46 0.99 0.3)',
+      [Common.Color.Format.A98_RGB]: 'color(a98-rgb 0.57 1 0.23)',
+      [Common.Color.Format.PROPHOTO_RGB]: 'color(prophoto-rgb 0.54 0.93 0.3)',
+      [Common.Color.Format.REC_2020]: 'color(rec2020 0.57 0.96 0.27)',
+      [Common.Color.Format.XYZ_D50]: 'color(xyz-d50 0.39 0.72 0.1)',
+      [Common.Color.Format.XYZ_D65]: 'color(xyz-d65 0.36 0.72 0.12)',
+      [Common.Color.Format.XYZ]: 'color(xyz 0.36 0.72 0.12)',
+    };
+
+    const color = Common.Color.parse('lime');
+    assertNotNullOrUndefined(color);
+
+    for (const format in lime) {
+      const spec = lime[format as Common.Color.Format];
+      assert.deepEqual(color?.asString(format as Common.Color.Format), spec);
+    }
+  });
+
+  it('supports all to all and chain conversions', () => {
+    // This test checks that both all-to-all as well as chaining together conversions producesthe expected outcome. It's
+    // not easily possible to do this with real color conversions because the converters aren't accurate enough to allow
+    // for good comparison of the color values. This test therefore stubs out the color converters. Since we don't care
+    // about real color values, the fake converter functions generate uniquly identifiable results by always returning
+    // the color codes below in the first coordinate of the color (and zeros for the rest). This lets us also verify
+    // that the sequence of converter functions is correct because the converters can check the input color is as
+    // expected.
+
+    // Constant color codes to identify color formats and spaces through conversions. These will be used in fake
+    // conversion functions below. Values need to be < 1 to avoid accidentally getting clamped.
+    const enum Code {
+      NICKNAME = 0,
+      // Legacy colors all get the same code because they all do the same conversions. Use a value of `1` here to make
+      // the color nickname match `red`.
+      HEX = 1,
+      ShortHEX = 1,
+      HEXA = 1,
+      ShortHEXA = 1,
+      RGB = 1,
+      RGBA = 1,
+      HSL = 1,
+      HSLA = 1,
+      HWB = 1,
+      HWBA = 1,
+      // Legacy colors are treated as srgb for conversions, so use the same value here too.
+      SRGB = 1,
+      XYZ_D65 = 0.1,
+      XYZ = 0.1,
+      LCH = 0.2,
+      OKLCH = 0.3,
+      LAB = 0.4,
+      OKLAB = 0.5,
+      SRGB_LINEAR = 0.6,
+      DISPLAY_P3 = 0.7,
+      A98_RGB = 0.8,
+      PROPHOTO_RGB = 0.9,
+      REC_2020 = 0.91,
+      XYZ_D50 = 0.92,
+    }
+
+    stub('adobeRGBToXyzd50', Code.A98_RGB, Code.XYZ_D50);
+    stub('displayP3ToXyzd50', Code.DISPLAY_P3, Code.XYZ_D50);
+    stub('labToLch', Code.LAB, Code.LCH);
+    stub('labToXyzd50', Code.LAB, Code.XYZ_D50);
+    stub('lchToLab', Code.LCH, Code.LAB);
+    stub('oklabToXyzd65', Code.OKLAB, Code.XYZ_D65);
+    stub('oklchToXyzd50', Code.OKLCH, Code.XYZ_D50);
+    stub('proPhotoToXyzd50', Code.PROPHOTO_RGB, Code.XYZ_D50);
+    stub('rec2020ToXyzd50', Code.REC_2020, Code.XYZ_D50);
+    stub('srgbLinearToXyzd50', Code.SRGB_LINEAR, Code.XYZ_D50);
+    stub('srgbToXyzd50', Code.SRGB, Code.XYZ_D50);
+    stub('xyzd50ToAdobeRGB', Code.XYZ_D50, Code.A98_RGB);
+    stub('xyzd50ToD65', Code.XYZ_D50, Code.XYZ_D65);
+    stub('xyzd50ToDisplayP3', Code.XYZ_D50, Code.DISPLAY_P3);
+    stub('xyzd50ToLab', Code.XYZ_D50, Code.LAB);
+    stub('xyzd50ToOklch', Code.XYZ_D50, Code.OKLCH);
+    stub('xyzd50ToProPhoto', Code.XYZ_D50, Code.PROPHOTO_RGB);
+    stub('xyzd50ToRec2020', Code.XYZ_D50, Code.REC_2020);
+    stub('xyzd50ToSrgb', Code.XYZ_D50, Code.SRGB);
+    stub('xyzd50TosRGBLinear', Code.XYZ_D50, Code.SRGB_LINEAR);
+    stub('xyzd65ToD50', Code.XYZ_D65, Code.XYZ_D50);
+    stub('xyzd65ToOklab', Code.XYZ_D65, Code.OKLAB);
+
+    function stub<Fn extends keyof typeof Common.ColorConverter.ColorConverter>(
+        fn: Fn, input: Code, output: Code): void {
+      const result = sinon.stub(Common.ColorConverter.ColorConverter, fn);
+      result.callsFake((a: number, b: number, c: number): [number, number, number] => {
+        assert.deepEqual([a, b, c], [input, 0, 0], `Conversion function ${fn} called with the wrong arguments`);
+        return [output, 0, 0];
+      });
+    }
+
+    const colors = new Map<Common.Color.Format, Common.Color.Color|null>();
+    colors.set(Common.Color.Format.Nickname, Common.Color.parse('red'));
+    colors.set(Common.Color.Format.HEX, Common.Color.parse('#ff0000'));
+    colors.set(Common.Color.Format.ShortHEX, Common.Color.parse('#f00'));
+    colors.set(Common.Color.Format.HEXA, Common.Color.parse('#ff0000ff'));
+    colors.set(Common.Color.Format.ShortHEXA, Common.Color.parse('#f00f'));
+    colors.set(Common.Color.Format.RGB, Common.Color.parse('rgb(255 0 0)'));
+    colors.set(Common.Color.Format.RGBA, Common.Color.parse('rgb(255 0 0)'));
+    colors.set(Common.Color.Format.HSL, Common.Color.parse('hsl(0deg 100% 50%)'));
+    colors.set(Common.Color.Format.HSLA, Common.Color.parse('hsl(0deg 100% 50%)'));
+    colors.set(Common.Color.Format.HWB, Common.Color.parse('hwb(0deg 0% 0%)'));
+    colors.set(Common.Color.Format.HWBA, Common.Color.parse('hwb(0deg 0% 0%)'));
+    colors.set(Common.Color.Format.LCH, Common.Color.parse(`lch(${Code.LCH} 0 0)`));
+    colors.set(Common.Color.Format.OKLCH, Common.Color.parse(`oklch(${Code.OKLCH} 0 0)`));
+    colors.set(Common.Color.Format.LAB, Common.Color.parse(`lab(${Code.LAB} 0 0)`));
+    colors.set(Common.Color.Format.OKLAB, Common.Color.parse(`oklab(${Code.OKLAB} 0 0)`));
+    colors.set(Common.Color.Format.SRGB, Common.Color.parse(`color(srgb ${Code.SRGB} 0 0)`));
+    colors.set(Common.Color.Format.SRGB_LINEAR, Common.Color.parse(`color(srgb-linear ${Code.SRGB_LINEAR} 0 0)`));
+    colors.set(Common.Color.Format.DISPLAY_P3, Common.Color.parse(`color(display-p3 ${Code.DISPLAY_P3} 0 0)`));
+    colors.set(Common.Color.Format.A98_RGB, Common.Color.parse(`color(a98-rgb ${Code.A98_RGB} 0 0)`));
+    colors.set(Common.Color.Format.PROPHOTO_RGB, Common.Color.parse(`color(prophoto-rgb ${Code.PROPHOTO_RGB} 0 0)`));
+    colors.set(Common.Color.Format.REC_2020, Common.Color.parse(`color(rec2020 ${Code.REC_2020} 0 0)`));
+    colors.set(Common.Color.Format.XYZ_D50, Common.Color.parse(`color(xyz-d50 ${Code.XYZ_D50} 0 0)`));
+    colors.set(Common.Color.Format.XYZ_D65, Common.Color.parse(`color(xyz-d65 ${Code.XYZ_D65} 0 0)`));
+    colors.set(Common.Color.Format.XYZ, Common.Color.parse(`color(xyz ${Code.XYZ} 0 0)`));
+
+    // Test all-to-all conversions.
+    for (const from of colors.keys()) {
+      for (const to of colors.keys()) {
+        const color = colors.get(from);
+        assertNotNullOrUndefined(color);
+        const expected = colors.get(to);
+        assertNotNullOrUndefined(expected);
+        assert.deepEqual(color.as(to).asString(), expected.asString());
+      }
+    }
+
+    // Test chaining conversions. For every color perform a chain of conversions through all colors in sequence and
+    // verify the result.
+    for (const start of colors.keys()) {
+      let color = colors.get(start);
+      assertNotNullOrUndefined(color);
+      for (const next of colors.keys()) {
+        color = color.as(next);
+        const expected = colors.get(next);
+        assertNotNullOrUndefined(expected);
+        assert.deepEqual(color.asString(), expected.asString(), `Original color ${colors.get(start)?.asString()}`);
+      }
     }
   });
 });

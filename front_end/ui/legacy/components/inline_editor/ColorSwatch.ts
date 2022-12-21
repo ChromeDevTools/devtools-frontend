@@ -43,7 +43,7 @@ export class ColorSwatch extends HTMLElement {
   private tooltip: string = i18nString(UIStrings.shiftclickToChangeColorFormat);
   private text: string|null = null;
   private color: Common.Color.Color|null = null;
-  private format: string|null = null;
+  private format: Common.Color.Format|null = null;
 
   constructor() {
     super();
@@ -60,7 +60,7 @@ export class ColorSwatch extends HTMLElement {
     return this.color;
   }
 
-  getFormat(): string|null {
+  getFormat(): Common.Color.Format|null {
     return this.format;
   }
 
@@ -94,18 +94,18 @@ export class ColorSwatch extends HTMLElement {
     if (typeof formatOrUseUserSetting === 'boolean' && formatOrUseUserSetting) {
       this.format = Common.Settings.detectColorFormat(this.color);
     } else if (typeof formatOrUseUserSetting === 'string') {
-      this.format = formatOrUseUserSetting;
+      this.format = Common.Color.getFormat(formatOrUseUserSetting);
     } else {
       this.format = this.color.format();
     }
 
-    this.text = this.color.asString(this.format);
+    this.text = this.color.asString(this.format ?? undefined);
 
     if (tooltip) {
       this.tooltip = tooltip;
     }
 
-    if (!(this.color instanceof Common.Color.Legacy) || this.color.canBeWideGamut()) {
+    if (!(this.color instanceof Common.Color.Legacy)) {
       this.renderCircularColorSwatch();
     } else {
       this.render();
@@ -202,7 +202,7 @@ declare global {
   }
 }
 
-function nextColorFormat(color: Common.Color.Legacy, curFormat: string): string {
+function nextColorFormat(color: Common.Color.Legacy, curFormat: Common.Color.Format): Common.Color.Format {
   // The format loop is as follows:
   // * original
   // * rgb(a)
@@ -211,41 +211,32 @@ function nextColorFormat(color: Common.Color.Legacy, curFormat: string): string 
   // * nickname (if the color has a nickname)
   // * shorthex (if has short hex)
   // * hex
-  const cf = Common.Color.Format;
-
   switch (curFormat) {
-    case cf.Original:
-      return !color.hasAlpha() ? cf.RGB : cf.RGBA;
+    case Common.Color.Format.RGB:
+    case Common.Color.Format.RGBA:
+      return !color.hasAlpha() ? Common.Color.Format.HSL : Common.Color.Format.HSLA;
 
-    case cf.RGB:
-    case cf.RGBA:
-      return !color.hasAlpha() ? cf.HSL : cf.HSLA;
+    case Common.Color.Format.HSL:
+    case Common.Color.Format.HSLA:
+      return !color.hasAlpha() ? Common.Color.Format.HWB : Common.Color.Format.HWBA;
 
-    case cf.HSL:
-    case cf.HSLA:
-      return !color.hasAlpha() ? cf.HWB : cf.HWBA;
-
-    case cf.HWB:
-    case cf.HWBA:
+    case Common.Color.Format.HWB:
+    case Common.Color.Format.HWBA:
       if (color.nickname()) {
-        return cf.Nickname;
+        return Common.Color.Format.Nickname;
       }
       return color.detectHEXFormat();
 
-    case cf.ShortHEX:
-      return cf.HEX;
+    case Common.Color.Format.ShortHEX:
+      return Common.Color.Format.HEX;
 
-    case cf.ShortHEXA:
-      return cf.HEXA;
+    case Common.Color.Format.ShortHEXA:
+      return Common.Color.Format.HEXA;
 
-    case cf.HEXA:
-    case cf.HEX:
-      return cf.Original;
-
-    case cf.Nickname:
+    case Common.Color.Format.Nickname:
       return color.detectHEXFormat();
 
     default:
-      return cf.RGBA;
+      return Common.Color.Format.RGBA;
   }
 }

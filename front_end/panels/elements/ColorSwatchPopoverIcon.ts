@@ -174,14 +174,11 @@ export class ColorSwatchPopoverIcon {
     }
 
     const color = this.swatch.getColor()?.asLegacyColor();
-    let format = this.swatch.getFormat();
+    const format = this.swatch.getFormat();
     if (!color || !format) {
       return;
     }
 
-    if (format === Common.Color.Format.Original) {
-      format = color.format();
-    }
     this.spectrum = new ColorPicker.Spectrum.Spectrum(this.contrastInfo);
     this.spectrum.setColor(color, format);
     this.spectrum.addPalette(this.generateCSSVariablesPalette());

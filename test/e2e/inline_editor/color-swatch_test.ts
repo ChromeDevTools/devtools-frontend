@@ -129,7 +129,7 @@ describe('The color swatch', async () => {
     }
     await shiftClickColorSwatch(property, 0);
 
-    await waitForCSSPropertyValue('#inspected', 'color', 'rgb(255 0 0)');
+    await waitForCSSPropertyValue('#inspected', 'color', '#f00');
   });
 
   it('supports shift-clicking for color properties in the Computed pane', async () => {
@@ -157,7 +157,7 @@ describe('The color swatch', async () => {
     }
     await shiftClickColorSwatch(property, 0);
 
-    await waitForCSSPropertyValue('#inspected', 'background-color', 'rgb(0 0 255)');
+    await waitForCSSPropertyValue('#inspected', 'background-color', '#00f');
   });
 
   it('is updated when the color value is updated in the Styles pane', async () => {

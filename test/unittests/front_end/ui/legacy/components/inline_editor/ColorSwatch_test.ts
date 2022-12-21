@@ -120,8 +120,6 @@ describeWithLocale('ColorSwatch', () => {
     dispatchClickEvent(target, {shiftKey: true});
     assertSwatch(swatch, {colorTextInSlot: '#ff0000'});
     dispatchClickEvent(target, {shiftKey: true});
-    assertSwatch(swatch, {colorTextInSlot: 'red'});
-    dispatchClickEvent(target, {shiftKey: true});
     assertSwatch(swatch, {colorTextInSlot: 'rgb(255 0 0)'});
     dispatchClickEvent(target, {shiftKey: true});
     assertSwatch(swatch, {colorTextInSlot: 'hsl(0deg 100% 50%)'});
@@ -138,7 +136,7 @@ describeWithLocale('ColorSwatch', () => {
     let currentFormat = swatch.getFormat();
     swatch.addEventListener(
         InlineEditor.ColorSwatch.FormatChangedEvent.eventName, (e: InlineEditor.ColorSwatch.FormatChangedEvent) => {
-          currentFormat = e.data.format;
+          currentFormat = Common.Color.getFormat(e.data.format);
         });
 
     assert.strictEqual(currentFormat, Common.Color.Format.Nickname);

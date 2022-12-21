@@ -220,217 +220,193 @@ const XYZD65_TO_SRGB_MATRIX = new Matrix3x3([
   [0.05567030990267439, -0.2040007921971802, 1.0571046720577026],
 ]);
 
-function labToXyzd50(l: number, a: number, b: number): [number, number, number] {
-  let y = (l + 16.0) / 116.0;
-  let x = y + a / 500.0;
-  let z = y - b / 200.0;
+export class ColorConverter {
+  static labToXyzd50(l: number, a: number, b: number): [number, number, number] {
+    let y = (l + 16.0) / 116.0;
+    let x = y + a / 500.0;
+    let z = y - b / 200.0;
 
-  function labInverseTransferFunction(t: number): number {
-    const delta = (24.0 / 116.0);
+    function labInverseTransferFunction(t: number): number {
+      const delta = (24.0 / 116.0);
 
-    if (t <= delta) {
-      return (108.0 / 841.0) * (t - (16.0 / 116.0));
+      if (t <= delta) {
+        return (108.0 / 841.0) * (t - (16.0 / 116.0));
+      }
+
+      return t * t * t;
     }
 
-    return t * t * t;
+    x = labInverseTransferFunction(x) * D50_X;
+    y = labInverseTransferFunction(y) * D50_Y;
+    z = labInverseTransferFunction(z) * D50_Z;
+
+    return [x, y, z];
   }
 
-  x = labInverseTransferFunction(x) * D50_X;
-  y = labInverseTransferFunction(y) * D50_Y;
-  z = labInverseTransferFunction(z) * D50_Z;
+  static xyzd50ToLab(x: number, y: number, z: number): [number, number, number] {
+    function labTransferFunction(t: number): number {
+      const deltaLimit: number = (24.0 / 116.0) * (24.0 / 116.0) * (24.0 / 116.0);
 
-  return [x, y, z];
-}
-
-function xyzd50ToLab(x: number, y: number, z: number): [number, number, number] {
-  function labTransferFunction(t: number): number {
-    const deltaLimit: number = (24.0 / 116.0) * (24.0 / 116.0) * (24.0 / 116.0);
-
-    if (t <= deltaLimit) {
-      return (841.0 / 108.0) * t + (16.0 / 116.0);
+      if (t <= deltaLimit) {
+        return (841.0 / 108.0) * t + (16.0 / 116.0);
+      }
+      return Math.pow(t, 1.0 / 3.0);
     }
-    return Math.pow(t, 1.0 / 3.0);
+
+    x = labTransferFunction(x / D50_X);
+    y = labTransferFunction(y / D50_Y);
+    z = labTransferFunction(z / D50_Z);
+
+    const l = 116.0 * y - 16.0;
+    const a = 500.0 * (x - y);
+    const b = 200.0 * (y - z);
+
+    return [l, a, b];
   }
 
-  x = labTransferFunction(x / D50_X);
-  y = labTransferFunction(y / D50_Y);
-  z = labTransferFunction(z / D50_Z);
-
-  const l = 116.0 * y - 16.0;
-  const a = 500.0 * (x - y);
-  const b = 200.0 * (y - z);
-
-  return [l, a, b];
-}
-
-function oklabToXyzd65(l: number, a: number, b: number): [number, number, number] {
-  const labInput = new Vector3([l, a, b]);
-  const lmsIntermediate = OKLAB_TO_LMS_MATRIX.multiply(labInput);
-  lmsIntermediate.values[0] = lmsIntermediate.values[0] * lmsIntermediate.values[0] * lmsIntermediate.values[0];
-  lmsIntermediate.values[1] = lmsIntermediate.values[1] * lmsIntermediate.values[1] * lmsIntermediate.values[1];
-  lmsIntermediate.values[2] = lmsIntermediate.values[2] * lmsIntermediate.values[2] * lmsIntermediate.values[2];
-  const xyzOutput = LMS_TO_XYZ_MATRIX.multiply(lmsIntermediate);
-  return xyzOutput.values;
-}
-
-function xyzd65ToOklab(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const lmsIntermediate = XYZ_TO_LMS_MATRIX.multiply(xyzInput);
-
-  lmsIntermediate.values[0] = Math.pow(lmsIntermediate.values[0], 1.0 / 3.0);
-  lmsIntermediate.values[1] = Math.pow(lmsIntermediate.values[1], 1.0 / 3.0);
-  lmsIntermediate.values[2] = Math.pow(lmsIntermediate.values[2], 1.0 / 3.0);
-
-  const labOutput = LMS_TO_OKLAB_MATRIX.multiply(lmsIntermediate);
-  return [labOutput.values[0], labOutput.values[1], labOutput.values[2]];
-}
-
-function lchToLab(l: number, c: number, h: number|undefined): [number, number, number] {
-  if (h === undefined) {
-    return [l, 0, 0];
+  static oklabToXyzd65(l: number, a: number, b: number): [number, number, number] {
+    const labInput = new Vector3([l, a, b]);
+    const lmsIntermediate = OKLAB_TO_LMS_MATRIX.multiply(labInput);
+    lmsIntermediate.values[0] = lmsIntermediate.values[0] * lmsIntermediate.values[0] * lmsIntermediate.values[0];
+    lmsIntermediate.values[1] = lmsIntermediate.values[1] * lmsIntermediate.values[1] * lmsIntermediate.values[1];
+    lmsIntermediate.values[2] = lmsIntermediate.values[2] * lmsIntermediate.values[2] * lmsIntermediate.values[2];
+    const xyzOutput = LMS_TO_XYZ_MATRIX.multiply(lmsIntermediate);
+    return xyzOutput.values;
   }
 
-  return [l, c * Math.cos(degToRad(h)), c * Math.sin(degToRad(h))];
-}
+  static xyzd65ToOklab(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const lmsIntermediate = XYZ_TO_LMS_MATRIX.multiply(xyzInput);
 
-function labToLch(l: number, a: number, b: number): [number, number, number] {
-  return [l, Math.sqrt(a * a + b * b), radToDeg(Math.atan2(b, a))];
-}
+    lmsIntermediate.values[0] = Math.pow(lmsIntermediate.values[0], 1.0 / 3.0);
+    lmsIntermediate.values[1] = Math.pow(lmsIntermediate.values[1], 1.0 / 3.0);
+    lmsIntermediate.values[2] = Math.pow(lmsIntermediate.values[2], 1.0 / 3.0);
 
-function displayP3ToXyzd50(r: number, g: number, b: number): [number, number, number] {
-  const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.sRGB, r, g, b);
-  const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
-  const xyzOutput = NAMED_GAMUTS.displayP3.multiply(rgbInput);
-  return xyzOutput.values;
-}
+    const labOutput = LMS_TO_OKLAB_MATRIX.multiply(lmsIntermediate);
+    return [labOutput.values[0], labOutput.values[1], labOutput.values[2]];
+  }
 
-function xyzd50ToDisplayP3(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const rgbOutput = NAMED_GAMUTS.displayP3_INVERSE.multiply(xyzInput);
-  return applyTransferFns(
-      NAMED_TRANSFER_FN.sRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
-}
+  static lchToLab(l: number, c: number, h: number|undefined): [number, number, number] {
+    if (h === undefined) {
+      return [l, 0, 0];
+    }
 
-function proPhotoToXyzd50(r: number, g: number, b: number): [number, number, number] {
-  const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.proPhotoRGB, r, g, b);
-  const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
-  const xyzOutput = PRO_PHOTO_TO_XYZD50_MATRIX.multiply(rgbInput);
-  return xyzOutput.values;
-}
+    return [l, c * Math.cos(degToRad(h)), c * Math.sin(degToRad(h))];
+  }
 
-function xyzd50ToProPhoto(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const rgbOutput = XYZD50_TO_PRO_PHOTO_MATRIX.multiply(xyzInput);
-  return applyTransferFns(
-      NAMED_TRANSFER_FN.proPhotoRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
-}
+  static labToLch(l: number, a: number, b: number): [number, number, number] {
+    return [l, Math.sqrt(a * a + b * b), radToDeg(Math.atan2(b, a))];
+  }
 
-function adobeRGBToXyzd50(r: number, g: number, b: number): [number, number, number] {
-  const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.k2Dot2, r, g, b);
-  const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
-  const xyzOutput = NAMED_GAMUTS.adobeRGB.multiply(rgbInput);
-  return xyzOutput.values;
-}
+  static displayP3ToXyzd50(r: number, g: number, b: number): [number, number, number] {
+    const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.sRGB, r, g, b);
+    const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
+    const xyzOutput = NAMED_GAMUTS.displayP3.multiply(rgbInput);
+    return xyzOutput.values;
+  }
 
-function xyzd50ToAdobeRGB(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const rgbOutput = NAMED_GAMUTS.adobeRGB_INVERSE.multiply(xyzInput);
-  return applyTransferFns(
-      NAMED_TRANSFER_FN.k2Dot2_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
-}
+  static xyzd50ToDisplayP3(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const rgbOutput = NAMED_GAMUTS.displayP3_INVERSE.multiply(xyzInput);
+    return applyTransferFns(
+        NAMED_TRANSFER_FN.sRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+  }
 
-function rec2020ToXyzd50(r: number, g: number, b: number): [number, number, number] {
-  const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.rec2020, r, g, b);
-  const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
-  const xyzOutput = NAMED_GAMUTS.rec2020.multiply(rgbInput);
-  return xyzOutput.values;
-}
+  static proPhotoToXyzd50(r: number, g: number, b: number): [number, number, number] {
+    const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.proPhotoRGB, r, g, b);
+    const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
+    const xyzOutput = PRO_PHOTO_TO_XYZD50_MATRIX.multiply(rgbInput);
+    return xyzOutput.values;
+  }
 
-function xyzd50ToRec2020(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const rgbOutput = NAMED_GAMUTS.rec2020_INVERSE.multiply(xyzInput);
-  return applyTransferFns(
-      NAMED_TRANSFER_FN.rec2020_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
-}
+  static xyzd50ToProPhoto(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const rgbOutput = XYZD50_TO_PRO_PHOTO_MATRIX.multiply(xyzInput);
+    return applyTransferFns(
+        NAMED_TRANSFER_FN.proPhotoRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+  }
 
-function xyzd50ToD65(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const xyzOutput = XYZD50_TO_XYZD65_MATRIX.multiply(xyzInput);
-  return xyzOutput.values;
-}
+  static adobeRGBToXyzd50(r: number, g: number, b: number): [number, number, number] {
+    const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.k2Dot2, r, g, b);
+    const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
+    const xyzOutput = NAMED_GAMUTS.adobeRGB.multiply(rgbInput);
+    return xyzOutput.values;
+  }
 
-function xyzd65ToD50(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const xyzOutput = XYZD65_TO_XYZD50_MATRIX.multiply(xyzInput);
-  return xyzOutput.values;
-}
+  static xyzd50ToAdobeRGB(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const rgbOutput = NAMED_GAMUTS.adobeRGB_INVERSE.multiply(xyzInput);
+    return applyTransferFns(
+        NAMED_TRANSFER_FN.k2Dot2_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+  }
 
-function xyzd65TosRGBLinear(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const rgbResult = XYZD65_TO_SRGB_MATRIX.multiply(xyzInput);
-  return rgbResult.values;
-}
+  static rec2020ToXyzd50(r: number, g: number, b: number): [number, number, number] {
+    const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.rec2020, r, g, b);
+    const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
+    const xyzOutput = NAMED_GAMUTS.rec2020.multiply(rgbInput);
+    return xyzOutput.values;
+  }
 
-function xyzd50TosRGBLinear(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const rgbResult = NAMED_GAMUTS.sRGB_INVERSE.multiply(xyzInput);
-  return rgbResult.values;
-}
+  static xyzd50ToRec2020(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const rgbOutput = NAMED_GAMUTS.rec2020_INVERSE.multiply(xyzInput);
+    return applyTransferFns(
+        NAMED_TRANSFER_FN.rec2020_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+  }
 
-function srgbLinearToXyzd50(r: number, g: number, b: number): [number, number, number] {
-  const rgbInput = new Vector3([r, g, b]);
-  const xyzOutput = NAMED_GAMUTS.sRGB.multiply(rgbInput);
-  return xyzOutput.values;
-}
+  static xyzd50ToD65(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const xyzOutput = XYZD50_TO_XYZD65_MATRIX.multiply(xyzInput);
+    return xyzOutput.values;
+  }
 
-function srgbToXyzd50(r: number, g: number, b: number): [number, number, number] {
-  const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.sRGB, r, g, b);
-  const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
-  const xyzOutput = NAMED_GAMUTS.sRGB.multiply(rgbInput);
-  return xyzOutput.values;
-}
+  static xyzd65ToD50(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const xyzOutput = XYZD65_TO_XYZD50_MATRIX.multiply(xyzInput);
+    return xyzOutput.values;
+  }
 
-function xyzd50ToSrgb(x: number, y: number, z: number): [number, number, number] {
-  const xyzInput = new Vector3([x, y, z]);
-  const rgbOutput = NAMED_GAMUTS.sRGB_INVERSE.multiply(xyzInput);
-  return applyTransferFns(
-      NAMED_TRANSFER_FN.sRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
-}
+  static xyzd65TosRGBLinear(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const rgbResult = XYZD65_TO_SRGB_MATRIX.multiply(xyzInput);
+    return rgbResult.values;
+  }
 
-function oklchToXyzd50(lInput: number, c: number, h: number): [number, number, number] {
-  const [l, a, b] = lchToLab(lInput, c, h);
-  const [x65, y65, z65] = oklabToXyzd65(l, a, b);
-  return xyzd65ToD50(x65, y65, z65);
-}
+  static xyzd50TosRGBLinear(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const rgbResult = NAMED_GAMUTS.sRGB_INVERSE.multiply(xyzInput);
+    return rgbResult.values;
+  }
 
-function xyzd50ToOklch(x: number, y: number, z: number): [number, number, number] {
-  const [x65, y65, z65] = xyzd50ToD65(x, y, z);
-  const [l, a, b] = xyzd65ToOklab(x65, y65, z65);
-  return labToLch(l, a, b);
-}
+  static srgbLinearToXyzd50(r: number, g: number, b: number): [number, number, number] {
+    const rgbInput = new Vector3([r, g, b]);
+    const xyzOutput = NAMED_GAMUTS.sRGB.multiply(rgbInput);
+    return xyzOutput.values;
+  }
 
-export {
-  labToXyzd50,
-  xyzd50ToLab,
-  oklabToXyzd65,
-  xyzd65ToOklab,
-  lchToLab,
-  labToLch,
-  displayP3ToXyzd50,
-  xyzd50ToDisplayP3,
-  proPhotoToXyzd50,
-  xyzd50ToProPhoto,
-  adobeRGBToXyzd50,
-  xyzd50ToAdobeRGB,
-  rec2020ToXyzd50,
-  xyzd50ToRec2020,
-  xyzd50ToD65,
-  xyzd65ToD50,
-  xyzd65TosRGBLinear,
-  xyzd50TosRGBLinear,
-  srgbLinearToXyzd50,
-  srgbToXyzd50,
-  xyzd50ToSrgb,
-  oklchToXyzd50,
-  xyzd50ToOklch,
-};
+  static srgbToXyzd50(r: number, g: number, b: number): [number, number, number] {
+    const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.sRGB, r, g, b);
+    const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
+    const xyzOutput = NAMED_GAMUTS.sRGB.multiply(rgbInput);
+    return xyzOutput.values;
+  }
+
+  static xyzd50ToSrgb(x: number, y: number, z: number): [number, number, number] {
+    const xyzInput = new Vector3([x, y, z]);
+    const rgbOutput = NAMED_GAMUTS.sRGB_INVERSE.multiply(xyzInput);
+    return applyTransferFns(
+        NAMED_TRANSFER_FN.sRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+  }
+
+  static oklchToXyzd50(lInput: number, c: number, h: number): [number, number, number] {
+    const [l, a, b] = ColorConverter.lchToLab(lInput, c, h);
+    const [x65, y65, z65] = ColorConverter.oklabToXyzd65(l, a, b);
+    return ColorConverter.xyzd65ToD50(x65, y65, z65);
+  }
+
+  static xyzd50ToOklch(x: number, y: number, z: number): [number, number, number] {
+    const [x65, y65, z65] = ColorConverter.xyzd50ToD65(x, y, z);
+    const [l, a, b] = ColorConverter.xyzd65ToOklab(x65, y65, z65);
+    return ColorConverter.labToLch(l, a, b);
+  }
+}

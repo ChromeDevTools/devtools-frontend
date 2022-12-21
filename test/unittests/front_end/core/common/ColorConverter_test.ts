@@ -29,7 +29,7 @@ describe('ColorConverter', async () => {
     ];  // red
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.labToXyzd50(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.labToXyzd50(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -47,7 +47,7 @@ describe('ColorConverter', async () => {
     ];  // red
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd50ToLab(input[0], input[1], input[2]), expected, 0.1);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToLab(input[0], input[1], input[2]), expected, 0.1);
     }
   });
 
@@ -74,7 +74,7 @@ describe('ColorConverter', async () => {
     ];  // green
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.oklabToXyzd65(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.oklabToXyzd65(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -101,7 +101,7 @@ describe('ColorConverter', async () => {
     ];
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd65ToOklab(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd65ToOklab(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -117,7 +117,7 @@ describe('ColorConverter', async () => {
     ];
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd50ToD65(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToD65(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -133,7 +133,7 @@ describe('ColorConverter', async () => {
     ];
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd65ToD50(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd65ToD50(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -149,7 +149,8 @@ describe('ColorConverter', async () => {
     ];
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd50TosRGBLinear(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(
+          Common.ColorConverter.ColorConverter.xyzd50TosRGBLinear(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -172,7 +173,7 @@ describe('ColorConverter', async () => {
     ];  // green
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.lchToLab(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.lchToLab(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -196,7 +197,7 @@ describe('ColorConverter', async () => {
     ];  // green
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.labToLch(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.labToLch(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -217,7 +218,8 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.srgbLinearToXyzd50(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(
+          Common.ColorConverter.ColorConverter.srgbLinearToXyzd50(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -238,7 +240,7 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.srgbToXyzd50(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.srgbToXyzd50(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -268,7 +270,7 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.displayP3ToXyzd50(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.displayP3ToXyzd50(input[0], input[1], input[2]), expected);
     }
   });
   it('XYZD50ToDisplayP3', () => {
@@ -297,7 +299,7 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd50ToDisplayP3(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToDisplayP3(input[0], input[1], input[2]), expected);
     }
   });
   it('ProPhotoToXyzd50', () => {
@@ -326,7 +328,7 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.proPhotoToXyzd50(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.proPhotoToXyzd50(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -356,7 +358,7 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd50ToProPhoto(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToProPhoto(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -386,7 +388,7 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.adobeRGBToXyzd50(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.adobeRGBToXyzd50(input[0], input[1], input[2]), expected);
     }
   });
   it('XYZD50ToAdobeRGB', () => {
@@ -415,7 +417,7 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd50ToAdobeRGB(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToAdobeRGB(input[0], input[1], input[2]), expected);
     }
   });
   it('Rec2020ToXyzd50', () => {
@@ -443,7 +445,7 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.rec2020ToXyzd50(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.rec2020ToXyzd50(input[0], input[1], input[2]), expected);
     }
   });
   it('XYZD50ToRec2020', () => {
@@ -469,7 +471,7 @@ describe('ColorConverter', async () => {
     ];  // pink
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd50ToRec2020(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToRec2020(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -491,7 +493,7 @@ describe('ColorConverter', async () => {
     ];                                          // pink
 
     for (const [expected, input] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd50ToSrgb(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToSrgb(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -505,7 +507,7 @@ describe('ColorConverter', async () => {
     ];  // green
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.xyzd50ToOklch(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToOklch(input[0], input[1], input[2]), expected);
     }
   });
 
@@ -519,7 +521,7 @@ describe('ColorConverter', async () => {
     ];  // green
 
     for (const [input, expected] of colorCases) {
-      assertAlmostEqual(Common.ColorConverter.oklchToXyzd50(input[0], input[1], input[2]), expected);
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.oklchToXyzd50(input[0], input[1], input[2]), expected);
     }
   });
 });

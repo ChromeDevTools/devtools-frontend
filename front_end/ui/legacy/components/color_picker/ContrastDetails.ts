@@ -220,8 +220,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private createFixColorButton(parent: Element, suggestedColor: Common.Color.Color): HTMLElement {
     const button = parent.createChild('button', 'contrast-fix-button') as HTMLElement;
     const originalColorFormat = this.contrastInfo.colorFormat();
-    const colorFormat = originalColorFormat && originalColorFormat !== Common.Color.Format.Nickname &&
-            originalColorFormat !== Common.Color.Format.Original ?
+    const colorFormat = originalColorFormat && originalColorFormat !== Common.Color.Format.Nickname ?
         originalColorFormat :
         Common.Color.Format.HEXA;
     const formattedColor = suggestedColor.asString(colorFormat);

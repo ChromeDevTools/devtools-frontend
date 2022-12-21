@@ -14,7 +14,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private readonly contrastRationAPCAThreshold: number|null;
   private fgColor: Common.Color.Legacy|null;
   private bgColorInternal: Common.Color.Legacy|null;
-  private colorFormatInternal!: string|undefined;
+  private colorFormatInternal: Common.Color.Format|undefined;
   constructor(contrastInfo: ContrastInfoType|null) {
     super();
     this.isNullInternal = true;
@@ -50,14 +50,14 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.isNullInternal;
   }
 
-  setColor(fgColor: Common.Color.Legacy, colorFormat?: string): void {
+  setColor(fgColor: Common.Color.Legacy, colorFormat?: Common.Color.Format): void {
     this.fgColor = fgColor;
     this.colorFormatInternal = colorFormat;
     this.updateContrastRatio();
     this.dispatchEventToListeners(Events.ContrastInfoUpdated);
   }
 
-  colorFormat(): string|undefined {
+  colorFormat(): Common.Color.Format|undefined {
     return this.colorFormatInternal;
   }
 

@@ -184,7 +184,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private originalFormat?: string;
   private colorNameInternal?: string;
   private colorStringInternal?: string;
-  private colorFormat?: string;
+  private colorFormat?: Common.Color.Format;
   private eyeDropperAbortController: AbortController|null = null;
   constructor(contrastInfo?: ContrastInfo|null) {
     super(true);
@@ -917,7 +917,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.showPalette(palette, false);
   }
 
-  setColor(color: Common.Color.Legacy, colorFormat: string): void {
+  setColor(color: Common.Color.Legacy, colorFormat: Common.Color.Format): void {
     this.originalFormat = colorFormat;
     this.innerSetColor(color.hsva(), '', undefined /* colorName */, colorFormat, ChangeSource.Model);
     const colorValues = this.color().canonicalHSLA();
@@ -931,7 +931,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
   private innerSetColor(
       hsva: number[]|undefined, colorString: string|undefined, colorName: string|undefined,
-      colorFormat: string|undefined, changeSource: string): void {
+      colorFormat: Common.Color.Format|undefined, changeSource: string): void {
     if (hsva !== undefined) {
       this.hsv = hsva;
     }
@@ -940,18 +940,16 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       this.colorStringInternal = colorString;
     }
     if (colorFormat !== undefined) {
-      const cf = Common.Color.Format;
-      console.assert(colorFormat !== cf.Original, 'Spectrum\'s color format cannot be Original');
-      if (colorFormat === cf.RGBA) {
-        colorFormat = cf.RGB;
-      } else if (colorFormat === cf.HSLA) {
-        colorFormat = cf.HSL;
-      } else if (colorFormat === cf.HWBA) {
-        colorFormat = cf.HWB;
-      } else if (colorFormat === cf.HEXA) {
-        colorFormat = cf.HEX;
-      } else if (colorFormat === cf.ShortHEXA) {
-        colorFormat = cf.ShortHEX;
+      if (colorFormat === Common.Color.Format.RGBA) {
+        colorFormat = Common.Color.Format.RGB;
+      } else if (colorFormat === Common.Color.Format.HSLA) {
+        colorFormat = Common.Color.Format.HSL;
+      } else if (colorFormat === Common.Color.Format.HWBA) {
+        colorFormat = Common.Color.Format.HWB;
+      } else if (colorFormat === Common.Color.Format.HEXA) {
+        colorFormat = Common.Color.Format.HEX;
+      } else if (colorFormat === Common.Color.Format.ShortHEXA) {
+        colorFormat = Common.Color.Format.ShortHEX;
       }
       this.colorFormat = colorFormat;
     }
@@ -983,7 +981,6 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     if (this.colorStringInternal) {
       return this.colorStringInternal;
     }
-    const cf = Common.Color.Format;
     const color = this.color();
 
     let colorString = color.asString(this.colorFormat);
@@ -991,18 +988,18 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       return colorString;
     }
 
-    if (this.colorFormat === cf.Nickname) {
-      colorString = color.asString(color.hasAlpha() ? cf.HEXA : cf.HEX);
-    } else if (this.colorFormat === cf.ShortHEX) {
+    if (this.colorFormat === Common.Color.Format.Nickname) {
+      colorString = color.asString(color.hasAlpha() ? Common.Color.Format.HEXA : Common.Color.Format.HEX);
+    } else if (this.colorFormat === Common.Color.Format.ShortHEX) {
       colorString = color.asString(color.detectHEXFormat());
-    } else if (this.colorFormat === cf.HEX) {
-      colorString = color.asString(cf.HEXA);
-    } else if (this.colorFormat === cf.HSL) {
-      colorString = color.asString(cf.HSLA);
-    } else if (this.colorFormat === cf.HWB) {
-      colorString = color.asString(cf.HWBA);
+    } else if (this.colorFormat === Common.Color.Format.HEX) {
+      colorString = color.asString(Common.Color.Format.HEXA);
+    } else if (this.colorFormat === Common.Color.Format.HSL) {
+      colorString = color.asString(Common.Color.Format.HSLA);
+    } else if (this.colorFormat === Common.Color.Format.HWB) {
+      colorString = color.asString(Common.Color.Format.HWBA);
     } else {
-      colorString = color.asString(cf.RGBA);
+      colorString = color.asString(Common.Color.Format.RGBA);
     }
 
     console.assert(Boolean(colorString));
@@ -1036,24 +1033,25 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private updateInput(): void {
-    const cf = Common.Color.Format;
-    if (this.colorFormat === cf.HEX || this.colorFormat === cf.ShortHEX || this.colorFormat === cf.Nickname) {
+    if (this.colorFormat === Common.Color.Format.HEX || this.colorFormat === Common.Color.Format.ShortHEX ||
+        this.colorFormat === Common.Color.Format.Nickname) {
       this.hexContainer.hidden = false;
       this.displayContainer.hidden = true;
-      if (this.colorFormat === cf.ShortHEX) {
+      if (this.colorFormat === Common.Color.Format.ShortHEX) {
         this.hexValue.value = String(this.color().asString(this.color().detectHEXFormat()));
       } else {  // Don't use ShortHEX if original was not in that format.
-        this.hexValue.value = String(this.color().asString(this.color().hasAlpha() ? cf.HEXA : cf.HEX));
+        this.hexValue.value =
+            String(this.color().asString(this.color().hasAlpha() ? Common.Color.Format.HEXA : Common.Color.Format.HEX));
       }
     } else {
       // RGBA, HSLA, HWBA display.
       this.hexContainer.hidden = true;
       this.displayContainer.hidden = false;
       let colorValues;
-      if (this.colorFormat === cf.RGB) {
+      if (this.colorFormat === Common.Color.Format.RGB) {
         this.textLabels.textContent = 'RGBA';
         colorValues = this.color().canonicalRGBA();
-      } else if (this.colorFormat === cf.HSL) {
+      } else if (this.colorFormat === Common.Color.Format.HSL) {
         this.textLabels.textContent = 'HSLA';
         colorValues = this.color().canonicalHSLA();
       } else {
@@ -1069,7 +1067,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
               PH2: this.textLabels.textContent,
             }));
         this.textValues[i].value = String(colorValues[i]);
-        if (this.colorFormat !== cf.RGB && (i === 1 || i === 2)) {
+        if (this.colorFormat !== Common.Color.Format.RGB && (i === 1 || i === 2)) {
           this.textValues[i].value += '%';
         }
       }
@@ -1098,14 +1096,16 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private formatViewSwitch(): void {
-    const cf = Common.Color.Format;
-    let format: string = cf.RGB;
-    if (this.colorFormat === cf.RGB) {
-      format = cf.HSL;
-    } else if (this.colorFormat === cf.HSL) {
-      format = cf.HWB;
-    } else if (this.colorFormat === cf.HWB) {
-      format = (this.originalFormat === cf.ShortHEX || this.originalFormat === cf.ShortHEXA) ? cf.ShortHEX : cf.HEX;
+    let format = Common.Color.Format.RGB;
+    if (this.colorFormat === Common.Color.Format.RGB) {
+      format = Common.Color.Format.HSL;
+    } else if (this.colorFormat === Common.Color.Format.HSL) {
+      format = Common.Color.Format.HWB;
+    } else if (this.colorFormat === Common.Color.Format.HWB) {
+      format = (this.originalFormat === Common.Color.Format.ShortHEX ||
+                this.originalFormat === Common.Color.Format.ShortHEXA) ?
+          Common.Color.Format.ShortHEX :
+          Common.Color.Format.HEX;
     }
     this.innerSetColor(undefined, '', undefined /* colorName */, format, ChangeSource.Other);
   }
@@ -1140,9 +1140,9 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       event.consume(true);
     }
 
-    const cf = Common.Color.Format;
     let colorString;
-    if (this.colorFormat === cf.Nickname || this.colorFormat === cf.HEX || this.colorFormat === cf.ShortHEX) {
+    if (this.colorFormat === Common.Color.Format.Nickname || this.colorFormat === Common.Color.Format.HEX ||
+        this.colorFormat === Common.Color.Format.ShortHEX) {
       colorString = this.hexValue.value;
     } else {
       const values = this.textValues.slice(0, -1).map(elementValue).join(' ');
@@ -1155,8 +1155,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       return;
     }
 
-    let colorFormat: string|undefined = undefined;
-    if (this.colorFormat === cf.HEX || this.colorFormat === cf.ShortHEX) {
+    let colorFormat: Common.Color.Format|undefined = undefined;
+    if (this.colorFormat === Common.Color.Format.HEX || this.colorFormat === Common.Color.Format.ShortHEX) {
       colorFormat = color.detectHEXFormat();
     }
     this.innerSetColor(color.hsva(), colorString, undefined /* colorName */, colorFormat, ChangeSource.Input);

@@ -163,6 +163,13 @@ const UIStrings = {
    */
   scroll: 'Scroll',
   /**
+   *@description Noun for an event in the Performance panel. Commit is a step
+   *where we send (also known as "commit") layers to the compositor thread. This
+   *step follows the "Layerize" step which is what calculates which layers to
+   *create.
+   */
+  commit: 'Commit',
+  /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
   compositeLayers: 'Composite Layers',
@@ -1176,6 +1183,7 @@ export class TimelineUIUtils {
     eventStyles[type.PrePaint] = new TimelineRecordStyle(i18nString(UIStrings.prePaint), rendering);
     eventStyles[type.RasterTask] = new TimelineRecordStyle(i18nString(UIStrings.rasterizePaint), painting);
     eventStyles[type.ScrollLayer] = new TimelineRecordStyle(i18nString(UIStrings.scroll), rendering);
+    eventStyles[type.Commit] = new TimelineRecordStyle(i18nString(UIStrings.commit), painting);
     eventStyles[type.CompositeLayers] = new TimelineRecordStyle(i18nString(UIStrings.compositeLayers), painting);
     eventStyles[type.ComputeIntersections] =
         new TimelineRecordStyle(i18nString(UIStrings.computeIntersections), rendering);

@@ -781,6 +781,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       if (matches.length) {
         matches[0].scrollIntoViewIfNeeded(false);
       }
+      treeElement.select(/* omitFocus */ true);
     }
   }
 

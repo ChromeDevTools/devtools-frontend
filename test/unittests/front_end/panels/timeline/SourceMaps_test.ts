@@ -12,6 +12,7 @@ import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
+import * as Console from '../../../../../front_end/panels/console/console.js';
 
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {
@@ -125,6 +126,10 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
         },
       };
     }
+  });
+
+  afterEach(async function() {
+    await Console.ConsoleView.ConsoleView.instance().getScheduledRefreshPromiseForTest();
   });
 
   it('renames nodes from the profile models when the corresponding scripts and source maps have loaded',

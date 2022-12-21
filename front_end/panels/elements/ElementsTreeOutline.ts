@@ -555,14 +555,8 @@ export class ElementsTreeOutline extends
     if (!scrollContainer) {
       return null;
     }
-    // We choose this X coordinate based on the knowledge that our list
-    // items extend at least to the right edge of the outer <ol> container.
-    // In the no-word-wrap mode the outer <ol> may be wider than the tree container
-    // (and partially hidden), in which case we are left to use only its right boundary.
-    // We use .clientWidth to account for possible scrollbar, and subtract 6px
-    // for the width of the split widget (see splitWidget.css).
-    const x = scrollContainer.totalOffsetLeft() + scrollContainer.clientWidth - 6;
 
+    const x = event.pageX;
     const y = event.pageY;
 
     // Our list items have 1-pixel cracks between them vertically. We avoid
@@ -586,12 +580,9 @@ export class ElementsTreeOutline extends
 
   private onmousedown(event: MouseEvent): void {
     const element = this.treeElementFromEventInternal(event);
-
-    if (!element || element.isEventWithinDisclosureTriangle(event)) {
-      return;
+    if (element) {
+      element.select();
     }
-
-    element.select();
   }
 
   setHoverEffect(treeElement: UI.TreeOutline.TreeElement|null): void {

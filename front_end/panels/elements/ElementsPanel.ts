@@ -253,6 +253,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     this.mainContainer.id = 'main-content';
     this.domTreeContainer.id = 'elements-content';
+    this.domTreeContainer.tabIndex = -1;
     // FIXME: crbug.com/425984
     if (Common.Settings.Settings.instance().moduleSetting('domWordWrap').get()) {
       this.domTreeContainer.classList.add('elements-wrap');
@@ -387,6 +388,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     if (this.isShowing()) {
       this.wasShown();
     }
+    if (this.domTreeContainer.hasFocus()) {
+      treeOutline.focus();
+    }
   }
 
   modelRemoved(domModel: SDK.DOMModel.DOMModel): void {
@@ -446,6 +450,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   focus(): void {
     if (this.treeOutlines.size) {
       this.treeOutlines.values().next().value.focus();
+    } else {
+      this.domTreeContainer.focus();
     }
   }
 

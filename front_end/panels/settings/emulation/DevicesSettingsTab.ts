@@ -14,55 +14,55 @@ let devicesSettingsTabInstance: DevicesSettingsTab;
 
 const UIStrings = {
   /**
-  *@description Title for a section of the UI that shows all of the devices the user can emulate, in the Device Toolbar.
-  */
+   *@description Title for a section of the UI that shows all of the devices the user can emulate, in the Device Toolbar.
+   */
   emulatedDevices: 'Emulated Devices',
   /**
-  *@description Button to add a custom device (e.g. phone, tablet) the Device Toolbar.
-  */
+   *@description Button to add a custom device (e.g. phone, tablet) the Device Toolbar.
+   */
   addCustomDevice: 'Add custom device...',
   /**
-  *@description Label/title for UI to add a new custom device type. Device means mobile/tablet etc.
-  */
+   *@description Label/title for UI to add a new custom device type. Device means mobile/tablet etc.
+   */
   device: 'Device',
   /**
-  *@description Placeholder for text input for the name of a custom device.
-  */
+   *@description Placeholder for text input for the name of a custom device.
+   */
   deviceName: 'Device Name',
   /**
-  *@description Placeholder text for text input for the width of a custom device in pixels.
-  */
+   *@description Placeholder text for text input for the width of a custom device in pixels.
+   */
   width: 'Width',
   /**
-  *@description Placeholder text for text input for the height of a custom device in pixels.
-  */
+   *@description Placeholder text for text input for the height of a custom device in pixels.
+   */
   height: 'Height',
   /**
-  *@description Placeholder text for text input for the height/width ratio of a custom device in pixels.
-  */
+   *@description Placeholder text for text input for the height/width ratio of a custom device in pixels.
+   */
   devicePixelRatio: 'Device pixel ratio',
   /**
-  *@description Label in the Devices settings pane for the user agent string input of a custom device
-  */
+   *@description Label in the Devices settings pane for the user agent string input of a custom device
+   */
   userAgentString: 'User agent string',
   /**
-  *@description Tooltip text for a drop-down in the Devices settings pane, for the 'user agent type' input of a custom device.
-  * 'Type' refers to different options e.g. mobile or desktop.
-  */
+   *@description Tooltip text for a drop-down in the Devices settings pane, for the 'user agent type' input of a custom device.
+   * 'Type' refers to different options e.g. mobile or desktop.
+   */
   userAgentType: 'User agent type',
   /**
-  *@description Error message in the Devices settings pane that declares the maximum length of the device name input
-  *@example {50} PH1
-  */
+   *@description Error message in the Devices settings pane that declares the maximum length of the device name input
+   *@example {50} PH1
+   */
   deviceNameMustBeLessThanS: 'Device name must be less than {PH1} characters.',
   /**
-  *@description Error message in the Devices settings pane that declares that the device name input must not be empty
-  */
+   *@description Error message in the Devices settings pane that declares that the device name input must not be empty
+   */
   deviceNameCannotBeEmpty: 'Device name cannot be empty.',
   /**
-  *@description Success message for screen readers when device is added.
-  *@example {TestDevice} PH1
-  */
+   *@description Success message for screen readers when device is added.
+   *@example {TestDevice} PH1
+   */
   deviceAddedOrUpdated: 'Device {PH1} successfully added/updated.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);

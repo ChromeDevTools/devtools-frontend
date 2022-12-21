@@ -18,77 +18,77 @@ import {CoverageModel, Events, CoverageType, type CoverageInfo, type URLCoverage
 
 const UIStrings = {
   /**
-  *@description Tooltip in Coverage List View of the Coverage tab for selecting JavaScript coverage mode
-  */
+   *@description Tooltip in Coverage List View of the Coverage tab for selecting JavaScript coverage mode
+   */
   chooseCoverageGranularityPer:
       'Choose coverage granularity: Per function has low overhead, per block has significant overhead.',
   /**
-  *@description Text in Coverage List View of the Coverage tab
-  */
+   *@description Text in Coverage List View of the Coverage tab
+   */
   perFunction: 'Per function',
   /**
-  *@description Text in Coverage List View of the Coverage tab
-  */
+   *@description Text in Coverage List View of the Coverage tab
+   */
   perBlock: 'Per block',
   /**
-  *@description Text to clear everything
-  */
+   *@description Text to clear everything
+   */
   clearAll: 'Clear all',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon download button in the Coverage View of the Coverage tab
-  */
+   *@description Tooltip text that appears when hovering over the largeicon download button in the Coverage View of the Coverage tab
+   */
   export: 'Export...',
   /**
-  *@description Text in Coverage View of the Coverage tab
-  */
+   *@description Text in Coverage View of the Coverage tab
+   */
   urlFilter: 'URL filter',
   /**
-  *@description Label for the type filter in the Converage Panel
-  */
+   *@description Label for the type filter in the Converage Panel
+   */
   filterCoverageByType: 'Filter coverage by type',
   /**
-  *@description Text for everything
-  */
+   *@description Text for everything
+   */
   all: 'All',
   /**
-  *@description Text that appears on a button for the css resource type filter.
-  */
+   *@description Text that appears on a button for the css resource type filter.
+   */
   css: 'CSS',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   javascript: 'JavaScript',
   /**
-  *@description Tooltip text that appears on the setting when hovering over it in Coverage View of the Coverage tab
-  */
+   *@description Tooltip text that appears on the setting when hovering over it in Coverage View of the Coverage tab
+   */
   includeExtensionContentScripts: 'Include extension content scripts',
   /**
-  *@description Title for a type of source files
-  */
+   *@description Title for a type of source files
+   */
   contentScripts: 'Content scripts',
   /**
-  *@description Message in Coverage View of the Coverage tab
-  *@example {record button icon} PH1
-  */
+   *@description Message in Coverage View of the Coverage tab
+   *@example {record button icon} PH1
+   */
   clickTheReloadButtonSToReloadAnd: 'Click the reload button {PH1} to reload and start capturing coverage.',
   /**
-  *@description Message in Coverage View of the Coverage tab
-  *@example {record button icon} PH1
-  */
+   *@description Message in Coverage View of the Coverage tab
+   *@example {record button icon} PH1
+   */
   clickTheRecordButtonSToStart: 'Click the record button {PH1} to start capturing coverage.',
   /**
-  *@description Footer message in Coverage View of the Coverage tab
-  *@example {300k used, 600k unused} PH1
-  *@example {500k used, 800k unused} PH2
-  */
+   *@description Footer message in Coverage View of the Coverage tab
+   *@example {300k used, 600k unused} PH1
+   *@example {500k used, 800k unused} PH2
+   */
   filteredSTotalS: 'Filtered: {PH1}  Total: {PH2}',
   /**
-  *@description Footer message in Coverage View of the Coverage tab
-  *@example {1.5 MB} PH1
-  *@example {2.1 MB} PH2
-  *@example {71%} PH3
-  *@example {29%} PH4
-  */
+   *@description Footer message in Coverage View of the Coverage tab
+   *@example {1.5 MB} PH1
+   *@example {2.1 MB} PH2
+   *@example {71%} PH3
+   *@example {29%} PH4
+   */
   sOfSSUsedSoFarSUnused: '{PH1} of {PH2} ({PH3}%) used so far, {PH4} unused.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/coverage/CoverageView.ts', UIStrings);

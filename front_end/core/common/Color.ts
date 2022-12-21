@@ -285,8 +285,8 @@ export function parse(text: string): Color|null {
 }
 
 /**
-   * Split the color parameters of (e.g.) rgb(a), hsl(a), hwb(a) functions.
-   */
+ * Split the color parameters of (e.g.) rgb(a), hsl(a), hwb(a) functions.
+ */
 function splitColorFunctionParameters(
     content: string, {allowCommas, convertNoneToZero}: SplitColorFunctionParametersOptions): string[]|null {
   const components = content.trim();
@@ -1013,7 +1013,7 @@ export class Legacy implements Color {
   }
 
   /** HSLA with components within [0..1]
-    */
+   */
   hsla(): number[] {
     if (this.#hslaInternal) {
       return this.#hslaInternal;
@@ -1028,7 +1028,7 @@ export class Legacy implements Color {
   }
 
   /** HSVA with components within [0..1]
-    */
+   */
   hsva(): number[] {
     const hsla = this.hsla();
     const h = hsla[0];
@@ -1040,7 +1040,7 @@ export class Legacy implements Color {
   }
 
   /** HWBA with components within [0..1]
-    */
+   */
   hwba(): number[] {
     if (this.#hwbaInternal) {
       return this.#hwbaInternal;
@@ -1201,7 +1201,7 @@ export class Legacy implements Color {
   }
 
   /** nickname
-     */
+   */
   nickname(): string|null {
     return RGBAToNickname.get(String(this.canonicalRGBA())) || null;
   }

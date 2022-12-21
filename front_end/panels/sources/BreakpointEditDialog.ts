@@ -11,39 +11,39 @@ import breakpointEditDialogStyles from './breakpointEditDialog.css.js';
 
 const UIStrings = {
   /**
-  *@description Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint
-  */
+   *@description Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint
+   */
   breakpointType: 'Breakpoint type',
   /**
-  *@description Text in Breakpoint Edit Dialog of the Sources panel
-  */
+   *@description Text in Breakpoint Edit Dialog of the Sources panel
+   */
   breakpoint: 'Breakpoint',
   /**
-  *@description Text in Breakpoint Edit Dialog of the Sources panel
-  */
+   *@description Text in Breakpoint Edit Dialog of the Sources panel
+   */
   conditionalBreakpoint: 'Conditional breakpoint',
   /**
-  *@description Text in Breakpoint Edit Dialog of the Sources panel
-  */
+   *@description Text in Breakpoint Edit Dialog of the Sources panel
+   */
   logpoint: 'Logpoint',
   /**
-  *@description Text in Breakpoint Edit Dialog of the Sources panel
-  */
+   *@description Text in Breakpoint Edit Dialog of the Sources panel
+   */
   expressionToCheckBeforePausingEg: 'Expression to check before pausing, e.g. x > 5',
   /**
-  *@description Type selector element title in Breakpoint Edit Dialog of the Sources panel
-  */
+   *@description Type selector element title in Breakpoint Edit Dialog of the Sources panel
+   */
   pauseOnlyWhenTheConditionIsTrue: 'Pause only when the condition is true',
   /**
-  *@description Text in Breakpoint Edit Dialog of the Sources panel. It is used as
-  *the placeholder for a text input field before the user enters text. Provides the user with
-  *an example on how to use Logpoints. 'Log' is a verb and 'message' is a noun.
-  *See: https://developer.chrome.com/blog/new-in-devtools-73/#logpoints
-  */
+   *@description Text in Breakpoint Edit Dialog of the Sources panel. It is used as
+   *the placeholder for a text input field before the user enters text. Provides the user with
+   *an example on how to use Logpoints. 'Log' is a verb and 'message' is a noun.
+   *See: https://developer.chrome.com/blog/new-in-devtools-73/#logpoints
+   */
   logMessageEgXIsX: 'Log message, e.g. `\'x is\', x`',
   /**
-  *@description Type selector element title in Breakpoint Edit Dialog of the Sources panel
-  */
+   *@description Type selector element title in Breakpoint Edit Dialog of the Sources panel
+   */
   logAMessageToConsoleDoNotBreak: 'Log a message to Console, do not break',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/BreakpointEditDialog.ts', UIStrings);

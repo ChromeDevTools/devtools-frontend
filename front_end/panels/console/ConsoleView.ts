@@ -69,49 +69,49 @@ import {ConsoleViewport, type ConsoleViewportElement, type ConsoleViewportProvid
 
 const UIStrings = {
   /**
-  *@description Label for button which links to Issues tab, specifying how many issues there are.
-  */
+   *@description Label for button which links to Issues tab, specifying how many issues there are.
+   */
   issuesWithColon: '{n, plural, =0 {No Issues} =1 {# Issue:} other {# Issues:}}',
   /**
-  *@description Text for the tooltip of the issue counter toolbar item
-  */
+   *@description Text for the tooltip of the issue counter toolbar item
+   */
   issueToolbarTooltipGeneral: 'Some problems no longer generate console messages, but are surfaced in the issues tab.',
   /**
-  * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
-  * there are in the Issues tab broken down by kind.
-  * @example {1 page error, 2 breaking changes} issueEnumeration
-  */
+   * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
+   * there are in the Issues tab broken down by kind.
+   * @example {1 page error, 2 breaking changes} issueEnumeration
+   */
   issueToolbarClickToView: 'Click to view {issueEnumeration}',
   /**
-  * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
-  * there are in the Issues tab broken down by kind.
-  */
+   * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
+   * there are in the Issues tab broken down by kind.
+   */
   issueToolbarClickToGoToTheIssuesTab: 'Click to go to the issues tab',
   /**
-  *@description Text in Console View of the Console panel
-  */
+   *@description Text in Console View of the Console panel
+   */
   findStringInLogs: 'Find string in logs',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in console view of the console panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in console view of the console panel
+   */
   consoleSettings: 'Console settings',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   groupSimilarMessagesInConsole: 'Group similar messages in console',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   showCorsErrorsInConsole: 'Show `CORS` errors in console',
   /**
-  * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
-  * open/show the sidebar.
-  */
+   * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
+   * open/show the sidebar.
+   */
   showConsoleSidebar: 'Show console sidebar',
   /**
-  * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
-  * open/show the sidebar.
-  */
+   * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
+   * open/show the sidebar.
+   */
   hideConsoleSidebar: 'Hide console sidebar',
   /**
    * @description Screen reader announcement when the sidebar is shown in the Console panel.
@@ -122,33 +122,33 @@ const UIStrings = {
    */
   consoleSidebarHidden: 'Console sidebar hidden',
   /**
-  *@description Tooltip text that appears on the setting to preserve log when hovering over the item
-  */
+   *@description Tooltip text that appears on the setting to preserve log when hovering over the item
+   */
   doNotClearLogOnPageReload: 'Do not clear log on page reload / navigation',
   /**
-  *@description Text to preserve the log after refreshing
-  */
+   *@description Text to preserve the log after refreshing
+   */
   preserveLog: 'Preserve log',
   /**
-  *@description Text in Console View of the Console panel
-  */
+   *@description Text in Console View of the Console panel
+   */
   hideNetwork: 'Hide network',
   /**
-  *@description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
-  */
+   *@description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
+   */
   onlyShowMessagesFromTheCurrentContext:
       'Only show messages from the current context (`top`, `iframe`, `worker`, extension)',
   /**
-  *@description Alternative title text of a setting in Console View of the Console panel
-  */
+   *@description Alternative title text of a setting in Console View of the Console panel
+   */
   selectedContextOnly: 'Selected context only',
   /**
    *@description Description of a setting that controls whether XMLHttpRequests are logged in the console.
    */
   logXMLHttpRequests: 'Log XMLHttpRequests',
   /**
-  *@description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
-  */
+   *@description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
+   */
   eagerlyEvaluateTextInThePrompt: 'Eagerly evaluate text in the prompt',
   /**
    *@description Description of a setting that controls whether text typed in the console should be autocompleted from commands executed in the local console history.
@@ -156,108 +156,108 @@ const UIStrings = {
   autocompleteFromHistory: 'Autocomplete from history',
   /**
    *@description Description of a setting that controls whether user activation is triggered by evaluation'.
-  */
+   */
   treatEvaluationAsUserActivation: 'Treat evaluation as user activation',
   /**
-  * @description Text in Console View of the Console panel, indicating that a number of console
-  * messages have been hidden.
-  */
+   * @description Text in Console View of the Console panel, indicating that a number of console
+   * messages have been hidden.
+   */
   sHidden: '{n, plural, =1 {# hidden} other {# hidden}}',
   /**
-  *@description Alert message for screen readers when the console is cleared
-  */
+   *@description Alert message for screen readers when the console is cleared
+   */
   consoleCleared: 'Console cleared',
   /**
-  *@description Text in Console View of the Console panel
-  *@example {index.js} PH1
-  */
+   *@description Text in Console View of the Console panel
+   *@example {index.js} PH1
+   */
   hideMessagesFromS: 'Hide messages from {PH1}',
   /**
-  *@description Text to save content as a specific file type
-  */
+   *@description Text to save content as a specific file type
+   */
   saveAs: 'Save as...',
   /**
-  *@description A context menu item in the Console View of the Console panel
-  */
+   *@description A context menu item in the Console View of the Console panel
+   */
   copyVisibleStyledSelection: 'Copy visible styled selection',
   /**
-  *@description Text to replay an XHR request
-  */
+   *@description Text to replay an XHR request
+   */
   replayXhr: 'Replay XHR',
   /**
-  *@description Text to indicate DevTools is writing to a file
-  */
+   *@description Text to indicate DevTools is writing to a file
+   */
   writingFile: 'Writing file…',
   /**
-  *@description Text to indicate the searching is in progress
-  */
+   *@description Text to indicate the searching is in progress
+   */
   searching: 'Searching…',
   /**
-  *@description Text to filter result items
-  */
+   *@description Text to filter result items
+   */
   filter: 'Filter',
   /**
-  *@description Text in Console View of the Console panel
-  */
+   *@description Text in Console View of the Console panel
+   */
   egEventdCdnUrlacom: 'e.g. `/event\d/ -cdn url:a.com`',
   /**
-  *@description Sdk console message message level verbose of level Labels in Console View of the Console panel
-  */
+   *@description Sdk console message message level verbose of level Labels in Console View of the Console panel
+   */
   verbose: 'Verbose',
   /**
-  *@description Sdk console message message level info of level Labels in Console View of the Console panel
-  */
+   *@description Sdk console message message level info of level Labels in Console View of the Console panel
+   */
   info: 'Info',
   /**
-  *@description Sdk console message message level warning of level Labels in Console View of the Console panel
-  */
+   *@description Sdk console message message level warning of level Labels in Console View of the Console panel
+   */
   warnings: 'Warnings',
   /**
-  *@description Text for errors
-  */
+   *@description Text for errors
+   */
   errors: 'Errors',
   /**
-  *@description Text in Console View of the Console panel
-  */
+   *@description Text in Console View of the Console panel
+   */
   logLevels: 'Log levels',
   /**
-  *@description Title text of a setting in Console View of the Console panel
-  */
+   *@description Title text of a setting in Console View of the Console panel
+   */
   overriddenByFilterSidebar: 'Overridden by filter sidebar',
   /**
-  *@description Text in Console View of the Console panel
-  */
+   *@description Text in Console View of the Console panel
+   */
   customLevels: 'Custom levels',
   /**
-  *@description Text in Console View of the Console panel
-  *@example {Warnings} PH1
-  */
+   *@description Text in Console View of the Console panel
+   *@example {Warnings} PH1
+   */
   sOnly: '{PH1} only',
   /**
-  *@description Text in Console View of the Console panel
-  */
+   *@description Text in Console View of the Console panel
+   */
   allLevels: 'All levels',
   /**
-  *@description Text in Console View of the Console panel
-  */
+   *@description Text in Console View of the Console panel
+   */
   defaultLevels: 'Default levels',
   /**
-  *@description Text in Console View of the Console panel
-  */
+   *@description Text in Console View of the Console panel
+   */
   hideAll: 'Hide all',
   /**
-  *@description Title of level menu button in console view of the console panel
-  *@example {All levels} PH1
-  */
+   *@description Title of level menu button in console view of the console panel
+   *@example {All levels} PH1
+   */
   logLevelS: 'Log level: {PH1}',
   /**
-  *@description A context menu item in the Console View of the Console panel
-  */
+   *@description A context menu item in the Console View of the Console panel
+   */
   default: 'Default',
   /**
-  *@description Text summary to indicate total number of messages in console for accessibility/screen readers.
-  *@example {5} PH1
-  */
+   *@description Text summary to indicate total number of messages in console for accessibility/screen readers.
+   *@example {5} PH1
+   */
   filteredMessagesInConsole: '{PH1} messages in console',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleView.ts', UIStrings);

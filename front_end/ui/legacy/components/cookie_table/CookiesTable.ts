@@ -47,49 +47,49 @@ import cookiesTableStyles from './cookiesTable.css.js';
 
 const UIStrings = {
   /**
-  *@description Cookie table cookies table expires session value in Cookies Table of the Cookies table in the Application panel
-  */
+   *@description Cookie table cookies table expires session value in Cookies Table of the Cookies table in the Application panel
+   */
   session: 'Session',
   /**
-  *@description Text for the name of something
-  */
+   *@description Text for the name of something
+   */
   name: 'Name',
   /**
-  *@description Text for the value of something
-  */
+   *@description Text for the value of something
+   */
   value: 'Value',
   /**
-  *@description Text for the size of something
-  */
+   *@description Text for the size of something
+   */
   size: 'Size',
   /**
-  *@description Data grid name for Editable Cookies data grid
-  */
+   *@description Data grid name for Editable Cookies data grid
+   */
   editableCookies: 'Editable Cookies',
   /**
-  *@description Text for web cookies
-  */
+   *@description Text for web cookies
+   */
   cookies: 'Cookies',
   /**
-  *@description Text for something not available
-  */
+   *@description Text for something not available
+   */
   na: 'N/A',
   /**
-  *@description Text for Context Menu entry
-  */
+   *@description Text for Context Menu entry
+   */
   showRequestsWithThisCookie: 'Show Requests With This Cookie',
   /**
-  *@description Text for Context Menu entry
-  */
+   *@description Text for Context Menu entry
+   */
   showIssueAssociatedWithThis: 'Show issue associated with this cookie',
   /**
-  *@description Tooltip for the cell that shows the sourcePort property of a cookie in the cookie table. The source port is numberic attribute of a cookie.
-  */
+   *@description Tooltip for the cell that shows the sourcePort property of a cookie in the cookie table. The source port is numberic attribute of a cookie.
+   */
   sourcePortTooltip:
       'Shows the source port (range 1-65535) the cookie was set on. If the port is unknown, this shows -1.',
   /**
-  *@description Tooltip for the cell that shows the sourceScheme property of a cookie in the cookie table. The source scheme is a trinary attribute of a cookie.
-  */
+   *@description Tooltip for the cell that shows the sourceScheme property of a cookie in the cookie table. The source scheme is a trinary attribute of a cookie.
+   */
   sourceSchemeTooltip:
       'Shows the source scheme (`Secure`, `NonSecure`) the cookie was set on. If the scheme is unknown, this shows `Unset`.',
   /**

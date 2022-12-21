@@ -12,20 +12,20 @@ import type * as Issues from './issues.js';
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
-  *@description Label for the issues pane
-  */
+   *@description Label for the issues pane
+   */
   issues: 'Issues',
   /**
-  *@description Command for showing the 'Issues' tool
-  */
+   *@description Command for showing the 'Issues' tool
+   */
   showIssues: 'Show Issues',
   /**
-  *@description Title for a tab drawer listing CSP Violations
-  */
+   *@description Title for a tab drawer listing CSP Violations
+   */
   cspViolations: 'CSP Violations',
   /**
-  *@description Command for showing the 'CSP Violations' tool
-  */
+   *@description Command for showing the 'CSP Violations' tool
+   */
   showCspViolations: 'Show CSP Violations',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/issues-meta.ts', UIStrings);

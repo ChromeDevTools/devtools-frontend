@@ -20,7 +20,7 @@ import type * as Protocol from '../../../generated/protocol.js';
  * use the nodeId from the LCP candidate to find the image candidate. That image
  * candidate also contains a `imageUrl` property, which will have the full URL
  * to the image.
-**/
+ **/
 const imageByDOMNodeId = new Map<Protocol.DOM.BackendNodeId, Types.TraceEvents.TraceEventLargestImagePaintCandidate>();
 
 export function reset(): void {

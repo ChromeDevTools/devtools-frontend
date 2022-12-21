@@ -12,12 +12,12 @@ import {ariaMetadata} from './ARIAMetadata.js';
 
 const UIStrings = {
   /**
-  *@description Text in ARIAAttributes View of the Accessibility panel
-  */
+   *@description Text in ARIAAttributes View of the Accessibility panel
+   */
   ariaAttributes: 'ARIA Attributes',
   /**
-  *@description Text in ARIAAttributes View of the Accessibility panel
-  */
+   *@description Text in ARIAAttributes View of the Accessibility panel
+   */
   noAriaAttributes: 'No ARIA attributes',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/ARIAAttributesView.ts', UIStrings);

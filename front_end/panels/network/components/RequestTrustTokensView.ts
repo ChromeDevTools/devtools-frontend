@@ -14,74 +14,74 @@ import requestTrustTokensViewStyles from './RequestTrustTokensView.css.js';
 
 const UIStrings = {
   /**
-  *@description Section heading in the Trust Token tab
-  */
+   *@description Section heading in the Trust Token tab
+   */
   parameters: 'Parameters',
   /**
-  *@description Text that refers to some types
-  */
+   *@description Text that refers to some types
+   */
   type: 'Type',
   /**
-  *@description Label for a Trust Token parameter
-  */
+   *@description Label for a Trust Token parameter
+   */
   refreshPolicy: 'Refresh policy',
   /**
-  *@description Label for a list if origins in the Trust Token tab
-  */
+   *@description Label for a list if origins in the Trust Token tab
+   */
   issuers: 'Issuers',
   /**
-  *@description Label for a report field in the Network panel
-  */
+   *@description Label for a report field in the Network panel
+   */
   topLevelOrigin: 'Top level origin',
   /**
-  *@description Text for the issuer of an item
-  */
+   *@description Text for the issuer of an item
+   */
   issuer: 'Issuer',
   /**
-  *@description Heading of a report section in the Network panel
-  */
+   *@description Heading of a report section in the Network panel
+   */
   result: 'Result',
   /**
-  *@description Text for the status of something
-  */
+   *@description Text for the status of something
+   */
   status: 'Status',
   /**
-  *@description Label for a field in the Network panel
-  */
+   *@description Label for a field in the Network panel
+   */
   numberOfIssuedTokens: 'Number of issued tokens',
   /**
-  * @description Text for the success status in the Network panel. Refers to the outcome of a network
-  * request which will either be 'Success' or 'Failure'.
-  */
+   * @description Text for the success status in the Network panel. Refers to the outcome of a network
+   * request which will either be 'Success' or 'Failure'.
+   */
   success: 'Success',
   /**
-  *@description Text in the network panel for an error status
-  */
+   *@description Text in the network panel for an error status
+   */
   failure: 'Failure',
   /**
-  *@description Detailed text for a success status in the Network panel
-  */
+   *@description Detailed text for a success status in the Network panel
+   */
   theOperationsResultWasServedFrom: 'The operations result was served from cache.',
   /**
-  *@description Detailed text for a success status in the Network panel
-  */
+   *@description Detailed text for a success status in the Network panel
+   */
   theOperationWasFulfilledLocally: 'The operation was fulfilled locally, no request was sent.',
   /**
-  *@description Text for an error status in the Network panel
-  */
+   *@description Text for an error status in the Network panel
+   */
   aClientprovidedArgumentWas: 'A client-provided argument was malformed or otherwise invalid.',
   /**
-  *@description Text for an error status in the Network panel
-  */
+   *@description Text for an error status in the Network panel
+   */
   eitherNoInputsForThisOperation:
       'Either no inputs for this operation are available or the output exceeds the operations quota.',
   /**
-  *@description Text for an error status in the Network panel
-  */
+   *@description Text for an error status in the Network panel
+   */
   theServersResponseWasMalformedOr: 'The servers response was malformed or otherwise invalid.',
   /**
-  *@description Text for an error status in the Network panel
-  */
+   *@description Text for an error status in the Network panel
+   */
   theOperationFailedForAnUnknown: 'The operation failed for an unknown reason.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestTrustTokensView.ts', UIStrings);

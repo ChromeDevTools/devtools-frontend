@@ -43,16 +43,16 @@ import {PageResourceLoader, type PageResourceLoadInitiator} from './PageResource
 
 const UIStrings = {
   /**
-  *@description Error message when failing to load a source map text via the network
-  *@example {https://example.com/sourcemap.map} PH1
-  *@example {A certificate error occurred} PH2
-  */
+   *@description Error message when failing to load a source map text via the network
+   *@example {https://example.com/sourcemap.map} PH1
+   *@example {A certificate error occurred} PH2
+   */
   couldNotLoadContentForSS: 'Could not load content for {PH1}: {PH2}',
   /**
-  *@description Error message when failing to load a script source text via the network
-  *@example {https://example.com} PH1
-  *@example {Unexpected token} PH2
-  */
+   *@description Error message when failing to load a script source text via the network
+   *@example {https://example.com} PH1
+   *@example {Unexpected token} PH2
+   */
   couldNotParseContentForSS: 'Could not parse content for {PH1}: {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/SourceMap.ts', UIStrings);

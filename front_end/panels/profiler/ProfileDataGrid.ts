@@ -36,18 +36,18 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  * @description This message is presented as a tooltip when developers investigate the performance
-  * of a page. The tooltip alerts developers that some parts of code in execution were not optimized
-  * (made to run faster) and that associated timing information must be considered with this in
-  * mind. The placeholder text is the reason the code was not optimized.
-  * @example {Optimized too many times} PH1
-  */
+   * @description This message is presented as a tooltip when developers investigate the performance
+   * of a page. The tooltip alerts developers that some parts of code in execution were not optimized
+   * (made to run faster) and that associated timing information must be considered with this in
+   * mind. The placeholder text is the reason the code was not optimized.
+   * @example {Optimized too many times} PH1
+   */
   notOptimizedS: 'Not optimized: {PH1}',
   /**
-  *@description Generic text with two placeholders separated by a comma
-  *@example {1 613 680} PH1
-  *@example {44 %} PH2
-  */
+   *@description Generic text with two placeholders separated by a comma
+   *@example {1 613 680} PH1
+   *@example {44 %} PH2
+   */
   genericTextTwoPlaceholders: '{PH1}, {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileDataGrid.ts', UIStrings);

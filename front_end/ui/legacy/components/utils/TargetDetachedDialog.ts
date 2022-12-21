@@ -10,8 +10,8 @@ import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text on the remote debugging window to indicate the connection is lost
-  */
+   *@description Text on the remote debugging window to indicate the connection is lost
+   */
   websocketDisconnected: 'WebSocket disconnected',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/TargetDetachedDialog.ts', UIStrings);

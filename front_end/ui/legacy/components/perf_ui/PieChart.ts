@@ -11,8 +11,8 @@ const {render, html, svg} = LitHtml;
 import * as i18n from '../../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
-  *@description Text for sum
-  */
+   *@description Text for sum
+   */
   total: 'Total',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/PieChart.ts', UIStrings);

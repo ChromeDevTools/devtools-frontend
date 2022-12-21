@@ -44,37 +44,37 @@ import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description Text in Call Stack Sidebar Pane of the Sources panel
-  */
+   *@description Text in Call Stack Sidebar Pane of the Sources panel
+   */
   callStack: 'Call Stack',
   /**
-  *@description Not paused message element text content in Call Stack Sidebar Pane of the Sources panel
-  */
+   *@description Not paused message element text content in Call Stack Sidebar Pane of the Sources panel
+   */
   notPaused: 'Not paused',
   /**
-  *@description Text exposed to screen reader when navigating through a ignore-listed call frame in the sources panel
-  */
+   *@description Text exposed to screen reader when navigating through a ignore-listed call frame in the sources panel
+   */
   onIgnoreList: 'on ignore list',
   /**
-  *@description Show all link text content in Call Stack Sidebar Pane of the Sources panel
-  */
+   *@description Show all link text content in Call Stack Sidebar Pane of the Sources panel
+   */
   showIgnorelistedFrames: 'Show ignore-listed frames',
   /**
-  *@description Text to show more content
-  */
+   *@description Text to show more content
+   */
   showMore: 'Show more',
   /**
-  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
-  */
+   *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+   */
   copyStackTrace: 'Copy stack trace',
   /**
-  *@description Text in Call Stack Sidebar Pane of the Sources panel when some call frames have warnings
-  */
+   *@description Text in Call Stack Sidebar Pane of the Sources panel when some call frames have warnings
+   */
   callFrameWarnings: 'Some call frames have warnings',
   /**
-  *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
-  *@example {src/myapp.debug.wasm.dwp} PH1
-  */
+   *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
+   *@example {src/myapp.debug.wasm.dwp} PH1
+   */
   debugFileNotFound: 'Failed to load debug file "{PH1}".',
   /**
    * @description A contex menu item in the Call Stack Sidebar Pane. "Restart" is a verb and

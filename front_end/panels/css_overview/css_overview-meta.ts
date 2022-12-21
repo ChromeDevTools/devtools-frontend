@@ -9,12 +9,12 @@ import type * as CSSOverview from './css_overview.js';
 
 const UIStrings = {
   /**
-  *@description Title of the CSS Overview Panel
-  */
+   *@description Title of the CSS Overview Panel
+   */
   cssOverview: 'CSS Overview',
   /**
-  *@description Title of the CSS Overview Panel
-  */
+   *@description Title of the CSS Overview Panel
+   */
   showCssOverview: 'Show CSS Overview',
 };
 

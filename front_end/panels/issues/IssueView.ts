@@ -36,50 +36,50 @@ import {type HiddenIssuesMenuData} from './components/HideIssuesMenu.js';
 
 const UIStrings = {
   /**
-  *@description Noun, singular. Label for a column or field containing the name of an entity.
-  */
+   *@description Noun, singular. Label for a column or field containing the name of an entity.
+   */
   name: 'Name',
   /**
-  *@description The kind of resolution for a mixed content issue
-  */
+   *@description The kind of resolution for a mixed content issue
+   */
   blocked: 'blocked',
   /**
-  *@description Label for a type of issue that can appear in the Issues view. Noun for singular or plural number of network requests.
-  */
+   *@description Label for a type of issue that can appear in the Issues view. Noun for singular or plural number of network requests.
+   */
   nRequests: '{n, plural, =1 {# request} other {# requests}}',
   /**
-  *@description Label for singular or plural number of affected resources in issue view
-  */
+   *@description Label for singular or plural number of affected resources in issue view
+   */
   nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**
-  *@description Label for mixed content issue's restriction status
-  */
+   *@description Label for mixed content issue's restriction status
+   */
   restrictionStatus: 'Restriction Status',
   /**
-  * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
-  * This string indicates that the ad was only warned, and not removed.
-  */
+   * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
+   * This string indicates that the ad was only warned, and not removed.
+   */
   warned: 'Warned',
   /**
-  *@description Header for the section listing affected resources
-  */
+   *@description Header for the section listing affected resources
+   */
   affectedResources: 'Affected Resources',
   /**
-  *@description Title for a link to further information in issue view
-  *@example {SameSite Cookies Explained} PH1
-  */
+   *@description Title for a link to further information in issue view
+   *@example {SameSite Cookies Explained} PH1
+   */
   learnMoreS: 'Learn more: {PH1}',
   /**
-  *@description The kind of resolution for a mixed content issue
-  */
+   *@description The kind of resolution for a mixed content issue
+   */
   automaticallyUpgraded: 'automatically upgraded',
   /**
-  *@description Menu entry for hiding a particular issue, in the Hide Issues context menu.
-  */
+   *@description Menu entry for hiding a particular issue, in the Hide Issues context menu.
+   */
   hideIssuesLikeThis: 'Hide issues like this',
   /**
-  *@description Menu entry for unhiding a particular issue, in the Hide Issues context menu.
-  */
+   *@description Menu entry for unhiding a particular issue, in the Hide Issues context menu.
+   */
   unhideIssuesLikeThis: 'Unhide issues like this',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueView.ts', UIStrings);

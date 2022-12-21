@@ -30,75 +30,75 @@ export const activeHints = new WeakMap<Element, Hint>();
 
 const UIStrings = {
   /**
-  *@description Text in Color Swatch Popover Icon of the Elements panel
-  */
+   *@description Text in Color Swatch Popover Icon of the Elements panel
+   */
   shiftClickToChangeColorFormat: 'Shift + Click to change color format.',
   /**
-  *@description Swatch icon element title in Color Swatch Popover Icon of the Elements panel
-  *@example {Shift + Click to change color format.} PH1
-  */
+   *@description Swatch icon element title in Color Swatch Popover Icon of the Elements panel
+   *@example {Shift + Click to change color format.} PH1
+   */
   openColorPickerS: 'Open color picker. {PH1}',
   /**
-  *@description The warning text shown in Elements panel when font-variation-settings don't match allowed values
-  *@example {wdth} PH1
-  *@example {100} PH2
-  *@example {10} PH3
-  *@example {20} PH4
-  *@example {Arial} PH5
-  */
+   *@description The warning text shown in Elements panel when font-variation-settings don't match allowed values
+   *@example {wdth} PH1
+   *@example {100} PH2
+   *@example {10} PH3
+   *@example {20} PH4
+   *@example {Arial} PH5
+   */
   valueForSettingSSIsOutsideThe:
       'Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”.',
   /**
-  *@description Context menu item for style property in edit mode
-  */
+   *@description Context menu item for style property in edit mode
+   */
   togglePropertyAndContinueEditing: 'Toggle property and continue editing',
   /**
-  *@description Context menu item for style property in edit mode
-  */
+   *@description Context menu item for style property in edit mode
+   */
   revealInSourcesPanel: 'Reveal in Sources panel',
   /**
-  *@description A context menu item in Styles panel to copy CSS declaration
-  */
+   *@description A context menu item in Styles panel to copy CSS declaration
+   */
   copyDeclaration: 'Copy declaration',
   /**
-  *@description A context menu item in Styles panel to copy CSS property
-  */
+   *@description A context menu item in Styles panel to copy CSS property
+   */
   copyProperty: 'Copy property',
   /**
-  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
-  */
+   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+   */
   copyValue: 'Copy value',
   /**
-  *@description A context menu item in Styles panel to copy CSS rule
-  */
+   *@description A context menu item in Styles panel to copy CSS rule
+   */
   copyRule: 'Copy rule',
   /**
-  *@description A context menu item in Styles panel to copy all CSS declarations
-  */
+   *@description A context menu item in Styles panel to copy all CSS declarations
+   */
   copyAllDeclarations: 'Copy all declarations',
   /**
-  *@description  A context menu item in Styles panel to copy all the CSS changes
-  */
+   *@description  A context menu item in Styles panel to copy all the CSS changes
+   */
   copyAllCSSChanges: 'Copy all CSS changes',
   /**
-  *@description A context menu item in Styles panel to view the computed CSS property value.
-  */
+   *@description A context menu item in Styles panel to view the computed CSS property value.
+   */
   viewComputedValue: 'View computed value',
   /**
-  * @description Title of the button that opens the flexbox editor in the Styles panel.
-  */
+   * @description Title of the button that opens the flexbox editor in the Styles panel.
+   */
   flexboxEditorButton: 'Open `flexbox` editor',
   /**
-  * @description Title of the button that opens the CSS Grid editor in the Styles panel.
-  */
+   * @description Title of the button that opens the CSS Grid editor in the Styles panel.
+   */
   gridEditorButton: 'Open `grid` editor',
   /**
-  *@description A context menu item in Styles panel to copy CSS declaration as JavaScript property.
-  */
+   *@description A context menu item in Styles panel to copy CSS declaration as JavaScript property.
+   */
   copyCssDeclarationAsJs: 'Copy declaration as JS',
   /**
-  *@description A context menu item in Styles panel to copy all declarations of CSS rule as JavaScript properties.
-  */
+   *@description A context menu item in Styles panel to copy all declarations of CSS rule as JavaScript properties.
+   */
   copyAllCssDeclarationsAsJs: 'Copy all declarations as JS',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeElement.ts', UIStrings);

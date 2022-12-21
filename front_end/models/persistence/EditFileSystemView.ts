@@ -40,35 +40,35 @@ import {type PlatformFileSystem} from './PlatformFileSystem.js';
 
 const UIStrings = {
   /**
-  *@description Text in Edit File System View of the Workspace settings in Settings
-  */
+   *@description Text in Edit File System View of the Workspace settings in Settings
+   */
   excludedFolders: 'Excluded folders',
   /**
-  *@description Text to add something
-  */
+   *@description Text to add something
+   */
   add: 'Add',
   /**
-  * @description Placeholder text for an area of the UI that shows which folders have been excluded
-  * from being show in DevTools. When the user has not yet chosen any folders to exclude, this text
-  * is shown.
-  */
+   * @description Placeholder text for an area of the UI that shows which folders have been excluded
+   * from being show in DevTools. When the user has not yet chosen any folders to exclude, this text
+   * is shown.
+   */
   none: 'None',
   /**
-  *@description Text in Edit File System View of the Workspace settings in Settings
-  *@example {file/path/} PH1
-  */
+   *@description Text in Edit File System View of the Workspace settings in Settings
+   *@example {file/path/} PH1
+   */
   sViaDevtools: '{PH1} (via .devtools)',
   /**
-  *@description Text in Edit File System View of the Workspace settings in Settings
-  */
+   *@description Text in Edit File System View of the Workspace settings in Settings
+   */
   folderPath: 'Folder path',
   /**
-  *@description Error message when a file system path is an empty string.
-  */
+   *@description Error message when a file system path is an empty string.
+   */
   enterAPath: 'Enter a path',
   /**
-  *@description Error message when a file system path is identical to an existing path.
-  */
+   *@description Error message when a file system path is identical to an existing path.
+   */
   enterAUniquePath: 'Enter a unique path',
 };
 const str_ = i18n.i18n.registerUIStrings('models/persistence/EditFileSystemView.ts', UIStrings);

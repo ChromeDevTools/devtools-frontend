@@ -27,20 +27,20 @@ import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCo
 
 const UIStrings = {
   /**
-  *@description Text to open a file
-  */
+   *@description Text to open a file
+   */
   openFile: 'Open file',
   /**
-  *@description Text to run commands
-  */
+   *@description Text to run commands
+   */
   runCommand: 'Run command',
   /**
-  *@description Text in Sources View of the Sources panel
-  */
+   *@description Text in Sources View of the Sources panel
+   */
   dropInAFolderToAddToWorkspace: 'Drop in a folder to add to workspace',
   /**
-  *@description Accessible label for Sources placeholder view actions list
-  */
+   *@description Accessible label for Sources placeholder view actions list
+   */
   sourceViewActions: 'Source View Actions',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);

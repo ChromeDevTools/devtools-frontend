@@ -11,15 +11,15 @@ import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.js';
 
 const UIStrings = {
   /**
-  * @description Title of a section in the Element State Pane Widget of the Elements panel. The
-  * controls in this section allow users to force a particular state on the selected element, e.g. a
-  * focused state via :focus or a hover state via :hover.
-  */
+   * @description Title of a section in the Element State Pane Widget of the Elements panel. The
+   * controls in this section allow users to force a particular state on the selected element, e.g. a
+   * focused state via :focus or a hover state via :hover.
+   */
   forceElementState: 'Force element state',
   /**
-  * @description Tooltip text in Element State Pane Widget of the Elements panel. For a button that
-  * opens a tool that toggles the various states of the selected element on/off.
-  */
+   * @description Tooltip text in Element State Pane Widget of the Elements panel. For a button that
+   * opens a tool that toggles the various states of the selected element on/off.
+   */
   toggleElementState: 'Toggle Element State',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementStatePaneWidget.ts', UIStrings);

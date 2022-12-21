@@ -30,32 +30,32 @@ import {TimespanView} from './LighthouseTimespanView.js';
 
 const UIStrings = {
   /**
-  *@description Text that appears when user drag and drop something (for example, a file) in Lighthouse Panel
-  */
+   *@description Text that appears when user drag and drop something (for example, a file) in Lighthouse Panel
+   */
   dropLighthouseJsonHere: 'Drop `Lighthouse` JSON here',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon add button in the Lighthouse Panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon add button in the Lighthouse Panel
+   */
   performAnAudit: 'Perform an audit…',
   /**
-  *@description Text to clear everything
-  */
+   *@description Text to clear everything
+   */
   clearAll: 'Clear all',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in start view of the audits panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in start view of the audits panel
+   */
   lighthouseSettings: '`Lighthouse` settings',
   /**
-  *@description Status header in the Lighthouse panel
-  */
+   *@description Status header in the Lighthouse panel
+   */
   printing: 'Printing',
   /**
-  *@description Status text in the Lighthouse panel
-  */
+   *@description Status text in the Lighthouse panel
+   */
   thePrintPopupWindowIsOpenPlease: 'The print popup window is open. Please close it to continue.',
   /**
-  *@description Text in Lighthouse Panel
-  */
+   *@description Text in Lighthouse Panel
+   */
   cancelling: 'Cancelling',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthousePanel.ts', UIStrings);

@@ -9,20 +9,20 @@ import networkManageCustomHeadersViewStyles from './networkManageCustomHeadersVi
 
 const UIStrings = {
   /**
-  *@description Text in Network Manage Custom Headers View of the Network panel
-  */
+   *@description Text in Network Manage Custom Headers View of the Network panel
+   */
   manageHeaderColumns: 'Manage Header Columns',
   /**
-  *@description Placeholder text content in Network Manage Custom Headers View of the Network panel
-  */
+   *@description Placeholder text content in Network Manage Custom Headers View of the Network panel
+   */
   noCustomHeaders: 'No custom headers',
   /**
-  *@description Text of add button in Network Manage Custom Headers View of the Network panel
-  */
+   *@description Text of add button in Network Manage Custom Headers View of the Network panel
+   */
   addCustomHeader: 'Add custom header…',
   /**
-  *@description Text in Network Manage Custom Headers View of the Network panel
-  */
+   *@description Text in Network Manage Custom Headers View of the Network panel
+   */
   headerName: 'Header Name',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkManageCustomHeadersView.ts', UIStrings);

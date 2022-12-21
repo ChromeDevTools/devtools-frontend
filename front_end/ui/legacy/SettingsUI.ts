@@ -39,12 +39,12 @@ import {CheckboxLabel} from './UIUtils.js';
 
 const UIStrings = {
   /**
-  *@description Note when a setting change will require the user to reload DevTools
-  */
+   *@description Note when a setting change will require the user to reload DevTools
+   */
   srequiresReload: '*Requires reload',
   /**
-  *@description Message to display if a setting change requires a reload of DevTools
-  */
+   *@description Message to display if a setting change requires a reload of DevTools
+   */
   oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SettingsUI.ts', UIStrings);

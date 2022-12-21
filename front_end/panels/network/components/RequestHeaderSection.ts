@@ -18,21 +18,21 @@ const {render, html} = LitHtml;
 
 const UIStrings = {
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Message to explain lack of raw headers for a particular network request
-  */
+   *@description Message to explain lack of raw headers for a particular network request
+   */
   provisionalHeadersAreShownDisableCache: 'Provisional headers are shown. Disable cache to see full headers.',
   /**
-  *@description Tooltip to explain lack of raw headers for a particular network request
-  */
+   *@description Tooltip to explain lack of raw headers for a particular network request
+   */
   onlyProvisionalHeadersAre:
       'Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers.',
   /**
-  *@description Message to explain lack of raw headers for a particular network request
-  */
+   *@description Message to explain lack of raw headers for a particular network request
+   */
   provisionalHeadersAreShown: 'Provisional headers are shown.',
 };
 

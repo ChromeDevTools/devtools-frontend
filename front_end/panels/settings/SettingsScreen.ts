@@ -45,58 +45,58 @@ import {highlightElement} from '../utils/utils.js';
 
 const UIStrings = {
   /**
-  *@description Name of the Settings view
-  */
+   *@description Name of the Settings view
+   */
   settings: 'Settings',
   /**
-  *@description Text for keyboard shortcuts
-  */
+   *@description Text for keyboard shortcuts
+   */
   shortcuts: 'Shortcuts',
   /**
-  *@description Text in Settings Screen of the Settings
-  */
+   *@description Text in Settings Screen of the Settings
+   */
   preferences: 'Preferences',
   /**
-  *@description Text of button in Settings Screen of the Settings
-  */
+   *@description Text of button in Settings Screen of the Settings
+   */
   restoreDefaultsAndReload: 'Restore defaults and reload',
   /**
-  *@description Text in Settings Screen of the Settings
-  */
+   *@description Text in Settings Screen of the Settings
+   */
   experiments: 'Experiments',
   /**
-  *@description Message shown in the experiments panel to warn users about any possible unstable features.
-  */
+   *@description Message shown in the experiments panel to warn users about any possible unstable features.
+   */
   theseExperimentsCouldBeUnstable:
       'These experiments could be unstable or unreliable and may require you to restart DevTools.',
   /**
-  *@description Message text content in Settings Screen of the Settings
-  */
+   *@description Message text content in Settings Screen of the Settings
+   */
   theseExperimentsAreParticularly: 'These experiments are particularly unstable. Enable at your own risk.',
   /**
-  *@description Warning text content in Settings Screen of the Settings
-  */
+   *@description Warning text content in Settings Screen of the Settings
+   */
   warning: 'WARNING:',
   /**
-  *@description Message to display if a setting change requires a reload of DevTools
-  */
+   *@description Message to display if a setting change requires a reload of DevTools
+   */
   oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
   /**
-  * @description Label for a filter text input that controls which experiments are shown.
-  */
+   * @description Label for a filter text input that controls which experiments are shown.
+   */
   filterExperimentsLabel: 'Filter',
   /**
-  * @description Warning text shown when the user has entered text to filter the
-  * list of experiments, but no experiments match the filter.
-  */
+   * @description Warning text shown when the user has entered text to filter the
+   * list of experiments, but no experiments match the filter.
+   */
   noResults: 'No experiments match the filter',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Text that is usually a hyperlink to a feedback form
-  */
+   *@description Text that is usually a hyperlink to a feedback form
+   */
   sendFeedback: 'Send feedback',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/SettingsScreen.ts', UIStrings);

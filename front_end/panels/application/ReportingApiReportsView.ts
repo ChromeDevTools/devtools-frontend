@@ -14,9 +14,9 @@ import reportingApiReportsViewStyles from './reportingApiReportsView.css.js';
 
 const UIStrings = {
   /**
-  *@description Placeholder text instructing the user how to display a Reporting API
-  *report body (https://developers.google.com/web/updates/2018/09/reportingapi#sending).
-  */
+   *@description Placeholder text instructing the user how to display a Reporting API
+   *report body (https://developers.google.com/web/updates/2018/09/reportingapi#sending).
+   */
   clickToDisplayBody: 'Click on any report to display its body',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ReportingApiReportsView.ts', UIStrings);

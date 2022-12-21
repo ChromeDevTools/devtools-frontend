@@ -12,25 +12,25 @@ import cssShadowEditorStyles from './cssShadowEditor.css.js';
 
 const UIStrings = {
   /**
-  *@description Text that refers to some types
-  */
+   *@description Text that refers to some types
+   */
   type: 'Type',
   /**
-  *@description Text in CSSShadow Editor of the inline editor in the Styles tab
-  */
+   *@description Text in CSSShadow Editor of the inline editor in the Styles tab
+   */
   xOffset: 'X offset',
   /**
-  *@description Text in CSSShadow Editor of the inline editor in the Styles tab
-  */
+   *@description Text in CSSShadow Editor of the inline editor in the Styles tab
+   */
   yOffset: 'Y offset',
   /**
-  * @description Text in CSSShadow Editor of the inline editor in the Styles tab. Noun which is a
-  * label for an input that allows the user to specify how blurred the box-shadow should be.
-  */
+   * @description Text in CSSShadow Editor of the inline editor in the Styles tab. Noun which is a
+   * label for an input that allows the user to specify how blurred the box-shadow should be.
+   */
   blur: 'Blur',
   /**
-  *@description Text in CSSShadow Editor of the inline editor in the Styles tab
-  */
+   *@description Text in CSSShadow Editor of the inline editor in the Styles tab
+   */
   spread: 'Spread',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/CSSShadowEditor.ts', UIStrings);

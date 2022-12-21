@@ -13,14 +13,14 @@ import {Plugin} from './Plugin.js';
 
 const UIStrings = {
   /**
-  *@description Text in Resource Origin Plugin of the Sources panel
-  *@example {example.com} PH1
-  */
+   *@description Text in Resource Origin Plugin of the Sources panel
+   *@example {example.com} PH1
+   */
   sourceMappedFromS: '(source mapped from {PH1})',
   /**
-  *@description Text in Resource Origin Plugin of the Sources panel
-  *@example {http://localhost/file.wasm} PH1
-  */
+   *@description Text in Resource Origin Plugin of the Sources panel
+   *@example {http://localhost/file.wasm} PH1
+   */
   providedViaDebugInfoByS: '(provided via debug info by {PH1})',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ResourceOriginPlugin.ts', UIStrings);

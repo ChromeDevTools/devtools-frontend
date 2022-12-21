@@ -14,100 +14,100 @@ import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
 const UIStrings = {
   /**
-  *@description Text in Accessibility Node View of the Accessibility panel
-  */
+   *@description Text in Accessibility Node View of the Accessibility panel
+   */
   computedProperties: 'Computed Properties',
   /**
-  *@description Text in Accessibility Node View of the Accessibility panel
-  */
+   *@description Text in Accessibility Node View of the Accessibility panel
+   */
   noAccessibilityNode: 'No accessibility node',
   /**
-  *@description Text in Accessibility Node View of the Accessibility panel
-  */
+   *@description Text in Accessibility Node View of the Accessibility panel
+   */
   accessibilityNodeNotExposed: 'Accessibility node not exposed',
   /**
-  *@description Text in Accessibility Node View of the Accessibility panel
-  */
+   *@description Text in Accessibility Node View of the Accessibility panel
+   */
   invalidSource: 'Invalid source.',
   /**
-  *@description Text in Accessibility Node View of the Accessibility panel
-  */
+   *@description Text in Accessibility Node View of the Accessibility panel
+   */
   notSpecified: 'Not specified',
   /**
-  *@description Text in Accessibility Node View of the Accessibility panel
-  */
+   *@description Text in Accessibility Node View of the Accessibility panel
+   */
   noNodeWithThisId: 'No node with this ID.',
   /**
-  *@description Text which appears in the Accessibility Node View of the Accessibility panel when an element is covered by a modal/popup window
-  */
+   *@description Text which appears in the Accessibility Node View of the Accessibility panel when an element is covered by a modal/popup window
+   */
   elementIsHiddenBy: 'Element is hidden by active modal dialog:\xA0',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   ancestorChildrenAreAll: 'Ancestor\'s children are all presentational:\xA0',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
+   *@description Reason element in Accessibility Node View of the Accessibility panel
   @example {aria-hidden} PH1
-  */
+   */
   elementIsPlaceholder: 'Element is {PH1}.',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  *@example {aria-hidden} PH1
-  *@example {true} PH2
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   *@example {aria-hidden} PH1
+   *@example {true} PH2
+   */
   placeholderIsPlaceholderOnAncestor: '{PH1} is {PH2} on ancestor:\xA0',
   /**
-  *@description Text in Accessibility Node View of the Accessibility panel
-  */
+   *@description Text in Accessibility Node View of the Accessibility panel
+   */
   elementHasEmptyAltText: 'Element has empty alt text.',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   noTextContent: 'No text content.',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   elementIsInert: 'Element is `inert`.',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   elementIsInAnInertSubTree: 'Element is in an `inert` subtree from\xA0',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   elementsInheritsPresentational: 'Element inherits presentational role from\xA0',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   partOfLabelElement: 'Part of label element:\xA0',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   labelFor: 'Label for\xA0',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   elementIsNotRendered: 'Element is not rendered.',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   elementIsNotVisible: 'Element is not visible.',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel. Indicates the
-  *ARIA role for this element, which will always have the format 'role=', but with different roles
-  *(which are not translated). https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles
-  *@example {role=link} PH1
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel. Indicates the
+   *ARIA role for this element, which will always have the format 'role=', but with different roles
+   *(which are not translated). https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles
+   *@example {role=link} PH1
+   */
   elementHasPlaceholder: 'Element has {PH1}.',
   /**
-  *@description Reason element in Accessibility Node View of the Accessibility panel
-  */
+   *@description Reason element in Accessibility Node View of the Accessibility panel
+   */
   elementIsPresentational: 'Element is presentational.',
   /**
-  * @description Reason element in Accessibility Node View of the Accessibility pane. Here
-  * 'interesting' is from the perspective of the accessibility engine in Chrome. A non-interesting
-  * element doesn't have any special accessibility considerations
-  */
+   * @description Reason element in Accessibility Node View of the Accessibility pane. Here
+   * 'interesting' is from the perspective of the accessibility engine in Chrome. A non-interesting
+   * element doesn't have any special accessibility considerations
+   */
   elementNotInteresting: 'Element not interesting for accessibility.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);

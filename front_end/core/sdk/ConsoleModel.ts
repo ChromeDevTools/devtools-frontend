@@ -57,23 +57,23 @@ import {TargetManager, type Observer} from './TargetManager.js';
 
 const UIStrings = {
   /**
-  *@description Text shown when the main frame (page) of the website was navigated to a different URL.
-  *@example {https://example.com} PH1
-  */
+   *@description Text shown when the main frame (page) of the website was navigated to a different URL.
+   *@example {https://example.com} PH1
+   */
   navigatedToS: 'Navigated to {PH1}',
   /**
-  *@description Text shown in the console when a performance profile (with the given name) was started.
-  *@example {title} PH1
-  */
+   *@description Text shown in the console when a performance profile (with the given name) was started.
+   *@example {title} PH1
+   */
   profileSStarted: 'Profile \'\'{PH1}\'\' started.',
   /**
-  *@description Text shown in the console when a performance profile (with the given name) was stopped.
-  *@example {name} PH1
-  */
+   *@description Text shown in the console when a performance profile (with the given name) was stopped.
+   *@example {name} PH1
+   */
   profileSFinished: 'Profile \'\'{PH1}\'\' finished.',
   /**
-  *@description Error message shown in the console after the user tries to save a JavaScript value to a temporary variable.
-  */
+   *@description Error message shown in the console after the user tries to save a JavaScript value to a temporary variable.
+   */
   failedToSaveToTempVariable: 'Failed to save to temp variable.',
 };
 

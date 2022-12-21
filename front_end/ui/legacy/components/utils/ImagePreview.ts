@@ -12,13 +12,13 @@ import imagePreviewStyles from './imagePreview.css.js';
 
 const UIStrings = {
   /**
-  *@description Alt text description of an image's source
-  */
+   *@description Alt text description of an image's source
+   */
   unknownSource: 'unknown source',
   /**
-  *@description Text to indicate the source of an image
-  *@example {example.com} PH1
-  */
+   *@description Text to indicate the source of an image
+   *@example {example.com} PH1
+   */
   imageFromS: 'Image from {PH1}',
   /**
    * @description Title of the row that shows the file size of an image.

@@ -14,16 +14,16 @@ import * as Components from './components/components.js';
 
 const UIStrings = {
   /**
-    * @description Menu entry for hiding all current Page Errors.
-    */
+   * @description Menu entry for hiding all current Page Errors.
+   */
   hideAllCurrentPageErrors: 'Hide all current Page Errors',
   /**
-    * @description Menu entry for hiding all current Breaking Changes.
-    */
+   * @description Menu entry for hiding all current Breaking Changes.
+   */
   hideAllCurrentBreakingChanges: 'Hide all current Breaking Changes',
   /**
-    * @description Menu entry for hiding all current Page Errors.
-    */
+   * @description Menu entry for hiding all current Page Errors.
+   */
   hideAllCurrentImprovements: 'Hide all current Improvements',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueKindView.ts', UIStrings);

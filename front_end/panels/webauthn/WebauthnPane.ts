@@ -14,130 +14,130 @@ import webauthnPaneStyles from './webauthnPane.css.js';
 
 const UIStrings = {
   /**
-  *@description Label for button that allows user to download the private key related to a credential.
-  */
+   *@description Label for button that allows user to download the private key related to a credential.
+   */
   export: 'Export',
   /**
-  *@description Label for an item to remove something
-  */
+   *@description Label for an item to remove something
+   */
   remove: 'Remove',
   /**
-  *@description Label for empty credentials table.
-  *@example {navigator.credentials.create()} PH1
-  */
+   *@description Label for empty credentials table.
+   *@example {navigator.credentials.create()} PH1
+   */
   noCredentialsTryCallingSFromYour: 'No credentials. Try calling {PH1} from your website.',
   /**
-  *@description Label for checkbox to toggle the virtual authenticator environment allowing user to interact with software-based virtual authenticators.
-  */
+   *@description Label for checkbox to toggle the virtual authenticator environment allowing user to interact with software-based virtual authenticators.
+   */
   enableVirtualAuthenticator: 'Enable virtual authenticator environment',
   /**
-  *@description Label for ID field for credentials.
-  */
+   *@description Label for ID field for credentials.
+   */
   id: 'ID',
   /**
-  *@description Label for field that describes whether a credential is a resident credential.
-  */
+   *@description Label for field that describes whether a credential is a resident credential.
+   */
   isResident: 'Is Resident',
   /**
-  *@description Label for credential field that represents the Relying Party ID that the credential is scoped to.
-  */
+   *@description Label for credential field that represents the Relying Party ID that the credential is scoped to.
+   */
   rpId: 'RP ID',
   /**
-  *@description Label for a column in a table. A field/unique ID that represents the user a credential is mapped to.
-  */
+   *@description Label for a column in a table. A field/unique ID that represents the user a credential is mapped to.
+   */
   userHandle: 'User Handle',
   /**
-  *@description Label for signature counter field for credentials which represents the number of successful assertions.
-  * See https://w3c.github.io/webauthn/#signature-counter.
-  */
+   *@description Label for signature counter field for credentials which represents the number of successful assertions.
+   * See https://w3c.github.io/webauthn/#signature-counter.
+   */
   signCount: 'Signature Count',
   /**
-  *@description Label for column with actions for credentials.
-  */
+   *@description Label for column with actions for credentials.
+   */
   actions: 'Actions',
   /**
-  *@description Title for the table that holds the credentials that a authenticator has registered.
-  */
+   *@description Title for the table that holds the credentials that a authenticator has registered.
+   */
   credentials: 'Credentials',
   /**
-  *@description Label for the learn more link that is shown before the virtual environment is enabled.
-  */
+   *@description Label for the learn more link that is shown before the virtual environment is enabled.
+   */
   useWebauthnForPhishingresistant: 'Use WebAuthn for phishing-resistant authentication',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Title for section of interface that allows user to add a new virtual authenticator.
-  */
+   *@description Title for section of interface that allows user to add a new virtual authenticator.
+   */
   newAuthenticator: 'New authenticator',
   /**
-  *@description Text for security or network protocol
-  */
+   *@description Text for security or network protocol
+   */
   protocol: 'Protocol',
   /**
-  *@description Label for input to select which transport option to use on virtual authenticators, e.g. USB or Bluetooth.
-  */
+   *@description Label for input to select which transport option to use on virtual authenticators, e.g. USB or Bluetooth.
+   */
   transport: 'Transport',
   /**
-  *@description Label for checkbox that toggles resident key support on virtual authenticators.
-  */
+   *@description Label for checkbox that toggles resident key support on virtual authenticators.
+   */
   supportsResidentKeys: 'Supports resident keys',
   /**
-  *@description Label for checkbox that toggles large blob support on virtual authenticators. Large blobs are opaque data associated
-  * with a WebAuthn credential that a website can store, like an SSH certificate or a symmetric encryption key.
-  * See https://w3c.github.io/webauthn/#sctn-large-blob-extension
-  */
+   *@description Label for checkbox that toggles large blob support on virtual authenticators. Large blobs are opaque data associated
+   * with a WebAuthn credential that a website can store, like an SSH certificate or a symmetric encryption key.
+   * See https://w3c.github.io/webauthn/#sctn-large-blob-extension
+   */
   supportsLargeBlob: 'Supports large blob',
   /**
-  *@description Text to add something
-  */
+   *@description Text to add something
+   */
   add: 'Add',
   /**
-  *@description Label for button to add a new virtual authenticator.
-  */
+   *@description Label for button to add a new virtual authenticator.
+   */
   addAuthenticator: 'Add authenticator',
   /**
-  *@description Label for radio button that toggles whether an authenticator is active.
-  */
+   *@description Label for radio button that toggles whether an authenticator is active.
+   */
   active: 'Active',
   /**
-  *@description Title for button that enables user to customize name of authenticator.
-  */
+   *@description Title for button that enables user to customize name of authenticator.
+   */
   editName: 'Edit name',
   /**
-  *@description Title for button that enables user to save name of authenticator after editing it.
-  */
+   *@description Title for button that enables user to save name of authenticator after editing it.
+   */
   saveName: 'Save name',
   /**
-  *@description Title for a user-added virtual authenticator which is uniquely identified with its AUTHENTICATORID.
-  *@example {8c7873be-0b13-4996-a794-1521331bbd96} PH1
-  */
+   *@description Title for a user-added virtual authenticator which is uniquely identified with its AUTHENTICATORID.
+   *@example {8c7873be-0b13-4996-a794-1521331bbd96} PH1
+   */
   authenticatorS: 'Authenticator {PH1}',
   /**
-  *@description Name for generated file which user can download. A private key is a secret code which enables encoding and decoding of a credential. .pem is the file extension.
-  */
+   *@description Name for generated file which user can download. A private key is a secret code which enables encoding and decoding of a credential. .pem is the file extension.
+   */
   privateKeypem: 'Private key.pem',
   /**
-  *@description Label for field that holds an authenticator's universally unique identifier (UUID).
-  */
+   *@description Label for field that holds an authenticator's universally unique identifier (UUID).
+   */
   uuid: 'UUID',
   /**
-  *@description Label for checkbox that toggles user verification support on virtual authenticators.
-  */
+   *@description Label for checkbox that toggles user verification support on virtual authenticators.
+   */
   supportsUserVerification: 'Supports user verification',
   /**
-  *@description Text in Timeline indicating that input has happened recently
-  */
+   *@description Text in Timeline indicating that input has happened recently
+   */
   yes: 'Yes',
   /**
-  *@description Text in Timeline indicating that input has not happened recently
-  */
+   *@description Text in Timeline indicating that input has not happened recently
+   */
   no: 'No',
   /**
-  *@description Title of radio button that sets an authenticator as active.
-  *@example {Authenticator ABCDEF} PH1
-  */
+   *@description Title of radio button that sets an authenticator as active.
+   *@example {Authenticator ABCDEF} PH1
+   */
   setSAsTheActiveAuthenticator: 'Set {PH1} as the active authenticator',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/webauthn/WebauthnPane.ts', UIStrings);

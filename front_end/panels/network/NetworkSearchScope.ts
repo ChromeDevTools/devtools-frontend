@@ -13,8 +13,8 @@ import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 const UIStrings = {
   /**
-  *@description Text for web URLs
-  */
+   *@description Text for web URLs
+   */
   url: 'URL',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkSearchScope.ts', UIStrings);

@@ -10,22 +10,22 @@ import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-  * @description Text shown in the console object preview. Shown when the user is inspecting a
-  * JavaScript object and there are multiple empty properties on the object (x =
-  * 'times'/'multiply').
-  * @example {3} PH1
-  */
+   * @description Text shown in the console object preview. Shown when the user is inspecting a
+   * JavaScript object and there are multiple empty properties on the object (x =
+   * 'times'/'multiply').
+   * @example {3} PH1
+   */
   emptyD: 'empty × {PH1}',
   /**
-  * @description Shown when the user is inspecting a JavaScript object in the console and there is
-  * an empty property on the object..
-  */
+   * @description Shown when the user is inspecting a JavaScript object in the console and there is
+   * an empty property on the object..
+   */
   empty: 'empty',
   /**
-  * @description Text shown when the user is inspecting a JavaScript object, but of the properties
-  * is not immediately available because it is a JavaScript 'getter' function, which means we have
-  * to run some code first in order to compute this property.
-  */
+   * @description Text shown when the user is inspecting a JavaScript object, but of the properties
+   * is not immediately available because it is a JavaScript 'getter' function, which means we have
+   * to run some code first in order to compute this property.
+   */
   thePropertyIsComputedWithAGetter: 'The property is computed with a getter',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts', UIStrings);

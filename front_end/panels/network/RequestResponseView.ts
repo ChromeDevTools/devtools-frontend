@@ -37,12 +37,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text in Request Response View of the Network panel
-  */
+   *@description Text in Request Response View of the Network panel
+   */
   thisRequestHasNoResponseData: 'This request has no response data available.',
   /**
-  *@description Text in Request Preview View of the Network panel
-  */
+   *@description Text in Request Preview View of the Network panel
+   */
   failedToLoadResponseData: 'Failed to load response data',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestResponseView.ts', UIStrings);

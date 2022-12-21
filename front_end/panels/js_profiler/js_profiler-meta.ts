@@ -10,40 +10,40 @@ import type * as Timeline from '../timeline/timeline.js';
 
 const UIStrings = {
   /**
-  *@description Title of the Profiler tool
-  */
+   *@description Title of the Profiler tool
+   */
   profiler: 'Profiler',
   /**
-  *@description Command for showing the Profiler tool
-  */
+   *@description Command for showing the Profiler tool
+   */
   showProfiler: 'Show Profiler',
   /**
-  *@description Text for the performance of something
-  */
+   *@description Text for the performance of something
+   */
   performance: 'Performance',
   /**
-  *@description Command for showing the 'Performance' tool
-  */
+   *@description Command for showing the 'Performance' tool
+   */
   showPerformance: 'Show Performance',
   /**
-  *@description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
-  */
+   *@description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
+   */
   startStopRecording: 'Start/stop recording',
   /**
-  *@description Title of an action in the timeline tool to show history
-  */
+   *@description Title of an action in the timeline tool to show history
+   */
   showRecentTimelineSessions: 'Show recent timeline sessions',
   /**
-  *@description Text to record a series of actions for analysis
-  */
+   *@description Text to record a series of actions for analysis
+   */
   record: 'Record',
   /**
-  *@description Text of an item that stops the running task
-  */
+   *@description Text of an item that stops the running task
+   */
   stop: 'Stop',
   /**
-  *@description Title of an action in the timeline tool to record reload
-  */
+   *@description Title of an action in the timeline tool to record reload
+   */
   startProfilingAndReloadPage: 'Start profiling and reload page',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/js_profiler/js_profiler-meta.ts', UIStrings);

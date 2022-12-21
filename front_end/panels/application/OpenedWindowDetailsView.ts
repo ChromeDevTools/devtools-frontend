@@ -12,77 +12,77 @@ import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
 
 const UIStrings = {
   /**
-  *@description Text in Timeline indicating that input has happened recently
-  */
+   *@description Text in Timeline indicating that input has happened recently
+   */
   yes: 'Yes',
   /**
-  *@description Text in Timeline indicating that input has not happened recently
-  */
+   *@description Text in Timeline indicating that input has not happened recently
+   */
   no: 'No',
   /**
-  *@description Title for a link to the Elements panel
-  */
+   *@description Title for a link to the Elements panel
+   */
   clickToRevealInElementsPanel: 'Click to reveal in Elements panel',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   document: 'Document',
   /**
-  *@description Text for web URLs
-  */
+   *@description Text for web URLs
+   */
   url: 'URL',
   /**
-  *@description Title of the 'Security' tool
-  */
+   *@description Title of the 'Security' tool
+   */
   security: 'Security',
   /**
-  *@description Label for link to Opener Frame in Detail View for Opened Window
-  */
+   *@description Label for link to Opener Frame in Detail View for Opened Window
+   */
   openerFrame: 'Opener Frame',
   /**
-  *@description Label in opened window's details view whether window has access to its opener
-  */
+   *@description Label in opened window's details view whether window has access to its opener
+   */
   accessToOpener: 'Access to opener',
   /**
-  *@description Description for the 'Access to Opener' field
-  */
+   *@description Description for the 'Access to Opener' field
+   */
   showsWhetherTheOpenedWindowIs: 'Shows whether the opened window is able to access its opener and vice versa',
   /**
-  *@description Text in Frames View of the Application panel
-  */
+   *@description Text in Frames View of the Application panel
+   */
   windowWithoutTitle: 'Window without title',
   /**
-  *@description Label suffix in the Application Panel Frames section for windows which are already closed
-  */
+   *@description Label suffix in the Application Panel Frames section for windows which are already closed
+   */
   closed: 'closed',
   /**
-  *@description Default name for worker
-  */
+   *@description Default name for worker
+   */
   worker: 'worker',
   /**
-  *@description Text that refers to some types
-  */
+   *@description Text that refers to some types
+   */
   type: 'Type',
   /**
-  *@description Section header in the Frame Details view
-  */
+   *@description Section header in the Frame Details view
+   */
   securityIsolation: 'Security & Isolation',
   /**
-  *@description Row title in the Frame Details view
-  */
+   *@description Row title in the Frame Details view
+   */
   crossoriginEmbedderPolicy: 'Cross-Origin Embedder Policy',
   /**
-  *@description Label for worker type: web worker
-  */
+   *@description Label for worker type: web worker
+   */
   webWorker: 'Web Worker',
   /**
-  *@description Text for an unspecified service worker response source
-  */
+   *@description Text for an unspecified service worker response source
+   */
   unknown: 'Unknown',
   /**
-  *@description This label specifies the server endpoints to which the server is reporting errors
-  *and warnings through the Report-to API. Following this label will be the URL of the server.
-  */
+   *@description This label specifies the server endpoints to which the server is reporting errors
+   *and warnings through the Report-to API. Following this label will be the URL of the server.
+   */
   reportingTo: 'reporting to',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/OpenedWindowDetailsView.ts', UIStrings);

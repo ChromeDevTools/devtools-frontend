@@ -12,69 +12,69 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text in Throttling Settings Tab of the Network panel
-  */
+   *@description Text in Throttling Settings Tab of the Network panel
+   */
   networkThrottlingProfiles: 'Network Throttling Profiles',
   /**
-  *@description Text of add conditions button in Throttling Settings Tab of the Network panel
-  */
+   *@description Text of add conditions button in Throttling Settings Tab of the Network panel
+   */
   addCustomProfile: 'Add custom profile...',
   /**
-  *@description A value in milliseconds
-  *@example {3} PH1
-  */
+   *@description A value in milliseconds
+   *@example {3} PH1
+   */
   dms: '{PH1} `ms`',
   /**
-  *@description Text in Throttling Settings Tab of the Network panel
-  */
+   *@description Text in Throttling Settings Tab of the Network panel
+   */
   profileName: 'Profile Name',
   /**
-  * @description Label for a textbox that sets the download speed in the Throttling Settings Tab.
-  * Noun, short for 'download speed'.
-  */
+   * @description Label for a textbox that sets the download speed in the Throttling Settings Tab.
+   * Noun, short for 'download speed'.
+   */
   download: 'Download',
   /**
-  * @description Label for a textbox that sets the upload speed in the Throttling Settings Tab.
-  * Noun, short for 'upload speed'.
-  */
+   * @description Label for a textbox that sets the upload speed in the Throttling Settings Tab.
+   * Noun, short for 'upload speed'.
+   */
   upload: 'Upload',
   /**
-  * @description Label for a textbox that sets the latency in the Throttling Settings Tab.
-  */
+   * @description Label for a textbox that sets the latency in the Throttling Settings Tab.
+   */
   latency: 'Latency',
   /**
-  *@description Text in Throttling Settings Tab of the Network panel
-  */
+   *@description Text in Throttling Settings Tab of the Network panel
+   */
   optional: 'optional',
   /**
-  *@description Error message for Profile Name input in Throtting pane of the Settings
-  *@example {49} PH1
-  */
+   *@description Error message for Profile Name input in Throtting pane of the Settings
+   *@example {49} PH1
+   */
   profileNameCharactersLengthMust: 'Profile Name characters length must be between 1 to {PH1} inclusive',
   /**
-  *@description Error message for Download and Upload inputs in Throttling pane of the Settings
-  *@example {Download} PH1
-  *@example {0} PH2
-  *@example {10000000} PH3
-  */
+   *@description Error message for Download and Upload inputs in Throttling pane of the Settings
+   *@example {Download} PH1
+   *@example {0} PH2
+   *@example {10000000} PH3
+   */
   sMustBeANumberBetweenSkbsToSkbs: '{PH1} must be a number between {PH2} `kbit/s` to {PH3} `kbit/s` inclusive',
   /**
-  *@description Error message for Latency input in Throttling pane of the Settings
-  *@example {0} PH1
-  *@example {1000000} PH2
-  */
+   *@description Error message for Latency input in Throttling pane of the Settings
+   *@example {0} PH1
+   *@example {1000000} PH2
+   */
   latencyMustBeAnIntegerBetweenSms: 'Latency must be an integer between {PH1} `ms` to {PH2} `ms` inclusive',
   /**
-  * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
-  * upload speed that will be applied in kilobits per second.
-  * @example {25} PH1
-  */
+   * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
+   * upload speed that will be applied in kilobits per second.
+   * @example {25} PH1
+   */
   dskbits: '{PH1} `kbit/s`',
   /**
-  * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
-  * upload speed that will be applied in megabits per second.
-  * @example {25.4} PH1
-  */
+   * @description Text in Throttling Settings Tab of the Network panel, indicating the download or
+   * upload speed that will be applied in megabits per second.
+   * @example {25.4} PH1
+   */
   fsmbits: '{PH1} `Mbit/s`',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);

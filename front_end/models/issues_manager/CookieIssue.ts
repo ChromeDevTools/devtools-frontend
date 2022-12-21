@@ -18,16 +18,16 @@ import {
 
 const UIStrings = {
   /**
-  *@description Label for the link for SameSiteCookies Issues
-  */
+   *@description Label for the link for SameSiteCookies Issues
+   */
   samesiteCookiesExplained: 'SameSite cookies explained',
   /**
-  *@description Label for the link for Schemeful Same-Site Issues
-  */
+   *@description Label for the link for Schemeful Same-Site Issues
+   */
   howSchemefulSamesiteWorks: 'How Schemeful Same-Site Works',
   /**
-  *@description Phrase used to describe the security of a context. Substitued like 'a secure context' or 'a secure origin'.
-  */
+   *@description Phrase used to describe the security of a context. Substitued like 'a secure context' or 'a secure origin'.
+   */
   aSecure: 'a secure',  // eslint-disable-line rulesdir/l10n_no_unused_message
   /**
    * @description Phrase used to describe the security of a context. Substitued like 'an insecure context' or 'an insecure origin'.

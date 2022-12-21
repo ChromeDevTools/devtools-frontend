@@ -23,8 +23,8 @@ import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 const UIStrings = {
   /**
-  *@description Error message that shows up in the console if a buffer to be opened in the linear memory inspector cannot be found.
-  */
+   *@description Error message that shows up in the console if a buffer to be opened in the linear memory inspector cannot be found.
+   */
   couldNotOpenLinearMemory: 'Could not open linear memory inspector: failed locating buffer.',
 };
 const str_ =

@@ -14,25 +14,25 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 
 const UIStrings = {
   /**
-  *@description Text in Timeline Loader of the Performance panel
-  */
+   *@description Text in Timeline Loader of the Performance panel
+   */
   malformedTimelineDataUnknownJson: 'Malformed timeline data: Unknown JSON format',
   /**
-  *@description Text in Timeline Loader of the Performance panel
-  */
+   *@description Text in Timeline Loader of the Performance panel
+   */
   malformedTimelineInputWrongJson: 'Malformed timeline input, wrong JSON brackets balance',
   /**
-  *@description Text in Timeline Loader of the Performance panel
-  *@example {Unknown JSON format} PH1
-  */
+   *@description Text in Timeline Loader of the Performance panel
+   *@example {Unknown JSON format} PH1
+   */
   malformedTimelineDataS: 'Malformed timeline data: {PH1}',
   /**
-  *@description Text in Timeline Loader of the Performance panel
-  */
+   *@description Text in Timeline Loader of the Performance panel
+   */
   legacyTimelineFormatIsNot: 'Legacy Timeline format is not supported.',
   /**
-  *@description Text in Timeline Loader of the Performance panel
-  */
+   *@description Text in Timeline Loader of the Performance panel
+   */
   malformedCpuProfileFormat: 'Malformed CPU profile format',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineLoader.ts', UIStrings);

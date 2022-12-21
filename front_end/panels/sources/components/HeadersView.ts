@@ -15,31 +15,31 @@ import HeadersViewStyles from './HeadersView.css.js';
 
 const UIStrings = {
   /**
-  *@description The title of a button that adds a field to input a header in the editor form.
-  */
+   *@description The title of a button that adds a field to input a header in the editor form.
+   */
   addHeader: 'Add a header',
   /**
-  *@description The title of a button that removes a field to input a header in the editor form.
-  */
+   *@description The title of a button that removes a field to input a header in the editor form.
+   */
   removeHeader: 'Remove this header',
   /**
-  *@description The title of a button that removes a section for defining header overrides in the editor form.
-  */
+   *@description The title of a button that removes a section for defining header overrides in the editor form.
+   */
   removeBlock: 'Remove this \'`ApplyTo`\'-section',
   /**
-  *@description Error message for files which cannot not be parsed.
-  *@example {.headers} PH1
-  */
+   *@description Error message for files which cannot not be parsed.
+   *@example {.headers} PH1
+   */
   errorWhenParsing: 'Error when parsing \'\'{PH1}\'\'.',
   /**
-  *@description Explainer for files which cannot be parsed.
-  *@example {.headers} PH1
-  */
+   *@description Explainer for files which cannot be parsed.
+   *@example {.headers} PH1
+   */
   parsingErrorExplainer:
       'This is most likely due to a syntax error in \'\'{PH1}\'\'. Try opening this file in an external editor to fix the error or delete the file and re-create the override.',
   /**
-  *@description Button text for a button which adds an additional header override rule.
-  */
+   *@description Button text for a button which adds an additional header override rule.
+   */
   addOverrideRule: 'Add override rule',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.ts', UIStrings);

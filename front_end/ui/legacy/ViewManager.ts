@@ -33,9 +33,9 @@ import viewContainersStyles from './viewContainers.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Aria label for the tab panel view container
-  *@example {Sensors} PH1
-  */
+   *@description Aria label for the tab panel view container
+   *@example {Sensors} PH1
+   */
   sPanel: '{PH1} panel',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ViewManager.ts', UIStrings);

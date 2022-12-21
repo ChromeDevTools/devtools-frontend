@@ -41,32 +41,32 @@ import * as UI from '../../legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text in Linkifier
-  */
+   *@description Text in Linkifier
+   */
   unknown: '(unknown)',
   /**
-  *@description Text short for automatic
-  */
+   *@description Text short for automatic
+   */
   auto: 'auto',
   /**
-  *@description Text in Linkifier
-  *@example {Sources panel} PH1
-  */
+   *@description Text in Linkifier
+   *@example {Sources panel} PH1
+   */
   revealInS: 'Reveal in {PH1}',
   /**
-  *@description Text for revealing an item in its destination
-  */
+   *@description Text for revealing an item in its destination
+   */
   reveal: 'Reveal',
   /**
-  *@description A context menu item in the Linkifier
-  *@example {Extension} PH1
-  */
+   *@description A context menu item in the Linkifier
+   *@example {Extension} PH1
+   */
   openUsingS: 'Open using {PH1}',
   /**
-  * @description The name of a setting which controls how links are handled in the UI. 'Handling'
-  * refers to the ability of extensions to DevTools to be able to intercept link clicks so that they
-  * can react to them.
-  */
+   * @description The name of a setting which controls how links are handled in the UI. 'Handling'
+   * refers to the ability of extensions to DevTools to be able to intercept link clicks so that they
+   * can react to them.
+   */
   linkHandling: 'Link handling:',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/Linkifier.ts', UIStrings);

@@ -10,8 +10,8 @@ import cssHintDetailsViewStyles from './cssHintDetailsView.css.js';
 
 const UIStrings = {
   /**
-    *@description Text for button that redirects to CSS property documentation.
-    */
+   *@description Text for button that redirects to CSS property documentation.
+   */
     learnMore: 'Learn More',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSHintDetailsView.ts', UIStrings);

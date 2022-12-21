@@ -15,8 +15,8 @@ const LINES_TO_SCAN_FOR_INDENTATION_GUESSING = 1000;
 
 const UIStrings = {
   /**
-  *@description Label text for the editor
-  */
+   *@description Label text for the editor
+   */
   codeEditor: 'Code editor',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/text_editor/config.ts', UIStrings);

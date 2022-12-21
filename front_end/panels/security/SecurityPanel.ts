@@ -26,439 +26,439 @@ import {
 
 const UIStrings = {
   /**
-  *@description Title text content in Security Panel of the Security panel
-  */
+   *@description Title text content in Security Panel of the Security panel
+   */
   overview: 'Overview',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   mainOrigin: 'Main origin',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   nonsecureOrigins: 'Non-secure origins',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   secureOrigins: 'Secure origins',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   unknownCanceled: 'Unknown / canceled',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   reloadToViewDetails: 'Reload to view details',
   /**
-  *@description New parent title in Security Panel of the Security panel
-  */
+   *@description New parent title in Security Panel of the Security panel
+   */
   mainOriginSecure: 'Main origin (secure)',
   /**
-  *@description New parent title in Security Panel of the Security panel
-  */
+   *@description New parent title in Security Panel of the Security panel
+   */
   mainOriginNonsecure: 'Main origin (non-secure)',
   /**
-  *@description Summary div text content in Security Panel of the Security panel
-  */
+   *@description Summary div text content in Security Panel of the Security panel
+   */
   securityOverview: 'Security overview',
   /**
-  *@description Text to show something is secure
-  */
+   *@description Text to show something is secure
+   */
   secure: 'Secure',
   /**
-  *@description Sdk console message message level info of level Labels in Console View of the Console panel
-  */
+   *@description Sdk console message message level info of level Labels in Console View of the Console panel
+   */
   info: 'Info',
   /**
-  *@description Not secure div text content in Security Panel of the Security panel
-  */
+   *@description Not secure div text content in Security Panel of the Security panel
+   */
   notSecure: 'Not secure',
   /**
-  *@description Text to view a security certificate
-  */
+   *@description Text to view a security certificate
+   */
   viewCertificate: 'View certificate',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   notSecureBroken: 'Not secure (broken)',
   /**
-  *@description Main summary for page when it has been deemed unsafe by the SafeBrowsing service.
-  */
+   *@description Main summary for page when it has been deemed unsafe by the SafeBrowsing service.
+   */
   thisPageIsDangerousFlaggedBy: 'This page is dangerous (flagged by Google Safe Browsing).',
   /**
-  *@description Summary phrase for a security problem where the site is deemed unsafe by the SafeBrowsing service.
-  */
+   *@description Summary phrase for a security problem where the site is deemed unsafe by the SafeBrowsing service.
+   */
   flaggedByGoogleSafeBrowsing: 'Flagged by Google Safe Browsing',
   /**
-  *@description Description of a security problem where the site is deemed unsafe by the SafeBrowsing service.
-  */
+   *@description Description of a security problem where the site is deemed unsafe by the SafeBrowsing service.
+   */
   toCheckThisPagesStatusVisit: 'To check this page\'s status, visit g.co/safebrowsingstatus.',
   /**
-  *@description Main summary for a non cert error page.
-  */
+   *@description Main summary for a non cert error page.
+   */
   thisIsAnErrorPage: 'This is an error page.',
   /**
-  *@description Main summary for where the site is non-secure HTTP.
-  */
+   *@description Main summary for where the site is non-secure HTTP.
+   */
   thisPageIsInsecureUnencrypted: 'This page is insecure (unencrypted HTTP).',
   /**
-  *@description Main summary for where the site has a non-cryptographic secure origin.
-  */
+   *@description Main summary for where the site has a non-cryptographic secure origin.
+   */
   thisPageHasANonhttpsSecureOrigin: 'This page has a non-HTTPS secure origin.',
   /**
-  *@description Message to display in devtools security tab when the page you are on triggered a safety tip.
-  */
+   *@description Message to display in devtools security tab when the page you are on triggered a safety tip.
+   */
   thisPageIsSuspicious: 'This page is suspicious',
   /**
-  *@description Body of message to display in devtools security tab when you are viewing a page that triggered a safety tip.
-  */
+   *@description Body of message to display in devtools security tab when you are viewing a page that triggered a safety tip.
+   */
   chromeHasDeterminedThatThisSiteS: 'Chrome has determined that this site could be fake or fraudulent.',
   /**
-  *@description Second part of the body of message to display in devtools security tab when you are viewing a page that triggered a safety tip.
-  */
+   *@description Second part of the body of message to display in devtools security tab when you are viewing a page that triggered a safety tip.
+   */
   ifYouBelieveThisIsShownIn:
       'If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings.',
   /**
-  *@description Summary of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
-  */
+   *@description Summary of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
+   */
   possibleSpoofingUrl: 'Possible spoofing URL',
   /**
-  *@description Body of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
-  *@example {wikipedia.org} PH1
-  */
+   *@description Body of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
+   *@example {wikipedia.org} PH1
+   */
   thisSitesHostnameLooksSimilarToP:
       'This site\'s hostname looks similar to {PH1}. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name.',
   /**
-  *@description second part of body of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
-  */
+   *@description second part of body of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
+   */
   ifYouBelieveThisIsShownInErrorSafety:
       'If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings.',
   /**
-  *@description Title of the devtools security tab when the page you are on triggered a safety tip.
-  */
+   *@description Title of the devtools security tab when the page you are on triggered a safety tip.
+   */
   thisPageIsSuspiciousFlaggedBy: 'This page is suspicious (flagged by Chrome).',
   /**
-  *@description Text for a security certificate
-  */
+   *@description Text for a security certificate
+   */
   certificate: 'Certificate',
   /**
-  *@description Summary phrase for a security problem where the site's certificate chain contains a SHA1 signature.
-  */
+   *@description Summary phrase for a security problem where the site's certificate chain contains a SHA1 signature.
+   */
   insecureSha: 'insecure (SHA-1)',
   /**
-  *@description Description of a security problem where the site's certificate chain contains a SHA1 signature.
-  */
+   *@description Description of a security problem where the site's certificate chain contains a SHA1 signature.
+   */
   theCertificateChainForThisSite: 'The certificate chain for this site contains a certificate signed using SHA-1.',
   /**
-  *@description Summary phrase for a security problem where the site's certificate is missing a subjectAltName extension.
-  */
+   *@description Summary phrase for a security problem where the site's certificate is missing a subjectAltName extension.
+   */
   subjectAlternativeNameMissing: '`Subject Alternative Name` missing',
   /**
-  *@description Description of a security problem where the site's certificate is missing a subjectAltName extension.
-  */
+   *@description Description of a security problem where the site's certificate is missing a subjectAltName extension.
+   */
   theCertificateForThisSiteDoesNot:
       'The certificate for this site does not contain a `Subject Alternative Name` extension containing a domain name or IP address.',
   /**
-  *@description Summary phrase for a security problem with the site's certificate.
-  */
+   *@description Summary phrase for a security problem with the site's certificate.
+   */
   missing: 'missing',
   /**
-  *@description Description of a security problem with the site's certificate.
-  *@example {net::ERR_CERT_AUTHORITY_INVALID} PH1
-  */
+   *@description Description of a security problem with the site's certificate.
+   *@example {net::ERR_CERT_AUTHORITY_INVALID} PH1
+   */
   thisSiteIsMissingAValidTrusted: 'This site is missing a valid, trusted certificate ({PH1}).',
   /**
-  *@description Summary phrase for a site that has a valid server certificate.
-  */
+   *@description Summary phrase for a site that has a valid server certificate.
+   */
   validAndTrusted: 'valid and trusted',
   /**
-  *@description Description of a site that has a valid server certificate.
-  *@example {Let's Encrypt Authority X3} PH1
-  */
+   *@description Description of a site that has a valid server certificate.
+   *@example {Let's Encrypt Authority X3} PH1
+   */
   theConnectionToThisSiteIsUsingA:
       'The connection to this site is using a valid, trusted server certificate issued by {PH1}.',
   /**
-  *@description Summary phrase for a security state where Private Key Pinning is ignored because the certificate chains to a locally-trusted root.
-  */
+   *@description Summary phrase for a security state where Private Key Pinning is ignored because the certificate chains to a locally-trusted root.
+   */
   publickeypinningBypassed: 'Public-Key-Pinning bypassed',
   /**
-  *@description Description of a security state where Private Key Pinning is ignored because the certificate chains to a locally-trusted root.
-  */
+   *@description Description of a security state where Private Key Pinning is ignored because the certificate chains to a locally-trusted root.
+   */
   publickeypinningWasBypassedByA: 'Public-Key-Pinning was bypassed by a local root certificate.',
   /**
-  *@description Summary phrase for a site with a certificate that is expiring soon.
-  */
+   *@description Summary phrase for a site with a certificate that is expiring soon.
+   */
   certificateExpiresSoon: 'Certificate expires soon',
   /**
-  *@description Description for a site with a certificate that is expiring soon.
-  */
+   *@description Description for a site with a certificate that is expiring soon.
+   */
   theCertificateForThisSiteExpires:
       'The certificate for this site expires in less than 48 hours and needs to be renewed.',
   /**
-  *@description Text that refers to the network connection
-  */
+   *@description Text that refers to the network connection
+   */
   connection: 'Connection',
   /**
-  *@description Summary phrase for a site that uses a modern, secure TLS protocol and cipher.
-  */
+   *@description Summary phrase for a site that uses a modern, secure TLS protocol and cipher.
+   */
   secureConnectionSettings: 'secure connection settings',
   /**
-  *@description Description of a site's TLS settings.
-  *@example {TLS 1.2} PH1
-  *@example {ECDHE_RSA} PH2
-  *@example {AES_128_GCM} PH3
-  */
+   *@description Description of a site's TLS settings.
+   *@example {TLS 1.2} PH1
+   *@example {ECDHE_RSA} PH2
+   *@example {AES_128_GCM} PH3
+   */
   theConnectionToThisSiteIs:
       'The connection to this site is encrypted and authenticated using {PH1}, {PH2}, and {PH3}.',
   /**
-  *@description A recommendation to the site owner to use a modern TLS protocol
-  *@example {TLS 1.0} PH1
-  */
+   *@description A recommendation to the site owner to use a modern TLS protocol
+   *@example {TLS 1.0} PH1
+   */
   sIsObsoleteEnableTlsOrLater: '{PH1} is obsolete. Enable TLS 1.2 or later.',
   /**
-  *@description A recommendation to the site owner to use a modern TLS key exchange
-  */
+   *@description A recommendation to the site owner to use a modern TLS key exchange
+   */
   rsaKeyExchangeIsObsoleteEnableAn: 'RSA key exchange is obsolete. Enable an ECDHE-based cipher suite.',
   /**
-  *@description A recommendation to the site owner to use a modern TLS cipher
-  *@example {3DES_EDE_CBC} PH1
-  */
+   *@description A recommendation to the site owner to use a modern TLS cipher
+   *@example {3DES_EDE_CBC} PH1
+   */
   sIsObsoleteEnableAnAesgcmbased: '{PH1} is obsolete. Enable an AES-GCM-based cipher suite.',
   /**
-  *@description A recommendation to the site owner to use a modern TLS server signature
-  */
+   *@description A recommendation to the site owner to use a modern TLS server signature
+   */
   theServerSignatureUsesShaWhichIs:
       'The server signature uses SHA-1, which is obsolete. Enable a SHA-2 signature algorithm instead. (Note this is different from the signature in the certificate.)',
   /**
-  *@description Summary phrase for a site that uses an outdated SSL settings (protocol, key exchange, or cipher).
-  */
+   *@description Summary phrase for a site that uses an outdated SSL settings (protocol, key exchange, or cipher).
+   */
   obsoleteConnectionSettings: 'obsolete connection settings',
   /**
-  *@description A title of the 'Resources' action category
-  */
+   *@description A title of the 'Resources' action category
+   */
   resources: 'Resources',
   /**
-  *@description Summary for page when there is active mixed content
-  */
+   *@description Summary for page when there is active mixed content
+   */
   activeMixedContent: 'active mixed content',
   /**
-  *@description Description for page when there is active mixed content
-  */
+   *@description Description for page when there is active mixed content
+   */
   youHaveRecentlyAllowedNonsecure:
       'You have recently allowed non-secure content (such as scripts or iframes) to run on this site.',
   /**
-  *@description Summary for page when there is mixed content
-  */
+   *@description Summary for page when there is mixed content
+   */
   mixedContent: 'mixed content',
   /**
-  *@description Description for page when there is mixed content
-  */
+   *@description Description for page when there is mixed content
+   */
   thisPageIncludesHttpResources: 'This page includes HTTP resources.',
   /**
-  *@description Summary for page when there is a non-secure form
-  */
+   *@description Summary for page when there is a non-secure form
+   */
   nonsecureForm: 'non-secure form',
   /**
-  *@description Description for page when there is a non-secure form
-  */
+   *@description Description for page when there is a non-secure form
+   */
   thisPageIncludesAFormWithA: 'This page includes a form with a non-secure "action" attribute.',
   /**
-  *@description Summary for the page when it contains active content with certificate error
-  */
+   *@description Summary for the page when it contains active content with certificate error
+   */
   activeContentWithCertificate: 'active content with certificate errors',
   /**
-  *@description Description for the page when it contains active content with certificate error
-  */
+   *@description Description for the page when it contains active content with certificate error
+   */
   youHaveRecentlyAllowedContent:
       'You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site.',
   /**
-  *@description Summary for page when there is active content with certificate errors
-  */
+   *@description Summary for page when there is active content with certificate errors
+   */
   contentWithCertificateErrors: 'content with certificate errors',
   /**
-  *@description Description for page when there is content with certificate errors
-  */
+   *@description Description for page when there is content with certificate errors
+   */
   thisPageIncludesResourcesThat: 'This page includes resources that were loaded with certificate errors.',
   /**
-  *@description Summary for page when all resources are served securely
-  */
+   *@description Summary for page when all resources are served securely
+   */
   allServedSecurely: 'all served securely',
   /**
-  *@description Description for page when all resources are served securely
-  */
+   *@description Description for page when all resources are served securely
+   */
   allResourcesOnThisPageAreServed: 'All resources on this page are served securely.',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   blockedMixedContent: 'Blocked mixed content',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   yourPageRequestedNonsecure: 'Your page requested non-secure resources that were blocked.',
   /**
-  *@description Refresh prompt text content in Security Panel of the Security panel
-  */
+   *@description Refresh prompt text content in Security Panel of the Security panel
+   */
   reloadThePageToRecordRequestsFor: 'Reload the page to record requests for HTTP resources.',
   /**
-  * @description Link text in the Security Panel. Clicking the link navigates the user to the
-  * Network panel. Requests refers to network requests. Each request is a piece of data transmitted
-  * from the current user's browser to a remote server.
-  */
+   * @description Link text in the Security Panel. Clicking the link navigates the user to the
+   * Network panel. Requests refers to network requests. Each request is a piece of data transmitted
+   * from the current user's browser to a remote server.
+   */
   viewDRequestsInNetworkPanel:
       '{n, plural, =1 {View # request in Network Panel} other {View # requests in Network Panel}}',
   /**
-  *@description Text for the origin of something
-  */
+   *@description Text for the origin of something
+   */
   origin: 'Origin',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   viewRequestsInNetworkPanel: 'View requests in Network Panel',
   /**
-  *@description Text for security or network protocol
-  */
+   *@description Text for security or network protocol
+   */
   protocol: 'Protocol',
   /**
-  *@description Text in the Security panel that refers to how the TLS handshake
-  *established encryption keys.
-  */
+   *@description Text in the Security panel that refers to how the TLS handshake
+   *established encryption keys.
+   */
   keyExchange: 'Key exchange',
   /**
-  *@description Text in Security Panel that refers to how the TLS handshake
-  *encrypted data.
-  */
+   *@description Text in Security Panel that refers to how the TLS handshake
+   *encrypted data.
+   */
   cipher: 'Cipher',
   /**
-  *@description Text in Security Panel that refers to the signature algorithm
-  *used by the server for authenticate in the TLS handshake.
-  */
+   *@description Text in Security Panel that refers to the signature algorithm
+   *used by the server for authenticate in the TLS handshake.
+   */
   serverSignature: 'Server signature',
   /**
-  *@description Text in Security Panel that refers to whether the ClientHello
-  *message in the TLS handshake was encrypted.
-  */
+   *@description Text in Security Panel that refers to whether the ClientHello
+   *message in the TLS handshake was encrypted.
+   */
   encryptedClientHello: 'Encrypted ClientHello',
   /**
-  *@description Sct div text content in Security Panel of the Security panel
-  */
+   *@description Sct div text content in Security Panel of the Security panel
+   */
   certificateTransparency: 'Certificate Transparency',
   /**
-  *@description Text that refers to the subject of a security certificate
-  */
+   *@description Text that refers to the subject of a security certificate
+   */
   subject: 'Subject',
   /**
-  *@description Text to show since when an item is valid
-  */
+   *@description Text to show since when an item is valid
+   */
   validFrom: 'Valid from',
   /**
-  *@description Text to indicate the expiry date
-  */
+   *@description Text to indicate the expiry date
+   */
   validUntil: 'Valid until',
   /**
-  *@description Text for the issuer of an item
-  */
+   *@description Text for the issuer of an item
+   */
   issuer: 'Issuer',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   openFullCertificateDetails: 'Open full certificate details',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   sct: 'SCT',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   logName: 'Log name',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   logId: 'Log ID',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   validationStatus: 'Validation status',
   /**
-  *@description Text for the source of something
-  */
+   *@description Text for the source of something
+   */
   source: 'Source',
   /**
-  * @description Label for a date/time string in the Security panel. It indicates the time at which
-  * a security certificate was issued (created by an authority and distributed).
-  */
+   * @description Label for a date/time string in the Security panel. It indicates the time at which
+   * a security certificate was issued (created by an authority and distributed).
+   */
   issuedAt: 'Issued at',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   hashAlgorithm: 'Hash algorithm',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   signatureAlgorithm: 'Signature algorithm',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   signatureData: 'Signature data',
   /**
-  *@description Toggle scts details link text content in Security Panel of the Security panel
-  */
+   *@description Toggle scts details link text content in Security Panel of the Security panel
+   */
   showFullDetails: 'Show full details',
   /**
-  *@description Toggle scts details link text content in Security Panel of the Security panel
-  */
+   *@description Toggle scts details link text content in Security Panel of the Security panel
+   */
   hideFullDetails: 'Hide full details',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   thisRequestCompliesWithChromes: 'This request complies with `Chrome`\'s Certificate Transparency policy.',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   thisRequestDoesNotComplyWith: 'This request does not comply with `Chrome`\'s Certificate Transparency policy.',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   thisResponseWasLoadedFromCache: 'This response was loaded from cache. Some security details might be missing.',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   theSecurityDetailsAboveAreFrom: 'The security details above are from the first inspected response.',
   /**
-  *@description Main summary for where the site has a non-cryptographic secure origin.
-  */
+   *@description Main summary for where the site has a non-cryptographic secure origin.
+   */
   thisOriginIsANonhttpsSecure: 'This origin is a non-HTTPS secure origin.',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   yourConnectionToThisOriginIsNot: 'Your connection to this origin is not secure.',
   /**
-  *@description No info div text content in Security Panel of the Security panel
-  */
+   *@description No info div text content in Security Panel of the Security panel
+   */
   noSecurityInformation: 'No security information',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   noSecurityDetailsAreAvailableFor: 'No security details are available for this origin.',
   /**
-  *@description San div text content in Security Panel of the Security panel
-  */
+   *@description San div text content in Security Panel of the Security panel
+   */
   na: '(n/a)',
   /**
-  *@description Text to show less content
-  */
+   *@description Text to show less content
+   */
   showLess: 'Show less',
   /**
-  *@description Truncated santoggle text content in Security Panel of the Security panel
-  *@example {2} PH1
-  */
+   *@description Truncated santoggle text content in Security Panel of the Security panel
+   *@example {2} PH1
+   */
   showMoreSTotal: 'Show more ({PH1} total)',
   /**
-  *@description Shown when a field refers to an option that is unknown to the frontend.
-  */
+   *@description Shown when a field refers to an option that is unknown to the frontend.
+   */
   unknownField: 'unknown',
   /**
-  *@description Shown when a field refers to a TLS feature which was enabled.
-  */
+   *@description Shown when a field refers to a TLS feature which was enabled.
+   */
   enabled: 'enabled',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityPanel.ts', UIStrings);

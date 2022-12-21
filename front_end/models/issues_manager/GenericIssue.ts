@@ -16,8 +16,8 @@ import {
 
 const UIStrings = {
   /**
-  *@description Title for cross-origin portal post message error
-  */
+   *@description Title for cross-origin portal post message error
+   */
   crossOriginPortalPostMessage: 'Portals - Same-origin communication channels',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/GenericIssue.ts', UIStrings);

@@ -12,20 +12,20 @@ import {AffectedResourcesView, AffectedItem} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-  *@description Noun for singular or plural network requests. Label for the affected resources section in the issue view.
-  */
+   *@description Noun for singular or plural network requests. Label for the affected resources section in the issue view.
+   */
   nRequests: '{n, plural, =1 {# request} other {# requests}}',
   /**
-  *@description Noun for a singular network request. Label for a column in the affected resources table in the issue view.
-  */
+   *@description Noun for a singular network request. Label for a column in the affected resources table in the issue view.
+   */
   requestC: 'Request',
   /**
-  *@description Noun for a singular parent frame. Label for a column in the affected resources table in the issue view.
-  */
+   *@description Noun for a singular parent frame. Label for a column in the affected resources table in the issue view.
+   */
   parentFrame: 'Parent Frame',
   /**
-  *@description Noun for a singular resource that was blocked (an example for a blocked resource would be a frame). Label for a column in the affected resources table in the issue view.
-  */
+   *@description Noun for a singular resource that was blocked (an example for a blocked resource would be a frame). Label for a column in the affected resources table in the issue view.
+   */
   blockedResource: 'Blocked Resource',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedBlockedByResponseView.ts', UIStrings);

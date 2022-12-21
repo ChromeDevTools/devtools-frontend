@@ -12,9 +12,9 @@ import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
 const UIStrings = {
   /**
-  *@description Text for the name of a thread of the page
-  *@example {1} PH1
-  */
+   *@description Text for the name of a thread of the page
+   *@example {1} PH1
+   */
   threadS: 'Thread {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('models/timeline_model/TimelineJSProfile.ts', UIStrings);

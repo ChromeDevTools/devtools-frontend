@@ -19,8 +19,8 @@ import consolePromptStyles from './consolePrompt.css.js';
 
 const UIStrings = {
   /**
-  *@description Text in Console Prompt of the Console panel
-  */
+   *@description Text in Console Prompt of the Console panel
+   */
   consolePrompt: 'Console prompt',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);

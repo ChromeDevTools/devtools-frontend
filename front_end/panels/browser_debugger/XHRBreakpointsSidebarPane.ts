@@ -11,49 +11,49 @@ import xhrBreakpointsSidebarPaneStyles from './xhrBreakpointsSidebarPane.css.js'
 
 const UIStrings = {
   /**
-  *@description Title of the 'XHR/fetch Breakpoints' tool in the bottom sidebar of the Sources tool
-  */
+   *@description Title of the 'XHR/fetch Breakpoints' tool in the bottom sidebar of the Sources tool
+   */
   xhrfetchBreakpoints: 'XHR/fetch Breakpoints',
   /**
-  *@description Text to indicate there are no breakpoints
-  */
+   *@description Text to indicate there are no breakpoints
+   */
   noBreakpoints: 'No breakpoints',
   /**
-  *@description Label for a button in the Sources panel that opens the input field to create a new XHR/fetch breakpoint.
-  */
+   *@description Label for a button in the Sources panel that opens the input field to create a new XHR/fetch breakpoint.
+   */
   addXhrfetchBreakpoint: 'Add XHR/fetch breakpoint',
   /**
-  *@description Text to add a breakpoint
-  */
+   *@description Text to add a breakpoint
+   */
   addBreakpoint: 'Add breakpoint',
   /**
-  *@description Input element container text content in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
-  */
+   *@description Input element container text content in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+   */
   breakWhenUrlContains: 'Break when URL contains:',
   /**
-  *@description Accessible label for XHR/fetch breakpoint text input
-  */
+   *@description Accessible label for XHR/fetch breakpoint text input
+   */
   urlBreakpoint: 'URL Breakpoint',
   /**
-  *@description Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
-  *@example {example.com} PH1
-  */
+   *@description Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+   *@example {example.com} PH1
+   */
   urlContainsS: 'URL contains "{PH1}"',
   /**
-  *@description Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
-  */
+   *@description Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+   */
   anyXhrOrFetch: 'Any XHR or fetch',
   /**
-  *@description Screen reader description of a hit breakpoint in the Sources panel
-  */
+   *@description Screen reader description of a hit breakpoint in the Sources panel
+   */
   breakpointHit: 'breakpoint hit',
   /**
-  *@description Text to remove all breakpoints
-  */
+   *@description Text to remove all breakpoints
+   */
   removeAllBreakpoints: 'Remove all breakpoints',
   /**
-  *@description Text to remove a breakpoint
-  */
+   *@description Text to remove a breakpoint
+   */
   removeBreakpoint: 'Remove breakpoint',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/XHRBreakpointsSidebarPane.ts', UIStrings);

@@ -9,26 +9,26 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text in Indexed DBViews of the Application panel
-  */
+   *@description Text in Indexed DBViews of the Application panel
+   */
   version: 'Version',
   /**
-  *@description Table heading for Service Workers update information. Update is a noun.
-  */
+   *@description Table heading for Service Workers update information. Update is a noun.
+   */
   updateActivity: 'Update Activity',
   /**
-  *@description Title for the timeline tab.
-  */
+   *@description Title for the timeline tab.
+   */
   timeline: 'Timeline',
   /**
-  *@description Text in Service Workers Update Life Cycle
-  *@example {2} PH1
-  */
+   *@description Text in Service Workers Update Life Cycle
+   *@example {2} PH1
+   */
   startTimeS: 'Start time: {PH1}',
   /**
-  *@description Text for end time of an event
-  *@example {2} PH1
-  */
+   *@description Text for end time of an event
+   *@example {2} PH1
+   */
   endTimeS: 'End time: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerUpdateCycleView.ts', UIStrings);

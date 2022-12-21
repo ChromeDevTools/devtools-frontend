@@ -21,40 +21,40 @@ const {render, html} = LitHtml;
 
 const UIStrings = {
   /**
-  *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
-  */
+   *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
+   */
   activeClientExperimentVariation: 'Active `client experiment variation IDs`.',
   /**
-  *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
-  */
+   *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
+   */
   activeClientExperimentVariationIds: 'Active `client experiment variation IDs` that trigger server-side behavior.',
   /**
-  *@description Text in Headers View of the Network panel for X-Client-Data HTTP headers
-  */
+   *@description Text in Headers View of the Network panel for X-Client-Data HTTP headers
+   */
   decoded: 'Decoded:',
   /**
-  *@description The title of a button to enable overriding a HTTP header.
-  */
+   *@description The title of a button to enable overriding a HTTP header.
+   */
   editHeader: 'Override header',
   /**
-  *@description Description of which letters the name of an HTTP header may contain (a-z, A-Z, 0-9, '-', or '_').
-  */
+   *@description Description of which letters the name of an HTTP header may contain (a-z, A-Z, 0-9, '-', or '_').
+   */
   headerNamesOnlyLetters: 'Header names should contain only letters, digits, dashes or underscores',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Text for a link to the issues panel
-  */
+   *@description Text for a link to the issues panel
+   */
   learnMoreInTheIssuesTab: 'Learn more in the issues tab',
   /**
-  *@description Hover text prompting the user to reload the whole page or refresh the particular request, so that the changes they made take effect.
-  */
+   *@description Hover text prompting the user to reload the whole page or refresh the particular request, so that the changes they made take effect.
+   */
   reloadPrompt: 'Refresh the page/request for these changes to take effect',
   /**
-  *@description The title of a button which removes a HTTP header override.
-  */
+   *@description The title of a button which removes a HTTP header override.
+   */
   removeOverride: 'Remove this header override',
 };
 

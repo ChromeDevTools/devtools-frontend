@@ -35,36 +35,36 @@ import {TimelineCategory, TimelineRecordStyle} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   frameStart: 'Frame Start',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   drawFrame: 'Draw Frame',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   layout: 'Layout',
   /**
-  *@description Text in UIDevtools Utils of the Performance panel
-  */
+   *@description Text in UIDevtools Utils of the Performance panel
+   */
   rasterizing: 'Rasterizing',
   /**
-  *@description Text in UIDevtools Utils of the Performance panel
-  */
+   *@description Text in UIDevtools Utils of the Performance panel
+   */
   drawing: 'Drawing',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   painting: 'Painting',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   system: 'System',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   idle: 'Idle',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/UIDevtoolsUtils.ts', UIStrings);

@@ -39,40 +39,40 @@ import * as EventListeners from '../event_listeners/event_listeners.js';
 
 const UIStrings = {
   /**
-  *@description Title of show framework listeners setting in event listeners widget of the elements panel
-  */
+   *@description Title of show framework listeners setting in event listeners widget of the elements panel
+   */
   frameworkListeners: '`Framework` listeners',
   /**
-  *@description Text to refresh the page
-  */
+   *@description Text to refresh the page
+   */
   refresh: 'Refresh',
   /**
-  *@description Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel
-  */
+   *@description Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel
+   */
   showListenersOnTheAncestors: 'Show listeners on the ancestors',
   /**
-  *@description Alternative title text of a setting in Event Listeners Widget of the Elements panel
-  */
+   *@description Alternative title text of a setting in Event Listeners Widget of the Elements panel
+   */
   ancestors: 'Ancestors',
   /**
-  *@description Title of dispatch filter in event listeners widget of the elements panel
-  */
+   *@description Title of dispatch filter in event listeners widget of the elements panel
+   */
   eventListenersCategory: 'Event listeners category',
   /**
-  *@description Text for everything
-  */
+   *@description Text for everything
+   */
   all: 'All',
   /**
-  *@description Text in Event Listeners Widget of the Elements panel
-  */
+   *@description Text in Event Listeners Widget of the Elements panel
+   */
   passive: 'Passive',
   /**
-  *@description Text in Event Listeners Widget of the Elements panel
-  */
+   *@description Text in Event Listeners Widget of the Elements panel
+   */
   blocking: 'Blocking',
   /**
-  *@description Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel
-  */
+   *@description Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel
+   */
   resolveEventListenersBoundWith: 'Resolve event listeners bound with framework',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/EventListenersWidget.ts', UIStrings);

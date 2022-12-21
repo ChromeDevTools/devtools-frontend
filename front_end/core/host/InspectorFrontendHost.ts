@@ -53,9 +53,9 @@ import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
 const UIStrings = {
   /**
-  *@description Document title in Inspector Frontend Host of the DevTools window
-  *@example {example.com} PH1
-  */
+   *@description Document title in Inspector Frontend Host of the DevTools window
+   *@example {example.com} PH1
+   */
   devtoolsS: 'DevTools - {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('core/host/InspectorFrontendHost.ts', UIStrings);

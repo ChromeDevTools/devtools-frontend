@@ -7,38 +7,38 @@ import * as i18n from '../../core/i18n/i18n.js';
 
 const UIStrings = {
   /**
- *@description Text to preserve the log after refreshing
- */
+   *@description Text to preserve the log after refreshing
+   */
   preserveLog: 'Preserve log',
   /**
-  * @description A term that can be used to search in the command menu, and will find the search
-  * result 'Preserve log on page reload / navigation'. This is an additional search term to help
-  * user find the setting even when they don't know the exact name of it.
-  */
+   * @description A term that can be used to search in the command menu, and will find the search
+   * result 'Preserve log on page reload / navigation'. This is an additional search term to help
+   * user find the setting even when they don't know the exact name of it.
+   */
   preserve: 'preserve',
   /**
-  * @description A term that can be used to search in the command menu, and will find the search
-  * result 'Preserve log on page reload / navigation'. This is an additional search term to help
-  * user find the setting even when they don't know the exact name of it.
-  */
+   * @description A term that can be used to search in the command menu, and will find the search
+   * result 'Preserve log on page reload / navigation'. This is an additional search term to help
+   * user find the setting even when they don't know the exact name of it.
+   */
   clear: 'clear',
   /**
-  * @description A term that can be used to search in the command menu, and will find the search
-  * result 'Preserve log on page reload / navigation'. This is an additional search term to help
-  * user find the setting even when they don't know the exact name of it.
-  */
+   * @description A term that can be used to search in the command menu, and will find the search
+   * result 'Preserve log on page reload / navigation'. This is an additional search term to help
+   * user find the setting even when they don't know the exact name of it.
+   */
   reset: 'reset',
   /**
- *@description Title of a setting under the Network category that can be invoked through the Command Menu
- */
+   *@description Title of a setting under the Network category that can be invoked through the Command Menu
+   */
   preserveLogOnPageReload: 'Preserve log on page reload / navigation',
   /**
- *@description Title of a setting under the Network category that can be invoked through the Command Menu
- */
+   *@description Title of a setting under the Network category that can be invoked through the Command Menu
+   */
   doNotPreserveLogOnPageReload: 'Do not preserve log on page reload / navigation',
   /**
- *@description Title of an action in the network tool to toggle recording
- */
+   *@description Title of an action in the network tool to toggle recording
+   */
   recordNetworkLog: 'Record network log',
 };
 const str_ = i18n.i18n.registerUIStrings('models/logs/logs-meta.ts', UIStrings);

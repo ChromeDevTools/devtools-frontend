@@ -19,20 +19,20 @@ type PrerenderingAttemptWithId = SDK.PrerenderingModel.PrerenderingAttemptWithId
 
 const UIStrings = {
   /**
-  *@description Text to clear content
-  */
+   *@description Text to clear content
+   */
   clearNotOngoing: 'Clear not ongoing',
   /**
-  *@description Text in grid and details
-  */
+   *@description Text in grid and details
+   */
   statusPrerendering: 'Prerendering',
   /**
-  *@description Text in grid and details
-  */
+   *@description Text in grid and details
+   */
   statusActivated: 'Activated',
   /**
-  *@description Text in grid and details
-  */
+   *@description Text in grid and details
+   */
   statusDiscarded: 'Discarded',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/PreloadingView.ts', UIStrings);

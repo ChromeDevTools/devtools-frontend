@@ -59,53 +59,53 @@ import smallBubbleStyles from './smallBubble.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description label to open link externally
-  */
+   *@description label to open link externally
+   */
   openInNewTab: 'Open in new tab',
   /**
-  *@description label to copy link address
-  */
+   *@description label to copy link address
+   */
   copyLinkAddress: 'Copy link address',
   /**
-  *@description label to copy file name
-  */
+   *@description label to copy file name
+   */
   copyFileName: 'Copy file name',
   /**
-  *@description label for the profiler control button
-  */
+   *@description label for the profiler control button
+   */
   anotherProfilerIsAlreadyActive: 'Another profiler is already active',
   /**
-  *@description Text in UIUtils
-  */
+   *@description Text in UIUtils
+   */
   promiseResolvedAsync: 'Promise resolved (async)',
   /**
-  *@description Text in UIUtils
-  */
+   *@description Text in UIUtils
+   */
   promiseRejectedAsync: 'Promise rejected (async)',
   /**
-  *@description Text in UIUtils
-  *@example {Promise} PH1
-  */
+   *@description Text in UIUtils
+   *@example {Promise} PH1
+   */
   sAsync: '{PH1} (async)',
   /**
-  *@description Text for the title of asynchronous function calls group in Call Stack
-  */
+   *@description Text for the title of asynchronous function calls group in Call Stack
+   */
   asyncCall: 'Async Call',
   /**
-  *@description Text for the name of anonymous functions
-  */
+   *@description Text for the name of anonymous functions
+   */
   anonymous: '(anonymous)',
   /**
-  *@description Text to close something
-  */
+   *@description Text to close something
+   */
   close: 'Close',
   /**
-  *@description Text on a button for message dialog
-  */
+   *@description Text on a button for message dialog
+   */
   ok: 'OK',
   /**
-  *@description Text to cancel something
-  */
+   *@description Text to cancel something
+   */
   cancel: 'Cancel',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/UIUtils.ts', UIStrings);

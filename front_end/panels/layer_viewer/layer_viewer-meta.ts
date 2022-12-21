@@ -7,40 +7,40 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text in the Shortcuts page to explain a keyboard shortcut (reset view in Layers Panel)
-  */
+   *@description Text in the Shortcuts page to explain a keyboard shortcut (reset view in Layers Panel)
+   */
   resetView: 'Reset view',
   /**
- *@description Text in the Shortcuts page to explain a keyboard shortcut (switch to pan in Layers Panel)
- */
+   *@description Text in the Shortcuts page to explain a keyboard shortcut (switch to pan in Layers Panel)
+   */
   switchToPanMode: 'Switch to pan mode',
   /**
- *@description Text in the Shortcuts page to explain a keyboard shortcut (switch to rotate mode in Layers Panel)
- */
+   *@description Text in the Shortcuts page to explain a keyboard shortcut (switch to rotate mode in Layers Panel)
+   */
   switchToRotateMode: 'Switch to rotate mode',
   /**
- *@description Text in the Shortcuts page to explain a keyboard shortcut (zoom in)
- */
+   *@description Text in the Shortcuts page to explain a keyboard shortcut (zoom in)
+   */
   zoomIn: 'Zoom in',
   /**
- *@description Text in the Shortcuts page to explain a keyboard shortcut (zoom out)
- */
+   *@description Text in the Shortcuts page to explain a keyboard shortcut (zoom out)
+   */
   zoomOut: 'Zoom out',
   /**
- *@description Description of a shortcut that pans or rotates the layer viewer up
- */
+   *@description Description of a shortcut that pans or rotates the layer viewer up
+   */
   panOrRotateUp: 'Pan or rotate up',
   /**
- *@description Description of a shortcut that pans or rotates the layer viewer down
- */
+   *@description Description of a shortcut that pans or rotates the layer viewer down
+   */
   panOrRotateDown: 'Pan or rotate down',
   /**
- *@description Description of a shortcut that pans or rotates the layer viewer left
- */
+   *@description Description of a shortcut that pans or rotates the layer viewer left
+   */
   panOrRotateLeft: 'Pan or rotate left',
   /**
- *@description Description of a shortcut that pans or rotates the layer viewer right
- */
+   *@description Description of a shortcut that pans or rotates the layer viewer right
+   */
   panOrRotateRight: 'Pan or rotate right',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/layer_viewer-meta.ts', UIStrings);

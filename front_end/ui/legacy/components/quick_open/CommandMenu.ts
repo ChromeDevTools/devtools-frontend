@@ -14,24 +14,24 @@ import {QuickOpenImpl} from './QuickOpen.js';
 
 const UIStrings = {
   /**
-  * @description Message to display if a setting change requires a reload of DevTools
-  */
+   * @description Message to display if a setting change requires a reload of DevTools
+   */
   oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
   /**
-  * @description Text in Command Menu of the Command Menu
-  */
+   * @description Text in Command Menu of the Command Menu
+   */
   noCommandsFound: 'No commands found',
   /**
-  * @description Text for command prefix of run a command
-  */
+   * @description Text for command prefix of run a command
+   */
   run: 'Run',
   /**
-  * @description Text for command suggestion of run a command
-  */
+   * @description Text for command suggestion of run a command
+   */
   command: 'Command',
   /**
-  * @description Hint text to indicate that a selected command is deprecated
-  */
+   * @description Hint text to indicate that a selected command is deprecated
+   */
   deprecated: '— deprecated',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/CommandMenu.ts', UIStrings);

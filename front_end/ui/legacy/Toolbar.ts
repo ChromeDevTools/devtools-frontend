@@ -51,16 +51,16 @@ import toolbarStyles from './toolbar.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Announced screen reader message for ToolbarSettingToggle when the setting is toggled on.
-  */
+   *@description Announced screen reader message for ToolbarSettingToggle when the setting is toggled on.
+   */
   pressed: 'pressed',
   /**
-  *@description Announced screen reader message for ToolbarSettingToggle when the setting is toggled off.
-  */
+   *@description Announced screen reader message for ToolbarSettingToggle when the setting is toggled off.
+   */
   notPressed: 'not pressed',
   /**
-  *@description Tooltip shown when the user hovers over the clear icon to empty the text input.
-  */
+   *@description Tooltip shown when the user hovers over the clear icon to empty the text input.
+   */
   clearInput: 'Clear input',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Toolbar.ts', UIStrings);

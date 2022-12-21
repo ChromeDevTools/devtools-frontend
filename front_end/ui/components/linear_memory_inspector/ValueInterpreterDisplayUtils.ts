@@ -7,10 +7,10 @@ import * as Platform from '../../../core/platform/platform.js';
 
 const UIStrings = {
   /**
-  *@description Text that is shown in the LinearMemoryInspector if a value could not be correctly formatted
-  *             for the requested mode (e.g. we do not floats to be represented as hexadecimal numbers).
-  *             Abbreviation stands for 'not applicable'.
-  */
+   *@description Text that is shown in the LinearMemoryInspector if a value could not be correctly formatted
+   *             for the requested mode (e.g. we do not floats to be represented as hexadecimal numbers).
+   *             Abbreviation stands for 'not applicable'.
+   */
   notApplicable: 'N/A',
 };
 const str_ =

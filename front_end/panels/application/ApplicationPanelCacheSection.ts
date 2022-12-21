@@ -16,20 +16,20 @@ import {ServiceWorkerCacheView} from './ServiceWorkerCacheViews.js';
 
 const UIStrings = {
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   cacheStorage: 'Cache Storage',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   backForwardCache: 'Back/forward cache',
   /**
-  *@description A context menu item in the Application Panel Sidebar of the Application panel
-  */
+   *@description A context menu item in the Application Panel Sidebar of the Application panel
+   */
   refreshCaches: 'Refresh Caches',
   /**
-  *@description Text to delete something
-  */
+   *@description Text to delete something
+   */
   delete: 'Delete',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelCacheSection.ts', UIStrings);

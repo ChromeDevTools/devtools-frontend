@@ -45,31 +45,31 @@ const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
 
 const UIStrings = {
   /**
-  * @description Placeholder text for a text input used to filter which DOM element properties show up in
-  * the Properties tab of the Elements panel.
-  */
+   * @description Placeholder text for a text input used to filter which DOM element properties show up in
+   * the Properties tab of the Elements panel.
+   */
   filter: 'Filter',
   /**
-  * @description ARIA accessible name for the text input used to filter which DOM element properties show up
-  * in the Properties tab of the Elements panel.
-  */
+   * @description ARIA accessible name for the text input used to filter which DOM element properties show up
+   * in the Properties tab of the Elements panel.
+   */
   filterProperties: 'Filter Properties',
   /**
-  * @description Text on the checkbox in the Properties tab of the Elements panel, which controls whether
-  * all properties of the currently selected DOM element are shown, or only meaningful properties (i.e.
-  * excluding properties whose values aren't set for example).
-  */
+   * @description Text on the checkbox in the Properties tab of the Elements panel, which controls whether
+   * all properties of the currently selected DOM element are shown, or only meaningful properties (i.e.
+   * excluding properties whose values aren't set for example).
+   */
   showAll: 'Show all',
   /**
    * @description Tooltip on the checkbox in the Properties tab of the Elements panel, which controls whether
-  * all properties of the currently selected DOM element are shown, or only meaningful properties (i.e.
-  * excluding properties whose values aren't set for example).
+   * all properties of the currently selected DOM element are shown, or only meaningful properties (i.e.
+   * excluding properties whose values aren't set for example).
    */
   showAllTooltip: 'When unchecked, only properties whose values are neither null nor undefined will be shown',
   /**
-  * @description Text shown to the user when a filter is applied in the Properties tab of the Elements panel, but
-  * no properties matched the filter and thus no results were returned.
-  */
+   * @description Text shown to the user when a filter is applied in the Properties tab of the Elements panel, but
+   * no properties matched the filter and thus no results were returned.
+   */
   noMatchingProperty: 'No matching property',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertiesWidget.ts', UIStrings);

@@ -10,24 +10,24 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-  *@description Label for number of affected resources indication in issue view
-  */
+   *@description Label for number of affected resources indication in issue view
+   */
   nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**
-  *@description Title for a column in a Trusted Web Activity issue view
-  */
+   *@description Title for a column in a Trusted Web Activity issue view
+   */
   statusCode: 'Status code',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   url: 'Url',
   /**
-  *@description Title for a column in a Trusted Web Activity issue view
-  */
+   *@description Title for a column in a Trusted Web Activity issue view
+   */
   packageName: 'Package name',
   /**
-  *@description Title for a column in a Trusted Web Activity issue view
-  */
+   *@description Title for a column in a Trusted Web Activity issue view
+   */
   packageSignature: 'Package signature',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts', UIStrings);

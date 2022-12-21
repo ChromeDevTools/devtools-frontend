@@ -13,66 +13,66 @@ import keybindsSettingsTabStyles from './keybindsSettingsTab.css.js';
 
 const UIStrings = {
   /**
-  *@description Text for keyboard shortcuts
-  */
+   *@description Text for keyboard shortcuts
+   */
   shortcuts: 'Shortcuts',
   /**
-  *@description Text appearing before a select control offering users their choice of keyboard shortcut presets.
-  */
+   *@description Text appearing before a select control offering users their choice of keyboard shortcut presets.
+   */
   matchShortcutsFromPreset: 'Match shortcuts from preset',
   /**
-  *@description Screen reader label for list of keyboard shortcuts in settings
-  */
+   *@description Screen reader label for list of keyboard shortcuts in settings
+   */
   keyboardShortcutsList: 'Keyboard shortcuts list',
   /**
-  *@description Screen reader label for an icon denoting a shortcut that has been changed from its default
-  */
+   *@description Screen reader label for an icon denoting a shortcut that has been changed from its default
+   */
   shortcutModified: 'Shortcut modified',
   /**
-  *@description Screen reader label for an empty shortcut cell in custom shortcuts settings tab
-  */
+   *@description Screen reader label for an empty shortcut cell in custom shortcuts settings tab
+   */
   noShortcutForAction: 'No shortcut for action',
   /**
-  *@description Link text in the settings pane to add another shortcut for an action
-  */
+   *@description Link text in the settings pane to add another shortcut for an action
+   */
   addAShortcut: 'Add a shortcut',
   /**
-  *@description Label for a button in the settings pane that confirms changes to a keyboard shortcut
-  */
+   *@description Label for a button in the settings pane that confirms changes to a keyboard shortcut
+   */
   confirmChanges: 'Confirm changes',
   /**
-  *@description Label for a button in the settings pane that discards changes to the shortcut being edited
-  */
+   *@description Label for a button in the settings pane that discards changes to the shortcut being edited
+   */
   discardChanges: 'Discard changes',
   /**
-  *@description Label for a button in the settings pane that removes a keyboard shortcut.
-  */
+   *@description Label for a button in the settings pane that removes a keyboard shortcut.
+   */
   removeShortcut: 'Remove shortcut',
   /**
-  *@description Label for a button in the settings pane that edits a keyboard shortcut
-  */
+   *@description Label for a button in the settings pane that edits a keyboard shortcut
+   */
   editShortcut: 'Edit shortcut',
   /**
-  *@description Message shown in settings when the user inputs a modifier-only shortcut such as Ctrl+Shift.
-  */
+   *@description Message shown in settings when the user inputs a modifier-only shortcut such as Ctrl+Shift.
+   */
   shortcutsCannotContainOnly: 'Shortcuts cannot contain only modifier keys.',
   /**
-  *@description Messages shown in shortcuts settings when the user inputs a shortcut that is already in use.
-  *@example {Performance} PH1
-  *@example {Start/stop recording} PH2
-  */
+   *@description Messages shown in shortcuts settings when the user inputs a shortcut that is already in use.
+   *@example {Performance} PH1
+   *@example {Start/stop recording} PH2
+   */
   thisShortcutIsInUseByS: 'This shortcut is in use by {PH1}: {PH2}.',
   /**
-  *@description Message shown in settings when to restore default shortcuts.
-  */
+   *@description Message shown in settings when to restore default shortcuts.
+   */
   RestoreDefaultShortcuts: 'Restore default shortcuts',
   /**
-  *@description Message shown in settings to show the full list of keyboard shortcuts.
-  */
+   *@description Message shown in settings to show the full list of keyboard shortcuts.
+   */
   FullListOfDevtoolsKeyboard: 'Full list of DevTools keyboard shortcuts and gestures',
   /**
    *@description Label for a button in the shortcut editor that resets all shortcuts for the current action.
-  */
+   */
   ResetShortcutsForAction: 'Reset shortcuts for action',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/KeybindsSettingsTab.ts', UIStrings);

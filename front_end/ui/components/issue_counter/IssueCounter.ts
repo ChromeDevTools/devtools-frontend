@@ -12,16 +12,16 @@ import issueCounterStyles from './issueCounter.css.js';
 
 const UIStrings = {
   /**
-  *@description Label for link to Issues tab, specifying how many issues there are.
-  */
+   *@description Label for link to Issues tab, specifying how many issues there are.
+   */
   pageErrors: '{issueCount, plural, =1 {# page error} other {# page errors}}',
   /**
- *@description Label for link to Issues tab, specifying how many issues there are.
- */
+   *@description Label for link to Issues tab, specifying how many issues there are.
+   */
   breakingChanges: '{issueCount, plural, =1 {# breaking change} other {# breaking changes}}',
   /**
- *@description Label for link to Issues tab, specifying how many issues there are.
- */
+   *@description Label for link to Issues tab, specifying how many issues there are.
+   */
   possibleImprovements: '{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/issue_counter/IssueCounter.ts', UIStrings);

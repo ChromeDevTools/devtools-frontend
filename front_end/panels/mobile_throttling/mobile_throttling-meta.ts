@@ -10,38 +10,38 @@ import type * as MobileThrottling from './mobile_throttling.js';
 
 const UIStrings = {
   /**
-  *@description Text for throttling the network
-  */
+   *@description Text for throttling the network
+   */
   throttling: 'Throttling',
   /**
-  *@description Command for showing the Mobile Throttling tool.
-  */
+   *@description Command for showing the Mobile Throttling tool.
+   */
   showThrottling: 'Show Throttling',
   /**
-  *@description Title of an action in the network conditions tool to network offline
-  */
+   *@description Title of an action in the network conditions tool to network offline
+   */
   goOffline: 'Go offline',
   /**
    *@description A tag of Mobile related settings that can be searched in the command menu
-  */
+   */
   device: 'device',
   /**
    *@description A tag of Network related actions that can be searched in the command menu
-  */
+   */
   throttlingTag: 'throttling',
   /**
    * @description Title of an action in the network conditions tool to simulate an environment with a
    * slow 3G connection, i.e. for a low end mobile device.
-  */
+   */
   enableSlowGThrottling: 'Enable slow `3G` throttling',
   /**
    * @description Title of an action in the network conditions tool to simulate an environment with a
    * medium-speed 3G connection, i.e. for a mid-tier mobile device.
-  */
+   */
   enableFastGThrottling: 'Enable fast `3G` throttling',
   /**
    *@description Title of an action in the network conditions tool to network online
-  */
+   */
   goOnline: 'Go online',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/mobile_throttling-meta.ts', UIStrings);

@@ -12,21 +12,21 @@ import diffViewStyles from './diffView.css.js';
 
 const UIStrings = {
   /**
-  *@description Text prepended to a removed line in a diff in the Changes tool, viewable only by screen reader.
-  */
+   *@description Text prepended to a removed line in a diff in the Changes tool, viewable only by screen reader.
+   */
   deletions: 'Deletion:',
   /**
-  *@description Text prepended to a new line in a diff in the Changes tool, viewable only by screen reader.
-  */
+   *@description Text prepended to a new line in a diff in the Changes tool, viewable only by screen reader.
+   */
   additions: 'Addition:',
   /**
-  *@description Screen-reader accessible name for the code editor in the Changes tool showing the user's changes.
-  */
+   *@description Screen-reader accessible name for the code editor in the Changes tool showing the user's changes.
+   */
   changesDiffViewer: 'Changes diff viewer',
   /**
-  *@description Text in Changes View of the Changes tab
-  *@example {2} PH1
-  */
+   *@description Text in Changes View of the Changes tab
+   *@example {2} PH1
+   */
   SkippingDMatchingLines: '( … Skipping {PH1} matching lines … )',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/diff_view/DiffView.ts', UIStrings);

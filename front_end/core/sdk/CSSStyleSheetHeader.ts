@@ -17,12 +17,12 @@ import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 const UIStrings = {
   /**
-  *@description Error message for when a CSS file can't be loaded
-  */
+   *@description Error message for when a CSS file can't be loaded
+   */
   couldNotFindTheOriginalStyle: 'Could not find the original style sheet.',
   /**
-  *@description Error message to display when a source CSS file could not be retrieved.
-  */
+   *@description Error message to display when a source CSS file could not be retrieved.
+   */
   thereWasAnErrorRetrievingThe: 'There was an error retrieving the source styles.',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UIStrings);

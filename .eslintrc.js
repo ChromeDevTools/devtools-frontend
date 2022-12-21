@@ -20,6 +20,7 @@ module.exports = {
     'mocha',
     'rulesdir',
     'import',
+    'jsdoc',
   ],
 
   'parserOptions': {'ecmaVersion': 9, 'sourceType': 'module'},
@@ -182,6 +183,12 @@ module.exports = {
       'rulesdir/no_underscored_properties': 2,
       'rulesdir/prefer_readonly_keyword': 2,
       'rulesdir/inline_type_imports': 2,
+
+      /**
+       * Ensures that JS Doc comments are properly aligned - all the starting
+       * `*` are in the right place.
+       */
+      'jsdoc/check-alignment': 2,
     }
   }]
 };

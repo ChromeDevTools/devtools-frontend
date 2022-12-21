@@ -16,8 +16,8 @@ import {
 
 const UIStrings = {
   /**
-  *@description Title for Client Hint specification url link
-  */
+   *@description Title for Client Hint specification url link
+   */
   fedCm: 'Federated Credential Management API',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/FederatedAuthRequestIssue.ts', UIStrings);

@@ -11,8 +11,8 @@ import {DataGridImpl, DataGridNode, type DataGridData, type Parameters} from './
 
 const UIStrings = {
   /**
-  *@description accessible name for expandible nodes in datagrids
-  */
+   *@description accessible name for expandible nodes in datagrids
+   */
   collapsed: 'collapsed',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/ViewportDataGrid.ts', UIStrings);

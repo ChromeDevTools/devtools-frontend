@@ -31,10 +31,10 @@ import {WebVitalsIntegrator} from './WebVitalsTimelineUtils.js';
 
 const UIStrings = {
   /**
-  *@description Text in Timeline Flame Chart View of the Performance panel
-  *@example {Frame} PH1
-  *@example {10ms} PH2
-  */
+   *@description Text in Timeline Flame Chart View of the Performance panel
+   *@example {Frame} PH1
+   *@example {10ms} PH2
+   */
   sAtS: '{PH1} at {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartView.ts', UIStrings);

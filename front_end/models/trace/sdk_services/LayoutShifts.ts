@@ -36,7 +36,7 @@ export interface LayoutShiftSource {
  *
  * This data is cached based on the provided model data and the given layout
  * shift, so it is is safe to call multiple times with the same input.
-*/
+ */
 export async function sourcesForLayoutShift(
     modelData: Handlers.Types.TraceParseData,
     event: Types.TraceEvents.TraceEventLayoutShift): Promise<readonly LayoutShiftSource[]> {

@@ -9,20 +9,20 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text to refresh the page
-  */
+   *@description Text to refresh the page
+   */
   refresh: 'Refresh',
   /**
-  *@description Text to filter result items
-  */
+   *@description Text to filter result items
+   */
   filter: 'Filter',
   /**
-  *@description Text to clear everything
-  */
+   *@description Text to clear everything
+   */
   clearAll: 'Clear All',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
+   */
   deleteSelected: 'Delete Selected',
   /**
    *@description Text that informs screen reader users that the storage table has been refreshed

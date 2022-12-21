@@ -14,8 +14,8 @@ import {PreloadingView} from './preloading/PreloadingView.js';
 
 const UIStrings = {
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   prefetchingAndPrerendering: 'Prefetching & Prerendering',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelPreloadingSection.ts', UIStrings);

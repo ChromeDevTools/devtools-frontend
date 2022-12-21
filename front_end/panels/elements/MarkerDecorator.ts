@@ -10,12 +10,12 @@ import {PseudoStateMarkerDecorator} from './ElementsPanel.js';
 
 const UIStrings = {
   /**
-  *@description Title of the Marker Decorator of Elements
-  */
+   *@description Title of the Marker Decorator of Elements
+   */
   domBreakpoint: 'DOM Breakpoint',
   /**
-  *@description Title of the Marker Decorator of Elements
-  */
+   *@description Title of the Marker Decorator of Elements
+   */
   elementIsHidden: 'Element is hidden',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/MarkerDecorator.ts', UIStrings);

@@ -42,32 +42,32 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text to indicate the progress of a profile
-  */
+   *@description Text to indicate the progress of a profile
+   */
   profiling: 'Profiling…',
   /**
-  *@description Text in Paint Profiler View of the Layers panel
-  */
+   *@description Text in Paint Profiler View of the Layers panel
+   */
   shapes: 'Shapes',
   /**
-  *@description Text in Paint Profiler View of the Layers panel
-  */
+   *@description Text in Paint Profiler View of the Layers panel
+   */
   bitmap: 'Bitmap',
   /**
-  *@description Generic label for any text
-  */
+   *@description Generic label for any text
+   */
   text: 'Text',
   /**
-  *@description Text in Paint Profiler View of the Layers panel
-  */
+   *@description Text in Paint Profiler View of the Layers panel
+   */
   misc: 'Misc',
   /**
-  *@description ARIA label for a pie chart that shows the results of the paint profiler
-  */
+   *@description ARIA label for a pie chart that shows the results of the paint profiler
+   */
   profilingResults: 'Profiling results',
   /**
-  *@description Label for command log tree in the Profiler tab
-  */
+   *@description Label for command log tree in the Profiler tab
+   */
   commandLog: 'Command Log',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/PaintProfilerView.ts', UIStrings);

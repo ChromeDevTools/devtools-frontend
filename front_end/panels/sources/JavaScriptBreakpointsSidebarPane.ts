@@ -16,69 +16,69 @@ import javaScriptBreakpointsSidebarPaneStyles from './javaScriptBreakpointsSideb
 
 const UIStrings = {
   /**
-  *@description Text to indicate there are no breakpoints
-  */
+   *@description Text to indicate there are no breakpoints
+   */
   noBreakpoints: 'No breakpoints',
   /**
-  *@description Text exposed to screen readers on checked items.
-  */
+   *@description Text exposed to screen readers on checked items.
+   */
   checked: 'checked',
   /**
-  *@description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
-  */
+   *@description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
+   */
   unchecked: 'unchecked',
   /**
-  *@description Accessible text for a breakpoint collection with a combination of checked states.
-  */
+   *@description Accessible text for a breakpoint collection with a combination of checked states.
+   */
   mixed: 'mixed',
   /**
-  *@description Accessibility label for hit breakpoints in the Sources panel.
-  *@example {checked} PH1
-  */
+   *@description Accessibility label for hit breakpoints in the Sources panel.
+   *@example {checked} PH1
+   */
   sBreakpointHit: '{PH1} breakpoint hit',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
+   *@description Text in Debugger Plugin of the Sources panel
+   */
   removeAllBreakpointsInLine: 'Remove all breakpoints in line',
   /**
-  *@description Text to remove a breakpoint
-  */
+   *@description Text to remove a breakpoint
+   */
   removeBreakpoint: 'Remove breakpoint',
   /**
-  *@description Context menu item that reveals the source code location of a breakpoint in the Sources panel.
-  */
+   *@description Context menu item that reveals the source code location of a breakpoint in the Sources panel.
+   */
   revealLocation: 'Reveal location',
   /**
-  *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
-  */
+   *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
+   */
   deactivateBreakpoints: 'Deactivate breakpoints',
   /**
-  *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
-  */
+   *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
+   */
   activateBreakpoints: 'Activate breakpoints',
   /**
-  *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
-  */
+   *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
+   */
   enableAllBreakpoints: 'Enable all breakpoints',
   /**
-  *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
-  */
+   *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
+   */
   enableBreakpointsInFile: 'Enable breakpoints in file',
   /**
-  *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
-  */
+   *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
+   */
   disableAllBreakpoints: 'Disable all breakpoints',
   /**
-  *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
-  */
+   *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
+   */
   disableBreakpointsInFile: 'Disable breakpoints in file',
   /**
-  *@description Text to remove all breakpoints
-  */
+   *@description Text to remove all breakpoints
+   */
   removeAllBreakpoints: 'Remove all breakpoints',
   /**
-  *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
-  */
+   *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
+   */
   removeOtherBreakpoints: 'Remove other breakpoints',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/JavaScriptBreakpointsSidebarPane.ts', UIStrings);

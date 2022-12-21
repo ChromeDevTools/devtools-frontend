@@ -65,9 +65,9 @@ export function rgbaToHwba([r, g, b, a]: number[]): number[] {
 }
 
 /**
-* Calculate the luminance of this color using the WCAG algorithm.
-* See http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
-*/
+ * Calculate the luminance of this color using the WCAG algorithm.
+ * See http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+ */
 export function luminance([rSRGB, gSRGB, bSRGB]: number[]): number {
   const r = rSRGB <= 0.03928 ? rSRGB / 12.92 : Math.pow(((rSRGB + 0.055) / 1.055), 2.4);
   const g = gSRGB <= 0.03928 ? gSRGB / 12.92 : Math.pow(((gSRGB + 0.055) / 1.055), 2.4);
@@ -107,9 +107,9 @@ const loConOffset = 0.06;
 const loClip = 0.001;
 
 /**
-* Calculate relative luminance of a color.
-* See https://github.com/Myndex/SAPC-APCA
-*/
+ * Calculate relative luminance of a color.
+ * See https://github.com/Myndex/SAPC-APCA
+ */
 export function luminanceAPCA([rSRGB, gSRGB, bSRGB]: number[]): number {
   const r = Math.pow(rSRGB, mainTRC);
   const g = Math.pow(gSRGB, mainTRC);

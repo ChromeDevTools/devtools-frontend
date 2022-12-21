@@ -51,21 +51,21 @@ import {type MarkerDecoratorRegistration} from './MarkerDecorator.js';
 
 const UIStrings = {
   /**
-  *@description ARIA accessible name in Elements Tree Outline of the Elements panel
-  */
+   *@description ARIA accessible name in Elements Tree Outline of the Elements panel
+   */
   pageDom: 'Page DOM',
   /**
-  *@description A context menu item to store a value as a global variable the Elements Panel
-  */
+   *@description A context menu item to store a value as a global variable the Elements Panel
+   */
   storeAsGlobalVariable: 'Store as global variable',
   /**
-  *@description Tree element expand all button element button text content in Elements Tree Outline of the Elements panel
-  *@example {3} PH1
-  */
+   *@description Tree element expand all button element button text content in Elements Tree Outline of the Elements panel
+   *@example {3} PH1
+   */
   showAllNodesDMore: 'Show All Nodes ({PH1} More)',
   /**
-  *@description Link text content in Elements Tree Outline of the Elements panel
-  */
+   *@description Link text content in Elements Tree Outline of the Elements panel
+   */
   reveal: 'reveal',
   /**
    * @description A context menu item to open the badge settings pane

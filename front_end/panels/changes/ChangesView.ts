@@ -21,36 +21,36 @@ import {ChangesSidebar, Events} from './ChangesSidebar.js';
 
 const UIStrings = {
   /**
-  *@description Screen reader/tooltip label for a button in the Changes tool that reverts all changes to the currently open file.
-  */
+   *@description Screen reader/tooltip label for a button in the Changes tool that reverts all changes to the currently open file.
+   */
   revertAllChangesToCurrentFile: 'Revert all changes to current file',
   /**
-  *@description Screen reader/tooltip label for a button in the Changes tool that copies all changes from the currently open file.
-  */
+   *@description Screen reader/tooltip label for a button in the Changes tool that copies all changes from the currently open file.
+   */
   copyAllChangesFromCurrentFile: 'Copy all changes from current file',
   /**
-  *@description Text in Changes View of the Changes tab
-  */
+   *@description Text in Changes View of the Changes tab
+   */
   noChanges: 'No changes',
   /**
-  *@description Text in Changes View of the Changes tab
-  */
+   *@description Text in Changes View of the Changes tab
+   */
   binaryData: 'Binary data',
   /**
-  * @description Text in the Changes tab that indicates how many lines of code have changed in the
-  * selected file. An insertion refers to an added line of code. The (+) is a visual cue to indicate
-  * lines were added (not translatable).
-  */
+   * @description Text in the Changes tab that indicates how many lines of code have changed in the
+   * selected file. An insertion refers to an added line of code. The (+) is a visual cue to indicate
+   * lines were added (not translatable).
+   */
   sInsertions: '{n, plural, =1 {# insertion (+)} other {# insertions (+)}}',
   /**
-  * @description Text in the Changes tab that indicates how many lines of code have changed in the
-  * selected file. A deletion refers to a removed line of code. The (-) is a visual cue to indicate
-  * lines were removed (not translatable).
-  */
+   * @description Text in the Changes tab that indicates how many lines of code have changed in the
+   * selected file. A deletion refers to a removed line of code. The (-) is a visual cue to indicate
+   * lines were removed (not translatable).
+   */
   sDeletions: '{n, plural, =1 {# deletion (-)} other {# deletions (-)}}',
   /**
-  *@description Text for a button in the Changes tool that copies all the changes from the currently open file.
-  */
+   *@description Text for a button in the Changes tool that copies all the changes from the currently open file.
+   */
   copy: 'Copy',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);

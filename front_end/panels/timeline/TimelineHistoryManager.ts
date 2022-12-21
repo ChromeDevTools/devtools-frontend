@@ -18,23 +18,23 @@ import {
 
 const UIStrings = {
   /**
-  *@description Screen reader label for the Timeline History dropdown button
-  *@example {example.com #3} PH1
-  *@example {Show recent timeline sessions} PH2
-  */
+   *@description Screen reader label for the Timeline History dropdown button
+   *@example {example.com #3} PH1
+   *@example {Show recent timeline sessions} PH2
+   */
   currentSessionSS: 'Current Session: {PH1}. {PH2}',
   /**
-  *@description Text that shows there is no recording
-  */
+   *@description Text that shows there is no recording
+   */
   noRecordings: '(no recordings)',
   /**
-  *@description Text in Timeline History Manager of the Performance panel
-  *@example {2s} PH1
-  */
+   *@description Text in Timeline History Manager of the Performance panel
+   *@example {2s} PH1
+   */
   sAgo: '({PH1} ago)',
   /**
-  *@description Text in Timeline History Manager of the Performance panel
-  */
+   *@description Text in Timeline History Manager of the Performance panel
+   */
   moments: 'moments',
   /**
    * @description Text in Timeline History Manager of the Performance panel.
@@ -49,14 +49,14 @@ const UIStrings = {
    */
   sH: '{PH1} h',
   /**
-  *@description Text in Timeline History Manager of the Performance panel
-  *@example {example.com} PH1
-  *@example {2} PH2
-  */
+   *@description Text in Timeline History Manager of the Performance panel
+   *@example {example.com} PH1
+   *@example {2} PH2
+   */
   sD: '{PH1} #{PH2}',
   /**
-  *@description Accessible label for the timeline session selection menu
-  */
+   *@description Accessible label for the timeline session selection menu
+   */
   selectTimelineSession: 'Select Timeline Session',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineHistoryManager.ts', UIStrings);

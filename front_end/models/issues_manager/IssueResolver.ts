@@ -9,8 +9,8 @@ import {type Issue} from './Issue.js';
 import {IssuesManager, Events as IssueManagerEvents, type IssueAddedEvent} from './IssuesManager.js';
 
 /**
-  * A class that facilitates resolving an issueId to an issue. See `ResolverBase` for more info.
-  */
+ * A class that facilitates resolving an issueId to an issue. See `ResolverBase` for more info.
+ */
 export class IssueResolver extends Common.ResolverBase.ResolverBase<Protocol.Audits.IssueId, Issue> {
   #issuesListener: Common.EventTarget.EventDescriptor|null = null;
   #issuesManager: IssuesManager;

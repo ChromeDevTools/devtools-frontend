@@ -71,12 +71,12 @@ const UIStrings = {
    */
   groupByCategory: 'Group by category',
   /**
-  * @description Title for a checkbox which toggles grouping by kind in the issues tab
-    */
+   * @description Title for a checkbox which toggles grouping by kind in the issues tab
+   */
   groupDisplayedIssuesUnderKind: 'Group displayed issues as Page errors, Breaking changes and Improvements',
   /**
-  * @description Label for a checkbox which toggles grouping by kind in the issues tab
-    */
+   * @description Label for a checkbox which toggles grouping by kind in the issues tab
+   */
   groupByKind: 'Group by kind',
   /**
    * @description Title for a checkbox. Whether the issues tab should include third-party issues or not.

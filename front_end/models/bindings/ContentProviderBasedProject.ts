@@ -36,8 +36,8 @@ import * as Workspace from '../workspace/workspace.js';
 
 const UIStrings = {
   /**
-  * @description Error message that is displayed in the Sources panel when can't be loaded.
-  */
+   * @description Error message that is displayed in the Sources panel when can't be loaded.
+   */
   unknownErrorLoadingFile: 'Unknown error loading file',
 };
 const str_ = i18n.i18n.registerUIStrings('models/bindings/ContentProviderBasedProject.ts', UIStrings);

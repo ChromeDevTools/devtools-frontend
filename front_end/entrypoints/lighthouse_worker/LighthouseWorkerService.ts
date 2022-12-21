@@ -42,7 +42,7 @@ class LegacyPort {
 /**
  * ConnectionProxy is a SDK interface, but the implementation has no knowledge it's a parallelConnection.
  * The CDP traffic is smuggled back and forth by the system described in LighthouseProtocolService
-*/
+ */
 class ConnectionProxy implements SDK.Connections.ParallelConnectionInterface {
   sessionId: string;
   onMessage: ((arg0: Object) => void)|null;

@@ -17,33 +17,33 @@ import {findNextNodeForKeyboardNavigation} from './BreakpointsViewUtils.js';
 
 const UIStrings = {
   /**
-  *@description Label for a checkbox to toggle pausing on uncaught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an uncaught exception is thrown at runtime.
-  */
+   *@description Label for a checkbox to toggle pausing on uncaught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an uncaught exception is thrown at runtime.
+   */
   pauseOnUncaughtExceptions: 'Pause on uncaught exceptions',
   /**
-  *@description Label for a checkbox to toggling pausing on caught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an exception is thrown, but caught (handled) at runtime.
-  */
+   *@description Label for a checkbox to toggling pausing on caught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an exception is thrown, but caught (handled) at runtime.
+   */
   pauseOnCaughtExceptions: 'Pause on caught exceptions',
   /**
-  *@description Text exposed to screen readers on checked items.
-  */
+   *@description Text exposed to screen readers on checked items.
+   */
   checked: 'checked',
   /**
-  *@description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
-  */
+   *@description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
+   */
   unchecked: 'unchecked',
   /**
-  *@description Accessible text for a breakpoint collection with a combination of checked states.
-  */
+   *@description Accessible text for a breakpoint collection with a combination of checked states.
+   */
   indeterminate: 'mixed',
   /**
-  *@description Accessibility label for hit breakpoints in the Sources panel.
-  *@example {checked} PH1
-  */
+   *@description Accessibility label for hit breakpoints in the Sources panel.
+   *@example {checked} PH1
+   */
   breakpointHit: '{PH1} breakpoint hit',
   /**
-  *@description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint groups.
-  */
+   *@description Tooltip text that shows when hovered over a remove button that appears next to a filename in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint groups.
+   */
   removeAllBreakpointsInFile: 'Remove all breakpoints in file',
   /**
    *@description Context menu item in the Breakpoints Sidebar Pane of the Sources panel that disables all breakpoints in a file.
@@ -54,38 +54,38 @@ const UIStrings = {
    */
   enableAllBreakpointsInFile: 'Enable all breakpoints in file',
   /**
-  *@description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint or conditional breakpoint in the breakpoint sidebar of the sources panel.
-  */
+   *@description Tooltip text that shows when hovered over an edit button that appears next to a breakpoint or conditional breakpoint in the breakpoint sidebar of the sources panel.
+   */
   editCondition: 'Edit condition',
   /**
-  *@description Tooltip text that shows when hovered over an edit button that appears next to a logpoint in the breakpoint sidebar of the sources panel.
-  */
+   *@description Tooltip text that shows when hovered over an edit button that appears next to a logpoint in the breakpoint sidebar of the sources panel.
+   */
   editLogpoint: 'Edit logpoint',
   /**
-  *@description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint items.
-  */
+   *@description Tooltip text that shows when hovered over a remove button that appears next to a breakpoint in the breakpoint sidebar of the sources panel. Also used in the context menu for breakpoint items.
+   */
   removeBreakpoint: 'Remove breakpoint',
   /**
-  *@description Text to remove all breakpoints
-  */
+   *@description Text to remove all breakpoints
+   */
   removeAllBreakpoints: 'Remove all breakpoints',
   /**
-  *@description Text in Breakpoints Sidebar Pane of the Sources panel
-  */
+   *@description Text in Breakpoints Sidebar Pane of the Sources panel
+   */
   removeOtherBreakpoints: 'Remove other breakpoints',
   /**
-  *@description Context menu item that reveals the source code location of a breakpoint in the Sources panel.
-  */
+   *@description Context menu item that reveals the source code location of a breakpoint in the Sources panel.
+   */
   revealLocation: 'Reveal location',
   /**
-  *@description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows the condition, on which the breakpoint will stop.
-  *@example {x < 3} PH1
-  */
+   *@description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows the condition, on which the breakpoint will stop.
+   *@example {x < 3} PH1
+   */
   conditionCode: 'Condition: {PH1}',
   /**
-  *@description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows what is going to be printed in the console, if execution hits this breakpoint.
-  *@example {'hello'} PH1
-  */
+   *@description Tooltip text that shows when hovered over a piece of code of a breakpoint in the breakpoint sidebar of the sources panel. It shows what is going to be printed in the console, if execution hits this breakpoint.
+   *@example {'hello'} PH1
+   */
   logpointCode: 'Logpoint: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/BreakpointsView.ts', UIStrings);

@@ -13,14 +13,14 @@ import interestGroupStorageViewStyles from './interestGroupStorageView.css.js';
 
 const UIStrings = {
   /**
-  *@description Placeholder text instructing the user how to display interest group
-  *details.
-  */
+   *@description Placeholder text instructing the user how to display interest group
+   *details.
+   */
   clickToDisplayBody: 'Click on any interest group event to display the group\'s current state',
   /**
-  *@description Placeholder text telling the user no details are available for
-  *the selected interest group.
-  */
+   *@description Placeholder text telling the user no details are available for
+   *the selected interest group.
+   */
   noDataAvailable: 'No details available for the selected interest group. The browser may have left the group.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/InterestGroupStorageView.ts', UIStrings);

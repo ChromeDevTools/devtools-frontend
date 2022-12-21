@@ -14,53 +14,53 @@ import developerResourcesListViewStyles from './developerResourcesListView.css.j
 
 const UIStrings = {
   /**
-  *@description Text for the status of something
-  */
+   *@description Text for the status of something
+   */
   status: 'Status',
   /**
-  *@description Text for web URLs
-  */
+   *@description Text for web URLs
+   */
   url: 'URL',
   /**
-  *@description Text for the initiator of something
-  */
+   *@description Text for the initiator of something
+   */
   initiator: 'Initiator',
   /**
-  *@description Text in Coverage List View of the Coverage tab
-  */
+   *@description Text in Coverage List View of the Coverage tab
+   */
   totalBytes: 'Total Bytes',
   /**
-  *@description Text for errors
-  */
+   *@description Text for errors
+   */
   error: 'Error',
   /**
-  *@description Title for the developer resources tab
-  */
+   *@description Title for the developer resources tab
+   */
   developerResources: 'Developer Resources',
   /**
-  *@description Text for a context menu entry
-  */
+   *@description Text for a context menu entry
+   */
   copyUrl: 'Copy URL',
   /**
-  * @description Text for a context menu entry. Command to copy a URL to the clipboard. The initiator
-  * of a request is the entity that caused this request to be sent.
-  */
+   * @description Text for a context menu entry. Command to copy a URL to the clipboard. The initiator
+   * of a request is the entity that caused this request to be sent.
+   */
   copyInitiatorUrl: 'Copy initiator URL',
   /**
-  *@description Text for the status column of a list view
-  */
+   *@description Text for the status column of a list view
+   */
   pending: 'pending',
   /**
-  *@description Text for the status column of a list view
-  */
+   *@description Text for the status column of a list view
+   */
   success: 'success',
   /**
-  *@description Text for the status column of a list view
-  */
+   *@description Text for the status column of a list view
+   */
   failure: 'failure',
   /**
-  *@description Accessible text for the value in bytes in memory allocation.
-  */
+   *@description Accessible text for the value in bytes in memory allocation.
+   */
   sBytes: '{n, plural, =1 {# byte} other {# bytes}}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperResourcesListView.ts', UIStrings);

@@ -19,12 +19,12 @@ import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
   /**
-  *@description Error message for canceled source map loads
-  */
+   *@description Error message for canceled source map loads
+   */
   loadCanceledDueToReloadOf: 'Load canceled due to reload of inspected page',
   /**
-  *@description Error message for canceled source map loads
-  */
+   *@description Error message for canceled source map loads
+   */
   loadCanceledDueToLoadTimeout: 'Load canceled due to load timeout',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/PageResourceLoader.ts', UIStrings);

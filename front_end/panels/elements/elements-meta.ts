@@ -12,120 +12,120 @@ import type * as Elements from './elements.js';
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
-  * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
-  */
+   * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
+   */
   showElements: 'Show Elements',
   /**
-  * @description Title of the Elements Panel. Elements refers to HTML elements.
-  */
+   * @description Title of the Elements Panel. Elements refers to HTML elements.
+   */
   elements: 'Elements',
   /**
-  * @description Command for showing the 'Event Listeners' tool. Refers to DOM Event listeners.
-  */
+   * @description Command for showing the 'Event Listeners' tool. Refers to DOM Event listeners.
+   */
   showEventListeners: 'Show Event Listeners',
   /**
-  * @description Title of the 'Event Listeners' tool in the sidebar of the elements panel. Refers to
-  * DOM Event listeners.
-  */
+   * @description Title of the 'Event Listeners' tool in the sidebar of the elements panel. Refers to
+   * DOM Event listeners.
+   */
   eventListeners: 'Event Listeners',
   /**
-  * @description Command for showing the 'Properties' tool. Refers to HTML properties.
-  */
+   * @description Command for showing the 'Properties' tool. Refers to HTML properties.
+   */
   showProperties: 'Show Properties',
   /**
-  * @description Title of the 'Properties' tool in the sidebar of the elements tool. Refers to HTML
-  * properties.
-  */
+   * @description Title of the 'Properties' tool in the sidebar of the elements tool. Refers to HTML
+   * properties.
+   */
   properties: 'Properties',
   /**
-  * @description Command for showing the 'Stack Trace' tool. Stack trace refers to the location in
-  * the code where the program was at a point in time.
-  */
+   * @description Command for showing the 'Stack Trace' tool. Stack trace refers to the location in
+   * the code where the program was at a point in time.
+   */
   showStackTrace: 'Show Stack Trace',
   /**
-  * @description Text for the execution stack trace tool, which shows the stack trace from when this
-  * HTML element was created. Stack trace refers to the location in the code where the program was
-  * at a point in time.
-  */
+   * @description Text for the execution stack trace tool, which shows the stack trace from when this
+   * HTML element was created. Stack trace refers to the location in the code where the program was
+   * at a point in time.
+   */
   stackTrace: 'Stack Trace',
   /**
-  * @description Command for showing the 'Layout' tool
-  */
+   * @description Command for showing the 'Layout' tool
+   */
   showLayout: 'Show Layout',
   /**
-  * @description The title of the 'Layout' tool in the sidebar of the elements panel.
-  */
+   * @description The title of the 'Layout' tool in the sidebar of the elements panel.
+   */
   layout: 'Layout',
   /**
-  * @description Command to hide a HTML element in the Elements tree.
-  */
+   * @description Command to hide a HTML element in the Elements tree.
+   */
   hideElement: 'Hide element',
   /**
-  * @description A context menu item (command) in the Elements panel that allows the user to edit the
-  * currently selected node as raw HTML text.
-  */
+   * @description A context menu item (command) in the Elements panel that allows the user to edit the
+   * currently selected node as raw HTML text.
+   */
   editAsHtml: 'Edit as HTML',
   /**
-  * @description A context menu item (command) in the Elements panel that creates an exact copy of
-  * this HTML element.
-  */
+   * @description A context menu item (command) in the Elements panel that creates an exact copy of
+   * this HTML element.
+   */
   duplicateElement: 'Duplicate element',
   /**
-  * @description A command in the Elements panel to undo the last action the user took.
-  */
+   * @description A command in the Elements panel to undo the last action the user took.
+   */
   undo: 'Undo',
   /**
-  * @description A command in the Elements panel to redo the last action the user took (undo an
-  * undo).
-  */
+   * @description A command in the Elements panel to redo the last action the user took (undo an
+   * undo).
+   */
   redo: 'Redo',
   /**
-  * @description A command in the Elements panel to capture a screenshot of the selected area.
-  */
+   * @description A command in the Elements panel to capture a screenshot of the selected area.
+   */
   captureAreaScreenshot: 'Capture area screenshot',
   /**
-  * @description Title/tooltip of an action in the elements panel to toggle element search on/off.
-  */
+   * @description Title/tooltip of an action in the elements panel to toggle element search on/off.
+   */
   selectAnElementInThePageTo: 'Select an element in the page to inspect it',
   /**
-  * @description Title of a setting under the Elements category in Settings. Whether words should be
-  * wrapped around at the end of lines or not.
-  */
+   * @description Title of a setting under the Elements category in Settings. Whether words should be
+   * wrapped around at the end of lines or not.
+   */
   wordWrap: 'Word wrap',
   /**
-  * @description Title of a setting under the Elements category. Whether words should be wrapped
-  * around at the end of lines or not when showing DOM elements.
-  */
+   * @description Title of a setting under the Elements category. Whether words should be wrapped
+   * around at the end of lines or not when showing DOM elements.
+   */
   enableDomWordWrap: 'Enable `DOM` word wrap',
   /**
-  * @description Title of a setting under the Elements category. Whether words should be wrapped
-  * around at the end of lines or not when showing DOM elements.
-  */
+   * @description Title of a setting under the Elements category. Whether words should be wrapped
+   * around at the end of lines or not when showing DOM elements.
+   */
   disableDomWordWrap: 'Disable `DOM` word wrap',
   /**
-  * @description Title of a setting under the Elements category. Whether to show/hide code comments in HTML.
-  */
+   * @description Title of a setting under the Elements category. Whether to show/hide code comments in HTML.
+   */
   showHtmlComments: 'Show `HTML` comments',
   /**
-  * @description Title of a setting under the Elements category. Whether to show/hide code comments in HTML.
-  */
+   * @description Title of a setting under the Elements category. Whether to show/hide code comments in HTML.
+   */
   hideHtmlComments: 'Hide `HTML` comments',
   /**
-  * @description Title of a setting under the Elements category in Settings. Whether the position of
-  * the DOM node on the actual website should be highlighted/revealed to the user when they hover
-  * over the corresponding node in the DOM tree in DevTools.
-  */
+   * @description Title of a setting under the Elements category in Settings. Whether the position of
+   * the DOM node on the actual website should be highlighted/revealed to the user when they hover
+   * over the corresponding node in the DOM tree in DevTools.
+   */
   revealDomNodeOnHover: 'Reveal `DOM` node on hover',
   /**
-  * @description Title of a setting under the Elements category in Settings. Turns on a mode where
-  * the inspect tooltip (an information pane that hovers next to selected DOM elements) has extra
-  * detail.
-  */
+   * @description Title of a setting under the Elements category in Settings. Turns on a mode where
+   * the inspect tooltip (an information pane that hovers next to selected DOM elements) has extra
+   * detail.
+   */
   showDetailedInspectTooltip: 'Show detailed inspect tooltip',
   /**
-  *@description A context menu item (command) in the Elements panel that copy the styles of
-  * the HTML element.
-  */
+   *@description A context menu item (command) in the Elements panel that copy the styles of
+   * the HTML element.
+   */
   copyStyles: 'Copy styles',
   /**
    * @description Title of a setting under the Elements category. Whether to show/hide hide
@@ -133,16 +133,16 @@ const UIStrings = {
    */
   showUserAgentShadowDOM: 'Show user agent shadow `DOM`',
   /**
-  * @description Command for showing the 'Computed' tool. Displays computed CSS styles in Elements sidebar.
-  */
+   * @description Command for showing the 'Computed' tool. Displays computed CSS styles in Elements sidebar.
+   */
   showComputedStyles: 'Show Computed Styles',
   /**
-  * @description Command for showing the 'Styles' tool. Displays CSS styles in Elements sidebar.
-  */
+   * @description Command for showing the 'Styles' tool. Displays CSS styles in Elements sidebar.
+   */
   showStyles: 'Show Styles',
   /**
-  * @description Command for toggling the eye dropper when the color picker is open
-  */
+   * @description Command for toggling the eye dropper when the color picker is open
+   */
   toggleEyeDropper: 'Toggle eye dropper',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/elements-meta.ts', UIStrings);

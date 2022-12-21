@@ -14,16 +14,16 @@ import infobarStyles from './infobar.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text on a button to close the infobar and never show the infobar in the future
-  */
+   *@description Text on a button to close the infobar and never show the infobar in the future
+   */
   dontShowAgain: 'Don\'t show again',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Text to close something
-  */
+   *@description Text to close something
+   */
   close: 'Close',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Infobar.ts', UIStrings);

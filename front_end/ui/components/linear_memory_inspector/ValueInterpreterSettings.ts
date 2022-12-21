@@ -14,8 +14,8 @@ const {render, html} = LitHtml;
 
 const UIStrings = {
   /**
-  *@description Name of a group of selectable value types that do not fall under integer and floating point value types, e.g. Pointer32. The group appears name appears under the Value Interpreter Settings.
-  */
+   *@description Name of a group of selectable value types that do not fall under integer and floating point value types, e.g. Pointer32. The group appears name appears under the Value Interpreter Settings.
+   */
   otherGroup: 'Other',
 };
 const str_ =

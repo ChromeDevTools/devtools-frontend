@@ -50,80 +50,80 @@ import {ResourceWebSocketFrameView} from './ResourceWebSocketFrameView.js';
 
 const UIStrings = {
   /**
-  *@description Text for network request headers
-  */
+   *@description Text for network request headers
+   */
   headers: 'Headers',
   /**
-  *@description Text in Network Item View of the Network panel
-  */
+   *@description Text in Network Item View of the Network panel
+   */
   payload: 'Payload',
   /**
-  *@description Text in Network Item View of the Network panel
-  */
+   *@description Text in Network Item View of the Network panel
+   */
   messages: 'Messages',
   /**
-  *@description Text in Network Item View of the Network panel
-  */
+   *@description Text in Network Item View of the Network panel
+   */
   websocketMessages: 'WebSocket messages',
   /**
-  *@description Text in Network Item View of the Network panel
-  */
+   *@description Text in Network Item View of the Network panel
+   */
   eventstream: 'EventStream',
   /**
-  *@description Text for previewing items
-  */
+   *@description Text for previewing items
+   */
   preview: 'Preview',
   /**
-  *@description Text in Network Item View of the Network panel
-  */
+   *@description Text in Network Item View of the Network panel
+   */
   responsePreview: 'Response preview',
   /**
-  *@description Icon title in Network Item View of the Network panel
-  */
+   *@description Icon title in Network Item View of the Network panel
+   */
   signedexchangeError: 'SignedExchange error',
   /**
-  *@description Title of a tab in the Network panel. A Network response refers to the act of acknowledging a
+   *@description Title of a tab in the Network panel. A Network response refers to the act of acknowledging a
   network request. Should not be confused with answer.
-  */
+   */
   response: 'Response',
   /**
-  *@description Text in Network Item View of the Network panel
-  */
+   *@description Text in Network Item View of the Network panel
+   */
   rawResponseData: 'Raw response data',
   /**
-  *@description Text for the initiator of something
-  */
+   *@description Text for the initiator of something
+   */
   initiator: 'Initiator',
   /**
-  * @description Tooltip for initiator view in Network panel. An initiator is a piece of code/entity
-  * in the code that initiated/started the network request, i.e. caused the network request. The 'call
-  * stack' is the location in the code where the initiation happened.
-  */
+   * @description Tooltip for initiator view in Network panel. An initiator is a piece of code/entity
+   * in the code that initiated/started the network request, i.e. caused the network request. The 'call
+   * stack' is the location in the code where the initiation happened.
+   */
   requestInitiatorCallStack: 'Request initiator call stack',
   /**
-  *@description Title of a tab in Network Item View of the Network panel.
-  *The tab displays the duration breakdown of a network request.
-  */
+   *@description Title of a tab in Network Item View of the Network panel.
+   *The tab displays the duration breakdown of a network request.
+   */
   timing: 'Timing',
   /**
-  *@description Text in Network Item View of the Network panel
-  */
+   *@description Text in Network Item View of the Network panel
+   */
   requestAndResponseTimeline: 'Request and response timeline',
   /**
-  *@description Label of a tab in the network panel
-  */
+   *@description Label of a tab in the network panel
+   */
   trustTokens: 'Trust Tokens',
   /**
-  *@description Title of the Trust token tab in the Network panel
-  */
+   *@description Title of the Trust token tab in the Network panel
+   */
   trustTokenOperationDetails: 'Trust Token operation details',
   /**
-  *@description Text for web cookies
-  */
+   *@description Text for web cookies
+   */
   cookies: 'Cookies',
   /**
-  *@description Text in Network Item View of the Network panel
-  */
+   *@description Text in Network Item View of the Network panel
+   */
   requestAndResponseCookies: 'Request and response cookies',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkItemView.ts', UIStrings);

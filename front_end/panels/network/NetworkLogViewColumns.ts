@@ -23,124 +23,124 @@ import {RequestInitiatorView} from './RequestInitiatorView.js';
 
 const UIStrings = {
   /**
-  *@description Data grid name for Network Log data grids
-  */
+   *@description Data grid name for Network Log data grids
+   */
   networkLog: 'Network Log',
   /**
-  *@description Inner element text content in Network Log View Columns of the Network panel
-  */
+   *@description Inner element text content in Network Log View Columns of the Network panel
+   */
   waterfall: 'Waterfall',
   /**
-  *@description A context menu item in the Network Log View Columns of the Network panel
-  */
+   *@description A context menu item in the Network Log View Columns of the Network panel
+   */
   responseHeaders: 'Response Headers',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   manageHeaderColumns: 'Manage Header Columns…',
   /**
-  *@description Text for the start time of an activity
-  */
+   *@description Text for the start time of an activity
+   */
   startTime: 'Start Time',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   responseTime: 'Response Time',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   endTime: 'End Time',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   totalDuration: 'Total Duration',
   /**
-  *@description Text for the latency of a task
-  */
+   *@description Text for the latency of a task
+   */
   latency: 'Latency',
   /**
-  *@description Text for the name of something
-  */
+   *@description Text for the name of something
+   */
   name: 'Name',
   /**
-  *@description Text that refers to a file path
-  */
+   *@description Text that refers to a file path
+   */
   path: 'Path',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   url: 'Url',
   /**
-  *@description Text for one or a group of functions
-  */
+   *@description Text for one or a group of functions
+   */
   method: 'Method',
   /**
-  *@description Text for the status of something
-  */
+   *@description Text for the status of something
+   */
   status: 'Status',
   /**
-  *@description Generic label for any text
-  */
+   *@description Generic label for any text
+   */
   text: 'Text',
   /**
-  *@description Text for security or network protocol
-  */
+   *@description Text for security or network protocol
+   */
   protocol: 'Protocol',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   scheme: 'Scheme',
   /**
-  *@description Text for the domain of a website
-  */
+   *@description Text for the domain of a website
+   */
   domain: 'Domain',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   remoteAddress: 'Remote Address',
   /**
-  *@description Text that refers to some types
-  */
+   *@description Text that refers to some types
+   */
   type: 'Type',
   /**
-  *@description Text for the initiator of something
-  */
+   *@description Text for the initiator of something
+   */
   initiator: 'Initiator',
   /**
-  *@description Column header in the Network log view of the Network panel
-  */
+   *@description Column header in the Network log view of the Network panel
+   */
   initiatorAddressSpace: 'Initiator Address Space',
   /**
-  *@description Text for web cookies
-  */
+   *@description Text for web cookies
+   */
   cookies: 'Cookies',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   setCookies: 'Set Cookies',
   /**
-  *@description Text for the size of something
-  */
+   *@description Text for the size of something
+   */
   size: 'Size',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   content: 'Content',
   /**
-  *@description Text that refers to the time
-  */
+   *@description Text that refers to the time
+   */
   time: 'Time',
   /**
-  *@description Text to show the priority of an item
-  */
+   *@description Text to show the priority of an item
+   */
   priority: 'Priority',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   connectionId: 'Connection ID',
   /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
+   *@description Text in Network Log View Columns of the Network panel
+   */
   remoteAddressSpace: 'Remote Address Space',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogViewColumns.ts', UIStrings);

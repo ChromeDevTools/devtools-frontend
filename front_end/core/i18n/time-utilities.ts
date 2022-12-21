@@ -6,34 +6,34 @@ import {getLocalizedString, registerUIStrings} from './i18nImpl.js';
 
 const UIStrings = {
   /**
-  *@description μs is the short form of micro-seconds and the placeholder is a number
-  *@example {2} PH1
-  */
+   *@description μs is the short form of micro-seconds and the placeholder is a number
+   *@example {2} PH1
+   */
   fmms: '{PH1} μs',
   /**
-  *@description ms is the short form of milli-seconds and the placeholder is a decimal number
-  *@example {2.14} PH1
-  */
+   *@description ms is the short form of milli-seconds and the placeholder is a decimal number
+   *@example {2.14} PH1
+   */
   fms: '{PH1} ms',
   /**
-  *@description s is short for seconds and the placeholder is a decimal number
-  *@example {2.14} PH1
-  */
+   *@description s is short for seconds and the placeholder is a decimal number
+   *@example {2.14} PH1
+   */
   fs: '{PH1} s',
   /**
-  *@description min is short for minutes and the placeholder is a decimal number
-  *@example {2.2} PH1
-  */
+   *@description min is short for minutes and the placeholder is a decimal number
+   *@example {2.2} PH1
+   */
   fmin: '{PH1} min',
   /**
-  *@description hrs is short for hours and the placeholder is a decimal number
-  *@example {2.2} PH1
-  */
+   *@description hrs is short for hours and the placeholder is a decimal number
+   *@example {2.2} PH1
+   */
   fhrs: '{PH1} hrs',
   /**
-  *@description days formatting and the placeholder is a decimal number
-  *@example {2.2} PH1
-  */
+   *@description days formatting and the placeholder is a decimal number
+   *@example {2.2} PH1
+   */
   fdays: '{PH1} days',
 };
 

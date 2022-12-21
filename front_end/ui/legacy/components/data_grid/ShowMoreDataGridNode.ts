@@ -34,23 +34,23 @@ import {DataGridNode} from './DataGrid.js';
 
 const UIStrings = {
   /**
-  * @description Shown in a table when there are too many results to show directly. The user can
-  * click this button to show more results. This will result in the UI showing X more results before
-  * the current position.
-  * @example {5} PH1
-  */
+   * @description Shown in a table when there are too many results to show directly. The user can
+   * click this button to show more results. This will result in the UI showing X more results before
+   * the current position.
+   * @example {5} PH1
+   */
   showDBefore: 'Show {PH1} before',
   /**
-  * @description Shown in a table when there are too many results to show directly. The user can
-  * click this button to show more results. This will result in the UI showing X more results after
-  * the current position.
-  * @example {5} PH1
-  */
+   * @description Shown in a table when there are too many results to show directly. The user can
+   * click this button to show more results. This will result in the UI showing X more results after
+   * the current position.
+   * @example {5} PH1
+   */
   showDAfter: 'Show {PH1} after',
   /**
-  *@description In a data grid, for a list of items with omitted items, display all omitted items
-  *@example {50} PH1
-  */
+   *@description In a data grid, for a list of items with omitted items, display all omitted items
+   *@example {50} PH1
+   */
   showAllD: 'Show all {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/ShowMoreDataGridNode.ts', UIStrings);

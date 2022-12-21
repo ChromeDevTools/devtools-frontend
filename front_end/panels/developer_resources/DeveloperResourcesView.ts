@@ -12,20 +12,20 @@ import developerResourcesViewStyles from './developerResourcesView.css.js';
 
 const UIStrings = {
   /**
-  *@description Placeholder for a search field in a toolbar
-  */
+   *@description Placeholder for a search field in a toolbar
+   */
   enterTextToSearchTheUrlAndError: 'Enter text to search the URL and Error columns',
   /**
-  * @description Tooltip for a checkbox in the toolbar of the developer resources view. The
-  * inspected target is the webpage that DevTools is debugging/inspecting/attached to.
-  */
+   * @description Tooltip for a checkbox in the toolbar of the developer resources view. The
+   * inspected target is the webpage that DevTools is debugging/inspecting/attached to.
+   */
   loadHttpsDeveloperResources: 'Load `HTTP(S)` developer resources through the inspected target',
   /**
-  * @description Text for a checkbox in the toolbar of the developer resources view. The target is
-  * the webpage that DevTools is debugging/inspecting/attached to. This setting makes it so
-  * developer resources are requested from the webpage itself, and not from the DevTools
-  * application.
-  */
+   * @description Text for a checkbox in the toolbar of the developer resources view. The target is
+   * the webpage that DevTools is debugging/inspecting/attached to. This setting makes it so
+   * developer resources are requested from the webpage itself, and not from the DevTools
+   * application.
+   */
   enableLoadingThroughTarget: 'Enable loading through target',
   /**
    *@description Text for resources load status

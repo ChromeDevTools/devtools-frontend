@@ -41,12 +41,12 @@ import {Log, type EntryDTO} from './Log.js';
 
 const UIStrings = {
   /**
-  *@description Title of progress in harwriter of the network panel
-  */
+   *@description Title of progress in harwriter of the network panel
+   */
   collectingContent: 'Collecting content…',
   /**
-  *@description Text to indicate DevTools is writing to a file
-  */
+   *@description Text to indicate DevTools is writing to a file
+   */
   writingFile: 'Writing file…',
 };
 const str_ = i18n.i18n.registerUIStrings('models/har/Writer.ts', UIStrings);

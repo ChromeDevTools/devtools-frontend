@@ -22,48 +22,48 @@ import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.j
 
 const UIStrings = {
   /**
-  *@description Text for the summary view
-  */
+   *@description Text for the summary view
+   */
   summary: 'Summary',
   /**
-  *@description Text in Timeline Details View of the Performance panel
-  */
+   *@description Text in Timeline Details View of the Performance panel
+   */
   bottomup: 'Bottom-Up',
   /**
-  *@description Text in Timeline Details View of the Performance panel
-  */
+   *@description Text in Timeline Details View of the Performance panel
+   */
   callTree: 'Call Tree',
   /**
-  *@description Text in Timeline Details View of the Performance panel
-  */
+   *@description Text in Timeline Details View of the Performance panel
+   */
   eventLog: 'Event Log',
   /**
-  *@description The label for estimated total blocking time in the performance panel
-  */
+   *@description The label for estimated total blocking time in the performance panel
+   */
   estimated: 'estimated',
   /**
-  *@description Label for the total blocking time in the Performance Panel
-  *@example {320.23} PH1
-  *@example {(estimated)} PH2
-  */
+   *@description Label for the total blocking time in the Performance Panel
+   *@example {320.23} PH1
+   *@example {(estimated)} PH2
+   */
   totalBlockingTimeSmss: 'Total blocking time: {PH1}ms{PH2}',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Title of the Layers tool
-  */
+   *@description Title of the Layers tool
+   */
   layers: 'Layers',
   /**
-  *@description Title of the paint profiler, old name of the performance pane
-  */
+   *@description Title of the paint profiler, old name of the performance pane
+   */
   paintProfiler: 'Paint Profiler',
   /**
-  *@description Text in Timeline Details View of the Performance panel
-  *@example {1ms} PH1
-  *@example {10ms} PH2
-  */
+   *@description Text in Timeline Details View of the Performance panel
+   *@example {1ms} PH1
+   *@example {10ms} PH2
+   */
   rangeSS: 'Range:  {PH1} – {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineDetailsView.ts', UIStrings);

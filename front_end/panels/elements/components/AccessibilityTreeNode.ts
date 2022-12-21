@@ -14,8 +14,8 @@ import accessibilityTreeNodeStyles from './accessibilityTreeNode.css.js';
 
 const UIStrings = {
   /**
-  *@description Ignored node element text content in Accessibility Tree View of the Elements panel
-  */
+   *@description Ignored node element text content in Accessibility Tree View of the Elements panel
+   */
   ignored: 'Ignored',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/AccessibilityTreeNode.ts', UIStrings);

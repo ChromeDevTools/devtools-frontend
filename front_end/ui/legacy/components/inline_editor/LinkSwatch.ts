@@ -11,9 +11,9 @@ import linkSwatchStyles from './linkSwatch.css.js';
 
 const UIStrings = {
   /**
-  *@description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane when the custom property in this function does not exist. The parameter is the name of the property.
-  *@example {--my-custom-property-name} PH1
-  */
+   *@description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane when the custom property in this function does not exist. The parameter is the name of the property.
+   *@example {--my-custom-property-name} PH1
+   */
   sIsNotDefined: '{PH1} is not defined',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/LinkSwatch.ts', UIStrings);

@@ -43,16 +43,16 @@ import {metadataForURL} from './ResourceUtils.js';
 
 const UIStrings = {
   /**
-  *@description Error text displayed in the console when editing a live script fails. LiveEdit is
-  *the name of the feature for editing code that is already running.
-  *@example {warning} PH1
-  */
+   *@description Error text displayed in the console when editing a live script fails. LiveEdit is
+   *the name of the feature for editing code that is already running.
+   *@example {warning} PH1
+   */
   liveEditFailed: '`LiveEdit` failed: {PH1}',
   /**
-  *@description Error text displayed in the console when compiling a live-edited script fails. LiveEdit is
-  *the name of the feature for editing code that is already running.
-  *@example {connection lost} PH1
-  */
+   *@description Error text displayed in the console when compiling a live-edited script fails. LiveEdit is
+   *the name of the feature for editing code that is already running.
+   *@example {connection lost} PH1
+   */
   liveEditCompileFailed: '`LiveEdit` compile failed: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('models/bindings/ResourceScriptMapping.ts', UIStrings);

@@ -57,57 +57,57 @@ import {ExecutionContextSelector} from './ExecutionContextSelector.js';
 
 const UIStrings = {
   /**
-  *@description Title of item in main
-  */
+   *@description Title of item in main
+   */
   customizeAndControlDevtools: 'Customize and control DevTools',
   /**
-  *@description Title element text content in Main
-  */
+   *@description Title element text content in Main
+   */
   dockSide: 'Dock side',
   /**
-  *@description Title element title in Main
-  *@example {Ctrl+Shift+D} PH1
-  */
+   *@description Title element title in Main
+   *@example {Ctrl+Shift+D} PH1
+   */
   placementOfDevtoolsRelativeToThe: 'Placement of DevTools relative to the page. ({PH1} to restore last position)',
   /**
-  *@description Text to undock the DevTools
-  */
+   *@description Text to undock the DevTools
+   */
   undockIntoSeparateWindow: 'Undock into separate window',
   /**
-  *@description Text to dock the DevTools to the bottom of the browser tab
-  */
+   *@description Text to dock the DevTools to the bottom of the browser tab
+   */
   dockToBottom: 'Dock to bottom',
   /**
-  *@description Text to dock the DevTools to the right of the browser tab
-  */
+   *@description Text to dock the DevTools to the right of the browser tab
+   */
   dockToRight: 'Dock to right',
   /**
-  *@description Text to dock the DevTools to the left of the browser tab
-  */
+   *@description Text to dock the DevTools to the left of the browser tab
+   */
   dockToLeft: 'Dock to left',
   /**
-  *@description Text in Main
-  */
+   *@description Text in Main
+   */
   focusDebuggee: 'Focus debuggee',
   /**
-  *@description Text in Main
-  */
+   *@description Text in Main
+   */
   hideConsoleDrawer: 'Hide console drawer',
   /**
-  *@description Text in Main
-  */
+   *@description Text in Main
+   */
   showConsoleDrawer: 'Show console drawer',
   /**
-  *@description A context menu item in the Main
-  */
+   *@description A context menu item in the Main
+   */
   moreTools: 'More tools',
   /**
-  *@description Text for the viewing the help options
-  */
+   *@description Text for the viewing the help options
+   */
   help: 'Help',
   /**
-  *@description Text describing how to navigate the dock side menu
-  */
+   *@description Text describing how to navigate the dock side menu
+   */
   dockSideNaviation: 'Use left and right arrow keys to navigate the options',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);

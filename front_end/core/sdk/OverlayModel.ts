@@ -20,8 +20,8 @@ import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
   /**
-  *@description Text in Overlay Model
-  */
+   *@description Text in Overlay Model
+   */
   pausedInDebugger: 'Paused in debugger',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/OverlayModel.ts', UIStrings);

@@ -9,8 +9,8 @@ import type * as Lighthouse from './lighthouse.js';
 
 const UIStrings = {
   /**
-  *@description Command for showing the 'Lighthouse' tool
-  */
+   *@description Command for showing the 'Lighthouse' tool
+   */
   showLighthouse: 'Show `Lighthouse`',
 };
 

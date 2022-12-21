@@ -46,51 +46,51 @@ import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
   /**
-  *@description Service worker running status displayed in the Service Workers view in the Application panel
-  */
+   *@description Service worker running status displayed in the Service Workers view in the Application panel
+   */
   running: 'running',
   /**
-  *@description Service worker running status displayed in the Service Workers view in the Application panel
-  */
+   *@description Service worker running status displayed in the Service Workers view in the Application panel
+   */
   starting: 'starting',
   /**
-  *@description Service worker running status displayed in the Service Workers view in the Application panel
-  */
+   *@description Service worker running status displayed in the Service Workers view in the Application panel
+   */
   stopped: 'stopped',
   /**
-  *@description Service worker running status displayed in the Service Workers view in the Application panel
-  */
+   *@description Service worker running status displayed in the Service Workers view in the Application panel
+   */
   stopping: 'stopping',
   /**
-  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
-  */
+   *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+   */
   activated: 'activated',
   /**
-  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
-  */
+   *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+   */
   activating: 'activating',
   /**
-  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
-  */
+   *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+   */
   installed: 'installed',
   /**
-  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
-  */
+   *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+   */
   installing: 'installing',
   /**
-  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
-  */
+   *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+   */
   new: 'new',
   /**
-  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
-  */
+   *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+   */
   redundant: 'redundant',
   /**
-  *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
-  *@example {sw.js} PH1
-  *@example {117} PH2
-  *@example {activated} PH3
-  */
+   *@description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+   *@example {sw.js} PH1
+   *@example {117} PH2
+   *@example {activated} PH3
+   */
   sSS: '{PH1} #{PH2} ({PH3})',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ServiceWorkerManager.ts', UIStrings);

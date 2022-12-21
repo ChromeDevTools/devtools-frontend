@@ -8,8 +8,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 
 const UIStrings = {
   /**
-  *@description Generic menu name accessibility label
-  */
+   *@description Generic menu name accessibility label
+   */
   genericMenuLabel: 'Menu',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/ComboBoxOfCheckBoxes.ts', UIStrings);

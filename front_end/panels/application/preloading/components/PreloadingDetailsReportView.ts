@@ -15,36 +15,36 @@ type PrerenderingAttempt = SDK.PrerenderingModel.PrerenderingAttempt;
 
 const UIStrings = {
   /**
-  *@description Text in PreloadingDetailsReportView of the Application panel
-  */
+   *@description Text in PreloadingDetailsReportView of the Application panel
+   */
   selectAnElementForMoreDetails: 'Select an element for more details',
   /**
-  *@description Text in grid and details
-  */
+   *@description Text in grid and details
+   */
   statusPrerendering: 'Prerendering',
   /**
-  *@description Text in grid and details
-  */
+   *@description Text in grid and details
+   */
   statusActivated: 'Activated',
   /**
-  *@description Text in grid and details
-  */
+   *@description Text in grid and details
+   */
   statusDiscarded: 'Discarded',
   /**
-  *@description Text in details
-  */
+   *@description Text in details
+   */
   detailsBasicInformation: 'Basic information',
   /**
-  *@description Text in details
-  */
+   *@description Text in details
+   */
   detailsStartedAt: 'Started at',
   /**
-  *@description Text in details
-  */
+   *@description Text in details
+   */
   detailsTrigger: 'Trigger',
   /**
-  *@description Text in details
-  */
+   *@description Text in details
+   */
   detailsStatus: 'Status',
 };
 const str_ =

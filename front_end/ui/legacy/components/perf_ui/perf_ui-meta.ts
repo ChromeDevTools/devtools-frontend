@@ -11,16 +11,16 @@ import type * as PerfUI from './perf_ui.js';
 
 const UIStrings = {
   /**
-     *@description Title of a setting under the Performance category in Settings
-    */
+   *@description Title of a setting under the Performance category in Settings
+   */
   flamechartMouseWheelAction: 'Flamechart mouse wheel action:',
   /**
-     *@description The action to scroll
-    */
+   *@description The action to scroll
+   */
   scroll: 'Scroll',
   /**
-     *@description Text for zooming in
-    */
+   *@description Text for zooming in
+   */
   zoom: 'Zoom',
   /**
    * @description Title of a setting under the Memory category in Settings. Live memory is memory
@@ -30,16 +30,16 @@ const UIStrings = {
    */
   liveMemoryAllocationAnnotations: 'Live memory allocation annotations',
   /**
-     *@description Title of a setting under the Memory category that can be invoked through the Command Menu
-    */
+   *@description Title of a setting under the Memory category that can be invoked through the Command Menu
+   */
   showLiveMemoryAllocation: 'Show live memory allocation annotations',
   /**
-     *@description Title of a setting under the Memory category that can be invoked through the Command Menu
-    */
+   *@description Title of a setting under the Memory category that can be invoked through the Command Menu
+   */
   hideLiveMemoryAllocation: 'Hide live memory allocation annotations',
   /**
-     *@description Title of an action in the components tool to collect garbage
-    */
+   *@description Title of an action in the components tool to collect garbage
+   */
   collectGarbage: 'Collect garbage',
 };
 

@@ -86,117 +86,117 @@ import {ReportingApiTreeElement} from './ReportingApiTreeElement.js';
 
 const UIStrings = {
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   application: 'Application',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   storage: 'Storage',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   localStorage: 'Local Storage',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   sessionStorage: 'Session Storage',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   webSql: 'Web SQL',
   /**
-  *@description Text for web cookies
-  */
+   *@description Text for web cookies
+   */
   cookies: 'Cookies',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   cache: 'Cache',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   backgroundServices: 'Background Services',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   preloading: 'Preloading',
   /**
-  *@description Text for rendering frames
-  */
+   *@description Text for rendering frames
+   */
   frames: 'Frames',
   /**
-  *@description Text that appears on a button for the manifest resource type filter.
-  */
+   *@description Text that appears on a button for the manifest resource type filter.
+   */
   manifest: 'Manifest',
   /**
-  *@description Text in App Manifest View of the Application panel
-  */
+   *@description Text in App Manifest View of the Application panel
+   */
   noManifestDetected: 'No manifest detected',
   /**
-  *@description Text in App Manifest View of the Application panel
-  */
+   *@description Text in App Manifest View of the Application panel
+   */
   appManifest: 'App Manifest',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   indexeddb: 'IndexedDB',
   /**
-  *@description A context menu item in the Application Panel Sidebar of the Application panel
-  */
+   *@description A context menu item in the Application Panel Sidebar of the Application panel
+   */
   refreshIndexeddb: 'Refresh IndexedDB',
   /**
-  *@description Tooltip in Application Panel Sidebar of the Application panel
-  *@example {1.0} PH1
-  */
+   *@description Tooltip in Application Panel Sidebar of the Application panel
+   *@example {1.0} PH1
+   */
   versionSEmpty: 'Version: {PH1} (empty)',
   /**
-  *@description Tooltip in Application Panel Sidebar of the Application panel
-  *@example {1.0} PH1
-  */
+   *@description Tooltip in Application Panel Sidebar of the Application panel
+   *@example {1.0} PH1
+   */
   versionS: 'Version: {PH1}',
   /**
-  *@description Text to clear content
-  */
+   *@description Text to clear content
+   */
   clear: 'Clear',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  *@example {"key path"} PH1
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   *@example {"key path"} PH1
+   */
   keyPathS: 'Key path: {PH1}',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   localFiles: 'Local Files',
   /**
-  *@description Tooltip in Application Panel Sidebar of the Application panel
-  *@example {https://example.com} PH1
-  */
+   *@description Tooltip in Application Panel Sidebar of the Application panel
+   *@example {https://example.com} PH1
+   */
   cookiesUsedByFramesFromS: 'Cookies used by frames from {PH1}',
   /**
-  *@description Text in Frames View of the Application panel
-  */
+   *@description Text in Frames View of the Application panel
+   */
   openedWindows: 'Opened Windows',
   /**
-  *@description Label for plural of worker type: web workers
-  */
+   *@description Label for plural of worker type: web workers
+   */
   webWorkers: 'Web Workers',
   /**
-  *@description Label in frame tree for unavailable document
-  */
+   *@description Label in frame tree for unavailable document
+   */
   documentNotAvailable: 'Document not available',
   /**
-  *@description Description of content of unavailable document in Application panel
-  */
+   *@description Description of content of unavailable document in Application panel
+   */
   theContentOfThisDocumentHasBeen:
       'The content of this document has been generated dynamically via \'document.write()\'.',
   /**
-  *@description Text in Frames View of the Application panel
-  */
+   *@description Text in Frames View of the Application panel
+   */
   windowWithoutTitle: 'Window without title',
   /**
-  *@description Default name for worker
-  */
+   *@description Default name for worker
+   */
   worker: 'worker',
   /**
    * @description Aria text for screen reader to announce they can scroll to top of manifest if invoked

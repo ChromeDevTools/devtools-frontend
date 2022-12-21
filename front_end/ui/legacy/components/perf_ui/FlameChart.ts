@@ -44,28 +44,28 @@ import flameChartStyles from './flameChart.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Aria accessible name in Flame Chart of the Performance panel
-  */
+   *@description Aria accessible name in Flame Chart of the Performance panel
+   */
   flameChart: 'Flame Chart',
   /**
-  *@description Text for the screen reader to announce a hovered group
-  *@example {Network} PH1
-  */
+   *@description Text for the screen reader to announce a hovered group
+   *@example {Network} PH1
+   */
   sHovered: '{PH1} hovered',
   /**
-  *@description Text for screen reader to announce a selected group.
-  *@example {Network} PH1
-  */
+   *@description Text for screen reader to announce a selected group.
+   *@example {Network} PH1
+   */
   sSelected: '{PH1} selected',
   /**
-  *@description Text for screen reader to announce an expanded group
-  *@example {Network} PH1
-  */
+   *@description Text for screen reader to announce an expanded group
+   *@example {Network} PH1
+   */
   sExpanded: '{PH1} expanded',
   /**
-  *@description Text for screen reader to announce a collapsed group
-  *@example {Network} PH1
-  */
+   *@description Text for screen reader to announce a collapsed group
+   *@example {Network} PH1
+   */
   sCollapsed: '{PH1} collapsed',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FlameChart.ts', UIStrings);

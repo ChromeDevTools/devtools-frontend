@@ -11,68 +11,68 @@ import type * as BrowserDebugger from './browser_debugger.js';
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
-  *@description Command for showing the 'Event Listener Breakpoints' tool
-  */
+   *@description Command for showing the 'Event Listener Breakpoints' tool
+   */
   showEventListenerBreakpoints: 'Show Event Listener Breakpoints',
   /**
-  *@description Title of the 'Event Listener Breakpoints' tool in the bottom sidebar of the Sources tool
-  */
+   *@description Title of the 'Event Listener Breakpoints' tool in the bottom sidebar of the Sources tool
+   */
   eventListenerBreakpoints: 'Event Listener Breakpoints',
   /**
-  *@description Title for showing the 'CSP Violation Breakpoints' tool in the Sources panel
-  */
+   *@description Title for showing the 'CSP Violation Breakpoints' tool in the Sources panel
+   */
   showCspViolationBreakpoints: 'Show CSP Violation Breakpoints',
   /**
-  *@description Title of the 'CSP Violation Breakpoints' tool in the bottom sidebar of the Sources tool
-  */
+   *@description Title of the 'CSP Violation Breakpoints' tool in the bottom sidebar of the Sources tool
+   */
   cspViolationBreakpoints: 'CSP Violation Breakpoints',
   /**
-  *@description Command for showing the 'XHR/fetch Breakpoints' in the sources panel
-  */
+   *@description Command for showing the 'XHR/fetch Breakpoints' in the sources panel
+   */
   showXhrfetchBreakpoints: 'Show XHR/fetch Breakpoints',
   /**
-  *@description Title of the 'XHR/fetch Breakpoints' tool in the bottom sidebar of the Sources tool
-  */
+   *@description Title of the 'XHR/fetch Breakpoints' tool in the bottom sidebar of the Sources tool
+   */
   xhrfetchBreakpoints: 'XHR/fetch Breakpoints',
   /**
-  *@description Command for showing the 'DOM Breakpoints' tool in the Elements panel
-  */
+   *@description Command for showing the 'DOM Breakpoints' tool in the Elements panel
+   */
   showDomBreakpoints: 'Show DOM Breakpoints',
   /**
-  *@description Title of the 'DOM Breakpoints' tool in the bottom sidebar of the Sources tool
-  */
+   *@description Title of the 'DOM Breakpoints' tool in the bottom sidebar of the Sources tool
+   */
   domBreakpoints: 'DOM Breakpoints',
   /**
-  *@description Command for showing the 'Gobal Listeners' tool in the sources panel
-  */
+   *@description Command for showing the 'Gobal Listeners' tool in the sources panel
+   */
   showGlobalListeners: 'Show Global Listeners',
   /**
-  *@description Title of the 'Global Listeners' tool in the bottom sidebar of the Sources tool
-  */
+   *@description Title of the 'Global Listeners' tool in the bottom sidebar of the Sources tool
+   */
   globalListeners: 'Global Listeners',
   /**
-  *@description Text that refers to one or a group of webpages
-  */
+   *@description Text that refers to one or a group of webpages
+   */
   page: 'Page',
   /**
-  *@description Command for showing the 'Page' tab in the Sources panel
-  */
+   *@description Command for showing the 'Page' tab in the Sources panel
+   */
   showPage: 'Show Page',
   /**
-  *@description Title as part of a tool to override existing configurations
-  */
+   *@description Title as part of a tool to override existing configurations
+   */
   overrides: 'Overrides',
   /**
-  *@description Command for showing the 'Overrides' tool in the Sources panel
-  */
+   *@description Command for showing the 'Overrides' tool in the Sources panel
+   */
   showOverrides: 'Show Overrides',
   /**
-  *@description Title for a type of source files
-  */
+   *@description Title for a type of source files
+   */
   contentScripts: 'Content scripts',
   /**
-  *@description Command for showing the 'Content scripts' tool in the sources panel
-  */
+   *@description Command for showing the 'Content scripts' tool in the sources panel
+   */
   showContentScripts: 'Show Content scripts',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/browser_debugger-meta.ts', UIStrings);

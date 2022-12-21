@@ -27,82 +27,82 @@ import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
 
 const UIStrings = {
   /**
-  *@description Text in Profile View of a profiler tool
-  */
+   *@description Text in Profile View of a profiler tool
+   */
   profile: 'Profile',
   /**
-  *@description Placeholder text in the search box of the JavaScript profiler tool. Users can search
-  *the results by the cost in milliseconds, the name of the function, or the file name.
-  */
+   *@description Placeholder text in the search box of the JavaScript profiler tool. Users can search
+   *the results by the cost in milliseconds, the name of the function, or the file name.
+   */
   findByCostMsNameOrFile: 'Find by cost (>50ms), name or file',
   /**
-  *@description Text for a programming function
-  */
+   *@description Text for a programming function
+   */
   function: 'Function',
   /**
-  *@description Title of the Profiler tool
-  */
+   *@description Title of the Profiler tool
+   */
   profiler: 'Profiler',
   /**
-  *@description Aria-label for profiles view combobox in memory tool
-  */
+   *@description Aria-label for profiles view combobox in memory tool
+   */
   profileViewMode: 'Profile view mode',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon visibility button in the Profile View of a profiler tool
-  */
+   *@description Tooltip text that appears when hovering over the largeicon visibility button in the Profile View of a profiler tool
+   */
   focusSelectedFunction: 'Focus selected function',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon delete button in the Profile View of a profiler tool
-  */
+   *@description Tooltip text that appears when hovering over the largeicon delete button in the Profile View of a profiler tool
+   */
   excludeSelectedFunction: 'Exclude selected function',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon refresh button in the Profile View of a profiler tool
-  */
+   *@description Tooltip text that appears when hovering over the largeicon refresh button in the Profile View of a profiler tool
+   */
   restoreAllFunctions: 'Restore all functions',
   /**
-  *@description Text in Profile View of a profiler tool
-  */
+   *@description Text in Profile View of a profiler tool
+   */
   chart: 'Chart',
   /**
-  *@description Text in Profile View of a profiler tool
-  */
+   *@description Text in Profile View of a profiler tool
+   */
   heavyBottomUp: 'Heavy (Bottom Up)',
   /**
-  *@description Text for selecting different profile views in the JS profiler tool. This option is a tree view.
-  */
+   *@description Text for selecting different profile views in the JS profiler tool. This option is a tree view.
+   */
   treeTopDown: 'Tree (Top Down)',
   /**
-  * @description Name of a profile
-  * @example {2} PH1
-  */
+   * @description Name of a profile
+   * @example {2} PH1
+   */
   profileD: 'Profile {PH1}',
   /**
    *@description Text in Profile View of a profiler tool
-  *@example {4 MB} PH1
-  */
+   *@example {4 MB} PH1
+   */
   loadingD: 'Loading… {PH1}%',
   /**
-  *@description Text in Profile View of a profiler tool
-  *@example {example.file} PH1
-  *@example {cannot open file} PH2
-  */
+   *@description Text in Profile View of a profiler tool
+   *@example {example.file} PH1
+   *@example {cannot open file} PH2
+   */
   fileSReadErrorS: 'File \'\'{PH1}\'\' read error: {PH2}',
   /**
-  *@description Text when something is loading
-  */
+   *@description Text when something is loading
+   */
   loading: 'Loading…',
   /**
-  *@description Text in Profile View of a profiler tool
-  */
+   *@description Text in Profile View of a profiler tool
+   */
   failedToReadFile: 'Failed to read file',
   /**
-  *@description Text in Profile View of a profiler tool
-  */
+   *@description Text in Profile View of a profiler tool
+   */
   parsing: 'Parsing…',
   /**
-  * @description Status indicator in the JS Profiler to show that a file has been successfully loaded
-  * from file, as opposed to a profile that has been captured locally.
-  */
+   * @description Status indicator in the JS Profiler to show that a file has been successfully loaded
+   * from file, as opposed to a profile that has been captured locally.
+   */
   loaded: 'Loaded',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileView.ts', UIStrings);

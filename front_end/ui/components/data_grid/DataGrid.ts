@@ -33,16 +33,16 @@ import {
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
-  *@description A context menu item in the Data Grid of a data grid
-  */
+   *@description A context menu item in the Data Grid of a data grid
+   */
   sortBy: 'Sort By',
   /**
-  *@description A context menu item in data grids to reset the columns to their default weight
-  */
+   *@description A context menu item in data grids to reset the columns to their default weight
+   */
   resetColumns: 'Reset Columns',
   /**
-  *@description A context menu item in data grids to list header options.
-  */
+   *@description A context menu item in data grids to list header options.
+   */
   headerOptions: 'Header Options',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/data_grid/DataGrid.ts', UIStrings);
@@ -713,11 +713,11 @@ export class DataGrid extends HTMLElement {
       LitHtml.render(LitHtml.html`
       ${this.#columns.map((col, columnIndex) => {
         /**
-        * We render the resizers outside of the table. One is rendered for each
-        * column, and they are positioned absolutely at the right position. They
-        * have 100% height so they sit over the entire table and can be grabbed
-        * by the user.
-        */
+         * We render the resizers outside of the table. One is rendered for each
+         * column, and they are positioned absolutely at the right position. They
+         * have 100% height so they sit over the entire table and can be grabbed
+         * by the user.
+         */
         return this.#renderResizeForCell(col, [columnIndex, 0]);
       })}
       <div class="wrapping-container" @scroll=${this.#onScroll} @focusout=${this.#onFocusOut}>

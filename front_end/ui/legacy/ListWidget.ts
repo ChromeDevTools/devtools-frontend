@@ -14,24 +14,24 @@ import {VBox} from './Widget.js';
 
 const UIStrings = {
   /**
-  *@description Text on a button to start editing text
-  */
+   *@description Text on a button to start editing text
+   */
   editString: 'Edit',
   /**
-  *@description Label for an item to remove something
-  */
+   *@description Label for an item to remove something
+   */
   removeString: 'Remove',
   /**
-  *@description Text to save something
-  */
+   *@description Text to save something
+   */
   saveString: 'Save',
   /**
-  *@description Text to add something
-  */
+   *@description Text to add something
+   */
   addString: 'Add',
   /**
-  *@description Text to cancel something
-  */
+   *@description Text to cancel something
+   */
   cancelString: 'Cancel',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ListWidget.ts', UIStrings);

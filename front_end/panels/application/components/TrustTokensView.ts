@@ -15,16 +15,16 @@ import type * as Protocol from '../../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description Text for the issuer of an item
-  */
+   *@description Text for the issuer of an item
+   */
   issuer: 'Issuer',
   /**
-  *@description Column header for Trust Token table
-  */
+   *@description Column header for Trust Token table
+   */
   storedTokenCount: 'Stored token count',
   /**
-  *@description Hover text for an info icon in the Trust Token panel
-  */
+   *@description Hover text for an info icon in the Trust Token panel
+   */
   allStoredTrustTokensAvailableIn: 'All stored Trust Tokens available in this browser instance.',
   /**
    * @description Text shown instead of a table when the table would be empty.

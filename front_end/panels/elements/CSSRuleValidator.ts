@@ -18,37 +18,37 @@ import {
 
 const UIStrings = {
   /**
-    *@description The message shown in the Style pane when the user hovers over a property that has no effect due to some other property.
-    *@example {flex-wrap: nowrap} REASON_PROPERTY_DECLARATION_CODE
-    *@example {align-content} AFFECTED_PROPERTY_DECLARATION_CODE
-    */
+   *@description The message shown in the Style pane when the user hovers over a property that has no effect due to some other property.
+   *@example {flex-wrap: nowrap} REASON_PROPERTY_DECLARATION_CODE
+   *@example {align-content} AFFECTED_PROPERTY_DECLARATION_CODE
+   */
   ruleViolatedBySameElementRuleReason:
       'The {REASON_PROPERTY_DECLARATION_CODE} property prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect.',
   /**
-    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to some other property.
-    *@example {flex-wrap} PROPERTY_NAME
+   *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to some other property.
+   *@example {flex-wrap} PROPERTY_NAME
     @example {nowrap} PROPERTY_VALUE
-    */
+   */
   ruleViolatedBySameElementRuleFix: 'Try setting {PROPERTY_NAME} to something other than {PROPERTY_VALUE}.',
   /**
-    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to the current property value.
-    *@example {display: block} EXISTING_PROPERTY_DECLARATION
-    *@example {display: flex} TARGET_PROPERTY_DECLARATION
-    */
+   *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to the current property value.
+   *@example {display: block} EXISTING_PROPERTY_DECLARATION
+   *@example {display: flex} TARGET_PROPERTY_DECLARATION
+   */
   ruleViolatedBySameElementRuleChangeSuggestion:
       'Try setting the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}.',
   /**
-    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to properties of the parent element.
-    *@example {display: block} REASON_PROPERTY_DECLARATION_CODE
-    *@example {flex} AFFECTED_PROPERTY_DECLARATION_CODE
-    */
+   *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to properties of the parent element.
+   *@example {display: block} REASON_PROPERTY_DECLARATION_CODE
+   *@example {flex} AFFECTED_PROPERTY_DECLARATION_CODE
+   */
   ruleViolatedByParentElementRuleReason:
       'The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element prevents {AFFECTED_PROPERTY_DECLARATION_CODE} from having an effect.',
   /**
-    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to the properties of the parent element.
-    *@example {display: block} EXISTING_PARENT_ELEMENT_RULE
-    *@example {display: flex} TARGET_PARENT_ELEMENT_RULE
-    */
+   *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to the properties of the parent element.
+   *@example {display: block} EXISTING_PARENT_ELEMENT_RULE
+   *@example {display: flex} TARGET_PARENT_ELEMENT_RULE
+   */
   ruleViolatedByParentElementRuleFix:
       'Try setting the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}.',
 };

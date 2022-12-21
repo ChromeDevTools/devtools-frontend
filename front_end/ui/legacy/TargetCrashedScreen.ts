@@ -9,12 +9,12 @@ import {VBox} from './Widget.js';
 
 const UIStrings = {
   /**
-  *@description Text in dialog box when the target page crashed
-  */
+   *@description Text in dialog box when the target page crashed
+   */
   devtoolsWasDisconnectedFromThe: 'DevTools was disconnected from the page.',
   /**
-  *@description Text content of content element
-  */
+   *@description Text content of content element
+   */
   oncePageIsReloadedDevtoolsWill: 'Once page is reloaded, DevTools will automatically reconnect.',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/TargetCrashedScreen.ts', UIStrings);

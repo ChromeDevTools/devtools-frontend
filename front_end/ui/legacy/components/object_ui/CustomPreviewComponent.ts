@@ -13,8 +13,8 @@ import customPreviewComponentStyles from './customPreviewComponent.css.js';
 
 const UIStrings = {
   /**
-  *@description A context menu item in the Custom Preview Component
-  */
+   *@description A context menu item in the Custom Preview Component
+   */
   showAsJavascriptObject: 'Show as JavaScript object',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/CustomPreviewComponent.ts', UIStrings);

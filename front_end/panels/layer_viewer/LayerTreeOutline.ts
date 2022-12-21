@@ -43,18 +43,18 @@ import {
 
 const UIStrings = {
   /**
-  *@description Label for layers sidepanel tree
-  */
+   *@description Label for layers sidepanel tree
+   */
   layersTreePane: 'Layers Tree Pane',
   /**
-  *@description A context menu item in the DView of the Layers panel
-  */
+   *@description A context menu item in the DView of the Layers panel
+   */
   showPaintProfiler: 'Show Paint Profiler',
   /**
-  *@description Details text content in Layer Tree Outline of the Layers panel
-  *@example {10} PH1
-  *@example {10} PH2
-  */
+   *@description Details text content in Layer Tree Outline of the Layers panel
+   *@example {10} PH1
+   *@example {10} PH2
+   */
   updateChildDimension: ' ({PH1} × {PH2})',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerTreeOutline.ts', UIStrings);

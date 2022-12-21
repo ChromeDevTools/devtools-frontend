@@ -17,16 +17,16 @@ import * as NodeText from '../../../ui/components/node_text/node_text.js';
 
 const UIStrings = {
   /**
-  * @description Accessible name for DOM tree breadcrumb navigation.
-  */
+   * @description Accessible name for DOM tree breadcrumb navigation.
+   */
   breadcrumbs: 'DOM tree breadcrumbs',
   /**
-  * @description A label/tooltip for a button that scrolls the breadcrumbs bar to the left to show more entries.
-  */
+   * @description A label/tooltip for a button that scrolls the breadcrumbs bar to the left to show more entries.
+   */
   scrollLeft: 'Scroll left',
   /**
-  * @description A label/tooltip for a button that scrolls the breadcrumbs bar to the right to show more entries.
-  */
+   * @description A label/tooltip for a button that scrolls the breadcrumbs bar to the right to show more entries.
+   */
   scrollRight: 'Scroll right',
 };
 

@@ -50,107 +50,107 @@ import {TimelineUIUtils, assignLayoutShiftsToClusters, type TimelineCategory} fr
 
 const UIStrings = {
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
   onIgnoreList: 'On ignore list',
   /**
-  *@description Text that refers to the animation of the web page
-  */
+   *@description Text that refers to the animation of the web page
+   */
   animation: 'Animation',
   /**
-  *@description Text that refers to the interactions on the page shown in the timeline
-  */
+   *@description Text that refers to the interactions on the page shown in the timeline
+   */
   userInteractions: 'Interactions',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
   timings: 'Timings',
   /**
-  *@description Title of the Console tool
-  */
+   *@description Title of the Console tool
+   */
   console: 'Console',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  *@example {example.com} PH1
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   *@example {example.com} PH1
+   */
   mainS: 'Main — {PH1}',
   /**
-  *@description Text that refers to the main target
-  */
+   *@description Text that refers to the main target
+   */
   main: 'Main',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  *@example {https://example.com} PH1
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   *@example {https://example.com} PH1
+   */
   frameS: 'Frame — {PH1}',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
   subframe: 'Subframe',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
   raster: 'Raster',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  *@example {2} PH1
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   *@example {2} PH1
+   */
   rasterizerThreadS: 'Rasterizer Thread {PH1}',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
   gpu: 'GPU',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
   thread: 'Thread',
   /**
-  *@description Text in Timeline for the Experience title
-  */
+   *@description Text in Timeline for the Experience title
+   */
   experience: 'Experience',
   /**
-  *@description Text for rendering frames
-  */
+   *@description Text for rendering frames
+   */
   frames: 'Frames',
   /**
-  * @description Text in the Performance panel to show how long was spent in a particular part of the code.
-  * The first placeholder is the total time taken for this node and all children, the second is the self time
-  * (time taken in this node, without children included).
-  *@example {10ms} PH1
-  *@example {10ms} PH2
-  */
+   * @description Text in the Performance panel to show how long was spent in a particular part of the code.
+   * The first placeholder is the total time taken for this node and all children, the second is the self time
+   * (time taken in this node, without children included).
+   *@example {10ms} PH1
+   *@example {10ms} PH2
+   */
   sSelfS: '{PH1} (self {PH2})',
   /**
-  *@description Tooltip text for the number of CLS occurences in Timeline
-  *@example {4} PH1
-  */
+   *@description Tooltip text for the number of CLS occurences in Timeline
+   *@example {4} PH1
+   */
   occurrencesS: 'Occurrences: {PH1}',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  */
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
   idleFrame: 'Idle Frame',
   /**
-  *@description Text in Timeline Frame Chart Data Provider of the Performance panel
-  */
+   *@description Text in Timeline Frame Chart Data Provider of the Performance panel
+   */
   droppedFrame: 'Dropped Frame',
   /**
-  *@description Text in Timeline Frame Chart Data Provider of the Performance panel
-  */
+   *@description Text in Timeline Frame Chart Data Provider of the Performance panel
+   */
   partiallyPresentedFrame: 'Partially Presented Frame',
   /**
-  *@description Text for a rendering frame
-  */
+   *@description Text for a rendering frame
+   */
   frame: 'Frame',
   /**
-  *@description Warning text content in Timeline Flame Chart Data Provider of the Performance panel
-  */
+   *@description Warning text content in Timeline Flame Chart Data Provider of the Performance panel
+   */
   longFrame: 'Long frame',
   /**
-  * @description Text for the name of a thread of the page. Used when there are multiple threads but
-  * a more specific name for this thread is not available. The placeholder is a number that uniquely
-  * identifies this thread.
-  * @example {1} PH1
-  */
+   * @description Text for the name of a thread of the page. Used when there are multiple threads but
+   * a more specific name for this thread is not available. The placeholder is a number that uniquely
+   * identifies this thread.
+   * @example {1} PH1
+   */
   threadS: 'Thread {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);

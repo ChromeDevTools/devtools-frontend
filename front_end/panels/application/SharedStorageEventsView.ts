@@ -17,7 +17,7 @@ const UIStrings = {
   /**
    *@description Placeholder text instructing the user how to display shared
    *storage event details.
-  */
+   */
   clickToDisplayBody: 'Click on any shared storage event to display the event parameters.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/SharedStorageEventsView.ts', UIStrings);

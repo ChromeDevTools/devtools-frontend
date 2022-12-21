@@ -11,46 +11,46 @@ import {type UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
   /**
-  *@description Text in Go To Line Quick Open of the Sources panel
-  */
+   *@description Text in Go To Line Quick Open of the Sources panel
+   */
   noFileSelected: 'No file selected.',
   /**
-  *@description Text to show no results have been found
-  */
+   *@description Text to show no results have been found
+   */
   noResultsFound: 'No results found',
   /**
-  *@description Text in Go To Line Quick Open of the Sources panel
-  */
+   *@description Text in Go To Line Quick Open of the Sources panel
+   */
   typeANumberToGoToThatLine: 'Type a number to go to that line.',
   /**
-  *@description Text in Go To Line Quick Open of the Sources panel
-  *@example {abc} PH1
-  *@example {000} PH2
-  *@example {bbb} PH3
-  */
+   *@description Text in Go To Line Quick Open of the Sources panel
+   *@example {abc} PH1
+   *@example {000} PH2
+   *@example {bbb} PH3
+   */
   currentPositionXsTypeAnOffset:
       'Current position: 0x{PH1}. Type an offset between 0x{PH2} and 0x{PH3} to navigate to.',
   /**
-  *@description Text in the GoToLine dialog of the Sources pane that describes the current line number, file line number range, and use of the GoToLine dialog
-  *@example {1} PH1
-  *@example {100} PH2
-  */
+   *@description Text in the GoToLine dialog of the Sources pane that describes the current line number, file line number range, and use of the GoToLine dialog
+   *@example {1} PH1
+   *@example {100} PH2
+   */
   currentLineSTypeALineNumber: 'Current line: {PH1}. Type a line number between 1 and {PH2} to navigate to.',
   /**
-  *@description Text in Go To Line Quick Open of the Sources panel
-  *@example {abc} PH1
-  */
+   *@description Text in Go To Line Quick Open of the Sources panel
+   *@example {abc} PH1
+   */
   goToOffsetXs: 'Go to offset 0x{PH1}.',
   /**
-  *@description Text in Go To Line Quick Open of the Sources panel
-  *@example {2} PH1
-  *@example {2} PH2
-  */
+   *@description Text in Go To Line Quick Open of the Sources panel
+   *@example {2} PH1
+   *@example {2} PH2
+   */
   goToLineSAndColumnS: 'Go to line {PH1} and column {PH2}.',
   /**
-  *@description Text in Go To Line Quick Open of the Sources panel
-  *@example {2} PH1
-  */
+   *@description Text in Go To Line Quick Open of the Sources panel
+   *@example {2} PH1
+   */
   goToLineS: 'Go to line {PH1}.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/GoToLineQuickOpen.ts', UIStrings);

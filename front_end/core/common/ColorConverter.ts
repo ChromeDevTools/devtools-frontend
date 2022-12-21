@@ -5,7 +5,7 @@
 /**
  * Implementation of this module and all the tests are heavily influenced by
  * https://source.chromium.org/chromium/chromium/src/+/main:ui/gfx/color_conversions.cc
-*/
+ */
 
 // https://en.wikipedia.org/wiki/CIELAB_color_space#Converting_between_CIELAB_and_CIEXYZ_coordinates
 const D50_X = 0.9642;

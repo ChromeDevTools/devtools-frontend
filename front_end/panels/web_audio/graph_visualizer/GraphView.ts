@@ -50,7 +50,7 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
 
     /**
      * For each param ID, save its corresponding node Id.
-      */
+     */
     this.paramIdToNodeIdMap = new Map();
   }
 

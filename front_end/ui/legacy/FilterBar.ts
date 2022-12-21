@@ -49,21 +49,21 @@ import filterStyles from './filter.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text to filter result items
-  */
+   *@description Text to filter result items
+   */
   filter: 'Filter',
   /**
-  *@description Text that appears when hover over the filter bar in the Network tool
-  */
+   *@description Text that appears when hover over the filter bar in the Network tool
+   */
   egSmalldUrlacomb: 'e.g. `/small[\d]+/ url:a.com/b`',
   /**
-  *@description Text that appears when hover over the All button in the Network tool
-  *@example {Ctrl + } PH1
-  */
+   *@description Text that appears when hover over the All button in the Network tool
+   *@example {Ctrl + } PH1
+   */
   sclickToSelectMultipleTypes: '{PH1}Click to select multiple types',
   /**
-  *@description Text for everything
-  */
+   *@description Text for everything
+   */
   allStrings: 'All',
   /**
    * @description Hover text for button to clear the filter that is applied

@@ -11,20 +11,20 @@ import preloadingGridStyles from './preloadingGrid.css.js';
 
 const UIStrings = {
   /**
-  *@description Column header for a table displaying prerendering attempt.
-  */
+   *@description Column header for a table displaying prerendering attempt.
+   */
   startedAt: 'Started at',
   /**
-  *@description Column header for a table displaying prerendering attempt.
-  */
+   *@description Column header for a table displaying prerendering attempt.
+   */
   type: 'Type',
   /**
-  *@description Column header for a table displaying prerendering attempt.
-  */
+   *@description Column header for a table displaying prerendering attempt.
+   */
   trigger: 'Trigger',
   /**
-  *@description Column header for a table displaying prerendering attempt.
-  */
+   *@description Column header for a table displaying prerendering attempt.
+   */
   status: 'Status',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingGrid.ts', UIStrings);

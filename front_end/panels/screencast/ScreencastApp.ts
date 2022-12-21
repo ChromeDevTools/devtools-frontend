@@ -11,8 +11,8 @@ import {ScreencastView} from './ScreencastView.js';
 
 const UIStrings = {
   /**
-  *@description Tooltip text that appears when hovering over largeicon phone button in Screencast App of the Remote Devices tab when toggling screencast
-  */
+   *@description Tooltip text that appears when hovering over largeicon phone button in Screencast App of the Remote Devices tab when toggling screencast
+   */
   toggleScreencast: 'Toggle screencast',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/screencast/ScreencastApp.ts', UIStrings);

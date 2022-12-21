@@ -15,44 +15,44 @@ import {type WebVitalsTooltip} from './WebVitalsTooltip.js';
 
 const UIStrings = {
   /**
-  *@description Label for the First Contentful Paint lane
-  */
+   *@description Label for the First Contentful Paint lane
+   */
   fcp: 'FCP',
   /**
-  *@description Label for the Largest Contentful Paint lane
-  */
+   *@description Label for the Largest Contentful Paint lane
+   */
   lcp: 'LCP',
   /**
-  *@description Label for the Layout Shifts lane
-  */
+   *@description Label for the Layout Shifts lane
+   */
   ls: 'LS',
   /**
-  *@description Label for the Long Tasks lane
-  */
+   *@description Label for the Long Tasks lane
+   */
   longTasks: 'Long Tasks',
   /**
-  *@description Label for the Long Tasks overlay
-  */
+   *@description Label for the Long Tasks overlay
+   */
   longTask: 'Long Task',
   /**
-  *@description Label for the First Contentful Paint overlay
-  */
+   *@description Label for the First Contentful Paint overlay
+   */
   firstContentfulPaint: 'First Contentful Paint',
   /**
-  *@description Label for the Largest Contentful Paint overlay
-  */
+   *@description Label for the Largest Contentful Paint overlay
+   */
   largestContentfulPaint: 'Largest Contentful Paint',
   /**
-  *@description Label to describe the range in which the rating for the value is considered good
-  */
+   *@description Label to describe the range in which the rating for the value is considered good
+   */
   good: 'Good',
   /**
-  *@description Label to describe the range in which the rating for the value is considered to need improvement
-  */
+   *@description Label to describe the range in which the rating for the value is considered to need improvement
+   */
   needsImprovement: 'Needs improvement',
   /**
-  *@description Label to describe the range in which the rating for the value is considered poor
-  */
+   *@description Label to describe the range in which the rating for the value is considered poor
+   */
   poor: 'Poor',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/WebVitalsTimeline.ts', UIStrings);

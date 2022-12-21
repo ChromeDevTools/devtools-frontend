@@ -11,16 +11,16 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-  *@description Label for number of affected resources indication in issue view
-  */
+   *@description Label for number of affected resources indication in issue view
+   */
   nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**
-  *@description Title for the 'Frame' column.
-  */
+   *@description Title for the 'Frame' column.
+   */
   frameId: 'Frame',
   /**
-  *@description Label for the violating node link in the issue view.
-  */
+   *@description Label for the violating node link in the issue view.
+   */
   violatingNode: 'Violating node',
 };
 

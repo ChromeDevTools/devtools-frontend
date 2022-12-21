@@ -20,8 +20,8 @@ import softDropDownButtonStyles from './softDropDownButton.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Placeholder text in Soft Drop Down
-  */
+   *@description Placeholder text in Soft Drop Down
+   */
   noItemSelected: '(no item selected)',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SoftDropDown.ts', UIStrings);

@@ -60,22 +60,22 @@ import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
   /**
-  *@description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
-  */
+   *@description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
+   */
   dropWorkspaceFolderHere: 'Drop workspace folder here',
   /**
-  *@description Text to show more options
-  */
+   *@description Text to show more options
+   */
   moreOptions: 'More options',
   /**
-  * @description Tooltip for the the navigator toggle in the Sources panel. Command to open/show the
-  * sidebar containing the navigator tool.
-  */
+   * @description Tooltip for the the navigator toggle in the Sources panel. Command to open/show the
+   * sidebar containing the navigator tool.
+   */
   showNavigator: 'Show navigator',
   /**
-  * @description Tooltip for the the navigator toggle in the Sources panel. Command to close/hide
-  * the sidebar containing the navigator tool.
-  */
+   * @description Tooltip for the the navigator toggle in the Sources panel. Command to close/hide
+   * the sidebar containing the navigator tool.
+   */
   hideNavigator: 'Hide navigator',
   /**
    * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
@@ -94,89 +94,89 @@ const UIStrings = {
    */
   debuggerHidden: 'Debugger sidebar hidden',
   /**
-  * @description Tooltip for the the debugger toggle in the Sources panel. Command to open/show the
-  * sidebar containing the debugger tool.
-  */
+   * @description Tooltip for the the debugger toggle in the Sources panel. Command to open/show the
+   * sidebar containing the debugger tool.
+   */
   showDebugger: 'Show debugger',
   /**
-  * @description Tooltip for the the debugger toggle in the Sources panel. Command to close/hide the
-  * sidebar containing the debugger tool.
-  */
+   * @description Tooltip for the the debugger toggle in the Sources panel. Command to close/hide the
+   * sidebar containing the debugger tool.
+   */
   hideDebugger: 'Hide debugger',
   /**
-  *@description Text in Sources Panel of the Sources panel
-  */
+   *@description Text in Sources Panel of the Sources panel
+   */
   groupByFolder: 'Group by folder',
   /**
-  *@description Text in Sources Panel of the Sources panel
-  */
+   *@description Text in Sources Panel of the Sources panel
+   */
   groupByAuthored: 'Group by Authored/Deployed',
   /**
-  *@description Text in Sources Panel of the Sources panel
-  */
+   *@description Text in Sources Panel of the Sources panel
+   */
   hideIgnoreListed: 'Hide ignore-listed sources',
   /**
-  *@description Text for pausing the debugger on exceptions
-  */
+   *@description Text for pausing the debugger on exceptions
+   */
   pauseOnExceptions: 'Pause on exceptions',
   /**
-  *@description Text in Sources Panel of the Sources panel
-  */
+   *@description Text in Sources Panel of the Sources panel
+   */
   dontPauseOnExceptions: 'Don\'t pause on exceptions',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel
+   */
   resumeWithAllPausesBlockedForMs: 'Resume with all pauses blocked for 500 ms',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon terminate execution button in the Sources Panel of the Sources panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon terminate execution button in the Sources Panel of the Sources panel
+   */
   terminateCurrentJavascriptCall: 'Terminate current JavaScript call',
   /**
-  *@description Text in Sources Panel of the Sources panel
-  */
+   *@description Text in Sources Panel of the Sources panel
+   */
   pauseOnCaughtExceptions: 'Pause on caught exceptions',
   /**
-  *@description A context menu item in the Sources Panel of the Sources panel
-  */
+   *@description A context menu item in the Sources Panel of the Sources panel
+   */
   revealInSidebar: 'Reveal in sidebar',
   /**
-  *@description A context menu item in the Sources Panel of the Sources panel when debugging JS code.
-  * When clicked, the execution is resumed until it reaches the line specified by the right-click that
-  * opened the context menu.
-  */
+   *@description A context menu item in the Sources Panel of the Sources panel when debugging JS code.
+   * When clicked, the execution is resumed until it reaches the line specified by the right-click that
+   * opened the context menu.
+   */
   continueToHere: 'Continue to here',
   /**
-  *@description A context menu item in the Console that stores selection as a temporary global variable
-  *@example {string} PH1
-  */
+   *@description A context menu item in the Console that stores selection as a temporary global variable
+   *@example {string} PH1
+   */
   storeSAsGlobalVariable: 'Store {PH1} as global variable',
   /**
-  *@description A context menu item in the Console, Sources, and Network panel
-  *@example {string} PH1
-  */
+   *@description A context menu item in the Console, Sources, and Network panel
+   *@example {string} PH1
+   */
   copyS: 'Copy {PH1}',
   /**
-  *@description A context menu item for strings in the Console, Sources, and Network panel.
-  * When clicked, the raw contents of the string is copied to the clipboard.
-  */
+   *@description A context menu item for strings in the Console, Sources, and Network panel.
+   * When clicked, the raw contents of the string is copied to the clipboard.
+   */
   copyStringContents: 'Copy string contents',
   /**
-  *@description A context menu item for strings in the Console, Sources, and Network panel.
-  * When clicked, the string is copied to the clipboard as a valid JavaScript literal.
-  */
+   *@description A context menu item for strings in the Console, Sources, and Network panel.
+   * When clicked, the string is copied to the clipboard as a valid JavaScript literal.
+   */
   copyStringAsJSLiteral: 'Copy string as JavaScript literal',
   /**
-  *@description A context menu item for strings in the Console, Sources, and Network panel.
-  * When clicked, the string is copied to the clipboard as a valid JSON literal.
-  */
+   *@description A context menu item for strings in the Console, Sources, and Network panel.
+   * When clicked, the string is copied to the clipboard as a valid JSON literal.
+   */
   copyStringAsJSONLiteral: 'Copy string as JSON literal',
   /**
-  *@description A context menu item in the Sources Panel of the Sources panel
-  */
+   *@description A context menu item in the Sources Panel of the Sources panel
+   */
   showFunctionDefinition: 'Show function definition',
   /**
-  *@description Text in Sources Panel of the Sources panel
-  */
+   *@description Text in Sources Panel of the Sources panel
+   */
   openInSourcesPanel: 'Open in Sources panel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesPanel.ts', UIStrings);

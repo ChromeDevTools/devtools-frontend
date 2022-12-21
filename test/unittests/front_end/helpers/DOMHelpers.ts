@@ -229,11 +229,11 @@ export async function raf() {
 }
 
 /**
-  * It's useful to use innerHTML in the tests to have full confidence in the
-  * renderer output, but LitHtml uses comment nodes to split dynamic from
-  * static parts of a template, and we don't want our tests full of noise
-  * from those.
-  */
+ * It's useful to use innerHTML in the tests to have full confidence in the
+ * renderer output, but LitHtml uses comment nodes to split dynamic from
+ * static parts of a template, and we don't want our tests full of noise
+ * from those.
+ */
 export function stripLitHtmlCommentNodes(text: string) {
   /**
    * LitHtml comments take the form of:

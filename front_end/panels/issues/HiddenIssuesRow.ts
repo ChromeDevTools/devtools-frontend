@@ -9,12 +9,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  * @description Title for the hidden issues row
-  */
+   * @description Title for the hidden issues row
+   */
   hiddenIssues: 'Hidden issues',
   /**
-  * @description Label for the button to unhide all hidden issues
-  */
+   * @description Label for the button to unhide all hidden issues
+   */
   unhideAll: 'Unhide all',
 };
 

@@ -24,16 +24,16 @@ export interface PreviewToggleData {
 
 const UIStrings = {
   /**
-  *@description Link text the user can click to provide feedback to the team.
-  */
+   *@description Link text the user can click to provide feedback to the team.
+   */
   previewTextFeedbackLink: 'Send us your feedback.',
   /**
-  *@description Link text the user can click to provide feedback to the team.
-  */
+   *@description Link text the user can click to provide feedback to the team.
+   */
   shortFeedbackLink: 'Send feedback',
   /**
-  *@description Link text the user can click to see documentation.
-  */
+   *@description Link text the user can click to see documentation.
+   */
   learnMoreLink: 'Learn More',
 };
 

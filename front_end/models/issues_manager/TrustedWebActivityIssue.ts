@@ -16,8 +16,8 @@ import {
 
 const UIStrings = {
   /**
-  *@description Label for the link for Trusted Web Activity issue
-  */
+   *@description Label for the link for Trusted Web Activity issue
+   */
   changesToQualityCriteriaForPwas: 'Changes to quality criteria for PWAs using Trusted Web Activity',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/TrustedWebActivityIssue.ts', UIStrings);

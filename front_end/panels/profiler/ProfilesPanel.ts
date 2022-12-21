@@ -51,35 +51,35 @@ import {instance} from './ProfileTypeRegistry.js';
 
 const UIStrings = {
   /**
-  *@description Tooltip text that appears when hovering over the largeicon clear button in the Profiles Panel of a profiler tool
-  */
+   *@description Tooltip text that appears when hovering over the largeicon clear button in the Profiles Panel of a profiler tool
+   */
   clearAllProfiles: 'Clear all profiles',
   /**
-  *@description Text in Profiles Panel of a profiler tool
-  *@example {'.js', '.json'} PH1
-  */
+   *@description Text in Profiles Panel of a profiler tool
+   *@example {'.js', '.json'} PH1
+   */
   cantLoadFileSupportedFile: 'Can’t load file. Supported file extensions: \'\'{PH1}\'\'.',
   /**
-  *@description Text in Profiles Panel of a profiler tool
-  */
+   *@description Text in Profiles Panel of a profiler tool
+   */
   cantLoadProfileWhileAnother: 'Can’t load profile while another profile is being recorded.',
   /**
-  *@description Text in Profiles Panel of a profiler tool
-  *@example {cannot open file} PH1
-  */
+   *@description Text in Profiles Panel of a profiler tool
+   *@example {cannot open file} PH1
+   */
   profileLoadingFailedS: 'Profile loading failed: {PH1}.',
   /**
-  *@description A context menu item in the Profiles Panel of a profiler tool
-  */
+   *@description A context menu item in the Profiles Panel of a profiler tool
+   */
   load: 'Load…',
   /**
-  *@description Text in Profiles Panel of a profiler tool
-  *@example {2} PH1
-  */
+   *@description Text in Profiles Panel of a profiler tool
+   *@example {2} PH1
+   */
   runD: 'Run {PH1}',
   /**
-  *@description Text in Profiles Panel of a profiler tool
-  */
+   *@description Text in Profiles Panel of a profiler tool
+   */
   profiles: 'Profiles',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfilesPanel.ts', UIStrings);

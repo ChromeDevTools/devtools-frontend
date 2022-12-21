@@ -36,26 +36,26 @@ import {type Database} from './DatabaseModel.js';
 
 const UIStrings = {
   /**
-  *@description Text in Database Table View of the Application panel
-  */
+   *@description Text in Database Table View of the Application panel
+   */
   database: 'Database',
   /**
-  *@description Text to refresh the page
-  */
+   *@description Text to refresh the page
+   */
   refresh: 'Refresh',
   /**
-  *@description Text in Database Table View of the Application panel
-  */
+   *@description Text in Database Table View of the Application panel
+   */
   visibleColumns: 'Visible columns',
   /**
-  *@description Text in Database Table View of the Application panel
-  *@example {database} PH1
-  */
+   *@description Text in Database Table View of the Application panel
+   *@example {database} PH1
+   */
   theStableIsEmpty: 'The "{PH1}" table is empty.',
   /**
-  *@description Error msg element text content in Database Table View of the Application panel
-  *@example {database} PH1
-  */
+   *@description Error msg element text content in Database Table View of the Application panel
+   *@example {database} PH1
+   */
   anErrorOccurredTryingToreadTheS: 'An error occurred trying to read the "{PH1}" table.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/DatabaseTableView.ts', UIStrings);

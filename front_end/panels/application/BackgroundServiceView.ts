@@ -19,112 +19,112 @@ import {Events, type BackgroundServiceModel} from './BackgroundServiceModel.js';
 
 const UIStrings = {
   /**
-  *@description Text in Background Service View of the Application panel
-  */
+   *@description Text in Background Service View of the Application panel
+   */
   backgroundFetch: 'Background Fetch',
   /**
-  *@description Text in Background Service View of the Application panel
-  */
+   *@description Text in Background Service View of the Application panel
+   */
   backgroundSync: 'Background Sync',
   /**
-  *@description Text in Background Service View of the Application panel
-  */
+   *@description Text in Background Service View of the Application panel
+   */
   pushMessaging: 'Push Messaging',
   /**
-  *@description Text in Background Service View of the Application panel
-  */
+   *@description Text in Background Service View of the Application panel
+   */
   notifications: 'Notifications',
   /**
-  *@description Text in Background Service View of the Application panel
-  */
+   *@description Text in Background Service View of the Application panel
+   */
   paymentHandler: 'Payment Handler',
   /**
-  *@description Text in the Periodic Background Service View of the Application panel
-  */
+   *@description Text in the Periodic Background Service View of the Application panel
+   */
   periodicBackgroundSync: 'Periodic Background Sync',
   /**
-  *@description Text to clear content
-  */
+   *@description Text to clear content
+   */
   clear: 'Clear',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon download button in the Background Service View of the Application panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon download button in the Background Service View of the Application panel
+   */
   saveEvents: 'Save events',
   /**
-  *@description Text in Background Service View of the Application panel
-  */
+   *@description Text in Background Service View of the Application panel
+   */
   showEventsFromOtherDomains: 'Show events from other domains',
   /**
-  *@description Text of a checkbox to show events for other dtorage keys
-  */
+   *@description Text of a checkbox to show events for other dtorage keys
+   */
   showEventsForOtherStorageKeys: 'Show events from other storage partitions',
   /**
-  *@description Title of an action under the Background Services category that can be invoked through the Command Menu
-  */
+   *@description Title of an action under the Background Services category that can be invoked through the Command Menu
+   */
   stopRecordingEvents: 'Stop recording events',
   /**
-  *@description Title of an action under the Background Services category that can be invoked through the Command Menu
-  */
+   *@description Title of an action under the Background Services category that can be invoked through the Command Menu
+   */
   startRecordingEvents: 'Start recording events',
   /**
-  *@description Text for timestamps of items
-  */
+   *@description Text for timestamps of items
+   */
   timestamp: 'Timestamp',
   /**
-  *@description Text that refers to some events
-  */
+   *@description Text that refers to some events
+   */
   event: 'Event',
   /**
-  *@description Text for the origin of something
-  */
+   *@description Text for the origin of something
+   */
   origin: 'Origin',
   /**
-  *@description Text for the storage key of something
-  */
+   *@description Text for the storage key of something
+   */
   storageKey: 'Storage Key',
   /**
-  *@description Text in Background Service View of the Application panel. The Scope is a URL associated with the Service Worker, which limits which pages/sites the Service Worker operates on.
-  */
+   *@description Text in Background Service View of the Application panel. The Scope is a URL associated with the Service Worker, which limits which pages/sites the Service Worker operates on.
+   */
   swScope: 'Service Worker Scope',
   /**
-  *@description Text in Background Service View of the Application panel
-  */
+   *@description Text in Background Service View of the Application panel
+   */
   instanceId: 'Instance ID',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   backgroundServices: 'Background Services',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Text in Background Service View of the Application panel
-  */
+   *@description Text in Background Service View of the Application panel
+   */
   selectAnEntryToViewMetadata: 'Select an entry to view metadata',
   /**
-  *@description Text in Background Service View of the Application panel
-  *@example {Background Fetch} PH1
-  */
+   *@description Text in Background Service View of the Application panel
+   *@example {Background Fetch} PH1
+   */
   recordingSActivity: 'Recording {PH1} activity...',
   /**
-  *@description Inform users that DevTools are recording/waiting for events in the Periodic Background Sync tool of the Application panel
-  *@example {Background Fetch} PH1
-  */
+   *@description Inform users that DevTools are recording/waiting for events in the Periodic Background Sync tool of the Application panel
+   *@example {Background Fetch} PH1
+   */
   devtoolsWillRecordAllSActivity: 'DevTools will record all {PH1} activity for up to 3 days, even when closed.',
   /**
-  *@description Text in Background Service View of the Application panel
-  *@example {record} PH1
-  *@example {Ctrl + R} PH2
-  */
+   *@description Text in Background Service View of the Application panel
+   *@example {record} PH1
+   *@example {Ctrl + R} PH2
+   */
   clickTheRecordButtonSOrHitSTo: 'Click the record button {PH1} or hit {PH2} to start recording.',
   /**
-  *@description Text to show an item is empty
-  */
+   *@description Text to show an item is empty
+   */
   empty: 'empty',
   /**
-  *@description Text in Background Service View of the Application panel
-  */
+   *@description Text in Background Service View of the Application panel
+   */
   noMetadataForThisEvent: 'No metadata for this event',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/BackgroundServiceView.ts', UIStrings);

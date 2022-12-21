@@ -47,85 +47,85 @@ import {SearchSourcesView} from './SearchSourcesView.js';
 
 const UIStrings = {
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   searchInFolder: 'Search in folder',
   /**
-  *@description Search label in Navigator View of the Sources panel
-  */
+   *@description Search label in Navigator View of the Sources panel
+   */
   searchInAllFiles: 'Search in all files',
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   noDomain: '(no domain)',
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   authored: 'Authored',
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   authoredTooltip: 'Contains original sources',
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   deployed: 'Deployed',
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   deployedTooltip: 'Contains final sources the browser sees',
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   areYouSureYouWantToExcludeThis: 'Are you sure you want to exclude this folder?',
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   areYouSureYouWantToDeleteThis: 'Are you sure you want to delete this file?',
   /**
-  *@description A context menu item in the Navigator View of the Sources panel
-  */
+   *@description A context menu item in the Navigator View of the Sources panel
+   */
   rename: 'Rename…',
   /**
-  *@description A context menu item in the Navigator View of the Sources panel
-  */
+   *@description A context menu item in the Navigator View of the Sources panel
+   */
   makeACopy: 'Make a copy…',
   /**
-  *@description Text to delete something
-  */
+   *@description Text to delete something
+   */
   delete: 'Delete',
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   areYouSureYouWantToDeleteAll: 'Are you sure you want to delete all overrides contained in this folder?',
   /**
-  *@description A context menu item in the Navigator View of the Sources panel
-  */
+   *@description A context menu item in the Navigator View of the Sources panel
+   */
   openFolder: 'Open folder',
   /**
-  *@description A context menu item in the Navigator View of the Sources panel
-  */
+   *@description A context menu item in the Navigator View of the Sources panel
+   */
   newFile: 'New file',
   /**
-  *@description A context menu item in the Navigator View of the Sources panel
-  */
+   *@description A context menu item in the Navigator View of the Sources panel
+   */
   excludeFolder: 'Exclude folder',
   /**
-  *@description A context menu item in the Navigator View of the Sources panel
-  */
+   *@description A context menu item in the Navigator View of the Sources panel
+   */
   removeFolderFromWorkspace: 'Remove folder from workspace',
   /**
-  *@description Text in Navigator View of the Sources panel
-  */
+   *@description Text in Navigator View of the Sources panel
+   */
   areYouSureYouWantToRemoveThis: 'Are you sure you want to remove this folder?',
   /**
-  *@description A context menu item in the Navigator View of the Sources panel
-  */
+   *@description A context menu item in the Navigator View of the Sources panel
+   */
   deleteAllOverrides: 'Delete all overrides',
   /**
-  *@description Name of an item from source map
-  *@example {compile.html} PH1
-  */
+   *@description Name of an item from source map
+   *@example {compile.html} PH1
+   */
   sFromSourceMap: '{PH1} (from source map)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/NavigatorView.ts', UIStrings);

@@ -58,143 +58,143 @@ import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegis
 
 const UIStrings = {
   /**
-  *@description Title for Ad adorner. This iframe is marked as advertisement frame.
-  */
+   *@description Title for Ad adorner. This iframe is marked as advertisement frame.
+   */
   thisFrameWasIdentifiedAsAnAd: 'This frame was identified as an ad frame',
   /**
-  *@description A context menu item in the Elements panel. Force is used as a verb, indicating intention to make the state change.
-  */
+   *@description A context menu item in the Elements panel. Force is used as a verb, indicating intention to make the state change.
+   */
   forceState: 'Force state',
   /**
-  *@description Hint element title in Elements Tree Element of the Elements panel
-  *@example {0} PH1
-  */
+   *@description Hint element title in Elements Tree Element of the Elements panel
+   *@example {0} PH1
+   */
   useSInTheConsoleToReferToThis: 'Use {PH1} in the console to refer to this element.',
   /**
-  *@description A context menu item in the Elements Tree Element of the Elements panel
-  */
+   *@description A context menu item in the Elements Tree Element of the Elements panel
+   */
   addAttribute: 'Add attribute',
   /**
-  *@description Text to modify the attribute of an item
-  */
+   *@description Text to modify the attribute of an item
+   */
   editAttribute: 'Edit attribute',
   /**
-  *@description Text to focus on something
-  */
+   *@description Text to focus on something
+   */
   focus: 'Focus',
   /**
-  *@description Text to scroll the displayed content into view
-  */
+   *@description Text to scroll the displayed content into view
+   */
   scrollIntoView: 'Scroll into view',
   /**
-  *@description A context menu item in the Elements Tree Element of the Elements panel
-  */
+   *@description A context menu item in the Elements Tree Element of the Elements panel
+   */
   editText: 'Edit text',
   /**
-  *@description A context menu item in the Elements Tree Element of the Elements panel
-  */
+   *@description A context menu item in the Elements Tree Element of the Elements panel
+   */
   editAsHtml: 'Edit as HTML',
   /**
-  *@description Text to cut an element, cut should be used as a verb
-  */
+   *@description Text to cut an element, cut should be used as a verb
+   */
   cut: 'Cut',
   /**
-  *@description Text for copying, copy should be used as a verb
-  */
+   *@description Text for copying, copy should be used as a verb
+   */
   copy: 'Copy',
   /**
-  *@description Text to paste an element, paste should be used as a verb
-  */
+   *@description Text to paste an element, paste should be used as a verb
+   */
   paste: 'Paste',
   /**
-  *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-  */
+   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   */
   copyOuterhtml: 'Copy outerHTML',
   /**
-  *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-  */
+   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   */
   copySelector: 'Copy `selector`',
   /**
-  *@description Text in Elements Tree Element of the Elements panel
-  */
+   *@description Text in Elements Tree Element of the Elements panel
+   */
   copyJsPath: 'Copy JS path',
   /**
-  *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-  */
+   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   */
   copyStyles: 'Copy styles',
   /**
-  *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-  */
+   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   */
   copyXpath: 'Copy XPath',
   /**
-  *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-  */
+   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   */
   copyFullXpath: 'Copy full XPath',
   /**
-  *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
-  */
+   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
+   */
   copyElement: 'Copy element',
   /**
-  *@description A context menu item in the Elements Tree Element of the Elements panel
-  */
+   *@description A context menu item in the Elements Tree Element of the Elements panel
+   */
   duplicateElement: 'Duplicate element',
   /**
-  *@description Text to hide an element
-  */
+   *@description Text to hide an element
+   */
   hideElement: 'Hide element',
   /**
-  *@description A context menu item in the Elements Tree Element of the Elements panel
-  */
+   *@description A context menu item in the Elements Tree Element of the Elements panel
+   */
   deleteElement: 'Delete element',
   /**
-  *@description Text to expand something recursively
-  */
+   *@description Text to expand something recursively
+   */
   expandRecursively: 'Expand recursively',
   /**
-  *@description Text to collapse children of a parent group
-  */
+   *@description Text to collapse children of a parent group
+   */
   collapseChildren: 'Collapse children',
   /**
-  *@description Title of an action in the emulation tool to capture node screenshot
-  */
+   *@description Title of an action in the emulation tool to capture node screenshot
+   */
   captureNodeScreenshot: 'Capture node screenshot',
   /**
-  *@description Title of a context menu item. When clicked DevTools goes to the Application panel and shows this specific iframe's details
-  */
+   *@description Title of a context menu item. When clicked DevTools goes to the Application panel and shows this specific iframe's details
+   */
   showFrameDetails: 'Show `iframe` details',
   /**
-  *@description Text in Elements Tree Element of the Elements panel
-  */
+   *@description Text in Elements Tree Element of the Elements panel
+   */
   valueIsTooLargeToEdit: '<value is too large to edit>',
   /**
-  *@description Element text content in Elements Tree Element of the Elements panel
-  */
+   *@description Element text content in Elements Tree Element of the Elements panel
+   */
   children: 'Children:',
   /**
-  *@description ARIA label for Elements Tree adorners
-  */
+   *@description ARIA label for Elements Tree adorners
+   */
   enableGridMode: 'Enable grid mode',
   /**
-  *@description ARIA label for Elements Tree adorners
-  */
+   *@description ARIA label for Elements Tree adorners
+   */
   disableGridMode: 'Disable grid mode',
   /**
-  *@description Label of the adorner for flex elements in the Elements panel
-  */
+   *@description Label of the adorner for flex elements in the Elements panel
+   */
   enableFlexMode: 'Enable flex mode',
   /**
-  *@description Label of the adorner for flex elements in the Elements panel
-  */
+   *@description Label of the adorner for flex elements in the Elements panel
+   */
   disableFlexMode: 'Disable flex mode',
   /**
-  *@description Label of an adorner in the Elements panel. When clicked, it enables
-  * the overlay showing CSS scroll snapping for the current element.
-  */
+   *@description Label of an adorner in the Elements panel. When clicked, it enables
+   * the overlay showing CSS scroll snapping for the current element.
+   */
   enableScrollSnap: 'Enable scroll-snap overlay',
   /**
-  *@description Label of an adorner in the Elements panel. When clicked, it disables
-  * the overlay showing CSS scroll snapping for the current element.
-  */
+   *@description Label of an adorner in the Elements panel. When clicked, it disables
+   * the overlay showing CSS scroll snapping for the current element.
+   */
   disableScrollSnap: 'Disable scroll-snap overlay',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeElement.ts', UIStrings);

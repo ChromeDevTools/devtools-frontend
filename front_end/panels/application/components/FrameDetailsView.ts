@@ -34,159 +34,159 @@ import {Prerender2ReasonDescription} from './Prerender2.js';
 
 const UIStrings = {
   /**
-  *@description Section header in the Frame Details view
-  */
+   *@description Section header in the Frame Details view
+   */
   additionalInformation: 'Additional Information',
   /**
-  *@description Explanation for why the additional information section is being shown
-  */
+   *@description Explanation for why the additional information section is being shown
+   */
   thisAdditionalDebugging:
       'This additional (debugging) information is shown because the \'Protocol Monitor\' experiment is enabled.',
   /**
-  *@description Label for subtitle of frame details view
-  */
+   *@description Label for subtitle of frame details view
+   */
   frameId: 'Frame ID',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   document: 'Document',
   /**
-  *@description A web URL (for a lot of languages this does not need to be translated, please translate only where necessary)
-  */
+   *@description A web URL (for a lot of languages this does not need to be translated, please translate only where necessary)
+   */
   url: 'URL',
   /**
   /**
-  *@description Title for a link to the Sources panel
-  */
+   *@description Title for a link to the Sources panel
+   */
   clickToRevealInSourcesPanel: 'Click to reveal in Sources panel',
   /**
-  *@description Title for a link to the Network panel
-  */
+   *@description Title for a link to the Network panel
+   */
   clickToRevealInNetworkPanel: 'Click to reveal in Network panel',
   /**
-  *@description Title for unreachable URL field
-  */
+   *@description Title for unreachable URL field
+   */
   unreachableUrl: 'Unreachable URL',
   /**
-  *@description Title for a link that applies a filter to the network panel
-  */
+   *@description Title for a link that applies a filter to the network panel
+   */
   clickToRevealInNetworkPanelMight: 'Click to reveal in Network panel (might require page reload)',
   /**
-  *@description The origin of a URL (https://web.dev/same-site-same-origin/#origin)
-  *(for a lot of languages this does not need to be translated, please translate only where necessary)
-  */
+   *@description The origin of a URL (https://web.dev/same-site-same-origin/#origin)
+   *(for a lot of languages this does not need to be translated, please translate only where necessary)
+   */
   origin: 'Origin',
   /**
   /**
-  *@description Related node label in Timeline UIUtils of the Performance panel
-  */
+   *@description Related node label in Timeline UIUtils of the Performance panel
+   */
   ownerElement: 'Owner Element',
   /**
-  *@description Title for a link to the Elements panel
-  */
+   *@description Title for a link to the Elements panel
+   */
   clickToRevealInElementsPanel: 'Click to reveal in Elements panel',
   /**
-  *@description Title for ad frame type field
-  */
+   *@description Title for ad frame type field
+   */
   adStatus: 'Ad Status',
   /**
-  *@description Description for ad frame type
-  */
+   *@description Description for ad frame type
+   */
   rootDescription: 'This frame has been identified as the root frame of an ad',
   /**
-  *@description Value for ad frame type
-  */
+   *@description Value for ad frame type
+   */
   root: 'root',
   /**
-  *@description Description for ad frame type
-  */
+   *@description Description for ad frame type
+   */
   childDescription: 'This frame has been identified as a child frame of an ad',
   /**
-  *@description Value for ad frame type
-  */
+   *@description Value for ad frame type
+   */
   child: 'child',
   /**
-  *@description Section header in the Frame Details view
-  */
+   *@description Section header in the Frame Details view
+   */
   securityIsolation: 'Security & Isolation',
   /**
-  *@description Row title for in the Frame Details view
-  */
+   *@description Row title for in the Frame Details view
+   */
   secureContext: 'Secure Context',
   /**
-  *@description Text in Timeline indicating that input has happened recently
-  */
+   *@description Text in Timeline indicating that input has happened recently
+   */
   yes: 'Yes',
   /**
-  *@description Text in Timeline indicating that input has not happened recently
-  */
+   *@description Text in Timeline indicating that input has not happened recently
+   */
   no: 'No',
   /**
-  *@description Label for whether a frame is cross-origin isolated
-  *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
-  *(for a lot of languages this does not need to be translated, please translate only where necessary)
-  */
+   *@description Label for whether a frame is cross-origin isolated
+   *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
+   *(for a lot of languages this does not need to be translated, please translate only where necessary)
+   */
   crossoriginIsolated: 'Cross-Origin Isolated',
   /**
-  *@description Explanatory text in the Frame Details view
-  */
+   *@description Explanatory text in the Frame Details view
+   */
   localhostIsAlwaysASecureContext: '`Localhost` is always a secure context',
   /**
-  *@description Explanatory text in the Frame Details view
-  */
+   *@description Explanatory text in the Frame Details view
+   */
   aFrameAncestorIsAnInsecure: 'A frame ancestor is an insecure context',
   /**
-  *@description Explanatory text in the Frame Details view
-  */
+   *@description Explanatory text in the Frame Details view
+   */
   theFramesSchemeIsInsecure: 'The frame\'s scheme is insecure',
   /**
-  *@description This label specifies the server endpoints to which the server is reporting errors
-  *and warnings through the Report-to API. Following this label will be the URL of the server.
-  */
+   *@description This label specifies the server endpoints to which the server is reporting errors
+   *and warnings through the Report-to API. Following this label will be the URL of the server.
+   */
   reportingTo: 'reporting to',
   /**
-  *@description Section header in the Frame Details view
-  */
+   *@description Section header in the Frame Details view
+   */
   apiAvailability: 'API availability',
   /**
-  *@description Explanation of why cross-origin isolation is important
-  *(https://web.dev/why-coop-coep/)
-  *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary)
-  */
+   *@description Explanation of why cross-origin isolation is important
+   *(https://web.dev/why-coop-coep/)
+   *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary)
+   */
   availabilityOfCertainApisDepends: 'Availability of certain APIs depends on the document being cross-origin isolated.',
   /**
-  *@description Description of the SharedArrayBuffer status
-  */
+   *@description Description of the SharedArrayBuffer status
+   */
   availableTransferable: 'available, transferable',
   /**
-  *@description Description of the SharedArrayBuffer status
-  */
+   *@description Description of the SharedArrayBuffer status
+   */
   availableNotTransferable: 'available, not transferable',
   /**
-  *@description Explanation for the SharedArrayBuffer availability status
-  */
+   *@description Explanation for the SharedArrayBuffer availability status
+   */
   unavailable: 'unavailable',
   /**
-  *@description Tooltip for the SharedArrayBuffer availability status
-  */
+   *@description Tooltip for the SharedArrayBuffer availability status
+   */
   sharedarraybufferConstructorIs:
       '`SharedArrayBuffer` constructor is available and `SABs` can be transferred via `postMessage`',
   /**
-  *@description Tooltip for the SharedArrayBuffer availability status
-  */
+   *@description Tooltip for the SharedArrayBuffer availability status
+   */
   sharedarraybufferConstructorIsAvailable:
       '`SharedArrayBuffer` constructor is available but `SABs` cannot be transferred via `postMessage`',
   /**
-  *@description Explanation why SharedArrayBuffer will not be available in the future
-  *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
-  *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary)
-  */
+   *@description Explanation why SharedArrayBuffer will not be available in the future
+   *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
+   *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary)
+   */
   willRequireCrossoriginIsolated: '⚠️ will require cross-origin isolated context in the future',
   /**
-  *@description Explanation why SharedArrayBuffer is not available
-  *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
-  *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary).
-  */
+   *@description Explanation why SharedArrayBuffer is not available
+   *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
+   *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary).
+   */
   requiresCrossoriginIsolated: 'requires cross-origin isolated context',
   /**
    *@description Explanation for the SharedArrayBuffer availability status in case the transfer of a SAB requires the
@@ -195,66 +195,66 @@ const UIStrings = {
   transferRequiresCrossoriginIsolatedPermission:
       '`SharedArrayBuffer` transfer requires enabling the permission policy:',
   /**
-  *@description Explanation for the Measure Memory availability status
-  */
+   *@description Explanation for the Measure Memory availability status
+   */
   available: 'available',
   /**
-  *@description Tooltip for the Measure Memory availability status
-  */
+   *@description Tooltip for the Measure Memory availability status
+   */
   thePerformanceAPI: 'The `performance.measureUserAgentSpecificMemory()` API is available',
   /**
-  *@description Tooltip for the Measure Memory availability status
-  */
+   *@description Tooltip for the Measure Memory availability status
+   */
   thePerformancemeasureuseragentspecificmemory:
       'The `performance.measureUserAgentSpecificMemory()` API is not available',
   /**
-  *@description Entry in the API availability section of the frame details view
-  */
+   *@description Entry in the API availability section of the frame details view
+   */
   measureMemory: 'Measure Memory',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
-  * stack trace for the line of code which caused the creation of the iframe. This is the stack trace we are showing here.
-  */
+   *@description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
+   * stack trace for the line of code which caused the creation of the iframe. This is the stack trace we are showing here.
+   */
   creationStackTrace: 'Frame Creation `Stack Trace`',
   /**
-  *@description Tooltip for 'Frame Creation Stack Trace' explaining that the stack
-  *trace shows where in the code the frame has been created programmatically
-  */
+   *@description Tooltip for 'Frame Creation Stack Trace' explaining that the stack
+   *trace shows where in the code the frame has been created programmatically
+   */
   creationStackTraceExplanation:
       'This frame was created programmatically. The `stack trace` shows where this happened.',
   /**
-  *@description Text descripting why a frame has been indentified as an advertisement.
-  */
+   *@description Text descripting why a frame has been indentified as an advertisement.
+   */
   parentIsAdExplanation: 'This frame is considered an ad frame because its parent frame is an ad frame.',
   /**
-  *@description Text descripting why a frame has been indentified as an advertisement.
-  */
+   *@description Text descripting why a frame has been indentified as an advertisement.
+   */
   matchedBlockingRuleExplanation:
       'This frame is considered an ad frame because its current (or previous) main document is an ad resource.',
   /**
-  *@description Text descripting why a frame has been indentified as an advertisement.
-  */
+   *@description Text descripting why a frame has been indentified as an advertisement.
+   */
   createdByAdScriptExplanation:
       'There was an ad script in the `(async) stack` when this frame was created. Examining the creation `stack trace` of this frame might provide more insight.',
   /**
-  *@description Label for a button which when clicked causes some information to be refreshed/updated.
-  */
+   *@description Label for a button which when clicked causes some information to be refreshed/updated.
+   */
   refresh: 'Refresh',
   /**
-  *@description Label for section of frame details view
-  */
+   *@description Label for section of frame details view
+   */
   prerendering: 'Prerendering',
   /**
-  *@description Label for subtitle of frame details view
-  */
+   *@description Label for subtitle of frame details view
+   */
   prerenderingStatus: 'Prerendering Status',
   /**
-  *@description Label for a link to an ad script, which created the current iframe.
-  */
+   *@description Label for a link to an ad script, which created the current iframe.
+   */
   creatorAdScript: 'Creator Ad Script',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);

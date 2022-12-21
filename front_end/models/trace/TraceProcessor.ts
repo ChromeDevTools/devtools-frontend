@@ -106,11 +106,11 @@ export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types
 }
 
 /**
-   * Some Handlers need data provided by others. Dependencies of a handler handler are
-   * declared in the `deps` field.
-   * @returns A map from trace event handler name to trace event hander whose entries
-   * iterate in such a way that each handler is visited after its dependencies.
-   */
+ * Some Handlers need data provided by others. Dependencies of a handler handler are
+ * declared in the `deps` field.
+ * @returns A map from trace event handler name to trace event hander whose entries
+ * iterate in such a way that each handler is visited after its dependencies.
+ */
 export function sortHandlers(
     traceHandlers: Partial<{[key in Handlers.Types.TraceEventHandlerName]: Handlers.Types.TraceEventHandler}>):
     Map<Handlers.Types.TraceEventHandlerName, Handlers.Types.TraceEventHandler> {

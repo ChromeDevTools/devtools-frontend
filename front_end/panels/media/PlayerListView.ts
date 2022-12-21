@@ -15,20 +15,20 @@ import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
 const UIStrings = {
   /**
-  *@description A right-click context menu entry which when clicked causes the menu entry for that player to be removed.
-  */
+   *@description A right-click context menu entry which when clicked causes the menu entry for that player to be removed.
+   */
   hidePlayer: 'Hide player',
   /**
-  *@description A right-click context menu entry which should keep the element selected, while hiding all other entries.
-  */
+   *@description A right-click context menu entry which should keep the element selected, while hiding all other entries.
+   */
   hideAllOthers: 'Hide all others',
   /**
-  *@description Context menu entry which downloads the json dump when clicked
-  */
+   *@description Context menu entry which downloads the json dump when clicked
+   */
   savePlayerInfo: 'Save player info',
   /**
-  *@description Side-panel entry title text for the players section.
-  */
+   *@description Side-panel entry title text for the players section.
+   */
   players: 'Players',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerListView.ts', UIStrings);

@@ -15,8 +15,8 @@ import {CSPViolationsListView} from './CSPViolationsListView.js';
 
 const UIStrings = {
   /**
-  *@description Text to filter result items
-  */
+   *@description Text to filter result items
+   */
   filter: 'Filter',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CSPViolationsView.ts', UIStrings);

@@ -60,100 +60,100 @@ import {NetworkTransferTimeCalculator, type NetworkTimeCalculator} from './Netwo
 
 const UIStrings = {
   /**
-  *@description Text to close something
-  */
+   *@description Text to close something
+   */
   close: 'Close',
   /**
-  *@description Title of a search bar or tool
-  */
+   *@description Title of a search bar or tool
+   */
   search: 'Search',
   /**
-  *@description Text to clear content
-  */
+   *@description Text to clear content
+   */
   clear: 'Clear',
   /**
-  *@description Tooltip text that appears on the setting to preserve log when hovering over the item
-  */
+   *@description Tooltip text that appears on the setting to preserve log when hovering over the item
+   */
   doNotClearLogOnPageReload: 'Do not clear log on page reload / navigation',
   /**
-  *@description Text to preserve the log after refreshing
-  */
+   *@description Text to preserve the log after refreshing
+   */
   preserveLog: 'Preserve log',
   /**
-  *@description Text to disable cache while DevTools is open
-  */
+   *@description Text to disable cache while DevTools is open
+   */
   disableCacheWhileDevtoolsIsOpen: 'Disable cache (while DevTools is open)',
   /**
-  *@description Text in Network Config View of the Network panel
-  */
+   *@description Text in Network Config View of the Network panel
+   */
   disableCache: 'Disable cache',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in network panel of the network panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in network panel of the network panel
+   */
   networkSettings: 'Network settings',
   /**
-  *@description Tooltip for expanding network request row setting
-  */
+   *@description Tooltip for expanding network request row setting
+   */
   showMoreInformationInRequestRows: 'Show more information in request rows',
   /**
-  *@description Text in Network Panel of the Network panel
-  */
+   *@description Text in Network Panel of the Network panel
+   */
   useLargeRequestRows: 'Use large request rows',
   /**
-  *@description Tooltip text for network request overview setting
-  */
+   *@description Tooltip text for network request overview setting
+   */
   showOverviewOfNetworkRequests: 'Show overview of network requests',
   /**
-  *@description Text in Network Panel of the Network panel
-  */
+   *@description Text in Network Panel of the Network panel
+   */
   showOverview: 'Show overview',
   /**
-  *@description Tooltip for group by frame network setting
-  */
+   *@description Tooltip for group by frame network setting
+   */
   groupRequestsByTopLevelRequest: 'Group requests by top level request frame',
   /**
-  *@description Text in Network Panel of the Network panel
-  */
+   *@description Text in Network Panel of the Network panel
+   */
   groupByFrame: 'Group by frame',
   /**
-  *@description Tooltip for capture screenshot network setting
-  */
+   *@description Tooltip for capture screenshot network setting
+   */
   captureScreenshotsWhenLoadingA: 'Capture screenshots when loading a page',
   /**
-  *@description Text to take screenshots
-  */
+   *@description Text to take screenshots
+   */
   captureScreenshots: 'Capture screenshots',
   /**
-  * @description Tooltip text that appears when hovering over the largeicon load button in the
-  * Network Panel. This action prompts the user to select a HAR file to upload to DevTools.
-  */
+   * @description Tooltip text that appears when hovering over the largeicon load button in the
+   * Network Panel. This action prompts the user to select a HAR file to upload to DevTools.
+   */
   importHarFile: 'Import `HAR` file...',
   /**
-  * @description Tooltip text that appears when hovering over the largeicon download button in the
-  * Network Panel. HAR is a file format (HTTP Archive) and should not be translated. This action
-  * triggers the download of a HAR file.
-  */
+   * @description Tooltip text that appears when hovering over the largeicon download button in the
+   * Network Panel. HAR is a file format (HTTP Archive) and should not be translated. This action
+   * triggers the download of a HAR file.
+   */
   exportHar: 'Export `HAR`...',
   /**
-  *@description Text for throttling the network
-  */
+   *@description Text for throttling the network
+   */
   throttling: 'Throttling',
   /**
-  *@description Text in Network Panel of the Network panel
-  *@example {Ctrl + R} PH1
-  */
+   *@description Text in Network Panel of the Network panel
+   *@example {Ctrl + R} PH1
+   */
   hitSToReloadAndCaptureFilmstrip: 'Hit {PH1} to reload and capture filmstrip.',
   /**
-  *@description A context menu item in the Network Panel of the Network panel
-  */
+   *@description A context menu item in the Network Panel of the Network panel
+   */
   revealInNetworkPanel: 'Reveal in Network panel',
   /**
-  *@description Text in Network Panel of the Network panel
-  */
+   *@description Text in Network Panel of the Network panel
+   */
   recordingFrames: 'Recording frames...',
   /**
-  *@description Text in Network Panel of the Network panel
-  */
+   *@description Text in Network Panel of the Network panel
+   */
   fetchingFrames: 'Fetching frames...',
   /**
    * @description Text of a button in the Network panel's toolbar that open Network Conditions panel in the drawer.

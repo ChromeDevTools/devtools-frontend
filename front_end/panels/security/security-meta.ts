@@ -9,12 +9,12 @@ import type * as Security from './security.js';
 
 const UIStrings = {
   /**
-    *@description Title of the security panel
-    */
+   *@description Title of the security panel
+   */
   security: 'Security',
   /**
-    *@description Command to open the security panel
-    */
+   *@description Command to open the security panel
+   */
   showSecurity: 'Show Security',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/security/security-meta.ts', UIStrings);

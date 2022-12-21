@@ -17,27 +17,27 @@ import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  * @description Text that refers to the main target. The main target is the primary webpage that
-  * DevTools is connected to. This text is used in various places in the UI as a label/name to inform
-  * the user which target/webpage they are currently connected to, as DevTools may connect to multiple
-  * targets at the same time in some scenarios.
-  */
+   * @description Text that refers to the main target. The main target is the primary webpage that
+   * DevTools is connected to. This text is used in various places in the UI as a label/name to inform
+   * the user which target/webpage they are currently connected to, as DevTools may connect to multiple
+   * targets at the same time in some scenarios.
+   */
   main: 'Main',
   /**
-  * @description Text that refers to the tab target. The tab target is the Chrome tab that
-  * DevTools is connected to. This text is used in various places in the UI as a label/name to inform
-  * the user which target they are currently connected to, as DevTools may connect to multiple
-  * targets at the same time in some scenarios.
-  */
+   * @description Text that refers to the tab target. The tab target is the Chrome tab that
+   * DevTools is connected to. This text is used in various places in the UI as a label/name to inform
+   * the user which target they are currently connected to, as DevTools may connect to multiple
+   * targets at the same time in some scenarios.
+   */
   tab: 'Tab',
   /**
-  * @description A warning shown to the user when JavaScript is disabled on the webpage that
-  * DevTools is connected to.
-  */
+   * @description A warning shown to the user when JavaScript is disabled on the webpage that
+   * DevTools is connected to.
+   */
   javascriptIsDisabled: 'JavaScript is disabled',
   /**
-  * @description A message that prompts the user to open devtools for a specific environment (Node.js)
-  */
+   * @description A message that prompts the user to open devtools for a specific environment (Node.js)
+   */
   openDedicatedTools: 'Open dedicated DevTools for `Node.js`',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/InspectorMain.ts', UIStrings);

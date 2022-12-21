@@ -56,28 +56,28 @@ import inspectorViewTabbedPaneStyles from './inspectorViewTabbedPane.css.legacy.
 
 const UIStrings = {
   /**
-  *@description Title of more tabs button in inspector view
-  */
+   *@description Title of more tabs button in inspector view
+   */
   moreTools: 'More Tools',
   /**
-  *@description Text that appears when hovor over the close button on the drawer view
-  */
+   *@description Text that appears when hovor over the close button on the drawer view
+   */
   closeDrawer: 'Close drawer',
   /**
-  *@description The aria label for main tabbed pane that contains Panels
-  */
+   *@description The aria label for main tabbed pane that contains Panels
+   */
   panels: 'Panels',
   /**
-  *@description Title of an action that reloads the DevTools
-  */
+   *@description Title of an action that reloads the DevTools
+   */
   reloadDevtools: 'Reload DevTools',
   /**
-  *@description Text for context menu action to move a tab to the main panel
-  */
+   *@description Text for context menu action to move a tab to the main panel
+   */
   moveToTop: 'Move to top',
   /**
-  *@description Text for context menu action to move a tab to the drawer
-  */
+   *@description Text for context menu action to move a tab to the drawer
+   */
   moveToBottom: 'Move to bottom',
   /**
    * @description Text shown in a prompt to the user when DevTools is started and the
@@ -100,29 +100,29 @@ const UIStrings = {
    */
   setToSpecificLanguage: 'Switch DevTools to {PH1}',
   /**
-  *@description The aria label for main toolbar
-  */
+   *@description The aria label for main toolbar
+   */
   mainToolbar: 'Main toolbar',
   /**
-  *@description The aria label for the drawer.
-  */
+   *@description The aria label for the drawer.
+   */
   drawer: 'Tool drawer',
   /**
-  *@description The aria label for the drawer shown.
-  */
+   *@description The aria label for the drawer shown.
+   */
   drawerShown: 'Drawer shown',
   /**
-  *@description The aria label for the drawer hidden.
-  */
+   *@description The aria label for the drawer hidden.
+   */
   drawerHidden: 'Drawer hidden',
   /**
-  * @description Request for the user to select a local file system folder for DevTools
-  * to store local overrides in.
-  */
+   * @description Request for the user to select a local file system folder for DevTools
+   * to store local overrides in.
+   */
   selectOverrideFolder: 'Select a folder to store override files in.',
   /**
-  *@description Label for a button which opens a file picker.
-  */
+   *@description Label for a button which opens a file picker.
+   */
   selectFolder: 'Select folder',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);

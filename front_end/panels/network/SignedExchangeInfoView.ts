@@ -15,88 +15,88 @@ import * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description Text for errors
-  */
+   *@description Text for errors
+   */
   errors: 'Errors',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   signedHttpExchange: 'Signed HTTP exchange',
   /**
-  *@description Text for an option to learn more about something
-  */
+   *@description Text for an option to learn more about something
+   */
   learnmore: 'Learn more',
   /**
-  *@description Text in Request Headers View of the Network panel
-  */
+   *@description Text in Request Headers View of the Network panel
+   */
   requestUrl: 'Request URL',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   responseCode: 'Response code',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   headerIntegrityHash: 'Header integrity hash',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   responseHeaders: 'Response headers',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   signature: 'Signature',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   label: 'Label',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   certificateUrl: 'Certificate URL',
   /**
-  *@description Text to view a security certificate
-  */
+   *@description Text to view a security certificate
+   */
   viewCertificate: 'View certificate',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   integrity: 'Integrity',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   certificateSha: 'Certificate SHA256',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   validityUrl: 'Validity URL',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   date: 'Date',
   /**
-  *@description Text in Signed Exchange Info View of the Network panel
-  */
+   *@description Text in Signed Exchange Info View of the Network panel
+   */
   expires: 'Expires',
   /**
-  *@description Text for a security certificate
-  */
+   *@description Text for a security certificate
+   */
   certificate: 'Certificate',
   /**
-  *@description Text that refers to the subject of a security certificate
-  */
+   *@description Text that refers to the subject of a security certificate
+   */
   subject: 'Subject',
   /**
-  *@description Text to show since when an item is valid
-  */
+   *@description Text to show since when an item is valid
+   */
   validFrom: 'Valid from',
   /**
-  *@description Text to indicate the expiry date
-  */
+   *@description Text to indicate the expiry date
+   */
   validUntil: 'Valid until',
   /**
-  *@description Text for the issuer of an item
-  */
+   *@description Text for the issuer of an item
+   */
   issuer: 'Issuer',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/SignedExchangeInfoView.ts', UIStrings);

@@ -17,95 +17,95 @@ import {CoverageType, type URLCoverageInfo} from './CoverageModel.js';
 
 const UIStrings = {
   /**
-  *@description Text that appears on a button for the css resource type filter.
-  */
+   *@description Text that appears on a button for the css resource type filter.
+   */
   css: 'CSS',
   /**
-  *@description Text in Coverage List View of the Coverage tab
-  */
+   *@description Text in Coverage List View of the Coverage tab
+   */
   jsPerFunction: 'JS (per function)',
   /**
-  *@description Text in Coverage List View of the Coverage tab
-  */
+   *@description Text in Coverage List View of the Coverage tab
+   */
   jsPerBlock: 'JS (per block)',
   /**
-  *@description Text for web URLs
-  */
+   *@description Text for web URLs
+   */
   url: 'URL',
   /**
-  *@description Text that refers to some types
-  */
+   *@description Text that refers to some types
+   */
   type: 'Type',
   /**
-  *@description Text in Coverage List View of the Coverage tab
-  */
+   *@description Text in Coverage List View of the Coverage tab
+   */
   totalBytes: 'Total Bytes',
   /**
-  *@description Text in Coverage List View of the Coverage tab
-  */
+   *@description Text in Coverage List View of the Coverage tab
+   */
   unusedBytes: 'Unused Bytes',
   /**
-  *@description Text in the Coverage List View of the Coverage Tab
-  */
+   *@description Text in the Coverage List View of the Coverage Tab
+   */
   usageVisualization: 'Usage Visualization',
   /**
-  *@description Data grid name for Coverage data grids
-  */
+   *@description Data grid name for Coverage data grids
+   */
   codeCoverage: 'Code Coverage',
   /**
-  *@description Cell title in Coverage List View of the Coverage tab. The coverage tool tells
-  *developers which functions (logical groups of lines of code) were actually run/executed. If a
-  *function does get run, then it is marked in the UI to indicate that it was covered.
-  */
+   *@description Cell title in Coverage List View of the Coverage tab. The coverage tool tells
+   *developers which functions (logical groups of lines of code) were actually run/executed. If a
+   *function does get run, then it is marked in the UI to indicate that it was covered.
+   */
   jsCoverageWithPerFunction:
       'JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered.',
   /**
-  *@description Cell title in Coverage List View of the Coverage tab. The coverage tool tells
-  *developers which blocks (logical groups of lines of code, smaller than a function) were actually
-  *run/executed. If a block does get run, then it is marked in the UI to indicate that it was
-  *covered.
-  */
+   *@description Cell title in Coverage List View of the Coverage tab. The coverage tool tells
+   *developers which blocks (logical groups of lines of code, smaller than a function) were actually
+   *run/executed. If a block does get run, then it is marked in the UI to indicate that it was
+   *covered.
+   */
   jsCoverageWithPerBlock:
       'JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered.',
   /**
-  *@description Accessible text for the value in bytes in memory allocation or coverage view.
-  */
+   *@description Accessible text for the value in bytes in memory allocation or coverage view.
+   */
   sBytes: '{n, plural, =1 {# byte} other {# bytes}}',
   /**
-  *@description Accessible text for the unused bytes column in the coverage tool that describes the total unused bytes and percentage of the file unused.
-  *@example {88%} percentage
-  */
+   *@description Accessible text for the unused bytes column in the coverage tool that describes the total unused bytes and percentage of the file unused.
+   *@example {88%} percentage
+   */
   sBytesS: '{n, plural, =1 {# byte, {percentage}} other {# bytes, {percentage}}}',
   /**
-  *@description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
-  *@example {1000} PH1
-  *@example {12.34} PH2
-  */
+   *@description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
+   *@example {1000} PH1
+   *@example {12.34} PH2
+   */
   sBytesSBelongToFunctionsThatHave: '{PH1} bytes ({PH2}) belong to functions that have not (yet) been executed.',
   /**
-  *@description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
-  *@example {1000} PH1
-  *@example {12.34} PH2
-  */
+   *@description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
+   *@example {1000} PH1
+   *@example {12.34} PH2
+   */
   sBytesSBelongToBlocksOf: '{PH1} bytes ({PH2}) belong to blocks of JavaScript that have not (yet) been executed.',
   /**
-  *@description Message in Coverage View of the Coverage tab
-  *@example {1000} PH1
-  *@example {12.34} PH2
-  */
+   *@description Message in Coverage View of the Coverage tab
+   *@example {1000} PH1
+   *@example {12.34} PH2
+   */
   sBytesSBelongToFunctionsThatHaveExecuted: '{PH1} bytes ({PH2}) belong to functions that have executed at least once.',
   /**
-  *@description Message in Coverage View of the Coverage tab
-  *@example {1000} PH1
-  *@example {12.34} PH2
-  */
+   *@description Message in Coverage View of the Coverage tab
+   *@example {1000} PH1
+   *@example {12.34} PH2
+   */
   sBytesSBelongToBlocksOfJavascript:
       '{PH1} bytes ({PH2}) belong to blocks of JavaScript that have executed at least once.',
   /**
-  *@description Accessible text for the visualization column of coverage tool. Contains percentage of unused bytes to used bytes.
-  *@example {12.3} PH1
-  *@example {12.3} PH2
-  */
+   *@description Accessible text for the visualization column of coverage tool. Contains percentage of unused bytes to used bytes.
+   *@example {12.3} PH1
+   *@example {12.3} PH2
+   */
   sOfFileUnusedSOfFileUsed: '{PH1} % of file unused, {PH2} % of file used',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/coverage/CoverageListView.ts', UIStrings);

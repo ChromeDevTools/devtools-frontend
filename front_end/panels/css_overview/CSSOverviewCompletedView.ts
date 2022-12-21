@@ -27,152 +27,152 @@ import {type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 const UIStrings = {
   /**
-  *@description Label for the summary in the CSS Overview report
-  */
+   *@description Label for the summary in the CSS Overview report
+   */
   overviewSummary: 'Overview summary',
   /**
-  *@description Title of colors subsection in the CSS Overview Panel
-  */
+   *@description Title of colors subsection in the CSS Overview Panel
+   */
   colors: 'Colors',
   /**
-  *@description Title of font info subsection in the CSS Overview Panel
-  */
+   *@description Title of font info subsection in the CSS Overview Panel
+   */
   fontInfo: 'Font info',
   /**
-  *@description Label to denote unused declarations in the target page
-  */
+   *@description Label to denote unused declarations in the target page
+   */
   unusedDeclarations: 'Unused declarations',
   /**
-  *@description Label for the number of media queries in the CSS Overview report
-  */
+   *@description Label for the number of media queries in the CSS Overview report
+   */
   mediaQueries: 'Media queries',
   /**
-  *@description Title of the Elements Panel
-  */
+   *@description Title of the Elements Panel
+   */
   elements: 'Elements',
   /**
-  *@description Label for the number of External stylesheets in the CSS Overview report
-  */
+   *@description Label for the number of External stylesheets in the CSS Overview report
+   */
   externalStylesheets: 'External stylesheets',
   /**
-  *@description Label for the number of inline style elements in the CSS Overview report
-  */
+   *@description Label for the number of inline style elements in the CSS Overview report
+   */
   inlineStyleElements: 'Inline style elements',
   /**
-  *@description Label for the number of style rules in CSS Overview report
-  */
+   *@description Label for the number of style rules in CSS Overview report
+   */
   styleRules: 'Style rules',
   /**
-  *@description Label for the number of type selectors in the CSS Overview report
-  */
+   *@description Label for the number of type selectors in the CSS Overview report
+   */
   typeSelectors: 'Type selectors',
   /**
-  *@description Label for the number of ID selectors in the CSS Overview report
-  */
+   *@description Label for the number of ID selectors in the CSS Overview report
+   */
   idSelectors: 'ID selectors',
   /**
-  *@description Label for the number of class selectors in the CSS Overview report
-  */
+   *@description Label for the number of class selectors in the CSS Overview report
+   */
   classSelectors: 'Class selectors',
   /**
-  *@description Label for the number of universal selectors in the CSS Overview report
-  */
+   *@description Label for the number of universal selectors in the CSS Overview report
+   */
   universalSelectors: 'Universal selectors',
   /**
-  *@description Label for the number of Attribute selectors in the CSS Overview report
-  */
+   *@description Label for the number of Attribute selectors in the CSS Overview report
+   */
   attributeSelectors: 'Attribute selectors',
   /**
-  *@description Label for the number of non-simple selectors in the CSS Overview report
-  */
+   *@description Label for the number of non-simple selectors in the CSS Overview report
+   */
   nonsimpleSelectors: 'Non-simple selectors',
   /**
-  *@description Label for unique background colors in the CSS Overview Panel
-  *@example {32} PH1
-  */
+   *@description Label for unique background colors in the CSS Overview Panel
+   *@example {32} PH1
+   */
   backgroundColorsS: 'Background colors: {PH1}',
   /**
-  *@description Label for unique text colors in the CSS Overview Panel
-  *@example {32} PH1
-  */
+   *@description Label for unique text colors in the CSS Overview Panel
+   *@example {32} PH1
+   */
   textColorsS: 'Text colors: {PH1}',
   /**
-  *@description Label for unique fill colors in the CSS Overview Panel
-  *@example {32} PH1
-  */
+   *@description Label for unique fill colors in the CSS Overview Panel
+   *@example {32} PH1
+   */
   fillColorsS: 'Fill colors: {PH1}',
   /**
-  *@description Label for unique border colors in the CSS Overview Panel
-  *@example {32} PH1
-  */
+   *@description Label for unique border colors in the CSS Overview Panel
+   *@example {32} PH1
+   */
   borderColorsS: 'Border colors: {PH1}',
   /**
-  *@description Label to indicate that there are no fonts in use
-  */
+   *@description Label to indicate that there are no fonts in use
+   */
   thereAreNoFonts: 'There are no fonts.',
   /**
-  *@description Message to show when no unused declarations in the target page
-  */
+   *@description Message to show when no unused declarations in the target page
+   */
   thereAreNoUnusedDeclarations: 'There are no unused declarations.',
   /**
-  *@description Message to show when no media queries are found in the target page
-  */
+   *@description Message to show when no media queries are found in the target page
+   */
   thereAreNoMediaQueries: 'There are no media queries.',
   /**
-  *@description Title of the Drawer for contrast issues in the CSS Overview Panel
-  */
+   *@description Title of the Drawer for contrast issues in the CSS Overview Panel
+   */
   contrastIssues: 'Contrast issues',
   /**
-  * @description Text to indicate how many times this CSS rule showed up.
-  */
+   * @description Text to indicate how many times this CSS rule showed up.
+   */
   nOccurrences: '{n, plural, =1 {# occurrence} other {# occurrences}}',
   /**
-  *@description Section header for contrast issues in the CSS Overview Panel
-  *@example {1} PH1
-  */
+   *@description Section header for contrast issues in the CSS Overview Panel
+   *@example {1} PH1
+   */
   contrastIssuesS: 'Contrast issues: {PH1}',
   /**
-  *@description Title of the button for a contrast issue in the CSS Overview Panel
-  *@example {#333333} PH1
-  *@example {#333333} PH2
-  *@example {2} PH3
-  */
+   *@description Title of the button for a contrast issue in the CSS Overview Panel
+   *@example {#333333} PH1
+   *@example {#333333} PH2
+   *@example {2} PH3
+   */
   textColorSOverSBackgroundResults: 'Text color {PH1} over {PH2} background results in low contrast for {PH3} elements',
   /**
-  *@description Label aa text content in Contrast Details of the Color Picker
-  */
+   *@description Label aa text content in Contrast Details of the Color Picker
+   */
   aa: 'AA',
   /**
-  *@description Label aaa text content in Contrast Details of the Color Picker
-  */
+   *@description Label aaa text content in Contrast Details of the Color Picker
+   */
   aaa: 'AAA',
   /**
-  *@description Label for the APCA contrast in Color Picker
-  */
+   *@description Label for the APCA contrast in Color Picker
+   */
   apca: 'APCA',
   /**
-  *@description Label for the column in the element list in the CSS Overview report
-  */
+   *@description Label for the column in the element list in the CSS Overview report
+   */
   element: 'Element',
   /**
-  *@description Column header title denoting which declaration is unused
-  */
+   *@description Column header title denoting which declaration is unused
+   */
   declaration: 'Declaration',
   /**
-  *@description Text for the source of something
-  */
+   *@description Text for the source of something
+   */
   source: 'Source',
   /**
-  *@description Text of a DOM element in Contrast Details of the Color Picker
-  */
+   *@description Text of a DOM element in Contrast Details of the Color Picker
+   */
   contrastRatio: 'Contrast ratio',
   /**
-  *@description Accessible title of a table in the CSS Overview Elements.
-  */
+   *@description Accessible title of a table in the CSS Overview Elements.
+   */
   cssOverviewElements: 'CSS Overview Elements',
   /**
-  *@description Title of the button to show the element in the CSS Overview panel
-  */
+   *@description Title of the button to show the element in the CSS Overview panel
+   */
   showElement: 'Show element',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewCompletedView.ts', UIStrings);

@@ -22,12 +22,12 @@ import {Plugin} from './Plugin.js';
 
 const UIStrings = {
   /**
-  *@description Swatch icon element title in CSSPlugin of the Sources panel
-  */
+   *@description Swatch icon element title in CSSPlugin of the Sources panel
+   */
   openColorPicker: 'Open color picker.',
   /**
-  *@description Text to open the cubic bezier editor
-  */
+   *@description Text to open the cubic bezier editor
+   */
   openCubicBezierEditor: 'Open cubic bezier editor.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CSSPlugin.ts', UIStrings);

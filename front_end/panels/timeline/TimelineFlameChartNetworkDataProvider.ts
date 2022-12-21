@@ -22,8 +22,8 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
-  *@description Title of the Network tool
-  */
+   *@description Title of the Network tool
+   */
   network: 'Network',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartNetworkDataProvider.ts', UIStrings);

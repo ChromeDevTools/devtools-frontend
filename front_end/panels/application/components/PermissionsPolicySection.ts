@@ -18,39 +18,39 @@ import * as Common from '../../../core/common/common.js';
 
 const UIStrings = {
   /**
-  *@description Label for a button. When clicked more details (for the content this button refers to) will be shown.
-  */
+   *@description Label for a button. When clicked more details (for the content this button refers to) will be shown.
+   */
   showDetails: 'Show details',
   /**
-  *@description Label for a button. When clicked some details (for the content this button refers to) will be hidden.
-  */
+   *@description Label for a button. When clicked some details (for the content this button refers to) will be hidden.
+   */
   hideDetails: 'Hide details',
   /**
-  *@description Label for a list of features which are allowed according to the current Permissions policy
-  *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
-  */
+   *@description Label for a list of features which are allowed according to the current Permissions policy
+   *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
+   */
   allowedFeatures: 'Allowed Features',
   /**
-  *@description Label for a list of features which are disabled according to the current Permissions policy
-  *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
-  */
+   *@description Label for a list of features which are disabled according to the current Permissions policy
+   *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
+   */
   disabledFeatures: 'Disabled Features',
   /**
-  *@description Tooltip text for a link to a specific request's headers in the Network panel.
-  */
+   *@description Tooltip text for a link to a specific request's headers in the Network panel.
+   */
   clickToShowHeader: 'Click to reveal the request whose "`Permissions-Policy`" HTTP header disables this feature.',
   /**
-  *@description Tooltip text for a link to a specific iframe in the Elements panel (Iframes can be nested, the link goes
-  *  to the outer-most iframe which blocks a certain feature).
-  */
+   *@description Tooltip text for a link to a specific iframe in the Elements panel (Iframes can be nested, the link goes
+   *  to the outer-most iframe which blocks a certain feature).
+   */
   clickToShowIframe: 'Click to reveal the top-most iframe which does not allow this feature in the elements panel.',
   /**
-  *@description Text describing that a specific feature is blocked by not being included in the iframe's "allow" attribute.
-  */
+   *@description Text describing that a specific feature is blocked by not being included in the iframe's "allow" attribute.
+   */
   disabledByIframe: 'missing in iframe "`allow`" attribute',
   /**
-  *@description Text describing that a specific feature is blocked by a Permissions Policy specified in a request header.
-  */
+   *@description Text describing that a specific feature is blocked by a Permissions Policy specified in a request header.
+   */
   disabledByHeader: 'disabled by "`Permissions-Policy`" header',
   /**
    *@description Text describing that a specific feature is blocked by virtue of being inside a fenced frame tree.

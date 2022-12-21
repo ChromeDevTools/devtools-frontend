@@ -16,35 +16,35 @@ import consoleSidebarStyles from './consoleSidebar.css.js';
 
 const UIStrings = {
   /**
-  * @description Filter name in Console Sidebar of the Console panel. This is shown when we fail to
-  * parse a URL when trying to display console messages from each URL separately. This might be
-  * because the console message does not come from any particular URL. This should be translated as
-  * a term that indicates 'not one of the other URLs listed here'.
-  */
+   * @description Filter name in Console Sidebar of the Console panel. This is shown when we fail to
+   * parse a URL when trying to display console messages from each URL separately. This might be
+   * because the console message does not come from any particular URL. This should be translated as
+   * a term that indicates 'not one of the other URLs listed here'.
+   */
   other: '<other>',
   /**
-  *@description Text in Console Sidebar of the Console panel to show how many user messages exist.
-  */
+   *@description Text in Console Sidebar of the Console panel to show how many user messages exist.
+   */
   dUserMessages: '{n, plural, =0 {No user messages} =1 {# user message} other {# user messages}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show how many messages exist.
-  */
+   *@description Text in Console Sidebar of the Console panel to show how many messages exist.
+   */
   dMessages: '{n, plural, =0 {No messages} =1 {# message} other {# messages}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show how many errors exist.
-  */
+   *@description Text in Console Sidebar of the Console panel to show how many errors exist.
+   */
   dErrors: '{n, plural, =0 {No errors} =1 {# error} other {# errors}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show how many warnings exist.
-  */
+   *@description Text in Console Sidebar of the Console panel to show how many warnings exist.
+   */
   dWarnings: '{n, plural, =0 {No warnings} =1 {# warning} other {# warnings}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show how many info messages exist.
-  */
+   *@description Text in Console Sidebar of the Console panel to show how many info messages exist.
+   */
   dInfo: '{n, plural, =0 {No info} =1 {# info} other {# info}}',
   /**
-  *@description Text in Console Sidebar of the Console panel to show how many verbose messages exist.
-  */
+   *@description Text in Console Sidebar of the Console panel to show how many verbose messages exist.
+   */
   dVerbose: '{n, plural, =0 {No verbose} =1 {# verbose} other {# verbose}}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleSidebar.ts', UIStrings);

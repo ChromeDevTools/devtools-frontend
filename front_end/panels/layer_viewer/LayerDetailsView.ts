@@ -49,114 +49,114 @@ import {
 
 const UIStrings = {
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   selectALayerToSeeItsDetails: 'Select a layer to see its details',
   /**
-  *@description Element text content in Layer Details View of the Layers panel
-  *@example {Touch event handler} PH1
-  *@example {10} PH2
-  *@example {10} PH3
-  *@example {10} PH4
-  *@example {10} PH5
-  */
+   *@description Element text content in Layer Details View of the Layers panel
+   *@example {Touch event handler} PH1
+   *@example {10} PH2
+   *@example {10} PH3
+   *@example {10} PH4
+   *@example {10} PH5
+   */
   scrollRectangleDimensions: '{PH1} {PH2} × {PH3} (at {PH4}, {PH5})',
   /**
-  * @description Text in Layer Details View of the Layers panel. Used to indicate that a particular
-  * layer of the website is unnamed (was not given a name/doesn't have one).
-  */
+   * @description Text in Layer Details View of the Layers panel. Used to indicate that a particular
+   * layer of the website is unnamed (was not given a name/doesn't have one).
+   */
   unnamed: '<unnamed>',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  *@example {Nearest Layer Shifting Sticky Box} PH1
-  *@example {&lt;unnamed&gt;} PH2
-  *@example {5} PH3
-  */
+   *@description Text in Layer Details View of the Layers panel
+   *@example {Nearest Layer Shifting Sticky Box} PH1
+   *@example {&lt;unnamed&gt;} PH2
+   *@example {5} PH3
+   */
   stickyAncenstorLayersS: '{PH1}: {PH2} ({PH3})',
   /**
-  *@description Sticky box rect element text content in Layer Details View of the Layers panel
-  *@example {10} PH1
-  *@example {10} PH2
-  *@example {10} PH3
-  *@example {10} PH4
-  */
+   *@description Sticky box rect element text content in Layer Details View of the Layers panel
+   *@example {10} PH1
+   *@example {10} PH2
+   *@example {10} PH3
+   *@example {10} PH4
+   */
   stickyBoxRectangleDimensions: 'Sticky Box {PH1} × {PH2} (at {PH3}, {PH4})',
   /**
-  * @description Containing block rect element text content in Layer Details View of the Layers panel.
-  * The placeholder are width, height, x position, and y position respectively.
-  *@example {10} PH1
-  *@example {10} PH2
-  *@example {10} PH3
-  *@example {10} PH4
-  */
+   * @description Containing block rect element text content in Layer Details View of the Layers panel.
+   * The placeholder are width, height, x position, and y position respectively.
+   *@example {10} PH1
+   *@example {10} PH2
+   *@example {10} PH3
+   *@example {10} PH4
+   */
   containingBlocRectangleDimensions: 'Containing Block {PH1} × {PH2} (at {PH3}, {PH4})',
   /**
-  * @description Text in Layer Details View of the Layers panel. This also means "The nearest sticky
-  * box that causes a layer shift".
-  */
+   * @description Text in Layer Details View of the Layers panel. This also means "The nearest sticky
+   * box that causes a layer shift".
+   */
   nearestLayerShiftingStickyBox: 'Nearest Layer Shifting Sticky Box',
   /**
-  * @description Text in Layer Details View of the Layers panel. This also means "The nearest block
-  * that causes a layer shift".
-  */
+   * @description Text in Layer Details View of the Layers panel. This also means "The nearest block
+   * that causes a layer shift".
+   */
   nearestLayerShiftingContaining: 'Nearest Layer Shifting Containing Block',
   /**
-  *@description Size cell text content in Layer Details View of the Layers panel
-  *@example {10} PH1
-  *@example {10} PH2
-  *@example {10} PH3
-  *@example {10} PH4
-  */
+   *@description Size cell text content in Layer Details View of the Layers panel
+   *@example {10} PH1
+   *@example {10} PH2
+   *@example {10} PH3
+   *@example {10} PH4
+   */
   updateRectangleDimensions: '{PH1} × {PH2} (at {PH3}, {PH4})',
   /**
-  *@description Text for the size of something
-  */
+   *@description Text for the size of something
+   */
   size: 'Size',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   compositingReasons: 'Compositing Reasons',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   memoryEstimate: 'Memory estimate',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   paintCount: 'Paint count',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   slowScrollRegions: 'Slow scroll regions',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   stickyPositionConstraint: 'Sticky position constraint',
   /**
-  *@description Title of the paint profiler, old name of the performance pane
-  */
+   *@description Title of the paint profiler, old name of the performance pane
+   */
   paintProfiler: 'Paint Profiler',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   nonFastScrollable: 'Non fast scrollable',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   touchEventHandler: 'Touch event handler',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   wheelEventHandler: 'Wheel event handler',
   /**
-  * @description Text in Layer Details View of the Layers panel. Means that this rectangle needs to
-  * be repainted when the webpage is scrolled. 'repaints' means that the browser engine needs to
-  * draw the pixels for this rectangle to the user's monitor again.
-  */
+   * @description Text in Layer Details View of the Layers panel. Means that this rectangle needs to
+   * be repainted when the webpage is scrolled. 'repaints' means that the browser engine needs to
+   * draw the pixels for this rectangle to the user's monitor again.
+   */
   repaintsOnScroll: 'Repaints on scroll',
   /**
-  *@description Text in Layer Details View of the Layers panel
-  */
+   *@description Text in Layer Details View of the Layers panel
+   */
   mainThreadScrollingReason: 'Main thread scrolling reason',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerDetailsView.ts', UIStrings);

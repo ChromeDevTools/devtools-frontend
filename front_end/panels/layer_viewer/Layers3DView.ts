@@ -52,43 +52,43 @@ import {Events as TransformControllerEvents, TransformController} from './Transf
 
 const UIStrings = {
   /**
-  *@description Text of a DOM element in DView of the Layers panel
-  */
+   *@description Text of a DOM element in DView of the Layers panel
+   */
   layerInformationIsNotYet: 'Layer information is not yet available.',
   /**
-  *@description Accessibility label for canvas view in Layers tool
-  */
+   *@description Accessibility label for canvas view in Layers tool
+   */
   dLayersView: '3D Layers View',
   /**
-  *@description Text in DView of the Layers panel
-  */
+   *@description Text in DView of the Layers panel
+   */
   cantDisplayLayers: 'Can\'t display layers,',
   /**
-  *@description Text in DView of the Layers panel
-  */
+   *@description Text in DView of the Layers panel
+   */
   webglSupportIsDisabledInYour: 'WebGL support is disabled in your browser.',
   /**
-  *@description Text in DView of the Layers panel
-  *@example {about:gpu} PH1
-  */
+   *@description Text in DView of the Layers panel
+   *@example {about:gpu} PH1
+   */
   checkSForPossibleReasons: 'Check {PH1} for possible reasons.',
   /**
-  *@description Text for a checkbox in the toolbar of the Layers panel to show the area of slow scroll rect
-  */
+   *@description Text for a checkbox in the toolbar of the Layers panel to show the area of slow scroll rect
+   */
   slowScrollRects: 'Slow scroll rects',
   /**
-  * @description Text for a checkbox in the toolbar of the Layers panel. This is a noun, for a
-  * setting meaning 'display paints in the layers viewer'. 'Paints' here means 'paint events' i.e.
-  * when the browser draws pixels to the screen.
-  */
+   * @description Text for a checkbox in the toolbar of the Layers panel. This is a noun, for a
+   * setting meaning 'display paints in the layers viewer'. 'Paints' here means 'paint events' i.e.
+   * when the browser draws pixels to the screen.
+   */
   paints: 'Paints',
   /**
-  *@description A context menu item in the DView of the Layers panel
-  */
+   *@description A context menu item in the DView of the Layers panel
+   */
   resetView: 'Reset View',
   /**
-  *@description A context menu item in the DView of the Layers panel
-  */
+   *@description A context menu item in the DView of the Layers panel
+   */
   showPaintProfiler: 'Show Paint Profiler',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/Layers3DView.ts', UIStrings);

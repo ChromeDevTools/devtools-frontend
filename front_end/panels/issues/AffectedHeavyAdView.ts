@@ -11,44 +11,44 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {
   /**
-  *@description Label for number of affected resources indication in issue view
-  */
+   *@description Label for number of affected resources indication in issue view
+   */
   nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**
-  *@description Title for a column in an Heavy Ads issue view
-  */
+   *@description Title for a column in an Heavy Ads issue view
+   */
   limitExceeded: 'Limit exceeded',
   /**
-  *@description Title for a column in an Heavy Ads issue view
-  */
+   *@description Title for a column in an Heavy Ads issue view
+   */
   resolutionStatus: 'Resolution Status',
   /**
-  *@description Title for a column in an Heavy Ads issue view
-  */
+   *@description Title for a column in an Heavy Ads issue view
+   */
   frameUrl: 'Frame URL',
   /**
-  * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
-  * This string indicates that the ad was bad enough that it was removed.
-  */
+   * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
+   * This string indicates that the ad was bad enough that it was removed.
+   */
   removed: 'Removed',
   /**
-  * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
-  * This string indicates that the ad was only warned, and not removed.
-  */
+   * @description When there is a Heavy Ad, the browser can choose to deal with it in different ways.
+   * This string indicates that the ad was only warned, and not removed.
+   */
   warned: 'Warned',
   /**
-  *@description Reason for a Heavy Ad being flagged in issue view. The Ad has been flagged as a
-  *Heavy Ad because it exceeded the set limit for peak CPU usage, e.g. it blocked the main thread
-  *for more than 15 seconds in any 30-second window.
-  */
+   *@description Reason for a Heavy Ad being flagged in issue view. The Ad has been flagged as a
+   *Heavy Ad because it exceeded the set limit for peak CPU usage, e.g. it blocked the main thread
+   *for more than 15 seconds in any 30-second window.
+   */
   cpuPeakLimit: 'CPU peak limit',
   /**
-  *@description Reason for a Heavy Ad being flagged in issue view
-  */
+   *@description Reason for a Heavy Ad being flagged in issue view
+   */
   cpuTotalLimit: 'CPU total limit',
   /**
-  *@description Reason for a Heavy Ad being flagged in issue view
-  */
+   *@description Reason for a Heavy Ad being flagged in issue view
+   */
   networkLimit: 'Network limit',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedHeavyAdView.ts', UIStrings);

@@ -41,32 +41,32 @@ import screencastViewStyles from './screencastView.css.js';
 
 const UIStrings = {
   /**
-  *@description Accessible alt text for the screencast canvas rendering of the debug target webpage
-  */
+   *@description Accessible alt text for the screencast canvas rendering of the debug target webpage
+   */
   screencastViewOfDebugTarget: 'Screencast view of debug target',
   /**
-  *@description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
-  */
+   *@description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
+   */
   theTabIsInactive: 'The tab is inactive',
   /**
-  *@description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
-  */
+   *@description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
+   */
   profilingInProgress: 'Profiling in progress',
   /**
-  *@description Accessible text for the screencast back button
-  */
+   *@description Accessible text for the screencast back button
+   */
   back: 'back',
   /**
-  *@description Accessible text for the screencast forward button
-  */
+   *@description Accessible text for the screencast forward button
+   */
   forward: 'forward',
   /**
-  *@description Accessible text for the screencast reload button
-  */
+   *@description Accessible text for the screencast reload button
+   */
   reload: 'reload',
   /**
-  *@description Accessible text for the address bar in screencast view
-  */
+   *@description Accessible text for the address bar in screencast view
+   */
   addressBar: 'Address bar',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/screencast/ScreencastView.ts', UIStrings);

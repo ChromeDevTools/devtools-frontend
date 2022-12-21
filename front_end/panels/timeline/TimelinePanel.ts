@@ -76,196 +76,196 @@ import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description Text that appears when user drag and drop something (for example, a file) in Timeline Panel of the Performance panel
-  */
+   *@description Text that appears when user drag and drop something (for example, a file) in Timeline Panel of the Performance panel
+   */
   dropTimelineFileOrUrlHere: 'Drop timeline file or URL here',
   /**
-  *@description Title of disable capture jsprofile setting in timeline panel of the performance panel
-  */
+   *@description Title of disable capture jsprofile setting in timeline panel of the performance panel
+   */
   disableJavascriptSamples: 'Disable JavaScript samples',
   /**
-  *@description Title of capture layers and pictures setting in timeline panel of the performance panel
-  */
+   *@description Title of capture layers and pictures setting in timeline panel of the performance panel
+   */
   enableAdvancedPaint: 'Enable advanced paint instrumentation (slow)',
   /**
-  *@description Title of show screenshots setting in timeline panel of the performance panel
-  */
+   *@description Title of show screenshots setting in timeline panel of the performance panel
+   */
   screenshots: 'Screenshots',
   /**
-  *@description Title of the 'Coverage' tool in the bottom drawer
-  */
+   *@description Title of the 'Coverage' tool in the bottom drawer
+   */
   coverage: 'Coverage',
   /**
-  *@description Text for the memory of the page
-  */
+   *@description Text for the memory of the page
+   */
   memory: 'Memory',
   /**
-  *@description Text in Timeline for the Web Vitals lane
-  */
+   *@description Text in Timeline for the Web Vitals lane
+   */
   webVitals: 'Web Vitals',
   /**
-  *@description Text to clear content
-  */
+   *@description Text to clear content
+   */
   clear: 'Clear',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon load button
-  */
+   *@description Tooltip text that appears when hovering over the largeicon load button
+   */
   loadProfile: 'Load profile…',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon download button
-  */
+   *@description Tooltip text that appears when hovering over the largeicon download button
+   */
   saveProfile: 'Save profile…',
   /**
-  *@description Text to take screenshots
-  */
+   *@description Text to take screenshots
+   */
   captureScreenshots: 'Capture screenshots',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   showMemoryTimeline: 'Show memory timeline',
   /**
-  *@description Text in Timeline for the Web Vitals lane checkbox
-  */
+   *@description Text in Timeline for the Web Vitals lane checkbox
+   */
   showWebVitals: 'Show Web Vitals',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   recordCoverageWithPerformance: 'Record coverage with performance trace',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel
+   */
   captureSettings: 'Capture settings',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   disablesJavascriptSampling: 'Disables JavaScript sampling, reduces overhead when running against mobile devices',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   capturesAdvancedPaint: 'Captures advanced paint instrumentation, introduces significant performance overhead',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   network: 'Network:',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   cpu: 'CPU:',
   /**
-  *@description Title of the 'Network conditions' tool in the bottom drawer
-  */
+   *@description Title of the 'Network conditions' tool in the bottom drawer
+   */
   networkConditions: 'Network conditions',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  *@example {wrong format} PH1
-  *@example {ERROR_FILE_NOT_FOUND} PH2
-  *@example {2} PH3
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   *@example {wrong format} PH1
+   *@example {ERROR_FILE_NOT_FOUND} PH2
+   *@example {2} PH3
+   */
   failedToSaveTimelineSSS: 'Failed to save timeline: {PH1} ({PH2}, {PH3})',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   CpuThrottlingIsEnabled: '- CPU throttling is enabled',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   NetworkThrottlingIsEnabled: '- Network throttling is enabled',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   HardwareConcurrencyIsEnabled: '- Hardware concurrency override is enabled',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   SignificantOverheadDueToPaint: '- Significant overhead due to paint instrumentation',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   JavascriptSamplingIsDisabled: '- JavaScript sampling is disabled',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   stoppingTimeline: 'Stopping timeline…',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   received: 'Received',
   /**
-  *@description Text to close something
-  */
+   *@description Text to close something
+   */
   close: 'Close',
   /**
-  *@description Status text to indicate the recording has failed in the Performance panel
-  */
+   *@description Status text to indicate the recording has failed in the Performance panel
+   */
   recordingFailed: 'Recording failed',
   /**
-  * @description Text to indicate the progress of a profile. Informs the user that we are currently
-  * creating a peformance profile.
-  */
+   * @description Text to indicate the progress of a profile. Informs the user that we are currently
+   * creating a peformance profile.
+   */
   profiling: 'Profiling…',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   bufferUsage: 'Buffer usage',
   /**
-  *@description Text for an option to learn more about something
-  */
+   *@description Text for an option to learn more about something
+   */
   learnmore: 'Learn more',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   wasd: 'WASD',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  *@example {record} PH1
-  *@example {Ctrl + R} PH2
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   *@example {record} PH1
+   *@example {Ctrl + R} PH2
+   */
   clickTheRecordButtonSOrHitSTo: 'Click the record button {PH1} or hit {PH2} to start a new recording.',
   /**
-  * @description Text in Timeline Panel of the Performance panel
-  * @example {reload button} PH1
-  * @example {Ctrl + R} PH2
-  */
+   * @description Text in Timeline Panel of the Performance panel
+   * @example {reload button} PH1
+   * @example {Ctrl + R} PH2
+   */
   clickTheReloadButtonSOrHitSTo: 'Click the reload button {PH1} or hit {PH2} to record the page load.',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  *@example {Ctrl + U} PH1
-  *@example {Learn more} PH2
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   *@example {Ctrl + U} PH1
+   *@example {Learn more} PH2
+   */
   afterRecordingSelectAnAreaOf:
       'After recording, select an area of interest in the overview by dragging. Then, zoom and pan the timeline with the mousewheel or {PH1} keys. {PH2}',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   loadingProfile: 'Loading profile…',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   processingProfile: 'Processing profile…',
   /**
-  *@description Text in Timeline Panel of the Performance panel
-  */
+   *@description Text in Timeline Panel of the Performance panel
+   */
   initializingProfiler: 'Initializing profiler…',
   /**
-  *@description Text for the status of something
-  */
+   *@description Text for the status of something
+   */
   status: 'Status',
   /**
-  *@description Text that refers to the time
-  */
+   *@description Text that refers to the time
+   */
   time: 'Time',
   /**
-  *@description Text for the description of something
-  */
+   *@description Text for the description of something
+   */
   description: 'Description',
   /**
-  *@description Text of an item that stops the running task
-  */
+   *@description Text of an item that stops the running task
+   */
   stop: 'Stop',
   /**
-  *@description Time text content in Timeline Panel of the Performance panel
-  *@example {2.12} PH1
-  */
+   *@description Time text content in Timeline Panel of the Performance panel
+   *@example {2.12} PH1
+   */
   ssec: '{PH1} sec',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);

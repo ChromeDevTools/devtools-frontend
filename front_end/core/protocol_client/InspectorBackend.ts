@@ -486,18 +486,18 @@ export class SessionRouter {
 }
 
 /**
-  * Make sure that `Domain` in get/set is only ever instantiated with one protocol domain
-  * name, because if `Domain` allows multiple domains, the type is unsound.
-  */
+ * Make sure that `Domain` in get/set is only ever instantiated with one protocol domain
+ * name, because if `Domain` allows multiple domains, the type is unsound.
+ */
 interface AgentsMap extends Map<ProtocolDomainName, ProtocolProxyApi.ProtocolApi[ProtocolDomainName]> {
   get<Domain extends ProtocolDomainName>(key: Domain): ProtocolProxyApi.ProtocolApi[Domain]|undefined;
   set<Domain extends ProtocolDomainName>(key: Domain, value: ProtocolProxyApi.ProtocolApi[Domain]): this;
 }
 
 /**
-  * Make sure that `Domain` in get/set is only ever instantiated with one protocol domain
-  * name, because if `Domain` allows multiple domains, the type is unsound.
-  */
+ * Make sure that `Domain` in get/set is only ever instantiated with one protocol domain
+ * name, because if `Domain` allows multiple domains, the type is unsound.
+ */
 interface DispatcherMap extends Map<ProtocolDomainName, ProtocolProxyApi.ProtocolDispatchers[ProtocolDomainName]> {
   get<Domain extends ProtocolDomainName>(key: Domain): DispatcherManager<Domain>|undefined;
   set<Domain extends ProtocolDomainName>(key: Domain, value: DispatcherManager<Domain>): this;

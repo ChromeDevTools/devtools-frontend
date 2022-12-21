@@ -15,41 +15,41 @@ import sharedStorageMetadataViewStyles from './sharedStorageMetadataView.css.js'
 
 const UIStrings = {
   /**
-  *@description Text in SharedStorage Metadata View of the Application panel
-  */
+   *@description Text in SharedStorage Metadata View of the Application panel
+   */
   sharedStorage: 'Shared Storage',
   /**
-  *@description Section header for Metadata
-  */
+   *@description Section header for Metadata
+   */
   metadata: 'Metadata',
   /**
-  *@description The origin of a URL (https://web.dev/same-site-same-origin/#origin)
-  *(for a lot of languages this does not need to be translated, please translate only where necessary)
-  */
+   *@description The origin of a URL (https://web.dev/same-site-same-origin/#origin)
+   *(for a lot of languages this does not need to be translated, please translate only where necessary)
+   */
   origin: 'Origin',
   /**
-  *@description The time when the origin most recently created its shared storage database
-  */
+   *@description The time when the origin most recently created its shared storage database
+   */
   creation: 'Creation Time',
   /**
-  *@description The placeholder text if there is no creation time because the origin is not yet using shared storage.
-  */
+   *@description The placeholder text if there is no creation time because the origin is not yet using shared storage.
+   */
   notYetCreated: 'Not yet created',
   /**
-  *@description The number of entries currently in the origin's database
-  */
+   *@description The number of entries currently in the origin's database
+   */
   numEntries: 'Number of Entries',
   /**
-  *@description The number of bits remaining in the origin's shared storage privacy budget
-  */
+   *@description The number of bits remaining in the origin's shared storage privacy budget
+   */
   entropyBudget: 'Entropy Budget for Fenced Frames',
   /**
-  *@description Hover text for `entropyBudget` giving a more detailed explanation
-  */
+   *@description Hover text for `entropyBudget` giving a more detailed explanation
+   */
   budgetExplanation: 'Remaining data leakage allowed within a 24-hour period for this origin in bits of entropy',
   /**
-  *@description Section header above Entries
-  */
+   *@description Section header above Entries
+   */
   entries: 'Entries',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/SharedStorageMetadataView.ts', UIStrings);

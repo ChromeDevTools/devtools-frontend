@@ -15,8 +15,8 @@ import {FilePathScoreFunction} from './FilePathScoreFunction.js';
 
 const UIStrings = {
   /**
-  *@description Text in Filtered UISource Code List Provider of the Sources panel
-  */
+   *@description Text in Filtered UISource Code List Provider of the Sources panel
+   */
   noFilesFound: 'No files found',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/FilteredUISourceCodeListProvider.ts', UIStrings);

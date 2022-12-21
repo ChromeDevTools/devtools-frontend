@@ -12,17 +12,17 @@ import consoleContextSelectorStyles from './consoleContextSelector.css.js';
 
 const UIStrings = {
   /**
-  *@description Title of toolbar item in console context selector of the console panel
-  */
+   *@description Title of toolbar item in console context selector of the console panel
+   */
   javascriptContextNotSelected: 'JavaScript context: Not selected',
   /**
-  *@description Text in Console Context Selector of the Console panel
-  */
+   *@description Text in Console Context Selector of the Console panel
+   */
   extension: 'Extension',
   /**
-  *@description Text in Console Context Selector of the Console panel
-  *@example {top} PH1
-  */
+   *@description Text in Console Context Selector of the Console panel
+   *@example {top} PH1
+   */
   javascriptContextS: 'JavaScript context: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleContextSelector.ts', UIStrings);

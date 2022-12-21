@@ -10,15 +10,15 @@ import type * as ProtocolMonitor from './protocol_monitor.js';
 
 const UIStrings = {
   /**
-  * @description Title of the 'Protocol monitor' tool in the bottom drawer. This is a tool for
-  * viewing and inspecting 'protocol' messages which are sent/received by DevTools. 'protocol' here
-  * could be left untranslated as this refers to the Chrome DevTools Protocol (CDP) which is a
-  * specific API name.
-  */
+   * @description Title of the 'Protocol monitor' tool in the bottom drawer. This is a tool for
+   * viewing and inspecting 'protocol' messages which are sent/received by DevTools. 'protocol' here
+   * could be left untranslated as this refers to the Chrome DevTools Protocol (CDP) which is a
+   * specific API name.
+   */
   protocolMonitor: 'Protocol monitor',
   /**
-  *@description Command for showing the 'Protocol monitor' tool in the bottom drawer
-  */
+   *@description Command for showing the 'Protocol monitor' tool in the bottom drawer
+   */
   showProtocolMonitor: 'Show Protocol monitor',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/protocol_monitor-meta.ts', UIStrings);

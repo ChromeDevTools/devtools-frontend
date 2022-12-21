@@ -12,98 +12,98 @@ import {type ProtocolService} from './LighthouseProtocolService.js';
 
 const UIStrings = {
   /**
-  *@description Explanation for user that Ligthhouse can only audit HTTP/HTTPS pages
-  */
+   *@description Explanation for user that Ligthhouse can only audit HTTP/HTTPS pages
+   */
   canOnlyAuditHttphttpsPagesAnd:
       'Can only audit HTTP/HTTPS pages and `Chrome` extensions. Navigate to a different page to start an audit.',
   /**
-  *@description Text when stored data in one location may affect Lighthouse run
-  *@example {IndexedDB} PH1
-  */
+   *@description Text when stored data in one location may affect Lighthouse run
+   *@example {IndexedDB} PH1
+   */
   thereMayBeStoredDataAffectingSingular:
       'There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores.',
   /**
-  *@description Text when stored data in multiple locations may affect Lighthouse run
-  *@example {IndexedDB, WebSQL} PH1
-  */
+   *@description Text when stored data in multiple locations may affect Lighthouse run
+   *@example {IndexedDB, WebSQL} PH1
+   */
   thereMayBeStoredDataAffectingLoadingPlural:
       'There may be stored data affecting loading performance in these locations: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores.',
   /**
-  *@description Help text in Lighthouse Controller
-  */
+   *@description Help text in Lighthouse Controller
+   */
   multipleTabsAreBeingControlledBy:
       'Multiple tabs are being controlled by the same `service worker`. Close your other tabs on the same origin to audit this page.',
   /**
-  *@description Help text in Lighthouse Controller
-  */
+   *@description Help text in Lighthouse Controller
+   */
   atLeastOneCategoryMustBeSelected: 'At least one category must be selected.',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   localStorage: 'Local Storage',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   indexeddb: 'IndexedDB',
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   webSql: 'Web SQL',
   /**
-  *@description Text of checkbox to include running the performance audits in Lighthouse
-  */
+   *@description Text of checkbox to include running the performance audits in Lighthouse
+   */
   performance: 'Performance',
   /**
-  *@description Tooltip text of checkbox to include running the performance audits in Lighthouse
-  */
+   *@description Tooltip text of checkbox to include running the performance audits in Lighthouse
+   */
   howLongDoesThisAppTakeToShow: 'How long does this app take to show content and become usable',
   /**
-  *@description Text of checkbox to include running the Progressive Web App audits in Lighthouse
-  */
+   *@description Text of checkbox to include running the Progressive Web App audits in Lighthouse
+   */
   progressiveWebApp: 'Progressive Web App',
   /**
-  *@description Tooltip text of checkbox to include running the Progressive Web App audits in Lighthouse
-  */
+   *@description Tooltip text of checkbox to include running the Progressive Web App audits in Lighthouse
+   */
   doesThisPageMeetTheStandardOfA: 'Does this page meet the standard of a Progressive Web App',
   /**
-  *@description Text of checkbox to include running the Best Practices audits in Lighthouse
-  */
+   *@description Text of checkbox to include running the Best Practices audits in Lighthouse
+   */
   bestPractices: 'Best practices',
   /**
-  *@description Tooltip text of checkbox to include running the Best Practices audits in Lighthouse
-  */
+   *@description Tooltip text of checkbox to include running the Best Practices audits in Lighthouse
+   */
   doesThisPageFollowBestPractices: 'Does this page follow best practices for modern web development',
   /**
-  *@description Text of checkbox to include running the Accessibility audits in Lighthouse
-  */
+   *@description Text of checkbox to include running the Accessibility audits in Lighthouse
+   */
   accessibility: 'Accessibility',
   /**
-  *@description Tooltip text of checkbox to include running the Accessibility audits in Lighthouse
-  */
+   *@description Tooltip text of checkbox to include running the Accessibility audits in Lighthouse
+   */
   isThisPageUsableByPeopleWith: 'Is this page usable by people with disabilities or impairments',
   /**
-  *@description Text of checkbox to include running the Search Engine Optimization audits in Lighthouse
-  */
+   *@description Text of checkbox to include running the Search Engine Optimization audits in Lighthouse
+   */
   seo: 'SEO',
   /**
-  *@description Tooltip text of checkbox to include running the Search Engine Optimization audits in Lighthouse
-  */
+   *@description Tooltip text of checkbox to include running the Search Engine Optimization audits in Lighthouse
+   */
   isThisPageOptimizedForSearch: 'Is this page optimized for search engine results ranking',
   /**
-  *@description Text of checkbox to include running the Ad speed and quality audits in Lighthouse
-  */
+   *@description Text of checkbox to include running the Ad speed and quality audits in Lighthouse
+   */
   publisherAds: 'Publisher Ads',
   /**
-  *@description Tooltip text of checkbox to include running the Ad speed and quality audits in Lighthouse
-  */
+   *@description Tooltip text of checkbox to include running the Ad speed and quality audits in Lighthouse
+   */
   isThisPageOptimizedForAdSpeedAnd: 'Is this page optimized for ad speed and quality',
   /**
-  *@description ARIA label for a radio button input to emulate mobile device behavior when running audits in Lighthouse.
-  */
+   *@description ARIA label for a radio button input to emulate mobile device behavior when running audits in Lighthouse.
+   */
   applyMobileEmulation: 'Apply mobile emulation',
   /**
-  *@description Tooltip text of checkbox to emulate mobile device behavior when running audits in Lighthouse
-  */
+   *@description Tooltip text of checkbox to emulate mobile device behavior when running audits in Lighthouse
+   */
   applyMobileEmulationDuring: 'Apply mobile emulation during auditing',
   /**
    * @description ARIA label for a radio button input to select the Lighthouse mode.
@@ -138,12 +138,12 @@ const UIStrings = {
    */
   snapshotTooltip: 'Snapshot mode analyzes the page in a particular state, typically after user interactions.',
   /**
-  *@description Text for the mobile platform, as opposed to desktop
-  */
+   *@description Text for the mobile platform, as opposed to desktop
+   */
   mobile: 'Mobile',
   /**
-  *@description Text for the desktop platform, as opposed to mobile
-  */
+   *@description Text for the desktop platform, as opposed to mobile
+   */
   desktop: 'Desktop',
   /**
    * @description Text for an option to select a throttling method.
@@ -163,8 +163,8 @@ const UIStrings = {
   simulateASlowerPageLoadBasedOn:
       'Simulated throttling simulates a slower page load based on data from an initial unthrottled load. DevTools throttling actually slows down the page.',
   /**
-  *@description Text of checkbox to reset storage features prior to running audits in Lighthouse
-  */
+   *@description Text of checkbox to reset storage features prior to running audits in Lighthouse
+   */
   clearStorage: 'Clear storage',
   /**
    * @description Text of checkbox to use the legacy Lighthouse navigation mode
@@ -175,14 +175,14 @@ const UIStrings = {
    */
   useLegacyNavigation: 'Analyze the page using classic Lighthouse when in navigation mode.',
   /**
-  * @description Tooltip text of checkbox to reset storage features prior to running audits in
-  * Lighthouse. Resetting the storage clears/empties it to a neutral state.
-  */
+   * @description Tooltip text of checkbox to reset storage features prior to running audits in
+   * Lighthouse. Resetting the storage clears/empties it to a neutral state.
+   */
   resetStorageLocalstorage:
       'Reset storage (`cache`, `service workers`, etc) before auditing. (Good for performance & `PWA` testing)',
   /**
-  *@description Explanation for user that Ligthhouse can only audit when JavaScript is enabled
-  */
+   *@description Explanation for user that Ligthhouse can only audit when JavaScript is enabled
+   */
   javaScriptDisabled:
       'JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript.',
 };

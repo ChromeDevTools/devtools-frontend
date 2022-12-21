@@ -17,16 +17,16 @@ import filteredListWidgetStyles from './filteredListWidget.css.js';
 
 const UIStrings = {
   /**
-  * @description Aria label for quick open dialog prompt
-  */
+   * @description Aria label for quick open dialog prompt
+   */
   quickOpenPrompt: 'Quick open prompt',
   /**
-  * @description Title of quick open dialog
-  */
+   * @description Title of quick open dialog
+   */
   quickOpen: 'Quick open',
   /**
-  * @description Text to show no results have been found
-  */
+   * @description Text to show no results have been found
+   */
   noResultsFound: 'No results found',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/FilteredListWidget.ts', UIStrings);

@@ -14,9 +14,9 @@ import mediaQueryInspectorStyles from './mediaQueryInspector.css.legacy.js';
 
 const UIStrings = {
   /**
-  * @description A context menu item/command in the Media Query Inspector of the Device Toolbar.
-  * Takes the user to the source code where this media query actually came from.
-  */
+   * @description A context menu item/command in the Media Query Inspector of the Device Toolbar.
+   * Takes the user to the source code where this media query actually came from.
+   */
   revealInSourceCode: 'Reveal in source code',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/MediaQueryInspector.ts', UIStrings);

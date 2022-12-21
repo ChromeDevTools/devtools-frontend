@@ -16,8 +16,8 @@ import deviceModeViewStyles from './deviceModeView.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Bottom resizer element title in Device Mode View of the Device Toolbar
-  */
+   *@description Bottom resizer element title in Device Mode View of the Device Toolbar
+   */
   doubleclickForFullHeight: 'Double-click for full height',
   /**
    * @description Name of a device that the user can select to emulate. Small mobile device.

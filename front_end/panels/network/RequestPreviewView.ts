@@ -41,12 +41,12 @@ import {WebBundleInfoView} from './components/WebBundleInfoView.js';
 
 const UIStrings = {
   /**
-  *@description Text in Request Preview View of the Network panel
-  */
+   *@description Text in Request Preview View of the Network panel
+   */
   failedToLoadResponseData: 'Failed to load response data',
   /**
-  *@description Text in Request Preview View of the Network panel
-  */
+   *@description Text in Request Preview View of the Network panel
+   */
   previewNotAvailable: 'Preview not available',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPreviewView.ts', UIStrings);

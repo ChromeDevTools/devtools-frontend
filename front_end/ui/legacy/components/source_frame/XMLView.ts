@@ -12,8 +12,8 @@ import xmlViewStyles from './xmlView.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text to find an item
-  */
+   *@description Text to find an item
+   */
   find: 'Find',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/XMLView.ts', UIStrings);

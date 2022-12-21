@@ -63,58 +63,58 @@ import {type Serializer} from '../common/Settings.js';
 
 const UIStrings = {
   /**
-  *@description Explanation why no content is shown for WebSocket connection.
-  */
+   *@description Explanation why no content is shown for WebSocket connection.
+   */
   noContentForWebSocket: 'Content for WebSockets is currently not supported',
   /**
-  *@description Explanation why no content is shown for redirect response.
-  */
+   *@description Explanation why no content is shown for redirect response.
+   */
   noContentForRedirect: 'No content available because this request was redirected',
   /**
-  *@description Explanation why no content is shown for preflight request.
-  */
+   *@description Explanation why no content is shown for preflight request.
+   */
   noContentForPreflight: 'No content available for preflight request',
   /**
-  *@description Text to indicate that network throttling is disabled
-  */
+   *@description Text to indicate that network throttling is disabled
+   */
   noThrottling: 'No throttling',
   /**
-  *@description Text to indicate the network connectivity is offline
-  */
+   *@description Text to indicate the network connectivity is offline
+   */
   offline: 'Offline',
   /**
-  *@description Text in Network Manager
-  */
+   *@description Text in Network Manager
+   */
   slowG: 'Slow 3G',
   /**
-  *@description Text in Network Manager
-  */
+   *@description Text in Network Manager
+   */
   fastG: 'Fast 3G',
   /**
-  *@description Text in Network Manager
-  *@example {https://example.com} PH1
-  */
+   *@description Text in Network Manager
+   *@example {https://example.com} PH1
+   */
   requestWasBlockedByDevtoolsS: 'Request was blocked by DevTools: "{PH1}"',
   /**
-  *@description Text in Network Manager
-  *@example {https://example.com} PH1
-  *@example {application} PH2
-  */
+   *@description Text in Network Manager
+   *@example {https://example.com} PH1
+   *@example {application} PH2
+   */
   crossoriginReadBlockingCorb:
       'Cross-Origin Read Blocking (CORB) blocked cross-origin response {PH1} with MIME type {PH2}. See https://www.chromestatus.com/feature/5629709824032768 for more details.',
   /**
-  *@description Message in Network Manager
-  *@example {XHR} PH1
-  *@example {GET} PH2
-  *@example {https://example.com} PH3
-  */
+   *@description Message in Network Manager
+   *@example {XHR} PH1
+   *@example {GET} PH2
+   *@example {https://example.com} PH3
+   */
   sFailedLoadingSS: '{PH1} failed loading: {PH2} "{PH3}".',
   /**
-  *@description Message in Network Manager
-  *@example {XHR} PH1
-  *@example {GET} PH2
-  *@example {https://example.com} PH3
-  */
+   *@description Message in Network Manager
+   *@example {XHR} PH1
+   *@example {GET} PH2
+   *@example {https://example.com} PH3
+   */
   sFinishedLoadingSS: '{PH1} finished loading: {PH2} "{PH3}".',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkManager.ts', UIStrings);

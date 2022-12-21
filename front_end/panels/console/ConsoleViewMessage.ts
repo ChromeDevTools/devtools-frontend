@@ -60,119 +60,119 @@ import {augmentErrorStackWithScriptIds, parseSourcePositionsFromErrorStack} from
 
 const UIStrings = {
   /**
-  * @description Message element text content in Console View Message of the Console panel. Shown
-  * when the user tried to run console.clear() but the 'Preserve log' option is enabled, which stops
-  * the log from being cleared.
-  */
+   * @description Message element text content in Console View Message of the Console panel. Shown
+   * when the user tried to run console.clear() but the 'Preserve log' option is enabled, which stops
+   * the log from being cleared.
+   */
   consoleclearWasPreventedDueTo: '`console.clear()` was prevented due to \'Preserve log\'',
   /**
-  * @description Text shown in the Console panel after the user has cleared the console, which
-  * removes all messages from the console so that it is empty.
-  */
+   * @description Text shown in the Console panel after the user has cleared the console, which
+   * removes all messages from the console so that it is empty.
+   */
   consoleWasCleared: 'Console was cleared',
   /**
-  *@description Message element title in Console View Message of the Console panel
-  *@example {Ctrl+L} PH1
-  */
+   *@description Message element title in Console View Message of the Console panel
+   *@example {Ctrl+L} PH1
+   */
   clearAllMessagesWithS: 'Clear all messages with {PH1}',
   /**
-  *@description Message prefix in Console View Message of the Console panel
-  */
+   *@description Message prefix in Console View Message of the Console panel
+   */
   assertionFailed: 'Assertion failed: ',
   /**
-  *@description Message text in Console View Message of the Console panel
-  *@example {console.log(1)} PH1
-  */
+   *@description Message text in Console View Message of the Console panel
+   *@example {console.log(1)} PH1
+   */
   violationS: '`[Violation]` {PH1}',
   /**
-  *@description Message text in Console View Message of the Console panel
-  *@example {console.log(1)} PH1
-  */
+   *@description Message text in Console View Message of the Console panel
+   *@example {console.log(1)} PH1
+   */
   interventionS: '`[Intervention]` {PH1}',
   /**
-  *@description Message text in Console View Message of the Console panel
-  *@example {console.log(1)} PH1
-  */
+   *@description Message text in Console View Message of the Console panel
+   *@example {console.log(1)} PH1
+   */
   deprecationS: '`[Deprecation]` {PH1}',
   /**
-  *@description Note title in Console View Message of the Console panel
-  */
+   *@description Note title in Console View Message of the Console panel
+   */
   thisValueWillNotBeCollectedUntil: 'This value will not be collected until console is cleared.',
   /**
-  *@description Note title in Console View Message of the Console panel
-  */
+   *@description Note title in Console View Message of the Console panel
+   */
   thisValueWasEvaluatedUponFirst: 'This value was evaluated upon first expanding. It may have changed since then.',
   /**
-  *@description Note title in Console View Message of the Console panel
-  */
+   *@description Note title in Console View Message of the Console panel
+   */
   functionWasResolvedFromBound: 'Function was resolved from bound function.',
   /**
-  * @description Shown in the Console panel when an exception is thrown when trying to access a
-  * property on an object. Should be translated.
-  */
+   * @description Shown in the Console panel when an exception is thrown when trying to access a
+   * property on an object. Should be translated.
+   */
   exception: '<exception>',
   /**
-  *@description Text to indicate an item is a warning
-  */
+   *@description Text to indicate an item is a warning
+   */
   warning: 'Warning',
   /**
-  *@description Text for errors
-  */
+   *@description Text for errors
+   */
   error: 'Error',
   /**
-  * @description Announced by the screen reader to indicate how many times a particular message in
-  * the console was repeated.
-  */
+   * @description Announced by the screen reader to indicate how many times a particular message in
+   * the console was repeated.
+   */
   repeatS: '{n, plural, =1 {Repeated # time} other {Repeated # times}}',
   /**
-  * @description Announced by the screen reader to indicate how many times a particular warning
-  * message in the console was repeated.
-  */
+   * @description Announced by the screen reader to indicate how many times a particular warning
+   * message in the console was repeated.
+   */
   warningS: '{n, plural, =1 {Warning, Repeated # time} other {Warning, Repeated # times}}',
   /**
-  * @description Announced by the screen reader to indicate how many times a particular error
-  * message in the console was repeated.
-  */
+   * @description Announced by the screen reader to indicate how many times a particular error
+   * message in the console was repeated.
+   */
   errorS: '{n, plural, =1 {Error, Repeated # time} other {Error, Repeated # times}}',
   /**
-  *@description Text appended to grouped console messages that are related to URL requests
-  */
+   *@description Text appended to grouped console messages that are related to URL requests
+   */
   url: '<URL>',
   /**
-  *@description Text appended to grouped console messages about tasks that took longer than N ms
-  */
+   *@description Text appended to grouped console messages about tasks that took longer than N ms
+   */
   tookNms: 'took <N>ms',
   /**
-  *@description Text appended to grouped console messages about tasks that are related to some DOM event
-  */
+   *@description Text appended to grouped console messages about tasks that are related to some DOM event
+   */
   someEvent: '<some> event',
   /**
-  *@description Text appended to grouped console messages about tasks that are related to a particular milestone
-  */
+   *@description Text appended to grouped console messages about tasks that are related to a particular milestone
+   */
   Mxx: ' M<XX>',
   /**
-  *@description Text appended to grouped console messages about tasks that are related to autofill completions
-  */
+   *@description Text appended to grouped console messages about tasks that are related to autofill completions
+   */
   attribute: '<attribute>',
   /**
-  *@description Text for the index of something
-  */
+   *@description Text for the index of something
+   */
   index: '(index)',
   /**
-  *@description Text for the value of something
-  */
+   *@description Text for the value of something
+   */
   value: 'Value',
   /**
-  *@description Title of the Console tool
-  */
+   *@description Title of the Console tool
+   */
   console: 'Console',
   /**
-  *@description Message to indicate a console message with a stack table is expanded
-  */
+   *@description Message to indicate a console message with a stack table is expanded
+   */
   stackMessageExpanded: 'Stack table expanded',
   /**
-  *@description Message to indicate a console message with a stack table is collapsed
-  */
+   *@description Message to indicate a console message with a stack table is collapsed
+   */
   stackMessageCollapsed: 'Stack table collapsed',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);

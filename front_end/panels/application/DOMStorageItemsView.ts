@@ -41,20 +41,20 @@ import {StorageItemsView} from './StorageItemsView.js';
 
 const UIStrings = {
   /**
-  *@description Text in DOMStorage Items View of the Application panel
-  */
+   *@description Text in DOMStorage Items View of the Application panel
+   */
   domStorage: 'DOM Storage',
   /**
-  *@description Text in DOMStorage Items View of the Application panel
-  */
+   *@description Text in DOMStorage Items View of the Application panel
+   */
   key: 'Key',
   /**
-  *@description Text for the value of something
-  */
+   *@description Text for the value of something
+   */
   value: 'Value',
   /**
-  *@description Name for the "DOM Storage Items" table that shows the content of the DOM Storage.
-  */
+   *@description Name for the "DOM Storage Items" table that shows the content of the DOM Storage.
+   */
   domStorageItems: 'DOM Storage Items',
   /**
    *@description Text for announcing that the "DOM Storage Items" table was cleared, that is, all
@@ -62,8 +62,8 @@ const UIStrings = {
    */
   domStorageItemsCleared: 'DOM Storage Items cleared',
   /**
-  *@description Text in DOMStorage Items View of the Application panel
-  */
+   *@description Text in DOMStorage Items View of the Application panel
+   */
   selectAValueToPreview: 'Select a value to preview',
   /**
    *@description Text for announcing a DOM Storage key/value item has been deleted

@@ -17,37 +17,37 @@ import consolePinPaneStyles from './consolePinPane.css.js';
 
 const UIStrings = {
   /**
-  *@description A context menu item in the Console Pin Pane of the Console panel
-  */
+   *@description A context menu item in the Console Pin Pane of the Console panel
+   */
   removeExpression: 'Remove expression',
   /**
-  *@description A context menu item in the Console Pin Pane of the Console panel
-  */
+   *@description A context menu item in the Console Pin Pane of the Console panel
+   */
   removeAllExpressions: 'Remove all expressions',
   /**
-  *@description Screen reader label for delete button on a non-blank live expression
-  *@example {document} PH1
-  */
+   *@description Screen reader label for delete button on a non-blank live expression
+   *@example {document} PH1
+   */
   removeExpressionS: 'Remove expression: {PH1}',
   /**
-  *@description Screen reader label for delete button on a blank live expression
-  */
+   *@description Screen reader label for delete button on a blank live expression
+   */
   removeBlankExpression: 'Remove blank expression',
   /**
-  *@description Text in Console Pin Pane of the Console panel
-  */
+   *@description Text in Console Pin Pane of the Console panel
+   */
   liveExpressionEditor: 'Live expression editor',
   /**
-  *@description Text in Console Pin Pane of the Console panel
-  */
+   *@description Text in Console Pin Pane of the Console panel
+   */
   expression: 'Expression',
   /**
-  *@description Side effect label title in Console Pin Pane of the Console panel
-  */
+   *@description Side effect label title in Console Pin Pane of the Console panel
+   */
   evaluateAllowingSideEffects: 'Evaluate, allowing side effects',
   /**
-  *@description Text of a DOM element in Console Pin Pane of the Console panel
-  */
+   *@description Text of a DOM element in Console Pin Pane of the Console panel
+   */
   notAvailable: 'not available',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePinPane.ts', UIStrings);

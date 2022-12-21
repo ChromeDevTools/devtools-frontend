@@ -8,24 +8,24 @@ import * as Protocol from '../../../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description Text in Network Priorities of the Performance panel
-  */
+   *@description Text in Network Priorities of the Performance panel
+   */
   lowest: 'Lowest',
   /**
-  *@description Text in Network Priorities of the Performance panel
-  */
+   *@description Text in Network Priorities of the Performance panel
+   */
   low: 'Low',
   /**
-  *@description Text in Network Priorities of the Performance panel
-  */
+   *@description Text in Network Priorities of the Performance panel
+   */
   medium: 'Medium',
   /**
-  *@description Text in Network Priorities of the Performance panel
-  */
+   *@description Text in Network Priorities of the Performance panel
+   */
   high: 'High',
   /**
-  *@description Text in Network Priorities of the Performance panel
-  */
+   *@description Text in Network Priorities of the Performance panel
+   */
   highest: 'Highest',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/NetworkPriorities.ts', UIStrings);

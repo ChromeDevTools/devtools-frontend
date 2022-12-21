@@ -20,13 +20,13 @@ import * as i18n from '../../../core/i18n/i18n.js';
 
 const UIStrings = {
   /**
-  *@description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear Memory Inspector. These settings
-  *             allow the user to change the value type to view, such as 32-bit Integer, or 32-bit Float.
-  */
+   *@description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear Memory Inspector. These settings
+   *             allow the user to change the value type to view, such as 32-bit Integer, or 32-bit Float.
+   */
   toggleValueTypeSettings: 'Toggle value type settings',
   /**
-  *@description Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear Memory Inspector.
-  */
+   *@description Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear Memory Inspector.
+   */
   changeEndianness: 'Change `Endianness`',
 };
 const str_ =

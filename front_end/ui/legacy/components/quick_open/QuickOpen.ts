@@ -9,8 +9,8 @@ import {FilteredListWidget, getRegisteredProviders, type Provider} from './Filte
 
 const UIStrings = {
   /**
-  * @description Text of the hint shows under Quick Open input box
-  */
+   * @description Text of the hint shows under Quick Open input box
+   */
   typeToSeeAvailableCommands: 'Type ? to see available commands',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/QuickOpen.ts', UIStrings);

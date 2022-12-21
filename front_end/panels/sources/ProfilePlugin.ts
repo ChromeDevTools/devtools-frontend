@@ -16,16 +16,16 @@ import {Plugin} from './Plugin.js';
 
 const UIStrings = {
   /**
-  *@description The milisecond unit
-  */
+   *@description The milisecond unit
+   */
   ms: 'ms',
   /**
-  *@description Unit for data size in DevTools
-  */
+   *@description Unit for data size in DevTools
+   */
   mb: 'MB',
   /**
-  *@description A unit
-  */
+   *@description A unit
+   */
   kb: 'kB',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ProfilePlugin.ts', UIStrings);

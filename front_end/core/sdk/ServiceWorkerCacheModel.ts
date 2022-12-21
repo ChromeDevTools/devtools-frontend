@@ -17,10 +17,10 @@ import {Events as StorageKeyManagerEvents, StorageKeyManager} from './StorageKey
 
 const UIStrings = {
   /**
-  *@description Text in Service Worker Cache Model
-  *@example {https://cache} PH1
-  *@example {error message} PH2
-  */
+   *@description Text in Service Worker Cache Model
+   *@example {https://cache} PH1
+   *@example {error message} PH2
+   */
   serviceworkercacheagentError: '`ServiceWorkerCacheAgent` error deleting cache entry {PH1} in cache: {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ServiceWorkerCacheModel.ts', UIStrings);

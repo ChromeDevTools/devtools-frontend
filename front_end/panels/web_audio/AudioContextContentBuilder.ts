@@ -8,33 +8,33 @@ import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description The current state of an item
-  */
+   *@description The current state of an item
+   */
   state: 'State',
   /**
-  *@description Text in Audio Context Content Builder
-  */
+   *@description Text in Audio Context Content Builder
+   */
   sampleRate: 'Sample Rate',
   /**
-  *@description Text in Audio Context Content Builder
-  */
+   *@description Text in Audio Context Content Builder
+   */
   callbackBufferSize: 'Callback Buffer Size',
   /**
-  * @description Label in the Audio Context Content Builder for the maximum number of output channels
-  * that this Audio Context has.
-  */
+   * @description Label in the Audio Context Content Builder for the maximum number of output channels
+   * that this Audio Context has.
+   */
   maxOutputChannels: 'Max Output Channels',
   /**
-  *@description Text in Audio Context Content Builder
-  */
+   *@description Text in Audio Context Content Builder
+   */
   currentTime: 'Current Time',
   /**
-  *@description Text in Audio Context Content Builder
-  */
+   *@description Text in Audio Context Content Builder
+   */
   callbackInterval: 'Callback Interval',
   /**
-  *@description Text in Audio Context Content Builder
-  */
+   *@description Text in Audio Context Content Builder
+   */
   renderCapacity: 'Render Capacity',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/AudioContextContentBuilder.ts', UIStrings);

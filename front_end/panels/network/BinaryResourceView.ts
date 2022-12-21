@@ -15,48 +15,48 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
-  * message after the current text has been copied to the clipboard. Base64 is a format for encoding
-  * data.
-  */
+   * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
+   * message after the current text has been copied to the clipboard. Base64 is a format for encoding
+   * data.
+   */
   copiedAsBase: 'Copied as `Base64`',
   /**
-  *@description Text in Binary Resource View of the Network panel
-  */
+   *@description Text in Binary Resource View of the Network panel
+   */
   hexViewer: '`Hex` Viewer',
   /**
-  * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
-  * message after the current text has been copied to the clipboard. Hex is short for hexadecimal,
-  * and is a format for encoding data.
-  */
+   * @description Text in Binary Resource View of the Network panel. Shown to the user as a status
+   * message after the current text has been copied to the clipboard. Hex is short for hexadecimal,
+   * and is a format for encoding data.
+   */
   copiedAsHex: 'Copied as `Hex`',
   /**
-  *@description Text in Binary Resource View of the Network panel. Shown to the user as a status
-  * message after the current text has been copied to the clipboard. UTF-8 is a format for encoding data.
-  */
+   *@description Text in Binary Resource View of the Network panel. Shown to the user as a status
+   * message after the current text has been copied to the clipboard. UTF-8 is a format for encoding data.
+   */
   copiedAsUtf: 'Copied as `UTF-8`',
   /**
-  *@description Screen reader label for a select box that chooses how to display binary data in the Network panel
-  */
+   *@description Screen reader label for a select box that chooses how to display binary data in the Network panel
+   */
   binaryViewType: 'Binary view type',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon copy button in the Binary Resource View of the Network panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon copy button in the Binary Resource View of the Network panel
+   */
   copyToClipboard: 'Copy to clipboard',
   /**
-  * @description A context menu command in the Binary Resource View of the Network panel, for
-  * copying to the clipboard. Base64 is a format for encoding data.
-  */
+   * @description A context menu command in the Binary Resource View of the Network panel, for
+   * copying to the clipboard. Base64 is a format for encoding data.
+   */
   copyAsBase: 'Copy as `Base64`',
   /**
-  *@description A context menu command in the Binary Resource View of the Network panel, for copying
-  * to the clipboard. Hex is short for hexadecimal, and is a format for encoding data.
-  */
+   *@description A context menu command in the Binary Resource View of the Network panel, for copying
+   * to the clipboard. Hex is short for hexadecimal, and is a format for encoding data.
+   */
   copyAsHex: 'Copy as `Hex`',
   /**
-  *@description A context menu command in the Binary Resource View of the Network panel, for copying
-  *to the clipboard. UTF-8 is a format for encoding data.
-  */
+   *@description A context menu command in the Binary Resource View of the Network panel, for copying
+   *to the clipboard. UTF-8 is a format for encoding data.
+   */
   copyAsUtf: 'Copy as `UTF-8`',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/BinaryResourceView.ts', UIStrings);

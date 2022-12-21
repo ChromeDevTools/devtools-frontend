@@ -9,12 +9,12 @@ interface PromiseInfo<T> {
 }
 
 /**
-  * A class that facilitates resolving a id to an object of type T. If the id does not yet resolve, a promise
-  * is created that gets resolved once `onResolve` is called with the corresponding id.
-  *
-  * This class enables clients to control the duration of the wait and the lifetime of the associated
-  * promises by using the `clear` method on this class.
-  */
+ * A class that facilitates resolving a id to an object of type T. If the id does not yet resolve, a promise
+ * is created that gets resolved once `onResolve` is called with the corresponding id.
+ *
+ * This class enables clients to control the duration of the wait and the lifetime of the associated
+ * promises by using the `clear` method on this class.
+ */
 export abstract class ResolverBase<Id, T> {
   #unresolvedIds: Map<Id, PromiseInfo<T>> = new Map();
 

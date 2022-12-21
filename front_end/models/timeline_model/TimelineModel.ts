@@ -42,28 +42,28 @@ import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 
 const UIStrings = {
   /**
-  *@description Text for the name of a thread of the page
-  *@example {1} PH1
-  */
+   *@description Text for the name of a thread of the page
+   *@example {1} PH1
+   */
   threadS: 'Thread {PH1}',
   /**
-  *@description Text shown when rendering the User Interactions track in the Performance panel
-  */
+   *@description Text shown when rendering the User Interactions track in the Performance panel
+   */
   userInteractions: 'User Interactions',
   /**
-  *@description Title of a worker in the timeline flame chart of the Performance panel
-  *@example {https://google.com} PH1
-  */
+   *@description Title of a worker in the timeline flame chart of the Performance panel
+   *@example {https://google.com} PH1
+   */
   workerS: '`Worker` — {PH1}',
   /**
-  *@description Title of a worker in the timeline flame chart of the Performance panel
-  */
+   *@description Title of a worker in the timeline flame chart of the Performance panel
+   */
   dedicatedWorker: 'Dedicated `Worker`',
   /**
-  *@description Title of a worker in the timeline flame chart of the Performance panel
-  *@example {FormatterWorker} PH1
-  *@example {https://google.com} PH2
-  */
+   *@description Title of a worker in the timeline flame chart of the Performance panel
+   *@example {FormatterWorker} PH1
+   *@example {https://google.com} PH2
+   */
   workerSS: '`Worker`: {PH1} — {PH2}',
 
   /**

@@ -129,9 +129,9 @@ const UIStrings = {
    */
   framesPerIssue: '{n, plural, =1 {# frame} other {# frames}}',
   /**
-  *@description Title for a frame in the frame tree that doesn't have a URL. Placeholder indicates which number frame with a blank URL it is.
-  *@example {3} PH1
-  */
+   *@description Title for a frame in the frame tree that doesn't have a URL. Placeholder indicates which number frame with a blank URL it is.
+   *@example {3} PH1
+   */
   blankURLTitle: 'Blank URL [{PH1}]',
 };
 

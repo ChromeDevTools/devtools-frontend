@@ -13,50 +13,50 @@ import {Events as ContrastInfoEvents, type ContrastInfo} from './ContrastInfo.js
 
 const UIStrings = {
   /**
-  *@description Label for when no contrast information is available in the color picker
-  */
+   *@description Label for when no contrast information is available in the color picker
+   */
   noContrastInformationAvailable: 'No contrast information available',
   /**
-  *@description Text of a DOM element in Contrast Details of the Color Picker
-  */
+   *@description Text of a DOM element in Contrast Details of the Color Picker
+   */
   contrastRatio: 'Contrast ratio',
   /**
-  *@description Text to show more content
-  */
+   *@description Text to show more content
+   */
   showMore: 'Show more',
   /**
-  *@description Choose bg color text content in Contrast Details of the Color Picker
-  */
+   *@description Choose bg color text content in Contrast Details of the Color Picker
+   */
   pickBackgroundColor: 'Pick background color',
   /**
-  *@description Tooltip text that appears when hovering over largeicon eyedropper button in Contrast Details of the Color Picker
-  */
+   *@description Tooltip text that appears when hovering over largeicon eyedropper button in Contrast Details of the Color Picker
+   */
   toggleBackgroundColorPicker: 'Toggle background color picker',
   /**
-  *@description Text of a button in Contrast Details of the Color Picker
-  *@example {rgba(0 0 0 / 100%) } PH1
-  */
+   *@description Text of a button in Contrast Details of the Color Picker
+   *@example {rgba(0 0 0 / 100%) } PH1
+   */
   useSuggestedColorStoFixLow: 'Use suggested color {PH1}to fix low contrast',
   /**
-  *@description Label for the APCA contrast in Color Picker
-  */
+   *@description Label for the APCA contrast in Color Picker
+   */
   apca: 'APCA',
   /**
-  *@description Label aa text content in Contrast Details of the Color Picker
-  */
+   *@description Label aa text content in Contrast Details of the Color Picker
+   */
   aa: 'AA',
   /**
-  *@description Text that starts with a colon and includes a placeholder
-  *@example {3.0} PH1
-  */
+   *@description Text that starts with a colon and includes a placeholder
+   *@example {3.0} PH1
+   */
   placeholderWithColon: ': {PH1}',
   /**
-  *@description Label aaa text content in Contrast Details of the Color Picker
-  */
+   *@description Label aaa text content in Contrast Details of the Color Picker
+   */
   aaa: 'AAA',
   /**
-  *@description Text to show less content
-  */
+   *@description Text to show less content
+   */
   showLess: 'Show less',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/color_picker/ContrastDetails.ts', UIStrings);

@@ -16,24 +16,24 @@ import {type IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
-  *@description Label for number of affected resources indication in issue view
-  */
+   *@description Label for number of affected resources indication in issue view
+   */
   nRequests: '{n, plural, =1 {# request} other {# requests}}',
   /**
-  *@description Value for the status column in SharedArrayBuffer issues
-  */
+   *@description Value for the status column in SharedArrayBuffer issues
+   */
   warning: 'warning',
   /**
-  *@description The kind of resolution for a mixed content issue
-  */
+   *@description The kind of resolution for a mixed content issue
+   */
   blocked: 'blocked',
   /**
-  *@description Text for the status column in the item list in the CORS issue details view
-  */
+   *@description Text for the status column in the item list in the CORS issue details view
+   */
   status: 'Status',
   /**
-  *@description Text for the column showing the associated network request in the item list in the CORS issue details view
-  */
+   *@description Text for the column showing the associated network request in the item list in the CORS issue details view
+   */
   request: 'Request',
   /**
    *@description Text for the column showing the resource's address in the item list in the CORS issue details view
@@ -44,84 +44,84 @@ const UIStrings = {
    */
   initiatorAddressSpace: 'Initiator Address',
   /**
-  *@description Text for the status of the initiator context
-  */
+   *@description Text for the status of the initiator context
+   */
   secure: 'secure',
   /**
-  *@description Text for the status of the initiator context
-  */
+   *@description Text for the status of the initiator context
+   */
   insecure: 'insecure',
   /**
-  *@description Title for a column showing the status of the initiator context. The initiator context is either secure or insecure depending on whether it was loaded via HTTP or HTTPS.
-  */
+   *@description Title for a column showing the status of the initiator context. The initiator context is either secure or insecure depending on whether it was loaded via HTTP or HTTPS.
+   */
   initiatorContext: 'Initiator Context',
   /**
-  *@description Title for a column in the affected resources for a CORS issue showing a link to the associated preflight request in case the preflight request caused the issue.
-  */
+   *@description Title for a column in the affected resources for a CORS issue showing a link to the associated preflight request in case the preflight request caused the issue.
+   */
   preflightRequestIfProblematic: 'Preflight Request (if problematic)',
   /**
-  *@description Title for a column in the affected resources for a CORS issue showing a link to the associated preflight request.
-  */
+   *@description Title for a column in the affected resources for a CORS issue showing a link to the associated preflight request.
+   */
   preflightRequest: 'Preflight Request',
   /**
-  *@description Title for a column in the affected resources for a CORS issue showing the name of the problematic HTTP response header.
-  */
+   *@description Title for a column in the affected resources for a CORS issue showing the name of the problematic HTTP response header.
+   */
   header: 'Header',
   /**
-  *@description Title for a column in the affected resources for a CORS issue showing the problem associated with the resource.
-  */
+   *@description Title for a column in the affected resources for a CORS issue showing the problem associated with the resource.
+   */
   problem: 'Problem',
   /**
-  *@description Title for a column in the affected resources for a CORS issue showing the value that was invalid and caused the problem if it is available.
-  */
+   *@description Title for a column in the affected resources for a CORS issue showing the value that was invalid and caused the problem if it is available.
+   */
   invalidValue: 'Invalid Value (if available)',
   /**
-  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header was missing.
-  */
+   *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header was missing.
+   */
   problemMissingHeader: 'Missing Header',
   /**
-  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header contained multiple values.
-  */
+   *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header contained multiple values.
+   */
   problemMultipleValues: 'Multiple Values',
   /**
-  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header contained an invalid value.
-  */
+   *@description Content for the problem column in the affected resources table for a CORS issue that indicates that a response header contained an invalid value.
+   */
   problemInvalidValue: 'Invalid Value',
   /**
-  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that the response to the preflight request was a redirect.
-  */
+   *@description Content for the problem column in the affected resources table for a CORS issue that indicates that the response to the preflight request was a redirect.
+   */
   preflightDisallowedRedirect: 'Response to preflight was a redirect',
   /**
-  *@description Content for the problem column in the affected resources table for a CORS issue that indicates that the HTTP status the preflight request was not successful.
-  */
+   *@description Content for the problem column in the affected resources table for a CORS issue that indicates that the HTTP status the preflight request was not successful.
+   */
   preflightInvalidStatus: 'HTTP status of preflight request didn\'t indicate success',
   /**
-  *@description Title for a column in the affected resources for a CORS issue showing the origin that was allowed according to CORS headers.
-  */
+   *@description Title for a column in the affected resources for a CORS issue showing the origin that was allowed according to CORS headers.
+   */
   allowedOrigin: 'Allowed Origin (from header)',
   /**
-  *@description Title for a column in the affected resources for a CORS issue showing the value of the Access-Control-Allow-Credentials response header.
-  */
+   *@description Title for a column in the affected resources for a CORS issue showing the value of the Access-Control-Allow-Credentials response header.
+   */
   allowCredentialsValueFromHeader: '`Access-Control-Allow-Credentials` Header Value',
   /**
-  *@description Title for a column in the affected resources for a CORS issue showing the request method that was disallowed.
-  */
+   *@description Title for a column in the affected resources for a CORS issue showing the request method that was disallowed.
+   */
   disallowedRequestMethod: 'Disallowed Request Method',
   /**
-  *@description Title for a column in the affected resources for a CORS issue showing the request header that was disallowed.
-  */
+   *@description Title for a column in the affected resources for a CORS issue showing the request header that was disallowed.
+   */
   disallowedRequestHeader: 'Disallowed Request Header',
   /**
-  *@description Header for the source location column
-  */
+   *@description Header for the source location column
+   */
   sourceLocation: 'Source Location',
   /**
-  *@description Header for the column with the URL scheme that is not supported by fetch
-  */
+   *@description Header for the column with the URL scheme that is not supported by fetch
+   */
   unsupportedScheme: 'Unsupported Scheme',
   /**
-  *@description A failed network request.
-  */
+   *@description A failed network request.
+   */
   failedRequest: 'Failed Request',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);

@@ -16,20 +16,20 @@ import {PersistenceImpl} from './PersistenceImpl.js';
 
 const UIStrings = {
   /**
-  *@description Text to save content as a specific file type
-  */
+   *@description Text to save content as a specific file type
+   */
   saveAs: 'Save as...',
   /**
-  *@description Context menu item for saving an image
-  */
+   *@description Context menu item for saving an image
+   */
   saveImage: 'Save image',
   /**
-  *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
-  */
+   *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
+   */
   saveForOverrides: 'Save for overrides',
   /**
-  *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
-  */
+   *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
+   */
   openInContainingFolder: 'Open in containing folder',
 };
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PersistenceActions.ts', UIStrings);

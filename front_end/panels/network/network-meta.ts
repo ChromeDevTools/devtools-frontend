@@ -13,100 +13,100 @@ import type * as Network from './network.js';
 
 const UIStrings = {
   /**
-  *@description Command for showing the 'Network' tool
-  */
+   *@description Command for showing the 'Network' tool
+   */
   showNetwork: 'Show Network',
   /**
-  *@description Title of the Network tool
-  */
+   *@description Title of the Network tool
+   */
   network: 'Network',
   /**
-  *@description Command for showing the 'Network request blocking' tool
-  */
+   *@description Command for showing the 'Network request blocking' tool
+   */
   showNetworkRequestBlocking: 'Show Network request blocking',
   /**
-  *@description Title of the 'Network request blocking' tool in the bottom drawer
-  */
+   *@description Title of the 'Network request blocking' tool in the bottom drawer
+   */
   networkRequestBlocking: 'Network request blocking',
   /**
-  *@description Command for showing the 'Network conditions' tool
-  */
+   *@description Command for showing the 'Network conditions' tool
+   */
   showNetworkConditions: 'Show Network conditions',
   /**
-  *@description Title of the 'Network conditions' tool in the bottom drawer
-  */
+   *@description Title of the 'Network conditions' tool in the bottom drawer
+   */
   networkConditions: 'Network conditions',
   /**
-  *@description A tag of Network Conditions tool that can be searched in the command menu
-  */
+   *@description A tag of Network Conditions tool that can be searched in the command menu
+   */
   diskCache: 'disk cache',
   /**
-  *@description A tag of Network Conditions tool that can be searched in the command menu
-  */
+   *@description A tag of Network Conditions tool that can be searched in the command menu
+   */
   networkThrottling: 'network throttling',
   /**
-  *@description Command for showing the 'Search' tool
-  */
+   *@description Command for showing the 'Search' tool
+   */
   showSearch: 'Show Search',
   /**
-  *@description Title of a search bar or tool
-  */
+   *@description Title of a search bar or tool
+   */
   search: 'Search',
   /**
-  *@description Title of an action in the network tool to toggle recording
-  */
+   *@description Title of an action in the network tool to toggle recording
+   */
   recordNetworkLog: 'Record network log',
   /**
-  *@description Title of an action in the network tool to toggle recording
-  */
+   *@description Title of an action in the network tool to toggle recording
+   */
   stopRecordingNetworkLog: 'Stop recording network log',
   /**
-  *@description Title of an action that hides network request details
-  */
+   *@description Title of an action that hides network request details
+   */
   hideRequestDetails: 'Hide request details',
   /**
-  *@description Title of a setting under the Network category in Settings
-  */
+   *@description Title of a setting under the Network category in Settings
+   */
   colorcodeResourceTypes: 'Color-code resource types',
   /**
-  *@description A tag of Network color-code resource types that can be searched in the command menu
-  */
+   *@description A tag of Network color-code resource types that can be searched in the command menu
+   */
   colorCode: 'color code',
   /**
-  *@description A tag of Network color-code resource types that can be searched in the command menu
-  */
+   *@description A tag of Network color-code resource types that can be searched in the command menu
+   */
   resourceType: 'resource type',
   /**
-  *@description Title of a setting under the Network category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Network category that can be invoked through the Command Menu
+   */
   colorCodeByResourceType: 'Color code by resource type',
   /**
-  *@description Title of a setting under the Network category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Network category that can be invoked through the Command Menu
+   */
   useDefaultColors: 'Use default colors',
   /**
-  *@description Title of a setting under the Network category in Settings
-  */
+   *@description Title of a setting under the Network category in Settings
+   */
   groupNetworkLogByFrame: 'Group network log by frame',
   /**
-  *@description A tag of Group Network by frame setting that can be searched in the command menu
-  */
+   *@description A tag of Group Network by frame setting that can be searched in the command menu
+   */
   netWork: 'network',
   /**
-  *@description A tag of Group Network by frame setting that can be searched in the command menu
-  */
+   *@description A tag of Group Network by frame setting that can be searched in the command menu
+   */
   frame: 'frame',
   /**
-  *@description A tag of Group Network by frame setting that can be searched in the command menu
-  */
+   *@description A tag of Group Network by frame setting that can be searched in the command menu
+   */
   group: 'group',
   /**
-  *@description Title of a setting under the Network category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Network category that can be invoked through the Command Menu
+   */
   groupNetworkLogItemsByFrame: 'Group network log items by frame',
   /**
-  *@description Title of a setting under the Network category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Network category that can be invoked through the Command Menu
+   */
   dontGroupNetworkLogItemsByFrame: 'Don\'t group network log items by frame',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/network-meta.ts', UIStrings);

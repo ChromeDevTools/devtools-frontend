@@ -14,8 +14,8 @@ import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 
 const UIStrings = {
   /**
-  *@description Label for the 'origin' field in a parsed Origin Trial Token.
-  */
+   *@description Label for the 'origin' field in a parsed Origin Trial Token.
+   */
   origin: 'Origin',
   /**
    *@description Label for `trialName` field in a parsed Origin Trial Token.

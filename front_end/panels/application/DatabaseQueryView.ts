@@ -37,13 +37,13 @@ import {type Database} from './DatabaseModel.js';
 
 const UIStrings = {
   /**
-  *@description Data grid name for Database Query data grids
-  */
+   *@description Data grid name for Database Query data grids
+   */
   databaseQuery: 'Database Query',
   /**
-  *@description Aria text for table selected in WebSQL DatabaseQueryView in Application panel
-  *@example {"SELECT * FROM LOGS"} PH1
-  */
+   *@description Aria text for table selected in WebSQL DatabaseQueryView in Application panel
+   *@example {"SELECT * FROM LOGS"} PH1
+   */
   queryS: 'Query: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/DatabaseQueryView.ts', UIStrings);

@@ -11,8 +11,8 @@ import {type MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
-  *@description Link title for the Low Text Contrast issue in the Issues panel
-  */
+   *@description Link title for the Low Text Contrast issue in the Issues panel
+   */
   colorAndContrastAccessibility: 'Color and contrast accessibility',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/LowTextContrastIssue.ts', UIStrings);

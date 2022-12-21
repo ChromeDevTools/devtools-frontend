@@ -38,132 +38,132 @@ import {ParsedURL} from './ParsedURL.js';
 
 const UIStrings = {
   /**
-  *@description Text that appears in a tooltip the xhr and fetch resource types filter.
-  */
+   *@description Text that appears in a tooltip the xhr and fetch resource types filter.
+   */
   xhrAndFetch: '`XHR` and `Fetch`',
   /**
-  *@description Text that appears in a tooltip for the JavaScript types filter.
-  */
+   *@description Text that appears in a tooltip for the JavaScript types filter.
+   */
   scripts: 'Scripts',
   /**
-  *@description Text that appears on a button for the JavaScript resource type filter.
-  */
+   *@description Text that appears on a button for the JavaScript resource type filter.
+   */
   js: 'JS',
   /**
-  *@description Text that appears in a tooltip for the css types filter.
-  */
+   *@description Text that appears in a tooltip for the css types filter.
+   */
   stylesheets: 'Stylesheets',
   /**
-  *@description Text that appears on a button for the css resource type filter.
-  */
+   *@description Text that appears on a button for the css resource type filter.
+   */
   css: 'CSS',
   /**
-  *@description Text that appears in a tooltip for the image types filter.
-  */
+   *@description Text that appears in a tooltip for the image types filter.
+   */
   images: 'Images',
   /**
-  *@description Text that appears on a button for the image resource type filter.
-  */
+   *@description Text that appears on a button for the image resource type filter.
+   */
   img: 'Img',
   /**
-  *@description Text that appears on a button for the media resource type filter.
-  */
+   *@description Text that appears on a button for the media resource type filter.
+   */
   media: 'Media',
   /**
-  *@description Text that appears in a tooltip for the resource types filter.
-  */
+   *@description Text that appears in a tooltip for the resource types filter.
+   */
   fonts: 'Fonts',
   /**
-  *@description Text that appears on a button for the font resource type filter.
-  */
+   *@description Text that appears on a button for the font resource type filter.
+   */
   font: 'Font',
   /**
-  *@description Text for documents, a type of resources
-  */
+   *@description Text for documents, a type of resources
+   */
   documents: 'Documents',
   /**
-  *@description Text that appears on a button for the document resource type filter.
-  */
+   *@description Text that appears on a button for the document resource type filter.
+   */
   doc: 'Doc',
   /**
-  *@description Text that appears in a tooltip for the websocket types filter.
-  */
+   *@description Text that appears in a tooltip for the websocket types filter.
+   */
   websockets: 'WebSockets',
   /**
-  *@description Text that appears on a button for the websocket resource type filter.
-  */
+   *@description Text that appears on a button for the websocket resource type filter.
+   */
   ws: 'WS',
   /**
-  *@description Text that appears in a tooltip for the WebAssembly types filter.
-  */
+   *@description Text that appears in a tooltip for the WebAssembly types filter.
+   */
   webassembly: 'WebAssembly',
   /**
-  *@description Text that appears on a button for the WebAssembly resource type filter.
-  */
+   *@description Text that appears on a button for the WebAssembly resource type filter.
+   */
   wasm: 'Wasm',
   /**
-  *@description Text that appears on a button for the manifest resource type filter.
-  */
+   *@description Text that appears on a button for the manifest resource type filter.
+   */
   manifest: 'Manifest',
   /**
-  *@description Text for other types of items
-  */
+   *@description Text for other types of items
+   */
   other: 'Other',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   document: 'Document',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   stylesheet: 'Stylesheet',
   /**
-  *@description Text in Image View of the Sources panel
-  */
+   *@description Text in Image View of the Sources panel
+   */
   image: 'Image',
   /**
-  *@description Label for a group of JavaScript files
-  */
+   *@description Label for a group of JavaScript files
+   */
   script: 'Script',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   texttrack: 'TextTrack',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   fetch: 'Fetch',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   eventsource: 'EventSource',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   websocket: 'WebSocket',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   webtransport: 'WebTransport',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   signedexchange: 'SignedExchange',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   ping: 'Ping',
   /**
-  *@description Name of a network resource type
-  */
+   *@description Name of a network resource type
+   */
   cspviolationreport: 'CSPViolationReport',
   /**
-  *@description Name of a network initiator type
-  */
+   *@description Name of a network initiator type
+   */
   preflight: 'Preflight',
   /**
-  *@description Name of a network initiator type
-  */
+   *@description Name of a network initiator type
+   */
   webbundle: 'WebBundle',
 };
 const str_ = i18n.i18n.registerUIStrings('core/common/ResourceType.ts', UIStrings);

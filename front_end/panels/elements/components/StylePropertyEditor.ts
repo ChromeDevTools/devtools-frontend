@@ -12,16 +12,16 @@ import {findFlexContainerIcon, findGridContainerIcon, type IconInfo} from './CSS
 
 const UIStrings = {
   /**
-    * @description Title of the button that selects a flex property.
-    * @example {flex-direction} propertyName
-    * @example {column} propertyValue
-    */
+   * @description Title of the button that selects a flex property.
+   * @example {flex-direction} propertyName
+   * @example {column} propertyValue
+   */
   selectButton: 'Add {propertyName}: {propertyValue}',
   /**
-    * @description Title of the button that deselects a flex property.
-    * @example {flex-direction} propertyName
-    * @example {row} propertyValue
-    */
+   * @description Title of the button that deselects a flex property.
+   * @example {flex-direction} propertyName
+   * @example {row} propertyValue
+   */
   deselectButton: 'Remove {propertyName}: {propertyValue}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/StylePropertyEditor.ts', UIStrings);

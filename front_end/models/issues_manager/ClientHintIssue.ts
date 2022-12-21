@@ -16,8 +16,8 @@ import {
 
 const UIStrings = {
   /**
-  *@description Title for Client Hint specification url link
-  */
+   *@description Title for Client Hint specification url link
+   */
   clientHintsInfrastructure: 'Client Hints Infrastructure',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/ClientHintIssue.ts', UIStrings);

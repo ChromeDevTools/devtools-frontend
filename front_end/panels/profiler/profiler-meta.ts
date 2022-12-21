@@ -14,40 +14,40 @@ let loadedProfilerModule: (typeof Profiler|undefined);
 
 const UIStrings = {
   /**
-  *@description Title for the profiler tab
-  */
+   *@description Title for the profiler tab
+   */
   memory: 'Memory',
   /**
-  *@description Title of the 'Live Heap Profile' tool in the bottom drawer
-  */
+   *@description Title of the 'Live Heap Profile' tool in the bottom drawer
+   */
   liveHeapProfile: 'Live Heap Profile',
   /**
-  *@description Title of an action under the Performance category that can be invoked through the Command Menu
-  */
+   *@description Title of an action under the Performance category that can be invoked through the Command Menu
+   */
   startRecordingHeapAllocations: 'Start recording heap allocations',
   /**
-  *@description Title of an action under the Performance category that can be invoked through the Command Menu
-  */
+   *@description Title of an action under the Performance category that can be invoked through the Command Menu
+   */
   stopRecordingHeapAllocations: 'Stop recording heap allocations',
   /**
-  *@description Title of an action in the live heap profile tool to start with reload
-  */
+   *@description Title of an action in the live heap profile tool to start with reload
+   */
   startRecordingHeapAllocationsAndReload: 'Start recording heap allocations and reload the page',
   /**
-  *@description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
-  */
+   *@description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
+   */
   startStopRecording: 'Start/stop recording',
   /**
-  *@description Title of a setting under the Performance category in Settings
-  */
+   *@description Title of a setting under the Performance category in Settings
+   */
   showNativeFunctions: 'Show native functions in JS Profile',
   /**
-  *@description Command for shwoing the profiler tab
-  */
+   *@description Command for shwoing the profiler tab
+   */
   showMemory: 'Show Memory',
   /**
-  *@description Command for showing the 'Live Heap Profile' tool in the bottom drawer
-  */
+   *@description Command for showing the 'Live Heap Profile' tool in the bottom drawer
+   */
   showLiveHeapProfile: 'Show Live Heap Profile',
 
 };

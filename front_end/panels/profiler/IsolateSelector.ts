@@ -10,49 +10,49 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description aria label for javascript VM instances target list in heap profiler
-  */
+   *@description aria label for javascript VM instances target list in heap profiler
+   */
   javascriptVmInstances: 'JavaScript VM instances',
   /**
-  *@description Text in Isolate Selector of a profiler tool
-  */
+   *@description Text in Isolate Selector of a profiler tool
+   */
   totalJsHeapSize: 'Total JS heap size',
   /**
-  *@description Total trend div title in Isolate Selector of a profiler tool
-  *@example {3} PH1
-  */
+   *@description Total trend div title in Isolate Selector of a profiler tool
+   *@example {3} PH1
+   */
   totalPageJsHeapSizeChangeTrend: 'Total page JS heap size change trend over the last {PH1} minutes.',
   /**
-  *@description Total value div title in Isolate Selector of a profiler tool
-  */
+   *@description Total value div title in Isolate Selector of a profiler tool
+   */
   totalPageJsHeapSizeAcrossAllVm: 'Total page JS heap size across all VM instances.',
   /**
-  *@description Heap size change trend measured in kB/s
-  *@example {2 kB} PH1
-  */
+   *@description Heap size change trend measured in kB/s
+   *@example {2 kB} PH1
+   */
   changeRate: '{PH1}/s',
   /**
-  *@description Text for isolate selector list items with positive change rate
-  *@example {1.0 kB} PH1
-  */
+   *@description Text for isolate selector list items with positive change rate
+   *@example {1.0 kB} PH1
+   */
   increasingBySPerSecond: 'increasing by {PH1} per second',
   /**
-  *@description Text for isolate selector list items with negative change rate
-  *@example {1.0 kB} PH1
-  */
+   *@description Text for isolate selector list items with negative change rate
+   *@example {1.0 kB} PH1
+   */
   decreasingBySPerSecond: 'decreasing by {PH1} per second',
   /**
-  *@description Heap div title in Isolate Selector of a profiler tool
-  */
+   *@description Heap div title in Isolate Selector of a profiler tool
+   */
   heapSizeInUseByLiveJsObjects: 'Heap size in use by live JS objects.',
   /**
-  *@description Trend div title in Isolate Selector of a profiler tool
-  *@example {3} PH1
-  */
+   *@description Trend div title in Isolate Selector of a profiler tool
+   *@example {3} PH1
+   */
   heapSizeChangeTrendOverTheLastS: 'Heap size change trend over the last {PH1} minutes.',
   /**
-  *@description Text to show an item is empty
-  */
+   *@description Text to show an item is empty
+   */
   empty: '(empty)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/IsolateSelector.ts', UIStrings);

@@ -10,104 +10,104 @@ import type * as Console from './console.js';
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
   /**
-  *@description Title of the Console tool
-  */
+   *@description Title of the Console tool
+   */
   console: 'Console',
   /**
-  *@description Title of an action that shows the console.
-  */
+   *@description Title of an action that shows the console.
+   */
   showConsole: 'Show Console',
   /**
-  *@description Text to clear the console
-  */
+   *@description Text to clear the console
+   */
   clearConsole: 'Clear console',
   /**
-  *@description Title of an action in the console tool to clear
-  */
+   *@description Title of an action in the console tool to clear
+   */
   clearConsoleHistory: 'Clear console history',
   /**
-  *@description Title of an action in the console tool to create pin. A live expression is code that the user can enter into the console and it will be pinned in the UI. Live expressions are constantly evaluated as the user interacts with the console (hence 'live').
-  */
+   *@description Title of an action in the console tool to create pin. A live expression is code that the user can enter into the console and it will be pinned in the UI. Live expressions are constantly evaluated as the user interacts with the console (hence 'live').
+   */
   createLiveExpression: 'Create live expression',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   hideNetworkMessages: 'Hide network messages',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   showNetworkMessages: 'Show network messages',
   /**
-  *@description Alternative title text of a setting in Console View of the Console panel
-  */
+   *@description Alternative title text of a setting in Console View of the Console panel
+   */
   selectedContextOnly: 'Selected context only',
   /**
-  *@description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
-  */
+   *@description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
+   */
   onlyShowMessagesFromTheCurrent: 'Only show messages from the current context (`top`, `iframe`, `worker`, extension)',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   showMessagesFromAllContexts: 'Show messages from all contexts',
   /**
-  *@description Title of a setting under the Console category in Settings
-  */
+   *@description Title of a setting under the Console category in Settings
+   */
   logXmlhttprequests: 'Log XMLHttpRequests',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   showTimestamps: 'Show timestamps',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   hideTimestamps: 'Hide timestamps',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   autocompleteFromHistory: 'Autocomplete from history',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   doNotAutocompleteFromHistory: 'Do not autocomplete from history',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   groupSimilarMessagesInConsole: 'Group similar messages in console',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   doNotGroupSimilarMessagesIn: 'Do not group similar messages in console',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   showCorsErrorsInConsole: 'Show `CORS` errors in console',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   doNotShowCorsErrorsIn: 'Do not show `CORS` errors in console',
   /**
-  *@description Title of a setting under the Console category in Settings
-  */
+   *@description Title of a setting under the Console category in Settings
+   */
   eagerEvaluation: 'Eager evaluation',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   eagerlyEvaluateConsolePromptText: 'Eagerly evaluate console prompt text',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   doNotEagerlyEvaluateConsole: 'Do not eagerly evaluate console prompt text',
   /**
-  *@description Title of a setting under the Console category in Settings
-  */
+   *@description Title of a setting under the Console category in Settings
+   */
   evaluateTriggersUserActivation: 'Evaluate triggers user activation',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   treatEvaluationAsUserActivation: 'Treat evaluation as user activation',
   /**
-  *@description Title of a setting under the Console category that can be invoked through the Command Menu
-  */
+   *@description Title of a setting under the Console category that can be invoked through the Command Menu
+   */
   doNotTreatEvaluationAsUser: 'Do not treat evaluation as user activation',
   /**
    * @description Title of a setting under the Console category in Settings that controls whether `console.trace()` messages appear expanded by default.

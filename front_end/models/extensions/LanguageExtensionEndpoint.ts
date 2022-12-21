@@ -59,7 +59,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   }
 
   /** Notify the plugin about a new script
-     */
+   */
   addRawModule(rawModuleId: string, symbolsURL: string, rawModule: Chrome.DevTools.RawModule): Promise<string[]> {
     return this.endpoint.sendRequest(
                PrivateAPI.LanguageExtensionPluginCommands.AddRawModule, {rawModuleId, symbolsURL, rawModule}) as
@@ -75,7 +75,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   }
 
   /** Find locations in raw modules from a location in a source file
-     */
+   */
   sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
       Promise<Chrome.DevTools.RawLocationRange[]> {
     return this.endpoint.sendRequest(
@@ -84,7 +84,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   }
 
   /** Find locations in source files from a location in a raw module
-     */
+   */
   rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.SourceLocation[]> {
     return this.endpoint.sendRequest(
                PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation, {rawLocation}) as
@@ -97,14 +97,14 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   }
 
   /** List all variables in lexical scope at a given location in a raw module
-     */
+   */
   listVariablesInScope(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.Variable[]> {
     return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope, {rawLocation}) as
         Promise<Chrome.DevTools.Variable[]>;
   }
 
   /** List all function names (including inlined frames) at location
-     */
+   */
   getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation): Promise<{
     frames: Array<Chrome.DevTools.FunctionInfo>,
   }> {
@@ -115,8 +115,8 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   }
 
   /** Find locations in raw modules corresponding to the inline function
-     *  that rawLocation is in.
-     */
+   *  that rawLocation is in.
+   */
   getInlinedFunctionRanges(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.RawLocationRange[]> {
     return this.endpoint.sendRequest(
                PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges, {rawLocation}) as
@@ -124,8 +124,8 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   }
 
   /** Find locations in raw modules corresponding to inline functions
-     *  called by the function or inline frame that rawLocation is in.
-     */
+   *  called by the function or inline frame that rawLocation is in.
+   */
   getInlinedCalleesRanges(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.RawLocationRange[]> {
     return this.endpoint.sendRequest(
                PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges, {rawLocation}) as

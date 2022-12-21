@@ -19,50 +19,50 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
-  *@description Text for the performance of something
-  */
+   *@description Text for the performance of something
+   */
   performance: 'Performance',
   /**
-  *@description Text to filter result items
-  */
+   *@description Text to filter result items
+   */
   filter: 'Filter',
   /**
-  *@description Time of a single activity, as opposed to the total time
-  */
+   *@description Time of a single activity, as opposed to the total time
+   */
   selfTime: 'Self Time',
   /**
-  *@description Text for the total time of something
-  */
+   *@description Text for the total time of something
+   */
   totalTime: 'Total Time',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   activity: 'Activity',
   /**
-  *@description Text of a DOM element in Timeline Tree View of the Performance panel
-  */
+   *@description Text of a DOM element in Timeline Tree View of the Performance panel
+   */
   selectItemForDetails: 'Select item for details.',
   /**
-  * @description This message is presented as a tooltip when developers investigate the performance
-  * of a page. The tooltip alerts developers that some parts of code in execution were not optimized
-  * (made to run faster) and that associated timing information must be considered with this in
-  * mind. The placeholder text is the reason the code was not optimized.
-  * @example {Optimized too many times} PH1
-  */
+   * @description This message is presented as a tooltip when developers investigate the performance
+   * of a page. The tooltip alerts developers that some parts of code in execution were not optimized
+   * (made to run faster) and that associated timing information must be considered with this in
+   * mind. The placeholder text is the reason the code was not optimized.
+   * @example {Optimized too many times} PH1
+   */
   notOptimizedS: 'Not optimized: {PH1}',
   /**
-  *@description Time in miliseconds
-  *@example {30.1} PH1
-  */
+   *@description Time in miliseconds
+   *@example {30.1} PH1
+   */
   fms: '{PH1} ms',
   /**
-  *@description Number followed by percent sign
-  *@example {20} PH1
-  */
+   *@description Number followed by percent sign
+   *@example {20} PH1
+   */
   percentPlaceholder: '{PH1} %',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   chromeExtensionsOverhead: '[`Chrome` extensions overhead]',
   /**
    * @description Text in Timeline Tree View of the Performance panel. The text is presented
@@ -71,71 +71,71 @@ const UIStrings = {
    */
   vRuntime: '[`V8` Runtime]',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   unattributed: '[unattributed]',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   javascript: 'JavaScript',
   /**
-  *@description Text that refers to one or a group of webpages
-  */
+   *@description Text that refers to one or a group of webpages
+   */
   page: 'Page',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   noGrouping: 'No Grouping',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   groupByActivity: 'Group by Activity',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   groupByCategory: 'Group by Category',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   groupByDomain: 'Group by Domain',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   groupByFrame: 'Group by Frame',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   groupBySubdomain: 'Group by Subdomain',
   /**
-  *@description Text in Timeline Tree View of the Performance panel
-  */
+   *@description Text in Timeline Tree View of the Performance panel
+   */
   groupByUrl: 'Group by URL',
   /**
-  *@description Aria-label for grouping combo box in Timeline Details View
-  */
+   *@description Aria-label for grouping combo box in Timeline Details View
+   */
   groupBy: 'Group by',
   /**
-  *@description Aria-label for filter bar in Call Tree view
-  */
+   *@description Aria-label for filter bar in Call Tree view
+   */
   filterCallTree: 'Filter call tree',
   /**
-  *@description Aria-label for the filter bar in Bottom-Up view
-  */
+   *@description Aria-label for the filter bar in Bottom-Up view
+   */
   filterBottomup: 'Filter bottom-up',
   /**
-  * @description Title of the sidebar pane in the Performance panel which shows the stack (call
-  * stack) where the program spent the most time (out of all the call stacks) while executing.
-  */
+   * @description Title of the sidebar pane in the Performance panel which shows the stack (call
+   * stack) where the program spent the most time (out of all the call stacks) while executing.
+   */
   heaviestStack: 'Heaviest stack',
   /**
-  * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
-  * Performance panel. Command to open/show the sidebar.
-  */
+   * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
+   * Performance panel. Command to open/show the sidebar.
+   */
   showHeaviestStack: 'Show Heaviest stack',
   /**
-  * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
-  * Performance panel. Command to close/hide the sidebar.
-  */
+   * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
+   * Performance panel. Command to close/hide the sidebar.
+   */
   hideHeaviestStack: 'Hide Heaviest stack',
   /**
    * @description Screen reader announcement when the heaviest stack sidebar is shown in the Performance panel.
@@ -146,8 +146,8 @@ const UIStrings = {
    */
   heaviestStackHidden: 'Heaviest stack sidebar hidden',
   /**
-  *@description Data grid name for Timeline Stack data grids
-  */
+   *@description Data grid name for Timeline Stack data grids
+   */
   timelineStack: 'Timeline Stack',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', UIStrings);

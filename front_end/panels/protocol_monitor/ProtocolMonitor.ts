@@ -19,68 +19,68 @@ import protocolMonitorStyles from './protocolMonitor.css.js';
 
 const UIStrings = {
   /**
-  *@description Text for one or a group of functions
-  */
+   *@description Text for one or a group of functions
+   */
   method: 'Method',
   /**
-  * @description Text in Protocol Monitor. Title for a table column which shows in which direction
-  * the particular protocol message was travelling. Values in this column will either be 'sent' or
-  * 'received'.
-  */
+   * @description Text in Protocol Monitor. Title for a table column which shows in which direction
+   * the particular protocol message was travelling. Values in this column will either be 'sent' or
+   * 'received'.
+   */
   type: 'Type',
   /**
-  * @description Text in Protocol Monitor of the Protocol Monitor tab. Noun relating to a network request.
-  */
+   * @description Text in Protocol Monitor of the Protocol Monitor tab. Noun relating to a network request.
+   */
   request: 'Request',
   /**
-  *@description Title of a cell content in protocol monitor. A Network response refers to the act of acknowledging a
+   *@description Title of a cell content in protocol monitor. A Network response refers to the act of acknowledging a
   network request. Should not be confused with answer.
-  */
+   */
   response: 'Response',
   /**
-  *@description Text for timestamps of items
-  */
+   *@description Text for timestamps of items
+   */
   timestamp: 'Timestamp',
   /**
-  *@description Text in Protocol Monitor of the Protocol Monitor tab
-  */
+   *@description Text in Protocol Monitor of the Protocol Monitor tab
+   */
   target: 'Target',
   /**
-  *@description Text to record a series of actions for analysis
-  */
+   *@description Text to record a series of actions for analysis
+   */
   record: 'Record',
   /**
-  *@description Text to clear everything
-  */
+   *@description Text to clear everything
+   */
   clearAll: 'Clear all',
   /**
-  *@description Text to filter result items
-  */
+   *@description Text to filter result items
+   */
   filter: 'Filter',
   /**
-  *@description Text for the documentation of something
-  */
+   *@description Text for the documentation of something
+   */
   documentation: 'Documentation',
   /**
-  *@description Cell text content in Protocol Monitor of the Protocol Monitor tab
-  *@example {30} PH1
-  */
+   *@description Cell text content in Protocol Monitor of the Protocol Monitor tab
+   *@example {30} PH1
+   */
   sMs: '{PH1} ms',
   /**
-  *@description Text in Protocol Monitor of the Protocol Monitor tab
-  */
+   *@description Text in Protocol Monitor of the Protocol Monitor tab
+   */
   noMessageSelected: 'No message selected',
   /**
-  *@description Text in Protocol Monitor for the save button
-  */
+   *@description Text in Protocol Monitor for the save button
+   */
   save: 'Save',
   /**
-  *@description Text in Protocol Monitor to describe the sessions column
-  */
+   *@description Text in Protocol Monitor to describe the sessions column
+   */
   session: 'Session',
   /**
-  *@description A placeholder for an input in Protocol Monitor. The input accepts commands that are sent to the backend on Enter. CDP stands for Chrome DevTools Protocol.
-  */
+   *@description A placeholder for an input in Protocol Monitor. The input accepts commands that are sent to the backend on Enter. CDP stands for Chrome DevTools Protocol.
+   */
   sendRawCDPCommand: 'Send a raw `CDP` command',
   /**
    * @description A tooltip text for the input in the Protocol Monitor panel. The tooltip describes what format is expected.
@@ -235,19 +235,19 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
               const typeColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'type');
 
               /**
-             * You can click the "Filter" item in the context menu to filter the
-             * protocol monitor entries to those that match the method of the
-             * current row.
-             */
+               * You can click the "Filter" item in the context menu to filter the
+               * protocol monitor entries to those that match the method of the
+               * current row.
+               */
               menu.defaultSection().appendItem(i18nString(UIStrings.filter), () => {
                 const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
                 this.textFilterUI.setValue(`method:${methodColumn.value}`, true);
               });
 
               /**
-             * You can click the "Documentation" item in the context menu to be
-             * taken to the CDP Documentation site entry for the given method.
-             */
+               * You can click the "Documentation" item in the context menu to be
+               * taken to the CDP Documentation site entry for the given method.
+               */
               menu.defaultSection().appendItem(i18nString(UIStrings.documentation), () => {
                 if (!methodColumn.value) {
                   return;

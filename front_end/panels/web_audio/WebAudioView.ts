@@ -16,8 +16,8 @@ import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
 
 const UIStrings = {
   /**
-  *@description Text in Web Audio View
-  */
+   *@description Text in Web Audio View
+   */
   openAPageThatUsesWebAudioApiTo: 'Open a page that uses Web Audio API to start monitoring.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/WebAudioView.ts', UIStrings);

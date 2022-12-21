@@ -13,9 +13,9 @@ import reportingApiGridStyles from './reportingApiGrid.css.js';
 
 const UIStrings = {
   /**
-  *@description Placeholder text when there are no Reporting API endpoints.
-  *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
-  */
+   *@description Placeholder text when there are no Reporting API endpoints.
+   *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
+   */
   noEndpointsToDisplay: 'No endpoints to display',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/EndpointsGrid.ts', UIStrings);

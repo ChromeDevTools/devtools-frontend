@@ -14,44 +14,44 @@ import performanceMonitorStyles from './performanceMonitor.css.js';
 
 const UIStrings = {
   /**
-  *@description Aria accessible name in Performance Monitor of the Performance monitor tab
-  */
+   *@description Aria accessible name in Performance Monitor of the Performance monitor tab
+   */
   graphsDisplayingARealtimeViewOf: 'Graphs displaying a real-time view of performance metrics',
   /**
-  *@description Text in Performance Monitor of the Performance monitor tab
-  */
+   *@description Text in Performance Monitor of the Performance monitor tab
+   */
   paused: 'Paused',
   /**
-  *@description Text in Performance Monitor of the Performance monitor tab
-  */
+   *@description Text in Performance Monitor of the Performance monitor tab
+   */
   cpuUsage: 'CPU usage',
   /**
-  *@description Text in Performance Monitor of the Performance monitor tab
-  */
+   *@description Text in Performance Monitor of the Performance monitor tab
+   */
   jsHeapSize: 'JS heap size',
   /**
-  *@description Text in Performance Monitor of the Performance monitor tab
-  */
+   *@description Text in Performance Monitor of the Performance monitor tab
+   */
   domNodes: 'DOM Nodes',
   /**
-  *@description Text in Performance Monitor of the Performance monitor tab
-  */
+   *@description Text in Performance Monitor of the Performance monitor tab
+   */
   jsEventListeners: 'JS event listeners',
   /**
-  *@description Text for documents, a type of resources
-  */
+   *@description Text for documents, a type of resources
+   */
   documents: 'Documents',
   /**
-  *@description Text in Performance Monitor of the Performance monitor tab
-  */
+   *@description Text in Performance Monitor of the Performance monitor tab
+   */
   documentFrames: 'Document Frames',
   /**
-  *@description Text in Performance Monitor of the Performance monitor tab
-  */
+   *@description Text in Performance Monitor of the Performance monitor tab
+   */
   layoutsSec: 'Layouts / sec',
   /**
-  *@description Text in Performance Monitor of the Performance monitor tab
-  */
+   *@description Text in Performance Monitor of the Performance monitor tab
+   */
   styleRecalcsSec: 'Style recalcs / sec',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/performance_monitor/PerformanceMonitor.ts', UIStrings);

@@ -12,8 +12,8 @@ import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description Screen reader description of a hit breakpoint in the Sources panel
-  */
+   *@description Screen reader description of a hit breakpoint in the Sources panel
+   */
   breakpointHit: 'breakpoint hit',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts', UIStrings);

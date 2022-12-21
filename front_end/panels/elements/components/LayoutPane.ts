@@ -18,44 +18,44 @@ import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
-  *@description Title of the input to select the overlay color for an element using the color picker
-  */
+   *@description Title of the input to select the overlay color for an element using the color picker
+   */
   chooseElementOverlayColor: 'Choose the overlay color for this element',
   /**
-  *@description Title of the show element button in the Layout pane of the Elements panel
-  */
+   *@description Title of the show element button in the Layout pane of the Elements panel
+   */
   showElementInTheElementsPanel: 'Show element in the Elements panel',
   /**
-  *@description Title of a section on CSS Grid tooling
-  */
+   *@description Title of a section on CSS Grid tooling
+   */
   grid: 'Grid',
   /**
-  *@description Title of a section in the Layout Sidebar pane of the Elements panel
-  */
+   *@description Title of a section in the Layout Sidebar pane of the Elements panel
+   */
   overlayDisplaySettings: 'Overlay display settings',
   /**
-  *@description Title of a section in Layout sidebar pane
-  */
+   *@description Title of a section in Layout sidebar pane
+   */
   gridOverlays: 'Grid overlays',
   /**
-  *@description Message in the Layout panel informing users that no CSS Grid layouts were found on the page
-  */
+   *@description Message in the Layout panel informing users that no CSS Grid layouts were found on the page
+   */
   noGridLayoutsFoundOnThisPage: 'No grid layouts found on this page',
   /**
-  *@description Title of the Flexbox section in the Layout panel
-  */
+   *@description Title of the Flexbox section in the Layout panel
+   */
   flexbox: 'Flexbox',
   /**
-  *@description Title of a section in the Layout panel
-  */
+   *@description Title of a section in the Layout panel
+   */
   flexboxOverlays: 'Flexbox overlays',
   /**
-  *@description Text in the Layout panel, when no flexbox elements are found
-  */
+   *@description Text in the Layout panel, when no flexbox elements are found
+   */
   noFlexboxLayoutsFoundOnThisPage: 'No flexbox layouts found on this page',
   /**
-  *@description Screen reader announcement when opening color picker tool.
-  */
+   *@description Screen reader announcement when opening color picker tool.
+   */
   colorPickerOpened: 'Color picker opened.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/LayoutPane.ts', UIStrings);

@@ -13,25 +13,25 @@ import filmStripViewStyles from './filmStripView.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Element title in Film Strip View of the Performance panel
-  */
+   *@description Element title in Film Strip View of the Performance panel
+   */
   doubleclickToZoomImageClickTo: 'Doubleclick to zoom image. Click to view preceding requests.',
   /**
-  *@description Aria label for captured screenshots in network panel.
-  *@example {3ms} PH1
-  */
+   *@description Aria label for captured screenshots in network panel.
+   *@example {3ms} PH1
+   */
   screenshotForSSelectToView: 'Screenshot for {PH1} - select to view preceding requests.',
   /**
-  *@description Text for one or a group of screenshots
-  */
+   *@description Text for one or a group of screenshots
+   */
   screenshot: 'Screenshot',
   /**
-  *@description Prev button title in Film Strip View of the Performance panel
-  */
+   *@description Prev button title in Film Strip View of the Performance panel
+   */
   previousFrame: 'Previous frame',
   /**
-  *@description Next button title in Film Strip View of the Performance panel
-  */
+   *@description Next button title in Film Strip View of the Performance panel
+   */
   nextFrame: 'Next frame',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FilmStripView.ts', UIStrings);

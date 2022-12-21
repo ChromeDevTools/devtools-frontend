@@ -11,8 +11,8 @@ import {type MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
-  *@description Title for a learn more link in Heavy Ads issue description
-  */
+   *@description Title for a learn more link in Heavy Ads issue description
+   */
   handlingHeavyAdInterventions: 'Handling Heavy Ad Interventions',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/HeavyAdIssue.ts', UIStrings);

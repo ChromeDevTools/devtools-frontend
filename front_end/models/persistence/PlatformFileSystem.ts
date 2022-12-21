@@ -9,8 +9,8 @@ import type * as TextUtils from '../text_utils/text_utils.js';
 
 const UIStrings = {
   /**
-  * @description Assertion error message when failing to load a file.
-  */
+   * @description Assertion error message when failing to load a file.
+   */
   unableToReadFilesWithThis: '`PlatformFileSystem` cannot read files.',
 };
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PlatformFileSystem.ts', UIStrings);

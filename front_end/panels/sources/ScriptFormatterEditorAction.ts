@@ -22,13 +22,13 @@ import {
 
 const UIStrings = {
   /**
-  *@description Title of the pretty print button in the Sources panel
-  *@example {file name} PH1
-  */
+   *@description Title of the pretty print button in the Sources panel
+   *@example {file name} PH1
+   */
   prettyPrintS: 'Pretty print {PH1}',
   /**
-  *@description Text to pretty print a file
-  */
+   *@description Text to pretty print a file
+   */
   prettyPrint: 'Pretty print',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ScriptFormatterEditorAction.ts', UIStrings);

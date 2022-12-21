@@ -12,46 +12,46 @@ import blockedURLsPaneStyles from './blockedURLsPane.css.js';
 
 const UIStrings = {
   /**
-  *@description Text to enable blocking of network requests
-  */
+   *@description Text to enable blocking of network requests
+   */
   enableNetworkRequestBlocking: 'Enable network request blocking',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon add button in the Blocked URLs Pane of the Network panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon add button in the Blocked URLs Pane of the Network panel
+   */
   addPattern: 'Add pattern',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon clear button in the Blocked URLs Pane of the Network panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon clear button in the Blocked URLs Pane of the Network panel
+   */
   removeAllPatterns: 'Remove all patterns',
   /**
-  *@description Accessible label for the button to add request blocking patterns in the network request blocking tool
-  */
+   *@description Accessible label for the button to add request blocking patterns in the network request blocking tool
+   */
   addNetworkRequestBlockingPattern: 'Add network request blocking pattern',
   /**
-  *@description Button to add a pattern to block netwrok requests in the Network request blocking tool
-  *@example {Add pattern} PH1
-  */
+   *@description Button to add a pattern to block netwrok requests in the Network request blocking tool
+   *@example {Add pattern} PH1
+   */
   networkRequestsAreNotBlockedS: 'Network requests are not blocked. {PH1}',
   /**
-  *@description Text in Blocked URLs Pane of the Network panel
-  *@example {4} PH1
-  */
+   *@description Text in Blocked URLs Pane of the Network panel
+   *@example {4} PH1
+   */
   dBlocked: '{PH1} blocked',
   /**
-  *@description Text in Blocked URLs Pane of the Network panel
-  */
+   *@description Text in Blocked URLs Pane of the Network panel
+   */
   textPatternToBlockMatching: 'Text pattern to block matching requests; use * for wildcard',
   /**
-  *@description Error text for empty list widget input in Request Blocking tool
-  */
+   *@description Error text for empty list widget input in Request Blocking tool
+   */
   patternInputCannotBeEmpty: 'Pattern input cannot be empty.',
   /**
-  *@description Error text for duplicate list widget input in Request Blocking tool
-  */
+   *@description Error text for duplicate list widget input in Request Blocking tool
+   */
   patternAlreadyExists: 'Pattern already exists.',
   /**
-  *@description Message to be announced for a when list item is removed from list widget
-  */
+   *@description Message to be announced for a when list item is removed from list widget
+   */
   itemDeleted: 'Item successfully deleted',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/BlockedURLsPane.ts', UIStrings);

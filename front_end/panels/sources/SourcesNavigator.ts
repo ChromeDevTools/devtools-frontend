@@ -43,8 +43,8 @@ import sourcesNavigatorStyles from './sourcesNavigator.css.js';
 
 const UIStrings = {
   /**
-  *@description Text in Sources Navigator of the Sources panel
-  */
+   *@description Text in Sources Navigator of the Sources panel
+   */
   syncChangesInDevtoolsWithThe: 'Sync changes in DevTools with the local filesystem',
   /**
    * @description Text for link in the Filesystem Side View in Sources Panel. Workspaces is a
@@ -53,52 +53,52 @@ const UIStrings = {
    */
   learnMoreAboutWorkspaces: 'Learn more about Workspaces',
   /**
-  *@description Text in Sources Navigator of the Sources panel
-  */
+   *@description Text in Sources Navigator of the Sources panel
+   */
   overridePageAssetsWithFilesFromA: 'Override page assets with files from a local folder',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon clear button in the Sources Navigator of the Sources panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon clear button in the Sources Navigator of the Sources panel
+   */
   clearConfiguration: 'Clear configuration',
   /**
-  *@description Text in Sources Navigator of the Sources panel
-  */
+   *@description Text in Sources Navigator of the Sources panel
+   */
   selectFolderForOverrides: 'Select folder for overrides',
   /**
-  *@description Text in Sources Navigator of the Sources panel
-  */
+   *@description Text in Sources Navigator of the Sources panel
+   */
   contentScriptsServedByExtensions: 'Content scripts served by extensions appear here',
   /**
-  *@description Text in Sources Navigator of the Sources panel
-  */
+   *@description Text in Sources Navigator of the Sources panel
+   */
   createAndSaveCodeSnippetsFor: 'Create and save code snippets for later reuse',
   /**
-  *@description Text in Sources Navigator of the Sources panel
-  */
+   *@description Text in Sources Navigator of the Sources panel
+   */
   newSnippet: 'New snippet',
   /**
-  *@description Title of an action in the sources tool to create snippet
-  */
+   *@description Title of an action in the sources tool to create snippet
+   */
   createNewSnippet: 'Create new snippet',
   /**
-  *@description A context menu item in the Sources Navigator of the Sources panel
-  */
+   *@description A context menu item in the Sources Navigator of the Sources panel
+   */
   run: 'Run',
   /**
-  *@description A context menu item in the Navigator View of the Sources panel
-  */
+   *@description A context menu item in the Navigator View of the Sources panel
+   */
   rename: 'Rename…',
   /**
-  *@description Label for an item to remove something
-  */
+   *@description Label for an item to remove something
+   */
   remove: 'Remove',
   /**
-  *@description Text to save content as a specific file type
-  */
+   *@description Text to save content as a specific file type
+   */
   saveAs: 'Save as...',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesNavigator.ts', UIStrings);

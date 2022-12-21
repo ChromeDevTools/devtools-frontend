@@ -16,58 +16,58 @@ import * as Network from '../network/network.js';
 
 const UIStrings = {
   /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
   cache: 'Cache',
   /**
-  *@description Text to refresh the page
-  */
+   *@description Text to refresh the page
+   */
   refresh: 'Refresh',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel
+   */
   deleteSelected: 'Delete Selected',
   /**
-  *@description Text in Service Worker Cache Views of the Application panel
-  */
+   *@description Text in Service Worker Cache Views of the Application panel
+   */
   filterByPath: 'Filter by Path',
   /**
-  *@description Text in Service Worker Cache Views of the Application panel
-  */
+   *@description Text in Service Worker Cache Views of the Application panel
+   */
   selectACacheEntryAboveToPreview: 'Select a cache entry above to preview',
   /**
-  *@description Text for the name of something
-  */
+   *@description Text for the name of something
+   */
   name: 'Name',
   /**
-  *@description Text in Service Worker Cache Views of the Application panel
-  */
+   *@description Text in Service Worker Cache Views of the Application panel
+   */
   timeCached: 'Time Cached',
   /**
-  * @description Tooltip text that appears when hovering over the vary header column in the Service Worker Cache Views of the Application panel
-  */
+   * @description Tooltip text that appears when hovering over the vary header column in the Service Worker Cache Views of the Application panel
+   */
   varyHeaderWarning: '⚠️ Set ignoreVary to true when matching this entry',
   /**
-  *@description Text used to show that data was retrieved from ServiceWorker Cache
-  */
+   *@description Text used to show that data was retrieved from ServiceWorker Cache
+   */
   serviceWorkerCache: '`Service Worker` Cache',
   /**
-  *@description Span text content in Service Worker Cache Views of the Application panel
-  *@example {2} PH1
-  */
+   *@description Span text content in Service Worker Cache Views of the Application panel
+   *@example {2} PH1
+   */
   matchingEntriesS: 'Matching entries: {PH1}',
   /**
-  *@description Span text content in Indexed DBViews of the Application panel
-  *@example {2} PH1
-  */
+   *@description Span text content in Indexed DBViews of the Application panel
+   *@example {2} PH1
+   */
   totalEntriesS: 'Total entries: {PH1}',
   /**
-  *@description Text for network request headers
-  */
+   *@description Text for network request headers
+   */
   headers: 'Headers',
   /**
-  *@description Text for previewing items
-  */
+   *@description Text for previewing items
+   */
   preview: 'Preview',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerCacheViews.ts', UIStrings);

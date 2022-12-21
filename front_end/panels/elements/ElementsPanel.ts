@@ -66,33 +66,33 @@ import {ColorSwatchPopoverIcon} from './ColorSwatchPopoverIcon.js';
 
 const UIStrings = {
   /**
-  * @description Placeholder text for the search box the Elements Panel. Selector refers to CSS
-  * selectors.
-  */
+   * @description Placeholder text for the search box the Elements Panel. Selector refers to CSS
+   * selectors.
+   */
   findByStringSelectorOrXpath: 'Find by string, selector, or `XPath`',
   /**
-  * @description Button text for a button that takes the user to the Accessibility Tree View from the
-  * DOM tree view, in the Elements panel.
-  */
+   * @description Button text for a button that takes the user to the Accessibility Tree View from the
+   * DOM tree view, in the Elements panel.
+   */
   switchToAccessibilityTreeView: 'Switch to Accessibility Tree view',
   /**
-  * @description Button text for a button that takes the user to the DOM tree view from the
-  * Accessibility Tree View, in the Elements panel.
-  */
+   * @description Button text for a button that takes the user to the DOM tree view from the
+   * Accessibility Tree View, in the Elements panel.
+   */
   switchToDomTreeView: 'Switch to DOM Tree view',
   /**
-  * @description Label for a link to a rendering frame.
-  */
+   * @description Label for a link to a rendering frame.
+   */
   frame: 'Frame',
   /**
-  * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
-  * open/show the sidebar.
-  */
+   * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
+   * open/show the sidebar.
+   */
   showComputedStylesSidebar: 'Show Computed Styles sidebar',
   /**
-  * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
-  * close/hide the sidebar.
-  */
+   * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
+   * close/hide the sidebar.
+   */
   hideComputedStylesSidebar: 'Hide Computed Styles sidebar',
   /**
    * @description Screen reader announcement when the computed styles sidebar is shown in the Elements panel.
@@ -103,53 +103,53 @@ const UIStrings = {
    */
   computedStylesHidden: 'Computed Styles sidebar hidden',
   /**
-  * @description Title of a pane in the Elements panel that shows computed styles for the selected
-  * HTML element. Computed styles are the final, actual styles of the element, including all
-  * implicit and specified styles.
-  */
+   * @description Title of a pane in the Elements panel that shows computed styles for the selected
+   * HTML element. Computed styles are the final, actual styles of the element, including all
+   * implicit and specified styles.
+   */
   computed: 'Computed',
   /**
-  * @description Title of a pane in the Elements panel that shows the CSS styles for the selected
-  * HTML element.
-  */
+   * @description Title of a pane in the Elements panel that shows the CSS styles for the selected
+   * HTML element.
+   */
   styles: 'Styles',
   /**
-  * @description A context menu item to reveal a node in the DOM tree of the Elements Panel
-  */
+   * @description A context menu item to reveal a node in the DOM tree of the Elements Panel
+   */
   revealInElementsPanel: 'Reveal in Elements panel',
   /**
-  * @description Warning/error text displayed when a node cannot be found in the current page.
-  */
+   * @description Warning/error text displayed when a node cannot be found in the current page.
+   */
   nodeCannotBeFoundInTheCurrent: 'Node cannot be found in the current page.',
   /**
-  * @description Console warning when a user tries to reveal a non-node type Remote Object. A remote
-  * object is a JavaScript object that is not stored in DevTools, that DevTools has a connection to.
-  * It should correspond to a local node.
-  */
+   * @description Console warning when a user tries to reveal a non-node type Remote Object. A remote
+   * object is a JavaScript object that is not stored in DevTools, that DevTools has a connection to.
+   * It should correspond to a local node.
+   */
   theRemoteObjectCouldNotBe: 'The remote object could not be resolved to a valid node.',
   /**
-  * @description Console warning when the user tries to reveal a deferred DOM Node that resolves as
-  * null. A deferred DOM node is a node we know about but have not yet fetched from the backend (we
-  * defer the work until later).
-  */
+   * @description Console warning when the user tries to reveal a deferred DOM Node that resolves as
+   * null. A deferred DOM node is a node we know about but have not yet fetched from the backend (we
+   * defer the work until later).
+   */
   theDeferredDomNodeCouldNotBe: 'The deferred `DOM` Node could not be resolved to a valid node.',
   /**
-  * @description Text in Elements Panel of the Elements panel. Shows the current CSS Pseudo-classes
-  * applicable to the selected HTML element.
-  * @example {::after, ::before} PH1
-  */
+   * @description Text in Elements Panel of the Elements panel. Shows the current CSS Pseudo-classes
+   * applicable to the selected HTML element.
+   * @example {::after, ::before} PH1
+   */
   elementStateS: 'Element state: {PH1}',
   /**
-  * @description Accessible name for side panel toolbar.
-  */
+   * @description Accessible name for side panel toolbar.
+   */
   sidePanelToolbar: 'Side panel toolbar',
   /**
-  * @description Accessible name for side panel contents.
-  */
+   * @description Accessible name for side panel contents.
+   */
   sidePanelContent: 'Side panel content',
   /**
-  * @description Accessible name for the DOM tree explorer view.
-  */
+   * @description Accessible name for the DOM tree explorer view.
+   */
   domTreeExplorer: 'DOM tree explorer',
 };
 

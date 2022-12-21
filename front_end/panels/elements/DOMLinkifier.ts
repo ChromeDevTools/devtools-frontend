@@ -10,10 +10,10 @@ import domLinkifierStyles from './domLinkifier.css.js';
 
 const UIStrings = {
   /**
-  * @description Text displayed when trying to create a link to a node in the UI, but the node
-  * location could not be found so we display this placeholder instead. Node refers to a DOM node.
-  * This should be translated if appropriate.
-  */
+   * @description Text displayed when trying to create a link to a node in the UI, but the node
+   * location could not be found so we display this placeholder instead. Node refers to a DOM node.
+   * This should be translated if appropriate.
+   */
   node: '<node>',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMLinkifier.ts', UIStrings);

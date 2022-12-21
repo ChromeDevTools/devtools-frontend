@@ -47,33 +47,33 @@ import tabbedPaneStyles from './tabbedPane.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description The aria label for the button to open more tabs at the right tabbed pane in Elements tools
-  */
+   *@description The aria label for the button to open more tabs at the right tabbed pane in Elements tools
+   */
   moreTabs: 'More tabs',
   /**
-  *@description Text in Tabbed Pane
-  *@example {tab} PH1
-  */
+   *@description Text in Tabbed Pane
+   *@example {tab} PH1
+   */
   closeS: 'Close {PH1}',
   /**
-  *@description Text to close something
-  */
+   *@description Text to close something
+   */
   close: 'Close',
   /**
-  *@description Text on a menu option to close other drawers when right click on a drawer title
-  */
+   *@description Text on a menu option to close other drawers when right click on a drawer title
+   */
   closeOthers: 'Close others',
   /**
-  *@description Text on a menu option to close the drawer to the right when right click on a drawer title
-  */
+   *@description Text on a menu option to close the drawer to the right when right click on a drawer title
+   */
   closeTabsToTheRight: 'Close tabs to the right',
   /**
-  *@description Text on a menu option to close all the drawers except Console when right click on a drawer title
-  */
+   *@description Text on a menu option to close all the drawers except Console when right click on a drawer title
+   */
   closeAll: 'Close all',
   /**
-  *@description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
-  */
+   *@description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
+   */
   previewFeature: 'Preview feature',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/TabbedPane.ts', UIStrings);

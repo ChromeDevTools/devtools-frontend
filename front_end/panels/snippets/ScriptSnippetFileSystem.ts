@@ -15,14 +15,14 @@ import * as Workspace from '../../models/workspace/workspace.js';
 
 const UIStrings = {
   /**
-  *@description Default snippet name when a new snippet is created in the Sources panel
-  *@example {1} PH1
-  */
+   *@description Default snippet name when a new snippet is created in the Sources panel
+   *@example {1} PH1
+   */
   scriptSnippet: 'Script snippet #{PH1}',
   /**
-  *@description Text to show something is linked to another
-  *@example {example.url} PH1
-  */
+   *@description Text to show something is linked to another
+   *@example {example.url} PH1
+   */
   linkedTo: 'Linked to {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/snippets/ScriptSnippetFileSystem.ts', UIStrings);

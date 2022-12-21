@@ -15,20 +15,20 @@ import {
 
 const UIStrings = {
   /**
-  *@description Text to save something
-  */
+   *@description Text to save something
+   */
   save: 'Save',
   /**
-  *@description Text to save something (with ellipsis)
-  */
+   *@description Text to save something (with ellipsis)
+   */
   saveWithEllipsis: 'Save…',
   /**
-  *@description A context menu item in the Profiles Panel of a profiler tool
-  */
+   *@description A context menu item in the Profiles Panel of a profiler tool
+   */
   load: 'Load…',
   /**
-  *@description Text to delete something
-  */
+   *@description Text to delete something
+   */
   delete: 'Delete',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileSidebarTreeElement.ts', UIStrings);

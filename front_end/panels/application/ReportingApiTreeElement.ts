@@ -14,8 +14,8 @@ import {ReportingApiView} from './ReportingApiView.js';
 
 const UIStrings = {
   /**
-  *@description Label for an item in the Application Panel Sidebar of the Application panel
-  */
+   *@description Label for an item in the Application Panel Sidebar of the Application panel
+   */
   reportingApi: 'Reporting API',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ReportingApiTreeElement.ts', UIStrings);

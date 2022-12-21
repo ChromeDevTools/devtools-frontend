@@ -14,8 +14,8 @@ import * as Host from '../../core/host/host.js';
 
 const UIStrings = {
   /**
-  *@description Hover text for an info icon in the Trust Token panel
-  */
+   *@description Hover text for an info icon in the Trust Token panel
+   */
   trustTokens: 'Trust Tokens',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/TrustTokensTreeElement.ts', UIStrings);

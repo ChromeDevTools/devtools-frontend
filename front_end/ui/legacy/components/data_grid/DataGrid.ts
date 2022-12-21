@@ -35,70 +35,70 @@ import dataGridStyles from './dataGrid.css.js';
 
 const UIStrings = {
   /**
-  *@description Accessible text label for expandible nodes in datagrids
-  */
+   *@description Accessible text label for expandible nodes in datagrids
+   */
   expanded: 'expanded',
   /**
-  *@description accessible name for expandible nodes in datagrids
-  */
+   *@description accessible name for expandible nodes in datagrids
+   */
   collapsed: 'collapsed',
   /**
-  *@description Accessible text for datagrid
-  *@example {Coverage grid} PH1
-  *@example {expanded} PH2
-  */
+   *@description Accessible text for datagrid
+   *@example {Coverage grid} PH1
+   *@example {expanded} PH2
+   */
   sRowS: '{PH1} Row {PH2}',
   /**
-  *@description Number of rows in a grid
-  *@example {1} PH1
-  */
+   *@description Number of rows in a grid
+   *@example {1} PH1
+   */
   rowsS: 'Rows: {PH1}',
   /**
-  * @description Default Accessible Text for a Datagrid. This text is read to the user by a
-  * screenreader when they navigate to a table structure. The placeholders tell the user something
-  * brief about the table contents i.e. the topic and how much data is in it.
-  * @example {Network} PH1
-  * @example {Rows: 27} PH2
-  */
+   * @description Default Accessible Text for a Datagrid. This text is read to the user by a
+   * screenreader when they navigate to a table structure. The placeholders tell the user something
+   * brief about the table contents i.e. the topic and how much data is in it.
+   * @example {Network} PH1
+   * @example {Rows: 27} PH2
+   */
   sSUseTheUpAndDownArrowKeysTo:
       '{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.',
   /**
-  *@description A context menu item in the Data Grid of a data grid
-  */
+   *@description A context menu item in the Data Grid of a data grid
+   */
   sortByString: 'Sort By',
   /**
-  *@description A context menu item in data grids to reset the columns to their default weight
-  */
+   *@description A context menu item in data grids to reset the columns to their default weight
+   */
   resetColumns: 'Reset Columns',
   /**
-  *@description A context menu item in data grids to list header options.
-  */
+   *@description A context menu item in data grids to list header options.
+   */
   headerOptions: 'Header Options',
   /**
-  *@description Text to refresh the page
-  */
+   *@description Text to refresh the page
+   */
   refresh: 'Refresh',
   /**
-  *@description A context menu item in the Data Grid of a data grid
-  */
+   *@description A context menu item in the Data Grid of a data grid
+   */
   addNew: 'Add new',
   /**
-  *@description A context menu item in the Data Grid of a data grid
-  *@example {pattern} PH1
-  */
+   *@description A context menu item in the Data Grid of a data grid
+   *@example {pattern} PH1
+   */
   editS: 'Edit "{PH1}"',
   /**
-  *@description Text to delete something
-  */
+   *@description Text to delete something
+   */
   delete: 'Delete',
   /**
-  *@description Depth of a node in the datagrid
-  *@example {1} PH1
-  */
+   *@description Depth of a node in the datagrid
+   *@example {1} PH1
+   */
   levelS: 'level {PH1}',
   /**
-  *@description Text exposed to screen readers on checked items.
-  */
+   *@description Text exposed to screen readers on checked items.
+   */
   checked: 'checked',
   /**
    *@description Accessible text indicating an empty row is created.

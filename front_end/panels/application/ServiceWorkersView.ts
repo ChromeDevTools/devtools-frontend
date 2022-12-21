@@ -21,37 +21,37 @@ import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
 const UIStrings = {
   /**
-  *@description Text for linking to other Service Worker registrations
-  */
+   *@description Text for linking to other Service Worker registrations
+   */
   serviceWorkersFromOtherOrigins: 'Service workers from other origins',
   /**
-  *@description Title of update on reload setting in service workers view of the application panel
-  */
+   *@description Title of update on reload setting in service workers view of the application panel
+   */
   updateOnReload: 'Update on reload',
   /**
-  *@description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
-  */
+   *@description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
+   */
   onPageReloadForceTheService: 'On page reload, force the `service worker` to update, and activate it',
   /**
-  *@description Title of bypass service worker setting in service workers view of the application panel
-  */
+   *@description Title of bypass service worker setting in service workers view of the application panel
+   */
   bypassForNetwork: 'Bypass for network',
   /**
-  *@description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
-  */
+   *@description Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel
+   */
   bypassTheServiceWorkerAndLoad: 'Bypass the `service worker` and load resources from the network',
   /**
-  *@description Screen reader title for a section of the Service Workers view of the Application panel
-  *@example {https://example.com} PH1
-  */
+   *@description Screen reader title for a section of the Service Workers view of the Application panel
+   *@example {https://example.com} PH1
+   */
   serviceWorkerForS: '`Service worker` for {PH1}',
   /**
-  *@description Text in Service Workers View of the Application panel
-  */
+   *@description Text in Service Workers View of the Application panel
+   */
   testPushMessageFromDevtools: 'Test push message from DevTools.',
   /**
-  *@description Button label for service worker network requests
-  */
+   *@description Button label for service worker network requests
+   */
   networkRequests: 'Network requests',
   /**
    * @description Label for a button in the Service Workers View of the Application panel.
@@ -59,120 +59,120 @@ const UIStrings = {
    */
   update: 'Update',
   /**
-  *@description Text in Service Workers View of the Application panel
-  */
+   *@description Text in Service Workers View of the Application panel
+   */
   unregisterServiceWorker: 'Unregister service worker',
   /**
-  *@description Text in Service Workers View of the Application panel
-  */
+   *@description Text in Service Workers View of the Application panel
+   */
   unregister: 'Unregister',
   /**
-  *@description Text for the source of something
-  */
+   *@description Text for the source of something
+   */
   source: 'Source',
   /**
-  *@description Text for the status of something
-  */
+   *@description Text for the status of something
+   */
   status: 'Status',
   /**
-  *@description Text in Service Workers View of the Application panel
-  */
+   *@description Text in Service Workers View of the Application panel
+   */
   clients: 'Clients',
   /**
-  * @description Text in Service Workers View of the Application panel. Label for a section of the
-  * tool which allows the developer to send a test push message to the service worker.
-  */
+   * @description Text in Service Workers View of the Application panel. Label for a section of the
+   * tool which allows the developer to send a test push message to the service worker.
+   */
   pushString: 'Push',
   /**
-  * @description Text in Service Workers View of the Application panel. Placeholder text for where
-  * the user can type in the data they want to push to the service worker i.e. the 'push data'. Noun
-  * phrase.
-  */
+   * @description Text in Service Workers View of the Application panel. Placeholder text for where
+   * the user can type in the data they want to push to the service worker i.e. the 'push data'. Noun
+   * phrase.
+   */
   pushData: 'Push data',
   /**
-  *@description Text in Service Workers View of the Application panel
-  */
+   *@description Text in Service Workers View of the Application panel
+   */
   syncString: 'Sync',
   /**
-  *@description Placeholder text for the input box where a user is asked for a test tag to sync. This is used as a compound noun, not as a verb.
-  */
+   *@description Placeholder text for the input box where a user is asked for a test tag to sync. This is used as a compound noun, not as a verb.
+   */
   syncTag: 'Sync tag',
   /**
-  *@description Text for button in Service Workers View of the Application panel that dispatches a periodicsync event
-  */
+   *@description Text for button in Service Workers View of the Application panel that dispatches a periodicsync event
+   */
   periodicSync: 'Periodic Sync',
   /**
-  *@description Default tag for a periodicsync event in Service Workers View of the Application panel
-  */
+   *@description Default tag for a periodicsync event in Service Workers View of the Application panel
+   */
   periodicSyncTag: 'Periodic Sync tag',
   /**
-  *@description Aria accessible name in Service Workers View of the Application panel
-  *@example {3} PH1
-  */
+   *@description Aria accessible name in Service Workers View of the Application panel
+   *@example {3} PH1
+   */
   sRegistrationErrors: '{PH1} registration errors',
   /**
-  * @description Text in Service Workers View of the Application panel. The Date/time that a service
-  * worker version update was received by the webpage.
-  * @example {7/3/2019, 3:38:37 PM} PH1
-  */
+   * @description Text in Service Workers View of the Application panel. The Date/time that a service
+   * worker version update was received by the webpage.
+   * @example {7/3/2019, 3:38:37 PM} PH1
+   */
   receivedS: 'Received {PH1}',
   /**
-  *@description Text in Service Workers View of the Application panel
-  *@example {example.com} PH1
-  */
+   *@description Text in Service Workers View of the Application panel
+   *@example {example.com} PH1
+   */
   sDeleted: '{PH1} - deleted',
   /**
-  *@description Text in Service Workers View of the Application panel
-  *@example {1} PH1
-  *@example {stopped} PH2
-  */
+   *@description Text in Service Workers View of the Application panel
+   *@example {1} PH1
+   *@example {stopped} PH2
+   */
   sActivatedAndIsS: '#{PH1} activated and is {PH2}',
   /**
-  *@description Text in Service Workers View of the Application panel
-  */
+   *@description Text in Service Workers View of the Application panel
+   */
   stopString: 'stop',
   /**
-  *@description Text in Service Workers View of the Application panel
-  */
+   *@description Text in Service Workers View of the Application panel
+   */
   inspect: 'inspect',
   /**
-  *@description Text in Service Workers View of the Application panel
-  */
+   *@description Text in Service Workers View of the Application panel
+   */
   startString: 'start',
   /**
-  * @description Text in Service Workers View of the Application panel. Service workers have
-  * different versions, which are labelled with numbers e.g. version #2. This text indicates that a
-  * particular version is now redundant (it was replaced by a newer version). # means 'number' here.
-  * @example {2} PH1
-  */
+   * @description Text in Service Workers View of the Application panel. Service workers have
+   * different versions, which are labelled with numbers e.g. version #2. This text indicates that a
+   * particular version is now redundant (it was replaced by a newer version). # means 'number' here.
+   * @example {2} PH1
+   */
   sIsRedundant: '#{PH1} is redundant',
   /**
-  *@description Text in Service Workers View of the Application panel
-  *@example {2} PH1
-  */
+   *@description Text in Service Workers View of the Application panel
+   *@example {2} PH1
+   */
   sWaitingToActivate: '#{PH1} waiting to activate',
   /**
-  *@description Text in Service Workers View of the Application panel
-  *@example {2} PH1
-  */
+   *@description Text in Service Workers View of the Application panel
+   *@example {2} PH1
+   */
   sTryingToInstall: '#{PH1} trying to install',
   /**
-  *@description Text in Service Workers Update Timeline. Update is a noun.
-  */
+   *@description Text in Service Workers Update Timeline. Update is a noun.
+   */
   updateCycle: 'Update Cycle',
   /**
-  *@description Text of a DOM element in Service Workers View of the Application panel
-  *@example {example.com} PH1
-  */
+   *@description Text of a DOM element in Service Workers View of the Application panel
+   *@example {example.com} PH1
+   */
   workerS: 'Worker: {PH1}',
   /**
-  *@description Link text in Service Workers View of the Application panel. When the link is clicked,
-  * the focus is moved to the service worker's client page.
-  */
+   *@description Link text in Service Workers View of the Application panel. When the link is clicked,
+   * the focus is moved to the service worker's client page.
+   */
   focus: 'focus',
   /**
-  *@description Link to view all the Service Workers that have been registered.
-  */
+   *@description Link to view all the Service Workers that have been registered.
+   */
   seeAllRegistrations: 'See all registrations',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkersView.ts', UIStrings);

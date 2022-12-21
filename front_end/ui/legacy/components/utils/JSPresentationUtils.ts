@@ -45,16 +45,16 @@ import jsUtilsStyles from './jsUtils.css.js';
 
 const UIStrings = {
   /**
-  *@description Text to stop preventing the debugger from stepping into library code
-  */
+   *@description Text to stop preventing the debugger from stepping into library code
+   */
   removeFromIgnore: 'Remove from ignore list',
   /**
-  *@description Text for scripts that should not be stepped into when debugging
-  */
+   *@description Text for scripts that should not be stepped into when debugging
+   */
   addToIgnore: 'Add script to ignore list',
   /**
-  * @description A context menu item to show more frames when they are available. Never 0.
-  */
+   * @description A context menu item to show more frames when they are available. Never 0.
+   */
   showSMoreFrames: '{n, plural, =1 {Show # more frame} other {Show # more frames}}',
   /**
    *@description Text indicating that source url of a link is currently unknown

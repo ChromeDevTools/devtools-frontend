@@ -21,68 +21,68 @@ import {
 
 const UIStrings = {
   /**
-  *@description Text with two placeholders separated by a colon
-  *@example {Node removed} PH1
-  *@example {div#id1} PH2
-  */
+   *@description Text with two placeholders separated by a colon
+   *@example {Node removed} PH1
+   *@example {div#id1} PH2
+   */
   sS: '{PH1}: {PH2}',
   /**
-  *@description Text in Throttling Manager of the Network panel
-  */
+   *@description Text in Throttling Manager of the Network panel
+   */
   add: 'Add…',
   /**
-  *@description Accessibility label for custom add network throttling option
-  *@example {Custom} PH1
-  */
+   *@description Accessibility label for custom add network throttling option
+   *@example {Custom} PH1
+   */
   addS: 'Add {PH1}',
   /**
-  *@description Text to indicate the network connectivity is offline
-  */
+   *@description Text to indicate the network connectivity is offline
+   */
   offline: 'Offline',
   /**
-  *@description Text in Throttling Manager of the Network panel
-  */
+   *@description Text in Throttling Manager of the Network panel
+   */
   forceDisconnectedFromNetwork: 'Force disconnected from network',
   /**
-  *@description Text for throttling the network
-  */
+   *@description Text for throttling the network
+   */
   throttling: 'Throttling',
   /**
-  *@description Icon title in Throttling Manager of the Network panel
-  */
+   *@description Icon title in Throttling Manager of the Network panel
+   */
   cpuThrottlingIsEnabled: 'CPU throttling is enabled',
   /**
-  *@description Screen reader label for a select box that chooses the CPU throttling speed in the Performance panel
-  */
+   *@description Screen reader label for a select box that chooses the CPU throttling speed in the Performance panel
+   */
   cpuThrottling: 'CPU throttling',
   /**
-  *@description Text for no network throttling
-  */
+   *@description Text for no network throttling
+   */
   noThrottling: 'No throttling',
   /**
-  *@description Text in Throttling Manager of the Network panel
-  *@example {2} PH1
-  */
+   *@description Text in Throttling Manager of the Network panel
+   *@example {2} PH1
+   */
   dSlowdown: '{PH1}× slowdown',
   /**
-  *@description Tooltip text in Throttling Manager of the Performance panel
-  */
+   *@description Tooltip text in Throttling Manager of the Performance panel
+   */
   excessConcurrency: 'Exceeding the default value may degrade system performance.',
   /**
-  *@description Tooltip text in Throttling Manager of the Performance panel
-  */
+   *@description Tooltip text in Throttling Manager of the Performance panel
+   */
   resetConcurrency: 'Reset to the default value',
   /**
-  *@description Screen reader label for an check box that neables overriding navigator.hardwareConcurrency
-  */
+   *@description Screen reader label for an check box that neables overriding navigator.hardwareConcurrency
+   */
   hardwareConcurrency: 'Hardware concurrency',
   /**
-  *@description Screen reader label for an input box that overrides navigator.hardwareConcurrency
-  */
+   *@description Screen reader label for an input box that overrides navigator.hardwareConcurrency
+   */
   hardwareConcurrencyValue: 'Value of navigator.hardwareConcurrency',
   /**
-  *@description Icon title in Throttling Manager of the Performance panel
-  */
+   *@description Icon title in Throttling Manager of the Performance panel
+   */
   hardwareConcurrencyIsEnabled: 'Hardware concurrency override is enabled',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingManager.ts', UIStrings);

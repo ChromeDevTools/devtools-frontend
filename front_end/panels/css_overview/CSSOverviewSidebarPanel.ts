@@ -10,8 +10,8 @@ import cssOverviewSidebarPanelStyles from './cssOverviewSidebarPanel.css.js';
 
 const UIStrings = {
   /**
-  *@description Label for the 'Clear overview' button in the CSS Overview report
-  */
+   *@description Label for the 'Clear overview' button in the CSS Overview report
+   */
   clearOverview: 'Clear overview',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewSidebarPanel.ts', UIStrings);

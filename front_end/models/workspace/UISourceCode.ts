@@ -39,12 +39,12 @@ import {Events as WorkspaceImplEvents, type Project} from './WorkspaceImpl.js';
 
 const UIStrings = {
   /**
-  *@description Text for the index of something
-  */
+   *@description Text for the index of something
+   */
   index: '(index)',
   /**
-  *@description Text in UISource Code of the DevTools local workspace
-  */
+   *@description Text in UISource Code of the DevTools local workspace
+   */
   thisFileWasChangedExternally: 'This file was changed externally. Would you like to reload it?',
 };
 const str_ = i18n.i18n.registerUIStrings('models/workspace/UISourceCode.ts', UIStrings);

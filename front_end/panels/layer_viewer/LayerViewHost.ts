@@ -10,8 +10,8 @@ import type * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text in Layer View Host of the Layers panel
-  */
+   *@description Text in Layer View Host of the Layers panel
+   */
   showInternalLayers: 'Show internal layers',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerViewHost.ts', UIStrings);

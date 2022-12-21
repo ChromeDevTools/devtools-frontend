@@ -8,9 +8,9 @@ import {type DOMNode} from './Helper.js';
 
 const UIStrings = {
   /**
-  * @description Text in Elements Breadcrumbs of the Elements panel. Indicates that a HTML element
-  * is a text node, meaning it contains text only and no other HTML elements. Should be translatd.
-  */
+   * @description Text in Elements Breadcrumbs of the Elements panel. Indicates that a HTML element
+   * is a text node, meaning it contains text only and no other HTML elements. Should be translatd.
+   */
   text: '(text)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsBreadcrumbsUtils.ts', UIStrings);

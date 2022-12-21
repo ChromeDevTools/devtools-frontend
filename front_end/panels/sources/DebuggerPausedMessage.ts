@@ -15,87 +15,87 @@ import * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit
-  *@example {conditional breakpoint} PH1
-  */
+   *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit
+   *@example {conditional breakpoint} PH1
+   */
   pausedOnS: 'Paused on {PH1}',
   /**
-  *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a child is added to the subtree
-  *@example {node} PH1
-  */
+   *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a child is added to the subtree
+   *@example {node} PH1
+   */
   childSAdded: 'Child {PH1} added',
   /**
-  *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is added
-  *@example {node} PH1
-  */
+   *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is added
+   *@example {node} PH1
+   */
   descendantSAdded: 'Descendant {PH1} added',
   /**
-  *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is removed
-  *@example {node} PH1
-  */
+   *@description Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is removed
+   *@example {node} PH1
+   */
   descendantSRemoved: 'Descendant {PH1} removed',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   pausedOnEventListener: 'Paused on event listener',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   pausedOnXhrOrFetch: 'Paused on XHR or fetch',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   pausedOnException: 'Paused on exception',
   /**
-  *@description We pause exactly when the promise rejection is happening, so that the user can see where in the code it comes from.
-  * A Promise is a Web API object (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise),
-  * that will either be 'fulfilled' or 'rejected' at some unknown time in the future.
-  * The subject of the term is omited but it is "Execution", that is, "Execution was paused on <event>".
-  */
+   *@description We pause exactly when the promise rejection is happening, so that the user can see where in the code it comes from.
+   * A Promise is a Web API object (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise),
+   * that will either be 'fulfilled' or 'rejected' at some unknown time in the future.
+   * The subject of the term is omited but it is "Execution", that is, "Execution was paused on <event>".
+   */
   pausedOnPromiseRejection: 'Paused on `promise` rejection',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   pausedOnAssertion: 'Paused on assertion',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   pausedOnDebuggedFunction: 'Paused on debugged function',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   pausedBeforePotentialOutofmemory: 'Paused before potential out-of-memory crash',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   pausedOnCspViolation: 'Paused on CSP violation',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel specifying cause of break
-  */
+   *@description Text in Debugger Paused Message of the Sources panel specifying cause of break
+   */
   trustedTypeSinkViolation: '`Trusted Type` Sink Violation',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel specifying cause of break
-  */
+   *@description Text in Debugger Paused Message of the Sources panel specifying cause of break
+   */
   trustedTypePolicyViolation: '`Trusted Type` Policy Violation',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   pausedOnBreakpoint: 'Paused on breakpoint',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   debuggerPaused: 'Debugger paused',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   subtreeModifications: 'subtree modifications',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   attributeModifications: 'attribute modifications',
   /**
-  *@description Text in Debugger Paused Message of the Sources panel
-  */
+   *@description Text in Debugger Paused Message of the Sources panel
+   */
   nodeRemoval: 'node removal',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPausedMessage.ts', UIStrings);

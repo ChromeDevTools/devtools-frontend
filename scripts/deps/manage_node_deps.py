@@ -72,6 +72,7 @@ DEPS = {
     "eslint-plugin-lit-a11y": "2.1.0",
     "eslint-plugin-mocha": "10.0.3",
     "eslint-plugin-rulesdir": "0.2.1",
+    "eslint-plugin-jsdoc": "39.6.4",
     "istanbul-lib-instrument": "5.1.0",
     "istanbul-lib-report": "3.0.0",
     "karma": "6.4.0",

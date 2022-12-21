@@ -10,8 +10,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Label for a button in the sources panel that refreshes the list of global event listeners.
-  */
+   *@description Label for a button in the sources panel that refreshes the list of global event listeners.
+   */
   refreshGlobalListeners: 'Refresh global listeners',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/ObjectEventListenersSidebarPane.ts', UIStrings);

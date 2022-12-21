@@ -12,58 +12,58 @@ import {type LoadNetworkResourceResult} from './InspectorFrontendHostAPI.js';
 
 const UIStrings = {
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   systemError: 'System error',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   connectionError: 'Connection error',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   certificateError: 'Certificate error',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   httpError: 'HTTP error',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   cacheError: 'Cache error',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   signedExchangeError: 'Signed Exchange error',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   ftpError: 'FTP error',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   certificateManagerError: 'Certificate manager error',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   dnsResolverError: 'DNS resolver error',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   unknownError: 'Unknown error',
   /**
-  *@description Phrase used in error messages that carry a network error name
-  *@example {404} PH1
-  *@example {net::ERR_INSUFFICIENT_RESOURCES} PH2
-  */
+   *@description Phrase used in error messages that carry a network error name
+   *@example {404} PH1
+   *@example {net::ERR_INSUFFICIENT_RESOURCES} PH2
+   */
   httpErrorStatusCodeSS: 'HTTP error: status code {PH1}, {PH2}',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   invalidUrl: 'Invalid URL',
   /**
-  *@description Name of an error category used in error messages
-  */
+   *@description Name of an error category used in error messages
+   */
   decodingDataUrlFailed: 'Decoding Data URL failed',
 };
 const str_ = i18n.i18n.registerUIStrings('core/host/ResourceLoader.ts', UIStrings);

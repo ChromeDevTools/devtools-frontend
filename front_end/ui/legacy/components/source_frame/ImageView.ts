@@ -42,43 +42,43 @@ import imageViewStyles from './imageView.css.legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text in Image View of the Sources panel
-  */
+   *@description Text in Image View of the Sources panel
+   */
   image: 'Image',
   /**
-  *@description Text that appears when user drag and drop something (for example, a file) in Image View of the Sources panel
-  */
+   *@description Text that appears when user drag and drop something (for example, a file) in Image View of the Sources panel
+   */
   dropImageFileHere: 'Drop image file here',
   /**
-  *@description Text to indicate the source of an image
-  *@example {example.com} PH1
-  */
+   *@description Text to indicate the source of an image
+   *@example {example.com} PH1
+   */
   imageFromS: 'Image from {PH1}',
   /**
-  *@description Text in Image View of the Sources panel
-  *@example {2} PH1
-  *@example {2} PH2
-  */
+   *@description Text in Image View of the Sources panel
+   *@example {2} PH1
+   *@example {2} PH2
+   */
   dD: '{PH1} × {PH2}',
   /**
-  *@description A context menu item in the Image View of the Sources panel
-  */
+   *@description A context menu item in the Image View of the Sources panel
+   */
   copyImageUrl: 'Copy image URL',
   /**
-  *@description A context menu item in the Image View of the Sources panel
-  */
+   *@description A context menu item in the Image View of the Sources panel
+   */
   copyImageAsDataUri: 'Copy image as data URI',
   /**
-  *@description A context menu item in the Image View of the Sources panel
-  */
+   *@description A context menu item in the Image View of the Sources panel
+   */
   openImageInNewTab: 'Open image in new tab',
   /**
-  *@description A context menu item in the Image Preview
-  */
+   *@description A context menu item in the Image Preview
+   */
   saveImageAs: 'Save image as...',
   /**
-  *@description The default file name when downloading a file
-  */
+   *@description The default file name when downloading a file
+   */
   download: 'download',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/ImageView.ts', UIStrings);

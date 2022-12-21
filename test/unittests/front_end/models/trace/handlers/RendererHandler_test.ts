@@ -859,13 +859,13 @@ describe('RendererHandler', () => {
   it('sets the last ScheduleStyleRecalculation as the initiator of a Layout event if the last InvalidateLayout was before the last RecalculateStyles',
      async () => {
        /**
-     * |---------------------------- Task A ----------------------------|
-     *       |-- IL --|   |--SSR--|   |--RS--|  |-- Layout --|
-     * SSR = ScheduleStyleRecalculation
-     * RS = RecalculateStyles
-     * IL = InvalidateLayout
-     * L = Layout
-     */
+        * |---------------------------- Task A ----------------------------|
+        *       |-- IL --|   |--SSR--|   |--RS--|  |-- Layout --|
+        * SSR = ScheduleStyleRecalculation
+        * RS = RecalculateStyles
+        * IL = InvalidateLayout
+        * L = Layout
+        */
        const data = [
          makeCompleteEventInMilliseconds('A', 0, 10_000),                                                       // 0..10
          makeCompleteEventInMilliseconds(TraceModel.Handlers.Types.KnownEventName.InvalidateLayout, 1_000, 0),  // 1

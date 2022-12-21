@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 import type * as Protocol from '../../generated/protocol.js';
 
+/* eslint-disable jsdoc/check-alignment */
 /**
  * @overview
                                                    ┌────────────┐
@@ -42,7 +43,8 @@ LighthouseWorkerService   ││          Either ConnectionProxy or LegacyPort  
  * All messages within ConnectionProxy/LegacyPort speak pure CDP.
  * The foundational CDP connection is `parallelConnection`.
  * All connections within the worker are not actual ParallelConnection's.
-*/
+ */
+/* eslint-enable jsdoc/check-alignment */
 
 let lastId = 1;
 

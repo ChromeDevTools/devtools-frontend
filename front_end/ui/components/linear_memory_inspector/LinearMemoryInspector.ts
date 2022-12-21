@@ -52,10 +52,10 @@ import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
-  *@description Tooltip text that appears when hovering over an invalid address in the address line in the Linear Memory Inspector
-  *@example {0x00000000} PH1
-  *@example {0x00400000} PH2
-  */
+   *@description Tooltip text that appears when hovering over an invalid address in the address line in the Linear Memory Inspector
+   *@example {0x00000000} PH1
+   *@example {0x00400000} PH2
+   */
   addressHasToBeANumberBetweenSAnd: 'Address has to be a number between {PH1} and {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/LinearMemoryInspector.ts', UIStrings);

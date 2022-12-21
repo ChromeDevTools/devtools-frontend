@@ -19,28 +19,28 @@ import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
 const UIStrings = {
   /**
-  *@description Text in AXBreadcrumbs Pane of the Accessibility panel
-  */
+   *@description Text in AXBreadcrumbs Pane of the Accessibility panel
+   */
   accessibilityTree: 'Accessibility Tree',
   /**
-  *@description Text to scroll the displayed content into view
-  */
+   *@description Text to scroll the displayed content into view
+   */
   scrollIntoView: 'Scroll into view',
   /**
-  *@description Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel
-  */
+   *@description Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel
+   */
   ignored: 'Ignored',
   /**
-  *@description Name for experimental tree toggle.
-  */
+   *@description Name for experimental tree toggle.
+   */
   fullTreeExperimentName: 'Enable full-page accessibility tree',
   /**
-  *@description Description text for experimental tree toggle.
-  */
+   *@description Description text for experimental tree toggle.
+   */
   fullTreeExperimentDescription: 'The accessibility tree moved to the top right corner of the DOM tree.',
   /**
-  *@description Message saying that DevTools must be restarted before the experiment is enabled.
-  */
+   *@description Message saying that DevTools must be restarted before the experiment is enabled.
+   */
   reloadRequired: 'Reload required before the change takes effect.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AXBreadcrumbsPane.ts', UIStrings);

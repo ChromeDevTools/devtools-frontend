@@ -10,8 +10,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Text in Threads Sidebar Pane of the Sources panel
-  */
+   *@description Text in Threads Sidebar Pane of the Sources panel
+   */
   paused: 'paused',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ThreadsSidebarPane.ts', UIStrings);

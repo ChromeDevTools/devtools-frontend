@@ -44,12 +44,12 @@ const UIStrings = {
    */
   showIgnoreList: 'Show Ignore List',
   /**
-  *@description Name of the Settings view
-  */
+   *@description Name of the Settings view
+   */
   settings: 'Settings',
   /**
    *@description Text for the documentation of something
-  */
+   */
   documentation: 'Documentation',
 };
 

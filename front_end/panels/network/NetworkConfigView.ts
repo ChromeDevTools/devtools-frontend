@@ -14,36 +14,36 @@ import networkConfigViewStyles from './networkConfigView.css.js';
 
 const UIStrings = {
   /**
-  *@description Text in Network Config View of the Network panel
-  */
+   *@description Text in Network Config View of the Network panel
+   */
   custom: 'Custom...',
   /**
-  *@description Other user agent element placeholder in Network Config View of the Network panel
-  */
+   *@description Other user agent element placeholder in Network Config View of the Network panel
+   */
   enterACustomUserAgent: 'Enter a custom user agent',
   /**
-  *@description Error message for empty custom user agent input
-  */
+   *@description Error message for empty custom user agent input
+   */
   customUserAgentFieldIsRequired: 'Custom user agent field is required',
   /**
-  *@description Text in Network Config View of the Network panel
-  */
+   *@description Text in Network Config View of the Network panel
+   */
   caching: 'Caching',
   /**
-  *@description Text in Network Config View of the Network panel
-  */
+   *@description Text in Network Config View of the Network panel
+   */
   disableCache: 'Disable cache',
   /**
-  *@description Text in Network Config View of the Network panel
-  */
+   *@description Text in Network Config View of the Network panel
+   */
   networkThrottling: 'Network throttling',
   /**
-  *@description Text in Network Config View of the Network panel
-  */
+   *@description Text in Network Config View of the Network panel
+   */
   userAgent: 'User agent',
   /**
-  *@description Text in Network Config View of the Network panel
-  */
+   *@description Text in Network Config View of the Network panel
+   */
   selectAutomatically: 'Use browser default',
   /**
    * @description Title of a section in the Network conditions view that includes
@@ -51,12 +51,12 @@ const UIStrings = {
    */
   acceptedEncoding: 'Accepted `Content-Encoding`s',
   /**
-  * @description Status text for successful update of client hints.
-  */
+   * @description Status text for successful update of client hints.
+   */
   clientHintsStatusText: 'User agent updated.',
   /**
-  * @description The aria alert message when the Network conditions panel is shown.
-  */
+   * @description The aria alert message when the Network conditions panel is shown.
+   */
   networkConditionsPanelShown: 'Network conditions shown',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkConfigView.ts', UIStrings);

@@ -9,16 +9,16 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-  *@description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
-  */
+   *@description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
+   */
   panModeX: 'Pan mode (X)',
   /**
-  *@description Tooltip text that appears when hovering over largeicon rotate button in Transform Controller of the Layers panel
-  */
+   *@description Tooltip text that appears when hovering over largeicon rotate button in Transform Controller of the Layers panel
+   */
   rotateModeV: 'Rotate mode (V)',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel
+   */
   resetTransform: 'Reset transform (0)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/TransformController.ts', UIStrings);

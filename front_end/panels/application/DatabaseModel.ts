@@ -37,13 +37,13 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 const UIStrings = {
   /**
-  *@description Message in Database Model of the Application panel
-  */
+   *@description Message in Database Model of the Application panel
+   */
   databaseNoLongerHasExpected: 'Database no longer has expected version.',
   /**
-  *@description Message in Database Model of the Application panel
-  *@example {-197} PH1
-  */
+   *@description Message in Database Model of the Application panel
+   *@example {-197} PH1
+   */
   anUnexpectedErrorSOccurred: 'An unexpected error {PH1} occurred.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/DatabaseModel.ts', UIStrings);

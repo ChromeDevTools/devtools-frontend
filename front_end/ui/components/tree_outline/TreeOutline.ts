@@ -478,12 +478,12 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         track-dom-node-to-tree-node=${trackDOMNodeToTreeNode(this.#domNodeToTreeNodeMap, node)}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(domNode => {
          /**
-           * Because TreeNodes are lazily rendered, you can call
-           * `outline.expandToAndSelect(NodeX)`, but `NodeX` will be rendered at some
-           * later point, once it's been fully resolved, within a LitHtml.until
-           * directive. That means we don't have a direct hook into when it's
-           * rendered, which we need because we want to focus the element, so we use this directive to receive a callback when the node is rendered.
-           */
+          * Because TreeNodes are lazily rendered, you can call
+          * `outline.expandToAndSelect(NodeX)`, but `NodeX` will be rendered at some
+          * later point, once it's been fully resolved, within a LitHtml.until
+          * directive. That means we don't have a direct hook into when it's
+          * rendered, which we need because we want to focus the element, so we use this directive to receive a callback when the node is rendered.
+          */
           if (!(domNode instanceof HTMLLIElement)) {
             return;
           }

@@ -40,30 +40,30 @@ import {type TimelineModeViewDelegate} from './TimelinePanel.js';
 
 const UIStrings = {
   /**
-  *@description Text for a heap profile type
-  */
+   *@description Text for a heap profile type
+   */
   jsHeap: 'JS Heap',
   /**
-  *@description Text for documents, a type of resources
-  */
+   *@description Text for documents, a type of resources
+   */
   documents: 'Documents',
   /**
-  *@description Text in Counters Graph of the Performance panel
-  */
+   *@description Text in Counters Graph of the Performance panel
+   */
   nodes: 'Nodes',
   /**
-  *@description Text in Counters Graph of the Performance panel
-  */
+   *@description Text in Counters Graph of the Performance panel
+   */
   listeners: 'Listeners',
   /**
-  *@description Text in Counters Graph of the Performance panel
-  */
+   *@description Text in Counters Graph of the Performance panel
+   */
   gpuMemory: 'GPU Memory',
   /**
-  *@description Range text content in Counters Graph of the Performance panel
-  *@example {2} PH1
-  *@example {10} PH2
-  */
+   *@description Range text content in Counters Graph of the Performance panel
+   *@example {2} PH1
+   *@example {10} PH2
+   */
   ss: '[{PH1} – {PH2}]',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/CountersGraph.ts', UIStrings);

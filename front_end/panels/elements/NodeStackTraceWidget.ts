@@ -11,8 +11,8 @@ import nodeStackTraceWidgetStyles from './nodeStackTraceWidget.css.js';
 
 const UIStrings = {
   /**
-  *@description Message displayed when no JavaScript stack trace is available for the DOM node in the Stack Trace widget of the Elements panel
-  */
+   *@description Message displayed when no JavaScript stack trace is available for the DOM node in the Stack Trace widget of the Elements panel
+   */
   noStackTraceAvailable: 'No stack trace available',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/NodeStackTraceWidget.ts', UIStrings);

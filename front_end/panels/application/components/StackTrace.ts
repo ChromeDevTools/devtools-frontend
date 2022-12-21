@@ -15,12 +15,12 @@ import stackTraceLinkButtonStyles from './stackTraceLinkButton.css.js';
 
 const UIStrings = {
   /**
-  *@description Error message stating that something went wrong when tring to render stack trace
-  */
+   *@description Error message stating that something went wrong when tring to render stack trace
+   */
   cannotRenderStackTrace: 'Cannot render stack trace',
   /**
-  *@description A link to show more frames in the stack trace if more are available. Never 0.
-  */
+   *@description A link to show more frames in the stack trace if more are available. Never 0.
+   */
   showSMoreFrames: '{n, plural, =1 {Show # more frame} other {Show # more frames}}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/StackTrace.ts', UIStrings);

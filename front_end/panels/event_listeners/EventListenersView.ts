@@ -19,32 +19,32 @@ import {frameworkEventListeners, type FrameworkEventListenersObject} from './Eve
 
 const UIStrings = {
   /**
-  *@description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
-  */
+   *@description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   */
   noEventListeners: 'No event listeners',
   /**
-  *@description Label for an item to remove something
-  */
+   *@description Label for an item to remove something
+   */
   remove: 'Remove',
   /**
-  *@description Delete button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
-  */
+   *@description Delete button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   */
   deleteEventListener: 'Delete event listener',
   /**
-  *@description Passive button text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
-  */
+   *@description Passive button text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   */
   togglePassive: 'Toggle Passive',
   /**
-  *@description Passive button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
-  */
+   *@description Passive button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   */
   toggleWhetherEventListenerIs: 'Toggle whether event listener is passive or blocking',
   /**
-  *@description A context menu item to reveal a node in the DOM tree of the Elements Panel
-  */
+   *@description A context menu item to reveal a node in the DOM tree of the Elements Panel
+   */
   revealInElementsPanel: 'Reveal in Elements panel',
   /**
-  *@description Text in Event Listeners Widget of the Elements panel
-  */
+   *@description Text in Event Listeners Widget of the Elements panel
+   */
   passive: 'Passive',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/event_listeners/EventListenersView.ts', UIStrings);

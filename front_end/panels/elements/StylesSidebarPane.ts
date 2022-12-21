@@ -73,100 +73,100 @@ import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 const UIStrings = {
   /**
-  *@description No matches element text content in Styles Sidebar Pane of the Elements panel
-  */
+   *@description No matches element text content in Styles Sidebar Pane of the Elements panel
+   */
   noMatchingSelectorOrStyle: 'No matching selector or style',
   /**
   /**
-  *@description Text to announce the result of the filter input in the Styles Sidebar Pane of the Elements panel
-  */
+   *@description Text to announce the result of the filter input in the Styles Sidebar Pane of the Elements panel
+   */
   visibleSelectors: '{n, plural, =1 {# visible selector listed below} other {# visible selectors listed below}}',
   /**
-  *@description Text in Styles Sidebar Pane of the Elements panel
-  */
+   *@description Text in Styles Sidebar Pane of the Elements panel
+   */
   invalidPropertyValue: 'Invalid property value',
   /**
-  *@description Text in Styles Sidebar Pane of the Elements panel
-  */
+   *@description Text in Styles Sidebar Pane of the Elements panel
+   */
   unknownPropertyName: 'Unknown property name',
   /**
-  *@description Text to filter result items
-  */
+   *@description Text to filter result items
+   */
   filter: 'Filter',
   /**
-  *@description ARIA accessible name in Styles Sidebar Pane of the Elements panel
-  */
+   *@description ARIA accessible name in Styles Sidebar Pane of the Elements panel
+   */
   filterStyles: 'Filter Styles',
   /**
-  *@description Separator element text content in Styles Sidebar Pane of the Elements panel
-  *@example {scrollbar-corner} PH1
-  */
+   *@description Separator element text content in Styles Sidebar Pane of the Elements panel
+   *@example {scrollbar-corner} PH1
+   */
   pseudoSElement: 'Pseudo ::{PH1} element',
   /**
-  *@description Text of a DOM element in Styles Sidebar Pane of the Elements panel
-  */
+   *@description Text of a DOM element in Styles Sidebar Pane of the Elements panel
+   */
   inheritedFroms: 'Inherited from ',
   /**
-  *@description Text of an inherited psuedo element in Styles Sidebar Pane of the Elements panel
-  *@example {highlight} PH1
-  */
+   *@description Text of an inherited psuedo element in Styles Sidebar Pane of the Elements panel
+   *@example {highlight} PH1
+   */
   inheritedFromSPseudoOf: 'Inherited from ::{PH1} pseudo of ',
   /**
-  *@description Title of  in styles sidebar pane of the elements panel
-  *@example {Ctrl} PH1
-  */
+   *@description Title of  in styles sidebar pane of the elements panel
+   *@example {Ctrl} PH1
+   */
   incrementdecrementWithMousewheelOne:
       'Increment/decrement with mousewheel or up/down keys. {PH1}: R ±1, Shift: G ±1, Alt: B ±1',
   /**
-  *@description Title of  in styles sidebar pane of the elements panel
-  *@example {Ctrl} PH1
-  */
+   *@description Title of  in styles sidebar pane of the elements panel
+   *@example {Ctrl} PH1
+   */
   incrementdecrementWithMousewheelHundred:
       'Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, Alt: ±0.1',
   /**
-  *@description Announcement string for invalid properties.
-  *@example {Invalid property value} PH1
-  *@example {font-size} PH2
-  *@example {invalidValue} PH3
-  */
+   *@description Announcement string for invalid properties.
+   *@example {Invalid property value} PH1
+   *@example {font-size} PH2
+   *@example {invalidValue} PH3
+   */
   invalidString: '{PH1}, property name: {PH2}, property value: {PH3}',
   /**
-  *@description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
-  */
+   *@description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
+   */
   newStyleRule: 'New Style Rule',
   /**
-  *@description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
-  *@example {margin} PH1
-  */
+   *@description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
+   *@example {margin} PH1
+   */
   cssPropertyName: '`CSS` property name: {PH1}',
   /**
-  *@description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles panel
-  *@example {10px} PH1
-  */
+   *@description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles panel
+   *@example {10px} PH1
+   */
   cssPropertyValue: '`CSS` property value: {PH1}',
   /**
-  *@description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
-  */
+   *@description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
+   */
   toggleRenderingEmulations: 'Toggle common rendering emulations',
   /**
-  *@description Rendering emulation option for toggling the automatic dark mode
-  */
+   *@description Rendering emulation option for toggling the automatic dark mode
+   */
   automaticDarkMode: 'Automatic dark mode',
   /**
-  *@description Tooltip text that appears when hovering over the css changes button in the Styles Sidebar Pane of the Elements panel
-  */
+   *@description Tooltip text that appears when hovering over the css changes button in the Styles Sidebar Pane of the Elements panel
+   */
   copyAllCSSChanges: 'Copy all the CSS changes',
   /**
-  *@description Tooltip text that appears after clicking on the copy CSS changes button
-  */
+   *@description Tooltip text that appears after clicking on the copy CSS changes button
+   */
   copiedToClipboard: 'Copied to clipboard',
   /**
-  *@description Text displayed on layer separators in the styles sidebar pane.
-  */
+   *@description Text displayed on layer separators in the styles sidebar pane.
+   */
   layer: 'Layer',
   /**
-  *@description Tooltip text for the link in the sidebar pane layer separators that reveals the layer in the layer tree view.
-  */
+   *@description Tooltip text for the link in the sidebar pane layer separators that reveals the layer in the layer tree view.
+   */
   clickToRevealLayer: 'Click to reveal layer in layer tree',
 };
 

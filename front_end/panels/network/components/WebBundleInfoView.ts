@@ -17,8 +17,8 @@ const {render, html} = LitHtml;
 
 const UIStrings = {
   /**
-  *@description Header for the column that contains URL of the resource in a web bundle.
-  */
+   *@description Header for the column that contains URL of the resource in a web bundle.
+   */
   bundledResource: 'Bundled resource',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/WebBundleInfoView.ts', UIStrings);

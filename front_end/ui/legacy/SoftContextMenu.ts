@@ -42,25 +42,25 @@ import {InspectorView} from './InspectorView.js';
 
 const UIStrings = {
   /**
-  *@description Text exposed to screen readers on checked items.
-  */
+   *@description Text exposed to screen readers on checked items.
+   */
   checked: 'checked',
   /**
-  *@description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
-  */
+   *@description Accessible text exposed to screen readers when the screen reader encounters an unchecked checkbox.
+   */
   unchecked: 'unchecked',
   /**
-  *@description Accessibility label for checkable SoftContextMenuItems with shortcuts
-  *@example {Open File} PH1
-  *@example {Ctrl + P} PH2
-  *@example {checked} PH3
-  */
+   *@description Accessibility label for checkable SoftContextMenuItems with shortcuts
+   *@example {Open File} PH1
+   *@example {Ctrl + P} PH2
+   *@example {checked} PH3
+   */
   sSS: '{PH1}, {PH2}, {PH3}',
   /**
-  *@description Generic text with two placeholders separated by a comma
-  *@example {1 613 680} PH1
-  *@example {44 %} PH2
-  */
+   *@description Generic text with two placeholders separated by a comma
+   *@example {1 613 680} PH1
+   *@example {44 %} PH2
+   */
   sS: '{PH1}, {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SoftContextMenu.ts', UIStrings);

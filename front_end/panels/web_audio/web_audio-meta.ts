@@ -9,8 +9,8 @@ import type * as WebAudio from './web_audio.js';
 
 const UIStrings = {
   /**
-  *@description Title of the WebAudio tool
-  */
+   *@description Title of the WebAudio tool
+   */
   webaudio: 'WebAudio',
   /**
    *@description A tags of WebAudio tool that can be searched in the command menu

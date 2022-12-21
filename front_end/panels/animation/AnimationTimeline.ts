@@ -24,63 +24,63 @@ import {AnimationUI} from './AnimationUI.js';
 
 const UIStrings = {
   /**
-  *@description Timeline hint text content in Animation Timeline of the Animation Inspector
-  */
+   *@description Timeline hint text content in Animation Timeline of the Animation Inspector
+   */
   selectAnEffectAboveToInspectAnd: 'Select an effect above to inspect and modify.',
   /**
-  *@description Text to clear everything
-  */
+   *@description Text to clear everything
+   */
   clearAll: 'Clear all',
   /**
-  *@description Tooltip text that appears when hovering over largeicon pause button in Animation Timeline of the Animation Inspector
-  */
+   *@description Tooltip text that appears when hovering over largeicon pause button in Animation Timeline of the Animation Inspector
+   */
   pauseAll: 'Pause all',
   /**
-  *@description Title of the playback rate button listbox
-  */
+   *@description Title of the playback rate button listbox
+   */
   playbackRates: 'Playback rates',
   /**
-  *@description Text in Animation Timeline of the Animation Inspector
-  *@example {50} PH1
-  */
+   *@description Text in Animation Timeline of the Animation Inspector
+   *@example {50} PH1
+   */
   playbackRatePlaceholder: '{PH1}%',
   /**
-  *@description Text of an item that pause the running task
-  */
+   *@description Text of an item that pause the running task
+   */
   pause: 'Pause',
   /**
-  *@description Button title in Animation Timeline of the Animation Inspector
-  *@example {50%} PH1
-  */
+   *@description Button title in Animation Timeline of the Animation Inspector
+   *@example {50%} PH1
+   */
   setSpeedToS: 'Set speed to {PH1}',
   /**
-  *@description Title of Animation Previews listbox
-  */
+   *@description Title of Animation Previews listbox
+   */
   animationPreviews: 'Animation previews',
   /**
-  *@description Empty buffer hint text content in Animation Timeline of the Animation Inspector
-  */
+   *@description Empty buffer hint text content in Animation Timeline of the Animation Inspector
+   */
   waitingForAnimations: 'Waiting for animations...',
   /**
-  *@description Tooltip text that appears when hovering over largeicon replay animation button in Animation Timeline of the Animation Inspector
-  */
+   *@description Tooltip text that appears when hovering over largeicon replay animation button in Animation Timeline of the Animation Inspector
+   */
   replayTimeline: 'Replay timeline',
   /**
-  *@description Text in Animation Timeline of the Animation Inspector
-  */
+   *@description Text in Animation Timeline of the Animation Inspector
+   */
   resumeAll: 'Resume all',
   /**
-  *@description Title of control button in animation timeline of the animation inspector
-  */
+   *@description Title of control button in animation timeline of the animation inspector
+   */
   playTimeline: 'Play timeline',
   /**
-  *@description Title of control button in animation timeline of the animation inspector
-  */
+   *@description Title of control button in animation timeline of the animation inspector
+   */
   pauseTimeline: 'Pause timeline',
   /**
-  *@description Title of a specific Animation Preview
-  *@example {1} PH1
-  */
+   *@description Title of a specific Animation Preview
+   *@example {1} PH1
+   */
   animationPreviewS: 'Animation Preview {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationTimeline.ts', UIStrings);

@@ -12,20 +12,20 @@ import {type DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 
 const UIStrings = {
   /**
-  *@description Text to stop preventing the debugger from stepping into library code
-  */
+   *@description Text to stop preventing the debugger from stepping into library code
+   */
   removeFromIgnoreList: 'Remove from ignore list',
   /**
-  *@description Text for scripts that should not be stepped into when debugging
-  */
+   *@description Text for scripts that should not be stepped into when debugging
+   */
   addScriptToIgnoreList: 'Add script to ignore list',
   /**
-  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
-  */
+   *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+   */
   removeAllContentScriptsFrom: 'Remove all content scripts from ignore list',
   /**
-  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
-  */
+   *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+   */
   addAllContentScriptsToIgnoreList: 'Add all content scripts to ignore list',
 };
 

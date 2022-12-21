@@ -9,32 +9,32 @@ import * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   theSecurityOfThisPageIsUnknown: 'The security of this page is unknown.',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   thisPageIsNotSecure: 'This page is not secure.',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   thisPageIsSecureValidHttps: 'This page is secure (valid HTTPS).',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
+   *@description Text in Security Panel of the Security panel
+   */
   thisPageIsNotSecureBrokenHttps: 'This page is not secure (broken HTTPS).',
   /**
-  *@description Description of an SSL cipher that contains a separate (bulk) cipher and MAC.
-  *@example {AES_256_CBC} PH1
-  *@example {HMAC-SHA1} PH2
-  */
+   *@description Description of an SSL cipher that contains a separate (bulk) cipher and MAC.
+   *@example {AES_256_CBC} PH1
+   *@example {HMAC-SHA1} PH2
+   */
   cipherWithMAC: '{PH1} with {PH2}',
   /**
-  *@description Description of an SSL Key and its Key Exchange Group.
-  *@example {ECDHE_RSA} PH1
-  *@example {X25519} PH2
-  */
+   *@description Description of an SSL Key and its Key Exchange Group.
+   *@example {ECDHE_RSA} PH1
+   *@example {X25519} PH2
+   */
   keyExchangeWithGroup: '{PH1} with {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityModel.ts', UIStrings);

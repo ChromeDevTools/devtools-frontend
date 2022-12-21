@@ -54,106 +54,106 @@ import {getRegisteredEditorActions} from './SourcesView.js';
 
 const UIStrings = {
   /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
+   *@description Text in Debugger Plugin of the Sources panel
+   */
   thisScriptIsOnTheDebuggersIgnore: 'This script is on the debugger\'s ignore list',
   /**
-  *@description Text to stop preventing the debugger from stepping into library code
-  */
+   *@description Text to stop preventing the debugger from stepping into library code
+   */
   removeFromIgnoreList: 'Remove from ignore list',
   /**
-  *@description Text of a button in the Sources panel Debugger Plugin to configure ignore listing in Settings
-  */
+   *@description Text of a button in the Sources panel Debugger Plugin to configure ignore listing in Settings
+   */
   configure: 'Configure',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
+   *@description Text in Debugger Plugin of the Sources panel
+   */
   sourceMapFoundButIgnoredForFile: 'Source map found, but ignored for file on ignore list.',
   /**
-  *@description Text to add a breakpoint
-  */
+   *@description Text to add a breakpoint
+   */
   addBreakpoint: 'Add breakpoint',
   /**
-  *@description A context menu item in the Debugger Plugin of the Sources panel
-  */
+   *@description A context menu item in the Debugger Plugin of the Sources panel
+   */
   addConditionalBreakpoint: 'Add conditional breakpoint…',
   /**
-  *@description A context menu item in the Debugger Plugin of the Sources panel
-  */
+   *@description A context menu item in the Debugger Plugin of the Sources panel
+   */
   addLogpoint: 'Add logpoint…',
   /**
-  *@description A context menu item in the Debugger Plugin of the Sources panel
-  */
+   *@description A context menu item in the Debugger Plugin of the Sources panel
+   */
   neverPauseHere: 'Never pause here',
   /**
-  *@description Context menu command to delete/remove a breakpoint that the user
-  *has set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
-  */
+   *@description Context menu command to delete/remove a breakpoint that the user
+   *has set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
+   */
   removeBreakpoint: '{n, plural, =1 {Remove breakpoint} other {Remove all breakpoints in line}}',
   /**
-  *@description A context menu item in the Debugger Plugin of the Sources panel
-  */
+   *@description A context menu item in the Debugger Plugin of the Sources panel
+   */
   editBreakpoint: 'Edit breakpoint…',
   /**
-  *@description Context menu command to disable (but not delete) a breakpoint
-  *that the user has set. One line of code can have multiple breakpoints. Always
-  *>= 1 breakpoint.
-  */
+   *@description Context menu command to disable (but not delete) a breakpoint
+   *that the user has set. One line of code can have multiple breakpoints. Always
+   *>= 1 breakpoint.
+   */
   disableBreakpoint: '{n, plural, =1 {Disable breakpoint} other {Disable all breakpoints in line}}',
   /**
-  *@description Context menu command to enable a breakpoint that the user has
-  *set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
-  */
+   *@description Context menu command to enable a breakpoint that the user has
+   *set. One line of code can have multiple breakpoints. Always >= 1 breakpoint.
+   */
   enableBreakpoint: '{n, plural, =1 {Enable breakpoint} other {Enable all breakpoints in line}}',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
+   *@description Text in Debugger Plugin of the Sources panel
+   */
   addSourceMap: 'Add source map…',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
+   *@description Text in Debugger Plugin of the Sources panel
+   */
   addWasmDebugInfo: 'Add DWARF debug info…',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
+   *@description Text in Debugger Plugin of the Sources panel
+   */
   sourceMapDetected: 'Source map detected.',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
+   *@description Text in Debugger Plugin of the Sources panel
+   */
   prettyprintThisMinifiedFile: 'Pretty-print this minified file?',
   /**
-  *@description Label of a button in the Sources panel to pretty-print the current file
-  */
+   *@description Label of a button in the Sources panel to pretty-print the current file
+   */
   prettyprint: 'Pretty-print',
   /**
-  *@description Text in Debugger Plugin pretty-print details message of the Sources panel
-  *@example {Debug} PH1
-  */
+   *@description Text in Debugger Plugin pretty-print details message of the Sources panel
+   *@example {Debug} PH1
+   */
   prettyprintingWillFormatThisFile:
       'Pretty-printing will format this file in a new tab where you can continue debugging. You can also pretty-print this file by clicking the {PH1} button on the bottom status bar.',
   /**
-  *@description Title of the Filtered List WidgetProvider of Quick Open
-  *@example {Ctrl+P Ctrl+O} PH1
-  */
+   *@description Title of the Filtered List WidgetProvider of Quick Open
+   *@example {Ctrl+P Ctrl+O} PH1
+   */
   associatedFilesAreAvailable: 'Associated files are available via file tree or {PH1}.',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
+   *@description Text in Debugger Plugin of the Sources panel
+   */
   associatedFilesShouldBeAdded:
       'Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.',
   /**
-  *@description Text in Debugger Plugin of the Sources panel
-  */
+   *@description Text in Debugger Plugin of the Sources panel
+   */
   theDebuggerWillSkipStepping: 'The debugger will skip stepping through this script, and will not stop on exceptions.',
   /**
-  *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
-  *@example {src/myapp.debug.wasm.dwp} PH1
-  */
+   *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
+   *@example {src/myapp.debug.wasm.dwp} PH1
+   */
   debugFileNotFound: 'Failed to load debug file "{PH1}".',
   /**
-  *@description Error message that is displayed when no debug info could be loaded
-  *@example {app.wasm} PH1
-  */
+   *@description Error message that is displayed when no debug info could be loaded
+   *@example {app.wasm} PH1
+   */
   debugInfoNotFound: 'Failed to load any debug info for {PH1}.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPlugin.ts', UIStrings);

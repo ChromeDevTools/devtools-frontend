@@ -52,138 +52,138 @@ import {TimelinePanel, TimelineSelection} from './TimelinePanel.js';
 
 const UIStrings = {
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {node1} PH1
-  *@example {node2} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {node1} PH1
+   *@example {node2} PH2
+   */
   sAndS: '{PH1} and {PH2}',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {node1} PH1
-  *@example {node2} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {node1} PH1
+   *@example {node2} PH2
+   */
   sAndSOther: '{PH1}, {PH2}, and 1 other',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   task: 'Task',
   /**
-  *@description Text for other types of items
-  */
+   *@description Text for other types of items
+   */
   other: 'Other',
   /**
-  *@description Text that refers to the animation of the web page
-  */
+   *@description Text that refers to the animation of the web page
+   */
   animation: 'Animation',
   /**
-  *@description Text that refers to some events
-  */
+   *@description Text that refers to some events
+   */
   event: 'Event',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   requestMainThreadFrame: 'Request Main Thread Frame',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   frameStart: 'Frame Start',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   frameStartMainThread: 'Frame Start (main thread)',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   drawFrame: 'Draw Frame',
   /**
-  *@description The process the browser uses to determine a target element for a
-  *pointer event. Typically, this is determined by considering the pointer's
-  *location and also the visual layout of elements on the screen.
-  */
+   *@description The process the browser uses to determine a target element for a
+   *pointer event. Typically, this is determined by considering the pointer's
+   *location and also the visual layout of elements on the screen.
+   */
   hitTest: 'Hit Test',
   /**
-  *@description Noun for an event in the Performance panel. The browser has decided
-  *that the styles for some elements need to be recalculated and scheduled that
-  *recalculation process at some time in the future.
-  */
+   *@description Noun for an event in the Performance panel. The browser has decided
+   *that the styles for some elements need to be recalculated and scheduled that
+   *recalculation process at some time in the future.
+   */
   scheduleStyleRecalculation: 'Schedule Style Recalculation',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   recalculateStyle: 'Recalculate Style',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   invalidateLayout: 'Invalidate Layout',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   layout: 'Layout',
   /**
-  *@description Noun for an event in the Performance panel. Paint setup is a
-  *step before the 'Paint' event. A paint event is when the browser draws pixels
-  *to the screen. This step is the setup beforehand.
-  */
+   *@description Noun for an event in the Performance panel. Paint setup is a
+   *step before the 'Paint' event. A paint event is when the browser draws pixels
+   *to the screen. This step is the setup beforehand.
+   */
   paintSetup: 'Paint Setup',
   /**
-  *@description Noun for a paint event in the Performance panel, where an image
-  *was being painted. A paint event is when the browser draws pixels to the
-  *screen, in this case specifically for an image in a website.
-  */
+   *@description Noun for a paint event in the Performance panel, where an image
+   *was being painted. A paint event is when the browser draws pixels to the
+   *screen, in this case specifically for an image in a website.
+   */
   paintImage: 'Paint Image',
   /**
-  *@description Noun for an event in the Performance panel. Pre-paint is a
-  *step before the 'Paint' event. A paint event is when the browser records the
-  *instructions for drawing the page. This step is the setup beforehand.
-  */
+   *@description Noun for an event in the Performance panel. Pre-paint is a
+   *step before the 'Paint' event. A paint event is when the browser records the
+   *instructions for drawing the page. This step is the setup beforehand.
+   */
   prePaint: 'Pre-Paint',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   updateLayer: 'Update Layer',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   updateLayerTree: 'Update Layer Tree',
   /**
-  *@description Noun for a paint event in the Performance panel. A paint event is when the browser draws pixels to the screen.
-  */
+   *@description Noun for a paint event in the Performance panel. A paint event is when the browser draws pixels to the screen.
+   */
   paint: 'Paint',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   rasterizePaint: 'Rasterize Paint',
   /**
-  *@description The action to scroll
-  */
+   *@description The action to scroll
+   */
   scroll: 'Scroll',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   compositeLayers: 'Composite Layers',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   computeIntersections: 'Compute Intersections',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   parseHtml: 'Parse HTML',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   parseStylesheet: 'Parse Stylesheet',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   installTimer: 'Install Timer',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   removeTimer: 'Remove Timer',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   timerFired: 'Timer Fired',
   /**
    *@description Text for an event. Shown in the timeline in the Performance panel.
@@ -199,32 +199,32 @@ const UIStrings = {
    */
   xhrLoad: '`XHR` Load',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   compileScript: 'Compile Script',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   cacheScript: 'Cache Script Code',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   compileCode: 'Compile Code',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   optimizeCode: 'Optimize Code',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   evaluateScript: 'Evaluate Script',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   compileModule: 'Compile Module',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   cacheModule: 'Cache Module Code',
   /**
    * @description Text for an event. Shown in the timeline in the Perforamnce panel.
@@ -234,76 +234,76 @@ const UIStrings = {
    */
   evaluateModule: 'Evaluate Module',
   /**
-  *@description Noun indicating that a compile task (type: streaming) happened.
-  */
+   *@description Noun indicating that a compile task (type: streaming) happened.
+   */
   streamingCompileTask: 'Streaming Compile Task',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   waitingForNetwork: 'Waiting for Network',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   parseAndCompile: 'Parse and Compile',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   streamingWasmResponse: 'Streaming Wasm Response',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   compiledWasmModule: 'Compiled Wasm Module',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   cachedWasmModule: 'Cached Wasm Module',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   wasmModuleCacheHit: 'Wasm Module Cache Hit',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   wasmModuleCacheInvalid: 'Wasm Module Cache Invalid',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   frameStartedLoading: 'Frame Started Loading',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   onloadEvent: 'Onload Event',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   domcontentloadedEvent: 'DOMContentLoaded Event',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   firstPaint: 'First Paint',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   firstContentfulPaint: 'First Contentful Paint',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   largestContentfulPaint: 'Largest Contentful Paint',
   /**
-  *@description Text for timestamps of items
-  */
+   *@description Text for timestamps of items
+   */
   timestamp: 'Timestamp',
   /**
-  *@description Noun for a 'time' event that happens in the Console (a tool in
-  * DevTools). The user can trigger console time events from their code, and
-  * they will show up in the Performance panel. Time events are used to measure
-  * the duration of something, e.g. the user will emit two time events at the
-  * start and end of some interesting task.
-  */
+   *@description Noun for a 'time' event that happens in the Console (a tool in
+   * DevTools). The user can trigger console time events from their code, and
+   * they will show up in the Performance panel. Time events are used to measure
+   * the duration of something, e.g. the user will emit two time events at the
+   * start and end of some interesting task.
+   */
   consoleTime: 'Console Time',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   userTiming: 'User Timing',
   /**
    * @description Name for an event shown in the Performance panel. When a network
@@ -312,124 +312,124 @@ const UIStrings = {
    */
   willSendRequest: 'Will Send Request',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   sendRequest: 'Send Request',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   receiveResponse: 'Receive Response',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   finishLoading: 'Finish Loading',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   receiveData: 'Receive Data',
   /**
-  *@description Event category in the Performance panel for time spent to execute microtasks in JavaScript
-  */
+   *@description Event category in the Performance panel for time spent to execute microtasks in JavaScript
+   */
   runMicrotasks: 'Run Microtasks',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   functionCall: 'Function Call',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   gcEvent: 'GC Event',
   /**
-  *@description Event category in the Performance panel for time spent to perform a full Garbage Collection pass
-  */
+   *@description Event category in the Performance panel for time spent to perform a full Garbage Collection pass
+   */
   majorGc: 'Major GC',
   /**
-  *@description Event category in the Performance panel for time spent to perform a quick Garbage Collection pass
-  */
+   *@description Event category in the Performance panel for time spent to perform a quick Garbage Collection pass
+   */
   minorGc: 'Minor GC',
   /**
-  *@description Event category in the Performance panel for time spent to execute JavaScript
-  */
+   *@description Event category in the Performance panel for time spent to execute JavaScript
+   */
   jsFrame: 'JS Frame',
   /**
-  *@description Text for the request animation frame event
-  */
+   *@description Text for the request animation frame event
+   */
   requestAnimationFrame: 'Request Animation Frame',
   /**
-  *@description Text to cancel the animation frame
-  */
+   *@description Text to cancel the animation frame
+   */
   cancelAnimationFrame: 'Cancel Animation Frame',
   /**
-  *@description Text for the event that an animation frame is fired
-  */
+   *@description Text for the event that an animation frame is fired
+   */
   animationFrameFired: 'Animation Frame Fired',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   requestIdleCallback: 'Request Idle Callback',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   cancelIdleCallback: 'Cancel Idle Callback',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   fireIdleCallback: 'Fire Idle Callback',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   createWebsocket: 'Create WebSocket',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   sendWebsocketHandshake: 'Send WebSocket Handshake',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   receiveWebsocketHandshake: 'Receive WebSocket Handshake',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   destroyWebsocket: 'Destroy WebSocket',
   /**
-  *@description Event category in the Performance panel for time spent in the embedder of the WebView
-  */
+   *@description Event category in the Performance panel for time spent in the embedder of the WebView
+   */
   embedderCallback: 'Embedder Callback',
   /**
-  *@description Event category in the Performance panel for time spent decoding an image
-  */
+   *@description Event category in the Performance panel for time spent decoding an image
+   */
   imageDecode: 'Image Decode',
   /**
-  *@description Event category in the Performance panel for time spent to resize an image
-  */
+   *@description Event category in the Performance panel for time spent to resize an image
+   */
   imageResize: 'Image Resize',
   /**
-  *@description Event category in the Performance panel for time spent in the GPU
-  */
+   *@description Event category in the Performance panel for time spent in the GPU
+   */
   gpu: 'GPU',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   inputLatency: 'Input Latency',
   /**
-  *@description Event category in the Performance panel for time spent to perform Garbage Collection for the Document Object Model
-  */
+   *@description Event category in the Performance panel for time spent to perform Garbage Collection for the Document Object Model
+   */
   domGc: 'DOM GC',
   /**
-  *@description Event category in the Performance panel for time spent to perform encryption
-  */
+   *@description Event category in the Performance panel for time spent to perform encryption
+   */
   encrypt: 'Encrypt',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   encryptReply: 'Encrypt Reply',
   /**
-  *@description Event category in the Performance panel for time spent to perform decryption
-  */
+   *@description Event category in the Performance panel for time spent to perform decryption
+   */
   decrypt: 'Decrypt',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   decryptReply: 'Decrypt Reply',
   /**
    * @description Noun phrase meaning 'the browser was preparing the digest'.
@@ -437,13 +437,13 @@ const UIStrings = {
    */
   digest: 'Digest',
   /**
-  *@description Noun phrase meaning 'the browser was preparing the digest
-  *reply'. Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
-  */
+   *@description Noun phrase meaning 'the browser was preparing the digest
+   *reply'. Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
+   */
   digestReply: 'Digest Reply',
   /**
-  *@description The 'sign' stage of a web crypto event. Shown when displaying what the website was doing at a particular point in time.
-  */
+   *@description The 'sign' stage of a web crypto event. Shown when displaying what the website was doing at a particular point in time.
+   */
   sign: 'Sign',
   /**
    * @description Noun phrase for an event of the Web Crypto API. The event is recorded when the signing process is concluded.
@@ -451,425 +451,425 @@ const UIStrings = {
    */
   signReply: 'Sign Reply',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   verify: 'Verify',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   verifyReply: 'Verify Reply',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   asyncTask: 'Async Task',
   /**
-  *@description Text in Timeline for Layout Shift records
-  */
+   *@description Text in Timeline for Layout Shift records
+   */
   layoutShift: 'Layout Shift',
   /**
-  *@description Text in Timeline for an Event Timing record
-  */
+   *@description Text in Timeline for an Event Timing record
+   */
   eventTiming: 'Event Timing',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   compile: 'Compile',
   /**
-  *@description Text to parse something
-  */
+   *@description Text to parse something
+   */
   parse: 'Parse',
   /**
-  *@description Text shown when rendering an interaction/
-  *@example {click} PH1
-  *@example {1200} PH2
-  */
+   *@description Text shown when rendering an interaction/
+   *@example {click} PH1
+   *@example {1200} PH2
+   */
   interactionEvent: 'Interaction type:{PH1} id:{PH2}',
   /**
-  *@description Text with two placeholders separated by a colon
-  *@example {Node removed} PH1
-  *@example {div#id1} PH2
-  */
+   *@description Text with two placeholders separated by a colon
+   *@example {Node removed} PH1
+   *@example {div#id1} PH2
+   */
   sS: '{PH1}: {PH2}',
   /**
-  *@description Details text in Timeline UIUtils of the Performance panel
-  *@example {30 MB} PH1
-  */
+   *@description Details text in Timeline UIUtils of the Performance panel
+   *@example {30 MB} PH1
+   */
   sCollected: '{PH1} collected',
   /**
-  *@description Details text in Timeline UIUtils of the Performance panel
-  *@example {https://example.com} PH1
-  *@example {2} PH2
-  *@example {4} PH3
-  */
+   *@description Details text in Timeline UIUtils of the Performance panel
+   *@example {https://example.com} PH1
+   *@example {2} PH2
+   *@example {4} PH3
+   */
   sSs: '{PH1} [{PH2}…{PH3}]',
   /**
-  *@description Details text in Timeline UIUtils of the Performance panel
-  *@example {https://example.com} PH1
-  *@example {2} PH2
-  */
+   *@description Details text in Timeline UIUtils of the Performance panel
+   *@example {https://example.com} PH1
+   *@example {2} PH2
+   */
   sSSquareBrackets: '{PH1} [{PH2}…]',
   /**
-  *@description Text that is usually a hyperlink to more documentation
-  */
+   *@description Text that is usually a hyperlink to more documentation
+   */
   learnMore: 'Learn more',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   compilationCacheStatus: 'Compilation cache status',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   compilationCacheSize: 'Compilation cache size',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   scriptLoadedFromCache: 'script loaded from cache',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   failedToLoadScriptFromCache: 'failed to load script from cache',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   scriptNotEligible: 'script not eligible',
   /**
-  *@description Text for the total time of something
-  */
+   *@description Text for the total time of something
+   */
   totalTime: 'Total Time',
   /**
-  *@description Time of a single activity, as opposed to the total time
-  */
+   *@description Time of a single activity, as opposed to the total time
+   */
   selfTime: 'Self Time',
   /**
-  *@description Label in the summary view in the Performance panel for a number which indicates how much managed memory has been reclaimed by performing Garbage Collection
-  */
+   *@description Label in the summary view in the Performance panel for a number which indicates how much managed memory has been reclaimed by performing Garbage Collection
+   */
   collected: 'Collected',
   /**
-  *@description Text for a programming function
-  */
+   *@description Text for a programming function
+   */
   function: 'Function',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   timerId: 'Timer ID',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   timeout: 'Timeout',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   repeats: 'Repeats',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   callbackId: 'Callback ID',
   /**
-  *@description Text that refers to the resources of the web page
-  */
+   *@description Text that refers to the resources of the web page
+   */
   resource: 'Resource',
   /**
-  *@description Text that refers to the network request method
-  */
+   *@description Text that refers to the network request method
+   */
   requestMethod: 'Request Method',
   /**
-  *@description Status code of an event
-  */
+   *@description Status code of an event
+   */
   statusCode: 'Status Code',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   mimeTypeCaps: 'MIME Type',
   /**
-  *@description Text to show the priority of an item
-  */
+   *@description Text to show the priority of an item
+   */
   priority: 'Priority',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   encodedData: 'Encoded Data',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   sBytes: '{n, plural, =1 {# Byte} other {# Bytes}}',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   decodedBody: 'Decoded Body',
   /**
-  *@description Text for a module, the programming concept
-  */
+   *@description Text for a module, the programming concept
+   */
   module: 'Module',
   /**
-  *@description Label for a group of JavaScript files
-  */
+   *@description Label for a group of JavaScript files
+   */
   script: 'Script',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   streamed: 'Streamed',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   eagerCompile: 'Compiling all functions eagerly',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   url: 'Url',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   producedCacheSize: 'Produced Cache Size',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   consumedCacheSize: 'Consumed Cache Size',
   /**
-  *@description Title for a group of cities
-  */
+   *@description Title for a group of cities
+   */
   location: 'Location',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {2} PH1
-  *@example {2} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {2} PH1
+   *@example {2} PH2
+   */
   sSCurlyBrackets: '({PH1}, {PH2})',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   dimensions: 'Dimensions',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {2} PH1
-  *@example {2} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {2} PH1
+   *@example {2} PH2
+   */
   sSDimensions: '{PH1} × {PH2}',
   /**
-  *@description Related node label in Timeline UIUtils of the Performance panel
-  */
+   *@description Related node label in Timeline UIUtils of the Performance panel
+   */
   layerRoot: 'Layer Root',
   /**
-  *@description Related node label in Timeline UIUtils of the Performance panel
-  */
+   *@description Related node label in Timeline UIUtils of the Performance panel
+   */
   ownerElement: 'Owner Element',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   imageUrl: 'Image URL',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   stylesheetUrl: 'Stylesheet URL',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   elementsAffected: 'Elements Affected',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   nodesThatNeedLayout: 'Nodes That Need Layout',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {2} PH1
-  *@example {10} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {2} PH1
+   *@example {10} PH2
+   */
   sOfS: '{PH1} of {PH2}',
   /**
-  *@description Related node label in Timeline UIUtils of the Performance panel
-  */
+   *@description Related node label in Timeline UIUtils of the Performance panel
+   */
   layoutRoot: 'Layout root',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   message: 'Message',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   websocketProtocol: 'WebSocket Protocol',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   callbackFunction: 'Callback Function',
   /**
-  *@description The current state of an item
-  */
+   *@description The current state of an item
+   */
   state: 'State',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   range: 'Range',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   allottedTime: 'Allotted Time',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   invokedByTimeout: 'Invoked by Timeout',
   /**
-  *@description Text that refers to some types
-  */
+   *@description Text that refers to some types
+   */
   type: 'Type',
   /**
-  *@description Text for the size of something
-  */
+   *@description Text for the size of something
+   */
   size: 'Size',
   /**
-  *@description Text for the details of something
-  */
+   *@description Text for the details of something
+   */
   details: 'Details',
   /**
-  *@description Title in Timeline for Cumulative Layout Shifts
-  */
+   *@description Title in Timeline for Cumulative Layout Shifts
+   */
   cumulativeLayoutShifts: 'Cumulative Layout Shifts',
   /**
-  *@description Text for the link to the evolved CLS website
-  */
+   *@description Text for the link to the evolved CLS website
+   */
   evolvedClsLink: 'evolved',
   /**
-  *@description Warning in Timeline that CLS can cause a poor user experience. It contains a link to inform developers about the recent changes to how CLS is measured. The new CLS metric is said to have evolved from the previous version.
-  *@example {Link to web.dev/metrics} PH1
-  *@example {Link to web.dev/evolving-cls which will always have the text 'evolved'} PH2
-  */
+   *@description Warning in Timeline that CLS can cause a poor user experience. It contains a link to inform developers about the recent changes to how CLS is measured. The new CLS metric is said to have evolved from the previous version.
+   *@example {Link to web.dev/metrics} PH1
+   *@example {Link to web.dev/evolving-cls which will always have the text 'evolved'} PH2
+   */
   sCLSInformation: '{PH1} can result in poor user experiences. It has recently {PH2}.',
   /**
-  *@description Text to indicate an item is a warning
-  */
+   *@description Text to indicate an item is a warning
+   */
   warning: 'Warning',
   /**
-  *@description Title for the Timeline CLS Score
-  */
+   *@description Title for the Timeline CLS Score
+   */
   score: 'Score',
   /**
-  *@description Text in Timeline for the cumulative CLS score
-  */
+   *@description Text in Timeline for the cumulative CLS score
+   */
   cumulativeScore: 'Cumulative Score',
   /**
-  *@description Text in Timeline for the current CLS score
-  */
+   *@description Text in Timeline for the current CLS score
+   */
   currentClusterScore: 'Current Cluster Score',
   /**
-  *@description Text in Timeline for the current CLS cluster
-  */
+   *@description Text in Timeline for the current CLS cluster
+   */
   currentClusterId: 'Current Cluster ID',
   /**
-  *@description Text in Timeline for whether input happened recently
-  */
+   *@description Text in Timeline for whether input happened recently
+   */
   hadRecentInput: 'Had recent input',
   /**
-  *@description Text in Timeline indicating that input has happened recently
-  */
+   *@description Text in Timeline indicating that input has happened recently
+   */
   yes: 'Yes',
   /**
-  *@description Text in Timeline indicating that input has not happened recently
-  */
+   *@description Text in Timeline indicating that input has not happened recently
+   */
   no: 'No',
   /**
-  *@description Label for Cumulative Layout records, indicating where they moved from
-  */
+   *@description Label for Cumulative Layout records, indicating where they moved from
+   */
   movedFrom: 'Moved from',
   /**
-  *@description Label for Cumulative Layout records, indicating where they moved to
-  */
+   *@description Label for Cumulative Layout records, indicating where they moved to
+   */
   movedTo: 'Moved to',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   timeWaitingForMainThread: 'Time Waiting for Main Thread',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   relatedNode: 'Related Node',
   /**
-  *@description Text for previewing items
-  */
+   *@description Text for previewing items
+   */
   preview: 'Preview',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   aggregatedTime: 'Aggregated Time',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   networkRequest: 'Network request',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   loadFromCache: 'load from cache',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   networkTransfer: 'network transfer',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {1ms} PH1
-  *@example {network transfer} PH2
-  *@example {1ms} PH3
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {1ms} PH1
+   *@example {network transfer} PH2
+   *@example {1ms} PH3
+   */
   SSSResourceLoading: ' ({PH1} {PH2} + {PH3} resource loading)',
   /**
-  *@description Text for the duration of something
-  */
+   *@description Text for the duration of something
+   */
   duration: 'Duration',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   mimeType: 'Mime Type',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   FromMemoryCache: ' (from memory cache)',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   FromCache: ' (from cache)',
   /**
-  *@description Label for a network request indicating that it was a HTTP2 server push instead of a regular network request, in the Performance panel
-  */
+   *@description Label for a network request indicating that it was a HTTP2 server push instead of a regular network request, in the Performance panel
+   */
   FromPush: ' (from push)',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   FromServiceWorker: ' (from `service worker`)',
   /**
-  *@description Text for the initiator of something
-  */
+   *@description Text for the initiator of something
+   */
   initiator: 'Initiator',
   /**
-  *@description Call site stack label in Timeline UIUtils of the Performance panel
-  */
+   *@description Call site stack label in Timeline UIUtils of the Performance panel
+   */
   timerInstalled: 'Timer Installed',
   /**
-  *@description Call site stack label in Timeline UIUtils of the Performance panel
-  */
+   *@description Call site stack label in Timeline UIUtils of the Performance panel
+   */
   animationFrameRequested: 'Animation Frame Requested',
   /**
-  *@description Call site stack label in Timeline UIUtils of the Performance panel
-  */
+   *@description Call site stack label in Timeline UIUtils of the Performance panel
+   */
   idleCallbackRequested: 'Idle Callback Requested',
   /**
-  *@description Stack label in Timeline UIUtils of the Performance panel
-  */
+   *@description Stack label in Timeline UIUtils of the Performance panel
+   */
   recalculationForced: 'Recalculation Forced',
   /**
-  *@description Call site stack label in Timeline UIUtils of the Performance panel
-  */
+   *@description Call site stack label in Timeline UIUtils of the Performance panel
+   */
   firstLayoutInvalidation: 'First Layout Invalidation',
   /**
-  *@description Stack label in Timeline UIUtils of the Performance panel
-  */
+   *@description Stack label in Timeline UIUtils of the Performance panel
+   */
   layoutForced: 'Layout Forced',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   callStacks: 'Call Stacks',
   /**
-  *@description Text for the execution stack trace
-  */
+   *@description Text for the execution stack trace
+   */
   stackTrace: 'Stack Trace',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   invalidations: 'Invalidations',
   /**
    * @description Text in Timeline UIUtils of the Performance panel. Phrase is followed by a number of milliseconds.
@@ -878,233 +878,233 @@ const UIStrings = {
    */
   pendingFor: 'Pending for',
   /**
-  *@description Text for revealing an item in its destination
-  */
+   *@description Text for revealing an item in its destination
+   */
   reveal: 'Reveal',
   /**
-  *@description Noun label for a stack trace which indicates the first time some condition was invalidated.
-  */
+   *@description Noun label for a stack trace which indicates the first time some condition was invalidated.
+   */
   firstInvalidated: 'First Invalidated',
   /**
-  *@description Title in Timeline UIUtils of the Performance panel
-  */
+   *@description Title in Timeline UIUtils of the Performance panel
+   */
   styleInvalidations: 'Style Invalidations',
   /**
-  *@description Title in Timeline UIUtils of the Performance panel
-  */
+   *@description Title in Timeline UIUtils of the Performance panel
+   */
   layoutInvalidations: 'Layout Invalidations',
   /**
-  *@description Title in Timeline UIUtils of the Performance panel
-  */
+   *@description Title in Timeline UIUtils of the Performance panel
+   */
   otherInvalidations: 'Other Invalidations',
   /**
-  *@description Title of the paint profiler, old name of the performance pane
-  */
+   *@description Title of the paint profiler, old name of the performance pane
+   */
   paintProfiler: 'Paint Profiler',
   /**
-  *@description Text in Timeline Flame Chart View of the Performance panel
-  *@example {Frame} PH1
-  *@example {10ms} PH2
-  */
+   *@description Text in Timeline Flame Chart View of the Performance panel
+   *@example {Frame} PH1
+   *@example {10ms} PH2
+   */
   sAtS: '{PH1} at {PH2}',
   /**
-  *@description Category in the Summary view of the Performance panel to indicate time spent to load resources
-  */
+   *@description Category in the Summary view of the Performance panel to indicate time spent to load resources
+   */
   loading: 'Loading',
   /**
-  *@description Text in Timeline for the Experience title
-  */
+   *@description Text in Timeline for the Experience title
+   */
   experience: 'Experience',
   /**
-  *@description Category in the Summary view of the Performance panel to indicate time spent in script execution
-  */
+   *@description Category in the Summary view of the Performance panel to indicate time spent in script execution
+   */
   scripting: 'Scripting',
   /**
-  *@description Category in the Summary view of the Performance panel to indicate time spent in rendering the web page
-  */
+   *@description Category in the Summary view of the Performance panel to indicate time spent in rendering the web page
+   */
   rendering: 'Rendering',
   /**
-  *@description Category in the Summary view of the Performance panel to indicate time spent to visually represent the web page
-  */
+   *@description Category in the Summary view of the Performance panel to indicate time spent to visually represent the web page
+   */
   painting: 'Painting',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   async: 'Async',
   /**
-  *@description Category in the Summary view of the Performance panel to indicate time spent in the rest of the system
-  */
+   *@description Category in the Summary view of the Performance panel to indicate time spent in the rest of the system
+   */
   system: 'System',
   /**
-  *@description Category in the Summary view of the Performance panel to indicate idle time
-  */
+   *@description Category in the Summary view of the Performance panel to indicate idle time
+   */
   idle: 'Idle',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {blink.console} PH1
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {blink.console} PH1
+   */
   sSelf: '{PH1} (self)',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {blink.console} PH1
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {blink.console} PH1
+   */
   sChildren: '{PH1} (children)',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   timeSpentInRendering: 'Time spent in rendering',
   /**
-  *@description Text for a rendering frame
-  */
+   *@description Text for a rendering frame
+   */
   frame: 'Frame',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   cpuTime: 'CPU time',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   layerTree: 'Layer tree',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   show: 'Show',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {10ms} PH1
-  *@example {10ms} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {10ms} PH1
+   *@example {10ms} PH2
+   */
   sAtSParentheses: '{PH1} (at {PH2})',
   /**
-  *@description Text that only contain a placeholder
-  *@example {100ms (at 200ms)} PH1
-  */
+   *@description Text that only contain a placeholder
+   *@example {100ms (at 200ms)} PH1
+   */
   emptyPlaceholder: '{PH1}',  // eslint-disable-line rulesdir/l10n_no_locked_or_placeholder_only_phrase
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   jank: 'jank',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {Took 3ms} PH1
-  *@example {jank} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {Took 3ms} PH1
+   *@example {jank} PH2
+   */
   sLongFrameTimesAreAnIndicationOf: '{PH1}. Long frame times are an indication of {PH2}',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   forcedReflow: 'Forced reflow',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {Forced reflow} PH1
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {Forced reflow} PH1
+   */
   sIsALikelyPerformanceBottleneck: '{PH1} is a likely performance bottleneck.',
   /**
-  *@description Span text content in Timeline UIUtils of the Performance panel
-  *@example {10ms} PH1
-  */
+   *@description Span text content in Timeline UIUtils of the Performance panel
+   *@example {10ms} PH1
+   */
   idleCallbackExecutionExtended: 'Idle callback execution extended beyond deadline by {PH1}',
   /**
-  *@description Span text content in Timeline UIUtils of the Performance panel
-  *@example {10ms} PH1
-  */
+   *@description Span text content in Timeline UIUtils of the Performance panel
+   *@example {10ms} PH1
+   */
   handlerTookS: 'Handler took {PH1}',
   /**
-  *@description Warning to the user in the Performance panel that an input handler, which was run multiple times, took too long. Placeholder text is time in ms.
-  *@example {20ms} PH1
-  */
+   *@description Warning to the user in the Performance panel that an input handler, which was run multiple times, took too long. Placeholder text is time in ms.
+   *@example {20ms} PH1
+   */
   recurringHandlerTookS: 'Recurring handler took {PH1}',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   longTask: 'Long task',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {task} PH1
-  *@example {10ms} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {task} PH1
+   *@example {10ms} PH2
+   */
   sTookS: '{PH1} took {PH2}.',
   /**
-  *@description Text that indicates something is not optimized
-  */
+   *@description Text that indicates something is not optimized
+   */
   notOptimized: 'Not optimized',
   /**
-  *@description Text that starts with a colon and includes a placeholder
-  *@example {3.0} PH1
-  */
+   *@description Text that starts with a colon and includes a placeholder
+   *@example {3.0} PH1
+   */
   emptyPlaceholderColon: ': {PH1}',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   unknownCause: 'Unknown cause',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {Unkown reason} PH1
-  *@example {node1} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {Unkown reason} PH1
+   *@example {node1} PH2
+   */
   sForS: '{PH1} for {PH2}',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {StyleInvalidator for element} PH1
-  *@example {Stack trace: function  line} PH2
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {StyleInvalidator for element} PH1
+   *@example {Stack trace: function  line} PH2
+   */
   sSDot: '{PH1}. {PH2}',
   /**
-  *@description Text in Object Properties Section
-  */
+   *@description Text in Object Properties Section
+   */
   unknown: 'unknown',
   /**
-  *@description Text of a DOM element in Timeline UIUtils of the Performance panel
-  */
+   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
+   */
   stackTraceColon: 'Stack trace:',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   nodes: 'Nodes:',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   node: 'Node:',
   /**
-  *@description Text of a DOM element in Timeline UIUtils of the Performance panel
-  *@example {id2} PH1
-  *@example {a, b} PH2
-  */
+   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
+   *@example {id2} PH1
+   *@example {a, b} PH2
+   */
   changedIdToSs: '(changed id to "{PH1}"{PH2})',
   /**
-  *@description Text of a DOM element in Timeline UIUtils of the Performance panel
-  *@example {class-name2} PH1
-  *@example {a, b} PH2
-  */
+   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
+   *@example {class-name2} PH1
+   *@example {a, b} PH2
+   */
   changedClassToSs: '(changed class to "{PH1}"{PH2})',
   /**
-  *@description Text of a DOM element in Timeline UIUtils of the Performance panel
-  *@example {attribute-name} PH1
-  *@example {a, b} PH2
-  */
+   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
+   *@example {attribute-name} PH1
+   *@example {a, b} PH2
+   */
   changedAttributeToSs: '(changed attribute to "{PH1}"{PH2})',
   /**
-  *@description Text of a DOM element in Timeline UIUtils of the Performance panel
-  *@example {after} PH1
-  *@example {a, b} PH2
-  */
+   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
+   *@example {after} PH1
+   *@example {a, b} PH2
+   */
   changedPesudoToSs: '(changed pseudo to "{PH1}"{PH2})',
   /**
-  *@description Text of a DOM element in Timeline UIUtils of the Performance panel
-  *@example {part} PH1
-  *@example {a, b} PH2
-  */
+   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
+   *@example {part} PH1
+   *@example {a, b} PH2
+   */
   changedSs: '(changed "{PH1}"{PH2})',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {node1} PH1
-  *@example {node2} PH2
-  *@example {2} PH3
-  */
+   *@description Text in Timeline UIUtils of the Performance panel
+   *@example {node1} PH1
+   *@example {node2} PH2
+   *@example {2} PH3
+   */
   sSAndSOthers: '{PH1}, {PH2}, and {PH3} others',
   /**
-  *@description Text of a DOM element in Timeline UIUtils of the Performance panel
-  */
+   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
+   */
   UnknownNode: '[ unknown node ]',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);

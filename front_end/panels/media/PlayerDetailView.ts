@@ -15,36 +15,36 @@ import {PlayerPropertiesView} from './PlayerPropertiesView.js';
 
 const UIStrings = {
   /**
-  *@description Title of the 'Properties' tool in the sidebar of the elements tool
-  */
+   *@description Title of the 'Properties' tool in the sidebar of the elements tool
+   */
   properties: 'Properties',
   /**
-  *@description Button text for viewing properties.
-  */
+   *@description Button text for viewing properties.
+   */
   playerProperties: 'Player properties',
   /**
-  *@description Button text for viewing events.
-  */
+   *@description Button text for viewing events.
+   */
   events: 'Events',
   /**
-  *@description Hover text for the Events button.
-  */
+   *@description Hover text for the Events button.
+   */
   playerEvents: 'Player events',
   /**
-  *@description Text in Network Item View of the Network panel
-  */
+   *@description Text in Network Item View of the Network panel
+   */
   messages: 'Messages',
   /**
-  *@description Column header for messages view.
-  */
+   *@description Column header for messages view.
+   */
   playerMessages: 'Player messages',
   /**
-  *@description Title for the timeline tab.
-  */
+   *@description Title for the timeline tab.
+   */
   timeline: 'Timeline',
   /**
-  *@description Hovertext for Timeline tab.
-  */
+   *@description Hovertext for Timeline tab.
+   */
   playerTimeline: 'Player timeline',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerDetailView.ts', UIStrings);

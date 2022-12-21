@@ -101,7 +101,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   /** comparator
-     */
+   */
   executionContextComparator(): (arg0: ExecutionContext, arg1: ExecutionContext) => number {
     return this.#executionContextComparatorInternal;
   }

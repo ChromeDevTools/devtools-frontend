@@ -406,7 +406,7 @@ export class HARStack extends HARBase {
     debuggerId?: Protocol.Runtime.UniqueDebuggerId,
   };
   /**
-  * Based on Protocol.Runtime.StackTrace defined in browser_protocol.pdl
+   * Based on Protocol.Runtime.StackTrace defined in browser_protocol.pdl
    */
   constructor(data: any) {
     super(data);
@@ -438,7 +438,7 @@ export class HARCallFrame extends HARBase {
   lineNumber: number = -1;
   columnNumber: number = -1;
   /**
-  * Based on Protocol.Runtime.CallFrame defined in browser_protocol.pdl
+   * Based on Protocol.Runtime.CallFrame defined in browser_protocol.pdl
    */
   constructor(data: any) {
     super(data);

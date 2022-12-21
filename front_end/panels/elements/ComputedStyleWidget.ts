@@ -54,40 +54,40 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 const UIStrings = {
   /**
-  * @description Placeholder text for a text input used to filter which CSS properties show up in
-  * the list of computed properties. In the Computed Style Widget of the Elements panel.
-  */
+   * @description Placeholder text for a text input used to filter which CSS properties show up in
+   * the list of computed properties. In the Computed Style Widget of the Elements panel.
+   */
   filter: 'Filter',
   /**
-  * @description ARIA accessible name for the text input used to filter which CSS properties show up
-  * in the list of computed properties. In the Computed Style Widget of the Elements panel.
-  */
+   * @description ARIA accessible name for the text input used to filter which CSS properties show up
+   * in the list of computed properties. In the Computed Style Widget of the Elements panel.
+   */
   filterComputedStyles: 'Filter Computed Styles',
   /**
-  * @description Text for a checkbox setting that controls whether the user-supplied filter text
-  * excludes all CSS propreties which are filtered out, or just greys them out. In Computed Style
-  * Widget of the Elements panel
-  */
+   * @description Text for a checkbox setting that controls whether the user-supplied filter text
+   * excludes all CSS propreties which are filtered out, or just greys them out. In Computed Style
+   * Widget of the Elements panel
+   */
   showAll: 'Show all',
   /**
-  * @description Text for a checkbox setting that controls whether similar CSS properties should be
-  * grouped together or not. In Computed Style Widget of the Elements panel.
-  */
+   * @description Text for a checkbox setting that controls whether similar CSS properties should be
+   * grouped together or not. In Computed Style Widget of the Elements panel.
+   */
   group: 'Group',
   /** [
-  * @description Text shown to the user when a filter is applied to the computed CSS properties, but
-  * no properties matched the filter and thus no results were returned.
-  */
+   * @description Text shown to the user when a filter is applied to the computed CSS properties, but
+   * no properties matched the filter and thus no results were returned.
+   */
   noMatchingProperty: 'No matching property',
   /**
-  * @description Context menu item in Elements panel to navigate to the source code location of the
-  * CSS selector that was clicked on.
-  */
+   * @description Context menu item in Elements panel to navigate to the source code location of the
+   * CSS selector that was clicked on.
+   */
   navigateToSelectorSource: 'Navigate to selector source',
   /**
-  * @description Context menu item in Elements panel to navigate to the corresponding CSS style rule
-  * for this computed property.
-  */
+   * @description Context menu item in Elements panel to navigate to the corresponding CSS style rule
+   * for this computed property.
+   */
   navigateToStyle: 'Navigate to style',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ComputedStyleWidget.ts', UIStrings);

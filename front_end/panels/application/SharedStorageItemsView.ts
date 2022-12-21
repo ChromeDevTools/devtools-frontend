@@ -15,20 +15,20 @@ import {StorageItemsView} from './StorageItemsView.js';
 
 const UIStrings = {
   /**
-  *@description Text in SharedStorage Items View of the Application panel
-  */
+   *@description Text in SharedStorage Items View of the Application panel
+   */
   sharedStorage: 'Shared Storage',
   /**
-  *@description Text in SharedStorage Items View of the Application panel
-  */
+   *@description Text in SharedStorage Items View of the Application panel
+   */
   key: 'Key',
   /**
-  *@description Text for the value of something
-  */
+   *@description Text for the value of something
+   */
   value: 'Value',
   /**
-  *@description Name for the "Shared Storage Items" table that shows the content of the Shared Storage.
-  */
+   *@description Name for the "Shared Storage Items" table that shows the content of the Shared Storage.
+   */
   sharedStorageItems: 'Shared Storage Items',
   /**
    *@description Text for announcing that the "Shared Storage Items" table was cleared, that is, all
@@ -41,8 +41,8 @@ const UIStrings = {
    */
   sharedStorageFilteredItemsCleared: 'Shared Storage filtered items cleared',
   /**
-  *@description Text in SharedStorage Items View of the Application panel
-  */
+   *@description Text in SharedStorage Items View of the Application panel
+   */
   selectAValueToPreview: 'Select a value to preview',
   /**
    *@description Text for announcing a Shared Storage key/value item has been deleted

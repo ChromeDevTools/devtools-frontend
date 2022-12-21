@@ -13,43 +13,43 @@ import sharedStorageAccessGridStyles from './sharedStorageAccessGrid.css.js';
 
 const UIStrings = {
   /**
-  *@description Text in Shared Storage Events View of the Application panel
-  */
+   *@description Text in Shared Storage Events View of the Application panel
+   */
   sharedStorage: 'Shared Storage',
   /**
-  *@description Hover text for an info icon in the Shared Storage Events panel
-  */
+   *@description Hover text for an info icon in the Shared Storage Events panel
+   */
   allSharedStorageEvents: 'All shared storage events for this page.',
   /**
-  *@description Text in Shared Storage Events View of the Application panel
-  * Date and time of an Shared Storage event in a locale-
-  * dependent format.
-  */
+   *@description Text in Shared Storage Events View of the Application panel
+   * Date and time of an Shared Storage event in a locale-
+   * dependent format.
+   */
   eventTime: 'Event Time',
   /**
-  *@description Text in Shared Storage Events View of the Application panel
-  * Type of shared storage event such as 'documentAddModule', 'documentRun',
-  * 'documentSet', 'workletDelete', or 'workletGet'.
-  */
+   *@description Text in Shared Storage Events View of the Application panel
+   * Type of shared storage event such as 'documentAddModule', 'documentRun',
+   * 'documentSet', 'workletDelete', or 'workletGet'.
+   */
   eventType: 'Access Type',
   /**
-  *@description Text in Shared Storage Events View of the Application panel
-  * Id of the page's main frame for this access event.
-  */
+   *@description Text in Shared Storage Events View of the Application panel
+   * Id of the page's main frame for this access event.
+   */
   mainFrameId: 'Main Frame ID',
   /**
-  *@description Text in Shared Storage Events View of the Application panel
-  * Owner origin of the shared storage for this access event.
-  */
+   *@description Text in Shared Storage Events View of the Application panel
+   * Owner origin of the shared storage for this access event.
+   */
   ownerOrigin: 'Owner Origin',
   /**
-  *@description Text in Shared Storage Events View of the Application panel
-  * Event parameters whose presence/absence depend on the access type.
-  */
+   *@description Text in Shared Storage Events View of the Application panel
+   * Event parameters whose presence/absence depend on the access type.
+   */
   eventParams: 'Optional Event Params',
   /**
-  *@description Text shown instead of a table when the table would be empty.
-  */
+   *@description Text shown instead of a table when the table would be empty.
+   */
   noEvents: 'No shared storage events recorded.',
 };
 

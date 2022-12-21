@@ -14,14 +14,14 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 const UIStrings = {
   /**
-  * @description Title of a section in the Element State Pane Widget of the Elements panel.
-  * The widget shows the layers present in the context of the currently selected node.
-  * */
+   * @description Title of a section in the Element State Pane Widget of the Elements panel.
+   * The widget shows the layers present in the context of the currently selected node.
+   * */
   cssLayersTitle: 'CSS layers',
   /**
-  * @description Tooltip text in Element State Pane Widget of the Elements panel.
-  * For a button that opens a tool that shows the layers present in the current document.
-  */
+   * @description Tooltip text in Element State Pane Widget of the Elements panel.
+   * For a button that opens a tool that shows the layers present in the current document.
+   */
   toggleCSSLayers: 'Toggle CSS Layers view',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/LayersWidget.ts', UIStrings);

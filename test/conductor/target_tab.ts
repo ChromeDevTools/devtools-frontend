@@ -5,6 +5,7 @@
 // use require here due to
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
 import puppeteer = require('puppeteer');
+import fetch from 'cross-fetch';
 
 import {loadEmptyPageAndWaitForContent} from './frontend_tab.js';
 
@@ -13,13 +14,18 @@ import {loadEmptyPageAndWaitForContent} from './frontend_tab.js';
  * managing a tab that can be inspected by the DevTools frontend.
  */
 export class TargetTab {
-  private constructor(readonly page: puppeteer.Page) {
+  private constructor(readonly page: puppeteer.Page, readonly tabTargetId: string) {
   }
 
   static async create(browser: puppeteer.Browser): Promise<TargetTab> {
-    const page = await browser.newPage();
+    const host = (new URL(browser.wsEndpoint())).host;
+    const frameTarget = new Promise<puppeteer.Target>(resolve => browser.once('targetcreated', resolve));
+    const jsonNewReponse = await fetch(`http://${host}/json/new?${escape('about:blank')}&for_tab`, {method: 'PUT'});
+    const tabTarget = await jsonNewReponse.json();
+    const page = await frameTarget.then(t => t.page()) as puppeteer.Page;
     await loadEmptyPageAndWaitForContent(page);
-    return new TargetTab(page);
+
+    return new TargetTab(page, tabTarget.id);
   }
 
   async reset(): Promise<void> {
@@ -27,7 +33,6 @@ export class TargetTab {
   }
 
   targetId(): string {
-    // TODO(crbug.com/1297458): Replace private property access with public getter once available in puppeteer.
-    return this.page.target()._targetId;
+    return this.tabTargetId;
   }
 }

@@ -62,7 +62,7 @@ export class DevToolsFrontendTab {
     // frontend instances.
     const id = DevToolsFrontendTab.tabCounter++;
     const frontendUrl = `https://i${id}.devtools-frontend.test:${testServerPort}/${devToolsAppURL}?ws=localhost:${
-        getDebugPort(browser)}/devtools/page/${targetId}`;
+        getDebugPort(browser)}/devtools/page/${targetId}&targetType=tab`;
 
     const frontend = await browser.newPage();
     installPageErrorHandlers(frontend);

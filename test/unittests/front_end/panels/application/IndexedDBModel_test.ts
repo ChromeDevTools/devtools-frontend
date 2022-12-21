@@ -133,11 +133,12 @@ describeWithMockConnection('IndexedDBModel', () => {
     }));
   });
 
-  it('calls protocol method on getMetadata', () => {
-    const getMetadataSpy = sinon.spy(indexedDBAgent, 'invoke_getMetadata');
+  it('calls protocol method on getMetadata', async () => {
+    const getMetadataSpy = sinon.stub(indexedDBAgent, 'invoke_getMetadata')
+                               .resolves({entriesCount: 0, keyGeneratorValue: 0, getError: () => undefined});
     indexedDBModel.enable();
 
-    void indexedDBModel.getMetadata(testDBId, new Resources.IndexedDBModel.ObjectStore('test-store', null, false));
+    await indexedDBModel.getMetadata(testDBId, new Resources.IndexedDBModel.ObjectStore('test-store', null, false));
 
     assert.isTrue(getMetadataSpy.calledOnceWithExactly(
         {storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store'}));

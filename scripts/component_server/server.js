@@ -259,15 +259,15 @@ async function requestHandler(request, response) {
      */
 
     /**
-    * We also let the user provide a different base path for any shared
-    * resources that we load. But if this is provided along with the
-    * componentDocsBaseArg, and the two are the same, we don't want to use the
-    * shared resources base, as it's part of the componentDocsBaseArg and
-    * therefore the URL is already correct.
-    *
-    * If we didn't get a componentDocsBaseArg or we did and it's different to
-    * the sharedResourcesBase, we use sharedResourcesBase.
-    */
+     * We also let the user provide a different base path for any shared
+     * resources that we load. But if this is provided along with the
+     * componentDocsBaseArg, and the two are the same, we don't want to use the
+     * shared resources base, as it's part of the componentDocsBaseArg and
+     * therefore the URL is already correct.
+     *
+     * If we didn't get a componentDocsBaseArg or we did and it's different to
+     * the sharedResourcesBase, we use sharedResourcesBase.
+     */
     const baseUrlForSharedResource =
         componentDocsBaseArg && componentDocsBaseArg.endsWith(sharedResourcesBase) ? '/' : `/${sharedResourcesBase}`;
     const fileContents = await fs.promises.readFile(path.join(componentDocsBaseFolder, filePath), {encoding: 'utf8'});

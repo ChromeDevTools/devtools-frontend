@@ -10,9 +10,9 @@ const fs = require('fs');
 function lookForParentClassBodyNode(node) {
   if (!node.parent) {
     /**
-    * If there is no parent node, we didn't find the class for the call to registerRequiredCSS.
-    * We will catch this null with a try catch and ask the file to be migrated manually.
-    **/
+     * If there is no parent node, we didn't find the class for the call to registerRequiredCSS.
+     * We will catch this null with a try catch and ask the file to be migrated manually.
+     **/
 
     return null;
   }
@@ -33,8 +33,8 @@ function lookForWasShownMethod(node) {
     }
   }
   /**
-    * If we did not find a wasShown method then we can return null and insert it ourselves.
-    **/
+   * If we did not find a wasShown method then we can return null and insert it ourselves.
+   **/
   return null;
 }
 
@@ -43,10 +43,10 @@ function lookForRegisterCSSFilesCall(node, privatePropertyName) {
     if (expressionStatement.expression && expressionStatement.expression.callee &&
         expressionStatement.expression.callee.property.name === 'registerCSSFiles') {
       /**
-        * Once we find a registerCSSFiles call in wasShown(), we need to check that the objects they are being called on the same. If the call is
-        * a `this.registerCSSFiles()` then privatePropertyName is ''. Otherwise, we check that the privatePropertyName is the same as the one we are
-        * calling registerCSSFiles() on.
-        **/
+       * Once we find a registerCSSFiles call in wasShown(), we need to check that the objects they are being called on the same. If the call is
+       * a `this.registerCSSFiles()` then privatePropertyName is ''. Otherwise, we check that the privatePropertyName is the same as the one we are
+       * calling registerCSSFiles() on.
+       **/
       if (privatePropertyName === '') {
         // We are looking for a this.registerRequiredCSS here
         if (expressionStatement.expression.callee.object.type === 'ThisExpression') {

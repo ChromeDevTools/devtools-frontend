@@ -6,9 +6,9 @@
  * Run this script to re-format all .js and .ts files found
  * node scripts/reformat-clang-js-ts.js --directory=front_end
  * The script starts in the given directory and recursively finds all `.js` and `.ts` files to reformat.
-  * Any `.clang-format` with `DisableFormat: true` is respected; those
-  * directories will not be used.
-**/
+ * Any `.clang-format` with `DisableFormat: true` is respected; those
+ * directories will not be used.
+ **/
 
 const fs = require('fs');
 const path = require('path');

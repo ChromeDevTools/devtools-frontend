@@ -111,13 +111,13 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
         }
       }
       /**
-         * We exempt background-image from var() checks otherwise it will think
-         * that: background-image: var(--my-lovely-image) is bad when it's not.
-         *
-         * Additionally we load images via variables which always start with
-         * --image-file, so those variables are allowed regardless of where they
-         * are used.
-         */
+       * We exempt background-image from var() checks otherwise it will think
+       * that: background-image: var(--my-lovely-image) is bad when it's not.
+       *
+       * Additionally we load images via variables which always start with
+       * --image-file, so those variables are allowed regardless of where they
+       * are used.
+       */
       const shouldAllowAnyVars =
           declarationToErrorOn.prop === 'background-image' || cssValueToCheck.startsWith('var(--image-file');
       if (shouldAllowAnyVars) {
@@ -126,11 +126,11 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
 
       if (cssValueToCheck === 'var()') {
         /**
-          * If it's an empty var(), let's leave it, as the developer is
-          * probably in the middle of typing the value into their editor, and
-          * we don't want to jump the gun and test until they've filled that
-          * value in.
-          */
+         * If it's an empty var(), let's leave it, as the developer is
+         * probably in the middle of typing the value into their editor, and
+         * we don't want to jump the gun and test until they've filled that
+         * value in.
+         */
         return;
       }
 
@@ -141,12 +141,12 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
         }
 
         /**
-           * The override prefix acts as an escape hatch to allow custom-defined
-           * color variables to be applied. This option should only be used when
-           * there's no alternative. Example scenarios include using CSS
-           * variables to customize internal styles of a web component from its
-           * host environment.
-           */
+         * The override prefix acts as an escape hatch to allow custom-defined
+         * color variables to be applied. This option should only be used when
+         * there's no alternative. Example scenarios include using CSS
+         * variables to customize internal styles of a web component from its
+         * host environment.
+         */
         if (variableName.startsWith(CUSTOM_VARIABLE_OVERRIDE_PREFIX)) {
           return;
         }

@@ -182,12 +182,12 @@ function executeTestSuite({
   mochaOptions = {},
 }) {
   /**
-  * Internally within various scripts (Mocha configs, Conductor, etc), we rely on
-  * process.env.FOO. We are moving to exposing the entire configuration to
-  * process.env.TEST_CONFIG_JSON but for now we need to still expose the values
-  * directly on the environment whilst we roll out this script and make all the
-  * required changes.
-  */
+   * Internally within various scripts (Mocha configs, Conductor, etc), we rely on
+   * process.env.FOO. We are moving to exposing the entire configuration to
+   * process.env.TEST_CONFIG_JSON but for now we need to still expose the values
+   * directly on the environment whilst we roll out this script and make all the
+   * required changes.
+   */
   setEnvValueIfValuePresent('CHROME_BIN', chromeBinaryPath);
   setEnvValueIfValuePresent('CHROME_FEATURES', chromeFeatures);
   setEnvValueIfValuePresent('JOBS', jobs);

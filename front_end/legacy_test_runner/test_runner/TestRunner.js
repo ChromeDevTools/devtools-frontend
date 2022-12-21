@@ -751,17 +751,17 @@ export function addScriptForFrame(url, content, frame) {
 export const formatters = {
 
   /**
- * @param {*} value
- * @return {string}
- */
+   * @param {*} value
+   * @return {string}
+   */
   formatAsTypeName(value) {
     return '<' + typeof value + '>';
   },
 
   /**
- * @param {*} value
- * @return {string}
- */
+   * @param {*} value
+   * @return {string}
+   */
   formatAsTypeNameOrNull(value) {
     if (value === null) {
       return 'null';
@@ -770,9 +770,9 @@ export const formatters = {
   },
 
   /**
- * @param {*} value
- * @return {string|!Date}
- */
+   * @param {*} value
+   * @return {string|!Date}
+   */
   formatAsRecentTime(value) {
     if (typeof value !== 'object' || !(value instanceof Date)) {
       return formatters.formatAsTypeName(value);
@@ -782,9 +782,9 @@ export const formatters = {
   },
 
   /**
- * @param {string} value
- * @return {string}
- */
+   * @param {string} value
+   * @return {string}
+   */
   formatAsURL(value) {
     if (!value) {
       return value;
@@ -797,9 +797,9 @@ export const formatters = {
   },
 
   /**
- * @param {string} value
- * @return {string}
- */
+   * @param {string} value
+   * @return {string}
+   */
   formatAsDescription(value) {
     if (!value) {
       return value;

@@ -8,7 +8,7 @@
 /**
  * @param taggedTemplateExpressionNode - a TaggedTemplateExpression node from the AST of the parsed code.
  * @returns {boolean} - `true` if the code matches LitHtml.html`` or html``, and false otherwise.
-*/
+ */
 function isLitHtmlTemplateCall(taggedTemplateExpressionNode) {
   if (taggedTemplateExpressionNode.type !== 'TaggedTemplateExpression') {
     throw new Error('Node of type other than TaggedTemplateExpression passed to isLitHtmlTemplateCall.');
@@ -29,7 +29,7 @@ function isLitHtmlTemplateCall(taggedTemplateExpressionNode) {
 /**
  * @param callExpressionNode - a CallExpression node from the AST of the parsed code.
  * @returns {boolean} - `true` if the code matches LitHtml.render() or render(), and false otherwise.
-*/
+ */
 function isLitHtmlRenderCall(callExpressionNode) {
   if (callExpressionNode.type !== 'CallExpression') {
     throw new Error('Node of type other than CallExpresson passed to isLitHtmlRenderCall.');

@@ -168,7 +168,7 @@ export class HeaderSectionRow extends HTMLElement {
             html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div> ` :
             LitHtml.nothing
           }
-          ${!this.#isValidHeaderName ?
+          ${isHeaderNameEditable && !this.#isValidHeaderName ?
             html`<${IconButton.Icon.Icon.litTagName} class="inline-icon disallowed-characters" title=${UIStrings.headerNamesOnlyLetters} .data=${{
               iconName: 'error_icon',
               width: '12px',

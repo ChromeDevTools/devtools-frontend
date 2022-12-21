@@ -82,4 +82,26 @@ describeWithEnvironment('RequestHeaderSection', () => {
       ['test:', 'fifth'],
     ]);
   });
+
+  it('does not warn about pseudo-headers containing invalid characters', async () => {
+    const request = {
+      cachedInMemory: () => true,
+      requestHeaders: () =>
+          [{name: ':Authority', value: 'www.example.com'},
+           {name: ':Method', value: 'GET'},
+           {name: ':Path', value: '/'},
+           {name: ':Scheme', value: 'https'},
+    ],
+      requestHeadersText: () => 'placeholderText',
+    } as unknown as SDK.NetworkRequest.NetworkRequest;
+
+    const component = await renderRequestHeaderSection(request);
+    assertShadowRoot(component.shadowRoot);
+
+    const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+    for (const row of rows) {
+      assertShadowRoot(row.shadowRoot);
+      assert.isNull(row.shadowRoot.querySelector('.disallowed-characters'));
+    }
+  });
 });

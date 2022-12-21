@@ -116,6 +116,11 @@ const UIStrings = {
    */
   invalidateLayout: 'Invalidate Layout',
   /**
+   *@description Noun for an event in the Performance panel. Layerize is a step
+   *where we calculate which layers to create.
+   */
+  layerize: 'Layerize',
+  /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
   layout: 'Layout',
@@ -1161,6 +1166,7 @@ export class TimelineUIUtils {
     eventStyles[type.UpdateLayoutTree] = new TimelineRecordStyle(i18nString(UIStrings.recalculateStyle), rendering);
     eventStyles[type.InvalidateLayout] =
         new TimelineRecordStyle(i18nString(UIStrings.invalidateLayout), rendering, true);
+    eventStyles[type.Layerize] = new TimelineRecordStyle(i18nString(UIStrings.layerize), rendering);
     eventStyles[type.Layout] = new TimelineRecordStyle(i18nString(UIStrings.layout), rendering);
     eventStyles[type.PaintSetup] = new TimelineRecordStyle(i18nString(UIStrings.paintSetup), painting);
     eventStyles[type.PaintImage] = new TimelineRecordStyle(i18nString(UIStrings.paintImage), painting, true);

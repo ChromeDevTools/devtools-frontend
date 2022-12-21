@@ -1621,6 +1621,7 @@ export enum RecordType {
   RecalculateStyles = 'RecalculateStyles',
   UpdateLayoutTree = 'UpdateLayoutTree',
   InvalidateLayout = 'InvalidateLayout',
+  Layerize = 'Layerize',
   Layout = 'Layout',
   LayoutShift = 'LayoutShift',
   UpdateLayer = 'UpdateLayer',

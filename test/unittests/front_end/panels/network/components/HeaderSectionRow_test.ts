@@ -211,38 +211,54 @@ describeWithEnvironment('HeaderSectionRow', () => {
     });
 
     assertElement(nameEditable, HTMLSpanElement);
+    assert.isTrue(hasReloadPrompt(component.shadowRoot));
     nameEditable.focus();
     nameEditable.innerText = editedHeaderName;
+    dispatchInputEvent(nameEditable, {inputType: 'insertText', data: editedHeaderName, bubbles: true, composed: true});
     nameEditable.blur();
+    await coordinator.done();
 
     assert.strictEqual(headerEditedEventCount, 1);
     assert.strictEqual(headerNameFromEvent, editedHeaderName);
     assert.strictEqual(headerValueFromEvent, originalHeaderValue);
+    assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
     assertElement(valueEditable, HTMLSpanElement);
     valueEditable.focus();
     valueEditable.innerText = editedHeaderValue;
+    dispatchInputEvent(
+        valueEditable, {inputType: 'insertText', data: editedHeaderValue, bubbles: true, composed: true});
     valueEditable.blur();
+    await coordinator.done();
 
     assert.strictEqual(headerEditedEventCount, 2);
     assert.strictEqual(headerNameFromEvent, editedHeaderName);
     assert.strictEqual(headerValueFromEvent, editedHeaderValue);
+    assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
     nameEditable.focus();
     nameEditable.innerText = originalHeaderName;
+    dispatchInputEvent(
+        nameEditable, {inputType: 'insertText', data: originalHeaderName, bubbles: true, composed: true});
     nameEditable.blur();
+    await coordinator.done();
 
     assert.strictEqual(headerEditedEventCount, 3);
     assert.strictEqual(headerNameFromEvent, originalHeaderName);
     assert.strictEqual(headerValueFromEvent, editedHeaderValue);
+    assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
     valueEditable.focus();
     valueEditable.innerText = originalHeaderValue;
+    dispatchInputEvent(
+        valueEditable, {inputType: 'insertText', data: originalHeaderValue, bubbles: true, composed: true});
     valueEditable.blur();
+    await coordinator.done();
 
     assert.strictEqual(headerEditedEventCount, 4);
     assert.strictEqual(headerNameFromEvent, originalHeaderName);
     assert.strictEqual(headerValueFromEvent, originalHeaderValue);
+    assert.isTrue(hasReloadPrompt(component.shadowRoot));
   });
 
   it('does not allow setting an emtpy header name', async () => {

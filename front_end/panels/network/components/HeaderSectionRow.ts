@@ -126,13 +126,8 @@ export class HeaderSectionRow extends HTMLElement {
 
   set data(data: HeaderSectionRowData) {
     this.#header = data.header;
-    // Case 1: Headers which were just now added via the 'Add header button'.
-    //         'nameEditable' is true only for such headers.
-    // Case 2: Headers for which the user clicked the 'remove' button.
-    // Case 3: Headers for which there is a mismatch between original header
-    //         value and current header value.
-    this.#isHeaderValueEdited = this.#header.nameEditable || this.#header.isDeleted ||
-        (this.#header.originalValue !== undefined && this.#header.value !== this.#header.originalValue);
+    this.#isHeaderValueEdited =
+        this.#header.originalValue !== undefined && this.#header.value !== this.#header.originalValue;
     this.#isValidHeaderName = isValidHeaderName(this.#header.name);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -158,6 +153,13 @@ export class HeaderSectionRow extends HTMLElement {
     // This ensures the header name's editability reacts correctly to enabling or
     // disabling local overrides.
     const isHeaderNameEditable = this.#header.nameEditable && this.#header.valueEditable;
+
+    // Case 1: Headers which were just now added via the 'Add header button'.
+    //         'nameEditable' is true only for such headers.
+    // Case 2: Headers for which the user clicked the 'remove' button.
+    // Case 3: Headers for which there is a mismatch between original header
+    //         value and current header value.
+    const showReloadInfoIcon = this.#header.nameEditable || this.#header.isDeleted || this.#isHeaderValueEdited;
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -192,7 +194,7 @@ export class HeaderSectionRow extends HTMLElement {
         >
           ${this.#renderHeaderValue()}
         </div>
-        ${this.#isHeaderValueEdited ?
+        ${showReloadInfoIcon ?
           html`<${IconButton.Icon.Icon.litTagName} class="row-flex-icon flex-right" title=${UIStrings.reloadPrompt} .data=${{
             iconName: 'info-icon',
             width: '12px',

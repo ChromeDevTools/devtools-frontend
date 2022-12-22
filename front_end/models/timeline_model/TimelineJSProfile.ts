@@ -23,29 +23,33 @@ export class TimelineJSProfileProcessor {
   static generateTracingEventsFromCpuProfile(
       jsProfileModel: SDK.CPUProfileDataModel.CPUProfileDataModel,
       thread: SDK.TracingModel.Thread): SDK.TracingModel.Event[] {
-    const idleNode = jsProfileModel.idleNode;
-    const programNode = jsProfileModel.programNode || null;
-    const gcNode = jsProfileModel.gcNode;
     const samples = jsProfileModel.samples || [];
     const timestamps = jsProfileModel.timestamps;
     const jsEvents = [];
     const nodeToStackMap = new Map<SDK.ProfileTreeModel.ProfileNode|null, Protocol.Runtime.CallFrame[]>();
-    nodeToStackMap.set(programNode, []);
+
+    let prevNode: SDK.ProfileTreeModel.ProfileNode = jsProfileModel.root;
     for (let i = 0; i < samples.length; ++i) {
       let node: SDK.ProfileTreeModel.ProfileNode|null = jsProfileModel.nodeByIndex(i);
       if (!node) {
         console.error(`Node with unknown id ${samples[i]} at index ${i}`);
         continue;
       }
-      if (node === gcNode || node === idleNode) {
-        continue;
-      }
       let callFrames = nodeToStackMap.get(node);
       if (!callFrames) {
-        callFrames = (new Array(node.depth + 1) as Protocol.Runtime.CallFrame[]);
-        nodeToStackMap.set(node, callFrames);
-        for (let j = 0; node.parent; node = node.parent) {
-          callFrames[j++] = (node as Protocol.Runtime.CallFrame);
+        if (node === jsProfileModel.gcNode) {
+          // GC samples have no stack, so we just put GC node on top of the last recorded sample.
+          // The depth is always 0, so set the callFrames size to 2 to save the GC and last recorded sample.
+          callFrames = (new Array(2) as Protocol.Runtime.CallFrame[]);
+          callFrames[0] = (node as Protocol.Runtime.CallFrame);
+          callFrames[1] = (prevNode as Protocol.Runtime.CallFrame);
+          nodeToStackMap.set(node, callFrames);
+        } else {
+          callFrames = (new Array(node.depth + 1) as Protocol.Runtime.CallFrame[]);
+          nodeToStackMap.set(node, callFrames);
+          for (let j = 0; node.parent; node = node.parent) {
+            callFrames[j++] = (node as Protocol.Runtime.CallFrame);
+          }
         }
       }
       const jsSampleEvent = new SDK.TracingModel.Event(
@@ -53,6 +57,8 @@ export class TimelineJSProfileProcessor {
           timestamps[i], thread);
       jsSampleEvent.args['data'] = {stackTrace: callFrames};
       jsEvents.push(jsSampleEvent);
+
+      prevNode = node;
     }
     return jsEvents;
   }

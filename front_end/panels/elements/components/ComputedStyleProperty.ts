@@ -26,7 +26,8 @@ export class ComputedStyleProperty extends HTMLElement {
   #traceable = false;
   #onNavigateToSource: ((event?: Event) => void) = () => {};
 
-  connectedCallback(): void {
+  constructor() {
+    super();
     this.#shadow.adoptedStyleSheets = [computedStylePropertyStyles];
   }
 

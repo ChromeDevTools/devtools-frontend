@@ -261,26 +261,6 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.GLOBAL,
-  storageType: Common.Settings.SettingStorageType.Local,
-  title: i18nLazyString(UIStrings.searchAsYouTypeSetting),
-  settingName: 'searchAsYouType',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  order: 3,
-  defaultValue: true,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.searchAsYouTypeCommand),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.searchOnEnterCommand),
-    },
-  ],
-});
-
-Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.disablePaused),

@@ -72,6 +72,12 @@ export const editorTheme = CM.EditorView.theme({
     padding: '0 3px 0 9px',
   },
 
+  '.cm-foldPlaceholder': {
+    background: 'transparent',
+    border: 'none',
+    color: 'var(--color-text-secondary)',
+  },
+
   '.cm-matchingBracket, .cm-nonmatchingBracket': {
     background: 'transparent',
     borderBottom: 'none',

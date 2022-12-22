@@ -230,55 +230,12 @@ export class TimelineJSProfileProcessor {
     if (!profile) {
       return events;
     }
-    const idToNode = new Map<any, any>();
-    const nodes = profile['nodes'];
-    for (let i = 0; i < nodes.length; ++i) {
-      idToNode.set(nodes[i].id, nodes[i]);
-    }
-    let programEvent: SDK.TracingManager.EventPayload|null = null;
-    let functionEvent: null|SDK.TracingManager.EventPayload = null;
-    let nextTime: number = profile.startTime;
-    let currentTime = 0;
-    const samples = profile['samples'];
-    const timeDeltas = profile['timeDeltas'];
-    for (let i = 0; i < samples.length; ++i) {
-      currentTime = nextTime;
-      nextTime += timeDeltas[i];
-      const node = idToNode.get(samples[i]);
-      const name = node.callFrame.functionName;
-      if (name === '(idle)') {
-        closeEvents();
-        continue;
-      }
-      if (!programEvent) {
-        programEvent = appendEvent('MessageLoop::RunTask', {}, currentTime, 0, 'X', 'toplevel');
-      }
-      if (name === '(program)') {
-        if (functionEvent) {
-          functionEvent.dur = currentTime - functionEvent.ts;
-          functionEvent = null;
-        }
-      } else {
-        // A JS function.
-        if (!functionEvent) {
-          functionEvent = appendEvent('FunctionCall', {data: {'sessionId': '1'}}, currentTime);
-        }
-      }
-    }
-    closeEvents();
+    // Append a root to show the start time of the profile (which is earlier than first sample), so the Performance
+    // panel won't truncate this time period.
+    appendEvent('(root)', {}, profile.startTime, profile.endTime - profile.startTime, 'X', 'toplevel');
+
     appendEvent('CpuProfile', {data: {'cpuProfile': profile}}, profile.endTime, 0, 'I');
     return events;
-
-    function closeEvents(): void {
-      if (programEvent) {
-        programEvent.dur = currentTime - programEvent.ts;
-      }
-      if (functionEvent) {
-        functionEvent.dur = currentTime - functionEvent.ts;
-      }
-      programEvent = null;
-      functionEvent = null;
-    }
 
     function appendEvent(
         name: string, args: any, ts: number, dur?: number, ph?: string, cat?: string): SDK.TracingManager.EventPayload {

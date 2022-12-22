@@ -1,0 +1,19 @@
+# Copyright 2022 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# NOTE: not a real BUILD.GN! Built as a fixture for the BuildGN import sync script.
+# Do not try and run this, it is not valid :)
+
+devtools_module("handlers") {
+  sources = [
+    "HandlerOne.ts",
+    "HandlerTwo.ts",
+  ]
+
+  deps = [
+    "../../../core/platform:bundle",
+    "../../../generated",
+    "../../../not-used-in-source-code:bundle",
+  ]
+}

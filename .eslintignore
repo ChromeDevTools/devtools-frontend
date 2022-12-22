@@ -29,6 +29,7 @@ front_end/third_party/lit/src/*.ts
 node_modules
 scripts/migration/**/*.js
 scripts/protocol_typescript/*.js
+scripts/deps/tests/fixtures
 test/**/fixtures/
 test/e2e/**/*.js
 test/shared/**/*.js

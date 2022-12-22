@@ -315,6 +315,7 @@ export class FlexOrGridItemValidator extends CSSRuleValidator {
     super([
       'place-self',
       'align-self',
+      'order',
     ]);
   }
 
@@ -355,7 +356,6 @@ export class FlexOrGridItemValidator extends CSSRuleValidator {
 export class FlexGridValidator extends CSSRuleValidator {
   constructor() {
     super([
-      'order',
       'justify-content',
       'align-content',
       'place-content',  // Shorthand	<'align-content'> <'justify-content'>?

@@ -19,7 +19,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['align-content', 'center'],
       ]),
       validator: () => new Elements.CSSRuleValidator.AlignContentValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Passes the validation if flex-wrap is set to nowrap, but the element is not a flex container',
@@ -29,7 +29,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['align-content', 'center'],
       ]),
       validator: () => new Elements.CSSRuleValidator.AlignContentValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Test `justify-content`, validation passes when the element is flex containers',
@@ -38,7 +38,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['justify-content', 'flex-end'],
       ]),
       validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Test `justify-content`, validation passes when the element is grid containers',
@@ -47,7 +47,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['justify-content', 'center'],
       ]),
       validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Test `place-content`, validation passes when the element is grid containers',
@@ -56,7 +56,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['place-content', 'center'],
       ]),
       validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description:
@@ -66,7 +66,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['place-content', 'center'],
       ]),
       validator: () => new Elements.CSSRuleValidator.FlexGridValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Reports a rule validation when flex properties are set to non-flex items',
@@ -77,7 +77,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['display', 'table'],
       ]),
       validator: () => new Elements.CSSRuleValidator.FlexItemValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Passes the validation when flex properties are set to flex items',
@@ -88,7 +88,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['display', 'flex'],
       ]),
       validator: () => new Elements.CSSRuleValidator.FlexItemValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Passes the validation when flex container properties are set to flex container',
@@ -98,7 +98,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.FlexContainerValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Reports a rule validation when flex container properties are set to non-flex container',
@@ -108,7 +108,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.FlexContainerValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Passes the validation when grid container properties are set to grid container',
@@ -118,7 +118,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.GridContainerValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Reports a rule validation when grid container properties are set to non-grid container',
@@ -128,7 +128,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.GridContainerValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Passes the validation when grid item properties are set to grid items',
@@ -139,7 +139,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['display', 'grid'],
       ]),
       validator: () => new Elements.CSSRuleValidator.GridItemValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Reports a rule validation when grid item properties are set to non-grid items',
@@ -150,7 +150,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['display', 'flex'],
       ]),
       validator: () => new Elements.CSSRuleValidator.GridItemValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Reports a rule validation when flex or grid item properties are set to non-flex or non-grid items',
@@ -159,7 +159,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Passes the validation when flex or grid item properties are set to flex or grid items',
@@ -170,7 +170,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['display', 'flex'],
       ]),
       validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Passes the validation when flex or grid item properties are set to grid items',
@@ -181,7 +181,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['display', 'grid'],
       ]),
       validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Passes the validation when padding is not set to table elements',
@@ -191,7 +191,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.PaddingValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Reports a rule validation when padding is set to table elements',
@@ -201,7 +201,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.PaddingValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Passes the validation when top is set to non-static positioned element',
@@ -211,7 +211,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.PositionValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Reports a rule validation when top is set to static positioned elements',
@@ -221,7 +221,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.PositionValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Passes the validation when z-index is set to non-static positioned element',
@@ -231,7 +231,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.ZIndexValidator(),
-      expectedResult: true,
+      hintExpected: false,
     },
     {
       description: 'Reports a rule validation when z-index is set to static positioned elements',
@@ -241,7 +241,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       ]),
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.ZIndexValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Validates width on an inline element',
@@ -252,7 +252,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       nodeName: 'span',
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.SizingValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Validates height on an inline element',
@@ -263,7 +263,7 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       nodeName: 'span',
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.SizingValidator(),
-      expectedResult: false,
+      hintExpected: true,
     },
     {
       description: 'Does not validate width on an inline element that could be replaced',
@@ -274,7 +274,43 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       nodeName: 'input',
       parentsComputedStyles: new Map<string, string>(),
       validator: () => new Elements.CSSRuleValidator.SizingValidator(),
-      expectedResult: true,
+      hintExpected: false,
+    },
+    {
+      description: 'Shows a hint the order property on non-flex/grid items',
+      computedStyles: new Map<string, string>([
+        ['order', '1'],
+      ]),
+      nodeName: 'input',
+      parentsComputedStyles: new Map<string, string>([
+        ['display', 'block'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
+      hintExpected: true,
+    },
+    {
+      description: 'Does not show a hint for the order property on a flex item',
+      computedStyles: new Map<string, string>([
+        ['order', '1'],
+      ]),
+      nodeName: 'input',
+      parentsComputedStyles: new Map<string, string>([
+        ['display', 'flex'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
+      hintExpected: false,
+    },
+    {
+      description: 'Does not show a hint for the order property on a grid item',
+      computedStyles: new Map<string, string>([
+        ['order', '1'],
+      ]),
+      nodeName: 'input',
+      parentsComputedStyles: new Map<string, string>([
+        ['display', 'grid'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
+      hintExpected: false,
     },
   ];
 
@@ -287,10 +323,10 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       const actualResult = test.validator().getHint(
           test.validator().getApplicableProperties()[0], test.computedStyles, test.parentsComputedStyles,
           test.nodeName);
-      if (test.expectedResult) {
-        assert.isUndefined(actualResult);
-      } else {
+      if (test.hintExpected) {
         assert.isDefined(actualResult);
+      } else {
+        assert.isUndefined(actualResult);
       }
     });
   }

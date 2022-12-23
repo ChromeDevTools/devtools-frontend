@@ -37,7 +37,7 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
   });
 
   async function toOffsetWithSourceMap(
-      sourceMap: SDK.SourceMap.SourceMap|null, location: SDK.DebuggerModel.Location|null) {
+      sourceMap: SDK.SourceMap.SourceMap|undefined, location: SDK.DebuggerModel.Location|null) {
     if (!location || !sourceMap) {
       return null;
     }

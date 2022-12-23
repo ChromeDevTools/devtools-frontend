@@ -146,7 +146,8 @@ export class SASSSourceMapping implements SourceMapping {
     const locations: SDK.CSSModel.CSSLocation[] = [];
     for (const sourceMap of binding.getReferringSourceMaps()) {
       const entries = sourceMap.findReverseEntries(uiSourceCode.url(), lineNumber, columnNumber);
-      for (const header of this.#sourceMapManager.clientsForSourceMap(sourceMap)) {
+      const header = this.#sourceMapManager.clientForSourceMap(sourceMap);
+      if (header) {
         locations.push(
             ...entries.map(entry => new SDK.CSSModel.CSSLocation(header, entry.lineNumber, entry.columnNumber)));
       }

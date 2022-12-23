@@ -111,6 +111,10 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return pageResourceLoader;
   }
 
+  static removeInstance(): void {
+    pageResourceLoader = null;
+  }
+
   onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
     const mainFrame = event.data;
     if (!mainFrame.isTopFrame()) {

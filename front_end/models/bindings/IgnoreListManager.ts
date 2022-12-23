@@ -174,10 +174,11 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
       event: Common.EventTarget.EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>):
       void {
     const script = event.data.client;
-    void this.updateScriptRanges(script, null);
+    void this.updateScriptRanges(script, undefined);
   }
 
-  private async updateScriptRanges(script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap|null): Promise<void> {
+  private async updateScriptRanges(script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap|undefined):
+      Promise<void> {
     let hasIgnoreListedMappings = false;
     if (!IgnoreListManager.instance().isUserIgnoreListedURL(script.sourceURL, script.isContentScript())) {
       hasIgnoreListedMappings =

@@ -376,12 +376,9 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return scripts.every(script => script.isJavaScript());
   }
 
-  sourceMapForScript(script: SDK.Script.Script): SDK.SourceMap.SourceMap|null {
+  sourceMapForScript(script: SDK.Script.Script): SDK.SourceMap.SourceMap|undefined {
     const modelData = this.#debuggerModelToData.get(script.debuggerModel);
-    if (!modelData) {
-      return null;
-    }
-    return modelData.compilerMapping.sourceMapForScript(script);
+    return modelData?.compilerMapping.sourceMapForScript(script);
   }
 
   private globalObjectCleared(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {

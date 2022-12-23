@@ -217,7 +217,8 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       if (!entry) {
         continue;
       }
-      for (const script of this.#sourceMapManager.clientsForSourceMap(sourceMap)) {
+      const script = this.#sourceMapManager.clientForSourceMap(sourceMap);
+      if (script) {
         locations.push(this.#debuggerModel.createRawLocation(
             script, entry.lineNumber + script.lineOffset,
             !entry.lineNumber ? entry.columnNumber + script.columnOffset : entry.columnNumber));
@@ -274,7 +275,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     await this.#debuggerWorkspaceBinding.updateLocations(script);
   }
 
-  sourceMapForScript(script: SDK.Script.Script): SDK.SourceMap.SourceMap|null {
+  sourceMapForScript(script: SDK.Script.Script): SDK.SourceMap.SourceMap|undefined {
     return this.#sourceMapManager.sourceMapForClient(script);
   }
 
@@ -286,7 +287,10 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
 
     const scripts: SDK.Script.Script[] = [];
     for (const sourceMap of binding.getReferringSourceMaps()) {
-      this.#sourceMapManager.clientsForSourceMap(sourceMap).forEach(script => scripts.push(script));
+      const script = this.#sourceMapManager.clientForSourceMap(sourceMap);
+      if (script) {
+        scripts.push(script);
+      }
     }
     return scripts;
   }

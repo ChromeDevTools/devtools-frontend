@@ -10,7 +10,7 @@ import type * as Workspace from '../workspace/workspace.js';
 import * as Protocol from '../../generated/protocol.js';
 
 interface CachedScopeMap {
-  sourceMap: SDK.SourceMap.SourceMap|null;
+  sourceMap: SDK.SourceMap.SourceMap|undefined;
   mappingPromise: Promise<{variableMapping: Map<string, string>, thisMapping: string|null}>;
 }
 

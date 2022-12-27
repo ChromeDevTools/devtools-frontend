@@ -98,6 +98,11 @@ it('can highlight JavaScript compatible with CodeMirror 5', testHighlight(`
 [meta <!DOCTYPE html>]
 <[tag button] [attribute style]=[property color]:[atom green]]>Don't click me</[tag button]>`, 'text/html'));
 
+it('can highlight Angular Templates', testHighlight(`
+<[tag div] [attribute class]=[attribute-value "title"]>{{[variable obj].[property title]}}</[tag div]>
+<[tag app-button] ([attribute clicked])=[variable onClick]()></[tag app-button]>
+`, 'text/x.angular'));
+
   it('can highlight Svelte Templates', testHighlight(`
 <[tag script]>
 [keyword import] [definition Widget] [keyword from] [string './Widget.svelte'];

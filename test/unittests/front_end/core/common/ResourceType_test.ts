@@ -453,6 +453,10 @@ describe('ResourceType', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('scala'), 'text/x-scala');
     });
 
+    it('returns correct MIME type for .component.html files', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('component.html'), 'text/x.angular');
+    });
+
     it('returns correct MIME type for .svelte files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('svelte'), 'text/x.svelte');
     });
@@ -509,6 +513,11 @@ describe('ResourceType', () => {
     it('returns correct MIME type for Scala files', () => {
       const url = 'http://localhost/App.scala' as Platform.DevToolsPath.UrlString;
       assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x-scala');
+    });
+
+    it('returns correct MIME type for Angular component templates', () => {
+      const url = 'http://localhost/src/app/app.component.html' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x.angular');
     });
 
     it('returns correct MIME type for .svelte files', () => {

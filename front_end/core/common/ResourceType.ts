@@ -252,7 +252,10 @@ export class ResourceType {
       return mimeTypeByName.get(name);
     }
 
-    const ext = ParsedURL.extractExtension(url).toLowerCase();
+    let ext = ParsedURL.extractExtension(url).toLowerCase();
+    if (ext === 'html' && name.endsWith('.component.html')) {
+      ext = 'component.html';
+    }
     return mimeTypeByExtension.get(ext);
   }
 
@@ -552,6 +555,9 @@ export const mimeTypeByExtension = new Map([
   ['ttf', 'font/ttf'],
   ['woff', 'font/woff'],
   ['woff2', 'font/woff2'],
+
+  // Angular
+  ['component.html', 'text/x.angular'],
 
   // Svelte
   ['svelte', 'text/x.svelte'],

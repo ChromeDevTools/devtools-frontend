@@ -15,6 +15,8 @@ devtools_pre_built("codemirror.next-sources") {
   sources = [
     "chunk/codemirror.js",
     "chunk/codemirror.js.map",
+    "chunk/angular.js",
+    "chunk/angular.js.map",
     "chunk/cpp.js",
     "chunk/cpp.js.map",
     "chunk/java.js",

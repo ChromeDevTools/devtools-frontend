@@ -4,6 +4,7 @@
   },
   "files": [
     "codemirror.next.js",
+    "chunk/angular.js",
     "chunk/codemirror.js",
     "chunk/cpp.js",
     "chunk/css.js",

@@ -49,6 +49,9 @@ export {highlightTree, Tag, tags} from '@lezer/highlight';
 export {LRParser} from '@lezer/lr';
 export {StyleModule} from 'style-mod';
 
+export function angular() {
+  return import('@codemirror/lang-angular');
+}
 export async function clojure() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clojure')).clojure);
 }

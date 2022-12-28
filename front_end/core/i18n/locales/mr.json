@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1} साठी आशय पार्स करता आला नाही: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools ला स्रोत नकाशा लोड करता आला नाही: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "रंगांधळेपणा"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript बंद करा"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL फॉरमॅट बंद करा"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "स्थानिक फाँट बंद करा"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript सुरू करा"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL फॉरमॅट सुरू करा"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "स्थानिक फाँट सुरू करा"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "नेटवर्क विनंती ब्लॉकिंग सुरू करा"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "DevTools ला रिमोट फाइल पाथवरून स्रोत नकाशे सारखे स्रोत लोड करण्याची अनुमती द्या. सुरक्षेशी संबंधित कारणांसाठी बाय डीफॉल्ट बंद केले आहे."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP फॉरमॅट सुरू करा"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF इमेज फॉरमॅट बंद करा"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL इमेज फॉरमॅट बंद करा"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "स्थानिक फाँट बंद करा"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "रेंडरिंग"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "तुम्ही टाइप करता तसे सुरू करा"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "तुम्ही टाइप करता तसे शोधा"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "तुम्ही टाइप करता तसे शोध बंद करा (शोधण्यासाठी एंटर दाबा)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "अनुमती असल्यास, या साइटवर जाहिराती दाखवा"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "मॅनिफेस्टमध्ये {PH1} {PH2} हा दिलेला नाही, त्याऐवजी {PH3} हा वापरला जातो. सध्याच्या ओळखीशी जुळणारा ॲप आयडी नमूद करण्यासाठी, {PH4} फील्ड {PH5} {PH6} वर सेट करा."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "अ‍ॅप मॅनिफेस्ट"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "'purpose: \"any maskable\"' सह आयकन घोषित करण्याला प्रोत्साहन दिले जात नाही. ते काही प्लॅटफॉर्मवर खूप जास्त किंवा खूप कमी पॅडिंगमुळे चुकीचे दिसू शकते."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "नवीन टीपची URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "मॅनिफेस्ट आढळला नाही"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "जुळणारा service worker आढळला नाही. तुम्हाला पेज रीलोड करावे लागू शकते किंवा सध्याच्या पेजसाठी service worker च्या व्याप्तीमध्ये व्याप्ती आणि मॅनिफेस्टमधील सुरू करा URL यांचा समावेश आहे हे तपासावे लागू शकते."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "पेज क्लायंटच्या प्रमाणपत्राची विनंती करत आहे, जे प्रीरेंडरिंगसारख्या लपवलेल्या पेजसाठी योग्य नाही."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "प्रीरेंडर केलेले पेज लोड केल्यानंतर क्रॉस-ओरिजिन URL वर नेव्हिगेट केले. सध्या प्रीरेंडरिंग क्रॉस-ओरिजिन पेजना अनुमती नाही."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "क्रॉस-ओरिजिन URL वर रीडिरेक्ट केलेली URL प्रीरेंडर करण्याचा प्रयत्न केला. सध्या प्रीरेंडरिंग क्रॉस-ओरिजिन पेजना अनुमती नाही."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "डेटा सेव्हर सुरू केले आहे"
   },
@@ -3936,27 +3900,6 @@
     "message": "मालकाचे मूळ"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "शेअर केलेले स्टोरेज"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "निर्मिती"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "नोंदी"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "लांबी"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "मेटाडेटा"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ओरिजिन"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "बजेट"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "शेअर केलेले स्टोरेज"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "प्रिंट पॉपअप विंडो उघडी आहे. पुढे सुरू ठेवण्यासाठी कृपया ती बंद करा."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "वरील परफॉर्मन्स मेट्रिक सिम्युलेट केलेली आहेत आणि ती या ट्रेसमध्ये आढळणार्‍या वेळांशी जुळणात नाहीत. तुम्हाला वेळा जुळायला हव्या असल्यास, \"लाइटहाउस सेटिंग्ज\" मध्ये सिम्युलेट केलेले थ्रॉटलिंग बंद करा."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "मूळ ट्रेस पहा"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "ट्रेस पहा"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(नवीन अहवाल)"
   },
@@ -6732,7 +6666,7 @@
     "message": "CPU थ्रॉटलिंग सुरू केले आहे"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1}× स्लोडाउन"
+    "message": "{PH1}× कमी वेगाने"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "डीफॉल्ट मूल्य ओलांडल्यामुळे सिस्टीमच्या परफॉर्मन्सचा दर्जा कमी होऊ शकतो."
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "विनंतीच्या 'कुकी' हेडरमध्ये सर्व्हरला पाठवल्या गेलेल्या कुकी"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "अधिक जाणून घ्या"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "समस्या असलेल्या प्रतिसाद कुकी"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "फिल्टर आउट केलेल्या कुकी दाखवा"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "या साइटवर दुसर्‍या विभाजनात या विनंतीसह न पाठवलेल्या कुकी आहेत. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "या विनंतीमध्ये कुकी नाहीत."
@@ -8760,7 +8688,7 @@
     "message": "प्रोफायलिंगचा प्रकार निवडा"
   },
   "panels/profiler/ProfileLauncherView.ts | start": {
-    "message": "सुरू करा"
+    "message": "सुरुवात करा"
   },
   "panels/profiler/ProfileLauncherView.ts | stop": {
     "message": "थांबवा"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "क्यूबिक बेझिअर संपादक उघडा."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमध्ये सर्व आशय स्क्रिप्ट जोडा"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमध्ये स्क्रिप्ट जोडा"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "काही कॉल फ्रेममध्ये चेतावण्या आहेत"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीवर"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमधून सर्व आशय स्क्रिप्ट काढून टाका"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमधून काढून टाका"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "फ्रेम रीस्टार्ट करा"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "प्रिटी प्रिंट {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} ने डीबग माहितीद्वारे पुरवले)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "({PH1} मधून मॅप केलेला स्रोत)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "फाइलमधील सर्व ब्रेकपॉइंट बंद करा"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "बंद केलेले ब्रेकपॉइंट"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "स्थिती संपादित करा"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "फाइलमधील सर्व ब्रेकपॉइंट सुरू करा"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "सुरू केलेले ब्रेकपॉइंट"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "मिश्र"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "कॅच केलेल्या एक्सेप्शनवर थांबवा"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "एक्सेप्शनवर थांबवा"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "सर्व ब्रेकपॉइंट काढून टाका"
@@ -11577,7 +11478,7 @@
     "message": "स्थान"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
-    "message": "दीर्घ टास्क"
+    "message": "दीर्घकालीन टास्क"
   },
   "panels/timeline/TimelineUIUtils.ts | majorGc": {
     "message": "मोठे GC"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y ऑफसेट"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} परिभाषित केलेले नाही"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "रंगाचा फॉरमॅट बदलण्यासाठी शिफ्ट-क्लिक करा"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "झटपट उघडा सूचना"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (कंफर्म करण्यासाठी 'एंटर ' किंवा रद्द करण्यासाठी 'एस्केप' दाबा.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "उपलब्ध कमांड पाहण्यासाठी '?' टाइप करा"

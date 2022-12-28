@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Não foi possível analisar o conteúdo para {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "O DevTools não conseguiu carregar o mapa de origem: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Acromatopsia"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Desativar JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Desativar formato JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Desativar tipos de letra locais"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Ativar JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Ativar formato JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Ativar tipos de letra locais"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Ativar bloqueio de pedidos de rede"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Permitir que o DevTools carregue recursos, como mapas de origem, a partir de caminhos de ficheiros remotos. Por predefinição, esta opção está desativada por motivos de segurança."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Ativar formato WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Desativar formato de imagem AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Desativar formato de imagem JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Desativar tipos de letra locais"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderização"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Ativar a pesquisa à medida que escreve"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Pesquisar à medida que escreve"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Desativar a pesquisa à medida que escreve (premir Enter para pesquisar)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Mostrar anúncios neste site, se permitidos"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} não está especificado no manifesto. Em alternativa, é utilizado {PH3}. Para especificar um ID da app que corresponda à identidade atual, defina o campo {PH4} como {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Manifesto da app"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Não é aconselhável declarar um ícone com \"purpose: \"any maskable\"\". Provavelmente terá um aspecto incorreto em algumas plataformas devido a um preenchimento excessivo ou insuficiente."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Novo URL de nota"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Nenhum manifesto detetado."
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Nenhum service worker correspondente detetado. Poderá ter de atualizar a página ou verificar se o âmbito do service worker da página atual inclui o URL de início e o âmbito do manifesto."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "A página está a pedir o certificado de cliente, o que não é adequado para uma página oculta, como a pré-renderização."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "A página pré-renderizada navegou para um URL de origem cruzada após o carregamento. Atualmente, a pré-renderização de páginas de origem cruzada não é permitida."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Tentou pré-renderizar um URL que redirecionava para um URL de origem cruzada. Atualmente, a pré-renderização de páginas de origem cruzada não é permitida."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Poupança de dados ativada"
   },
@@ -3936,27 +3900,6 @@
     "message": "Origem do proprietário"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Armazenamento partilhado"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Criação"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Entradas"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Comprimento"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadados"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Origem"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Orçamento"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Armazenamento partilhado"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "Limpar armazenamento"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "Ambiente de trabalho"
+    "message": "Computador"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "Limitação das DevTools (avançado)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "A janela pop-up de impressão está aberta. Feche-a para continuar."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "As métricas de desempenho acima são simuladas e não irão corresponder aos tempos que se encontram neste rastreio. Desative a limitação simulada em \"Definições do Lighthouse\" se pretender que os tempos correspondam."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Ver rastreio original"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Ver rastreio"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(novo relatório)"
@@ -6930,7 +6864,7 @@
     "message": "Content-Encodings aceites"
   },
   "panels/network/NetworkConfigView.ts | caching": {
-    "message": "A colocar em cache…"
+    "message": "Colocação em cache"
   },
   "panels/network/NetworkConfigView.ts | clientHintsStatusText": {
     "message": "Agente do utilizador atualizado."
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies enviados para o servidor no cabeçalho \"cookie\" do pedido."
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Saiba mais"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Cookies de resposta com formato incorreto"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "mostrar cookies de pedido filtrados"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Este site tem cookies noutra partição que não foram enviados com este pedido. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Este pedido não tem cookies."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Abra o editor de Bézier cúbico."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Adicionar todos os scripts de conteúdo à lista de itens a ignorar"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Adicionar script à lista de itens a ignorar"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Alguns frames de chamadas têm avisos"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "na lista de itens a ignorar"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Remover todos os scripts de conteúdo da lista de itens a ignorar"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Remover da lista de itens a ignorar"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Reiniciar frame"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Aplicar estilos de formatação {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(fornecido através das informações de depuração por {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(origem mapeada de {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Desativar todos os pontos de interrupção no ficheiro"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Pontos de interrupção desativados"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Edite a condição"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Ativar todos os pontos de interrupção no ficheiro"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Pontos de interrupção ativados"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "mistos"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Pausar nas exceções capturadas"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Pausar nas exceções"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Remover todos os pontos de interrupção"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Compensação Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} não está definido."
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Prima a tecla Shift e clique para alterar o formato de cor"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Mensagem de abertura rápida"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Prima \"Enter\" para confirmar ou \"Escape\" para cancelar.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Escreva \"?\" para ver os comandos disponíveis"

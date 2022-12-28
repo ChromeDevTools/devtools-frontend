@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Не ўдалося правесці сінтаксічны аналіз для {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Інструментам распрацоўшчыка не ўдалося загрузіць карту зыходнага кода: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Поўная колеравая слепата"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Адключыць JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Адключыць фармат JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Адключыць лакальныя шрыфты"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Уключыць JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Уключыць фармат JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Уключыць лакальныя шрыфты"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Уключыць блакіроўку сеткавых запытаў"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Дазволіць інструментам \"DevTools\" загружаць такія рэсурсы, як карты зыходнага кода, са шляхоў да аддаленых файлаў. Стандартна гэта функцыя адключана з меркаванняў бяспекі."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Уключыць фармат WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Адключыць фармат відарысаў AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Адключыць фармат відарысаў JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Адключыць лакальныя шрыфты"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Візуалізацыя"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Уключыць пошук падчас набору"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Пошук падчас набору"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Адключыць пошук падчас набору (для пошуку трэба націскаць Увод)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Паказаць рэкламу на гэтым сайце (калі яна дазволена)"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} поле \"{PH2}\" не ўказана ў маніфесце, замест яго выкарыстоўваецца поле \"{PH3}\". Каб указаць ідэнтыфікатар праграмы, які ёй адпавядае, задайце ў полі \"{PH4}\" значэнне \"{PH5}\" {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Маніфест праграмы"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Абвяшчаць значок з атрыбутам purpose: \"any maskable\" не рэкамендуецца. На некаторых платформах ён можа выглядаць няправільна з-за занадта вялікіх або занадта маленькіх водступаў."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL-адрас новай нататкі"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Маніфест не знойдзены"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Адпаведны service worker не выяўлены. Магчыма, вам трэба перазагрузіць старонку або ўпэўніцца, што вобласць прымянення працэсу service worker для бягучай старонкі ахапляе вобласць прымянення і пачатковы URL-адрас з маніфеста."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Старонка запытвае сертыфікат кліента. У дачыненні да схаваных старонак (напрыклад, старонак у стане папярэдняй візуалізацыі) гэта працэдура не прымяняецца."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Пасля загрузкі папярэдне візуалізаванай старонкі для яе быў ажыццёўлены пераход на міждаменны URL-адрас. Папярэдняя візуалізацыя міждаменных старонак зараз забаронена."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Была ажыццёўлена спроба папярэдняй візуалізацыі URL-адраса, які перанакіроўваў на міждаменны URL-адрас. Папярэдняя візуалізацыя міждаменных старонак зараз забаронена."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Эканомія трафіка ўключана"
   },
@@ -3936,27 +3900,6 @@
     "message": "Паходжанне ўладальніка"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Абагуленае сховішча"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Стварэнне"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Запісы"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Даўжыня"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Метаданыя"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Паходжанне"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Бюджэт"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Абагуленае сховішча"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "Ачысціць сховішча"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "Настольны камп'ютар"
+    "message": "ПК"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "Рэгуляванне нагрузкі з дапамогай інструментаў распрацоўшчыка (для вопытных карыстальнікаў)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Адкрыта ўсплывальнае акно друку. Закрыйце яго, каб працягнуць."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Прыведзеныя вышэй паказчыкі прадукцыйнасці змадэліраваны і не будуць адпавядаць значэнням часу, якія знаходзяцца ў гэтай трасіроўцы. Калі вы хочаце, каб час супадаў, адключыце імітацыю рэгулявання нагрузкі ў наладах Lighthouse."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Паказаць даныя зыходнай трасіроўкі"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Праглядзець трасіроўку"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(новая справаздача)"
@@ -6723,7 +6657,7 @@
     "message": "Дадаць…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | addS": {
-    "message": "Дадаць {PH1}"
+    "message": "Дадаць: {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "Рэгуляванне нагрузкі ЦП"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Запісы cookie, якія былі адпраўлены на сервер у загалоўку \"cookie\" запыту"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Даведацца больш"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Запісы cookie у адказ маюць няправільны фармат"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "паказаць адфільтраваныя запісы cookie запыту"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "У іншым раздзеле гэтага сайта ёсць файлы cookie, якія не былі адпраўлены з гэтым запытам. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Гэты запыт не мае запісаў cookie."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Адкрыць рэдактар кубічных крывых Безье."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Дадаць усе сцэнарыі змесціва ў спіс ігнаравання"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Дадаць сцэнарый у ліст ігнаравання"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Некаторыя фрэймы выклікаў маюць заўвагі."
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "у спісе ігнаравання"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Выдаліць усе сцэнарыі змесціва са спіса ігнаравання"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Выдаліць са спіса ігнаравання"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Перазапусціць фрэйм"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Вывесці ў зручным фармаце файл \"{PH1}\""
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(забяспечваецца праз адладачную інфармацыю файлам {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(крыніца супастаўлена з {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl + Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Адключыць усе пункты прыпынення ў файле"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Адключаныя пункты прыпынення"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Змяніць умову"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Уключыць усе пункты прыпынення ў файле"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Уключаныя пункты прыпынення"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "камбінацыя"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Прыпыняць на апрацаваных выключэннях"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Прыпыняць на выключэннях"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Выдаліць усе пункты прыпынення"
@@ -12120,7 +12021,7 @@
     "message": "Уключыць асяроддзе віртуальнага аўтэнтыфікатара"
   },
   "panels/webauthn/WebauthnPane.ts | export": {
-    "message": "Экспарт"
+    "message": "Экспартаваць"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
     "message": "ID"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Зрух па восі Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "Функцыя \"{PH1}\" не вызначана"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Каб змяніць фармат колеру, націсніце кнопку мышы, утрымліваючы Shift"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Запыт хуткага адкрыцця"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Націсніце Enter, каб пацвердзіць, або Escape, каб скасаваць.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Увядзіце \"?\", каб пабачыць даступныя каманды"

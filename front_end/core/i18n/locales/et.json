@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Üksuse {PH1} sisu ei saanud sõeluda: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools ei saanud allika kaarti laadida: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Akromatopsia"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Keela JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Keela vorming JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Keela kohalikud fondid"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Luba JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Luba vorming JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Luba kohalikud fondid"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Luba võrgutaotluse blokeerimine"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Tööriistal DevTools lubatakse laadida ressursse (nt lähtekoodi kaarte) kaugfailide teede kaudu. Turvalisuse huvides on see vaikimisi keelatud."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Luba vorming WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Keela pildivorming AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Keela pildivorming JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Keela kohalikud fondid"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderdamine"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Luba otsing sisestamisel"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Otsing sisestamisel"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Keela otsing sisestamisel (otsimiseks peab vajutama sisestusklahvi)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Kuva sellel saidil reklaamid, kui see on lubatud"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "Üksust {PH1} {PH2} pole manifestis määratud, selle asemel kasutatakse üksust {PH3}. Selleks et määrata rakenduse ID, mis ühtiks praeguse identiteediga, määrake välja {PH4} väärtuseks {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Rakenduse manifest"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Ikooni deklareerimist atribuudiga „purpose: \"any maskable\"“ ei soovitata. See näeb tõenäoliselt teatud platvormidel liiga vähese või liiga rohke täidise tõttu vale välja."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Uue märkuse URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Ühtki manifesti ei tuvastatud"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Ühtki sobivat üksust service worker ei leitud. Teil tuleb võib-olla leht uuesti laadida või veenduda, et praeguse lehe üksuse service worker ulatus hõlmaks manifestis märgitud ulatust ja alguse URL-i."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Leht taotleb kliendi sertifikaadi, mis ei ole peidetud lehe (näiteks eelrenderdamise lehe) jaoks sobiv."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Eelrenderdatud leht navigeeris pärast laadimist mitme lähtekohaga URL-ile. Praegu on mitme lähtekohaga lehtede eelrenderdamine keelatud."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Üritati eelrenderdada URL-i, mis suunas ümber mitme lähtekohaga URL-ile. Praegu on mitme lähtekohaga lehtede eelrenderdamine keelatud."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Andmemahu säästja on lubatud"
   },
@@ -3936,27 +3900,6 @@
     "message": "Omaniku lähtekoht"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Jagatud salvestusruum"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Loomise aeg"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Kirjed"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Pikkus"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metaandmed"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Päritolu"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Eelarve"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Jagatud salvestusruum"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "Tühjenda salvestusruum"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "Arvuti"
+    "message": "Lauaarvuti"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "Arendaja tööriistadega piiramine (täpsem)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Printimise hüpikaken on avatud. Jätkamiseks sulgege see."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Ülalolevad toimivusmõõdikud on simuleeritud ega kattu selles jäljes olevate ajastustega. Kui soovite, et ajastused kattuksid, keelake Lighthouse'i seadetes simuleeritud piiramine."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Kuva algne jälg"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Kuva jälg"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(uus aruanne)"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Küpsisefailid, mis saadeti serverisse taotluse päises „cookie“"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Lisateave"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Vigased vastuse küpsisefailid"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "kuva väljafiltreeritud päringu küpsisefailid"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Sellel saidil on teises sektsioonis küpsised, mida ei saadetud koos selle taotlusega. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Sellel taotlusel ei ole küpsisefaile."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Ava kuubipõhise Bézier' kõvera redaktor."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Lisa kõik sisuskriptid eiramisloendisse"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Lisa skript eiramisloendisse"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Mõnel kutseraamil on hoiatusi"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "eiramisloendis"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Eemalda kõik sisuskriptid eiramisloendist"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Eemalda eiramisloendist"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Taaskäivita raam"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Paranda faili {PH1} loetavust"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(esitatud faili {PH1} silumisteabe kaudu)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(lähtekood vastendati asukohast {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl + sisestusklahv"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Keela failis kõik katkestuspunktid"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Keelatud katkestuspunktid"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Tingimuse muutmine"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Luba failis kõik katkestuspunktid"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Lubatud katkestuspunktid"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "erinevad"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Peatu tabatud erandite puhul"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Peata erandite puhul"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Eemalda kõik murdepunktid"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y-nihe"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "Atribuut {PH1} ei ole defineeritud"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Värvivormingu muutmiseks vajutage tõstuklahvi ja klõpsake"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Kiiravamise viip"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Kinnitamiseks vajutage sisestusklahvi, tühistamiseks paoklahvi.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Saadaolevate käskude vaatamiseks sisestage „?“"

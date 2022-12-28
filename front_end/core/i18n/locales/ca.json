@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "No s'ha pogut analitzar el contingut per a {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools no ha pogut carregar el mapa d'origen: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Acromatòpsia"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Desactiva JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Desactiva el format JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Desactiva els tipus de lletra locals"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Activa JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Activa el format JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Activa tipus de lletra locals"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Activa el bloqueig de sol·licituds de xarxa"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Permet que DevTools carregui recursos, com ara mapes d'origen, de camins de fitxers remots. Estan desactivats de manera predeterminada per motius de seguretat."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Activa el format WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Desactiva el format d'imatge AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Desactiva el format d'imatge JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Desactiva els tipus de lletra locals"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderització"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Activa la cerca mentre escrius"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Cerca a mesura que escrius"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Desactiva la cerca a mesura que escrius (prem Retorn per cercar)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Mostra anuncis en aquest lloc web, si es permet"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} no s'especifica en el manifest; en lloc seu, s'utilitza {PH3}. Per especificar un identificador d'aplicació que correspongui a la identitat actual, estableix el camp {PH4} en {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Manifest de l'aplicació"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "No es recomana declarar una icona amb \"purpose: \"any maskable\"\". És probable que es mostri de manera incorrecta en algunes plataformes a causa de massa o massa poc farciment."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL de la nota nova"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "No s'ha detectat cap fitxer de manifest"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "No s'ha detectat cap service worker coincident. Pot ser que hagis de tornar a carregar la pàgina o comprovar que l'abast que té service worker per a la pàgina actual englobi l'abast i l'URL d'inici del fitxer de manifest."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "La pàgina sol·licita un certificat de client, que no és adequat per a una pàgina amagada, com ara una de renderització prèvia."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "La pàgina renderitzada prèviament ha navegat fins a un URL d'un altre origen després de carregar-se. Actualment, no es permet renderitzar prèviament pàgines d'altres orígens."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "S'ha provat de renderitzar prèviament un URL que redirigeix a un URL d'altres orígens. Actualment, no es permet renderitzar prèviament pàgines d'altres orígens."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Estalvi de dades activat"
   },
@@ -3936,27 +3900,6 @@
     "message": "Origen del propietari"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Emmagatzematge compartit"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Creació"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Entrades"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Llargada"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadades"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Origen"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Pressupost"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Emmagatzematge compartit"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "Esborra emmagatzematge"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "Escriptori"
+    "message": "Ordinador"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "Limitació de DevTools (opció avançada)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "La finestra emergent d'impressió està oberta. Tanca-la per continuar."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Les mètriques de rendiment anteriors són simulades i no coincidiran amb els temps que es troben en aquesta traça. Si vols que els temps coincideixin, desactiva la limitació simulada a Configuració de Lighthouse."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Mostra la traça original"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Mostra la traça"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(informe nou)"
@@ -6732,7 +6666,7 @@
     "message": "La limitació de la CPU està activada"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1} × alentiment"
+    "message": "{PH1} vegades més lenta"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "Superar el valor predeterminat pot empitjorar el rendiment del sistema."
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Galetes que s'han enviat al servidor a la capçalera \"cookie\" de la sol·licitud"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Més informació"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Galetes de resposta amb un format incorrecte"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "mostra les galetes de sol·licitud filtrades"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Aquest lloc web té galetes en una altra partició que no s'han enviat amb aquesta sol·licitud. {PH1}."
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Aquesta sol·licitud no té cap galeta."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Obre l'editor de cubic-bezier."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Afegeix tots els scripts de contingut a la llista d'elements ignorats"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Afegeix un script per ignorar la llista"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Alguns marcs de trucada tenen advertiments"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "a la llista d'elements ignorats"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Suprimeix tots els scripts de contingut de la llista d'elements ignorats"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Suprimeix de la llista d'elements ignorats"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Reinicia el marc"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Aplica estils de format a {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(proporcionat a través de la informació de depuració de {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(font assignada des de: {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Retorn"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Desactiva tots els punts de ruptura del fitxer"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Punts de ruptura desactivats"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Edita la condició"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Activa tots els punts de ruptura del fitxer"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Punts de ruptura activats"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "combinats"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Posa en pausa a les excepcions preses"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "En pausa a les excepcions"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Suprimeix tots els punts de ruptura"
@@ -11115,7 +11016,7 @@
     "message": "Mostra la cronologia de la memòria"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Mostra les dades vitals del lloc web"
+    "message": "Mostra les dades vitals web"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} s"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Òfset Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} no està definit"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Prem Maj i fes clic per canviar el format de color"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Sol·licitud d'obertura ràpida"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Prem Retorn per confirmar o Escapada per cancel·lar)."
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Escriu \"?\" per veure les ordres disponibles"

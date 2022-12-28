@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Ekki var hægt að þátta efni fyrir {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Forritunartólum tókst ekki að hlaða inn kóðavörpun: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Allitblinda"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Gera JavaScript óvirkt"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Gera JPEG XL snið óvirkt"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Gera staðbundnar leturgerðir óvirkar"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Kveikja á JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Virkja JPEG XL-snið"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Virkja staðbundnar leturgerðir"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Kveikja á útilokun netbeiðna"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Leyfa DevTools að hlaða gögnum á borð við upprunavarpanir frá fjartengdum skráaslóðum. Slökkt sjálfkrafa af öryggisástæðum."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Virkja WebP-snið"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Gera myndasnið AVIF óvirkt"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Gera JPEG XL myndasnið óvirkt"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Gera staðbundnar leturgerðir óvirkar"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Teiknun"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Kveikja á leit á meðan þú skrifar"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Leita á meðan þú skrifar"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Slökkva á leit á meðan þú skrifar (ýttu á „Enter“ til að leita)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Birta auglýsingar á þessu vefsvæði ef það er leyft"
@@ -2169,7 +2145,7 @@
     "message": "Hreinsa allt"
   },
   "panels/animation/AnimationTimeline.ts | pause": {
-    "message": "Gera hlé"
+    "message": "Hlé"
   },
   "panels/animation/AnimationTimeline.ts | pauseAll": {
     "message": "Gera hlé á öllu"
@@ -2233,9 +2209,6 @@
   },
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} er ekki tilgreint í upplýsingaskránni. {PH3} er notað þess í stað. Stilltu reitinn {PH4} á {PH5} {PH6} til að tilgreina auðkenni forrits sem passar við núverandi auðkenni."
-  },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Upplýsingaskrá forrits"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Ekki er mælt með að skilgreina tákn með „purpose: \"any maskable\"“. Líklegt er að slíkt birtist ekki rétt á tilteknum verkvöngum vegna of margra eða of fárra auðra bila."
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Vefslóð nýrrar glósu"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Engin upplýsingaskrá fannst"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Samsvarandi service worker fannst ekki. Þú gætir þurft að endurhlaða síðuna eða ganga úr skugga um að gildissvið service worker fyrir síðuna nái utan um svið og upphafsvefslóð úr upplýsingaskránni."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Síðan biður um biðlaravottorð sem hentar ekki fyrir falda síðu eins og forteiknun."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Forteiknaða síðan fletti yfir á vefslóð, þvert á uppruna, eftir að henni var hlaðið. Forteiknun síða þvert á uppruna er ekki leyfð sem stendur."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Reynt var að forteikna vefslóð sem framsendi á vefslóð þvert á uppruna. Forteiknun síða þvert á uppruna er ekki leyfð sem stendur."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Kveikt á gagnasparnaði"
   },
@@ -3936,27 +3900,6 @@
     "message": "Uppruni eiganda"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Samnýtt geymslurými"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Búið til"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Færslur"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Lengd"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Lýsigögn"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Uppruni"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Kostnaðarhámark"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Samnýtt geymslurými"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Sprettigluggi fyrir prentun er opinn. Lokaðu honum til að halda áfram."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Afkastatölfræðin hér að ofan er fengin með hermilíkani og passar ekki við tímasetningarnar í þessari rakningu. Slökktu á bandvíddartakmörkun í stillingum Lighthouse ef þú vilt að tímasetningarnar stemmi."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Skoða upprunalega rakningu"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Skoða rakningu"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(ný skýrsla)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Fótspor sem send voru til þjónsins í hausnum „cookie“ í beiðninni"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Nánar"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Gölluð fótspor í svari"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "sýna fótspor sem voru síuð úr beiðni"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Þetta vefsvæði er með fótspor í annarri sneið, sem voru ekki send með þessari beiðni. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Þessi beiðni inniheldur engin fótspor."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Opna cubic bezier-ritil."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Setja allar efnisskriftur á hunsunarlista"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Setja skriftu á hunsunarlista"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Sumir kallrammar hafa viðvaranir"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "á hunsunarlista"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Fjarlægja allar efnisskriftur af hunsunarlista"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Fjarlægja af hunsunarlista"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Endurræsa ramma"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Fagurprentun {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(látið í té með villuleitarupplýsingum af {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(uppruna varpað frá {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Slökkva á öllum stopppunktum í skrá"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Óvirkir stopppunktar"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Breyta skilyrði"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Virkja alla stopppunkta í skrá"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Virkir stopppunktar"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "blandað"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Gera hlé við fangaðar undantekningar"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Gera hlé við undantekningar"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Fjarlægja alla stopppunkta"
@@ -11562,7 +11463,7 @@
     "message": "Rót uppsetningar"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "Færsla uppsetningar"
+    "message": "Uppsetningarhliðrun"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Frekari upplýsingar"
@@ -11577,7 +11478,7 @@
     "message": "Staður"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
-    "message": "Langt verk"
+    "message": "Langvarandi verk"
   },
   "panels/timeline/TimelineUIUtils.ts | majorGc": {
     "message": "Stór GC-köll"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y-hliðrun"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} er ekki skilgreint"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Haltu inni Shift og smelltu til að breyta litasniði"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Kvaðning flýtiopnunar"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Ýttu á „Enter“ til að staðfesta eða „Escape“ til að hætta við)."
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Sláðu inn „?“ til að sjá tiltækar skipanir"

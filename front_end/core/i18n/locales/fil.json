@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Hindi ma-parse ang content para sa {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Hindi na-load ng DevTools ang source map: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsia"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "I-disable ang JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "I-disable ang format na JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "I-disable ang mga lokal na font"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "I-enable ang JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "I-enable ang format na JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "I-enable ang mga lokal na font"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "I-enable ang pag-block ng kahilingan sa network"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Payagan ang DevTools na mag-load ng mga resource, tulad ng mga source map, mula sa mga remote na path ng file. Naka-disable bilang default para sa mga layuning panseguridad."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "I-enable ang format na WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "I-disable ang format ng larawan na AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "I-disable ang format ng larawan na JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "I-disable ang mga lokal na font"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Pag-render"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "I-enable ang maghanap habang nagta-type ka."
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Maghanap habang nagta-type ka"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "I-disable ang paghahanap habang nagta-type ka (pindutin ang Enter para maghanap)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Magpakita ng mga ad sa site na ito, kung pinapayagan"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "Hindi tinutukoy ang {PH1} {PH2} sa manifest, sa halip ay {PH3} ang ginagamit. Para tumukoy ng App Id na tumutugma sa kasalukuyang pagkakakilanlan, itakda ang field ng {PH4} sa {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Manifest ng App"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Hindi iminumungkahi ang pag-declare ng icon na may 'purpose: \"any maskable\".' Posibleng magmukhang may mali rito sa ilang platform dahil sa napakarami o napakakaunting padding."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL ng bagong tala"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Walang natukoy na manifest"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Walang na-detect na magkatugmang service worker. Posibleng kailanganin mong i-reload ang page, o tingnan kung nakapaloob sa saklaw ng service worker para sa kasalukuyang page ang saklaw at start URL mula sa manifest."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Ang page ay humihiling ng client cert, na hindi naaangkop para sa nakatagong page gaya ng pag-prerender."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Ang na-prerender na page ay nag-navigate sa isang cross-origin URL pagkatapos mag-load. Kasalukuyang hindi pinapayagan ang pag-prerender ng mga cross-origin na page."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Nagtangkang mag-prerender ng URL na nag-redirect sa isang cross-origin URL. Kasalukuyang hindi pinapayagan ang pag-prerender ng mga cross-origin na page."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Naka-enable ang Data saver"
   },
@@ -3936,27 +3900,6 @@
     "message": "Origin ng May-ari"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Naka-share na Storage"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Paggawa"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Mga Entry"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Haba"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Origin"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Badyet"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Naka-share na Storage"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Nakabukas ang window ng popup sa pag-print. Pakisara ito para magpatuloy."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Naka-simulate ang mga sukatan ng performance sa itaas at hindi tutugma ang mga ito sa mga oras na makikita sa trace na ito. I-disable ang naka-simulate na pag-throttle sa \"Mga Setting ng Lighthouse\" kung gusto mong magtugma ang mga oras."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Tingnan ang Orihinal na Trace"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Tingnan ang Trace"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(bagong ulat)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies na ipinadala sa server sa 'cookie' na header ng kahilingan"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Matuto pa"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Mali ang Cookies ng Sagot"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ipakita ang na-filter na cookies ng kahilingan"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "May cookies ang site na ito sa ibang partition na hindi naipadala kasama ng kahilingang ito. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Walang cookies ang kahilingang ito."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Buksan ang cubic bezier editor."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Idagdag ang lahat ng script ng content sa listahan ng babalewalain"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Magdagdag ng script sa listahan ng babalewalain"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "May mga babala ang ilang frame ng tawag"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "nasa listahan ng babalewalain"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Alisin ang lahat ng script ng content sa listahan ng babalewalain"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Alisin sa listahan ng babalewalain"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "I-restart ang frame"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "I-pretty print ang {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(ibinigay sa pamamagitan ng impormasyon sa pag-debug ng {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(na-mapa ang source mula sa {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "I-disable ang lahat ng breakpoint sa file"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Mga naka-disable na breakpoint"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "I-edit ang kundisyon"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "I-enable ang lahat ng breakpoint sa file"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Mga naka-enable na breakpoint"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "halo-halo"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Mag-pause sa mga na-catch na exception"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Mag-pause sa mga exception"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Alisin ang lahat ng breakpoint"
@@ -11562,7 +11463,7 @@
     "message": "Root ng layout"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "Pagbabago ng Layout"
+    "message": "Pagbabago sa Layout"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Matuto pa"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y offset"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "Hindi tinukoy ang {PH1}"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Pindutin ang Shift at mag-click para baguhin ang format ng kulay"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Prompt sa mabilisang pagbubukas"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Pindutin ang 'Enter' para kumpirmahin o ang 'Escape' para kanselahin.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "I-type ang '?' para makita ang mga available na command"

@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1}-ისთვის კონტენტის ანალიზი ვერ მოხერხდა: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools-მა ვერ ჩატვირთა წყაროს რუკა: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "აქრომატოფსია"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript-ის გათიშვა"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL ფორმატის გათიშვა"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "ადგილობრივი შრიფტების გათიშვა"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript-ის ჩართვა"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL ფორმატის ჩართვა"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "ადგილობრივი შრიფტების ჩართვა"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ქსელის მოთხოვნების დაბლოკვის ჩართვა"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "მიეცით საშუალება DevTools-ს, ჩატვირთოს რესურსები, როგორიცაა, მაგალითად, წყაროების რუკები ფაილების დისტანციური მდებარეობებიდან. უსაფრთხოების მოსაზრებებიდან გამომდინარე, აღნიშნული ნაგულისხმევად გათიშულია."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ფორმატის ჩართვა"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "სურათების AVIF ფორმატის გათიშვა"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "სურათების JPEG XL ფორმატის გათიშვა"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "ადგილობრივი შრიფტების გათიშვა"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "რენდერი"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "ტექსტის აკრეფის პარალელურად ძიების ჩართვა"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "ძიება ტექსტის აკრეფის პარალელურად"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "ტექსტის აკრეფის პარალელურად ძიების გათიშვა (ძიებისთვის Enter-ზე დაჭერა)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "ამ საიტზე რეკლამის ჩვენება (თუ დაშვებულია)"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} არ არის განსაზღვრული აღწერის ფაილში, ამიტომ, სანაცვლოდ, გამოყენებულია {PH3}. ამჟამინდელი აპის შესატყვისი ID რომ განსაზღვროთ, „{PH4}“-ს ველში მიუთითეთ „{PH5}“ {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "აპის აღწერის ფაილი"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "ხატულის „purpose: \"any maskable\"“-ით გამოცხადება არ არის რეკომენდებული. მოსალოდნელია, რომ ის არასწორად გამოჩნდება ზოგიერთ პლატფორმაზე არასაკმარისი ან ზედმეტი დაშორების გამო."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "ახალი ჩანიშვნის URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "აღწერის ფაილი აღმოჩენილი არ არის"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "შესატყვისი service worker აღმოჩენილი არ არის. შესაძლოა, დაგჭირდეთ გვერდის გადატვირთვა, ან იმის შემოწმება, რომ service worker-ის სფერო ამჟამინდელი გვერდისთვის დაერთვის აღწერის ფაილში მითითებულ სფეროსა და საწყის URL-ს."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "გვერდი ითხოვს კლიენტის სერტიფიკატს, რომელიც არ არის შესაფერისი დამალული გვერდისთვის, როგორიცაა წინასწარი ვიზუალიზაცია."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "წინასწარ ვიზუალიზებული გვერდი ჩატვირთვის შემდეგ გადავიდა ჯვარედინი წარმოშობის URL-ზე. ჯვარედინი წარმოშობის გვერდების წინასწარი ვიზუალიზაცია ამჟამად დაუშვებელია."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "განხორციელდა ისეთი URL-ის წინასწარი ვიზუალიზაციის მცდელობა, რომელიც გადამისამართებულია ჯვარედინი წარმოშობის URL-ზე. ჯვარედინი წარმოშობის გვერდების წინასწარი ვიზუალიზაცია ამჟამად დაუშვებელია."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "მონაცემთა დამზოგველი ჩართულია"
   },
@@ -3936,27 +3900,6 @@
     "message": "მფლობელის წყარო"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "საზიარო მეხსიერება"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "შექმნა"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "შენატანები"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "სიგრძე"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "მეტამონაცემები"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "წყარო"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "ბიუჯეტი"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "საზიარო მეხსიერება"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "გახსნილია ბეჭდვის ამომხტარი ფანჯარა. გასაგრძელებლად დახურეთ ის."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "წარმადობასთან დაკავშირებული მეტრიკა, რომელიც მოცემულია ზემოთ, სიმულირებულია და არ დაემთხვევა ამ ტრასირებაში მითითებულ დროს. თუ გსურთ, რომ დრო ემთხვეოდეს, გათიშეთ სიმულირებული რეგულირება „შუქურას პარამეტრებიდან“."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "თავდაპირველი ტრასირების ნახვა"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "ტრასირების ნახვა"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(ახალი მოხსენება)"
   },
@@ -6723,7 +6657,7 @@
     "message": "დამატება…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | addS": {
-    "message": "დაემატოს {PH1}"
+    "message": "{PH1}-ის დამატება"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU-ს რეგულირება"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "ქუქი-ჩანაწერები გაეგზავნა სერვერს მოთხოვნის „ქუქი-ჩანაწერის“ ჰედერში"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "შეიტყვეთ მეტი"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "რეაგირების არასწორად ფორმირებული ქუქი-ჩანაწერები"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "მოთხოვნების გაფილტრული ქუქი-ჩანაწერების ჩვენება"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "ამ საიტს ქუქი-ჩანაწერები აქვს სხვა დანაყოფში, რომლის შესახებაც ინფორმაცია არ მიგვიღია ამ მოთხოვნასთან ერთად. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "ამ მოთხოვნას ქუქი-ჩანაწერები არ აქვს."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "ბეზიეს კუბური რედაქტორის გახსნა."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "კონტენტის ყველა სცენარის დამატება იგნორირებულთა სიაში"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "სცენარის დამატება იგნორირებულთა სიაში"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "გამოძახების ზოგიერთი ფრეიმი შეიცავს გაფრთხილებებს"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "იგნორებულთა სიაშია"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "კონტენტის ყველა სცენარის ამოშლა იგნორირებულთა სიიდან"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "იგნორირებულთა სიიდან ამოშლა"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "ფრეიმის ხელახლა გაშვება"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "კოდის ფორმატირება {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(უზრუნველყოფილია გამართვის ინფორმაციის მეშვეობით {PH1}-დან)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(წყაროს რუკა შექმნილია {PH1}-დან)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ფაილში წყვეტის ყველა წერტილის გათიშვა"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "წყვეტის გათიშული წერტილები"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "მდგომარეობის რედაქტირება"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ფაილში წყვეტის ყველა წერტილის ჩართვა"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "წყვეტის ჩართული წერტილები"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "შერეული"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "გამოვლენილ გამონაკლისებზე დაპაუზება"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "გამონაკლისებზე დაპაუზება"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "წყვეტის ყველა წერტილის ამოშლა"
@@ -11562,7 +11463,7 @@
     "message": "განლაგების ძირი"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "განლაგების წანაცვლება"
+    "message": "განლაგების შეცვლა"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "შეიტყვეთ მეტი"
@@ -12120,7 +12021,7 @@
     "message": "ვირტუალური ავთენტიფიკატორის გარემოს ჩართვა"
   },
   "panels/webauthn/WebauthnPane.ts | export": {
-    "message": "ექსპორტირება"
+    "message": "ექსპორტი"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
     "message": "ID"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "წანაცვლება Y-ღერძზე"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} არ არის განსაზღვრული"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "ფერთა ფორმატის შესაცვლელად დააწკაპუნეთ Shift-ზე დაჭერის პარალელურად"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "სწრაფი გახსნის მოთხოვნა"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (დასადასტურებლად დააჭირეთ Enter-ს, ხოლო გასაუქმებლად — Escape-ს)."
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "ხელმისაწვდომი ბრძანებების სანახავად აკრიფეთ „?“"

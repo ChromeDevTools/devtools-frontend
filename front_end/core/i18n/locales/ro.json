@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Nu s-a putut analiza conținutul pentru {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools nu a încărcat harta sursă: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Acromatopsie"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Dezactivează JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Dezactivează formatul JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Dezactivează fonturile locale"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Activează JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Activează formatul JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Activează fonturile locale"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Activează blocarea solicitărilor din rețea"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Permite ca DevTools să încarce resurse, cum ar fi hărțile sursă, din căi de fișiere de la distanță. Opțiune dezactivată în mod prestabilit din motive de securitate."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Activează formatul WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Dezactivează formatul de imagine AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Dezactivează formatul de imagine JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Dezactivează fonturile locale"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Redare"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Activează căutarea pe măsură ce introduci text"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Caută pe măsură ce introduci text"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Dezactivează căutarea pe măsură ce tastezi (apasă pe Enter pentru a căuta)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Afișează anunțuri pe acest site, dacă sunt permise"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} nu este specificat în manifest; se folosește {PH3}. Ca să specifici un cod de aplicație care corespunde identității actuale, setează câmpul {PH4} la {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Manifestul aplicației"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Nu încurajăm declararea unei pictograme cu purpose: \"any maskable\". Este posibil să pară incorect pe unele platforme deoarece există prea multe sau prea puține chenare interioare."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Adresa URL a notei noi"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Niciun manifest detectat"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Nu s-a detectat niciun service worker care corespunde. Poate fi necesar să reîncarci pagina sau să verifici dacă aria de acoperire asociată cu service worker pentru pagina actuală include aria de acoperire și adresa URL inițială din manifest."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Pagina solicită un certificat de client, care nu este adecvat pentru o pagină ascunsă, cum ar fi redarea anticipată."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Pagina încărcată anterior a navigat la o adresă URL cu origini multiple după încărcare. Redarea anticipată a paginilor cu mai multe origini nu este permisă momentan."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "S-a încercat preluarea unei adrese URL care a redirecționat către o adresă URL cu origini multiple. Redarea anticipată a paginilor cu mai multe origini nu este permisă momentan."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Economizorul de date este activat"
   },
@@ -3936,27 +3900,6 @@
     "message": "Originea proprietarului"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Spațiu de stocare comun"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Creare"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Intrări"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Lungime"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadate"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Origine"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Buget"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Spațiu de stocare comun"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Fereastra pop-up de printare este deschisă. Închide-o pentru a continua."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Valorile de performanță de mai sus sunt simulate și nu se vor potrivi cu momentele din această urmă. Dezactivează limitarea simulată din Setări Lighthouse dacă vrei ca momentele să se potrivească."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Vezi urma inițială"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Vezi urma"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(raport nou)"
   },
@@ -6732,7 +6666,7 @@
     "message": "Limitarea CPU este activată"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "Încetinește redarea de {PH1} ori"
+    "message": "Încetinire {PH1}x"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "Depășirea valorii prestabilite poate reduce performanța sistemului."
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookie-uri care au fost trimise la server în antetul cookie al solicitării"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Află mai multe"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Cookie-uri de răspuns formate greșit"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "afișează cookie-urile cu solicitări filtrate"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Site-ul conține cookie-uri în altă partiție, care nu au fost trimise împreună cu această solicitare. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Această solicitare nu conține cookie-uri."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Deschide editorul Curbă Bezier."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Adaugă toate scripturile de conținut pe lista de ignorat"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Adaugă scriptul pe lista de ignorat"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Unele cadre de apelare au avertismente"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "pe lista de ignorat"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Elimină toate scripturile de conținut din lista de ignorat"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Elimină din lista de ignorat"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Repornește cadrul"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Aplică o formatare stilizată pentru {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(oferit în informațiile de remediere a erorilor de la {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(sursă mapată de pe {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Dezactivează toate punctele de întrerupere din fișier"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Puncte de întrerupere dezactivate"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Editează condiția"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Activează toate punctele de întrerupere din fișier"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Puncte de întrerupere activate"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "mixtă"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Întrerupe la excepțiile detectate"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Întrerupe la excepții"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Elimină toate punctele de întrerupere"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Decalajul Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "Nu s-a definit {PH1}"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Shift + clic pentru a schimba formatul de culoare"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Solicitare cu deschidere rapidă"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Apasă pe Enter pentru a confirma sau pe Escape pentru a anula.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Introdu ? pentru a vedea comenzile disponibile"

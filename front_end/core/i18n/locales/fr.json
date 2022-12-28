@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Impossible d'analyser le contenu de {PH1} : {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Échec du chargement de la carte source par les Outils de développement : {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsie"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Désactiver JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Désactiver le format JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Désactiver les polices locales"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Activer JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Activer le format JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Activer les polices locales"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Activer le blocage de requête réseau"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Autoriser DevTools à charger des ressources, comme des cartes sources, à partir de chemins d'accès aux fichiers distants. Désactivé par défaut pour des raisons de sécurité."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Activer le format WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Désactiver le format d'image AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Désactiver le format d'image JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Désactiver les polices locales"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Affichage"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Activer l'affichage instantané des résultats"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Affichage instantané des résultats"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Désactiver l'affichage instantané des résultats (appuyer sur \"Entrée\" pour rechercher)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Diffuser des annonces sur ce site (si autorisé)"
@@ -2169,7 +2145,7 @@
     "message": "Tout effacer"
   },
   "panels/animation/AnimationTimeline.ts | pause": {
-    "message": "Mettre en pause"
+    "message": "Suspendre"
   },
   "panels/animation/AnimationTimeline.ts | pauseAll": {
     "message": "Tout suspendre"
@@ -2233,9 +2209,6 @@
   },
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} n'est pas indiqué dans le fichier manifeste. {PH3} est utilisé à la place. Pour spécifier un ID d'appli correspondant à l'identité actuelle, définissez le champ {PH4} sur {PH5} {PH6}."
-  },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Fichier manifeste d'appli"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Définir une icône sur \"purpose: \"any maskable\"\" est déconseillé. Elle risque de mal s'afficher sur certaines plates-formes en raison d'une marge intérieure trop petite ou trop grande."
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL de nouvelle note"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Aucun fichier manifeste détecté"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Aucun service worker correspondant détecté. Vous devrez peut-être actualiser la page ou vérifier que le champ d'application du service worker pour la page actuelle inclut le champ d'application et l'URL de démarrage du fichier manifeste."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "La page demande un certificat client, ce qui n'est pas adapté à une page masquée comme le prérendu."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "La page prérendue a redirigé l'utilisateur vers une URL multi-origine après le chargement. Le prérendu de pages multi-origines n'est pas autorisé actuellement."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Tentative de prérendu d'une URL redirigeant vers une URL d'origine différente. Le prérendu de pages multi-origines n'est pas autorisé actuellement."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Économiseur de données activé"
   },
@@ -3936,27 +3900,6 @@
     "message": "Origine du propriétaire"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Stockage partagé"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Création"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Participations"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Longueur"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Métadonnées"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Origine"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Budget"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Stockage partagé"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -5460,10 +5403,10 @@
     "message": "Modifier…"
   },
   "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeature": {
-    "message": "L'indicateur \"Experimental Web Platform Feature\" est activé. Cliquez ici pour le désactiver."
+    "message": "Le flag \"Experimental Web Platform Feature\" est activé. Cliquez ici pour le désactiver."
   },
   "panels/emulation/DeviceModeToolbar.ts | experimentalWebPlatformFeatureFlag": {
-    "message": "L'indicateur \"Experimental Web Platform Feature\" est désactivé. Cliquez ici pour l'activer."
+    "message": "Le flag \"Experimental Web Platform Feature\" est désactivé. Cliquez ici pour l'activer."
   },
   "panels/emulation/DeviceModeToolbar.ts | fitToWindowF": {
     "message": "Ajuster à la fenêtre ({PH1} %)"
@@ -6234,7 +6177,7 @@
     "message": "Vider l'espace de stockage"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "Bureau"
+    "message": "Ordinateur"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "Limitation des outils de développement (avancée)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Le pop-up d'impression est ouvert. Veuillez le fermer pour continuer."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Les statistiques de performances ci-dessus sont simulées et ne correspondent pas aux temps trouvés dans cette trace. Si vous voulez que les temps correspondent, désactivez la limitation simulée dans \"Paramètres Lighthouse\"."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Afficher la trace d'origine"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Afficher la trace"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(nouveau rapport)"
@@ -6957,7 +6891,7 @@
     "message": "Utiliser la valeur par défaut du navigateur"
   },
   "panels/network/NetworkConfigView.ts | userAgent": {
-    "message": "Agent utilisateur"
+    "message": "User-agent"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
     "message": "Chrome a utilisé une autre tâche, car elle a remporté la mise en concurrence avec une tâche principale."
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies envoyés au serveur dans l'en-tête \"cookie\" de la requête"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "En savoir plus"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Cookies de réponse non valides"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "afficher les cookies de requête filtrés"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Ce site contient des cookies dans une autre partition, qui n'ont pas été envoyés avec cette requête. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Cette requête ne contient aucun cookie."
@@ -7887,7 +7815,7 @@
     "message": "Filtrer"
   },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Longueur"
+    "message": "Durée"
   },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "N/A"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Ouvrez l'éditeur de courbe de Bézier cubique."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Ajouter tous les scripts de contenu à la liste des éléments à ignorer"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Ajouter un script à la liste des éléments à ignorer"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Des avertissements existent pour certains frames d'appel"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "sur la liste des éléments à ignorer"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Supprimer tous les scripts de contenu de la liste des éléments à ignorer"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Supprimer de la liste des éléments à ignorer"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Redémarrer le frame"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Impression élégante de {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(fourni par les informations de débogage sur {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(source mappée à partir de {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Entrée"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Désactiver les points d'arrêt dans le fichier"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Points d'arrêt désactivés"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Modifier la condition"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Activer tous les points d'arrêt dans le fichier"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Points d'arrêt activés"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "mixte"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Suspendre sur les exceptions interceptées"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Suspendre sur les exceptions"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Supprimer tous les points d'arrêt"
@@ -11115,7 +11016,7 @@
     "message": "Afficher la chronologie de la mémoire"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Afficher les Signaux Web essentiels"
+    "message": "Afficher les Signaux Web"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} s"
@@ -11562,7 +11463,7 @@
     "message": "Racine de mise en page"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "Layout Shift"
+    "message": "Décalage de mise en page"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "En savoir plus"
@@ -11883,7 +11784,7 @@
     "message": "Temps d'attente pour le thread principal"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
-    "message": "Délai inactivité"
+    "message": "Délai d'inactivité"
   },
   "panels/timeline/TimelineUIUtils.ts | timerFired": {
     "message": "Minuteur déclenché"
@@ -12297,7 +12198,7 @@
     "message": "Afficher l'outil d'inspection de mémoire"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
-    "message": "Feedback"
+    "message": "Commentaires"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
     "message": "Fonctionnalité bêta"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Décalage axe Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} non défini"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Cliquez en maintenant la touche Maj enfoncée pour changer de format de couleurs"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Invite d'ouverture rapide"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Appuyez sur Entrée pour confirmer ou sur Échap pour annuler.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Appuyez sur \"?\" pour voir les commandes disponibles"

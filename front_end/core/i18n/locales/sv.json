@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Det gick inte att analysera innehåll för {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Verktyg för programmerare kunde inte läsa in SourceMap: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Akromatopsi"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Inaktivera JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Inaktivera JPEG XL-format"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Inaktivera lokala teckensnitt"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Aktivera JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Aktivera JPEG XL-format"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Aktivera lokala teckensnitt"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktivera blockering av nätverksbegäran"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Tillåt att DevTools läser in resurser, till exempel källkartor, från fjärrsökvägar. Inaktiverat som standard av säkerhetsskäl."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivera WebP-format"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Inaktivera bildformatet AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Inaktivera bildformatet JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Inaktivera lokala teckensnitt"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderar"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Aktivera funktionen Sök medan du skriver"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Sök medan du skriver"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Inaktivera funktionen Sök medan du skriver (tryck på Retur för att söka)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Visa annonser på den här webbplatsen om det tillåts"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} är inte ifyllt i manifestet. I stället används {PH3}. Om du vill ange ett app-id som matchar det aktuella id:t anger du värdet {PH5} {PH6} i fältet {PH4}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Appmanifest"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Att deklarera en ikon med purpose: \"any maskable\" rekommenderas inte. Det ser troligen inte rätt ut på vissa plattformar eftersom utfyllnaden blir för stor eller för liten."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Webbadress för ny anteckning"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Inget manifest påträffades"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Ingen matchande service worker registrerades. Du kanske måste läsa in sidan igen eller kontrollera att omfattning för service worker för den aktuella sidan inbegriper omfattningen och startwebbadressen i manifestet."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Sidan begär klientcertifikat, vilket inte är lämpligt för en dold sida, som en förrenderad sida."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Den förrenderade sidan navigerade till en webbadress med korsursprung efter inläsning. Förrendering av sidor med korsursprung tillåts inte för närvarande."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Ett försök gjordes att förrendera en webbadress som omdirigerade till en webbadress med korsursprung. Förrendering av sidor med korsursprung tillåts inte för närvarande."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Databesparing har aktiverats"
   },
@@ -3936,27 +3900,6 @@
     "message": "Ägarens ursprung"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Delat lagringsutrymme"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Skapad"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Poster"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Längd"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Ursprung"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Budget"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Delat lagringsutrymme"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Popup-fönstret för utskrift är öppet. Stäng det om du vill fortsätta."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Resultatmätvärdena ovan är simulerade och stämmer inte överens med tiderna som finns i detta spår. Inaktivera simulerad begränsning i Inställningar för Lighthouse om du vill att tiderna ska stämma överens."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Visa ursprungligt spår"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Visa spår"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(ny rapport)"
   },
@@ -6720,7 +6654,7 @@
     "message": "Förinställningar"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | add": {
-    "message": "Lägg till …"
+    "message": "Lägg till …"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | addS": {
     "message": "Lägg till {PH1}"
@@ -6732,7 +6666,7 @@
     "message": "CPU-begränsning har aktiverats"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1} × lägre hastighet"
+    "message": "{PH1} × lägre hastighet"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "Om du överskrider standardvärdet kan systemets prestanda försämras."
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies som skickades till servern i huvudet cookie för begäran"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Läs mer"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Svarscookies har fel format"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "visa bortfiltrerade cookies för begäran"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Den här webbplatsen har cookies i en annan partition som inte skickades med denna begäran. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Begäran har inga cookies."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Öppna redigerare för kubisk bezier."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Lägg till alla innehållsskript på ignoreringslistan"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Lägg till skript på ignoreringslistan"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Det finns varningar för vissa anropsramar"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "på ignoreringslistan"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Ta bort alla innehållsskript från ignoreringslistan"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Ta bort från ignoreringslistan"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Starta om bildruta"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Skriv ut {PH1} med indenterad kod"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(tillhandahölls via felsökningsinformation av {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(källan har mappats från {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Retur"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Inaktivera alla brytpunkter i filen"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Inaktiverade brytpunkter"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Redigera villkor"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Aktivera alla brytpunkter i filen"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Aktiverade brytpunkter"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "blandat"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Pausa vid påträffade undantag"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Pausa vid undantag"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Ta bort alla brytpunkter"
@@ -11115,7 +11016,7 @@
     "message": "Visa minnestidslinje"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Visa webbvärden"
+    "message": "Visa Webbvärden"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} sek"
@@ -11883,7 +11784,7 @@
     "message": "Väntetid för huvudtråd"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
-    "message": "Paus"
+    "message": "Tidsgräns"
   },
   "panels/timeline/TimelineUIUtils.ts | timerFired": {
     "message": "Timern har aktiverats"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y-förskjutning"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} har inte definierats"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Ändra färgformat genom att trycka på skift och klicka"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Öppna meddelande snabbt"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Tryck på Retur för att bekräfta eller Escape för att avbryta.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Skriv ? för att visa tillgängliga kommandon"

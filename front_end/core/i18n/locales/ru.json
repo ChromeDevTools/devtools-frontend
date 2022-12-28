@@ -450,7 +450,7 @@
     "message": "Загрузка {PH1} завершена: {PH2} ({PH3})."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "Медленная 3G-сеть"
+    "message": "3G (низкая скорость)"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "При сохранении файла cookie произошла неизвестная ошибка"
@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Не удалось выполнить синтаксический анализ контента для {PH1}: {PH2}."
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Не удалось загрузить карту исходного кода с помощью инструментов разработчика: {PH1}."
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ахроматопсия"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Отключить JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Отключить формат JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Не использовать шрифты на устройстве"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Включить JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Включить формат JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Включить шрифты на устройстве"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Включить блокировку сетевых запросов"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Разрешить DevTools загружать ресурсы, например карты исходного кода, из удаленных (не локальных) источников. По умолчанию этот параметр отключен из соображений безопасности."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Включить формат WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Отключить графический формат AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Отключить графический формат JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Не использовать шрифты на устройстве"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Отрисовка"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Включить поиск при вводе запроса"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Поиск при вводе запроса"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Отключить поиск при вводе запроса (для поиска нужно нажать Ввод)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Показать рекламу на этом сайте (если разрешено)"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} Поле {PH2} не указано в манифесте. Вместо него используется поле {PH3}. Чтобы указать идентификатор приложения, задайте для поля {PH4} значение \"{PH5} {PH6}\"."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Манифест приложения"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Не рекомендуется объявлять значок, у которого задано значение атрибута purpose: \"any maskable\". Скорее всего, это изображение будет некорректно показываться на некоторых платформах из-за слишком больших или маленьких полей."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL новой заметки"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Манифест не обнаружен"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Не обнаружено совпадающего объекта service worker. Перезагрузите страницу или убедитесь, что файлы service worker текущей страницы включают область действия и стартовый URL из манифеста."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Страница запрашивает сертификат клиента. Для скрытых страниц (например, предварительно отрисованных) эта процедура не применяется."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Предварительно отрисованная страница была загружена, после чего для нее выполнен переход по междоменному URL. Сейчас предварительная отрисовка междоменных страниц запрещена."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Не удалось предварительно отрисовать страницу, переход с которой выполняется на междоменный URL. Сейчас предварительная отрисовка междоменных страниц запрещена."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Экономия трафика включена."
   },
@@ -3936,27 +3900,6 @@
     "message": "Источник-владелец"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Общее хранилище"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Время создания"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Записи"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Длина"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Метаданные"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Источник"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Бюджет"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Общее хранилище"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "Очистить хранилище"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "Компьютер"
+    "message": "Версия для компьютера"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "Ограничение инструментов разработчика (для опытных пользователей)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Открыто всплывающее окно печати. Чтобы продолжить, закройте его."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Указанные выше показатели эффективности смоделированы и не будут совпадать с хронологией трассировки. Если вы хотите это изменить, отключите симуляцию ограничений в настройках инструмента Lighthouse."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Посмотреть оригинальную трассировку"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Посмотреть трассировку"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(новый отчет)"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Файлы cookie, которые были отправлены на сервер в заголовке cookie запроса"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Подробнее…"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Неверные файлы cookie ответов"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "Показать отфильтрованные файлы cookie запроса"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "В другом сегменте этого сайта сохранены файлы cookie, которые не были отправлены с этим запросом. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "У этого запроса нет файлов cookie."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Открыть редактор кривой Безье"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Добавить все скрипты для содержимого в список игнорируемых"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Добавить скрипт в список игнорируемых"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Для некоторых фреймов вызова есть предупреждения."
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "в списке игнорируемых"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Удалить все скрипты для содержимого из списка игнорируемых"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Удалить из списка игнорируемых"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Перезапустить фрейм"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Автоформатировать файл \"{PH1}\""
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(предоставлено через сведения для отладки, источник: {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(исходный код преобразован из {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl + Ввод"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Отключить все точки останова в файле"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Отключенные точки останова"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Изменить условие"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Включить все точки останова в файле"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Включенные точки останова"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "смешанные"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Приостанавливать на обнаруженных исключениях"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Приостанавливать на исключениях"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Удалить все точки останова"
@@ -11115,7 +11016,7 @@
     "message": "Показать хронологию памяти"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Показать набор Web Vitals"
+    "message": "Показать интернет-показатели"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} сек."
@@ -11562,7 +11463,7 @@
     "message": "Корневой макет"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "LayoutShift"
+    "message": "Смещение макета"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Подробнее…"
@@ -12297,7 +12198,7 @@
     "message": "Показать инспектор памяти"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
-    "message": "Отзыв"
+    "message": "Отправить отзыв"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
     "message": "Функция просмотра"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Смещение по оси Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "Элемент {PH1} не определен"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Чтобы изменить формат цвета, нажмите, удерживая клавишу Shift"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Быстрый доступ к текстовому полю"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Нажмите \"Ввод\" для подтверждения или Escape для отмены.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Чтобы увидеть доступные команды, введите знак вопроса (?)."

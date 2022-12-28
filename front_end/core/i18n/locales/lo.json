@@ -423,7 +423,7 @@
     "message": "Cross-Origin Read Blocking (CORB) ບລັອກຄຳຕອບຂ້າມຕົ້ນທາງ {PH1} ທີ່ມີປະເພດ MIME {PH2}. ກະລຸນາເບິ່ງ https://www.chromestatus.com/feature/5629709824032768 ສຳລັບລາຍລະອຽດເພີ່ມເຕີມ."
   },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "3G ໄວ"
+    "message": "3G ແບບໄວ"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "ບໍ່ມີເນື້ອຫາທີ່ສາມາດໃຊ້ໄດ້ສຳລັບຄຳຮ້ອງຂໍການກວດສອບລ່ວງໜ້າ"
@@ -450,7 +450,7 @@
     "message": "ໂຫຼດ {PH1} ແລ້ວໆ: {PH2} \"{PH3}\"."
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "3G ຊ້າ"
+    "message": "3G ແບບຊ້າ"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "ເກີດຂໍ້ຜິດພາດທີ່ບໍ່ຮູ້ຈັກຂຶ້ນໃນການຈັດເກັບຄຸກກີ້ນີ້."
@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "ບໍ່ສາມາດແຍກວິເຄາະເນື້ອຫາໄດ້ສຳລັບ {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools ໂຫຼດແຜນທີ່ແຫຼ່ງທີ່ມາບໍ່ສຳເລັດ: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "ຕາບອດສີທຸກສີ"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "ປິດການນຳໃຊ້ JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "ປິດການນຳໃຊ້ຮູບແບບ JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "ປິດການນຳໃຊ້ຟອນໃນເຄື່ອງ"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "ເປີດການນຳໃຊ້ JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "ເປິດການນຳໃຊ້ຮູບແບບ JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "ເປີດການນຳໃຊ້ຟອນໃນເຄື່ອງ"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ເປີດການນຳໃຊ້ການບລັອກຄຳຮ້ອງຂໍເຄືອຂ່າຍ"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "ອະນຸຍາດໃຫ້ DevTools ໂຫຼດຊັບພະຍາກອນ, ເຊັ່ນ: ແຜນທີ່ຕົ້ນສະບັບ, ຈາກເສັ້ນທາງໄຟລ໌ຣີໂໝດ. ປິດການນຳໃຊ້ຕາມຄ່າເລີ່ມຕົ້ນເນື່ອງຈາກເຫດຜົນດ້ານຄວາມປອດໄພ."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "ເປິດການນຳໃຊ້ຮູບແບບ WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "ປິດການນຳໃຊ້ຮູບແບບຮູບພາບ AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "ປິດການນຳໃຊ້ນາມສະກຸນໄຟລ໌ຮູບ JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "ປິດການນຳໃຊ້ຟອນໃນເຄື່ອງ"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ການສະແດງພາບ"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "ເປີດການນຳໃຊ້ການຊອກຫາທັນທີທີ່ທ່ານພິມ"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "ຊອກຫາທັນທີທີ່ທ່ານພິມ"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "ປິດການນຳໃຊ້ຊອກຫາທັນທີທີ່ທ່ານພິມ (ກົດ Enter ເພື່ອຊອກຫາ)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "ສະແດງໂຄສະນາຢູ່ເວັບໄຊນີ້, ຫາກອະນຸຍາດ"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "ບໍ່ໄດ້ລະບຸ {PH1} {PH2} ໃນ manifest, ໃຊ້ {PH3} ແທນ. ເພື່ອລະບຸ ID ແອັບໃດໜຶ່ງທີ່ກົງກັບຕົວລະບຸປັດຈຸບັນ, ໃຫ້ຕັ້ງຊ່ອງຂໍ້ມູນ {PH4} ເປັນ {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "ໄຟລ໌ Manifest ຂອງແອັບ"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "ບໍ່ແນະນຳໃຫ້ປະກາດໄອຄອນທີ່ມີ 'purpose: \"any maskable\"'. ມັນອາດສະແດງຜົນບໍ່ຖືກຕ້ອງໃນບາງແພລດຟອມເນື່ອງຈາກມີໄລຍະຫ່າງຈາກຂອບຫຼາຍ ຫຼື ໜ້ອຍເກີນໄປ."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL ບັນທຶກໃໝ່"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "ກວດບໍ່ພົບໄຟລ໌ manifest"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "ບໍ່ພົບ service worker ທີ່ກົງກັນ. ທ່ານອາດຈະຕ້ອງໂຫຼດໜ້ານີ້ຊໍ້າ ຫຼື ກວດສອບວ່າຂອບເຂດຂອງ service worker ສຳລັບໜ້າປັດຈຸບັນກວມເອົາຂອບເຂດ ແລະ URL ຈາກໄຟລ໌ manifest ຫຼືບໍ່."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "ໜ້ານີ້ກໍາລັງຮ້ອງຂໍໃບຮັບຮອງລູກຂ່າຍ, ເຊິ່ງບໍ່ເໝາະສໍາລັບໜ້າທີ່ເຊື່ອງໄວ້ ເຊັ່ນ: ການສະແດງພາບລ່ວງໜ້າ."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "ໜ້າທີ່ສະແດງພາບລ່ວງໜ້າຈະຖືກນໍາທາງໄປຫາ URL ຂ້າມຕົ້ນທາງຫຼັງຈາກການໂຫຼດ. ປັດຈຸບັນລະບົບບໍ່ອະນຸຍາດໃຫ້ສະແດງພາບໜ້າຂ້າມຕົ້ນທາງລ່ວງໜ້າ."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "ພະຍາຍາມສະແດງ URL ລ່ວງໜ້າເຊິ່ງປ່ຽນເສັ້ນທາງໄປຫາ URL ຂ້າມຕົ້ນທາງ. ປັດຈຸບັນລະບົບບໍ່ອະນຸຍາດໃຫ້ສະແດງພາບໜ້າຂ້າມຕົ້ນທາງລ່ວງໜ້າ."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "ເປີດການນຳໃຊ້ຕົວປະຢັດຂໍ້ມູນແລ້ວ"
   },
@@ -3936,27 +3900,6 @@
     "message": "ຕົ້ນທາງເຈົ້າຂອງ"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "ບ່ອນຈັດເກັບຂໍ້ມູນທີ່ແບ່ງປັນ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "ການສ້າງ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "ລາຍການ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "ຄວາມຍາວ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "ເມຕາເດຕາ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ຕົ້ນສະບັບ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "ງົບປະມານ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "ບ່ອນຈັດເກັບຂໍ້ມູນທີ່ແບ່ງປັນ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "ໜ້າຈໍການປັອບອັບການພິມເປີດຢູ່. ກະລຸນາປິດມັນໃຫ້ສືບຕໍ່."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "ເມທຣິກປະສິດທິພາບຂ້າງເທິງມາຈາກການຈຳລອງ ແລະ ຈະບໍ່ກົງກັນກັບເວລາທີ່ພົບໃນການຕິດຕາມນີ້. ຖ້າຕ້ອງການໃຫ້ເວລາກົງກັນ, ກະລຸນາປິດການນຳໃຊ້ການຄວບຄຸມການຈຳລອງໃນ \"ການຕັ້ງຄ່າ Lighthouse\"."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "ເບິ່ງການຕິດຕາມດັ້ງເດີມ"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "ເບິ່ງການຕິດຕາມ"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(ລາຍງານໃໝ່)"
   },
@@ -6660,7 +6594,7 @@
     "message": "ການຫຼິ້ນແບບຕົ້ນທາງດຽວ"
   },
   "panels/media/PlayerPropertiesView.ts | startTime": {
-    "message": "ເວລາເລີ່ມ"
+    "message": "ເວລາເລີ່ມຕົ້ນ"
   },
   "panels/media/PlayerPropertiesView.ts | streaming": {
     "message": "ກຳລັງສະຕຣີມ"
@@ -6732,7 +6666,7 @@
     "message": "ການຄວບຄຸມ CPU ເປີດໃຊ້ຢູ່"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "ຊ້າລົງ {PH1} ເທົ່າ"
+    "message": "ເຮັດວຽກຊ້າລົງ {PH1} ເທົ່າ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "ຫາກເກີນກວ່າຄ່າເລີ່ມຕົ້ນອາດເຮັດໃຫ້ປະສິດທິພາບຂອງລະບົບຫຼຸດລົງ."
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "ຄຸກກີ້ທີ່ຖືກສົ່ງຫາເຊີບເວີໃນສ່ວນຫົວ 'ຄຸກກີ້' ຂອງຄຳຂໍ"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "ສຶກສາເພີ່ມເຕີມ"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "ຄຸກກີ້ການຕອບກັບມີຮູບແບບບໍ່ຖືກຕ້ອງ"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ສະແດງຄຸກກີ້ຄຳຂໍທີ່ກັ່ນຕອງອອກ"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "ເວັບໄຊນີ້ມີຄຸກກີ້ຢູ່ໃນພາທິຊັນອື່ນ, ທີ່ບໍ່ໄດ້ຖືກສົ່ງດ້ວຍຄຳຮ້ອງຂໍນີ້. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "ຄຳຂໍນີ້ບໍ່ມີຄຸກກີ້"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "ເປີດຕົວແກ້ໄຂ cubic bezier."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "ເພີ່ມສະຄຣິບເນື້ອຫາທັງໝົດໄປໃສ່ລາຍຊື່ຍົກເວັ້ນ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "ເພີ່ມສະຄຣິບໃສ່ລາຍການລະເວັ້ນ"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "ເຟຣມການເອີ້ນບາງອັນມີຄຳເຕືອນ"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "ຢູ່ລາຍຊື່ລະເວັ້ນ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "ລຶບສະຄຣິບເນື້ອຫາທັງໝົດອອກຈາກລາຍຊື່ຍົກເວັ້ນ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "ລຶບອອກຈາກລາຍຊື່ຍົກເວັ້ນ"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "ຣີສະຕາດເຟຣມ"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Pretty print {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(ສະໜອງໃຫ້ຜ່ານຂໍ້ມູນດີບັກໂດຍ {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(ຈັບຄູ່ແຫຼ່ງຂໍ້ມູນຈາກ {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ປິດການນຳໃຊ້ເບຣກພອຍທັງໝົດໃນໄຟລ໌"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "ເບຣກພອຍທີ່ປິດການນຳໃຊ້ແລ້ວ"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "ແກ້ໄຂເງື່ອນໄຂ"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ເປີດການນຳໃຊ້ເບຣກພອຍທັງໝົດໃນໄຟລ໌"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "ເປີດການນຳໃຊ້ເບຣກພອຍ"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "ປະສົມ"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "ຢຸດຊົ່ວຄາວເມື່ອພົບຂໍ້ຍົກເວັ້ນ"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "ຢຸດຊົ່ວຄາວເມື່ອມີຂໍ້ຍົກເວັ້ນ"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "ລຶບເບຣກພອຍທັງໝົດອອກ"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "ໄລຍະຫ່າງແນວຕັ້ງ"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "ບໍ່ໄດ້ກຳນົດ {PH1}"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "ຄລິກ Shift ເພື່ອປ່ຽນຮູບແບບສີ"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "ຂໍ້ຄວາມແບບເປີດດ່ວນ"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (ກົດ 'Enter' ເພື່ອຢືນຢັນ ຫຼື ກົດ 'Escape' ເພື່ອຍົກເລີກ.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "ພິມ '?' ເພື່ອເບິ່ງຄຳສັ່ງທີ່ສາມາດໃຊ້ໄດ້"

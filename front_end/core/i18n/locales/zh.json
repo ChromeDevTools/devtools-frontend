@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "无法解析 {PH1} 的内容：{PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools 无法加载来源映射：{PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "全色盲"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "停用 JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "停用 JPEG XL 格式"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "停用本地字体"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "启用 JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "启用 JPEG XL 格式"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "启用本地字体"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "启用网络请求屏蔽功能"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "允许 DevTools 从远程文件路径加载资源（比如源映射关系）。为安全起见，此功能默认处于停用状态。"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "启用 WebP 格式"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "停用 AVIF 图片格式"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "停用 JPEG XL 图片格式"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "停用本地字体"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "渲染"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "启用即输即搜功能"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "即输即搜"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "停用即输即搜功能（按 Enter 键即可搜索）"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "在此网站上显示广告（如果允许）"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1}您未在清单中指定 {PH2}，而是使用了 {PH3}。若要指定一个与当前标识符匹配的应用 ID，请将“{PH4}”字段设为 {PH5}{PH6}。"
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "应用清单"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "最好不要使用“purpose: \"any maskable\"”来声明图标。否则，相应图标可能会因内边距过大或过小而无法在某些平台上正确显示。"
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "新备注网址"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "未检测到任何清单"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "未检测到任何匹配的 service worker。您可能需要重新加载网页，或检查当前网页的 service worker 范围是否包含清单中的范围和起始网址。"
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "该网页正在请求客户端证书，但此证书不适用于隐藏的网页（例如预渲染的网页）。"
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "预渲染的网页在加载后导航到了跨源网址。目前不允许预渲染跨源网页。"
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "已尝试预渲染重定向到跨源网址的网址。目前不允许预渲染跨源网页。"
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "流量节省程序已启用"
   },
@@ -3936,27 +3900,6 @@
     "message": "所有者源"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "共享存储空间"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "创建"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "条目"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "长度"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "元数据"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "源"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "预算"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "共享存储空间"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "弹出式窗口“打印”已打开。请关闭它以继续操作。"
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "上述性能指标为模拟数据，因此不会与此跟踪记录中的时间相匹配。如需使时间相匹配，请停用“Lighthouse 设置”中的模拟节流功能。"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "查看原始跟踪记录"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "查看跟踪记录"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "（新报告）"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "请求的“cookie”标头中已发送到服务器的 Cookie"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "了解详情"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "格式不正确的响应 Cookie"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "显示滤除的请求 Cookie"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "此网站在另一个分区中有 Cookie，这些 Cookie 不是随该请求发送的。{PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "此请求不含任何 Cookie。"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "打开三次贝塞尔曲线编辑器。"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "向忽略列表添加所有内容脚本"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "向忽略列表添加脚本"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "某些调用帧包含警告"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "在忽略列表中"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "从忽略列表中移除所有内容脚本"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "从忽略列表中移除"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "重启帧"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "美观输出{PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "（在 {PH1} 上通过调试信息提供）"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "（从 {PH1} 映射的源代码）"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "停用文件内所有断点"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "已停用的断点"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "修改条件"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "启用文件内所有断点"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "已启用的断点"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "混合"
   },
@@ -10491,9 +10395,6 @@
     "message": "日志点：{PH1}"
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
-    "message": "在遇到异常时暂停"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
     "message": "在遇到异常时暂停"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
@@ -11883,7 +11784,7 @@
     "message": "等待主线程的时间"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
-    "message": "超时"
+    "message": "超时时限"
   },
   "panels/timeline/TimelineUIUtils.ts | timerFired": {
     "message": "定时器已触发"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y 轴偏移"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} 未定义"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "按住 Shift 并点击即可更改颜色格式"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "快速打开提示"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1}（按 Enter 键即可确认，按 Escape 键即可取消。）"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "输入“?”即可查看可用命令"

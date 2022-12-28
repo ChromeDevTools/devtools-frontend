@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Չհաջողվեց վերլուծել բովանդակությունը {PH1} էջի համար՝ {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Չհաջողվեց բեռնել աղբյուրի քարտեզը մշակողի գործիքների միջոցով՝ {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Աքրոմատոպսիա"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Անջատել JavaScript-ը"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Անջատել JPEG XL ձևաչափը"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Անջատել սարքում տեղադրված տառաչափերը"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Միացնել JavaScript-ը"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Միացնել JPEG XL ձևաչափը"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Միացնել տեղային տառատեսակները"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Միացնել ցանցի հարցման արգելափակումը"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Թույլատրել DevTools կարգավորումներին բեռնել ռեսուրսները, օրինակ՝ աղբյուրի քարտեզները, ֆայլերի հեռակա ուղիների միջոցով։ Ըստ կանխադրման անջատված է անվտանգության նկատառումներով։"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Միացնել WebP ձևաչափը"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Անջատել պատկերի AVIF ձևաչափը"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Անջատել պատկերի JPEG XL ձևաչափը"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Անջատել սարքում տեղադրված տառաչափերը"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Արտապատկերում"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Միացնել հարցումը մուտքագրելիս որոնումը"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Հարցումը մուտքագրելիս որոնում"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Անջատել հարցումը մուտքագրելիս որոնումը (սեղմեք Enter՝ որոնելու համար)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Ցույց տալ գովազդ այս կայքում, եթե թույլատրվում է"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} դաշտը նշված չէ մանիֆեստում։ Փոխարենն օգտագործվում է {PH3} դաշտը։ Հավելվածի ID-ն նշելու համար {PH4} դաշտի համար սահմանեք {PH5} {PH6} արժեքը։"
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Հավելվածի մանիֆեստ"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Խորհուրդ չի տրվում հայտարարել մի պատկերակ, որն ունի «purpose: \"any maskable\"» արժեքը։ Որոշ հարթակներում դա կարող է սխալ տեսք ունենալ՝ չափազանց մեծ կամ չափազանց փոքր լուսանցքների պատճառով։"
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Նոր նշման URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Մանիֆեստ չի գտնվել"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Համապատասխանող service worker չի հայտնաբերվել։ Հնարավոր է, որ ձեզանից պահանջվի վերաբեռնել էջը կամ ստուգել, որ ընթացիկ էջի համար service worker ֆայլի ընդգրկույթը ներառի մանիֆեստից ընդգրկույթն ու մեկնարկային URL-ը։"
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Էջը պահանջում է սպասառուի հավաստագիր, որը նախատեսված չէ թաքցված էջերի (օրինակ՝ նախաարտապատկերումների) համար։"
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Բեռնումից հետո նախաարտապատկերված էջը անցում է կատարել դեպի բազմատիրույթ URL։ Ներկայումս բազմատիրույթ էջերի նախաարտապատկերումն արգելված է։"
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Փորձ արվեց նախաարտապատկերել URL-ը, որը վերաուղղորդվում է դեպի բազմատիրույթ URL։ Ներկայումս բազմատիրույթ էջերի նախաարտապատկերումն արգելված է։"
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Թրաֆիկի տնտեսումը միացված է"
   },
@@ -3936,27 +3900,6 @@
     "message": "Սեփականատիրոջ աղբյուրը"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Ընդհանուր պահոց"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Ստեղծումը"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Գրառումներ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Երկարություն"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Մետատվյալներ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Աղբյուրը"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Բյուջե"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Ընդհանուր պահոց"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Տպման ելնող պատուհանը բացված է։ Փակեք այն և շարունակեք։"
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Արդյունավետության վերը նշված տվյալները նմանակված են և չեն համընկնի այս հետագծման ժամանակագրության հետ։ Անջատեք սահմանափակումների նմանակումը Lighthouse-ի կարգավորումներում, եթե ուզում եք փոխել դա։"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Դիտել սկզբնական հետագծումը"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Դիտել հետագծումը"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(նոր հաշվետվություն)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Քուքիներ, որոնք հարցման «քուքի» գլխագրում ուղարկվել են սերվեր"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Իմանալ ավելին"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Պատասխանների սխալ քուքիներ"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ցույց տալ հարցման զտված քուքիները"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Այս կայքի այլ հատվածում պահված են քուքիներ, որոնք այս հարցման հետ չեն ուղարկվել։ {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Այս հարցումը քուքիներ չունի։"
@@ -7887,7 +7815,7 @@
     "message": "Զտիչ"
   },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Երկարություն"
+    "message": "Երկարությունը"
   },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "Կիրառելի չէ"
@@ -8760,7 +8688,7 @@
     "message": "Ընտրեք պրոֆիլավորման տեսակը"
   },
   "panels/profiler/ProfileLauncherView.ts | start": {
-    "message": "Սկսել"
+    "message": "Սկիզբ"
   },
   "panels/profiler/ProfileLauncherView.ts | stop": {
     "message": "Կանգնեցնել"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Բացել Բեզյեի կորի խմբագրիչը։"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Բովանդակության բոլոր սկրիպտներն ավելացնել անտեսվածների ցուցակում"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Ավելացնել սկրիպտը անտեսվածների ցուցակում"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Զանգերի որոշ շրջանակներ ունեն նախազգուշացումներ"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "անտեսվածների ցանկում"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Հեռացնել բովանդակության բոլոր սկրիպտներն անտեսվածների ցանկից"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Հեռացնել անտեսվածների ցանկից"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Վերագործարկել շրջանակը"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Կիրառել գեղեցիկ ձևաչափում {PH1} ֆայլի նկատմամբ"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(տրամադրվել է վրիպազերծման մասին տեղեկությունների միջոցով՝ {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(աղբյուրի կոդը փոխակերպվել է {PH1} կայքից)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Անջատել կանգի բոլոր կետերը ֆայլում"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Անջատված կանգի կետեր"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Փոփոխել պայմանը"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Միացնել բոլոր կանգի կետերը ֆայլում"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Միացված կանգի կետեր"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "խառը"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Դադարեցնել հայտնաբերված բացառությունների վրա"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Դադարեցնել բացառությունների դեպքում"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Հեռացնել բոլոր կանգի կետերը"
@@ -11115,7 +11016,7 @@
     "message": "Ցույց տալ հիշողության ժամանակագրությունը"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Ցույց տալ Web Vitals հավաքածուն"
+    "message": "Ցույց տալ համացանցի ցուցանիշները"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} վ"
@@ -12297,7 +12198,7 @@
     "message": "Ցուցադրել հիշողության հսկիչը"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
-    "message": "Կարծիք հայտնել"
+    "message": "Հետադարձ կապ"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
     "message": "Փորձնական գործառույթ"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y առանցքով շեղում"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} տարրը սահմանված չէ"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Գույնի ձևաչափը փոխելու համար սեղմեք՝ Shift կոճակը սեղմած պահելով"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Հուշման արագ բացում"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Սեղմեք Enter՝ հաստատելու համար, կամ Escape՝ չեղարկելու համար)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Մուտքագրեք «?» նշանը՝ հասանելի հրահանգները տեսնելու համար"

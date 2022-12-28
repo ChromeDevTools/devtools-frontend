@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Kan content voor {PH1} niet parseren: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools kan bronkaart niet laden: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsie"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript uitzetten"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL-indeling uitzetten"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Lokale lettertypen uitzetten"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript aanzetten"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL-indeling aanzetten"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Lokale lettertypen aanzetten"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Blokkeren van netwerkverzoeken aanzetten"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Geef DevTools toestemming om bronnen, zoals bronkaarten, te laden vanuit externe bestandspaden. Standaard uitgezet wegens beveiligingsredenen."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP-indeling aanzetten"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF-bestandsindeling uitzetten"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL-bestandsindeling uitzetten"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Lokale lettertypen uitzetten"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderen"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Zoeken terwijl je typt aanzetten"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Zoeken terwijl je typt"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Zoeken terwijl je typt uitzetten (druk op Enter om te zoeken)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Advertenties bekijken op deze site, indien toegestaan"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} is niet opgegeven in het manifest. In plaats daarvan is {PH3} gebruikt. Als je een app-ID wilt opgeven die overeenkomt met de huidige identiteit, stel je het veld {PH4} in op {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "App-manifest"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Een icoon definiëren met purpose: \"any maskable\" wordt afgeraden. Dit ziet er op sommige platforms waarschijnlijk niet goed uit vanwege te veel of te weinig opvulling."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL van nieuwe notitie"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Geen manifest waargenomen"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Geen overeenkomende service worker waargenomen. Laad de pagina opnieuw of ga na of het bereik van de service worker voor de huidige pagina het bereik en de start-URL van het manifest omvat."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "De pagina vraagt een clientcertificaat aan, wat niet geschikt is voor een verborgen pagina zoals bij pre-rendering."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "De vooraf gerenderde pagina is na het laden naar een cross-origin-URL genavigeerd. Pre-rendering van cross-origin-pagina's is momenteel niet toegestaan."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Er is geprobeerd een URL vooraf te renderen die omleidt naar een cross-origin-URL. Pre-rendering van cross-origin-pagina's is momenteel niet toegestaan."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Databesparing aangezet"
   },
@@ -3936,27 +3900,6 @@
     "message": "Oorsprong van eigenaar"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Gedeelde opslag"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Aanmaakdatum"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Items"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Lengte"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Oorsprong"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Budget"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Gedeelde opslag"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Het pop-upvenster voor afdrukken is geopend. Sluit het om door te gaan."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "De prestatiestatistieken hierboven zijn gesimuleerd en komen niet overeen met de timings in dit traceringslogboek. Ga naar de Lighthouse-instellingen en zet gesimuleerde throttling uit als je wilt dat de timings overeenkomen."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Oorspronkelijke tracering bekijken"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Tracering bekijken"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(nieuw rapport)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies die naar de server zijn gestuurd in de cookie-header van het verzoek"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Meer informatie"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Onjuist gevormde reactiecookies"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "weggefilterde aanvraagcookies tonen"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Deze site heeft cookies in een andere partitie die niet zijn meegestuurd met dit verzoek. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Dit verzoek bevat geen cookies."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Open de cubic-bezier-editor."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Alle contentscripts toevoegen aan negeerlijst"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Script toevoegen aan negeerlijst"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Sommige aanroepframes hebben waarschuwingen"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "op negeerlijst"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Alle contentscripts verwijderen uit negeerlijst"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Verwijderen van negeerlijst"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Frame opnieuw starten"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Pretty-print toepassen op {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(geleverd via foutopsporingsinfo door {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(bron toegewezen vanaf {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Alle breakpoints in bestand uitzetten"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Breakpoints die zijn uitgezet"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Voorwaarde bewerken"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Alle breakpoints in bestand aanzetten"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Breakpoints die zijn aangezet"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "gemengd"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Onderbreken bij gevonden uitzonderingen"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Onderbreken bij uitzonderingen"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Alle breakpoints verwijderen"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y-verschuiving"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} is niet gedefinieerd"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Houd de Shift-toets ingedrukt en klik om de kleurindeling te wijzigen"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Prompt voor snel openen"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Druk op Enter om te bevestigen of op Escape om te annuleren.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Typ '?' om beschikbare opdrachten te bekijken"

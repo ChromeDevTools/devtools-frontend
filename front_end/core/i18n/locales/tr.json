@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1} için içerik ayrıştırılamadı: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Geliştirici Araçları kaynak eşlemesini yükleyemedi: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Renk körlüğü"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript'i devre dışı bırak"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL biçimini devre dışı bırak"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Yerel yazı tiplerini devre dışı bırak"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript’i Etkinleştir"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL biçimini etkinleştir"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Yerel yazı tiplerini etkinleştir"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Ağ istek engellemeyi etkinleştir"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "DevTools sitesinin, uzak dosya yollarındaki kaynak haritaları gibi kaynakları yüklemesine izin verin. Güvenlik nedeniyle varsayılan olarak devre dışıdır."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP biçimini etkinleştir"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF resim biçimini devre dışı bırak"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL resim biçimini devre dışı bırak"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Yerel yazı tiplerini devre dışı bırak"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Oluşturma"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Yazarken arama özelliğini etkinleştir"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Yazarken ara"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Yazarken aramayı devre dışı bırakın (arama yapmak için Enter tuşuna basın)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "İzin veriliyorsa bu sitede reklamları göster"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "Manifest dosyasında {PH1} {PH2} belirtilmemiş, onun yerine {PH3} kullanılmış. Mevcut kimlikle eşleşen bir Uygulama Kimliği belirtmek için {PH4} alanını {PH5} {PH6} olarak ayarlayın."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Uygulama Manifesti"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "\"purpose: \"any maskable\"\" ile bir simge tanımlanması önerilmez. Çok fazla veya çok az dolgu nedeniyle bazı platformlarda yanlış görünebilir."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Yeni not URL'si"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Manifest dosyası algılanmadı"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Eşleşen service worker algılanmadı. Sayfayı yeniden yüklemeniz veya mevcut sayfaya ait service worker kapsamının, manifest dosyasındaki kapsamı ve başlangıç URL'sini içerdiğinden emin olmanız gerekir."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Sayfa, istemci sertifikası istiyor. Bu durum, önceden oluşturma gibi gizli bir sayfa için uygun değil."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Önceden oluşturulmuş sayfa, yüklendikten sonra çapraz kaynak URL'sine gitti. Şu anda çapraz kaynak sayfalarının önceden oluşturulmasına izin verilmemektedir."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Çapraz kaynak URL'sine yönlendirilen bir URL'yi önceden oluşturma girişimi gerçekleşti. Şu anda çapraz kaynak sayfalarının önceden oluşturulmasına izin verilmemektedir."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Veri tasarrufu etkinleştirildi"
   },
@@ -3936,27 +3900,6 @@
     "message": "Sahibin Kaynağı"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Paylaşılan Depolama"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Oluşturulma saati"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Girişler"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Uzunluk"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Meta veri"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Kaynak"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Bütçe"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Paylaşılan Depolama"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Yazdırma popup penceresi açık. Devam etmek için lütfen kapatın."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Yukarıdaki performans metrikleri simüle edilmiş olup bu izde bulunan zamanlamalarla eşleşmez. Zamanlamaların eşleşmesini istiyorsanız \"Lighthouse Ayarlarında\" simüle edilmiş kısıtlamayı devre dışı bırakın."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Orijinal İzi Görüntüle"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "İzi Göster"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(yeni rapor)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "İsteğin \"çerez\" üst bilgisi içinde sunucuya gönderilen çerezler"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Daha fazla bilgi"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Bozuk Yanıt Çerezleri"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "filtreyle hariç tutulan istek çerezlerini göster"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Bu sitenin başka bir bölümünde, bu istekle birlikte gönderilmeyen çerezler mevcut. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Bu istek çerez içermiyor."
@@ -7887,7 +7815,7 @@
     "message": "Filtre"
   },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Uzunluk"
+    "message": "Süre"
   },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "Yok"
@@ -9729,7 +9657,7 @@
     "message": "Emüle Edilen Cihazlar"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Yükseklik"
+    "message": "Boy"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Kullanıcı aracısı dizesi"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Kübik bezier düzenleyicisini aç."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Tüm İçerik komut dosyalarını yoksayılanlar listesine ekle"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Komut dosyasını yoksayılanlar listesine ekle"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Bazı arama çerçevelerinde uyarılar var"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "yoksayılanlar listesinde"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Tüm içerik komut dosyalarını yoksayılanlar listesinden kaldır"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Yok sayılanlar listesinden kaldır"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Çerçeveyi yeniden başlat"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "{PH1} dosyasını okunaklı hale getir"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} tarafından hata ayıklama bilgileri üzerinden sağlandı)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(kaynak eşlemesi {PH1} adresinden alındı)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Dosyadaki tüm kesme noktalarını devre dışı bırak"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Devre dışı kesme noktaları"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Koşulu düzenleyin"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Dosyadaki tüm kesme noktalarını etkinleştir"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Etkin kesme noktaları"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "karma"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Yakalanan istisnalarda duraklat"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "İstisnalarda duraklat"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Tüm ayrılma noktalarını kaldır"
@@ -11115,7 +11016,7 @@
     "message": "Bellek zaman çizelgesini göster"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Web Verilerini göster"
+    "message": "Web Verileri'ni göster"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} sn."
@@ -12297,7 +12198,7 @@
     "message": "Bellek Denetleyicisini Göster"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
-    "message": "Feedback"
+    "message": "Geri bildirim"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
     "message": "Önizleme özelliği"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y ofseti"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} tanımlı değil."
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Renk biçimini değiştirmek için üst karakter tuşunu basılı tutarak tıklayın"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Hızlı açılan istem iletişim kutusu"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Onaylamak için \"Enter\", iptal etmek için \"Escape\" tuşuna basın.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Kullanılabilir komutları görmek için \"?\" yazın"

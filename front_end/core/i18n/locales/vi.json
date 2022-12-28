@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Không thể phân tích cú pháp nội dung cho {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Công cụ cho nhà phát triển không tải được bản đồ nguồn: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Mù màu"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Tắt JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Tắt định dạng JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Tắt phông chữ trên máy"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Bật JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Bật định dạng JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Bật phông chữ trên máy"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Bật tính năng chặn yêu cầu kết nối mạng"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Cho phép DevTools tải các tài nguyên, chẳng hạn như bản đồ nguồn, từ các đường dẫn tệp từ xa. Bị tắt theo mặc định vì lý do bảo mật."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Bật định dạng WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Tắt định dạng hình ảnh AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Tắt định dạng hình ảnh JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Tắt phông chữ trên máy"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Kết xuất hình ảnh"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Bật tính năng tìm kiếm khi bạn nhập"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Tìm kiếm khi bạn nhập"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Tắt tính năng tìm kiếm khi bạn nhập (nhấn Enter để tìm kiếm)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Hiển thị quảng cáo trên trang web này, nếu được phép"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} hiện không được chỉ định trong tệp kê khai, hệ thống sẽ dùng {PH3} thay thế. Để chỉ định một Mã ứng dụng phù hợp với danh tính hiện tại, hãy đặt trường {PH4} thành {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Tệp kê khai ứng dụng"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Bạn không nên khai báo biểu tượng có \"purpose: \"any maskable\"\". Lý do là vì biểu tượng có thể hiển thị không chính xác trên một số nền tảng do có quá nhiều hoặc quá ít khoảng đệm."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL ghi chú mới"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Không phát hiện thấy tệp kê khai"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Chưa phát hiện service worker nào trùng khớp. Bạn có thể phải tải lại trang hoặc kiểm tra để đảm bảo phạm vi của service worker cho trang hiện tại bao gồm phạm vi và URL bắt đầu của tệp kê khai."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Trang này yêu cầu chứng chỉ ứng dụng, yêu cầu này không phù hợp với một trang ẩn như trang kết xuất trước."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Trang được kết xuất trước đã chuyển hướng đến một URL nhiều nguồn gốc sau khi tải. Việc kết xuất trước các trang nhiều nguồn gốc hiện không được cho phép."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Đã thử kết xuất trước một URL chuyển hướng đến một URL nhiều nguồn gốc. Việc kết xuất trước các trang nhiều nguồn gốc hiện không được cho phép."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Trình tiết kiệm dữ liệu đã bật"
   },
@@ -3936,27 +3900,6 @@
     "message": "Nguồn gốc của chủ sở hữu"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Bộ nhớ dùng chung"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Thời gian tạo"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Mục"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Chiều dài"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Siêu dữ liệu"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Nguồn gốc"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Ngân sách"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Bộ nhớ dùng chung"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Cửa sổ in bật lên đang mở. Vui lòng đóng cửa sổ này để tiếp tục."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Các chỉ số hiệu suất ở trên được mô phỏng và sẽ không khớp với dấu thời gian có trong dấu vết này. Hãy tắt chế độ điều tiết mô phỏng trong phần \"Cài đặt Lighthouse\" nếu bạn muốn khớp các dấu thời gian."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Xem dấu vết gốc"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Xem dấu vết"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(báo cáo mới)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Những cookie được gửi đến máy chủ trong tiêu đề \"cookie\" của yêu cầu"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Tìm hiểu thêm"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Cookie phản hồi có cú pháp không hợp lệ"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "hiển thị các cookie yêu cầu đã bị lọc ra"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Trang web này có cookie trong một phân vùng khác và các cookie đó không được gửi cùng với yêu cầu này. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Yêu cầu này không có cookie nào."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Mở trình chỉnh sửa cubic bezier."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Thêm mọi tập lệnh nội dung vào danh sách bỏ qua"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Thêm tập lệnh vào danh sách bỏ qua"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Một số khung lệnh gọi có cảnh báo"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "trên danh sách bỏ qua"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Xóa mọi tập lệnh nội dung khỏi danh sách bỏ qua"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Xóa khỏi danh sách bỏ qua"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Bắt đầu lại khung"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Tạo bản in đẹp cho {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(được cung cấp qua thông tin gỡ lỗi theo {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(đã ánh xạ nguồn từ {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Tắt mọi điểm ngắt trong tệp"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Điểm ngắt đã tắt"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Chỉnh sửa điều kiện"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Bật mọi điểm ngắt trong tệp"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Điểm ngắt đã bật"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "hỗn hợp"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Tạm dừng khi phát hiện các trường hợp ngoại lệ"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Tạm dừng khi gặp các trường hợp ngoại lệ"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Xóa mọi điểm ngắt"
@@ -11115,7 +11016,7 @@
     "message": "Hiển thị tiến trình bộ nhớ"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Hiển thị Các chỉ số quan trọng về trang web"
+    "message": "Hiện các chỉ số quan trọng về trang web"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} giây"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Độ bù Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} chưa được xác định"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Nhấn phím Shift và nhấp để thay đổi định dạng màu"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Lời nhắc mở nhanh"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Nhấn phím \"Enter\" để xác nhận hoặc phím \"Escape\" để hủy.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Nhập \"?\" để xem các lệnh có sẵn"

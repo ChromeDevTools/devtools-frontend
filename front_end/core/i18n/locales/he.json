@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "לא ניתן היה לנתח תוכן עבור {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "כלי הפיתוח לא הצליחו לטעון את מפת המקור: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "אכרומטופסיה"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "השבתה של JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "השבתה של הפורמט JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "השבתת גופנים מקומיים"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "הפעלת JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "הפעלת הפורמט JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "הפעלת גופנים מקומיים"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "הפעלת חסימה של בקשת הרשת"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "ל-DevTools יש הרשאה לטעון משאבים, כמו מפות מקור, מנתיבי קובץ מרוחקים. האפשרות מושבתת כברירת מחדל מטעמי אבטחה."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "הפעלת הפורמט WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "השבתת פורמט התמונה AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "השבתת פורמט התמונה JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "השבתת פונטים מקומיים"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "רינדור"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "הפעלת החיפוש בזמן ההקלדה"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "חיפוש בזמן ההקלדה"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "השבתת החיפוש בזמן ההקלדה (יש להקיש על Enter כדי לחפש)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "הצגת מודעות באתר הזה, אם המערכת מאפשרת זאת"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "לא צוין {PH1} {PH2} במניפסט, במקום זאת נעשה שימוש ב-{PH3}. כדי לציין מזהה אפליקציה שתואם לזיהוי הנוכחי, צריך להגדיר את{PH4} בתור {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "קובץ מניפסט של אפליקציה"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "לא מומלץ להצהיר על סמל עם 'purpose: \"any maskable\"'. סביר להניח שהוא לא ייראה כמו שצריך בפלטפורמות מסוימות בגלל יותר מדי או מעט מדי מרווח פנימי."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "כתובת URL של הערה חדשה"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "לא זוהה מניפסט"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "לא זוהה service worker תואם. ייתכן שצריך לטעון מחדש את הדף, או לבדוק אם ההיקף של service worker של הדף הנוכחי כולל את ההיקף ואת כתובת ה-URL להתחלה של קובץ המניפסט."
@@ -3471,16 +3441,16 @@
     "message": "לא ניתן לבצע פעולות שיפתרו את הבעיות האלה. כלומר, היה גורם שמנע שמירה במטמון, ולדף אין שליטה ישירה על הגורם הזה."
   },
   "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
-    "message": "{n,plural, =1{מסגרת אחת}two{# מסגרות}many{# מסגרות}other{# מסגרות}}"
+    "message": "{n,plural, =1{מסגרת אחת}one{# מסגרות}two{# מסגרות}other{# מסגרות}}"
   },
   "panels/application/components/BackForwardCacheView.ts | framesTitle": {
     "message": "מסגרות"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
-    "message": "{n,plural, =1{נמצאה בעיה אחת ב-{m} מסגרות.}two{נמצאו # בעיות ב-{m} מסגרות.}many{נמצאו # בעיות ב-{m} מסגרות.}other{נמצאו # בעיות ב-{m} מסגרות.}}"
+    "message": "{n,plural, =1{נמצאה בעיה אחת ב-{m} מסגרות.}one{נמצאו # בעיות ב-{m} מסגרות.}two{נמצאו # בעיות ב-{m} מסגרות.}other{נמצאו # בעיות ב-{m} מסגרות.}}"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
-    "message": "{n,plural, =1{נמצאה בעיה אחת במסגרת אחת.}two{נמצאו # בעיות במסגרת אחת.}many{נמצאו # בעיות במסגרת אחת.}other{נמצאו # בעיות במסגרת אחת.}}"
+    "message": "{n,plural, =1{נמצאה בעיה אחת במסגרת אחת.}one{נמצאו # בעיות במסגרת אחת.}two{נמצאו # בעיות במסגרת אחת.}other{נמצאו # בעיות במסגרת אחת.}}"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "מידע נוסף על: האפשרות להשתמש ב'מטמון לדף הקודם/הבא'"
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "הדף מבקש אישור לקוח, שלא מתאים לדף מוסתר כמו במצב של עיבוד מראש."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר לכתובת URL ממקורות שונים לאחר הטעינה. כרגע אין אפשרות לבצע עיבוד מראש לדפים ממקורות שונים."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "נעשה ניסיון לבצע עיבוד מראש של כתובת URL שהפנתה לכתובת URL ממקור שונה. כרגע אין אפשרות לבצע עיבוד מראש לדפים ממקורות שונים."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "חוסך הנתונים (Data Saver) מופעל"
   },
@@ -3938,32 +3902,11 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "נפח אחסון משותף"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "יצירה"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "רשומות"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "אורך"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "מטא נתונים"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "מקור"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "תקציב"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
-    "message": "נפח אחסון משותף"
-  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "לא ניתן לרנדר את דוח הקריסות"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{הצגה של מסגרת אחת נוספת}two{הצגה של # מסגרות נוספות}many{הצגה של # מסגרות נוספות}other{הצגה של # מסגרות נוספות}}"
+    "message": "{n,plural, =1{הצגה של מסגרת אחת נוספת}one{הצגה של # מסגרות נוספות}two{הצגה של # מסגרות נוספות}other{הצגה של # מסגרות נוספות}}"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "כל אסימוני האימות המאוחסנים זמינים במופע של הדפדפן הזה."
@@ -4137,10 +4080,10 @@
     "message": "ביטול כל השינויים כדי לחזור לקובץ הנוכחי"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{פעולת מחיקה אחת (-)}two{# פעולות מחיקה (-)}many{# פעולות מחיקה (-)}other{# פעולות מחיקה (-)}}"
+    "message": "{n,plural, =1{פעולת מחיקה אחת (-)}one{# פעולות מחיקה (-)}two{# פעולות מחיקה (-)}other{# פעולות מחיקה (-)}}"
   },
   "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{הוספה אחת (+)}two{# הוספות (+)}many{# הוספות (+)}other{# הוספות (+)}}"
+    "message": "{n,plural, =1{הוספה אחת (+)}one{# הוספות (+)}two{# הוספות (+)}other{# הוספות (+)}}"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "שינויים"
@@ -4185,22 +4128,22 @@
     "message": "הודעה במסוף"
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
-    "message": "{n,plural, =0{אין שגיאות}=1{שגיאה אחת}two{# שגיאות}many{# שגיאות}other{# שגיאות}}"
+    "message": "{n,plural, =0{אין שגיאות}=1{שגיאה אחת}one{# שגיאות}two{# שגיאות}other{# שגיאות}}"
   },
   "panels/console/ConsoleSidebar.ts | dInfo": {
-    "message": "{n,plural, =0{אין מידע}=1{קטע מידע אחד}two{# קטעי מידע}many{# קטעי מידע}other{# קטעי מידע}}"
+    "message": "{n,plural, =0{אין מידע}=1{קטע מידע אחד}one{# קטעי מידע}two{# קטעי מידע}other{# קטעי מידע}}"
   },
   "panels/console/ConsoleSidebar.ts | dMessages": {
-    "message": "{n,plural, =0{אין הודעות}=1{הודעה אחת}two{# הודעות}many{# הודעות}other{# הודעות}}"
+    "message": "{n,plural, =0{אין הודעות}=1{הודעה אחת}one{# הודעות}two{# הודעות}other{# הודעות}}"
   },
   "panels/console/ConsoleSidebar.ts | dUserMessages": {
-    "message": "{n,plural, =0{אין הודעות משתמש}=1{הודעת משתמש אחת}two{# הודעות משתמש}many{# הודעות משתמש}other{# הודעות משתמש}}"
+    "message": "{n,plural, =0{אין הודעות משתמש}=1{הודעת משתמש אחת}one{# הודעות משתמש}two{# הודעות משתמש}other{# הודעות משתמש}}"
   },
   "panels/console/ConsoleSidebar.ts | dVerbose": {
-    "message": "{n,plural, =0{אין הודעות על דרגת מלל}=1{דרגת מלל אחת}two{# דרגות מלל}many{# דרגות מלל}other{# דרגות מלל}}"
+    "message": "{n,plural, =0{אין הודעות על דרגת מלל}=1{דרגת מלל אחת}one{# דרגות מלל}two{# דרגות מלל}other{# דרגות מלל}}"
   },
   "panels/console/ConsoleSidebar.ts | dWarnings": {
-    "message": "{n,plural, =0{אין אזהרות}=1{אזהרה אחת}two{# אזהרות}many{# אזהרות}other{# אזהרות}}"
+    "message": "{n,plural, =0{אין אזהרות}=1{אזהרה אחת}one{# אזהרות}two{# אזהרות}other{# אזהרות}}"
   },
   "panels/console/ConsoleSidebar.ts | other": {
     "message": "<אחר>"
@@ -4284,7 +4227,7 @@
     "message": "במקום יצירת הודעות במסוף, חלק מהבעיות מוצגות בכרטיסיית הבעיות."
   },
   "panels/console/ConsoleView.ts | issuesWithColon": {
-    "message": "{n,plural, =0{אין בעיות}=1{בעיה אחת:}two{# בעיות:}many{# בעיות:}other{# בעיות:}}"
+    "message": "{n,plural, =0{אין בעיות}=1{בעיה אחת:}one{# בעיות:}two{# בעיות:}other{# בעיות:}}"
   },
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "רמה ביומן: {PH1}"
@@ -4308,7 +4251,7 @@
     "message": "הפעלה מחדש של XHR"
   },
   "panels/console/ConsoleView.ts | sHidden": {
-    "message": "{n,plural, =1{הודעת מסוף אחת מוסתרת}two{# הודעות מסוף מוסתרות}many{# הודעות מסוף מוסתרות}other{# הודעות מסוף מוסתרות}}"
+    "message": "{n,plural, =1{הודעת מסוף אחת מוסתרת}one{# הודעות מסוף מוסתרות}two{# הודעות מסוף מוסתרות}other{# הודעות מסוף מוסתרות}}"
   },
   "panels/console/ConsoleView.ts | sOnly": {
     "message": "{PH1} בלבד"
@@ -4368,7 +4311,7 @@
     "message": "שגיאה"
   },
   "panels/console/ConsoleViewMessage.ts | errorS": {
-    "message": "{n,plural, =1{שגיאה, חזרה פעם אחת}two{שגיאה, חזרה פעמיים}many{שגיאה, חזרה # פעמים}other{שגיאה, חזרה # פעמים}}"
+    "message": "{n,plural, =1{שגיאה, חזרה פעם אחת}one{שגיאה, חזרה # פעמים}two{שגיאה, חזרה פעמיים}other{שגיאה, חזרה # פעמים}}"
   },
   "panels/console/ConsoleViewMessage.ts | exception": {
     "message": "<חריג>"
@@ -4383,7 +4326,7 @@
     "message": "[Intervention] {PH1}"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
-    "message": "{n,plural, =1{חזרה פעם אחת}two{חזרה # פעמים}many{חזרה # פעמים}other{חזרה # פעמים}}"
+    "message": "{n,plural, =1{חזרה פעם אחת}one{חזרה # פעמים}two{חזרה # פעמים}other{חזרה # פעמים}}"
   },
   "panels/console/ConsoleViewMessage.ts | someEvent": {
     "message": "אירוע <some>"
@@ -4416,7 +4359,7 @@
     "message": "אזהרה"
   },
   "panels/console/ConsoleViewMessage.ts | warningS": {
-    "message": "{n,plural, =1{אזהרה, חזרה פעם אחת}two{אזהרה, חזרה פעמיים}many{אזהרה, חזרה # פעמים}other{אזהרה, חזרה # פעמים}}"
+    "message": "{n,plural, =1{אזהרה, חזרה פעם אחת}one{אזהרה, חזרה # פעמים}two{אזהרה, חזרה פעמיים}other{אזהרה, חזרה # פעמים}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "השלמה אוטומטית מההיסטוריה"
@@ -4497,13 +4440,13 @@
     "message": "פתיחת המסוף כדי לראות {PH1}"
   },
   "panels/console_counters/WarningErrorCounter.ts | openIssuesToView": {
-    "message": "{n,plural, =1{יש לפתוח את כרטיסיית הבעיות כדי להציג בעיה אחת:}two{יש לפתוח את כרטיסיית הבעיות כדי להציג # בעיות:}many{יש לפתוח את כרטיסיית הבעיות כדי להציג # בעיות:}other{יש לפתוח את כרטיסיית הבעיות כדי להציג # בעיות:}}"
+    "message": "{n,plural, =1{יש לפתוח את כרטיסיית הבעיות כדי להציג בעיה אחת:}one{יש לפתוח את כרטיסיית הבעיות כדי להציג # בעיות:}two{יש לפתוח את כרטיסיית הבעיות כדי להציג # בעיות:}other{יש לפתוח את כרטיסיית הבעיות כדי להציג # בעיות:}}"
   },
   "panels/console_counters/WarningErrorCounter.ts | sErrors": {
-    "message": "{n,plural, =1{שגיאה אחת}two{# שגיאות}many{# שגיאות}other{# שגיאות}}"
+    "message": "{n,plural, =1{שגיאה אחת}one{# שגיאות}two{# שגיאות}other{# שגיאות}}"
   },
   "panels/console_counters/WarningErrorCounter.ts | sWarnings": {
-    "message": "{n,plural, =1{אזהרה אחת}two{# אזהרות}many{# אזהרות}other{# אזהרות}}"
+    "message": "{n,plural, =1{אזהרה אחת}one{# אזהרות}two{# אזהרות}other{# אזהרות}}"
   },
   "panels/coverage/CoverageListView.ts | codeCoverage": {
     "message": "רמת הכיסוי של הקוד"
@@ -4524,10 +4467,10 @@
     "message": "JavaScript (לכל פונקציה)"
   },
   "panels/coverage/CoverageListView.ts | sBytes": {
-    "message": "{n,plural, =1{בייט אחד}two{# בייט}many{# בייט}other{# בייט}}"
+    "message": "{n,plural, =1{בייט אחד}one{# בייט}two{# בייט}other{# בייט}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesS": {
-    "message": "{n,plural, =1{בייט אחד, {percentage}}two{# בייט, {percentage}}many{# בייט, {percentage}}other{# בייט, {percentage}}}"
+    "message": "{n,plural, =1{בייט אחד, {percentage}}one{# בייט, {percentage}}two{# בייט, {percentage}}other{# בייט, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
     "message": "{PH1} בייטים ({PH2}) שייכים לבלוקים של JavaScript אשר (עדיין) לא בוצעו."
@@ -4686,7 +4629,7 @@
     "message": "שאילתות מדיה"
   },
   "panels/css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
-    "message": "{n,plural, =1{אירוע אחד}two{# אירועים}many{# אירועים}other{# אירועים}}"
+    "message": "{n,plural, =1{אירוע אחד}one{# אירועים}two{# אירועים}other{# אירועים}}"
   },
   "panels/css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
     "message": "בוררים לא פשוטים"
@@ -4800,7 +4743,7 @@
     "message": "בהמתנה"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | sBytes": {
-    "message": "{n,plural, =1{בייט אחד}two{# בייט}many{# בייט}other{# בייט}}"
+    "message": "{n,plural, =1{בייט אחד}one{# בייט}two{# בייט}other{# בייט}}"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | status": {
     "message": "סטטוס"
@@ -4824,7 +4767,7 @@
     "message": "טעינה של מקורות מידע מסוג HTTP(S) למפתחים דרך היעד שנבדק"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
-    "message": "{n,plural, =1{משאב אחד}two{# משאבים}many{# משאבים}other{# משאבים}}"
+    "message": "{n,plural, =1{משאב אחד}one{# משאבים}two{# משאבים}other{# משאבים}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} מקורות מידע, {PH2} טוענים כעת"
@@ -5112,7 +5055,7 @@
     "message": "אין דוחות קריסות זמינים"
   },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
-    "message": "{n,plural, =1{(גליף אחד)}two{(# גליפים)}many{(# גליפים)}other{(# גליפים)}}"
+    "message": "{n,plural, =1{(גליף אחד)}one{(# גליפים)}two{(# גליפים)}other{(# גליפים)}}"
   },
   "panels/elements/PlatformFontsWidget.ts | localFile": {
     "message": "קובץ מקומי"
@@ -5610,7 +5553,7 @@
     "message": "משאב שנחסם"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | nRequests": {
-    "message": "{n,plural, =1{בקשה אחת}two{# בקשות}many{# בקשות}other{# בקשות}}"
+    "message": "{n,plural, =1{בקשה אחת}one{# בקשות}two{# בקשות}other{# בקשות}}"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | parentFrame": {
     "message": "מסגרת הורה"
@@ -5625,10 +5568,10 @@
     "message": "הצגה של בקשות הרשת עם כותרת Set-Cookie הזו בחלונית 'רשת'"
   },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
-    "message": "{n,plural, =1{קובץ cookie אחד}two{# קובצי cookie}many{# קובצי cookie}other{# קובצי cookie}}"
+    "message": "{n,plural, =1{קובץ cookie אחד}one{# קובצי cookie}two{# קובצי cookie}other{# קובצי cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
-    "message": "{n,plural, =1{כותרת גולמית אחת מסוג Set-Cookie}two{# כותרות גולמיות מסוג Set-Cookie}many{# כותרות גולמיות מסוג Set-Cookie}other{# כותרות גולמיות מסוג Set-Cookie}}"
+    "message": "{n,plural, =1{כותרת גולמית אחת מסוג Set-Cookie}one{# כותרות גולמיות מסוג Set-Cookie}two{# כותרות גולמיות מסוג Set-Cookie}other{# כותרות גולמיות מסוג Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "שם"
@@ -5649,7 +5592,7 @@
     "message": "רכיב"
   },
   "panels/issues/AffectedDirectivesView.ts | nDirectives": {
-    "message": "{n,plural, =1{הוראה אחת}two{# הוראות}many{# הוראות}other{# הוראות}}"
+    "message": "{n,plural, =1{הוראה אחת}one{# הוראות}two{# הוראות}other{# הוראות}}"
   },
   "panels/issues/AffectedDirectivesView.ts | reportonly": {
     "message": "דוחות בלבד"
@@ -5670,13 +5613,13 @@
     "message": "מצב"
   },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
-    "message": "{n,plural, =1{ מסמך}two{ מסמכים}many{ מסמכים}other{ מסמכים}}"
+    "message": "{n,plural, =1{ מסמך}one{ מסמכים}two{ מסמכים}other{ מסמכים}}"
   },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "כתובת URL"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
-    "message": "{n,plural, =1{רכיב אחד}two{# רכיבים}many{# רכיבים}other{# רכיבים}}"
+    "message": "{n,plural, =1{רכיב אחד}one{# רכיבים}two{# רכיבים}other{# רכיבים}}"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "יחס ניגודיות"
@@ -5709,7 +5652,7 @@
     "message": "חריגה ממגבלה"
   },
   "panels/issues/AffectedHeavyAdView.ts | nResources": {
-    "message": "{n,plural, =1{משאב אחד}two{# משאבים}many{# משאבים}other{# משאבים}}"
+    "message": "{n,plural, =1{משאב אחד}one{# משאבים}two{# משאבים}other{# משאבים}}"
   },
   "panels/issues/AffectedHeavyAdView.ts | networkLimit": {
     "message": "הגבלת רשת"
@@ -5742,7 +5685,7 @@
     "message": "יצירת אובייקט"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | nViolations": {
-    "message": "{n,plural, =1{הפרה אחת}two{# הפרות}many{# הפרות}other{# הפרות}}"
+    "message": "{n,plural, =1{הפרה אחת}one{# הפרות}two{# הפרות}other{# הפרות}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
     "message": "SharedArrayBuffer הועבר להקשר שאינו מבודד ממקורות שונים"
@@ -5763,10 +5706,10 @@
     "message": "אזהרה"
   },
   "panels/issues/AffectedSourcesView.ts | nSources": {
-    "message": "{n,plural, =1{ מקור אחד}two{# מקורות}many{# מקורות}other{# מקורות}}"
+    "message": "{n,plural, =1{ מקור אחד}one{# מקורות}two{# מקורות}other{# מקורות}}"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{משאב אחד}two{# משאבים}many{# משאבים}other{# משאבים}}"
+    "message": "{n,plural, =1{משאב אחד}one{# משאבים}two{# משאבים}other{# משאבים}}"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
     "message": "שם חבילה"
@@ -5790,7 +5733,7 @@
     "message": "מקסימום הרשמות בו-זמניות"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
-    "message": "{n,plural, =1{הפרה אחת}two{# הפרות}many{# הפרות}other{# הפרות}}"
+    "message": "{n,plural, =1{הפרה אחת}one{# הפרות}two{# הפרות}other{# הפרות}}"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | request": {
     "message": "בקשה"
@@ -5838,7 +5781,7 @@
     "message": "ערך לא תקין (אם הוא זמין)"
   },
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
-    "message": "{n,plural, =1{בקשה אחת}two{# בקשות}many{# בקשות}other{# בקשות}}"
+    "message": "{n,plural, =1{בקשה אחת}one{# בקשות}two{# בקשות}other{# בקשות}}"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightDisallowedRedirect": {
     "message": "התגובה לקדם ההפעלה הייתה הפנייה אוטומטית"
@@ -5889,7 +5832,7 @@
     "message": "מסגרת"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{משאב אחד}two{# משאבים}many{# משאבים}other{# משאבים}}"
+    "message": "{n,plural, =1{משאב אחד}one{# משאבים}two{# משאבים}other{# משאבים}}"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "בעיות מוסתרות"
@@ -5922,10 +5865,10 @@
     "message": "מידע נוסף: {PH1}"
   },
   "panels/issues/IssueView.ts | nRequests": {
-    "message": "{n,plural, =1{בקשה אחת}two{# בקשות}many{# בקשות}other{# בקשות}}"
+    "message": "{n,plural, =1{בקשה אחת}one{# בקשות}two{# בקשות}other{# בקשות}}"
   },
   "panels/issues/IssueView.ts | nResources": {
-    "message": "{n,plural, =1{משאב אחד}two{# משאבים}many{# משאבים}other{# משאבים}}"
+    "message": "{n,plural, =1{משאב אחד}one{# משאבים}two{# משאבים}other{# משאבים}}"
   },
   "panels/issues/IssueView.ts | name": {
     "message": "שם"
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "חלון ההדפסה הקופץ פתוח. יש לסגור אותו כדי להמשיך."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "מדדי הביצועים המופיעים למעלה הם חלק מהדמיה ולא יתאימו לתזמונים שנמצאו בעקבות האלה. אם ברצונך להתאים את התזמונים, יש להשבית את הדמיית ויסות הנתונים (throttle) ב\"הגדרות של Lighthouse\"."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "צפייה בעקבות המקוריות"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "צפייה בעקבות"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(דוח חדש)"
   },
@@ -6660,7 +6594,7 @@
     "message": "הפעלה ממקור יחיד"
   },
   "panels/media/PlayerPropertiesView.ts | startTime": {
-    "message": "שעת התחלה"
+    "message": "שעת ההתחלה"
   },
   "panels/media/PlayerPropertiesView.ts | streaming": {
     "message": "סטרימינג"
@@ -6954,7 +6888,7 @@
     "message": "הגבלת רוחב פס"
   },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
-    "message": "שימוש בדפדפן המוגדר כברירת המחדל"
+    "message": "שימוש בברירת המחדל שמוגדרת בדפדפן"
   },
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "סוכן משתמש"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "קובצי cookie שנשלחו לשרת בכותרת 'cookie' של הבקשה"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "מידע נוסף"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "קובצי cookie שגויים של תגובה"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "הצגת קובצי cookie של בקשה שסוננו"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "לאתר הזה יש קובצי cookie במחיצה אחרת, שלא נשלחו עם הבקשה הזו. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "לבקשה זו אין קובצי cookie."
@@ -9321,7 +9249,7 @@
     "message": "הצגת אישור"
   },
   "panels/security/SecurityPanel.ts | viewDRequestsInNetworkPanel": {
-    "message": "{n,plural, =1{הצגת בקשה אחת בחלונית הרשת}two{הצגת # בקשות בחלונית הרשת}many{הצגת # בקשות בחלונית הרשת}other{הצגת # בקשות בחלונית הרשת}}"
+    "message": "{n,plural, =1{הצגת בקשה אחת בחלונית הרשת}one{הצגת # בקשות בחלונית הרשת}two{הצגת # בקשות בחלונית הרשת}other{הצגת # בקשות בחלונית הרשת}}"
   },
   "panels/security/SecurityPanel.ts | viewRequestsInNetworkPanel": {
     "message": "צפייה בבקשות בחלונית הרשת"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "פתיחת עורך cubic bezier."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "הוספת כל הסקריפטים של התוכן כדי להתעלם מהרשימה"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "הוספה של סקריפט לרשימת הפריטים להתעלמות"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "לחלק ממסגרות הקריאה יש אזהרות"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "ברשימת הפריטים להתעלמות"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "הסרת כל הסקריפטים של תוכן מרשימת הפריטים להתעלמות"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "הסרה מרשימת הפריטים להתעלמות"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "הפעלה מחדש של המסגרת"
@@ -10047,13 +9963,13 @@
     "message": "הטעינה של המידע על תוצאות ניפוי הבאגים עבור {PH1} נכשלה."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
-    "message": "{n,plural, =1{השבתת נקודת העצירה (breakpoint)}two{השבתת כל נקודות העצירה (breakpoint) בשורה}many{השבתת כל נקודות העצירה (breakpoint) בשורה}other{השבתת כל נקודות העצירה (breakpoint) בשורה}}"
+    "message": "{n,plural, =1{השבתת נקודת העצירה (breakpoint)}one{השבתת כל נקודות העצירה (breakpoint) בשורה}two{השבתת כל נקודות העצירה (breakpoint) בשורה}other{השבתת כל נקודות העצירה (breakpoint) בשורה}}"
   },
   "panels/sources/DebuggerPlugin.ts | editBreakpoint": {
     "message": "עריכה של נקודת עצירה (breakpoint)…"
   },
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
-    "message": "{n,plural, =1{הפעלת נקודת העצירה (breakpoint)}two{הפעלת כל נקודות העצירה (breakpoint) בשורה}many{הפעלת כל נקודות העצירה (breakpoint) בשורה}other{הפעלת כל נקודות העצירה (breakpoint) בשורה}}"
+    "message": "{n,plural, =1{הפעלת נקודת העצירה (breakpoint)}one{הפעלת כל נקודות העצירה (breakpoint) בשורה}two{הפעלת כל נקודות העצירה (breakpoint) בשורה}other{הפעלת כל נקודות העצירה (breakpoint) בשורה}}"
   },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "אין להשהות כאן"
@@ -10068,7 +9984,7 @@
     "message": "הקובץ הזה יוצג בכרטיסייה חדשה באמצעות הדפסה יפה, ושם ניתן יהיה להמשיך לנפות בו באגים. כדי לבצע הדפסה יפה של הקובץ הזה, אפשר גם ללחוץ על הלחצן {PH1} שבשורת הסטטוס בחלק התחתון."
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
-    "message": "{n,plural, =1{הסרה של נקודת עצירה (breakpoint) אחת}two{הסרה של כל נקודות העצירה (breakpoint) שבשורה}many{הסרה של כל נקודות העצירה (breakpoint) שבשורה}other{הסרה של כל נקודות העצירה (breakpoint) שבשורה}}"
+    "message": "{n,plural, =1{הסרה של נקודת עצירה (breakpoint) אחת}one{הסרה של כל נקודות העצירה (breakpoint) שבשורה}two{הסרה של כל נקודות העצירה (breakpoint) שבשורה}other{הסרה של כל נקודות העצירה (breakpoint) שבשורה}}"
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "הסרה מרשימת הפריטים להתעלמות"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "הדפסה יפה של {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(סופק באמצעות מידע על תוצאות ניפוי הבאגים מ-{PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(מיפוי מקור מ-{PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "השבתת כל נקודות העצירה (breakpoint) בקובץ"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "נקודות העצירה (breakpoint) מושבתות"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "עריכת התנאי"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "הפעלת כל נקודות העצירה (breakpoint) בקובץ"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "נקודות העצירה (Breakpoints) מופעלות"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "משולב"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "השהיה בחריגות שזוהו"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "השהיה בחריגות"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "הסרה של כל נקודות העצירה (breakpoint)"
@@ -11577,7 +11478,7 @@
     "message": "מיקום"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
-    "message": "משימה ארוכה אחת"
+    "message": "משימה ארוכה"
   },
   "panels/timeline/TimelineUIUtils.ts | majorGc": {
     "message": "GC משמעותי"
@@ -11751,7 +11652,7 @@
     "message": "{PH1} (ב-{PH2})"
   },
   "panels/timeline/TimelineUIUtils.ts | sBytes": {
-    "message": "{n,plural, =1{בייט אחד}two{# בייט}many{# בייט}other{# בייט}}"
+    "message": "{n,plural, =1{בייט אחד}one{# בייט}two{# בייט}other{# בייט}}"
   },
   "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
     "message": "{PH1} יכול לגרום לחוויות משתמש גרועות. לאחרונה: {PH2}."
@@ -12213,13 +12114,13 @@
     "message": "מחיקה:"
   },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
-    "message": "{issueCount,plural, =1{שינוי תוכנה אחד שעלול לגרום לכשל}two{# שינויי תוכנה שעלולים לגרום לכשלים}many{# שינויי תוכנה שעלולים לגרום לכשלים}other{# שינויי תוכנה שעלולים לגרום לכשלים}}"
+    "message": "{issueCount,plural, =1{שינוי תוכנה אחד שעלול לגרום לכשל}one{# שינויי תוכנה שעלולים לגרום לכשלים}two{# שינויי תוכנה שעלולים לגרום לכשלים}other{# שינויי תוכנה שעלולים לגרום לכשלים}}"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
-    "message": "{issueCount,plural, =1{שגיאה אחת בדף}two{# שגיאות בדף}many{# שגיאות בדף}other{# שגיאות בדף}}"
+    "message": "{issueCount,plural, =1{שגיאה אחת בדף}one{# שגיאות בדף}two{# שגיאות בדף}other{# שגיאות בדף}}"
   },
   "ui/components/issue_counter/IssueCounter.ts | possibleImprovements": {
-    "message": "{issueCount,plural, =1{שיפור אחד אפשרי}two{# שיפורים אפשריים}many{# שיפורים אפשריים}other{# שיפורים אפשריים}}"
+    "message": "{issueCount,plural, =1{שיפור אחד אפשרי}one{# שיפורים אפשריים}two{# שיפורים אפשריים}other{# שיפורים אפשריים}}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssue": {
     "message": "יש ללחוץ כדי להציג בעיה בכרטיסיית הבעיות"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "היסט Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} אינו מוגדר"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "הקשה על Shift ולחיצה על הפריט כדי לשנות את פורמט הצבע"
   },
@@ -13016,9 +12914,6 @@
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "הודעת פתיחה מהירה של תיבת דו-שיח"
   },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (יש להקיש על מקש 'Enter' לאישור, או על מקש 'Escape' לביטול.)"
-  },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "יש להקיש על '?' כדי לראות את הפקודות הזמינות"
   },
@@ -13155,7 +13050,7 @@
     "message": "הסרה מרשימת הפריטים להתעלמות"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{הצגה של מסגרת אחת נוספת}two{הצגה של # מסגרות נוספות}many{הצגה של # מסגרות נוספות}other{הצגה של # מסגרות נוספות}}"
+    "message": "{n,plural, =1{הצגה של מסגרת אחת נוספת}one{הצגה של # מסגרות נוספות}two{הצגה של # מסגרות נוספות}other{הצגה של # מסגרות נוספות}}"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "לא ידועה"

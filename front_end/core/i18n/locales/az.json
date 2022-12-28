@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1}: {PH2} üçün məzmunu parselləmək mümkün olmadı"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools mənbə xəritə yükləyə bilmədi: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Axromatopsiya"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript'i deaktiv edin"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL formatını deaktiv edin"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Lokal şriftləri deaktiv edin"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript'i aktivləşdirin"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL formatını aktivləşdirin"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Lokal şriftləri aktivləşdirin"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Şəbəkə sorğusunun bloklanmasını aktivləşdirin"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "DevTools obyektinin distant fayl yollarından mənbə xəritələri kimi resursları yükləməsinə icazə verin. Təhlükəsizlik səbəbi ilə defolt olaraq deaktiv edilib."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP formatını aktivləşdirin"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF şəkil formatını deaktiv edin"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL şəkil formatını deaktiv edin"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Lokal şriftləri deaktiv edin"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Göstərilir"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Yazdıqca axtarışı aktiv edin"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Yazdıqca axtarın"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Yazdıqca axtarışı deaktiv edin (axtarmaq üçün Enter düyməsinə basın)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "İcazə verildiyi halda, bu saytda reklamları göstərin"
@@ -2169,7 +2145,7 @@
     "message": "Hamısını silin"
   },
   "panels/animation/AnimationTimeline.ts | pause": {
-    "message": "Durdurun"
+    "message": "Pauza"
   },
   "panels/animation/AnimationTimeline.ts | pauseAll": {
     "message": "Hamısına pauza verin"
@@ -2233,9 +2209,6 @@
   },
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} manifestdə göstərilməyib, əvəzində {PH3} istifadə olunur. Cari kimliyə uyğun gələn Tətbiq Id-si təyin etmək üçün {PH4} sahəsini {PH5} {PH6} olaraq ayarlayın."
-  },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Tətbiq Manifesti"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "İşarənin 'purpose: \"any maskable\"' ilə bildirilməsi tövsiyə edilmir. Əlavələrin həddən çox və ya həddən az olması səbəbi ilə bəzi platformalarda səhv görünə bilər."
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Yeni qeyd keçidi"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Heç bir manifest aşkarlanmadı"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Uyğun gələn service worker aşkarlanmadı. Səhifəni yenidən yükləməli, yaxud cari səhifə üzrə service worker əhatə dairəsinin tam qarşılandığını yoxlamalı və manifestdən URL'i başlatmalı ola bilərsiniz."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Səhifə müştəri sertifikatı tələb edir, bu isə öncədən görüntüləmə kimi gizli səhifə üçün uyğun deyil."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Öncədən görüntülənmiş səhifə yükləndikdən sonra çarpaz mənşəli keçidə yönləndirilib. Hazırda çarpaz mənşəli səhifələrin öncədən görüntülənməsinə icazə verilmir."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Çarpaz mənşəli keçidə yönləndirilmiş keçidi öncədən görüntüləməyə cəhd edildi. Hazırda çarpaz mənşəli səhifələrin öncədən görüntülənməsinə icazə verilmir."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Data Qənaəti aktiv edilib"
   },
@@ -3936,27 +3900,6 @@
     "message": "Sahib Mənşəyi"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Paylaşılan Yaddaş"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Yaratma"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Daxiletmələr"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Uzunluq"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Mənşə"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Büdcə"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Paylaşılan Yaddaş"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Çap popap pəncərəsi açıqdır. Davam etmək üçün onu bağlayın."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Yuxarıda göstərilən göstəricilər simulyasiya edilir və bu fəaliyyət izində tapılan vaxtlarla uyğun gəlmir. Vaxtların uyğun gəlməsini istəyirsinizsə, \"Lighthouse Ayarlarında\" simulyasiya edilmiş məhdudiyyəti deaktiv edin."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Orijinal Fəaliyyət İzinə Baxın"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Fəaliyyət izinə baxın"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(yeni hesabat)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Sorğunun \"kuki\" başlığında serverə göndərilən kukilər"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Ətraflı məlumat"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Qüsurlu Cavab Kukiləri"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "filtrlənmiş sorğu kukilərini göstərin"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Bu saytda bu sorğu ilə göndərilməmiş başqa bölmədə kukilər var. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Bu sorğuda kukilər yoxdur."
@@ -7887,7 +7815,7 @@
     "message": "Filtr"
   },
   "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Uzunluq"
+    "message": "Müddət"
   },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "Uyğun Deyil"
@@ -8760,7 +8688,7 @@
     "message": "Təhlil növü seçin"
   },
   "panels/profiler/ProfileLauncherView.ts | start": {
-    "message": "Başlayın"
+    "message": "Başladın"
   },
   "panels/profiler/ProfileLauncherView.ts | stop": {
     "message": "Dayandırın"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Cubic bezier redaktorunu açın."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Bütün məzmun skriptlərini nəzərə almama siyahısına əlavə edin"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Nəzərə almama siyahısına skript əlavə edin"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Bəzi zəng çərçivələrində xəbərdarlıqlar var"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "nəzərə almama siyahısında"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Nəzərə almama siyahısından bütün məzmun skriptlərini silin"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Nəzərə almama siyahısından silin"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Çərçivəni yenidən başladın"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Dəqiq çap edin: {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} tərəfindən sazlama məlumatı vasitəsilə təmin edilib)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(mənbə buradan əldə edildi: {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Fayldakı bütün kəsilmə nöqtələrini deaktiv edin"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Deaktiv kəsilmə nöqtələri"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Şərti redaktə edin"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Fayldakı bütün kəsilmə nöqtələrini aktivləşdirin"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Kəsilmə nöqtələri aktiv edilib"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "qarışıq"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Əldə edilən istisnalarda durdurun"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "İstisnalarda durdurun"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Bütün kəsilmə nöqtələrini silin"
@@ -11883,7 +11784,7 @@
     "message": "Əsas Mövzu üçün vaxtı gözləyir"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
-    "message": "Taymaut"
+    "message": "Vaxt limiti"
   },
   "panels/timeline/TimelineUIUtils.ts | timerFired": {
     "message": "Taymer təqdim edildi"
@@ -12120,7 +12021,7 @@
     "message": "Virtual yoxlayıcı mühitini aktivləşdirin"
   },
   "panels/webauthn/WebauthnPane.ts | export": {
-    "message": "İxrac edin"
+    "message": "Eksport"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
     "message": "ID"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y oxu üzrə ofset"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} müəyyənləşdirilməyib"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Rəng formatını dəyişmək üçün Shift düyməsinə basaraq klikləyin"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Cəld açma dəvəti"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Təsdiq etmək üçün \"Enter\", yaxud ləğv etmək üçün \"Escape\" üzərinə basın)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Əlçatan əmrlərə baxmaq üçün \"?\" yazın"

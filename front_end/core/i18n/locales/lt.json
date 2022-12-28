@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Nepavyko išanalizuoti {PH1} turinio: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Naudojant kūrėjo įrankius nepavyko įkelti šaltinio žemėlapio: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsija"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "„JavaScript“ išjungimas"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Išjungti JPEG XL formatą"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Išjungti vietinius šriftus"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "„JavaScript“ įgalinimas"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Įgalinti JPEG XL formatą"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Įgalinti vietinius šriftus"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Įgalinti tinklo užklausų blokavimą"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Leisti „DevTools“ įkelti šaltinius, pvz., šaltinio žemėlapius, iš nuotolinių failų kelių. Išjungta pagal numatytuosius nustatymus saugos sumetimais."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Įgalinti „WebP“ formatą"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Išjungti AVIF vaizdo formatą"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Išjungti JPEG XL vaizdo formatą"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Išjungti vietinius šriftus"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Pateikimas"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Įgalinti paiešką vedant tekstą"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Ieškoti vedant tekstą"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Išjungti paiešką vedant tekstą (jei norite ieškoti, paspauskite „Enter“)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Rodyti skelbimus šioje svetainėje, jei leidžiama"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} nėra nurodytas apraše, vietoje jo naudojama „{PH3}“. Jei norite nurodyti programos ID, atitinkantį dabartinę tapatybę, nustatykite {PH4} lauką kaip „{PH5}“ {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Programos aprašas"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Nerekomenduojama apibrėžti piktogramos naudojant vertę „purpose: \"any maskable\"“. Tikėtina, kad ji bus rodoma netinkamai kai kuriose platformose dėl per didelio arba per mažo užpildymo."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Naujų užrašų URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Neaptiktas joks aprašas"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Nerasta atitinkančio service worker. Gali reikėti iš naujo įkelti puslapį arba patikrinti, ar dabartinio puslapio service worker apima aprašo aprėptį ir pradžios URL."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Puslapyje prašoma kliento sertifikato, kuris netinkamas paslėptam puslapiui, pvz., išankstinio pateikimo."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Įkėlus iš anksto pateiktą puslapį nukreipiama į kelių šaltinių URL. Šiuo metu išankstinio pateikimo kelių šaltinių puslapiai neleidžiami."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Bandyta iš anksto pateikti URL, kuris peradresavo į kelių šaltinių URL. Šiuo metu išankstinio pateikimo kelių šaltinių puslapiai neleidžiami."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Duomenų taupymo priemonė įgalinta"
   },
@@ -3936,27 +3900,6 @@
     "message": "Savininko kilmė"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Bendrinama saugykla"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Sukūrimas"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Įrašai"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Ilgis"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metaduomenys"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Šaltinis"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Biudžetas"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Bendrinama saugykla"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Atidarytas spausdinimo iššokantysis langas. Norėdami tęsti, uždarykite jį."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Anksčiau nurodyta našumo metrika imituojama ir neatitiks šiuose pėdsakuose rasto laiko. Jei norite, kad laikas atitiktų, išjunkite imituojamą duomenų srauto ribojimą „Lighthouse“ nustatymų“ skiltyje."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Žr. pradinį pėdsaką"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Žiūrėti pėdsaką"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(nauja ataskaita)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Slapukai, kurie buvo išsiųsti į serverį užklausos antraštėje „slapukas“"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Sužinokite daugiau"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Netinkamai suformatuoti atsakymo slapukai"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "rodyti išfiltruotus užklausos slapukus"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Šios svetainės kitame skaidinyje yra slapukų, kurie nebuvo išsiųsti su šia užklausa. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Šioje užklausoje nėra slapukų."
@@ -9729,7 +9657,7 @@
     "message": "Imituojami įrenginiai"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Ūgis"
+    "message": "Aukštis"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Naudotojo priemonės eilutė"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Atidaryti „cubic bezier“ redagavimo priemonę."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Pridėti visus turinio scenarijus prie nepaisomų elementų sąrašo"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Pridėti scenarijų, kad būtų nepaisoma sąrašo"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Pateikta perspėjimų dėl kelių iškvietimo rėmelių"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "nepaisomų elementų sąraše"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Pašalinti visus turinio scenarijus iš nepaisomų elementų sąrašo"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Pašalinti iš nepaisomų sąrašo"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Iš naujo paleisti rėmelį"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Taikyti struktūrinę lygiuotę „{PH1}“"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} pateikė kaip derinimo informaciją)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(šaltinis susietas iš {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl + Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Išjungti visus stabdos taškus faile"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Išjungti stabdos taškai"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Redaguoti sąlygą"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Įgalinti visus stabdos taškus faile"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Įgalinti stabdos taškai"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "mišrus"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Pristabdyti užfiksavus išimčių"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Pristabdyti radus išimčių"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Pašalinti visus stabdos taškus"
@@ -11883,7 +11784,7 @@
     "message": "Pagrindinės grupės laukimo laikas"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
-    "message": "Skirtasis laikas"
+    "message": "Skirtas laikas"
   },
   "panels/timeline/TimelineUIUtils.ts | timerFired": {
     "message": "Laikmatis suaktyvintas"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y poslinkis"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} neapibrėžta"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Spustelėkite „Shift“, jei norite pakeisti nuotraukos formatą"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Spartaus atidarymo raginimas"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Paspauskite „Enter“, kad patvirtintumėte, arba „Escape“, kad atšauktumėte.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Įveskite ?, kad peržiūrėtumėte pasiekiamas komandas"

@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1}의 콘텐츠를 파싱할 수 없음: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools에서 소스 맵을 로드하지 못함: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "색맹"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "자바스크립트 사용 중지"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL 형식 사용 중지"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "로컬 글꼴 사용 중지"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "자바스크립트 사용 설정"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL 형식 사용 설정"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "로컬 글꼴 사용 설정"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "네트워크 요청 차단 사용 설정"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "DevTools가 원격 파일 경로에서 소스 맵과 같은 리소스를 로드하도록 허용합니다. 보안상의 이유로 기본적으로 사용 중지되어 있습니다."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP 형식 사용 설정"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF 이미지 형식 사용 중지"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL 이미지 형식 사용 중지"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "로컬 글꼴 사용 중지"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "렌더링"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "실시간 검색 사용"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "실시간 검색"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "실시간 검색 사용 중지(Enter 키를 눌러야 검색)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "허용된 경우 이 사이트에 광고 표시"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} 매니페스트에 {PH2}이(가) 지정되지 않아 {PH3}이(가) 대신 사용되었습니다. 현재 ID에 대응하는 앱 ID를 지정하려면 {PH4} 필드를 {PH5} {PH6}(으)로 설정하세요."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "앱 매니페스트"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "'purpose: \"any maskable\"'을(를) 포함한 아이콘 선언은 권장되지 않습니다. 패딩이 너무 많거나 적어 일부 플랫폼에서 잘못 표시될 가능성이 높습니다."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "새 노트 URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "감지된 매니페스트 없음"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "일치하는 service worker이(가) 없습니다. 페이지를 새로고침하거나 현재 페이지에 관한 service worker의 범위가 매니페스트의 범위와 시작 URL을 포괄하는지 확인하세요."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "페이지에서 클라이언트 인증서를 요청하고 있으나 이는 사전 렌더링과 같은 숨겨진 페이지에 적합하지 않습니다."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "사전 렌더링된 페이지가 로드 후 교차 출처 URL로 이동했습니다. 현재 교차 출처 페이지의 사전 렌더링은 허용되지 않습니다."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "교차 출처 URL로 리디렉션되는 URL의 사전 렌더링을 시도했습니다. 현재 교차 출처 페이지의 사전 렌더링은 허용되지 않습니다."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "데이터 절약 모드 사용 설정됨"
   },
@@ -3936,27 +3900,6 @@
     "message": "소유자 출처"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "공유 저장소"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "생성"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "항목"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "길이"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "메타데이터"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "출처"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "예산"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "공유 저장소"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "인쇄 팝업 창이 열려 있습니다. 계속하려면 팝업 창을 닫으세요."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "위의 성능 측정항목은 시뮬레이션된 것이며 이 흔적에서 발견된 타이밍과 일치하지 않습니다. 타이밍을 일치시키려면 'Lighthouse 설정'에서 시뮬레이션 제한을 사용 중지하세요."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "출처 흔적 보기"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "흔적 보기"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(신규 보고서)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "요청의 '쿠키' 헤더를 통해 서버로 전송된 쿠키입니다."
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "자세히 알아보기"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "잘못된 형식의 응답 쿠키"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "필터링을 통해 제외된 요청 쿠키 표시"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "이 사이트의 다른 파티션에는 이 요청과 함께 전송되지 않은 쿠키가 있습니다. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "이 요청에 쿠키가 없습니다."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "cubic bezier 에디터를 엽니다."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "무시 목록에 모든 콘텐츠 스크립트 추가"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "무시 목록에 스크립트 추가"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "일부 호출 프레임에 경고가 표시됩니다."
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "무시 목록에서"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "무시 목록에서 모든 콘텐츠 스크립트 삭제"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "무시 목록에서 삭제"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "프레임 다시 시작"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "{PH1} pretty print 적용"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1}에서 디버그 정보를 통해 제공됨)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "({PH1}에서 매핑된 소스)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "파일의 모든 중단점 사용 중지"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "사용 중지된 중단점"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "조건 수정"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "파일의 모든 중단점 사용 설정"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "사용 설정된 중단점"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "혼합"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "포착된 예외에서 일시중지"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "예외에서 일시중지"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "모든 중단점 삭제"
@@ -11115,7 +11016,7 @@
     "message": "메모리 타임라인 표시"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "성능 보고서 표시"
+    "message": "웹 바이탈 표시"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1}초"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y 오프셋"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1}이 정의되지 않음"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Shift를 누른 상태에서 클릭하여 색상 형식 변경"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "프롬프트 빨리 열기"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1}('Enter' 키를 눌러 확인하거나 'Esc' 키를 눌러 취소)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "'?'를 입력하여 사용 가능한 명령어 보기"

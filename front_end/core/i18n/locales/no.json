@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Kunne ikke analyse innhold for {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Utviklerverktøy kunne ikke laste inn kildekartet: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsia"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Deaktiver JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Deaktiver JPEG XL-formatet"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Deaktiver lokale skrifttyper"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Slå på JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Aktivér JPEG XL-formatet"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Aktiver lokale skrifttyper"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Slå på blokkering av nettverksforespørsler"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Tillat DevTools å laste inn ressurser, for eksempel kildekart, fra eksterne filbaner. Deaktivert som standard av sikkerhetshensyn."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivér WebP-formatet"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Deaktiver AVIF-bildeformat"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Deaktiver JPEG XL-bildeformatet"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Deaktiver lokale skrifttyper"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Gjengir"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Aktiver søk mens du skriver"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Søk mens du skriver"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Deaktiver søk mens du skriver (trykk på Enter for å søke)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Vis annonser på dette nettstedet, hvis tillatt"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} er ikke angitt i manifestet. {PH3} brukes i stedet. For å angi en app-ID som samsvarer med den gjeldende identiteten, sett {PH4}-feltet til {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Appmanifest"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Å erklære et ikon med «purpose: \"any maskable\"» frarådes. Det kommer sannsynligvis til å se feil ut på noen plattformer på grunn av for mye eller for lite utfylling."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Ny merknad for nettadresse"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Fant ikke noe manifest"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Fant ingen samsvarende service worker. Du må kanskje laste inn siden på nytt eller sjekke at service worker for den gjeldende siden har et omfang som omslutter omfanget («scope») og start-nettadressen («start_url») fra manifestet."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Siden ber om klientsertifikat, som ikke egner seg for en skjult side som forhåndsgjengivelse."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Den forhåndsgjengitte siden navigerte til en opphavsuavhengig nettadresse etter innlasting. Forhåndsgjengivelse av opphavsuavhengige sider er foreløpig ikke tillatt."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Forsøkte å forhåndsgjengi en nettadresse som ble viderekoblet til en opphavsuavhengig nettadresse. Forhåndsgjengivelse av opphavsuavhengige sider er foreløpig ikke tillatt."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Datasparing er slått på"
   },
@@ -3936,27 +3900,6 @@
     "message": "Eieropphav"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Delt lagring"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Opprettet"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Oppføringer"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Lengde"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Opphav"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Budsjett"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Delt lagring"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Forgrunnsvinduet for utskrift er åpent. Lukk det for å fortsette."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Ytelsesmålingene over er simulert og samsvarer ikke med tidene i denne sporingen. Slå av simulert struping i «Lighthouse-innstillinger» hvis du vil at tidene skal stemme overens."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Vis opprinnelig sporing"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Vis sporing"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(ny rapport)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Informasjonskapsler som ble sendt til tjeneren i «cookie»-hodet til forespørselen"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Finn ut mer"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Responsinformasjonskapsler som inneholder feil"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "vis forespørselsinformasjonskapsler som er filtrert bort"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Dette nettstedet har informasjonskapsler i en annen partisjon. Disse ble ikke sendt sammen med denne forespørselen. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Denne forespørselen har ingen informasjonskapsler"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Åpne cubic bezier-redigeringsprogram."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Legg til innholdsskripter på ignoreringslisten"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Legg til skript på ignoreringsliste"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Noen kallrammer har advarsler"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "på ignoreringsliste"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Fjern alle innholdsskripter fra ignoreringslisten"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Fjern fra ignoreringslisten"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Start ramme på nytt"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Pen formatering {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(angitt via feilsøkingsinformasjon av {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(kildekartlegging fra {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Deaktiver alle stoppunkter i filen"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Deaktiverte stoppunkter"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Endre betingelsen"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Aktiver alle stoppunkter i filen"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Aktiverte stoppunkter"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "blandet"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Sett på pause ved fangede unntak"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Sett på pause ved unntak"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Fjern alle stoppunkter"
@@ -11115,7 +11016,7 @@
     "message": "Vis tidslinje for minne"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Vis nettvitaler"
+    "message": "Vis Statistikk for nett"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} sek."
@@ -11562,7 +11463,7 @@
     "message": "Layoutrot"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "Layoutbytte"
+    "message": "Utseendeforskyvning"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Finn ut mer"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y-forskyvning"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} er ikke definert"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Shift-klikk for å endre fargeformat"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Hurtig åpning"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Trykk på «Enter» for å bekrefte eller «Escape» for å avbryte.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Skriv inn «?» for å se tilgjengelige kommandoer"

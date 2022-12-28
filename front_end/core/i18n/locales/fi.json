@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Kohteen {PH1} sisällön jäsennys epäonnistui: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools ei voinut ladata lähdekarttaa: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Akromatopsia"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Poista JavaScript käytöstä"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Poista muoto JPEG XL käytöstä"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Poista paikalliset fontit käytöstä"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Ota JavaScript käyttöön"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Ota muoto JPEG XL käyttöön"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Ota paikalliset fontit käyttöön"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Ota käyttöön verkkopyyntöjen esto"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Salli, että DevTools voi ladata materiaaleja, esim. lähdekarttoja, etätiedostopolkujen kautta. Oletuksena pois käytöstä turvallisuussyistä."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Ota muoto WebP käyttöön"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Poista kuvamuoto AVIF käytöstä"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Poista kuvamuoto JPEG XL käytöstä"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Poista paikalliset fontit käytöstä"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderöinti"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Ota käyttöön Haku kirjoittaessa -ominaisuus"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Haku kirjoittaessa"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Poista Haku kirjoittaessa käytöstä (hae painamalla Enter-näppäintä)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Näytä tällä sivustolla mainoksia, jos se on sallittua"
@@ -2169,7 +2145,7 @@
     "message": "Poista kaikki"
   },
   "panels/animation/AnimationTimeline.ts | pause": {
-    "message": "Keskeytä"
+    "message": "Tauko"
   },
   "panels/animation/AnimationTimeline.ts | pauseAll": {
     "message": "Keskeytä kaikki"
@@ -2233,9 +2209,6 @@
   },
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} ei ole määriteltynä manifestissa. Sen sijaan käytössä on {PH3}. Voit määrittää sovellustunnuksen, joka vastaa nykyistä identiteettiä, valitsemalla {PH4}-kenttään osoitteen {PH5} {PH6}."
-  },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Sovelluksen manifesti"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Kuvaketta ei suositella määriteltäväksi tällä: purpose: \"any maskable\". Se näyttää todennäköisesti väärältä joillain alustoilla liian vähäisen täytteen vuoksi."
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Uuden muistiinpanon URL-osoite"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Manifestiä ei löydy"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Vastaavuutta ei havaittu: service worker. Sinun on ehkä päivitettävä sivu tai tarkistettava, kattavatko nykyisen sivun laajuus ja service worker manifestin ja aloitus-URL:in."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Tämä sivu pyytää asiakasvarmennetta, joka ei sovellu piilotetulle sivulle (esimerkiksi esirenderöintiin)."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Esirenderöity sivu siirtyi eri lähteistä peräisin olevaan URL-osoitteeseen lataamisen jälkeen. Eri lähteistä peräisin olevien sivujen esirenderöinti on kiellettyä."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Yritettiin esirenderöidä URL-osoite, joka uudelleenohjasi eri alkuperän URL-osoitteeseen. Eri lähteistä peräisin olevien sivujen esirenderöinti on kiellettyä."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Data Saver käytössä"
   },
@@ -3936,27 +3900,6 @@
     "message": "Omistajan alkuperä"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Jaettu tallennustila"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Luomisaika"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Merkinnät"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Pituus"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Alkuperä"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Budjetti"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Jaettu tallennustila"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "Tyhjennä tallennustila"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "Työpöytä"
+    "message": "Tietokone"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "DevToolsin rajoittaminen (edistynyt)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Tulostuksen ponnahdusikkuna on auki. Sulje se jatkaaksesi."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Yllä mainitut mittaritiedot ovat simulaatioita, eivätkä vastaa jäljessä olevia ajoituksia. Laita simulaatiorajoitukset pois päältä Lighthouse-asetuksista, jos haluat, että ajoitukset vastaavat toisiaan."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Näytä alkuperäinen jälki"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Näytä jälki"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(uusi raportti)"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Evästeet, jotka on lähetetty palvelimelle pyynnön \"cookie\"-otsikossa"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Lue lisää"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Väärin muotoillut vastausevästeet"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "näytä poissuodatetut pyyntöevästeet"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Tällä sivustolla on toisessa osiossa evästeitä, joita ei lähetetty tämän pyynnön yhteydessä. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Tällä pyynnöllä ei ole evästeitä."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Avaa kuutiollisen bezier-käyrän muokkaaja."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Lisää kaikki sisältökomentosarjat ohitusluetteloon"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Lisää skripti ohituslistalle"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Joissakin soittokehyksissä on varoituksia"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "ohitusluettelossa"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Poista kaikki sisältökomentosarjat ohitusluettelosta"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Poista ohituslistalta"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Käynnistä kehys uudelleen"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Kaunista {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(lähde: {PH1} virheenkorjaustietojen kautta)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(lähde mäpätty osoitteesta {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Poista kaikki tiedoston pysäytyspisteet käytöstä"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Käytöstä poistetut pysäytyspisteet"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Muokkaa ehtoa"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Ota käyttöön kaikki tiedoston pysäytyspisteet"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Käytössä olevat pysäytyspisteet"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "sekalainen"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Keskeytä havaittaessa poikkeuksia"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Keskeytä kohdattaessa poikkeuksia"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Poista kaikki pysäytyspisteet"
@@ -11115,7 +11016,7 @@
     "message": "Näytä muistin aikajana"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Näytä sivuston suorituskyky"
+    "message": "Näytä Web Vitals ‑tiedot"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} s"
@@ -11562,7 +11463,7 @@
     "message": "Asettelun juuri"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "Asettelun muutos"
+    "message": "Asettelumuutos"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Lue lisää"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y-akselin väli"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} ei ole määritetty"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Vaihda värimuotoa painamalla vaihto ja klikkaamalla"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Kehotteen pika-avaus"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (vahvista painamalla Enter tai peru painamalla Esc.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Kirjoita ?, niin näet käytettävissä olevat komennot"

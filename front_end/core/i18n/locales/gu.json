@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1} માટે કન્ટેન્ટનું વિશ્લેષણ કરી શકાયું નથી: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools સૉર્સ નકશાને લોડ કરવામાં નિષ્ફળ રહ્યા: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "રંગ અંધત્વ"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript બંધ કરો"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL ફૉર્મેટ બંધ કરો"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "સ્થાનિક ફૉન્ટ બંધ કરો"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript ચાલુ કરો"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL ફૉર્મેટ ચાલુ કરો"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "સ્થાનિક ફૉન્ટ ચાલુ કરો"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "નેટવર્કની વિનંતી બ્લૉક કરવાનું ચાલુ કરો"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "રિમોટ ફાઇલ પથમાંથી, DevToolsને સૉર્સના નકશા જેવા સંસાધનો લોડ કરવાની મંજૂરી આપો. સુરક્ષા સંબંધિત કારણોથી ડિફૉલ્ટ તરીકેનો વિકલ્પ બંધ કર્યો છે."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ફૉર્મેટ ચાલુ કરો"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF છબીનું ફૉર્મેટ બંધ કરો"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL છબીનું ફૉર્મેટ બંધ કરો"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "સ્થાનિક ફૉન્ટ બંધ કરો"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "રેન્ડર કરવામાં"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "ટાઇપ કરતી વખતે શોધવાનું ચાલુ કરો"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "ટાઇપ કરતા જાઓ, શોધતા જાઓ"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "ટાઇપ કરતી વખતે શોધવાનું બંધ કરો (શોધવા માટે Enter કી દબાવો)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "જો મંજૂરી હોય, તો આ સાઇટ પર જાહેરાતો બતાવો"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "મેનિફેસ્ટમાં {PH1} {PH2}ની સ્પષ્ટતા કરવામાં આવી નથી, તેના બદલે {PH3}નો ઉપયોગ કરવામાં આવ્યો છે. વર્તમાન ઓળખ સાથે મેળ ખાતા ઍપના IDનો ઉલ્લેખ કરવા માટે, {PH4}ના ફીલ્ડને {PH5} {PH6} પર સેટ કરો."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "ઍપ મેનિફેસ્ટ"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "'purpose: \"any maskable\"' સાથે આઇકન જાહેર ન કરવાની સલાહ આપવામાં આવે છે. જાહેરાતની આજુબાજુની ખૂબ વધારે અથવા ખૂબ ઓછી ખાલી જગ્યાને કારણે તે અમુક પ્લૅટફૉર્મ પર બરાબર ન દેખાય તેમ બની શકે છે."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "નવી નોંધનું URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "કોઈ મેનિફેસ્ટ મળી નથી"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "મેળ ખાતી હોય તેવી કોઈ service worker મળી નથી. તમારે પેજ ફરીથી લોડ કરવું જરૂરી હોઈ શકે છે અથવા ચેક કરો કે વર્તમાન પેજ માટે service workerનું કાર્યક્ષેત્ર, મેનિફેસ્ટના કાર્યક્ષેત્ર અને સ્ટાર્ટ URLના કાર્યક્ષેત્રને આવરી લેતું હોય."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "પેજ ક્લાયન્ટના પ્રમાણપત્રની વિનંતી કરી રહ્યું છે, જે પ્રીરેન્ડરિંગ જેવા કોઈ છુપાવેલા પેજ માટે યોગ્ય નથી."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "લોડ થયા પછી પ્રીરેન્ડર કરેલું પેજ કોઈ ક્રોસ-ઑરિજિન URL પર નૅવિગેટ થાય છે. હાલમાં ક્રોસ-ઑરિજિન પેજને પ્રીરેન્ડર કરવાની મંજૂરી નથી."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "કોઈ એવા URLને પ્રીરેન્ડર કરવાનો પ્રયાસ કરવામાં આવ્યો કે જે કોઈ ક્રોસ-ઑરિજિન URL પર રીડાયરેક્ટ કરવામાં આવ્યું છે. હાલમાં ક્રોસ-ઑરિજિન પેજને પ્રીરેન્ડર કરવાની મંજૂરી નથી."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "ડેટા સેવર ચાલુ કર્યું"
   },
@@ -3936,27 +3900,6 @@
     "message": "માલિક ઑરિજિન"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "શેર કરેલો સ્ટોરેજ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "રચના"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "એન્ટ્રી"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "લંબાઈ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "મેટાડેટા"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "મૂળ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "બજેટ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "શેર કરેલો સ્ટોરેજ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "પ્રિન્ટ માટેની પૉપઅપ વિન્ડો ખુલી છે. આગળ વધવા માટે તેને બંધ કરો."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "કાર્યપ્રદર્શનના ઉપર આપેલા મેટ્રિક અનુકરણ કરેલા છે અને આ ટ્રેસમાં મળતા સમય સાથે મેળ ખાશે નહીં. જો સમય મેળ ખાય તેવું તમે ઇચ્છતા હો, તો \"લાઇટહાઉસ સેટિંગ\"માં અનુકરણ કરેલું થ્રોટલિંગ બંધ કરો."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "ઑરિજિનલ ટ્રેસ જુઓ"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "ટ્રેસ જુઓ"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(નવો રિપોર્ટ)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "વિનંતીના 'કુકી' હેડરમાં સર્વર પર મોકલવામાં આવેલી કુકી"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "વધુ જાણો"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "પ્રતિસાદની દૂષિત કુકી"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ફિલ્ટર કરીને કાઢી નાખેલી 'રિક્વેસ્ટ કુકી' બતાવો"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "આ સાઇટના અન્ય વિભાગમાં એવી કુકી છે, જેને આ વિનંતી સાથે મોકલવામાં આવી ન હતી. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "આ વિનંતીમાં કોઈ કુકી નથી."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "ક્યુબિક બેઝિયર એડિટર ખોલો."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "'અવગણવાની સૂચિ'માં કન્ટેન્ટની બધી સ્ક્રિપ્ટ ઉમેરો"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "અવગણવાની સૂચિમાં સ્ક્રિપ્ટ ઉમેરો"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "અમુક કૉલ ફ્રેમમાં ચેતવણીઓ હોય છે"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "'અવગણવાની સૂચિ' પર"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "'અવગણવાની સૂચિ'માંથી કન્ટેન્ટની બધી સ્ક્રિપ્ટ કાઢી નાખો"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "અવગણવાની સૂચિમાંથી કાઢી નાખો"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "ફ્રેમને ફરી શરૂ કરો"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "પ્રિટી પ્રિન્ટ {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} દ્વારા ડિબગ માહિતી મારફતે ઉપલબ્ધ કરાવવામાં આવ્યું)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "({PH1}માંથી લેવામાં આવેલો સૉર્સ)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ફાઇલમાંના બધા બ્રેકપૉઇન્ટ બંધ કરો"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "બંધ કરેલા બ્રેકપૉઇન્ટ"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "શરતમાં ફેરફાર કરો"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ફાઇલમાં બધા બ્રેકપૉઇન્ટ ચાલુ કરો"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "ચાલુ કરેલા બ્રેકપૉઇન્ટ"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "મિશ્ર"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "અપવાદો મળે ત્યારે તેના પર થોભાવશો"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "અપવાદો પર થોભાવો"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "તમામ બ્રેકપૉઇન્ટ કાઢી નાખો"
@@ -11115,7 +11016,7 @@
     "message": "મેમરીની સમયરેખા બતાવો"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "વેબની વિગતો બતાવો"
+    "message": "વેબની મહત્ત્વની વિગતો બતાવો"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} સેકન્ડ"
@@ -12297,7 +12198,7 @@
     "message": "'મેમરી ઇન્સપેક્ટર' બતાવો"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
-    "message": "પ્રતિસાદ"
+    "message": "પ્રતિસાદ આપો"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
     "message": "પ્રીવ્યૂની સુવિધા"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y ઑફસેટ"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} નિર્ધારિત કર્યું નથી"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "રંગના ફૉર્મેટમાં ફેરફાર કરવા માટે Shift દબાવીને ક્લિક કરો"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "ઝટપટ ખોલવાનો સંકેત"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (કન્ફર્મ કરવા માટે 'Enter' કી અથવા રદ કરવા માટે 'Escape' કી દબાવો.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "ઉપલબ્ધ આદેશો જોવા માટે '?' ટાઇપ કરો"

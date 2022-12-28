@@ -423,7 +423,7 @@
     "message": "Cross-Origin Read Blocking (CORB) memblokir respons lintas asal {PH1} dengan jenis MIME {PH2}. Buka https://www.chromestatus.com/feature/5629709824032768 untuk mengetahui detail selengkapnya."
   },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Fast 3G"
+    "message": "3G Cepat"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Tidak ada konten yang tersedia untuk permintaan preflight"
@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Tidak dapat mengurai konten untuk {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools gagal memuat peta sumber: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsia"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Nonaktifkan JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Nonaktifkan format JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Nonaktifkan font lokal"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Aktifkan JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Aktifkan format JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Aktifkan font lokal"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktifkan pemblokiran permintaan jaringan"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Izinkan DevTools memuat resource, seperti peta sumber, dari jalur file jarak jauh. Dinonaktifkan secara default karena alasan keamanan."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktifkan format WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Nonaktifkan format gambar AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Nonaktifkan format gambar JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Nonaktifkan font lokal"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Rendering"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Aktifkan telusuri saat Anda mengetik"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Telusuri saat Anda mengetik"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Nonaktifkan telusuri saat Anda mengetik (tekan Enter untuk menelusuri)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Tampilkan iklan di situs ini, jika diizinkan"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} Jika {PH2} tidak ditentukan dalam manifes, {PH3} akan digunakan sebagai gantinya. Untuk menentukan ID Aplikasi yang cocok dengan identitas saat ini, setel kolom {PH4} ke {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Manifes Aplikasi"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Mendeklarasikan ikon dengan 'purpose: \"any maskable\"' tidak disarankan. Kemungkinan terlihat salah pada beberapa platform karena terlalu banyak atau terlalu sedikit padding."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL catatan baru"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Tidak ada manifes yang terdeteksi"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Tidak terdeteksi service worker yang cocok. Anda harus memuat ulang halaman, atau memeriksa apakah cakupan service worker untuk halaman saat ini menyertakan scope dan start_URL dari manifes."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Halaman meminta sertifikat klien, yang tidak sesuai untuk halaman tersembunyi seperti pra-rendering."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Halaman pra-rendering dialihkan ke URL lintas asal setelah dimuat. Saat ini, pra-rendering halaman lintas asal tidak diizinkan."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Mencoba melakukan pra-rendering URL yang mengalihkan ke URL lintas asal. Saat ini, pra-rendering halaman lintas asal tidak diizinkan."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Penghemat data diaktifkan"
   },
@@ -3936,27 +3900,6 @@
     "message": "Origin Pemilik"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Penyimpanan Bersama"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Pembuatan"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Entri"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Durasi"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Asal"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Anggaran"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Penyimpanan Bersama"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Jendela pop-up cetak terbuka. Tutup jendela tersebut untuk melanjutkan."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Metrik performa di atas disimulasikan dan tidak akan cocok dengan waktu yang ditemukan dalam pelacakan ini. Nonaktifkan throttling simulasi di \"Setelan Lighthouse\" jika Anda ingin waktunya cocok."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Lihat Trace Asli"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Lihat Trace"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(laporan baru)"
   },
@@ -6720,7 +6654,7 @@
     "message": "Preset"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | add": {
-    "message": "Tambahkan…"
+    "message": "Tambahkan …"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | addS": {
     "message": "Tambahkan {PH1}"
@@ -6954,7 +6888,7 @@
     "message": "Throttling jaringan"
   },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
-    "message": "Gunakan browser default"
+    "message": "Gunakan default browser"
   },
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "Agen pengguna"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookie yang dikirim ke server di header 'cookie' permintaan"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Pelajari lebih lanjut"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Cookie Respons Salah"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "tampilkan cookie permintaan yang difilter"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Situs ini memiliki cookie dalam partisi lain, yang tidak dikirim dengan permintaan ini. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Permintaan ini tidak memiliki cookie."
@@ -8187,7 +8115,7 @@
     "message": "Jaringan"
   },
   "panels/network/network-meta.ts | networkConditions": {
-    "message": "Ketentuan jaringan"
+    "message": "Kondisi jaringan"
   },
   "panels/network/network-meta.ts | networkRequestBlocking": {
     "message": "Pemblokiran permintaan jaringan"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Buka editor kubik bezier."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Tambahkan semua skrip konten ke daftar yang diabaikan"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Tambahkan skrip ke daftar yang diabaikan"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Beberapa frame panggilan memiliki peringatan"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "pada daftar abaikan"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Hapus semua skrip konten dari daftar abaikan"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Hapus dari daftar yang diabaikan"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Mulai ulang frame"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Pretty print {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(disediakan melalui info debug oleh {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(sumber dipetakan dari {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Nonaktifkan semua titik henti sementara dalam file"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Titik henti sementara dinonaktifkan"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Edit kondisi"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Aktifkan semua titik henti sementara dalam file"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Titik henti sementara diaktifkan"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "campuran"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Jeda pada pengecualian yang tertangkap"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Dijeda pada pengecualian"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Hapus semua titik henti sementara"
@@ -11088,7 +10989,7 @@
     "message": "Jaringan:"
   },
   "panels/timeline/TimelinePanel.ts | networkConditions": {
-    "message": "Ketentuan jaringan"
+    "message": "Kondisi jaringan"
   },
   "panels/timeline/TimelinePanel.ts | processingProfile": {
     "message": "Memproses profil…"
@@ -11562,7 +11463,7 @@
     "message": "Root tata letak"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "Shift Tata Letak"
+    "message": "Pergeseran Tata Letak"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Pelajari lebih lanjut"
@@ -11883,7 +11784,7 @@
     "message": "Waktu Menunggu Thread Utama"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
-    "message": "Waktu habis"
+    "message": "Waktu tunggu"
   },
   "panels/timeline/TimelineUIUtils.ts | timerFired": {
     "message": "Timer Diaktifkan"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Offset Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} tidak ditetapkan"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Klik Shift untuk mengubah format warna"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Buka perintah dengan cepat"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Tekan 'Enter' untuk mengonfirmasi atau 'Escape' untuk membatalkan.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Ketik '?' untuk melihat perintah yang tersedia"

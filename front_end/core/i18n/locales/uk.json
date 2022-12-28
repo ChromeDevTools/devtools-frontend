@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Не вдалося виконати синтаксичний аналіз контенту для {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Інструментам розробника не вдалося завантажити карту джерела: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ахроматопсія"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Вимкнути JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Вимкнути формат JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Вимкнути локальні шрифти"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Увімкнути JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Увімкнути формат JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Увімкнути локальні шрифти"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Увімкнути блокування запитів мережі"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Дозволити DevTools завантажувати ресурси, як-от карти джерел, із віддалених шляхів до файлів. За умовчанням цю опцію вимкнено з міркувань безпеки."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Увімкнути формат WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Вимкнути формат зображень AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Вимкнути формат зображень JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Вимкнути локальні шрифти"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Відрисовка"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Увімкнути пошук під час введення"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Пошук під час введення"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Вимкнути пошук під час введення (натисніть Enter, щоб шукати)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Показувати оголошення на цьому сайті, якщо їх дозволено"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} у маніфесті не заповнено поле {PH2}. Замість нього використовується поле {PH3}. Щоб указати ідентифікатор додатка, що відповідає поточному, введіть у полі {PH4} значення {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Маніфест додатка"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Не рекомендується задавати значок із purpose: \"any maskable\". Найімовірніше, він матиме неправильний вигляд на деяких платформах через завеликі або замалі відступи."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL-адреса нової нотатки"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Маніфест не виявлено"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Не виявлено збігів service worker. Можливо, потрібно перезавантажити сторінку або перевірити, чи область дії синтаксису service worker для поточної сторінки включає область дії та початкову URL-адресу з маніфесту."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Ця сторінка запитує сертифікат клієнта, який не підходить для прихованих сторінок (наприклад, сертифікат попередньої відрисовки)."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Після завантаження попередньо відрисована сторінка переспрямовує на URL-адресу міждоменного джерела. Зараз попередню відрисовку сторінок із міждоменним джерелом заборонено."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Спроба попередньої відрисовки URL-адреси, яка переспрямовує на міждоменну URL-адресу. Зараз попередню відрисовку сторінок із міждоменним джерелом заборонено."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Заощадження трафіку ввімкнено"
   },
@@ -3936,27 +3900,6 @@
     "message": "Джерело власника"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Спільне сховище"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Дата створення"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Записи"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Довжина"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Метадані"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Джерело"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Бюджет"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Спільне сховище"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "Очистити пам'ять"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "Комп'ютер"
+    "message": "Комп’ютер"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "Обмеження пропускної спроможності для Інструментів розробника (для досвідчених користувачів)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Відкрито спливаюче вікно друку. Закрийте його, щоб продовжити."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Зазначені вище показники ефективності є імітацією та не збігатимуться з часом у цьому трасуванні. Вимкніть імітоване обмеження пропускної спроможності в розділі \"Налаштування Lighthouse\", якщо хочете, щоб час збігався."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Переглянути оригінальне трасування"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Переглянути трасування"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(новий звіт)"
@@ -6723,7 +6657,7 @@
     "message": "Додати…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | addS": {
-    "message": "Додати {PH1}"
+    "message": "Додати ({PH1})"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "Обмеження пропускної спроможності ЦП"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Файли cookie, надіслані на сервер у заголовку запиту \"cookie\""
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Докладніше"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Неправильні файли cookie відповіді"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "показати відфільтровані файли cookie запиту"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Сайт має файли cookie в іншому розділенні, які не було надіслано в цьому запиті. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Цей запит не містить файлів cookie."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Відкрити редактор кривої Безьє."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Додати всі скрипти контенту в список ігнорування"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Додати скрипт у список ігнорування"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Деякі фрейми викликів мають попередження"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "у списку ігнорування"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Видалити всі скрипти контенту зі списку ігнорування"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Видалити зі списку ігнорування"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Перезапустити фрейм"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Автоматичне форматування: {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(надано через інформацію про налагодження: {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(джерело зіставлено з {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Вимкнути всі точки зупину у файлі"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Вимкнені точки зупину"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Змінити умову"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Увімкнути всі точки зупину у файлі"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Увімкнені точки зупину"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "комбінація"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Призупинятися на виявлених винятках"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Призупиняти на винятках"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Видалити всі точки зупину"
@@ -11115,7 +11016,7 @@
     "message": "Показати часову шкалу пам'яті"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Показувати веб-показники"
+    "message": "Відображати веб-показники"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} с"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Зміщення по осі Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} не визначено"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Утримуйте Shift і натисніть, щоб змінити формат кольору"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Командний рядок Quick Open"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Щоб підтвердити, натисніть Enter; щоб скасувати – Escape.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Введіть \"?\", щоб переглянути доступні команди"

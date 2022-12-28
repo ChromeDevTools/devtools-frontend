@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1} தளத்திற்கான உள்ளடக்கத்தைப் பாகுபடுத்த முடியவில்லை: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "சோர்ஸ் மேப்பை டெவெலப்பர் கருவிகளால் ஏற்ற முடியவில்லை: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "அக்ரமடோப்ஸியா"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScriptடை முடக்கு"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL வடிவமைப்பை முடக்கு"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "சாதனத்தில் உள்ள எழுத்து வடிவத்தை முடக்கு"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScriptடை இயக்கு"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL வடிவமைப்பை இயக்கு"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "சாதனத்தில் உள்ள எழுத்து வடிவங்களை இயக்கு"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "நெட்வொர்க் கோரிக்கைத் தடையை இயக்கு"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "சோர்ஸ் மேப்ஸ் போன்ற ஆதாரங்களை ரிமோட் ஃபைல் தடங்களில் இருந்து DevTools ஏற்ற அனுமதி. பாதுகாப்புக் காரணங்களுக்காக இவை இயல்பாகவே முடக்கப்பட்டிருக்கும்."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP வடிவமைப்பை இயக்கு"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF பட வடிவமைப்பை முடக்கு"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL பட வடிவமைப்பை முடக்கு"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "சாதனத்தில் உள்ள எழுத்து வடிவத்தை முடக்கு"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ரெண்டரிங்"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "டைப் செய்யும்போதே தேடு என்பதை இயக்கு"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "டைப் செய்யும்போதே தேடு"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "டைப் செய்யும்போதே தேடுவதை முடக்கு (தேட Enter அழுத்தவும்)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "அனுமதிக்கப்பட்டால் இந்தத் தளத்தில் விளம்பரங்களைக் காட்டு"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} மெனிஃபெஸ்ட்டில் குறிப்பிடப்படவில்லை எனில் அதற்குப் பதிலாக {PH3} பயன்படுத்தப்படும். தற்போதைய அடையாளத்துடன் பொருந்தும் ஓர் ஆப்ஸ் ஐடியைக் குறிப்பிட, {PH4} புலத்தை {PH5} {PH6} என அமைக்கவும்."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "ஆப்ஸ் மெனிஃபெஸ்ட்"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "purpose: \"any maskable\" உடன் ஓர் ஐகானை அறிவிப்பது பரிந்துரைக்கப்படவில்லை. மிக அதிகமான அல்லது மிகக் குறைந்த இடைவெளி காரணமாகச் சில பிளாட்ஃபார்ம்களில் இது தவறாகத் தெரியக்கூடும்."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "புதிய குறிப்பு URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "மெனிஃபெஸ்ட் எதுவும் கண்டறியப்படவில்லை"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "பொருந்தும் service worker கண்டறியப்படவில்லை. பக்கத்தை ரெஃப்ரெஷ் செய்ய வேண்டியிருக்கலாம் அல்லது தற்போதைய பக்கத்திற்கான service worker இன் நோக்கம் மெனிஃபெஸ்ட்டின் ஸ்கோப் மற்றும் ஸ்டார்ட் URLலைக் கொண்டுள்ளதா எனச் சரிபார்க்கவும்."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "ப்ரீரெண்டரிங் போன்ற மறைக்கப்பட்ட பக்கங்களுக்குப் பொருந்தாத கிளையண்ட் சான்றிதழை இந்தப் பக்கம் கோருகிறது."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "ப்ரீரெண்டரிங் செய்யப்பட்ட பக்கம் ஏற்றப்பட்ட பிறகு அது கிராஸ் ஆரிஜின் URLலுக்குச் சென்றது. தற்போது ப்ரீரெண்டரிங் கிராஸ் ஆரிஜின் பக்கங்கள் அனுமதிக்கப்படுவதில்லை."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "கிராஸ் ஆரிஜின் URLலுக்குத் திசைதிருப்பப்பட்ட URLலைப் ப்ரீரெண்டரிங் செய்ய முயற்சி மேற்கொள்ளப்பட்டது. தற்போது ப்ரீரெண்டரிங் கிராஸ் ஆரிஜின் பக்கங்கள் அனுமதிக்கப்படுவதில்லை."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "டேட்டா சேமிப்பான் இயக்கப்பட்டது"
   },
@@ -3936,27 +3900,6 @@
     "message": "உரிமையாளர் ஆரிஜின்"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "பகிர்ந்த சேமிப்பகம்"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "உருவாக்கிய நேரம்"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "உள்ளீடுகள்"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "நீளம்"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "தரவுத்தகவல்"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ஆரிஜின்"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "பட்ஜெட்"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "பகிர்ந்த சேமிப்பகம்"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "அச்சிடுதலுக்கான பாப்-அப் சாளரம் திறந்துள்ளது. தொடர, அதனை மூடவும்."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "மேலேயுள்ள செயல்திறன் அளவீடுகள் உருவகப்படுத்தப்பட்டவை. இந்த டிரேஸில் உள்ள நேரங்களுடன் அவை பொருந்தாது. நேரங்கள் பொருந்த வேண்டுமெனில் \"Lighthouse அமைப்புகளில்\" உருவகப்படுத்தப்பட்ட த்ராட்லிங்கை முடக்கவும்."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "அசல் டிரேஸைக் காட்டு"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "டிரேஸைக் காட்டு"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(புதிய அறிக்கை)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "கோரிக்கையின் 'குக்கீ' தலைப்பில் சேவையகத்திற்கு அனுப்பப்பட்ட குக்கீகள்"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "மேலும் அறிக"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "தவறான பதிலளிப்புக் குக்கீகள்"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "வடிகட்டப்பட்ட பதிலளிப்புக் குக்கீகளைக் காட்டு"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "வேறொரு பார்டிஷனில் இந்தத் தளத்தின் குக்கீகள் உள்ளன. அவை இந்தக் கோரிக்கையுடன் அனுப்பப்படவில்லை. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "இந்தக் கோரிக்கையில் குக்கீகள் இல்லை."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "cubic bezier எடிட்டரைத் திற."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "உள்ளடக்க ஸ்கிரிப்ட்டுகள் அனைத்தையும் புறக்கணிப்புப் பட்டியலில் சேர்"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "புறக்கணிப்புப் பட்டியலில் ஸ்கிரிப்ட்டைச் சேர்"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "சில கால் ஃபிரேம்களில் எச்சரிக்கைகள் உள்ளன"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "புறக்கணிப்புப் பட்டியல் காட்டப்படுகிறது"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "புறக்கணிப்புப் பட்டியலில் இருந்து உள்ளடக்க ஸ்கிரிப்ட்டுகள் அனைத்தையும் அகற்று"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "புறக்கணிப்புப் பட்டியலில் இருந்து அகற்று"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "ஃபிரேமை மீண்டும் தொடங்கு"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "பிரெட்டி பிரிண்ட் {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} தளத்தினால் பிழைதிருத்தத் தகவல் மூலம் வழங்கப்பட்டது)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "({PH1} தளத்தில் இருந்து சோர்ஸ் மேப் செய்யப்பட்டது)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ஃபைலில் உள்ள பிரேக்பாயிண்ட்டுகள் அனைத்தையும் முடக்கு"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "முடக்கப்பட்ட பிரேக்பாயிண்ட்டுகள்"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "நிபந்தனையைத் திருத்தும்"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ஃபைலில் உள்ள அனைத்து பிரேக்பாயிண்ட்டுகளையும் இயக்கு"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "இயக்கப்பட்டுள்ள பிரேக்பாயிண்ட்டுகள்"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "கலவை"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "வழங்கப்பட்ட எக்ஸெப்ஷன்களில் இடைநிறுத்து"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "எக்ஸெப்ஷன்களின்போது இடைநிறுத்து"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "பிரேக்பாயிண்ட்டுகள் அனைத்தையும் அகற்று"
@@ -11883,7 +11784,7 @@
     "message": "முக்கியமான தொடரிழைக்கான காத்திருப்பு நேரம்"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
-    "message": "நேரம் முடிந்தது"
+    "message": "நேர முடிவு"
   },
   "panels/timeline/TimelineUIUtils.ts | timerFired": {
     "message": "டைமர் செயல்படுத்தப்பட்டது"
@@ -12297,7 +12198,7 @@
     "message": "நினைவகக் கண்காணிப்புக் கருவியைக் காட்டு"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
-    "message": "Feedback"
+    "message": "கருத்து"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
     "message": "மாதிரிக்காட்சி அம்சம்"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y ஆஃப்செட்"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} வரையறுக்கப்படவில்லை"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "வண்ண வடிவத்தை மாற்ற, Shift விசையை அழுத்தியபடி கிளிக் செய்க"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "விரைவாகத் திறப்பதற்கான அறிவிப்பு"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (உறுதிசெய்ய 'Enter' விசையையோ ரத்துசெய்ய 'Esc' விசையையோ அழுத்தவும்.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "கட்டளைகளைப் பார்க்க, '?' ஐ உள்ளிடவும்"

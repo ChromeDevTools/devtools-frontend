@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1} ਲਈ ਸਮੱਗਰੀ ਨੂੰ ਪਾਰਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools, ਸਰੋਤ ਨਕਸ਼ੇ ਨੂੰ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ ਰਹੇ: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "ਰੰਗ ਦਾ ਅੰਨ੍ਹਾਪਣ"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript ਬੰਦ ਕਰੋ"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL ਫਾਰਮੈਟ ਨੂੰ ਬੰਦ ਕਰੋ"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "ਸਥਾਨਕ ਫ਼ੌਂਟਾਂ ਨੂੰ ਬੰਦ ਕਰੋ"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript ਨੂੰ ਚਾਲੂ ਕਰੋ"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL ਫਾਰਮੈਟ ਨੂੰ ਚਾਲੂ ਕਰੋ"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "ਸਥਾਨਕ ਫ਼ੌਂਟਾਂ ਨੂੰ ਚਾਲੂ ਕਰੋ"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ਨੈੱਟਵਰਕ ਬੇਨਤੀ ਨੂੰ ਬਲਾਕ ਕਰਨਾ ਚਾਲੂ ਕਰੋ"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "DevTools ਨੂੰ ਸਰੋਤ ਲੋਡ ਕਰਨ ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ, ਜਿਵੇਂ ਕਿ ਰਿਮੋਟ ਫ਼ਾਈਲ ਪਾਥਾਂ ਤੋਂ ਸਰੋਤ ਨਕਸ਼ੇ। ਸੁਰੱਖਿਆ ਕਾਰਨਾਂ ਕਰਕੇ ਪੂਰਵ-ਨਿਰਧਾਰਿਤ ਤੌਰ 'ਤੇ ਬੰਦ ਕੀਤਾ ਗਿਆ ਹੈ।"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ਫਾਰਮੈਟ ਨੂੰ ਚਾਲੂ ਕਰੋ"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF ਚਿੱਤਰ ਫਾਰਮੈਟ ਨੂੰ ਬੰਦ ਕਰੋ"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL ਚਿੱਤਰ ਫਾਰਮੈਟ ਨੂੰ ਬੰਦ ਕਰੋ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "ਸਥਾਨਕ ਫ਼ੌਂਟਾਂ ਨੂੰ ਬੰਦ ਕਰੋ"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ਰੈਂਡਰਿੰਗ"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "ਟਾਈਪ ਕਰਦੇ ਹੋਏ ਖੋਜ ਚਾਲੂ ਕਰੋ"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "ਟਾਈਪ ਕਰਦੇ ਹੋਏ ਖੋਜੋ"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "ਟਾਈਪ ਕਰਦੇ ਹੋਏ ਖੋਜ ਬੰਦ ਕਰੋ (ਖੋਜ ਕਰਨ ਲਈ Enter ਦਬਾਓ)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "ਆਗਿਆ ਹੋਣ 'ਤੇ, ਇਸ ਸਾਈਟ 'ਤੇ ਵਿਗਿਆਪਨਾਂ ਨੂੰ ਦਿਖਾਓ"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "ਮੈਨੀਫ਼ੈਸਟ ਵਿੱਚ {PH1} {PH2} ਨਿਰਧਾਰਿਤ ਨਹੀਂ ਕੀਤੀ ਗਈ ਹੈ, ਇਸਦੀ ਬਜਾਏ {PH3} ਵਰਤਿਆ ਗਿਆ ਹੈ। ਮੌਜੂਦਾ ਪਛਾਣ ਨਾਲ ਮੇਲ ਖਾਂਦੀ ਐਪ ਆਈਡੀ ਨਿਰਧਾਰਿਤ ਕਰਨ ਲਈ, {PH4} ਖੇਤਰ ਨੂੰ {PH5} {PH6} 'ਤੇ ਸੈੱਟ ਕਰੋ।"
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "ਐਪ ਮੈਨੀਫ਼ੈਸਟ"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "'purpose: \"any maskable\"' ਦੇ ਨਾਲ ਪ੍ਰਤੀਕ ਨੂੰ ਘੋਸ਼ਿਤ ਕਰਨ ਨੂੰ ਵਰਜਿਆ ਜਾਂਦਾ ਹੈ। ਬਹੁਤ ਜ਼ਿਆਦਾ ਜਾਂ ਬਹੁਤ ਘੱਟ ਪੈਡਿੰਗ ਕਾਰਨ ਕੁਝ ਪਲੇਟਫਾਰਮਾਂ 'ਤੇ ਇਹ ਸੰਭਾਵੀ ਤੌਰ 'ਤੇ ਗਲਤ ਦਿਖਾਈ ਦੇ ਸਕਦਾ ਹੈ।"
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "ਨਵਾਂ ਨੋਟ URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "ਕਿਸੇ ਮੈਨੀਫ਼ੈਸਟ ਦਾ ਪਤਾ ਨਹੀਂ ਲੱਗਿਆ"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "ਕਿਸੇ ਮੇਲ ਖਾਂਦੇ service worker ਦਾ ਪਤਾ ਨਹੀਂ ਲੱਗਿਆ। ਤੁਹਾਨੂੰ ਪੰਨਾ ਰੀਲੋਡ ਕਰਨ ਦੀ ਲੋੜ ਪੈ ਸਕਦੀ ਹੈ, ਜਾਂ ਸਕੋਪ ਨਾਲ ਨੱਥੀ ਕੀਤੇ ਮੌਜੂਦਾ ਪੰਨੇ ਲਈ service worker ਦੇ ਸਕੋਪ ਦੀ ਜਾਂਚ ਕਰੋ ਅਤੇ ਮੈਨੀਫ਼ੈਸਟ ਤੋਂ URL ਸ਼ੁਰੂ ਕਰੋ।"
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "ਪੰਨਾ ਅਜਿਹੇ ਕਲਾਇੰਟ ਪ੍ਰਮਾਣ-ਪੱਤਰ ਦੀ ਬੇਨਤੀ ਕਰ ਰਿਹਾ ਹੈ, ਜੋ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਵਰਗੇ ਲੁਕਵੇਂ ਪੰਨੇ ਲਈ ਢੁਕਵਾਂ ਨਹੀਂ ਹੈ।"
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "ਪਹਿਲਾਂ ਤੋਂ ਰੈਂਡਰ ਕੀਤਾ ਪੰਨਾ ਲੋਡ ਕਰਨ ਤੋਂ ਬਾਅਦ ਕ੍ਰੌਸ-ਮੂਲ ਦੇ URL 'ਤੇ ਨੈਵੀਗੇਟ ਹੋ ਗਿਆ। ਫ਼ਿਲਹਾਲ ਕ੍ਰੌਸ-ਮੂਲ ਵਾਲੇ ਪੰਨਿਆਂ ਨੂੰ ਪਹਿਲਾਂ ਹੀ ਰੈਂਡਰ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ।"
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "ਉਸ URL ਨੂੰ ਪਹਿਲਾਂ ਹੀ ਰੈਂਡਰ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕੀਤੀ ਗਈ ਜਿਸਨੂੰ ਕਿਸੇ ਕ੍ਰੌਸ-ਮੂਲ URL 'ਤੇ ਰੀਡਾਇਰੈਕਟ ਕੀਤਾ ਗਿਆ ਹੈ। ਫ਼ਿਲਹਾਲ ਕ੍ਰੌਸ-ਮੂਲ ਵਾਲੇ ਪੰਨਿਆਂ ਨੂੰ ਪਹਿਲਾਂ ਹੀ ਰੈਂਡਰ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ।"
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "ਡਾਟਾ ਸੇਵਰ ਚਾਲੂ ਹੈ"
   },
@@ -3936,27 +3900,6 @@
     "message": "ਮੂਲ ਮਾਲਕ"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "ਸਾਂਝੀ ਸਟੋਰੇਜ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "ਬਣਾਉਣ ਦਾ ਸਮਾਂ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "ਇੰਦਰਾਜ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "ਲੰਬਾਈ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "ਮੈਟਾਡਾਟਾ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ਮੂਲ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "ਬਜਟ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "ਸਾਂਝੀ ਸਟੋਰੇਜ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "ਪ੍ਰਿੰਟ ਪੌਪਅੱਪ ਵਿੰਡੋ ਖੁੱਲ੍ਹੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਜਾਰੀ ਰੱਖਣ ਲਈ ਇਸਨੂੰ ਬੰਦ ਕਰੋ।"
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "ਉੱਪਰ ਦਿੱਤੇ ਗਏ ਕਾਰਗੁਜ਼ਾਰੀ ਮਾਪਕ ਸਿਮੂਲੇਟ ਕੀਤੇ ਹੋਏ ਹਨ ਅਤੇ ਇਸ ਟ੍ਰੇਸ ਵਿੱਚ ਮਿਲੇ ਸਮਿਆਂ ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ। ਜੇ ਤੁਸੀਂ ਸਮਿਆਂ ਨੂੰ ਮੇਲ ਕਰਵਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ, ਤਾਂ \"ਲਾਈਟਹਾਊਸ ਸੈਟਿੰਗਾਂ\" ਵਿੱਚ ਸਿਮੂਲੇਟਿਡ ਥ੍ਰੋਟਲਿੰਗ ਨੂੰ ਬੰਦ ਕਰੋ।"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "ਮੂਲ ਟ੍ਰੇਸ ਦੇਖੋ"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "ਟ੍ਰੇਸ ਦੇਖੋ"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(ਨਵੀਂ ਰਿਪੋਰਟ)"
   },
@@ -6732,7 +6666,7 @@
     "message": "CPU ਥ੍ਰੋਟਲਿੰਗ ਚਾਲੂ ਹੈ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1}× ਸਲੋਡਾਊਨ"
+    "message": "{PH1}× ਧੀਮੀ ਗਤੀ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "ਪੂਰਵ-ਨਿਰਧਾਰਿਤ ਮੁੱਲ ਦੀ ਸੀਮਾ ਪਾਰ ਕਰਨ ਨਾਲ ਸਿਸਟਮ ਦੀ ਕਾਰਗੁਜ਼ਾਰੀ ਘਟ ਸਕਦੀ ਹੈ।"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "ਉਹ ਕੁਕੀਜ਼ ਜੋ ਬੇਨਤੀ ਦੇ 'ਕੁਕੀ' ਸਿਰਲੇਖ ਵਿੱਚ ਸਰਵਰ ਨੂੰ ਭੇਜੀਆਂ ਗਈਆਂ ਸਨ"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "ਹੋਰ ਜਾਣੋ"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "ਨੁਕਸਦਾਰ ਜਵਾਬੀ ਕੁਕੀਜ਼"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ਫਿਲਟਰ ਕੀਤੀਆਂ ਹੋਈਆਂ ਬੇਨਤੀ ਕੁਕੀਜ਼ ਦਿਖਾਓ"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "ਇਸ ਸਾਈਟ ਦੇ ਦੂਜੇ ਭਾਗ ਵਿੱਚ ਉਹ ਕੁਕੀਜ਼ ਹਨ, ਜਿਨ੍ਹਾਂ ਨੂੰ ਇਸ ਬੇਨਤੀ ਨਾਲ ਨਹੀਂ ਭੇਜਿਆ ਗਿਆ ਸੀ। {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "ਇਸ ਬੇਨਤੀ ਵਿੱਚ ਕੋਈ ਕੁਕੀ ਨਹੀਂ ਹੈ।"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "ਕਿਊਬਿਕ ਬੇਜ਼ੀਅਰ ਸੰਪਾਦਕ ਖੋਲ੍ਹੋ।"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "ਸੂਚੀ ਨੂੰ ਅਣਡਿੱਠ ਕਰਨ ਲਈ ਸਾਰੀਆਂ ਸਮੱਗਰੀ ਸਕ੍ਰਿਪਟਾਂ ਨੂੰ ਸ਼ਾਮਲ ਕਰੋ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "ਅਣਡਿੱਠ ਸੂਚੀ ਵਿੱਚ ਸਕ੍ਰਿਪਟ ਸ਼ਾਮਲ ਕਰੋ"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "ਕੁਝ ਕਾਲ ਫ੍ਰੇਮਾਂ ਵਿੱਚ ਚਿਤਾਵਨੀਆਂ ਹਨ।"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "ਅਣਡਿੱਠ ਸੂਚੀ 'ਤੇ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "ਅਣਡਿੱਠ ਸੂਚੀ ਤੋਂ ਸਮੱਗਰੀ ਦੀਆਂ ਸਾਰੀਆਂ ਸਕ੍ਰਿਪਟਾਂ ਨੂੰ ਹਟਾਓ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "ਅਣਡਿੱਠ ਸੂਚੀ ਤੋਂ ਹਟਾਓ"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "ਫ੍ਰੇਮ ਮੁੜ-ਸ਼ੁਰੂ ਕਰੋ"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "ਪ੍ਰਿਟੀ ਪ੍ਰਿੰਟ {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} ਤੋਂ ਡੀਬੱਗ ਜਾਣਕਾਰੀ ਰਾਹੀਂ ਪ੍ਰਦਾਨ ਕੀਤਾ ਗਿਆ)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(ਸਰੋਤ ਨੂੰ {PH1} ਤੋਂ ਮੈਪ ਕੀਤਾ ਗਿਆ)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ਫ਼ਾਈਲ ਵਿੱਚ ਸਾਰੇ ਬ੍ਰੇਕਪੁਆਇੰਟ ਬੰਦ ਕਰੋ"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "ਬ੍ਰੇਕਪੁਆਇੰਟ ਬੰਦ ਕਰੋ"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "ਸੰਪਾਦਨ ਸਥਿਤੀ"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ਫ਼ਾਈਲ ਵਿੱਚ ਸਾਰੇ ਬ੍ਰੇਕਪੁਆਇੰਟਾਂ ਨੂੰ ਚਾਲੂ ਕਰੋ"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "ਬ੍ਰੇਕਪੁਆਇੰਟ ਚਾਲੂ ਕੀਤੇ ਗਏ"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "ਮਿਸ਼ਰਿਤ"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "ਮਿਲਣ ਵਾਲੇ ਅਪਵਾਦਾਂ 'ਤੇ ਰੁਕੋ"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "ਅਪਵਾਦ ਮਿਲਣ 'ਤੇ ਰੁਕੋ"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "ਸਾਰੇ ਬ੍ਰੇਕਪੁਆਇੰਟਾਂ ਨੂੰ ਹਟਾਓ"
@@ -11115,7 +11016,7 @@
     "message": "ਮੈਮੋਰੀ ਸਮਾਂਰੇਖਾ ਦਿਖਾਓ"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "ਵੈੱਬ ਬਾਰੇ ਮਹੱਤਵਪੂਰਣ ਜਾਣਕਾਰੀ ਦਿਖਾਓ"
+    "message": "ਵੈੱਬ ਬਾਰੇ ਮਹੱਤਵਪੂਰਨ ਜਾਣਕਾਰੀ ਦਿਖਾਓ"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} ਸਕਿੰਟ"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y ਆਫ਼ਸੈੱਟ"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} ਨੂੰ ਪਰਿਭਾਸ਼ਿਤ ਨਹੀਂ ਕੀਤਾ ਗਿਆ ਹੈ"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "ਰੰਗ ਦਾ ਫਾਰਮੈਟ ਬਦਲਣ ਲਈ Shift 'ਤੇ ਕਲਿੱਕ ਕਰੋ"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "ਉਤਪ੍ਰੇਰਕ ਨੂੰ ਤੁਰੰਤ ਖੋਲ੍ਹੋ"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (ਤਸਦੀਕ ਕਰਨ ਲਈ 'Enter' ਜਾਂ ਰੱਦ ਕਰਨ ਲਈ 'Escape' ਦਬਾਓ।)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "ਉਪਲਬਧ ਆਦੇਸ਼ਾਂ ਨੂੰ ਦੇਖਣ ਲਈ '?' ਟਾਈਪ ਕਰੋ"

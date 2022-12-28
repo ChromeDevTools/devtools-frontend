@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Imeshindwa kuchanganua maudhui ya {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Zana za DevTools zimeshindwa kupakia ramani chanzo: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Tatizo la kutotambua rangi"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Zima JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Zima muundo wa JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Zima kipengele cha kutumia fonti zilizo kwenye kifaa"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Washa JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Washa muundo wa JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Ruhusu fonti zilizo kwenye kifaa"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Washa kipengele cha kuzuia maombi ya mtandao"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Ruhusu DevTools ipakie nyenzo kama vile ramani za chanzo kutoka njia za faili za mbali. Zana zimezimwa kwa chaguomsingi kwa sababu za usalama."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Washa muundo wa WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Zima muundo wa picha wa AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Zima muundo wa picha wa JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Zima kipengele cha kutumia fonti zilizo kwenye kifaa"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Utekelezaji"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Washa kipengele cha kutafuta huku ukiandika"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Tafuta huku ukiandika"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Zima kipengele cha kutafuta huku ukiandika (bonyeza Enter ili kutafuta)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Onyesha matangazo kwenye tovuti hii, kama imeruhusiwa"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} haijabainishwa katika faili ya maelezo, {PH3} imetumiwa badala yake. Ili ubainishe Kitambulisho cha Programu kinacholingana na utambulisho uliopo, weka sehemu ya {PH4} iwe {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Faili ya Maelezo ya Programu"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Hatupendekezi ubainishaji wa aikoni yenye 'purpose: \"any maskable\".' Inaweza kuonekana haiko sahihi kwenye baadhi ya mifumo kutokana na kuwa na nafasi kubwa sana au ndogo sana."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL ya dokezo jipya"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Hamna faili ya maelezo iliyotambuliwa"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Hakuna service worker inayolingana iliyotambuliwa. Huenda ukahitaji kupakia ukurasa huu upya, au uhakikishe kwamba upeo na sehemu ya kwanza ya URL kutoka kwenye faili ya maelezo ipo ndani ya upeo wa service worker wa ukurasa wa sasa."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Ukurasa unaomba cheti cha kompyuta teja, kisichofaa kwa ajili ya ukurasa uliofichwa kama vile uonyeshaji wa awali wa ukurasa."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Ukurasa unaoonyeshwa awali umesogezwa kwenye URL ya vyanzo mbalimbali baada ya kupakiwa. Uonyeshaji wa awali wa kurasa kutoka vyanzo mbalimbali umezuiwa kwa sasa."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Ulijaribu kuonyesha ukurasa wa awali wa URL iliyokuelekeza kwenye URL ya vyanzo mbalimbali. Uonyeshaji wa awali wa kurasa kutoka vyanzo mbalimbali umezuiwa kwa sasa."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Kiokoa data kimewashwa"
   },
@@ -3936,27 +3900,6 @@
     "message": "Chanzo cha Mmiliki"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Hifadhi Inayoshirikiwa"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Kazi"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Vipengee"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Urefu"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Chanzo"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Bajeti"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Hifadhi Inayoshirikiwa"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Dirisha ibukizi la kuchapisha limefunguliwa. Tafadhali ifunge ili uendelee."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Vipimo vya utendaji vilivyo hapo juu ni vya kuiga na havitalingana na saa zinazopatikana katika historia hii ya shughuli. Zima kipengele cha kubana kwa kuiga katika \"Mipangilio ya Lighthouse\" ikiwa ungependa saa zilingane."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Angalia Historia Halisi ya Shughuli"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Angalia Historia ya Shughuli"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(ripoti mpya)"
   },
@@ -6732,7 +6666,7 @@
     "message": "Kipengele cha kubana CPU kimewashwa"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1}× kupunguza kasi"
+    "message": "Imepunguza kasi mara {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "Kuzidisha thamani chaguomsingi kunaweza kupunguza utendaji wa mfumo."
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Vidakuzi vilivyotumwa kwenye seva katika kichwa cha 'kidakuzi' cha ombi"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Pata maelezo zaidi"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Vidakuzi vya Majibu vyenye Hitilafu"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "onyesha vidakuzi vya ombi vilivyochujwa"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Tovuti hii ina vidakuzi katika sehemu nyingine, ambavyo havikutumwa na ombi hili. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Ombi hili halina vidakuzi."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Fungua kihariri cha cubic bezier."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Weka hati zote za maudhui kwenye orodha ya vipengee vilivyopuuzwa"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Weka hati kwenye orodha ya vipengee vilivyopuuzwa"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Baadhi ya fremu za utekelezaji zina maonyo"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "kwenye orodha ya vipengee vilivyopuuzwa"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Ondoa hati zote za maudhui kwenye orodha ya vipengee vilivyopuuzwa"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Ondoa kwenye orodha ya vipengee vilivyopuuzwa"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Anzisha fremu upya"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Uchapishaji maridadi {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(imetolewa kupitia maelezo ya utatuzi ya {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(chanzo kimeambatishwa kutoka {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Zima sehemu zote za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi katika faili"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Sehemu za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi zilizozimwa"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Badilisha hali"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Washa sehemu zote za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi zilizo katika faili"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Sehemu za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi zilizowashwa"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "Mseto"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Sitisha matukio ya kutofuata kanuni yakitambuliwa"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Sitisha wakati kuna matukio yasiofuata kanuni"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Ondoa sehemu zote za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
@@ -11577,7 +11478,7 @@
     "message": "Eneo"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
-    "message": "Jukumu ndefu"
+    "message": "Jukumu refu"
   },
   "panels/timeline/TimelineUIUtils.ts | majorGc": {
     "message": "Usafishaji Mkuu wa Taka"
@@ -12120,7 +12021,7 @@
     "message": "Washa mazingira ya vithibitishaji pepe"
   },
   "panels/webauthn/WebauthnPane.ts | export": {
-    "message": "Hamisha"
+    "message": "Pakua"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
     "message": "Kitambulisho"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Usogezaji kiwima"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} haijabainishwa"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Bonyeza Shift na kishe ubofye ili ubadilishe muundo wa rangi"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Kidokezo cha kufungua kwa haraka"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Bonyeza 'Enter' ili uthibitishe au 'Escape' ili ughairi.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Andika '?' ili uone amri zinazopatikana"

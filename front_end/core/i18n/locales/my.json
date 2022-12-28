@@ -450,7 +450,7 @@
     "message": "{PH1} ကို ဖွင့်ပြီးပြီ- {PH2} “{PH3}”။"
   },
   "core/sdk/NetworkManager.ts | slowG": {
-    "message": "နှေးသော 3G"
+    "message": "အနှေး 3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
     "message": "ဤကွတ်ကီးကိုသိမ်းနေစဉ် အမည်မသိအမှား ဖြစ်သွားသည်။"
@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1} အတွက် အကြောင်းအရာကို ခွဲခြမ်းစိတ်ဖြာ၍မရပါ- {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools က ရင်းမြစ်မြေပုံကို ဖွင့်၍မရပါ- {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "အရောင်မခွဲခြားနိုင်ခြင်း"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript ပိတ်ခြင်း"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL အမျိုးအစားကို ပိတ်ပါ"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "စက်တွင်းဖောင့်များ ပိတ်ရန်"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript ဖွင့်ခြင်း"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL အမျိုးအစား ဖွင့်ပါ"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "စက်တွင်းဖောင့်များ ဖွင့်ရန်"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "ကွန်ရက်တောင်းဆိုချက် ပိတ်ဆို့ခြင်းကို ဖွင့်ရန်"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "ရင်းမြစ်မြေပုံများကဲ့သို့ ဖိုင်လမ်းကြောင်းထိန်းချုပ်မှုမှ ရင်းမြစ်များအား DevTools ကို ဖွင့်ခွင့်ပြုရန်။ လုံခြုံရေးအတွက် မူရင်းသတ်မှတ်ချက်အနေဖြင့် ပိတ်ထားသည်။"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP အမျိုးအစား ဖွင့်ပါ"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF ပုံဖိုင်အမျိုးအစားကို ပိတ်ရန်"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL ပုံဖိုင်အမျိုးအစားကို ပိတ်ရန်"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "စက်တွင်းဖောင့်များ ပိတ်ရန်"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ပုံဖော်ခြင်း"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "စာရိုက်နေစဉ် ရှာဖွေခြင်းကို ဖွင့်ရန်"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "စာရိုက်နေစဉ် ရှာဖွေရန်"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "စာရိုက်နေစဉ် ရှာဖွေခြင်းကို ပိတ်ရန် (Enter ခလုတ် နှိပ်၍ ရှာဖွေရန်)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "ခွင့်ပြုပါက ဤဝဘ်ဆိုက်တွင် ကြော်ငြာများကို ပြရန်"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "မန်နီးဖက်စ် (manifest) တွင် {PH1} {PH2} သတ်မှတ်မထားဘဲ ၎င်းအစား {PH3} ကို သုံးထားသည်။ လက်ရှိအထောက်အထားနှင့် တူညီသော ‘အက်ပ် Id’ သတ်မှတ်ရန် {PH4} အကွက်ကို {PH5} {PH6} ဟု သတ်မှတ်ပါ။"
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "အက်ပ်မန်နီးဖက်စ်"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "‘purpose: \"any maskable\"’ နှင့် သင်္ကေတကို အားမပေးကြောင်း ကြေညာသည်။ အကွက်များ အလွန်များခြင်း (သို့) အလွန်နည်းခြင်းကြောင့် ၎င်းသည် ပလက်ဖောင်းအချို့တွင် မမှန်ကန်ပုံပေါ်သည်။"
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "မှတ်စုအသစ် URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "မန်နီးဖက်စ် မတွေ့ပါ"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "ကိုက်ညီသော service worker မတွေ့ပါ။ စာမျက်နှာကို ပြန်လည်စတင်ရန် လိုအပ်နိုင်သည် (သို့) လက်ရှိစာမျက်နှာအတွက် service worker နယ်ပယ်သည် ထိုနယ်ပယ်ကို အကျုံးဝင်ခြင်း ရှိ၊ မရှိ စစ်ဆေးပြီး မန်နီးဖက်စ်မှ URL ကို စတင်ရန် လိုအပ်နိုင်သည်။"
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "ဤစာမျက်နှာက ကလိုင်းယင့် အသိအမှတ်ပြုလက်မှတ် တောင်းဆိုလျက်ရှိပြီး ကြိုတင်ပုံဖော်ခြင်းကဲ့သို့ ဖျောက်ထားသည့်စာမျက်နှာအတွက် သင့်လျော်မှုမရှိပါ။"
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "ကြိုတင်ပုံဖော်ထားသည့် စာမျက်နှာသည် ဖွင့်ပြီးနောက် ဇာစ်မြစ်အမျိုးမျိုးရှိ URL သို့ လမ်းညွှန်ထားသည်။ ဇာစ်မြစ်အမျိုးမျိုးရှိ စာမျက်နှာများ ကြိုတင်ပုံဖော်ခြင်းကို လောလောဆယ် ခွင့်ပြုမထားပါ။"
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "ဇာစ်မြစ်အမျိုးမျိုးရှိ URL တစ်ခုသို့ တစ်ဆင့်ပြန်ညွှန်ပြသည့် URL ကို ကြိုတင်ပုံဖော်ရန် ကြိုးပမ်းထားသည်။ ဇာစ်မြစ်အမျိုးမျိုးရှိ စာမျက်နှာများ ကြိုတင်ပုံဖော်ခြင်းကို လောလောဆယ် ခွင့်ပြုမထားပါ။"
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "ဒေတာ ချွေတာမှုကို ဖွင့်ထားသည်"
   },
@@ -3936,27 +3900,6 @@
     "message": "မူရင်းပိုင်ရှင်"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "မျှသုံးသိုလှောင်ခန်း"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "ပြုလုပ်ချိန်"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "ထည့်သွင်းမှုများ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "အရှည်"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "မက်တာဒေတာ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ဇာစ်မြစ်"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "အသုံးစရိတ်"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "မျှသုံးသိုလှောင်ခန်း"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "ပုံနှိပ်သည့် ပေါ့ပ်အပ်ဝင်းဒိုး ပွင့်နေသည်။ ရှေ့ဆက်ရန် ၎င်းကို ပိတ်ပါ။"
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "အထက်ပါ စွမ်းဆောင်ရည်မက်ထရစ်များကို အသွင်တူပြုလုပ်ထားခြင်းဖြစ်ပြီး ဤလုပ်ဆောင်ချက်မှတ်တမ်းတွင် တွေ့ရသော ချိန်ကိုက်မှုများနှင့် တူညီမည်မဟုတ်ပါ။ ချိန်ကိုက်မှုများ တူညီလိုပါက \"Lighthouse ဆက်တင်များ\" ရှိ အသွင်တူပြုလုပ်ထားသော မြန်နှုန်းထိန်းချုပ်မှုကို ပိတ်ပါ။"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "မူရင်း လုပ်ဆောင်ချက်မှတ်တမ်းကိုကြည့်ရန်"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "လုပ်ဆောင်ချက်မှတ်တမ်း ကြည့်ရန်"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(အစီရင်ခံစာ အသစ်)"
   },
@@ -6732,7 +6666,7 @@
     "message": "CPU မြန်နှုန်းထိန်းချုပ်ခြင်းကို ဖွင့်ထားသည်"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1} ဆ အရှိန်လျှော့ခြင်း"
+    "message": "{PH1} ဆ အရှိန်လျှော့ချခြင်း"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "မူရင်းတန်ဖိုးကို ကျော်လွန်ပါက စနစ်စွမ်းဆောင်ရည် ကျဆင်းနိုင်သည်။"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "တောင်းဆိုချက်၏ 'ကွတ်ကီး' ခေါင်းစီးတွင် ဆာဗာသို့ ပို့ထားသော ကွတ်ကီးများ"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "ပိုမိုလေ့လာရန်"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "ပုံစံပျက်နေသော တုံ့ပြန်ချက် ကွတ်ကီးများ"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "စစ်ထုတ်ထားသော တောင်းဆိုချက်ကွတ်ကီးများ ပြရန်"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "ဤဝဘ်ဆိုက်သည် အခြားအကန့်ခွဲတွင် ဤတောင်းဆိုချက်ဖြင့် ပို့မထားသော ကွတ်ကီးများရှိသည်။ {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "ဤတောင်းဆိုချက်တွင် ကွတ်ကီးများ မရှိပါ။"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Cubic bezier တည်းဖြတ်စနစ် ဖွင့်ပါ။"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "အကြောင်းအရာ script အားလုံးကို လျစ်လျူရှုစာရင်းတွင် ထည့်ရန်"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Script ကို လျစ်လျူရှုစာရင်းတွင် ထည့်ရန်"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "ခေါ်ဆိုမှုဖရိမ်အချို့တွင် သတိပေးချက်များ ရှိသည်"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "လျစ်လျူရှုစာရင်းတွင်"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "လျစ်လျူရှုစာရင်းမှ အကြောင်းအရာ script အားလုံးကို ဖယ်ရှားရန်"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "လျစ်လျူရှုစာရင်းမှ ဖယ်ရှားရန်"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "ဖရိမ် ပြန်စရန်"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "{PH1} ကို လှလှရှင်းရှင်း စာလုံးသုံးရန်"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} ဖြင့် အမှားရှာပြင် အချက်အလက်မှတစ်ဆင့် ပေးထားသည်)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "({PH1} မှ အကြမ်းဖော်ပြထားသော ရင်းမြစ်)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ဖိုင်ရှိ ဖြတ်တောက်မှတ်အားလုံး ပိတ်ရန်"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "ပိတ်ထားသည့် ဖြတ်တောက်မှတ်များ"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "အခြေအနေ တည်းဖြတ်ရန်"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ဖိုင်ရှိ ဖြတ်တောက်မှတ်အားလုံးကို ဖွင့်ရန်"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "ဖွင့်ထားသည့် ဖြတ်တောက်မှတ်များ"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "ရောထားသည်"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "ရရှိသော ခြွင်းချက်ပြဿနာများတွင် ခဏရပ်ရန်"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "ခြွင်းချက်ပြဿနာများတွင် ခဏရပ်ရန်"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "ဖြတ်တောက်မှတ်အားလုံး ဖယ်ရှားရန်"
@@ -11562,7 +11463,7 @@
     "message": "အပြင်အဆင် ရင်းမြစ်"
   },
   "panels/timeline/TimelineUIUtils.ts | layoutShift": {
-    "message": "အပြင်အဆင် ပြောင်းလဲခြင်း"
+    "message": "အပြင်အဆင်ပြောင်းလဲခြင်း"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y ချိန်ညှိမှု"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} ကို သတ်မှတ်မထားပါ"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "အရောင်ဖော်မက်ပြောင်းရန် shift နှင့်တွဲနှိပ်ပါ"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "အမြန်ဖွင့်ရန် အတည်ပြုစနစ်"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (အတည်ပြုရန် ‘Enter’ နှိပ်ပါ (သို့) ပယ်ဖျက်ရန် ‘Escape’ နှိပ်ပါ။)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "ရနိုင်သောကွန်မန်းများ ကြည့်ရန် '?' ကို ရိုက်ပါ"

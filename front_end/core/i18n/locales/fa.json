@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "محتوا برای {PH1} تجزیه نشد: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools نتوانست نگاشت منبع را بار کند: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "رنگ‌کوری کامل"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "غیرفعال کردن جاوا اسکریپت"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "غیرفعال کردن قالب JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "غیرفعال کردن قلم‌های محلی"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "فعال کردن جاوا اسکریپت"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "فعال کردن قالب JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "فعال کردن قلم‌های محلی"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "فعال کردن مسدودسازی درخواست شبکه"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "به DevTools اجازه داده شود منابع را (ازجمله نقشه‌های منبع) ازطریق مسیرهای فایل راه‌دور بار کند. به‌دلایل امنیتی به‌طور پیش‌فرض غیرفعال است."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "فعال کردن قالب WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "غیرفعال کردن قالب تصویر AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "غیرفعال کردن قالب تصویر JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "غیرفعال کردن قلم‌های محلی"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "درحال پرداز زدن"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "فعال کردن جستجو درحین تایپ کردن"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "جستجو درحین تایپ کردن"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "غیرفعال کردن جستجو درحین تایپ کردن (برای جستجو Enter را فشار دهید)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "آگهی‌ها درصورت مجاز بودن، در این سایت نشان داده شود"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} در مانیفست مشخص نشده است، درعوض از {PH3} استفاده می‌شود. برای مشخص کردن «شناسه برنامه‌ای» که با هویت فعلی مطابقت داشته باشد، فیلد {PH4} را روی {PH5} {PH6} تنظیم کنید."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "مانیفست برنامه"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "تعریف نماد با «purpose: \"any maskable\"» توصیه نمی‌شود. ممکن است به‌دلیل لایه‌گذاری خیلی زیاد یا خیلی کم در برخی‌از پلاتفرم‌ها درست نشان داده نشود."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "نشانی وب یادداشت جدید"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "هیچ مانیفستی شناسایی نشد"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "service worker منطبقی شناسایی نشد. شاید لازم باشد صفحه را بار کردن مجدد کنید، یا بررسی کنید که محدوده service worker برای صفحه کنونی، محدوده و شروع نشانی وب موجود در مانیفست را دربر گیرید."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "صفحهْ گواهینامه کارخواه را درخواست می‌کند که برای صفحه‌های پنهان نظیر پیش‌پرداز مناسب نیست."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "صفحه پیش‌پرداززنی بعداز بارشدن به نشانی وب بین‌مبدائی پیمایش کرد. درحال‌حاضر پیش‌پرداززنی صفحه‌های بین‌مبدائی مجاز نیست."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "تلاش برای پیش‌پرداز نشانی وبی که به نشانی وب بین‌مبدائی هدایت می‌شود. درحال‌حاضر پیش‌پرداز صفحه‌های بین‌مبدائی مجاز نیست."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "«صرفه‌جویی داده» فعال شده است"
   },
@@ -3936,27 +3900,6 @@
     "message": "مبدأ مالک"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "فضای ذخیره‌سازی مشترک"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "تاریخ ایجاد"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "ورودی‌ها"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "طول"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "فراداده"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "مبدأ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "بودجه"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "فضای ذخیره‌سازی مشترک"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "پاک کردن فضای ذخیره‌سازی"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "میز کار"
+    "message": "رایانه"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "محدودسازی DevTools (پیشرفته)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "پنجره بالاپر چاپ باز است. لطفاً برای ادامه دادن، آن را ببندید."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "سنجه‌های عملکرد نشان‌داده‌شده در بالا شبیه‌سازی شده‌اند و با زمان‌بندی‌های پیداشده در این رد مطابقت نخواهند داشت. اگر می‌خواهید زمان‌بندی‌ها مطابقت داشته باشند، محدود کردن شبکه شبیه‌سازی‌شده را در «تنظیمات Lighthouse» غیرفعال کنید."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "مشاهده رد اصلی"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "مشاهده رد"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(گزارش جدید)"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "کوکی‌هایی که در سرصفحه «کوکی» در درخواست به سرور ارسال شده است"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "بیشتر بدانید"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "کوکی‌های پاسخ ناقص"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "نمایش کوکی‌های درخواست فیلترشده"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "کوکی‌های این سایت در بخش دیگری است و با این درخواست ارسال نشده است. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "این درخواست فاقد کوکی است."
@@ -9729,7 +9657,7 @@
     "message": "دستگاه‌های شبیه‌سازی‌شده"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
-    "message": "قد"
+    "message": "ارتفاع"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "رشته نماینده کاربر"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "ویرایشگر منحنی بزیه مکعبی را باز کنید."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "افزودن همه متون محتوا به فهرست نادیده گرفتن"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "افزودن متن به فهرست نادیده گرفتن"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "بعضی‌از قاب‌های تماس دارای هشدار هستند"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "در فهرست نادیده گرفتن"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "برداشتن همه متن‌های محتوا از فهرست نادیده گرفتن"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "برداشتن از فهرست نادیده گرفتن"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "بازراه‌اندازی قاب"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "چاپ شکیل {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(ازطریق اطلاعات اشکال‌زدایی توسط {PH1} ارائه شده است)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(منبع از {PH1} نگاشت شده است)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "غیرفعال کردن همه نقطه‌های توقف در فایل"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "نقاط توقف غیرفعال"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "ویرایش شرط"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "فعال کردن همه نقطه‌های توقف در فایل"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "نقاط توقف فعال"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "ترکیبی"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "مکث در موارد استثنای پیداشده"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "مکث در موارد استثنا"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "حذف همه نقاط توقف"
@@ -11115,7 +11016,7 @@
     "message": "نمایش خط زمان حافظه"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "نمایش جزئیات مهم وب"
+    "message": "نمایش معیارهای کلیدی وب"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} ثانیه"
@@ -12120,7 +12021,7 @@
     "message": "فعال کردن محیط برنامه اصالت‌سنجی مجازی"
   },
   "panels/webauthn/WebauthnPane.ts | export": {
-    "message": "صادر کردن"
+    "message": "بیرون‌بُرد"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
     "message": "شناسه"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "انحراف Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} تعریف نشده است"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "کلیک کردن هم‌زمان با نگه داشتن کلید تبدیل برای تغییر قالب رنگ"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "فرمان باز کردن سریع"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (برای تأیید کلید «Enter»، یا برای لغو کلید «گریز» را فشار دهید.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "برای دیدن فرمان‌های موجود، «?» را تایپ کنید"

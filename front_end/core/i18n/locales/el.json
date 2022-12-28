@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Δεν ήταν δυνατή η ανάλυση περιεχομένου για {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Δεν ήταν δυνατή η φόρτωση της αντιστοίχισης πηγών από τα Εργαλεία για προγραμματιστές: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Αχρωματοψία"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Απενεργοποίηση JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Απενεργοποίηση της μορφής JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Απενεργοποίηση τοπικών γραμματοσειρών"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Ενεργοποίηση JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Ενεργοποίηση μορφής JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Ενεργοποίηση τοπικών γραμματοσειρών"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Ενεργοποίηση αποκλεισμού αιτημάτων δικτύου"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Να επιτρέπεται στο DevTools η φόρτωση πόρων, όπως αντιστοιχίσεων πηγών, από απομακρυσμένες διαδρομές αρχείων. Απενεργοποιημένο από προεπιλογή για λόγος ασφαλείας."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Ενεργοποίηση μορφής WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Απενεργοποίηση της μορφής εικόνας AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Απενεργοποίηση της μορφής εικόνας JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Απενεργοποίηση τοπικών γραμματοσειρών"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Απόδοση"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Ενεργοποίηση αναζήτησης κατά την πληκτρολόγηση"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Αναζήτηση κατά την πληκτρολόγηση"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Απενεργοποίηση αναζήτησης καθώς πληκτρολογείτε (πατήστε Enter για αναζήτηση)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Εμφάνιση διαφημίσεων σε αυτόν τον ιστότοπο, αν επιτρέπονται"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} Το {PH2} δεν προσδιορίζεται στο μανιφέστο, αντ΄ αυτού, χρησιμοποιείται το {PH3}. Για να προσδιορίσετε ένα αναγνωριστικό εφαρμογής που αντιστοιχεί στο τρέχον αναγνωριστικό, ορίστε το πεδίο {PH4} σε {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Μανιφέστο εφαρμογής"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Δεν συνιστάται η δήλωση εικονιδίου με purpose: \"any maskable\". Είναι πιθανό να φαίνεται λανθασμένο σε ορισμένες πλατφόρμες λόγω υπερβολικής ή πολύ λίγης αναπλήρωσης."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL νέας σημείωσης"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Δεν εντοπίστηκε μανιφέστο"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Δεν εντοπίστηκαν service worker που να αντιστοιχούν. Μπορεί να χρειαστεί να επαναλάβετε τη φόρτωση της σελίδας ή να ελέγξετε ότι το εύρος του service worker για την τρέχουσα σελίδα περικλείει το εύρος του URL έναρξης από το μανιφέστο."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Η σελίδα ζητάει πιστοποίηση εφαρμογής πελάτη, η οποία δεν είναι κατάλληλη για μια κρυφή σελίδα, όπως η προαπόδοση."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Η σελίδα που προαποδόθηκε πραγματοποίησε πλοήγηση σε URL διασταυρούμενων προελεύσεων μετά τη φόρτωση. Επί του παρόντος δεν επιτρέπεται η προαπόδοση σελίδων διασταυρούμενων προελεύσεων."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Επιχειρήθηκε προαπόδοση ενός URL που ανακατεύθυνε σε URL διασταυρούμενης προέλευσης. Επί του παρόντος δεν επιτρέπεται η προαπόδοση σελίδων διασταυρούμενων προελεύσεων."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Η Εξοικονόμηση δεδομένων είναι ενεργοποιημένη"
   },
@@ -3936,27 +3900,6 @@
     "message": "Προέλευση κατόχου"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Κοινόχρηστος αποθηκευτικός χώρος"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Δημιουργία"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Καταχωρίσεις"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Μήκος"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Μεταδεδομένα"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Προέλευση"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Προϋπολογισμός"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Κοινόχρηστος αποθηκευτικός χώρος"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6231,7 +6174,7 @@
     "message": "Μπορεί να ελέγχει μόνο σελίδες HTTP/HTTPS και επεκτάσεις Chrome. Πλοηγηθείτε σε άλλη σελίδα για να ξεκινήσετε έναν έλεγχο."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
-    "message": "Διαγραφή αποθηκευτικού χώρου"
+    "message": "Εκκαθάριση αποθηκευτικού χώρου"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "Υπολογιστής"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Το αναδυόμενο παράθυρο εκτύπωσης είναι ανοιχτό. Κλείστε το για να συνεχίσετε."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Οι παραπάνω μετρήσεις απόδοσης αποτελούν προσομοίωση και δεν αντιστοιχούν στους χρονισμούς που υπάρχουν σε αυτό το ίχνος. Αν θέλετε να αντιστοιχούν οι χρονισμοί, απενεργοποιήστε τον προσομοιωμένο περιορισμό στις Ρυθμίσεις του Lighthouse."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Προβολή αρχικού ίχνους"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Προβολή ίχνους"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(νέα αναφορά)"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Τα cookie που στάλθηκαν στον διακομιστή στην κεφαλίδα cookie του αιτήματος"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Μάθετε περισσότερα"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Cookie απόκρισης με λανθασμένη μορφή"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "εμφάνιση φιλτραρισμένων cookie αιτημάτων"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Αυτός ο ιστότοπος έχει cookie σε ένα άλλο διαμέρισμα, τα οποία δεν στάλθηκαν με αυτό το αίτημα. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Αυτό το αίτημα δεν έχει cookie."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Άνοιγμα προγράμματος επεξεργασίας κυβικής bezier."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Προσθήκη όλων των σεναρίων περιεχομένου στη λίστα παράβλεψης"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Προσθήκη σεναρίου σε λίστα παράβλεψης"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Σε ορισμένα πλαίσια κλήσης υπάρχουν ειδοποιήσεις"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "στη λίστα παράβλεψης"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Κατάργηση όλων των σεναρίων περιεχομένου από τη λίστα παράβλεψης"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Κατάργηση από τη λίστα παράβλεψης"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Επανεκκίνηση πλαισίου"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Όμορφη εκτύπωση {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(παρέχεται μέσω πληροφοριών εντοπισμού σφάλματος από {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(αντιστοιχίστηκε πηγή από {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Απενεργοποίηση όλων των σημείων διακοπής στο αρχείο"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Απενεργοποιημένα σημεία διακοπής"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Επεξεργασία κατάστασης"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Ενεργοποίηση όλων των σημείων διακοπής στο αρχείο"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Ενεργοποιημένα σημεία διακοπής"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "συνδυαστική"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Παύση κατά τη σύλληψη εξαιρέσεων"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Παύση σε εξαιρέσεις"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Κατάργηση όλων των σημείων διακοπής"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Μετατόπιση Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "Το {PH1} δεν έχει προσδιοριστεί"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Πατήστε Shift και κάντε κλικ για να αλλάξετε τη μορφή χρωμάτων"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Προτροπή γρήγορου ανοίγματος"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Πατήστε το πλήκτρο Enter για επιβεβαίωση ή το πλήκτρο Escape για ακύρωση.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Πληκτρολογήστε ? για να δείτε τις διαθέσιμες εντολές"

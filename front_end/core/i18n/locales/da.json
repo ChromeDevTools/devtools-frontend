@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Indhold kunne ikke parses for {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Udviklerværktøjer kunne ikke indlæse kildekortet: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Farveblindhed"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Deaktiver JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Deaktiver formatet JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Deaktiver lokale skrifttyper"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Aktivér JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Aktivér formatet JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Aktivér lokale skrifttyper"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktivér blokering af netværksanmodning"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Giv DevTools tilladelse til at indlæse ressourcer, f.eks. kildekort, fra eksterne filstier. Af sikkerhedsmæssige årsager er den som standard deaktiveret."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivér formatet WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Deaktiver AVIF-billedformatet"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Deaktiver billedformatet JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Deaktiver lokale skrifttyper"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Gengivelse"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Aktivér søgning mens du indtaster."
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Søg, mens du indtaster"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Deaktiver søgning, mens du indtaster (tryk på Enter for at søge)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Vis annoncer på dette website, hvis det er tilladt"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} er ikke angivet i manifestet. {PH3} anvendes i stedet. Du kan angive et app-id, der stemmer overens med den aktuelle identitet, ved at indstille feltet {PH4} til {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Appmanifest"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Vi fraråder at deklarere et ikon med \"purpose: \"any maskable\"\". Det vil sandsynligvis se forkert ud på nogle platforme, da den indre margen vil være for stor eller for lille."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Webadresse til ny note"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Intet manifest er registreret"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Der blev ikke registreret nogen matchende service worker. Du skal muligvis genindlæse siden eller tjekke, at omfanget af service worker for den aktuelle side omslutter omfanget og startwebadressen fra manifestet."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Siden anmoder om et klientcertifikat, hvilket ikke er egnet til en skjult side, f.eks. en forhåndsgengivelse."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Den forhåndsgengivne side navigerede til en webadresse med krydsoprindelse efter indlæsningen. Det er i øjeblikket ikke tilladt at foretage forhåndsgengivelser af sider med krydsoprindelse."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Et forsøg på at forhåndsgengive en webadresse er omdirigeret til en webadresse med krydsoprindelse. Det er i øjeblikket ikke tilladt at foretage forhåndsgengivelser af sider med krydsoprindelse."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Datasparefunktionen er aktiveret"
   },
@@ -3936,27 +3900,6 @@
     "message": "Ejerens oprindelse"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Delt lagerplads"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Oprettelse"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Poster"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Længde"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Oprindelse"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Budget"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Delt lagerplads"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Pop op-vinduet for udskrivning er åbent. Luk det for at fortsætte."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "De effektivitetsmetrics, der vises ovenfor, er simulerede og stemmer ikke overens med tiderne i dette spor. Deaktiver simuleret begrænsning i \"Lighthouse-indstillinger\", hvis du vil have tiderne til at stemme overens."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Se oprindeligt spor"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Se spor"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(ny rapport)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies, som blev sendt til serveren i \"cookie\"-headeren for anmodningen"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Få flere oplysninger"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Forkert udformede svarcookies"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "vis bortfiltrerede anmodningscookies"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Dette website har cookies i en anden partition, som ikke blev sendt med denne anmodning. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Denne anmodning har ingen cookies."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Åbn kubisk Bezier-redigeringsværktøj."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Føj alle indholdsscripts til listen over ignorerede"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Føj script til liste over ignorerede"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Der er advarsler ved nogle opkaldsrammer"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "på listen over ignorerede"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Fjern alle indholdsscripts fra listen over ignorerede"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Fjern fra listen over ignorerede"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Genstart rammen"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Anvend pretty print på {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(leveret via fejlretningsoplysninger fra {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(kilden er tilknyttet fra {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Deaktiver alle stoppunkter i filen"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Deaktiverede stoppunkter"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Rediger betingelse"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Aktivér alle stoppunkter i filen"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Aktiverede stoppunkter"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "blandet"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Sæt registrerede undtagelser på pause"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Sæt på pause ved undtagelser"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Fjern alle stoppunkter"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y-forskydning"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} er ikke defineret."
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Shift+klik for at ændre farveformat"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Besked om hurtig åbning"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Tryk på \"Enter\" for at bekræfte eller \"Escape\" for at annullere)."
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Angiv \"?\" for at se tilgængelige kommandoer"

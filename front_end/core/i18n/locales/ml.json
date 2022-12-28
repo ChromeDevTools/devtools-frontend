@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1} എന്നതിനായി ഉള്ളടക്കം വിശകലനം ചെയ്യാനായില്ല: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools-ന് സോഴ്‌സ് മാപ്പ് ലോഡ് ചെയ്യാനായില്ല: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "അക്രോമാറ്റോപ്സിയ"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript പ്രവർത്തനരഹിതമാക്കുക"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL ഫോർമാറ്റ് പ്രവർത്തനരഹിതമാക്കുക"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "ലോക്കൽ ഫോണ്ടുകൾ പ്രവർത്തനരഹിതമാക്കുക"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript പ്രവർത്തനക്ഷമമാക്കുക"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL ഫോർമാറ്റ് പ്രവർത്തനക്ഷമമാക്കുക"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "ലോക്കൽ ഫോണ്ടുകൾ പ്രവർത്തനക്ഷമമാക്കുക"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്യൽ പ്രവർത്തനക്ഷമമാക്കുക"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "വിദൂര ഫയൽ പാതകളിൽ നിന്ന് സോഴ്‌സ് മാപ്പുകൾ പോലുള്ള ഉറവിടങ്ങൾ ലോഡ് ചെയ്യാൻ DevTools എന്നതിനെ അനുവദിക്കുക. സുരക്ഷാ കാരണങ്ങളാൽ ഡിഫോൾട്ടായി പ്രവർത്തനരഹിതമാക്കി."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ഫോർമാറ്റ് പ്രവർത്തനക്ഷമമാക്കുക"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF ഇമേജ് ഫോര്‍മാറ്റ് പ്രവർത്തനരഹിതമാക്കുക"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL ഇമേജ് ഫോർമാറ്റ് പ്രവർത്തനരഹിതമാക്കുക"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "ലോക്കൽ ഫോണ്ടുകൾ പ്രവർത്തനരഹിതമാക്കുക"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "റെൻഡർ ചെയ്യുന്നു"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "നിങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ തിരയുന്നത് പ്രവർത്തനക്ഷമമാക്കുക"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "നിങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ തിരയുക"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "നിങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ തിരയുന്നത് പ്രവർത്തനരഹിതമാക്കുക (തിരയാൻ Enter അമർത്തുക)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "അനുവദനീയമെങ്കിൽ ഈ സൈറ്റിൽ പരസ്യങ്ങൾ കാണിക്കുക"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} മാനിഫെസ്റ്റിൽ {PH2} വ്യക്തമാക്കിയിട്ടില്ല, പകരം {PH3} ഉപയോഗിച്ചിരിക്കുന്നു. നിലവിലെ ഐഡന്റിറ്റിയുമായി പൊരുത്തപ്പെടുന്ന ആപ്പ് ഐഡി വ്യക്തമാക്കാൻ, {PH4} ഫീൽഡ് {PH5} {PH6} എന്നതിലേക്ക് സജ്ജീകരിക്കുക."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "ആപ്പ് മാനിഫെസ്റ്റ്"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "ഐക്കൺ purpose: \"any maskable\" ആയി സാക്ഷ്യപ്പെടുത്താതിരിക്കുക. പാഡിംഗ് വളരെ കൂടുതലോ കുറച്ചോ ആയതിനാൽ ചില പ്ലാറ്റ്‌ഫോമുകളിൽ ഇത് തെറ്റായി ദൃശ്യമാകാനിടയുണ്ട്."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "പുതിയ കുറിപ്പിന്റെ URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "മാനിഫെസ്റ്റുകളൊന്നും കണ്ടെത്തിയില്ല"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "പൊരുത്തമുള്ള service worker കണ്ടെത്തിയില്ല. നിങ്ങൾക്ക് പേജ് റീലോഡ് ചെയ്യേണ്ടി വന്നേക്കാം, അല്ലെങ്കിൽ നിലവിലെ പേജിനുള്ള service worker എന്നതിന്റെ പരിധി, പരിധിയെ ഉൾപ്പെടുത്തുന്നുണ്ടെന്ന് പരിശോധിച്ച് മാനിഫെസ്റ്റിൽ നിന്ന് URL ആരംഭിക്കേണ്ടി വന്നേക്കാം."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "പ്രീറെൻഡറിംഗ് പോലുള്ള മറച്ച പേജിന് അനുയോജ്യമല്ലാത്ത ക്ലയന്റ് സർട്ടിഫിക്കറ്റിനായി പേജ് അഭ്യർത്ഥിക്കുന്നു."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "പ്രീറെൻഡർ ചെയ്ത പേജ് ലോഡ് ചെയ്തതിന് ശേഷം, ക്രോസ്-ഒറിജിൻ URL-ലേക്ക് നാവിഗേറ്റ് ചെയ്തു. നിലവിൽ ക്രോസ്-ഒറിജിൻ പേജുകൾ പ്രീറെൻഡർ ചെയ്യുന്നത് അനുവദനീയമല്ല."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "ക്രോസ് ഒറിജിൻ URL-ലേക്ക് റീഡയറക്റ്റ് ചെയ്ത ഒരു URL പ്രീറെൻഡർ ചെയ്യാൻ ശ്രമിച്ചു. നിലവിൽ ക്രോസ്-ഒറിജിൻ പേജുകൾ പ്രീറെൻഡർ ചെയ്യുന്നത് അനുവദനീയമല്ല."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "ഡാറ്റാ സേവർ പ്രവർത്തനക്ഷമമാക്കി"
   },
@@ -3936,27 +3900,6 @@
     "message": "ഉടമയുടെ ഉറവിടം"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "പങ്കിട്ട സ്റ്റോറേജ്"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "സൃഷ്‌ടിച്ചത്"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "എൻട്രികൾ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "ദൈർഘ്യം"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "മെറ്റാഡാറ്റ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ഉറവിടം"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "ബജറ്റ്"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "പങ്കിട്ട സ്റ്റോറേജ്"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "സ്‌റ്റോറേജ് മായ്‌ക്കുക"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "ഡെസ്‌ക്‌ടോപ്പ്"
+    "message": "ഡെസ്‌ക്ടോപ്പ്"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "DevTools ത്രോട്ടിലിംഗ് (വിപുലമായത്)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "പ്രിന്റ് പോപ്പ് അപ്പ് വിൻഡോ തുറന്നിരിക്കുന്നു. തുടരാൻ ഇത് അടയ്ക്കുക."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "മുകളിലുള്ള പ്രകടന മെട്രിക്കുകൾ യഥാർത്ഥമല്ല, ഈ ട്രെയ്‌സിലുള്ള സമയവുമായി പൊരുത്തപ്പെടുകയുമില്ല. സമയങ്ങൾ തമ്മിൽ പൊരുത്തപ്പെടണമെങ്കിൽ \"Lighthouse ക്രമീകരണത്തിൽ\" സിമുലേറ്റഡ് ത്രോട്ടിലിംഗ് പ്രവർത്തനരഹിതമാക്കുക."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "ഒറിജിനൽ ട്രെയ്‌സ് കാണുക"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "ട്രെയ്‌സ് കാണുക"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(പുതിയ റിപ്പോർട്ട്)"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "അഭ്യർത്ഥനയുടെ 'കുക്കി' ഹെഡറിലെ സെർവറിലേക്ക് അയച്ച കുക്കികൾ"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "കൂടുതലറിയുക"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "തകരാറുള്ള പ്രതികരണ കുക്കികൾ"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ഫിൽട്ടർ ചെയ്‌ത അഭ്യർത്ഥനാ കുക്കികൾ കാണിക്കുക"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "ഈ സൈറ്റിന് മറ്റൊരു പാർട്ടീഷനിൽ കുക്കികളുണ്ട്, അവ ഈ അഭ്യർത്ഥനയ്‌ക്കൊപ്പം അയച്ചിട്ടില്ല. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "ഈ അഭ്യർത്ഥനയ്‌ക്ക് കുക്കികൾ ഇല്ല."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "ക്യൂബിക് ബെസിയർ എഡിറ്റർ തുറക്കുക."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "എല്ലാ ഉള്ളടക്ക സ്ക്രിപ്റ്റുകളും നിരസിക്കൽ ലിസ്റ്റിലേക്ക് ചേർക്കുക"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "നിരസിച്ച ലിസ്റ്റിലേക്ക് സ്ക്രിപ്റ്റ് ചേർക്കുക"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "ചില കോൾ ഫ്രെയിമുകളിൽ മുന്നറിയിപ്പുകളുണ്ട്"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "നിരസിക്കേണ്ടവയുടെ ലിസ്റ്റിൽ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "നിരസിക്കൽ ലിസ്റ്റിൽ നിന്ന് എല്ലാ ഉള്ളടക്ക സ്ക്രിപ്റ്റുകളും നീക്കം ചെയ്യുക"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "നിരസിക്കേണ്ടവയുടെ ലിസ്റ്റിൽ നിന്ന് നീക്കം ചെയ്യുക"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "ഫ്രെയിം റീസ്റ്റാർട്ട് ചെയ്യുക"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "പ്രെറ്റി പ്രിന്റ് {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} എന്നതിൽ നിന്നുള്ള ഡീബഗ് വിവരങ്ങളിലൂടെ നൽകിയത്)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(സോഴ്‌സ് {PH1} എന്നതിൽ നിന്ന് മാപ്പ് ചെയ്തു)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ഫയലിലെ എല്ലാ ബ്രേക്ക്പോയിന്റുകളും പ്രവർത്തനരഹിതമാക്കുക"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "പ്രവർത്തനരഹിതമാക്കിയ ബ്രേക്ക്‌പോയിന്റുകൾ"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "കണ്ടീഷൻ എഡിറ്റ് ചെയ്യുക"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "ഫയലിലെ എല്ലാ ബ്രേക്ക്‌പോയിന്റുകളും പ്രവർത്തനക്ഷമമാക്കുക"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "പ്രവർത്തനക്ഷമമാക്കിയ ബ്രേക്ക്പോയിന്റുകൾ"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "മിക്‌സഡ്"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "കണ്ടെത്തിയ ഒഴിവാക്കലുകളിൽ താൽക്കാലികമായി നിർത്തുക"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "ഒഴിവാക്കലുകളിൽ താൽക്കാലികമായി നിർത്തുക"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "എല്ലാ ബ്രേക്ക്പോയിന്റുകളും നീക്കം ചെയ്യുക"
@@ -12297,7 +12198,7 @@
     "message": "മെമ്മറി ഇൻസ്‌പെക്‌ടർ കാണിക്കുക"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
-    "message": "ഫീഡ്‌ബാക്ക്"
+    "message": "ഫീഡ്ബാക്ക്"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
     "message": "പ്രിവ്യൂ ഫീച്ചർ"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y ഓഫ്സെറ്റ്"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} നിർവ്വചിച്ചിട്ടില്ല"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "നിറത്തിന്റെ ഫോർമാറ്റ് മാറ്റാൻ Shift-ക്ലിക്ക് ചെയ്യുക"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "വേഗത്തിൽ തുറക്കുക പ്രോംപ്റ്റ്"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (സ്ഥിരീകരിക്കാൻ 'Enter' അമർത്തുക, റദ്ദാക്കാൻ 'Escape' അമർത്തുക.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "ലഭ്യമായ കമാൻഡുകൾ കാണാൻ '?' ടൈപ്പ് ചെയ്യുക"

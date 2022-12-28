@@ -423,7 +423,7 @@
     "message": "Citas izcelsmes datu lasīšanas bloķēšanas (CORB) algoritms bloķēja citas izcelsmes atbildi ({PH1}) ar šādu MIME veida vienumu: {PH2}. Plašāku informāciju skatiet lapā https://www.chromestatus.com/feature/5629709824032768."
   },
   "core/sdk/NetworkManager.ts | fastG": {
-    "message": "Ātrs 3G tīkls"
+    "message": "Ātrs 3G savienojums"
   },
   "core/sdk/NetworkManager.ts | noContentForPreflight": {
     "message": "Saturs nav pieejams priekšpārbaudes pieprasījumam."
@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "Nevarēja analizēt saturu vietnē {PH1}: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "Ar izstrādātāja rīkiem neizdevās ielādēt avota karti: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ahromatopsija"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Atspējot JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "Atspējot formātu JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Atspējot lokālos fontus"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Iespējot JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "Iespējot formātu JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Iespējot lokālos fontus"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Iespējot tīkla pieprasījumu bloķēšanu"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "Atļaut rīku komplektam DevTools ielādēt resursus (piemēram, avota kartes,) no attālu failu ceļiem. Drošības apsvērumu dēļ šī opcija pēc noklusējuma ir atspējota."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Iespējot formātu WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Atspējot AVIF attēla formātu"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "Atspējot attēlu formātu JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Atspējot lokālos fontus"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderēšana"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Iespējot meklēšanu teksta ievades laikā"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Meklēt teksta ievades laikā"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Atspējot meklēšanu teksta ievades laikā (nospiediet taustiņu Enter, lai meklētu)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Rādīt reklāmas šajā vietnē, ja tas ir atļauts"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} Manifestā nav norādīts lauks “{PH2}”; tā vietā ir izmantots lauks “{PH3}”. Lai norādītu lietotnes ID, kas atbilst pašreizējam identifikatoram, laukā “{PH4}” iestatiet vērtību “{PH5}” {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Lietotnes manifests"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Nav ieteicams deklarēt ikonu ar atribūtu “purpose: \"any maskable\"”. Iespējams, dažās platformās tā neizskatīsies pareizi, jo iekšējā atkāpe būs pārāk liela vai maza."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Jaunas piezīmes URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Netika konstatēts neviens manifests"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Netika konstatēts neviens atbilstošs service worker. Iespējams, būs atkārtoti jāielādē lapa vai jāpārbauda, vai pašreizējās lapas service worker savā tvērumā iekļauj manifestā norādīto tvērumu un sākuma URL."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Lapā tiek pieprasīts klienta sertifikāts, taču šāda prasība nav piemērota slēptai lapai, piemēram, iepriekšējai atveidošanai."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Iepriekš atveidotajā lapā pēc ielādes tika veikta navigācija uz citas izcelsmes vietrādi URL. Pašlaik nav atļauts iepriekš atveidot citas izcelsmes lapas."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Tika mēģināts iepriekš atveidot vietrādi URL, no kura tika veikta novirzīšana uz citas izcelsmes URL. Pašlaik nav atļauts iepriekš atveidot citas izcelsmes lapas."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Datu lietojuma samazinātājs ir iespējots"
   },
@@ -3936,27 +3900,6 @@
     "message": "Īpašnieka avots"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Kopīga krātuve"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Izveide"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Ieraksti"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Garums"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadati"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Izcelsme"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Budžets"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Kopīga krātuve"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Drukāšanas uznirstošais logs ir atvērts. Lai turpinātu, aizveriet to."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Šī veiktspējas metrika ir simulēta un neatbildīs šajā trasējumā konstatētajam laikam. Ja vēlaties, lai laika vērtības sakristu, atspējojiet simulēto ierobežošanu sadaļā “Lighthouse iestatījumi”."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Skatīt sākotnējo trasējumu"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Skatīt trasējumu"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(jauns pārskats)"
   },
@@ -6732,7 +6666,7 @@
     "message": "Centrālā procesora ierobežošana ir iespējota"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1}× palēninājums"
+    "message": "{PH1} × palēninājums"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "Pārsniedzot noklusējuma vērtību, var pasliktināties sistēmas veiktspēja."
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Sīkfaili, kas tika nosūtīti uz serveri pieprasījuma galvenē “cookie”"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Uzzināt vairāk"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Nepareizi veidots atbildes sīkfails"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "rādīt filtrētos pieprasījumu sīkfailus"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Citā šīs vietnes nodalījumā ir sīkfaili, kas netika nosūtīti ar šo pieprasījumu. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Šim pieprasījumam nav sīkfailu."
@@ -9729,7 +9657,7 @@
     "message": "Emulētās ierīces"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Garums"
+    "message": "Augstums"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Lietotāja aģenta virkne"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Atveriet kubisko Bezjē līkņu redaktoru."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Pievienot visus satura skriptus ignorēto sarakstam"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Pievienot skriptu ignorēto sarakstam"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Dažos izsaukumu ietvaros ir konstatēti brīdinājumi"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "ignorēto sarakstā"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Noņemt visus satura skriptus no ignorēto saraksta"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Noņemt no ignorēto saraksta"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Restartēt ietvaru"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Lietot struktūrdruku failam {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(iekļauts {PH1} atkļūdošanas informācijā)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(ar vietni {PH1} saistīts avots)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Atspējot visus pārtraukumpunktus failā"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Atspējoti pārtraukumpunkti"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Rediģēt nosacījumu"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Iespējot visus pārtraukumpunktus failā"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Iespējoti pārtraukumpunkti"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "dažādi"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Pārtraukt, apstrādājot izņēmumus"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Pārtraukt, konstatējot izņēmumus"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Noņemt visus pārtraukumpunktus"
@@ -11115,7 +11016,7 @@
     "message": "Rādīt atmiņas laika grafiku"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Rādīt tīmekļa pamatrādītājus"
+    "message": "Rādīt tīmekļa rādītājus"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} s"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y nobīde"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "“{PH1}” nav definēts."
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Nospiediet taustiņu Shift un noklikšķiniet, lai mainītu krāsas formātu"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Ātras atvēršanas uzvedne"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Lai apstiprinātu, nospiediet ievadīšanas taustiņu. Lai atceltu, nospiediet atsoļa taustiņu.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Lai skatītu pieejamās komandas, ierakstiet simbolu “?”"

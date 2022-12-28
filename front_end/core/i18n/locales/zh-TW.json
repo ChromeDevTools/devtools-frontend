@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "無法剖析 {PH1} 的內容：{PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "開發人員工具無法載入來源對應：{PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "全色盲"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "停用 JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "停用 JPEG XL 格式"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "停用本機字型"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "啟用 JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "啟用 JPEG XL 格式"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "啟用本機字型"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "啟用網路要求封鎖功能"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "允許 DevTools 透過遠端檔案路徑載入來源對應等資源。為了安全起見，系統預設會停用這項設定。"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "啟用 WebP 格式"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "停用 AVIF 圖片格式"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "停用 JPEG XL 圖片格式"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "停用本機字型"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "算繪"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "啟用即時搜尋功能"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "即時搜尋"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "停用即時搜尋功能 (按下 Enter 鍵搜尋)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "在情況允許時顯示這個網站上的廣告"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1}你未在資訊清單中指定「{PH2}」，而是使用「{PH3}」。如要指定符合目前識別資訊的應用程式 ID，請將 [{PH4}] 欄位設為「{PH5} {PH6}」。"
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "應用程式資訊清單"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "不建議宣告含有「purpose: \"any maskable\"」的圖示。由於邊框間距過寬或過窄，此圖示在某些平台上可能會有顯示問題。"
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "新記事的網址"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "未偵測到任何資訊清單"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "未偵測到相符的 service worker。你可能需要重新載入網頁，或是檢查目前網頁的 service worker 範圍是否涵蓋資訊清單的範圍和開始網址。"
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "這個頁面正在要求用戶端憑證，但這項要求不適用於預先轉譯的隱藏頁面。"
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "預先轉譯頁面會在載入後導向到跨來源網址，但目前無法預先轉譯跨來源頁面。"
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "要預先轉譯的網址會重新導向到跨來源網址，但目前無法預先轉譯跨來源頁面。"
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "已啟用數據節省模式"
   },
@@ -3936,27 +3900,6 @@
     "message": "擁有者來源"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "共用儲存空間"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "建立時間"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "項目"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "長度"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "中繼資料"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "來源"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "預算"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "共用儲存空間"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "列印彈出式視窗已開啟，如要繼續操作，請關閉該視窗。"
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "以上成效指標為模擬數據，不會與此追蹤記錄所呈現的時間相符。如果你希望指標與記錄的時間一致，請到「Lighthouse 設定」停用模擬節流功能。"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "查看原始追蹤記錄"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "查看追蹤記錄"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(新增報表)"
   },
@@ -6732,7 +6666,7 @@
     "message": "已啟用 CPU 節流"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1} × 減速"
+    "message": "速度降低 {PH1} 倍"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "超過預設值可能會降低系統效能。"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "在要求的「cookie」標頭中傳送到伺服器的 Cookie"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "瞭解詳情"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "格式錯誤的回應 Cookie"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "顯示篩除的要求 Cookie"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "這個網站在其他分區中設有 Cookie，並未與這項要求一併傳送。{PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "這項要求沒有任何 Cookie。"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "開啟三次方貝茲編輯器。"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "將內容指令碼全部新增至忽略清單"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "將指令碼新增至忽略清單"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "部分呼叫框出現警告"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "在忽略清單中"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "從忽略清單中移除所有概念指令碼"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "從忽略清單中移除"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "重新開始顯示頁框"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "對「{PH1}」套用美化排版"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(由 {PH1} 透過偵錯資訊所提供)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(透過 {PH1} 對應的來源)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl + Enter 鍵"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "停用檔案中的所有中斷點"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "已停用的中斷點"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "編輯條件"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "啟用檔案中的所有中斷點"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "已啟用的中斷點"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "混合"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "在遇到例外狀況時暫停"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "在例外狀況時暫停"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "移除所有中斷點"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y 軸偏移"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "未定義「{PH1}」"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "按住 Shift 鍵再按一下滑鼠即可變更顏色格式"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "快速開啟提示"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (按下「Enter 鍵」即可確認；或按下「Escape 鍵」取消)。"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "輸入「?」就能查看可用的指令"

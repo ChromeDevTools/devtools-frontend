@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1} мазмуну талданбай койду: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools булак картасын жүктөй алган жок: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ахроматопсия"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript'ти өчүрүү"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL форматын өчүрүү"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Жергиликтүү ариптерди өчүрүү"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript'ти иштетүү"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL форматын иштетүү"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Жергиликтүү ариптерди кошуу"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Тармак сурамын бөгөттөөнү иштетүү"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "DevTools кызматына булак карталары сыяктуу булактарды алыскы файл жолдорунан жүктөөгө уруксат берүү. Коопсуздук себептеринен улам демейки шартта өчүрүлдү."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP форматын иштетүү"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF сүрөт форматын өчүрүү"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL сүрөт форматын өчүрүү"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Жергиликтүү ариптерди өчүрүү"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Үлгүдөн алып тартуу"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Терип жатып издөөнү иштетүү"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Терип жатып издөө"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Терип жатып издөөнү өчүрүү (издөө үчүн Enter баскычын басуу)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Эгер уруксат берилсе, бул сайтта жарнамалар көрсөтүлсүн"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} манифестте көрсөтүлгөн эмес, анын ордуна {PH3} колдонулат. Учурдагы идентификаторго дал келген колдонмонун идентификаторун көрсөтүү үчүн {PH4} талаасына төмөнкү маанини коюңуз: {PH5} {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Колдонмонун манифести"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Сүрөтчөнү \"purpose: \"any maskable\"\" катары жарыялоого болбойт. Ашыкча же кем толтурулгандыктан айрым платформаларда туура эмес көрүнүшү мүмкүн."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Жаңы кыска жазуунун URL дареги"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Манифест аныкталган жок"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Дал келген service worker аныкталган жок. Баракты кайра жүктөңүз же service worker үчүн учурдагы масштабды карап, манифесттеги URL дарегине өтүңүз."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Барак кардардын тастыктамасын талап кылууда. Бул жашырылган, мисалы, алдын ала көрсөтүлгөн баракка ылайыксыз."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Алдын ала көрсөтүлгөн барак жүктөлгөндөн кийин, башка булактагы URL дарекке өттү. Учурда ар кандай булактардагы барактарды алдын ала көрсөтүүгө болбойт."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Башка булактардагы URL дарекке багыттаган URL'ди алдын ала көрсөтүүгө аракет жасалды. Учурда ар кандай булактардагы барактарды алдын ала көрсөтүүгө болбойт."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Трафикти үнөмдөө иштетилди"
   },
@@ -3936,27 +3900,6 @@
     "message": "Булактын ээси"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Жалпы сактагыч"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Түзүү"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Жазуулар"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Узактыгы"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Метадайындар"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Түпнуска"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Бюджет"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Жалпы сактагыч"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Басып чыгаруу үчүн калкып чыгуучу терезе ачылды. Улантуу үчүн аны жабыңыз."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Жогорудагы майнаптуулук көрсөткүчтөрү окшош жана алар бул трассирлөөдөгү убакыттарга дал келбейт. Убакыттар дал келиши үчүн, \"Маяк жөндөөлөрүнөн\" жөнгө салууну өчүрүңүз."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Түпнуска трассирлөөнү көрүү"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Трассирлөөгө көз салуу"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(жаңы отчёт)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Серверден алынган \"cookie\" деп аталган жооптун cookie файлдары"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Кеңири маалымат"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Бурмаланган жооптун cookie файлдары"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "чыпкаланган сурамдардын cookie файлдарын көрсөтүү"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Бул сайтта ушул сурам менен жөнөтүлбөгөн cookie файлдары бар. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Бул сурамдын cookie файлдары жок."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Безье куб түзөтүүчүсүн ачуу."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Бардык мазмун скрипттерин четке кагылгандардын тизмесине кошуу"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Скриптти четке кагылгандардын тизмесине кошуу"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Айрым чалуу фреймдеринде эскертүүлөр бар"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "четке кагылгандардын тизмесинде"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Четке кагылгандардын тизмесинен бардык мазмун скрипттерин өчүрүү"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Четке кагылгандардын тизмесинен өчүрүү"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Фреймди өчүрүп күйгүзүү"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Кооз басып чыгаруу: {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} сайтындагы мүчүлүштүктөр жөнүндө маалымат аркылуу берилген)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(булак {PH1} сайтынан түзүлгөн)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Файлдагы бардык ажырым чекиттерин өчүрүү"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Өчүрүлгөн ажырым чекиттери"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Абалды өзгөртүү"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Файлдагы бардык ажырым чекиттерди иштетүү"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Иштетилген ажырым чекиттери"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "аралаш"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Табылган өзгөчө учурларда тындыруу"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Өзгөчө учурларда тындыруу"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Бардык ажырым чекиттерин өчүрүү"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y деңгээли"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} аныкталган жок"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Түсүн өзгөртүү үчүн \"Shift\" баскычын чыкылдатуу"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Тез ачуу кеңеши"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Ырастоо үчүн \"Enter\" же жокко чыгаруу үчүн \"Escape\" баскычтарын басыңыз.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Жеткиликтүү буйруктарды көрүү үчүн \"?\" белгисин териңиз"

@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1} uchun kontent tahlil qilinmadi: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools tomonidan manba xaritasi yuklanmadi: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Axromatopsiya"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScriptni faolsizlantirish"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL formatini faolsizlantirish"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Qurilmadagi shriftlarni faolsizlantirish"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScriptni yoqish"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL formatini yoqish"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Qurilmada shriftlarini yoqish"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Tarmoq soʻrovlari bloklanishini yoqish"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "DevTools obyektiga masofaviy fayl yoʻllari orqali manba xaritalari kabi resurslarni yuklashiga ruxsat bering. Xavfsizlik sabablariga koʻra standart holatda ishlamaydi"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP formatini yoqish"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF rasm formatini faolsizlantirish"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL rasm formatini faolsizlantirish"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Qurilmadagi shriftlarni faolsizlantirish"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Renderlash"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Yozayotganda qidirish funksiyasini yoqish"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Yozayotganda qidirish"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Yozayotganda qidirish funksiyasini oʻchirish (qidirish uchun Enter bosiladi)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Ruxsat berilsa, bu saytda reklamalar chiqsin"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} manifest faylida {PH2} qiymati tayinlanmagan, uning oʻrniga {PH3} ishlatiladi. Ilova identifikatorini belgilash uchun {PH4} faylida {PH5} qiymatini tayinlang {PH6}."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Ilova manifesti"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Tarkibida purpose: \"any maskable\" qiymatli attributi bor belgini eʼlon qilish tavsiya etilmaydi. Bu tasvir maydonlari juda kichik yoki katta boʻlgani uchun ayrim platformalarda nosoz koʻrinishi mumkin."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Yangi qayd URL manzili"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Manifest aniqlanmadi"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Hech qanday mos service worker aniqlanmadi. Sahifani qayta yuklang yoki service worker qamrovi manifest faylidagi URL manzildan boshlab, joriy sahifa miqyosigacha qoʻllanilishini tekshiring."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Bu sahifa oldindan renderlanadigan yashirin sahifaga mos kelmaydigan mijoz sertifikatini talab qilmoqda."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Oldindan renderlash sahifasi yuklanganidan keyin begona manbali URL manzilga yoʻnaltirildi. Hozir begona manba sahifalarini oldindan renderlashga ruxsat berilmagan."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Oldindan renderlash URL manzili begona URL manziliga yoʻnaltirishga urindi. Hozir begona manba sahifalarini oldindan renderlashga ruxsat berilmagan."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Trafikni rejash funksiyasi yoqildi"
   },
@@ -3936,27 +3900,6 @@
     "message": "Egasining kelib chiqishi"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Umumiy xotira"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Yaratilishi"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Qaydlar"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Uzunligi"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Meta-axborot"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Manba"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Budjet"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Umumiy xotira"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Chop etish pop-ap oynasi ochiq. Davom etish uchun uni yoping."
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Yuqoridagi simulyatsiya qilingan unumdorlik koʻrsatkichlari bu kuzatuvda topilgan vaqtlar belgilariga mos emas. Vaqt belgilari bir xil boʻlishi uchun Lighthouse sozlamalari orqali Qotirish simulyatsiyasini faolsizlantiring."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Asl izini koʻrish"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Izini ochish"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(yangi hisobot)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookie fayllari serverga soʻrovdagi “cookie” sarlavhasi orqali yuborildi"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Batafsil"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Javob Cookie fayllari yaroqsiz"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "filtrlangan soʻrov cookie fayllarini chiqarish"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Bu saytning boshqa qismida ushbu soʻrov bilan yuborilmagan cookie fayllar bor. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Bu soʻrov cookie fayllarisiz."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Cubic bezier muharririni ochish."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Barcha kontent skriptlarini inkor etish roʻyxatiga kiritish"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Inkor etish roʻyxatiga skript kiritish"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Ayrim chaqiruv freymlarida ogohlantirishlar bor"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "inkor etish roʻyxatida"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Inkor etiladigan barcha kontent skriptlarini olib tashlash"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Inkor etiladiganlardan olib tashlash"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Freymni qayta yuklash"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Saranjomlash: {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} debag axboroti orqali raqdim etildi)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(kod manbasi: {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Fayldagi barcha uzilish nuqtalarini faolsizlantirish"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Faolsizlantirilgan uzilish nuqtalari"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Shartni tahrirlash"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Fayldagi barcha uzilish nuqtalarini yoqish"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Yoqilgan uzilish nuqtalari"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "aralash"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Chiqqan istisnolarda pauza qilish"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Istisnolarda pauza qilish"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Hamma nuqtalarni olib tashlash"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y surilish"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} belgilanmagan"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Rang formatini oʻzgartirish uchun Shift+klik qiling"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Tezkor buyruq oynasi"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Tasdiqlash uchun Enter, bekor qilish uchun Escape tugmasini bosing.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Mavjud buryuqlarni koʻrish uchun “?” belgisini yozing"

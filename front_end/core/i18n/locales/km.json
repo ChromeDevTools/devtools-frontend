@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "មិនអាចញែក​ខ្លឹមសារ​សម្រាប់ {PH1}៖ {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools មិនអាចផ្ទុក​ផែនទី​ប្រភព​បានទេ៖ {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "ការមើលឃើញ​តែពណ៌ស ខ្មៅ និងប្រផេះ"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "បិទ JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "បិទទម្រង់ JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "បិទ​ពុម្ពអក្សរ​មូលដ្ឋាន"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "បើក JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "បើកទម្រង់ JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "បើក​ពុម្ពអក្សរ​មូលដ្ឋាន"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "បើកការទប់ស្កាត់សំណើសុំភ្ជាប់បណ្ដាញ"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "អនុញ្ញាតឱ្យ DevTools ផ្ទុកធនធាន ដូចជាផែនទីប្រភពពីផ្លូវឯកសារពីចម្ងាយ។ បានបិទតាម​លំនាំដើមដោយសារហេតុផលសុវត្ថិភាព។"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "បើកទម្រង់ WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "បិទ​ទម្រង់​រូបភាព AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "បិទ​ទម្រង់​រូបភាព JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "បិទ​ពុម្ពអក្សរ​មូលដ្ឋាន"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ការបំប្លែង"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "បើក​ការស្វែងរក​ស្របពេលអ្នកវាយបញ្ចូល"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "ស្វែងរក​ស្របពេលអ្នក​វាយបញ្ចូល"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "បិទ​ការស្វែងរកស្របពេល​អ្នក​វាយបញ្ចូល (ចុច Enter ដើម្បីស្វែងរក)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "បង្ហាញ​ការផ្សាយ​ពាណិជ្ជកម្ម​នៅលើ​គេហទំព័រ​នេះ ប្រសិនបើ​អនុញ្ញាត"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} {PH2} មិនត្រូវបានបញ្ជាក់​នៅក្នុង​មេនីហ្វេសថ៍ទេ ហើយ {PH3} ត្រូវបានប្រើជំនួសវិញ។ ដើម្បីបញ្ជាក់​លេខសម្គាល់​កម្មវិធីដែលត្រូវនឹង​អត្តសញ្ញាណបច្ចុប្បន្ន សូមកំណត់​កន្លែងបញ្ចូល {PH4} ទៅ {PH5} {PH6}។"
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "មេនីហ្វេសថ៍​កម្មវិធី"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "ការប្រកាស​រូបតំណាង​ដោយប្រើ 'purpose: \"any maskable\"' មិនត្រូវបាន​ណែនាំទេ។ ទំនងជា​បង្ហាញមិនត្រឹមត្រូវ​នៅលើប្រព័ន្ធ​មួយចំនួនទេ ដោយសារ​មានចន្លោះធំពេក ឬតូចពេក។"
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL នៃកំណត់ចំណាំ​ថ្មី"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "រកមិនឃើញ​មេនីហ្វេសថ៍​ទេ"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "រកមិនឃើញ service worker ដែលត្រូវគ្នាទេ។ អ្នកប្រហែលជាត្រូវផ្ទុកទំព័រឡើងវិញ ឬពិនិត្យមើលថាតើដែនកំណត់នៃ service worker សម្រាប់ទំព័របច្ចុប្បន្នត្រូវនឹងដែនកំណត់នេះឬអត់ និងចាប់ផ្ដើម URL ពីមេនីហ្វេសថ៍។"
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "ទំព័រ​កំពុង​ស្នើសុំ​វិញ្ញាបនបត្រ​កម្មវិធី​ភ្ញៀវ ដែល​មិន​សមស្រប​សម្រាប់​ទំព័រ​ដែលបានលាក់​ដូចជា​ការបំប្លែងជាមុន។"
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​ត្រូវបាន​រុករក​ទៅ URL ប្រភពដើម​ផ្សេង​បន្ទាប់​ពី​ផ្ទុក។ បច្ចុប្បន្ន ការបំប្លែង​ជាមុន​នូវទំព័រ​ដែល​មាន​ប្រភពដើម​ផ្សេង​មិនត្រូវបាន​អនុញ្ញាត​ទេ។"
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "បានព្យាយាមបំប្លែងជាមុននូវ URL ​ដែល​បានបញ្ជូន​បន្ត​ទៅ URL ដែលមានប្រភពដើម​ផ្សេង។ បច្ចុប្បន្ន ការបំប្លែង​ជាមុន​នូវទំព័រ​ដែល​មាន​ប្រភពដើម​ផ្សេង​មិនត្រូវបាន​អនុញ្ញាត​ទេ។"
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "មុខងារសន្សំសំចៃទិន្នន័យត្រូវបានបើក"
   },
@@ -3936,27 +3900,6 @@
     "message": "ប្រភពដើមរបស់ម្ចាស់"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "ទំហំផ្ទុករួម"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "ការបង្កើត"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "ធាតុ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "ប្រវែង"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "ទិន្នន័យមេតា"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ប្រភពដើម"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "ថវិកា"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "ទំហំផ្ទុករួម"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "ផ្ទាំងវិនដូ​លោតឡើង​នៃការបោះពុម្ព​ត្រូវបានបើក។ សូម​បិទវា ដើម្បី​បន្ត។"
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "មេទ្រិកនៃ​ប្រតិបត្តិការ​ខាងលើ​ត្រូវបានត្រាប់តាម ហើយនឹងមិនត្រូវគ្នានឹង​រយៈពេលដែលបានរកឃើញ​នៅក្នុង​ដាននេះទេ។ សូមបិទការពន្យឺត​ដែលបានត្រាប់តាមនៅក្នុង \"ការកំណត់ Lighthouse\" ប្រសិនបើអ្នក​ចង់ឱ្យរយៈពេល​ត្រូវគ្នា។"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "មើលដានដើម"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "មើលដាន"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(របាយការណ៍ថ្មី)"
   },
@@ -6732,7 +6666,7 @@
     "message": "ការពន្យឺត CPU ត្រូវបានបើក"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "ដើរយឺត {PH1} ដង"
+    "message": "យឺតជាង {PH1} ដង"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "ការ​លើស​តម្លៃ​លំនាំដើម​អាច​ធ្វើឱ្យប្រតិបត្តិការ​ប្រព័ន្ធធ្លាក់ចុះ​។"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "ខូគីដែលត្រូវបានបញ្ជូនទៅម៉ាស៊ីនមេនៅក្នុងផ្នែកក្បាល 'ខូគី' របស់សំណើ"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "ស្វែងយល់បន្ថែម"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "ខូគីនៃការឆ្លើយតប​មានទម្រង់មិនត្រឹមត្រូវ"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "បង្ហាញខូគី​សំណើដែលបានត្រងចេញ"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "គេហទំព័រនេះមានខូគីនៅក្នុងផ្នែកមួយទៀតដែលមិនបានផ្ញើជាមួយសំណើនេះ។ {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "សំណើនេះគ្មានខូគីទេ។"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "បើក​កម្មវិធីកែ​បេស៊ីយេ​គូប។"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "បញ្ចូល​ស្គ្រីបខ្លឹមសារ​ទាំងអស់​ទៅក្នុង​បញ្ជីមិនអើពើ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "បញ្ចូល​ស្គ្រីបទៅ​បញ្ជីមិនអើពើ"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "ស៊ុមនៃការហៅមួយចំនួនមានការព្រមាន"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "នៅលើ​បញ្ជី​មិនអើពើ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "លុប​ស្គ្រីបខ្លឹមសារ​ទាំងអស់​ចេញពី​បញ្ជីមិនអើពើ"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "ដកចេញពី​បញ្ជីមិនអើពើ"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "ចាប់ផ្ដើម​ស៊ុម​ឡើងវិញ"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "ប្រើ​ទម្រង់ស្អាត​សម្រាប់ {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(បានផ្ដល់​តាមរយៈ​ព័ត៌មាន​អំពីការជួសជុល​ដោយ {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(​ប្រភពដែល​បានពី {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "បិទ​ចំណុចផ្អាក​ទាំងអស់​នៅក្នុង​ឯកសារ"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "ចំណុចផ្អាកដែលបានបិទ"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "កែស្ថានភាព"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "បើក​ចំណុច​ផ្អាក​ទាំងអស់​នៅ​ក្នុង​ឯកសារ"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "ចំណុចផ្អាកដែលបានបើក"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "ចម្រុះ"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "ផ្អាក​ពេលមាន​ការលើកលែង​ដែលចាប់បាន"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "ផ្អាក​ពេលមាន​ការលើកលែង"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "លុប​ចំណុចផ្អាក​ទាំងអស់"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "គម្លាត Y"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1} មិនត្រូវបាន​កំណត់​អត្ថន័យទេ"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "ចុចដោយ​សង្កត់គ្រាប់ចុចប្ដូរ (Shift) ឱ្យជាប់ ដើម្បីប្ដូរ​ទម្រង់ពណ៌"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "បើក​សារ​យ៉ាងរហ័ស"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (ចុច 'Enter' ដើម្បី​បញ្ជាក់ ឬ​ចុច 'Escape' ដើម្បី​បោះបង់។)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "វាយបញ្ចូល '?' ដើម្បីមើល​ការបញ្ជា​ដែលអាច​ប្រើបាន"

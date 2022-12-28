@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "แยกวิเคราะห์เนื้อหาสำหรับ {PH1} ไม่ได้: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "เครื่องมือสำหรับนักพัฒนาเว็บไม่สามารถโหลดการแมปแหล่งที่มาได้: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "ภาวะตาบอดสีทุกสี"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "ปิดใช้ JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "ปิดใช้รูปแบบ JPEG XL"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "ปิดใช้แบบอักษรในเครื่อง"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "เปิดใช้ JavaScript"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "เปิดใช้รูปแบบ JPEG XL"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "เปิดใช้แบบอักษรในเครื่อง"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "เปิดใช้การบล็อกคำขอเครือข่าย"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "อนุญาตให้ DevTools โหลดทรัพยากร เช่น การแมปแหล่งที่มา จากเส้นทางของไฟล์ระยะไกล ปิดใช้อยู่โดยค่าเริ่มต้นเพื่อความปลอดภัย"
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "เปิดใช้รูปแบบ WebP"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "ปิดใช้รูปแบบรูปภาพ AVIF"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "ปิดใช้รูปแบบรูปภาพ JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "ปิดใช้แบบอักษรในเครื่อง"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "การแสดงผล"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "เปิดใช้การค้นหาขณะพิมพ์"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "ค้นหาขณะพิมพ์"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "ปิดใช้การค้นหาขณะพิมพ์ (กด Enter เพื่อค้นหา)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "แสดงโฆษณาในเว็บไซต์นี้หากได้รับอนุญาต"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "{PH1} ไม่ได้กำหนด {PH2} ในไฟล์ Manifest ระบบจะใช้ {PH3} แทน หากต้องการกำหนดรหัสแอปที่ตรงกับข้อมูลระบุในปัจจุบัน ให้ตั้งค่าช่อง {PH4} เป็น {PH5} {PH6}"
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "ไฟล์ Manifest ของแอป"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "ไม่แนะนำให้ประกาศไอคอนที่มี \"purpose: \"any maskable\"\" เพราะอาจแสดงผลได้ไม่ถูกต้องในบางแพลตฟอร์มเนื่องจากระยะห่างจากขอบมากเกินไปหรือน้อยเกินไป"
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL โน้ตใหม่"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "ไม่พบไฟล์ Manifest"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "ไม่พบ service worker ที่ตรงกัน คุณอาจต้องโหลดหน้านี้ซ้ำหรือตรวจสอบว่าขอบเขตของ service worker สำหรับหน้าปัจจุบันครอบคลุมขอบเขตและ URL เริ่มต้นจากไฟล์ Manifest"
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "หน้าเว็บกําลังขอใบรับรองไคลเอ็นต์ ซึ่งไม่เหมาะสำหรับหน้าที่ซ่อนอยู่ เช่น การแสดงผลล่วงหน้า"
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "หน้าที่แสดงผลล่วงหน้าซึ่งไปยัง URL แบบข้ามต้นทางหลังจากการโหลด ปัจจุบันไม่อนุญาตให้ใช้หน้าแบบข้ามต้นทางที่แสดงผลล่วงหน้า"
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "พยายามแสดงผลล่วงหน้าสำหรับ URL ซึ่งเปลี่ยนเส้นทางไปยัง URL แบบข้ามต้นทาง ปัจจุบันไม่อนุญาตให้ใช้หน้าแบบข้ามต้นทางที่แสดงผลล่วงหน้า"
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "เปิดใช้การประหยัดอินเทอร์เน็ตแล้ว"
   },
@@ -3936,27 +3900,6 @@
     "message": "ต้นทางเจ้าของ"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "พื้นที่เก็บข้อมูลที่ใช้ร่วมกัน"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "การสร้าง"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "รายการ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "ความยาว"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "ข้อมูลเมตา"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ต้นทาง"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "งบประมาณ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "พื้นที่เก็บข้อมูลที่ใช้ร่วมกัน"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6356,15 +6299,6 @@
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "หน้าต่างป๊อปอัปการพิมพ์เปิดอยู่ โปรดปิดหน้าต่างดังกล่าวเพื่อดำเนินการต่อ"
   },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "เมตริกประสิทธิภาพข้างต้นมาจากการจำลองและจะไม่ตรงกับเวลาที่พบในการติดตามนี้ หากต้องการให้เวลาตรงกัน ให้ปิดใช้การควบคุมจำลองใน \"การตั้งค่า Lighthouse\""
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "ดูการติดตามดั้งเดิม"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "ดูการติดตาม"
-  },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(รายงานใหม่)"
   },
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "คุกกี้ที่ส่งไปยังเซิร์ฟเวอร์ในส่วนหัว \"คุกกี้\" ของคำขอ"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "ดูข้อมูลเพิ่มเติม"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "คุกกี้การตอบกลับมีรูปแบบไม่ถูกต้อง"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "แสดงคุกกี้คำขอที่กรองออก"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "เว็บไซต์นี้มีคุกกี้ในพาร์ติชันอื่น แต่ไม่ได้ส่งด้วยคำขอนี้ {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "คำขอนี้ไม่มีคุกกี้"
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "เปิดเครื่องมือแก้ไข cubic bezier"
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "เพิ่มสคริปต์เนื้อหาทั้งหมดลงในรายการละเว้น"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "เพิ่มสคริปต์ลงในรายการละเว้น"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "เฟรม Call บางเฟรมมีคำเตือน"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "อยู่ในรายการละเว้น"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "ลบสคริปต์เนื้อหาทั้งหมดออกจากรายการละเว้น"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "นำออกจากรายการละเว้น"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "รีสตาร์ทเฟรม"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "จัดรูปแบบ {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(ให้บริการผ่านข้อมูลการแก้ไขข้อบกพร่องโดย {PH1})"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(แหล่งที่มาที่แมปจาก {PH1})"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "ปิดใช้เบรกพอยท์ทั้งหมดในไฟล์"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "เบรกพอยท์ที่ปิดใช้"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "แก้ไขเงื่อนไข"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "เปิดใช้เบรกพอยท์ทั้งหมดในไฟล์"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "เบรกพอยท์ที่เปิดใช้"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "ผสม"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "หยุดชั่วคราวเมื่อพบข้อยกเว้น"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "หยุดชั่วคราวเนื่องจากข้อยกเว้น"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "นำเบรกพอยท์ทั้งหมดออก"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "ระยะห่างแนวตั้ง"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "ไม่ได้กำหนด {PH1}"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "กด Shift และคลิกเพื่อเปลี่ยนรูปแบบสี"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "ข้อความแบบเปิดด่วน"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (กด \"Enter\" เพื่อยืนยันหรือกด \"Escape\" เพื่อยกเลิก)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "พิมพ์ \"?\" เพื่อดูคำสั่งที่ใช้ได้"

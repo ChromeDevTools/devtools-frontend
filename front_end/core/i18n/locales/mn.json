@@ -623,9 +623,6 @@
   "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
     "message": "{PH1}-д контентыг шинжилж чадсангүй: {PH2}"
   },
-  "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools нь эх газрын зургийг ачаалж чадсангүй: {PH1}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ахроматопси"
   },
@@ -649,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript-г идэвхгүй болгох"
-  },
-  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
-    "message": "JPEG XL форматыг идэвхгүй болгох"
   },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Дотоод фонтыг идэвхгүй болгох"
@@ -749,17 +743,11 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript-г идэвхжүүлэх"
   },
-  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
-    "message": "JPEG XL форматыг идэвхжүүлэх"
-  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Дотоод фонтыг идэвхжүүлэх"
   },
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Сүлжээний хүсэлт блоклохыг идэвхжүүлэх"
-  },
-  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
-    "message": "DevTools-д эх газрын зураг зэрэг нөөцийг алсын файлын замаас ачаалахыг зөвшөөрнө үү. Аюулгүй байдлын шалтгааны улмаас өгөгдмөлөөр идэвхгүй болгосон."
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP форматыг идэвхжүүлэх"
@@ -871,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF зургийн форматыг идэвхгүй болгох"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
-    "message": "JPEG XL зургийн форматыг идэвхгүй болгох"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Дотоод фонтыг идэвхгүй болгох"
@@ -1003,15 +988,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Буулгах"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
-    "message": "Бичих явцдаа хайхыг идэвхжүүлэх"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
-    "message": "Бичих явцдаа хайх"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
-    "message": "Бичих явцдаа хайхыг идэвхгүй болгох (хайхын тулд Enter дээр дарна уу)"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Зөвшөөрсөн тохиолдолд энэ сайт дээр зар харуул"
@@ -2234,9 +2210,6 @@
   "panels/application/AppManifestView.ts | appIdNote": {
     "message": "Санамж: {PH1} {PH2}-г тодорхойлогч файлд заагаагүй бөгөөд оронд нь {PH3}-г ашигласан. Одоогийн таниулбартай таарах аппын ID-г заахын тулд {PH4} талбарыг '{PH5} {PH6} болгож тохируулна уу."
   },
-  "panels/application/AppManifestView.ts | appManifest": {
-    "message": "Аппын тодорхойлогч файл"
-  },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "'purpose: \"any maskable\"'-тай дүрс тэмдгийг мэдэгдэхийг зөвлөдөггүй. Хэт их эсвэл хэт бага зах хүрээтэй тул зарим платформ дээр буруу харагдаж магадгүй."
   },
@@ -2329,9 +2302,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Шинэ тэмдэглэлийн URL"
-  },
-  "panels/application/AppManifestView.ts | noManifestDetected": {
-    "message": "Тодорхойлогч файл илрээгүй"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
     "message": "Тохирох service worker илэрсэнгүй. Та хуудсыг дахин ачаалах эсвэл одоогийн хуудасны service worker-н хүрээ нь хүрээг хязгаарлаж байгааг шалгаж, тодорхойлогч файлаас URL эхлүүлэх шаардлагатай байж магадгүй."
@@ -3770,12 +3740,6 @@
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Хуудас клиентийн сертификатын хүсэлт тавьж байгаа бөгөөд энэ нь урьдчилан рэндэрлэх зэрэг нуусан хуудсанд тохиромжгүй."
   },
-  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "Ачаалсны дараа урьдчилан рэндэрлэсэн хуудсыг хөндлөнгийн эхийн URL руу шилжүүлсэн. Одоогоор хөндлөнгийн эхийн хуудаснуудыг урьдчилан рэндэрлэхийг зөвшөөрдөггүй."
-  },
-  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "Хөндлөнгийн эхийн URL руу дахин чиглүүлсэн URL-г урьдчилан рэндэрлэхээр оролдсон. Одоогоор хөндлөнгийн эхийн хуудаснуудыг урьдчилан рэндэрлэхийг зөвшөөрдөггүй."
-  },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Дата хэмнэгчийг идэвхжүүлсэн"
   },
@@ -3936,27 +3900,6 @@
     "message": "Өмчлөгчийн эх"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Дундын хадгалах сан"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | creationTime": {
-    "message": "Үүсгэсэн цаг"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Оруулгууд"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | length": {
-    "message": "Тоо"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Мета өгөгдөл"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Эх"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | remainingBudget": {
-    "message": "Төсөв"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Дундын хадгалах сан"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
@@ -6234,7 +6177,7 @@
     "message": "Хадгалах санг цэвэрлэх"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
-    "message": "Дэлгэц"
+    "message": "Компьютер"
   },
   "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
     "message": "DevTools-н удаашруулалт (дэвшилтэт)"
@@ -6355,15 +6298,6 @@
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
     "message": "Хэвлэх попап цонх нээлттэй байна. Үргэлжлүүлэхийн тулд үүнийг хаана уу."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Дээрх гүйцэтгэлийн хэмжигдэхүүнүүдийг загварчилсан бөгөөд энэ ул мөрд олдсон хуваарьтай таарахгүй. Хэрэв та хуваарийг тааруулахыг хүсвэл загварчилсан багасгалтыг \"Lighthouse тохиргоонд\" идэвхгүй болгоно уу."
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
-    "message": "Эх ул мөрийг харах"
-  },
-  "panels/lighthouse/LighthouseReportRenderer.ts | viewTrace": {
-    "message": "Ул мөрийг харах"
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(шинэ тайлан)"
@@ -7535,9 +7469,6 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Хүсэлтийн 'күүки' толгой хэсгийн серверт илгээсэн күүки"
   },
-  "panels/network/RequestCookiesView.ts | learnMore": {
-    "message": "Нэмэлт мэдээлэл авах"
-  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Алдаатай хариу үйлдлийн күүки"
   },
@@ -7552,9 +7483,6 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "шүүсэн хүсэлтийн күүкийг харуулах"
-  },
-  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Энэ сайт энэ хүсэлтийн хамт илгээгээгүй өөр хуваарилалтад күүкитэй байна. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Энэ хүсэлтэд күүки байхгүй байна."
@@ -9908,12 +9836,6 @@
   "panels/sources/CSSPlugin.ts | openCubicBezierEditor": {
     "message": "Шоо дөрвөлжин безье засварлагчийг нээнэ үү."
   },
-  "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Үл хэрэгсэх жагсаалтад контентын бүх скриптийг нэмэх"
-  },
-  "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
-    "message": "Үл хэрэгсэх жагсаалтад скрипт нэмэх"
-  },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
     "message": "Зарим дуудлагын фреймд сануулга байна"
   },
@@ -9931,12 +9853,6 @@
   },
   "panels/sources/CallStackSidebarPane.ts | onIgnoreList": {
     "message": "үл хэрэгсэх жагсаалтад"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeAllContentScriptsFrom": {
-    "message": "Үл хэрэгсэх жагсаалтаас контентын бүх скриптийг хасах"
-  },
-  "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
-    "message": "Үл хэрэгсэх жагсаалтаас хасах"
   },
   "panels/sources/CallStackSidebarPane.ts | restartFrame": {
     "message": "Фреймийг дахин эхлүүлэх"
@@ -10274,12 +10190,6 @@
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
     "message": "Pretty print {PH1}"
   },
-  "panels/sources/ScriptOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1}-н дебаг хийх мэдээллээс олгосон)"
-  },
-  "panels/sources/ScriptOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(эх сурвалжийг {PH1}-с буулгасан)"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10469,9 +10379,6 @@
   "panels/sources/components/BreakpointsView.ts | disableAllBreakpointsInFile": {
     "message": "Файл дахь бүх хугарлын цэгийг идэвхгүй болгох"
   },
-  "panels/sources/components/BreakpointsView.ts | disabledBreakpoints": {
-    "message": "Идэвхгүй болгосон хугарлын цэгүүд"
-  },
   "panels/sources/components/BreakpointsView.ts | editCondition": {
     "message": "Засах нөхцөл"
   },
@@ -10481,9 +10388,6 @@
   "panels/sources/components/BreakpointsView.ts | enableAllBreakpointsInFile": {
     "message": "Файл дахь бүх хугарлын цэгийг идэвхжүүлэх"
   },
-  "panels/sources/components/BreakpointsView.ts | enabledBreakpoints": {
-    "message": "Идэвхжүүлсэн хугарлын цэгүүд"
-  },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
     "message": "холимог"
   },
@@ -10492,9 +10396,6 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Илрүүлсэн гажиг дээр түр зогсоох"
-  },
-  "panels/sources/components/BreakpointsView.ts | pauseOnExceptions": {
-    "message": "Гажиг дээр түр зогсоох"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Бүх хугарлын цэгийг хасах"
@@ -11115,7 +11016,7 @@
     "message": "Санах ойн он цагийн хэлхээсийг харуулах"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Вебийн хэмжүүрийг харуулах"
+    "message": "Вебийн үзүүлэлтийг харуулах"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} сек"
@@ -12791,9 +12692,6 @@
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | yOffset": {
     "message": "Y офсет"
   },
-  "ui/legacy/components/inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
-    "message": "{PH1}-г тодорхойлоогүй"
-  },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Өнгөний форматыг өөрчлөхийн тулд Shift-г дарж, товшино уу"
   },
@@ -13015,9 +12913,6 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | quickOpenPrompt": {
     "message": "Сануулгыг шуурхай нээх"
-  },
-  "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
-    "message": "{PH1} (Баталгаажуулахын тулд 'Enter' эсвэл цуцлахын тулд 'Escape'-г дарна уу.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Боломжтой тушаалуудыг харахын тулд '?' гэж бичнэ үү"

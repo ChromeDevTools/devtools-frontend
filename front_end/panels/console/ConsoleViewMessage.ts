@@ -235,6 +235,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   protected repeatCountElement: UI.UIUtils.DevToolsSmallBubble|null;
   private requestResolver: Logs.RequestResolver.RequestResolver;
   private issueResolver: IssuesManager.IssueResolver.IssueResolver;
+  #adjacentUserCommandResult: boolean = false;
 
   /** Formatting Error#stack is asynchronous. Allow tests to wait for the result */
   #formatErrorStackPromiseForTest = Promise.resolve();
@@ -1180,6 +1181,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.elementInternal.tabIndex = -1;
     this.elementInternal.addEventListener('keydown', (this.onKeyDown.bind(this) as EventListener));
     this.updateMessageElement();
+    this.elementInternal.classList.toggle('console-adjacent-user-command-result', this.#adjacentUserCommandResult);
     return this.elementInternal;
   }
 
@@ -1266,6 +1268,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
     this.messageLevelIcon.setIconType(iconType);
     UI.ARIAUtils.setAccessibleName(this.messageLevelIcon, accessibleName);
+  }
+
+  setAdjacentUserCommandResult(adjacentUserCommandResult: boolean): void {
+    this.#adjacentUserCommandResult = adjacentUserCommandResult;
+    this.elementInternal?.classList.toggle('console-adjacent-user-command-result', this.#adjacentUserCommandResult);
   }
 
   repeatCount(): number {

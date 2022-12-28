@@ -965,9 +965,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
     if (!currentGroup || !currentGroup.messagesHidden()) {
       const originatingMessage = viewMessage.consoleMessage().originatingMessage();
-      if (lastMessage && originatingMessage && lastMessage.consoleMessage() === originatingMessage) {
-        viewMessage.toMessageElement().classList.add('console-adjacent-user-command-result');
-      }
+      const adjacent = Boolean(originatingMessage && lastMessage?.consoleMessage() === originatingMessage);
+      viewMessage.setAdjacentUserCommandResult(adjacent);
       showGroup(currentGroup, this.visibleViewMessages);
       this.visibleViewMessages.push(viewMessage);
       this.searchMessage(this.visibleViewMessages.length - 1);

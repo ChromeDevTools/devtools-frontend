@@ -47,7 +47,6 @@ import {NetworkProject} from './NetworkProject.js';
 export class CompilerScriptMapping implements DebuggerSourceMapping {
   readonly #debuggerModel: SDK.DebuggerModel.DebuggerModel;
   readonly #sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.Script.Script>;
-  readonly #workspace: Workspace.Workspace.WorkspaceImpl;
   readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
   readonly #regularProject: ContentProviderBasedProject;
   readonly #contentScriptsProject: ContentProviderBasedProject;
@@ -61,7 +60,6 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
     this.#debuggerModel = debuggerModel;
     this.#sourceMapManager = this.#debuggerModel.sourceMapManager();
-    this.#workspace = workspace;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     const target = debuggerModel.target();
@@ -91,22 +89,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
           SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this),
       this.#sourceMapManager.addEventListener(
           SDK.SourceMapManager.Events.SourceMapDetached, this.sourceMapDetached, this),
-      this.#workspace.addEventListener(
-          Workspace.Workspace.Events.UISourceCodeAdded,
-          event => {
-            this.onUiSourceCodeAdded(event);
-          },
-          this),
     ];
-  }
-
-  private onUiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
-    const uiSourceCode = event.data;
-    if (uiSourceCode.contentType().isDocument()) {
-      for (const script of this.#debuggerModel.scriptsForSourceURL(uiSourceCode.url())) {
-        void this.#debuggerWorkspaceBinding.updateLocations(script);
-      }
-    }
   }
 
   private addStubUISourceCode(script: SDK.Script.Script): void {

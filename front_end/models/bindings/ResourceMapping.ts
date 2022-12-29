@@ -322,6 +322,11 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
     }
     this.#project.addUISourceCodeWithProvider(this.#uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
     this.#edits = [];
+
+    void Promise.all([
+      ...this.inlineScripts().map(script => DebuggerWorkspaceBinding.instance().updateLocations(script)),
+      ...this.inlineStyles().map(style => CSSWorkspaceBinding.instance().updateLocations(style)),
+    ]);
   }
 
   private inlineStyles(): SDK.CSSStyleSheetHeader.CSSStyleSheetHeader[] {
@@ -424,6 +429,10 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
 
   dispose(): void {
     this.#project.removeFile(this.#uiSourceCode.url());
+    void Promise.all([
+      ...this.inlineScripts().map(script => DebuggerWorkspaceBinding.instance().updateLocations(script)),
+      ...this.inlineStyles().map(style => CSSWorkspaceBinding.instance().updateLocations(style)),
+    ]);
   }
 
   private firstResource(): SDK.Resource.Resource {

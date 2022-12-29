@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import * as SourceMapEncoder from './SourceMapEncoder.js';
 
 describe('SourceMapEncoder', () => {
@@ -37,39 +36,24 @@ describe('SourceMapEncoder', () => {
           names: [],
           mappings: 'A',
           version: 3,
-          file: undefined,
-          sections: undefined,
-          sourceRoot: undefined,
-          sourcesContent: undefined,
-          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(['0:0']));
 
     assert.deepEqual(
         {
-          sources: ['a.js' as Platform.DevToolsPath.UrlString],
+          sources: ['a.js'],
           names: [],
           mappings: 'AAAA',
           version: 3,
-          file: undefined,
-          sections: undefined,
-          sourceRoot: undefined,
-          sourcesContent: undefined,
-          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0']));
 
     assert.deepEqual(
         {
-          sources: ['a.js' as Platform.DevToolsPath.UrlString],
+          sources: ['a.js'],
           names: ['b'],
           mappings: 'AAAAA',
           version: 3,
-          file: undefined,
-          sections: undefined,
-          sourceRoot: undefined,
-          sourcesContent: undefined,
-          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0@b']));
   });
@@ -99,15 +83,10 @@ describe('SourceMapEncoder', () => {
     // Relative source, source line and source column.
     assert.deepEqual(
         {
-          sources: ['a.js', 'b.js', 'c.js'] as Platform.DevToolsPath.UrlString[],
+          sources: ['a.js', 'b.js', 'c.js'],
           names: [],
           mappings: 'CACC;CCEC;CCFC;CDAH',
           version: 3,
-          file: undefined,
-          sections: undefined,
-          sourceRoot: undefined,
-          sourcesContent: undefined,
-          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(['0:1 => a.js:1:1', '1:1 => b.js:3:2', '2:1 => c.js:1:3', '3:1 => b.js:1:0']));
   });
@@ -115,15 +94,10 @@ describe('SourceMapEncoder', () => {
   it('can encode names correctly', () => {
     assert.deepEqual(
         {
-          sources: ['a.js' as Platform.DevToolsPath.UrlString],
+          sources: ['a.js'],
           names: ['a', 'b', 'c'],
           mappings: 'AAAAA;AACAC;AACAC;AACAF',
           version: 3,
-          file: undefined,
-          sections: undefined,
-          sourceRoot: undefined,
-          sourcesContent: undefined,
-          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(
             ['0:0 => a.js:0:0@a', '1:0 => a.js:1:0@b', '2:0 => a.js:2:0@c', '3:0 => a.js:3:0@a']));
@@ -132,15 +106,10 @@ describe('SourceMapEncoder', () => {
   it('can encode small realistic samples correctly', () => {
     assert.deepEqual(
         {
-          sources: ['example.js' as Platform.DevToolsPath.UrlString],
+          sources: ['example.js'],
           names: ['a', 'b', 'c', 'd'],
           mappings: 'AAASA,QAAAA,IAAG,CAACC,CAAD,CAAaC,CAAb,CACZ,CACI,MAAOD,EAAP,CAAoBC,CADxB,CAIA,IAAIC,OAAS;A',
           version: 3,
-          file: undefined,
-          sections: undefined,
-          sourceRoot: undefined,
-          sourcesContent: undefined,
-          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap([
           // clang-format off
@@ -166,16 +135,11 @@ describe('SourceMapEncoder', () => {
 
     assert.deepEqual(
         {
-          sources: ['sourcemap-stepping-source.js' as Platform.DevToolsPath.UrlString],
+          sources: ['sourcemap-stepping-source.js'],
           names: [],
           mappings:
               'AAAA,oCAAoC;;AAEpC;GACG;GAAA;GAAA;GACA;GAAA;GAAA;GACA;GAAA;GAAA;;GAEA;AACH;;AAEA;GACG;GACA;GACA;;GAEA;AACH',
           version: 3,
-          file: undefined,
-          sections: undefined,
-          sourceRoot: undefined,
-          sourcesContent: undefined,
-          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap([
           // clang-format off

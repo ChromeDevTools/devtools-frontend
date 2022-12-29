@@ -82,35 +82,52 @@ export interface SourceMap {
       TextUtils.TextRange.TextRange[];
 }
 
-export class SourceMapV3 {
-  version!: number;
-  file!: string|undefined;
-  sources!: Platform.DevToolsPath.UrlString[];
-  sections!: Section[]|undefined;
-  mappings!: string;
-  sourceRoot!: Platform.DevToolsPath.UrlString|undefined;
-  names!: string[]|undefined;
-  sourcesContent!: string|undefined;
+/**
+ * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
+ * some additional fields.
+ *
+ * @see {@link SourceMapV3}
+ * @see {@link https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k Source Map Revision 3 Proposal}
+ */
+export type SourceMapV3Object = {
+  // clang-format off
+  'version': number,
+  'file'?: string,
+  'sourceRoot'?: string,
+  'sources': string[],
+  'sourcesContent'?: (string|null)[],
+  'names'?: string[],
+  'mappings': string,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  x_google_ignoreList!: number[]|undefined;
-  constructor() {
-  }
-}
+  'x_google_linecount'?: number,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  'x_google_ignoreList'?: number[],
+  // clang-format on
+};
 
-export class Section {
-  map!: SourceMapV3;
-  offset!: Offset;
-  url!: Platform.DevToolsPath.UrlString|undefined;
-  constructor() {
-  }
-}
-
-export class Offset {
-  line!: number;
-  column!: number;
-  constructor() {
-  }
-}
+/**
+ * Type of JSON objects that classify as valid sourcemaps per version 3 of the specification.
+ *
+ * We support both possible formats, the traditional source map object (represented by the {@link SourceMapV3Object} type),
+ * as well as the index map format, which consists of a sequence of sections that each hold source maps objects themselves
+ * or URLs to external source map files.
+ *
+ * @see {@link SourceMapV3Object}
+ * @see {@link https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k Source Map Revision 3 Proposal}
+ */
+export type SourceMapV3 = SourceMapV3Object|{
+  // clang-format off
+  'version': number,
+  'file'?: string,
+  'sections': ({
+    'offset': {line: number, column: number},
+    'map': SourceMapV3Object,
+  } | {
+    'offset': {line: number, column: number},
+    'url': string,
+  })[],
+  // clang-format on
+};
 
 export class SourceMapEntry {
   lineNumber: number;
@@ -172,9 +189,8 @@ export class TextSourceMap implements SourceMap {
 
     this.#mappingsInternal = null;
     this.#sourceInfos = new Map();
-    if (this.#json.sections) {
-      const sectionWithURL = Boolean(this.#json.sections.find(section => Boolean(section.url)));
-      if (sectionWithURL) {
+    if ('sections' in this.#json) {
+      if (this.#json.sections.find(section => 'url' in section)) {
         Common.Console.Console.instance().warn(
             `SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
       }
@@ -427,38 +443,41 @@ export class TextSourceMap implements SourceMap {
     }
   }
 
-  private eachSection(callback: (arg0: SourceMapV3, arg1: number, arg2: number) => void): void {
+  private eachSection(callback: (arg0: SourceMapV3Object, arg1: number, arg2: number) => void): void {
     if (!this.#json) {
       return;
     }
-    if (!this.#json.sections) {
+    if ('sections' in this.#json) {
+      for (const section of this.#json.sections) {
+        if ('map' in section) {
+          callback(section.map, section.offset.line, section.offset.column);
+        }
+      }
+    } else {
       callback(this.#json, 0, 0);
-      return;
-    }
-    for (const section of this.#json.sections) {
-      callback(section.map, section.offset.line, section.offset.column);
     }
   }
 
-  private parseSources(sourceMap: SourceMapV3): void {
+  private parseSources(sourceMap: SourceMapV3Object): void {
     const sourcesList = [];
-    const sourceRoot = sourceMap.sourceRoot || Platform.DevToolsPath.EmptyUrlString;
+    const sourceRoot = sourceMap.sourceRoot ?? '';
     const ignoreList = new Set(sourceMap.x_google_ignoreList);
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       let href = sourceMap.sources[i];
       // The source map v3 proposal says to prepend the sourceRoot to the source URL
       // and if the resulting URL is not absolute, then resolve the source URL against
-      // the source map URL. Appending the sourceRoot (if one exists) is not likely to
+      // the source map URL. Prepending the sourceRoot (if one exists) is not likely to
       // be meaningful or useful if the source URL is already absolute though. In this
       // case, use the source URL as is without prepending the sourceRoot.
       if (Common.ParsedURL.ParsedURL.isRelativeURL(href)) {
         if (sourceRoot && !sourceRoot.endsWith('/') && href && !href.startsWith('/')) {
-          href = Common.ParsedURL.ParsedURL.concatenate(sourceRoot, '/', href);
+          href = sourceRoot.concat('/', href);
         } else {
-          href = Common.ParsedURL.ParsedURL.concatenate(sourceRoot, href);
+          href = sourceRoot.concat(href);
         }
       }
-      let url = Common.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || href;
+      let url =
+          Common.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || (href as Platform.DevToolsPath.UrlString);
       const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
       if (url === this.#compiledURLInternal && source) {
         url = Common.ParsedURL.ParsedURL.concatenate(url, '? [sm]');
@@ -473,7 +492,7 @@ export class TextSourceMap implements SourceMap {
     sourceMapToSourceList.set(sourceMap, sourcesList);
   }
 
-  private parseMap(map: SourceMapV3, lineNumber: number, columnNumber: number): void {
+  private parseMap(map: SourceMapV3Object, lineNumber: number, columnNumber: number): void {
     let sourceIndex = 0;
     let sourceLineNumber = 0;
     let sourceColumnNumber = 0;
@@ -485,7 +504,7 @@ export class TextSourceMap implements SourceMap {
     // only reach this point when we are certain
     // we have the list available.
     const sources = sourceMapToSourceList.get(map);
-    const names = map.names || [];
+    const names = map.names ?? [];
     const stringCharIterator = new TextSourceMap.StringCharIterator(map.mappings);
     let sourceURL: Platform.DevToolsPath.UrlString|undefined = sources && sources[sourceIndex];
 

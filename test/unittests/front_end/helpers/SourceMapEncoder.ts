@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
 const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -37,10 +36,9 @@ const mappingRE = new RegExp('^(\\d+):(\\d+)(?:\\s*=>\\s*([^:]+):(\\d+):(\\d+)(?
 
 // Encode array mappings of the form "compiledLine:compiledColumn => srcFile:srcLine:srcColumn@name"
 // as a source map.
-export function encodeSourceMap(
-    textMap: string[], sourceRoot: string|undefined = undefined): SDK.SourceMap.SourceMapV3 {
+export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.SourceMap.SourceMapV3Object {
   let mappings = '';
-  const sources: Platform.DevToolsPath.UrlString[] = [];
+  const sources: string[] = [];
   const names: string[] = [];
 
   const state = {
@@ -103,17 +101,11 @@ export function encodeSourceMap(
     mappings += encodeVlqList(toEncode);
   }
 
-  return {
-    mappings,
-    sources,
-    names,
-    version: 3,
-    file: undefined,
-    sections: undefined,
-    sourceRoot: sourceRoot as Platform.DevToolsPath.UrlString,
-    sourcesContent: undefined,
-    x_google_ignoreList: undefined,
-  };
+  const sourceMapV3: SDK.SourceMap.SourceMapV3 = {version: 3, mappings, sources, names};
+  if (sourceRoot !== undefined) {
+    sourceMapV3.sourceRoot = sourceRoot;
+  }
+  return sourceMapV3;
 
   function getOrAddString(array: string[], s: string) {
     const index = array.indexOf(s);

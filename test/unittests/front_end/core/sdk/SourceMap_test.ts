@@ -254,13 +254,7 @@ describe('TextSourceMap', () => {
     const mappingPayload = {
       mappings: 'AAAA,C,CAAE;',
       sources: [sourceUrlExample],
-      version: 1,
-      file: undefined,
-      sections: undefined,
-      sourceRoot: undefined,
-      names: undefined,
-      sourcesContent: undefined,
-      x_google_ignoreList: undefined,
+      version: 3,
     };
     const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
@@ -278,13 +272,7 @@ describe('TextSourceMap', () => {
     const mappingPayload = {
       mappings: 'AAAA;;;CACA',
       sources: [sourceUrlExample],
-      version: 1,
-      file: undefined,
-      sections: undefined,
-      sourceRoot: undefined,
-      names: undefined,
-      sourcesContent: undefined,
-      x_google_ignoreList: undefined,
+      version: 3,
     };
     const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
@@ -293,7 +281,7 @@ describe('TextSourceMap', () => {
   });
 
   it('can parse the multiple sections format', () => {
-    const mappingPayload = {
+    const mappingPayload: SDK.SourceMap.SourceMapV3 = {
       mappings: '',
       sources: [],
       sections: [
@@ -301,39 +289,20 @@ describe('TextSourceMap', () => {
           offset: {line: 0, 'column': 0},
           map: {
             mappings: 'AAAA,CAEC',
-            sources: ['source1.js', 'source2.js'] as Platform.DevToolsPath.UrlString[],
-            version: 1,
-            file: undefined,
-            sections: undefined,
-            sourceRoot: undefined,
-            names: undefined,
-            sourcesContent: undefined,
-            x_google_ignoreList: undefined,
+            sources: ['source1.js', 'source2.js'],
+            version: 3,
           },
-          url: undefined,
         },
         {
           offset: {line: 2, 'column': 10},
           map: {
             mappings: 'AAAA,CAEC',
-            sources: ['source3.js' as Platform.DevToolsPath.UrlString],
-            version: 1,
-            file: undefined,
-            sections: undefined,
-            sourceRoot: undefined,
-            names: undefined,
-            sourcesContent: undefined,
-            x_google_ignoreList: undefined,
+            sources: ['source3.js'],
+            version: 3,
           },
-          url: undefined,
         },
       ],
-      version: 1,
-      file: undefined,
-      sourceRoot: undefined,
-      names: undefined,
-      sourcesContent: undefined,
-      x_google_ignoreList: undefined,
+      version: 3,
     };
     const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
@@ -367,13 +336,13 @@ describe('TextSourceMap', () => {
   });
 
   describe('source URL resolution', () => {
-    const noSourceRoot = Platform.DevToolsPath.EmptyUrlString;
-    const absoluteSourceRootExample = 'http://example.com/src' as Platform.DevToolsPath.UrlString;
-    const absoluteSourceRootFoo = 'http://foo.com/src' as Platform.DevToolsPath.UrlString;
-    const relativeSourceRootSrc = 'src' as Platform.DevToolsPath.UrlString;
-    const relativeSourceRootSlashSrc = '/src' as Platform.DevToolsPath.UrlString;
-    const relativeSourceRootSrcSlash = 'src/' as Platform.DevToolsPath.UrlString;
-    const relativeSourceRootCSlashD = 'c/d' as Platform.DevToolsPath.UrlString;
+    const noSourceRoot = '';
+    const absoluteSourceRootExample = 'http://example.com/src';
+    const absoluteSourceRootFoo = 'http://foo.com/src';
+    const relativeSourceRootSrc = 'src';
+    const relativeSourceRootSlashSrc = '/src';
+    const relativeSourceRootSrcSlash = 'src/';
+    const relativeSourceRootCSlashD = 'c/d';
     const cases = [
       // No sourceRoot, relative sourceURL. sourceURL is normalized and resolved relative to sourceMapURL.
       {
@@ -631,7 +600,7 @@ describe('TextSourceMap', () => {
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: 'http://example.com/src/a/b' as Platform.DevToolsPath.UrlString,
+        sourceRoot: 'http://example.com/src/a/b',
         sourceURL: '../../../foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/foo.ts',
@@ -667,17 +636,7 @@ describe('TextSourceMap', () => {
     for (const {sourceRoot, sourceURL, sourceMapURL, expected} of cases) {
       it(`can resolve sourceURL "${sourceURL}" with sourceRoot "${sourceRoot}" and sourceMapURL "${sourceMapURL}"`,
          () => {
-           const mappingPayload = {
-             mappings: 'AAAA;;;CACA',
-             sourceRoot,
-             sources: [sourceURL as Platform.DevToolsPath.UrlString],
-             version: 1,
-             file: undefined,
-             sections: undefined,
-             names: undefined,
-             sourcesContent: undefined,
-             x_google_ignoreList: undefined,
-           };
+           const mappingPayload = {mappings: 'AAAA;;;CACA', sourceRoot, sources: [sourceURL], version: 3};
            const sourceMap = new SDK.SourceMap.TextSourceMap(
                compiledUrl, sourceMapURL as Platform.DevToolsPath.UrlString, mappingPayload, fakeInitiator);
            const sourceURLs = sourceMap.sourceURLs();

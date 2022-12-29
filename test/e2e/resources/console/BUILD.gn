@@ -13,6 +13,7 @@ copy_to_gen("console") {
     "command-line-api-getEventListeners.html",
     "console-fetch-logging.html",
     "console-filter.html",
+    "console-uncaught-promise.html",
     "context-selector-inner.html",
     "context-selector.html",
     "cors-issue.html",

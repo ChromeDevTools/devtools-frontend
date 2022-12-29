@@ -275,10 +275,6 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     await this.#debuggerWorkspaceBinding.updateLocations(script);
   }
 
-  sourceMapForScript(script: SDK.Script.Script): SDK.SourceMap.SourceMap|undefined {
-    return this.#sourceMapManager.sourceMapForClient(script);
-  }
-
   scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {
     const binding = uiSourceCodeToBinding.get(uiSourceCode);
     if (!binding) {

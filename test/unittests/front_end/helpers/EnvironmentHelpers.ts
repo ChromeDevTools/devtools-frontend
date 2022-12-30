@@ -30,7 +30,7 @@ function initializeTargetManagerIfNecessary(): SDK.TargetManager.TargetManager {
 
 let uniqueTargetId = 0;
 
-export function createTarget({id, name = 'test', type = SDK.Target.Type.Frame, parentTarget, subtype}: {
+export function createTarget({id, name, type = SDK.Target.Type.Frame, parentTarget, subtype}: {
   id?: Protocol.Target.TargetID,
   name?: string,
   type?: SDK.Target.Type,
@@ -46,7 +46,7 @@ export function createTarget({id, name = 'test', type = SDK.Target.Type.Frame, p
   }
   const targetManager = initializeTargetManagerIfNecessary();
   return targetManager.createTarget(
-      id, name, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined,
+      id, name ?? id, type, parentTarget ? parentTarget : null, /* sessionId=*/ parentTarget ? id : undefined,
       /* suspended=*/ false,
       /* connection=*/ undefined, {subtype} as Protocol.Target.TargetInfo);
 }
@@ -265,6 +265,7 @@ export async function deinitializeGlobalVars() {
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();
   Workspace.Workspace.WorkspaceImpl.removeInstance();
+  Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
   Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
   Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
   IssuesManager.IssuesManager.IssuesManager.removeInstance();

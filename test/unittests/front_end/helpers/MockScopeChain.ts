@@ -17,6 +17,7 @@ interface ScriptDescription {
   hasSourceURL?: boolean;
   startLine?: number;
   startColumn?: number;
+  isContentScript?: boolean;
 }
 
 export class MockProtocolBackend {
@@ -88,7 +89,7 @@ export class MockProtocolBackend {
 
   async addScript(target: SDK.Target.Target, scriptDescription: ScriptDescription, sourceMap: {
     url: string,
-    content: string,
+    content: string|SDK.SourceMap.SourceMapV3,
   }|null): Promise<SDK.Script.Script> {
     const scriptId = 'SCRIPTID.' + this.#nextScriptIndex++;
     this.#scriptSources.set(scriptId, scriptDescription.content);
@@ -108,16 +109,21 @@ export class MockProtocolBackend {
       endLine,
       endColumn,
       executionContextId: 1,
+      executionContextAuxData: {isDefault: !scriptDescription.isContentScript},
       hash: '',
       hasSourceURL: Boolean(scriptDescription.hasSourceURL),
-      sourceMapURL: sourceMap?.url ?? '',
+      ...(sourceMap ? {sourceMapURL: sourceMap.url} : null),
     });
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
     const scriptObject = debuggerModel.scriptForId(scriptId);
     assertNotNullOrUndefined(scriptObject);
     if (sourceMap) {
-      this.#sourceMapContents.set(sourceMap.url, sourceMap.content);
+      let {content} = sourceMap;
+      if (typeof content !== 'string') {
+        content = JSON.stringify(content);
+      }
+      this.#sourceMapContents.set(sourceMap.url, content);
 
       // Wait until the source map loads.
       const loadedSourceMap = await debuggerModel.sourceMapManager().sourceMapForClientPromise(scriptObject);

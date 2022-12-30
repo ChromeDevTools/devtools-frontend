@@ -32,14 +32,13 @@ export function encodeVlqList(list: number[]) {
   return list.map(encodeVlq).join('');
 }
 
-const mappingRE = new RegExp('^(\\d+):(\\d+)(?:\\s*=>\\s*([^:]+):(\\d+):(\\d+)(?:@(\\S+))?)?$');
-
 // Encode array mappings of the form "compiledLine:compiledColumn => srcFile:srcLine:srcColumn@name"
 // as a source map.
 export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.SourceMap.SourceMapV3Object {
   let mappings = '';
   const sources: string[] = [];
   const names: string[] = [];
+  let sourcesContent: (null|string)[]|undefined;
 
   const state = {
     line: -1,
@@ -51,9 +50,14 @@ export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.Sou
   };
 
   for (const mapping of textMap) {
-    const match = mapping.match(mappingRE);
+    let match = mapping.match(/^(\d+):(\d+)(?:\s*=>\s*([^:]+):(\d+):(\d+)(?:@(\S+))?)?$/);
     if (!match) {
-      throw `Cannot parse mapping "${mapping}"`;
+      match = mapping.match(/^([^:]+):\s*(.+)$/);
+      if (!match) {
+        throw new Error(`Cannot parse mapping "${mapping}"`);
+      }
+      (sourcesContent = sourcesContent ?? [])[getOrAddString(sources, match[1])] = match[2];
+      continue;
     }
 
     const lastState = Object.assign({}, state);
@@ -104,6 +108,14 @@ export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.Sou
   const sourceMapV3: SDK.SourceMap.SourceMapV3 = {version: 3, mappings, sources, names};
   if (sourceRoot !== undefined) {
     sourceMapV3.sourceRoot = sourceRoot;
+  }
+  if (sourcesContent !== undefined) {
+    for (let i = 0; i < sources.length; ++i) {
+      if (typeof sourcesContent[i] !== 'string') {
+        sourcesContent[i] = null;
+      }
+    }
+    sourceMapV3.sourcesContent = sourcesContent;
   }
   return sourceMapV3;
 

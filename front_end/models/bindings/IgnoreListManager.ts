@@ -32,7 +32,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/bindings/IgnoreListManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let ignoreListManagerInstance: IgnoreListManager;
+let ignoreListManagerInstance: IgnoreListManager|undefined;
 
 export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
@@ -81,6 +81,10 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     }
 
     return ignoreListManagerInstance;
+  }
+
+  static removeInstance(): void {
+    ignoreListManagerInstance = undefined;
   }
 
   addChangeListener(listener: () => void): void {

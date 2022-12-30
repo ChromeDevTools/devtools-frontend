@@ -128,7 +128,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.DebuggerApi;
   runtimeModelInternal: RuntimeModel;
   readonly #sourceMapManagerInternal: SourceMapManager<Script>;
-  readonly #sourceMapIdToScript: Map<string, Script>;
   #debuggerPausedDetailsInternal: DebuggerPausedDetails|null;
   readonly #scriptsInternal: Map<string, Script>;
   readonly #scriptsBySourceURL: Map<string, Script[]>;
@@ -161,7 +160,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.runtimeModelInternal = (target.model(RuntimeModel) as RuntimeModel);
 
     this.#sourceMapManagerInternal = new SourceMapManager(target);
-    this.#sourceMapIdToScript = new Map();
 
     this.#debuggerPausedDetailsInternal = null;
     this.#scriptsInternal = new Map();
@@ -211,13 +209,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     if (resourceTreeModel) {
       resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameNavigated, this.onFrameNavigated, this);
     }
-  }
-
-  static sourceMapId(executionContextId: number, sourceURL: string, sourceMapURL: string|undefined): string|null {
-    if (!sourceMapURL) {
-      return null;
-    }
-    return executionContextId + ':' + sourceURL + ':' + sourceMapURL;
   }
 
   sourceMapManager(): SourceMapManager<Script> {
@@ -539,11 +530,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   private reset(): void {
-    for (const scriptWithSourceMap of this.#sourceMapIdToScript.values()) {
-      this.#sourceMapManagerInternal.detachSourceMap(scriptWithSourceMap);
+    for (const script of this.#scriptsInternal.values()) {
+      this.#sourceMapManagerInternal.detachSourceMap(script);
     }
-    this.#sourceMapIdToScript.clear();
-
     this.#scriptsInternal.clear();
     this.#scriptsBySourceURL.clear();
     this.#discardableScripts = [];
@@ -696,15 +685,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
-    const sourceMapId = DebuggerModel.sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
-    if (sourceMapId && !hasSyntaxError) {
-      // Consecutive script evaluations in the same execution context with the same #sourceURL
-      // and sourceMappingURL should result in source map reloading.
-      const previousScript = this.#sourceMapIdToScript.get(sourceMapId);
-      if (previousScript) {
-        this.#sourceMapManagerInternal.detachSourceMap(previousScript);
-      }
-      this.#sourceMapIdToScript.set(sourceMapId, script);
+    if (script.sourceMapURL && !hasSyntaxError) {
       this.#sourceMapManagerInternal.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
     }
 
@@ -717,18 +698,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   setSourceMapURL(script: Script, newSourceMapURL: Platform.DevToolsPath.UrlString): void {
-    let sourceMapId = DebuggerModel.sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
-    if (sourceMapId && this.#sourceMapIdToScript.get(sourceMapId) === script) {
-      this.#sourceMapIdToScript.delete(sourceMapId);
-    }
+    // Detach any previous source map from the `script` first.
     this.#sourceMapManagerInternal.detachSourceMap(script);
-
     script.sourceMapURL = newSourceMapURL;
-    sourceMapId = DebuggerModel.sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
-    if (!sourceMapId) {
-      return;
-    }
-    this.#sourceMapIdToScript.set(sourceMapId, script);
     this.#sourceMapManagerInternal.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
   }
 
@@ -741,11 +713,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   executionContextDestroyed(executionContext: ExecutionContext): void {
-    const sourceMapIds = Array.from(this.#sourceMapIdToScript.keys());
-    for (const sourceMapId of sourceMapIds) {
-      const script = this.#sourceMapIdToScript.get(sourceMapId);
-      if (script && script.executionContextId === executionContext.id) {
-        this.#sourceMapIdToScript.delete(sourceMapId);
+    for (const script of this.#scriptsInternal.values()) {
+      if (script.executionContextId === executionContext.id) {
         this.#sourceMapManagerInternal.detachSourceMap(script);
       }
     }

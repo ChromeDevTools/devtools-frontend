@@ -199,6 +199,7 @@ export class HeaderSectionRow extends HTMLElement {
             iconName: 'info-icon',
             width: '12px',
             height: '12px',
+            color: 'var(--color-text-secondary)',
           } as IconButton.Icon.IconData}>
           </${IconButton.Icon.Icon.litTagName}>` : LitHtml.nothing
         }

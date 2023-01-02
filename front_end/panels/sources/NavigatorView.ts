@@ -602,8 +602,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   private folderNode(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, project: Workspace.Workspace.Project,
-      target: SDK.Target.Target|null, frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, projectOrigin: string,
-      path: Platform.DevToolsPath.EncodedPathString[], fromSourceMap: boolean): NavigatorTreeNode {
+      target: SDK.Target.Target|null, frame: SDK.ResourceTreeModel.ResourceTreeFrame|null,
+      projectOrigin: Platform.DevToolsPath.UrlString, path: Platform.DevToolsPath.EncodedPathString[],
+      fromSourceMap: boolean): NavigatorTreeNode {
     if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
       return this.rootNode;
     }
@@ -634,7 +635,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
     const name = Common.ParsedURL.ParsedURL.encodedPathToRawPathString(path[path.length - 1]);
 
-    folderNode = new NavigatorFolderTreeNode(this, project, folderId, type, folderPath, name);
+    folderNode = new NavigatorFolderTreeNode(this, project, folderId, type, folderPath, name, projectOrigin);
     this.subfolderNodes.set(folderId, folderNode);
     parentNode.appendChild(folderNode);
     return folderNode;
@@ -948,9 +949,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
-  handleFolderContextMenu(event: Event, node: NavigatorTreeNode): void {
-    const path = (node as NavigatorFolderTreeNode).folderPath || Platform.DevToolsPath.EmptyEncodedPathString;
-    const project = (node as NavigatorFolderTreeNode).project || null;
+  handleFolderContextMenu(event: Event, node: NavigatorFolderTreeNode): void {
+    const path = node.folderPath || Platform.DevToolsPath.EmptyEncodedPathString;
+    const project = node.project || null;
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     NavigatorView.appendSearchItem(contextMenu, path);
@@ -970,6 +971,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
         contextMenu.defaultSection().appendItem(i18nString(UIStrings.newFile), () => {
           this.handleContextMenuCreate(project, path, undefined);
         });
+      }
+    } else {
+      const url = Common.ParsedURL.ParsedURL.concatenate(node.origin, '/', node.folderPath);
+      for (const {text, callback} of Bindings.IgnoreListManager.IgnoreListManager.instance()
+               .getIgnoreListFolderContextMenuItems(url)) {
+        contextMenu.defaultSection().appendItem(text, callback);
       }
     }
 
@@ -1184,7 +1191,7 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     this.select();
-    this.navigatorView.handleFolderContextMenu(event, this.node);
+    this.navigatorView.handleFolderContextMenu(event, this.node as NavigatorFolderTreeNode);
   }
 
   private mouseMove(_event: Event): void {
@@ -1611,15 +1618,17 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
 export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   project: Workspace.Workspace.Project|null;
   readonly folderPath: Platform.DevToolsPath.EncodedPathString;
+  readonly origin: Platform.DevToolsPath.UrlString;
   title: string;
   treeElement!: NavigatorFolderTreeElement|null;
   constructor(
       navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string,
-      folderPath: Platform.DevToolsPath.EncodedPathString, title: string) {
+      folderPath: Platform.DevToolsPath.EncodedPathString, title: string, origin: Platform.DevToolsPath.UrlString) {
     super(navigatorView, id, type);
     this.project = project;
     this.folderPath = folderPath;
     this.title = title;
+    this.origin = origin;
   }
 
   treeNode(): UI.TreeOutline.TreeElement {

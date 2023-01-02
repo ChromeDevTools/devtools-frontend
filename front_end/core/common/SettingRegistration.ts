@@ -197,8 +197,21 @@ export enum SettingType {
 }
 
 export interface RegExpSettingItem {
+  /**
+   * A regular expression matched against URLs for ignore listing.
+   */
   pattern: string;
+  /**
+   * If true, ignore this rule.
+   */
   disabled?: boolean;
+  /**
+   * When a rule is disabled due to requesting through a script's context menu
+   * that it no longer be ignore listed, this field is set to the URL of that
+   * script, so that if the user requests through the same context menu to
+   * enable ignore listing, the rule can be reenabled.
+   */
+  disabledForUrl?: Platform.DevToolsPath.UrlString;
 }
 
 export interface SettingRegistration {

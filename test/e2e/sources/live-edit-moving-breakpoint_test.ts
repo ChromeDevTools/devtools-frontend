@@ -23,7 +23,7 @@ import {
 
 describe('Live edit', async () => {
   // Flakily freezes, causing the whole e2e suite to block and be cancelled.
-  it.skip('[crbug.com/1326829] moves the breakpoint after reload when changes are not persisted', async () => {
+  it('moves the breakpoint after reload when changes are not persisted', async () => {
     const {frontend, target} = getBrowserAndPages();
     await openSourceCodeEditorForFile('live-edit-moving-breakpoint.js', 'live-edit-moving-breakpoint.html');
 
@@ -54,11 +54,8 @@ describe('Live edit', async () => {
       await reloadPageAndWaitForSourceFile(target, 'live-edit-moving-breakpoint.js');
       await openSourceCodeEditorForFile('live-edit-moving-breakpoint.js', 'live-edit-moving-breakpoint.html');
 
-      // TODO(crbug.com/1216904): Flip this assumption once crbug.com/1216904 is fixed.
-      //     We currently expect the bugged state to make sure the test keeps running
-      //     and is maintained.
-      assert.isTrue(await isBreakpointSet(9));
-      assert.isFalse(await isBreakpointSet(7));
+      assert.isFalse(await isBreakpointSet(9));
+      assert.isTrue(await isBreakpointSet(7));
     });
   });
 });

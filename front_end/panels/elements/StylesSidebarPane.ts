@@ -2048,8 +2048,8 @@ export function escapeUrlAsCssComment(urlText: string): string {
 export class StylesSidebarPropertyRenderer {
   private rule: SDK.CSSRule.CSSRule|null;
   private node: SDK.DOMModel.DOMNode|null;
-  private propertyName: string;
-  private propertyValue: string;
+  readonly propertyName: string;
+  readonly propertyValue: string;
   private colorHandler: ((arg0: string) => Node)|null;
   private bezierHandler: ((arg0: string) => Node)|null;
   private fontHandler: ((arg0: string) => Node)|null;

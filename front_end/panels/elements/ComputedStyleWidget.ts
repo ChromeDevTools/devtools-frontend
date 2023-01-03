@@ -93,23 +93,61 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ComputedStyleWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/**
+ * Rendering a property's name and value is expensive, and each time we do it
+ * it generates a new HTML element. If we call this directly from our Lit
+ * components, we will generate a brand new DOM element on each single render.
+ * This is very expensive and unneccessary - for the majority of re-renders a
+ * property's name and value does not change. So we cache the rest of rendering
+ * the name and value in a map, where the key used is a combination of the
+ * property's name and value. This ensures that we only re-generate this element
+ * if the node itself changes.
+ * The resulting Element nodes are inserted into the ComputedStyleProperty
+ * component via <slot>s, ensuring that Lit doesn't directly render/re-render
+ * the element.
+ */
+const propertyContentsCache = new Map<string, {name: Element, value: Element}>();
+
+function renderPropertyContents(
+    node: SDK.DOMModel.DOMNode, propertyName: string, propertyValue: string): {name: Element, value: Element} {
+  const cacheKey = propertyName + ':' + propertyValue;
+  const valueFromCache = propertyContentsCache.get(cacheKey);
+  if (valueFromCache) {
+    return valueFromCache;
+  }
+  const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
+  renderer.setColorHandler(processColor);
+  const name = renderer.renderName();
+  name.slot = 'name';
+  const value = renderer.renderValue();
+  value.slot = 'value';
+  propertyContentsCache.set(cacheKey, {name, value});
+  return {name, value};
+}
+
+/**
+ * Note: this function is called for each tree node on each render, so we need
+ * to ensure nothing expensive runs here, or if it does it is safely cached.
+ **/
 const createPropertyElement =
     (node: SDK.DOMModel.DOMNode, propertyName: string, propertyValue: string, traceable: boolean, inherited: boolean,
-     onNavigateToSource: ((event?: Event) => void)): ElementsComponents.ComputedStyleProperty.ComputedStyleProperty => {
-      const propertyElement = new ElementsComponents.ComputedStyleProperty.ComputedStyleProperty();
-
-      const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
-      renderer.setColorHandler(processColor);
-
-      propertyElement.data = {
-        propertyNameRenderer: renderer.renderName.bind(renderer),
-        propertyValueRenderer: renderer.renderValue.bind(renderer),
-        traceable,
-        inherited,
-        onNavigateToSource,
-      };
-
-      return propertyElement;
+     activeProperty: SDK.CSSProperty.CSSProperty|undefined,
+     onContextMenu: ((event: Event) => void)): LitHtml.TemplateResult => {
+      const {name, value} = renderPropertyContents(node, propertyName, propertyValue);
+      // clang-format off
+      return LitHtml.html`<${ElementsComponents.ComputedStyleProperty.ComputedStyleProperty.litTagName}
+        .traceable=${traceable}
+        .inherited=${inherited}
+        @oncontextmenu=${onContextMenu}
+        @onnavigatetosource=${(event: ElementsComponents.ComputedStyleProperty.NavigateToSourceEvent):void => {
+          if (activeProperty) {
+            navigateToSource(activeProperty, event);
+          }
+        }}>
+          ${name}
+          ${value}
+      </${ElementsComponents.ComputedStyleProperty.ComputedStyleProperty.litTagName}>`;
+      // clang-format on
     };
 
 const createTraceElement =
@@ -258,14 +296,6 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   onResize(): void {
     const isNarrow = this.contentElement.offsetWidth < 260;
     this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
-  }
-
-  private showInheritedComputedStyleChanged(): void {
-    this.update();
-  }
-
-  update(): void {
-    super.update();
   }
 
   wasShown(): void {
@@ -434,22 +464,18 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
        state: {isExpanded: boolean}) => LitHtml.TemplateResult {
     return node => {
       const data = node.treeNodeData;
-      let navigate: (arg0?: Event) => void = () => {};
       if (data.tag === 'property') {
         const trace = propertyTraces.get(data.propertyName);
         const activeProperty = trace?.find(
             property => matchedStyles.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.Active);
-        if (activeProperty) {
-          navigate = navigateToSource.bind(this, activeProperty);
-        }
         const propertyElement = createPropertyElement(
             domNode, data.propertyName, data.propertyValue, propertyTraces.has(data.propertyName), data.inherited,
-            navigate);
-        if (activeProperty) {
-          propertyElement.addEventListener(
-              'contextmenu', this.handleContextMenuEvent.bind(this, matchedStyles, activeProperty));
-        }
-        return LitHtml.html`${propertyElement}`;
+            activeProperty, event => {
+              if (activeProperty) {
+                this.handleContextMenuEvent(matchedStyles, activeProperty, event);
+              }
+            });
+        return propertyElement;
       }
       if (data.tag === 'traceElement') {
         const isPropertyOverloaded =

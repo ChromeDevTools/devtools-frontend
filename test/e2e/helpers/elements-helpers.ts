@@ -257,9 +257,11 @@ export const waitForComputedPaneChange = async (initialValue: string) => {
 
 export const getAllPropertiesFromComputedPane = async () => {
   const properties = await $$(COMPUTED_PROPERTY_SELECTOR);
-  return (await Promise.all(properties.map(elem => elem.evaluate(node => {
-           const name = node.shadowRoot?.querySelector('.property-name');
-           const value = node.shadowRoot?.querySelector('.property-value');
+  return (await Promise.all(properties.map(elem => elem.evaluate(async node => {
+           const nameSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-name slot');
+           const valueSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-value slot');
+           const name = nameSlot?.assignedElements().at(0);
+           const value = valueSlot?.assignedElements().at(0);
 
            return (!name || !value) ? null : {
              name: name.textContent ? name.textContent.trim().replace(/:$/, '') : '',
@@ -273,7 +275,8 @@ export const getPropertyFromComputedPane = async (name: string) => {
   const properties = await $$(COMPUTED_PROPERTY_SELECTOR);
   for (const property of properties) {
     const matchingProperty = await property.evaluate((node, name) => {
-      const nameEl = node.shadowRoot?.querySelector('.property-name');
+      const nameSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-name slot');
+      const nameEl = nameSlot?.assignedElements().at(0);
       return nameEl?.textContent?.trim().replace(/:$/, '') === name;
     }, name);
     // Note that evaluateHandle always returns a handle, even if it points to an undefined remote object, so we need to

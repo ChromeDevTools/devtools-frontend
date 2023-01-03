@@ -26,30 +26,30 @@ export class TimelineJSProfileProcessor {
     const samples = jsProfileModel.samples || [];
     const timestamps = jsProfileModel.timestamps;
     const jsEvents = [];
-    const nodeToStackMap = new Map<SDK.ProfileTreeModel.ProfileNode|null, Protocol.Runtime.CallFrame[]>();
 
     let prevNode: SDK.ProfileTreeModel.ProfileNode = jsProfileModel.root;
+    let prevCallFrames: Protocol.Runtime.CallFrame[] = [];
     for (let i = 0; i < samples.length; ++i) {
-      let node: SDK.ProfileTreeModel.ProfileNode|null = jsProfileModel.nodeByIndex(i);
+      const node: SDK.ProfileTreeModel.ProfileNode|null = jsProfileModel.nodeByIndex(i);
       if (!node) {
         console.error(`Node with unknown id ${samples[i]} at index ${i}`);
         continue;
       }
-      let callFrames = nodeToStackMap.get(node);
-      if (!callFrames) {
-        if (node === jsProfileModel.gcNode) {
-          // GC samples have no stack, so we just put GC node on top of the last recorded sample.
-          // The depth is always 0, so set the callFrames size to 2 to save the GC and last recorded sample.
-          callFrames = (new Array(2) as Protocol.Runtime.CallFrame[]);
-          callFrames[0] = (node as Protocol.Runtime.CallFrame);
-          callFrames[1] = (prevNode as Protocol.Runtime.CallFrame);
-          nodeToStackMap.set(node, callFrames);
+      let callFrames;
+      if (node === jsProfileModel.gcNode) {
+        if (prevNode === jsProfileModel.gcNode) {
+          // If the last recorded sample is also GC sample, we just use the same call frames.
+          callFrames = prevCallFrames;
         } else {
-          callFrames = (new Array(node.depth + 1) as Protocol.Runtime.CallFrame[]);
-          nodeToStackMap.set(node, callFrames);
-          for (let j = 0; node.parent; node = node.parent) {
-            callFrames[j++] = (node as Protocol.Runtime.CallFrame);
-          }
+          // GC samples have no stack, so we just put GC node on top of the last recorded sample.
+          callFrames = [(node as Protocol.Runtime.CallFrame), ...prevCallFrames];
+        }
+      } else {
+        // For non Garbage Collection nodes, we just use its own call frames.
+        callFrames = new Array(node.depth + 1) as Protocol.Runtime.CallFrame[];
+        let currentNode = node;
+        for (let j = 0; currentNode.parent; currentNode = currentNode.parent) {
+          callFrames[j++] = (currentNode as Protocol.Runtime.CallFrame);
         }
       }
       const jsSampleEvent = new SDK.TracingModel.Event(
@@ -59,6 +59,7 @@ export class TimelineJSProfileProcessor {
       jsEvents.push(jsSampleEvent);
 
       prevNode = node;
+      prevCallFrames = callFrames;
     }
     return jsEvents;
   }

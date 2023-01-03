@@ -7,6 +7,8 @@ Note that this documentation is a work in progress as it is migrated from the [o
 ## Table of Contents
 
 1. [Creating components](./CreatingComponents.md)
+1. [Styling components](./StylingComponents.md)
+1. [Component performance](./ComponentPerformance.md)
 
 ## FAQs
 

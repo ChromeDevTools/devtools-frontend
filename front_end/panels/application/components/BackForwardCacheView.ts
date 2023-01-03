@@ -294,7 +294,7 @@ export class BackForwardCacheView extends HTMLElement {
         <div class="report-key">
           ${i18nString(UIStrings.url)}
         </div>
-        <div class="report-value">
+        <div class="report-value" title=${this.#frame.url}>
           ${this.#frame.url}
         </div>
       </div>

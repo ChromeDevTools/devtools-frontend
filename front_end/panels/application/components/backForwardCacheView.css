@@ -55,7 +55,9 @@
 
 .report-value {
   padding: 0 6px;
-  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .link,

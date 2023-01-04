@@ -614,7 +614,7 @@ describe('NetworkPersistenceManager', () => {
         Persistence.NetworkPersistenceManager.extractDirectoryIndex('path/*.html'), {head: 'path/', tail: '*.html'});
     assert.deepEqual(Persistence.NetworkPersistenceManager.extractDirectoryIndex('foo*.html'), {head: 'foo*.html'});
     assert.deepEqual(Persistence.NetworkPersistenceManager.extractDirectoryIndex('a*'), {head: 'a*'});
-    assert.deepEqual(Persistence.NetworkPersistenceManager.extractDirectoryIndex('a/*'), {head: 'a/', tail: '*'});
+    assert.deepEqual(Persistence.NetworkPersistenceManager.extractDirectoryIndex('a/*'), {head: 'a/*'});
   });
 
   it('merges headers which do not overlap', () => {
@@ -713,7 +713,7 @@ describe('NetworkPersistenceManager', () => {
 
     const expectedMapping = [
       {
-        applyTo: /^https?:\/\/www\.example\.com\/(.*)?$/.toString(),
+        applyTo: /^https?:\/\/www\.example\.com\/.*$/.toString(),
         headers: [{name: 'age', value: '0'}],
       },
       {
@@ -739,6 +739,29 @@ describe('NetworkPersistenceManager', () => {
         override => ({applyTo: override.applyToRegex.toString(), headers: override.headers}),
     );
     assert.deepEqual(actualMapping, expectedMapping);
+  });
+
+  it('generates header patterns for global header overrides', async () => {
+    const {networkPersistenceManager} = setUpEnvironment();
+    const headers = `[
+      {
+        "applyTo": "*",
+        "headers": [{
+          "name": "age",
+          "value": "0"
+        }]
+      }
+    ]`;
+
+    const {uiSourceCode} = createFileSystemUISourceCode({
+      url: 'file:///path/to/overrides/.headers' as Platform.DevToolsPath.UrlString,
+      content: headers,
+      mimeType: 'text/plain',
+      fileSystemPath: 'file:///path/to/overrides',
+    });
+
+    const {headerPatterns} = await networkPersistenceManager.generateHeaderPatterns(uiSourceCode);
+    assert.deepEqual(Array.from(headerPatterns), ['http?://*']);
   });
 
   it('updates interception patterns upon edit of .headers file', async () => {

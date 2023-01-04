@@ -809,7 +809,7 @@ export function extractDirectoryIndex(pattern: string): {head: string, tail?: st
   const tail = lastSlash >= 0 ? pattern.slice(lastSlash + 1) : pattern;
   const head = lastSlash >= 0 ? pattern.slice(0, lastSlash + 1) : '';
   const regex = new RegExp('^' + escapeRegex(tail) + '$');
-  if (regex.test('index.html') || regex.test('index.htm') || regex.test('index.php')) {
+  if (tail !== '*' && (regex.test('index.html') || regex.test('index.htm') || regex.test('index.php'))) {
     return {head, tail};
   }
   return {head: pattern};

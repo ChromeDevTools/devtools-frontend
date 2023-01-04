@@ -38,6 +38,7 @@ describeWithLocale('GenericIssue', async () => {
     const issueDetails = {
       errorType: Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError,
       frameId: 'main' as Protocol.Page.FrameId,
+      violatingNodeId: 1 as Protocol.DOM.BackendNodeId,
     };
     const issue = createProtocolIssueWithDetails(issueDetails);
 
@@ -48,7 +49,7 @@ describeWithLocale('GenericIssue', async () => {
     assert.strictEqual(genericIssue.getCategory(), IssuesManager.Issue.IssueCategory.Generic);
     assert.strictEqual(
         genericIssue.primaryKey(),
-        `GenericIssue::CrossOriginPortalPostMessageError-(${'main' as Protocol.Page.FrameId})`);
+        `GenericIssue::CrossOriginPortalPostMessageError-(${'main' as Protocol.Page.FrameId})-(1)`);
     assert.strictEqual(genericIssue.getKind(), IssuesManager.Issue.IssueKind.Improvement);
     assert.isNotNull(genericIssue.getDescription());
   });

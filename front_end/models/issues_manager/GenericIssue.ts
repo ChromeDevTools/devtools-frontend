@@ -58,7 +58,7 @@ export class GenericIssue extends Issue {
   }
 
   getKind(): IssueKind {
-    return IssueKind.Improvement;
+    return issueTypes.get(this.#issueDetails.errorType) || IssueKind.Improvement;
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
@@ -93,4 +93,9 @@ export const genericFormLabelForNameError = {
 const issueDescriptions: Map<Protocol.Audits.GenericIssueErrorType, LazyMarkdownIssueDescription> = new Map([
   [Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError, genericCrossOriginPortalPostMessageError],
   [Protocol.Audits.GenericIssueErrorType.FormLabelForNameError, genericFormLabelForNameError],
+]);
+
+const issueTypes: Map<Protocol.Audits.GenericIssueErrorType, IssueKind> = new Map([
+  [Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError, IssueKind.Improvement],
+  [Protocol.Audits.GenericIssueErrorType.FormLabelForNameError, IssueKind.PageError],
 ]);

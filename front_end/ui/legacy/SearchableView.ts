@@ -312,6 +312,8 @@ export class SearchableView extends VBox {
     if (this.footerElementContainer.hasFocus()) {
       this.focus();
     }
+
+    this.searchProvider.searchClosed?.();
   }
 
   private toggleSearchBar(toggled: boolean): void {
@@ -572,6 +574,8 @@ const searchableViewsByElement = new WeakMap<Element, SearchableView>();
 
 export interface Searchable {
   searchCanceled(): void;
+  // Called when the search toolbar is closed
+  searchClosed?: () => void;
   performSearch(searchConfig: SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void;
   jumpToNextSearchResult(): void;
   jumpToPreviousSearchResult(): void;

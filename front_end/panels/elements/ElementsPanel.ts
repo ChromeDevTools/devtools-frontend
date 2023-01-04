@@ -640,6 +640,19 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
+  searchClosed(): void {
+    const selectedNode = this.selectedDOMNode();
+    if (!selectedNode) {
+      return;
+    }
+    const treeElement = this.treeElementForNode(selectedNode);
+    if (!treeElement) {
+      return;
+    }
+
+    treeElement.select();
+  }
+
   searchCanceled(): void {
     this.searchConfig = undefined;
     this.hideSearchHighlights();

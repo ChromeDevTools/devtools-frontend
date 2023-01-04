@@ -164,6 +164,11 @@ button:hover devtools-icon {
   background-color: var(--legacy-focus-bg-color);
 }
 
+:host-context(.-theme-with-dark-background) .breakpoint-item.hit {
+  background-color: hsl(46deg 98% 22%);
+  color: var(--color-text-primary);
+}
+
 .-theme-with-dark-background .type-indicator,
 :host-context(.-theme-with-dark-background) .type-indicator {
   --override-color-conditional-breakpoint: #e9a33a;

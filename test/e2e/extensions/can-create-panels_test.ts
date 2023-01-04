@@ -12,6 +12,7 @@ import {
   waitForAriaNone,
   waitForFunction,
 } from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {loadExtension} from '../helpers/extension-helpers.js';
 
 describe('The Extension API', async () => {

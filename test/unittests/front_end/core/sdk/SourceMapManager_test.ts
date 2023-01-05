@@ -242,5 +242,86 @@ describe('SourceMapManager', () => {
       assert.isTrue(sourceMapDetached.calledWith(sinon.match.hasNested('data.client', client)));
       assert.isTrue(sourceMapDetached.calledWith(sinon.match.hasNested('data.sourceMap', sourceMap)));
     });
+
+    it('triggers the correct lifecycle events when disabled', async () => {
+      const target = createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+      const client = new MockClient(target);
+      sourceMapManager.setEnabled(false);
+      sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL);
+      const sourceMapFailedToAttach = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapFailedToAttach, sourceMapFailedToAttach);
+      const sourceMapDetached = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, sourceMapDetached);
+
+      sourceMapManager.detachSourceMap(client);
+
+      assert.strictEqual(sourceMapFailedToAttach.callCount, 0, 'SourceMapFailedToAttach events');
+      assert.strictEqual(sourceMapDetached.callCount, 0, 'SourceMapDetached events');
+    });
+  });
+
+  describe('setEnabled', () => {
+    it('triggers the correct lifecycle events when disabling while attaching', () => {
+      const target = createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+      const client = new MockClient(target);
+      sinon.stub(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource').returns(new Promise(() => {}));
+      sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL);
+      const sourceMapFailedToAttach = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapFailedToAttach, sourceMapFailedToAttach);
+
+      sourceMapManager.setEnabled(false);
+
+      assert.strictEqual(sourceMapFailedToAttach.callCount, 1, 'SourceMapFailedToAttach events');
+      assert.isTrue(sourceMapFailedToAttach.calledWith(sinon.match.hasNested('data.client', client)));
+    });
+
+    it('triggers the correct lifecycle events when disabling once attached', async () => {
+      const target = createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+      const client = new MockClient(target);
+      sinon.stub(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource').resolves({content});
+      sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL);
+      const sourceMap = await sourceMapManager.sourceMapForClientPromise(client);
+      const sourceMapDetached = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, sourceMapDetached);
+
+      sourceMapManager.setEnabled(false);
+
+      assert.strictEqual(sourceMapDetached.callCount, 1, 'SourceMapDetached events');
+      assert.isTrue(sourceMapDetached.calledWith(sinon.match.hasNested('data.client', client)));
+      assert.isTrue(sourceMapDetached.calledWith(sinon.match.hasNested('data.sourceMap', sourceMap)));
+    });
+
+    it('triggers the correct lifecycle events when re-enabling', async () => {
+      const target = createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+      const client = new MockClient(target);
+      sinon.stub(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource').resolves({content});
+      sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL);
+      await sourceMapManager.sourceMapForClientPromise(client);
+      sourceMapManager.setEnabled(false);
+      const sourceMapDetached = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, sourceMapDetached);
+      const sourceMapWillAttach = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapWillAttach, sourceMapWillAttach);
+      const sourceMapFailedToAttach = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapFailedToAttach, sourceMapFailedToAttach);
+      const sourceMapAttached = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, sourceMapAttached);
+
+      sourceMapManager.setEnabled(true);
+
+      const sourceMap = await sourceMapManager.sourceMapForClientPromise(client);
+      assert.strictEqual(sourceMapDetached.callCount, 0, 'SourceMapDetached events');
+      assert.strictEqual(sourceMapFailedToAttach.callCount, 0, 'SourceMapFailedToAttach events');
+      assert.strictEqual(sourceMapWillAttach.callCount, 1, 'SourceMapWillAttach events');
+      assert.isTrue(sourceMapWillAttach.calledWith(sinon.match.hasNested('data.client', client)));
+      assert.isTrue(sourceMapAttached.calledAfter(sourceMapWillAttach));
+      assert.strictEqual(sourceMapAttached.callCount, 1, 'SourceMapAttached events');
+      assert.isTrue(sourceMapAttached.calledWith(sinon.match.hasNested('data.client', client)));
+      assert.isTrue(sourceMapAttached.calledWith(sinon.match.hasNested('data.sourceMap', sourceMap)));
+    });
   });
 });

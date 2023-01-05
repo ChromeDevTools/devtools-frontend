@@ -33,14 +33,16 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     if (isEnabled === this.#isEnabled) {
       return;
     }
-    this.#isEnabled = isEnabled;
 
     // We need this copy, because `this.#clientData` is getting modified
     // in the loop body and trying to iterate over it at the same time
     // leads to an infinite loop.
     const clientData = [...this.#clientData.entries()];
-    for (const [client, {relativeSourceURL, relativeSourceMapURL}] of clientData) {
+    for (const [client] of clientData) {
       this.detachSourceMap(client);
+    }
+    this.#isEnabled = isEnabled;
+    for (const [client, {relativeSourceURL, relativeSourceMapURL}] of clientData) {
       this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL);
     }
   }
@@ -145,6 +147,9 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
       return;
     }
     this.#clientData.delete(client);
+    if (!this.#isEnabled) {
+      return;
+    }
     const {sourceMap} = clientData;
     if (sourceMap) {
       this.#sourceMaps.delete(sourceMap);

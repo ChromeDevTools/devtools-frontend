@@ -131,21 +131,22 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     }
 
     // Find the source location for the raw location.
-    const entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
+    const {lineNumber, columnNumber} = script.rawLocationToRelativeLocation(rawLocation);
+    const entry = sourceMap.findEntry(lineNumber, columnNumber);
     if (!entry || !entry.sourceURL) {
       return [];
     }
 
     // Map the source location back to raw location ranges.
     const ranges = sourceMap.findReverseRanges(entry.sourceURL, entry.sourceLineNumber, entry.sourceColumnNumber);
-    return ranges.map(textRangeToLocationRange);
-
-    function textRangeToLocationRange(t: TextUtils.TextRange.TextRange): RawLocationRange {
+    return ranges.map(({startLine, startColumn, endLine, endColumn}) => {
+      const start = script.relativeLocationToRawLocation({lineNumber: startLine, columnNumber: startColumn});
+      const end = script.relativeLocationToRawLocation({lineNumber: endLine, columnNumber: endColumn});
       return {
-        start: debuggerModel.createRawLocation(script as SDK.Script.Script, t.startLine, t.startColumn),
-        end: debuggerModel.createRawLocation(script as SDK.Script.Script, t.endLine, t.endColumn),
+        start: debuggerModel.createRawLocation(script, start.lineNumber, start.columnNumber),
+        end: debuggerModel.createRawLocation(script, end.lineNumber, end.columnNumber),
       };
-    }
+    });
   }
 
   uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString, isContentScript: boolean):
@@ -160,12 +161,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       return null;
     }
 
-    const lineNumber = rawLocation.lineNumber - script.lineOffset;
-    let columnNumber = rawLocation.columnNumber;
-    if (!lineNumber) {
-      columnNumber -= script.columnOffset;
-    }
-
+    const {lineNumber, columnNumber} = script.rawLocationToRelativeLocation(rawLocation);
     const stubUISourceCode = this.#stubUISourceCodes.get(script);
     if (stubUISourceCode) {
       return new Workspace.UISourceCode.UILocation(stubUISourceCode, lineNumber, columnNumber);
@@ -201,11 +197,11 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
         continue;
       }
       const script = this.#sourceMapManager.clientForSourceMap(sourceMap);
-      if (script) {
-        locations.push(this.#debuggerModel.createRawLocation(
-            script, entry.lineNumber + script.lineOffset,
-            !entry.lineNumber ? entry.columnNumber + script.columnOffset : entry.columnNumber));
+      if (!script) {
+        continue;
       }
+      const location = script.relativeLocationToRawLocation(entry);
+      locations.push(this.#debuggerModel.createRawLocation(script, location.lineNumber, location.columnNumber));
     }
     return locations;
   }

@@ -308,14 +308,6 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return null;
   }
 
-  toRelativeLocation(location: Location): number[] {
-    console.assert(
-        location.scriptId === this.scriptId, '`toRelativeLocation` must be used with location of the same script');
-    const relativeLineNumber = location.lineNumber - this.lineOffset;
-    const relativeColumnNumber = (location.columnNumber || 0) - (relativeLineNumber === 0 ? this.columnOffset : 0);
-    return [relativeLineNumber, relativeColumnNumber];
-  }
-
   isInlineScript(): boolean {
     const startsAtZero = !this.lineOffset && !this.columnOffset;
     return !this.isWasm() && Boolean(this.sourceURL) && !startsAtZero;
@@ -353,6 +345,58 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
   createPageResourceLoadInitiator(): PageResourceLoadInitiator {
     return {target: this.target(), frameId: this.frameId, initiatorUrl: this.embedderName()};
+  }
+
+  /**
+   * Translates the `rawLocation` from line and column number in terms of what V8 understands
+   * to a script relative location. Specifically this means that for inline `<script>`'s
+   * without a `//# sourceURL=` annotation, the line and column offset of the script
+   * content is subtracted to make the location within the script independent of the
+   * location of the `<script>` tag within the surrounding document.
+   *
+   * @param rawLocation the raw location in terms of what V8 understands.
+   * @returns the script relative line and column number for the {@link rawLocation}.
+   */
+  rawLocationToRelativeLocation(rawLocation: {lineNumber: number, columnNumber: number}):
+      {lineNumber: number, columnNumber: number};
+  rawLocationToRelativeLocation(rawLocation: {lineNumber: number, columnNumber: number|undefined}):
+      {lineNumber: number, columnNumber: number|undefined};
+  rawLocationToRelativeLocation(rawLocation: {lineNumber: number, columnNumber: number|undefined}):
+      {lineNumber: number, columnNumber: number|undefined} {
+    let {lineNumber, columnNumber} = rawLocation;
+    if (!this.hasSourceURL && this.isInlineScript()) {
+      lineNumber -= this.lineOffset;
+      if (lineNumber === 0 && columnNumber !== undefined) {
+        columnNumber -= this.columnOffset;
+      }
+    }
+    return {lineNumber, columnNumber};
+  }
+
+  /**
+   * Translates the `relativeLocation` from script relative line and column number to
+   * the raw location in terms of what V8 understands. Specifically this means that for
+   * inline `<script>`'s without a `//# sourceURL=` annotation, the line and column offset
+   * of the script content is added to make the location relative to the start of the
+   * surrounding document.
+   *
+   * @param relativeLocation the script relative location.
+   * @returns the raw location in terms of what V8 understands for the {@link relativeLocation}.
+   */
+  relativeLocationToRawLocation(relativeLocation: {lineNumber: number, columnNumber: number}):
+      {lineNumber: number, columnNumber: number};
+  relativeLocationToRawLocation(relativeLocation: {lineNumber: number, columnNumber: number|undefined}):
+      {lineNumber: number, columnNumber: number|undefined};
+  relativeLocationToRawLocation(relativeLocation: {lineNumber: number, columnNumber: number|undefined}):
+      {lineNumber: number, columnNumber: number|undefined} {
+    let {lineNumber, columnNumber} = relativeLocation;
+    if (!this.hasSourceURL && this.isInlineScript()) {
+      if (lineNumber === 0 && columnNumber !== undefined) {
+        columnNumber += this.columnOffset;
+      }
+      lineNumber += this.lineOffset;
+    }
+    return {lineNumber, columnNumber};
   }
 }
 

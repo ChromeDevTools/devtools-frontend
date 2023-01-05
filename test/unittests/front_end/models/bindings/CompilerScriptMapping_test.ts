@@ -226,6 +226,47 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     ]);
   });
 
+  it('correctly maps to inline <script>s with `//# sourceURL` annotations', async () => {
+    const target = createTarget();
+
+    const sourceRoot = 'http://example.com';
+    const scriptInfo = {
+      url: `${sourceRoot}/test.out.js`,
+      content: 'function f(x) {\n  console.log(x);\n}\n',
+      startLine: 4,
+      startOffset: 12,
+      hasSourceURL: true,
+    };
+    const sourceMapInfo = {
+      url: `${scriptInfo.url}.map`,
+      content: encodeSourceMap(
+          [
+            '0:0 => test.ts:0:0',
+            '1:0 => test.ts:1:0',
+            '1:2 => test.ts:1:2',
+            '2:0 => test.ts:2:0',
+          ],
+          sourceRoot),
+    };
+
+    const [uiSourceCode, script] = await Promise.all([
+      waitForUISourceCodeAdded(`${sourceRoot}/test.ts`, target),
+      backend.addScript(target, scriptInfo, sourceMapInfo),
+    ]);
+
+    const rawLocations = await debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 1, 2);
+    assert.lengthOf(rawLocations, 1);
+    const [rawLocation] = rawLocations;
+    assert.strictEqual(rawLocation.script(), script);
+    assert.strictEqual(rawLocation.lineNumber, 1);
+    assert.strictEqual(rawLocation.columnNumber, 2);
+    const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    assertNotNullOrUndefined(uiLocation);
+    assert.strictEqual(uiLocation.uiSourceCode, uiSourceCode);
+    assert.strictEqual(uiLocation.lineNumber, 1);
+    assert.strictEqual(uiLocation.columnNumber, 2);
+  });
+
   describe('supports modern Web development workflows', () => {
     it('supports webpack code splitting', async () => {
       // This is basically the "Shared code with webpack entry point code-splitting" scenario

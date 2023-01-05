@@ -245,9 +245,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       {lineNumber: number, columnNumber: number|undefined} {
     const uiSourceCode = uiLocation.uiSourceCode;
     const script = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode);
-    const {lineNumber, columnNumber} = script ?
-        DefaultScriptMapping.scriptLineColumnToRawLineColumn(script, uiLocation.lineNumber, uiLocation.columnNumber) :
-        uiLocation;
+    const {lineNumber, columnNumber} = script ? script.relativeLocationToRawLocation(uiLocation) : uiLocation;
     return {lineNumber, columnNumber};
   }
 
@@ -259,8 +257,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       columnNumber: number|undefined): Workspace.UISourceCode.UILocation {
     const script = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode);
     if (script) {
-      ({lineNumber, columnNumber} =
-           DefaultScriptMapping.rawLineColumnToScriptLineColumn(script, lineNumber, columnNumber));
+      ({lineNumber, columnNumber} = script.rawLocationToRelativeLocation({lineNumber, columnNumber}));
     }
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
   }

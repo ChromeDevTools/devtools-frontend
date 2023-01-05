@@ -16,10 +16,11 @@ import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
 describeWithMockConnection('CompilerScriptMapping', () => {
   let backend: MockProtocolBackend;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+  let workspace: Workspace.Workspace.WorkspaceImpl;
 
   beforeEach(() => {
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+    workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
     debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
         {forceNew: true, resourceMapping, targetManager});
@@ -32,7 +33,6 @@ describeWithMockConnection('CompilerScriptMapping', () => {
           debuggerWorkspaceBinding.waitForUISourceCodeAdded(url as Platform.DevToolsPath.UrlString, target);
   const waitForUISourceCodeRemoved = (uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> =>
       new Promise(resolve => {
-        const workspace = Workspace.Workspace.WorkspaceImpl.instance();
         const {eventType, listener} =
             workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, event => {
               if (event.data === uiSourceCode) {
@@ -267,6 +267,40 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     assert.strictEqual(uiLocation.columnNumber, 2);
   });
 
+  it('correctly removes UISourceCodes when detaching a sourcemap', async () => {
+    const target = createTarget();
+
+    const sourceRoot = 'http://example.com';
+    const scriptInfo = {
+      url: `${sourceRoot}/test.out.js`,
+      content: '1\n2\n',
+    };
+    const sourceMapInfo = {
+      url: `${scriptInfo.url}.map`,
+      content: encodeSourceMap(
+          [
+            '0:0 => a.ts:0:0',
+            '1:0 => b.ts:1:0',
+          ],
+          sourceRoot),
+    };
+
+    const [, , script] = await Promise.all([
+      waitForUISourceCodeAdded(`${sourceRoot}/a.ts`, target),
+      waitForUISourceCodeAdded(`${sourceRoot}/b.ts`, target),
+      backend.addScript(target, scriptInfo, sourceMapInfo),
+    ]);
+
+    script.debuggerModel.sourceMapManager().detachSourceMap(script);
+
+    assert.isNull(
+        workspace.uiSourceCodeForURL(`${sourceRoot}/a.ts` as Platform.DevToolsPath.UrlString),
+        '`a.ts` should not be around anymore');
+    assert.isNull(
+        workspace.uiSourceCodeForURL(`${sourceRoot}/b.ts` as Platform.DevToolsPath.UrlString),
+        '`b.ts` should not be around anymore');
+  });
+
   describe('supports modern Web development workflows', () => {
     it('supports webpack code splitting', async () => {
       // This is basically the "Shared code with webpack entry point code-splitting" scenario
@@ -343,9 +377,17 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       }
     });
 
-    // Currently the CompilerScriptMapping does not properly update mappings to support
-    // webpack's hot module replacement machinery.
-    it.skip('[crbug.com/1403432]: supports webpack hot module replacement', async () => {
+    it('supports webpack hot module replacement', async () => {
+      // This simulates the webpack HMR machinery, where originally a `bundle.js` is served,
+      // which includes embedded authored code for `lib.js` and `app.js`, both of which map
+      // to `bundle.js`. Later an update script is sent that replaces `app.js` with a newer
+      // version, while sending the same authored code for `lib.js` (presumably because the
+      // devserver figured the file might have changed). Now the initial `app.js` should be
+      // removed and `bundle.js` will have un-mapped locations for the `app.js` part. The
+      // new `app.js` will point to the update script. `lib.js` remains unchanged.
+      //
+      // This is a generalization of https://crbug.com/1403362 and http://crbug.com/1403432,
+      // which both present special cases of the general stale mapping problem.
       const target = createTarget();
       const sourceRoot = 'webpack:///src';
 

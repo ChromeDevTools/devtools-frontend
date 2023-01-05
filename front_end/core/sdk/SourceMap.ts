@@ -80,6 +80,19 @@ export interface SourceMap {
   hasIgnoreListHint(sourceURL: Platform.DevToolsPath.UrlString): boolean;
   findRanges(predicate: (sourceURL: Platform.DevToolsPath.UrlString) => boolean, options: {isStartMatching: boolean}):
       TextUtils.TextRange.TextRange[];
+
+  /**
+   * Determines whether this and the {@link other} `SourceMap` agree on content and ignore-list hint
+   * with respect to the {@link sourceURL}.
+   *
+   * @param sourceURL the URL to test for (might not be provided by either of the sourcemaps).
+   * @param other the other `SourceMap` to check.
+   * @returns `true` if both this and the {@link other} `SourceMap` either both have the ignore-list
+   *          hint for {@link sourceURL} or neither, and if both of them either provide the same
+   *          content for the {@link sourceURL} inline or both provide no `sourcesContent` entry
+   *          for it.
+   */
+  compatibleForURL(sourceURL: Platform.DevToolsPath.UrlString, other: SourceMap): boolean;
 }
 
 /**
@@ -663,6 +676,11 @@ export class TextSourceMap implements SourceMap {
     }
 
     return ranges;
+  }
+
+  compatibleForURL(sourceURL: Platform.DevToolsPath.UrlString, other: SourceMap): boolean {
+    return this.embeddedContentByURL(sourceURL) === other.embeddedContentByURL(sourceURL) &&
+        this.hasIgnoreListHint(sourceURL) === other.hasIgnoreListHint(sourceURL);
   }
 }
 

@@ -335,6 +335,81 @@ describe('TextSourceMap', () => {
     assertMapping(sourceMap.findEntry(4, 0), 'wp:///other.js', 5, 0);
   });
 
+  describe('compatibleForURL', () => {
+    const compiledURL = 'http://example.com/foo.js' as Platform.DevToolsPath.UrlString;
+    const sourceMappingURL = `${compiledURL}.map` as Platform.DevToolsPath.UrlString;
+    const sourceRoot = 'webpack:///src';
+    const sourceURL = `${sourceRoot}/foo.ts` as Platform.DevToolsPath.UrlString;
+
+    it('correctly identifies equal sourcemaps with content', () => {
+      const payload = {
+        mappings: '',
+        sourceRoot,
+        sources: ['foo.ts'],
+        sourcesContent: ['function foo() {\n  console.log("Hello world!");\n}'],
+        version: 3,
+      };
+      const sourceMap1 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
+      const sourceMap2 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
+      assert.isTrue(sourceMap1.compatibleForURL(sourceURL, sourceMap2));
+      assert.isTrue(sourceMap2.compatibleForURL(sourceURL, sourceMap1));
+    });
+
+    it('correctly identifies equal sourcemaps without content', () => {
+      const payload = {
+        mappings: '',
+        sourceRoot,
+        sources: ['foo.ts'],
+        version: 3,
+      };
+      const sourceMap1 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
+      const sourceMap2 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
+      assert.isTrue(sourceMap1.compatibleForURL(sourceURL, sourceMap2));
+      assert.isTrue(sourceMap2.compatibleForURL(sourceURL, sourceMap1));
+    });
+
+    it('correctly differentiates based on content', () => {
+      const sourceMap1 = new SDK.SourceMap.TextSourceMap(
+          compiledURL, sourceMappingURL, {
+            mappings: '',
+            sourceRoot,
+            sources: ['foo.ts'],
+            sourcesContent: ['function foo() {\n  console.log("Hello from first!");\n}'],
+            version: 3,
+          },
+          fakeInitiator);
+      const sourceMap2 = new SDK.SourceMap.TextSourceMap(
+          compiledURL, sourceMappingURL, {
+            mappings: '',
+            sourceRoot,
+            sources: ['foo.ts'],
+            sourcesContent: ['function foo() {\n  console.log("Hello from second!");\n}'],
+            version: 3,
+          },
+          fakeInitiator);
+      assert.isFalse(sourceMap1.compatibleForURL(sourceURL, sourceMap2));
+      assert.isFalse(sourceMap2.compatibleForURL(sourceURL, sourceMap1));
+    });
+
+    it('correctly differentiates based on ignore-list hint', () => {
+      const payload1 = {
+        mappings: '',
+        sourceRoot,
+        sources: ['foo.ts'],
+        sourcesContent: ['function foo() {\n  console.log("Hello world!");\n}'],
+        version: 3,
+      };
+      const payload2 = {
+        ...payload1,
+        'x_google_ignoreList': [0],
+      };
+      const sourceMap1 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload1, fakeInitiator);
+      const sourceMap2 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload2, fakeInitiator);
+      assert.isFalse(sourceMap1.compatibleForURL(sourceURL, sourceMap2));
+      assert.isFalse(sourceMap2.compatibleForURL(sourceURL, sourceMap1));
+    });
+  });
+
   describe('source URL resolution', () => {
     const noSourceRoot = '';
     const absoluteSourceRootExample = 'http://example.com/src';

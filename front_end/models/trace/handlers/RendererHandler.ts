@@ -142,18 +142,19 @@ export function assignOrigin(
   for (const [frameId, renderProcessesByPid] of rendererProcessesByFrame) {
     for (const [pid, processInfo] of renderProcessesByPid) {
       const process = getOrCreateRendererProcess(processes, pid);
-      try {
-        // Sometimes a single process is responsible with rendering multiple
-        // frames at the same time. For example, see https://crbug.com/1334563.
-        // When this happens, we'd still like to assign a single url per process
-        // so: 1) use the first frame rendered by this process as the url source
-        // and 2) if there's a more "important" frame found, us its url instead.
-        if (process.url === null /* first frame */ || frameId === mainFrameId /* more important frame */) {
-          process.url = new URL(processInfo.frame.url);
+      // Sometimes a single process is responsible with rendering multiple
+      // frames at the same time. For example, see https://crbug.com/1334563.
+      // When this happens, we'd still like to assign a single url per process
+      // so: 1) use the first frame rendered by this process as the url source
+      // and 2) if there's a more "important" frame found, us its url instead.
+      if (process.url === null /* first frame */ || frameId === mainFrameId /* more important frame */) {
+        // If we are here, it's because we care about this process and the URL. But before we store it, we check if it is a valid URL by trying to create a URL object. If it isn't, we won't set it, and this process will be filtered out later.
+        try {
+          new URL(processInfo.frame.url);
+          process.url = processInfo.frame.url;
+        } catch (e) {
+          process.url = null;
         }
-      } catch (e) {
-        // Failing to parse the URL isn't a concern, so don't stop for this.
-        // Process' url will stay null, we'll filter out these processes later.
       }
     }
   }
@@ -213,7 +214,12 @@ export function sanitizeProcesses(processes: Map<Types.TraceEvents.ProcessID, Re
     // parsed for some reason, or if it's an "about:" origin, delete it.
     // This is done because we don't really care about processes for which we
     // can't provide actionable insights to the user (e.g. about:blank pages).
-    if (process.url === null || process.url.protocol === 'about:') {
+    if (process.url === null) {
+      processes.delete(pid);
+      continue;
+    }
+    const asUrl = new URL(process.url);
+    if (asUrl.protocol === 'about:') {
       processes.delete(pid);
     }
   }
@@ -505,7 +511,9 @@ export interface RendererHandlerData {
 }
 
 export interface RendererProcess {
-  url: URL|null;
+  // In an ideal world this would be modelled as a URL, but URLs cannot be sent
+  // between the main thread and workers, so we have to store it as a string.
+  url: string|null;
   isOnMainFrame: boolean;
   threads: Map<Types.TraceEvents.ThreadID, RendererThread>;
 }

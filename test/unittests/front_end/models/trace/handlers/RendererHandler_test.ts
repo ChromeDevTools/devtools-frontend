@@ -66,7 +66,9 @@ describe('RendererHandler', () => {
         ],
         'Process IDs do not match expectations');
 
-    const origins = [...renderers.processes].map(([, process]) => process.url?.origin);
+    const origins = [...renderers.processes].map(([, process]) => {
+      return process.url ? new URL(process.url).origin : null;
+    });
     assert.deepEqual(
         origins,
         [
@@ -944,7 +946,7 @@ describe('RendererHandler', () => {
       [
         TraceModel.Types.TraceEvents.ProcessID(1),
         {
-          url: new URL('http://what.com'),
+          url: 'http://what.com',
           isOnMainFrame: true,
           threads: new Map(),
         } as TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess,
@@ -954,8 +956,7 @@ describe('RendererHandler', () => {
     TraceModel.Handlers.ModelHandlers.Renderer.sanitizeProcesses(processes);
 
     assert.strictEqual(processes.size, 1, 'Didn\'t remove the bad process');
-    assert.strictEqual(
-        [...processes.values()][0].url?.origin, new URL('http://what.com').origin, 'Removed the correct process');
+    assert.strictEqual([...processes.values()][0].url, ('http://what.com'), 'Removed the correct process');
   });
 
   it('can process multiple processes', async () => {
@@ -989,7 +990,7 @@ describe('RendererHandler', () => {
       [
         TraceModel.Types.TraceEvents.ProcessID(0),
         {
-          url: new URL('http://a.com'),
+          url: ('http://a.com'),
           isOnMainFrame: true,
           threads: new Map([[
             TraceModel.Types.TraceEvents.ThreadID(1),
@@ -1000,7 +1001,7 @@ describe('RendererHandler', () => {
       [
         TraceModel.Types.TraceEvents.ProcessID(2),
         {
-          url: new URL('http://b.com'),
+          url: ('http://b.com'),
           isOnMainFrame: false,
           threads: new Map([[
             TraceModel.Types.TraceEvents.ThreadID(3),
@@ -1045,7 +1046,7 @@ describe('RendererHandler', () => {
     TraceModel.Handlers.ModelHandlers.Renderer.assignOrigin(
         processes, metadata.mainFrameId, metadata.rendererProcessesByFrame);
 
-    assert.deepEqual([...processes].map(([pid, p]) => [pid, p.url?.origin]), [
+    assert.deepEqual([...processes].map(([pid, p]) => [pid, p.url ? new URL(p.url).origin : null]), [
       [TraceModel.Types.TraceEvents.ProcessID(MAIN_FRAME_PID), 'http://localhost:5000'],
       [TraceModel.Types.TraceEvents.ProcessID(SUB_FRAME_PID), 'https://www.example.com'],
       [TraceModel.Types.TraceEvents.ProcessID(SUB_FRAME_PID_2), 'https://www.example.com'],

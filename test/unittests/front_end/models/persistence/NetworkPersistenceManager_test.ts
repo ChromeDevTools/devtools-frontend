@@ -761,7 +761,7 @@ describe('NetworkPersistenceManager', () => {
     });
 
     const {headerPatterns} = await networkPersistenceManager.generateHeaderPatterns(uiSourceCode);
-    assert.deepEqual(Array.from(headerPatterns), ['http?://*']);
+    assert.deepEqual(Array.from(headerPatterns), ['http?://*', 'file:///*']);
   });
 
   it('updates interception patterns upon edit of .headers file', async () => {

@@ -402,6 +402,11 @@ export class FetchDispatcher implements ProtocolProxyApi.FetchDispatcher {
   requestPaused({requestId, request, resourceType, responseStatusCode, responseHeaders, networkId}:
                     Protocol.Fetch.RequestPausedEvent): void {
     const networkRequest = networkId ? this.#manager.requestForId(networkId) : null;
+    // If there was no 'Network.responseReceivedExtraInfo' event (e.g. for 'file:/' URLSs),
+    // populate 'originalResponseHeaders' with the headers from the 'Fetch.requestPaused' event.
+    if (networkRequest?.originalResponseHeaders.length === 0 && responseHeaders) {
+      networkRequest.originalResponseHeaders = responseHeaders;
+    }
     void MultitargetNetworkManager.instance().requestIntercepted(new InterceptedRequest(
         this.#fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders));
   }

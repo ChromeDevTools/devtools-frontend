@@ -463,6 +463,20 @@ describeWithMockConnection('InterceptedRequest', () => {
           },
           {name: 'helloWorld.html', path: 'www.example.com/', content: 'Hello World!'},
           {name: 'something.html', path: 'file:/usr/local/foo/content/', content: 'Override for something'},
+          {
+            name: '.headers',
+            path: 'file:/usr/local/example/',
+            content: `[
+            {
+              "applyTo": "*",
+              "headers": [{
+                "name": "test-file-urls",
+                "value": "file url value"
+              }]
+            }
+          ]`,
+          },
+          {name: 'index.html', path: 'file:/usr/local/example/', content: 'Overridden file content'},
         ]);
     sinon.stub(target.fetchAgent(), 'invoke_enable');
     await networkPersistenceManager.updateInterceptionPatternsForTests();
@@ -635,6 +649,57 @@ describeWithMockConnection('InterceptedRequest', () => {
           responseCode,
           body: btoa('Override for something'),
           responseHeaders,
+        });
+  });
+
+  it('can override headers and content for a request with a \'file:/\'-URL', async () => {
+    const responseCode = 200;
+    const requestId = 'request_id_8' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'file:///usr/local/example/index.html',
+        } as Protocol.Network.Request,
+        requestId, responseCode,
+        [
+          {name: 'content-type', value: 'text/html; charset=utf-8'},
+          {name: 'age', value: 'original'},
+        ],
+        responseBody, {
+          requestId,
+          responseCode,
+          body: btoa('Overridden file content'),
+          responseHeaders: [
+            {name: 'test-file-urls', value: 'file url value'},
+            {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+          ],
+        });
+  });
+
+  it('can apply global header overrides to a request with a \'file:/\'-URL', async () => {
+    const responseCode = 200;
+    const requestId = 'request_id_9' as Protocol.Fetch.RequestId;
+    const responseBody = 'content of something/index.html';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'file:///usr/local/whatever/index.html',
+        } as Protocol.Network.Request,
+        requestId, responseCode,
+        [
+          {name: 'content-type', value: 'text/html; charset=utf-8'},
+          {name: 'age', value: 'original'},
+        ],
+        responseBody, {
+          requestId,
+          responseCode,
+          body: responseBody,
+          responseHeaders: [
+            {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+          ],
         });
   });
 

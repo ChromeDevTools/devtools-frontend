@@ -466,7 +466,6 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     path: Platform.DevToolsPath.EncodedPathString,
     overridesWithRegex: HeaderOverrideWithRegex[],
   }> {
-    const headerPatterns = new Set<string>();
     const content = (await uiSourceCode.requestContent()).content || '[]';
     let headerOverrides: HeaderOverride[] = [];
     try {
@@ -476,7 +475,11 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       }
     } catch (e) {
       console.error('Failed to parse', uiSourceCode.url(), 'for locally overriding headers.');
-      return {headerPatterns, path: Platform.DevToolsPath.EmptyEncodedPathString, overridesWithRegex: []};
+      return {
+        headerPatterns: new Set<string>(),
+        path: Platform.DevToolsPath.EmptyEncodedPathString,
+        overridesWithRegex: [],
+      };
     }
     const relativePath = FileSystemWorkspaceBinding.relativePath(uiSourceCode).join('/');
     // 'relativePath' returns an encoded string of the local file name which itself is already encoded.
@@ -486,10 +489,31 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const singlyDecodedPath = this.decodeLocalPathToUrlPath(relativePath).slice(0, -HEADERS_FILENAME.length) as
         Platform.DevToolsPath.EncodedPathString;
     const decodedPath = this.decodeLocalPathToUrlPath(singlyDecodedPath) as Platform.DevToolsPath.RawPathString;
+    const patterns = decodedPath.startsWith('file:/') ?
+        this.generateHeaderPatternsForFileUrl(
+            Common.ParsedURL.ParsedURL.substring(decodedPath, 'file:/'.length), headerOverrides) :
+        this.generateHeaderPatternsForHttpUrl(decodedPath, headerOverrides);
+    return {...patterns, path: singlyDecodedPath};
+  }
 
+  generateHeaderPatternsForHttpUrl(decodedPath: Platform.DevToolsPath.RawPathString, headerOverrides: HeaderOverride[]):
+      {
+        headerPatterns: Set<string>,
+        overridesWithRegex: HeaderOverrideWithRegex[],
+      } {
+    const headerPatterns = new Set<string>();
     const overridesWithRegex: HeaderOverrideWithRegex[] = [];
     for (const headerOverride of headerOverrides) {
       headerPatterns.add('http?://' + decodedPath + headerOverride.applyTo);
+
+      // Make 'global' overrides apply to file URLs as well.
+      if (decodedPath === '') {
+        headerPatterns.add('file:///' + headerOverride.applyTo);
+        overridesWithRegex.push({
+          applyToRegex: new RegExp('^file:\/\/\/' + escapeRegex(decodedPath + headerOverride.applyTo) + '$'),
+          headers: headerOverride.headers,
+        });
+      }
 
       // Most servers have the concept of a "directory index", which is a
       // default resource name for a request targeting a "directory", e. g.
@@ -515,7 +539,25 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         });
       }
     }
-    return {headerPatterns, path: singlyDecodedPath, overridesWithRegex};
+    return {headerPatterns, overridesWithRegex};
+  }
+
+  generateHeaderPatternsForFileUrl(decodedPath: Platform.DevToolsPath.RawPathString, headerOverrides: HeaderOverride[]):
+      {
+        headerPatterns: Set<string>,
+        overridesWithRegex: HeaderOverrideWithRegex[],
+      } {
+    const headerPatterns = new Set<string>();
+    const overridesWithRegex: HeaderOverrideWithRegex[] = [];
+    for (const headerOverride of headerOverrides) {
+      headerPatterns.add('file:///' + decodedPath + headerOverride.applyTo);
+      const regex = new RegExp('^file:\/\/\/' + escapeRegex(decodedPath + headerOverride.applyTo) + '$');
+      overridesWithRegex.push({
+        applyToRegex: regex,
+        headers: headerOverride.headers,
+      });
+    }
+    return {headerPatterns, overridesWithRegex};
   }
 
   async updateInterceptionPatternsForTests(): Promise<void> {

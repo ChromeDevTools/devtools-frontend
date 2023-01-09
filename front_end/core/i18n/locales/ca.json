@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Activa el bloqueig de sol·licituds de xarxa"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Permet que DevTools carregui recursos, com ara mapes d'origen, de camins de fitxers remots. Estan desactivats de manera predeterminada per motius de seguretat."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Activa el format WebP"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "Obre les DevTools específiques per a Node.js"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "Pestanya"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Dades vitals principals del lloc web"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "Format de color:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "Aquesta opció de configuració està obsoleta perquè és incompatible amb els espais de color moderns. Per tornar a activar-la, pots desactivar l'experiment corresponent."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Fosc"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "Dreta"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Activa la cerca mentre escrius"
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Cerca a mesura que escrius"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "Cerca al tauler"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "Desactiva la cerca a mesura que escrius (prem Retorn per cercar)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "Estableix el format de color tal com s'ha escrit originalment"
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] S'estan carregant els símbols de depuració per a {PH2} (mitjançant {PH3})..."
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Afegeix tots els scripts de contingut a la llista d'elements ignorats"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Afegeix un script per ignorar la llista"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Suprimeix de la llista d'elements ignorats"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "Error en la compilació de LiveEdit: {PH1}"
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Actualitza les memòries cau"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "Recollida i renderització prèvies"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "Manifest de l'aplicació"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplicació"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "No s'ha detectat cap fitxer de manifest"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "T'has desplaçat fins a {PH1}"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Finestres obertes"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "Precàrrega"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Actualitza IndexedDB"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Selecciona una entrada per veure les metadades"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "Mostra els esdeveniments d'altres particions de l'emmagatzematge"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Mostra els esdeveniments d'altres dominis"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Atura la gravació d'esdeveniments"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "Clau d'emmagatzematge"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Abast del Service Worker"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "Treballador: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Fes clic en qualsevol esdeveniment d'emmagatzematge compartit per mostrar els paràmetres de l'esdeveniment."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "Clau"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Selecciona un valor per previsualitzar-lo"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "Emmagatzematge compartit"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "Els elements filtrats de l'emmagatzematge compartit s'han esborrat"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "L'element d'emmagatzematge s'ha suprimit."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "L'edició de l'element d'emmagatzematge s'ha cancel·lat."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "L'element d'emmagatzematge s'ha editat."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "Elements de l'emmagatzematge compartit"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "Els elements de l'emmagatzematge compartit s'han esborrat"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "Nombre d'entrades que es mostren a la taula: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "Valor"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "Emmagatzematge compartit"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Esborra-ho tot"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Actualment, les pàgines que han sol·licitat un AppBanner no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "La memòria cau back-forward està desactivada a causa d'una sol·licitud de keepalive."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "chrome://flags ha desactivat la memòria cau back-forward. Visita chrome://flags/#back-forward-cache per activar-la de manera local en aquest dispositiu."
@@ -3235,6 +3322,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "Actualment, les pàgines que tenen una connexió IndexedDB oberta no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "La memòria cau back-forward està desactivada a causa d'un esdeveniment IndexedDB."
   },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "S'han utilitzat API no aptes."
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Activat abans de l'inici"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "La pàgina s'ha renderitzat prèviament, però la navegació s'ha acabat duent a terme de manera diferent que a la renderització prèvia original, de manera que la pàgina renderitzada prèviament no s'ha pogut activar."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "La renderització prèvia encara no admet l'API AudioContext."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "La pàgina sol·licita un certificat de client, que no és adequat per a una pàgina amagada, com ara una de renderització prèvia."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "La pàgina renderitzada prèviament ha navegat fins a un URL d'altres llocs web després de carregar-se. Actualment, no es permet renderitzar prèviament pàgines d'altres llocs web."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "S'ha provat de renderitzar prèviament un URL que redirigia a un URL d'altres llocs web. Actualment, no es permet renderitzar prèviament pàgines d'altres llocs web."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Estalvi de dades activat"
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "El procés renderitzador de la pàgina de renderització prèvia s'ha cancel·lat."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "La pàgina renderitzada prèviament ha navegat fins a un URL d'altres orígens del mateix lloc web després de carregar-se. Actualment, no es permet renderitzar prèviament pàgines d'altres orígens."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "La pàgina renderitzada prèviament ha navegat fins a un URL d'altres orígens del mateix lloc web després de carregar-se. Això no es permet tret que el lloc web de destinació enviï una capçalera Supports-Loading-Mode: credentialed-prerender."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "S'ha provat de renderitzar prèviament un URL que redirigia a un URL d'altres orígens del mateix lloc web. Actualment, no es permet renderitzar prèviament pàgines d'altres orígens."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "S'ha provat de renderitzar prèviament un URL que redirigia a un URL d'altres orígens del mateix lloc web. Això no es permet tret que el lloc web de destinació enviï una capçalera Supports-Loading-Mode: credentialed-prerender."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Error del certificat SSL."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Emmagatzematge compartit"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "Filtració de dades restant que es permet en un període de 24 hores per a aquest origen en bits d'entropia"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "Hora de creació"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Entrades"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "Pressupost d'entropia per als marcs tancats"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadades"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "Encara no s'ha creat"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "Nombre d'entrades"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Origen"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Emmagatzematge compartit"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "No es pot renderitzar la traça de la pila"
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Nombre de testimonis emmagatzemats"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "Esborrament no en curs"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "S'ha activat"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "S'ha descartat"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "Renderització prèvia"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "Informació bàsica"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "Inici"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "Estat"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "Activador"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "Selecciona un element per obtenir més informació"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "S'ha activat"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "S'ha descartat"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "Renderització prèvia"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "Inici"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "Estat"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "Activador"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "Tipus"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "petició del punt de ruptura"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "Esborra l'historial de la consola"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "Replega els missatges de console.trace() de manera predeterminada"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "Consola"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Avaluació activa l'activació de l'usuari"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "Desplega els missatges de console.trace() de manera predeterminada"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Agrupa els missatges semblants a la consola"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nom de propietat desconegut"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{A continuació s'enumera # selector visible}other{A continuació s'enumeren # selectors visibles}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "mostra"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Traça de la pila"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "Commuta el comptagotes"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Desfés"
@@ -5700,7 +5898,7 @@
     "message": "Transfereix"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | trigger": {
-    "message": "Activació"
+    "message": "Activador"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "advertiment"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# recurs}other{# recursos}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "Node infractor"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Problemes amagats"
@@ -6894,10 +7095,10 @@
     "message": "Agent d'usuari"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome ha utilitzat una feina alternativa perquè ha guanyat una competició contra una feina principal."
+    "message": "Chrome ha utilitzat una connexió HTTP/3 induïda per una capçalera Alt-Svc perquè ha estat més ràpida en establir una connexió utilitzant una altra versió del protocol HTTP."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome ha utilitzat una feina alternativa sense competir contra una feina principal."
+    "message": "Chrome ha utilitzat una connexió HTTP/3 induïda per una capçalera Alt-Svc sense competir per establir una connexió amb una altra versió del protocol HTTP."
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Aquesta sol·licitud s'ha bloquejat a causa de capçaleres de resposta amb una configuració errònia. Fes clic per veure-les."
@@ -6906,7 +7107,7 @@
     "message": "(bloquejat: {PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome no ha utilitzat cap feina alternativa perquè s'ha marcat com a trencada."
+    "message": "Chrome no ha intentat establir una connexió HTTP/3 perquè s'havia marcat com a malmesa."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(cancel·lada)"
@@ -6930,10 +7131,10 @@
     "message": "(memòria cau del disc)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome ha utilitzat una feina ALPN de DNS perquè ha guanyat una competició contra una feina principal i una feina alternativa."
+    "message": "Chrome ha utilitzat una connexió HTTP/3 perquè DNS record indicava que s'admetia HTTP/3, el qual ha estat més ràpid en establir una connexió amb una altra versió del protocol HTTP."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome ha utilitzat una feina ALPN de DNS sense competir contra una feina principal i una feina alternativa."
+    "message": "Chrome ha utilitzat una connexió HTTP/3 perquè DNS record indicava que s'admetia HTTP/3. No hi ha hagut cap competició per establir una connexió utilitzant una altra versió del protocol HTTP."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(ha fallat)"
@@ -6945,10 +7146,10 @@
     "message": "nivell 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome ha utilitzat una feina principal perquè ha guanyat una competició contra una feina alternativa o una feina ALPN de DNS."
+    "message": "Chrome ha utilitzat aquest protocol perquè ha estat el més ràpid en establir una connexió HTTP/3."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome no ha utilitzat cap feina alternativa perquè falta informació del protocol alternatiu."
+    "message": "Chrome no ha utilitzat una versió alternativa de HTTP perquè no hi havia disponible informació sobre un protocol alternatiu quan es va emetre la sol·licitud, però hi havia una capçalera Alt-Svc a la resposta."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memòria cau)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Galetes que s'han enviat al servidor a la capçalera \"cookie\" de la sol·licitud"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Més informació"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Galetes de resposta amb un format incorrecte"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "mostra les galetes de sol·licitud filtrades"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Aquest lloc web té galetes en una altra partició que no s'han enviat amb aquesta sol·licitud. {PH1}."
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Aquesta sol·licitud no té cap galeta."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "Anul·la la capçalera"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "Els noms de les capçaleres només poden contenir lletres, dígits, guions o ratlles baixes"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Més informació"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Més informació a la pestanya Problemes"
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "Actualitza la pàgina o la sol·licitud perquè aquests canvis tinguin efecte"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "Suprimeix aquesta anul·lació de les capçaleres"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(proporcionat a través de la informació de depuració de {PH1})"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(font assignada des de: {PH1})"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Tancament"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Posa en pausa a les excepcions preses"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "Posa en pausa a les excepcions no detectades"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Suprimeix tots els punts de ruptura"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Recollit"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "Valida"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Mida de la memòria cau de la compilació"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Arbre de capes"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "Càlcul de capes"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "Disseny"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} a {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "Commuta el selector de color"
+    "message": "Comptagotes [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Galetes"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Unitats"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} no està definit"
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Mostra com a objecte de JavaScript"
   },
@@ -12895,6 +13126,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Ordre"
+  },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "(opció obsoleta)"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "No s'ha trobat cap ordre"

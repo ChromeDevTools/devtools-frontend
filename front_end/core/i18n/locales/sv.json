@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktivera blockering av nätverksbegäran"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Tillåt att DevTools läser in resurser, till exempel källkartor, från fjärrsökvägar. Inaktiverat som standard av säkerhetsskäl."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivera WebP-format"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "Öppna verktyg för programmerare avsedda för Node.js"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "Tabb"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Diagnos av huvudvärden för webben"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "Färgformat:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "Den här inställningen är utfasad eftersom den inte är kompatibel med moderna färgrymder. Om du vill återaktivera den kan du inaktivera det tillhörande experimentet."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Mörkt"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "Höger"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktivera funktionen Sök medan du skriver"
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Sök medan du skriver"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "Sök i panel"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "Inaktivera funktionen Sök medan du skriver (tryck på Retur för att söka)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "Ställ in färgformat på Som skapat"
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Felsökningssymboler läses in för {PH2} (via {PH3}) …"
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Lägg till alla innehållsskript på ignoreringslistan"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Lägg till skript på ignoreringslistan"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Ta bort från ignoreringslistan"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "Det gick inte att kompilera LiveEdit: {PH1}"
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Uppdatera cacheminnen"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "Förhämtning och förrendering"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "Appmanifest"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "App"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "Inget manifest påträffades"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Scrollade till {PH1}"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Öppnade fönster"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "Inläsning i förväg"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Uppdatera IndexedDB"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Välj en post för att visa metadata"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "Visa händelser från andra lagringspartitioner"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Visa händelser för andra domäner"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Sluta spela in händelser"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "Lagringsnyckel"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Omfattning för tjänstefunktion"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "Funktion: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Klicka på en händelse i det delade lagringsutrymmet för att visa händelseparametrarna."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "Nyckel"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Välj ett värde för att förhandsgranska"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "Delat lagringsutrymme"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "Filtrerade objekt i det delade lagringsutrymmet rensades"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "Objektet i lagringsutrymmet raderades."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "Redigeringen av objektet i lagringsutrymmet avbröts."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "Objektet i lagringsutrymmet redigerades."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "Objekt i det delade lagringsutrymmet"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "Objekt i det delade lagringsutrymmet rensades"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "Antal poster som visas i tabellen: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "Värde"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "Delat lagringsutrymme"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Ta bort alla"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Sidor som har begärt en AppBanner kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "Vilocacheminnet har inaktiverats på grund av en keepalive-begäran."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Vilocacheminnet har inaktiverats med hjälp av en flagga. Öppna chrome://flags/#back-forward-cache om du vill aktivera det lokalt på enheten."
@@ -3235,6 +3322,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "Sidor med en öppen IndexedDB-anslutning kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "Vilocacheminnet har inaktiverats på grund av en IndexedDB-händelse."
   },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "Otillåtna API:er användes."
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Aktiverades före start"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "Sidan förrenderades, men navigeringen utfördes på ett annat sätt än den ursprungliga förrenderingen så det gick inte att aktivera den förrenderade sidan."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Förrendering har inte stöd för AudioContext API ännu."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Sidan begär klientcertifikat, vilket inte är lämpligt för en dold sida, som en förrenderad sida."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "Den förrenderade sidan navigerade till en webbadress på en annan webbplats efter inläsning. Förrendering av sidor på andra webbplatser tillåts inte för närvarande."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Ett försök gjordes att förrendera en webbadress som omdirigerade till en webbadress på en annan webbplats. Förrendering av sidor på andra webbplatser tillåts inte för närvarande."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Databesparing har aktiverats"
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "Renderingsprocessen för den förrenderade sidan avslutades."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "Den förrenderade sidan navigerade till en webbadress med korsursprung på samma webbplats efter inläsning. Förrendering av sidor med korsursprung tillåts inte för närvarande."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "Den förrenderade sidan navigerade till en webbadress med korsursprung på samma webbplats efter inläsning. Detta är inte tillåtet om inte målwebbplatsen skickar huvudet Supports-Loading-Mode: credentialed-prerender."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Ett försök gjordes att förrendera en webbadress som omdirigerade till en webbadress med korsursprung på samma webbplats. Förrendering av sidor med korsursprung tillåts inte för närvarande."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Ett försök gjordes att förrendera en webbadress som omdirigerade till en webbadress med korsursprung på samma webbplats. Detta är inte tillåtet om inte målwebbplatsen skickar huvudet Supports-Loading-Mode: credentialed-prerender."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL-certifikatfel."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Delat lagringsutrymme"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "Återstående dataläckage som tillåts inom en 24-timmarsperiod för detta ursprung i bitars entropi"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "Skapades"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Poster"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "Entropibudget för låsta ramar"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "Ännu inte skapad"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "Antal poster"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Ursprung"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Delat lagringsutrymme"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Det gick inte att rendera stackspårning"
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Antal lagrade token"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "Rensa ej pågående"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "Har aktiverats"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "Har kastats"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "Förrendering"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "Grundläggande information"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "Började"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "Utlösare"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "Välj ett element för mer information"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "Har aktiverats"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "Har kastats"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "Förrendering"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "Började"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "Utlösare"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "Typ"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "träffade brytpunkt"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "Ta bort konsolhistorik"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "Komprimera console.trace()-meddelanden som standard"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "Konsol"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Beräkning utlöser användaraktivering"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "Utöka console.trace()-meddelanden som standard"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Gruppera liknande meddelanden i konsolen"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Okänt egendomsnamn"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{# synlig väljare listas nedan}other{# synliga väljare listas nedan}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "visa"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stackspårning"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "Aktivera/inaktivera släppfunktionen"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Ångra"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resurs}other{# resurser}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "Nod med överträdelser"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Dolda problem"
@@ -6894,10 +7095,10 @@
     "message": "Användaragent"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome använde ett alternativt jobb eftersom det vann mot ett huvudjobb."
+    "message": "Chrome använde en HTTP/3-anslutning som orsakades av ett Alt-Svc-huvud eftersom den vann mot upprättningen av en anslutning via en annan HTTP-version."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome använde ett alternativt jobb utan att tävla mot ett huvudjobb."
+    "message": "Chrome använde en HTTP/3-anslutning som orsakades av ett Alt-Svc-huvud utan att tävla mot upprättningen av en anslutning via en annan HTTP-version."
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Denna begäran blockerades på grund av felkonfigurerade svarshuvuden. Klicka för att visa svarshuvudena"
@@ -6906,7 +7107,7 @@
     "message": "(blockerad: {PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome använde inte ett alternativt jobb eftersom det var markerat som trasigt."
+    "message": "Chrome försökte inte upprätta en HTTP/3-anslutning eftersom den har markerats som trasig."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(avbröts)"
@@ -6930,10 +7131,10 @@
     "message": "(diskcache)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome använde ett DNS alpn-jobb eftersom det vann mot ett huvudjobb och ett alternativt jobb."
+    "message": "Chrome använde en HTTP/3-anslutning eftersom DNS record indikerade stöd för HTTP/3, vilket vann mot upprättningen av en anslutning via en annan HTTP-version."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome använde ett DNS alpn-jobb utan att tävla mot ett huvudjobb eller ett alternativt jobb."
+    "message": "Chrome använde en HTTP/3-anslutning eftersom DNS record indikerade stöd för HTTP/3. Det skedde inget lopp mot upprättningen av en anslutning via en annan HTTP-version."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(misslyckades)"
@@ -6945,10 +7146,10 @@
     "message": "nivå 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome använde ett huvudjobb eftersom det vann mot ett alternativt jobb och/eller ett DNS alpn-jobb."
+    "message": "Chrome använde detta protokoll eftersom det vann mot upprättningen av en HTTP/3-anslutning."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome använde inte ett alternativt jobb eftersom information om det alternativa protokollet saknades."
+    "message": "Chrome använde inte en alternativ HTTP-version eftersom det inte fanns någon alternativ protokollinformation när begäran utfärdades, men ett Alt-Svc-huvud fanns i svaret."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(minnescache)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies som skickades till servern i huvudet cookie för begäran"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Läs mer"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Svarscookies har fel format"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "visa bortfiltrerade cookies för begäran"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Den här webbplatsen har cookies i en annan partition som inte skickades med denna begäran. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Begäran har inga cookies."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "Åsidosätt huvud"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "Huvudnamn bör endast innehålla bokstäver, siffror, bindestreck eller understreck"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Läs mer"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Läs mer på fliken Problem"
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "Uppdatera sidan/begäran för att dessa ändringar ska träda i kraft"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "Ta bort detta åsidosättande av huvud"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(tillhandahölls via felsökningsinformation av {PH1})"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(källan har mappats från {PH1})"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Stängning"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Pausa vid påträffade undantag"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "Pausa vid ej påträffade undantag"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Ta bort alla brytpunkter"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Hämtad"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "Bekräfta"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Storlek på kompileringscache"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Lagerträd"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "Skapa preliminära lager"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "Layout"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} i {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "Aktivera/inaktivera färgväljare"
+    "message": "Släppfunktion [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Enheter"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} har inte definierats"
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Visa som JavaScript-objekt"
   },
@@ -12895,6 +13126,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Kommando"
+  },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "– utfasad"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "Inga kommandon hittades"

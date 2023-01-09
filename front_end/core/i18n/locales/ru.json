@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Включить блокировку сетевых запросов"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Разрешить DevTools загружать ресурсы, например карты исходного кода, из удаленных (не локальных) источников. По умолчанию этот параметр отключен из соображений безопасности."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Включить формат WebP"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "Откройте специальные инструменты разработчика для Node.js"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "Вкладка"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Основные интернет-показатели"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "Цветовой формат:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "Поддержка этого параметра прекращена, так как он несовместим с современными цветовыми пространствами. Чтобы вновь включить его, отключите соответствующий эксперимент."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Тёмная"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "По правому краю"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Включить поиск при вводе запроса"
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Поиск при вводе запроса"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "Поиск на панели"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "Отключить поиск при вводе запроса (для поиска нужно нажать Ввод)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "Установить формат цвета \"Авторский вариант\""
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Загрузка отладочных символов для {PH2} (через {PH3})…"
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Добавить все скрипты для содержимого в список игнорируемых"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Добавить скрипт в список игнорируемых"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Удалить из списка игнорируемых"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "Не удалось скомпилировать LiveEdit: {PH1}."
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Обновить кеш"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "Предварительная загрузка (prefetch) и отрисовка"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "Манифест приложения"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Приложение"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Манифест"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "Манифест не обнаружен"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Прокручено до подраздела {PH1}"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Открытые окна"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "Предзагрузка (preload)"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Обновить IndexedDB"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Чтобы посмотреть метаданные, выберите запись"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "Показывать события из других сегментов хранилища"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Показать события из других доменов"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Остановить запись событий"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "Ключ в хранилище"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Область действия Service Worker"
@@ -2628,7 +2673,7 @@
     "message": "Ключ"
   },
   "panels/application/DOMStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Выберите значение для просмотра."
+    "message": "Выберите значение для просмотра"
   },
   "panels/application/DOMStorageItemsView.ts | value": {
     "message": "Значение"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "Service Worker: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Чтобы посмотреть параметры события, нажмите на любое событие общего хранилища."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "Ключ"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Выберите значение для просмотра"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "Общее хранилище"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "Отфильтрованные элементы общего хранилища удалены"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "Элемент хранилища был удален."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "Изменение элемента хранилища было отменено."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "Элемент хранилища был изменен."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "Элементы общего хранилища"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "Все элементы общего хранилища удалены"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "Записей в таблице: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "Значение"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "Общее хранилище"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Очистить все"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Страницы, которые запросили AppBanner, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "Возвратный кеш отключен из-за запроса keepalive."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Возвратный кеш отключен в разделе экспериментальных параметров Chrome. Введите chrome://flags/#back-forward-cache в адресной строке, чтобы включить кеш на этом устройстве."
@@ -3235,6 +3322,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "Страницы с открытым подключением IndexedDB в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "Возвратный кеш отключен из-за события IndexedDB."
   },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "Использовались недопустимые API."
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Активировано до запуска."
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "Страница была предварительно отрисована, однако был осуществлен переход, отличающийся от изначально заданного для нее, и поэтому она не была использована."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Предварительная отрисовка пока не поддерживает AudioContext API."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Страница запрашивает сертификат клиента. Для скрытых страниц (например, предварительно отрисованных) эта процедура не применяется."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "Предварительно отрисованная страница была загружена, после чего с нее был выполнен переход по междоменному URL. Сейчас предварительная отрисовка междоменных страниц запрещена."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Не удалось предварительно отрисовать страницу, перенаправляющую по междоменному URL. Сейчас предварительная отрисовка междоменных страниц запрещена."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Экономия трафика включена."
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "Отрисовка, которая должна была быть выполнена для этой страницы предварительно, остановлена."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "Предварительно отрисованная страница была загружена, после чего с нее был выполнен переход по междоменному URL этого же сайта. Сейчас предварительная отрисовка междоменных страниц запрещена."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "Предварительно отрисованная страница была загружена, после чего с нее был выполнен переход по междоменному URL этого же сайта. Такая отрисовка допустима, только если целевой сайт отправляет заголовок Supports-Loading-Mode со значением credentialed-prerender."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Не удалось предварительно отрисовать страницу, перенаправляющую по междоменному URL этого же сайта. Сейчас предварительная отрисовка междоменных страниц запрещена."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Не удалось предварительно отрисовать страницу, перенаправляющую по междоменному URL этого же сайта. Отрисовка допустима, только если целевой сайт отправляет заголовок Supports-Loading-Mode со значением credentialed-prerender."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Ошибка сертификата SSL."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Общее хранилище"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "Допустимая утечка данных в течение 24 часов для этого источника в битах энтропии"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "Время создания"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Записи"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "Бюджет энтропии в Fenced Frames"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Метаданные"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "Ещё не создано"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "Количество записей"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Источник"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Общее хранилище"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Не удается показать трассировку стека."
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Число сохраненных токенов"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "Очистить без изменений"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "Активировано"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "Отменено"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "В процессе предварительной отрисовки"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "Общие сведения"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "Запуск в"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "Статус"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "Триггер"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "Выберите элемент, чтобы посмотреть дополнительные сведения о нем"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "Активировано"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "Отменено"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "В процессе предварительной отрисовки"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "Запуск в"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "Статус"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "Триггер"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "Тип"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "достигнута точка останова"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "Удалить историю консоли"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "Сворачивать сообщения console.trace() по умолчанию"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "Консоль"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Вычисление запускает активацию пользователя"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "Разворачивать сообщения console.trace() по умолчанию"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Группировать в консоли похожие сообщения"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Неизвестное имя свойства"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{Ниже показан # видимый селектор}one{Ниже показан # видимый селектор}few{Ниже показано # видимых селектора}many{Ниже показано # видимых селекторов}other{Ниже показано # видимого селектора}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "показать"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Трассировка стека"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "Показать пипетку"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Отменить"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ресурс}one{# ресурс}few{# ресурса}many{# ресурсов}other{# ресурса}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "Нарушающий узел"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Скрытые проблемы"
@@ -6894,10 +7095,10 @@
     "message": "Агент пользователя"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Браузер Chrome выполнил запрос, используя альтернативный протокол вместо основного из-за более быстрого ответа сервера"
+    "message": "Браузер Chrome использовал для соединения протокол HTTP/3, определенный заголовком Alt-Svc, так как соединение с помощью этой версии HTTP было установлено раньше, чем посредством других"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Браузер Chrome выполнил запрос, используя альтернативный протокол вместо основного. Скорость получения ответа от сервера не сравнивалась."
+    "message": "Браузер Chrome установил соединение по протоколу HTTP/3, определенному заголовком Alt-Svc, и не пытался использовать для соединения другие версии HTTP"
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Запрос заблокирован из-за недопустимых заголовков ответа. Нажмите, чтобы посмотреть заголовки."
@@ -6906,7 +7107,7 @@
     "message": "(заблокировано: {PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Браузер Chrome не использовал для запроса альтернативный протокол, поскольку этот протокол был помечен как работающий некорректно"
+    "message": "Браузер Chrome не пытался установить соединение по протоколу HTTP/3, поскольку оно было помечено как нерабочее"
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(отменено)"
@@ -6930,10 +7131,10 @@
     "message": "(кеш диска)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Браузер Chrome выполнил запрос, используя протокол DNS с расширением ALPN вместо основного и альтернативного протоколов из-за более быстрого ответа сервера"
+    "message": "Браузер Chrome использовал для соединения протокол HTTP/3, так как DNS record содержит указание о поддержке HTTP/3. Соединение с помощью этой версии HTTP было установлено раньше, чем посредством других."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Браузер Chrome выполнил запрос, используя протокол DNS с расширением ALPN вместо основного и альтернативного протоколов. Скорость получения ответа от сервера не сравнивалась."
+    "message": "Браузер Chrome установил соединение по протоколу HTTP/3, так как DNS record содержит указание о поддержке HTTP/3, и не пытался использовать другие версии HTTP"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(ошибка)"
@@ -6945,10 +7146,10 @@
     "message": "уровень 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Браузер Chrome выполнил запрос, используя основной протокол вместо альтернативного и протокола DNS с расширением ALPN из-за более быстрого ответа сервера"
+    "message": "Браузер Chrome использовал этот протокол, так как соединение по нему было установлено раньше, чем по HTTP/3"
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Браузер Chrome не использовал для запроса альтернативный протокол из-за отсутствия информации об этом протоколе"
+    "message": "Браузер Chrome не использовал альтернативную версию протокола HTTP, так как на момент отправки запроса информация об альтернативных протоколах отсутствовала, несмотря на то, что ответ содержал заголовок Alt-Svc"
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(кеш памяти)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Файлы cookie, которые были отправлены на сервер в заголовке cookie запроса"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Подробнее…"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Неверные файлы cookie ответов"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "Показать отфильтрованные файлы cookie запроса"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "В другом сегменте этого сайта сохранены файлы cookie, которые не были отправлены с этим запросом. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "У этого запроса нет файлов cookie."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "Переопределить заголовок"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "Названия заголовков должны содержать только буквы, цифры, дефисы и символы подчеркивания."
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Подробнее…"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Узнайте больше на вкладке \"Проблемы\""
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "Чтобы изменения вступили в силу, обновите страницу или запрос"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "Удалить переопределение заголовка"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "мс"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(предоставлено через сведения для отладки, источник: {PH1})"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(исходный код преобразован из {PH1})"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Замыкание"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Приостанавливать на обнаруженных исключениях"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "Приостанавливать на необнаруженных исключениях"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Удалить все точки останова"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Собрано"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "Перенос"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Размер кеша компиляции"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Дерево слоев"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "Создание слоев"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "Макет"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} в {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "Показать/скрыть палитру"
+    "message": "Пипетка [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Файлы cookie"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Единицы измерения"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "Элемент {PH1} не определен"
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Показать как объект JavaScript"
   },
@@ -12895,6 +13126,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Команда"
+  },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "– больше не поддерживается"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "Команды не найдены."

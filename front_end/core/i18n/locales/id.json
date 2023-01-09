@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktifkan pemblokiran permintaan jaringan"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Izinkan DevTools memuat resource, seperti peta sumber, dari jalur file jarak jauh. Dinonaktifkan secara default karena alasan keamanan."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktifkan format WebP"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "Buka DevTools khusus untuk Node.js"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "Tab"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Data Web Inti"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "Format warna:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "Setelan ini tidak digunakan lagi karena tidak kompatibel dengan ruang warna modern. Untuk mengaktifkannya kembali, Anda dapat menonaktifkan eksperimen yang sesuai."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Gelap"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "Kanan"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktifkan telusuri saat Anda mengetik"
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Telusuri saat Anda mengetik"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "Telusuri di panel"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "Nonaktifkan telusuri saat Anda mengetik (tekan Enter untuk menelusuri)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "Setel format warna seperti yang ditulis"
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Memuat simbol debug untuk {PH2} (melalui {PH3})..."
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Tambahkan semua skrip konten ke daftar yang diabaikan"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Tambahkan skrip ke daftar yang diabaikan"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Hapus dari daftar yang diabaikan"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit kompilasi gagal: {PH1}"
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Muat Ulang Cache"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "Pengambilan Data & Pra-rendering"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "Manifes Aplikasi"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikasi"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifes"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "Tidak ada manifes yang terdeteksi"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Di-scroll ke {PH1}"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Jendela yang dibuka"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "Pramuat"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Muat Ulang IndexedDB"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Pilih entri untuk melihat metadata"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "Tampilkan peristiwa dari partisi penyimpanan lainnya"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Tampilkan peristiwa dari domain lain"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Berhenti merekam peristiwa"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "Kunci Penyimpanan"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Cakupan Pekerja Layanan"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "Pekerja: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Klik peristiwa penyimpanan bersama untuk menampilkan parameter peristiwa."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "Kunci"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Pilih nilai untuk dipratinjau"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "Penyimpanan Bersama"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "Item yang difilter dengan Penyimpanan Bersama dihapus"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "Item penyimpanan telah dihapus."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "Pengeditan item penyimpanan telah dibatalkan."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "Item penyimpanan telah diedit."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "Item Penyimpanan Bersama"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "Item Penyimpanan Bersama dihapus"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "Jumlah entri yang ditampilkan dalam tabel: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "Nilai"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "Penyimpanan Bersama"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Hapus Semua"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Halaman yang meminta AppBanner saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "Back-forward cache dinonaktifkan karena permintaan keepalive."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Back-forward cache dinonaktifkan oleh tanda. Buka chrome://flags/#back-forward-cache untuk mengaktifkannya secara lokal di perangkat ini."
@@ -3235,6 +3322,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "Halaman yang memiliki IndexedDB connection terbuka saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "Back-forward cache dinonaktifkan karena peristiwa IndexedDB."
   },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "API yang tidak memenuhi syarat telah digunakan."
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Diaktifkan sebelum dimulai"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "Halaman telah dipra-render, tetapi navigasi akhirnya dijalankan secara berbeda dengan pra-rendering asli, sehingga halaman yang dipra-render tidak dapat diaktifkan."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Pra-rendering belum mendukung AudioContext API."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Halaman meminta sertifikat klien, yang tidak sesuai untuk halaman tersembunyi seperti pra-rendering."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "Halaman pra-rendering dialihkan ke URL lintas situs setelah dimuat. Saat ini, pra-rendering halaman lintas situs tidak diizinkan."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Mencoba melakukan pra-rendering URL yang mengalihkan ke URL lintas situs. Saat ini, pra-rendering halaman lintas situs tidak diizinkan."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Penghemat data diaktifkan"
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "Proses rendering untuk halaman pra-rendering dihentikan."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "Halaman pra-rendering dialihkan ke URL lintas origin situs yang sama setelah dimuat. Saat ini, pra-rendering halaman lintas origin tidak diizinkan."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "Halaman pra-rendering dialihkan ke URL lintas origin situs yang sama setelah dimuat. Tindakan ini tidak diizinkan kecuali jika situs tujuan mengirimkan header Supports-Loading-Mode: credentialed-prerender."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Mencoba melakukan pra-rendering URL yang mengalihkan ke URL lintas origin situs yang sama. Saat ini, pra-rendering halaman lintas origin tidak diizinkan."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Mencoba melakukan pra-rendering URL yang mengalihkan ke URL lintas origin situs yang sama. Tindakan ini tidak diizinkan kecuali jika situs tujuan mengirimkan header Supports-Loading-Mode: credentialed-prerender."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Error sertifikat SSL."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Penyimpanan Bersama"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "Kebocoran data yang tersisa diizinkan dalam periode 24 jam untuk origin ini di bit entropi"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "Waktu Pembuatan"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Entri"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "Anggaran Entropi untuk Frame dengan Fence"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "Belum dibuat"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "Jumlah Entri"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Asal"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Penyimpanan Bersama"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Tidak dapat merender pelacakan tumpukan"
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Jumlah token yang disimpan"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "Proses hapus tidak berjalan"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "Diaktifkan"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "Dihapus"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "Pra-rendering"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "Informasi dasar"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "Dimulai pada"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "Pemicu"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "Pilih elemen untuk melihat detail selengkapnya"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "Diaktifkan"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "Dihapus"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "Pra-rendering"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "Dimulai pada"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "Pemicu"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "Jenis"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "hit titik henti sementara"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "Hapus histori konsol"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "Ciutkan pesan console.trace() secara default"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "Konsol"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Evaluasi memicu aktivasi pengguna"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "Luaskan pesan console.trace() secara default"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Kelompokkan pesan serupa di konsol"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nama properti tidak diketahui"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{# pemilih yang terlihat tercantum di bawah}other{# pemilih yang terlihat tercantum di bawah}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "buka"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Pelacakan Tumpukan"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "Tombol dropper"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Urungkan"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resource}other{# resource}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "Node yang melanggar"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Masalah tersembunyi"
@@ -6894,10 +7095,10 @@
     "message": "Agen pengguna"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome menggunakan tugas alternatif karena memenangkan race dengan tugas utama."
+    "message": "Chrome menggunakan koneksi HTTP/3 yang dipicu oleh header 'Alt-Svc' karena lebih cepat daripada membuat koneksi menggunakan versi HTTP lain."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome menggunakan tugas alternatif tanpa melakukan race dengan tugas utama."
+    "message": "Chrome menggunakan koneksi HTTP/3 yang dipicu oleh header 'Alt-Svc' yang sama cepatnya dengan pembuatan koneksi menggunakan versi HTTP lain."
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Permintaan ini diblokir karena header respons yang salah dikonfigurasi, klik untuk melihat header"
@@ -6906,7 +7107,7 @@
     "message": "(diblokir:{PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome tidak menggunakan tugas alternatif karena ditandai sebagai rusak."
+    "message": "Chrome tidak mencoba membuat koneksi ke HTTP/3 karena ditandai sebagai rusak."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(dibatalkan)"
@@ -6930,10 +7131,10 @@
     "message": "(cache disk)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome menggunakan tugas alpn DNS karena memenangkan race dengan tugas utama dan tugas alternatif."
+    "message": "Chrome menggunakan koneksi HTTP/3 karena DNS record menunjukkan dukungan HTTP/3, yang lebih cepat daripada membuat koneksi menggunakan versi HTTP lain."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome menggunakan tugas alpn DNS tanpa melakukan race dengan tugas utama dan tugas alternatif."
+    "message": "Chrome menggunakan koneksi HTTP/3 karena DNS record menunjukkan dukungan HTTP/3. Tidak ada yang lebih cepat daripada membuat koneksi menggunakan versi HTTP lain."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(gagal)"
@@ -6945,10 +7146,10 @@
     "message": "level 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome menggunakan tugas utama karena memenangkan race dengan tugas alternatif dan/atau tugas alpn DNS."
+    "message": "Chrome menggunakan protokol ini karena lebih cepat daripada membuat koneksi HTTP/3."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome tidak menggunakan tugas alternatif karena informasi Protokol Alternatif tidak ada."
+    "message": "Chrome tidak menggunakan versi HTTP alternatif karena tidak ada informasi protokol alternatif yang tersedia saat permintaan dibuat, namun header 'Alt-Svc' ada dalam respons."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(cache memori)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookie yang dikirim ke server di header 'cookie' permintaan"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Pelajari lebih lanjut"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Cookie Respons Salah"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "tampilkan cookie permintaan yang difilter"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Situs ini memiliki cookie dalam partisi lain, yang tidak dikirim dengan permintaan ini. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Permintaan ini tidak memiliki cookie."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "Ganti header"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "Nama header hanya boleh berisi huruf, angka, tanda hubung, atau garis bawah"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Pelajari lebih lanjut"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Pelajari lebih lanjut di tab masalah"
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "Muat ulang halaman/permintaan agar perubahan ini diterapkan"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "Hapus penggantian header ini"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "md"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(disediakan melalui info debug oleh {PH1})"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(sumber dipetakan dari {PH1})"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Penutup"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Jeda pada pengecualian yang tertangkap"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "Jeda pada pengecualian yang tidak tertangkap"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Hapus semua titik henti sementara"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Terkumpul"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "Pengiriman"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Ukuran cache kompilasi"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Hierarki lapisan"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "Pelapisan"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "Tata Letak"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} di {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "Tombol pemilih warna"
+    "message": "Dropper [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Unit"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} tidak ditetapkan"
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Tampilkan sebagai objek JavaScript"
   },
@@ -12896,6 +13127,9 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Perintah"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "— tidak digunakan lagi"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "Perintah tidak ditemukan"
   },
@@ -12915,7 +13149,7 @@
     "message": "Buka perintah dengan cepat"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Ketik '?' untuk melihat perintah yang tersedia"
+    "message": "Ketik ? untuk melihat perintah yang tersedia"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Buka file"

@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Bật tính năng chặn yêu cầu kết nối mạng"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Cho phép DevTools tải các tài nguyên, chẳng hạn như bản đồ nguồn, từ các đường dẫn tệp từ xa. Bị tắt theo mặc định vì lý do bảo mật."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Bật định dạng WebP"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "Mở Công cụ cho nhà phát triển chuyên dụng đối với Node.js"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "Thẻ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Các chỉ số quan trọng về trang web"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "Định dạng màu:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "Chế độ cài đặt này không được dùng nữa vì không tương thích với hệ màu hiện đại. Để bật lại, bạn có thể tắt thử nghiệm có liên quan."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Tối"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "Bên phải"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Bật tính năng tìm kiếm khi bạn nhập"
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Tìm kiếm khi bạn nhập"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "Tìm kiếm trong bảng điều khiển"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "Tắt tính năng tìm kiếm khi bạn nhập (nhấn Enter để tìm kiếm)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "Đặt định dạng màu như đã tạo ban đầu"
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Đang tải biểu tượng gỡ lỗi cho {PH2} (qua {PH3})..."
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Thêm mọi tập lệnh nội dung vào danh sách bỏ qua"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Thêm tập lệnh vào danh sách bỏ qua"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Xóa khỏi danh sách bỏ qua"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "Không biên dịch được LiveEdit: {PH1}"
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Làm mới bộ nhớ đệm"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "Tìm nạp trước và kết xuất trước"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "Tệp kê khai ứng dụng"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Ứng dụng"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Tệp kê khai"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "Không phát hiện thấy tệp kê khai"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Đã cuộn đến {PH1}"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Các cửa sổ đã mở"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "Tải trước"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Làm mới IndexedDB"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Hãy chọn một mục để xem siêu dữ liệu"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "Hiện sự kiện từ các phân vùng bộ nhớ khác"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Hiển thị sự kiện từ các miền khác"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Dừng sự kiện ghi"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "Khoá bộ nhớ"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Phạm vi của trình chạy dịch vụ"
@@ -2613,7 +2658,7 @@
     "message": "Bộ nhớ DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
-    "message": "Đã xoá mục lưu trữ."
+    "message": "Đã xoá mục trong bộ nhớ."
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "Mục lưu trữ của DOM"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "Trình chạy dịch vụ: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Nhấp vào một sự kiện bộ nhớ dùng chung bất kỳ để hiển thị các thông số về sự kiện."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "Khoá"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Chọn một giá trị để xem trước"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "Bộ nhớ dùng chung"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "Đã xoá các mục được lọc trong Bộ nhớ dùng chung"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "Đã xoá mục trong bộ nhớ."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "Yêu cầu chỉnh sửa mục trong bộ nhớ đã bị huỷ."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "Đã chỉnh sửa mục trong bộ nhớ."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "Các mục trong bộ nhớ dùng chung"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "Đã xoá các mục trong bộ nhớ dùng chung"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "Số mục nhập hiển thị trong bảng: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "Giá trị"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "Bộ nhớ dùng chung"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Xóa tất cả"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Những trang đã yêu cầu AppBanner hiện không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "Bộ nhớ đệm cho thao tác tiến/lùi đã bị tắt do có yêu cầu duy trì hoạt động."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Bộ nhớ đệm cho thao tác tiến/lùi đã bị tắt do cờ. Hãy truy cập chrome://flags/#back-forward-cache để bật tính năng đó trên thiết bị này."
@@ -3235,6 +3322,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "Những trang có kết nối IndexedDB mở hiện không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "Bộ nhớ đệm cho thao tác tiến/lùi bị tắt do sự kiện IndexedDB."
   },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "Các API được sử dụng không đủ điều kiện."
@@ -3585,7 +3675,7 @@
     "message": "Khung này được coi là khung quảng cáo vì có khung chính là khung quảng cáo."
   },
   "panels/application/components/FrameDetailsView.ts | prerendering": {
-    "message": "Hiển thị trước"
+    "message": "Kết xuất trước"
   },
   "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
     "message": "Trạng thái hiển thị trước"
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Được kích hoạt trước khi bắt đầu"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "Trang đã được kết xuất trước nhưng thao tác điều hướng lại được thực hiện khác với quá trình kết xuất trước ban đầu, vì vậy không thể kích hoạt trang được kết xuất trước này."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Tính năng kết xuất trước chưa hỗ trợ API AudioContext."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Trang này yêu cầu chứng chỉ ứng dụng, yêu cầu này không phù hợp với một trang ẩn như trang kết xuất trước."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "Trang được kết xuất trước đã chuyển hướng đến một URL của trang web khác sau khi tải. Hiện không được phép kết xuất trước các trang trên trang web khác."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Đã thử kết xuất trước một URL chuyển hướng đến một URL của trang web khác. Hiện không được phép kết xuất trước các trang trên trang web khác."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Trình tiết kiệm dữ liệu đã bật"
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "Quá trình kết xuất cho trang kết xuất trước đã bị tắt."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "Trang được kết xuất trước đã chuyển hướng đến một URL có nguồn gốc khác, của cùng một trang web sau khi tải. Hiện không được phép kết xuất trước các trang có nguồn gốc khác."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "Trang được kết xuất trước đã chuyển hướng đến một URL có nguồn gốc khác, của cùng một trang web sau khi tải. Không được phép thực hiện việc này trừ khi trang web đích gửi tiêu đề Supports-Loading-Mode: credentialed-prerender."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Đã thử kết xuất trước một URL chuyển hướng đến một URL có nguồn gốc khác, của cùng một trang web. Hiện không được phép kết xuất trước các trang có nguồn gốc khác."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Đã thử kết xuất trước một URL chuyển hướng đến một URL có nguồn gốc khác, của cùng một trang web. Không được phép thực hiện việc này trừ khi trang web đích gửi tiêu đề Supports-Loading-Mode: credentialed-prerender."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Lỗi chứng chỉ SSL."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Bộ nhớ dùng chung"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "Cho phép rò rỉ dữ liệu còn lại trong khoảng thời gian 24 giờ đối với nguồn gốc này (tính theo bit entropy)"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "Thời gian tạo"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Mục"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "Ngân sách entropy cho khung được bảo vệ"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Siêu dữ liệu"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "Chưa tạo"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "Số lượng mục nhập"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Nguồn gốc"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Bộ nhớ dùng chung"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Không thể hiển thị dấu vết ngăn xếp"
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Số lượng mã thông báo đã lưu trữ"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "Quá trình xoá hiện không diễn ra"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "Đã kích hoạt"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "Đã loại bỏ"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "Kết xuất trước"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "Thông tin cơ bản"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "Thời gian bắt đầu"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "Trạng thái"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "Kích hoạt"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "Chọn một phần tử để biết thêm chi tiết"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "Đã kích hoạt"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "Đã loại bỏ"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "Kết xuất trước"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "Thời gian bắt đầu"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "Trạng thái"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "Kích hoạt"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "Loại"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "lần truy cập có điểm ngắt"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "Xóa nhật ký của bảng điều khiển"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "Thu gọn thông báo console.trace() theo mặc định"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "Bảng điều khiển"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Chế độ đánh giá sẽ khởi động hoạt động kích hoạt của người dùng"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "Mở rộng thông báo console.trace() theo mặc định"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Nhóm các thông báo tương tự trong bảng điều khiển"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Tên thuộc tính không xác định"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{# bộ chọn hiển thị được liệt kê bên dưới}other{# bộ chọn hiển thị được liệt kê bên dưới}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "hiển thị"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Dấu vết ngăn xếp"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "Bật/tắt công cụ chọn màu"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Hủy"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# tài nguyên}other{# tài nguyên}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "Nút vi phạm"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Các vấn đề ẩn"
@@ -6894,10 +7095,10 @@
     "message": "Tác nhân người dùng"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome sử dụng một công việc thay thế vì công việc đó đã thắng khi chạy đua với công việc chính."
+    "message": "Chrome đã sử dụng kết nối HTTP/3 do tiêu đề \"Alt-Svc\" tạo ra vì kết nối này đã thắng khi chạy đua với việc thiết lập kết nối bằng một phiên bản HTTP khác."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome sử dụng một công việc thay thế mà không cần công việc đó chạy đua với công việc chính."
+    "message": "Chrome đã sử dụng kết nối HTTP/3 do một tiêu đề \"Alt-Svc\" tạo ra mà không cần chạy đua với việc thiết lập kết nối bằng phiên bản HTTP khác."
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Yêu cầu này đã bị chặn do các tiêu đề phản hồi bị định cấu hình sai. Hãy nhấp để xem các tiêu đề"
@@ -6906,7 +7107,7 @@
     "message": "(đã chặn:{PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome không sử dụng công việc thay thế vì công việc đó bị đánh dấu là đã hỏng."
+    "message": "Chrome đã không tìm cách thiết lập kết nối HTTP/3 vì kết nối này được đánh dấu là bị hỏng."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(đã hủy)"
@@ -6930,10 +7131,10 @@
     "message": "(bộ nhớ đệm của ổ đĩa)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome sử dụng một công việc alpn DNS vì công việc đó đã thắng khi chạy đua với công việc chính và công việc thay thế."
+    "message": "Chrome đã sử dụng kết nối HTTP/3 do DNS record cho thấy có hỗ trợ HTTP/3, kết nối này đã thắng khi chạy đua với việc thiết lập kết nối bằng phiên bản HTTP khác."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome sử dụng một công việc alpn DNS mà không cần công việc đó chạy đua với công việc chính và công việc thay thế."
+    "message": "Chrome đã sử dụng kết nối HTTP/3 do DNS record cho thấy có hỗ trợ HTTP/3. Không có cuộc đua nào để thiết lập kết nối bằng phiên bản HTTP khác."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(không thành công)"
@@ -6945,10 +7146,10 @@
     "message": "cấp 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome sử dụng một công việc chính vì công việc đó đã thắng khi chạy đua với công việc thay thế và/hoặc công việc alpn DNS."
+    "message": "Chrome đã sử dụng giao thức này vì giao thức này đã thắng khi chạy đua với việc thiết lập kết nối HTTP/3."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome không sử dụng công việc thay thế do thiếu thông tin Alternate-Protocol."
+    "message": "Chrome đã không sử dụng phiên bản HTTP thay thế vì không có thông tin giao thức thay thế nào khi yêu cầu được đưa ra, nhưng tiêu đề \"Alt-Svc\" lại xuất hiện trong phản hồi."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(bộ nhớ đệm của bộ nhớ)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Những cookie được gửi đến máy chủ trong tiêu đề \"cookie\" của yêu cầu"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Tìm hiểu thêm"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Cookie phản hồi có cú pháp không hợp lệ"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "hiển thị các cookie yêu cầu đã bị lọc ra"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Trang web này có cookie trong một phân vùng khác và các cookie đó không được gửi cùng với yêu cầu này. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Yêu cầu này không có cookie nào."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "Ghi đè tiêu đề"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "Tên tiêu đề chỉ được chứa chữ cái, chữ số, dấu gạch ngang hoặc dấu gạch dưới"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Tìm hiểu thêm"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Tìm hiểu thêm trong thẻ vấn đề"
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "Làm mới trang/yêu cầu để các thay đổi này có hiệu lực"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "Loại bỏ phần ghi đè tiêu đề này"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "mili giây"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(được cung cấp qua thông tin gỡ lỗi theo {PH1})"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(đã ánh xạ nguồn từ {PH1})"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Đóng"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Tạm dừng khi phát hiện các trường hợp ngoại lệ"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "Tạm dừng khi có các trường hợp ngoại lệ chưa nắm bắt được"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Xóa mọi điểm ngắt"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Đã thu thập"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "Xác nhận"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Dung lượng bộ nhớ đệm biên dịch"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Cây lớp"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "Xác định lớp"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "Bố cục"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} trong {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "Bật/tắt công cụ chọn màu"
+    "message": "Công cụ chọn màu [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookie"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Đơn vị"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} chưa được xác định"
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Hiển thị dưới dạng đối tượng JavaScript"
   },
@@ -12896,6 +13127,9 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Lệnh"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "– không dùng nữa"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "Không tìm thấy lệnh nào"
   },
@@ -12915,7 +13149,7 @@
     "message": "Lời nhắc mở nhanh"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Nhập \"?\" để xem các lệnh có sẵn"
+    "message": "Nhập ? để xem các lệnh có sẵn"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Mở tệp"

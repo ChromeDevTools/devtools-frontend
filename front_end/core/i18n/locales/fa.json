@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "فعال کردن مسدودسازی درخواست شبکه"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "به DevTools اجازه داده شود منابع را (ازجمله نقشه‌های منبع) ازطریق مسیرهای فایل راه‌دور بار کند. به‌دلایل امنیتی به‌طور پیش‌فرض غیرفعال است."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "فعال کردن قالب WebP"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "DevTools اختصاصی را برای Node.js باز کنید"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "برگه"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "معیارهای کلیدی اصلی وب"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "قالب رنگ:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "این تنظیم منسوخ شده است زیرا با فضاهای رنگی مدرن سازگار نیست. برای فعال کردن مجدد آن، می‌توانید آزمایش مربوطه را غیرفعال کنید."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "تیره"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "راست"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "فعال کردن جستجو درحین تایپ کردن"
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "جستجو درحین تایپ کردن"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "جستجو در پانل"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "غیرفعال کردن جستجو درحین تایپ کردن (برای جستجو Enter را فشار دهید)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "تنظیم قالب رنگ به‌صورت نوشته‌شده"
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] درحال بارگیری نمادهای اشکال‌زدایی {PH2} (ازطریق {PH3})…"
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "افزودن همه متون محتوا به فهرست نادیده گرفتن"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "افزودن متن به فهرست نادیده گرفتن"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "برداشتن از فهرست نادیده گرفتن"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit ترجمه نشد: {PH1}"
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "بازآوری حافظه‌های پنهان"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "واکشی اولیه و پیش‌پرداززنی"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "مانیفست برنامه"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "برنامه"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "مانیفست"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "هیچ مانیفستی شناسایی نشد"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "به {PH1} پیمایش شد"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "پنجره‌های بازشده"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "پیش‌بارگیری"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "بازآوری IndexedDB"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "برای مشاهده فراداده‌ها، یک ورودی انتخاب کنید"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "نمایش رویدادهای سایر پارتیشن‌های فضای ذخیره‌سازی"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "نمایش رویدادها از دامنه‌های دیگر"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "توقف ضبط رویدادها"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "کلید فضای ذخیره‌سازی"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "دامنه عامل خدماتی"
@@ -2613,7 +2658,7 @@
     "message": "فضای ذخیره‌سازی DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
-    "message": "مورد فضای ذخیره‌سازی حذف شده است."
+    "message": "مورد فضای ذخیره‌سازی حذف شد."
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "موارد فضای ذخیره‌سازی DOM"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "عامل: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "برای نمایش پارامترهای رویداد، روی هرکدام از رویدادهای فضای ذخیره‌سازی مشترک کلیک کنید."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "کلید"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "مقداری را برای پیش‌دید کردن انتخاب کنید"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "فضای ذخیره‌سازی مشترک"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "موارد فیلترشده فضای ذخیره‌سازی مشترک پاک شد"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "مورد فضای ذخیره‌سازی حذف شد."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "ویرایش مورد فضای ذخیره‌سازی لغو شد."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "مورد فضای ذخیره‌سازی ویرایش شد."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "موارد فضای ذخیره‌سازی مشترک"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "موارد فضای ذخیره‌سازی مشترک پاک شد"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "تعداد ورودی‌های نشان‌داده‌شده در جدول: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "ارزش"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "فضای ذخیره‌سازی مشترک"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "پاک کردن همه"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "درحال‌حاضر، صفحه‌هایی که AppBanner درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "به‌دلیل درخواست زنده‌نگهداری، حافظه نهان بهینه‌شده غیرفعال شده است."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "حافظه پنهان عقب-جلو با پرچم غیرفعال شده است. برای اینکه حافظه پنهان عقب-جلو را به‌صورت محلی در این دستگاه فعال کنید، به chrome://flags/#back-forward-cache بروید."
@@ -3235,6 +3322,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "درحال‌حاضر، صفحه‌هایی که اتصال IndexedDB دارند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "حافظه نهان بهینه‌شده به‌دلیل رویداد IndexedDB غیرفعال است."
   },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "میاناهای برنامه‌سازی کاربردی استفاده‌شده واجدشرایط نبودند."
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "پیش‌از شروع فعال شده است"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "صفحه پیش‌پرداز شده بود، اما در نهایت پیمایش متفاوت ازپیش‌پردازنده اصلی انجام شد، بنابراین صفحه پیش‌پردازشده نتوانست فعال شود."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "پیش‌پرداز هنوز از AudioContext API پشتیبانی نکرده است."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "صفحهْ گواهینامه کارخواه را درخواست می‌کند که برای صفحه‌های پنهان نظیر پیش‌پرداز مناسب نیست."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "صفحه پیش‌پردازشده بعداز بار شدن به نشانی وب بین‌سایتی پیمایش کرد. درحال‌حاضر پیش‌پرداززنی صفحه‌های بین‌سایتی مجاز نیست."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "تلاش شد نشانی وبی که به نشانی وب بین‌سایتی هدایت می‌کرد پیش‌پرداز شود. درحال‌حاضر پیش‌پرداززنی صفحه‌های بین‌سایتی مجاز نیست."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "«صرفه‌جویی داده» فعال شده است"
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "پردازش تولیدکننده تصویر برای صفحه پیش‌پرداز متوقف شد."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "صفحه پیش‌پردازشده بعداز بار شدن به نشانی وب بین‌مبدأیی همان سایت پیمایش کرد. درحال‌حاضر پیش‌پرداززنی صفحه‌های بین‌مبدأیی مجاز نیست."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "صفحه پیش‌پردازشده بعداز بار شدن به نشانی وب بین‌مبدأیی همان سایت پیمایش کرد. این مورد غیرمجاز است، مگر اینکه سایت مقصد سرصفحه Supports-Loading-Mode: credentialed-prerender ارسال کند."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "تلاش شد نشانی وبی که به نشانی وب بین‌مبدأیی همان سایت هدایت می‌کرد پیش‌پرداز شود. درحال‌حاضر پیش‌پرداززنی صفحه‌های بین‌مبدأیی مجاز نیست."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "تلاش شد نشانی وبی که به نشانی وب بین‌مبدأیی همان سایت هدایت می‌کرد پیش‌پرداز شود. این مورد غیرمجاز است، مگر اینکه سایت مقصد سرصفحه Supports-Loading-Mode: credentialed-prerender ارسال کند."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "خطای گواهینامه SSL."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "فضای ذخیره‌سازی مشترک"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "نشت داده باقی‌مانده مجاز در یک دوره ۲۴ ساعته برای این مبدأ در بیت‌های آنتروپی"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "زمان ایجاد"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "ورودی‌ها"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "بودجه آنتروپی برای قاب‌های محصور"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "فراداده"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "هنوز ایجاد نشده است"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "تعداد ورودی‌ها"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "مبدأ"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "فضای ذخیره‌سازی مشترک"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "ردیابی پشته‌ای پرداز نمی‌شود"
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "تعداد کدهای ذخیره‌شده"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "پاک کردن محتوای غیرمداوم"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "فعال"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "نادیده گرفته شد"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "پیش‌پرداززنی"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "اطلاعات اصلی"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "ساعت شروع:"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "وضعیت"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "راه‌انداز"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "برای جزئیات بیشتر، عنصری انتخاب کنید"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "فعال"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "نادیده گرفته شد"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "پیش‌پرداززنی"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "ساعت شروع:"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "وضعیت"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "راه‌انداز"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "نوع"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "رسیدن به نقطه توقف"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "پاک کردن سابقه کنسول"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "جمع کردن پیام‌های console.trace() به‌طور پیش‌فرش"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "کنسول"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "ارزیابی کردنْ فعال‌سازی کاربر را راه‌اندازی می‌کند"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "ازهم بازکردن پیام‌های console.trace() به‌طور پیش‌فرض"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "گروه‌بندی پیام‌های مشابه در کنسول"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "نام دارایی نامشخص است"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{‏# گزینشگر نمایان در پایین فهرست شد}one{‏# گزینشگر نمایان در پایین فهرست شد}other{‏# گزینشگر نمایان در پایین فهرست شد}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "نمایش"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "ردیابی پشته‌ای"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "روشن/ خاموش کردن انتخابگر"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "واگرد"
@@ -5700,7 +5898,7 @@
     "message": "انتقال"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | trigger": {
-    "message": "راه انداز"
+    "message": "راه‌انداز"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "هشدار"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# منبع}one{# منبع}other{# منبع}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "گره ناقض"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "مشکلات پنهان"
@@ -6894,10 +7095,10 @@
     "message": "نماینده کاربر"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome از تکلیف جایگزینی استفاده کرد چون این تکلیف در رقابت با تکلیفی اصلی پیروز شد."
+    "message": "Chrome از اتصال HTTP/3 که توسط سرصفحه Alt-Svc القا شده بود استفاده کرد، زیرا در رقابت برای ایجاد اتصال بااستفاده از نسخه HTTP متفاوت پیروز شده بود."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome از تکلیفی جایگزین استفاده کرد، بدون اینکه این تکلیف با تکلیفی اصلی رقابت کرده باشد."
+    "message": "Chrome از اتصال HTTP/3 که توسط سرصفحه Alt-Svc القا شده بود استفاده کرد، بدون اینکه برای ایجاد اتصال بااستفاده از نسخه HTTP متفاوت رقابت کند."
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "این درخواست به‌دلیل پیکربندی نادرست سرصفحه‌های پاسخ مسدود شده است، برای مشاهده سرصفحه‌ها کلیک کنید"
@@ -6906,7 +7107,7 @@
     "message": "(مسدودشده:{PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome از تکلیف جایگزین استفاده نکرد چون این تکلیف به‌عنوان خراب علامت‌گذاری شده بود."
+    "message": "Chrome تلاشی برای ایجاد اتصال HTTP/3 نکرد چون به‌عنوان خراب علامت‌گذاری شده بود."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(لغوشده)"
@@ -6930,10 +7131,10 @@
     "message": "(حافظه نهان دیسک)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome از تکلیف DNS alpn استفاده کرد چون این تکلیف در رقابت با تکلیفی اصلی و تکلیفی جایگزین پیروز شد."
+    "message": "Chrome از اتصال HTTP/3 استفاده کرد زیرا DNS record پشتیبانی از HTTP/3 را نشان می‌داد و در رقابت برای ایجاد اتصال بااستفاده از نسخه HTTP متفاوت پیروز شده بود."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome از تکلیف DNS alpn استفاده کرد، بدون اینکه این تکلیف با تکلیفی اصلی یا تکلیفی جایگزین رقابت کرده باشد."
+    "message": "Chrome از اتصال HTTP/3 استفاده کرد زیرا DNS record پشتیبانی از HTTP/3 را نشان می‌داد. هیچ رقابتی برای ایجاد اتصال بااستفاده از نسخه HTTP متفاوت وجود نداشت."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(انجام نشد)"
@@ -6945,10 +7146,10 @@
     "message": "سطح ۱"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome از تکلیفی اصلی استفاده کرد چون این تکلیف در رقابت با تکلیفی جایگزین و/یا تکلیف DNS alpn پیروز شد."
+    "message": "Chrome از این پروتکل استفاده کرد زیرا در رقابت برای ایجاد اتصال HTTP/3 پیروز شده بود."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome از تکلیف جایگزین استفاده نکرد چون اطلاعات «پروتکل-متناوب» پیدا نشد."
+    "message": "Chrome از نسخه جایگزین HTTP استفاده نکرد زیرا هیچ اطلاعات پروتکل جایگزینی در هنگام صدور درخواست دردسترس نبود، اما سرصفحه «Alt-Svc» در پاسخ وجود داشت."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(حافظه پنهان)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "کوکی‌هایی که در سرصفحه «کوکی» در درخواست به سرور ارسال شده است"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "بیشتر بدانید"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "کوکی‌های پاسخ ناقص"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "نمایش کوکی‌های درخواست فیلترشده"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "کوکی‌های این سایت در بخش دیگری است و با این درخواست ارسال نشده است. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "این درخواست فاقد کوکی است."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "ابطال سرصفحه"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "نام سرصفحه فقط می‌تواند حاوی حرف، عدد، خط تیره، و زیرخط باشد"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "بیشتر بدانید"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "اطلاعات بیشتر در برگه مشکلات"
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "صفحه/ درخواست را بازآوری کنید تا این تغییرات اعمال شود"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "حذف این ابطال سرصفحه"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "میلی‌ثانیه"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(ازطریق اطلاعات اشکال‌زدایی توسط {PH1} ارائه شده است)"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(منبع از {PH1} نگاشت شده است)"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "بستن"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "مکث در موارد استثنای پیداشده"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "مکث در موارد استثنای مشخص‌نشده"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "حذف همه نقاط توقف"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "جمع‌آوری‌شده"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "انجام"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "اندازه حافظه پنهان ترجمه"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "درخت لایه"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "لایه‌بندی"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "طرح‌بندی"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} در {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "روشن/خاموش کردن انتخابگر رنگ"
+    "message": "انتخابگر [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "کوکی‌ها"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "واحدها"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} تعریف نشده است"
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "نمایش به‌عنوان شیء جاوا اسکریپت"
   },
@@ -12896,6 +13127,9 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "فرمان"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "— منسوخ"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "هیچ فرمانی پیدا نشد"
   },
@@ -12915,7 +13149,7 @@
     "message": "فرمان باز کردن سریع"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "برای دیدن فرمان‌های موجود، «?» را تایپ کنید"
+    "message": "برای دیدن فرمان‌های موجود، ? را تایپ کنید"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "باز کردن فایل"

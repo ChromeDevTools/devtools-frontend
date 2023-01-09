@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Aktivér blokering af netværksanmodning"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Giv DevTools tilladelse til at indlæse ressourcer, f.eks. kildekort, fra eksterne filstier. Af sikkerhedsmæssige årsager er den som standard deaktiveret."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivér formatet WebP"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "Åbn Udviklerværktøjer specifikt for Node.js"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "Fane"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Vigtige netstatistikker"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "Farveformat:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "Denne indstilling er udfaset, fordi den ikke er kompatibel med moderne farverum. Hvis du vil genaktivere den, kan du deaktivere det pågældende eksperiment."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Mørkt"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "Højre"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Aktivér søgning mens du indtaster."
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Søg, mens du indtaster"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "Søg i panel"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "Deaktiver søgning, mens du indtaster (tryk på Enter for at søge)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "Angiv farveformatet som oprindeligt oprettet"
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Indlæser fejlretningssymboler for {PH2} (via {PH3})..."
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Føj alle indholdsscripts til listen over ignorerede"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Føj script til liste over ignorerede"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Fjern fra listen over ignorerede"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit kunne ikke kompileres: {PH1}"
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Opdater cache"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "Hentning på forhånd og forhåndsgengivelse"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "Appmanifest"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "App"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "Intet manifest er registreret"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Rullede til {PH1}"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Åbnede vinduer"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "Forudindlæsning"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Opdater IndexedDB"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Vælg en post for at se metadata"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "Vis hændelser fra andre lagerpartitioner"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Se hændelser fra andre domæner"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Stop med at registrere hændelser"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "Lagernøgle"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Omfanget af scripttjeneste"
@@ -2622,7 +2667,7 @@
     "message": "Elementer i DOM-lagerpladsen er ryddet"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
-    "message": "Antal indtastninger, der vises i tabellen: {PH1}"
+    "message": "Antal poster, der vises i tabellen: {PH1}"
   },
   "panels/application/DOMStorageItemsView.ts | key": {
     "message": "Nøgle"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "Scripttjeneste: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Klik på en hvilken som helst hændelse for delt lagerplads for at vise hændelsesparametrene."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "Nøgle"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Vælg en værdi, du vil se en forhåndsvisning af"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "Delt lagerplads"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "De filtrerede elementer i delt lagerplads blev ryddet"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "Lagerelementet blev slettet."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "Redigeringen af lagerelementet blev annulleret."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "Lagerelementet blev redigeret."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "Elementer i delt lagerplads"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "Elementerne i delt lagerplads blev ryddet"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "Antal poster, der vises i tabellen: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "Værdi"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "Delt lagerplads"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Ryd alt"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Sider, der har anmodet om et AppBanner, er ikke kvalificeret til back/forward-cachen i øjeblikket."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "Back/forward-cachen er deaktiveret på grund af en keepalive-anmodning."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Back/forward-cachen er deaktiveret under chrome://flags. Gå til chrome://flags/#back-forward-cache for at aktivere den lokalt på denne enhed."
@@ -3235,6 +3322,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "Sider, der har en åben IndexedDB-forbindelse, er ikke kvalificeret til back/forward-cachen i øjeblikket."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "Back/forward-cachen er deaktiveret på grund af en IndexedDB-hændelse."
   },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "Der blev brugt ikke-kvalificerede API'er."
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Aktiveret før start"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "Siden blev forhåndsgengivet, men navigationen endte med at blive udført anderledes end den oprindelige forhåndsgengivelse, så den forhåndsgengivne side kunne ikke aktiveres."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Forhåndsgengivelse understøtter endnu ikke AudioContext API."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Siden anmoder om et klientcertifikat, hvilket ikke er egnet til en skjult side, f.eks. en forhåndsgengivelse."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "Den forhåndsgengivne side navigerede til en webadresse med oprindelse på tværs af websites efter indlæsningen. Det er i øjeblikket ikke tilladt at foretage forhåndsgengivelser af sider på tværs af websites."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Et forsøg på at forhåndsgengive en webadresse er omdirigeret til en webadresse på tværs af websites. Det er i øjeblikket ikke tilladt at foretage forhåndsgengivelser af sider på tværs af websites."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Datasparefunktionen er aktiveret"
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "Gengivelsesprocessen for den forhåndsgengivne side mislykkedes."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "Den forhåndsgengivne side navigerede til en webadresse med krydsoprindelse på samme website efter indlæsningen. Det er i øjeblikket ikke tilladt at foretage forhåndsgengivelser af sider med krydsoprindelse."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "Den forhåndsgengivne side navigerede til en webadresse med krydsoprindelse på samme website efter indlæsningen. Dette er ikke tilladt, medmindre destinationswebsitet sender en header af typen Supports-Loading-Mode: credentialed-prerender."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Forsøgte at forhåndsgengive en webadresse, der omdirigerede til en webadresse med krydsoprindelse på samme website. Det er i øjeblikket ikke tilladt at foretage forhåndsgengivelser af sider med krydsoprindelse."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Forsøgte at forhåndsgengive en webadresse, der omdirigerede til en webadresse med krydsoprindelse på samme website. Dette er ikke tilladt, medmindre destinationswebsitet sender en header af typen Supports-Loading-Mode: credentialed-prerender."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Der opstod en SSL-certifikatfejl."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Delt lagerplads"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "Resterende tilladt dataudslip inden for en periode på 24 timer for denne funktion i bits entropi"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "Oprettelsestidspunkt"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Poster"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "Entropibudget for lukkede rammer"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "Endnu ikke oprettet"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "Antal poster"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Oprindelse"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Delt lagerplads"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Staksporingen kan ikke gengives"
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Antal lagrede tokens"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "Ryd ikke-igangværende"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "Aktiveret"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "Kasseret"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "Forhåndsgengivelse"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "Grundlæggende oplysninger"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "Startet"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "Trigger"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "Vælg et element for at få flere oplysninger"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "Aktiveret"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "Kasseret"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "Forhåndsgengivelse"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "Startet"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "Trigger"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "Type"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ramt skillepunkt"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "Ryd konsolhistorik"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "Skjul console.trace()-meddelelser som standard"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "Konsol"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Evaluering starter brugeraktivering"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "Udvid console.trace()-meddelelser som standard"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Gruppér lignende beskeder i konsollen"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ukendt egenskabsnavn"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{# synlig selektor er angivet nedenfor}one{# synlig selektor er angivet nedenfor}other{# synlige selektorer er angivet nedenfor}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "vis"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Staksporing"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "Slå pipette til/fra"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Fortryd"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ressource}one{# ressource}other{# ressourcer}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "Node med overtrædelse"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Skjulte problemer"
@@ -6894,10 +7095,10 @@
     "message": "Brugeragent"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome anvendte en alternativt opgave, fordi den var hurtigere end en primær opgave."
+    "message": "Chrome brugte en HTTP/3-forbindelse, der var baseret på en \"Alt-Svc\"-header, fordi den var hurtigere end forsøget på at etablere en forbindelse via en anden HTTP-version."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome anvendte en alternativ opgave, uden at der blev dystet med en primær opgave."
+    "message": "Chrome brugte en HTTP/3-forbindelse, der var baseret på en \"Alt-Svc\"-header, uden at dyste mod et forsøg på at etablere en forbindelse via en anden HTTP-version."
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Denne anmodning blev blokeret på grund af fejlkonfigurerede svarheadere. Klik for at se headerne"
@@ -6906,7 +7107,7 @@
     "message": "(blokeret:{PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome anvendte ikke en alternativ opgave, fordi den var markeret som ødelagt."
+    "message": "Chrome forsøgte ikke at oprette en forbindelse til HTTP/3, fordi den var markeret som defekt."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(annulleret)"
@@ -6930,10 +7131,10 @@
     "message": "(diskcache)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome anvendte en DNS alpn-opgave, fordi den var hurtigere end en primær opgave og en alternativ opgave."
+    "message": "Chrome brugte en HTTP/3-forbindelse, fordiDNS record indikerer understøttelse af HTTP/3, som var hurtigere end forsøget på at etablere en forbindelse via en anden HTTP-version."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome anvendte en DNS alpn-opgave, uden at der blev dystet med en primær opgave og en alternativ opgave."
+    "message": "Chrome brugte en HTTP/3-forbindelse, fordi DNS record indikerer understøttelse af HTTP/3. Der var ingen dyst med et forsøg på at etablere forbindelse via en anden HTTP-version."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(mislykket)"
@@ -6945,10 +7146,10 @@
     "message": "niveau 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome anvendte en primær opgave, fordi den var hurtigere end en alternativ opgave og/eller en DNS alpn-opgave."
+    "message": "Chrome brugte denne protokol, fordi den var hurtigere end forsøget på at etablere en HTTP/3-forbindelse."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome anvendte ikke en alternativ opgave, fordi der var manglende oplysninger om den alternative protokol."
+    "message": "Chrome brugte ikke en alternativ HTTP-version, da der ikke var tilgængelige alternative protokoloplysninger, da anmodningen blev udstedt, men der var en \"Alt-Svc\"-header i svaret."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(hukommelsescache)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies, som blev sendt til serveren i \"cookie\"-headeren for anmodningen"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Få flere oplysninger"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Forkert udformede svarcookies"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "vis bortfiltrerede anmodningscookies"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Dette website har cookies i en anden partition, som ikke blev sendt med denne anmodning. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Denne anmodning har ingen cookies."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "Tilsidesæt header"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "Overskriftsnavne må kun indeholde bogstaver, tal, bindestreger og understregninger"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Få flere oplysninger"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Få flere oplysninger på fanen med problemer"
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "Opdater siden/anmodningen, så disse ændringer træder i kraft"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "Fjern denne headertilsidesættelse"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(leveret via fejlretningsoplysninger fra {PH1})"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(kilden er tilknyttet fra {PH1})"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Lukning"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Sæt registrerede undtagelser på pause"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "Sæt på pause ved ikke-registrerede undtagelser"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Fjern alle stoppunkter"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Indsamlet"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "Send"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Størrelse på kompileringscache"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Lagtræ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "Lagdeling"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "Layout"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} i {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "Vis/skjul farvevælger"
+    "message": "Pipette [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Enheder"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} er ikke defineret."
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Vis som JavaScript-objekt"
   },
@@ -12896,6 +13127,9 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Kommando"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "– udfaset"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "Der blev ikke fundet nogen kommandoer"
   },
@@ -12915,7 +13149,7 @@
     "message": "Besked om hurtig åbning"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Angiv \"?\" for at se tilgængelige kommandoer"
+    "message": "Angiv ? for at se tilgængelige kommandoer"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Åbn fil"

@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "I-enable ang pag-block ng kahilingan sa network"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Payagan ang DevTools na mag-load ng mga resource, tulad ng mga source map, mula sa mga remote na path ng file. Naka-disable bilang default para sa mga layuning panseguridad."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "I-enable ang format na WebP"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "Buksan ang nakalaang DevTools para sa Node.js"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "Tab"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "Format ng kulay:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "Hindi na ginagamit ang setting na ito dahil hindi ito compatible sa mga modern color space. Para i-enable ito ulit, puwede mong i-disable ang naaayong eksperimento."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Madilim"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "Kanan"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "I-enable ang maghanap habang nagta-type ka."
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Maghanap habang nagta-type ka"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "Maghanap sa panel"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "I-disable ang paghahanap habang nagta-type ka (pindutin ang Enter para maghanap)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "Itakda ang format ng kulay gaya ng itinakda ng author"
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Nilo-load ang mga simbolo sa pag-debug para sa {PH2} (sa pamamagitan ng {PH3})..."
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Idagdag ang lahat ng script ng content sa listahan ng babalewalain"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Magdagdag ng script sa listahan ng babalewalain"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Alisin sa listahan ng babalewalain"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "Hindi naisagawa ang pag-compile ng LiveEdit: {PH1}"
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "I-refresh ang Mga Cache"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "Pag-prefetch at Pag-prerender"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "Manifest ng App"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Application"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "Walang natukoy na manifest"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Nag-scroll sa {PH1}"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Mga Binuksang Window"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "Pag-preload"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "I-refresh ang IndexedDB"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Pumili ng entry para makita ang metadata"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "Ipakita ang mga event mula sa iba pang partition ng storage"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Ipakita ang mga event mula sa iba pang domain"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Ihinto ang pag-record ng mga event"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "Storage Key"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Saklaw ng Service Worker"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "Worker: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "I-click ang anumang event ng naka-share na storage para ipakita ang mga parameter ng event."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "Key"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Pumili ng value para i-preview"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "Naka-share na Storage"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "Na-clear ang mga naka-filter na item sa Naka-share na Storage"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "Na-delete ang item sa storage."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "Kinansela ang pag-edit ng item sa storage."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "Na-edit ang item sa storage."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "Mga Naka-share na Item sa Storage"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "Na-clear ang mga item sa Naka-share na Storage"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "Bilang ng mga entry na ipinapakita sa talahanayan: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "Value"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "Naka-share na Storage"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "I-clear Lahat"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na humiling ng AppBanner."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na request."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Dini-disable ng mga pag-flag ang back/forward cache. Bumisita sa chrome://flags/#back-forward-cache para lokal itong i-enable sa device na ito."
@@ -3236,6 +3323,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na may bukas na IndexedDBConnection."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "Naka-disable ang back/forward cache dahil sa event na IndexedDB."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "May ginamit na mga hindi kwalipikadong API."
   },
@@ -3249,7 +3339,7 @@
     "message": "Internal na error."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na kahilingan."
+    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na request."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Kasalukuyang hindi available para sa back/forward cache ang mag page na gumagamit ng KeyboardLock."
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Na-activate bago sinimulan"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "Na-prerender ang page na ito, pero iba ang naging performance ng pag-navigate sa orihinal na prerender, kaya hindi ma-activate ang na-prerender na page."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Hindi pa sinusuportahan ng prerendering ang AudioContext API."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "Ang page ay humihiling ng client cert, na hindi naaangkop para sa nakatagong page gaya ng pag-prerender."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "Ang na-prerender na page ay nag-navigate sa isang cross-site URL pagkatapos mag-load. Kasalukuyang hindi pinapayagan ang pag-prerender ng mga cross-site na page."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Nagtangkang mag-prerender ng URL na nag-redirect sa isang cross-site URL. Kasalukuyang hindi pinapayagan ang pag-prerender ng mga cross-site na page."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Naka-enable ang Data saver"
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "Inihinto ang proseso ng tagapag-render para sa page ng pag-prerender."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "Ang na-prerender na page ay nag-navigate sa isang same-site cross-origin URL pagkatapos mag-load. Kasalukuyang hindi pinapayagan ang pag-prerender ng mga cross-origin na page."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "Ang na-prerender na page ay nag-navigate sa isang same-site cross-origin URL pagkatapos mag-load. Hindi ito pinapayagan maliban kung magpapadala ng Supports-Loading-Mode: credentialed-prerender header ang site ng destinasyon."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Nagtangkang mag-prerender ng URL na nag-redirect sa isang same-site cross-origin URL. Kasalukuyang hindi pinapayagan ang pag-prerender ng mga cross-origin na page."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Nagtangkang mag-prerender ng URL na nag-redirect sa isang same-site cross-origin URL. Hindi ito pinapayagan maliban kung magpapadala ng Supports-Loading-Mode: credentialed-prerender header ang site ng destinasyon."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "Error sa SSL certificate."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Naka-share na Storage"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "Pinapayagan ang natitirang pag-leak ng data sa loob ng 24 na oras para sa origin na ito sa bits of entropy"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "Oras ng Paggawa"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Mga Entry"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "Badyet ng Entropy para sa Mga Fenced Frame"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "Hindi pa nagawa"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "Bilang ng Mga Entry"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Naka-share na Storage"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Hindi ma-render ang stack trace"
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Bilang ng naka-store na token"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "Hindi kasalukuyang nagke-clear"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "Naka-activate"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "I-discard"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "Pag-prerender"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "Pangunahing impormasyon"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "Nagsimula sa"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "Trigger"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "Pumili ng element para sa higit pang detalye"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "Naka-activate"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "I-discard"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "Pag-prerender"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "Nagsimula sa"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "Trigger"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "Uri"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "breakpoint na hit"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "I-clear ang history ng console"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "I-collapse ang mga console.trace() na mensahe bilang default"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "Console"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Tini-trigger ng pagsusuri ang pag-activate ng user"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "Palawakin ang mga console.trace() na mensahe bilang default"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Pagpangkatin ang magkakaparehong mensahe sa console"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Hindi kilalang pangalan ng property"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{# nakikitang selector ang nakalista sa ibaba}one{# nakikitang selector ang nakalista sa ibaba}other{# na nakikitang selector ang nakalista sa ibaba}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "ipakita"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stack Trace"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "I-toggle ang eye dropper"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "I-undo"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resource}one{# resource}other{# na resource}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "Lumalabag na node"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Mga nakatagong isyu"
@@ -6894,10 +7095,10 @@
     "message": "User agent"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Gumamit ang Chrome ng alternatibong trabaho dahil naunahan nito ang isang pangunahing trabaho."
+    "message": "Gumamit ang Chrome ng HTTP/3 na koneksyon na na-induce ng isang 'Alt-Svc' na header dahil naunahan nito ang pagtatatag ng koneksyon gamit ang ibang bersyon ng HTTP."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Gumamit ang Chrome ng alternatibong trabaho nang hindi inuunahan ang isang pangunahing trabaho."
+    "message": "Gumamit ang Chrome ng HTTP/3 na koneksyon na na-induce ng isang 'Alt-Svc' na header nang hindi nauunahan ang pagtatatag ng koneksyon gamit ang ibang bersyon ng HTTP."
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Na-block ang kahilingang ito dahil sa mga header ng sagot na mali ang pagkaka-configure, i-click para makita ang mga header"
@@ -6906,7 +7107,7 @@
     "message": "(na-block:{PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Hindi gumamit ang Chrome ng alternatibong trabaho dahil minarkahan itong sira."
+    "message": "Hindi sinubukan ng Chrome na magtatag ng HTTP/3 na koneksyon dahil namarkahan ito bilang sira."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(kinansela)"
@@ -6930,10 +7131,10 @@
     "message": "(cache ng disk)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Gumamit ang Chrome ng DNS alpn job dahil naunahan nito ang isang pangunahing trabaho at alternatibong trabaho."
+    "message": "Gumamit ang Chrome ng HTTP/3 na koneksyon dahil sa DNS record na tumutukoy ng suporta sa HTTP/3, na naunahan ang pagtatatag ng koneksyon gamit ang ibang bersyon ng HTTP."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Gumamit ang Chrome ng DNS alpn job nang hindi inuunahan ang isang pangunahing trabaho at alternatibong trabaho."
+    "message": "Gumamit ang Chrome ng HTTP/3 na koneksyon dahil sa DNS record na tumutukoy ng suporta sa HTTP/3. Walang naganap na unahan sa pagtatatag ng koneksyon gamit ng ibang bersyon ng HTTP."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(hindi naisagawa)"
@@ -6945,10 +7146,10 @@
     "message": "antas 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Gumamit ang Chrome ng pangunahing trabaho dahil naunahan nito ang isang alternatibong trabaho at/o DNS alpn job."
+    "message": "Ginamit ng Chrome ang protocol na ito dahil naunahan nito ang pagtatakda ng HTTP/3 na koneksyon."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Hindi gumamit ang Chrome ng alternatibong trabaho dahil sa kulang na impormasyon ng Alternatibong Protocol."
+    "message": "Hindi gumamit ang Chrome ng alternatibong bersyon ng HTTP dahil walang available na impormasyon sa alternatibong protocol noong ginawa ang kahilingan, pero may 'Alt-Svc' na header sa sagot."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(cache ng memory)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies na ipinadala sa server sa 'cookie' na header ng kahilingan"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Matuto pa"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Mali ang Cookies ng Sagot"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "ipakita ang na-filter na cookies ng kahilingan"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "May cookies ang site na ito sa ibang partition na hindi naipadala kasama ng kahilingang ito. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Walang cookies ang kahilingang ito."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "I-override ang header"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "Naglalaman lang dapat ng mga titik, digit, gitling o underscore ang mga pangalan ng header"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Matuto pa"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Matuto pa sa tab na mga isyu"
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "I-refresh ang page/request para magkaroon ng bisa ang mga pagbabagong ito"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "Alisin ang pag-override ng header na ito"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(ibinigay sa pamamagitan ng impormasyon sa pag-debug ng {PH1})"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(na-mapa ang source mula sa {PH1})"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Pagsasara"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Mag-pause sa mga na-catch na exception"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "Mag-pause sa mga hindi na-catch na exception"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Alisin ang lahat ng breakpoint"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Nakolekta"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "Pag-commit"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Laki ng cache ng compilation"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Layer tree"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "Pag-layerize"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "Layout"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} sa {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "I-toggle ang tagapili ng kulay"
+    "message": "Eye dropper [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Mga Unit"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "Hindi tinukoy ang {PH1}"
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Ipakita bilang object ng JavaScript"
   },
@@ -12896,6 +13127,9 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Command"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "— hindi na ginagamit"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "Walang nakitang command"
   },
@@ -12915,7 +13149,7 @@
     "message": "Prompt sa mabilisang pagbubukas"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "I-type ang '?' para makita ang mga available na command"
+    "message": "I-type ang ? para makita ang mga available na command"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Buksan ang file"

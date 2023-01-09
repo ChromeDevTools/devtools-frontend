@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Enable network request blocking"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Allow DevTools to load resources, such as source maps, from remote file paths. Disabled by default for security reasons."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Enable WebP format"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "Open dedicated DevTools for Node.js"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "Tab"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "Colour format:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "This setting is deprecated because it is incompatible with modern colour spaces. To reenable it, you can disable the according experiment."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Dark"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "Right"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Enable search as you type"
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Search as you type"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "Search in panel"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "Disable search as you type (press Enter to search)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "Set colour format as authored"
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Loading debug symbols for {PH2} (via {PH3})…"
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Add all content scripts to ignore list"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Add script to ignore list"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Remove from ignore list"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit compile failed: {PH1}"
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Refresh caches"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "Prefetching and prerendering"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "App manifest"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Application"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "No manifest detected"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Scrolled to {PH1}"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Opened windows"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "Preloading"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Refresh IndexedDB"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Select an entry to view metadata"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "Show events from other storage partitions"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Show events from other domains"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Stop recording events"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "Storage key"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Service worker scope"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "Worker: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Click on any shared storage event to display the event parameters."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "Key"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Select a value to preview"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "Shared storage"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "Shared storage filtered items cleared"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "The storage item was deleted."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "The storage item edit was cancelled."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "The storage item was edited."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "Shared storage items"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "Shared storage items cleared"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "Number of entries shown in table: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "Value"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "Shared storage"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Clear all"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Pages that requested an AppBanner are not currently eligible for back-forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "Back-forward cache is disabled due to a keepalive request."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Back-forward cache is disabled by flags. Visit chrome://flags/#back-forward-cache to enable it locally on this device."
@@ -3236,6 +3323,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "Pages that have an open IndexedDB connection are not currently eligible for back-forward cache."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "Back/forward cache is disabled due to an IndexedDB event."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "Ineligible APIs were used."
   },
@@ -3249,7 +3339,7 @@
     "message": "Internal error."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "Back/forward cache is disabled due to a keepalive request."
+    "message": "Back-forward cache is disabled due to a keepalive request."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Pages that use keyboard lock are not currently eligible for back-forward cache."
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Activated before started"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "The page was prerendered, but the navigation ended up being performed differently than the original prerender, so the prerendered page could not be activated."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Prerendering has not supported the AudioContext API yet."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "The page is requesting client cert, which is not suitable for a hidden page like prerendering."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "The prerendered page navigated to a cross-site URL after loading. Currently, prerendering cross-site pages are disallowed."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Attempted to prerender a URL which redirected to a cross-site URL. Currently, prerendering cross-site pages are disallowed."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Data saver enabled"
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "The renderer process for the prerendering page was killed."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "The prerendered page navigated to a same-site cross-origin URL after loading. Currently, prerendering cross-origin pages are disallowed."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "The prerendered page navigated to a same-site cross-origin URL after loading. This is disallowed unless the destination site sends a Supports-Loading-Mode: credentialed-prerender header."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Attempted to prerender a URL which redirected to a same-site cross-origin URL. Currently, prerendering cross-origin pages are disallowed."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Attempted to prerender a URL which redirected to a same-site cross-origin URL. This is disallowed unless the destination site sends a Supports-Loading-Mode: credentialed-prerender header."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL certificate error."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Shared storage"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "Remaining data leakage allowed within a 24-hour period for this origin in bits of entropy"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "Creation time"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Entries"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "Entropy budget for fenced frames"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "Not yet created"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "Number of entries"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Shared storage"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Cannot render stack trace"
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Stored token count"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "Clear not ongoing"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "Activated"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "Discarded"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "Prerendering"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "Basic information"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "Started at"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "Trigger"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "Select an element for more details"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "Activated"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "Discarded"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "Prerendering"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "Started at"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "Trigger"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "Type"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "breakpoint hit"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "Clear console history"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "Collapse console.trace() messages by default"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "Console"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Evaluate triggers user activation"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "Expand console.trace() messages by default"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Group similar messages in console"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Unknown property name"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{# visible selector listed below}other{# visible selectors listed below}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "reveal"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stack trace"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "Toggle eye dropper"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Undo"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resource}other{# resources}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "Violating node"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Hidden issues"
@@ -6894,10 +7095,10 @@
     "message": "User agent"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome used an alternative job because it won a race with a main job."
+    "message": "Chrome used a HTTP/3 connection induced by an 'Alt-Svc' header because it won a race against establishing a connection using a different HTTP version."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome used an alternative job without racing with a main job."
+    "message": "Chrome used a HTTP/3 connection induced by an 'Alt-Svc' header without racing against establishing a connection using a different HTTP version."
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "This request was blocked due to misconfigured response headers; click to view the headers"
@@ -6906,7 +7107,7 @@
     "message": "(blocked: {PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome didn't use an alternative job because it was marked broken."
+    "message": "Chrome did not try to establish a HTTP/3 connection because it was marked as broken."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(cancelled)"
@@ -6930,10 +7131,10 @@
     "message": "(disk cache)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome used a DNS alpn job because it won a race with a main job and an alternative job."
+    "message": "Chrome used a HTTP/3 connection due to the DNS record indicating HTTP/3 support, which won a race against establishing a connection using a different HTTP version."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome used a DNS alpn job without racing with a main job and an alternative job."
+    "message": "Chrome used a HTTP/3 connection due to the DNS record indicating HTTP/3 support. There was no race against establishing a connection using a different HTTP version."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(failed)"
@@ -6945,10 +7146,10 @@
     "message": "level 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome used a main job because it won a race with an alternative job and/or a DNS alpn job."
+    "message": "Chrome used this protocol because it won a race against establishing a HTTP/3 connection."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome didn't use an alternative job because of missing alternative-protocol information."
+    "message": "Chrome did not use an alternative HTTP version because no alternative protocol information was available when the request was issued, but an 'Alt-Svc' header was present in the response."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(memory cache)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies that were sent to the server in the 'cookie' header of the request"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Learn more"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Malformed response cookies"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "show filtered out request cookies"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "This site has cookies in another partition that were not sent with this request. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "This request has no cookies."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "Override header"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "Header names should contain only letters, digits, dashes or underscores"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Learn more"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Learn more in the issues tab"
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "Refresh the page/request for these changes to take effect"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "Remove this header override"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(provided via debug info by {PH1})"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(source mapped from {PH1})"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Closure"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Pause on caught exceptions"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "Pause on uncaught exceptions"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Remove all breakpoints"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Collected"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "Commit"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Compilation cache size"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Layer tree"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "Layerise"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "Layout"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} in {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "Toggle colour picker"
+    "message": "Eye dropper [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Units"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} is not defined"
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Show as JavaScript object"
   },
@@ -12895,6 +13126,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Command"
+  },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "– deprecated"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "No commands found"

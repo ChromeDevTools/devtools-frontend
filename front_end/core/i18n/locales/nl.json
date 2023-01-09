@@ -749,6 +749,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Blokkeren van netwerkverzoeken aanzetten"
   },
+  "core/sdk/sdk-meta.ts | enableRemoteFileLoading": {
+    "message": "Geef DevTools toestemming om bronnen, zoals bronkaarten, te laden vanuit externe bestandspaden. Standaard uitgezet wegens beveiligingsredenen."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP-indeling aanzetten"
   },
@@ -853,6 +856,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
     "message": "Speciale DevTools openen voor Node.js"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | tab": {
+    "message": "Tabblad"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Site-vitaliteit"
@@ -1061,6 +1067,9 @@
   "entrypoints/main/main-meta.ts | colorFormat": {
     "message": "Kleurindeling:"
   },
+  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
+    "message": "Deze instelling is beëindigd omdat deze niet meer werkt met moderne kleurruimtes. Je kunt het bijbehorende experiment uitzetten om de instelling weer aan te zetten."
+  },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Donker"
   },
@@ -1133,8 +1142,17 @@
   "entrypoints/main/main-meta.ts | right": {
     "message": "Rechts"
   },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Zoeken terwijl je typt aanzetten"
+  },
+  "entrypoints/main/main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Zoeken terwijl je typt"
+  },
   "entrypoints/main/main-meta.ts | searchInPanel": {
     "message": "Zoeken in deelvenster"
+  },
+  "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
+    "message": "Zoeken terwijl je typt uitzetten (druk op Enter om te zoeken)"
   },
   "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
     "message": "Kleurindeling instellen als geschreven"
@@ -1255,6 +1273,15 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Foutopsporingssymbolen laden voor {PH2} (via {PH3})..."
+  },
+  "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
+    "message": "Alle contentscripts toevoegen aan negeerlijst"
+  },
+  "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
+    "message": "Script toevoegen aan negeerlijst"
+  },
+  "models/bindings/IgnoreListManager.ts | removeFromIgnoreList": {
+    "message": "Verwijderen van negeerlijst"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit compileren is mislukt: {PH1}"
@@ -2429,6 +2456,12 @@
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Cachegeheugens vernieuwen"
   },
+  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
+    "message": "Prefetching en pre-rendering"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | appManifest": {
+    "message": "App-manifest"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "App"
   },
@@ -2474,6 +2507,9 @@
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
   },
+  "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
+    "message": "Geen manifest waargenomen"
+  },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "Gescrolld naar {PH1}"
   },
@@ -2482,6 +2518,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Geopende vensters"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | preloading": {
+    "message": "Vooraf laden"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB vernieuwen"
@@ -2570,6 +2609,9 @@
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
     "message": "Selecteer een item voor de metagegevens"
   },
+  "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
+    "message": "Gebeurtenissen uit andere opslagpartities tonen"
+  },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Gebeurtenissen uit andere domeinen tonen"
   },
@@ -2578,6 +2620,9 @@
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Stoppen met gebeurtenissen registreren"
+  },
+  "panels/application/BackgroundServiceView.ts | storageKey": {
+    "message": "Opslagsleutel"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Bereik van service worker"
@@ -2622,7 +2667,7 @@
     "message": "DOM-opslagitems gewist"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
-    "message": "Aantal vermeldingen getoond in de tabel: {PH1}"
+    "message": "Aantal items getoond in de tabel: {PH1}"
   },
   "panels/application/DOMStorageItemsView.ts | key": {
     "message": "Sleutel"
@@ -2960,6 +3005,45 @@
   "panels/application/ServiceWorkersView.ts | workerS": {
     "message": "Worker: {PH1}"
   },
+  "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
+    "message": "Klik op een gebeurtenis voor gedeelde opslag om de gebeurtenisparameters te tonen."
+  },
+  "panels/application/SharedStorageItemsView.ts | key": {
+    "message": "Sleutel"
+  },
+  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Selecteer een waarde om een voorbeeld te bekijken"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorage": {
+    "message": "Gedeelde opslag"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
+    "message": "Gefilterde items in gedeelde opslag gewist"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemDeleted": {
+    "message": "Het opslagitem is verwijderd."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEditCanceled": {
+    "message": "De bewerking van het opslagitem is geannuleerd."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
+    "message": "Het opslagitem is bewerkt."
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
+    "message": "Items in gedeelde opslag"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
+    "message": "Items in gedeelde opslag gewist"
+  },
+  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
+    "message": "Aantal items getoond in de tabel: {PH1}"
+  },
+  "panels/application/SharedStorageItemsView.ts | value": {
+    "message": "Waarde"
+  },
+  "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
+    "message": "Gedeelde opslag"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Alles wissen"
   },
@@ -3094,6 +3178,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Pagina's die een AppBanner hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
+    "message": "Back-Forward Cache is uitgezet vanwege een keepalive-verzoek."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Back-Forward Cache is uitgezet door flags. Ga naar chrome://flags/#back-forward-cache om het lokaal aan te zetten op dit apparaat."
@@ -3235,6 +3322,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
     "message": "Pagina's met een open IndexedDB-verbinding komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
+    "message": "Back-Forward Cache is uitgezet vanwege een IndexedDB-gebeurtenis."
   },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "Er zijn niet in aanmerking komende API's gebruikt."
@@ -3728,6 +3818,9 @@
   "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
     "message": "Geactiveerd vóór de start"
   },
+  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
+    "message": "De pagina was vooraf gerenderd, maar de navigatie werd uiteindelijk anders uitgevoerd dan de oorspronkelijke pre-rendering. Hierdoor kon de vooraf gerenderde pagina niet worden geactiveerd."
+  },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "Pre-rendering heeft de AudioContext API nog niet ondersteund."
   },
@@ -3739,6 +3832,12 @@
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
     "message": "De pagina vraagt een clientcertificaat aan, wat niet geschikt is voor een verborgen pagina zoals bij pre-rendering."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
+    "message": "De vooraf gerenderde pagina is na het laden naar een cross-site-URL genavigeerd. Pre-rendering van cross-site-pagina's is momenteel niet toegestaan."
+  },
+  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
+    "message": "Er is geprobeerd een URL vooraf te renderen die omleidt naar een cross-site-URL. Pre-rendering van cross-site-pagina's is momenteel niet toegestaan."
   },
   "panels/application/components/Prerender2.ts | DataSaverEnabled": {
     "message": "Databesparing aangezet"
@@ -3821,6 +3920,18 @@
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "Het proces van het weergaveprogramma voor de pre-rendering-pagina is beëindigd."
   },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
+    "message": "De vooraf gerenderde pagina is na het laden naar een cross-origin-URL op dezelfde site genavigeerd. Pre-rendering van cross-origin-pagina's is momenteel niet toegestaan."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
+    "message": "De vooraf gerenderde pagina is na het laden naar een cross-origin-URL op dezelfde site genavigeerd. Dit is niet toegestaan tenzij de bestemmingssite een header Supports-Loading-Mode: credentialed-prerender stuurt."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
+    "message": "Er is geprobeerd een URL vooraf te renderen die omleidt naar een cross-origin-URL van dezelfde site. Pre-rendering van cross-origin-pagina's is momenteel niet toegestaan."
+  },
+  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
+    "message": "Er is geprobeerd een URL vooraf te renderen die omleidt naar een cross-origin-URL van dezelfde site. Dit is niet toegestaan tenzij de bestemmingssite een header Supports-Loading-Mode: credentialed-prerender stuurt."
+  },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL-certificaatfout."
   },
@@ -3902,6 +4013,33 @@
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Gedeelde opslag"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
+    "message": "Resterende datalekkage toegestaan binnen een periode van 24 uur voor deze oorsprong in bits van entropie"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | creation": {
+    "message": "Gemaakt om"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entries": {
+    "message": "Items"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
+    "message": "Entropiebudget voor frames met fencing"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
+    "message": "Metadata"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
+    "message": "Nog niet gemaakt"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
+    "message": "Aantal items"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | origin": {
+    "message": "Oorsprong"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
+    "message": "Gedeelde opslag"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Kan geen stacktrace renderen"
   },
@@ -3922,6 +4060,54 @@
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Aantal tokens opgeslagen"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
+    "message": "Niet actieve items wissen"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusActivated": {
+    "message": "Geactiveerd"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
+    "message": "Verwijderd"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
+    "message": "Pre-rendering"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
+    "message": "Algemene informatie"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
+    "message": "Gestart om"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
+    "message": "Trigger"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
+    "message": "Selecteer een element voor meer informatie"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
+    "message": "Geactiveerd"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
+    "message": "Verwijderd"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
+    "message": "Pre-rendering"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
+    "message": "Gestart om"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+    "message": "Trigger"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | type": {
+    "message": "Type"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "breakpoint-hit"
@@ -4370,6 +4556,9 @@
   "panels/console/console-meta.ts | clearConsoleHistory": {
     "message": "Consolegeschiedenis wissen"
   },
+  "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
+    "message": "console.trace()-berichten standaard samenvouwen"
+  },
   "panels/console/console-meta.ts | console": {
     "message": "Console"
   },
@@ -4399,6 +4588,9 @@
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Evaluatie activeert gebruikersactiviteit"
+  },
+  "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
+    "message": "console.trace()-berichten standaard uitvouwen"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Vergelijkbare berichten in console groeperen"
@@ -5228,6 +5420,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Onbekende propertynaam"
   },
+  "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
+    "message": "{n,plural, =1{# zichtbare kiezer hieronder vermeld}other{# zichtbare kiezers hieronder vermeld}}"
+  },
   "panels/elements/TopLayerContainer.ts | reveal": {
     "message": "bekijken"
   },
@@ -5368,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stacktrace"
+  },
+  "panels/elements/elements-meta.ts | toggleEyeDropper": {
+    "message": "Schakelen naar pipet"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Ongedaan maken"
@@ -5833,6 +6031,9 @@
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resource}other{# resources}}"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | violatingNode": {
+    "message": "Schendende node"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Verborgen problemen"
@@ -6894,10 +7095,10 @@
     "message": "User-agent"
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonRace": {
-    "message": "Chrome heeft een alternatieve taak gebruikt omdat deze een race met een hoofdtaak heeft gewonnen."
+    "message": "Chrome heeft een HTTP/3-verbinding gebruikt die is veroorzaakt door een Alt-Svc-header, omdat die het snelst een verbinding tot stand bracht via een andere HTTP-versie."
   },
   "panels/network/NetworkDataGridNode.ts | alternativeJobWonWithoutRace": {
-    "message": "Chrome heeft een alternatieve taak gebruikt zonder met een hoofdtaak te racen."
+    "message": "Chrome heeft een HTTP/3-verbinding gebruikt die wordt veroorzaakt door een Alt-Svc-header, omdat die het snelst een verbinding tot stand bracht met een andere HTTP-versie."
   },
   "panels/network/NetworkDataGridNode.ts | blockedTooltip": {
     "message": "Dit verzoek is geblokkeerd vanwege onjuist ingestelde reactieheaders. Klik om de headers te bekijken."
@@ -6906,7 +7107,7 @@
     "message": "(geblokkeerd:{PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
-    "message": "Chrome heeft geen alternatieve taak gebruikt omdat deze is gemarkeerd als beschadigd."
+    "message": "Chrome heeft niet geprobeerd een HTTP/3-verbinding tot stand te brengen omdat deze was gemarkeerd als defect."
   },
   "panels/network/NetworkDataGridNode.ts | canceled": {
     "message": "(geannuleerd)"
@@ -6930,10 +7131,10 @@
     "message": "(schijfcache)"
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonRace": {
-    "message": "Chrome heeft een DNS alpn-taak gebruikt omdat deze een race met een hoofdtaak en een alternatieve taak heeft gewonnen."
+    "message": "Chrome heeft een HTTP/3-verbinding gebruikt omdat de DNS record ondersteuning voor HTTP/3 aangeeft. Die maakte het snelst een verbinding met een andere HTTP-versie."
   },
   "panels/network/NetworkDataGridNode.ts | dnsAlpnH3JobWonWithoutRace": {
-    "message": "Chrome heeft een DNS alpn-taak gebruikt zonder met een hoofdtaak en een alternatieve taak te racen."
+    "message": "Chrome heeft een HTTP/3-verbinding gebruikt omdat DNS record ondersteuning voor HTTP/3 aangeeft. Er is niet gekeken of een andere was HTTP-versie sneller een verbinding kon maken."
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(mislukt)"
@@ -6945,10 +7146,10 @@
     "message": "niveau 1"
   },
   "panels/network/NetworkDataGridNode.ts | mainJobWonRace": {
-    "message": "Chrome heeft een hoofdtaak gebruikt omdat deze een race met een alternatieve taak en/of een DNS alpn-taak heeft gewonnen."
+    "message": "Chrome heeft dit protocol gebruikt omdat die het snelst een HTTP/3-verbinding tot stand bracht."
   },
   "panels/network/NetworkDataGridNode.ts | mappingMissing": {
-    "message": "Chrome heeft geen alternatieve taak gebruikt vanwege ontbrekende informatie over het alternatieve protocol."
+    "message": "Chrome heeft geen alternatieve HTTP-versie gebruikt omdat er geen alternatieve protocolgegevens beschikbaar waren toen het verzoek werd verstuurd. Er was wel een Alt-Svc-header aanwezig in de reactie."
   },
   "panels/network/NetworkDataGridNode.ts | memoryCache": {
     "message": "(geheugencache)"
@@ -7469,6 +7670,9 @@
   "panels/network/RequestCookiesView.ts | cookiesThatWereSentToTheServerIn": {
     "message": "Cookies die naar de server zijn gestuurd in de cookie-header van het verzoek"
   },
+  "panels/network/RequestCookiesView.ts | learnMore": {
+    "message": "Meer informatie"
+  },
   "panels/network/RequestCookiesView.ts | malformedResponseCookies": {
     "message": "Onjuist gevormde reactiecookies"
   },
@@ -7483,6 +7687,9 @@
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
     "message": "weggefilterde aanvraagcookies tonen"
+  },
+  "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
+    "message": "Deze site heeft cookies in een andere partitie die niet zijn meegestuurd met dit verzoek. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Dit verzoek bevat geen cookies."
@@ -7925,11 +8132,17 @@
   "panels/network/components/HeaderSectionRow.ts | editHeader": {
     "message": "Header overschrijven"
   },
+  "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
+    "message": "Headernamen mogen alleen letters, cijfers, koppeltekens en underscores bevatten"
+  },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Meer informatie"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMoreInTheIssuesTab": {
     "message": "Meer informatie op het tabblad Problemen"
+  },
+  "panels/network/components/HeaderSectionRow.ts | reloadPrompt": {
+    "message": "Vernieuw de pagina/het verzoek om deze wijzigingen door te voeren"
   },
   "panels/network/components/HeaderSectionRow.ts | removeOverride": {
     "message": "Deze headeroverschrijving verwijderen"
@@ -10160,6 +10373,12 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
+  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
+    "message": "(geleverd via foutopsporingsinfo door {PH1})"
+  },
+  "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
+    "message": "(bron toegewezen vanaf {PH1})"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Afsluiting"
   },
@@ -10396,6 +10615,9 @@
   },
   "panels/sources/components/BreakpointsView.ts | pauseOnCaughtExceptions": {
     "message": "Onderbreken bij gevonden uitzonderingen"
+  },
+  "panels/sources/components/BreakpointsView.ts | pauseOnUncaughtExceptions": {
+    "message": "Onderbreken bij niet-gevonden uitzonderingen"
   },
   "panels/sources/components/BreakpointsView.ts | removeAllBreakpoints": {
     "message": "Alle breakpoints verwijderen"
@@ -11210,6 +11432,9 @@
   "panels/timeline/TimelineUIUtils.ts | collected": {
     "message": "Opgehaald"
   },
+  "panels/timeline/TimelineUIUtils.ts | commit": {
+    "message": "Toewijzen"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Cachegrootte van compilatie"
   },
@@ -11449,6 +11674,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | layerTree": {
     "message": "Laagstructuur"
+  },
+  "panels/timeline/TimelineUIUtils.ts | layerize": {
+    "message": "Lagen maken"
   },
   "panels/timeline/TimelineUIUtils.ts | layout": {
     "message": "Indeling"
@@ -12576,7 +12804,7 @@
     "message": "{PH1} in {PH2}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | toggleColorPicker": {
-    "message": "Kleurkiezer schakelen"
+    "message": "Pipet [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
@@ -12755,6 +12983,9 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Eenheden"
   },
+  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} is niet gedefinieerd"
+  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Tonen als JavaScript-object"
   },
@@ -12895,6 +13126,9 @@
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Opdracht"
+  },
+  "ui/legacy/components/quick_open/CommandMenu.ts | deprecated": {
+    "message": "— beëindigd"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "Geen opdrachten gevonden"

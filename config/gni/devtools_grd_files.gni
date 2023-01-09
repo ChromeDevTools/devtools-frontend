@@ -891,6 +891,7 @@ grd_files_debug_sources = [
   "front_end/panels/application/components/reportingApiGrid.css.js",
   "front_end/panels/application/components/sharedStorageAccessGrid.css.js",
   "front_end/panels/application/components/sharedStorageMetadataView.css.js",
+  "front_end/panels/application/components/sharedStorageMetadataViewResetBudgetButton.css.js",
   "front_end/panels/application/components/stackTraceLinkButton.css.js",
   "front_end/panels/application/components/stackTraceRow.css.js",
   "front_end/panels/application/components/trustTokensView.css.js",

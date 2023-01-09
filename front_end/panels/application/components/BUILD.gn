@@ -19,6 +19,7 @@ generate_css("css_files") {
     "reportingApiGrid.css",
     "sharedStorageAccessGrid.css",
     "sharedStorageMetadataView.css",
+    "sharedStorageMetadataViewResetBudgetButton.css",
     "stackTraceLinkButton.css",
     "stackTraceRow.css",
     "trustTokensView.css",

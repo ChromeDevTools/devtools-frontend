@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2022 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.reset-budget-button {
+  width: 16px;
+  height: 16px;
+  background: transparent;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  outline: none;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.reset-budget-button:hover devtools-icon {
+  --icon-color: var(--color-text-primary);
+}
+
+.reset-budget-button:focus devtools-icon {
+  --icon-color: var(--color-text-secondary);
+}
+
+.icon-basic {
+  width: 12px;
+  height: 14px;
+}

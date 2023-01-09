@@ -12,6 +12,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 
 import sharedStorageMetadataViewStyles from './sharedStorageMetadataView.css.js';
+import sharedStorageMetadataViewResetBudgetButtonStyles from './sharedStorageMetadataViewResetBudgetButton.css.js';
 
 const UIStrings = {
   /**
@@ -48,6 +49,10 @@ const UIStrings = {
    */
   budgetExplanation: 'Remaining data leakage allowed within a 24-hour period for this origin in bits of entropy',
   /**
+   *@description Label for a button which when clicked causes the budget to be reset to the max.
+   */
+  resetBudget: 'Reset Budget',
+  /**
    *@description Section header above Entries
    */
   entries: 'Entries',
@@ -57,6 +62,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface SharedStorageMetadataGetter {
   getMetadata: () => Promise<Protocol.Storage.SharedStorageMetadata|null>;
+  resetBudget: () => Promise<void>;
 }
 
 export class SharedStorageMetadataView extends UI.Widget.VBox {
@@ -69,6 +75,9 @@ export class SharedStorageMetadataView extends UI.Widget.VBox {
     this.contentElement.classList.add('overflow-auto');
     this.contentElement.appendChild(this.#reportView);
     this.#reportView.origin = owner;
+    this.#reportView.resetBudgetHandler = (): void => {
+      void this.#resetBudget();
+    };
     void this.doUpdate();
   }
 
@@ -79,6 +88,11 @@ export class SharedStorageMetadataView extends UI.Widget.VBox {
     const remainingBudget = metadata?.remainingBudget ?? 0;
     this.#reportView.data = {creationTime, length, remainingBudget};
   }
+
+  async #resetBudget(): Promise<void> {
+    await this.#sharedStorageMetadataGetter.resetBudget();
+    await this.doUpdate();
+  }
 }
 
 export interface SharedStorageMetadataViewData {
@@ -87,7 +101,40 @@ export interface SharedStorageMetadataViewData {
   remainingBudget: number;
 }
 
+interface SharedStorageResetBudgetButtonData {
+  resetBudgetHandler: () => void;
+}
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+
+class SharedStorageResetBudgetButton extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-shared-storage-reset-budget-button`;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #resetBudgetHandler: (() => void) = () => {};
+
+  connectedCallback(): void {
+    this.#shadow.adoptedStyleSheets = [sharedStorageMetadataViewResetBudgetButtonStyles];
+  }
+
+  set data(data: SharedStorageResetBudgetButtonData) {
+    this.#resetBudgetHandler = data.resetBudgetHandler;
+    this.#render();
+  }
+
+  #render(): void {
+    // clang-format off
+    LitHtml.render(LitHtml.html`
+      <button class="reset-budget-button"
+        title=${i18nString(UIStrings.resetBudget)}
+        @click=${(): void => this.#resetBudgetHandler()}>
+      <${IconButton.Icon.Icon.litTagName} .data=${
+      {iconName: 'ic_undo_16x16_icon', color: 'var(--color-text-secondary)', width: '12px', height: '14px'} as
+      IconButton.Icon.IconWithName}>
+        </${IconButton.Icon.Icon.litTagName}>
+      </button>`, this.#shadow, {host: this});
+    // clang-format on
+  }
+}
 
 export class SharedStorageMetadataReportView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-shared-storage-metadata-view`;
@@ -96,6 +143,7 @@ export class SharedStorageMetadataReportView extends HTMLElement {
   #creationTime: Protocol.Network.TimeSinceEpoch|null = null;
   #length: number = 0;
   #remainingBudget: number = 0;
+  resetBudgetHandler: (() => void) = () => {};
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [sharedStorageMetadataViewStyles];
@@ -151,8 +199,8 @@ export class SharedStorageMetadataReportView extends HTMLElement {
           .data=${
         {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as IconButton.Icon.IconWithName}>
         </${IconButton.Icon.Icon.litTagName}></${ReportView.ReportView.ReportKey.litTagName}><${
-        ReportView.ReportView.ReportValue.litTagName}>${this.#remainingBudget}</${
-        ReportView.ReportView.ReportValue.litTagName}>
+        ReportView.ReportView.ReportValue.litTagName}>${this.#remainingBudget}${this.#renderResetBudgetButton()}
+        </${ReportView.ReportView.ReportValue.litTagName}>
       <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
         ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;
@@ -166,6 +214,14 @@ export class SharedStorageMetadataReportView extends HTMLElement {
     return LitHtml.html`${date.toLocaleString()}`;
   }
 
+  #renderResetBudgetButton(): LitHtml.TemplateResult {
+    // clang-format off
+    return LitHtml.html`<${SharedStorageResetBudgetButton.litTagName}
+     .data=${{resetBudgetHandler: this.resetBudgetHandler} as SharedStorageResetBudgetButtonData}
+    ></${SharedStorageResetBudgetButton.litTagName}>`;
+    // clang-format on
+  }
+
   #renderEntriesSection(): LitHtml.LitTemplate {
     return LitHtml.html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName} title=${i18nString(UIStrings.entries)}>
@@ -175,11 +231,14 @@ export class SharedStorageMetadataReportView extends HTMLElement {
 }
 
 ComponentHelpers.CustomElements.defineComponent(
+    'devtools-shared-storage-reset-budget-button', SharedStorageResetBudgetButton);
+ComponentHelpers.CustomElements.defineComponent(
     'devtools-shared-storage-metadata-view', SharedStorageMetadataReportView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-shared-storage-metadata-view': SharedStorageMetadataReportView;
+    'devtools-shared-storage-reset-budget-button': SharedStorageResetBudgetButton;
   }
 }

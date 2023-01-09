@@ -133,6 +133,17 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
     assert.deepEqual(node.textContent, nodeContents);
   });
 
+  it('parses color-mix correctly', () => {
+    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
+        null, null, 'color', 'color-mix(in srgb, red, blue)');
+    renderer.setColorMixHandler(() => document.createTextNode(nodeContents));
+
+    const nodeContents = 'nodeContents';
+
+    const node = renderer.renderValue();
+    assert.deepEqual(node.textContent, nodeContents);
+  });
+
   it('does not call bezier handler when color() value contains srgb-linear color space in a variable definition',
      () => {
        const colorHandler = sinon.fake.returns(document.createTextNode('colorHandler'));

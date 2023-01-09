@@ -6,7 +6,8 @@ import * as Common from '../../../../core/common/common.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
-import {ColorSwatch, FormatChangedEvent} from './ColorSwatch.js';
+import {ColorChangedEvent, ColorSwatch} from './ColorSwatch.js';
+
 import {type CSSShadowModel} from './CSSShadowModel.js';
 import bezierSwatchStyles from './bezierSwatch.css.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
@@ -99,7 +100,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
         if (!this.colorSwatchInternal) {
           this.colorSwatchInternal = new ColorSwatch();
           const value = this.colorSwatchInternal.createChild('span');
-          this.colorSwatchInternal.addEventListener(FormatChangedEvent.eventName, (event: FormatChangedEvent) => {
+          this.colorSwatchInternal.addEventListener(ColorChangedEvent.eventName, (event: ColorChangedEvent) => {
             value.textContent = event.data.text;
           });
         }

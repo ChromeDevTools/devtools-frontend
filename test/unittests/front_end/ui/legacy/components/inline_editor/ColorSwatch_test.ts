@@ -134,10 +134,9 @@ describeWithLocale('ColorSwatch', () => {
     const target = getClickTarget(swatch);
 
     let currentFormat = swatch.getFormat();
-    swatch.addEventListener(
-        InlineEditor.ColorSwatch.FormatChangedEvent.eventName, (e: InlineEditor.ColorSwatch.FormatChangedEvent) => {
-          currentFormat = Common.Color.getFormat(e.data.format);
-        });
+    swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, () => {
+      currentFormat = swatch.getFormat();
+    });
 
     assert.strictEqual(currentFormat, Common.Color.Format.Nickname);
 
@@ -189,11 +188,11 @@ describeWithLocale('ColorSwatch', () => {
     const swatch = createSwatch('red');
     const target = getClickTarget(swatch);
 
-    const formatChangedEventsReceived: InlineEditor.ColorSwatch.FormatChangedEvent[] = [];
-    const onClick = (e: InlineEditor.ColorSwatch.FormatChangedEvent) => {
+    const formatChangedEventsReceived: InlineEditor.ColorSwatch.ColorChangedEvent[] = [];
+    const onClick = (e: InlineEditor.ColorSwatch.ColorChangedEvent) => {
       formatChangedEventsReceived.push(e);
     };
-    swatch.addEventListener(InlineEditor.ColorSwatch.FormatChangedEvent.eventName, onClick);
+    swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onClick);
 
     dispatchClickEvent(target);
     dispatchClickEvent(target);
@@ -201,7 +200,7 @@ describeWithLocale('ColorSwatch', () => {
 
     assert.strictEqual(formatChangedEventsReceived.length, 0, 'No formatchanged events are received on click');
 
-    swatch.removeEventListener(InlineEditor.ColorSwatch.FormatChangedEvent.eventName, onClick);
+    swatch.removeEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onClick);
   });
 
   it('shows a circular color swatch for a wide gamut color', () => {

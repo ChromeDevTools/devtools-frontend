@@ -1,0 +1,39 @@
+/*
+ * Copyright 2022 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.swatch-icon {
+  display: inline-grid;
+  inline-size: 15px;
+  grid: [stack] 1fr / [stack] 1fr;
+  margin-left: 1px;
+  margin-right: 2px;
+  vertical-align: middle;
+}
+
+/* stylelint-disable */
+.swatch {
+  aspect-ratio: 1 / 1;
+  display: inline-block;
+  width: 10px;
+  border-radius: 1e5px;
+  background:
+    linear-gradient(var(--color), var(--color)),
+    var(--image-file-checker);
+  box-shadow: inset 0 0 0 .5px rgb(128 128 128 / 60%);
+  grid-area: stack;
+}
+/* stylelint-enable */
+
+.swatch-right {
+  justify-self: end;
+}
+
+.swatch-mix {
+  box-shadow: none;
+  justify-self: end;
+  mask: radial-gradient(circle at 0% center, rgb(0 0 0) 50%, rgb(0 0 0 / 0%) calc(50% + 1px));
+  -webkit-mask: radial-gradient(circle at 0% center, rgb(0 0 0) 50%, rgb(0 0 0 / 0%) calc(50% + 1px));
+}

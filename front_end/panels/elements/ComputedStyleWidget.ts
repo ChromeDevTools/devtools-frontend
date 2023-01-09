@@ -185,7 +185,7 @@ const processColor = (text: string): Node => {
   swatch.append(valueElement);
 
   swatch.addEventListener(
-      InlineEditor.ColorSwatch.FormatChangedEvent.eventName, (event: InlineEditor.ColorSwatch.FormatChangedEvent) => {
+      InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event: InlineEditor.ColorSwatch.ColorChangedEvent) => {
         const {data} = event;
         valueElement.textContent = data.text;
       });

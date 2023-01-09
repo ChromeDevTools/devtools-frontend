@@ -14,7 +14,12 @@ import * as ColorPicker from '../../ui/legacy/components/color_picker/color_pick
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} from './ColorSwatchPopoverIcon.js';
+import {
+  BezierPopoverIcon,
+  ColorSwatchPopoverIcon,
+  ColorSwatchPopoverIconEvents,
+  ShadowSwatchPopoverHelper,
+} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
@@ -247,16 +252,33 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     swatch.appendChild(valueChild);
 
-    const onFormatchanged = (event: InlineEditor.ColorSwatch.FormatChangedEvent): void => {
+    const onColorChanged = (event: InlineEditor.ColorSwatch.ColorChangedEvent): void => {
       const {data} = event;
       swatch.firstElementChild && swatch.firstElementChild.remove();
       swatch.createChild('span').textContent = data.text;
     };
 
-    swatch.addEventListener(InlineEditor.ColorSwatch.FormatChangedEvent.eventName, onFormatchanged);
+    swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);
 
     if (this.editable()) {
-      void this.addColorContrastInfo(swatch);
+      const swatchIcon = new ColorSwatchPopoverIcon(this, this.parentPaneInternal.swatchPopoverHelper(), swatch);
+      swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.ColorChanged, ev => {
+        // TODO(crbug.com/1402233): Is it really okay to dispatch an event from `Swatch` here?
+        // This needs consideration as current structure feels a bit different:
+        // There are: ColorSwatch, ColorSwatchPopoverIcon, and Spectrum
+        // * Our entry into the Spectrum is `ColorSwatch` and `ColorSwatch` is able to
+        // update the color too. (its format at least, don't know the difference)
+        // * ColorSwatchPopoverIcon is a helper to show/hide the Spectrum popover
+        // * Spectrum is the color picker
+        //
+        // My idea is: merge `ColorSwatch` and `ColorSwatchPopoverIcon`
+        // and emit `ColorChanged` event whenever color is changed.
+        // Until then, this is a hack to kind of emulate the behavior described above
+        // `swatch` is dispatching its own ColorChangedEvent with the changed
+        // color text whenever the color changes.
+        swatch.dispatchEvent(new InlineEditor.ColorSwatch.ColorChangedEvent(ev.data));
+      });
+      void this.addColorContrastInfo(swatchIcon);
     }
 
     return swatch;
@@ -273,6 +295,34 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   private processColor(text: string, valueChild?: Node|null): Node {
     return this.renderColorSwatch(text, valueChild);
+  }
+
+  private processColorMix(text: string): Node {
+    const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
+    swatch.setText(text);
+
+    const contentChild = document.createElement('span');
+    // We're matching the colors inside `color-mix` syntax like
+    // `red` and `blue` in `color-mix(in srgb, red, blue)` and adding
+    // color swatch for them.
+    const matches = TextUtils.TextUtils.Utils.splitStringByRegexes(text, [Common.Color.Regex]);
+    for (const match of matches) {
+      if (match.regexIndex === 0) {
+        const colorSwatch = this.processColor(match.value);
+        colorSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, () => {
+          // Update the `color-mix` swatch when one parameter color changed through its color swatch
+          swatch.setText(this.property.value);
+        });
+
+        contentChild.appendChild(colorSwatch);
+      } else {
+        contentChild.appendChild(document.createTextNode(match.value));
+      }
+    }
+
+    swatch.appendChild(contentChild);
+
+    return swatch;
   }
 
   private processVar(text: string): Node {
@@ -303,9 +353,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.parentPaneInternal.jumpToProperty(variableName);
   }
 
-  private async addColorContrastInfo(swatch: InlineEditor.ColorSwatch.ColorSwatch): Promise<void> {
-    const swatchPopoverHelper = this.parentPaneInternal.swatchPopoverHelper();
-    const swatchIcon = new ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch);
+  private async addColorContrastInfo(swatchIcon: ColorSwatchPopoverIcon): Promise<void> {
     if (this.property.name !== 'color' || !this.parentPaneInternal.cssModel() || !this.node()) {
       return;
     }
@@ -675,6 +723,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       propertyRenderer.setVarHandler(this.processVar.bind(this));
       propertyRenderer.setAnimationNameHandler(this.processAnimationName.bind(this));
       propertyRenderer.setColorHandler(this.processColor.bind(this));
+      propertyRenderer.setColorMixHandler(this.processColorMix.bind(this));
       propertyRenderer.setBezierHandler(this.processBezier.bind(this));
       propertyRenderer.setFontHandler(this.processFont.bind(this));
       propertyRenderer.setShadowHandler(this.processShadow.bind(this));

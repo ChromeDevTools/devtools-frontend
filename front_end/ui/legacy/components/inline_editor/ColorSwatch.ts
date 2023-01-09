@@ -18,14 +18,14 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/ColorSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class FormatChangedEvent extends Event {
-  static readonly eventName = 'formatchanged';
+export class ColorChangedEvent extends Event {
+  static readonly eventName = 'colorchanged';
 
-  data: {format: string, text: string|null};
+  data: {text: string};
 
-  constructor(format: string, text: string|null) {
-    super(FormatChangedEvent.eventName, {});
-    this.data = {format, text};
+  constructor(text: string) {
+    super(ColorChangedEvent.eventName, {});
+    this.data = {text};
   }
 }
 
@@ -184,7 +184,7 @@ export class ColorSwatch extends HTMLElement {
       this.text = currentValue;
       this.render();
 
-      this.dispatchEvent(new FormatChangedEvent(this.format, this.text));
+      this.dispatchEvent(new ColorChangedEvent(this.text));
     }
   }
 }
@@ -197,7 +197,7 @@ declare global {
   }
 
   interface HTMLElementEventMap {
-    [FormatChangedEvent.eventName]: FormatChangedEvent;
+    [ColorChangedEvent.eventName]: ColorChangedEvent;
     [ClickEvent.eventName]: Event;
   }
 }

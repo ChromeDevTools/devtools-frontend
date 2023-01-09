@@ -106,7 +106,15 @@ export class BezierPopoverIcon {
   }
 }
 
-export class ColorSwatchPopoverIcon {
+export const enum ColorSwatchPopoverIconEvents {
+  ColorChanged = 'colorchanged',
+}
+
+export type ColorSwatchPopoverIconEventTypes = {
+  [ColorSwatchPopoverIconEvents.ColorChanged]: string,
+};
+
+export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<ColorSwatchPopoverIconEventTypes> {
   private treeElement: StylePropertyTreeElement;
   private readonly swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
   private swatch: InlineEditor.ColorSwatch.ColorSwatch;
@@ -120,6 +128,8 @@ export class ColorSwatchPopoverIcon {
   constructor(
       treeElement: StylePropertyTreeElement, swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper,
       swatch: InlineEditor.ColorSwatch.ColorSwatch) {
+    super();
+
     this.treeElement = treeElement;
     this.swatchPopoverHelper = swatchPopoverHelper;
     this.swatch = swatch;
@@ -206,7 +216,7 @@ export class ColorSwatchPopoverIcon {
     this.swatchPopoverHelper.reposition();
   }
 
-  private spectrumChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
+  private async spectrumChanged(event: Common.EventTarget.EventTargetEvent<string>): Promise<void> {
     const color = Common.Color.parse(event.data);
     if (!color) {
       return;
@@ -222,7 +232,15 @@ export class ColorSwatchPopoverIcon {
       this.swatch.createChild('span').textContent = text;
     }
 
-    void this.treeElement.applyStyleText(this.treeElement.renderedPropertyText(), false);
+    // TODO(crbug.com/1402233): This component should only care about its own
+    // responsibilities. It shouldn't apply style text by itself but
+    // emit an event that will be handled from the parent
+    await this.treeElement.applyStyleText(this.treeElement.renderedPropertyText(), false);
+
+    // `asString` somehow can return null.
+    if (text) {
+      this.dispatchEventToListeners(ColorSwatchPopoverIconEvents.ColorChanged, text);
+    }
   }
 
   private onScroll(_event: Event): void {

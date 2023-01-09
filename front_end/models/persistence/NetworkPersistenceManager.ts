@@ -414,7 +414,13 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
     // 'relativePath' returns an encoded string of the local file name which itself is already encoded.
     // We therefore need to decode twice to get the raw path.
-    return 'http?://' + this.decodeLocalPathToUrlPath(this.decodeLocalPathToUrlPath(relativePathParts.join('/')));
+    const path = this.decodeLocalPathToUrlPath(this.decodeLocalPathToUrlPath(relativePathParts.join('/')));
+    if (path.startsWith('file:/')) {
+      // The file path of the override file looks like '/path/to/overrides/file:/path/to/local/files/index.html'.
+      // The decoded relative path then starts with 'file:/' which we modify to start with 'file:///' instead.
+      return 'file:///' + path.substring('file:/'.length);
+    }
+    return 'http?://' + path;
   }
 
   private async onUISourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {

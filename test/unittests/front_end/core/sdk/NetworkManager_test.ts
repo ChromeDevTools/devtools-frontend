@@ -462,6 +462,7 @@ describeWithMockConnection('InterceptedRequest', () => {
           ]`,
           },
           {name: 'helloWorld.html', path: 'www.example.com/', content: 'Hello World!'},
+          {name: 'something.html', path: 'file:/usr/local/foo/content/', content: 'Override for something'},
         ]);
     sinon.stub(target.fetchAgent(), 'invoke_enable');
     await networkPersistenceManager.updateInterceptionPatternsForTests();
@@ -612,6 +613,28 @@ describeWithMockConnection('InterceptedRequest', () => {
             {name: 'age', value: 'overridden'},
             {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
+        });
+  });
+
+  it('can override content for a request with a \'file:/\'-URL', async () => {
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
+    const responseCode = 200;
+    const requestId = 'request_id_7' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    const responseHeaders = [
+      {name: 'age', value: 'original'},
+      {name: 'content-type', value: 'text/html; charset=utf-8'},
+    ];
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'file:///usr/local/foo/content/something.html',
+        } as Protocol.Network.Request,
+        requestId, responseCode, responseHeaders, responseBody, {
+          requestId,
+          responseCode,
+          body: btoa('Override for something'),
+          responseHeaders,
         });
   });
 

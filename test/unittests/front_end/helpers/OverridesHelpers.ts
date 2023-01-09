@@ -7,7 +7,6 @@ import * as Bindings from '../../../../front_end/models/bindings/bindings.js';
 import * as Persistence from '../../../../front_end/models/persistence/persistence.js';
 import * as Workspace from '../../../../front_end/models/workspace/workspace.js';
 import type * as Platform from '../../../../front_end/core/platform/platform.js';
-import * as Common from '../../../../front_end/core/common/common.js';
 
 export function setUpEnvironment() {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -36,19 +35,6 @@ export async function createWorkspaceProject(
   } as unknown as Persistence.FileSystemWorkspaceBinding.FileSystem;
 
   const uiSourceCodes = new Map<string, Workspace.UISourceCode.UISourceCode>();
-  for (const file of files) {
-    const url = Common.ParsedURL.ParsedURL.concatenate(baseUrl, '/', file.path, file.name);
-    uiSourceCodes.set(url, {
-      requestContent: () => Promise.resolve({content: file.content}),
-      url: () => url,
-      project: () => {
-        return {...fileSystem, requestFileBlob: () => new Blob([file.content])};
-      },
-      name: () => file.name,
-      setWorkingCopy: () => {},
-      commitWorkingCopy: () => {},
-    } as unknown as Workspace.UISourceCode.UISourceCode);
-  }
 
   const mockProject = {
     uiSourceCodes: () => Array.from(uiSourceCodes.values()),
@@ -63,6 +49,23 @@ export async function createWorkspaceProject(
       type: () => 'filesystem',
     },
   } as unknown as Workspace.Workspace.Project;
+  await networkPersistenceManager.setProject(mockProject);
+
+  for (const file of files) {
+    const url = file.path.concat(file.name) as Platform.DevToolsPath.UrlString;
+    const fileUrl = networkPersistenceManager.fileUrlFromNetworkUrl(url, true);
+
+    uiSourceCodes.set(fileUrl, {
+      requestContent: () => Promise.resolve({content: file.content}),
+      url: () => fileUrl,
+      project: () => {
+        return {...fileSystem, requestFileBlob: () => new Blob([file.content])};
+      },
+      name: () => file.name,
+      setWorkingCopy: () => {},
+      commitWorkingCopy: () => {},
+    } as unknown as Workspace.UISourceCode.UISourceCode);
+  }
 
   await networkPersistenceManager.setProject(mockProject);
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();

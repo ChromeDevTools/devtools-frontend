@@ -39,7 +39,7 @@ const UIStrings = {
   /**
    *@description Description of which letters the name of an HTTP header may contain (a-z, A-Z, 0-9, '-', or '_').
    */
-  headerNamesOnlyLetters: 'Header names should contain only letters, digits, dashes or underscores',
+  headerNamesOnlyLetters: 'Header names should contain only letters, digits, hyphens or underscores',
   /**
    *@description Text that is usually a hyperlink to more documentation
    */

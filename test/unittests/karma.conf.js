@@ -10,6 +10,7 @@ const glob = require('glob');
 const fs = require('fs');
 const rimraf = require('rimraf');
 const debugCheck = require('./debug-check.js');
+const ResultsDb = require('../shared/resultsdb.js');
 
 const USER_DEFINED_COVERAGE_FOLDERS = process.env['COVERAGE_FOLDERS'];
 
@@ -123,6 +124,57 @@ for (const pattern of TEST_FILES) {
   }
 }
 
+const ResultsDBReporter = function(baseReporterDecorator, formatError, config) {
+  baseReporterDecorator(this);
+
+  const capturedLog = [];
+  this.onBrowserLog = (browser, log, type) => {
+    capturedLog.push({log, type});
+  };
+
+  const specComplete = (browser, result) => {
+    const {suite, description, log, startTime, endTime, success, skipped} = result;
+    const testId = ResultsDb.sanitizedTestId([...suite, description].join('/'));
+    const expected = success || skipped;
+    const status = skipped ? 'SKIP' : success ? 'PASS' : 'FAIL';
+    const duration = endTime - startTime;
+
+    const consoleLog = capturedLog.map(({type, log}) => `${type.toUpperCase()}: ${log}`);
+    capturedLog.length = 0;
+
+    let summaryHtml = undefined;
+    if (!expected || consoleLog.length > 0) {
+      const messages = [...consoleLog, ...log];
+      // Prepare resultsdb summary
+      summaryHtml = messages.map(m => `<p><pre>${m}</pre></p>`).join('\n');
+
+      // Log to console
+      const header = `==== ${status}: ${testId}`;
+      this.write(`${header}\n${messages.join('\n\n')}\n${'='.repeat(header.length)}\n\n`);
+    } else if (skipped) {
+      this.write(`==== ${status}: ${testId}\n\n`);
+    }
+
+    const testResult = {status, expected, summaryHtml, testId, duration};
+    ResultsDb.recordTestResult(testResult);
+  };
+  this.specSuccess = specComplete;
+  this.specSkipped = specComplete;
+  this.specFailure = specComplete;
+
+  this.onRunComplete = (browsers, results) => {
+    if (browsers.length >= 1 && !results.disconnected && !results.error) {
+      if (!results.failed) {
+        this.write('SUCCESS: %d passed (%d skipped)\n', results.success, results.skipped);
+      } else {
+        this.write('FAILED: %d failed, %d passed (%d skipped)\n', results.failed, results.success, results.skipped);
+      }
+    }
+    ResultsDb.sendCollectedTestResultsIfSinkIsAvailable();
+  };
+};
+ResultsDBReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];
+
 module.exports = function(config) {
   const targetDir = path.relative(process.cwd(), GEN_DIRECTORY);
   const options = {
@@ -153,7 +205,7 @@ module.exports = function(config) {
     ],
 
     reporters: [
-      EXPANDED_REPORTING ? 'mocha' : 'dots',
+      EXPANDED_REPORTING ? 'mocha' : 'resultsdb',
       ...coverageReporters,
     ],
 
@@ -195,6 +247,7 @@ module.exports = function(config) {
       require('karma-sourcemap-loader'),
       require('karma-spec-reporter'),
       require('karma-coverage'),
+      {'reporter:resultsdb': ['type', ResultsDBReporter]},
     ],
 
     preprocessors: {

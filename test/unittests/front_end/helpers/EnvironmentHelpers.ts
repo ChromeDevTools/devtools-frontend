@@ -94,6 +94,7 @@ const REGISTERED_EXPERIMENTS = [
   'ignoreListJSFramesOnTimeline',
   'instrumentationBreakpoints',
   'cssTypeComponentLength',
+  'timelineDoNotSkipSystemNodesOfCpuProfile',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

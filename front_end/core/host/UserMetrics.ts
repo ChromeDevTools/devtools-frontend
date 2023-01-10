@@ -712,8 +712,9 @@ export enum DevtoolsExperiments {
   'timelineAsConsoleProfileResultPanel' = 67,
   'preloadingStatusPanel' = 68,
   'disableColorFormatSetting' = 69,
+  'timelineDoNotSkipSystemNodesOfCpuProfile' = 70,
   // Increment this when new experiments are added.
-  'MaxValue' = 70,
+  'MaxValue' = 71,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

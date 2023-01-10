@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -27,39 +28,72 @@ export class TimelineJSProfileProcessor {
     const timestamps = jsProfileModel.timestamps;
     const jsEvents = [];
 
-    let prevNode: SDK.ProfileTreeModel.ProfileNode = jsProfileModel.root;
-    let prevCallFrames: Protocol.Runtime.CallFrame[] = [];
-    for (let i = 0; i < samples.length; ++i) {
-      const node: SDK.ProfileTreeModel.ProfileNode|null = jsProfileModel.nodeByIndex(i);
-      if (!node) {
-        console.error(`Node with unknown id ${samples[i]} at index ${i}`);
-        continue;
-      }
-      let callFrames;
-      if (node === jsProfileModel.gcNode) {
-        if (prevNode === jsProfileModel.gcNode) {
-          // If the last recorded sample is also GC sample, we just use the same call frames.
-          callFrames = prevCallFrames;
+    if (Root.Runtime.experiments.isEnabled('timelineDoNotSkipSystemNodesOfCpuProfile')) {
+      // Node.js/Deno developers want to view the system nodes as well, but this might disturb the web user.
+      // So add a flag to guard this feature.
+      let prevNode: SDK.ProfileTreeModel.ProfileNode = jsProfileModel.root;
+      let prevCallFrames: Protocol.Runtime.CallFrame[] = [];
+      for (let i = 0; i < samples.length; ++i) {
+        const node: SDK.ProfileTreeModel.ProfileNode|null = jsProfileModel.nodeByIndex(i);
+        if (!node) {
+          console.error(`Node with unknown id ${samples[i]} at index ${i}`);
+          continue;
+        }
+        let callFrames;
+        if (node === jsProfileModel.gcNode) {
+          if (prevNode === jsProfileModel.gcNode) {
+            // If the last recorded sample is also GC sample, we just use the same call frames.
+            callFrames = prevCallFrames;
+          } else {
+            // GC samples have no stack, so we just put GC node on top of the last recorded sample.
+            callFrames = [(node as Protocol.Runtime.CallFrame), ...prevCallFrames];
+          }
         } else {
-          // GC samples have no stack, so we just put GC node on top of the last recorded sample.
-          callFrames = [(node as Protocol.Runtime.CallFrame), ...prevCallFrames];
+          // For non Garbage Collection nodes, we just use its own call frames.
+          callFrames = new Array(node.depth + 1) as Protocol.Runtime.CallFrame[];
+          let currentNode = node;
+          for (let j = 0; currentNode.parent; currentNode = currentNode.parent) {
+            callFrames[j++] = (currentNode as Protocol.Runtime.CallFrame);
+          }
         }
-      } else {
-        // For non Garbage Collection nodes, we just use its own call frames.
-        callFrames = new Array(node.depth + 1) as Protocol.Runtime.CallFrame[];
-        let currentNode = node;
-        for (let j = 0; currentNode.parent; currentNode = currentNode.parent) {
-          callFrames[j++] = (currentNode as Protocol.Runtime.CallFrame);
-        }
-      }
-      const jsSampleEvent = new SDK.TracingModel.Event(
-          SDK.TracingModel.DevToolsTimelineEventCategory, RecordType.JSSample, SDK.TracingModel.Phase.Instant,
-          timestamps[i], thread);
-      jsSampleEvent.args['data'] = {stackTrace: callFrames};
-      jsEvents.push(jsSampleEvent);
+        const jsSampleEvent = new SDK.TracingModel.Event(
+            SDK.TracingModel.DevToolsTimelineEventCategory, RecordType.JSSample, SDK.TracingModel.Phase.Instant,
+            timestamps[i], thread);
+        jsSampleEvent.args['data'] = {stackTrace: callFrames};
+        jsEvents.push(jsSampleEvent);
 
-      prevNode = node;
-      prevCallFrames = callFrames;
+        prevNode = node;
+        prevCallFrames = callFrames;
+      }
+    } else {
+      const idleNode = jsProfileModel.idleNode;
+      const programNode = jsProfileModel.programNode || null;
+      const gcNode = jsProfileModel.gcNode;
+      const nodeToStackMap = new Map<SDK.ProfileTreeModel.ProfileNode|null, Protocol.Runtime.CallFrame[]>();
+      nodeToStackMap.set(programNode, []);
+      for (let i = 0; i < samples.length; ++i) {
+        let node: SDK.ProfileTreeModel.ProfileNode|null = jsProfileModel.nodeByIndex(i);
+        if (!node) {
+          console.error(`Node with unknown id ${samples[i]} at index ${i}`);
+          continue;
+        }
+        if (node === gcNode || node === idleNode) {
+          continue;
+        }
+        let callFrames = nodeToStackMap.get(node);
+        if (!callFrames) {
+          callFrames = (new Array(node.depth + 1) as Protocol.Runtime.CallFrame[]);
+          nodeToStackMap.set(node, callFrames);
+          for (let j = 0; node.parent; node = node.parent) {
+            callFrames[j++] = (node as Protocol.Runtime.CallFrame);
+          }
+        }
+        const jsSampleEvent = new SDK.TracingModel.Event(
+            SDK.TracingModel.DevToolsTimelineEventCategory, RecordType.JSSample, SDK.TracingModel.Phase.Instant,
+            timestamps[i], thread);
+        jsSampleEvent.args['data'] = {stackTrace: callFrames};
+        jsEvents.push(jsSampleEvent);
+      }
     }
     return jsEvents;
   }
@@ -227,6 +261,7 @@ export class TimelineJSProfileProcessor {
   static buildTraceProfileFromCpuProfile(profile: any, tid: number, injectPageEvent: boolean, name?: string|null):
       SDK.TracingManager.EventPayload[] {
     const events: SDK.TracingManager.EventPayload[] = [];
+
     if (injectPageEvent) {
       appendEvent('TracingStartedInPage', {data: {'sessionId': '1'}}, 0, 0, 'M');
     }
@@ -237,9 +272,60 @@ export class TimelineJSProfileProcessor {
     if (!profile) {
       return events;
     }
-    // Append a root to show the start time of the profile (which is earlier than first sample), so the Performance
-    // panel won't truncate this time period.
-    appendEvent('(root)', {}, profile.startTime, profile.endTime - profile.startTime, 'X', 'toplevel');
+
+    if (Root.Runtime.experiments.isEnabled('timelineDoNotSkipSystemNodesOfCpuProfile')) {
+      // Append a root to show the start time of the profile (which is earlier than first sample), so the Performance
+      // panel won't truncate this time period.
+      appendEvent('(root)', {}, profile.startTime, profile.endTime - profile.startTime, 'X', 'toplevel');
+    } else {
+      const idToNode = new Map<any, any>();
+      const nodes = profile['nodes'];
+      for (let i = 0; i < nodes.length; ++i) {
+        idToNode.set(nodes[i].id, nodes[i]);
+      }
+      let programEvent: SDK.TracingManager.EventPayload|null = null;
+      let functionEvent: null|SDK.TracingManager.EventPayload = null;
+      let nextTime: number = profile.startTime;
+      let currentTime = 0;
+      const samples = profile['samples'];
+      const timeDeltas = profile['timeDeltas'];
+      for (let i = 0; i < samples.length; ++i) {
+        currentTime = nextTime;
+        nextTime += timeDeltas[i];
+        const node = idToNode.get(samples[i]);
+        const name = node.callFrame.functionName;
+        if (name === '(idle)') {
+          closeEvents();
+          continue;
+        }
+        if (!programEvent) {
+          programEvent = appendEvent('MessageLoop::RunTask', {}, currentTime, 0, 'X', 'toplevel');
+        }
+        if (name === '(program)') {
+          if (functionEvent) {
+            functionEvent.dur = currentTime - functionEvent.ts;
+            functionEvent = null;
+          }
+        } else {
+          // A JS function.
+          if (!functionEvent) {
+            functionEvent = appendEvent('FunctionCall', {data: {'sessionId': '1'}}, currentTime);
+          }
+        }
+      }
+      closeEvents();
+
+      function closeEvents(): void {
+        if (programEvent) {
+          programEvent.dur = currentTime - programEvent.ts;
+        }
+        if (functionEvent) {
+          functionEvent.dur = currentTime - functionEvent.ts;
+        }
+        programEvent = null;
+        functionEvent = null;
+      }
+    }
 
     appendEvent('CpuProfile', {data: {'cpuProfile': profile}}, profile.endTime, 0, 'I');
     return events;

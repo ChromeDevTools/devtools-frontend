@@ -59,6 +59,7 @@ export interface DataGridData {
   contextMenus?: DataGridContextMenusConfiguration;
   label?: string;
   paddingRowsCount?: number;
+  showScrollbar?: boolean;
 }
 
 const enum UserScrollState {
@@ -83,6 +84,7 @@ export class DataGrid extends HTMLElement {
   #contextMenus?: DataGridContextMenusConfiguration = undefined;
   #label?: string = undefined;
   #paddingRowsCount = 10;
+  #showScrollbar?: boolean = false;
   #currentResize: {
     rightCellCol: HTMLTableColElement,
     leftCellCol: HTMLTableColElement,
@@ -141,6 +143,7 @@ export class DataGrid extends HTMLElement {
       contextMenus: this.#contextMenus,
       label: this.#label,
       paddingRowsCount: this.#paddingRowsCount,
+      showScrollbar: this.#showScrollbar,
     };
   }
 
@@ -153,6 +156,7 @@ export class DataGrid extends HTMLElement {
     this.#sortState = data.activeSort;
     this.#contextMenus = data.contextMenus;
     this.#label = data.label;
+    this.#showScrollbar = data.showScrollbar;
 
     /**
      * On first render, now we have data, we can figure out which cell is the
@@ -706,6 +710,10 @@ export class DataGrid extends HTMLElement {
     const renderableRows = nonHiddenRows.filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
     const indexOfFirstVisibleColumn = this.#columns.findIndex(col => col.visible);
     const anyColumnsSortable = this.#columns.some(col => col.sortable === true);
+    const containerClassMap = {
+      'wrapping-container': true,
+      'show-scrollbar': this.#showScrollbar === true,
+    };
 
     await coordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
@@ -720,7 +728,7 @@ export class DataGrid extends HTMLElement {
          */
         return this.#renderResizeForCell(col, [columnIndex, 0]);
       })}
-      <div class="wrapping-container" @scroll=${this.#onScroll} @focusout=${this.#onFocusOut}>
+      <div class=${LitHtml.Directives.classMap(containerClassMap)} @scroll=${this.#onScroll} @focusout=${this.#onFocusOut}>
         <table
           aria-label=${LitHtml.Directives.ifDefined(this.#label)}
           aria-rowcount=${this.#rows.length}

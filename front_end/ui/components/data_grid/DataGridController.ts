@@ -32,6 +32,7 @@ export interface DataGridControllerData {
   contextMenus?: DataGridContextMenusConfiguration;
   label?: string;
   paddingRowsCount?: number;
+  showScrollbar?: boolean;
 }
 
 export class DataGridController extends HTMLElement {
@@ -43,6 +44,7 @@ export class DataGridController extends HTMLElement {
   #rows: Row[] = [];
   #contextMenus?: DataGridContextMenusConfiguration = undefined;
   #label?: string = undefined;
+  #showScrollbar?: boolean = false;
 
   /**
    * Because the controller will sort data in place (e.g. mutate it) when we get
@@ -70,6 +72,7 @@ export class DataGridController extends HTMLElement {
       contextMenus: this.#contextMenus,
       label: this.#label,
       paddingRowsCount: this.#paddingRowsCount,
+      showScrollbar: this.#showScrollbar,
     };
   }
 
@@ -80,6 +83,7 @@ export class DataGridController extends HTMLElement {
     this.#filters = data.filters || [];
     this.#contextMenus = data.contextMenus;
     this.#label = data.label;
+    this.#showScrollbar = data.showScrollbar;
 
     this.#columns = [...this.#originalColumns];
     this.#rows = this.#cloneAndFilterRows(data.rows, this.#filters);
@@ -229,6 +233,7 @@ export class DataGridController extends HTMLElement {
           contextMenus: this.#contextMenus,
           label: this.#label,
           paddingRowsCount: this.#paddingRowsCount,
+          showScrollbar: this.#showScrollbar,
         } as DataGridData}
         @columnheaderclick=${this.#onColumnHeaderClick}
         @contextmenucolumnsortclick=${this.#onContextMenuColumnSortClick}

@@ -18,7 +18,7 @@
   height: 100%;
 }
 
-.wrapping-container::-webkit-scrollbar {
+.wrapping-container:not(.show-scrollbar)::-webkit-scrollbar {
   display: none;
 }
 

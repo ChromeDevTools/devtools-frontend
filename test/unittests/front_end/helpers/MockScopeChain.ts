@@ -20,13 +20,17 @@ interface ScriptDescription {
   isContentScript?: boolean;
 }
 
+interface SetBreakpointByUrlResponse {
+  response: Promise<Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>|{getError(): string}>;
+  callback: () => void;
+  isOneShot: boolean;
+}
+
 export class MockProtocolBackend {
   #scriptSources = new Map<string, string>();
   #sourceMapContents = new Map<string, string>();
   #objectProperties = new Map<string, {name: string, value: number}[]>();
-  #breakpointResponses = new Map<
-      string,
-      {response: Promise<Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>>, callback: () => void}>();
+  #breakpointResponses = new Map<string, SetBreakpointByUrlResponse>();
   #nextObjectIndex = 0;
   #nextScriptIndex = 0;
 
@@ -39,6 +43,7 @@ export class MockProtocolBackend {
     setMockConnectionResponseHandler('Storage.getStorageKeyForFrame', () => ({storageKey: 'test-key'}));
     setMockConnectionResponseHandler('Debugger.removeBreakpoint', () => ({}));
     setMockConnectionResponseHandler('Debugger.resume', () => ({}));
+    setMockConnectionResponseHandler('Debugger.enable', () => ({debuggerId: 'DEBUGGER_ID'}));
 
     SDK.PageResourceLoader.PageResourceLoader.instance({
       forceNew: true,
@@ -208,11 +213,21 @@ export class MockProtocolBackend {
       requestCallback = resolve;
     });
     const key = this.#getBreakpointKey(url, lineNumber);
-    this.#breakpointResponses.set(key, {response: responsePromise, callback: requestCallback});
+    this.#breakpointResponses.set(key, {response: responsePromise, callback: requestCallback, isOneShot: true});
     return async (response: Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>) => {
       responseCallback(response);
       await requestPromise;
     };
+  }
+
+  setBreakpointByUrlToFail(url: string, lineNumber: number) {
+    const key = this.#getBreakpointKey(url, lineNumber);
+    const responsePromise = Promise.resolve({
+      getError() {
+        return 'Breakpoint error';
+      },
+    });
+    this.#breakpointResponses.set(key, {response: responsePromise, callback: () => {}, isOneShot: false});
   }
 
   #getScriptSourceHandler(request: Protocol.Debugger.GetScriptSourceRequest):
@@ -235,11 +250,13 @@ export class MockProtocolBackend {
   }
 
   #setBreakpointByUrlHandler(request: Protocol.Debugger.SetBreakpointByUrlRequest):
-      Promise<Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>> {
+      Promise<Omit<Protocol.Debugger.SetBreakpointByUrlResponse, 'getError'>|{getError(): string}> {
     const key = this.#getBreakpointKey(request.url ?? '', request.lineNumber);
     const responseCallback = this.#breakpointResponses.get(key);
     if (responseCallback) {
-      this.#breakpointResponses.delete(key);
+      if (responseCallback.isOneShot) {
+        this.#breakpointResponses.delete(key);
+      }
       // Announce to the client that the breakpoint request arrived.
       responseCallback.callback();
       // Return the response promise.

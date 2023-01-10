@@ -280,35 +280,6 @@ describeWithRealConnection('BreakpointManager', () => {
       assert.isTrue(spy.calledOnce);
     });
   });
-
-  describe('Breakpoints', () => {
-    it('are removed and kept in storage after a back-end error', async () => {
-      const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
-
-      // Use TestDebuggerModel, which always returns the same location to create a location crash.
-      const debuggerModel = new TestDebuggerModel(target);
-
-      // Simulates a back-end error.
-      sinon.stub(debuggerModel, 'setBreakpointByURL').callsFake(() => {
-        return Promise.resolve({locations: [], breakpointId: null} as SDK.DebuggerModel.SetBreakpointResult);
-      });
-      const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, 42, SCRIPT_ID);
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
-
-      const breakpoint = await breakpointManager.setBreakpoint(
-          uiSourceCode, 42, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
-      breakpoint.modelAdded(debuggerModel);
-      const removedSpy = sinon.spy(breakpoint, 'remove');
-      await breakpoint.updateBreakpoint();
-
-      // Breakpoint was removed and is kept in storage.
-      assert.isTrue(breakpoint.getIsRemoved());
-      assert.isTrue(removedSpy.calledWith(true));
-
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
-      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-    });
-  });
 });
 
 describeWithMockConnection('BreakpointManager (mock backend)', () => {
@@ -339,6 +310,8 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
   let breakpointManager: Bindings.BreakpointManager.BreakpointManager;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
   beforeEach(async () => {
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.BREAKPOINT_VIEW, '', true);
+
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
@@ -377,6 +350,37 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     const uiLocation = await breakpointManager.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
     return uiLocation?.uiSourceCode ?? null;
   }
+
+  describe('Breakpoints', () => {
+    it('are removed and kept in storage after a back-end error', async () => {
+      // Simulates a back-end error.
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assertNotNullOrUndefined(debuggerModel);
+
+      if (!debuggerModel.isReadyToPause()) {
+        await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+      }
+
+      // Create an inline script and get a UI source code instance for it.
+      const script = await backend.addScript(target, scriptDescription, null);
+      const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
+      assertNotNullOrUndefined(uiSourceCode);
+
+      // Set up the backend to respond with an error.
+      backend.setBreakpointByUrlToFail(URL, BREAKPOINT_SCRIPT_LINE);
+
+      // Set the breakpoint.
+      const breakpoint = await breakpointManager.setBreakpoint(
+          uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+
+      const removedSpy = sinon.spy(breakpoint, 'remove');
+      await breakpoint.updateBreakpoint();
+
+      // Breakpoint was removed and is kept in storage.
+      assert.isTrue(breakpoint.getIsRemoved());
+      assert.isTrue(removedSpy.calledWith(true));
+    });
+  });
 
   it('removes ui source code from breakpoint even after breakpoint live location update', async () => {
     const BREAKPOINT_TS_LINE = 10;

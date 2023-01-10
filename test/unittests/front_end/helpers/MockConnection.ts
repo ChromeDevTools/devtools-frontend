@@ -16,7 +16,7 @@ export type ProtocolCommand = keyof ProtocolMapping.Commands;
 export type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
 export type ProtocolResponse<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['returnType'];
 export type ProtocolCommandHandler<C extends ProtocolCommand> = (...params: ProtocolCommandParams<C>) =>
-    Omit<ProtocolResponse<C>, 'getError'>;
+    Omit<ProtocolResponse<C>, 'getError'>|{getError(): string};
 export type MessageCallback = (result: string|Object) => void;
 type Message = {
   id: number,

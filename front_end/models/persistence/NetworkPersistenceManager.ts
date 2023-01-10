@@ -204,7 +204,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (initialEncodedPath.endsWith('/') && initialEncodedPath.indexOf('?') === -1) {
       initialEncodedPath = Common.ParsedURL.ParsedURL.concatenate(initialEncodedPath, 'index.html');
     }
-    let encodedPathParts = encodeEncodedPathToLocalPathParts(initialEncodedPath);
+    let encodedPathParts = NetworkPersistenceManager.encodeEncodedPathToLocalPathParts(initialEncodedPath);
     const projectPath =
         FileSystemWorkspaceBinding.fileSystemPath(this.projectInternal.id() as Platform.DevToolsPath.UrlString);
     const encodedPath = encodedPathParts.join('/');
@@ -221,49 +221,48 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       ];
     }
     return Common.ParsedURL.ParsedURL.join(encodedPathParts as Platform.DevToolsPath.RawPathString[], '/');
+  }
 
-    function encodeEncodedPathToLocalPathParts(encodedPath: Platform.DevToolsPath.EncodedPathString): string[] {
-      const encodedParts = [];
-      for (const pathPart of fileNamePartsFromEncodedPath(encodedPath)) {
-        if (!pathPart) {
-          continue;
-        }
-        // encodeURI() escapes all the unsafe filename characters except '/' and '*'
-        let encodedName =
-            encodeURI(pathPart).replace(/[\/\*]/g, match => '%' + match[0].charCodeAt(0).toString(16).toUpperCase());
-        if (Host.Platform.isWin()) {
-          // Windows does not allow ':' and '?' in filenames
-          encodedName = encodedName.replace(/[:\?]/g, match => '%' + match[0].charCodeAt(0).toString(16).toUpperCase());
-          // Windows does not allow a small set of filenames.
-          if (RESERVED_FILENAMES.has(encodedName.toLowerCase())) {
-            encodedName =
-                encodedName.split('').map(char => '%' + char.charCodeAt(0).toString(16).toUpperCase()).join('');
-          }
-          // Windows does not allow the file to end in a space or dot (space should already be encoded).
-          const lastChar = encodedName.charAt(encodedName.length - 1);
-          if (lastChar === '.') {
-            encodedName = encodedName.substr(0, encodedName.length - 1) + '%2E';
-          }
-        }
-        encodedParts.push(encodedName);
+  static encodeEncodedPathToLocalPathParts(encodedPath: Platform.DevToolsPath.EncodedPathString): string[] {
+    const encodedParts = [];
+    for (const pathPart of this.#fileNamePartsFromEncodedPath(encodedPath)) {
+      if (!pathPart) {
+        continue;
       }
-      return encodedParts;
+      // encodeURI() escapes all the unsafe filename characters except '/' and '*'
+      let encodedName =
+          encodeURI(pathPart).replace(/[\/\*]/g, match => '%' + match[0].charCodeAt(0).toString(16).toUpperCase());
+      if (Host.Platform.isWin()) {
+        // Windows does not allow ':' and '?' in filenames
+        encodedName = encodedName.replace(/[:\?]/g, match => '%' + match[0].charCodeAt(0).toString(16).toUpperCase());
+        // Windows does not allow a small set of filenames.
+        if (RESERVED_FILENAMES.has(encodedName.toLowerCase())) {
+          encodedName = encodedName.split('').map(char => '%' + char.charCodeAt(0).toString(16).toUpperCase()).join('');
+        }
+        // Windows does not allow the file to end in a space or dot (space should already be encoded).
+        const lastChar = encodedName.charAt(encodedName.length - 1);
+        if (lastChar === '.') {
+          encodedName = encodedName.substr(0, encodedName.length - 1) + '%2E';
+        }
+      }
+      encodedParts.push(encodedName);
     }
+    return encodedParts;
+  }
 
-    function fileNamePartsFromEncodedPath(encodedPath: Platform.DevToolsPath.EncodedPathString): string[] {
-      encodedPath = Common.ParsedURL.ParsedURL.urlWithoutHash(encodedPath) as Platform.DevToolsPath.EncodedPathString;
-      const queryIndex = encodedPath.indexOf('?');
-      if (queryIndex === -1) {
-        return encodedPath.split('/');
-      }
-      if (queryIndex === 0) {
-        return [encodedPath];
-      }
-      const endSection = encodedPath.substr(queryIndex);
-      const parts = encodedPath.substr(0, encodedPath.length - endSection.length).split('/');
-      parts[parts.length - 1] += endSection;
-      return parts;
+  static #fileNamePartsFromEncodedPath(encodedPath: Platform.DevToolsPath.EncodedPathString): string[] {
+    encodedPath = Common.ParsedURL.ParsedURL.urlWithoutHash(encodedPath) as Platform.DevToolsPath.EncodedPathString;
+    const queryIndex = encodedPath.indexOf('?');
+    if (queryIndex === -1) {
+      return encodedPath.split('/');
     }
+    if (queryIndex === 0) {
+      return [encodedPath];
+    }
+    const endSection = encodedPath.substr(queryIndex);
+    const parts = encodedPath.substr(0, encodedPath.length - endSection.length).split('/');
+    parts[parts.length - 1] += endSection;
+    return parts;
   }
 
   fileUrlFromNetworkUrl(url: Platform.DevToolsPath.UrlString, ignoreInactive?: boolean):
@@ -410,6 +409,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       return '';
     }
     if (relativePathParts[1] === 'longurls' && relativePathParts.length !== 2) {
+      if (relativePathParts[0] === 'file:') {
+        return 'file:///*';
+      }
       return 'http?://' + relativePathParts[0] + '/*';
     }
     // 'relativePath' returns an encoded string of the local file name which itself is already encoded.
@@ -461,11 +463,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  async generateHeaderPatterns(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<{
-    headerPatterns: Set<string>,
-    path: Platform.DevToolsPath.EncodedPathString,
-    overridesWithRegex: HeaderOverrideWithRegex[],
-  }> {
+  async #getHeaderOverridesFromUiSourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
+      Promise<HeaderOverride[]> {
     const content = (await uiSourceCode.requestContent()).content || '[]';
     let headerOverrides: HeaderOverride[] = [];
     try {
@@ -475,32 +474,51 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       }
     } catch (e) {
       console.error('Failed to parse', uiSourceCode.url(), 'for locally overriding headers.');
-      return {
-        headerPatterns: new Set<string>(),
-        path: Platform.DevToolsPath.EmptyEncodedPathString,
-        overridesWithRegex: [],
-      };
+      return [];
     }
-    const relativePath = FileSystemWorkspaceBinding.relativePath(uiSourceCode).join('/');
-    // 'relativePath' returns an encoded string of the local file name which itself is already encoded.
-    // e.g. relativePath: 'www.example.com%253A443/path/.headers '
-    // singlyDecodedPath: 'www.example.com%3A443/path/'
-    // decodedPath: 'www.example.com:443/path'
-    const singlyDecodedPath = this.decodeLocalPathToUrlPath(relativePath).slice(0, -HEADERS_FILENAME.length) as
-        Platform.DevToolsPath.EncodedPathString;
+    return headerOverrides;
+  }
+
+  #doubleDecodeEncodedPathString(relativePath: Platform.DevToolsPath.EncodedPathString):
+      {singlyDecodedPath: Platform.DevToolsPath.EncodedPathString, decodedPath: Platform.DevToolsPath.RawPathString} {
+    // 'relativePath' is an encoded string of a local file path, which is itself already encoded.
+    // e.g. relativePath: 'www.example.com%253A443/path/.headers'
+    // singlyDecodedPath: 'www.example.com%3A443/path/.headers'
+    // decodedPath: 'www.example.com:443/path/.headers'
+    const singlyDecodedPath = this.decodeLocalPathToUrlPath(relativePath) as Platform.DevToolsPath.EncodedPathString;
     const decodedPath = this.decodeLocalPathToUrlPath(singlyDecodedPath) as Platform.DevToolsPath.RawPathString;
-    const patterns = decodedPath.startsWith('file:/') ?
-        this.generateHeaderPatternsForFileUrl(
-            Common.ParsedURL.ParsedURL.substring(decodedPath, 'file:/'.length), headerOverrides) :
-        this.generateHeaderPatternsForHttpUrl(decodedPath, headerOverrides);
+    return {singlyDecodedPath, decodedPath};
+  }
+
+  async generateHeaderPatterns(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<{
+    headerPatterns: Set<string>,
+    path: Platform.DevToolsPath.EncodedPathString,
+    overridesWithRegex: HeaderOverrideWithRegex[],
+  }> {
+    const headerOverrides = await this.#getHeaderOverridesFromUiSourceCode(uiSourceCode);
+    const relativePathParts = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
+    const relativePath = Common.ParsedURL.ParsedURL.slice(
+        Common.ParsedURL.ParsedURL.join(relativePathParts, '/'), 0, -HEADERS_FILENAME.length);
+    const {singlyDecodedPath, decodedPath} = this.#doubleDecodeEncodedPathString(relativePath);
+    let patterns;
+
+    // Long URLS are encoded as `[domain]/longurls/[hashed path]` by `rawPathFromUrl()`.
+    if (relativePathParts.length > 2 && relativePathParts[1] === 'longurls' && headerOverrides.length) {
+      patterns = this.#generateHeaderPatternsForLongUrl(decodedPath, headerOverrides, relativePathParts[0]);
+    } else if (decodedPath.startsWith('file:/')) {
+      patterns = this.#generateHeaderPatternsForFileUrl(
+          Common.ParsedURL.ParsedURL.substring(decodedPath, 'file:/'.length), headerOverrides);
+    } else {
+      patterns = this.#generateHeaderPatternsForHttpUrl(decodedPath, headerOverrides);
+    }
     return {...patterns, path: singlyDecodedPath};
   }
 
-  generateHeaderPatternsForHttpUrl(decodedPath: Platform.DevToolsPath.RawPathString, headerOverrides: HeaderOverride[]):
-      {
-        headerPatterns: Set<string>,
-        overridesWithRegex: HeaderOverrideWithRegex[],
-      } {
+  #generateHeaderPatternsForHttpUrl(
+      decodedPath: Platform.DevToolsPath.RawPathString, headerOverrides: HeaderOverride[]): {
+    headerPatterns: Set<string>,
+    overridesWithRegex: HeaderOverrideWithRegex[],
+  } {
     const headerPatterns = new Set<string>();
     const overridesWithRegex: HeaderOverrideWithRegex[] = [];
     for (const headerOverride of headerOverrides) {
@@ -525,16 +543,13 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       if (tail) {
         headerPatterns.add('http?://' + decodedPath + head);
 
-        const pattern = escapeRegex(decodedPath + head) + '(' + escapeRegex(tail) + ')?';
-        const regex = new RegExp('^https?:\/\/' + pattern + '$');
         overridesWithRegex.push({
-          applyToRegex: regex,
+          applyToRegex: new RegExp(`^${escapeRegex(decodedPath + head)}(${escapeRegex(tail)})?$`),
           headers: headerOverride.headers,
         });
       } else {
-        const regex = new RegExp('^https?:\/\/' + escapeRegex(decodedPath + headerOverride.applyTo) + '$');
         overridesWithRegex.push({
-          applyToRegex: regex,
+          applyToRegex: new RegExp(`^${escapeRegex(decodedPath + headerOverride.applyTo)}$`),
           headers: headerOverride.headers,
         });
       }
@@ -542,18 +557,50 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     return {headerPatterns, overridesWithRegex};
   }
 
-  generateHeaderPatternsForFileUrl(decodedPath: Platform.DevToolsPath.RawPathString, headerOverrides: HeaderOverride[]):
-      {
-        headerPatterns: Set<string>,
-        overridesWithRegex: HeaderOverrideWithRegex[],
-      } {
+  #generateHeaderPatternsForFileUrl(
+      decodedPath: Platform.DevToolsPath.RawPathString, headerOverrides: HeaderOverride[]): {
+    headerPatterns: Set<string>,
+    overridesWithRegex: HeaderOverrideWithRegex[],
+  } {
     const headerPatterns = new Set<string>();
     const overridesWithRegex: HeaderOverrideWithRegex[] = [];
     for (const headerOverride of headerOverrides) {
       headerPatterns.add('file:///' + decodedPath + headerOverride.applyTo);
-      const regex = new RegExp('^file:\/\/\/' + escapeRegex(decodedPath + headerOverride.applyTo) + '$');
       overridesWithRegex.push({
-        applyToRegex: regex,
+        applyToRegex: new RegExp(`^file:\/${escapeRegex(decodedPath + headerOverride.applyTo)}$`),
+        headers: headerOverride.headers,
+      });
+    }
+    return {headerPatterns, overridesWithRegex};
+  }
+
+  // For very long URLs, part of the URL is hashed for local overrides, so that
+  // the URL appears shorter. This special case is handled here.
+  #generateHeaderPatternsForLongUrl(
+      decodedPath: Platform.DevToolsPath.RawPathString, headerOverrides: HeaderOverride[],
+      relativePathPart: Platform.DevToolsPath.EncodedPathString): {
+    headerPatterns: Set<string>,
+    overridesWithRegex: HeaderOverrideWithRegex[],
+  } {
+    const headerPatterns = new Set<string>();
+
+    // Use pattern with wildcard => every request which matches will be paused
+    // and checked whether its hashed URL matches a stored local override in
+    // `maybeMergeHeadersForPathSegment()`.
+    let {decodedPath: decodedPattern} =
+        this.#doubleDecodeEncodedPathString(Common.ParsedURL.ParsedURL.concatenate(relativePathPart, '/*'));
+
+    const isFileUrl = decodedPath.startsWith('file:/');
+    if (isFileUrl) {
+      decodedPath = Common.ParsedURL.ParsedURL.substring(decodedPath, 'file:/'.length);
+      decodedPattern = Common.ParsedURL.ParsedURL.substring(decodedPattern, 'file:/'.length);
+    }
+    headerPatterns.add((isFileUrl ? 'file:///' : 'http?://') + decodedPattern);
+
+    const overridesWithRegex: HeaderOverrideWithRegex[] = [];
+    for (const headerOverride of headerOverrides) {
+      overridesWithRegex.push({
+        applyToRegex: new RegExp(`^${isFileUrl ? 'file:\/' : ''}${escapeRegex(decodedPath + headerOverride.applyTo)}$`),
         headers: headerOverride.headers,
       });
     }
@@ -708,7 +755,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       headers: Protocol.Fetch.HeaderEntry[]): Protocol.Fetch.HeaderEntry[] {
     const headerOverrides = this.#headerOverridesMap.get(path) || [];
     for (const headerOverride of headerOverrides) {
-      if (headerOverride.applyToRegex.test(requestUrl)) {
+      const requestUrlWithLongUrlReplacement = this.decodeLocalPathToUrlPath(this.rawPathFromUrl(requestUrl));
+      if (headerOverride.applyToRegex.test(requestUrlWithLongUrlReplacement)) {
         headers = this.mergeHeaders(headers, headerOverride.headers);
       }
     }

@@ -6,12 +6,16 @@ const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {createWorkspaceProject} from '../../helpers/OverridesHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+
+const LONG_URL_PART =
+    'LoremIpsumDolorSitAmetConsecteturAdipiscingElitPhasellusVitaeOrciInAugueCondimentumTinciduntUtEgetDolorQuisqueEfficiturUltricesTinciduntVivamusVelitPurusCommodoQuisErosSitAmetTemporMalesuadaNislNullamTtempusVulputateAugueEgetScelerisqueLacusVestibulumNon/index.html';
 
 describeWithMockConnection('MultitargetNetworkManager', () => {
   describe('Trust Token done event', () => {
@@ -477,6 +481,45 @@ describeWithMockConnection('InterceptedRequest', () => {
           ]`,
           },
           {name: 'index.html', path: 'file:/usr/local/example/', content: 'Overridden file content'},
+          {
+            name: '.headers',
+            path: 'www.longurl.com/longurls/',
+            content: `[
+            {
+              "applyTo": "index.html-${
+                Platform.StringUtilities.hashCode('www.longurl.com/' + LONG_URL_PART).toString(16)}.html",
+              "headers": [{
+                "name": "long-url-header",
+                "value": "long url header value"
+              }]
+            }
+          ]`,
+          },
+          {
+            name:
+                `index.html-${Platform.StringUtilities.hashCode('www.longurl.com/' + LONG_URL_PART).toString(16)}.html`,
+            path: 'www.longurl.com/longurls/',
+            content: 'Overridden long URL file content',
+          },
+          {
+            name: '.headers',
+            path: 'file:/longurls/',
+            content: `[
+            {
+              "applyTo": "index.html-${
+                Platform.StringUtilities
+                    .hashCode(
+                        Persistence.NetworkPersistenceManager.NetworkPersistenceManager
+                            .encodeEncodedPathToLocalPathParts('file:' as Platform.DevToolsPath.EncodedPathString)[0] +
+                        '/' + LONG_URL_PART)
+                    .toString(16)}.html",
+              "headers": [{
+                "name": "long-file-url-header",
+                "value": "long file url header value"
+              }]
+            }
+          ]`,
+          },
         ]);
     sinon.stub(target.fetchAgent(), 'invoke_enable');
     await networkPersistenceManager.updateInterceptionPatternsForTests();
@@ -697,6 +740,58 @@ describeWithMockConnection('InterceptedRequest', () => {
           responseCode,
           body: responseBody,
           responseHeaders: [
+            {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+          ],
+        });
+  });
+
+  it('can override headers and content for a request with a very long URL', async () => {
+    const responseCode = 200;
+    const requestId = 'request_id_10' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: `https://www.longurl.com/${LONG_URL_PART}`,
+        } as Protocol.Network.Request,
+        requestId, responseCode,
+        [
+          {name: 'content-type', value: 'text/html; charset=utf-8'},
+          {name: 'age', value: 'original'},
+        ],
+        responseBody, {
+          requestId,
+          responseCode,
+          body: btoa('Overridden long URL file content'),
+          responseHeaders: [
+            {name: 'long-url-header', value: 'long url header value'},
+            {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+          ],
+        });
+  });
+
+  it('can override headers for a request with a very long \'file:/\'-URL', async () => {
+    const responseCode = 200;
+    const requestId = 'request_id_11' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'file:///' + LONG_URL_PART,
+        } as Protocol.Network.Request,
+        requestId, responseCode,
+        [
+          {name: 'content-type', value: 'text/html; charset=utf-8'},
+          {name: 'age', value: 'original'},
+        ],
+        responseBody, {
+          requestId,
+          responseCode,
+          body: responseBody,
+          responseHeaders: [
+            {name: 'long-file-url-header', value: 'long file url header value'},
             {name: 'age', value: 'overridden'},
             {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],

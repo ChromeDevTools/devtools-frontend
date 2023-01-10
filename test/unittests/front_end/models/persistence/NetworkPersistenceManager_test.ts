@@ -713,23 +713,23 @@ describe('NetworkPersistenceManager', () => {
 
     const expectedMapping = [
       {
-        applyTo: /^https?:\/\/www\.example\.com\/.*$/.toString(),
+        applyTo: /^www\.example\.com\/.*$/.toString(),
         headers: [{name: 'age', value: '0'}],
       },
       {
-        applyTo: /^https?:\/\/www\.example\.com\/page\.html$/.toString(),
+        applyTo: /^www\.example\.com\/page\.html$/.toString(),
         headers: [{name: 'age', value: '1'}],
       },
       {
-        applyTo: /^https?:\/\/www\.example\.com\/(index\.html)?$/.toString(),
+        applyTo: /^www\.example\.com\/(index\.html)?$/.toString(),
         headers: [{name: 'age', value: '2'}],
       },
       {
-        applyTo: /^https?:\/\/www\.example\.com\/nested\/path\/.*\.js$/.toString(),
+        applyTo: /^www\.example\.com\/nested\/path\/.*\.js$/.toString(),
         headers: [{name: 'age', value: '3'}],
       },
       {
-        applyTo: /^https?:\/\/www\.example\.com\/.*\/path\/.*\.js$/.toString(),
+        applyTo: /^www\.example\.com\/.*\/path\/.*\.js$/.toString(),
         headers: [{name: 'age', value: '4'}],
       },
     ];
@@ -762,6 +762,42 @@ describe('NetworkPersistenceManager', () => {
 
     const {headerPatterns} = await networkPersistenceManager.generateHeaderPatterns(uiSourceCode);
     assert.deepEqual(Array.from(headerPatterns), ['http?://*', 'file:///*']);
+  });
+
+  it('generates header patterns for long URLs', async () => {
+    const {networkPersistenceManager} = setUpEnvironment();
+    const headers = `[
+      {
+        "applyTo": "index.html-5b9f4873.html",
+        "headers": [{
+          "name": "foo",
+          "value": "bar"
+        }]
+      }
+    ]`;
+
+    const {uiSourceCode} = createFileSystemUISourceCode({
+      url: 'file:///path/to/overrides/www.longurls.com/longurls/.headers' as Platform.DevToolsPath.UrlString,
+      content: headers,
+      mimeType: 'text/plain',
+      fileSystemPath: 'file:///path/to/overrides',
+    });
+
+    const {headerPatterns, path, overridesWithRegex} =
+        await networkPersistenceManager.generateHeaderPatterns(uiSourceCode);
+    assert.deepEqual(Array.from(headerPatterns), ['http?://www.longurls.com/*']);
+    assert.strictEqual(path, 'www.longurls.com/longurls/');
+
+    const expectedMapping = [
+      {
+        applyTo: /^www\.longurls\.com\/longurls\/index\.html\-5b9f4873\.html$/.toString(),
+        headers: [{name: 'foo', value: 'bar'}],
+      },
+    ];
+    const actualMapping = overridesWithRegex.map(
+        override => ({applyTo: override.applyToRegex.toString(), headers: override.headers}),
+    );
+    assert.deepEqual(actualMapping, expectedMapping);
   });
 
   it('updates interception patterns upon edit of .headers file', async () => {

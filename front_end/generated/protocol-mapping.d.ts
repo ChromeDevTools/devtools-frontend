@@ -35,8 +35,7 @@ export namespace ProtocolMapping {
      * Called with all existing backgroundServiceEvents when enabled, and all new
      * events afterwards if enabled and recording.
      */
-    'BackgroundService.backgroundServiceEventReceived':
-        [Protocol.BackgroundService.BackgroundServiceEventReceivedEvent];
+    'BackgroundService.backgroundServiceEventReceived': [Protocol.BackgroundService.BackgroundServiceEventReceivedEvent];
     /**
      * Fired when page is about to start a download.
      */
@@ -677,12 +676,18 @@ export namespace ProtocolMapping {
     /**
      * Disables the accessibility domain.
      */
-    'Accessibility.disable': {paramsType: []; returnType: void;};
+    'Accessibility.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables the accessibility domain which causes `AXNodeId`s to remain consistent between method calls.
      * This turns on accessibility for the page, which can impact performance until accessibility is disabled.
      */
-    'Accessibility.enable': {paramsType: []; returnType: void;};
+    'Accessibility.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
      */
@@ -713,56 +718,86 @@ export namespace ProtocolMapping {
      * `accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.
      */
     'Accessibility.queryAXTree': {
-      paramsType: [Protocol.Accessibility.QueryAXTreeRequest?]; returnType: Protocol.Accessibility.QueryAXTreeResponse;
+      paramsType: [Protocol.Accessibility.QueryAXTreeRequest?];
+      returnType: Protocol.Accessibility.QueryAXTreeResponse;
     };
     /**
      * Disables animation domain notifications.
      */
-    'Animation.disable': {paramsType: []; returnType: void;};
+    'Animation.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables animation domain notifications.
      */
-    'Animation.enable': {paramsType: []; returnType: void;};
+    'Animation.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Returns the current time of the an animation.
      */
     'Animation.getCurrentTime': {
-      paramsType: [Protocol.Animation.GetCurrentTimeRequest]; returnType: Protocol.Animation.GetCurrentTimeResponse;
+      paramsType: [Protocol.Animation.GetCurrentTimeRequest];
+      returnType: Protocol.Animation.GetCurrentTimeResponse;
     };
     /**
      * Gets the playback rate of the document timeline.
      */
-    'Animation.getPlaybackRate': {paramsType: []; returnType: Protocol.Animation.GetPlaybackRateResponse;};
+    'Animation.getPlaybackRate': {
+      paramsType: [];
+      returnType: Protocol.Animation.GetPlaybackRateResponse;
+    };
     /**
      * Releases a set of animations to no longer be manipulated.
      */
-    'Animation.releaseAnimations': {paramsType: [Protocol.Animation.ReleaseAnimationsRequest]; returnType: void;};
+    'Animation.releaseAnimations': {
+      paramsType: [Protocol.Animation.ReleaseAnimationsRequest];
+      returnType: void;
+    };
     /**
      * Gets the remote object of the Animation.
      */
     'Animation.resolveAnimation': {
-      paramsType: [Protocol.Animation.ResolveAnimationRequest]; returnType: Protocol.Animation.ResolveAnimationResponse;
+      paramsType: [Protocol.Animation.ResolveAnimationRequest];
+      returnType: Protocol.Animation.ResolveAnimationResponse;
     };
     /**
      * Seek a set of animations to a particular time within each animation.
      */
-    'Animation.seekAnimations': {paramsType: [Protocol.Animation.SeekAnimationsRequest]; returnType: void;};
+    'Animation.seekAnimations': {
+      paramsType: [Protocol.Animation.SeekAnimationsRequest];
+      returnType: void;
+    };
     /**
      * Sets the paused state of a set of animations.
      */
-    'Animation.setPaused': {paramsType: [Protocol.Animation.SetPausedRequest]; returnType: void;};
+    'Animation.setPaused': {
+      paramsType: [Protocol.Animation.SetPausedRequest];
+      returnType: void;
+    };
     /**
      * Sets the playback rate of the document timeline.
      */
-    'Animation.setPlaybackRate': {paramsType: [Protocol.Animation.SetPlaybackRateRequest]; returnType: void;};
+    'Animation.setPlaybackRate': {
+      paramsType: [Protocol.Animation.SetPlaybackRateRequest];
+      returnType: void;
+    };
     /**
      * Sets the timing of an animation node.
      */
-    'Animation.setTiming': {paramsType: [Protocol.Animation.SetTimingRequest]; returnType: void;};
+    'Animation.setTiming': {
+      paramsType: [Protocol.Animation.SetTimingRequest];
+      returnType: void;
+    };
     /**
      * Enables application cache domain notifications.
      */
-    'ApplicationCache.enable': {paramsType: []; returnType: void;};
+    'ApplicationCache.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Returns relevant application cache data for the document in given frame.
      */
@@ -774,8 +809,10 @@ export namespace ProtocolMapping {
      * Returns array of frame identifiers with manifest urls for each frame containing a document
      * associated with some application cache.
      */
-    'ApplicationCache.getFramesWithManifests':
-        {paramsType: []; returnType: Protocol.ApplicationCache.GetFramesWithManifestsResponse;};
+    'ApplicationCache.getFramesWithManifests': {
+      paramsType: [];
+      returnType: Protocol.ApplicationCache.GetFramesWithManifestsResponse;
+    };
     /**
      * Returns manifest URL for document in the given frame.
      */
@@ -788,96 +825,152 @@ export namespace ProtocolMapping {
      * applies to images.
      */
     'Audits.getEncodedResponse': {
-      paramsType: [Protocol.Audits.GetEncodedResponseRequest]; returnType: Protocol.Audits.GetEncodedResponseResponse;
+      paramsType: [Protocol.Audits.GetEncodedResponseRequest];
+      returnType: Protocol.Audits.GetEncodedResponseResponse;
     };
     /**
      * Disables issues domain, prevents further issues from being reported to the client.
      */
-    'Audits.disable': {paramsType: []; returnType: void;};
+    'Audits.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables issues domain, sends the issues collected so far to the client by means of the
      * `issueAdded` event.
      */
-    'Audits.enable': {paramsType: []; returnType: void;};
+    'Audits.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Runs the contrast check for the target page. Found issues are reported
      * using Audits.issueAdded event.
      */
-    'Audits.checkContrast': {paramsType: [Protocol.Audits.CheckContrastRequest?]; returnType: void;};
+    'Audits.checkContrast': {
+      paramsType: [Protocol.Audits.CheckContrastRequest?];
+      returnType: void;
+    };
     /**
      * Enables event updates for the service.
      */
-    'BackgroundService.startObserving':
-        {paramsType: [Protocol.BackgroundService.StartObservingRequest]; returnType: void;};
+    'BackgroundService.startObserving': {
+      paramsType: [Protocol.BackgroundService.StartObservingRequest];
+      returnType: void;
+    };
     /**
      * Disables event updates for the service.
      */
-    'BackgroundService.stopObserving':
-        {paramsType: [Protocol.BackgroundService.StopObservingRequest]; returnType: void;};
+    'BackgroundService.stopObserving': {
+      paramsType: [Protocol.BackgroundService.StopObservingRequest];
+      returnType: void;
+    };
     /**
      * Set the recording state for the service.
      */
-    'BackgroundService.setRecording': {paramsType: [Protocol.BackgroundService.SetRecordingRequest]; returnType: void;};
+    'BackgroundService.setRecording': {
+      paramsType: [Protocol.BackgroundService.SetRecordingRequest];
+      returnType: void;
+    };
     /**
      * Clears all stored data for the service.
      */
-    'BackgroundService.clearEvents': {paramsType: [Protocol.BackgroundService.ClearEventsRequest]; returnType: void;};
+    'BackgroundService.clearEvents': {
+      paramsType: [Protocol.BackgroundService.ClearEventsRequest];
+      returnType: void;
+    };
     /**
      * Set permission settings for given origin.
      */
-    'Browser.setPermission': {paramsType: [Protocol.Browser.SetPermissionRequest]; returnType: void;};
+    'Browser.setPermission': {
+      paramsType: [Protocol.Browser.SetPermissionRequest];
+      returnType: void;
+    };
     /**
      * Grant specific permissions to the given origin and reject all others.
      */
-    'Browser.grantPermissions': {paramsType: [Protocol.Browser.GrantPermissionsRequest]; returnType: void;};
+    'Browser.grantPermissions': {
+      paramsType: [Protocol.Browser.GrantPermissionsRequest];
+      returnType: void;
+    };
     /**
      * Reset all permission management for all origins.
      */
-    'Browser.resetPermissions': {paramsType: [Protocol.Browser.ResetPermissionsRequest?]; returnType: void;};
+    'Browser.resetPermissions': {
+      paramsType: [Protocol.Browser.ResetPermissionsRequest?];
+      returnType: void;
+    };
     /**
      * Set the behavior when downloading a file.
      */
-    'Browser.setDownloadBehavior': {paramsType: [Protocol.Browser.SetDownloadBehaviorRequest]; returnType: void;};
+    'Browser.setDownloadBehavior': {
+      paramsType: [Protocol.Browser.SetDownloadBehaviorRequest];
+      returnType: void;
+    };
     /**
      * Cancel a download if in progress
      */
-    'Browser.cancelDownload': {paramsType: [Protocol.Browser.CancelDownloadRequest]; returnType: void;};
+    'Browser.cancelDownload': {
+      paramsType: [Protocol.Browser.CancelDownloadRequest];
+      returnType: void;
+    };
     /**
      * Close browser gracefully.
      */
-    'Browser.close': {paramsType: []; returnType: void;};
+    'Browser.close': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Crashes browser on the main thread.
      */
-    'Browser.crash': {paramsType: []; returnType: void;};
+    'Browser.crash': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Crashes GPU process.
      */
-    'Browser.crashGpuProcess': {paramsType: []; returnType: void;};
+    'Browser.crashGpuProcess': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Returns version information.
      */
-    'Browser.getVersion': {paramsType: []; returnType: Protocol.Browser.GetVersionResponse;};
+    'Browser.getVersion': {
+      paramsType: [];
+      returnType: Protocol.Browser.GetVersionResponse;
+    };
     /**
      * Returns the command line switches for the browser process if, and only if
      * --enable-automation is on the commandline.
      */
-    'Browser.getBrowserCommandLine': {paramsType: []; returnType: Protocol.Browser.GetBrowserCommandLineResponse;};
+    'Browser.getBrowserCommandLine': {
+      paramsType: [];
+      returnType: Protocol.Browser.GetBrowserCommandLineResponse;
+    };
     /**
      * Get Chrome histograms.
      */
-    'Browser.getHistograms':
-        {paramsType: [Protocol.Browser.GetHistogramsRequest?]; returnType: Protocol.Browser.GetHistogramsResponse;};
+    'Browser.getHistograms': {
+      paramsType: [Protocol.Browser.GetHistogramsRequest?];
+      returnType: Protocol.Browser.GetHistogramsResponse;
+    };
     /**
      * Get a Chrome histogram by name.
      */
-    'Browser.getHistogram':
-        {paramsType: [Protocol.Browser.GetHistogramRequest]; returnType: Protocol.Browser.GetHistogramResponse;};
+    'Browser.getHistogram': {
+      paramsType: [Protocol.Browser.GetHistogramRequest];
+      returnType: Protocol.Browser.GetHistogramResponse;
+    };
     /**
      * Get position and size of the browser window.
      */
-    'Browser.getWindowBounds':
-        {paramsType: [Protocol.Browser.GetWindowBoundsRequest]; returnType: Protocol.Browser.GetWindowBoundsResponse;};
+    'Browser.getWindowBounds': {
+      paramsType: [Protocol.Browser.GetWindowBoundsRequest];
+      returnType: Protocol.Browser.GetWindowBoundsResponse;
+    };
     /**
      * Get the browser window that contains the devtools target.
      */
@@ -888,46 +981,73 @@ export namespace ProtocolMapping {
     /**
      * Set position and/or size of the browser window.
      */
-    'Browser.setWindowBounds': {paramsType: [Protocol.Browser.SetWindowBoundsRequest]; returnType: void;};
+    'Browser.setWindowBounds': {
+      paramsType: [Protocol.Browser.SetWindowBoundsRequest];
+      returnType: void;
+    };
     /**
      * Set dock tile details, platform-specific.
      */
-    'Browser.setDockTile': {paramsType: [Protocol.Browser.SetDockTileRequest?]; returnType: void;};
+    'Browser.setDockTile': {
+      paramsType: [Protocol.Browser.SetDockTileRequest?];
+      returnType: void;
+    };
     /**
      * Invoke custom browser commands used by telemetry.
      */
-    'Browser.executeBrowserCommand': {paramsType: [Protocol.Browser.ExecuteBrowserCommandRequest]; returnType: void;};
+    'Browser.executeBrowserCommand': {
+      paramsType: [Protocol.Browser.ExecuteBrowserCommandRequest];
+      returnType: void;
+    };
     /**
      * Inserts a new rule with the given `ruleText` in a stylesheet with given `styleSheetId`, at the
      * position specified by `location`.
      */
-    'CSS.addRule': {paramsType: [Protocol.CSS.AddRuleRequest]; returnType: Protocol.CSS.AddRuleResponse;};
+    'CSS.addRule': {
+      paramsType: [Protocol.CSS.AddRuleRequest];
+      returnType: Protocol.CSS.AddRuleResponse;
+    };
     /**
      * Returns all class names from specified stylesheet.
      */
-    'CSS.collectClassNames':
-        {paramsType: [Protocol.CSS.CollectClassNamesRequest]; returnType: Protocol.CSS.CollectClassNamesResponse;};
+    'CSS.collectClassNames': {
+      paramsType: [Protocol.CSS.CollectClassNamesRequest];
+      returnType: Protocol.CSS.CollectClassNamesResponse;
+    };
     /**
      * Creates a new special "via-inspector" stylesheet in the frame with given `frameId`.
      */
-    'CSS.createStyleSheet':
-        {paramsType: [Protocol.CSS.CreateStyleSheetRequest]; returnType: Protocol.CSS.CreateStyleSheetResponse;};
+    'CSS.createStyleSheet': {
+      paramsType: [Protocol.CSS.CreateStyleSheetRequest];
+      returnType: Protocol.CSS.CreateStyleSheetResponse;
+    };
     /**
      * Disables the CSS agent for the given page.
      */
-    'CSS.disable': {paramsType: []; returnType: void;};
+    'CSS.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables the CSS agent for the given page. Clients should not assume that the CSS agent has been
      * enabled until the result of this command is received.
      */
-    'CSS.enable': {paramsType: []; returnType: void;};
+    'CSS.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Ensures that the given node will have specified pseudo-classes whenever its style is computed by
      * the browser.
      */
-    'CSS.forcePseudoState': {paramsType: [Protocol.CSS.ForcePseudoStateRequest]; returnType: void;};
-    'CSS.getBackgroundColors':
-        {paramsType: [Protocol.CSS.GetBackgroundColorsRequest]; returnType: Protocol.CSS.GetBackgroundColorsResponse;};
+    'CSS.forcePseudoState': {
+      paramsType: [Protocol.CSS.ForcePseudoStateRequest];
+      returnType: void;
+    };
+    'CSS.getBackgroundColors': {
+      paramsType: [Protocol.CSS.GetBackgroundColorsRequest];
+      returnType: Protocol.CSS.GetBackgroundColorsResponse;
+    };
     /**
      * Returns the computed style for a DOM node identified by `nodeId`.
      */
@@ -940,7 +1060,8 @@ export namespace ProtocolMapping {
      * attributes) for a DOM node identified by `nodeId`.
      */
     'CSS.getInlineStylesForNode': {
-      paramsType: [Protocol.CSS.GetInlineStylesForNodeRequest]; returnType: Protocol.CSS.GetInlineStylesForNodeResponse;
+      paramsType: [Protocol.CSS.GetInlineStylesForNodeRequest];
+      returnType: Protocol.CSS.GetInlineStylesForNodeResponse;
     };
     /**
      * Returns requested styles for a DOM node identified by `nodeId`.
@@ -952,7 +1073,10 @@ export namespace ProtocolMapping {
     /**
      * Returns all media queries parsed by the rendering engine.
      */
-    'CSS.getMediaQueries': {paramsType: []; returnType: Protocol.CSS.GetMediaQueriesResponse;};
+    'CSS.getMediaQueries': {
+      paramsType: [];
+      returnType: Protocol.CSS.GetMediaQueriesResponse;
+    };
     /**
      * Requests information about platform fonts which we used to render child TextNodes in the given
      * node.
@@ -964,8 +1088,10 @@ export namespace ProtocolMapping {
     /**
      * Returns the current textual content for a stylesheet.
      */
-    'CSS.getStyleSheetText':
-        {paramsType: [Protocol.CSS.GetStyleSheetTextRequest]; returnType: Protocol.CSS.GetStyleSheetTextResponse;};
+    'CSS.getStyleSheetText': {
+      paramsType: [Protocol.CSS.GetStyleSheetTextRequest];
+      returnType: Protocol.CSS.GetStyleSheetTextResponse;
+    };
     /**
      * Starts tracking the given computed styles for updates. The specified array of properties
      * replaces the one previously specified. Pass empty array to disable tracking.
@@ -974,74 +1100,111 @@ export namespace ProtocolMapping {
      * by the DOM agent. If no changes to the tracked properties occur after the node has been pushed
      * to the front-end, no updates will be issued for the node.
      */
-    'CSS.trackComputedStyleUpdates': {paramsType: [Protocol.CSS.TrackComputedStyleUpdatesRequest]; returnType: void;};
+    'CSS.trackComputedStyleUpdates': {
+      paramsType: [Protocol.CSS.TrackComputedStyleUpdatesRequest];
+      returnType: void;
+    };
     /**
      * Polls the next batch of computed style updates.
      */
-    'CSS.takeComputedStyleUpdates': {paramsType: []; returnType: Protocol.CSS.TakeComputedStyleUpdatesResponse;};
+    'CSS.takeComputedStyleUpdates': {
+      paramsType: [];
+      returnType: Protocol.CSS.TakeComputedStyleUpdatesResponse;
+    };
     /**
      * Find a rule with the given active property for the given node and set the new value for this
      * property
      */
-    'CSS.setEffectivePropertyValueForNode':
-        {paramsType: [Protocol.CSS.SetEffectivePropertyValueForNodeRequest]; returnType: void;};
+    'CSS.setEffectivePropertyValueForNode': {
+      paramsType: [Protocol.CSS.SetEffectivePropertyValueForNodeRequest];
+      returnType: void;
+    };
     /**
      * Modifies the keyframe rule key text.
      */
-    'CSS.setKeyframeKey':
-        {paramsType: [Protocol.CSS.SetKeyframeKeyRequest]; returnType: Protocol.CSS.SetKeyframeKeyResponse;};
-    /**
-     * Modifies the rule selector.
-     */
-    'CSS.setMediaText':
-        {paramsType: [Protocol.CSS.SetMediaTextRequest]; returnType: Protocol.CSS.SetMediaTextResponse;};
-    /**
-     * Modifies the expression of a container query.
-     */
-    'CSS.setContainerQueryText': {
-      paramsType: [Protocol.CSS.SetContainerQueryTextRequest]; returnType: Protocol.CSS.SetContainerQueryTextResponse;
+    'CSS.setKeyframeKey': {
+      paramsType: [Protocol.CSS.SetKeyframeKeyRequest];
+      returnType: Protocol.CSS.SetKeyframeKeyResponse;
     };
     /**
      * Modifies the rule selector.
      */
-    'CSS.setRuleSelector':
-        {paramsType: [Protocol.CSS.SetRuleSelectorRequest]; returnType: Protocol.CSS.SetRuleSelectorResponse;};
+    'CSS.setMediaText': {
+      paramsType: [Protocol.CSS.SetMediaTextRequest];
+      returnType: Protocol.CSS.SetMediaTextResponse;
+    };
+    /**
+     * Modifies the expression of a container query.
+     */
+    'CSS.setContainerQueryText': {
+      paramsType: [Protocol.CSS.SetContainerQueryTextRequest];
+      returnType: Protocol.CSS.SetContainerQueryTextResponse;
+    };
+    /**
+     * Modifies the rule selector.
+     */
+    'CSS.setRuleSelector': {
+      paramsType: [Protocol.CSS.SetRuleSelectorRequest];
+      returnType: Protocol.CSS.SetRuleSelectorResponse;
+    };
     /**
      * Sets the new stylesheet text.
      */
-    'CSS.setStyleSheetText':
-        {paramsType: [Protocol.CSS.SetStyleSheetTextRequest]; returnType: Protocol.CSS.SetStyleSheetTextResponse;};
+    'CSS.setStyleSheetText': {
+      paramsType: [Protocol.CSS.SetStyleSheetTextRequest];
+      returnType: Protocol.CSS.SetStyleSheetTextResponse;
+    };
     /**
      * Applies specified style edits one after another in the given order.
      */
-    'CSS.setStyleTexts':
-        {paramsType: [Protocol.CSS.SetStyleTextsRequest]; returnType: Protocol.CSS.SetStyleTextsResponse;};
+    'CSS.setStyleTexts': {
+      paramsType: [Protocol.CSS.SetStyleTextsRequest];
+      returnType: Protocol.CSS.SetStyleTextsResponse;
+    };
     /**
      * Enables the selector recording.
      */
-    'CSS.startRuleUsageTracking': {paramsType: []; returnType: void;};
+    'CSS.startRuleUsageTracking': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Stop tracking rule usage and return the list of rules that were used since last call to
      * `takeCoverageDelta` (or since start of coverage instrumentation)
      */
-    'CSS.stopRuleUsageTracking': {paramsType: []; returnType: Protocol.CSS.StopRuleUsageTrackingResponse;};
+    'CSS.stopRuleUsageTracking': {
+      paramsType: [];
+      returnType: Protocol.CSS.StopRuleUsageTrackingResponse;
+    };
     /**
      * Obtain list of rules that became used since last call to this method (or since start of coverage
      * instrumentation)
      */
-    'CSS.takeCoverageDelta': {paramsType: []; returnType: Protocol.CSS.TakeCoverageDeltaResponse;};
+    'CSS.takeCoverageDelta': {
+      paramsType: [];
+      returnType: Protocol.CSS.TakeCoverageDeltaResponse;
+    };
     /**
      * Enables/disables rendering of local CSS fonts (enabled by default).
      */
-    'CSS.setLocalFontsEnabled': {paramsType: [Protocol.CSS.SetLocalFontsEnabledRequest]; returnType: void;};
+    'CSS.setLocalFontsEnabled': {
+      paramsType: [Protocol.CSS.SetLocalFontsEnabledRequest];
+      returnType: void;
+    };
     /**
      * Deletes a cache.
      */
-    'CacheStorage.deleteCache': {paramsType: [Protocol.CacheStorage.DeleteCacheRequest]; returnType: void;};
+    'CacheStorage.deleteCache': {
+      paramsType: [Protocol.CacheStorage.DeleteCacheRequest];
+      returnType: void;
+    };
     /**
      * Deletes a cache entry.
      */
-    'CacheStorage.deleteEntry': {paramsType: [Protocol.CacheStorage.DeleteEntryRequest]; returnType: void;};
+    'CacheStorage.deleteEntry': {
+      paramsType: [Protocol.CacheStorage.DeleteEntryRequest];
+      returnType: void;
+    };
     /**
      * Requests cache names.
      */
@@ -1070,24 +1233,39 @@ export namespace ProtocolMapping {
      * Also starts observing for issue messages. When an issue is added or removed,
      * an |issueUpdated| event is fired.
      */
-    'Cast.enable': {paramsType: [Protocol.Cast.EnableRequest?]; returnType: void;};
+    'Cast.enable': {
+      paramsType: [Protocol.Cast.EnableRequest?];
+      returnType: void;
+    };
     /**
      * Stops observing for sinks and issues.
      */
-    'Cast.disable': {paramsType: []; returnType: void;};
+    'Cast.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Sets a sink to be used when the web page requests the browser to choose a
      * sink via Presentation API, Remote Playback API, or Cast SDK.
      */
-    'Cast.setSinkToUse': {paramsType: [Protocol.Cast.SetSinkToUseRequest]; returnType: void;};
+    'Cast.setSinkToUse': {
+      paramsType: [Protocol.Cast.SetSinkToUseRequest];
+      returnType: void;
+    };
     /**
      * Starts mirroring the tab to the sink.
      */
-    'Cast.startTabMirroring': {paramsType: [Protocol.Cast.StartTabMirroringRequest]; returnType: void;};
+    'Cast.startTabMirroring': {
+      paramsType: [Protocol.Cast.StartTabMirroringRequest];
+      returnType: void;
+    };
     /**
      * Stops the active Cast session on the sink.
      */
-    'Cast.stopCasting': {paramsType: [Protocol.Cast.StopCastingRequest]; returnType: void;};
+    'Cast.stopCasting': {
+      paramsType: [Protocol.Cast.StopCastingRequest];
+      returnType: void;
+    };
     /**
      * Collects class names for the node with given id and all of it's child nodes.
      */
@@ -1099,62 +1277,93 @@ export namespace ProtocolMapping {
      * Creates a deep copy of the specified node and places it into the target container before the
      * given anchor.
      */
-    'DOM.copyTo': {paramsType: [Protocol.DOM.CopyToRequest]; returnType: Protocol.DOM.CopyToResponse;};
+    'DOM.copyTo': {
+      paramsType: [Protocol.DOM.CopyToRequest];
+      returnType: Protocol.DOM.CopyToResponse;
+    };
     /**
      * Describes node given its id, does not require domain to be enabled. Does not start tracking any
      * objects, can be used for automation.
      */
-    'DOM.describeNode':
-        {paramsType: [Protocol.DOM.DescribeNodeRequest?]; returnType: Protocol.DOM.DescribeNodeResponse;};
+    'DOM.describeNode': {
+      paramsType: [Protocol.DOM.DescribeNodeRequest?];
+      returnType: Protocol.DOM.DescribeNodeResponse;
+    };
     /**
      * Scrolls the specified rect of the given node into view if not already visible.
      * Note: exactly one between nodeId, backendNodeId and objectId should be passed
      * to identify the node.
      */
-    'DOM.scrollIntoViewIfNeeded': {paramsType: [Protocol.DOM.ScrollIntoViewIfNeededRequest?]; returnType: void;};
+    'DOM.scrollIntoViewIfNeeded': {
+      paramsType: [Protocol.DOM.ScrollIntoViewIfNeededRequest?];
+      returnType: void;
+    };
     /**
      * Disables DOM agent for the given page.
      */
-    'DOM.disable': {paramsType: []; returnType: void;};
+    'DOM.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Discards search results from the session with the given id. `getSearchResults` should no longer
      * be called for that search.
      */
-    'DOM.discardSearchResults': {paramsType: [Protocol.DOM.DiscardSearchResultsRequest]; returnType: void;};
+    'DOM.discardSearchResults': {
+      paramsType: [Protocol.DOM.DiscardSearchResultsRequest];
+      returnType: void;
+    };
     /**
      * Enables DOM agent for the given page.
      */
-    'DOM.enable': {paramsType: []; returnType: void;};
+    'DOM.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Focuses the given element.
      */
-    'DOM.focus': {paramsType: [Protocol.DOM.FocusRequest?]; returnType: void;};
+    'DOM.focus': {
+      paramsType: [Protocol.DOM.FocusRequest?];
+      returnType: void;
+    };
     /**
      * Returns attributes for the specified node.
      */
-    'DOM.getAttributes':
-        {paramsType: [Protocol.DOM.GetAttributesRequest]; returnType: Protocol.DOM.GetAttributesResponse;};
+    'DOM.getAttributes': {
+      paramsType: [Protocol.DOM.GetAttributesRequest];
+      returnType: Protocol.DOM.GetAttributesResponse;
+    };
     /**
      * Returns boxes for the given node.
      */
-    'DOM.getBoxModel': {paramsType: [Protocol.DOM.GetBoxModelRequest?]; returnType: Protocol.DOM.GetBoxModelResponse;};
+    'DOM.getBoxModel': {
+      paramsType: [Protocol.DOM.GetBoxModelRequest?];
+      returnType: Protocol.DOM.GetBoxModelResponse;
+    };
     /**
      * Returns quads that describe node position on the page. This method
      * might return multiple quads for inline nodes.
      */
-    'DOM.getContentQuads':
-        {paramsType: [Protocol.DOM.GetContentQuadsRequest?]; returnType: Protocol.DOM.GetContentQuadsResponse;};
+    'DOM.getContentQuads': {
+      paramsType: [Protocol.DOM.GetContentQuadsRequest?];
+      returnType: Protocol.DOM.GetContentQuadsResponse;
+    };
     /**
      * Returns the root DOM node (and optionally the subtree) to the caller.
      */
-    'DOM.getDocument': {paramsType: [Protocol.DOM.GetDocumentRequest?]; returnType: Protocol.DOM.GetDocumentResponse;};
+    'DOM.getDocument': {
+      paramsType: [Protocol.DOM.GetDocumentRequest?];
+      returnType: Protocol.DOM.GetDocumentResponse;
+    };
     /**
      * Returns the root DOM node (and optionally the subtree) to the caller.
      * Deprecated, as it is not designed to work well with the rest of the DOM agent.
      * Use DOMSnapshot.captureSnapshot instead.
      */
     'DOM.getFlattenedDocument': {
-      paramsType: [Protocol.DOM.GetFlattenedDocumentRequest?]; returnType: Protocol.DOM.GetFlattenedDocumentResponse;
+      paramsType: [Protocol.DOM.GetFlattenedDocumentRequest?];
+      returnType: Protocol.DOM.GetFlattenedDocumentResponse;
     };
     /**
      * Finds nodes with a given computed style in a subtree.
@@ -1167,50 +1376,75 @@ export namespace ProtocolMapping {
      * Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
      * either returned or not.
      */
-    'DOM.getNodeForLocation':
-        {paramsType: [Protocol.DOM.GetNodeForLocationRequest]; returnType: Protocol.DOM.GetNodeForLocationResponse;};
+    'DOM.getNodeForLocation': {
+      paramsType: [Protocol.DOM.GetNodeForLocationRequest];
+      returnType: Protocol.DOM.GetNodeForLocationResponse;
+    };
     /**
      * Returns node's HTML markup.
      */
-    'DOM.getOuterHTML':
-        {paramsType: [Protocol.DOM.GetOuterHTMLRequest?]; returnType: Protocol.DOM.GetOuterHTMLResponse;};
+    'DOM.getOuterHTML': {
+      paramsType: [Protocol.DOM.GetOuterHTMLRequest?];
+      returnType: Protocol.DOM.GetOuterHTMLResponse;
+    };
     /**
      * Returns the id of the nearest ancestor that is a relayout boundary.
      */
-    'DOM.getRelayoutBoundary':
-        {paramsType: [Protocol.DOM.GetRelayoutBoundaryRequest]; returnType: Protocol.DOM.GetRelayoutBoundaryResponse;};
+    'DOM.getRelayoutBoundary': {
+      paramsType: [Protocol.DOM.GetRelayoutBoundaryRequest];
+      returnType: Protocol.DOM.GetRelayoutBoundaryResponse;
+    };
     /**
      * Returns search results from given `fromIndex` to given `toIndex` from the search with the given
      * identifier.
      */
-    'DOM.getSearchResults':
-        {paramsType: [Protocol.DOM.GetSearchResultsRequest]; returnType: Protocol.DOM.GetSearchResultsResponse;};
+    'DOM.getSearchResults': {
+      paramsType: [Protocol.DOM.GetSearchResultsRequest];
+      returnType: Protocol.DOM.GetSearchResultsResponse;
+    };
     /**
      * Hides any highlight.
      */
-    'DOM.hideHighlight': {paramsType: []; returnType: void;};
+    'DOM.hideHighlight': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Highlights DOM node.
      */
-    'DOM.highlightNode': {paramsType: []; returnType: void;};
+    'DOM.highlightNode': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Highlights given rectangle.
      */
-    'DOM.highlightRect': {paramsType: []; returnType: void;};
+    'DOM.highlightRect': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Marks last undoable state.
      */
-    'DOM.markUndoableState': {paramsType: []; returnType: void;};
+    'DOM.markUndoableState': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Moves node into the new container, places it before the given anchor.
      */
-    'DOM.moveTo': {paramsType: [Protocol.DOM.MoveToRequest]; returnType: Protocol.DOM.MoveToResponse;};
+    'DOM.moveTo': {
+      paramsType: [Protocol.DOM.MoveToRequest];
+      returnType: Protocol.DOM.MoveToResponse;
+    };
     /**
      * Searches for a given string in the DOM tree. Use `getSearchResults` to access search results or
      * `cancelSearch` to end this search session.
      */
-    'DOM.performSearch':
-        {paramsType: [Protocol.DOM.PerformSearchRequest]; returnType: Protocol.DOM.PerformSearchResponse;};
+    'DOM.performSearch': {
+      paramsType: [Protocol.DOM.PerformSearchRequest];
+      returnType: Protocol.DOM.PerformSearchResponse;
+    };
     /**
      * Requests that the node is sent to the caller given its path. // FIXME, use XPath
      */
@@ -1228,101 +1462,159 @@ export namespace ProtocolMapping {
     /**
      * Executes `querySelector` on a given node.
      */
-    'DOM.querySelector':
-        {paramsType: [Protocol.DOM.QuerySelectorRequest]; returnType: Protocol.DOM.QuerySelectorResponse;};
+    'DOM.querySelector': {
+      paramsType: [Protocol.DOM.QuerySelectorRequest];
+      returnType: Protocol.DOM.QuerySelectorResponse;
+    };
     /**
      * Executes `querySelectorAll` on a given node.
      */
-    'DOM.querySelectorAll':
-        {paramsType: [Protocol.DOM.QuerySelectorAllRequest]; returnType: Protocol.DOM.QuerySelectorAllResponse;};
+    'DOM.querySelectorAll': {
+      paramsType: [Protocol.DOM.QuerySelectorAllRequest];
+      returnType: Protocol.DOM.QuerySelectorAllResponse;
+    };
     /**
      * Re-does the last undone action.
      */
-    'DOM.redo': {paramsType: []; returnType: void;};
+    'DOM.redo': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Removes attribute with given name from an element with given id.
      */
-    'DOM.removeAttribute': {paramsType: [Protocol.DOM.RemoveAttributeRequest]; returnType: void;};
+    'DOM.removeAttribute': {
+      paramsType: [Protocol.DOM.RemoveAttributeRequest];
+      returnType: void;
+    };
     /**
      * Removes node with given id.
      */
-    'DOM.removeNode': {paramsType: [Protocol.DOM.RemoveNodeRequest]; returnType: void;};
+    'DOM.removeNode': {
+      paramsType: [Protocol.DOM.RemoveNodeRequest];
+      returnType: void;
+    };
     /**
      * Requests that children of the node with given id are returned to the caller in form of
      * `setChildNodes` events where not only immediate children are retrieved, but all children down to
      * the specified depth.
      */
-    'DOM.requestChildNodes': {paramsType: [Protocol.DOM.RequestChildNodesRequest]; returnType: void;};
+    'DOM.requestChildNodes': {
+      paramsType: [Protocol.DOM.RequestChildNodesRequest];
+      returnType: void;
+    };
     /**
      * Requests that the node is sent to the caller given the JavaScript node object reference. All
      * nodes that form the path from the node to the root are also sent to the client as a series of
      * `setChildNodes` notifications.
      */
-    'DOM.requestNode': {paramsType: [Protocol.DOM.RequestNodeRequest]; returnType: Protocol.DOM.RequestNodeResponse;};
+    'DOM.requestNode': {
+      paramsType: [Protocol.DOM.RequestNodeRequest];
+      returnType: Protocol.DOM.RequestNodeResponse;
+    };
     /**
      * Resolves the JavaScript node object for a given NodeId or BackendNodeId.
      */
-    'DOM.resolveNode': {paramsType: [Protocol.DOM.ResolveNodeRequest?]; returnType: Protocol.DOM.ResolveNodeResponse;};
+    'DOM.resolveNode': {
+      paramsType: [Protocol.DOM.ResolveNodeRequest?];
+      returnType: Protocol.DOM.ResolveNodeResponse;
+    };
     /**
      * Sets attribute for an element with given id.
      */
-    'DOM.setAttributeValue': {paramsType: [Protocol.DOM.SetAttributeValueRequest]; returnType: void;};
+    'DOM.setAttributeValue': {
+      paramsType: [Protocol.DOM.SetAttributeValueRequest];
+      returnType: void;
+    };
     /**
      * Sets attributes on element with given id. This method is useful when user edits some existing
      * attribute value and types in several attribute name/value pairs.
      */
-    'DOM.setAttributesAsText': {paramsType: [Protocol.DOM.SetAttributesAsTextRequest]; returnType: void;};
+    'DOM.setAttributesAsText': {
+      paramsType: [Protocol.DOM.SetAttributesAsTextRequest];
+      returnType: void;
+    };
     /**
      * Sets files for the given file input element.
      */
-    'DOM.setFileInputFiles': {paramsType: [Protocol.DOM.SetFileInputFilesRequest]; returnType: void;};
+    'DOM.setFileInputFiles': {
+      paramsType: [Protocol.DOM.SetFileInputFilesRequest];
+      returnType: void;
+    };
     /**
      * Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`. Default is disabled.
      */
-    'DOM.setNodeStackTracesEnabled': {paramsType: [Protocol.DOM.SetNodeStackTracesEnabledRequest]; returnType: void;};
+    'DOM.setNodeStackTracesEnabled': {
+      paramsType: [Protocol.DOM.SetNodeStackTracesEnabledRequest];
+      returnType: void;
+    };
     /**
      * Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation.
      */
-    'DOM.getNodeStackTraces':
-        {paramsType: [Protocol.DOM.GetNodeStackTracesRequest]; returnType: Protocol.DOM.GetNodeStackTracesResponse;};
+    'DOM.getNodeStackTraces': {
+      paramsType: [Protocol.DOM.GetNodeStackTracesRequest];
+      returnType: Protocol.DOM.GetNodeStackTracesResponse;
+    };
     /**
      * Returns file information for the given
      * File wrapper.
      */
-    'DOM.getFileInfo': {paramsType: [Protocol.DOM.GetFileInfoRequest]; returnType: Protocol.DOM.GetFileInfoResponse;};
+    'DOM.getFileInfo': {
+      paramsType: [Protocol.DOM.GetFileInfoRequest];
+      returnType: Protocol.DOM.GetFileInfoResponse;
+    };
     /**
      * Enables console to refer to the node with given id via $x (see Command Line API for more details
      * $x functions).
      */
-    'DOM.setInspectedNode': {paramsType: [Protocol.DOM.SetInspectedNodeRequest]; returnType: void;};
+    'DOM.setInspectedNode': {
+      paramsType: [Protocol.DOM.SetInspectedNodeRequest];
+      returnType: void;
+    };
     /**
      * Sets node name for a node with given id.
      */
-    'DOM.setNodeName': {paramsType: [Protocol.DOM.SetNodeNameRequest]; returnType: Protocol.DOM.SetNodeNameResponse;};
+    'DOM.setNodeName': {
+      paramsType: [Protocol.DOM.SetNodeNameRequest];
+      returnType: Protocol.DOM.SetNodeNameResponse;
+    };
     /**
      * Sets node value for a node with given id.
      */
-    'DOM.setNodeValue': {paramsType: [Protocol.DOM.SetNodeValueRequest]; returnType: void;};
+    'DOM.setNodeValue': {
+      paramsType: [Protocol.DOM.SetNodeValueRequest];
+      returnType: void;
+    };
     /**
      * Sets node HTML markup, returns new node id.
      */
-    'DOM.setOuterHTML': {paramsType: [Protocol.DOM.SetOuterHTMLRequest]; returnType: void;};
+    'DOM.setOuterHTML': {
+      paramsType: [Protocol.DOM.SetOuterHTMLRequest];
+      returnType: void;
+    };
     /**
      * Undoes the last performed action.
      */
-    'DOM.undo': {paramsType: []; returnType: void;};
+    'DOM.undo': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Returns iframe node that owns iframe with the given domain.
      */
-    'DOM.getFrameOwner':
-        {paramsType: [Protocol.DOM.GetFrameOwnerRequest]; returnType: Protocol.DOM.GetFrameOwnerResponse;};
+    'DOM.getFrameOwner': {
+      paramsType: [Protocol.DOM.GetFrameOwnerRequest];
+      returnType: Protocol.DOM.GetFrameOwnerResponse;
+    };
     /**
      * Returns the container of the given node based on container query conditions.
      * If containerName is given, it will find the nearest container with a matching name;
      * otherwise it will find the nearest container regardless of its container name.
      */
-    'DOM.getContainerForNode':
-        {paramsType: [Protocol.DOM.GetContainerForNodeRequest]; returnType: Protocol.DOM.GetContainerForNodeResponse;};
+    'DOM.getContainerForNode': {
+      paramsType: [Protocol.DOM.GetContainerForNodeRequest];
+      returnType: Protocol.DOM.GetContainerForNodeResponse;
+    };
     /**
      * Returns the descendants of a container query container that have
      * container queries against this container.
@@ -1341,62 +1633,90 @@ export namespace ProtocolMapping {
     /**
      * Removes DOM breakpoint that was set using `setDOMBreakpoint`.
      */
-    'DOMDebugger.removeDOMBreakpoint':
-        {paramsType: [Protocol.DOMDebugger.RemoveDOMBreakpointRequest]; returnType: void;};
+    'DOMDebugger.removeDOMBreakpoint': {
+      paramsType: [Protocol.DOMDebugger.RemoveDOMBreakpointRequest];
+      returnType: void;
+    };
     /**
      * Removes breakpoint on particular DOM event.
      */
-    'DOMDebugger.removeEventListenerBreakpoint':
-        {paramsType: [Protocol.DOMDebugger.RemoveEventListenerBreakpointRequest]; returnType: void;};
+    'DOMDebugger.removeEventListenerBreakpoint': {
+      paramsType: [Protocol.DOMDebugger.RemoveEventListenerBreakpointRequest];
+      returnType: void;
+    };
     /**
      * Removes breakpoint on particular native event.
      */
-    'DOMDebugger.removeInstrumentationBreakpoint':
-        {paramsType: [Protocol.DOMDebugger.RemoveInstrumentationBreakpointRequest]; returnType: void;};
+    'DOMDebugger.removeInstrumentationBreakpoint': {
+      paramsType: [Protocol.DOMDebugger.RemoveInstrumentationBreakpointRequest];
+      returnType: void;
+    };
     /**
      * Removes breakpoint from XMLHttpRequest.
      */
-    'DOMDebugger.removeXHRBreakpoint':
-        {paramsType: [Protocol.DOMDebugger.RemoveXHRBreakpointRequest]; returnType: void;};
+    'DOMDebugger.removeXHRBreakpoint': {
+      paramsType: [Protocol.DOMDebugger.RemoveXHRBreakpointRequest];
+      returnType: void;
+    };
     /**
      * Sets breakpoint on particular CSP violations.
      */
-    'DOMDebugger.setBreakOnCSPViolation':
-        {paramsType: [Protocol.DOMDebugger.SetBreakOnCSPViolationRequest]; returnType: void;};
+    'DOMDebugger.setBreakOnCSPViolation': {
+      paramsType: [Protocol.DOMDebugger.SetBreakOnCSPViolationRequest];
+      returnType: void;
+    };
     /**
      * Sets breakpoint on particular operation with DOM.
      */
-    'DOMDebugger.setDOMBreakpoint': {paramsType: [Protocol.DOMDebugger.SetDOMBreakpointRequest]; returnType: void;};
+    'DOMDebugger.setDOMBreakpoint': {
+      paramsType: [Protocol.DOMDebugger.SetDOMBreakpointRequest];
+      returnType: void;
+    };
     /**
      * Sets breakpoint on particular DOM event.
      */
-    'DOMDebugger.setEventListenerBreakpoint':
-        {paramsType: [Protocol.DOMDebugger.SetEventListenerBreakpointRequest]; returnType: void;};
+    'DOMDebugger.setEventListenerBreakpoint': {
+      paramsType: [Protocol.DOMDebugger.SetEventListenerBreakpointRequest];
+      returnType: void;
+    };
     /**
      * Sets breakpoint on particular native event.
      */
-    'DOMDebugger.setInstrumentationBreakpoint':
-        {paramsType: [Protocol.DOMDebugger.SetInstrumentationBreakpointRequest]; returnType: void;};
+    'DOMDebugger.setInstrumentationBreakpoint': {
+      paramsType: [Protocol.DOMDebugger.SetInstrumentationBreakpointRequest];
+      returnType: void;
+    };
     /**
      * Sets breakpoint on XMLHttpRequest.
      */
-    'DOMDebugger.setXHRBreakpoint': {paramsType: [Protocol.DOMDebugger.SetXHRBreakpointRequest]; returnType: void;};
+    'DOMDebugger.setXHRBreakpoint': {
+      paramsType: [Protocol.DOMDebugger.SetXHRBreakpointRequest];
+      returnType: void;
+    };
     /**
      * Disables DOM snapshot agent for the given page.
      */
-    'DOMSnapshot.disable': {paramsType: []; returnType: void;};
+    'DOMSnapshot.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables DOM snapshot agent for the given page.
      */
-    'DOMSnapshot.enable': {paramsType: []; returnType: void;};
+    'DOMSnapshot.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Returns a document snapshot, including the full DOM tree of the root node (including iframes,
      * template contents, and imported documents) in a flattened array, as well as layout and
      * white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is
      * flattened.
      */
-    'DOMSnapshot.getSnapshot':
-        {paramsType: [Protocol.DOMSnapshot.GetSnapshotRequest]; returnType: Protocol.DOMSnapshot.GetSnapshotResponse;};
+    'DOMSnapshot.getSnapshot': {
+      paramsType: [Protocol.DOMSnapshot.GetSnapshotRequest];
+      returnType: Protocol.DOMSnapshot.GetSnapshotResponse;
+    };
     /**
      * Returns a document snapshot, including the full DOM tree of the root node (including iframes,
      * template contents, and imported documents) in a flattened array, as well as layout and
@@ -1407,32 +1727,54 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.DOMSnapshot.CaptureSnapshotRequest];
       returnType: Protocol.DOMSnapshot.CaptureSnapshotResponse;
     };
-    'DOMStorage.clear': {paramsType: [Protocol.DOMStorage.ClearRequest]; returnType: void;};
+    'DOMStorage.clear': {
+      paramsType: [Protocol.DOMStorage.ClearRequest];
+      returnType: void;
+    };
     /**
      * Disables storage tracking, prevents storage events from being sent to the client.
      */
-    'DOMStorage.disable': {paramsType: []; returnType: void;};
+    'DOMStorage.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables storage tracking, storage events will now be delivered to the client.
      */
-    'DOMStorage.enable': {paramsType: []; returnType: void;};
+    'DOMStorage.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     'DOMStorage.getDOMStorageItems': {
       paramsType: [Protocol.DOMStorage.GetDOMStorageItemsRequest];
       returnType: Protocol.DOMStorage.GetDOMStorageItemsResponse;
     };
-    'DOMStorage.removeDOMStorageItem':
-        {paramsType: [Protocol.DOMStorage.RemoveDOMStorageItemRequest]; returnType: void;};
-    'DOMStorage.setDOMStorageItem': {paramsType: [Protocol.DOMStorage.SetDOMStorageItemRequest]; returnType: void;};
+    'DOMStorage.removeDOMStorageItem': {
+      paramsType: [Protocol.DOMStorage.RemoveDOMStorageItemRequest];
+      returnType: void;
+    };
+    'DOMStorage.setDOMStorageItem': {
+      paramsType: [Protocol.DOMStorage.SetDOMStorageItemRequest];
+      returnType: void;
+    };
     /**
      * Disables database tracking, prevents database events from being sent to the client.
      */
-    'Database.disable': {paramsType: []; returnType: void;};
+    'Database.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables database tracking, database events will now be delivered to the client.
      */
-    'Database.enable': {paramsType: []; returnType: void;};
-    'Database.executeSQL':
-        {paramsType: [Protocol.Database.ExecuteSQLRequest]; returnType: Protocol.Database.ExecuteSQLResponse;};
+    'Database.enable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'Database.executeSQL': {
+      paramsType: [Protocol.Database.ExecuteSQLRequest];
+      returnType: Protocol.Database.ExecuteSQLResponse;
+    };
     'Database.getDatabaseTableNames': {
       paramsType: [Protocol.Database.GetDatabaseTableNamesRequest];
       returnType: Protocol.Database.GetDatabaseTableNamesResponse;
@@ -1440,97 +1782,152 @@ export namespace ProtocolMapping {
     /**
      * Clears the overridden Device Orientation.
      */
-    'DeviceOrientation.clearDeviceOrientationOverride': {paramsType: []; returnType: void;};
+    'DeviceOrientation.clearDeviceOrientationOverride': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Overrides the Device Orientation.
      */
-    'DeviceOrientation.setDeviceOrientationOverride':
-        {paramsType: [Protocol.DeviceOrientation.SetDeviceOrientationOverrideRequest]; returnType: void;};
+    'DeviceOrientation.setDeviceOrientationOverride': {
+      paramsType: [Protocol.DeviceOrientation.SetDeviceOrientationOverrideRequest];
+      returnType: void;
+    };
     /**
      * Tells whether emulation is supported.
      */
-    'Emulation.canEmulate': {paramsType: []; returnType: Protocol.Emulation.CanEmulateResponse;};
+    'Emulation.canEmulate': {
+      paramsType: [];
+      returnType: Protocol.Emulation.CanEmulateResponse;
+    };
     /**
      * Clears the overridden device metrics.
      */
-    'Emulation.clearDeviceMetricsOverride': {paramsType: []; returnType: void;};
+    'Emulation.clearDeviceMetricsOverride': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Clears the overridden Geolocation Position and Error.
      */
-    'Emulation.clearGeolocationOverride': {paramsType: []; returnType: void;};
+    'Emulation.clearGeolocationOverride': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Requests that page scale factor is reset to initial values.
      */
-    'Emulation.resetPageScaleFactor': {paramsType: []; returnType: void;};
+    'Emulation.resetPageScaleFactor': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables or disables simulating a focused and active page.
      */
-    'Emulation.setFocusEmulationEnabled':
-        {paramsType: [Protocol.Emulation.SetFocusEmulationEnabledRequest]; returnType: void;};
+    'Emulation.setFocusEmulationEnabled': {
+      paramsType: [Protocol.Emulation.SetFocusEmulationEnabledRequest];
+      returnType: void;
+    };
     /**
      * Enables CPU throttling to emulate slow CPUs.
      */
-    'Emulation.setCPUThrottlingRate': {paramsType: [Protocol.Emulation.SetCPUThrottlingRateRequest]; returnType: void;};
+    'Emulation.setCPUThrottlingRate': {
+      paramsType: [Protocol.Emulation.SetCPUThrottlingRateRequest];
+      returnType: void;
+    };
     /**
      * Sets or clears an override of the default background color of the frame. This override is used
      * if the content does not specify one.
      */
-    'Emulation.setDefaultBackgroundColorOverride':
-        {paramsType: [Protocol.Emulation.SetDefaultBackgroundColorOverrideRequest?]; returnType: void;};
+    'Emulation.setDefaultBackgroundColorOverride': {
+      paramsType: [Protocol.Emulation.SetDefaultBackgroundColorOverrideRequest?];
+      returnType: void;
+    };
     /**
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
      * window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
      * query results).
      */
-    'Emulation.setDeviceMetricsOverride':
-        {paramsType: [Protocol.Emulation.SetDeviceMetricsOverrideRequest]; returnType: void;};
-    'Emulation.setScrollbarsHidden': {paramsType: [Protocol.Emulation.SetScrollbarsHiddenRequest]; returnType: void;};
-    'Emulation.setDocumentCookieDisabled':
-        {paramsType: [Protocol.Emulation.SetDocumentCookieDisabledRequest]; returnType: void;};
-    'Emulation.setEmitTouchEventsForMouse':
-        {paramsType: [Protocol.Emulation.SetEmitTouchEventsForMouseRequest]; returnType: void;};
+    'Emulation.setDeviceMetricsOverride': {
+      paramsType: [Protocol.Emulation.SetDeviceMetricsOverrideRequest];
+      returnType: void;
+    };
+    'Emulation.setScrollbarsHidden': {
+      paramsType: [Protocol.Emulation.SetScrollbarsHiddenRequest];
+      returnType: void;
+    };
+    'Emulation.setDocumentCookieDisabled': {
+      paramsType: [Protocol.Emulation.SetDocumentCookieDisabledRequest];
+      returnType: void;
+    };
+    'Emulation.setEmitTouchEventsForMouse': {
+      paramsType: [Protocol.Emulation.SetEmitTouchEventsForMouseRequest];
+      returnType: void;
+    };
     /**
      * Emulates the given media type or media feature for CSS media queries.
      */
-    'Emulation.setEmulatedMedia': {paramsType: [Protocol.Emulation.SetEmulatedMediaRequest?]; returnType: void;};
+    'Emulation.setEmulatedMedia': {
+      paramsType: [Protocol.Emulation.SetEmulatedMediaRequest?];
+      returnType: void;
+    };
     /**
      * Emulates the given vision deficiency.
      */
-    'Emulation.setEmulatedVisionDeficiency':
-        {paramsType: [Protocol.Emulation.SetEmulatedVisionDeficiencyRequest]; returnType: void;};
+    'Emulation.setEmulatedVisionDeficiency': {
+      paramsType: [Protocol.Emulation.SetEmulatedVisionDeficiencyRequest];
+      returnType: void;
+    };
     /**
      * Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
      * unavailable.
      */
-    'Emulation.setGeolocationOverride':
-        {paramsType: [Protocol.Emulation.SetGeolocationOverrideRequest?]; returnType: void;};
+    'Emulation.setGeolocationOverride': {
+      paramsType: [Protocol.Emulation.SetGeolocationOverrideRequest?];
+      returnType: void;
+    };
     /**
      * Overrides the Idle state.
      */
-    'Emulation.setIdleOverride': {paramsType: [Protocol.Emulation.SetIdleOverrideRequest]; returnType: void;};
+    'Emulation.setIdleOverride': {
+      paramsType: [Protocol.Emulation.SetIdleOverrideRequest];
+      returnType: void;
+    };
     /**
      * Clears Idle state overrides.
      */
-    'Emulation.clearIdleOverride': {paramsType: []; returnType: void;};
+    'Emulation.clearIdleOverride': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Overrides value returned by the javascript navigator object.
      */
-    'Emulation.setNavigatorOverrides':
-        {paramsType: [Protocol.Emulation.SetNavigatorOverridesRequest]; returnType: void;};
+    'Emulation.setNavigatorOverrides': {
+      paramsType: [Protocol.Emulation.SetNavigatorOverridesRequest];
+      returnType: void;
+    };
     /**
      * Sets a specified page scale factor.
      */
-    'Emulation.setPageScaleFactor': {paramsType: [Protocol.Emulation.SetPageScaleFactorRequest]; returnType: void;};
+    'Emulation.setPageScaleFactor': {
+      paramsType: [Protocol.Emulation.SetPageScaleFactorRequest];
+      returnType: void;
+    };
     /**
      * Switches script execution in the page.
      */
-    'Emulation.setScriptExecutionDisabled':
-        {paramsType: [Protocol.Emulation.SetScriptExecutionDisabledRequest]; returnType: void;};
+    'Emulation.setScriptExecutionDisabled': {
+      paramsType: [Protocol.Emulation.SetScriptExecutionDisabledRequest];
+      returnType: void;
+    };
     /**
      * Enables touch on platforms which do not support them.
      */
-    'Emulation.setTouchEmulationEnabled':
-        {paramsType: [Protocol.Emulation.SetTouchEmulationEnabledRequest]; returnType: void;};
+    'Emulation.setTouchEmulationEnabled': {
+      paramsType: [Protocol.Emulation.SetTouchEmulationEnabledRequest];
+      returnType: void;
+    };
     /**
      * Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
      * the current virtual time policy.  Note this supersedes any previous time budget.
@@ -1542,23 +1939,37 @@ export namespace ProtocolMapping {
     /**
      * Overrides default host system locale with the specified one.
      */
-    'Emulation.setLocaleOverride': {paramsType: [Protocol.Emulation.SetLocaleOverrideRequest?]; returnType: void;};
+    'Emulation.setLocaleOverride': {
+      paramsType: [Protocol.Emulation.SetLocaleOverrideRequest?];
+      returnType: void;
+    };
     /**
      * Overrides default host system timezone with the specified one.
      */
-    'Emulation.setTimezoneOverride': {paramsType: [Protocol.Emulation.SetTimezoneOverrideRequest]; returnType: void;};
+    'Emulation.setTimezoneOverride': {
+      paramsType: [Protocol.Emulation.SetTimezoneOverrideRequest];
+      returnType: void;
+    };
     /**
      * Resizes the frame/viewport of the page. Note that this does not affect the frame's container
      * (e.g. browser window). Can be used to produce screenshots of the specified size. Not supported
      * on Android.
      */
-    'Emulation.setVisibleSize': {paramsType: [Protocol.Emulation.SetVisibleSizeRequest]; returnType: void;};
-    'Emulation.setDisabledImageTypes':
-        {paramsType: [Protocol.Emulation.SetDisabledImageTypesRequest]; returnType: void;};
+    'Emulation.setVisibleSize': {
+      paramsType: [Protocol.Emulation.SetVisibleSizeRequest];
+      returnType: void;
+    };
+    'Emulation.setDisabledImageTypes': {
+      paramsType: [Protocol.Emulation.SetDisabledImageTypesRequest];
+      returnType: void;
+    };
     /**
      * Allows overriding user agent with the given string.
      */
-    'Emulation.setUserAgentOverride': {paramsType: [Protocol.Emulation.SetUserAgentOverrideRequest]; returnType: void;};
+    'Emulation.setUserAgentOverride': {
+      paramsType: [Protocol.Emulation.SetUserAgentOverrideRequest];
+      returnType: void;
+    };
     /**
      * Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
      * screenshot from the resulting frame. Requires that the target was created with enabled
@@ -1572,59 +1983,93 @@ export namespace ProtocolMapping {
     /**
      * Disables headless events for the target.
      */
-    'HeadlessExperimental.disable': {paramsType: []; returnType: void;};
+    'HeadlessExperimental.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables headless events for the target.
      */
-    'HeadlessExperimental.enable': {paramsType: []; returnType: void;};
+    'HeadlessExperimental.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Close the stream, discard any temporary backing storage.
      */
-    'IO.close': {paramsType: [Protocol.IO.CloseRequest]; returnType: void;};
+    'IO.close': {
+      paramsType: [Protocol.IO.CloseRequest];
+      returnType: void;
+    };
     /**
      * Read a chunk of the stream
      */
-    'IO.read': {paramsType: [Protocol.IO.ReadRequest]; returnType: Protocol.IO.ReadResponse;};
+    'IO.read': {
+      paramsType: [Protocol.IO.ReadRequest];
+      returnType: Protocol.IO.ReadResponse;
+    };
     /**
      * Return UUID of Blob object specified by a remote object id.
      */
-    'IO.resolveBlob': {paramsType: [Protocol.IO.ResolveBlobRequest]; returnType: Protocol.IO.ResolveBlobResponse;};
+    'IO.resolveBlob': {
+      paramsType: [Protocol.IO.ResolveBlobRequest];
+      returnType: Protocol.IO.ResolveBlobResponse;
+    };
     /**
      * Clears all entries from an object store.
      */
-    'IndexedDB.clearObjectStore': {paramsType: [Protocol.IndexedDB.ClearObjectStoreRequest]; returnType: void;};
+    'IndexedDB.clearObjectStore': {
+      paramsType: [Protocol.IndexedDB.ClearObjectStoreRequest];
+      returnType: void;
+    };
     /**
      * Deletes a database.
      */
-    'IndexedDB.deleteDatabase': {paramsType: [Protocol.IndexedDB.DeleteDatabaseRequest]; returnType: void;};
+    'IndexedDB.deleteDatabase': {
+      paramsType: [Protocol.IndexedDB.DeleteDatabaseRequest];
+      returnType: void;
+    };
     /**
      * Delete a range of entries from an object store
      */
-    'IndexedDB.deleteObjectStoreEntries':
-        {paramsType: [Protocol.IndexedDB.DeleteObjectStoreEntriesRequest]; returnType: void;};
+    'IndexedDB.deleteObjectStoreEntries': {
+      paramsType: [Protocol.IndexedDB.DeleteObjectStoreEntriesRequest];
+      returnType: void;
+    };
     /**
      * Disables events from backend.
      */
-    'IndexedDB.disable': {paramsType: []; returnType: void;};
+    'IndexedDB.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables events from backend.
      */
-    'IndexedDB.enable': {paramsType: []; returnType: void;};
+    'IndexedDB.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Requests data from object store or index.
      */
-    'IndexedDB.requestData':
-        {paramsType: [Protocol.IndexedDB.RequestDataRequest]; returnType: Protocol.IndexedDB.RequestDataResponse;};
+    'IndexedDB.requestData': {
+      paramsType: [Protocol.IndexedDB.RequestDataRequest];
+      returnType: Protocol.IndexedDB.RequestDataResponse;
+    };
     /**
      * Gets metadata of an object store
      */
-    'IndexedDB.getMetadata':
-        {paramsType: [Protocol.IndexedDB.GetMetadataRequest]; returnType: Protocol.IndexedDB.GetMetadataResponse;};
+    'IndexedDB.getMetadata': {
+      paramsType: [Protocol.IndexedDB.GetMetadataRequest];
+      returnType: Protocol.IndexedDB.GetMetadataResponse;
+    };
     /**
      * Requests database with given name in given frame.
      */
     'IndexedDB.requestDatabase': {
-      paramsType: [Protocol.IndexedDB.RequestDatabaseRequest]; returnType: Protocol.IndexedDB.RequestDatabaseResponse;
+      paramsType: [Protocol.IndexedDB.RequestDatabaseRequest];
+      returnType: Protocol.IndexedDB.RequestDatabaseResponse;
     };
     /**
      * Requests database names for given security origin.
@@ -1636,64 +2081,105 @@ export namespace ProtocolMapping {
     /**
      * Dispatches a drag event into the page.
      */
-    'Input.dispatchDragEvent': {paramsType: [Protocol.Input.DispatchDragEventRequest]; returnType: void;};
+    'Input.dispatchDragEvent': {
+      paramsType: [Protocol.Input.DispatchDragEventRequest];
+      returnType: void;
+    };
     /**
      * Dispatches a key event to the page.
      */
-    'Input.dispatchKeyEvent': {paramsType: [Protocol.Input.DispatchKeyEventRequest]; returnType: void;};
+    'Input.dispatchKeyEvent': {
+      paramsType: [Protocol.Input.DispatchKeyEventRequest];
+      returnType: void;
+    };
     /**
      * This method emulates inserting text that doesn't come from a key press,
      * for example an emoji keyboard or an IME.
      */
-    'Input.insertText': {paramsType: [Protocol.Input.InsertTextRequest]; returnType: void;};
+    'Input.insertText': {
+      paramsType: [Protocol.Input.InsertTextRequest];
+      returnType: void;
+    };
     /**
      * This method sets the current candidate text for ime.
      * Use imeCommitComposition to commit the final text.
      * Use imeSetComposition with empty string as text to cancel composition.
      */
-    'Input.imeSetComposition': {paramsType: [Protocol.Input.ImeSetCompositionRequest]; returnType: void;};
+    'Input.imeSetComposition': {
+      paramsType: [Protocol.Input.ImeSetCompositionRequest];
+      returnType: void;
+    };
     /**
      * Dispatches a mouse event to the page.
      */
-    'Input.dispatchMouseEvent': {paramsType: [Protocol.Input.DispatchMouseEventRequest]; returnType: void;};
+    'Input.dispatchMouseEvent': {
+      paramsType: [Protocol.Input.DispatchMouseEventRequest];
+      returnType: void;
+    };
     /**
      * Dispatches a touch event to the page.
      */
-    'Input.dispatchTouchEvent': {paramsType: [Protocol.Input.DispatchTouchEventRequest]; returnType: void;};
+    'Input.dispatchTouchEvent': {
+      paramsType: [Protocol.Input.DispatchTouchEventRequest];
+      returnType: void;
+    };
     /**
      * Emulates touch event from the mouse event parameters.
      */
-    'Input.emulateTouchFromMouseEvent':
-        {paramsType: [Protocol.Input.EmulateTouchFromMouseEventRequest]; returnType: void;};
+    'Input.emulateTouchFromMouseEvent': {
+      paramsType: [Protocol.Input.EmulateTouchFromMouseEventRequest];
+      returnType: void;
+    };
     /**
      * Ignores input events (useful while auditing page).
      */
-    'Input.setIgnoreInputEvents': {paramsType: [Protocol.Input.SetIgnoreInputEventsRequest]; returnType: void;};
+    'Input.setIgnoreInputEvents': {
+      paramsType: [Protocol.Input.SetIgnoreInputEventsRequest];
+      returnType: void;
+    };
     /**
      * Prevents default drag and drop behavior and instead emits `Input.dragIntercepted` events.
      * Drag and drop behavior can be directly controlled via `Input.dispatchDragEvent`.
      */
-    'Input.setInterceptDrags': {paramsType: [Protocol.Input.SetInterceptDragsRequest]; returnType: void;};
+    'Input.setInterceptDrags': {
+      paramsType: [Protocol.Input.SetInterceptDragsRequest];
+      returnType: void;
+    };
     /**
      * Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
      */
-    'Input.synthesizePinchGesture': {paramsType: [Protocol.Input.SynthesizePinchGestureRequest]; returnType: void;};
+    'Input.synthesizePinchGesture': {
+      paramsType: [Protocol.Input.SynthesizePinchGestureRequest];
+      returnType: void;
+    };
     /**
      * Synthesizes a scroll gesture over a time period by issuing appropriate touch events.
      */
-    'Input.synthesizeScrollGesture': {paramsType: [Protocol.Input.SynthesizeScrollGestureRequest]; returnType: void;};
+    'Input.synthesizeScrollGesture': {
+      paramsType: [Protocol.Input.SynthesizeScrollGestureRequest];
+      returnType: void;
+    };
     /**
      * Synthesizes a tap gesture over a time period by issuing appropriate touch events.
      */
-    'Input.synthesizeTapGesture': {paramsType: [Protocol.Input.SynthesizeTapGestureRequest]; returnType: void;};
+    'Input.synthesizeTapGesture': {
+      paramsType: [Protocol.Input.SynthesizeTapGestureRequest];
+      returnType: void;
+    };
     /**
      * Disables inspector domain notifications.
      */
-    'Inspector.disable': {paramsType: []; returnType: void;};
+    'Inspector.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables inspector domain notifications.
      */
-    'Inspector.enable': {paramsType: []; returnType: void;};
+    'Inspector.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Provides the reasons why the given layer was composited.
      */
@@ -1704,33 +2190,48 @@ export namespace ProtocolMapping {
     /**
      * Disables compositing tree inspection.
      */
-    'LayerTree.disable': {paramsType: []; returnType: void;};
+    'LayerTree.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables compositing tree inspection.
      */
-    'LayerTree.enable': {paramsType: []; returnType: void;};
+    'LayerTree.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Returns the snapshot identifier.
      */
-    'LayerTree.loadSnapshot':
-        {paramsType: [Protocol.LayerTree.LoadSnapshotRequest]; returnType: Protocol.LayerTree.LoadSnapshotResponse;};
+    'LayerTree.loadSnapshot': {
+      paramsType: [Protocol.LayerTree.LoadSnapshotRequest];
+      returnType: Protocol.LayerTree.LoadSnapshotResponse;
+    };
     /**
      * Returns the layer snapshot identifier.
      */
-    'LayerTree.makeSnapshot':
-        {paramsType: [Protocol.LayerTree.MakeSnapshotRequest]; returnType: Protocol.LayerTree.MakeSnapshotResponse;};
+    'LayerTree.makeSnapshot': {
+      paramsType: [Protocol.LayerTree.MakeSnapshotRequest];
+      returnType: Protocol.LayerTree.MakeSnapshotResponse;
+    };
     'LayerTree.profileSnapshot': {
-      paramsType: [Protocol.LayerTree.ProfileSnapshotRequest]; returnType: Protocol.LayerTree.ProfileSnapshotResponse;
+      paramsType: [Protocol.LayerTree.ProfileSnapshotRequest];
+      returnType: Protocol.LayerTree.ProfileSnapshotResponse;
     };
     /**
      * Releases layer snapshot captured by the back-end.
      */
-    'LayerTree.releaseSnapshot': {paramsType: [Protocol.LayerTree.ReleaseSnapshotRequest]; returnType: void;};
+    'LayerTree.releaseSnapshot': {
+      paramsType: [Protocol.LayerTree.ReleaseSnapshotRequest];
+      returnType: void;
+    };
     /**
      * Replays the layer snapshot and returns the resulting bitmap.
      */
     'LayerTree.replaySnapshot': {
-      paramsType: [Protocol.LayerTree.ReplaySnapshotRequest]; returnType: Protocol.LayerTree.ReplaySnapshotResponse;
+      paramsType: [Protocol.LayerTree.ReplaySnapshotRequest];
+      returnType: Protocol.LayerTree.ReplaySnapshotResponse;
     };
     /**
      * Replays the layer snapshot and returns canvas log.
@@ -1742,94 +2243,155 @@ export namespace ProtocolMapping {
     /**
      * Clears the log.
      */
-    'Log.clear': {paramsType: []; returnType: void;};
+    'Log.clear': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Disables log domain, prevents further log entries from being reported to the client.
      */
-    'Log.disable': {paramsType: []; returnType: void;};
+    'Log.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables log domain, sends the entries collected so far to the client by means of the
      * `entryAdded` notification.
      */
-    'Log.enable': {paramsType: []; returnType: void;};
+    'Log.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * start violation reporting.
      */
-    'Log.startViolationsReport': {paramsType: [Protocol.Log.StartViolationsReportRequest]; returnType: void;};
+    'Log.startViolationsReport': {
+      paramsType: [Protocol.Log.StartViolationsReportRequest];
+      returnType: void;
+    };
     /**
      * Stop violation reporting.
      */
-    'Log.stopViolationsReport': {paramsType: []; returnType: void;};
-    'Memory.getDOMCounters': {paramsType: []; returnType: Protocol.Memory.GetDOMCountersResponse;};
-    'Memory.prepareForLeakDetection': {paramsType: []; returnType: void;};
+    'Log.stopViolationsReport': {
+      paramsType: [];
+      returnType: void;
+    };
+    'Memory.getDOMCounters': {
+      paramsType: [];
+      returnType: Protocol.Memory.GetDOMCountersResponse;
+    };
+    'Memory.prepareForLeakDetection': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Simulate OomIntervention by purging V8 memory.
      */
-    'Memory.forciblyPurgeJavaScriptMemory': {paramsType: []; returnType: void;};
+    'Memory.forciblyPurgeJavaScriptMemory': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enable/disable suppressing memory pressure notifications in all processes.
      */
-    'Memory.setPressureNotificationsSuppressed':
-        {paramsType: [Protocol.Memory.SetPressureNotificationsSuppressedRequest]; returnType: void;};
+    'Memory.setPressureNotificationsSuppressed': {
+      paramsType: [Protocol.Memory.SetPressureNotificationsSuppressedRequest];
+      returnType: void;
+    };
     /**
      * Simulate a memory pressure notification in all processes.
      */
-    'Memory.simulatePressureNotification':
-        {paramsType: [Protocol.Memory.SimulatePressureNotificationRequest]; returnType: void;};
+    'Memory.simulatePressureNotification': {
+      paramsType: [Protocol.Memory.SimulatePressureNotificationRequest];
+      returnType: void;
+    };
     /**
      * Start collecting native memory profile.
      */
-    'Memory.startSampling': {paramsType: [Protocol.Memory.StartSamplingRequest?]; returnType: void;};
+    'Memory.startSampling': {
+      paramsType: [Protocol.Memory.StartSamplingRequest?];
+      returnType: void;
+    };
     /**
      * Stop collecting native memory profile.
      */
-    'Memory.stopSampling': {paramsType: []; returnType: void;};
+    'Memory.stopSampling': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Retrieve native memory allocations profile
      * collected since renderer process startup.
      */
-    'Memory.getAllTimeSamplingProfile':
-        {paramsType: []; returnType: Protocol.Memory.GetAllTimeSamplingProfileResponse;};
+    'Memory.getAllTimeSamplingProfile': {
+      paramsType: [];
+      returnType: Protocol.Memory.GetAllTimeSamplingProfileResponse;
+    };
     /**
      * Retrieve native memory allocations profile
      * collected since browser process startup.
      */
-    'Memory.getBrowserSamplingProfile':
-        {paramsType: []; returnType: Protocol.Memory.GetBrowserSamplingProfileResponse;};
+    'Memory.getBrowserSamplingProfile': {
+      paramsType: [];
+      returnType: Protocol.Memory.GetBrowserSamplingProfileResponse;
+    };
     /**
      * Retrieve native memory allocations profile collected since last
      * `startSampling` call.
      */
-    'Memory.getSamplingProfile': {paramsType: []; returnType: Protocol.Memory.GetSamplingProfileResponse;};
+    'Memory.getSamplingProfile': {
+      paramsType: [];
+      returnType: Protocol.Memory.GetSamplingProfileResponse;
+    };
     /**
      * Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
      */
-    'Network.setAcceptedEncodings': {paramsType: [Protocol.Network.SetAcceptedEncodingsRequest]; returnType: void;};
+    'Network.setAcceptedEncodings': {
+      paramsType: [Protocol.Network.SetAcceptedEncodingsRequest];
+      returnType: void;
+    };
     /**
      * Clears accepted encodings set by setAcceptedEncodings
      */
-    'Network.clearAcceptedEncodingsOverride': {paramsType: []; returnType: void;};
+    'Network.clearAcceptedEncodingsOverride': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Tells whether clearing browser cache is supported.
      */
-    'Network.canClearBrowserCache': {paramsType: []; returnType: Protocol.Network.CanClearBrowserCacheResponse;};
+    'Network.canClearBrowserCache': {
+      paramsType: [];
+      returnType: Protocol.Network.CanClearBrowserCacheResponse;
+    };
     /**
      * Tells whether clearing browser cookies is supported.
      */
-    'Network.canClearBrowserCookies': {paramsType: []; returnType: Protocol.Network.CanClearBrowserCookiesResponse;};
+    'Network.canClearBrowserCookies': {
+      paramsType: [];
+      returnType: Protocol.Network.CanClearBrowserCookiesResponse;
+    };
     /**
      * Tells whether emulation of network conditions is supported.
      */
-    'Network.canEmulateNetworkConditions':
-        {paramsType: []; returnType: Protocol.Network.CanEmulateNetworkConditionsResponse;};
+    'Network.canEmulateNetworkConditions': {
+      paramsType: [];
+      returnType: Protocol.Network.CanEmulateNetworkConditionsResponse;
+    };
     /**
      * Clears browser cache.
      */
-    'Network.clearBrowserCache': {paramsType: []; returnType: void;};
+    'Network.clearBrowserCache': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Clears browser cookies.
      */
-    'Network.clearBrowserCookies': {paramsType: []; returnType: void;};
+    'Network.clearBrowserCookies': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Response to Network.requestIntercepted which either modifies the request to continue with any
      * modifications, or blocks it, or completes it with the provided response bytes. If a network
@@ -1837,51 +2399,74 @@ export namespace ProtocolMapping {
      * event will be sent with the same InterceptionId.
      * Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead.
      */
-    'Network.continueInterceptedRequest':
-        {paramsType: [Protocol.Network.ContinueInterceptedRequestRequest]; returnType: void;};
+    'Network.continueInterceptedRequest': {
+      paramsType: [Protocol.Network.ContinueInterceptedRequestRequest];
+      returnType: void;
+    };
     /**
      * Deletes browser cookies with matching name and url or domain/path pair.
      */
-    'Network.deleteCookies': {paramsType: [Protocol.Network.DeleteCookiesRequest]; returnType: void;};
+    'Network.deleteCookies': {
+      paramsType: [Protocol.Network.DeleteCookiesRequest];
+      returnType: void;
+    };
     /**
      * Disables network tracking, prevents network events from being sent to the client.
      */
-    'Network.disable': {paramsType: []; returnType: void;};
+    'Network.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Activates emulation of network conditions.
      */
-    'Network.emulateNetworkConditions':
-        {paramsType: [Protocol.Network.EmulateNetworkConditionsRequest]; returnType: void;};
+    'Network.emulateNetworkConditions': {
+      paramsType: [Protocol.Network.EmulateNetworkConditionsRequest];
+      returnType: void;
+    };
     /**
      * Enables network tracking, network events will now be delivered to the client.
      */
-    'Network.enable': {paramsType: [Protocol.Network.EnableRequest?]; returnType: void;};
+    'Network.enable': {
+      paramsType: [Protocol.Network.EnableRequest?];
+      returnType: void;
+    };
     /**
      * Returns all browser cookies. Depending on the backend support, will return detailed cookie
      * information in the `cookies` field.
      */
-    'Network.getAllCookies': {paramsType: []; returnType: Protocol.Network.GetAllCookiesResponse;};
+    'Network.getAllCookies': {
+      paramsType: [];
+      returnType: Protocol.Network.GetAllCookiesResponse;
+    };
     /**
      * Returns the DER-encoded certificate.
      */
-    'Network.getCertificate':
-        {paramsType: [Protocol.Network.GetCertificateRequest]; returnType: Protocol.Network.GetCertificateResponse;};
+    'Network.getCertificate': {
+      paramsType: [Protocol.Network.GetCertificateRequest];
+      returnType: Protocol.Network.GetCertificateResponse;
+    };
     /**
      * Returns all browser cookies for the current URL. Depending on the backend support, will return
      * detailed cookie information in the `cookies` field.
      */
-    'Network.getCookies':
-        {paramsType: [Protocol.Network.GetCookiesRequest?]; returnType: Protocol.Network.GetCookiesResponse;};
+    'Network.getCookies': {
+      paramsType: [Protocol.Network.GetCookiesRequest?];
+      returnType: Protocol.Network.GetCookiesResponse;
+    };
     /**
      * Returns content served for the given request.
      */
-    'Network.getResponseBody':
-        {paramsType: [Protocol.Network.GetResponseBodyRequest]; returnType: Protocol.Network.GetResponseBodyResponse;};
+    'Network.getResponseBody': {
+      paramsType: [Protocol.Network.GetResponseBodyRequest];
+      returnType: Protocol.Network.GetResponseBodyResponse;
+    };
     /**
      * Returns post data sent with the request. Returns an error when no data was sent with the request.
      */
     'Network.getRequestPostData': {
-      paramsType: [Protocol.Network.GetRequestPostDataRequest]; returnType: Protocol.Network.GetRequestPostDataResponse;
+      paramsType: [Protocol.Network.GetRequestPostDataRequest];
+      returnType: Protocol.Network.GetRequestPostDataResponse;
     };
     /**
      * Returns content served for the given currently intercepted request.
@@ -1905,7 +2490,10 @@ export namespace ProtocolMapping {
      * parameters should be identical: method, url, async, request body, extra headers, withCredentials
      * attribute, user, password.
      */
-    'Network.replayXHR': {paramsType: [Protocol.Network.ReplayXHRRequest]; returnType: void;};
+    'Network.replayXHR': {
+      paramsType: [Protocol.Network.ReplayXHRRequest];
+      returnType: void;
+    };
     /**
      * Searches for given string in response content.
      */
@@ -1916,41 +2504,67 @@ export namespace ProtocolMapping {
     /**
      * Blocks URLs from loading.
      */
-    'Network.setBlockedURLs': {paramsType: [Protocol.Network.SetBlockedURLsRequest]; returnType: void;};
+    'Network.setBlockedURLs': {
+      paramsType: [Protocol.Network.SetBlockedURLsRequest];
+      returnType: void;
+    };
     /**
      * Toggles ignoring of service worker for each request.
      */
-    'Network.setBypassServiceWorker': {paramsType: [Protocol.Network.SetBypassServiceWorkerRequest]; returnType: void;};
+    'Network.setBypassServiceWorker': {
+      paramsType: [Protocol.Network.SetBypassServiceWorkerRequest];
+      returnType: void;
+    };
     /**
      * Toggles ignoring cache for each request. If `true`, cache will not be used.
      */
-    'Network.setCacheDisabled': {paramsType: [Protocol.Network.SetCacheDisabledRequest]; returnType: void;};
+    'Network.setCacheDisabled': {
+      paramsType: [Protocol.Network.SetCacheDisabledRequest];
+      returnType: void;
+    };
     /**
      * Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
      */
-    'Network.setCookie':
-        {paramsType: [Protocol.Network.SetCookieRequest]; returnType: Protocol.Network.SetCookieResponse;};
+    'Network.setCookie': {
+      paramsType: [Protocol.Network.SetCookieRequest];
+      returnType: Protocol.Network.SetCookieResponse;
+    };
     /**
      * Sets given cookies.
      */
-    'Network.setCookies': {paramsType: [Protocol.Network.SetCookiesRequest]; returnType: void;};
+    'Network.setCookies': {
+      paramsType: [Protocol.Network.SetCookiesRequest];
+      returnType: void;
+    };
     /**
      * Specifies whether to always send extra HTTP headers with the requests from this page.
      */
-    'Network.setExtraHTTPHeaders': {paramsType: [Protocol.Network.SetExtraHTTPHeadersRequest]; returnType: void;};
+    'Network.setExtraHTTPHeaders': {
+      paramsType: [Protocol.Network.SetExtraHTTPHeadersRequest];
+      returnType: void;
+    };
     /**
      * Specifies whether to attach a page script stack id in requests
      */
-    'Network.setAttachDebugStack': {paramsType: [Protocol.Network.SetAttachDebugStackRequest]; returnType: void;};
+    'Network.setAttachDebugStack': {
+      paramsType: [Protocol.Network.SetAttachDebugStackRequest];
+      returnType: void;
+    };
     /**
      * Sets the requests to intercept that match the provided patterns and optionally resource types.
      * Deprecated, please use Fetch.enable instead.
      */
-    'Network.setRequestInterception': {paramsType: [Protocol.Network.SetRequestInterceptionRequest]; returnType: void;};
+    'Network.setRequestInterception': {
+      paramsType: [Protocol.Network.SetRequestInterceptionRequest];
+      returnType: void;
+    };
     /**
      * Allows overriding user agent with the given string.
      */
-    'Network.setUserAgentOverride': {paramsType: [Protocol.Network.SetUserAgentOverrideRequest]; returnType: void;};
+    'Network.setUserAgentOverride': {
+      paramsType: [Protocol.Network.SetUserAgentOverrideRequest];
+      returnType: void;
+    };
     /**
      * Returns information about the COEP/COOP isolation status.
      */
@@ -1968,11 +2582,17 @@ export namespace ProtocolMapping {
     /**
      * Disables domain notifications.
      */
-    'Overlay.disable': {paramsType: []; returnType: void;};
+    'Overlay.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables domain notifications.
      */
-    'Overlay.enable': {paramsType: []; returnType: void;};
+    'Overlay.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * For testing.
      */
@@ -1997,91 +2617,158 @@ export namespace ProtocolMapping {
     /**
      * Hides any highlight.
      */
-    'Overlay.hideHighlight': {paramsType: []; returnType: void;};
+    'Overlay.hideHighlight': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Highlights owner element of the frame with given id.
      * Deprecated: Doesn't work reliablity and cannot be fixed due to process
      * separatation (the owner node might be in a different process). Determine
      * the owner node in the client and use highlightNode.
      */
-    'Overlay.highlightFrame': {paramsType: [Protocol.Overlay.HighlightFrameRequest]; returnType: void;};
+    'Overlay.highlightFrame': {
+      paramsType: [Protocol.Overlay.HighlightFrameRequest];
+      returnType: void;
+    };
     /**
      * Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or
      * objectId must be specified.
      */
-    'Overlay.highlightNode': {paramsType: [Protocol.Overlay.HighlightNodeRequest]; returnType: void;};
+    'Overlay.highlightNode': {
+      paramsType: [Protocol.Overlay.HighlightNodeRequest];
+      returnType: void;
+    };
     /**
      * Highlights given quad. Coordinates are absolute with respect to the main frame viewport.
      */
-    'Overlay.highlightQuad': {paramsType: [Protocol.Overlay.HighlightQuadRequest]; returnType: void;};
+    'Overlay.highlightQuad': {
+      paramsType: [Protocol.Overlay.HighlightQuadRequest];
+      returnType: void;
+    };
     /**
      * Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
      */
-    'Overlay.highlightRect': {paramsType: [Protocol.Overlay.HighlightRectRequest]; returnType: void;};
+    'Overlay.highlightRect': {
+      paramsType: [Protocol.Overlay.HighlightRectRequest];
+      returnType: void;
+    };
     /**
      * Highlights the source order of the children of the DOM node with given id or with the given
      * JavaScript object wrapper. Either nodeId or objectId must be specified.
      */
-    'Overlay.highlightSourceOrder': {paramsType: [Protocol.Overlay.HighlightSourceOrderRequest]; returnType: void;};
+    'Overlay.highlightSourceOrder': {
+      paramsType: [Protocol.Overlay.HighlightSourceOrderRequest];
+      returnType: void;
+    };
     /**
      * Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
      * Backend then generates 'inspectNodeRequested' event upon element selection.
      */
-    'Overlay.setInspectMode': {paramsType: [Protocol.Overlay.SetInspectModeRequest]; returnType: void;};
+    'Overlay.setInspectMode': {
+      paramsType: [Protocol.Overlay.SetInspectModeRequest];
+      returnType: void;
+    };
     /**
      * Highlights owner element of all frames detected to be ads.
      */
-    'Overlay.setShowAdHighlights': {paramsType: [Protocol.Overlay.SetShowAdHighlightsRequest]; returnType: void;};
-    'Overlay.setPausedInDebuggerMessage':
-        {paramsType: [Protocol.Overlay.SetPausedInDebuggerMessageRequest?]; returnType: void;};
+    'Overlay.setShowAdHighlights': {
+      paramsType: [Protocol.Overlay.SetShowAdHighlightsRequest];
+      returnType: void;
+    };
+    'Overlay.setPausedInDebuggerMessage': {
+      paramsType: [Protocol.Overlay.SetPausedInDebuggerMessageRequest?];
+      returnType: void;
+    };
     /**
      * Requests that backend shows debug borders on layers
      */
-    'Overlay.setShowDebugBorders': {paramsType: [Protocol.Overlay.SetShowDebugBordersRequest]; returnType: void;};
+    'Overlay.setShowDebugBorders': {
+      paramsType: [Protocol.Overlay.SetShowDebugBordersRequest];
+      returnType: void;
+    };
     /**
      * Requests that backend shows the FPS counter
      */
-    'Overlay.setShowFPSCounter': {paramsType: [Protocol.Overlay.SetShowFPSCounterRequest]; returnType: void;};
+    'Overlay.setShowFPSCounter': {
+      paramsType: [Protocol.Overlay.SetShowFPSCounterRequest];
+      returnType: void;
+    };
     /**
      * Highlight multiple elements with the CSS Grid overlay.
      */
-    'Overlay.setShowGridOverlays': {paramsType: [Protocol.Overlay.SetShowGridOverlaysRequest]; returnType: void;};
-    'Overlay.setShowFlexOverlays': {paramsType: [Protocol.Overlay.SetShowFlexOverlaysRequest]; returnType: void;};
-    'Overlay.setShowScrollSnapOverlays':
-        {paramsType: [Protocol.Overlay.SetShowScrollSnapOverlaysRequest]; returnType: void;};
-    'Overlay.setShowContainerQueryOverlays':
-        {paramsType: [Protocol.Overlay.SetShowContainerQueryOverlaysRequest]; returnType: void;};
+    'Overlay.setShowGridOverlays': {
+      paramsType: [Protocol.Overlay.SetShowGridOverlaysRequest];
+      returnType: void;
+    };
+    'Overlay.setShowFlexOverlays': {
+      paramsType: [Protocol.Overlay.SetShowFlexOverlaysRequest];
+      returnType: void;
+    };
+    'Overlay.setShowScrollSnapOverlays': {
+      paramsType: [Protocol.Overlay.SetShowScrollSnapOverlaysRequest];
+      returnType: void;
+    };
+    'Overlay.setShowContainerQueryOverlays': {
+      paramsType: [Protocol.Overlay.SetShowContainerQueryOverlaysRequest];
+      returnType: void;
+    };
     /**
      * Requests that backend shows paint rectangles
      */
-    'Overlay.setShowPaintRects': {paramsType: [Protocol.Overlay.SetShowPaintRectsRequest]; returnType: void;};
+    'Overlay.setShowPaintRects': {
+      paramsType: [Protocol.Overlay.SetShowPaintRectsRequest];
+      returnType: void;
+    };
+    /**
+     * Requests that backend shows redraw rectangles for elements being redrawn
+     */
+    'Overlay.setShowRedrawRects': {
+      paramsType: [Protocol.Overlay.SetShowRedrawRectsRequest];
+      returnType: void;
+    };
     /**
      * Requests that backend shows layout shift regions
      */
-    'Overlay.setShowLayoutShiftRegions':
-        {paramsType: [Protocol.Overlay.SetShowLayoutShiftRegionsRequest]; returnType: void;};
+    'Overlay.setShowLayoutShiftRegions': {
+      paramsType: [Protocol.Overlay.SetShowLayoutShiftRegionsRequest];
+      returnType: void;
+    };
     /**
      * Requests that backend shows scroll bottleneck rects
      */
-    'Overlay.setShowScrollBottleneckRects':
-        {paramsType: [Protocol.Overlay.SetShowScrollBottleneckRectsRequest]; returnType: void;};
+    'Overlay.setShowScrollBottleneckRects': {
+      paramsType: [Protocol.Overlay.SetShowScrollBottleneckRectsRequest];
+      returnType: void;
+    };
     /**
      * Requests that backend shows hit-test borders on layers
      */
-    'Overlay.setShowHitTestBorders': {paramsType: [Protocol.Overlay.SetShowHitTestBordersRequest]; returnType: void;};
+    'Overlay.setShowHitTestBorders': {
+      paramsType: [Protocol.Overlay.SetShowHitTestBordersRequest];
+      returnType: void;
+    };
     /**
      * Request that backend shows an overlay with web vital metrics.
      */
-    'Overlay.setShowWebVitals': {paramsType: [Protocol.Overlay.SetShowWebVitalsRequest]; returnType: void;};
+    'Overlay.setShowWebVitals': {
+      paramsType: [Protocol.Overlay.SetShowWebVitalsRequest];
+      returnType: void;
+    };
     /**
      * Paints viewport size upon main frame resize.
      */
-    'Overlay.setShowViewportSizeOnResize':
-        {paramsType: [Protocol.Overlay.SetShowViewportSizeOnResizeRequest]; returnType: void;};
+    'Overlay.setShowViewportSizeOnResize': {
+      paramsType: [Protocol.Overlay.SetShowViewportSizeOnResizeRequest];
+      returnType: void;
+    };
     /**
      * Add a dual screen device hinge
      */
-    'Overlay.setShowHinge': {paramsType: [Protocol.Overlay.SetShowHingeRequest?]; returnType: void;};
+    'Overlay.setShowHinge': {
+      paramsType: [Protocol.Overlay.SetShowHingeRequest?];
+      returnType: void;
+    };
     /**
      * Deprecated, please use addScriptToEvaluateOnNewDocument instead.
      */
@@ -2099,128 +2786,213 @@ export namespace ProtocolMapping {
     /**
      * Brings page to front (activates tab).
      */
-    'Page.bringToFront': {paramsType: []; returnType: void;};
+    'Page.bringToFront': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Capture page screenshot.
      */
-    'Page.captureScreenshot':
-        {paramsType: [Protocol.Page.CaptureScreenshotRequest?]; returnType: Protocol.Page.CaptureScreenshotResponse;};
+    'Page.captureScreenshot': {
+      paramsType: [Protocol.Page.CaptureScreenshotRequest?];
+      returnType: Protocol.Page.CaptureScreenshotResponse;
+    };
     /**
      * Returns a snapshot of the page as a string. For MHTML format, the serialization includes
      * iframes, shadow DOM, external resources, and element-inline styles.
      */
-    'Page.captureSnapshot':
-        {paramsType: [Protocol.Page.CaptureSnapshotRequest?]; returnType: Protocol.Page.CaptureSnapshotResponse;};
+    'Page.captureSnapshot': {
+      paramsType: [Protocol.Page.CaptureSnapshotRequest?];
+      returnType: Protocol.Page.CaptureSnapshotResponse;
+    };
     /**
      * Clears the overridden device metrics.
      */
-    'Page.clearDeviceMetricsOverride': {paramsType: []; returnType: void;};
+    'Page.clearDeviceMetricsOverride': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Clears the overridden Device Orientation.
      */
-    'Page.clearDeviceOrientationOverride': {paramsType: []; returnType: void;};
+    'Page.clearDeviceOrientationOverride': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Clears the overridden Geolocation Position and Error.
      */
-    'Page.clearGeolocationOverride': {paramsType: []; returnType: void;};
+    'Page.clearGeolocationOverride': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Creates an isolated world for the given frame.
      */
     'Page.createIsolatedWorld': {
-      paramsType: [Protocol.Page.CreateIsolatedWorldRequest]; returnType: Protocol.Page.CreateIsolatedWorldResponse;
+      paramsType: [Protocol.Page.CreateIsolatedWorldRequest];
+      returnType: Protocol.Page.CreateIsolatedWorldResponse;
     };
     /**
      * Deletes browser cookie with given name, domain and path.
      */
-    'Page.deleteCookie': {paramsType: [Protocol.Page.DeleteCookieRequest]; returnType: void;};
+    'Page.deleteCookie': {
+      paramsType: [Protocol.Page.DeleteCookieRequest];
+      returnType: void;
+    };
     /**
      * Disables page domain notifications.
      */
-    'Page.disable': {paramsType: []; returnType: void;};
+    'Page.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables page domain notifications.
      */
-    'Page.enable': {paramsType: []; returnType: void;};
-    'Page.getAppManifest': {paramsType: []; returnType: Protocol.Page.GetAppManifestResponse;};
-    'Page.getInstallabilityErrors': {paramsType: []; returnType: Protocol.Page.GetInstallabilityErrorsResponse;};
-    'Page.getManifestIcons': {paramsType: []; returnType: Protocol.Page.GetManifestIconsResponse;};
+    'Page.enable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'Page.getAppManifest': {
+      paramsType: [];
+      returnType: Protocol.Page.GetAppManifestResponse;
+    };
+    'Page.getInstallabilityErrors': {
+      paramsType: [];
+      returnType: Protocol.Page.GetInstallabilityErrorsResponse;
+    };
+    'Page.getManifestIcons': {
+      paramsType: [];
+      returnType: Protocol.Page.GetManifestIconsResponse;
+    };
     /**
      * Returns all browser cookies. Depending on the backend support, will return detailed cookie
      * information in the `cookies` field.
      */
-    'Page.getCookies': {paramsType: []; returnType: Protocol.Page.GetCookiesResponse;};
+    'Page.getCookies': {
+      paramsType: [];
+      returnType: Protocol.Page.GetCookiesResponse;
+    };
     /**
      * Returns present frame tree structure.
      */
-    'Page.getFrameTree': {paramsType: []; returnType: Protocol.Page.GetFrameTreeResponse;};
+    'Page.getFrameTree': {
+      paramsType: [];
+      returnType: Protocol.Page.GetFrameTreeResponse;
+    };
     /**
      * Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
      */
-    'Page.getLayoutMetrics': {paramsType: []; returnType: Protocol.Page.GetLayoutMetricsResponse;};
+    'Page.getLayoutMetrics': {
+      paramsType: [];
+      returnType: Protocol.Page.GetLayoutMetricsResponse;
+    };
     /**
      * Returns navigation history for the current page.
      */
-    'Page.getNavigationHistory': {paramsType: []; returnType: Protocol.Page.GetNavigationHistoryResponse;};
+    'Page.getNavigationHistory': {
+      paramsType: [];
+      returnType: Protocol.Page.GetNavigationHistoryResponse;
+    };
     /**
      * Resets navigation history for the current page.
      */
-    'Page.resetNavigationHistory': {paramsType: []; returnType: void;};
+    'Page.resetNavigationHistory': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Returns content of the given resource.
      */
-    'Page.getResourceContent':
-        {paramsType: [Protocol.Page.GetResourceContentRequest]; returnType: Protocol.Page.GetResourceContentResponse;};
+    'Page.getResourceContent': {
+      paramsType: [Protocol.Page.GetResourceContentRequest];
+      returnType: Protocol.Page.GetResourceContentResponse;
+    };
     /**
      * Returns present frame / resource tree structure.
      */
-    'Page.getResourceTree': {paramsType: []; returnType: Protocol.Page.GetResourceTreeResponse;};
+    'Page.getResourceTree': {
+      paramsType: [];
+      returnType: Protocol.Page.GetResourceTreeResponse;
+    };
     /**
      * Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
      */
-    'Page.handleJavaScriptDialog': {paramsType: [Protocol.Page.HandleJavaScriptDialogRequest]; returnType: void;};
+    'Page.handleJavaScriptDialog': {
+      paramsType: [Protocol.Page.HandleJavaScriptDialogRequest];
+      returnType: void;
+    };
     /**
      * Navigates current page to the given URL.
      */
-    'Page.navigate': {paramsType: [Protocol.Page.NavigateRequest]; returnType: Protocol.Page.NavigateResponse;};
+    'Page.navigate': {
+      paramsType: [Protocol.Page.NavigateRequest];
+      returnType: Protocol.Page.NavigateResponse;
+    };
     /**
      * Navigates current page to the given history entry.
      */
-    'Page.navigateToHistoryEntry': {paramsType: [Protocol.Page.NavigateToHistoryEntryRequest]; returnType: void;};
+    'Page.navigateToHistoryEntry': {
+      paramsType: [Protocol.Page.NavigateToHistoryEntryRequest];
+      returnType: void;
+    };
     /**
      * Print page as PDF.
      */
-    'Page.printToPDF': {paramsType: [Protocol.Page.PrintToPDFRequest?]; returnType: Protocol.Page.PrintToPDFResponse;};
+    'Page.printToPDF': {
+      paramsType: [Protocol.Page.PrintToPDFRequest?];
+      returnType: Protocol.Page.PrintToPDFResponse;
+    };
     /**
      * Reloads given page optionally ignoring the cache.
      */
-    'Page.reload': {paramsType: [Protocol.Page.ReloadRequest?]; returnType: void;};
+    'Page.reload': {
+      paramsType: [Protocol.Page.ReloadRequest?];
+      returnType: void;
+    };
     /**
      * Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
      */
-    'Page.removeScriptToEvaluateOnLoad':
-        {paramsType: [Protocol.Page.RemoveScriptToEvaluateOnLoadRequest]; returnType: void;};
+    'Page.removeScriptToEvaluateOnLoad': {
+      paramsType: [Protocol.Page.RemoveScriptToEvaluateOnLoadRequest];
+      returnType: void;
+    };
     /**
      * Removes given script from the list.
      */
-    'Page.removeScriptToEvaluateOnNewDocument':
-        {paramsType: [Protocol.Page.RemoveScriptToEvaluateOnNewDocumentRequest]; returnType: void;};
+    'Page.removeScriptToEvaluateOnNewDocument': {
+      paramsType: [Protocol.Page.RemoveScriptToEvaluateOnNewDocumentRequest];
+      returnType: void;
+    };
     /**
      * Acknowledges that a screencast frame has been received by the frontend.
      */
-    'Page.screencastFrameAck': {paramsType: [Protocol.Page.ScreencastFrameAckRequest]; returnType: void;};
+    'Page.screencastFrameAck': {
+      paramsType: [Protocol.Page.ScreencastFrameAckRequest];
+      returnType: void;
+    };
     /**
      * Searches for given string in resource content.
      */
-    'Page.searchInResource':
-        {paramsType: [Protocol.Page.SearchInResourceRequest]; returnType: Protocol.Page.SearchInResourceResponse;};
+    'Page.searchInResource': {
+      paramsType: [Protocol.Page.SearchInResourceRequest];
+      returnType: Protocol.Page.SearchInResourceResponse;
+    };
     /**
      * Enable Chrome's experimental ad filter on all sites.
      */
-    'Page.setAdBlockingEnabled': {paramsType: [Protocol.Page.SetAdBlockingEnabledRequest]; returnType: void;};
+    'Page.setAdBlockingEnabled': {
+      paramsType: [Protocol.Page.SetAdBlockingEnabledRequest];
+      returnType: void;
+    };
     /**
      * Enable page Content Security Policy by-passing.
      */
-    'Page.setBypassCSP': {paramsType: [Protocol.Page.SetBypassCSPRequest]; returnType: void;};
+    'Page.setBypassCSP': {
+      paramsType: [Protocol.Page.SetBypassCSPRequest];
+      returnType: void;
+    };
     /**
      * Get Permissions Policy state on given frame.
      */
@@ -2231,80 +3003,128 @@ export namespace ProtocolMapping {
     /**
      * Get Origin Trials on given frame.
      */
-    'Page.getOriginTrials':
-        {paramsType: [Protocol.Page.GetOriginTrialsRequest]; returnType: Protocol.Page.GetOriginTrialsResponse;};
+    'Page.getOriginTrials': {
+      paramsType: [Protocol.Page.GetOriginTrialsRequest];
+      returnType: Protocol.Page.GetOriginTrialsResponse;
+    };
     /**
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
      * window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
      * query results).
      */
-    'Page.setDeviceMetricsOverride': {paramsType: [Protocol.Page.SetDeviceMetricsOverrideRequest]; returnType: void;};
+    'Page.setDeviceMetricsOverride': {
+      paramsType: [Protocol.Page.SetDeviceMetricsOverrideRequest];
+      returnType: void;
+    };
     /**
      * Overrides the Device Orientation.
      */
-    'Page.setDeviceOrientationOverride':
-        {paramsType: [Protocol.Page.SetDeviceOrientationOverrideRequest]; returnType: void;};
+    'Page.setDeviceOrientationOverride': {
+      paramsType: [Protocol.Page.SetDeviceOrientationOverrideRequest];
+      returnType: void;
+    };
     /**
      * Set generic font families.
      */
-    'Page.setFontFamilies': {paramsType: [Protocol.Page.SetFontFamiliesRequest]; returnType: void;};
+    'Page.setFontFamilies': {
+      paramsType: [Protocol.Page.SetFontFamiliesRequest];
+      returnType: void;
+    };
     /**
      * Set default font sizes.
      */
-    'Page.setFontSizes': {paramsType: [Protocol.Page.SetFontSizesRequest]; returnType: void;};
+    'Page.setFontSizes': {
+      paramsType: [Protocol.Page.SetFontSizesRequest];
+      returnType: void;
+    };
     /**
      * Sets given markup as the document's HTML.
      */
-    'Page.setDocumentContent': {paramsType: [Protocol.Page.SetDocumentContentRequest]; returnType: void;};
+    'Page.setDocumentContent': {
+      paramsType: [Protocol.Page.SetDocumentContentRequest];
+      returnType: void;
+    };
     /**
      * Set the behavior when downloading a file.
      */
-    'Page.setDownloadBehavior': {paramsType: [Protocol.Page.SetDownloadBehaviorRequest]; returnType: void;};
+    'Page.setDownloadBehavior': {
+      paramsType: [Protocol.Page.SetDownloadBehaviorRequest];
+      returnType: void;
+    };
     /**
      * Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
      * unavailable.
      */
-    'Page.setGeolocationOverride': {paramsType: [Protocol.Page.SetGeolocationOverrideRequest?]; returnType: void;};
+    'Page.setGeolocationOverride': {
+      paramsType: [Protocol.Page.SetGeolocationOverrideRequest?];
+      returnType: void;
+    };
     /**
      * Controls whether page will emit lifecycle events.
      */
-    'Page.setLifecycleEventsEnabled': {paramsType: [Protocol.Page.SetLifecycleEventsEnabledRequest]; returnType: void;};
+    'Page.setLifecycleEventsEnabled': {
+      paramsType: [Protocol.Page.SetLifecycleEventsEnabledRequest];
+      returnType: void;
+    };
     /**
      * Toggles mouse event-based touch event emulation.
      */
-    'Page.setTouchEmulationEnabled': {paramsType: [Protocol.Page.SetTouchEmulationEnabledRequest]; returnType: void;};
+    'Page.setTouchEmulationEnabled': {
+      paramsType: [Protocol.Page.SetTouchEmulationEnabledRequest];
+      returnType: void;
+    };
     /**
      * Starts sending each frame using the `screencastFrame` event.
      */
-    'Page.startScreencast': {paramsType: [Protocol.Page.StartScreencastRequest?]; returnType: void;};
+    'Page.startScreencast': {
+      paramsType: [Protocol.Page.StartScreencastRequest?];
+      returnType: void;
+    };
     /**
      * Force the page stop all navigations and pending resource fetches.
      */
-    'Page.stopLoading': {paramsType: []; returnType: void;};
+    'Page.stopLoading': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Crashes renderer on the IO thread, generates minidumps.
      */
-    'Page.crash': {paramsType: []; returnType: void;};
+    'Page.crash': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Tries to close page, running its beforeunload hooks, if any.
      */
-    'Page.close': {paramsType: []; returnType: void;};
+    'Page.close': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Tries to update the web lifecycle state of the page.
      * It will transition the page to the given state according to:
      * https://github.com/WICG/web-lifecycle/
      */
-    'Page.setWebLifecycleState': {paramsType: [Protocol.Page.SetWebLifecycleStateRequest]; returnType: void;};
+    'Page.setWebLifecycleState': {
+      paramsType: [Protocol.Page.SetWebLifecycleStateRequest];
+      returnType: void;
+    };
     /**
      * Stops sending each frame in the `screencastFrame`.
      */
-    'Page.stopScreencast': {paramsType: []; returnType: void;};
+    'Page.stopScreencast': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Forces compilation cache to be generated for every subresource script.
      * See also: `Page.produceCompilationCache`.
      */
-    'Page.setProduceCompilationCache':
-        {paramsType: [Protocol.Page.SetProduceCompilationCacheRequest]; returnType: void;};
+    'Page.setProduceCompilationCache': {
+      paramsType: [Protocol.Page.SetProduceCompilationCacheRequest];
+      returnType: void;
+    };
     /**
      * Requests backend to produce compilation cache for the specified scripts.
      * Unlike setProduceCompilationCache, this allows client to only produce cache
@@ -2316,181 +3136,302 @@ export namespace ProtocolMapping {
      * produced upon backend discretion, based on internal heuristics.
      * See also: `Page.compilationCacheProduced`.
      */
-    'Page.produceCompilationCache': {paramsType: [Protocol.Page.ProduceCompilationCacheRequest]; returnType: void;};
+    'Page.produceCompilationCache': {
+      paramsType: [Protocol.Page.ProduceCompilationCacheRequest];
+      returnType: void;
+    };
     /**
      * Seeds compilation cache for given url. Compilation cache does not survive
      * cross-process navigation.
      */
-    'Page.addCompilationCache': {paramsType: [Protocol.Page.AddCompilationCacheRequest]; returnType: void;};
+    'Page.addCompilationCache': {
+      paramsType: [Protocol.Page.AddCompilationCacheRequest];
+      returnType: void;
+    };
     /**
      * Clears seeded compilation cache.
      */
-    'Page.clearCompilationCache': {paramsType: []; returnType: void;};
+    'Page.clearCompilationCache': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Generates a report for testing.
      */
-    'Page.generateTestReport': {paramsType: [Protocol.Page.GenerateTestReportRequest]; returnType: void;};
+    'Page.generateTestReport': {
+      paramsType: [Protocol.Page.GenerateTestReportRequest];
+      returnType: void;
+    };
     /**
      * Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger.
      */
-    'Page.waitForDebugger': {paramsType: []; returnType: void;};
+    'Page.waitForDebugger': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Intercept file chooser requests and transfer control to protocol clients.
      * When file chooser interception is enabled, native file chooser dialog is not shown.
      * Instead, a protocol event `Page.fileChooserOpened` is emitted.
      */
-    'Page.setInterceptFileChooserDialog':
-        {paramsType: [Protocol.Page.SetInterceptFileChooserDialogRequest]; returnType: void;};
+    'Page.setInterceptFileChooserDialog': {
+      paramsType: [Protocol.Page.SetInterceptFileChooserDialogRequest];
+      returnType: void;
+    };
     /**
      * Disable collecting and reporting metrics.
      */
-    'Performance.disable': {paramsType: []; returnType: void;};
+    'Performance.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enable collecting and reporting metrics.
      */
-    'Performance.enable': {paramsType: [Protocol.Performance.EnableRequest?]; returnType: void;};
+    'Performance.enable': {
+      paramsType: [Protocol.Performance.EnableRequest?];
+      returnType: void;
+    };
     /**
      * Sets time domain to use for collecting and reporting duration metrics.
      * Note that this must be called before enabling metrics collection. Calling
      * this method while metrics collection is enabled returns an error.
      */
-    'Performance.setTimeDomain': {paramsType: [Protocol.Performance.SetTimeDomainRequest]; returnType: void;};
+    'Performance.setTimeDomain': {
+      paramsType: [Protocol.Performance.SetTimeDomainRequest];
+      returnType: void;
+    };
     /**
      * Retrieve current values of run-time metrics.
      */
-    'Performance.getMetrics': {paramsType: []; returnType: Protocol.Performance.GetMetricsResponse;};
+    'Performance.getMetrics': {
+      paramsType: [];
+      returnType: Protocol.Performance.GetMetricsResponse;
+    };
     /**
      * Previously buffered events would be reported before method returns.
      * See also: timelineEventAdded
      */
-    'PerformanceTimeline.enable': {paramsType: [Protocol.PerformanceTimeline.EnableRequest]; returnType: void;};
+    'PerformanceTimeline.enable': {
+      paramsType: [Protocol.PerformanceTimeline.EnableRequest];
+      returnType: void;
+    };
     /**
      * Disables tracking security state changes.
      */
-    'Security.disable': {paramsType: []; returnType: void;};
+    'Security.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables tracking security state changes.
      */
-    'Security.enable': {paramsType: []; returnType: void;};
+    'Security.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enable/disable whether all certificate errors should be ignored.
      */
-    'Security.setIgnoreCertificateErrors':
-        {paramsType: [Protocol.Security.SetIgnoreCertificateErrorsRequest]; returnType: void;};
+    'Security.setIgnoreCertificateErrors': {
+      paramsType: [Protocol.Security.SetIgnoreCertificateErrorsRequest];
+      returnType: void;
+    };
     /**
      * Handles a certificate error that fired a certificateError event.
      */
-    'Security.handleCertificateError':
-        {paramsType: [Protocol.Security.HandleCertificateErrorRequest]; returnType: void;};
+    'Security.handleCertificateError': {
+      paramsType: [Protocol.Security.HandleCertificateErrorRequest];
+      returnType: void;
+    };
     /**
      * Enable/disable overriding certificate errors. If enabled, all certificate error events need to
      * be handled by the DevTools client and should be answered with `handleCertificateError` commands.
      */
-    'Security.setOverrideCertificateErrors':
-        {paramsType: [Protocol.Security.SetOverrideCertificateErrorsRequest]; returnType: void;};
-    'ServiceWorker.deliverPushMessage':
-        {paramsType: [Protocol.ServiceWorker.DeliverPushMessageRequest]; returnType: void;};
-    'ServiceWorker.disable': {paramsType: []; returnType: void;};
-    'ServiceWorker.dispatchSyncEvent':
-        {paramsType: [Protocol.ServiceWorker.DispatchSyncEventRequest]; returnType: void;};
-    'ServiceWorker.dispatchPeriodicSyncEvent':
-        {paramsType: [Protocol.ServiceWorker.DispatchPeriodicSyncEventRequest]; returnType: void;};
-    'ServiceWorker.enable': {paramsType: []; returnType: void;};
-    'ServiceWorker.inspectWorker': {paramsType: [Protocol.ServiceWorker.InspectWorkerRequest]; returnType: void;};
-    'ServiceWorker.setForceUpdateOnPageLoad':
-        {paramsType: [Protocol.ServiceWorker.SetForceUpdateOnPageLoadRequest]; returnType: void;};
-    'ServiceWorker.skipWaiting': {paramsType: [Protocol.ServiceWorker.SkipWaitingRequest]; returnType: void;};
-    'ServiceWorker.startWorker': {paramsType: [Protocol.ServiceWorker.StartWorkerRequest]; returnType: void;};
-    'ServiceWorker.stopAllWorkers': {paramsType: []; returnType: void;};
-    'ServiceWorker.stopWorker': {paramsType: [Protocol.ServiceWorker.StopWorkerRequest]; returnType: void;};
-    'ServiceWorker.unregister': {paramsType: [Protocol.ServiceWorker.UnregisterRequest]; returnType: void;};
-    'ServiceWorker.updateRegistration':
-        {paramsType: [Protocol.ServiceWorker.UpdateRegistrationRequest]; returnType: void;};
+    'Security.setOverrideCertificateErrors': {
+      paramsType: [Protocol.Security.SetOverrideCertificateErrorsRequest];
+      returnType: void;
+    };
+    'ServiceWorker.deliverPushMessage': {
+      paramsType: [Protocol.ServiceWorker.DeliverPushMessageRequest];
+      returnType: void;
+    };
+    'ServiceWorker.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'ServiceWorker.dispatchSyncEvent': {
+      paramsType: [Protocol.ServiceWorker.DispatchSyncEventRequest];
+      returnType: void;
+    };
+    'ServiceWorker.dispatchPeriodicSyncEvent': {
+      paramsType: [Protocol.ServiceWorker.DispatchPeriodicSyncEventRequest];
+      returnType: void;
+    };
+    'ServiceWorker.enable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'ServiceWorker.inspectWorker': {
+      paramsType: [Protocol.ServiceWorker.InspectWorkerRequest];
+      returnType: void;
+    };
+    'ServiceWorker.setForceUpdateOnPageLoad': {
+      paramsType: [Protocol.ServiceWorker.SetForceUpdateOnPageLoadRequest];
+      returnType: void;
+    };
+    'ServiceWorker.skipWaiting': {
+      paramsType: [Protocol.ServiceWorker.SkipWaitingRequest];
+      returnType: void;
+    };
+    'ServiceWorker.startWorker': {
+      paramsType: [Protocol.ServiceWorker.StartWorkerRequest];
+      returnType: void;
+    };
+    'ServiceWorker.stopAllWorkers': {
+      paramsType: [];
+      returnType: void;
+    };
+    'ServiceWorker.stopWorker': {
+      paramsType: [Protocol.ServiceWorker.StopWorkerRequest];
+      returnType: void;
+    };
+    'ServiceWorker.unregister': {
+      paramsType: [Protocol.ServiceWorker.UnregisterRequest];
+      returnType: void;
+    };
+    'ServiceWorker.updateRegistration': {
+      paramsType: [Protocol.ServiceWorker.UpdateRegistrationRequest];
+      returnType: void;
+    };
     /**
      * Clears storage for origin.
      */
-    'Storage.clearDataForOrigin': {paramsType: [Protocol.Storage.ClearDataForOriginRequest]; returnType: void;};
+    'Storage.clearDataForOrigin': {
+      paramsType: [Protocol.Storage.ClearDataForOriginRequest];
+      returnType: void;
+    };
     /**
      * Returns all browser cookies.
      */
-    'Storage.getCookies':
-        {paramsType: [Protocol.Storage.GetCookiesRequest?]; returnType: Protocol.Storage.GetCookiesResponse;};
+    'Storage.getCookies': {
+      paramsType: [Protocol.Storage.GetCookiesRequest?];
+      returnType: Protocol.Storage.GetCookiesResponse;
+    };
     /**
      * Sets given cookies.
      */
-    'Storage.setCookies': {paramsType: [Protocol.Storage.SetCookiesRequest]; returnType: void;};
+    'Storage.setCookies': {
+      paramsType: [Protocol.Storage.SetCookiesRequest];
+      returnType: void;
+    };
     /**
      * Clears cookies.
      */
-    'Storage.clearCookies': {paramsType: [Protocol.Storage.ClearCookiesRequest?]; returnType: void;};
+    'Storage.clearCookies': {
+      paramsType: [Protocol.Storage.ClearCookiesRequest?];
+      returnType: void;
+    };
     /**
      * Returns usage and quota in bytes.
      */
     'Storage.getUsageAndQuota': {
-      paramsType: [Protocol.Storage.GetUsageAndQuotaRequest]; returnType: Protocol.Storage.GetUsageAndQuotaResponse;
+      paramsType: [Protocol.Storage.GetUsageAndQuotaRequest];
+      returnType: Protocol.Storage.GetUsageAndQuotaResponse;
     };
     /**
      * Override quota for the specified origin
      */
-    'Storage.overrideQuotaForOrigin': {paramsType: [Protocol.Storage.OverrideQuotaForOriginRequest]; returnType: void;};
+    'Storage.overrideQuotaForOrigin': {
+      paramsType: [Protocol.Storage.OverrideQuotaForOriginRequest];
+      returnType: void;
+    };
     /**
      * Registers origin to be notified when an update occurs to its cache storage list.
      */
-    'Storage.trackCacheStorageForOrigin':
-        {paramsType: [Protocol.Storage.TrackCacheStorageForOriginRequest]; returnType: void;};
+    'Storage.trackCacheStorageForOrigin': {
+      paramsType: [Protocol.Storage.TrackCacheStorageForOriginRequest];
+      returnType: void;
+    };
     /**
      * Registers origin to be notified when an update occurs to its IndexedDB.
      */
-    'Storage.trackIndexedDBForOrigin':
-        {paramsType: [Protocol.Storage.TrackIndexedDBForOriginRequest]; returnType: void;};
+    'Storage.trackIndexedDBForOrigin': {
+      paramsType: [Protocol.Storage.TrackIndexedDBForOriginRequest];
+      returnType: void;
+    };
     /**
      * Unregisters origin from receiving notifications for cache storage.
      */
-    'Storage.untrackCacheStorageForOrigin':
-        {paramsType: [Protocol.Storage.UntrackCacheStorageForOriginRequest]; returnType: void;};
+    'Storage.untrackCacheStorageForOrigin': {
+      paramsType: [Protocol.Storage.UntrackCacheStorageForOriginRequest];
+      returnType: void;
+    };
     /**
      * Unregisters origin from receiving notifications for IndexedDB.
      */
-    'Storage.untrackIndexedDBForOrigin':
-        {paramsType: [Protocol.Storage.UntrackIndexedDBForOriginRequest]; returnType: void;};
+    'Storage.untrackIndexedDBForOrigin': {
+      paramsType: [Protocol.Storage.UntrackIndexedDBForOriginRequest];
+      returnType: void;
+    };
     /**
      * Returns the number of stored Trust Tokens per issuer for the
      * current browsing context.
      */
-    'Storage.getTrustTokens': {paramsType: []; returnType: Protocol.Storage.GetTrustTokensResponse;};
+    'Storage.getTrustTokens': {
+      paramsType: [];
+      returnType: Protocol.Storage.GetTrustTokensResponse;
+    };
     /**
      * Removes all Trust Tokens issued by the provided issuerOrigin.
      * Leaves other stored data, including the issuer's Redemption Records, intact.
      */
     'Storage.clearTrustTokens': {
-      paramsType: [Protocol.Storage.ClearTrustTokensRequest]; returnType: Protocol.Storage.ClearTrustTokensResponse;
+      paramsType: [Protocol.Storage.ClearTrustTokensRequest];
+      returnType: Protocol.Storage.ClearTrustTokensResponse;
     };
     /**
      * Returns information about the system.
      */
-    'SystemInfo.getInfo': {paramsType: []; returnType: Protocol.SystemInfo.GetInfoResponse;};
+    'SystemInfo.getInfo': {
+      paramsType: [];
+      returnType: Protocol.SystemInfo.GetInfoResponse;
+    };
     /**
      * Returns information about all running processes.
      */
-    'SystemInfo.getProcessInfo': {paramsType: []; returnType: Protocol.SystemInfo.GetProcessInfoResponse;};
+    'SystemInfo.getProcessInfo': {
+      paramsType: [];
+      returnType: Protocol.SystemInfo.GetProcessInfoResponse;
+    };
     /**
      * Activates (focuses) the target.
      */
-    'Target.activateTarget': {paramsType: [Protocol.Target.ActivateTargetRequest]; returnType: void;};
+    'Target.activateTarget': {
+      paramsType: [Protocol.Target.ActivateTargetRequest];
+      returnType: void;
+    };
     /**
      * Attaches to the target with given id.
      */
-    'Target.attachToTarget':
-        {paramsType: [Protocol.Target.AttachToTargetRequest]; returnType: Protocol.Target.AttachToTargetResponse;};
+    'Target.attachToTarget': {
+      paramsType: [Protocol.Target.AttachToTargetRequest];
+      returnType: Protocol.Target.AttachToTargetResponse;
+    };
     /**
      * Attaches to the browser target, only uses flat sessionId mode.
      */
-    'Target.attachToBrowserTarget': {paramsType: []; returnType: Protocol.Target.AttachToBrowserTargetResponse;};
+    'Target.attachToBrowserTarget': {
+      paramsType: [];
+      returnType: Protocol.Target.AttachToBrowserTargetResponse;
+    };
     /**
      * Closes the target. If the target is a page that gets closed too.
      */
-    'Target.closeTarget':
-        {paramsType: [Protocol.Target.CloseTargetRequest]; returnType: Protocol.Target.CloseTargetResponse;};
+    'Target.closeTarget': {
+      paramsType: [Protocol.Target.CloseTargetRequest];
+      returnType: Protocol.Target.CloseTargetResponse;
+    };
     /**
      * Inject object to the target's main frame that provides a communication
      * channel with browser target.
@@ -2501,7 +3442,10 @@ export namespace ProtocolMapping {
      * - `binding.send(json)` - a method to send messages over the remote debugging protocol
      * - `binding.onmessage = json => handleMessage(json)` - a callback that will be called for the protocol notifications and command responses.
      */
-    'Target.exposeDevToolsProtocol': {paramsType: [Protocol.Target.ExposeDevToolsProtocolRequest]; returnType: void;};
+    'Target.exposeDevToolsProtocol': {
+      paramsType: [Protocol.Target.ExposeDevToolsProtocolRequest];
+      returnType: void;
+    };
     /**
      * Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
      * one.
@@ -2513,107 +3457,172 @@ export namespace ProtocolMapping {
     /**
      * Returns all browser contexts created with `Target.createBrowserContext` method.
      */
-    'Target.getBrowserContexts': {paramsType: []; returnType: Protocol.Target.GetBrowserContextsResponse;};
+    'Target.getBrowserContexts': {
+      paramsType: [];
+      returnType: Protocol.Target.GetBrowserContextsResponse;
+    };
     /**
      * Creates a new page.
      */
-    'Target.createTarget':
-        {paramsType: [Protocol.Target.CreateTargetRequest]; returnType: Protocol.Target.CreateTargetResponse;};
+    'Target.createTarget': {
+      paramsType: [Protocol.Target.CreateTargetRequest];
+      returnType: Protocol.Target.CreateTargetResponse;
+    };
     /**
      * Detaches session with given id.
      */
-    'Target.detachFromTarget': {paramsType: [Protocol.Target.DetachFromTargetRequest?]; returnType: void;};
+    'Target.detachFromTarget': {
+      paramsType: [Protocol.Target.DetachFromTargetRequest?];
+      returnType: void;
+    };
     /**
      * Deletes a BrowserContext. All the belonging pages will be closed without calling their
      * beforeunload hooks.
      */
-    'Target.disposeBrowserContext': {paramsType: [Protocol.Target.DisposeBrowserContextRequest]; returnType: void;};
+    'Target.disposeBrowserContext': {
+      paramsType: [Protocol.Target.DisposeBrowserContextRequest];
+      returnType: void;
+    };
     /**
      * Returns information about a target.
      */
-    'Target.getTargetInfo':
-        {paramsType: [Protocol.Target.GetTargetInfoRequest?]; returnType: Protocol.Target.GetTargetInfoResponse;};
+    'Target.getTargetInfo': {
+      paramsType: [Protocol.Target.GetTargetInfoRequest?];
+      returnType: Protocol.Target.GetTargetInfoResponse;
+    };
     /**
      * Retrieves a list of available targets.
      */
-    'Target.getTargets': {paramsType: []; returnType: Protocol.Target.GetTargetsResponse;};
+    'Target.getTargets': {
+      paramsType: [];
+      returnType: Protocol.Target.GetTargetsResponse;
+    };
     /**
      * Sends protocol message over session with given id.
      * Consider using flat mode instead; see commands attachToTarget, setAutoAttach,
      * and crbug.com/991325.
      */
-    'Target.sendMessageToTarget': {paramsType: [Protocol.Target.SendMessageToTargetRequest]; returnType: void;};
+    'Target.sendMessageToTarget': {
+      paramsType: [Protocol.Target.SendMessageToTargetRequest];
+      returnType: void;
+    };
     /**
      * Controls whether to automatically attach to new targets which are considered to be related to
      * this one. When turned on, attaches to all existing related targets as well. When turned off,
      * automatically detaches from all currently attached targets.
      */
-    'Target.setAutoAttach': {paramsType: [Protocol.Target.SetAutoAttachRequest]; returnType: void;};
+    'Target.setAutoAttach': {
+      paramsType: [Protocol.Target.SetAutoAttachRequest];
+      returnType: void;
+    };
     /**
      * Controls whether to discover available targets and notify via
      * `targetCreated/targetInfoChanged/targetDestroyed` events.
      */
-    'Target.setDiscoverTargets': {paramsType: [Protocol.Target.SetDiscoverTargetsRequest]; returnType: void;};
+    'Target.setDiscoverTargets': {
+      paramsType: [Protocol.Target.SetDiscoverTargetsRequest];
+      returnType: void;
+    };
     /**
      * Enables target discovery for the specified locations, when `setDiscoverTargets` was set to
      * `true`.
      */
-    'Target.setRemoteLocations': {paramsType: [Protocol.Target.SetRemoteLocationsRequest]; returnType: void;};
+    'Target.setRemoteLocations': {
+      paramsType: [Protocol.Target.SetRemoteLocationsRequest];
+      returnType: void;
+    };
     /**
      * Request browser port binding.
      */
-    'Tethering.bind': {paramsType: [Protocol.Tethering.BindRequest]; returnType: void;};
+    'Tethering.bind': {
+      paramsType: [Protocol.Tethering.BindRequest];
+      returnType: void;
+    };
     /**
      * Request browser port unbinding.
      */
-    'Tethering.unbind': {paramsType: [Protocol.Tethering.UnbindRequest]; returnType: void;};
+    'Tethering.unbind': {
+      paramsType: [Protocol.Tethering.UnbindRequest];
+      returnType: void;
+    };
     /**
      * Stop trace events collection.
      */
-    'Tracing.end': {paramsType: []; returnType: void;};
+    'Tracing.end': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Gets supported tracing categories.
      */
-    'Tracing.getCategories': {paramsType: []; returnType: Protocol.Tracing.GetCategoriesResponse;};
+    'Tracing.getCategories': {
+      paramsType: [];
+      returnType: Protocol.Tracing.GetCategoriesResponse;
+    };
     /**
      * Record a clock sync marker in the trace.
      */
-    'Tracing.recordClockSyncMarker': {paramsType: [Protocol.Tracing.RecordClockSyncMarkerRequest]; returnType: void;};
+    'Tracing.recordClockSyncMarker': {
+      paramsType: [Protocol.Tracing.RecordClockSyncMarkerRequest];
+      returnType: void;
+    };
     /**
      * Request a global memory dump.
      */
     'Tracing.requestMemoryDump': {
-      paramsType: [Protocol.Tracing.RequestMemoryDumpRequest?]; returnType: Protocol.Tracing.RequestMemoryDumpResponse;
+      paramsType: [Protocol.Tracing.RequestMemoryDumpRequest?];
+      returnType: Protocol.Tracing.RequestMemoryDumpResponse;
     };
     /**
      * Start trace events collection.
      */
-    'Tracing.start': {paramsType: [Protocol.Tracing.StartRequest?]; returnType: void;};
+    'Tracing.start': {
+      paramsType: [Protocol.Tracing.StartRequest?];
+      returnType: void;
+    };
     /**
      * Disables the fetch domain.
      */
-    'Fetch.disable': {paramsType: []; returnType: void;};
+    'Fetch.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables issuing of requestPaused events. A request will be paused until client
      * calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.
      */
-    'Fetch.enable': {paramsType: [Protocol.Fetch.EnableRequest?]; returnType: void;};
+    'Fetch.enable': {
+      paramsType: [Protocol.Fetch.EnableRequest?];
+      returnType: void;
+    };
     /**
      * Causes the request to fail with specified reason.
      */
-    'Fetch.failRequest': {paramsType: [Protocol.Fetch.FailRequestRequest]; returnType: void;};
+    'Fetch.failRequest': {
+      paramsType: [Protocol.Fetch.FailRequestRequest];
+      returnType: void;
+    };
     /**
      * Provides response to the request.
      */
-    'Fetch.fulfillRequest': {paramsType: [Protocol.Fetch.FulfillRequestRequest]; returnType: void;};
+    'Fetch.fulfillRequest': {
+      paramsType: [Protocol.Fetch.FulfillRequestRequest];
+      returnType: void;
+    };
     /**
      * Continues the request, optionally modifying some of its parameters.
      */
-    'Fetch.continueRequest': {paramsType: [Protocol.Fetch.ContinueRequestRequest]; returnType: void;};
+    'Fetch.continueRequest': {
+      paramsType: [Protocol.Fetch.ContinueRequestRequest];
+      returnType: void;
+    };
     /**
      * Continues a request supplying authChallengeResponse following authRequired event.
      */
-    'Fetch.continueWithAuth': {paramsType: [Protocol.Fetch.ContinueWithAuthRequest]; returnType: void;};
+    'Fetch.continueWithAuth': {
+      paramsType: [Protocol.Fetch.ContinueWithAuthRequest];
+      returnType: void;
+    };
     /**
      * Causes the body of the response to be received from the server and
      * returned as a single string. May only be issued for a request that
@@ -2622,8 +3631,10 @@ export namespace ProtocolMapping {
      * affect the request or disabling fetch domain before body is received
      * results in an undefined behavior.
      */
-    'Fetch.getResponseBody':
-        {paramsType: [Protocol.Fetch.GetResponseBodyRequest]; returnType: Protocol.Fetch.GetResponseBodyResponse;};
+    'Fetch.getResponseBody': {
+      paramsType: [Protocol.Fetch.GetResponseBodyRequest];
+      returnType: Protocol.Fetch.GetResponseBodyResponse;
+    };
     /**
      * Returns a handle to the stream representing the response body.
      * The request must be paused in the HeadersReceived stage.
@@ -2643,26 +3654,39 @@ export namespace ProtocolMapping {
     /**
      * Enables the WebAudio domain and starts sending context lifetime events.
      */
-    'WebAudio.enable': {paramsType: []; returnType: void;};
+    'WebAudio.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Disables the WebAudio domain.
      */
-    'WebAudio.disable': {paramsType: []; returnType: void;};
+    'WebAudio.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Fetch the realtime data from the registered contexts.
      */
     'WebAudio.getRealtimeData': {
-      paramsType: [Protocol.WebAudio.GetRealtimeDataRequest]; returnType: Protocol.WebAudio.GetRealtimeDataResponse;
+      paramsType: [Protocol.WebAudio.GetRealtimeDataRequest];
+      returnType: Protocol.WebAudio.GetRealtimeDataResponse;
     };
     /**
      * Enable the WebAuthn domain and start intercepting credential storage and
      * retrieval with a virtual authenticator.
      */
-    'WebAuthn.enable': {paramsType: []; returnType: void;};
+    'WebAuthn.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Disable the WebAuthn domain.
      */
-    'WebAuthn.disable': {paramsType: []; returnType: void;};
+    'WebAuthn.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Creates and adds a virtual authenticator.
      */
@@ -2673,63 +3697,138 @@ export namespace ProtocolMapping {
     /**
      * Removes the given authenticator.
      */
-    'WebAuthn.removeVirtualAuthenticator':
-        {paramsType: [Protocol.WebAuthn.RemoveVirtualAuthenticatorRequest]; returnType: void;};
+    'WebAuthn.removeVirtualAuthenticator': {
+      paramsType: [Protocol.WebAuthn.RemoveVirtualAuthenticatorRequest];
+      returnType: void;
+    };
     /**
      * Adds the credential to the specified authenticator.
      */
-    'WebAuthn.addCredential': {paramsType: [Protocol.WebAuthn.AddCredentialRequest]; returnType: void;};
+    'WebAuthn.addCredential': {
+      paramsType: [Protocol.WebAuthn.AddCredentialRequest];
+      returnType: void;
+    };
     /**
      * Returns a single credential stored in the given virtual authenticator that
      * matches the credential ID.
      */
-    'WebAuthn.getCredential':
-        {paramsType: [Protocol.WebAuthn.GetCredentialRequest]; returnType: Protocol.WebAuthn.GetCredentialResponse;};
+    'WebAuthn.getCredential': {
+      paramsType: [Protocol.WebAuthn.GetCredentialRequest];
+      returnType: Protocol.WebAuthn.GetCredentialResponse;
+    };
     /**
      * Returns all the credentials stored in the given virtual authenticator.
      */
-    'WebAuthn.getCredentials':
-        {paramsType: [Protocol.WebAuthn.GetCredentialsRequest]; returnType: Protocol.WebAuthn.GetCredentialsResponse;};
+    'WebAuthn.getCredentials': {
+      paramsType: [Protocol.WebAuthn.GetCredentialsRequest];
+      returnType: Protocol.WebAuthn.GetCredentialsResponse;
+    };
     /**
      * Removes a credential from the authenticator.
      */
-    'WebAuthn.removeCredential': {paramsType: [Protocol.WebAuthn.RemoveCredentialRequest]; returnType: void;};
+    'WebAuthn.removeCredential': {
+      paramsType: [Protocol.WebAuthn.RemoveCredentialRequest];
+      returnType: void;
+    };
     /**
      * Clears all the credentials from the specified device.
      */
-    'WebAuthn.clearCredentials': {paramsType: [Protocol.WebAuthn.ClearCredentialsRequest]; returnType: void;};
+    'WebAuthn.clearCredentials': {
+      paramsType: [Protocol.WebAuthn.ClearCredentialsRequest];
+      returnType: void;
+    };
     /**
      * Sets whether User Verification succeeds or fails for an authenticator.
      * The default is true.
      */
-    'WebAuthn.setUserVerified': {paramsType: [Protocol.WebAuthn.SetUserVerifiedRequest]; returnType: void;};
+    'WebAuthn.setUserVerified': {
+      paramsType: [Protocol.WebAuthn.SetUserVerifiedRequest];
+      returnType: void;
+    };
     /**
      * Sets whether tests of user presence will succeed immediately (if true) or fail to resolve (if false) for an authenticator.
      * The default is true.
      */
-    'WebAuthn.setAutomaticPresenceSimulation':
-        {paramsType: [Protocol.WebAuthn.SetAutomaticPresenceSimulationRequest]; returnType: void;};
+    'WebAuthn.setAutomaticPresenceSimulation': {
+      paramsType: [Protocol.WebAuthn.SetAutomaticPresenceSimulationRequest];
+      returnType: void;
+    };
     /**
      * Enables the Media domain
      */
-    'Media.enable': {paramsType: []; returnType: void;};
+    'Media.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Disables the Media domain.
      */
-    'Media.disable': {paramsType: []; returnType: void;};
+    'Media.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'CohtmlDebug.setDrawMetaDataEmit': {
+      paramsType: [Protocol.CohtmlDebug.SetDrawMetaDataEmitRequest];
+      returnType: void;
+    };
+    'CohtmlDebug.setContinuousRepaint': {
+      paramsType: [Protocol.CohtmlDebug.SetContinuousRepaintRequest];
+      returnType: void;
+    };
+    'CohtmlDebug.dumpDOM': {
+      paramsType: [];
+      returnType: void;
+    };
+    'CohtmlDebug.dumpStackingContext': {
+      paramsType: [];
+      returnType: void;
+    };
+    'CohtmlDebug.dumpUsedImages': {
+      paramsType: [];
+      returnType: void;
+    };
+    'CohtmlDebug.captureBackend': {
+      paramsType: [];
+      returnType: void;
+    };
+    'CohtmlDebug.captureRend': {
+      paramsType: [];
+      returnType: void;
+    };
+    'CohtmlDebug.capturePage': {
+      paramsType: [];
+      returnType: void;
+    };
+    'CohtmlDebug.enable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'CohtmlDebug.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Continues execution until specific location is reached.
      */
-    'Debugger.continueToLocation': {paramsType: [Protocol.Debugger.ContinueToLocationRequest]; returnType: void;};
+    'Debugger.continueToLocation': {
+      paramsType: [Protocol.Debugger.ContinueToLocationRequest];
+      returnType: void;
+    };
     /**
      * Disables debugger for given page.
      */
-    'Debugger.disable': {paramsType: []; returnType: void;};
+    'Debugger.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables debugger for the given page. Clients should not assume that the debugging has been
      * enabled until the result for this command is received.
      */
-    'Debugger.enable': {paramsType: [Protocol.Debugger.EnableRequest?]; returnType: Protocol.Debugger.EnableResponse;};
+    'Debugger.enable': {
+      paramsType: [Protocol.Debugger.EnableRequest?];
+      returnType: Protocol.Debugger.EnableResponse;
+    };
     /**
      * Evaluates expression on a given call frame.
      */
@@ -2749,66 +3848,95 @@ export namespace ProtocolMapping {
      * Returns source for the script with given id.
      */
     'Debugger.getScriptSource': {
-      paramsType: [Protocol.Debugger.GetScriptSourceRequest]; returnType: Protocol.Debugger.GetScriptSourceResponse;
+      paramsType: [Protocol.Debugger.GetScriptSourceRequest];
+      returnType: Protocol.Debugger.GetScriptSourceResponse;
     };
     /**
      * This command is deprecated. Use getScriptSource instead.
      */
     'Debugger.getWasmBytecode': {
-      paramsType: [Protocol.Debugger.GetWasmBytecodeRequest]; returnType: Protocol.Debugger.GetWasmBytecodeResponse;
+      paramsType: [Protocol.Debugger.GetWasmBytecodeRequest];
+      returnType: Protocol.Debugger.GetWasmBytecodeResponse;
     };
     /**
      * Returns stack trace with given `stackTraceId`.
      */
-    'Debugger.getStackTrace':
-        {paramsType: [Protocol.Debugger.GetStackTraceRequest]; returnType: Protocol.Debugger.GetStackTraceResponse;};
+    'Debugger.getStackTrace': {
+      paramsType: [Protocol.Debugger.GetStackTraceRequest];
+      returnType: Protocol.Debugger.GetStackTraceResponse;
+    };
     /**
      * Stops on the next JavaScript statement.
      */
-    'Debugger.pause': {paramsType: []; returnType: void;};
-    'Debugger.pauseOnAsyncCall': {paramsType: [Protocol.Debugger.PauseOnAsyncCallRequest]; returnType: void;};
+    'Debugger.pause': {
+      paramsType: [];
+      returnType: void;
+    };
+    'Debugger.pauseOnAsyncCall': {
+      paramsType: [Protocol.Debugger.PauseOnAsyncCallRequest];
+      returnType: void;
+    };
     /**
      * Removes JavaScript breakpoint.
      */
-    'Debugger.removeBreakpoint': {paramsType: [Protocol.Debugger.RemoveBreakpointRequest]; returnType: void;};
+    'Debugger.removeBreakpoint': {
+      paramsType: [Protocol.Debugger.RemoveBreakpointRequest];
+      returnType: void;
+    };
     /**
      * Restarts particular call frame from the beginning.
      */
-    'Debugger.restartFrame':
-        {paramsType: [Protocol.Debugger.RestartFrameRequest]; returnType: Protocol.Debugger.RestartFrameResponse;};
+    'Debugger.restartFrame': {
+      paramsType: [Protocol.Debugger.RestartFrameRequest];
+      returnType: Protocol.Debugger.RestartFrameResponse;
+    };
     /**
      * Resumes JavaScript execution.
      */
-    'Debugger.resume': {paramsType: [Protocol.Debugger.ResumeRequest?]; returnType: void;};
+    'Debugger.resume': {
+      paramsType: [Protocol.Debugger.ResumeRequest?];
+      returnType: void;
+    };
     /**
      * Searches for given string in script content.
      */
     'Debugger.searchInContent': {
-      paramsType: [Protocol.Debugger.SearchInContentRequest]; returnType: Protocol.Debugger.SearchInContentResponse;
+      paramsType: [Protocol.Debugger.SearchInContentRequest];
+      returnType: Protocol.Debugger.SearchInContentResponse;
     };
     /**
      * Enables or disables async call stacks tracking.
      */
-    'Debugger.setAsyncCallStackDepth':
-        {paramsType: [Protocol.Debugger.SetAsyncCallStackDepthRequest]; returnType: void;};
+    'Debugger.setAsyncCallStackDepth': {
+      paramsType: [Protocol.Debugger.SetAsyncCallStackDepthRequest];
+      returnType: void;
+    };
     /**
      * Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in
      * scripts with url matching one of the patterns. VM will try to leave blackboxed script by
      * performing 'step in' several times, finally resorting to 'step out' if unsuccessful.
      */
-    'Debugger.setBlackboxPatterns': {paramsType: [Protocol.Debugger.SetBlackboxPatternsRequest]; returnType: void;};
+    'Debugger.setBlackboxPatterns': {
+      paramsType: [Protocol.Debugger.SetBlackboxPatternsRequest];
+      returnType: void;
+    };
     /**
      * Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted
      * scripts by performing 'step in' several times, finally resorting to 'step out' if unsuccessful.
      * Positions array contains positions where blackbox state is changed. First interval isn't
      * blackboxed. Array should be sorted.
      */
-    'Debugger.setBlackboxedRanges': {paramsType: [Protocol.Debugger.SetBlackboxedRangesRequest]; returnType: void;};
+    'Debugger.setBlackboxedRanges': {
+      paramsType: [Protocol.Debugger.SetBlackboxedRangesRequest];
+      returnType: void;
+    };
     /**
      * Sets JavaScript breakpoint at a given location.
      */
-    'Debugger.setBreakpoint':
-        {paramsType: [Protocol.Debugger.SetBreakpointRequest]; returnType: Protocol.Debugger.SetBreakpointResponse;};
+    'Debugger.setBreakpoint': {
+      paramsType: [Protocol.Debugger.SetBreakpointRequest];
+      returnType: Protocol.Debugger.SetBreakpointResponse;
+    };
     /**
      * Sets instrumentation breakpoint.
      */
@@ -2838,52 +3966,88 @@ export namespace ProtocolMapping {
     /**
      * Activates / deactivates all breakpoints on the page.
      */
-    'Debugger.setBreakpointsActive': {paramsType: [Protocol.Debugger.SetBreakpointsActiveRequest]; returnType: void;};
+    'Debugger.setBreakpointsActive': {
+      paramsType: [Protocol.Debugger.SetBreakpointsActiveRequest];
+      returnType: void;
+    };
     /**
      * Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions or
      * no exceptions. Initial pause on exceptions state is `none`.
      */
-    'Debugger.setPauseOnExceptions': {paramsType: [Protocol.Debugger.SetPauseOnExceptionsRequest]; returnType: void;};
+    'Debugger.setPauseOnExceptions': {
+      paramsType: [Protocol.Debugger.SetPauseOnExceptionsRequest];
+      returnType: void;
+    };
     /**
      * Changes return value in top frame. Available only at return break position.
      */
-    'Debugger.setReturnValue': {paramsType: [Protocol.Debugger.SetReturnValueRequest]; returnType: void;};
+    'Debugger.setReturnValue': {
+      paramsType: [Protocol.Debugger.SetReturnValueRequest];
+      returnType: void;
+    };
     /**
      * Edits JavaScript source live.
      */
     'Debugger.setScriptSource': {
-      paramsType: [Protocol.Debugger.SetScriptSourceRequest]; returnType: Protocol.Debugger.SetScriptSourceResponse;
+      paramsType: [Protocol.Debugger.SetScriptSourceRequest];
+      returnType: Protocol.Debugger.SetScriptSourceResponse;
     };
     /**
      * Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc).
      */
-    'Debugger.setSkipAllPauses': {paramsType: [Protocol.Debugger.SetSkipAllPausesRequest]; returnType: void;};
+    'Debugger.setSkipAllPauses': {
+      paramsType: [Protocol.Debugger.SetSkipAllPausesRequest];
+      returnType: void;
+    };
     /**
      * Changes value of variable in a callframe. Object-based scopes are not supported and must be
      * mutated manually.
      */
-    'Debugger.setVariableValue': {paramsType: [Protocol.Debugger.SetVariableValueRequest]; returnType: void;};
+    'Debugger.setVariableValue': {
+      paramsType: [Protocol.Debugger.SetVariableValueRequest];
+      returnType: void;
+    };
     /**
      * Steps into the function call.
      */
-    'Debugger.stepInto': {paramsType: [Protocol.Debugger.StepIntoRequest?]; returnType: void;};
+    'Debugger.stepInto': {
+      paramsType: [Protocol.Debugger.StepIntoRequest?];
+      returnType: void;
+    };
     /**
      * Steps out of the function call.
      */
-    'Debugger.stepOut': {paramsType: []; returnType: void;};
+    'Debugger.stepOut': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Steps over the statement.
      */
-    'Debugger.stepOver': {paramsType: [Protocol.Debugger.StepOverRequest?]; returnType: void;};
+    'Debugger.stepOver': {
+      paramsType: [Protocol.Debugger.StepOverRequest?];
+      returnType: void;
+    };
     /**
      * Enables console to refer to the node with given id via $x (see Command Line API for more details
      * $x functions).
      */
-    'HeapProfiler.addInspectedHeapObject':
-        {paramsType: [Protocol.HeapProfiler.AddInspectedHeapObjectRequest]; returnType: void;};
-    'HeapProfiler.collectGarbage': {paramsType: []; returnType: void;};
-    'HeapProfiler.disable': {paramsType: []; returnType: void;};
-    'HeapProfiler.enable': {paramsType: []; returnType: void;};
+    'HeapProfiler.addInspectedHeapObject': {
+      paramsType: [Protocol.HeapProfiler.AddInspectedHeapObjectRequest];
+      returnType: void;
+    };
+    'HeapProfiler.collectGarbage': {
+      paramsType: [];
+      returnType: void;
+    };
+    'HeapProfiler.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'HeapProfiler.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     'HeapProfiler.getHeapObjectId': {
       paramsType: [Protocol.HeapProfiler.GetHeapObjectIdRequest];
       returnType: Protocol.HeapProfiler.GetHeapObjectIdResponse;
@@ -2892,26 +4056,57 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.HeapProfiler.GetObjectByHeapObjectIdRequest];
       returnType: Protocol.HeapProfiler.GetObjectByHeapObjectIdResponse;
     };
-    'HeapProfiler.getSamplingProfile': {paramsType: []; returnType: Protocol.HeapProfiler.GetSamplingProfileResponse;};
-    'HeapProfiler.startSampling': {paramsType: [Protocol.HeapProfiler.StartSamplingRequest?]; returnType: void;};
-    'HeapProfiler.startTrackingHeapObjects':
-        {paramsType: [Protocol.HeapProfiler.StartTrackingHeapObjectsRequest?]; returnType: void;};
-    'HeapProfiler.stopSampling': {paramsType: []; returnType: Protocol.HeapProfiler.StopSamplingResponse;};
-    'HeapProfiler.stopTrackingHeapObjects':
-        {paramsType: [Protocol.HeapProfiler.StopTrackingHeapObjectsRequest?]; returnType: void;};
-    'HeapProfiler.takeHeapSnapshot': {paramsType: [Protocol.HeapProfiler.TakeHeapSnapshotRequest?]; returnType: void;};
-    'Profiler.disable': {paramsType: []; returnType: void;};
-    'Profiler.enable': {paramsType: []; returnType: void;};
+    'HeapProfiler.getSamplingProfile': {
+      paramsType: [];
+      returnType: Protocol.HeapProfiler.GetSamplingProfileResponse;
+    };
+    'HeapProfiler.startSampling': {
+      paramsType: [Protocol.HeapProfiler.StartSamplingRequest?];
+      returnType: void;
+    };
+    'HeapProfiler.startTrackingHeapObjects': {
+      paramsType: [Protocol.HeapProfiler.StartTrackingHeapObjectsRequest?];
+      returnType: void;
+    };
+    'HeapProfiler.stopSampling': {
+      paramsType: [];
+      returnType: Protocol.HeapProfiler.StopSamplingResponse;
+    };
+    'HeapProfiler.stopTrackingHeapObjects': {
+      paramsType: [Protocol.HeapProfiler.StopTrackingHeapObjectsRequest?];
+      returnType: void;
+    };
+    'HeapProfiler.takeHeapSnapshot': {
+      paramsType: [Protocol.HeapProfiler.TakeHeapSnapshotRequest?];
+      returnType: void;
+    };
+    'Profiler.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'Profiler.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Collect coverage data for the current isolate. The coverage data may be incomplete due to
      * garbage collection.
      */
-    'Profiler.getBestEffortCoverage': {paramsType: []; returnType: Protocol.Profiler.GetBestEffortCoverageResponse;};
+    'Profiler.getBestEffortCoverage': {
+      paramsType: [];
+      returnType: Protocol.Profiler.GetBestEffortCoverageResponse;
+    };
     /**
      * Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
      */
-    'Profiler.setSamplingInterval': {paramsType: [Protocol.Profiler.SetSamplingIntervalRequest]; returnType: void;};
-    'Profiler.start': {paramsType: []; returnType: void;};
+    'Profiler.setSamplingInterval': {
+      paramsType: [Protocol.Profiler.SetSamplingIntervalRequest];
+      returnType: void;
+    };
+    'Profiler.start': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code
      * coverage may be incomplete. Enabling prevents running optimized code and resets execution
@@ -2924,100 +4119,161 @@ export namespace ProtocolMapping {
     /**
      * Enable type profile.
      */
-    'Profiler.startTypeProfile': {paramsType: []; returnType: void;};
-    'Profiler.stop': {paramsType: []; returnType: Protocol.Profiler.StopResponse;};
+    'Profiler.startTypeProfile': {
+      paramsType: [];
+      returnType: void;
+    };
+    'Profiler.stop': {
+      paramsType: [];
+      returnType: Protocol.Profiler.StopResponse;
+    };
     /**
      * Disable precise code coverage. Disabling releases unnecessary execution count records and allows
      * executing optimized code.
      */
-    'Profiler.stopPreciseCoverage': {paramsType: []; returnType: void;};
+    'Profiler.stopPreciseCoverage': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Disable type profile. Disabling releases type profile data collected so far.
      */
-    'Profiler.stopTypeProfile': {paramsType: []; returnType: void;};
+    'Profiler.stopTypeProfile': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Collect coverage data for the current isolate, and resets execution counters. Precise code
      * coverage needs to have started.
      */
-    'Profiler.takePreciseCoverage': {paramsType: []; returnType: Protocol.Profiler.TakePreciseCoverageResponse;};
+    'Profiler.takePreciseCoverage': {
+      paramsType: [];
+      returnType: Protocol.Profiler.TakePreciseCoverageResponse;
+    };
     /**
      * Collect type profile.
      */
-    'Profiler.takeTypeProfile': {paramsType: []; returnType: Protocol.Profiler.TakeTypeProfileResponse;};
+    'Profiler.takeTypeProfile': {
+      paramsType: [];
+      returnType: Protocol.Profiler.TakeTypeProfileResponse;
+    };
     /**
      * Enable counters collection.
      */
-    'Profiler.enableCounters': {paramsType: []; returnType: void;};
+    'Profiler.enableCounters': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Disable counters collection.
      */
-    'Profiler.disableCounters': {paramsType: []; returnType: void;};
+    'Profiler.disableCounters': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Retrieve counters.
      */
-    'Profiler.getCounters': {paramsType: []; returnType: Protocol.Profiler.GetCountersResponse;};
+    'Profiler.getCounters': {
+      paramsType: [];
+      returnType: Protocol.Profiler.GetCountersResponse;
+    };
     /**
      * Enable run time call stats collection.
      */
-    'Profiler.enableRuntimeCallStats': {paramsType: []; returnType: void;};
+    'Profiler.enableRuntimeCallStats': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Disable run time call stats collection.
      */
-    'Profiler.disableRuntimeCallStats': {paramsType: []; returnType: void;};
+    'Profiler.disableRuntimeCallStats': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Retrieve run time call stats.
      */
-    'Profiler.getRuntimeCallStats': {paramsType: []; returnType: Protocol.Profiler.GetRuntimeCallStatsResponse;};
+    'Profiler.getRuntimeCallStats': {
+      paramsType: [];
+      returnType: Protocol.Profiler.GetRuntimeCallStatsResponse;
+    };
     /**
      * Add handler to promise with given promise object id.
      */
-    'Runtime.awaitPromise':
-        {paramsType: [Protocol.Runtime.AwaitPromiseRequest]; returnType: Protocol.Runtime.AwaitPromiseResponse;};
+    'Runtime.awaitPromise': {
+      paramsType: [Protocol.Runtime.AwaitPromiseRequest];
+      returnType: Protocol.Runtime.AwaitPromiseResponse;
+    };
     /**
      * Calls function with given declaration on the given object. Object group of the result is
      * inherited from the target object.
      */
-    'Runtime.callFunctionOn':
-        {paramsType: [Protocol.Runtime.CallFunctionOnRequest]; returnType: Protocol.Runtime.CallFunctionOnResponse;};
+    'Runtime.callFunctionOn': {
+      paramsType: [Protocol.Runtime.CallFunctionOnRequest];
+      returnType: Protocol.Runtime.CallFunctionOnResponse;
+    };
     /**
      * Compiles expression.
      */
-    'Runtime.compileScript':
-        {paramsType: [Protocol.Runtime.CompileScriptRequest]; returnType: Protocol.Runtime.CompileScriptResponse;};
+    'Runtime.compileScript': {
+      paramsType: [Protocol.Runtime.CompileScriptRequest];
+      returnType: Protocol.Runtime.CompileScriptResponse;
+    };
     /**
      * Disables reporting of execution contexts creation.
      */
-    'Runtime.disable': {paramsType: []; returnType: void;};
+    'Runtime.disable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Discards collected exceptions and console API calls.
      */
-    'Runtime.discardConsoleEntries': {paramsType: []; returnType: void;};
+    'Runtime.discardConsoleEntries': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Enables reporting of execution contexts creation by means of `executionContextCreated` event.
      * When the reporting gets enabled the event will be sent immediately for each existing execution
      * context.
      */
-    'Runtime.enable': {paramsType: []; returnType: void;};
+    'Runtime.enable': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Evaluates expression on global object.
      */
-    'Runtime.evaluate':
-        {paramsType: [Protocol.Runtime.EvaluateRequest]; returnType: Protocol.Runtime.EvaluateResponse;};
+    'Runtime.evaluate': {
+      paramsType: [Protocol.Runtime.EvaluateRequest];
+      returnType: Protocol.Runtime.EvaluateResponse;
+    };
     /**
      * Returns the isolate id.
      */
-    'Runtime.getIsolateId': {paramsType: []; returnType: Protocol.Runtime.GetIsolateIdResponse;};
+    'Runtime.getIsolateId': {
+      paramsType: [];
+      returnType: Protocol.Runtime.GetIsolateIdResponse;
+    };
     /**
      * Returns the JavaScript heap usage.
      * It is the total usage of the corresponding isolate not scoped to a particular Runtime.
      */
-    'Runtime.getHeapUsage': {paramsType: []; returnType: Protocol.Runtime.GetHeapUsageResponse;};
+    'Runtime.getHeapUsage': {
+      paramsType: [];
+      returnType: Protocol.Runtime.GetHeapUsageResponse;
+    };
     /**
      * Returns properties of a given object. Object group of the result is inherited from the target
      * object.
      */
-    'Runtime.getProperties':
-        {paramsType: [Protocol.Runtime.GetPropertiesRequest]; returnType: Protocol.Runtime.GetPropertiesResponse;};
+    'Runtime.getProperties': {
+      paramsType: [Protocol.Runtime.GetPropertiesRequest];
+      returnType: Protocol.Runtime.GetPropertiesResponse;
+    };
     /**
      * Returns all let, const and class variables from global scope.
      */
@@ -3025,38 +4281,61 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.Runtime.GlobalLexicalScopeNamesRequest?];
       returnType: Protocol.Runtime.GlobalLexicalScopeNamesResponse;
     };
-    'Runtime.queryObjects':
-        {paramsType: [Protocol.Runtime.QueryObjectsRequest]; returnType: Protocol.Runtime.QueryObjectsResponse;};
+    'Runtime.queryObjects': {
+      paramsType: [Protocol.Runtime.QueryObjectsRequest];
+      returnType: Protocol.Runtime.QueryObjectsResponse;
+    };
     /**
      * Releases remote object with given id.
      */
-    'Runtime.releaseObject': {paramsType: [Protocol.Runtime.ReleaseObjectRequest]; returnType: void;};
+    'Runtime.releaseObject': {
+      paramsType: [Protocol.Runtime.ReleaseObjectRequest];
+      returnType: void;
+    };
     /**
      * Releases all remote objects that belong to a given group.
      */
-    'Runtime.releaseObjectGroup': {paramsType: [Protocol.Runtime.ReleaseObjectGroupRequest]; returnType: void;};
+    'Runtime.releaseObjectGroup': {
+      paramsType: [Protocol.Runtime.ReleaseObjectGroupRequest];
+      returnType: void;
+    };
     /**
      * Tells inspected instance to run if it was waiting for debugger to attach.
      */
-    'Runtime.runIfWaitingForDebugger': {paramsType: []; returnType: void;};
+    'Runtime.runIfWaitingForDebugger': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Runs script with given id in a given context.
      */
-    'Runtime.runScript':
-        {paramsType: [Protocol.Runtime.RunScriptRequest]; returnType: Protocol.Runtime.RunScriptResponse;};
+    'Runtime.runScript': {
+      paramsType: [Protocol.Runtime.RunScriptRequest];
+      returnType: Protocol.Runtime.RunScriptResponse;
+    };
     /**
      * Enables or disables async call stacks tracking.
      */
-    'Runtime.setAsyncCallStackDepth': {paramsType: [Protocol.Runtime.SetAsyncCallStackDepthRequest]; returnType: void;};
-    'Runtime.setCustomObjectFormatterEnabled':
-        {paramsType: [Protocol.Runtime.SetCustomObjectFormatterEnabledRequest]; returnType: void;};
-    'Runtime.setMaxCallStackSizeToCapture':
-        {paramsType: [Protocol.Runtime.SetMaxCallStackSizeToCaptureRequest]; returnType: void;};
+    'Runtime.setAsyncCallStackDepth': {
+      paramsType: [Protocol.Runtime.SetAsyncCallStackDepthRequest];
+      returnType: void;
+    };
+    'Runtime.setCustomObjectFormatterEnabled': {
+      paramsType: [Protocol.Runtime.SetCustomObjectFormatterEnabledRequest];
+      returnType: void;
+    };
+    'Runtime.setMaxCallStackSizeToCapture': {
+      paramsType: [Protocol.Runtime.SetMaxCallStackSizeToCaptureRequest];
+      returnType: void;
+    };
     /**
      * Terminate current or next JavaScript execution.
      * Will cancel the termination when the outer-most script execution ends.
      */
-    'Runtime.terminateExecution': {paramsType: []; returnType: void;};
+    'Runtime.terminateExecution': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * If executionContextId is empty, adds binding with the given name on the
      * global objects of all inspected contexts, including those created later,
@@ -3065,16 +4344,25 @@ export namespace ProtocolMapping {
      * in case of any other input, function throws an exception.
      * Each binding function call produces Runtime.bindingCalled notification.
      */
-    'Runtime.addBinding': {paramsType: [Protocol.Runtime.AddBindingRequest]; returnType: void;};
+    'Runtime.addBinding': {
+      paramsType: [Protocol.Runtime.AddBindingRequest];
+      returnType: void;
+    };
     /**
      * This method does not remove binding function from global object but
      * unsubscribes current runtime agent from Runtime.bindingCalled notifications.
      */
-    'Runtime.removeBinding': {paramsType: [Protocol.Runtime.RemoveBindingRequest]; returnType: void;};
+    'Runtime.removeBinding': {
+      paramsType: [Protocol.Runtime.RemoveBindingRequest];
+      returnType: void;
+    };
     /**
      * Returns supported domains.
      */
-    'Schema.getDomains': {paramsType: []; returnType: Protocol.Schema.GetDomainsResponse;};
+    'Schema.getDomains': {
+      paramsType: [];
+      returnType: Protocol.Schema.GetDomainsResponse;
+    };
   }
 }
 

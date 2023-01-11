@@ -9716,3 +9716,5 @@ domain CohtmlDebug
   command enable
 
   command disable
+
+  command clearCachedUnusedImages

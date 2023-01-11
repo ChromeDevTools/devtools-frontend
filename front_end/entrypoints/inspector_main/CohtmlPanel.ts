@@ -84,6 +84,10 @@ const UIStrings = {
 
   capturePageDesc: 'Capture Full Page',
 
+  clearCachedUnusedImagesTitle: 'Clear Cached Unused Images',
+
+  clearCachedUnusedImagesDesc: 'Removes all unused images (raster and svg) from internal caches.',
+
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/CohtmlPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -173,6 +177,13 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     });
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
+
+    this.createButton(UIStrings.clearCachedUnusedImagesTitle, UIStrings.clearCachedUnusedImagesDesc, () => {
+      if (this.cohtmlDebugModel)
+      {
+        this.cohtmlDebugModel.clearCachedUnusedImages();
+      }
+    });
   }
 
   static instance(opts: {

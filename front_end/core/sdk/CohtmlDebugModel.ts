@@ -89,6 +89,10 @@ export class CohtmlDebugModel extends SDKModel<EventTypes> implements ProtocolPr
     this.cohtmlDebugAgent.invoke_capturePage();
   }
 
+  clearCachedUnusedImages(): void {
+    this.cohtmlDebugAgent.invoke_clearCachedUnusedImages();
+  }
+
 
 }
 // eslint-disable-next-line rulesdir/const_enum

@@ -451,7 +451,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
         property,
         rule,
       },
-      id: rule.origin + ': ' + rule.styleSheetId + property.range,
+      id: rule.origin + ': ' + rule.styleSheetId + (property.range || property.name),
     };
   }
 

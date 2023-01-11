@@ -126,7 +126,7 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
   constructor(
       resourcesPanel: ResourcesPanel, model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel,
       cache: SDK.ServiceWorkerCacheModel.Cache) {
-    super(resourcesPanel, cache.cacheName + ' - ' + cache.securityOrigin, false);
+    super(resourcesPanel, cache.cacheName + ' - ' + cache.storageKey, false);
     this.model = model;
     this.cache = cache;
     this.view = null;

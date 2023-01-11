@@ -27,7 +27,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
     target = createTarget();
     cacheStorageModel = new SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel(target);
     cache = new SDK.ServiceWorkerCacheModel.Cache(
-        cacheStorageModel, undefined, testKey, 'test-cache', 'id' as Protocol.CacheStorage.CacheId);
+        cacheStorageModel, testKey, 'test-cache', 'id' as Protocol.CacheStorage.CacheId);
     manager = target.model(SDK.StorageKeyManager.StorageKeyManager);
     cacheAgent = target.cacheStorageAgent();
   });
@@ -113,7 +113,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
 
     assert.isTrue(dispatcherSpy.calledOnceWithExactly(
         SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated as unknown as sinon.SinonMatcher,
-        {origin: '', storageKey: testKey, cacheName: 'test-cache'}));
+        {storageKey: testKey, cacheName: 'test-cache'}));
   });
 
   it('requests cache names on cacheStorageListUpdated', async () => {

@@ -551,10 +551,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
    * Returns all `Script` objects with the same provided `sourceURL`. The
    * resulting array is sorted by time with the newest `Script` in the front.
    */
-  scriptsForSourceURL(sourceURL: string|null): Script[] {
-    if (!sourceURL) {
-      return [];
-    }
+  scriptsForSourceURL(sourceURL: string): Script[] {
     return this.#scriptsBySourceURL.get(sourceURL) || [];
   }
 

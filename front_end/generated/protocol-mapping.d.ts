@@ -3807,6 +3807,10 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: void;
     };
+    'CohtmlDebug.clearCachedUnusedImages': {
+      paramsType: [];
+      returnType: void;
+    };
     /**
      * Continues execution until specific location is reached.
      */

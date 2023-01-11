@@ -351,9 +351,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     }
     this.fileSystemInternal.addExcludedFolder(relativeFolder);
 
-    const uiSourceCodes = this.uiSourceCodes().slice();
-    for (let i = 0; i < uiSourceCodes.length; ++i) {
-      const uiSourceCode = uiSourceCodes[i];
+    for (const uiSourceCode of this.uiSourceCodes()) {
       if (uiSourceCode.url().startsWith(url)) {
         this.removeUISourceCode(uiSourceCode.url());
       }

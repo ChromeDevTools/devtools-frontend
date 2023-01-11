@@ -174,17 +174,17 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
 
     if (this.activeInternal && this.projectInternal) {
-      await Promise.all(
-          this.projectInternal.uiSourceCodes().map(uiSourceCode => this.filesystemUISourceCodeAdded(uiSourceCode)));
+      await Promise.all([...this.projectInternal.uiSourceCodes()].map(
+          uiSourceCode => this.filesystemUISourceCodeAdded(uiSourceCode)));
 
       const networkProjects = this.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
       for (const networkProject of networkProjects) {
         await Promise.all(
-            networkProject.uiSourceCodes().map(uiSourceCode => this.networkUISourceCodeAdded(uiSourceCode)));
+            [...networkProject.uiSourceCodes()].map(uiSourceCode => this.networkUISourceCodeAdded(uiSourceCode)));
       }
     } else if (this.projectInternal) {
-      await Promise.all(
-          this.projectInternal.uiSourceCodes().map(uiSourceCode => this.filesystemUISourceCodeRemoved(uiSourceCode)));
+      await Promise.all([...this.projectInternal.uiSourceCodes()].map(
+          uiSourceCode => this.filesystemUISourceCodeRemoved(uiSourceCode)));
       this.networkUISourceCodeForEncodedPath.clear();
     }
     PersistenceImpl.instance().refreshAutomapping();
@@ -680,15 +680,15 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
 
     if (this.projectInternal) {
-      await Promise.all(
-          this.projectInternal.uiSourceCodes().map(uiSourceCode => this.filesystemUISourceCodeRemoved(uiSourceCode)));
+      await Promise.all([...this.projectInternal.uiSourceCodes()].map(
+          uiSourceCode => this.filesystemUISourceCodeRemoved(uiSourceCode)));
     }
 
     this.projectInternal = project;
 
     if (this.projectInternal) {
-      await Promise.all(
-          this.projectInternal.uiSourceCodes().map(uiSourceCode => this.filesystemUISourceCodeAdded(uiSourceCode)));
+      await Promise.all([...this.projectInternal.uiSourceCodes()].map(
+          uiSourceCode => this.filesystemUISourceCodeAdded(uiSourceCode)));
     }
 
     await this.updateActiveProject();

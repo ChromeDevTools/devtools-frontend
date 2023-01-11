@@ -122,7 +122,9 @@ export class Automapping {
       this.projectFoldersIndex.addFolder(gitFolder);
     }
     this.projectFoldersIndex.addFolder(fileSystem.fileSystemPath());
-    project.uiSourceCodes().forEach(this.onUISourceCodeAdded.bind(this));
+    for (const uiSourceCode of project.uiSourceCodes()) {
+      this.onUISourceCodeAdded(uiSourceCode);
+    }
     this.scheduleRemap();
   }
 

@@ -409,8 +409,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     // Remove all the files in the `project` that (still) belong to the `sourceMap`.
     // In case of conflicts or overrides (for example due to HMR), not all the files
     // that were originally provided by the `sourceMap` might still belong to it.
-    const uiSourceCodes = project.uiSourceCodes().slice();
-    for (const uiSourceCode of uiSourceCodes) {
+    for (const uiSourceCode of project.uiSourceCodes()) {
       if (this.#uiSourceCodeToSourceMaps.delete(uiSourceCode, sourceMap)) {
         NetworkProject.removeFrameAttribution(uiSourceCode, script.frameId);
         if (!this.#uiSourceCodeToSourceMaps.has(uiSourceCode)) {

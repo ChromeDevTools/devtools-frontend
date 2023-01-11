@@ -85,7 +85,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
     const compositeProgress = new Common.Progress.CompositeProgress(progress);
     for (let i = 0; i < projects.length; ++i) {
       const project = projects[i];
-      const projectProgress = compositeProgress.createSubProgress(project.uiSourceCodes().length);
+      const projectProgress = compositeProgress.createSubProgress([...project.uiSourceCodes()].length);
       project.indexContent(projectProgress);
     }
   }
@@ -124,7 +124,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
     const searchContentProgress = compositeProgress.createSubProgress();
     const findMatchingFilesProgress = new Common.Progress.CompositeProgress(compositeProgress.createSubProgress());
     for (const project of this.projects()) {
-      const weight = project.uiSourceCodes().length;
+      const weight = [...project.uiSourceCodes()].length;
       const findMatchingFilesInProjectProgress = findMatchingFilesProgress.createSubProgress(weight);
       const filesMatchingFileQuery = this.projectFilesMatchingFileQuery(project, searchConfig);
       const promise =
@@ -143,9 +143,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
       project: Workspace.Workspace.Project, searchConfig: Workspace.Workspace.ProjectSearchConfig,
       dirtyOnly?: boolean): Platform.DevToolsPath.UrlString[] {
     const result = [];
-    const uiSourceCodes = project.uiSourceCodes();
-    for (let i = 0; i < uiSourceCodes.length; ++i) {
-      const uiSourceCode = uiSourceCodes[i];
+    for (const uiSourceCode of project.uiSourceCodes()) {
       if (!uiSourceCode.contentType().isTextType()) {
         continue;
       }

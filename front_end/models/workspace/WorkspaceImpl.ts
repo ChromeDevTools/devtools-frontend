@@ -75,7 +75,16 @@ export interface Project {
       progress: Common.Progress.Progress): Promise<string[]>;
   indexContent(progress: Common.Progress.Progress): void;
   uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString): UISourceCode|null;
-  uiSourceCodes(): UISourceCode[];
+
+  /**
+   * Returns an iterator for the currently registered {@link UISourceCode}s for this project. When
+   * new {@link UISourceCode}s are added while iterating, they might show up already. When removing
+   * {@link UISourceCode}s while iterating, these will no longer show up, and will have no effect
+   * on the other entries.
+   *
+   * @return an iterator for the sources provided by this project.
+   */
+  uiSourceCodes(): Iterable<UISourceCode>;
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -94,20 +103,14 @@ export abstract class ProjectStore implements Project {
   private readonly idInternal: string;
   private readonly typeInternal: projectTypes;
   private readonly displayNameInternal: string;
-  private uiSourceCodesMap: Map<Platform.DevToolsPath.UrlString, {
-    uiSourceCode: UISourceCode,
-    index: number,
-  }>;
-  private uiSourceCodesList: UISourceCode[];
+  readonly #uiSourceCodes: Map<Platform.DevToolsPath.UrlString, UISourceCode>;
 
   constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string) {
     this.workspaceInternal = workspace;
     this.idInternal = id;
     this.typeInternal = type;
     this.displayNameInternal = displayName;
-
-    this.uiSourceCodesMap = new Map();
-    this.uiSourceCodesList = [];
+    this.#uiSourceCodes = new Map();
   }
 
   id(): string {
@@ -136,41 +139,31 @@ export abstract class ProjectStore implements Project {
     if (this.uiSourceCodeForURL(url)) {
       return false;
     }
-    this.uiSourceCodesMap.set(url, {uiSourceCode: uiSourceCode, index: this.uiSourceCodesList.length});
-    this.uiSourceCodesList.push(uiSourceCode);
+    this.#uiSourceCodes.set(url, uiSourceCode);
     this.workspaceInternal.dispatchEventToListeners(Events.UISourceCodeAdded, uiSourceCode);
     return true;
   }
 
   removeUISourceCode(url: Platform.DevToolsPath.UrlString): void {
-    const entry = this.uiSourceCodesMap.get(url);
-    if (!entry) {
+    const uiSourceCode = this.#uiSourceCodes.get(url);
+    if (uiSourceCode === undefined) {
       return;
     }
-    const movedUISourceCode = this.uiSourceCodesList[this.uiSourceCodesList.length - 1];
-    this.uiSourceCodesList[entry.index] = movedUISourceCode;
-    const movedEntry = this.uiSourceCodesMap.get(movedUISourceCode.url());
-    if (movedEntry) {
-      movedEntry.index = entry.index;
-    }
-    this.uiSourceCodesList.splice(this.uiSourceCodesList.length - 1, 1);
-    this.uiSourceCodesMap.delete(url);
-    this.workspaceInternal.dispatchEventToListeners(Events.UISourceCodeRemoved, entry.uiSourceCode);
+    this.#uiSourceCodes.delete(url);
+    this.workspaceInternal.dispatchEventToListeners(Events.UISourceCodeRemoved, uiSourceCode);
   }
 
   removeProject(): void {
     this.workspaceInternal.removeProject(this);
-    this.uiSourceCodesMap = new Map();
-    this.uiSourceCodesList = [];
+    this.#uiSourceCodes.clear();
   }
 
   uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString): UISourceCode|null {
-    const entry = this.uiSourceCodesMap.get(url);
-    return entry ? entry.uiSourceCode : null;
+    return this.#uiSourceCodes.get(url) ?? null;
   }
 
-  uiSourceCodes(): UISourceCode[] {
-    return this.uiSourceCodesList;
+  uiSourceCodes(): Iterable<UISourceCode> {
+    return this.#uiSourceCodes.values();
   }
 
   renameUISourceCode(uiSourceCode: UISourceCode, newName: string): void {
@@ -178,12 +171,8 @@ export abstract class ProjectStore implements Project {
     const newPath = uiSourceCode.parentURL() ?
         Common.ParsedURL.ParsedURL.urlFromParentUrlAndName(uiSourceCode.parentURL(), newName) :
         Common.ParsedURL.ParsedURL.preEncodeSpecialCharactersInPath(newName) as Platform.DevToolsPath.UrlString;
-    const value = this.uiSourceCodesMap.get(oldPath) as {
-      uiSourceCode: UISourceCode,
-      index: number,
-    };
-    this.uiSourceCodesMap.set(newPath, value);
-    this.uiSourceCodesMap.delete(oldPath);
+    this.#uiSourceCodes.set(newPath, uiSourceCode);
+    this.#uiSourceCodes.delete(oldPath);
   }
 
   // No-op implementation for a handfull of interface methods.

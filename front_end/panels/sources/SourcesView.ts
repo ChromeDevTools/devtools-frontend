@@ -116,7 +116,11 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       const projects =
           Workspace.Workspace.WorkspaceImpl.instance().projectsForType(Workspace.Workspace.projectTypes.FileSystem);
       for (const project of projects) {
-        unsavedSourceCodes.push(...project.uiSourceCodes().filter(sourceCode => sourceCode.isDirty()));
+        for (const uiSourceCode of project.uiSourceCodes()) {
+          if (uiSourceCode.isDirty()) {
+            unsavedSourceCodes.push(uiSourceCode);
+          }
+        }
       }
 
       if (!unsavedSourceCodes.length) {
@@ -336,7 +340,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   private projectRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
     const project = event.data;
     const uiSourceCodes = project.uiSourceCodes();
-    this.removeUISourceCodes(uiSourceCodes);
+    this.removeUISourceCodes([...uiSourceCodes]);
   }
 
   private updateScriptViewToolbarItems(): void {
@@ -690,13 +694,11 @@ export class SwitchFileActionDelegate implements UI.ActionRegistration.ActionDel
       return namePrefix.toLowerCase();
     }
 
-    const uiSourceCodes = currentUISourceCode.project().uiSourceCodes();
     const candidates = [];
     const url = currentUISourceCode.parentURL();
     const name = currentUISourceCode.name();
     const namePrefix = fileNamePrefix(name);
-    for (let i = 0; i < uiSourceCodes.length; ++i) {
-      const uiSourceCode = uiSourceCodes[i];
+    for (const uiSourceCode of currentUISourceCode.project().uiSourceCodes()) {
       if (url !== uiSourceCode.parentURL()) {
         continue;
       }

@@ -511,7 +511,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   tryAddProject(project: Workspace.Workspace.Project): void {
     this.projectAdded(project);
-    project.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
+    for (const uiSourceCode of project.uiSourceCodes()) {
+      this.addUISourceCode(uiSourceCode);
+    }
   }
 
   private projectAdded(project: Workspace.Workspace.Project): void {
@@ -568,9 +570,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   private removeProject(project: Workspace.Workspace.Project): void {
-    const uiSourceCodes = project.uiSourceCodes();
-    for (let i = 0; i < uiSourceCodes.length; ++i) {
-      this.removeUISourceCode(uiSourceCodes[i]);
+    for (const uiSourceCode of project.uiSourceCodes()) {
+      this.removeUISourceCode(uiSourceCode);
     }
     if (project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;

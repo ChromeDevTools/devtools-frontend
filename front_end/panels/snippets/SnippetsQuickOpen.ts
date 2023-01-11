@@ -56,7 +56,7 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   }
 
   attach(): void {
-    this.snippets = findSnippetsProject().uiSourceCodes();
+    this.snippets = [...findSnippetsProject().uiSourceCodes()];
   }
 
   detach(): void {

@@ -62,7 +62,7 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
     this.panelToolbar.appendToolbarItem(item);
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     this.server.notifySearchAction(this.id, ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
     this.searchableViewInternal.updateSearchMatchesCount(0);
   }

@@ -162,7 +162,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     this.updateSearchIndex(0);
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     this.searchConfig = null;
     this.currentSearchTreeElements = [];
     this.innerSearchCanceled();

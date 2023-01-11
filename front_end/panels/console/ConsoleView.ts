@@ -1356,7 +1356,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     return [this.messagesElement];
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     this.cleanupAfterSearch();
     for (const message of this.visibleViewMessages) {
       message.setSearchRegex(null);
@@ -1368,7 +1368,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
-    this.searchCanceled();
+    this.onSearchCanceled();
     this.searchableViewInternal.updateSearchMatchesCount(0);
 
     this.searchRegex = searchConfig.toSearchRegex(true).regex;

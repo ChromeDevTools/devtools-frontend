@@ -605,7 +605,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
-    this.searchCanceled();
+    this.onSearchCanceled();
     const matchesQuery = this.matchFunction(searchConfig);
     if (!matchesQuery) {
       return;
@@ -629,7 +629,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
     this.searchableView.updateCurrentMatchIndex(this.searchResultIndex);
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     if (this.searchResults) {
       for (let i = 0; i < this.searchResults.length; ++i) {
         const profileNode = this.searchResults[i].profileNode;

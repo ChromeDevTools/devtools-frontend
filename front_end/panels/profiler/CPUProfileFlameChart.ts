@@ -237,13 +237,13 @@ export class CPUProfileFlameChart extends
       }
       this.mainPane.setSelectedEntry(this.searchResults[this.searchResultIndex]);
     } else {
-      this.searchCanceled();
+      this.onSearchCanceled();
     }
     this.searchableView.updateSearchMatchesCount(this.searchResults.length);
     this.searchableView.updateCurrentMatchIndex(this.searchResultIndex);
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     this.mainPane.setSelectedEntry(-1);
     this.searchResults = [];
     this.searchResultIndex = -1;

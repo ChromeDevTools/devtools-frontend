@@ -521,7 +521,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
 
   // UI.SearchableView.Searchable implementation
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     this.searchResults = [];
     this.currentResult = 0;
   }

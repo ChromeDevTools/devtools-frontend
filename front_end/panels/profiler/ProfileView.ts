@@ -370,9 +370,9 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     return false;
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     if (this.searchableElement) {
-      this.searchableElement.searchCanceled();
+      this.searchableElement.onSearchCanceled();
     }
   }
 

@@ -313,7 +313,7 @@ export class SearchableView extends VBox {
       this.focus();
     }
 
-    this.searchProvider.searchClosed?.();
+    this.searchProvider.onSearchClosed?.();
   }
 
   private toggleSearchBar(toggled: boolean): void {
@@ -484,7 +484,7 @@ export class SearchableView extends VBox {
     delete this.currentQuery;
     if (Boolean(untypedSearchProvider.currentQuery)) {
       delete untypedSearchProvider.currentQuery;
-      this.searchProvider.searchCanceled();
+      this.searchProvider.onSearchCanceled();
     }
     this.updateSearchMatchesCountAndCurrentMatchIndex(0, -1);
   }
@@ -573,9 +573,9 @@ export const _symbol = Symbol('searchableView');
 const searchableViewsByElement = new WeakMap<Element, SearchableView>();
 
 export interface Searchable {
-  searchCanceled(): void;
+  onSearchCanceled(): void;
   // Called when the search toolbar is closed
-  searchClosed?: () => void;
+  onSearchClosed?: () => void;
   performSearch(searchConfig: SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void;
   jumpToNextSearchResult(): void;
   jumpToPreviousSearchResult(): void;

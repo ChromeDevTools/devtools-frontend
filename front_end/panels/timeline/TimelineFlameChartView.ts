@@ -511,7 +511,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.selectSearchResult(selectedIndex);
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     if (typeof this.selectedSearchResult !== 'undefined') {
       this.delegate.select(null);
     }

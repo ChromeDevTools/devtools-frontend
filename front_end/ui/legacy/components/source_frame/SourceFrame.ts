@@ -781,7 +781,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.searchRegex = null;
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     const range = this.currentSearchResultIndex !== -1 ? this.searchResults[this.currentSearchResultIndex] : null;
     this.resetSearch();
     if (!this.loaded) {

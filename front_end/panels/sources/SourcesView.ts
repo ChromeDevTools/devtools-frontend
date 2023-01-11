@@ -535,9 +535,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
         UISourceCodeFrameEvents.ToolbarItemsChanged, this.updateScriptViewToolbarItems, this);
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     if (this.searchView) {
-      this.searchView.searchCanceled();
+      this.searchView.onSearchCanceled();
     }
 
     delete this.searchView;

@@ -640,7 +640,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  searchClosed(): void {
+  onSearchClosed(): void {
     const selectedNode = this.selectedDOMNode();
     if (!selectedNode) {
       return;
@@ -653,7 +653,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     treeElement.select();
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     this.searchConfig = undefined;
     this.hideSearchHighlights();
 
@@ -674,7 +674,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
 
     if (!this.searchConfig || this.searchConfig.query !== query) {
-      this.searchCanceled();
+      this.onSearchCanceled();
     } else {
       this.hideSearchHighlights();
     }

@@ -602,7 +602,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     return false;
   }
 
-  searchCanceled(): void {
+  onSearchCanceled(): void {
     this.currentSearchResultIndex = -1;
     this.searchResults = [];
   }
@@ -622,8 +622,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   }
 
   async performSearchInternal(nextQuery: HeapSnapshotModel.HeapSnapshotModel.SearchConfig): Promise<void> {
-    // Call searchCanceled since it will reset everything we need before doing a new search.
-    this.searchCanceled();
+    // Call onSearchCanceled since it will reset everything we need before doing a new search.
+    this.onSearchCanceled();
 
     if (!this.currentPerspective.supportsSearch()) {
       return;

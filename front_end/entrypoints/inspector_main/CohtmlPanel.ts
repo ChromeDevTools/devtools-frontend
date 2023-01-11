@@ -88,6 +88,10 @@ const UIStrings = {
 
   clearCachedUnusedImagesDesc: 'Removes all unused images (raster and svg) from internal caches.',
 
+  getSystemCacheTitle: 'Get System Cache Stats',
+
+  getSystemCacheDesc: 'Get statistics for the system-wide caches',
+
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/CohtmlPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -182,6 +186,16 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
       if (this.cohtmlDebugModel)
       {
         this.cohtmlDebugModel.clearCachedUnusedImages();
+      }
+    });
+
+    this.createButton(UIStrings.getSystemCacheTitle, UIStrings.getSystemCacheDesc, () => {
+      if (this.cohtmlDebugModel)
+      {
+        const cacheStats = this.cohtmlDebugModel.getSystemCacheStats();
+        cacheStats?.then((obj) => {
+          console.log('Alive Images:', obj?.stats);
+        });
       }
     });
   }

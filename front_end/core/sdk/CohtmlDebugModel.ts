@@ -93,6 +93,15 @@ export class CohtmlDebugModel extends SDKModel<EventTypes> implements ProtocolPr
     this.cohtmlDebugAgent.invoke_clearCachedUnusedImages();
   }
 
+  async getSystemCacheStats(): Promise<Protocol.CohtmlDebug.GetSystemCacheStatsResponse|null> {
+    const response = await this.cohtmlDebugAgent.invoke_getSystemCacheStats();
+    if (response.getError()) {
+      return null;
+    }
+
+    return response;
+  }
+
 
 }
 // eslint-disable-next-line rulesdir/const_enum

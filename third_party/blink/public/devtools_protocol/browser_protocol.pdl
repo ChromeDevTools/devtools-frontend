@@ -9693,6 +9693,21 @@ experimental domain Media
 domain CohtmlDebug
   depends on Runtime
 
+  type ImageData extends object
+    properties
+      string name
+      integer sizeBytes
+
+  type SystemCacheStats extends object
+    properties
+      integer aliveImagesCount
+      integer aliveTotalBytesUsed
+      array of ImageData aliveImages
+
+      integer orphanedImagesCount
+      integer orphanedBytesUsed
+      array of ImageData orphanedImages
+
   command setDrawMetaDataEmit
     parameters
       boolean result
@@ -9718,3 +9733,7 @@ domain CohtmlDebug
   command disable
 
   command clearCachedUnusedImages
+
+  command getSystemCacheStats
+    returns
+      SystemCacheStats stats

@@ -729,6 +729,10 @@ export class TargetBase {
     return this.getAgent('Storage');
   }
 
+  systemInfo(): ProtocolProxyApi.SystemInfoApi {
+    return this.getAgent('SystemInfo');
+  }
+
   targetAgent(): ProtocolProxyApi.TargetApi {
     return this.getAgent('Target');
   }

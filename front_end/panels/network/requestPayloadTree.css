@@ -42,6 +42,7 @@
 
 .tree-outline li:not(.parent) {
   margin-left: 10px;
+  display: block;
 }
 
 .tree-outline li:not(.parent)::before {
@@ -74,7 +75,7 @@
 
 .tree-outline .payload-name {
   color: var(--color-text-secondary);
-  display: inline-block;
+  display: inline-flex;
   margin-right: 0.25em;
   font-weight: bold;
   vertical-align: top;

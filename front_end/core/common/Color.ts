@@ -1627,9 +1627,10 @@ export class Legacy implements Color {
       case Format.HSLA: {
         const hsla = this.hsla();
         const start = Platform.StringUtilities.sprintf(
-            'hsl(%ddeg %d% %d%', Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100));
+            'hsl(%sdeg %s% %s%', stringifyWithPrecision(hsla[0] * 360), stringifyWithPrecision(hsla[1] * 100),
+            stringifyWithPrecision(hsla[2] * 100));
         if (this.hasAlpha()) {
-          return start + Platform.StringUtilities.sprintf(' / %d%)', Math.round(hsla[3] * 100));
+          return start + Platform.StringUtilities.sprintf(' / %s%)', stringifyWithPrecision(hsla[3] * 100));
         }
         return start + ')';
       }
@@ -1637,9 +1638,10 @@ export class Legacy implements Color {
       case Format.HWBA: {
         const hwba = this.hwba();
         const start = Platform.StringUtilities.sprintf(
-            'hwb(%ddeg %d% %d%', Math.round(hwba[0] * 360), Math.round(hwba[1] * 100), Math.round(hwba[2] * 100));
+            'hwb(%sdeg %s% %s%', stringifyWithPrecision(hwba[0] * 360), stringifyWithPrecision(hwba[1] * 100),
+            stringifyWithPrecision(hwba[2] * 100));
         if (this.hasAlpha()) {
-          return start + Platform.StringUtilities.sprintf(' / %d%)', Math.round(hwba[3] * 100));
+          return start + Platform.StringUtilities.sprintf(' / %s%)', stringifyWithPrecision(hwba[3] * 100));
         }
         return start + ')';
       }

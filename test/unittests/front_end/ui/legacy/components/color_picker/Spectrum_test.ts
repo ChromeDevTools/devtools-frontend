@@ -67,9 +67,9 @@ describe('Spectrum', () => {
       'hsl(1deg 100% 50% / 20%)',
       'hsl(1deg 100% 50% / 20%)',
       'hsl(1deg 100% 50% / 20%)',
-      'hwb(0deg 67% 33%)',
-      'hwb(0deg 67% 33% / 20%)',
-      'hwb(57deg 20% 50% / 20%)',
+      'hwb(0deg 66.67% 33.33%)',
+      'hwb(0deg 66.67% 33.33% / 20%)',
+      'hwb(57.3deg 20% 50% / 20%)',
       'hwb(1deg 20% 50% / 20%)',
     ];
     for (const i in colorSpecs) {
@@ -104,9 +104,9 @@ describe('Spectrum', () => {
       'hsl(1deg 100% 50% / 0%)',
       'hsl(1deg 100% 50% / 0%)',
       'hsl(1deg 100% 50% / 0%)',
-      'hwb(0deg 67% 33% / 0%)',
-      'hwb(0deg 67% 33% / 0%)',
-      'hwb(57deg 20% 50% / 0%)',
+      'hwb(0deg 66.67% 33.33% / 0%)',
+      'hwb(0deg 66.67% 33.33% / 0%)',
+      'hwb(57.3deg 20% 50% / 0%)',
       'hwb(1deg 20% 50% / 0%)',
     ];
     for (const i in colorSpecs) {
@@ -126,24 +126,24 @@ describe('Spectrum', () => {
     const spectrum = new ColorPicker.Spectrum.Spectrum();
     const colorStrings = [
       ['red', 'rgb(255 0 0)', 'hsl(0deg 100% 50%)'],
-      ['#abc', 'rgb(170 187 204)', 'hsl(210deg 25% 73%)'],
-      ['#abca', 'rgb(170 187 204 / 67%)', 'hsl(210deg 25% 73% / 67%)'],
-      ['#abcdef', 'rgb(171 205 239)', 'hsl(210deg 68% 80%)'],
-      ['#abcdefaa', 'rgb(171 205 239 / 67%)', 'hsl(210deg 68% 80% / 67%)'],
-      ['rgb(1 2 3)', 'hsl(210deg 50% 1%)', 'hwb(210deg 0% 99%)'],
-      ['rgb(1 2 3 / 20%)', 'hsl(210deg 50% 1% / 20%)', 'hwb(210deg 0% 99% / 20%)'],
-      ['rgb(1 2 3 / 20%)', 'hsl(210deg 50% 1% / 20%)', 'hwb(210deg 0% 99% / 20%)'],
-      ['rgb(1 2 3 / 20%)', 'hsl(210deg 50% 1% / 20%)', 'hwb(210deg 0% 99% / 20%)'],
-      ['rgb(1 2 3)', 'hsl(210deg 50% 1%)', 'hwb(210deg 0% 99%)'],
-      ['rgb(2 3 3)', 'hsl(199deg 35% 1%)', 'hwb(199deg 1% 99%)'],
+      ['#abc', 'rgb(170 187 204)', 'hsl(210deg 25% 73.33%)'],
+      ['#abca', 'rgb(170 187 204 / 67%)', 'hsl(210deg 25% 73.33% / 66.67%)'],
+      ['#abcdef', 'rgb(171 205 239)', 'hsl(210deg 68% 80.39%)'],
+      ['#abcdefaa', 'rgb(171 205 239 / 67%)', 'hsl(210deg 68% 80.39% / 66.67%)'],
+      ['rgb(1 2 3)', 'hsl(210deg 50% 0.78%)', 'hwb(210deg 0.39% 98.82%)'],
+      ['rgb(1 2 3 / 20%)', 'hsl(210deg 50% 0.78% / 20%)', 'hwb(210deg 0.39% 98.82% / 20%)'],
+      ['rgb(1 2 3 / 20%)', 'hsl(210deg 50% 0.78% / 20%)', 'hwb(210deg 0.39% 98.82% / 20%)'],
+      ['rgb(1 2 3 / 20%)', 'hsl(210deg 50% 0.78% / 20%)', 'hwb(210deg 0.39% 98.82% / 20%)'],
+      ['rgb(1 2 3)', 'hsl(210deg 50% 0.78%)', 'hwb(210deg 0.39% 98.82%)'],
+      ['rgb(2 3 3)', 'hsl(198.75deg 34.78% 0.9%)', 'hwb(198.75deg 0.59% 98.78%)'],
       ['hsl(1deg 100% 50%)', 'hwb(1deg 0% 0%)', '#ff0400'],
       ['hsl(1deg 100% 50%)', 'hwb(1deg 0% 0%)', '#ff0400'],
       ['hsl(1deg 100% 50% / 20%)', 'hwb(1deg 0% 0% / 20%)', '#ff040033'],
       ['hsl(1deg 100% 50% / 20%)', 'hwb(1deg 0% 0% / 20%)', '#ff040033'],
       ['hsl(1deg 100% 50% / 20%)', 'hwb(1deg 0% 0% / 20%)', '#ff040033'],
-      ['hwb(0deg 67% 33%)', '#aaaaaa', 'rgb(170 170 170)'],
-      ['hwb(0deg 67% 33% / 20%)', '#aaaaaa33', 'rgb(170 170 170 / 20%)'],
-      ['hwb(57deg 20% 50% / 20%)', '#807c3333', 'rgb(128 124 51 / 20%)'],
+      ['hwb(0deg 66.67% 33.33%)', '#aaaaaa', 'rgb(170 170 170)'],
+      ['hwb(0deg 66.67% 33.33% / 20%)', '#aaaaaa33', 'rgb(170 170 170 / 20%)'],
+      ['hwb(57.3deg 20% 50% / 20%)', '#807c3333', 'rgb(128 124 51 / 20%)'],
       ['hwb(1deg 20% 50% / 20%)', '#80343333', 'rgb(128 52 51 / 20%)'],
     ];
     for (const i in colorSpecs) {
@@ -160,7 +160,9 @@ describe('Spectrum', () => {
       resultingColorStrings.push(spectrum.colorString());
       switcher.click();
       resultingColorStrings.push(spectrum.colorString());
-      assert.deepStrictEqual(resultingColorStrings, expectedColorStrings);
+      assert.deepStrictEqual(
+          resultingColorStrings, expectedColorStrings,
+          `${JSON.stringify(resultingColorStrings)} !== ${JSON.stringify(expectedColorStrings)}`);
     }
   });
 });

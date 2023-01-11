@@ -49,7 +49,7 @@ describe('Color', () => {
   it('is able to create a color class from an HSVA value', () => {
     const color = Color.Legacy.fromHSVA([0.5, 0.5, 0.5, 100]);
     assert.deepEqual(color.rgba(), [0.25, 0.49999999999999994, 0.5, 1], 'RGBA array was not set correctly');
-    assert.strictEqual(color.asString(), 'hsl(180deg 33% 38%)', 'original text was not set correctly');
+    assert.strictEqual(color.asString(), 'hsl(180deg 33.33% 37.5%)', 'original text was not set correctly');
     assert.strictEqual(color.format(), 'hsla', 'format was not set correctly');
   });
 
@@ -483,43 +483,43 @@ describe('Color', () => {
         bgColor: 'salmon',
         fgColor: 'white',
         contrast: 4.5,
-        result: 'hsl(0deg 0% 23%)',
+        result: 'hsl(0deg 0% 22.96%)',
       },
       {
         bgColor: 'Lightblue',
         fgColor: 'white',
         contrast: 4.5,
-        result: 'hsl(0deg 0% 35%)',
+        result: 'hsl(0deg 0% 35.34%)',
       },
       {
         bgColor: 'white',
         fgColor: 'hsl(0 53% 52% / 87%)',
         contrast: 7.0,
-        result: 'hsl(0deg 49% 32% / 87%)',
+        result: 'hsl(0deg 48.92% 31.54% / 87%)',
       },
       {
         bgColor: 'white',
         fgColor: 'white',
         contrast: 7.0,
-        result: 'hsl(0deg 0% 35%)',
+        result: 'hsl(0deg 0% 34.89%)',
       },
       {
         bgColor: 'black',
         fgColor: 'black',
         contrast: 7.05,
-        result: 'hsl(0deg 0% 59%)',
+        result: 'hsl(0deg 0% 58.62%)',
       },
       {
         bgColor: 'white',
         fgColor: '#00FF00',
         contrast: 7.05,
-        result: 'hsl(120deg 100% 20%)',
+        result: 'hsl(120deg 100% 20.37%)',
       },
       {
         bgColor: 'black',
         fgColor: '#b114ff',
         contrast: 7.05,
-        result: 'hsl(280deg 100% 71%)',
+        result: 'hsl(280.09deg 100% 70.52%)',
       },
     ];
     for (const {fgColor, bgColor, contrast, result} of colors) {

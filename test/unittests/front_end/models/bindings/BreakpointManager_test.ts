@@ -127,112 +127,6 @@ describeWithRealConnection('BreakpointManager', () => {
     target = mainTarget;
   });
 
-  it('allows awaiting the restoration of breakpoints', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
-
-    const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
-
-    // Create a new DebuggerModel and notify the breakpoint engine about it.
-    const debuggerModel = new TestDebuggerModel(target);
-    breakpoint.modelAdded(debuggerModel);
-
-    // Make sure that we await all updates that are triggered by adding the model.
-    await breakpoint.updateBreakpoint();
-
-    // Retrieve the ModelBreakpoint that is linked to our DebuggerModel.
-    const modelBreakpoint = breakpoint.modelBreakpoint(debuggerModel);
-    assertNotNullOrUndefined(modelBreakpoint);
-
-    // Make sure that we do not have a linked script yet.
-    assert.isNull(modelBreakpoint.currentState);
-
-    // Create a fake mapping that can be used to set a breakpoint.
-    const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, 42, SCRIPT_ID);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
-
-    // Now await restoring the breakpoint.
-    // A successful restore should update the ModelBreakpoint of the DebuggerModel
-    // to reflect a state, in which we have successfully set a breakpoint (i.e. a script id
-    // is available).
-    const script = debuggerModel.scriptForId(SCRIPT_ID);
-    assertNotNullOrUndefined(script);
-    await breakpointManager.restoreBreakpointsForScript(script);
-    assertNotNullOrUndefined(modelBreakpoint.currentState);
-    assert.lengthOf(modelBreakpoint.currentState.positions, 1);
-    assert.strictEqual(modelBreakpoint.currentState.positions[0].url, URL);
-
-    // Clean up.
-    await breakpoint.remove(false);
-    breakpointManager.modelRemoved(debuggerModel);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
-    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
-  });
-
-  it('allows awaiting on scheduled update in debugger', async () => {
-    const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
-
-    const debuggerModel = new TestDebuggerModel(target);
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, 42, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
-
-    const modelBreakpoint = new Bindings.BreakpointManager.ModelBreakpoint(
-        debuggerModel, breakpoint, breakpointManager.debuggerWorkspaceBinding);
-    const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, 42, SCRIPT_ID);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
-    assert.isNull(breakpoint.currentState);
-    const update = modelBreakpoint.scheduleUpdateInDebugger();
-    assert.isNull(breakpoint.currentState);
-    const result = await update;
-    // Make sure that no error occurred.
-    assert.isTrue(result === Bindings.BreakpointManager.DebuggerUpdateResult.OK);
-    assert.strictEqual(breakpoint.currentState?.positions[0]?.lineNumber, 13);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
-    await breakpoint.remove(false);
-    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-  });
-
-  it('allows awaiting on removal of breakpoint in debugger', async () => {
-    const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
-    // Set up breakpoint with UISourceCode, and fake DebuggerModel.
-    const debuggerModel = new TestDebuggerModel(target);
-    const removeSpy = sinon.spy(debuggerModel, 'removeBreakpoint');
-    const setSpy = sinon.spy(debuggerModel, 'setBreakpointByURL');
-
-    // We need to stub the debuggerModel of the real connection to make sure that we
-    // can await the removal of the breakpoint (since it will await updating all
-    // DebuggerModels, including the one with the real connection).
-    const realDebugger = target.model(SDK.DebuggerModel.DebuggerModel);
-    assertNotNullOrUndefined(realDebugger);
-    sinon.stub(realDebugger, 'setBreakpointByURL')
-        .callsFake(() => Promise.resolve({breakpointId: BREAKPOINT_ID, locations: []}));
-    sinon.stub(realDebugger, 'removeBreakpoint').callsFake(() => Promise.resolve());
-
-    const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, 42, SCRIPT_ID);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
-
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, 42, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
-    breakpoint.modelAdded(debuggerModel);
-
-    // Make sure that the location could be resolved, and that we could set a breakpoint.
-    const modelBreakpoint = breakpoint.modelBreakpoint(debuggerModel);
-    assertNotNullOrUndefined(modelBreakpoint);
-    await modelBreakpoint.scheduleUpdateInDebugger();
-    assertNotNullOrUndefined(modelBreakpoint.currentState);
-    assert.isTrue(setSpy.calledOnce);
-
-    // Test if awaiting breakpoint.remove is actually removing the state.
-    await breakpoint.remove(false);
-    assert.isNull(modelBreakpoint.currentState);
-    assert.isTrue(removeSpy.calledOnce);
-
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
-    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-  });
-
   it('can wait for file system breakpoints to be mapped to network ui source code', async () => {
     const url = 'file://example.js' as Platform.DevToolsPath.UrlString;
     const content = 'console.log(3)';
@@ -380,6 +274,132 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       assert.isTrue(breakpoint.getIsRemoved());
       assert.isTrue(removedSpy.calledWith(true));
     });
+  });
+
+  it('allows awaiting the restoration of breakpoints', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+
+    // Make sure that we await all updates that are triggered by adding the model.
+    await breakpoint.updateBreakpoint();
+
+    const responder = backend.responderToBreakpointByUrlRequest(URL, 0);
+    const script = await backend.addScript(target, scriptDescription, null);
+    void responder({
+      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+      locations: [
+        {
+          scriptId: script.scriptId,
+          lineNumber: 0,
+          columnNumber: 9,
+        },
+      ],
+    });
+
+    // Retrieve the ModelBreakpoint that is linked to our DebuggerModel.
+    const modelBreakpoint = breakpoint.modelBreakpoint(debuggerModel);
+    assertNotNullOrUndefined(modelBreakpoint);
+
+    // Make sure that we do not have a linked script yet.
+    assert.isNull(modelBreakpoint.currentState);
+
+    // Now await restoring the breakpoint.
+    // A successful restore should update the ModelBreakpoint of the DebuggerModel
+    // to reflect a state, in which we have successfully set a breakpoint (i.e. a script id
+    // is available).
+    await breakpointManager.restoreBreakpointsForScript(script);
+    assertNotNullOrUndefined(modelBreakpoint.currentState);
+    assert.lengthOf(modelBreakpoint.currentState.positions, 1);
+    assert.strictEqual(modelBreakpoint.currentState.positions[0].url, URL);
+
+    // Clean up.
+    await breakpoint.remove(false);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+  });
+
+  it('allows awaiting on scheduled update in debugger', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 13, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+
+    // Make sure that we await all updates that are triggered by adding the model.
+    await breakpoint.updateBreakpoint();
+
+    const responder = backend.responderToBreakpointByUrlRequest(URL, 13);
+    const script = await backend.addScript(target, scriptDescription, null);
+    void responder({
+      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+      locations: [
+        {
+          scriptId: script.scriptId,
+          lineNumber: 13,
+          columnNumber: 9,
+        },
+      ],
+    });
+
+    // Retrieve the ModelBreakpoint that is linked to our DebuggerModel.
+    const modelBreakpoint = breakpoint.modelBreakpoint(debuggerModel);
+    assertNotNullOrUndefined(modelBreakpoint);
+
+    assert.isNull(breakpoint.currentState);
+    const update = modelBreakpoint.scheduleUpdateInDebugger();
+    assert.isNull(breakpoint.currentState);
+    const result = await update;
+    // Make sure that no error occurred.
+    assert.isTrue(result === Bindings.BreakpointManager.DebuggerUpdateResult.OK);
+    assert.strictEqual(breakpoint.currentState?.positions[0]?.lineNumber, 13);
+    await breakpoint.remove(false);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+  });
+
+  it('allows awaiting on removal of breakpoint in debugger', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    const script = await backend.addScript(target, scriptDescription, null);
+    const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
+    assertNotNullOrUndefined(uiSourceCode);
+
+    const breakpointId = 'BREAK_ID' as Protocol.Debugger.BreakpointId;
+    void backend.responderToBreakpointByUrlRequest(URL, 13)({
+      breakpointId,
+      locations: [
+        {
+          scriptId: script.scriptId,
+          lineNumber: 13,
+          columnNumber: 9,
+        },
+      ],
+    });
+
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 13, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    await breakpoint.updateBreakpoint();
+
+    // Retrieve the ModelBreakpoint that is linked to our DebuggerModel.
+    const modelBreakpoint = breakpoint.modelBreakpoint(debuggerModel);
+    assertNotNullOrUndefined(modelBreakpoint);
+    assertNotNullOrUndefined(modelBreakpoint.currentState);
+
+    // Test if awaiting breakpoint.remove is actually removing the state.
+    const removalPromise = backend.breakpointRemovedPromise(breakpointId);
+    await breakpoint.remove(false);
+    await removalPromise;
+    assert.isNull(modelBreakpoint.currentState);
   });
 
   it('removes ui source code from breakpoint even after breakpoint live location update', async () => {

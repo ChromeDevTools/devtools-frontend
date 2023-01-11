@@ -640,7 +640,10 @@ export enum KeyboardShortcutAction {
   'layers.right' = 105,
   'help.report-translation-issue' = 106,
   'rendering.toggle-prefers-color-scheme' = 107,
-  MaxValue = 108,
+  'chrome_recorder.start-recording' = 108,
+  'chrome_recorder.replay-recording' = 109,
+  'chrome_recorder.toggle-code-view' = 110,
+  MaxValue = 111,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

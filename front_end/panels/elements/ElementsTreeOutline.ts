@@ -1683,6 +1683,20 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     return this.nodeShortcut.deferredNode.domModel();
   }
 
+  private setLeftIndentOverlay(): void {
+    // We use parent's `--indent` value and add 24px to account for an extra level of indent.
+    let indent = 24;
+    if (this.parent && this.parent instanceof ElementsTreeElement) {
+      const parentIndent = parseFloat(this.parent.listItemElement.style.getPropertyValue('--indent')) || 0;
+      indent += parentIndent;
+    }
+    this.listItemElement.style.setProperty('--indent', indent + 'px');
+  }
+
+  onattach(): void {
+    this.setLeftIndentOverlay();
+  }
+
   onselect(selectedByUser?: boolean): boolean {
     if (!selectedByUser) {
       return true;

@@ -57,6 +57,14 @@
   min-width: 200px;
 }
 
+.elements-disclosure li::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  left: calc(var(--indent) * -1);
+  width: var(--indent);
+}
+
 .elements-disclosure li.parent {
   display: flex;
 }
@@ -291,6 +299,7 @@ select {
   left: 0;
   width: 15px;
   height: 15px;
+  z-index: 1;
 }
 
 .elements-hide-gutter .gutter-container {

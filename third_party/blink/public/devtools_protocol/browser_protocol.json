@@ -20759,6 +20759,58 @@
             "dependencies": [
                 "Runtime"
             ],
+            "types": [
+                {
+                    "id": "ImageData",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "sizeBytes",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "id": "SystemCacheStats",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "aliveImagesCount",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "aliveTotalBytesUsed",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "aliveImages",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ImageData"
+                            }
+                        },
+                        {
+                            "name": "orphanedImagesCount",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "orphanedBytesUsed",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "orphanedImages",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ImageData"
+                            }
+                        }
+                    ]
+                }
+            ],
             "commands": [
                 {
                     "name": "setDrawMetaDataEmit",
@@ -20804,6 +20856,15 @@
                 },
                 {
                     "name": "clearCachedUnusedImages"
+                },
+                {
+                    "name": "getSystemCacheStats",
+                    "returns": [
+                        {
+                            "name": "stats",
+                            "$ref": "SystemCacheStats"
+                        }
+                    ]
                 }
             ]
         },

@@ -836,6 +836,7 @@ inspectorBackend.registerCommand("CohtmlDebug.capturePage", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.enable", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.disable", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.clearCachedUnusedImages", [], []);
+inspectorBackend.registerCommand("CohtmlDebug.getSystemCacheStats", [], ["stats"]);
 
 // Debugger.
 inspectorBackend.registerEnum("Debugger.ScopeType", {Global: "global", Local: "local", With: "with", Closure: "closure", Catch: "catch", Block: "block", Script: "script", Eval: "eval", Module: "module", WasmExpressionStack: "wasm-expression-stack"});

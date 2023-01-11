@@ -3387,6 +3387,8 @@ declare namespace ProtocolProxyApi {
 
     invoke_clearCachedUnusedImages(): Promise<Protocol.ProtocolResponseWithError>;
 
+    invoke_getSystemCacheStats(): Promise<Protocol.CohtmlDebug.GetSystemCacheStatsResponse>;
+
   }
   export interface CohtmlDebugDispatcher {
   }

@@ -13954,12 +13954,30 @@ declare namespace Protocol {
    */
   export namespace CohtmlDebug {
 
+    export interface ImageData {
+      name: string;
+      sizeBytes: integer;
+    }
+
+    export interface SystemCacheStats {
+      aliveImagesCount: integer;
+      aliveTotalBytesUsed: integer;
+      aliveImages: ImageData[];
+      orphanedImagesCount: integer;
+      orphanedBytesUsed: integer;
+      orphanedImages: ImageData[];
+    }
+
     export interface SetDrawMetaDataEmitRequest {
       result: boolean;
     }
 
     export interface SetContinuousRepaintRequest {
       result: boolean;
+    }
+
+    export interface GetSystemCacheStatsResponse extends ProtocolResponseWithError {
+      stats: SystemCacheStats;
     }
   }
 

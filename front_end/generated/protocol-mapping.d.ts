@@ -3811,6 +3811,10 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: void;
     };
+    'CohtmlDebug.getSystemCacheStats': {
+      paramsType: [];
+      returnType: Protocol.CohtmlDebug.GetSystemCacheStatsResponse;
+    };
     /**
      * Continues execution until specific location is reached.
      */

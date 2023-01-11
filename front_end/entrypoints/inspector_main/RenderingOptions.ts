@@ -43,6 +43,12 @@ const UIStrings = {
   */
   highlightsAreasOfThePageGreen:
       'Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.',
+
+  redrawFlashing: 'Redraw flashing',
+
+  highlightsAreasOfThePageRed:
+      'Highlights elements of the page (red) that need to be repainted. This highlights every element that is repainted during the frame.',
+
   /**
   * @description The name of a checkbox setting in the Rendering tool. This setting highlights areas
   * (regions) of the page that were shifted (where a 'layout shift' occurred). A layout shift is
@@ -213,6 +219,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this.appendCheckbox(
         i18nString(UIStrings.paintFlashing), i18nString(UIStrings.highlightsAreasOfThePageGreen),
         Common.Settings.Settings.instance().moduleSetting('showPaintRects'));
+    this.appendCheckbox(
+        i18nString(UIStrings.redrawFlashing), i18nString(UIStrings.highlightsAreasOfThePageRed),
+        Common.Settings.Settings.instance().moduleSetting('showRedrawRects'));
     this.appendCheckbox(
         i18nString(UIStrings.layoutShiftRegions), i18nString(UIStrings.highlightsAreasOfThePageBlueThat),
         Common.Settings.Settings.instance().moduleSetting('showLayoutShiftRegions'));

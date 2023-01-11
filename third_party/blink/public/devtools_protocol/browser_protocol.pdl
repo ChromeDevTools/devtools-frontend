@@ -6504,6 +6504,12 @@ experimental domain Overlay
       # True for showing paint rectangles
       boolean result
 
+  # Requests that backend shows redraw rectangles for elements being redrawn
+  command setShowRedrawRects
+    parameters
+      # True for showing redraw rectangles
+      boolean result
+
   # Requests that backend shows layout shift regions
   command setShowLayoutShiftRegions
     parameters
@@ -9681,4 +9687,32 @@ experimental domain Media
   command enable
 
   # Disables the Media domain.
+  command disable
+
+# This domain exposes some Cohtml deubg functionality
+domain CohtmlDebug
+  depends on Runtime
+
+  command setDrawMetaDataEmit
+    parameters
+      boolean result
+
+  command setContinuousRepaint
+    parameters
+      boolean result
+
+  command dumpDOM
+
+  command dumpStackingContext
+
+  command dumpUsedImages
+
+  command captureBackend
+
+  command captureRend
+
+  command capturePage
+
+  command enable
+
   command disable

@@ -14142,6 +14142,17 @@
                     ]
                 },
                 {
+                    "name": "setShowRedrawRects",
+                    "description": "Requests that backend shows redraw rectangles for elements being redrawn",
+                    "parameters": [
+                        {
+                            "name": "result",
+                            "description": "True for showing redraw rectangles",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "setShowLayoutShiftRegions",
                     "description": "Requests that backend shows layout shift regions",
                     "parameters": [
@@ -20739,6 +20750,57 @@
                 {
                     "name": "disable",
                     "description": "Disables the Media domain."
+                }
+            ]
+        },
+        {
+            "domain": "CohtmlDebug",
+            "description": "This domain exposes some Cohtml deubg functionality",
+            "dependencies": [
+                "Runtime"
+            ],
+            "commands": [
+                {
+                    "name": "setDrawMetaDataEmit",
+                    "parameters": [
+                        {
+                            "name": "result",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "setContinuousRepaint",
+                    "parameters": [
+                        {
+                            "name": "result",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "dumpDOM"
+                },
+                {
+                    "name": "dumpStackingContext"
+                },
+                {
+                    "name": "dumpUsedImages"
+                },
+                {
+                    "name": "captureBackend"
+                },
+                {
+                    "name": "captureRend"
+                },
+                {
+                    "name": "capturePage"
+                },
+                {
+                    "name": "enable"
+                },
+                {
+                    "name": "disable"
                 }
             ]
         },

@@ -49,6 +49,7 @@ import * as NetworkManager from './NetworkManager.js';
 import * as NetworkRequest from './NetworkRequest.js';
 import * as OverlayColorGenerator from './OverlayColorGenerator.js';
 import * as OverlayModel from './OverlayModel.js';
+import * as CohtmlDebugModel from './CohtmlDebugModel.js';
 import * as OverlayPersistentHighlighter from './OverlayPersistentHighlighter.js';
 import * as PageLoad from './PageLoad.js';
 import * as PageResourceLoader from './PageResourceLoader.js';
@@ -114,6 +115,7 @@ export {
   NetworkRequest,
   OverlayColorGenerator,
   OverlayModel,
+  CohtmlDebugModel,
   OverlayPersistentHighlighter,
   PageLoad,
   PageResourceLoader,

@@ -102,6 +102,15 @@ const UIStrings = {
   *@description Title of a setting under the Rendering category that can be invoked through the Command Menu
   */
   hidePaintFlashingRectangles: 'Hide paint flashing rectangles',
+
+  showRedrawFlashingRectangles: 'Show elements redraw flashing rectangles',
+
+  hideRedrawFlashingRectangles: 'Hide elements redraw flashing rectangles',
+
+  enableContinuousRepaint: 'Enable redrawing of the view each frame',
+
+  disableContinuousRepaint: 'Disable redrawing of the view each frame',
+
   /**
   *@description Title of a setting under the Rendering category that can be invoked through the Command Menu
   */
@@ -517,6 +526,60 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.hidePaintFlashingRectangles),
+    },
+  ],
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'showRedrawRects',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.Session,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showRedrawFlashingRectangles),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.hideRedrawFlashingRectangles),
+    },
+  ],
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'continuousRepaint',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.Session,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.enableContinuousRepaint),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.disableContinuousRepaint),
+    },
+  ],
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'drawMetaData',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.Session,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showRedrawFlashingRectangles),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.hideRedrawFlashingRectangles),
     },
   ],
   defaultValue: false,

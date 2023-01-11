@@ -692,6 +692,10 @@ export class TargetBase {
     return this.getAgent('Overlay');
   }
 
+  cohtmlDebugAgent(): ProtocolProxyApi.CohtmlDebugApi {
+    return this.getAgent('CohtmlDebug');
+  }
+
   pageAgent(): ProtocolProxyApi.PageApi {
     return this.getAgent('Page');
   }
@@ -830,6 +834,10 @@ export class TargetBase {
 
   registerOverlayDispatcher(dispatcher: ProtocolProxyApi.OverlayDispatcher): void {
     this.registerDispatcher('Overlay', dispatcher);
+  }
+
+  registerCohtmlDebugDispatcher(dispatcher: ProtocolProxyApi.CohtmlDebugDispatcher): void {
+    this.registerDispatcher('CohtmlDebug', dispatcher);
   }
 
   registerPageDispatcher(dispatcher: ProtocolProxyApi.PageDispatcher): void {

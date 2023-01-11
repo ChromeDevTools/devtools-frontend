@@ -15,10 +15,16 @@ const UIStrings = {
   * https://developer.chrome.com/docs/devtools/evaluate-performance/reference#rendering
   */
   rendering: 'Rendering',
+
+  cohtml: 'Cohtml',
+
   /**
   * @description Command for showing the 'Rendering' tool
   */
   showRendering: 'Show Rendering',
+
+  showCohtml: 'Show Cohtml View',
+
   /**
   * @description Command Menu search query that points to the Rendering tool. This refers to the
   * process of drawing pixels onto the screen (called painting).
@@ -135,6 +141,21 @@ UI.ViewManager.registerViewExtension({
     i18nLazyString(UIStrings.cssMediaFeature),
     i18nLazyString(UIStrings.visionDeficiency),
     i18nLazyString(UIStrings.colorVisionDeficiency),
+  ],
+});
+
+UI.ViewManager.registerViewExtension({
+  location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
+  id: 'cohtml',
+  title: i18nLazyString(UIStrings.cohtml),
+  commandPrompt: i18nLazyString(UIStrings.showCohtml),
+  persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
+  order: 50,
+  async loadView() {
+    const InspectorMain = await loadInspectorMainModule();
+    return InspectorMain.CohtmlPanelView.CohtmlPanelView.instance();
+  },
+  tags: [
   ],
 });
 

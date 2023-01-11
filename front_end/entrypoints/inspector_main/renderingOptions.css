@@ -27,3 +27,13 @@
 .chrome-select-label {
   margin-bottom: 16px;
 }
+
+.button-block {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 7px;;
+}
+
+.button-block span{
+  margin-left: 11pt;
+}

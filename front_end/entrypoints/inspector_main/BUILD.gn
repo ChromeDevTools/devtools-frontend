@@ -10,6 +10,7 @@ devtools_module("inspector_main") {
   sources = [
     "InspectorMain.ts",
     "RenderingOptions.ts",
+    "CohtmlPanel.ts",
   ]
 
   deps = [
@@ -22,6 +23,7 @@ devtools_module("inspector_main") {
     "../../panels/mobile_throttling:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/components/buttons:bundle",
   ]
 }
 

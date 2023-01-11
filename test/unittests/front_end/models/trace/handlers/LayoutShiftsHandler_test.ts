@@ -232,6 +232,7 @@ describe('LayoutShiftsHandler', () => {
         if (screenshotIndex === null) {
           continue;
         }
+        assert.isDefined(shift.screenshotSource);
         // Make sure the screenshot came after the shift.
         assert.isAtLeast(screenshots[screenshotIndex].ts, shift.ts);
         if (screenshotIndex > 0) {

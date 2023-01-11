@@ -151,15 +151,13 @@ function updateTraceWindowMax(traceWindow: Types.Timing.TraceWindow, newMax: Typ
   traceWindow.range = Types.Timing.MicroSeconds(traceWindow.max - traceWindow.min);
 }
 
-function findNextScreenshot(timestamp: Types.Timing.MicroSeconds): HTMLImageElement|undefined {
+function findNextScreenshotSource(timestamp: Types.Timing.MicroSeconds): string|undefined {
   const screenshots = screenshotsHandlerData();
   const screenshotIndex = findNextScreenshotEventIndex(screenshots, timestamp);
   if (!screenshotIndex) {
     return undefined;
   }
-  const image = new Image();
-  image.src = `data:img/png;base64,${screenshots[screenshotIndex].args.snapshot}`;
-  return image;
+  return `data:img/png;base64,${screenshots[screenshotIndex].args.snapshot}`;
 }
 
 export function findNextScreenshotEventIndex(
@@ -278,7 +276,7 @@ async function buildLayoutShiftsClusters(): Promise<void> {
     currentCluster.clusterCumulativeScore += event.args.data ? event.args.data.weighted_score_delta : 0;
     const shift: LayoutShift = {
       ...event,
-      screenshot: findNextScreenshot(event.ts),
+      screenshotSource: findNextScreenshotSource(event.ts),
       timeFromNavigation,
       cumulativeWeightedScoreInWindow: currentCluster.clusterCumulativeScore,
       // The score of the session window is temporarily set to 0 just
@@ -410,7 +408,7 @@ interface LayoutShiftSessionWindowData {
   id: number;
 }
 interface LayoutShiftData {
-  screenshot?: HTMLImageElement;
+  screenshotSource?: string;
   timeFromNavigation?: Types.Timing.MicroSeconds;
   // The sum of the weighted scores of the shifts that
   // belong to a session window up until this shift

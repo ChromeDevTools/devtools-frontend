@@ -294,7 +294,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
       return;
     }
     this.#terminated = true;
-    this.#project.removeFile(this.uiSourceCode.url());
+    this.#project.removeUISourceCode(this.uiSourceCode.url());
     Common.EventTarget.removeEventListeners(this.#eventListeners);
   }
 

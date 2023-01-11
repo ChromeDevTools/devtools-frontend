@@ -428,7 +428,7 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
   }
 
   dispose(): void {
-    this.#project.removeFile(this.#uiSourceCode.url());
+    this.#project.removeUISourceCode(this.#uiSourceCode.url());
     void Promise.all([
       ...this.inlineScripts().map(script => DebuggerWorkspaceBinding.instance().updateLocations(script)),
       ...this.inlineStyles().map(style => CSSWorkspaceBinding.instance().updateLocations(style)),

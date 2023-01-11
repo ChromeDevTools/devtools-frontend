@@ -230,7 +230,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     this.#uiSourceCodeToScriptFile.delete(uiSourceCode);
     this.#scriptToUISourceCode.delete(script);
     const project = uiSourceCode.project() as ContentProviderBasedProject;
-    project.removeFile(uiSourceCode.url());
+    project.removeUISourceCode(uiSourceCode.url());
     void this.debuggerWorkspaceBinding.updateLocations(script);
   }
 

@@ -111,7 +111,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     const uiSourceCode = this.#stubUISourceCodes.get(script);
     this.#stubUISourceCodes.delete(script);
     if (uiSourceCode) {
-      this.#stubProject.removeFile(uiSourceCode.url());
+      this.#stubProject.removeUISourceCode(uiSourceCode.url());
     }
   }
 
@@ -359,7 +359,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
               }
             }
             this.#uiSourceCodeToSourceMaps.deleteAll(uiSourceCode);
-            project.removeFile(url);
+            project.removeUISourceCode(url);
             uiSourceCode = null;
           }
         }
@@ -414,7 +414,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       if (this.#uiSourceCodeToSourceMaps.delete(uiSourceCode, sourceMap)) {
         NetworkProject.removeFrameAttribution(uiSourceCode, script.frameId);
         if (!this.#uiSourceCodeToSourceMaps.has(uiSourceCode)) {
-          project.removeFile(uiSourceCode.url());
+          project.removeUISourceCode(uiSourceCode.url());
         }
       }
     }

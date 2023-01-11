@@ -143,11 +143,6 @@ export abstract class ProjectStore implements Project {
   }
 
   removeUISourceCode(url: Platform.DevToolsPath.UrlString): void {
-    const uiSourceCode = this.uiSourceCodeForURL(url);
-    if (!uiSourceCode) {
-      return;
-    }
-
     const entry = this.uiSourceCodesMap.get(url);
     if (!entry) {
       return;

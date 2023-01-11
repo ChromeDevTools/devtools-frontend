@@ -201,7 +201,7 @@ class Binding {
 
     if (this.uiSourceCode) {
       NetworkProject.cloneInitialFrameAttribution(this.uiSourceCode, newUISourceCode);
-      this.#project.removeFile(this.uiSourceCode.url());
+      this.#project.removeUISourceCode(this.uiSourceCode.url());
     } else {
       NetworkProject.setInitialFrameAttribution(newUISourceCode, frameId);
     }
@@ -225,7 +225,7 @@ class Binding {
       this.referringSourceMaps.splice(lastIndex, 1);
     }
     if (!this.referringSourceMaps.length) {
-      this.#project.removeFile(uiSourceCode.url());
+      this.#project.removeUISourceCode(uiSourceCode.url());
       this.uiSourceCode = null;
     } else {
       this.recreateUISourceCodeIfNeeded(frameId);

@@ -93,7 +93,7 @@ export class SourceFormatter {
     objectToFormattingResult.delete(formatData.formattedSourceCode);
     await this.scriptMapping.setSourceMappingEnabled(formatData, false);
     void this.styleMapping.setSourceMappingEnabled(formatData, false);
-    this.project.removeFile(formatData.formattedSourceCode.url());
+    this.project.removeUISourceCode(formatData.formattedSourceCode.url());
   }
 
   hasFormatted(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {

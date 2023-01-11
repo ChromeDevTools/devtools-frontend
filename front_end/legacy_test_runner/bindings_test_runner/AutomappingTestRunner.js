@@ -66,7 +66,7 @@ BindingsTestRunner.AutomappingTest = function(workspace) {
 BindingsTestRunner.AutomappingTest.prototype = {
   removeResources: function(urls) {
     for (const url of urls) {
-      this.networkProject.removeFile(url);
+      this.networkProject.removeUISourceCode(url);
     }
   },
 

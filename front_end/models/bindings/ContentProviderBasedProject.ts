@@ -42,20 +42,20 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('models/bindings/ContentProviderBasedProject.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 interface UISourceCodeData {
   mimeType: string;
   metadata: Workspace.UISourceCode.UISourceCodeMetadata|null;
+  contentProvider: TextUtils.ContentProvider.ContentProvider;
 }
 
 export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStore {
-  readonly #contentProviders: Map<string, TextUtils.ContentProvider.ContentProvider>;
   readonly #isServiceProjectInternal: boolean;
   readonly #uiSourceCodeToData: WeakMap<Workspace.UISourceCode.UISourceCode, UISourceCodeData>;
   constructor(
       workspace: Workspace.Workspace.WorkspaceImpl, id: string, type: Workspace.Workspace.projectTypes,
       displayName: string, isServiceProject: boolean) {
     super(workspace, id, type, displayName);
-    this.#contentProviders = new Map();
     this.#isServiceProjectInternal = isServiceProject;
     this.#uiSourceCodeToData = new WeakMap();
     workspace.addProject(this);
@@ -63,8 +63,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
 
   async requestFileContent(uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Promise<TextUtils.ContentProvider.DeferredContent> {
-    const contentProvider =
-        (this.#contentProviders.get(uiSourceCode.url()) as TextUtils.ContentProvider.ContentProvider);
+    const {contentProvider} = this.#uiSourceCodeToData.get(uiSourceCode) as UISourceCodeData;
     try {
       const content = await contentProvider.requestContent();
       const wasmDisassemblyInfo = 'wasmDisassemblyInfo' in content ? content.wasmDisassemblyInfo : undefined;
@@ -90,7 +89,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
 
   async requestMetadata(uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Promise<Workspace.UISourceCode.UISourceCodeMetadata|null> {
-    const {metadata} = (this.#uiSourceCodeToData.get(uiSourceCode) as UISourceCodeData);
+    const {metadata} = this.#uiSourceCodeToData.get(uiSourceCode) as UISourceCodeData;
     return metadata;
   }
 
@@ -126,20 +125,12 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
           (arg0: boolean, arg1?: string|undefined, arg2?: Platform.DevToolsPath.UrlString|undefined,
            arg3?: Common.ResourceType.ResourceType|undefined) => void): void {
     const path = uiSourceCode.url();
-    this.performRename(path, newName, innerCallback.bind(this));
-
-    function innerCallback(this: ContentProviderBasedProject, success: boolean, newName?: string): void {
+    this.performRename(path, newName, (success: boolean, newName?: string): void => {
       if (success && newName) {
-        const copyOfPath = path.split('/');
-        copyOfPath[copyOfPath.length - 1] = newName;
-        const newPath = copyOfPath.join('/');
-        const contentProvider = (this.#contentProviders.get(path) as TextUtils.ContentProvider.ContentProvider);
-        this.#contentProviders.set(newPath, contentProvider);
-        this.#contentProviders.delete(path);
         this.renameUISourceCode(uiSourceCode, newName);
       }
       callback(success, newName);
-    }
+    });
   }
 
   excludeFolder(_path: Platform.DevToolsPath.UrlString): void {
@@ -174,8 +165,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   searchInFileContent(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, query: string, caseSensitive: boolean,
       isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]> {
-    const contentProvider =
-        (this.#contentProviders.get(uiSourceCode.url()) as TextUtils.ContentProvider.ContentProvider);
+    const {contentProvider} = this.#uiSourceCodeToData.get(uiSourceCode) as UISourceCodeData;
     return contentProvider.searchInContent(query, caseSensitive, isRegex);
   }
 
@@ -188,19 +178,22 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
     progress.done();
     return result;
 
-    async function searchInContent(this: ContentProviderBasedProject, path: string): Promise<void> {
-      const contentProvider = (this.#contentProviders.get(path) as TextUtils.ContentProvider.ContentProvider);
-      let allMatchesFound = true;
-      for (const query of searchConfig.queries().slice()) {
-        const searchMatches =
-            await contentProvider.searchInContent(query, !searchConfig.ignoreCase(), searchConfig.isRegex());
-        if (!searchMatches.length) {
-          allMatchesFound = false;
-          break;
+    async function searchInContent(
+        this: ContentProviderBasedProject, path: Platform.DevToolsPath.UrlString): Promise<void> {
+      const uiSourceCode = this.uiSourceCodeForURL(path);
+      if (uiSourceCode) {
+        let allMatchesFound = true;
+        for (const query of searchConfig.queries().slice()) {
+          const searchMatches =
+              await this.searchInFileContent(uiSourceCode, query, !searchConfig.ignoreCase(), searchConfig.isRegex());
+          if (!searchMatches.length) {
+            allMatchesFound = false;
+            break;
+          }
         }
-      }
-      if (allMatchesFound) {
-        result.push(path);
+        if (allMatchesFound) {
+          result.push(path);
+        }
       }
       progress.incrementWorked(1);
     }
@@ -213,8 +206,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   addUISourceCodeWithProvider(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, contentProvider: TextUtils.ContentProvider.ContentProvider,
       metadata: Workspace.UISourceCode.UISourceCodeMetadata|null, mimeType: string): void {
-    this.#contentProviders.set(uiSourceCode.url(), contentProvider);
-    this.#uiSourceCodeToData.set(uiSourceCode, {mimeType, metadata});
+    this.#uiSourceCodeToData.set(uiSourceCode, {mimeType, metadata, contentProvider});
     this.addUISourceCode(uiSourceCode);
   }
 
@@ -226,19 +218,12 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
     return uiSourceCode;
   }
 
-  removeFile(path: Platform.DevToolsPath.UrlString): void {
-    this.#contentProviders.delete(path);
-    this.removeUISourceCode(path);
-  }
-
   reset(): void {
-    this.#contentProviders.clear();
     this.removeProject();
     this.workspace().addProject(this);
   }
 
   dispose(): void {
-    this.#contentProviders.clear();
     this.removeProject();
   }
 }

@@ -21,15 +21,15 @@ const UIStrings = {
    */
   title: 'User agent client hints',
   /**
-   * @description Heading for brands section.
+   * @description Heading for user agent section.
    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
    */
-  brands: 'Brands',
+  useragent: 'User agent (Sec-CH-UA)',
   /**
    * @description ARIA label for a form with properties for a single brand in a brand list. The form includes a brand name input field, a version
    * input field and a delete icon. Brand refer to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
    */
-  brandProperties: 'Brand properties',
+  useragentProperties: 'User agent properties',
   /**
    * @description Input field placeholder for brands browser name.
    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
@@ -42,10 +42,10 @@ const UIStrings = {
    */
   brandNameAriaLabel: 'Brand {PH1}',
   /**
-   * @description Input field placeholder for brands version.
+   * @description Input field placeholder for brand version.
    * Brands here relate to different browser brands/vendors like Google Chrome (v89), Microsoft Edge (v92) etc.
    */
-  version: 'Version',
+  brandVersionPlaceholder: 'Significant version (e.g. 87)',
   /**
    * @description Aria label for brands browser version input field.
    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
@@ -71,7 +71,7 @@ const UIStrings = {
   /**
    * @description Label for full browser version input field.
    */
-  fullBrowserVersion: 'Full browser version',
+  fullBrowserVersion: 'Full browser version (Sec-CH-UA-Full-Browser-Version)',
   /**
    * @description Placeholder for full browser version input field.
    */
@@ -79,7 +79,7 @@ const UIStrings = {
   /**
    * @description Label for platform heading section, platform relates to OS like Android, Windows etc.
    */
-  platformLabel: 'Platform',
+  platformLabel: 'Platform (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)',
   /**
    * @description Platform row, including platform name and platform version input field.
    */
@@ -95,7 +95,7 @@ const UIStrings = {
   /**
    * @description Label for architecture (Eg: x86, x64, arm) input field.
    */
-  architecture: 'Architecture',
+  architecture: 'Architecture (Sec-CH-UA-Arch)',
   /**
    * @description Placeholder for architecture (Eg: x86, x64, arm) input field.
    */
@@ -107,7 +107,7 @@ const UIStrings = {
   /**
    * @description Label for Device Model input field.
    */
-  deviceModel: 'Device model',
+  deviceModel: 'Device model (Sec-CH-UA-Model)',
   /**
    * @description Label for Mobile phone checkbox.
    */
@@ -191,7 +191,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
   #metaData: Protocol.Emulation.UserAgentMetadata = DEFAULT_METADATA;
   #showMobileCheckbox: boolean = false;
   #showSubmitButton: boolean = false;
-  #brandsModifiedAriaMessage: string = '';
+  #useragentModifiedAriaMessage: string = '';
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, userAgentClientHintsFormStyles];
@@ -242,8 +242,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
     this.#render();
   };
 
-  #handleBrandInputChange = (value: string, index: number, brandInputType: 'brandName'|'brandVersion'): void => {
-    const updatedBrands = this.#metaData.brands?.map((browserBrand, brandIndex) => {
+  #handleUseragentInputChange = (value: string, index: number, brandInputType: 'brandName'|'brandVersion'): void => {
+    const updatedUseragent = this.#metaData.brands?.map((browserBrand, brandIndex) => {
       if (brandIndex === index) {
         const {brand, version} = browserBrand;
         if (brandInputType === 'brandName') {
@@ -261,13 +261,13 @@ export class UserAgentClientHintsForm extends HTMLElement {
     });
     this.#metaData = {
       ...this.#metaData,
-      brands: updatedBrands,
+      brands: updatedUseragent,
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
     this.#render();
   };
 
-  #handleBrandDelete = (index: number): void => {
+  #handleUseragentDelete = (index: number): void => {
     const {brands = []} = this.#metaData;
     brands.splice(index, 1);
     this.#metaData = {
@@ -275,7 +275,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       brands,
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
-    this.#brandsModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
+    this.#useragentModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
     this.#render();
 
     // after deleting a brand row, focus on next Brand input if available,
@@ -287,7 +287,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     (nextFocusElement as HTMLElement)?.focus();
   };
 
-  #handleAddBrandClick = (): void => {
+  #handleAddUseragentBrandClick = (): void => {
     const {brands} = this.#metaData;
     this.#metaData = {
       ...this.#metaData,
@@ -300,7 +300,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       ],
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
-    this.#brandsModifiedAriaMessage = i18nString(UIStrings.addedBrand);
+    this.#useragentModifiedAriaMessage = i18nString(UIStrings.addedBrand);
     this.#render();
     const brandInputElements = this.shadowRoot?.querySelectorAll('.brand-name-input');
     if (brandInputElements) {
@@ -311,10 +311,10 @@ export class UserAgentClientHintsForm extends HTMLElement {
     }
   };
 
-  #handleAddBrandKeyPress = (event: KeyboardEvent): void => {
+  #handleAddUseragentBrandKeyPress = (event: KeyboardEvent): void => {
     if (event.code === 'Space' || event.code === 'Enter') {
       event.preventDefault();
-      this.#handleAddBrandClick();
+      this.#handleAddUseragentBrandClick();
     }
   };
 
@@ -430,7 +430,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
-  #renderBrands(): LitHtml.TemplateResult {
+  #renderUseragent(): LitHtml.TemplateResult {
     const {
       brands =
           [
@@ -443,7 +443,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     const brandElements = brands.map((brandRow, index) => {
       const {brand, version} = brandRow;
       const handleDeleteClick = (): void => {
-        this.#handleBrandDelete(index);
+        this.#handleUseragentDelete(index);
       };
       const handleKeyPress = (event: KeyboardEvent): void => {
         if (event.code === 'Space' || event.code === 'Enter') {
@@ -451,20 +451,20 @@ export class UserAgentClientHintsForm extends HTMLElement {
           handleDeleteClick();
         }
       };
-      const handleBrandBrowserChange = (event: KeyboardEvent): void => {
+      const handleUseragentBrowserChange = (event: KeyboardEvent): void => {
         const value = (event.target as HTMLInputElement).value;
-        this.#handleBrandInputChange(value, index, 'brandName');
+        this.#handleUseragentInputChange(value, index, 'brandName');
       };
-      const handleBrandVersionChange = (event: KeyboardEvent): void => {
+      const handleUseragentVersionChange = (event: KeyboardEvent): void => {
         const value = (event.target as HTMLInputElement).value;
-        this.#handleBrandInputChange(value, index, 'brandVersion');
+        this.#handleUseragentInputChange(value, index, 'brandVersion');
       };
       return LitHtml.html`
-        <div class="full-row brand-row" aria-label=${i18nString(UIStrings.brandProperties)} role="group">
+        <div class="full-row brand-row" aria-label=${i18nString(UIStrings.useragentProperties)} role="group">
           <input
             class="input-field brand-name-input"
             type="text"
-            @input=${handleBrandBrowserChange}
+            @input=${handleUseragentBrowserChange}
             .value=${brand}
             id="brand-${index + 1}-input"
             placeholder=${i18nString(UIStrings.brandName)}
@@ -475,9 +475,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           <input
             class="input-field"
             type="text"
-            @input=${handleBrandVersionChange}
+            @input=${handleUseragentVersionChange}
             .value=${version}
-            placeholder=${i18nString(UIStrings.version)}
+            placeholder=${i18nString(UIStrings.brandVersionPlaceholder)}
             aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
         PH1: index + 1,
       })}
@@ -501,7 +501,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       `;
     });
     return LitHtml.html`
-      <span class="full-row label">${i18nString(UIStrings.brands)}</span>
+      <span class="full-row label">${i18nString(UIStrings.useragent)}</span>
       ${brandElements}
       <div
         class="add-container full-row"
@@ -509,8 +509,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
         tabindex="0"
         id="add-brand-button"
         aria-label=${i18nString(UIStrings.addBrand)}
-        @click=${this.#handleAddBrandClick}
-        @keypress=${this.#handleAddBrandKeyPress}
+        @click=${this.#handleAddUseragentBrandClick}
+        @keypress=${this.#handleAddUseragentBrandKeyPress}
       >
         <${IconButton.Icon.Icon.litTagName}
           aria-hidden="true"
@@ -525,7 +525,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
 
   #render(): void {
     const {fullVersion, architecture} = this.#metaData;
-    const brandSection = this.#renderBrands();
+    const brandSection = this.#renderUseragent();
     const fullBrowserInput = this.#renderInputWithLabel(
         i18nString(UIStrings.fullBrowserVersion), i18nString(UIStrings.fullBrowserVersionPlaceholder),
         fullVersion || '', 'fullVersion');
@@ -593,7 +593,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           ${deviceModelSection}
           ${submitButton}
         </form>
-        <div aria-live="polite" aria-label=${this.#brandsModifiedAriaMessage}></div>
+        <div aria-live="polite" aria-label=${this.#useragentModifiedAriaMessage}></div>
       </section>
     `;
     // clang-format off

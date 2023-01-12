@@ -107,8 +107,12 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
       includeBlendedBackgroundColors: true,
     };
 
-    const formatColor = (color: Common.Color.Legacy): string|null => {
-      return color.hasAlpha() ? color.asString(Common.Color.Format.HEXA) : color.asString(Common.Color.Format.HEX);
+    const formatColor = (color: Common.Color.Color): string|null => {
+      if (color instanceof Common.Color.Legacy) {
+        return color.hasAlpha() ? color.asString(Common.Color.Format.HEXA) : color.asString(Common.Color.Format.HEX);
+      }
+
+      return color.asString();
     };
 
     const storeColor = (id: number, nodeId: number, target: Map<string, Set<number>>): Common.Color.Color|undefined => {
@@ -122,8 +126,8 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
         return;
       }
 
-      const color = Common.Color.parse(colorText)?.asLegacyColor();
-      if (!color || color.rgba()[3] === 0) {
+      const color = Common.Color.parse(colorText);
+      if (!color || color.asLegacyColor().rgba()[3] === 0) {
         return;
       }
 

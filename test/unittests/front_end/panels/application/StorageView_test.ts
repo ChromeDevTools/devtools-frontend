@@ -29,7 +29,7 @@ describeWithMockConnection('StorageView', () => {
       securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
     });
 
-    it('emits correct events on clearStorageByStorageKey', () => {
+    it('emits correct events on clear', () => {
       const testId = {storageKey: testKey, isLocalStorage: true} as Protocol.DOMStorage.StorageId;
 
       assertNotNullOrUndefined(domStorageModel);
@@ -40,8 +40,7 @@ describeWithMockConnection('StorageView', () => {
 
       const dispatcherSpy = sinon.spy(domStorageModel, 'dispatchEventToListeners');
       const spyClearDataForStorageKey = sinon.stub(target.storageAgent(), 'invoke_clearDataForStorageKey');
-      Resources.StorageView.StorageView.clearByStorageKey(
-          target, testKey, undefined, [Protocol.Storage.StorageType.All], false);
+      Resources.StorageView.StorageView.clear(target, testKey, null, [Protocol.Storage.StorageType.All], false);
       // must be called 4 times, twice with DOMStorageRemoved for local and non-local storage and twice with DOMStorageAdded
       assert.isTrue(spyClearDataForStorageKey.calledOnce);
       assert.strictEqual(dispatcherSpy.callCount, 4);
@@ -63,20 +62,19 @@ describeWithMockConnection('StorageView', () => {
       assert.strictEqual(subtitle?.textContent, testKey);
     });
 
-    it('also clears cookies on clearByStorageKey', () => {
+    it('also clears cookies on clear', () => {
       /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
       const cookieModel = target.model(SDK.CookieModel.CookieModel)!;
       const clearByOriginSpy = sinon.spy(target.storageAgent(), 'invoke_clearDataForOrigin');
       const cookieClearSpy = sinon.spy(cookieModel, 'clear');
 
-      Resources.StorageView.StorageView.clearByStorageKey(
-          target, testKey, testOrigin, [Protocol.Storage.StorageType.All], false);
+      Resources.StorageView.StorageView.clear(target, testKey, testOrigin, [Protocol.Storage.StorageType.All], false);
 
       assert.isTrue(clearByOriginSpy.calledOnceWithExactly({origin: testOrigin, storageTypes: 'cookies'}));
       assert.isTrue(cookieClearSpy.calledOnceWithExactly(undefined, testOrigin));
     });
 
-    it('also clears WebSQL on clearByStorageKey', async () => {
+    it('also clears WebSQL on clear', async () => {
       const databaseModel = target.model(Resources.DatabaseModel.DatabaseModel);
       assertNotNullOrUndefined(databaseModel);
       const databaseRemoved = new Promise(resolve => {
@@ -88,8 +86,7 @@ describeWithMockConnection('StorageView', () => {
       databaseModel.addDatabase(testDatabase);
       assert.deepEqual(databaseModel.databases()[0], testDatabase);
 
-      Resources.StorageView.StorageView.clearByStorageKey(
-          target, testKey, '', [Protocol.Storage.StorageType.All], false);
+      Resources.StorageView.StorageView.clear(target, testKey, '', [Protocol.Storage.StorageType.All], false);
 
       await databaseRemoved;
       assert.isEmpty(databaseModel.databases());
@@ -152,7 +149,7 @@ describeWithMockConnection('StorageView', () => {
       assert.isEmpty(databaseModel.databases());
     });
 
-    it('clears cache on clearByStorageKey', async () => {
+    it('clears cache on clear', async () => {
       const cacheStorageModel = target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       assertNotNullOrUndefined(cacheStorageModel);
       let caches = [
@@ -180,8 +177,7 @@ describeWithMockConnection('StorageView', () => {
       await cacheAddedPromise;
       caches = [];
 
-      Resources.StorageView.StorageView.clearByStorageKey(
-          target, testKey, '', [Protocol.Storage.StorageType.Cache_storage], false);
+      Resources.StorageView.StorageView.clear(target, testKey, '', [Protocol.Storage.StorageType.Cache_storage], false);
 
       assert.isEmpty(cacheStorageModel.caches());
     });

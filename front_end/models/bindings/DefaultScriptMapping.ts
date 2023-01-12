@@ -36,30 +36,29 @@ import * as Workspace from '../workspace/workspace.js';
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {type DebuggerSourceMapping, type DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 
-const uiSourceCodeToScriptsMap = new WeakMap<Workspace.UISourceCode.UISourceCode, Set<SDK.Script.Script>>();
-const scriptToUISourceCodeMap = new WeakMap<SDK.Script.Script, Workspace.UISourceCode.UISourceCode>();
-
 export class DefaultScriptMapping implements DebuggerSourceMapping {
-  readonly #debuggerModel: SDK.DebuggerModel.DebuggerModel;
   readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
   readonly #project: ContentProviderBasedProject;
   readonly #eventListeners: Common.EventTarget.EventDescriptor[];
-  readonly #uiSourceCodeToScriptsMap: WeakMap<Workspace.UISourceCode.UISourceCode, SDK.Script.Script>;
+  readonly #uiSourceCodeToScript: Map<Workspace.UISourceCode.UISourceCode, SDK.Script.Script>;
+  readonly #scriptToUISourceCode: Map<SDK.Script.Script, Workspace.UISourceCode.UISourceCode>;
+
   constructor(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl,
       debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
-    this.#debuggerModel = debuggerModel;
+    defaultScriptMappings.add(this);
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     this.#project = new ContentProviderBasedProject(
         workspace, 'debugger:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Debugger, '',
         true /* isServiceProject */);
     this.#eventListeners = [
-      debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.debuggerReset, this),
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),
       debuggerModel.addEventListener(
           SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this.discardedScriptSource, this),
     ];
-    this.#uiSourceCodeToScriptsMap = new WeakMap();
+    this.#uiSourceCodeToScript = new Map();
+    this.#scriptToUISourceCode = new Map();
   }
 
   static createV8ScriptURL(script: SDK.Script.Script): Platform.DevToolsPath.UrlString {
@@ -69,12 +68,17 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
   }
 
   static scriptForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script|null {
-    const scripts = uiSourceCodeToScriptsMap.get(uiSourceCode);
-    return scripts ? scripts.values().next().value : null;
+    for (const defaultScriptMapping of defaultScriptMappings) {
+      const script = defaultScriptMapping.#uiSourceCodeToScript.get(uiSourceCode);
+      if (script !== undefined) {
+        return script;
+      }
+    }
+    return null;
   }
 
   uiSourceCodeForScript(script: SDK.Script.Script): Workspace.UISourceCode.UISourceCode|null {
-    return scriptToUISourceCodeMap.get(script) ?? null;
+    return this.#scriptToUISourceCode.get(script) ?? null;
   }
 
   rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null {
@@ -82,7 +86,7 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     if (!script) {
       return null;
     }
-    const uiSourceCode = scriptToUISourceCodeMap.get(script);
+    const uiSourceCode = this.#scriptToUISourceCode.get(script);
     if (!uiSourceCode) {
       return null;
     }
@@ -92,13 +96,13 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
 
   uiLocationToRawLocations(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number,
-      columnNumber: number|undefined): SDK.DebuggerModel.Location[] {
-    const script = this.#uiSourceCodeToScriptsMap.get(uiSourceCode);
+      columnNumber?: number): SDK.DebuggerModel.Location[] {
+    const script = this.#uiSourceCodeToScript.get(uiSourceCode);
     if (!script) {
       return [];
     }
     ({lineNumber, columnNumber} = script.relativeLocationToRawLocation({lineNumber, columnNumber}));
-    return [this.#debuggerModel.createRawLocation(script, lineNumber, columnNumber ?? 0)];
+    return [script.debuggerModel.createRawLocation(script, lineNumber, columnNumber ?? 0)];
   }
 
   private parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
@@ -106,43 +110,37 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     const url = DefaultScriptMapping.createV8ScriptURL(script);
 
     const uiSourceCode = this.#project.createUISourceCode(url, Common.ResourceType.resourceTypes.Script);
-    this.#uiSourceCodeToScriptsMap.set(uiSourceCode, script);
-    const scriptSet = uiSourceCodeToScriptsMap.get(uiSourceCode);
-    if (!scriptSet) {
-      uiSourceCodeToScriptsMap.set(uiSourceCode, new Set([script]));
-    } else {
-      scriptSet.add(script);
-    }
-    scriptToUISourceCodeMap.set(script, uiSourceCode);
+    this.#uiSourceCodeToScript.set(uiSourceCode, script);
+    this.#scriptToUISourceCode.set(script, uiSourceCode);
     this.#project.addUISourceCodeWithProvider(uiSourceCode, script, null, 'text/javascript');
     void this.#debuggerWorkspaceBinding.updateLocations(script);
   }
 
   private discardedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
     const script = event.data;
-    const uiSourceCode = scriptToUISourceCodeMap.get(script);
-    if (!uiSourceCode) {
+    const uiSourceCode = this.#scriptToUISourceCode.get(script);
+    if (uiSourceCode === undefined) {
       return;
     }
-    scriptToUISourceCodeMap.delete(script);
-    this.#uiSourceCodeToScriptsMap.delete(uiSourceCode);
-    const scripts = uiSourceCodeToScriptsMap.get(uiSourceCode);
-    if (scripts) {
-      scripts.delete(script);
-      if (!scripts.size) {
-        uiSourceCodeToScriptsMap.delete(uiSourceCode);
-      }
-    }
+    this.#scriptToUISourceCode.delete(script);
+    this.#uiSourceCodeToScript.delete(uiSourceCode);
     this.#project.removeUISourceCode(uiSourceCode.url());
   }
 
-  private debuggerReset(): void {
+  private globalObjectCleared(): void {
+    this.#scriptToUISourceCode.clear();
+    this.#uiSourceCodeToScript.clear();
     this.#project.reset();
   }
 
   dispose(): void {
+    defaultScriptMappings.delete(this);
     Common.EventTarget.removeEventListeners(this.#eventListeners);
-    this.debuggerReset();
+    this.globalObjectCleared();
     this.#project.dispose();
   }
 }
+
+// TODO(bmeurer): Remove the static methods from DefaultScriptMapping
+// and get rid of this global table.
+const defaultScriptMappings = new Set<DefaultScriptMapping>();

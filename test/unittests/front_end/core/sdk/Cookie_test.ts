@@ -58,7 +58,6 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.httpOnly(), true);
     assert.strictEqual(cookie.secure(), true);
     assert.strictEqual(cookie.sameSite(), 'Strict');
-    assert.strictEqual(cookie.sameParty(), false);
     assert.strictEqual(cookie.session(), false);
     assert.strictEqual(cookie.path(), '/test');
     assert.strictEqual(cookie.domain(), '.example.com');
@@ -97,7 +96,6 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.httpOnly(), false);
     assert.strictEqual(cookie.secure(), false);
     assert.strictEqual(cookie.sameSite(), undefined);
-    assert.strictEqual(cookie.sameParty(), false);
     assert.strictEqual(cookie.priority(), 'Medium');
     // Session cookie status is derived from the presence of max-age or expires fields.
     assert.strictEqual(cookie.session(), true);
@@ -136,7 +134,6 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.httpOnly(), false);
     assert.strictEqual(cookie.secure(), false);
     assert.strictEqual(cookie.sameSite(), undefined);
-    assert.strictEqual(cookie.sameParty(), false);
     assert.strictEqual(cookie.priority(), 'Medium');
     // Session cookie status is derived from the presence of max-age or expires fields.
     assert.strictEqual(cookie.session(), true);

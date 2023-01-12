@@ -211,15 +211,6 @@ export class CookiesTable extends UI.Widget.VBox {
         editable: editable,
       },
       {
-        id: SDK.Cookie.Attributes.SameParty,
-        title: 'SameParty',
-        sortable: true,
-        align: DataGrid.DataGrid.Align.Center,
-        weight: 7,
-        dataType: DataGrid.DataGrid.DataType.Boolean,
-        editable: editable,
-      },
-      {
         id: SDK.Cookie.Attributes.PartitionKey,
         title: 'Partition Key',
         sortable: true,
@@ -388,7 +379,6 @@ export class CookiesTable extends UI.Widget.VBox {
         groupData[SDK.Cookie.Attributes.HttpOnly] = '';
         groupData[SDK.Cookie.Attributes.Secure] = '';
         groupData[SDK.Cookie.Attributes.SameSite] = '';
-        groupData[SDK.Cookie.Attributes.SameParty] = '';
         groupData[SDK.Cookie.Attributes.SourcePort] = '';
         groupData[SDK.Cookie.Attributes.SourceScheme] = '';
         groupData[SDK.Cookie.Attributes.Priority] = '';
@@ -471,8 +461,6 @@ export class CookiesTable extends UI.Widget.VBox {
           return String(cookie.secure());
         case SDK.Cookie.Attributes.SameSite:
           return String(cookie.sameSite());
-        case SDK.Cookie.Attributes.SameParty:
-          return String(cookie.sameParty());
         case SDK.Cookie.Attributes.PartitionKey:
           return cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey) : String(cookie.partitionKey());
         case SDK.Cookie.Attributes.SourceScheme:
@@ -579,7 +567,6 @@ export class CookiesTable extends UI.Widget.VBox {
     data[SDK.Cookie.Attributes.HttpOnly] = cookie.httpOnly();
     data[SDK.Cookie.Attributes.Secure] = cookie.secure();
     data[SDK.Cookie.Attributes.SameSite] = cookie.sameSite() || '';
-    data[SDK.Cookie.Attributes.SameParty] = cookie.sameParty();
     data[SDK.Cookie.Attributes.SourcePort] = cookie.sourcePort();
     data[SDK.Cookie.Attributes.SourceScheme] = cookie.sourceScheme();
     data[SDK.Cookie.Attributes.Priority] = cookie.priority() || '';
@@ -666,9 +653,6 @@ export class CookiesTable extends UI.Widget.VBox {
     }
     if (data[SDK.Cookie.Attributes.SameSite]) {
       cookie.addAttribute(SDK.Cookie.Attributes.SameSite, data[SDK.Cookie.Attributes.SameSite]);
-    }
-    if (data[SDK.Cookie.Attributes.SameParty]) {
-      cookie.addAttribute(SDK.Cookie.Attributes.SameParty);
     }
     if (SDK.Cookie.Attributes.SourceScheme in data) {
       cookie.addAttribute(SDK.Cookie.Attributes.SourceScheme, data[SDK.Cookie.Attributes.SourceScheme]);

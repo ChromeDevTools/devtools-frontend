@@ -1670,7 +1670,6 @@ export const cookieBlockedReasonToAttribute = function(blockedReason: Protocol.N
         case Protocol.Network.CookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
           return Attributes.SameSite;
         case Protocol.Network.CookieBlockedReason.SamePartyFromCrossPartyContext:
-          return Attributes.SameParty;
         case Protocol.Network.CookieBlockedReason.NameValuePairExceedsMaxSize:
         case Protocol.Network.CookieBlockedReason.UserPreferences:
         case Protocol.Network.CookieBlockedReason.UnknownError:
@@ -1699,7 +1698,6 @@ export const setCookieBlockedReasonToAttribute = function(blockedReason: Protoco
           return Attributes.Name;
         case Protocol.Network.SetCookieBlockedReason.SamePartyConflictsWithOtherAttributes:
         case Protocol.Network.SetCookieBlockedReason.SamePartyFromCrossPartyContext:
-          return Attributes.SameParty;
         case Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize:
         case Protocol.Network.SetCookieBlockedReason.UserPreferences:
         case Protocol.Network.SetCookieBlockedReason.SyntaxError:

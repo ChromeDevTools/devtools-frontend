@@ -43,9 +43,6 @@ export class Cookie {
     if (protocolCookie['sameSite']) {
       cookie.addAttribute('sameSite', protocolCookie['sameSite']);
     }
-    if (protocolCookie.sameParty) {
-      cookie.addAttribute('sameParty');
-    }
     if ('sourcePort' in protocolCookie) {
       cookie.addAttribute('sourcePort', protocolCookie.sourcePort);
     }
@@ -90,10 +87,6 @@ export class Cookie {
     // TODO(allada) This should not rely on #attributes and instead store them individually.
     // when #attributes get added via addAttribute() they are lowercased, hence the lowercasing of samesite here
     return this.#attributes['samesite'] as Protocol.Network.CookieSameSite;
-  }
-
-  sameParty(): boolean {
-    return 'sameparty' in this.#attributes;
   }
 
   partitionKey(): string {
@@ -259,7 +252,6 @@ export enum Attributes {
   HttpOnly = 'httpOnly',
   Secure = 'secure',
   SameSite = 'sameSite',
-  SameParty = 'sameParty',
   SourceScheme = 'sourceScheme',
   SourcePort = 'sourcePort',
   Priority = 'priority',

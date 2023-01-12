@@ -276,15 +276,18 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return source + '\n //# sourceURL=' + this.sourceURL;
   }
 
-  async editSource(newSource: string): Promise<
-      {status: Protocol.Debugger.SetScriptSourceResponseStatus, exceptionDetails?: Protocol.Runtime.ExceptionDetails}> {
+  async editSource(newSource: string): Promise<{
+    changed: boolean,
+    status: Protocol.Debugger.SetScriptSourceResponseStatus,
+    exceptionDetails?: Protocol.Runtime.ExceptionDetails,
+  }> {
     newSource = Script.trimSourceURLComment(newSource);
     // We append correct #sourceURL to script for consistency only. It's not actually needed for things to work correctly.
     newSource = this.appendSourceURLCommentIfNeeded(newSource);
 
     const {content: oldSource} = await this.requestContent();
     if (oldSource === newSource) {
-      return {status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok};
+      return {changed: false, status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok};
     }
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
         {scriptId: this.scriptId, scriptSource: newSource, allowTopFrameEditing: true});
@@ -298,7 +301,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       this.#contentPromise = Promise.resolve({content: newSource, isEncoded: false});
     }
 
-    return {status: response.status, exceptionDetails: response.exceptionDetails};
+    return {changed: true, status: response.status, exceptionDetails: response.exceptionDetails};
   }
 
   rawLocation(lineNumber: number, columnNumber: number): Location|null {

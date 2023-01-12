@@ -20,11 +20,13 @@ import {
 } from '../../helpers/MockConnection.js';
 import {
   createContentProviderUISourceCode,
+  createFileSystemUISourceCode,
 } from '../../helpers/UISourceCodeHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
+import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 
 describeWithMockConnection('BreakpointManager (mock backend)', () => {
   const URL_HTML = 'http://site/index.html' as Platform.DevToolsPath.UrlString;
@@ -438,6 +440,84 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     afterEach(() => {
       Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
     });
+
+    async function testBreakpointMovedOnInstrumentationBreak(
+        fileSystemDescription: {fileSystemPath: string, url: string, content: string, type?: string}) {
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assertNotNullOrUndefined(debuggerModel);
+      const mimeType = 'text/javascript';
+      const mainFrameId = 'main' as Protocol.Page.FrameId;
+
+      // Create resource that is required for binding the file system uiSourceCode and the
+      // network uiSourceCode.
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
+
+      const resource = new SDK.Resource.Resource(
+          resourceTreeModel, null, scriptDescription.url, scriptDescription.url, mainFrameId, null,
+          Common.ResourceType.ResourceType.fromMimeType('text/javascript'), mimeType, null,
+          scriptDescription.content.length);
+      const frame = resourceTreeModel.frameForId(mainFrameId);
+      assertNotNullOrUndefined(frame);
+
+      frame.addResource(resource);
+
+      // Create the file system uiSourceCode with the same metadata as the script's resource file.
+      const metadata = new Workspace.UISourceCode.UISourceCodeMetadata(resource.lastModified(), resource.contentSize());
+      const fileSystem = createFileSystemUISourceCode({
+        url: fileSystemDescription.url as Platform.DevToolsPath.UrlString,
+        content: fileSystemDescription.content,
+        fileSystemPath: fileSystemDescription.fileSystemPath,
+        mimeType,
+        metadata,
+        autoMapping: true,
+        type: fileSystemDescription.type,
+      });
+
+      const breakpointLine = 0;
+      const resolvedBreakpointLine = 1;
+
+      // Set the breakpoint on the file system uiSourceCode.
+      await breakpointManager.setBreakpoint(
+          fileSystem.uiSourceCode, breakpointLine, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+
+      // Add the script.
+      const script = await backend.addScript(target, scriptDescription, null);
+      const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
+      assertNotNullOrUndefined(uiSourceCode);
+      assert.strictEqual(uiSourceCode.project().type(), Workspace.Workspace.projectTypes.Network);
+
+      // Set the breakpoint response for our upcoming request.
+      void backend.responderToBreakpointByUrlRequest(URL, breakpointLine)({
+        breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+        locations: [
+          {
+            scriptId: script.scriptId,
+            lineNumber: resolvedBreakpointLine,
+            columnNumber: 0,
+          },
+        ],
+      });
+
+      // Register our interest in an outgoing 'resume', which should be sent as soon as
+      // we have set up all breakpoints during the instrumentation pause.
+      const resumeSentPromise = registerListenerOnOutgoingMessage('Debugger.resume');
+
+      // Inform the front-end about an instrumentation break.
+      backend.dispatchDebuggerPause(script, Protocol.Debugger.PausedEventReason.Instrumentation);
+
+      // Wait for the breakpoints to be set, and the resume to be sent.
+      await resumeSentPromise;
+
+      // Verify that the network uiSourceCode has the breakpoint that we originally set
+      // on the file system uiSourceCode.
+      const reloadedBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
+      assert.strictEqual(1, reloadedBoundLocations.length);
+      assert.strictEqual(resolvedBreakpointLine, reloadedBoundLocations[0].uiLocation.lineNumber);
+      assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.columnNumber);
+
+      fileSystem.project.dispose();
+    }
 
     it('can restore breakpoints in scripts', async () => {
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
@@ -975,6 +1055,26 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.columnNumber);
 
       Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
+    });
+
+    it('can move breakpoints to network files that are set in override files', async () => {
+      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '', true);
+
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+      SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+      Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
+          {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
+
+      const fileSystemPath = 'file://path/to/overrides';
+      const fileSystemResourceDescription = {
+        url: fileSystemPath + '/site/script.js',
+        fileSystemPath,
+        content: scriptDescription.content,
+        type: 'overrides',
+      };
+
+      await testBreakpointMovedOnInstrumentationBreak(fileSystemResourceDescription);
     });
   });
 

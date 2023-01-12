@@ -1059,6 +1059,9 @@ export class TimelineModelImpl {
 
         break;
       }
+      case RecordType.Coherent_ImmediateLayout: {
+        break;
+      }
       // COHERENT END
       case RecordType.ResourceSendRequest:
       case RecordType.WebSocketCreate: {
@@ -1737,6 +1740,7 @@ export enum RecordType {
   Coherent_ExecuteTimers = 'Coherent_ExecuteTimers',
   Coherent_InvalidateLayout = 'Coherent_InvalidateLayout',
   Coherent_Layout = 'Coherent_Layout',
+  Coherent_ImmediateLayout = 'Coherent_ImmediateLayout',
   Coherent_RecordRendering = 'Coherent_RecordRendering',
   Coherent_Paint = 'Coherent_Paint',
   Coherent_WaitPendingFrame = 'Coherent_WaitPendingFrame',

@@ -1210,6 +1210,7 @@ const UIStrings = {
   // COHERENT BEGIN
 
   advance: 'Advance',
+  immediateLayout: 'Immediate Layout',
   executeScript: 'Execute Script',
   jsEvent: 'JS Event',
   synchronizeModels: 'Synchronize Models',
@@ -1468,6 +1469,7 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_UpdateNodeTransforms] = new TimelineRecordStyle(UIStrings.updateNodeTransforms, rendering);
     eventStyles[type.Coherent_ExecuteTimers] = new TimelineRecordStyle(UIStrings.executeTimers, scripting);
     eventStyles[type.Coherent_Layout] = new TimelineRecordStyle(UIStrings.layout, rendering);
+    eventStyles[type.Coherent_ImmediateLayout] = new TimelineRecordStyle(UIStrings.immediateLayout, rendering);
     eventStyles[type.Coherent_InvalidateLayout] = new TimelineRecordStyle(UIStrings.invalidateLayout, rendering);
     eventStyles[type.Coherent_RecordRendering] = new TimelineRecordStyle(UIStrings.recordRendering, painting);
     eventStyles[type.Coherent_Paint] = new TimelineRecordStyle(UIStrings.paint, painting);
@@ -2580,6 +2582,10 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(
             UIStrings.nodesThatNeedLayout,
             i18nString(UIStrings.sOfS, {PH1: event.args['int1'], PH2: event.args['int2']}));
+        break;
+      }
+      case recordTypes.Coherent_ImmediateLayout: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
         break;
       }
       case recordTypes.Coherent_ExecuteBuffers:

@@ -6,6 +6,7 @@ import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/p
 import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 import {TEXT_NODE, withMutations} from '../../helpers/MutationHelpers.js';
 
 import {getAllRows, getHeaderCellForColumnId, getValuesForColumn, getValuesOfAllBodyRows} from './DataGridHelpers.js';
@@ -24,7 +25,7 @@ const getInternalDataGridShadowRoot = (component: DataGrid.DataGridController.Da
 };
 
 describe('DataGridController', () => {
-  describe('sorting the columns', () => {
+  describeWithLocale('sorting the columns', () => {
     const columns = [
       {id: 'key', title: 'Key', sortable: true, widthWeighting: 1, visible: true, hideable: false},
     ];
@@ -201,7 +202,7 @@ describe('DataGridController', () => {
     });
   });
 
-  describe('filtering rows', () => {
+  describeWithLocale('filtering rows', () => {
     const columns = [
       {id: 'key', title: 'Letter', sortable: true, widthWeighting: 1, visible: true, hideable: false},
       {id: 'value', title: 'Phonetic', sortable: true, widthWeighting: 1, visible: true, hideable: false},

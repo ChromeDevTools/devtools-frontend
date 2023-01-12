@@ -5,6 +5,7 @@
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 
 import {
   SortDirection,
@@ -18,6 +19,27 @@ import {
 import {type ContextMenuColumnSortClickEvent, type ColumnHeaderClickEvent} from './DataGridEvents.js';
 import {DataGrid, type DataGridData, type DataGridContextMenusConfiguration} from './DataGrid.js';
 import dataGridControllerStyles from './dataGridController.css.js';
+import {alert} from '../../legacy/ARIAUtils.js';
+
+const UIStrings = {
+  /**
+   *@description Text announced when the column is sorted in ascending order
+   *@example {title} PH1
+   */
+  sortInAscendingOrder: '{PH1} sorted in ascending order',
+  /**
+   *@description Text announced when the column is sorted in descending order
+   *@example {title} PH1
+   */
+  sortInDescendingOrder: '{PH1} sorted in descending order',
+  /**
+   *@description Text announced when the column sorting canceled
+   *@example {title} PH1
+   */
+  sortingCanceled: '{PH1} sorting canceled',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/components/data_grid/DataGridController.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface DataGridControllerData {
   columns: Column[];
@@ -202,13 +224,19 @@ export class DataGridController extends HTMLElement {
         direction: SortDirection.ASC,
       };
     }
+    const headerName = column.title;
 
     if (this.#sortState) {
       this.#sortRows(this.#sortState);
+      alert(
+          this.#sortState.direction === SortDirection.ASC ?
+              i18nString(UIStrings.sortInAscendingOrder, {PH1: headerName || ''}) :
+              i18nString(UIStrings.sortInDescendingOrder, {PH1: headerName || ''}));
     } else {
       // No sortstate = render the original rows.
       this.#rows = this.#cloneAndFilterRows(this.#originalRows, this.#filters);
       this.#render();
+      alert(i18nString(UIStrings.sortingCanceled, {PH1: headerName || ''}));
     }
   }
 

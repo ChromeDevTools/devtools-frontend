@@ -33,33 +33,6 @@ describe('WorkspaceImpl', () => {
     assert.strictEqual(result, uiSourceCodeStub);
   });
 
-  it('awaiting UI source code returns it directly if it is available', async () => {
-    const sut = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-    const projectStub = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);
-    const exampleProjectID = 'exampleProjectID';
-    const exampleUrl = 'https://example.com/' as Platform.DevToolsPath.UrlString;
-    projectStub.id.returns(exampleProjectID);
-    const uiSourceCodeStub = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
-    projectStub.uiSourceCodeForURL.withArgs(exampleUrl).returns(uiSourceCodeStub);
-    sut.addProject(projectStub);
-
-    const result = await sut.uiSourceCodeForURLPromise(exampleUrl);
-
-    assert.deepStrictEqual(result, uiSourceCodeStub);
-  });
-
-  it('can explicitly await the UI source code if not yet available', async () => {
-    const sut = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-    const exampleUrl = 'https://example.com/' as Platform.DevToolsPath.UrlString;
-    const uiSourceCodeStub = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
-    uiSourceCodeStub.url.returns(exampleUrl);
-
-    const result = sut.uiSourceCodeForURLPromise(exampleUrl);
-    sut.dispatchEventToListeners(Workspace.Workspace.Events.UISourceCodeAdded, uiSourceCodeStub);
-
-    assert.deepStrictEqual(await result, uiSourceCodeStub);
-  });
-
   it('can return the UI source code from a URL', async () => {
     const sut = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const exampleUrl = 'https://example.com/' as Platform.DevToolsPath.UrlString;

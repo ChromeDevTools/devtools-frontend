@@ -729,7 +729,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
   private addDOMStorage(domStorage: DOMStorage): void {
     console.assert(!this.domStorageTreeElements.get(domStorage));
-    console.assert(Boolean(domStorage.storageKey) || Boolean(domStorage.securityOrigin));
+    console.assert(Boolean(domStorage.storageKey));
 
     const domStorageTreeElement = new DOMStorageTreeElement(this.panel, domStorage);
     this.domStorageTreeElements.set(domStorage, domStorageTreeElement);
@@ -1665,19 +1665,15 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
 export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
   private readonly domStorage: DOMStorage;
   constructor(storagePanel: ResourcesPanel, domStorage: DOMStorage) {
-    super(
-        storagePanel,
-        domStorage.securityOrigin ? domStorage.securityOrigin :
-                                    (domStorage.storageKey ? domStorage.storageKey : i18nString(UIStrings.localFiles)),
-        false);
+    super(storagePanel, domStorage.storageKey ? domStorage.storageKey : i18nString(UIStrings.localFiles), false);
     this.domStorage = domStorage;
     const icon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
 
   get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'storage://' + this.domStorage.securityOrigin + '/' +
-        (this.domStorage.isLocalStorage ? 'local' : 'session') as Platform.DevToolsPath.UrlString;
+    return 'storage://' + this.domStorage.storageKey + '/' + (this.domStorage.isLocalStorage ? 'local' : 'session') as
+        Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {

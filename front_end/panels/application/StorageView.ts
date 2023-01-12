@@ -406,12 +406,8 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (this.target) {
       const includeThirdPartyCookies = this.includeThirdPartyCookiesSetting.get();
-      if (this.storageKey) {
-        StorageView.clearByStorageKey(
-            this.target, this.storageKey, this.securityOrigin, selectedStorageTypes, includeThirdPartyCookies);
-      } else if (this.securityOrigin) {
-        StorageView.clear(this.target, this.securityOrigin, selectedStorageTypes, includeThirdPartyCookies);
-      }
+      StorageView.clear(
+          this.target, this.storageKey, this.securityOrigin, selectedStorageTypes, includeThirdPartyCookies);
     }
 
     this.clearButton.disabled = true;
@@ -425,39 +421,12 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   static clear(
-      target: SDK.Target.Target, securityOrigin: string, selectedStorageTypes: string[],
+      target: SDK.Target.Target, storageKey: string|null, originForCookies: string|null, selectedStorageTypes: string[],
       includeThirdPartyCookies: boolean): void {
-    void target.storageAgent().invoke_clearDataForOrigin(
-        {origin: securityOrigin, storageTypes: selectedStorageTypes.join(',')});
-
-    const set = new Set(selectedStorageTypes);
-    const hasAll = set.has(Protocol.Storage.StorageType.All);
-    if (set.has(Protocol.Storage.StorageType.Cookies) || hasAll) {
-      const cookieModel = target.model(SDK.CookieModel.CookieModel);
-      if (cookieModel) {
-        void cookieModel.clear(undefined, includeThirdPartyCookies ? undefined : securityOrigin);
-      }
+    console.assert(Boolean(storageKey));
+    if (!storageKey) {
+      return;
     }
-
-    if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
-      const storageModel = target.model(DOMStorageModel);
-      if (storageModel) {
-        storageModel.clearForOrigin(securityOrigin);
-      }
-    }
-
-    if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
-      const databaseModel = target.model(DatabaseModel);
-      if (databaseModel) {
-        databaseModel.disable();
-        databaseModel.enable();
-      }
-    }
-  }
-
-  static clearByStorageKey(
-      target: SDK.Target.Target, storageKey: string, originForCookies: string|undefined, selectedStorageTypes: string[],
-      includeThirdPartyCookies: boolean): void {
     void target.storageAgent().invoke_clearDataForStorageKey(
         {storageKey, storageTypes: selectedStorageTypes.join(',')});
 
@@ -637,12 +606,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     }
     const securityOrigin = resourceTreeModel.getMainSecurityOrigin();
     resourceTreeModel.getMainStorageKey().then(storageKey => {
-      if (storageKey) {
-        StorageView.clearByStorageKey(
-            target, storageKey, securityOrigin ? securityOrigin : undefined, AllStorageTypes, includeThirdPartyCookies);
-      } else if (securityOrigin) {
-        StorageView.clear(target, securityOrigin, AllStorageTypes, includeThirdPartyCookies);
-      }
+      StorageView.clear(target, storageKey, securityOrigin, AllStorageTypes, includeThirdPartyCookies);
     }, _ => {});
     return true;
   }

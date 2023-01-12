@@ -211,25 +211,23 @@ export class PreloadingView extends UI.Widget.VBox {
   // Shows warnings if features are disabled by feature flags.
   private onGetFeatureFlags(flags: FeatureFlags): void {
     if (flags.preloadingHoldback === true) {
-      const infobar = new UI.Infobar.Infobar(
-          UI.Infobar.Type.Warning, /* text */ i18nString(UIStrings.warningTitlePreloadingDisabledByFeatureFlag),
-          /* actions? */ undefined, /* disableSetting? */ undefined);
-      infobar.setParentView(this);
-      infobar.createDetailsRowMessage(i18nString(UIStrings.warningDetailPreloadingDisabledByFeatureFlag));
-      this.showInfobar(infobar);
+      this.showInfobar(
+          i18nString(UIStrings.warningTitlePreloadingDisabledByFeatureFlag),
+          i18nString(UIStrings.warningDetailPreloadingDisabledByFeatureFlag));
     }
 
     if (flags.prerender2Holdback === true) {
-      const infobar = new UI.Infobar.Infobar(
-          UI.Infobar.Type.Warning, /* text */ i18nString(UIStrings.warningTitlePrerenderingDisabledByFeatureFlag),
-          /* actions? */ undefined, /* disableSetting? */ undefined);
-      infobar.setParentView(this);
-      infobar.createDetailsRowMessage(i18nString(UIStrings.warningDetailPrerenderingDisabledByFeatureFlag));
-      this.showInfobar(infobar);
+      this.showInfobar(
+          i18nString(UIStrings.warningTitlePrerenderingDisabledByFeatureFlag),
+          i18nString(UIStrings.warningDetailPrerenderingDisabledByFeatureFlag));
     }
   }
 
-  private showInfobar(infobar: UI.Infobar.Infobar): void {
+  private showInfobar(titleText: string, detailsText: string): void {
+    const infobar = new UI.Infobar.Infobar(
+        UI.Infobar.Type.Warning, /* text */ titleText, /* actions? */ undefined, /* disableSetting? */ undefined);
+    infobar.setParentView(this);
+    infobar.createDetailsRowMessage(detailsText);
     this.infobarContainer.appendChild(infobar.element);
   }
 

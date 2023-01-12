@@ -23,6 +23,10 @@
   white-space: nowrap;
 }
 
+.stack-trace-source-location .text-ellipsis {
+  padding-right: 2px;
+}
+
 .ignore-list-link {
   opacity: 60%;
 }

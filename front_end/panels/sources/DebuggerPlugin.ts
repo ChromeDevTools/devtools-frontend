@@ -2044,7 +2044,12 @@ export function computePopoverHighlightRange(state: CodeMirror.EditorState, mime
     return {from: main.from, to: main.to};
   }
 
-  const node = CodeMirror.syntaxTree(state).resolveInner(cursorPos, 1);
+  const tree = CodeMirror.ensureSyntaxTree(state, cursorPos, 5 * 1000);
+  if (!tree) {
+    return null;
+  }
+
+  const node = tree.resolveInner(cursorPos, 1);
   // Only do something if the cursor is over a leaf node.
   if (node.firstChild) {
     return null;

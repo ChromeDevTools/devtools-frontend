@@ -144,6 +144,33 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     return locations;
   }
 
+  getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Set<number>|null {
+    if (!boundUISourceCodes.has(uiSourceCode)) {
+      return null;
+    }
+    const target = NetworkProject.targetForUISourceCode(uiSourceCode);
+    if (!target) {
+      return null;
+    }
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    if (!debuggerModel) {
+      return null;
+    }
+    const mappedLines = new Set<number>();
+    for (const script of debuggerModel.scripts()) {
+      if (script.embedderName() !== uiSourceCode.url()) {
+        continue;
+      }
+      const {startLine} = scriptOffsetMap.get(script) ||
+          TextUtils.TextRange.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
+      const endLine = startLine + (script.endLine - script.lineOffset);
+      for (let line = startLine; line <= endLine; ++line) {
+        mappedLines.add(line);
+      }
+    }
+    return mappedLines;
+  }
+
   uiLocationToCSSLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[] {
     if (!boundUISourceCodes.has(uiLocation.uiSourceCode)) {
       return [];

@@ -4,6 +4,7 @@
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
@@ -192,6 +193,20 @@ describeWithMockConnection('ResourceMapping', () => {
                 debuggerModel.createRawLocationByScriptId(scriptId, startLine, column)),
             new Workspace.UISourceCode.UILocation(uiSourceCode, startLine, column));
       }
+    });
+  });
+
+  describe('getMappedLines', () => {
+    it('reports line numbers for all inline scripts', () => {
+      const expectedLines = new Set();
+      SCRIPTS.forEach(({startLine, endLine}) => {
+        for (let line = startLine; line <= endLine; ++line) {
+          expectedLines.add(line);
+        }
+      });
+      const mappedLines = resourceMapping.getMappedLines(uiSourceCode);
+      assertNotNullOrUndefined(mappedLines);
+      assert.deepEqual(mappedLines, expectedLines);
     });
   });
 });

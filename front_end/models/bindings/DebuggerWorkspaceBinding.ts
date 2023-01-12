@@ -337,6 +337,30 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return uiLocation;
   }
 
+  /**
+   * Computes the set of lines in the {@link uiSourceCode} that map to scripts by either looking at
+   * the debug info (if any) or checking for inline scripts within documents. If this set cannot be
+   * computed or all the lines in the {@link uiSourceCode} correspond to lines in a script, `null`
+   * is returned here.
+   *
+   * @param uiSourceCode the source entity.
+   * @returns a set of known mapped lines for {@link uiSourceCode} or `null` if it's impossible to
+   *          determine the set or the {@link uiSourceCode} does not map to or include any scripts.
+   */
+  async getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Set<number>|null> {
+    for (const modelData of this.#debuggerModelToData.values()) {
+      const mappedLines = modelData.getMappedLines(uiSourceCode);
+      if (mappedLines !== null) {
+        return mappedLines;
+      }
+    }
+    const {pluginManager} = this;
+    if (!pluginManager) {
+      return null;
+    }
+    return await pluginManager.getMappedLines(uiSourceCode);
+  }
+
   scriptFile(uiSourceCode: Workspace.UISourceCode.UISourceCode, debuggerModel: SDK.DebuggerModel.DebuggerModel):
       ResourceScriptFile|null {
     const modelData = this.#debuggerModelToData.get(debuggerModel);
@@ -484,6 +508,12 @@ class ModelData {
         locations :
         this.#defaultMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     return locations;
+  }
+
+  getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Set<number>|null {
+    let mappedLines = this.compilerMapping.getMappedLines(uiSourceCode);
+    mappedLines = mappedLines ?? this.#resourceMapping.getMappedLines(uiSourceCode);
+    return mappedLines;
   }
 
   private beforePaused(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails): boolean {

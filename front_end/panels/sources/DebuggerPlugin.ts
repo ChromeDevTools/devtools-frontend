@@ -1643,30 +1643,16 @@ const infobarState = CodeMirror.StateField.define<UI.Infobar.Infobar[]>({
 async function computeNonBreakableLines(
     state: CodeMirror.EditorState, transformer: SourceFrame.SourceFrame.Transformer,
     sourceCode: Workspace.UISourceCode.UISourceCode): Promise<readonly number[]> {
+  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+  const mappedLines = await debuggerWorkspaceBinding.getMappedLines(sourceCode);
+  if (!mappedLines) {
+    return [];
+  }
   const linePositions = [];
-  if (Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(sourceCode).length) {
-    for (let i = 0; i < state.doc.lines; i++) {
-      const {lineNumber} = transformer.editorLocationToUILocation(i, 0);
-      const lineHasMapping =
-          Bindings.CompilerScriptMapping.CompilerScriptMapping.uiLineHasMapping(sourceCode, lineNumber);
-      if (!lineHasMapping) {
-        linePositions.push(state.doc.line(i + 1).from);
-      }
-    }
-  } else {
-    const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-    if (!pluginManager) {
-      return [];
-    }
-    const mappedLines = await pluginManager.getMappedLines(sourceCode);
-    if (!mappedLines) {
-      return [];
-    }
-    for (let i = 0; i < state.doc.lines; i++) {
-      const {lineNumber} = transformer.editorLocationToUILocation(i, 0);
-      if (!mappedLines.has(lineNumber)) {
-        linePositions.push(state.doc.line(i + 1).from);
-      }
+  for (let i = 0; i < state.doc.lines; i++) {
+    const {lineNumber} = transformer.editorLocationToUILocation(i, 0);
+    if (!mappedLines.has(lineNumber)) {
+      linePositions.push(state.doc.line(i + 1).from);
     }
   }
   return linePositions;

@@ -275,6 +275,30 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   }
 
   /**
+   * Computes the set of line numbers which are source-mapped to a script within the
+   * given {@link uiSourceCode}.
+   *
+   * @param uiSourceCode the source mapped entity.
+   * @return a set of source-mapped line numbers or `null` if the {@link uiSourceCode}
+   *         is not provided by this {@link CompilerScriptMapping} instance.
+   */
+  getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Set<number>|null {
+    if (!this.#uiSourceCodeToSourceMaps.has(uiSourceCode)) {
+      return null;
+    }
+    const mappedLines = new Set<number>();
+    for (const sourceMap of this.#uiSourceCodeToSourceMaps.get(uiSourceCode)) {
+      for (const entry of sourceMap.mappings()) {
+        if (entry.sourceURL !== uiSourceCode.url()) {
+          continue;
+        }
+        mappedLines.add(entry.sourceLineNumber);
+      }
+    }
+    return mappedLines;
+  }
+
+  /**
    * Invoked by the {@link SDK.SourceMapManager.SourceMapManager} whenever it starts loading the
    * source map for a given {@link SDK.Script.Script}. The `CompilerScriptMapping` will set up a
    * {@link Workspace.UISourceCode.UISourceCode} stub for the time that the source map is being
@@ -434,22 +458,6 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   }
 
   private sourceMapAttachedForTest(_sourceMap: SDK.SourceMap.SourceMap): void {
-  }
-
-  static uiLineHasMapping(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number): boolean {
-    for (const compilerScriptMapping of compilerScriptMappings) {
-      if (!compilerScriptMapping.#uiSourceCodeToSourceMaps.has(uiSourceCode)) {
-        continue;
-      }
-      const sourceMaps = compilerScriptMapping.#uiSourceCodeToSourceMaps.get(uiSourceCode);
-      for (const sourceMap of sourceMaps) {
-        if (sourceMap.sourceLineMapping(uiSourceCode.url(), lineNumber, 0)) {
-          return true;
-        }
-      }
-      return false;
-    }
-    return true;
   }
 
   dispose(): void {

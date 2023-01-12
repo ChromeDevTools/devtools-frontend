@@ -1473,11 +1473,11 @@ export class DebuggerLanguagePluginManager implements
     }
   }
 
-  async getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Set<number>|undefined> {
+  async getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Set<number>|null> {
     const rawModuleIds =
         await Promise.all(this.scriptsForUISourceCode(uiSourceCode).map(s => this.rawModuleIdAndPluginForScript(s)));
 
-    let mappedLines: Set<number>|undefined;
+    let mappedLines: Set<number>|null = null;
     for (const {rawModuleId, plugin} of rawModuleIds) {
       if (!plugin) {
         continue;
@@ -1487,12 +1487,9 @@ export class DebuggerLanguagePluginManager implements
       if (lines === undefined) {
         continue;
       }
-      if (mappedLines === undefined) {
+      if (mappedLines === null) {
         mappedLines = new Set(lines);
       } else {
-        /**
-         * @param {number} l
-         */
         lines.forEach(l => (mappedLines as Set<number>).add(l));
       }
     }

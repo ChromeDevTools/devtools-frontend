@@ -301,6 +301,36 @@ describeWithMockConnection('CompilerScriptMapping', () => {
         '`b.ts` should not be around anymore');
   });
 
+  it('correctly reports source-mapped lines', async () => {
+    const target = createTarget();
+
+    const sourceRoot = 'http://example.com';
+    const scriptInfo = {
+      url: `${sourceRoot}/test.out.js`,
+      content: 'function f(x) {\n  console.log(x);\n}\n',
+    };
+    const sourceMapInfo = {
+      url: `${scriptInfo.url}.map`,
+      content: encodeSourceMap(
+          [
+            '0:9 => test.ts:0:1',
+            '1:0 => test.ts:4:0',
+            '1:2 => test.ts:4:2',
+            '2:0 => test.ts:2:0',
+          ],
+          sourceRoot),
+    };
+
+    const [uiSourceCode] = await Promise.all([
+      waitForUISourceCodeAdded(`${sourceRoot}/test.ts`, target),
+      backend.addScript(target, scriptInfo, sourceMapInfo),
+    ]);
+
+    const mappedLines = await debuggerWorkspaceBinding.getMappedLines(uiSourceCode);
+    assertNotNullOrUndefined(mappedLines);
+    assert.sameMembers([...mappedLines], [0, 2, 4]);
+  });
+
   describe('supports modern Web development workflows', () => {
     it('supports webpack code splitting', async () => {
       // This is basically the "Shared code with webpack entry point code-splitting" scenario

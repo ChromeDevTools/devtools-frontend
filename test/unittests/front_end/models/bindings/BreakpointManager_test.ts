@@ -1057,6 +1057,21 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
     });
 
+    it('can move breakpoints to network files that are set in matching file system files', async () => {
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+      Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+      const fileName = Common.ParsedURL.ParsedURL.extractName(scriptDescription.url);
+      const fileSystemPath = 'file://path/to/filesystem';
+
+      const fileSystemResourceDescription = {
+        url: fileSystemPath + '/' + fileName,
+        fileSystemPath,
+        content: scriptDescription.content,
+      };
+
+      await testBreakpointMovedOnInstrumentationBreak(fileSystemResourceDescription);
+    });
+
     it('can move breakpoints to network files that are set in override files', async () => {
       Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '', true);
 

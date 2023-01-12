@@ -290,6 +290,16 @@ export class UserMetrics {
         EnumeratedHistogram.RecordingExported, value, RecordingExported.MaxValue);
   }
 
+  recordingCodeToggled(value: RecordingCodeToggled): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.RecordingCodeToggled, value, RecordingCodeToggled.MaxValue);
+  }
+
+  recordingCopiedToClipboard(value: RecordingCopiedToClipboard): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.RecordingCopiedToClipboard, value, RecordingCopiedToClipboard.MaxValue);
+  }
+
   styleTextCopied(value: StyleTextCopied): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.StyleTextCopied, value, StyleTextCopied.MaxValue);
@@ -1048,6 +1058,28 @@ export enum RecordingExported {
   ToExtension = 4,
   ToLighthouse = 5,
   MaxValue = 6,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RecordingCodeToggled {
+  CodeShown = 1,
+  CodeHidden = 2,
+  MaxValue = 3,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RecordingCopiedToClipboard {
+  CopiedRecordingWithPuppeteer = 1,
+  CopiedRecordingWithJSON = 2,
+  CopiedRecordingWithReplay = 3,
+  CopiedRecordingWithExtension = 4,
+  CopiedStepWithPuppeteer = 5,
+  CopiedStepWithJSON = 6,
+  CopiedStepWithReplay = 7,
+  CopiedStepWithExtension = 8,
+  MaxValue = 9,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

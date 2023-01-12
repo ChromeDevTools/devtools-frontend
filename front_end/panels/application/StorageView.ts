@@ -636,13 +636,14 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       return false;
     }
     const securityOrigin = resourceTreeModel.getMainSecurityOrigin();
-    const storageKey = void resourceTreeModel.getMainStorageKey();
-    if (storageKey) {
-      StorageView.clearByStorageKey(
-          target, storageKey, securityOrigin ? securityOrigin : undefined, AllStorageTypes, includeThirdPartyCookies);
-    } else if (securityOrigin) {
-      StorageView.clear(target, securityOrigin, AllStorageTypes, includeThirdPartyCookies);
-    }
+    resourceTreeModel.getMainStorageKey().then(storageKey => {
+      if (storageKey) {
+        StorageView.clearByStorageKey(
+            target, storageKey, securityOrigin ? securityOrigin : undefined, AllStorageTypes, includeThirdPartyCookies);
+      } else if (securityOrigin) {
+        StorageView.clear(target, securityOrigin, AllStorageTypes, includeThirdPartyCookies);
+      }
+    }, _ => {});
     return true;
   }
 }

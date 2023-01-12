@@ -105,6 +105,10 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     return project;
   }
 
+  uiSourceCodeForScript(script: SDK.Script.Script): Workspace.UISourceCode.UISourceCode|null {
+    return this.#scriptToUISourceCode.get(script) ?? null;
+  }
+
   rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null {
     const script = rawLocation.script();
     if (!script) {

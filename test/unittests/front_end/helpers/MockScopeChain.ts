@@ -18,6 +18,7 @@ interface ScriptDescription {
   startLine?: number;
   startColumn?: number;
   isContentScript?: boolean;
+  embedderName?: string;
 }
 
 interface SetBreakpointByUrlResponse {
@@ -119,6 +120,7 @@ export class MockProtocolBackend {
       hash: '',
       hasSourceURL: Boolean(scriptDescription.hasSourceURL),
       ...(sourceMap ? {sourceMapURL: sourceMap.url} : null),
+      embedderName: scriptDescription.embedderName,
     });
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;

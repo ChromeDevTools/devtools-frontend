@@ -73,6 +73,10 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     return scripts ? scripts.values().next().value : null;
   }
 
+  uiSourceCodeForScript(script: SDK.Script.Script): Workspace.UISourceCode.UISourceCode|null {
+    return scriptToUISourceCodeMap.get(script) ?? null;
+  }
+
   rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null {
     const script = rawLocation.script();
     if (!script) {

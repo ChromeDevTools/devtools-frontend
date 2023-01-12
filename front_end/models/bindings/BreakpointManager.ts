@@ -180,29 +180,13 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   async getUISourceCodeWithUpdatedBreakpointInfo(script: SDK.Script.Script):
       Promise<Workspace.UISourceCode.UISourceCode> {
-    const isSnippet = script.sourceURL.startsWith('snippet://');
-    const projectType = isSnippet ? Workspace.Workspace.projectTypes.Network : undefined;
+    const uiSourceCode = this.debuggerWorkspaceBinding.uiSourceCodeForScript(script);
+    assertNotNullOrUndefined(uiSourceCode);
+    await this.#updateBindings(uiSourceCode);
+    return uiSourceCode;
+  }
 
-    // Some temporary workarounds that will probably be replaced by live locations.
-    // 1. Handle inline scripts without sourceURL comment separately:
-    // The UISourceCode of inline scripts without sourceURLs will not be availabe
-    // until a later point. Use the v8 script for setting the breakpoint.
-    // 2. Handle resources that have scripts differently: nowadays they don't use the
-    // sourceURL directly anymore, but are resolved relatively to the parents document's
-    // base URL; so resolve it before awaiting its uiSourceCode.
-    const isInlineScriptWithoutSourceURL = script.isInlineScript() && !script.hasSourceURL;
-    const hasResourceScriptMapping = !script.isLiveEdit() && script.sourceURL && script.hasSourceURL;
-    let sourceURL = script.sourceURL;
-    if (isInlineScriptWithoutSourceURL) {
-      sourceURL = DefaultScriptMapping.createV8ScriptURL(script);
-    } else if (hasResourceScriptMapping) {
-      sourceURL = SDK.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(
-          script.debuggerModel.target(), script.sourceURL);
-    }
-
-    const uiSourceCode =
-        await Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURLPromise(sourceURL, projectType);
-
+  async #updateBindings(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     if (this.#updateBindingsCallbacks.length > 0) {
       // It's possible to set breakpoints on files on the file system, and to have them
       // hit whenever we navigate to a page that serves that file.
@@ -215,7 +199,6 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       }
       await Promise.all(promises);
     }
-    return uiSourceCode;
   }
 
   async #restoreBreakpointsForUrl(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {

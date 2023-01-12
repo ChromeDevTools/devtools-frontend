@@ -278,6 +278,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return null;
   }
 
+  uiSourceCodeForScript(script: SDK.Script.Script): Workspace.UISourceCode.UISourceCode|null {
+    const modelData = this.#debuggerModelToData.get(script.debuggerModel);
+    if (!modelData) {
+      return null;
+    }
+    return modelData.uiSourceCodeForScript(script);
+  }
+
   waitForUISourceCodeAdded(url: Platform.DevToolsPath.UrlString, target: SDK.Target.Target):
       Promise<Workspace.UISourceCode.UISourceCode> {
     return new Promise(resolve => {
@@ -491,6 +499,14 @@ class ModelData {
     uiLocation = uiLocation || this.#resourceMapping.jsLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this.#defaultMapping.rawLocationToUILocation(rawLocation);
     return uiLocation;
+  }
+
+  uiSourceCodeForScript(script: SDK.Script.Script): Workspace.UISourceCode.UISourceCode|null {
+    let uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
+    uiSourceCode = uiSourceCode || this.#resourceScriptMapping.uiSourceCodeForScript(script);
+    uiSourceCode = uiSourceCode || this.#resourceMapping.uiSourceCodeForScript(script);
+    uiSourceCode = uiSourceCode || this.#defaultMapping.uiSourceCodeForScript(script);
+    return uiSourceCode;
   }
 
   uiLocationToRawLocations(

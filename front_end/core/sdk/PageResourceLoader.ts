@@ -304,8 +304,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
   }> {
     const networkManager = (target.model(NetworkManager) as NetworkManager);
     const ioModel = (target.model(IOModel) as IOModel);
-    const resource =
-        await networkManager.loadNetworkResource(frameId, url, {disableCache: true, includeCredentials: true});
+    const disableCache = Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get();
+    const resource = await networkManager.loadNetworkResource(frameId, url, {disableCache, includeCredentials: true});
     try {
       const content = resource.stream ? await ioModel.readToString(resource.stream) : '';
       return {

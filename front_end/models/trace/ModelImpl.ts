@@ -2,83 +2,135 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
-import * as Handlers from './handlers/handlers.js';
+import type * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
-import {TraceProcessor} from './TraceProcessor.js';
 
 import type * as Types from './types/types.js';
+import type * as Worker from './worker/worker.js';
 
 // Note: this model is implemented in a way that can support multiple trace
 // processors. Currently there is only one implemented, but you will see
 // references to "processors" plural because it can easily be extended in the future.
 
 export class Model extends EventTarget {
-  readonly #traceProcessor = new TraceProcessor(Handlers.ModelHandlers);
   readonly #traces: ParsedTraceFile[] = [];
   readonly #nextNumberByDomain = new Map<string, number>();
 
   readonly #recordingsAvailable: string[] = [];
   #lastRecordingIndex = 0;
+  #traceWorker: Common.Worker.WorkerWrapper;
 
+  constructor() {
+    super();
+    this.#traceWorker = this.#createTraceWorker();
+  }
+
+  #createTraceWorker(): Common.Worker.WorkerWrapper {
+    return Common.Worker.WorkerWrapper.fromURL(new URL('./worker/worker_entrypoint.js', import.meta.url));
+  }
+
+  #sendMessageToTraceWorker(message: Worker.Types.MessageToWorker): void {
+    this.#traceWorker.postMessage(message);
+  }
+
+  #sendParseMessageToWorker(events: readonly Types.TraceEvents.TraceEventData[], freshRecording: boolean): void {
+    this.#sendMessageToTraceWorker({
+      action: 'PARSE',
+      events,
+      freshRecording,
+    });
+  }
+
+  #parsingComplete(file: ParsedTraceFile, data: Handlers.Types.HandlerData<typeof Handlers.ModelHandlers>): void {
+    file.traceParsedData = data;
+    this.#lastRecordingIndex++;
+    let recordingName = `Trace ${this.#lastRecordingIndex}`;
+    let origin: string|null = null;
+    if (file.traceParsedData) {
+      origin = Helpers.Trace.extractOriginFromTrace(file.traceParsedData.Meta.mainFrameURL);
+      if (origin) {
+        const nextSequenceForDomain = Platform.MapUtilities.getWithDefault(this.#nextNumberByDomain, origin, () => 1);
+        recordingName = `${origin} (${nextSequenceForDomain})`;
+        this.#nextNumberByDomain.set(origin, nextSequenceForDomain + 1);
+      }
+    }
+    this.#recordingsAvailable.push(recordingName);
+    this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.TRACE, data: 'done'}));
+  }
+
+  /**
+   * Parses an array of trace events into a structured object containing all the
+   * information parsed by the trace handlers.
+   * You can `await` this function to pause execution until parsing is complete,
+   * or instead rely on the `ModuleUpdateEvent` that is dispatched when the
+   * parsing is finished.
+   *
+   * Once parsed, you then have to call the `traceParsedData` method, providing an
+   * index of the trace you want to have the data for. This is because any model
+   * can store a number of traces. Each trace is given an index, which starts at 0
+   * and increments by one as a new trace is parsed.
+   *
+   * @example
+   * // Awaiting the parse method() to block until parsing complete
+   * await this.traceModel.parse(events);
+   * const data = this.traceModel.traceParsedData(0)
+   *
+   * @example
+   * // Using an event listener to be notified when tracing is complete.
+   * this.traceModel.addEventListener(Trace.ModelUpdateEvent.eventName, (event) => {
+   *   if(event.data.data === 'done') {
+   *     // trace complete
+   *     const data = this.traceModel.traceParsedData(0);
+   *   }
+   * });
+   * void this.traceModel.parse(events);
+   **/
   async parse(
       traceEvents: readonly Types.TraceEvents.TraceEventData[], metadata: TraceFileMetaData = {},
       freshRecording = false): Promise<void> {
     // During parsing, periodically update any listeners on each processors'
     // progress (if they have any updates).
-    const onTraceUpdate = (event: Event): void => {
-      const {data} = event as TraceParseEvent;
-      this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.TRACE, data: data}));
-    };
 
-    this.#traceProcessor.addEventListener(TraceParseEvent.eventName, onTraceUpdate);
-
-    // Create a parsed trace file, populating it in parallel as each processor
-    // finishes its parsing process.
-
+    // Create a parsed trace file.  It will be populated with data from the processor.
     const file: ParsedTraceFile = {
       traceEvents,
       metadata,
       traceParsedData: null,
     };
 
-    // When processors have finished parsing, store the parsed data so that it
-    // is available to call sites notified by each respective 'done' update.
-
-    const traceProcessing = async(): Promise<void> => {
-      await this.#traceProcessor.parse(traceEvents, freshRecording);
-      file.traceParsedData = this.#traceProcessor.data;
-      this.#lastRecordingIndex++;
-      let recordingName = `Trace ${this.#lastRecordingIndex}`;
-      let origin: string|null = null;
-      if (file.traceParsedData) {
-        origin = Helpers.Trace.extractOriginFromTrace(file.traceParsedData.Meta.mainFrameURL);
-        if (origin) {
-          const nextSequenceForDomain = Platform.MapUtilities.getWithDefault(this.#nextNumberByDomain, origin, () => 1);
-          recordingName = `${origin} (${nextSequenceForDomain})`;
-          this.#nextNumberByDomain.set(origin, nextSequenceForDomain + 1);
+    await new Promise<void>(resolve => {
+      void this.#sendParseMessageToWorker(traceEvents, freshRecording);
+      this.#traceWorker.onmessage = (event: MessageEvent): void => {
+        const eventFromWorker = event.data as Worker.Types.MessageFromWorker;
+        switch (eventFromWorker.message) {
+          case 'PARSE_COMPLETE': {
+            this.#parsingComplete(file, event.data.data);
+            // Store the file in our list of traces. We can only do this once we
+            // know that there have been no errors during the parsing stage.
+            this.#traces.push(file);
+            // All processors have finished parsing, no more updates are expected.
+            // Finally, update any listeners that all processors are 'done'.
+            this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.GLOBAL, data: 'done'}));
+            resolve();
+            break;
+          }
+          case 'PARSE_ERROR': {
+            // If the worker throws an error, we just throw it too and let the caller deal with it.
+            throw eventFromWorker.error;
+          }
+          case 'PARSE_UPDATE': {
+            const {data} = event as TraceParseEvent;
+            this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.TRACE, data: data}));
+            break;
+          }
+          default:
+            Platform.assertNever(eventFromWorker, `Unexpected event from the trace worker ${eventFromWorker}`);
         }
-      }
-      this.#recordingsAvailable.push(recordingName);
-      this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.TRACE, data: 'done'}));
-    };
-
-    try {
-      // Wait for all outstanding promises before finishing the async execution,
-      // but perform all tasks in parallel.
-      await traceProcessing();
-      // We only push the file onto this.#traces here once we know it's valid
-      // and there's been no errors in the parsing.
-      this.#traces.push(file);
-    } catch (e) {
-      throw e;
-    } finally {
-      // All processors have finished parsing, no more updates are expected.
-      // Finally, update any listeners that all processors are 'done'.
-      this.#traceProcessor.removeEventListener(TraceParseEvent.eventName, onTraceUpdate);
-      this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.GLOBAL, data: 'done'}));
-    }
+      };
+    });
   }
 
   traceParsedData(index: number): Handlers.Types.TraceParseData|null {
@@ -119,7 +171,9 @@ export class Model extends EventTarget {
   }
 
   reset(): void {
-    this.#traceProcessor.reset();
+    this.#sendMessageToTraceWorker({
+      action: 'RESET',
+    });
   }
 }
 

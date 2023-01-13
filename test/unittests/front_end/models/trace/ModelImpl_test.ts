@@ -39,72 +39,6 @@ describe('TraceModel', async () => {
     void loadEventsFromTraceFile('basic.json.gz').then(events => model.parse(events));
   });
 
-  it('can use a trace processor', async () => {
-    const processor = new TraceModel.TraceProcessor.TraceProcessor(TraceModel.Handlers.ModelHandlers);
-    const file = await loadEventsFromTraceFile('basic.json.gz');
-
-    // Check parsing after instantiation.
-    assert.isNull(processor.data);
-    await processor.parse(file);
-    assert.isNotNull(processor.data);
-
-    // Check parsing without a reset.
-    let thrown;
-    try {
-      await processor.parse(file);
-    } catch (e) {
-      thrown = e as Error;
-    }
-    assert.strictEqual(thrown?.message, 'Trace processor can\'t start parsing when not idle.');
-
-    // Check parsing after reset.
-    processor.reset();
-    assert.isNull(processor.data);
-    await processor.parse(file);
-    assert.isNotNull(processor.data);
-    // Cleanup.
-    processor.reset();
-
-    // Check simultaneous parsing without waiting.
-    let promise;
-    try {
-      promise = processor.parse(file);
-      await processor.parse(file);
-    } catch (e) {
-      thrown = e as Error;
-    } finally {
-      // Cleanup.
-      await promise;
-      processor.reset();
-    }
-    assert.strictEqual(thrown?.message, 'Trace processor can\'t start parsing when not idle.');
-
-    // Check if data is null immediately after resetting.
-    assert.isNull(processor.data);
-    await processor.parse(file);
-    assert.isNotNull(processor.data);
-    processor.reset();
-    assert.isNull(processor.data);
-
-    // Check resetting while parsing.
-    try {
-      promise = processor.parse(file);
-      processor.reset();
-    } catch (e) {
-      thrown = e as Error;
-    } finally {
-      // Cleanup.
-      await promise;
-      processor.reset();
-    }
-    assert.strictEqual(thrown?.message, 'Trace processor can\'t reset while parsing.');
-
-    // Check parsing after resetting while parsing.
-    assert.isNull(processor.data);
-    await processor.parse(file);
-    assert.isNotNull(processor.data);
-  });
-
   it('supports parsing multiple traces', async () => {
     const model = new TraceModel.TraceModel.Model();
     const file1 = await loadEventsFromTraceFile('basic.json.gz');
@@ -141,7 +75,11 @@ describe('TraceModel', async () => {
     assert.isNull(model.traceParsedData(0));
   });
 
-  it('names traces using their origin and defaults to "Trace n" when no origin is found', async () => {
+  it('names traces using their origin and defaults to "Trace n" when no origin is found', async function() {
+    // Parsing multiple traces can be quite slow, on the bots the default 2
+    // second timeout is not long enough to reliably parse these without timing
+    // out.
+    this.timeout(5_000);
     const model = new TraceModel.TraceModel.Model();
     const traceFiles = [
       await loadEventsFromTraceFile('threejs-gpu.json.gz'),

@@ -1,17 +1,27 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import type * as Types from '../types/types.js';
+import * as Handlers from '../handlers/handlers.js';
 
-import type * as Handlers from './handlers/handlers.js';
-import type * as Types from './types/types.js';
-
-import {type TraceParseEventProgressData, TraceParseEvent} from './ModelImpl.js';
 const enum Status {
-  IDLE = 0,
-  PARSING = 1,
-  FINISHED_PARSING = 2,
-  ERRORED_WHILE_PARSING = 3,
+  IDLE = 'IDLE',
+  PARSING = 'PARSING',
+  FINISHED_PARSING = 'FINISHED_PARSING',
+  ERRORED_WHILE_PARSING = 'ERRORED_WHILE_PARSING',
 }
+
+export class TraceParseProgressEvent extends Event {
+  static readonly eventName = 'traceparse';
+  constructor(public data: TraceParseEventProgressData, init: EventInit = {bubbles: true}) {
+    super(TraceParseProgressEvent.eventName, init);
+  }
+}
+
+export type TraceParseEventProgressData = {
+  index: number,
+  total: number,
+};
 
 export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types.TraceEventHandler}> extends
     EventTarget {
@@ -20,7 +30,11 @@ export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types
   #pauseFrequencyMs: number;
   #status = Status.IDLE;
 
-  constructor(traceHandlers: ModelHandlers, {pauseDuration = 20, pauseFrequencyMs = 100} = {}) {
+  static create(): TraceProcessor<typeof Handlers.ModelHandlers> {
+    return new TraceProcessor(Handlers.ModelHandlers);
+  }
+
+  private constructor(traceHandlers: ModelHandlers, {pauseDuration = 20, pauseFrequencyMs = 100} = {}) {
     super();
 
     this.#traceHandlers = traceHandlers;
@@ -43,7 +57,7 @@ export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types
 
   async parse(traceEvents: readonly Types.TraceEvents.TraceEventData[], freshRecording = false): Promise<void> {
     if (this.#status !== Status.IDLE) {
-      throw new Error('Trace processor can\'t start parsing when not idle.');
+      throw new Error(`Trace processor can't start parsing when not idle. Current state: ${this.#status}`);
     }
     try {
       this.#status = Status.PARSING;
@@ -77,7 +91,7 @@ export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types
     // Handle each event.
     for await (const item of traceEventIterator) {
       if (item.kind === IteratorItemType.STATUS_UPDATE) {
-        this.dispatchEvent(new TraceParseEvent(item.data));
+        this.dispatchEvent(new TraceParseProgressEvent(item.data));
         continue;
       }
       for (const handler of sortedHandlers) {

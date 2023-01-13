@@ -24,7 +24,7 @@
     "@codemirror/view": "^6.7.3",
     "@lezer/highlight": "^1.1.3",
     "@lezer/html": "^1.3.0",
-    "@lezer/javascript": "^1.4.1",
+    "@lezer/javascript": "lezer-parser/javascript#9c8b965b923661a93f9d39ec35afb88e23e1dc18",
     "@replit/codemirror-lang-svelte": "^6.0.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-terser": "^0.1.0",

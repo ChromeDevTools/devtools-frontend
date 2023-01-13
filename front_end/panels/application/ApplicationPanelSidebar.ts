@@ -257,13 +257,13 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   cacheStorageListTreeElement: ServiceWorkerCacheTreeElement;
   sharedStorageListTreeElement: SharedStorageListTreeElement;
   private backForwardCacheListTreeElement?: BackForwardCacheTreeElement;
-  backgroundFetchTreeElement: BackgroundServiceTreeElement|undefined;
-  backgroundSyncTreeElement: BackgroundServiceTreeElement|undefined;
-  notificationsTreeElement: BackgroundServiceTreeElement|undefined;
-  paymentHandlerTreeElement: BackgroundServiceTreeElement|undefined;
-  periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement|undefined;
-  pushMessagingTreeElement: BackgroundServiceTreeElement|undefined;
-  reportingApiTreeElement: ReportingApiTreeElement|undefined;
+  backgroundFetchTreeElement: BackgroundServiceTreeElement;
+  backgroundSyncTreeElement: BackgroundServiceTreeElement;
+  notificationsTreeElement: BackgroundServiceTreeElement;
+  paymentHandlerTreeElement: BackgroundServiceTreeElement;
+  periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement;
+  pushMessagingTreeElement: BackgroundServiceTreeElement;
+  reportingApiTreeElement: ReportingApiTreeElement;
   preloadingTreeElement: PreloadingTreeElement|undefined;
   private readonly resourcesSection: ResourcesSection;
   private readonly databaseTableViews: Map<DatabaseModelDatabase, {
@@ -371,38 +371,30 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.backForwardCacheListTreeElement = new BackForwardCacheTreeElement(panel);
     cacheTreeElement.appendChild(this.backForwardCacheListTreeElement);
 
-    if (Root.Runtime.experiments.isEnabled('backgroundServices')) {
-      const backgroundServiceSectionTitle = i18nString(UIStrings.backgroundServices);
-      const backgroundServiceTreeElement = this.addSidebarSection(backgroundServiceSectionTitle);
+    const backgroundServiceSectionTitle = i18nString(UIStrings.backgroundServices);
+    const backgroundServiceTreeElement = this.addSidebarSection(backgroundServiceSectionTitle);
 
-      this.backgroundFetchTreeElement =
-          new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundFetch);
-      backgroundServiceTreeElement.appendChild(this.backgroundFetchTreeElement);
-      this.backgroundSyncTreeElement =
-          new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundSync);
-      backgroundServiceTreeElement.appendChild(this.backgroundSyncTreeElement);
+    this.backgroundFetchTreeElement =
+        new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundFetch);
+    backgroundServiceTreeElement.appendChild(this.backgroundFetchTreeElement);
+    this.backgroundSyncTreeElement =
+        new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundSync);
+    backgroundServiceTreeElement.appendChild(this.backgroundSyncTreeElement);
 
-      if (Root.Runtime.experiments.isEnabled('backgroundServicesNotifications')) {
-        this.notificationsTreeElement =
-            new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.Notifications);
-        backgroundServiceTreeElement.appendChild(this.notificationsTreeElement);
-      }
-      if (Root.Runtime.experiments.isEnabled('backgroundServicesPaymentHandler')) {
-        this.paymentHandlerTreeElement =
-            new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PaymentHandler);
-        backgroundServiceTreeElement.appendChild(this.paymentHandlerTreeElement);
-      }
-      this.periodicBackgroundSyncTreeElement =
-          new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PeriodicBackgroundSync);
-      backgroundServiceTreeElement.appendChild(this.periodicBackgroundSyncTreeElement);
-      if (Root.Runtime.experiments.isEnabled('backgroundServicesPushMessaging')) {
-        this.pushMessagingTreeElement =
-            new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PushMessaging);
-        backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
-      }
-      this.reportingApiTreeElement = new ReportingApiTreeElement(panel);
-      backgroundServiceTreeElement.appendChild(this.reportingApiTreeElement);
-    }
+    this.notificationsTreeElement =
+        new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.Notifications);
+    backgroundServiceTreeElement.appendChild(this.notificationsTreeElement);
+    this.paymentHandlerTreeElement =
+        new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PaymentHandler);
+    backgroundServiceTreeElement.appendChild(this.paymentHandlerTreeElement);
+    this.periodicBackgroundSyncTreeElement =
+        new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PeriodicBackgroundSync);
+    backgroundServiceTreeElement.appendChild(this.periodicBackgroundSyncTreeElement);
+    this.pushMessagingTreeElement =
+        new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PushMessaging);
+    backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
+    this.reportingApiTreeElement = new ReportingApiTreeElement(panel);
+    backgroundServiceTreeElement.appendChild(this.reportingApiTreeElement);
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL)) {
       const preloadingSectionTitle = i18nString(UIStrings.preloading);
@@ -557,21 +549,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         this.target && this.target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel) || null;
     this.cacheStorageListTreeElement.initialize(serviceWorkerCacheModel);
     const backgroundServiceModel = this.target && this.target.model(BackgroundServiceModel) || null;
-    if (Root.Runtime.experiments.isEnabled('backgroundServices')) {
-      this.backgroundFetchTreeElement && this.backgroundFetchTreeElement.initialize(backgroundServiceModel);
-      this.backgroundSyncTreeElement && this.backgroundSyncTreeElement.initialize(backgroundServiceModel);
-      if (Root.Runtime.experiments.isEnabled('backgroundServicesNotifications') && this.notificationsTreeElement) {
-        this.notificationsTreeElement.initialize(backgroundServiceModel);
-      }
-      if (Root.Runtime.experiments.isEnabled('backgroundServicesPaymentHandler') && this.paymentHandlerTreeElement) {
-        this.paymentHandlerTreeElement.initialize(backgroundServiceModel);
-      }
-      this.periodicBackgroundSyncTreeElement &&
-          this.periodicBackgroundSyncTreeElement.initialize(backgroundServiceModel);
-      if (Root.Runtime.experiments.isEnabled('backgroundServicesPushMessaging') && this.pushMessagingTreeElement) {
-        this.pushMessagingTreeElement.initialize(backgroundServiceModel);
-      }
-    }
+    this.backgroundFetchTreeElement && this.backgroundFetchTreeElement.initialize(backgroundServiceModel);
+    this.backgroundSyncTreeElement && this.backgroundSyncTreeElement.initialize(backgroundServiceModel);
+    this.notificationsTreeElement.initialize(backgroundServiceModel);
+    this.paymentHandlerTreeElement.initialize(backgroundServiceModel);
+    this.periodicBackgroundSyncTreeElement.initialize(backgroundServiceModel);
+    this.pushMessagingTreeElement.initialize(backgroundServiceModel);
 
     // The condition is equivalent to
     // `Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL)`.

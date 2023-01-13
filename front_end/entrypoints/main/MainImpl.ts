@@ -275,13 +275,6 @@ export class MainImpl {
     Root.Runtime.experiments.register('applyCustomStylesheet', 'Allow extensions to load custom stylesheets');
     Root.Runtime.experiments.register('captureNodeCreationStacks', 'Capture node creation stacks');
     Root.Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');
-    Root.Runtime.experiments.register('backgroundServices', 'Background web platform feature events', true);
-    Root.Runtime.experiments.register(
-        'backgroundServicesNotifications', 'Background services section for Notifications');
-    Root.Runtime.experiments.register(
-        'backgroundServicesPaymentHandler', 'Background services section for Payment Handler');
-    Root.Runtime.experiments.register(
-        'backgroundServicesPushMessaging', 'Background services section for Push Messaging');
     Root.Runtime.experiments.register(
         'ignoreListJSFramesOnTimeline', 'Ignore List for JavaScript frames on Timeline', true);
     Root.Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
@@ -440,10 +433,6 @@ export class MainImpl {
       Root.Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(';'));
     }
     Root.Runtime.experiments.enableExperimentsTransiently([
-      'backgroundServices',
-      'backgroundServicesNotifications',
-      'backgroundServicesPushMessaging',
-      'backgroundServicesPaymentHandler',
       'bfcacheDisplayTree',
       'webauthnPane',
       'developerResourcesView',

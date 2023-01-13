@@ -104,7 +104,6 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     beforeEach(() => {
       stubNoopSettings();
       target = targetFactory();
-      Root.Runtime.experiments.register('backgroundServices', '', false);
       Root.Runtime.experiments.register(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, '', false);
     });
 

@@ -58,43 +58,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/SourceMap.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export interface SourceMap {
-  compiledURL(): Platform.DevToolsPath.UrlString;
-  url(): Platform.DevToolsPath.UrlString;
-  sourceURLs(): Platform.DevToolsPath.UrlString[];
-  sourceContentProvider(sourceURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType):
-      TextUtils.ContentProvider.ContentProvider;
-  embeddedContentByURL(sourceURL: Platform.DevToolsPath.UrlString): string|null;
-  findEntry(lineNumber: number, columnNumber: number): SourceMapEntry|null;
-  findEntryRanges(lineNumber: number, columnNumber: number): {
-    range: TextUtils.TextRange.TextRange,
-    sourceRange: TextUtils.TextRange.TextRange,
-    sourceURL: Platform.DevToolsPath.UrlString,
-  }|null;
-  findReverseRanges(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
-      TextUtils.TextRange.TextRange[];
-  sourceLineMapping(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
-      SourceMapEntry|null;
-  mappings(): SourceMapEntry[];
-  mapsOrigin(): boolean;
-  hasIgnoreListHint(sourceURL: Platform.DevToolsPath.UrlString): boolean;
-  findRanges(predicate: (sourceURL: Platform.DevToolsPath.UrlString) => boolean, options: {isStartMatching: boolean}):
-      TextUtils.TextRange.TextRange[];
-
-  /**
-   * Determines whether this and the {@link other} `SourceMap` agree on content and ignore-list hint
-   * with respect to the {@link sourceURL}.
-   *
-   * @param sourceURL the URL to test for (might not be provided by either of the sourcemaps).
-   * @param other the other `SourceMap` to check.
-   * @returns `true` if both this and the {@link other} `SourceMap` either both have the ignore-list
-   *          hint for {@link sourceURL} or neither, and if both of them either provide the same
-   *          content for the {@link sourceURL} inline or both provide no `sourcesContent` entry
-   *          for it.
-   */
-  compatibleForURL(sourceURL: Platform.DevToolsPath.UrlString, other: SourceMap): boolean;
-}
-
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
  * some additional fields.
@@ -178,14 +141,20 @@ for (let i = 0; i < base64Digits.length; ++i) {
 
 const sourceMapToSourceList = new WeakMap<SourceMapV3, Platform.DevToolsPath.UrlString[]>();
 
-export class TextSourceMap implements SourceMap {
+interface SourceInfo {
+  content: string|null;
+  ignoreListHint: boolean;
+  reverseMappings: number[]|null;
+}
+
+export class SourceMap {
   readonly #initiator: PageResourceLoadInitiator;
   #json: SourceMapV3|null;
   readonly #compiledURLInternal: Platform.DevToolsPath.UrlString;
   readonly #sourceMappingURL: Platform.DevToolsPath.UrlString;
   readonly #baseURL: Platform.DevToolsPath.UrlString;
   #mappingsInternal: SourceMapEntry[]|null;
-  readonly #sourceInfos: Map<Platform.DevToolsPath.UrlString, TextSourceMap.SourceInfo>;
+  readonly #sourceInfos: Map<Platform.DevToolsPath.UrlString, SourceInfo>;
 
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
@@ -216,7 +185,7 @@ export class TextSourceMap implements SourceMap {
    */
   static async load(
       sourceMapURL: Platform.DevToolsPath.UrlString, compiledURL: Platform.DevToolsPath.UrlString,
-      initiator: PageResourceLoadInitiator): Promise<TextSourceMap> {
+      initiator: PageResourceLoadInitiator): Promise<SourceMap> {
     let updatedContent;
     try {
       const {content} = await PageResourceLoader.instance().loadResource(sourceMapURL, initiator);
@@ -234,7 +203,7 @@ export class TextSourceMap implements SourceMap {
 
     try {
       const payload = (JSON.parse(updatedContent) as SourceMapV3);
-      return new TextSourceMap(compiledURL, sourceMapURL, payload, initiator);
+      return new SourceMap(compiledURL, sourceMapURL, payload, initiator);
     } catch (error) {
       throw new Error(i18nString(UIStrings.couldNotParseContentForSS, {PH1: sourceMapURL, PH2: error.message}));
     }
@@ -499,7 +468,7 @@ export class TextSourceMap implements SourceMap {
       if (!this.#sourceInfos.has(url)) {
         const content = source ?? null;
         const ignoreListHint = ignoreList.has(i);
-        this.#sourceInfos.set(url, new TextSourceMap.SourceInfo(content, ignoreListHint));
+        this.#sourceInfos.set(url, {content, ignoreListHint, reverseMappings: null});
       }
     }
     sourceMapToSourceList.set(sourceMap, sourcesList);
@@ -518,7 +487,7 @@ export class TextSourceMap implements SourceMap {
     // we have the list available.
     const sources = sourceMapToSourceList.get(map);
     const names = map.names ?? [];
-    const stringCharIterator = new TextSourceMap.StringCharIterator(map.mappings);
+    const stringCharIterator = new SourceMap.StringCharIterator(map.mappings);
     let sourceURL: Platform.DevToolsPath.UrlString|undefined = sources && sources[sourceIndex];
 
     while (true) {
@@ -570,15 +539,15 @@ export class TextSourceMap implements SourceMap {
     return char === ',' || char === ';';
   }
 
-  private decodeVLQ(stringCharIterator: TextSourceMap.StringCharIterator): number {
+  private decodeVLQ(stringCharIterator: SourceMap.StringCharIterator): number {
     // Read unsigned value.
     let result = 0;
     let shift = 0;
-    let digit: number = TextSourceMap._VLQ_CONTINUATION_MASK;
-    while (digit & TextSourceMap._VLQ_CONTINUATION_MASK) {
+    let digit: number = SourceMap._VLQ_CONTINUATION_MASK;
+    while (digit & SourceMap._VLQ_CONTINUATION_MASK) {
       digit = base64Map.get(stringCharIterator.next()) || 0;
-      result += (digit & TextSourceMap._VLQ_BASE_MASK) << shift;
-      shift += TextSourceMap._VLQ_BASE_SHIFT;
+      result += (digit & SourceMap._VLQ_BASE_MASK) << shift;
+      shift += SourceMap._VLQ_BASE_SHIFT;
     }
 
     // Fix the sign.
@@ -678,13 +647,24 @@ export class TextSourceMap implements SourceMap {
     return ranges;
   }
 
+  /**
+   * Determines whether this and the {@link other} `SourceMap` agree on content and ignore-list hint
+   * with respect to the {@link sourceURL}.
+   *
+   * @param sourceURL the URL to test for (might not be provided by either of the sourcemaps).
+   * @param other the other `SourceMap` to check.
+   * @returns `true` if both this and the {@link other} `SourceMap` either both have the ignore-list
+   *          hint for {@link sourceURL} or neither, and if both of them either provide the same
+   *          content for the {@link sourceURL} inline or both provide no `sourcesContent` entry
+   *          for it.
+   */
   compatibleForURL(sourceURL: Platform.DevToolsPath.UrlString, other: SourceMap): boolean {
     return this.embeddedContentByURL(sourceURL) === other.embeddedContentByURL(sourceURL) &&
         this.hasIgnoreListHint(sourceURL) === other.hasIgnoreListHint(sourceURL);
   }
 }
 
-export namespace TextSourceMap {
+export namespace SourceMap {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
   export const _VLQ_BASE_SHIFT = 5;
@@ -714,13 +694,6 @@ export namespace TextSourceMap {
 
     hasNext(): boolean {
       return this.position < this.string.length;
-    }
-  }
-
-  export class SourceInfo {
-    reverseMappings: number[]|null = null;
-
-    constructor(public content: string|null, public ignoreListHint: boolean) {
     }
   }
 }

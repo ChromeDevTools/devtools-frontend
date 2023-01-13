@@ -73,7 +73,7 @@ export class SASSSourceMapping implements SourceMapping {
           .EventTargetEvent<{client: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, sourceMap: SDK.SourceMap.SourceMap}>):
       Promise<void> {
     const header = event.data.client;
-    const sourceMap = (event.data.sourceMap as SDK.SourceMap.TextSourceMap);
+    const sourceMap = event.data.sourceMap;
     const project = this.#project;
     const bindings = this.#bindings;
     for (const sourceURL of sourceMap.sourceURLs()) {
@@ -93,7 +93,7 @@ export class SASSSourceMapping implements SourceMapping {
           .EventTargetEvent<{client: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, sourceMap: SDK.SourceMap.SourceMap}>):
       Promise<void> {
     const header = event.data.client;
-    const sourceMap = (event.data.sourceMap as SDK.SourceMap.TextSourceMap);
+    const sourceMap = event.data.sourceMap;
     const bindings = this.#bindings;
     for (const sourceURL of sourceMap.sourceURLs()) {
       const binding = bindings.get(sourceURL);
@@ -174,7 +174,7 @@ const uiSourceCodeToBinding = new WeakMap<Workspace.UISourceCode.UISourceCode, B
 class Binding {
   readonly #project: ContentProviderBasedProject;
   readonly #url: Platform.DevToolsPath.UrlString;
-  referringSourceMaps: SDK.SourceMap.TextSourceMap[];
+  referringSourceMaps: SDK.SourceMap.SourceMap[];
   uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
 
   constructor(project: ContentProviderBasedProject, url: Platform.DevToolsPath.UrlString) {
@@ -209,7 +209,7 @@ class Binding {
     this.#project.addUISourceCodeWithProvider(this.uiSourceCode, contentProvider, metadata, mimeType);
   }
 
-  addSourceMap(sourceMap: SDK.SourceMap.TextSourceMap, frameId: Protocol.Page.FrameId): void {
+  addSourceMap(sourceMap: SDK.SourceMap.SourceMap, frameId: Protocol.Page.FrameId): void {
     if (this.uiSourceCode) {
       NetworkProject.addFrameAttribution(this.uiSourceCode, frameId);
     }
@@ -217,7 +217,7 @@ class Binding {
     this.recreateUISourceCodeIfNeeded(frameId);
   }
 
-  removeSourceMap(sourceMap: SDK.SourceMap.TextSourceMap, frameId: Protocol.Page.FrameId): void {
+  removeSourceMap(sourceMap: SDK.SourceMap.SourceMap, frameId: Protocol.Page.FrameId): void {
     const uiSourceCode = (this.uiSourceCode as Workspace.UISourceCode.UISourceCode);
     NetworkProject.removeFrameAttribution(uiSourceCode, frameId);
     const lastIndex = this.referringSourceMaps.lastIndexOf(sourceMap);
@@ -232,7 +232,7 @@ class Binding {
     }
   }
 
-  getReferringSourceMaps(): Array<SDK.SourceMap.TextSourceMap> {
+  getReferringSourceMaps(): Array<SDK.SourceMap.SourceMap> {
     return this.referringSourceMaps;
   }
 

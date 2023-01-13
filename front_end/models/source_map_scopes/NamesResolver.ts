@@ -461,7 +461,7 @@ export const resolveExpression = async(
   if (!script) {
     return '';
   }
-  const sourceMap = script.debuggerModel.sourceMapManager().sourceMapForClient(script) as SDK.SourceMap.TextSourceMap;
+  const sourceMap = script.debuggerModel.sourceMapManager().sourceMapForClient(script);
   if (!sourceMap) {
     return '';
   }

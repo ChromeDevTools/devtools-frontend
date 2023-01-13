@@ -56,7 +56,7 @@ describe('SourceMapEntry', () => {
   });
 });
 
-describe('TextSourceMap', () => {
+describe('SourceMap', () => {
   const compiledUrl = 'compiled.js' as Platform.DevToolsPath.UrlString;
   const sourceMapJsonUrl = 'source-map.json' as Platform.DevToolsPath.UrlString;
   const sourceUrlExample = 'example.js' as Platform.DevToolsPath.UrlString;
@@ -64,23 +64,23 @@ describe('TextSourceMap', () => {
 
   describe('StringCharIterator', () => {
     it('detects when it has reached the end', () => {
-      const emptyIterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('');
+      const emptyIterator = new SDK.SourceMap.SourceMap.StringCharIterator('');
       assert.isFalse(emptyIterator.hasNext());
 
-      const iterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('foo');
+      const iterator = new SDK.SourceMap.SourceMap.StringCharIterator('foo');
       assert.isTrue(iterator.hasNext());
     });
 
     it('peeks the next character', () => {
-      const emptyIterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('');
+      const emptyIterator = new SDK.SourceMap.SourceMap.StringCharIterator('');
       assert.strictEqual(emptyIterator.peek(), '');
 
-      const iterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('foo');
+      const iterator = new SDK.SourceMap.SourceMap.StringCharIterator('foo');
       assert.strictEqual(iterator.peek(), 'f');
     });
 
     it('advances when {next} is called', () => {
-      const iterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('bar');
+      const iterator = new SDK.SourceMap.SourceMap.StringCharIterator('bar');
       assert.strictEqual(iterator.next(), 'b');
       assert.strictEqual(iterator.next(), 'a');
       assert.strictEqual(iterator.next(), 'r');
@@ -150,7 +150,7 @@ describe('TextSourceMap', () => {
       // clang-format on
     ]);
 
-    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 9), 'example.js', 0, 9);
     assertMapping(sourceMap.findEntry(0, 13), 'example.js', 0, 13);
@@ -180,7 +180,7 @@ describe('TextSourceMap', () => {
       // clang-format on
     ]);
 
-    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     // Exact match for source location.
     assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 3, 0).map(r => r.serializeToObject()), [
@@ -236,7 +236,7 @@ describe('TextSourceMap', () => {
       // clang-format on
     ]);
 
-    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 1, 0).map(r => r.serializeToObject()), [
       {startLine: 0, startColumn: 0, endLine: 1, endColumn: 0},
@@ -256,7 +256,7 @@ describe('TextSourceMap', () => {
       sources: [sourceUrlExample],
       version: 3,
     };
-    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 2);
@@ -274,7 +274,7 @@ describe('TextSourceMap', () => {
       sources: [sourceUrlExample],
       version: 3,
     };
-    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertReverseMapping(sourceMap.sourceLineMapping(sourceUrlExample, 1, 0), 3, 1);
@@ -304,7 +304,7 @@ describe('TextSourceMap', () => {
       ],
       version: 3,
     };
-    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assert.lengthOf(sourceMap.sourceURLs(), 3, 'unexpected number of original source URLs');
     assertMapping(sourceMap.findEntry(0, 0), 'source1.js', 0, 0);
@@ -329,7 +329,7 @@ describe('TextSourceMap', () => {
         'wp:///' /* sourceRoot */);
 
     const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
-    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(1, 0), 'wp:///example.js', 3, 0);
     assertMapping(sourceMap.findEntry(4, 0), 'wp:///other.js', 5, 0);
@@ -349,8 +349,8 @@ describe('TextSourceMap', () => {
         sourcesContent: ['function foo() {\n  console.log("Hello world!");\n}'],
         version: 3,
       };
-      const sourceMap1 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
-      const sourceMap2 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
+      const sourceMap1 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
+      const sourceMap2 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
       assert.isTrue(sourceMap1.compatibleForURL(sourceURL, sourceMap2));
       assert.isTrue(sourceMap2.compatibleForURL(sourceURL, sourceMap1));
     });
@@ -362,14 +362,14 @@ describe('TextSourceMap', () => {
         sources: ['foo.ts'],
         version: 3,
       };
-      const sourceMap1 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
-      const sourceMap2 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
+      const sourceMap1 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
+      const sourceMap2 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload, fakeInitiator);
       assert.isTrue(sourceMap1.compatibleForURL(sourceURL, sourceMap2));
       assert.isTrue(sourceMap2.compatibleForURL(sourceURL, sourceMap1));
     });
 
     it('correctly differentiates based on content', () => {
-      const sourceMap1 = new SDK.SourceMap.TextSourceMap(
+      const sourceMap1 = new SDK.SourceMap.SourceMap(
           compiledURL, sourceMappingURL, {
             mappings: '',
             sourceRoot,
@@ -378,7 +378,7 @@ describe('TextSourceMap', () => {
             version: 3,
           },
           fakeInitiator);
-      const sourceMap2 = new SDK.SourceMap.TextSourceMap(
+      const sourceMap2 = new SDK.SourceMap.SourceMap(
           compiledURL, sourceMappingURL, {
             mappings: '',
             sourceRoot,
@@ -403,8 +403,8 @@ describe('TextSourceMap', () => {
         ...payload1,
         'x_google_ignoreList': [0],
       };
-      const sourceMap1 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload1, fakeInitiator);
-      const sourceMap2 = new SDK.SourceMap.TextSourceMap(compiledURL, sourceMappingURL, payload2, fakeInitiator);
+      const sourceMap1 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload1, fakeInitiator);
+      const sourceMap2 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload2, fakeInitiator);
       assert.isFalse(sourceMap1.compatibleForURL(sourceURL, sourceMap2));
       assert.isFalse(sourceMap2.compatibleForURL(sourceURL, sourceMap1));
     });
@@ -712,7 +712,7 @@ describe('TextSourceMap', () => {
       it(`can resolve sourceURL "${sourceURL}" with sourceRoot "${sourceRoot}" and sourceMapURL "${sourceMapURL}"`,
          () => {
            const mappingPayload = {mappings: 'AAAA;;;CACA', sourceRoot, sources: [sourceURL], version: 3};
-           const sourceMap = new SDK.SourceMap.TextSourceMap(
+           const sourceMap = new SDK.SourceMap.SourceMap(
                compiledUrl, sourceMapURL as Platform.DevToolsPath.UrlString, mappingPayload, fakeInitiator);
            const sourceURLs = sourceMap.sourceURLs();
            assert.lengthOf(sourceURLs, 1, 'unexpected number of original source URLs');
@@ -737,7 +737,7 @@ describe('TextSourceMap', () => {
       mappingPayload.x_google_ignoreList = [0 /* vendor.js */, 3 /* other.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
-      const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+      const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor.js' as Platform.DevToolsPath.UrlString), true);
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///main.js' as Platform.DevToolsPath.UrlString), false);
@@ -760,7 +760,7 @@ describe('TextSourceMap', () => {
       mappingPayload.x_google_ignoreList = [0 /* vendor1.js */, 1 /* vendor2.js */, 2 /* vendor3.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
-      const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+      const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///foo.js' as Platform.DevToolsPath.UrlString), false);
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor1.js' as Platform.DevToolsPath.UrlString), true);
@@ -798,7 +798,7 @@ describe('TextSourceMap', () => {
       mappingPayload.x_google_ignoreList = [1 /* vendor1.js */, 3 /* vendor2.js */, 5 /* vendor3.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
-      const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+      const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///foo.js' as Platform.DevToolsPath.UrlString), false);
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///bar.js' as Platform.DevToolsPath.UrlString), false);
@@ -844,7 +844,7 @@ describe('TextSourceMap', () => {
       mappingPayload.x_google_ignoreList = [0 /* vendor1.js */, 1 /* vendor2.js */, 2 /* vendor3.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
-      const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+      const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///foo.js' as Platform.DevToolsPath.UrlString), false);
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor1.js' as Platform.DevToolsPath.UrlString), true);
@@ -886,7 +886,7 @@ describe('TextSourceMap', () => {
       mappingPayload.x_google_ignoreList = [1 /* vendor1.js */, 2 /* vendor2.js */, 3 /* vendor3.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
-      const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+      const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///foo.js' as Platform.DevToolsPath.UrlString), false);
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor1.js' as Platform.DevToolsPath.UrlString), true);
@@ -929,7 +929,7 @@ describe('TextSourceMap', () => {
       const pageResourceLoadInitiator = {} as SDK.PageResourceLoader.PageResourceLoadInitiator;
       const url = 'test.js.map' as Platform.DevToolsPath.UrlString;
       try {
-        await SDK.SourceMap.TextSourceMap.load(url, url, pageResourceLoadInitiator);
+        await SDK.SourceMap.SourceMap.load(url, url, pageResourceLoadInitiator);
       } catch (e) {
         assert.fail(`Expected sourcemap with BOM to be parsed correctly. Failed with: ${e}.`);
       }

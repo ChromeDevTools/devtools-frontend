@@ -10,7 +10,7 @@ import {type FrameAssociated} from './FrameAssociated.js';
 import {Type, type Target} from './Target.js';
 import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
 
-import {TextSourceMap, type SourceMap} from './SourceMap.js';
+import {SourceMap} from './SourceMap.js';
 
 export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   readonly #target: Target;
@@ -119,7 +119,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 
         const initiator = client.createPageResourceLoadInitiator();
         clientData.sourceMapPromise =
-            TextSourceMap.load(sourceMapURL, sourceURL, initiator)
+            SourceMap.load(sourceMapURL, sourceURL, initiator)
                 .then(
                     sourceMap => {
                       if (this.#clientData.get(client) === clientData) {

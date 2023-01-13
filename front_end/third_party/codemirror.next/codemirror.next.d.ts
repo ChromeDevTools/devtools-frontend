@@ -5525,7 +5525,7 @@ declare function htmlCompletionSourceWith(config: {
 }): (context: CompletionContext) => CompletionResult | null;
 
 declare type NestedLang = {
-    tag: "script" | "style" | "textarea";
+    tag: string;
     attrs?: (attrs: {
         [attr: string]: string;
     }) => boolean;
@@ -5571,10 +5571,10 @@ declare function html(config?: {
     */
     extraGlobalAttributes?: Record<string, null | readonly string[]>;
     /**
-    Register additional languages to parse the content of script,
-    style, or textarea tags. If given, `attrs` should be a function
-    that, given an object representing the tag's attributes, returns
-    `true` if this language applies.
+    Register additional languages to parse the content of specific
+    tags. If given, `attrs` should be a function that, given an
+    object representing the tag's attributes, returns `true` if this
+    language applies.
     */
     nestedLanguages?: NestedLang[];
     /**

@@ -215,7 +215,6 @@ export class PrerenderingRegistry {
     return `PrerenderingAttempt-opaque:${frameId}` as PreloadingId;
   }
 
-  // TODO(https://crbug.com/1384419): Make this private.
   processEvent(event: PrerenderingAttemptEvent): void {
     switch (event.kind) {
       case 'PrerenderingAttemptEventAdd': {

@@ -20,6 +20,7 @@ button ~ .text-ellipsis {
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;
+  padding: 0;
 }
 
 button.link {
@@ -27,6 +28,11 @@ button.link {
   background: none;
   font-family: inherit;
   font-size: inherit;
+  height: 16px;
+}
+
+button.link:has(devtools-icon) {
+  margin: 5px 1px 0;
 }
 
 .inline-button {

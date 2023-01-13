@@ -608,6 +608,7 @@
 .timeline-landing-page > div > p {
   flex: none;
   white-space: pre-line;
+  line-height: 18px;
 }
 
 .timeline-tree-view .data-grid .name-container div {

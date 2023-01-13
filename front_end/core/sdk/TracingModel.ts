@@ -557,7 +557,6 @@ export class Event {
   }
 
   // COHERENT BEGIN
-
   /**
  * @param {!SDK.TracingModel.Event} a
  * @param {!SDK.TracingModel.Event} b
@@ -586,6 +585,16 @@ export class Event {
     // startTime's are equal, so both events got placed into the result array.
     return a.startTime - b.startTime || a.ordinal - b.ordinal || -1;
   }
+
+  // COHERENT BEGIN
+  isContainedIn(other: Event) {
+    return other.endTime !== undefined && this.endTime !== undefined && other.startTime < this.startTime && this.endTime < other.endTime;
+  }
+
+  isBefore(other: Event) {
+    return this.endTime !== undefined && !(other.startTime < this.endTime);
+  }
+  // COHERENT END
 
   hasCategory(categoryName: string): boolean {
     return this.parsedCategories.has(categoryName);

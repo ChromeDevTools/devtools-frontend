@@ -2186,7 +2186,7 @@ export class TimelineUIUtils {
     const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
     const initiator = timelineData.initiator();
     // COHERENT BEGIN
-    const initiators = timelineData.initiators();
+    const initiators = timelineData.getInitiators();
     // COHERENT END
     let url: (string|null)|null = null;
 
@@ -2561,6 +2561,7 @@ export class TimelineUIUtils {
         break;
       }
       case recordTypes.Coherent_Advance:
+      case recordTypes.Coherent_ImmediateLayout:
       case recordTypes.Coherent_ExecuteTimers:
       case recordTypes.Coherent_RecalcVisualStyle:
       case recordTypes.Coherent_UpdateNodeTransforms:
@@ -2582,10 +2583,6 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(
             UIStrings.nodesThatNeedLayout,
             i18nString(UIStrings.sOfS, {PH1: event.args['int1'], PH2: event.args['int2']}));
-        break;
-      }
-      case recordTypes.Coherent_ImmediateLayout: {
-        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
         break;
       }
       case recordTypes.Coherent_ExecuteBuffers:
@@ -2684,8 +2681,7 @@ export class TimelineUIUtils {
       contentHelper.appendElementRow('', event[previewElementSymbol]);
     }
 
-    if (initiator || timelineData.stackTraceForSelfOrInitiator() ||
-        (initiators && initiators.length > 0) ||
+    if (initiator || timelineData.stackTraceForSelfOrInitiator() || initiators.length > 0 ||
         TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event)) {
       TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
     }
@@ -2995,8 +2991,8 @@ export class TimelineUIUtils {
     }
 
     // COHERENT BEGIN
-    const initiators = TimelineModel.TimelineModel.TimelineData.forEvent(event).initiators();
-    if (initiators && initiators.length) {
+    const initiators = TimelineModel.TimelineModel.TimelineData.forEvent(event).getInitiators();
+    if (initiators.length) {
       var delay = event.startTime - initiators[0].startTime;
       contentHelper.appendTextRow(UIStrings.pendingFor, i18n.TimeUtilities.preciseMillisToString(delay, 1));
 

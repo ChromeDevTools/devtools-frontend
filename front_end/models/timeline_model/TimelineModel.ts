@@ -825,6 +825,9 @@ export class TimelineModelImpl {
       console.error(
           `Children are longer than parent at ${event.startTime} ` +
           `(${(child.startTime - this.minimumRecordTime()).toFixed(3)} by ${(-event.selfTime).toFixed(3)}`);
+// COHERENT BEGIN
+      console.error(`Abovementioned child is: ${event.name}`);
+// COHERENT END
     }
     event.selfTime = 0;
   }
@@ -915,7 +918,6 @@ export class TimelineModelImpl {
 
   private processEvent(event: SDK.TracingModel.Event): boolean {
     const eventStack = this.eventStack;
-
     if (!eventStack.length) {
       if (this.currentTaskLayoutAndRecalcEvents && this.currentTaskLayoutAndRecalcEvents.length) {
         const totalTime = this.currentTaskLayoutAndRecalcEvents.reduce((time, event) => {
@@ -976,35 +978,23 @@ export class TimelineModelImpl {
         break;
       }
       case RecordType.Coherent_ScheduleStyleRecalculation: {
-        let urlIndex = parseInt(event.args['int1']);
+        const urlIndex = parseInt(event.args['int1']);
         if (urlIndex != -1) {
-          let scheduleStyleRecalcTimelineData = TimelineData.forEvent(event);
-          scheduleStyleRecalcTimelineData.setUrl(this.currentLoadedUrls[urlIndex]);
+          timelineData.setUrl(this.currentLoadedUrls[urlIndex]);
         }
-        // since we have many initiators, some may happen during
-        // style recalculation and they will get processed in the
-        // current style recalculation event
-        if (this.lastRecalculateStylesEvent
-          && this.lastRecalculateStylesEvent.endTime
-          && event.endTime
-          && this.lastRecalculateStylesEvent.startTime < event.startTime
-          && this.lastRecalculateStylesEvent.endTime > event.endTime) {
-            let recalcStylesTimelineData = TimelineData.forEvent(this.lastRecalculateStylesEvent);
-            recalcStylesTimelineData.addInitiator(event);
+        // Some recalc scheduling events happen due to a style recalc and we don't want them as initiators.
+        if (this.lastRecalculateStylesEvent && event.isContainedIn(this.lastRecalculateStylesEvent)) {
+            break;
         }
-        else {
-          this.scheduledStyleRecalculation.push(event);
-        }
-        this.lastRecalculateStylesEvent = event;
+        this.scheduledStyleRecalculation.push(event);
         break;
       }
       case RecordType.Coherent_RecalculateStyles: {
         if (this.scheduledStyleRecalculation) {
-          let initiators = this.scheduledStyleRecalculation;
+          const initiators = this.scheduledStyleRecalculation;
+          initiators.forEach(initiator => timelineData.addInitiator(initiator));
           this.scheduledStyleRecalculation = [];
-          timelineData.setInitiators(initiators);
         }
-
         this.lastRecalculateStylesEvent = event;
         break;
       }
@@ -1017,46 +1007,41 @@ export class TimelineModelImpl {
         // processed after this thread, we don't check if there are any
         // existing earlier layout invalidation records, but invalidations
         // with additional information are priority
-        let urlIndex = parseInt(event.args['int1']);
+        const urlIndex = parseInt(event.args['int1']);
         if (urlIndex != -1) {
-          let invalidateLayoutEventTimelineData = TimelineData.forEvent(event);
-          invalidateLayoutEventTimelineData.setUrl(this.currentLoadedUrls[urlIndex])
-          this.scheduledLayoutInvalidate.push(event);
-        } else if (this.lastRecalculateStylesEvent
-          && this.lastRecalculateStylesEvent.endTime
-          && this.lastRecalculateStylesEvent.endTime > event.startTime) {
-            let recalcInitiators = TimelineData.forEvent(this.lastRecalculateStylesEvent).initiators();
-            if (recalcInitiators) {
-              for (let i = 0; i < recalcInitiators.length; i++) {
-                // sometimes we might schedule layout tasks that were
-                // triggered during recalculate styles, but they will end
-                // here, so no duplicates
-                if (this.scheduledLayoutInvalidate.indexOf(recalcInitiators[i]) == -1) {
-                    this.scheduledLayoutInvalidate.push(recalcInitiators[i]);
-                }
-            }
-            // Coherent: and hide this event since we won't need it on the timeline
-            event.name = RecordType.Coherent_Disabled;
-          }
-
-        } else {
-            this.scheduledLayoutInvalidate.push(event);
+          timelineData.setUrl(this.currentLoadedUrls[urlIndex])
         }
+        // Recalculating styles can force a layout. In that scenario we use the recalculate style initiators
+        // as initiators for the layout and hide the current event from the timeline.
+        if (this.lastRecalculateStylesEvent && event.isContainedIn(this.lastRecalculateStylesEvent)) {
+          event.name = RecordType.Coherent_Disabled;
+          const recalcStyleInitiators = TimelineData.forEvent(this.lastRecalculateStylesEvent).getInitiators();
+          recalcStyleInitiators.forEach(initiator => {
+            if (this.scheduledLayoutInvalidate.indexOf(initiator) === -1) {
+              this.scheduledLayoutInvalidate.push(initiator);
+            }
+          });
+          break;
+        } 
+        this.scheduledLayoutInvalidate.push(event);
         break;
       }
       case RecordType.Coherent_Layout: {
+        if (!this.scheduledLayoutInvalidate.length) {
+          break;
+        }
         // This event can be sent from a different thread than the one
         // creating the initiators, in this case, we need to look up to
         // certain timeStamp and only the last frame id
-        if (this.scheduledLayoutInvalidate) {
-            var lastInitiatorIndex = this.scheduledLayoutInvalidate.findIndex(initiator =>
-              (initiator.endTime && initiator.endTime > event.startTime || initiator.args['int0'] != event.args['int0']));
-            if (lastInitiatorIndex > 0) {
-                let initiators = this.scheduledLayoutInvalidate.splice(0, lastInitiatorIndex);
-                timelineData.setInitiators(initiators);
-            }
+        for (let i = 0; i < this.scheduledLayoutInvalidate.length; ++i) {
+          const initiator = this.scheduledLayoutInvalidate[i];
+          if (!initiator.isBefore(event) || initiator.args['int0'] !== event.args['int0']) {
+            this.scheduledLayoutInvalidate = this.scheduledLayoutInvalidate.slice(i);
+            break;
+          }
+          timelineData.addInitiator(initiator);
         }
-
+        this.scheduledLayoutInvalidate = [];
         break;
       }
       case RecordType.Coherent_ImmediateLayout: {
@@ -2501,7 +2486,7 @@ export class TimelineData {
   frameId: string;
   timeWaitingForMainThread?: number;
   // COHERENT BEGIN
-  private initiatorsInternal: SDK.TracingModel.Event[]|null;
+  private initiators: SDK.TracingModel.Event[];
   // COHERENT END
 
   constructor() {
@@ -2515,7 +2500,7 @@ export class TimelineData {
     this.frameId = '';
 
     // COHERENT BEGIN
-    this.initiatorsInternal = [];
+    this.initiators = [];
     // COHERENT END
   }
 
@@ -2526,18 +2511,18 @@ export class TimelineData {
   }
 
   addInitiator(initiator: SDK.TracingModel.Event|null): void {
-      if (!initiator || !this.initiatorsInternal) {
+      if (!initiator) {
         return;
       }
-      this.initiatorsInternal.push(initiator);
+      this.initiators.push(initiator);
   }
 
-  setInitiators(initiators: SDK.TracingModel.Event[]|null): void {
-      this.initiatorsInternal = initiators;
+  clearInitiators(): void {
+    this.initiators = [];
   }
 
-  initiators(): SDK.TracingModel.Event[]|null {
-      return this.initiatorsInternal;
+  getInitiators(): SDK.TracingModel.Event[] {
+      return this.initiators;
   }
 
   // COHERENT END

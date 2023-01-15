@@ -394,8 +394,11 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
           if (sourceMap.hasIgnoreListHint(url)) {
             uiSourceCode.markKnownThirdParty();
           }
-          const contentProvider = sourceMap.sourceContentProvider(url, contentType);
           const content = sourceMap.embeddedContentByURL(url);
+          const contentProvider = content !== null ?
+              TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, contentType, content) :
+              new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
+                  url, contentType, script.createPageResourceLoadInitiator());
           const metadata =
               content !== null ? new Workspace.UISourceCode.UISourceCodeMetadata(null, content.length) : null;
           const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) ?? contentType.canonicalMimeType();

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
@@ -14,8 +13,8 @@ import * as TextEditor from '../../../../../front_end/ui/components/text_editor/
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {MockProtocolBackend, parseScopeChain} from '../../helpers/MockScopeChain.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {MockProtocolBackend, parseScopeChain} from '../../helpers/MockScopeChain.js';
 
 describeWithMockConnection('Inline variable view scope helpers', () => {
   const URL = 'file:///tmp/example.js' as Platform.DevToolsPath.UrlString;
@@ -45,10 +44,7 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
     if (!entry || !entry.sourceURL) {
       return null;
     }
-    const content =
-        (await sourceMap.sourceContentProvider(entry.sourceURL, Common.ResourceType.resourceTypes.SourceMapScript)
-             .requestContent())
-            .content;
+    const content = sourceMap.embeddedContentByURL(entry.sourceURL);
     if (!content) {
       return null;
     }

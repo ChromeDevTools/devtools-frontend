@@ -9,7 +9,8 @@ import * as Host from '../../../../../front_end/core/host/host.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {describeWithEnvironment, describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
 
 interface LoadResult {
   success: boolean;
@@ -210,5 +211,46 @@ describeWithEnvironment('PageResourceLoader', () => {
         'file:////127.0.0.1/share/source-map.js.map' as Platform.DevToolsPath.UrlString, initiator);
 
     assert.strictEqual(response.content, 'content of the source map');
+  });
+});
+
+describeWithMockConnection('PageResourceLoader', () => {
+  describe('loadResource', () => {
+    const stream = 'STREAM_ID' as Protocol.IO.StreamHandle;
+    const initiatorUrl = 'htp://example.com' as Platform.DevToolsPath.UrlString;
+    const url = `${initiatorUrl}/test.txt` as Platform.DevToolsPath.UrlString;
+
+    function setupLoadingSourceMapsAsNetworkResource(): Promise<Protocol.Network.LoadNetworkResourceRequest> {
+      return new Promise(resolve => {
+        let contentToRead: string|null = 'foo';
+        setMockConnectionResponseHandler('IO.read', () => {
+          const data = contentToRead;
+          contentToRead = null;
+          return {data};
+        });
+        setMockConnectionResponseHandler('IO.close', () => ({}));
+        setMockConnectionResponseHandler('Network.loadNetworkResource', request => {
+          resolve(request);
+          return {resource: {success: true, stream, statusCode: 200}};
+        });
+      });
+    }
+
+    for (const disableCache of [true, false]) {
+      it(`loads with ${disableCache ? 'disabled' : 'enabled'} cache based on the setting`, async () => {
+        Common.Settings.Settings.instance().moduleSetting('cacheDisabled').set(disableCache);
+        const target = createTarget();
+        const initiator = {target, frameId: null, initiatorUrl};
+        const loader = SDK.PageResourceLoader.PageResourceLoader.instance();
+        const [{options}, {content}] = await Promise.all([
+          setupLoadingSourceMapsAsNetworkResource(),
+          loader.loadResource(url, initiator),
+        ]);
+        // Check that we loaded the resources with appropriately enabled caching.
+        assert.strictEqual(options.disableCache, disableCache);
+        // Sanity check on the content.
+        assert.deepEqual(content, 'foo');
+      });
+    }
   });
 });

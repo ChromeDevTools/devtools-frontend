@@ -10,7 +10,9 @@ import {type FrameAssociated} from './FrameAssociated.js';
 import {Type, type Target} from './Target.js';
 import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
 
-import {SourceMap} from './SourceMap.js';
+import {PageResourceLoader, type PageResourceLoadInitiator} from './PageResourceLoader.js';
+
+import {parseSourceMap, SourceMap, type SourceMapV3} from './SourceMap.js';
 
 export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   readonly #target: Target;
@@ -119,9 +121,10 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 
         const initiator = client.createPageResourceLoadInitiator();
         clientData.sourceMapPromise =
-            SourceMap.load(sourceMapURL, sourceURL, initiator)
+            loadSourceMap(sourceMapURL, initiator)
                 .then(
-                    sourceMap => {
+                    payload => {
+                      const sourceMap = new SourceMap(sourceURL, sourceMapURL, payload);
                       if (this.#clientData.get(client) === clientData) {
                         clientData.sourceMap = sourceMap;
                         this.#sourceMaps.set(sourceMap, client);
@@ -162,6 +165,16 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   dispose(): void {
     TargetManager.instance().removeEventListener(
         TargetManagerEvents.InspectedURLChanged, this.inspectedURLChanged, this);
+  }
+}
+
+async function loadSourceMap(
+    url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<SourceMapV3> {
+  try {
+    const {content} = await PageResourceLoader.instance().loadResource(url, initiator);
+    return parseSourceMap(content);
+  } catch (cause) {
+    throw new Error(`Could not load content for ${url}: ${cause.message}`, {cause});
   }
 }
 

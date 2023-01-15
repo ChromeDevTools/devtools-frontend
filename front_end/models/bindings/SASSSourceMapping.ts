@@ -29,9 +29,10 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
@@ -79,7 +80,7 @@ export class SASSSourceMapping implements SourceMapping {
     for (const sourceURL of sourceMap.sourceURLs()) {
       let binding = bindings.get(sourceURL);
       if (!binding) {
-        binding = new Binding(project, sourceURL);
+        binding = new Binding(project, sourceURL, header.createPageResourceLoadInitiator());
         bindings.set(sourceURL, binding);
       }
       binding.addSourceMap(sourceMap, header.frameId);
@@ -174,12 +175,16 @@ const uiSourceCodeToBinding = new WeakMap<Workspace.UISourceCode.UISourceCode, B
 class Binding {
   readonly #project: ContentProviderBasedProject;
   readonly #url: Platform.DevToolsPath.UrlString;
+  readonly #initiator: SDK.PageResourceLoader.PageResourceLoadInitiator;
   referringSourceMaps: SDK.SourceMap.SourceMap[];
   uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
 
-  constructor(project: ContentProviderBasedProject, url: Platform.DevToolsPath.UrlString) {
+  constructor(
+      project: ContentProviderBasedProject, url: Platform.DevToolsPath.UrlString,
+      initiator: SDK.PageResourceLoader.PageResourceLoadInitiator) {
     this.#project = project;
     this.#url = url;
+    this.#initiator = initiator;
 
     this.referringSourceMaps = [];
     this.uiSourceCode = null;
@@ -188,13 +193,15 @@ class Binding {
   private recreateUISourceCodeIfNeeded(frameId: Protocol.Page.FrameId): void {
     const sourceMap = this.referringSourceMaps[this.referringSourceMaps.length - 1];
 
-    const contentProvider =
-        sourceMap.sourceContentProvider(this.#url, Common.ResourceType.resourceTypes.SourceMapStyleSheet);
-    const newUISourceCode = this.#project.createUISourceCode(this.#url, contentProvider.contentType());
-    uiSourceCodeToBinding.set(newUISourceCode, this);
-    const mimeType =
-        Common.ResourceType.ResourceType.mimeFromURL(this.#url) || contentProvider.contentType().canonicalMimeType();
+    const contentType = Common.ResourceType.resourceTypes.SourceMapStyleSheet;
     const embeddedContent = sourceMap.embeddedContentByURL(this.#url);
+    const contentProvider = embeddedContent !== null ?
+        TextUtils.StaticContentProvider.StaticContentProvider.fromString(this.#url, contentType, embeddedContent) :
+        new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
+            this.#url, contentType, this.#initiator);
+    const newUISourceCode = this.#project.createUISourceCode(this.#url, contentType);
+    uiSourceCodeToBinding.set(newUISourceCode, this);
+    const mimeType = Common.ResourceType.ResourceType.mimeFromURL(this.#url) || contentType.canonicalMimeType();
     const metadata = typeof embeddedContent === 'string' ?
         new Workspace.UISourceCode.UISourceCodeMetadata(null, embeddedContent.length) :
         null;

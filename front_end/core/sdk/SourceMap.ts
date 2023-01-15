@@ -34,29 +34,7 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-
-import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
-
-import {PageResourceLoader, type PageResourceLoadInitiator} from './PageResourceLoader.js';
-
-const UIStrings = {
-  /**
-   *@description Error message when failing to load a source map text via the network
-   *@example {https://example.com/sourcemap.map} PH1
-   *@example {A certificate error occurred} PH2
-   */
-  couldNotLoadContentForSS: 'Could not load content for {PH1}: {PH2}',
-  /**
-   *@description Error message when failing to load a script source text via the network
-   *@example {https://example.com} PH1
-   *@example {Unexpected token} PH2
-   */
-  couldNotParseContentForSS: 'Could not parse content for {PH1}: {PH2}',
-};
-const str_ = i18n.i18n.registerUIStrings('core/sdk/SourceMap.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
@@ -105,6 +83,24 @@ export type SourceMapV3 = SourceMapV3Object|{
   // clang-format on
 };
 
+/**
+ * Parses the {@link content} as JSON, ignoring BOM markers in the beginning, and
+ * also handling the CORB bypass prefix correctly.
+ *
+ * @param content the string representation of a sourcemap.
+ * @returns the {@link SourceMapV3} representation of the {@link content}.
+ */
+export function parseSourceMap(content: string): SourceMapV3 {
+  if (content.startsWith(')]}')) {
+    content = content.substring(content.indexOf('\n'));
+  }
+  if (content.charCodeAt(0) === 0xFEFF) {
+    // Strip BOM at the beginning before parsing the JSON.
+    content = content.slice(1);
+  }
+  return JSON.parse(content) as SourceMapV3;
+}
+
 export class SourceMapEntry {
   lineNumber: number;
   columnNumber: number;
@@ -148,7 +144,6 @@ interface SourceInfo {
 }
 
 export class SourceMap {
-  readonly #initiator: PageResourceLoadInitiator;
   #json: SourceMapV3|null;
   readonly #compiledURLInternal: Platform.DevToolsPath.UrlString;
   readonly #sourceMappingURL: Platform.DevToolsPath.UrlString;
@@ -162,8 +157,7 @@ export class SourceMap {
    */
   constructor(
       compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString,
-      payload: SourceMapV3, initiator: PageResourceLoadInitiator) {
-    this.#initiator = initiator;
+      payload: SourceMapV3) {
     this.#json = payload;
     this.#compiledURLInternal = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
@@ -180,35 +174,6 @@ export class SourceMap {
     this.eachSection(this.parseSources.bind(this));
   }
 
-  /**
-   * @throws {!Error}
-   */
-  static async load(
-      sourceMapURL: Platform.DevToolsPath.UrlString, compiledURL: Platform.DevToolsPath.UrlString,
-      initiator: PageResourceLoadInitiator): Promise<SourceMap> {
-    let updatedContent;
-    try {
-      const {content} = await PageResourceLoader.instance().loadResource(sourceMapURL, initiator);
-      updatedContent = content;
-      if (content.slice(0, 3) === ')]}') {
-        updatedContent = content.substring(content.indexOf('\n'));
-      }
-      if (updatedContent.charCodeAt(0) === 0xFEFF) {
-        // Strip BOM at the beginning before parsing the JSON.
-        updatedContent = updatedContent.slice(1);
-      }
-    } catch (error) {
-      throw new Error(i18nString(UIStrings.couldNotLoadContentForSS, {PH1: sourceMapURL, PH2: error.message}));
-    }
-
-    try {
-      const payload = (JSON.parse(updatedContent) as SourceMapV3);
-      return new SourceMap(compiledURL, sourceMapURL, payload, initiator);
-    } catch (error) {
-      throw new Error(i18nString(UIStrings.couldNotParseContentForSS, {PH1: sourceMapURL, PH2: error.message}));
-    }
-  }
-
   compiledURL(): Platform.DevToolsPath.UrlString {
     return this.#compiledURLInternal;
   }
@@ -219,15 +184,6 @@ export class SourceMap {
 
   sourceURLs(): Platform.DevToolsPath.UrlString[] {
     return [...this.#sourceInfos.keys()];
-  }
-
-  sourceContentProvider(sourceURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType):
-      TextUtils.ContentProvider.ContentProvider {
-    const info = this.#sourceInfos.get(sourceURL);
-    if (info && info.content) {
-      return TextUtils.StaticContentProvider.StaticContentProvider.fromString(sourceURL, contentType, info.content);
-    }
-    return new CompilerSourceMappingContentProvider(sourceURL, contentType, this.#initiator);
   }
 
   embeddedContentByURL(sourceURL: Platform.DevToolsPath.UrlString): string|null {

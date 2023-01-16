@@ -29,9 +29,10 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Platform from '../../core/platform/platform.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -330,7 +331,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     const itemId = BreakpointManager.breakpointStorageId(url, lineNumber, columnNumber);
     let breakpoint = this.#breakpointByStorageId.get(itemId);
     if (breakpoint) {
-      breakpoint.updateState(condition, enabled);
+      breakpoint.updateState({...breakpoint.storageState, condition, enabled});
       breakpoint.addUISourceCode(uiSourceCode);
       void breakpoint.updateBreakpoint();
       return breakpoint;
@@ -524,13 +525,9 @@ const enum ResolveLocationResult {
 
 export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly breakpointManager: BreakpointManager;
-  urlInternal: Platform.DevToolsPath.UrlString;
-  readonly #lineNumberInternal: number;
-  readonly #columnNumberInternal: number|undefined;
   readonly #uiLocations: Set<Workspace.UISourceCode.UILocation>;
   uiSourceCodes: Set<Workspace.UISourceCode.UISourceCode>;
-  #conditionInternal!: string;
-  #enabledInternal!: boolean;
+  #storageState!: BreakpointStorageState;
   #origin: BreakpointOrigin;
   isRemoved = false;
   currentState: Breakpoint.State|null;
@@ -541,9 +538,6 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
       url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number|undefined, condition: string,
       enabled: boolean, origin: BreakpointOrigin) {
     this.breakpointManager = breakpointManager;
-    this.urlInternal = url;
-    this.#lineNumberInternal = lineNumber;
-    this.#columnNumberInternal = columnNumber;
     this.#origin = origin;
 
     this.#uiLocations = new Set();   // Bound locations
@@ -553,7 +547,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     this.currentState = null;
 
     this.#modelBreakpoints = new Map();
-    this.updateState(condition, enabled);
+    this.updateState({url, lineNumber, columnNumber, condition, enabled});
     this.addUISourceCode(primaryUISourceCode);
     this.breakpointManager.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
@@ -658,15 +652,15 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   }
 
   url(): Platform.DevToolsPath.UrlString {
-    return this.urlInternal;
+    return this.#storageState.url;
   }
 
   lineNumber(): number {
-    return this.#lineNumberInternal;
+    return this.#storageState.lineNumber;
   }
 
   columnNumber(): number|undefined {
-    return this.#columnNumberInternal;
+    return this.#storageState.columnNumber;
   }
 
   uiLocationAdded(uiLocation: Workspace.UISourceCode.UILocation): void {
@@ -692,7 +686,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   }
 
   enabled(): boolean {
-    return this.#enabledInternal;
+    return this.#storageState.enabled;
   }
 
   bound(): boolean {
@@ -709,23 +703,31 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   }
 
   setEnabled(enabled: boolean): void {
-    this.updateState(this.#conditionInternal, enabled);
+    this.updateState({...this.#storageState, enabled});
   }
 
   condition(): string {
-    return this.#conditionInternal;
+    return this.#storageState.condition;
   }
 
   setCondition(condition: string): void {
-    this.updateState(condition, this.#enabledInternal);
+    this.updateState({...this.#storageState, condition});
   }
 
-  updateState(condition: string, enabled: boolean): void {
-    if (this.#enabledInternal === enabled && this.#conditionInternal === condition) {
+  get storageState(): BreakpointStorageState {
+    return this.#storageState;
+  }
+
+  updateState(newState: BreakpointStorageState): void {
+    // Only 'enabled' and 'condition' can change (except during initialization).
+    Platform.DCHECK(
+        () => !this.#storageState ||
+            (this.#storageState.url === newState.url && this.#storageState.lineNumber === newState.lineNumber &&
+             this.#storageState.columnNumber === newState.columnNumber));
+    if (this.#storageState?.enabled === newState.enabled && this.#storageState?.condition === newState.condition) {
       return;
     }
-    this.#enabledInternal = enabled;
-    this.#conditionInternal = condition;
+    this.#storageState = newState;
     this.breakpointManager.storage.updateBreakpoint(this);
     void this.updateBreakpoint();
   }
@@ -759,12 +761,12 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
 
   breakpointStorageId(): string {
     return BreakpointManager.breakpointStorageId(
-        this.urlInternal, this.#lineNumberInternal, this.#columnNumberInternal);
+        this.#storageState.url, this.#storageState.lineNumber, this.#storageState.columnNumber);
   }
 
   private defaultUILocation(uiSourceCode: Workspace.UISourceCode.UISourceCode): Workspace.UISourceCode.UILocation {
     return BreakpointManager.uiLocationFromBreakpointLocation(
-        uiSourceCode, this.#lineNumberInternal, this.#columnNumberInternal);
+        uiSourceCode, this.#storageState.lineNumber, this.#storageState.columnNumber);
   }
 
   private removeAllUnboundLocations(): void {
@@ -1132,20 +1134,19 @@ export namespace Breakpoint {
 }
 
 class Storage {
-  readonly #setting: Common.Settings.Setting<Storage.Item[]>;
-  readonly #breakpoints: Map<string, Storage.Item>;
+  readonly #setting: Common.Settings.Setting<BreakpointStorageState[]>;
+  readonly #breakpoints: Map<string, BreakpointStorageState>;
   #muted!: boolean|undefined;
 
   constructor() {
     this.#setting = Common.Settings.Settings.instance().createLocalSetting('breakpoints', []);
     this.#breakpoints = new Map();
-    const items = (this.#setting.get() as Storage.Item[]);
-    for (const item of items) {
+    for (const item of this.#setting.get()) {
       this.#breakpoints.set(BreakpointManager.breakpointStorageId(item.url, item.lineNumber, item.columnNumber), item);
     }
   }
 
-  get setting(): Common.Settings.Setting<Storage.Item[]> {
+  get setting(): Common.Settings.Setting<BreakpointStorageState[]> {
     return this.#setting;
   }
 
@@ -1157,7 +1158,7 @@ class Storage {
     this.#muted = undefined;
   }
 
-  breakpointItems(url: Platform.DevToolsPath.UrlString): Storage.Item[] {
+  breakpointItems(url: Platform.DevToolsPath.UrlString): BreakpointStorageState[] {
     return Array.from(this.#breakpoints.values()).filter(item => item.url === url);
   }
 
@@ -1165,7 +1166,7 @@ class Storage {
     if (this.#muted || !breakpoint.breakpointStorageId()) {
       return;
     }
-    this.#breakpoints.set(breakpoint.breakpointStorageId(), new Storage.Item(breakpoint));
+    this.#breakpoints.set(breakpoint.breakpointStorageId(), breakpoint.storageState);
     this.save();
   }
 
@@ -1181,22 +1182,16 @@ class Storage {
   }
 }
 
-namespace Storage {
-  export class Item {
-    url: Platform.DevToolsPath.UrlString;
-    lineNumber: number;
-    columnNumber?: number;
-    condition: string;
-    enabled: boolean;
-
-    constructor(breakpoint: Breakpoint) {
-      this.url = breakpoint.url();
-      this.lineNumber = breakpoint.lineNumber();
-      this.columnNumber = breakpoint.columnNumber();
-      this.condition = breakpoint.condition();
-      this.enabled = breakpoint.enabled();
-    }
-  }
+/**
+ * All the data for a single `Breakpoint` thats stored in the settings.
+ * Whenever any of these change, we need to update the settings.
+ */
+interface BreakpointStorageState {
+  readonly url: Platform.DevToolsPath.UrlString;
+  readonly lineNumber: number;
+  readonly columnNumber?: number;
+  readonly condition: string;
+  readonly enabled: boolean;
 }
 
 export class BreakpointLocation {

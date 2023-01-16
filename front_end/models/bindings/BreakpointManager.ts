@@ -103,13 +103,6 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     return breakpointManagerInstance;
   }
 
-  static breakpointStorageId(url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber?: number): string {
-    if (!url) {
-      return '';
-    }
-    return `${url}:${lineNumber}` + (typeof columnNumber === 'number' ? `:${columnNumber}` : '');
-  }
-
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       debuggerModel.setSynchronizeBreakpointsCallback(this.restoreBreakpointsForScript.bind(this));
@@ -328,8 +321,9 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number|undefined,
       condition: string, enabled: boolean, origin: BreakpointOrigin): Breakpoint {
     const url = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode)?.sourceURL ?? uiSourceCode.url();
-    const itemId = BreakpointManager.breakpointStorageId(url, lineNumber, columnNumber);
-    let breakpoint = this.#breakpointByStorageId.get(itemId);
+    const breakpointStorageState: BreakpointStorageState = {url, lineNumber, columnNumber, condition, enabled};
+    const storageId = Storage.storageId(breakpointStorageState);
+    let breakpoint = this.#breakpointByStorageId.get(storageId);
     if (breakpoint) {
       breakpoint.updateState({...breakpoint.storageState, condition, enabled});
       breakpoint.addUISourceCode(uiSourceCode);
@@ -337,7 +331,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       return breakpoint;
     }
     breakpoint = new Breakpoint(this, uiSourceCode, url, lineNumber, columnNumber, condition, enabled, origin);
-    this.#breakpointByStorageId.set(itemId, breakpoint);
+    this.#breakpointByStorageId.set(storageId, breakpoint);
     return breakpoint;
   }
 
@@ -728,7 +722,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
       return;
     }
     this.#storageState = newState;
-    this.breakpointManager.storage.updateBreakpoint(this);
+    this.breakpointManager.storage.updateBreakpoint(this.#storageState);
     void this.updateBreakpoint();
   }
 
@@ -760,8 +754,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   }
 
   breakpointStorageId(): string {
-    return BreakpointManager.breakpointStorageId(
-        this.#storageState.url, this.#storageState.lineNumber, this.#storageState.columnNumber);
+    return Storage.storageId(this.#storageState);
   }
 
   private defaultUILocation(uiSourceCode: Workspace.UISourceCode.UISourceCode): Workspace.UISourceCode.UILocation {
@@ -1142,7 +1135,7 @@ class Storage {
     this.#setting = Common.Settings.Settings.instance().createLocalSetting('breakpoints', []);
     this.#breakpoints = new Map();
     for (const item of this.#setting.get()) {
-      this.#breakpoints.set(BreakpointManager.breakpointStorageId(item.url, item.lineNumber, item.columnNumber), item);
+      this.#breakpoints.set(Storage.storageId(item), item);
     }
   }
 
@@ -1162,11 +1155,12 @@ class Storage {
     return Array.from(this.#breakpoints.values()).filter(item => item.url === url);
   }
 
-  updateBreakpoint(breakpoint: Breakpoint): void {
-    if (this.#muted || !breakpoint.breakpointStorageId()) {
+  updateBreakpoint(storageState: BreakpointStorageState): void {
+    const storageId = Storage.storageId(storageState);
+    if (this.#muted || !storageId) {
       return;
     }
-    this.#breakpoints.set(breakpoint.breakpointStorageId(), breakpoint.storageState);
+    this.#breakpoints.set(storageId, storageState);
     this.save();
   }
 
@@ -1179,6 +1173,13 @@ class Storage {
 
   private save(): void {
     this.#setting.set(Array.from(this.#breakpoints.values()));
+  }
+
+  static storageId({url, lineNumber, columnNumber}: BreakpointStorageState): string {
+    if (!url) {
+      return '';
+    }
+    return `${url}:${lineNumber}` + (typeof columnNumber === 'number' ? `:${columnNumber}` : '');
   }
 }
 

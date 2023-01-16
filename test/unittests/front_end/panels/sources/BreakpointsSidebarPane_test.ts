@@ -40,8 +40,7 @@ function createBreakpointLocations(testData: LocationTestData[]): Bindings.Break
     const breakpoint = sinon.createStubInstance(Bindings.BreakpointManager.Breakpoint);
     breakpoint.enabled.returns(data.enabled);
     breakpoint.condition.returns(data.condition);
-    breakpoint.breakpointStorageId.returns(
-        Bindings.BreakpointManager.BreakpointManager.breakpointStorageId(data.url, data.lineNumber, data.columnNumber));
+    breakpoint.breakpointStorageId.returns(`${data.url}:${data.lineNumber}:${data.columnNumber}`);
     return new Bindings.BreakpointManager.BreakpointLocation(breakpoint, uiLocation);
   });
   return breakpointLocations;

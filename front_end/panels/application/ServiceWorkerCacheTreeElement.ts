@@ -30,7 +30,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerCacheTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTreeElement {
-  private swCacheModel: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel|null;
+  private swCacheModels: Set<SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel>;
   private swCacheTreeElements: Set<SWCacheTreeElement>;
 
   constructor(resourcesPanel: ResourcesPanel) {
@@ -40,24 +40,19 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
         'https://developer.chrome.com/docs/devtools/storage/cache/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
     this.setLeadingIcons([icon]);
-    this.swCacheModel = null;
+    this.swCacheModels = new Set();
     this.swCacheTreeElements = new Set();
   }
 
-  initialize(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel|null): void {
+  initialize(): void {
+    this.swCacheModels.clear();
     this.swCacheTreeElements.clear();
-    this.swCacheModel = model;
-    if (model) {
-      for (const cache of model.caches()) {
-        this.addCache(model, cache);
-      }
-    }
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, SDK.ServiceWorkerCacheModel.Events.CacheAdded,
-        this.cacheAdded, this);
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, SDK.ServiceWorkerCacheModel.Events.CacheRemoved,
-        this.cacheRemoved, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, {
+      modelAdded: (model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel): void =>
+          this.serviceWorkerCacheModelAdded(model),
+      modelRemoved: (model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel): void =>
+          this.serviceWorkerCacheModelRemoved(model),
+    });
   }
 
   onattach(): void {
@@ -72,9 +67,28 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
   }
 
   private refreshCaches(): void {
-    if (this.swCacheModel) {
-      this.swCacheModel.refreshCacheNames();
+    for (const swCacheModel of this.swCacheModels) {
+      swCacheModel.refreshCacheNames();
     }
+  }
+
+  private serviceWorkerCacheModelAdded(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel): void {
+    model.enable();
+    this.swCacheModels.add(model);
+    for (const cache of model.caches()) {
+      this.addCache(model, cache);
+    }
+    model.addEventListener(SDK.ServiceWorkerCacheModel.Events.CacheAdded, this.cacheAdded, this);
+    model.addEventListener(SDK.ServiceWorkerCacheModel.Events.CacheRemoved, this.cacheRemoved, this);
+  }
+
+  private serviceWorkerCacheModelRemoved(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel): void {
+    for (const cache of model.caches()) {
+      this.removeCache(model, cache);
+    }
+    model.removeEventListener(SDK.ServiceWorkerCacheModel.Events.CacheAdded, this.cacheAdded, this);
+    model.removeEventListener(SDK.ServiceWorkerCacheModel.Events.CacheRemoved, this.cacheRemoved, this);
+    this.swCacheModels.delete(model);
   }
 
   private cacheAdded(event: Common.EventTarget.EventTargetEvent<SDK.ServiceWorkerCacheModel.CacheEvent>): void {
@@ -91,6 +105,11 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
 
   private cacheRemoved(event: Common.EventTarget.EventTargetEvent<SDK.ServiceWorkerCacheModel.CacheEvent>): void {
     const {model, cache} = event.data;
+    this.removeCache(model, cache);
+  }
+
+  private removeCache(
+      model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache): void {
     const swCacheTreeElement = this.cacheTreeElement(model, cache);
     if (!swCacheTreeElement) {
       return;

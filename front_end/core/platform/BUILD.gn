@@ -42,6 +42,7 @@ devtools_module("platform") {
     "UIString.ts",
     "UserVisibleError.ts",
     "array-utilities.ts",
+    "brand.ts",
     "date-utilities.ts",
     "dom-utilities.ts",
     "keyboard-utilities.ts",

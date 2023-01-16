@@ -2,36 +2,29 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-class UrlStringTag {
-  private urlTag: (string|undefined);
-}
+import {type Brand} from './brand.js';
+
 /**
  * File paths in DevTools that are represented as URLs
  * @example
  * “file:///Hello%20World/file/js”
  */
-export type UrlString = string&UrlStringTag;
+export type UrlString = Brand<string, 'UrlString'>;
 export const EmptyUrlString = '' as UrlString;
 
-class RawPathStringTag {
-  private rawPathTag: (string|undefined);
-}
 /**
  * File paths in DevTools that are represented as unencoded absolute
  * or relative paths
  * @example
  * “/Hello World/file.js”
  */
-export type RawPathString = string&RawPathStringTag;
+export type RawPathString = Brand<string, 'RawPathString'>;
 export const EmptyRawPathString = '' as RawPathString;
 
-class EncodedPathStringTag {
-  private encodedPathTag: (string|undefined);
-}
 /**
  * File paths in DevTools that are represented as encoded paths
  * @example
  * “/Hello%20World/file.js”
  */
-export type EncodedPathString = string&EncodedPathStringTag;
+export type EncodedPathString = Brand<string, 'EncodedPathString'>;
 export const EmptyEncodedPathString = '' as EncodedPathString;

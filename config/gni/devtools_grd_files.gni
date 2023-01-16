@@ -597,6 +597,7 @@ grd_files_debug_sources = [
   "front_end/core/platform/UIString.js",
   "front_end/core/platform/UserVisibleError.js",
   "front_end/core/platform/array-utilities.js",
+  "front_end/core/platform/brand.js",
   "front_end/core/platform/date-utilities.js",
   "front_end/core/platform/dcheck.js",
   "front_end/core/platform/dom-utilities.js",

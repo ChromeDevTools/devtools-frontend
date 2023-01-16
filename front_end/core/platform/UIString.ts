@@ -33,9 +33,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-class LocalizedStringTag {
-  private localizationTag: (string|undefined);
-}
-export type LocalizedString = string&LocalizedStringTag;
+import {type Brand} from './brand.js';
 
+export type LocalizedString = Brand<string, 'LocalizedString'>;
 export const LocalizedEmptyString = '' as LocalizedString;

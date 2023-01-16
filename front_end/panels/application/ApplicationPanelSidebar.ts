@@ -42,14 +42,15 @@ import * as Protocol from '../../generated/protocol.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {BackForwardCacheTreeElement, ServiceWorkerCacheTreeElement} from './ApplicationPanelCacheSection.js';
 import {PreloadingTreeElement} from './ApplicationPanelPreloadingSection.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {AppManifestView} from './AppManifestView.js';
+import {BackForwardCacheTreeElement} from './BackForwardCacheTreeElement.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
 import * as ApplicationComponents from './components/components.js';
 import resourcesSidebarStyles from './resourcesSidebar.css.js';
+import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
 
 import {DatabaseModel, Events as DatabaseModelEvents, type Database as DatabaseModelDatabase} from './DatabaseModel.js';
 import {DatabaseQueryView, Events as DatabaseQueryViewEvents} from './DatabaseQueryView.js';
@@ -109,10 +110,6 @@ const UIStrings = {
    *@description Text for web cookies
    */
   cookies: 'Cookies',
-  /**
-   *@description Text in Application Panel Sidebar of the Application panel
-   */
-  cache: 'Cache',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
@@ -363,17 +360,14 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.sharedStorageListTreeElement = new SharedStorageListTreeElement(panel);
     storageTreeElement.appendChild(this.sharedStorageListTreeElement);
 
-    const cacheSectionTitle = i18nString(UIStrings.cache);
-    const cacheTreeElement = this.addSidebarSection(cacheSectionTitle);
     this.cacheStorageListTreeElement = new ServiceWorkerCacheTreeElement(panel);
-    cacheTreeElement.appendChild(this.cacheStorageListTreeElement);
-
-    this.backForwardCacheListTreeElement = new BackForwardCacheTreeElement(panel);
-    cacheTreeElement.appendChild(this.backForwardCacheListTreeElement);
+    storageTreeElement.appendChild(this.cacheStorageListTreeElement);
 
     const backgroundServiceSectionTitle = i18nString(UIStrings.backgroundServices);
     const backgroundServiceTreeElement = this.addSidebarSection(backgroundServiceSectionTitle);
 
+    this.backForwardCacheListTreeElement = new BackForwardCacheTreeElement(panel);
+    backgroundServiceTreeElement.appendChild(this.backForwardCacheListTreeElement);
     this.backgroundFetchTreeElement =
         new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundFetch);
     backgroundServiceTreeElement.appendChild(this.backgroundFetchTreeElement);

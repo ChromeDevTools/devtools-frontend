@@ -194,8 +194,8 @@ export const $ =
     async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root as puppeteer.ElementHandle : frontend;
-  const element = await rootElement.$<ElementType>(`${handler}/${selector}`);
-  return element;
+  const element = await rootElement.$(`${handler}/${selector}`);
+  return element as puppeteer.ElementHandle<ElementType>;
 };
 
 // Get multiple element handles. Uses `pierce` handler per default for piercing Shadow DOM.
@@ -203,8 +203,8 @@ export const $$ =
     async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root.asElement() || frontend : frontend;
-  const elements = await rootElement.$$<ElementType>(`${handler}/${selector}`);
-  return elements;
+  const elements = await rootElement.$$(`${handler}/${selector}`);
+  return elements as puppeteer.ElementHandle<ElementType>[];
 };
 
 /**
@@ -465,7 +465,7 @@ export const activeElement = async(): Promise<puppeteer.ElementHandle> => {
       activeElement = activeElement.shadowRoot.activeElement;
     }
 
-    return activeElement;
+    return activeElement as Element;
   });
 };
 
@@ -505,8 +505,10 @@ export const tabBackward = async (page?: puppeteer.Page) => {
   await targetPage.keyboard.up('Shift');
 };
 
+type Awaitable<T> = T|Promise<T>;
+
 export const selectTextFromNodeToNode = async (
-    from: puppeteer.JSHandle|Promise<puppeteer.JSHandle>, to: puppeteer.JSHandle|Promise<puppeteer.JSHandle>,
+    from: Awaitable<puppeteer.ElementHandle<Node>>, to: Awaitable<puppeteer.ElementHandle<Node>>,
     direction: 'up'|'down') => {
   const {target} = getBrowserAndPages();
 
@@ -514,7 +516,7 @@ export const selectTextFromNodeToNode = async (
   await target.bringToFront();
 
   return target.evaluate(async (from, to, direction) => {
-    const selection = from.getRootNode().getSelection();
+    const selection = (from.getRootNode() as Document).getSelection() as Selection;
     const range = document.createRange();
     if (direction === 'down') {
       range.setStartBefore(from);

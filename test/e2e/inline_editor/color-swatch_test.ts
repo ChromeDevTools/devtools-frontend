@@ -53,7 +53,7 @@ describe('The color swatch', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'color', 'red');
-    const property = await getCSSPropertyInRule('#inspected', 'color');
+    const property = await getCSSPropertyInRule('#inspected', 'color') as puppeteer.ElementHandle<Element>;
 
     await assertColorSwatch(property, 'red');
   });
@@ -71,7 +71,7 @@ describe('The color swatch', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'margin', '10px');
-    const property = await getCSSPropertyInRule('#inspected', 'margin');
+    const property = await getCSSPropertyInRule('#inspected', 'margin') as puppeteer.ElementHandle<Element>;
 
     await assertNoColorSwatch(property);
   });
@@ -80,7 +80,7 @@ describe('The color swatch', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'animation-name', 'black');
-    const property = await getCSSPropertyInRule('#inspected', 'animation-name');
+    const property = await getCSSPropertyInRule('#inspected', 'animation-name') as puppeteer.ElementHandle<Element>;
 
     await assertNoColorSwatch(property);
   });
@@ -89,7 +89,7 @@ describe('The color swatch', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'background', 'url(red green blue.jpg)');
-    const property = await getCSSPropertyInRule('#inspected', 'background');
+    const property = await getCSSPropertyInRule('#inspected', 'background') as puppeteer.ElementHandle<Element>;
 
     await assertNoColorSwatch(property);
   });
@@ -98,7 +98,7 @@ describe('The color swatch', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)');
-    const property = await getCSSPropertyInRule('#inspected', 'background-color');
+    const property = await getCSSPropertyInRule('#inspected', 'background-color') as puppeteer.ElementHandle<Element>;
     await assertColorSwatch(property, 'blue');
   });
 
@@ -107,7 +107,7 @@ describe('The color swatch', async () => {
        await goToTestPageAndSelectTestElement();
 
        await waitForCSSPropertyValue('#inspected', 'border-color', 'var(--red)');
-       const property = await getCSSPropertyInRule('#inspected', 'border-color');
+       const property = await getCSSPropertyInRule('#inspected', 'border-color') as puppeteer.ElementHandle<Element>;
        await assertNoColorSwatch(property);
      });
 
@@ -115,7 +115,7 @@ describe('The color swatch', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', '--variable', 'blue');
-    const property = await getCSSPropertyInRule('#inspected', '--variable');
+    const property = await getCSSPropertyInRule('#inspected', '--variable') as puppeteer.ElementHandle<Element>;
     await assertColorSwatch(property, 'blue');
   });
 
@@ -123,7 +123,7 @@ describe('The color swatch', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'color', 'red');
-    const property = await getCSSPropertyInRule('#inspected', 'color');
+    const property = await getCSSPropertyInRule('#inspected', 'color') as puppeteer.ElementHandle<Element>;
     if (!property) {
       assert.fail('Property not found');
     }
@@ -151,7 +151,7 @@ describe('The color swatch', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)');
-    const property = await getCSSPropertyInRule('#inspected', 'background-color');
+    const property = await getCSSPropertyInRule('#inspected', 'background-color') as puppeteer.ElementHandle<Element>;
     if (!property) {
       assert.fail('Property not found');
     }
@@ -164,13 +164,13 @@ describe('The color swatch', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'color', 'red');
-    let property = await getCSSPropertyInRule('#inspected', 'color');
+    let property = await getCSSPropertyInRule('#inspected', 'color') as puppeteer.ElementHandle<Element>;
     await assertColorSwatch(property, 'red');
 
     await editCSSProperty('#inspected', 'color', 'blue');
 
     await waitForCSSPropertyValue('#inspected', 'color', 'blue');
-    property = await getCSSPropertyInRule('#inspected', 'color');
+    property = await getCSSPropertyInRule('#inspected', 'color') as puppeteer.ElementHandle<Element>;
     await assertColorSwatch(property, 'blue');
   });
 
@@ -180,16 +180,16 @@ describe('The color swatch', async () => {
     await waitForCSSPropertyValue('#inspected', '--bar', 'var(--baz)');
     await waitForCSSPropertyValue('#inspected', 'color', 'var(--bar)');
 
-    let barProperty = await getCSSPropertyInRule('#inspected', '--bar');
-    let colorProperty = await getCSSPropertyInRule('#inspected', 'color');
+    let barProperty = await getCSSPropertyInRule('#inspected', '--bar') as puppeteer.ElementHandle<Element>;
+    let colorProperty = await getCSSPropertyInRule('#inspected', 'color') as puppeteer.ElementHandle<Element>;
     await assertColorSwatch(barProperty, 'red');
     await assertColorSwatch(colorProperty, 'red');
 
     await editCSSProperty('#inspected', '--baz', 'blue');
     await waitForCSSPropertyValue('#inspected', '--baz', 'blue');
 
-    barProperty = await getCSSPropertyInRule('#inspected', '--bar');
-    colorProperty = await getCSSPropertyInRule('#inspected', 'color');
+    barProperty = await getCSSPropertyInRule('#inspected', '--bar') as puppeteer.ElementHandle<Element>;
+    colorProperty = await getCSSPropertyInRule('#inspected', 'color') as puppeteer.ElementHandle<Element>;
     await assertColorSwatch(barProperty, 'blue');
     await assertColorSwatch(colorProperty, 'blue');
   });

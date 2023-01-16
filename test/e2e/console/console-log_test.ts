@@ -37,7 +37,7 @@ describe('The Console Tab', async () => {
         message: 'log',
         messageClasses: 'console-message',
         repeatCount: null,
-        source: '__puppeteer_evaluation_script__:1',
+        source: '(index):1',
         stackPreview: null,
         wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
       }],
@@ -49,7 +49,7 @@ describe('The Console Tab', async () => {
         message: 'debug',
         messageClasses: 'console-message',
         repeatCount: null,
-        source: '__puppeteer_evaluation_script__:1',
+        source: '(index):1',
         stackPreview: null,
         wrapperClasses: 'console-message-wrapper console-from-api console-verbose-level',
       }],
@@ -61,8 +61,8 @@ describe('The Console Tab', async () => {
         message: 'warn',
         messageClasses: 'console-message',
         repeatCount: null,
-        source: '__puppeteer_evaluation_script__:1',
-        stackPreview: '\n(anonymous) @ __puppeteer_evaluation_script__:1',
+        source: '(index):1',
+        stackPreview: '\n(anonymous) @ (index):1',
         wrapperClasses: 'console-message-wrapper console-from-api console-warning-level',
       }],
     },
@@ -73,8 +73,8 @@ describe('The Console Tab', async () => {
         message: 'error',
         messageClasses: 'console-message',
         repeatCount: null,
-        source: '__puppeteer_evaluation_script__:1',
-        stackPreview: '\n(anonymous) @ __puppeteer_evaluation_script__:1',
+        source: '(index):1',
+        stackPreview: '\n(anonymous) @ (index):1',
         wrapperClasses: 'console-message-wrapper console-from-api console-error-level',
       }],
     },
@@ -89,7 +89,7 @@ describe('The Console Tab', async () => {
         message: 'repeated',
         messageClasses: 'console-message repeated-message',
         repeatCount: '5',
-        source: '__puppeteer_evaluation_script__:3',
+        source: '(index):3',
         stackPreview: null,
         wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
       }],
@@ -106,7 +106,7 @@ describe('The Console Tab', async () => {
           message: 'count: 1',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:3',
+          source: '(index):3',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
         },
@@ -114,7 +114,7 @@ describe('The Console Tab', async () => {
           message: 'count: 2',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:3',
+          source: '(index):3',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
         },
@@ -131,7 +131,7 @@ describe('The Console Tab', async () => {
           message: 'group',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:2',
+          source: '(index):2',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-group-title console-from-api console-info-level',
         },
@@ -147,7 +147,7 @@ describe('The Console Tab', async () => {
           message: '1 2 3',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:2',
+          source: '(index):2',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
         },
@@ -174,7 +174,7 @@ describe('The Console Tab', async () => {
           message: 'groupCollapsed',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:2',
+          source: '(index):2',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-group-title console-from-api console-info-level',
         },
@@ -195,7 +195,7 @@ describe('The Console Tab', async () => {
           message: 'default: 1',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:2',
+          source: '(index):2',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
         },
@@ -203,7 +203,7 @@ describe('The Console Tab', async () => {
           message: 'default: 2',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:3',
+          source: '(index):3',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
         },
@@ -211,7 +211,7 @@ describe('The Console Tab', async () => {
           message: 'default: 3',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:4',
+          source: '(index):4',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
         },
@@ -219,7 +219,7 @@ describe('The Console Tab', async () => {
           message: 'title: 1',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:5',
+          source: '(index):5',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
         },
@@ -227,7 +227,7 @@ describe('The Console Tab', async () => {
           message: 'title: 2',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:6',
+          source: '(index):6',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
         },
@@ -235,7 +235,7 @@ describe('The Console Tab', async () => {
           message: 'title: 3',
           messageClasses: 'console-message',
           repeatCount: null,
-          source: '__puppeteer_evaluation_script__:7',
+          source: '(index):7',
           stackPreview: null,
           wrapperClasses: 'console-message-wrapper console-from-api console-info-level',
         },
@@ -322,14 +322,14 @@ describe('The Console Tab', async () => {
 
   describe('Console log message formatters', () => {
     async function getConsoleMessageTextChunksWithStyle(
-        frontend: puppeteer.Page, styles: string[] = []): Promise<string[][][]> {
-      return await frontend.evaluate((selector, styles: string[]) => {
+        frontend: puppeteer.Page, styles: (keyof CSSStyleDeclaration)[] = []): Promise<string[][][]> {
+      return await frontend.evaluate((selector, styles) => {
         return [...document.querySelectorAll(selector)].map(message => [...message.childNodes].map(node => {
           // For all nodes, extract text.
-          const result = [node.textContent];
+          const result = [node.textContent as string];
           // For element nodes, get the requested styles.
           for (const style of styles) {
-            result.push(node.style?.[style] ?? '');
+            result.push(((node as HTMLElement).style?.[style] as string) ?? '');
           }
           return result;
         }));
@@ -381,7 +381,7 @@ describe('The Console Tab', async () => {
       await waitForConsoleMessages(1);
 
       // Check that the 'BG' text has the background image set.
-      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['background-image']);
+      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['backgroundImage']);
       assert.strictEqual(textsAndStyles.length, 1);
       const message = textsAndStyles[0];
       assert.strictEqual(message.length, 2);
@@ -398,7 +398,7 @@ describe('The Console Tab', async () => {
       await waitForConsoleMessages(1);
 
       // Check that the 'BG' text has no bakcground image.
-      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['background-image']);
+      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['backgroundImage']);
       assert.deepEqual(textsAndStyles, [[['PRE', ''], ['BG', '']]]);
     });
   });

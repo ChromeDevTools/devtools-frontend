@@ -275,7 +275,7 @@ export const getPropertyFromComputedPane = async (name: string) => {
   const properties = await $$(COMPUTED_PROPERTY_SELECTOR);
   for (const property of properties) {
     const matchingProperty = await property.evaluate((node, name) => {
-      const nameSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-name slot');
+      const nameSlot = node.shadowRoot?.querySelector('.property-name slot') as HTMLSlotElement;
       const nameEl = nameSlot?.assignedElements().at(0);
       return nameEl?.textContent?.trim().replace(/:$/, '') === name;
     }, name);
@@ -333,7 +333,7 @@ export const getComputedStylesForDomNode = async (elementSelector: string, style
     if (!element) {
       throw new Error(`${elementSelector} could not be found`);
     }
-    return getComputedStyle(element)[styleAttribute];
+    return getComputedStyle(element)[styleAttribute as keyof CSSStyleDeclaration];
   }, elementSelector, styleAttribute);
 };
 
@@ -560,8 +560,9 @@ export const getCSSPropertyInRule =
         await node.evaluateHandle((node, name) => (name === node.textContent) ? node.parentNode : undefined, name);
     // Note that evaluateHandle always returns a handle, even if it points to an undefined remote object, so we need to
     // check it's defined here or continue iterating.
-    if (await parent.evaluate(n => Boolean(n))) {
-      return parent as puppeteer.ElementHandle;
+    const handle = parent.asElement();
+    if (handle) {
+      return handle;
     }
   }
   return undefined;
@@ -659,7 +660,7 @@ export async function waitForPropertyToHighlight(ruleSelector: string, propertyN
     }
     // StylePropertyHighlighter temporarily highlights the property using the Web Animations API, so the only way to
     // know it's happening is by listing all animations.
-    const animationCount = await property.evaluate(node => node.getAnimations().length);
+    const animationCount = await property.evaluate(node => (node as HTMLElement).getAnimations().length);
     return animationCount > 0;
   });
 }

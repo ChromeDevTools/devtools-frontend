@@ -28,9 +28,12 @@ describe('The Sources Tab', async () => {
     await openFileInSourcesPanel('dynamic-loading-javascript.html');
 
     // Load the JavaScript files by executing the function in `dynamic-loading.html`
-    const capturedFileNames = await captureAddedSourceFiles(2, () => target.evaluate('go();'));
+    const capturedFileNames = await captureAddedSourceFiles(3, async () => {
+      await target.evaluate('go();');
+    });
 
     assert.deepEqual(capturedFileNames, [
+      '//__puppeteer_evaluation_script__/(index)',
       '/test/e2e/resources/sources/minified-sourcecode.js',
       '/test/e2e/resources/sources/evalSourceURL.js',
     ]);
@@ -41,7 +44,7 @@ describe('The Sources Tab', async () => {
 
     await openFileInSourcesPanel('dynamic-loading-css.html');
 
-    const capturedFileNames = await captureAddedSourceFiles(1, async () => {
+    const capturedFileNames = await captureAddedSourceFiles(2, async () => {
       // Load the CSS file by executing the function in `dynamic-loading-css.html`
       await target.evaluate('go();');
 
@@ -52,6 +55,7 @@ describe('The Sources Tab', async () => {
     });
 
     assert.deepEqual(capturedFileNames, [
+      '//__puppeteer_evaluation_script__/(index)',
       '/test/e2e/resources/sources/dynamic.css',
     ]);
   });
@@ -60,13 +64,12 @@ describe('The Sources Tab', async () => {
     const {target} = getBrowserAndPages();
     await goToResource('pages/hello-world.html');
     await navigateToElementsTab();
-    const capturedFileNames = await captureAddedSourceFiles(1, async () => {
+    const capturedFileNames = await captureAddedSourceFiles(2, async () => {
       await target.reload({waitUntil: 'networkidle0'});
       await openSourcesPanel();
     });
 
-    assert.deepEqual(capturedFileNames, [
-      '/test/e2e/resources/pages/hello-world.html',
-    ]);
+    assert.deepEqual(
+        capturedFileNames, ['/test/e2e/resources/pages/hello-world.html', '//__puppeteer_evaluation_script__/(index)']);
   });
 });

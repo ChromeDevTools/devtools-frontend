@@ -57,19 +57,23 @@ describe('Sources Tab', async function() {
 
     {
       const capturedFileNames =
-          await captureAddedSourceFiles(2, () => goToResource('sources/wasm/call-to-add-wasm.html'));
-      assert.deepEqual(
-          capturedFileNames,
-          ['/test/e2e/resources/sources/wasm/call-to-add-wasm.html', '/test/e2e/resources/sources/wasm/add.wasm']);
+          await captureAddedSourceFiles(3, () => goToResource('sources/wasm/call-to-add-wasm.html'));
+      assert.deepEqual(capturedFileNames, [
+        '/test/e2e/resources/sources/wasm/call-to-add-wasm.html',
+        '//__puppeteer_evaluation_script__/(index)',
+        '/test/e2e/resources/sources/wasm/add.wasm',
+      ]);
     }
 
     {
-      const capturedFileNames = await captureAddedSourceFiles(2, async () => {
+      const capturedFileNames = await captureAddedSourceFiles(3, async () => {
         await target.reload();
       });
-      assert.deepEqual(
-          capturedFileNames,
-          ['/test/e2e/resources/sources/wasm/call-to-add-wasm.html', '/test/e2e/resources/sources/wasm/add.wasm']);
+      assert.deepEqual(capturedFileNames, [
+        '/test/e2e/resources/sources/wasm/call-to-add-wasm.html',
+        '//__puppeteer_evaluation_script__/(index)',
+        '/test/e2e/resources/sources/wasm/add.wasm',
+      ]);
     }
   });
 

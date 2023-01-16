@@ -79,7 +79,7 @@ describe('The Sources Tab', async function() {
       await addBreakpointForLine(frontend, 9);
     });
 
-    let scriptEvaluation: Promise<void>;
+    let scriptEvaluation: Promise<unknown>;
     await step('trigger evaluation of script', async () => {
       scriptEvaluation = target.evaluate('f2();');
     });

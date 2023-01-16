@@ -64,7 +64,7 @@ describe('The Performance panel', () => {
     // Check setting a different value works:
     await input.click({clickCount: 3});
     await input.type(`${initialValue + 1}`);
-    concurrency = await waitForChangedConcurrency(concurrency);
+    concurrency = await waitForChangedConcurrency(concurrency as number);
     assert.deepEqual(concurrency, initialValue + 1);
 
     // Check that the warning is shown when exceeding the default value:
@@ -77,7 +77,7 @@ describe('The Performance panel', () => {
     assertNotNullOrUndefined(button);
     await button.click();
 
-    concurrency = await waitForChangedConcurrency(concurrency);
+    concurrency = await waitForChangedConcurrency(concurrency as number);
     assert.deepEqual(concurrency, initialValue);
   });
 });

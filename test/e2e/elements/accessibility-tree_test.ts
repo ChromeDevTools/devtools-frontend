@@ -31,7 +31,8 @@ describe('Accessibility Tree in the Elements Tab', async function() {
     const iframeDoc = await waitForElementWithTextContent(
         'RootWebArea\xa0"Simple page with aria labeled element" focusable:\xa0true');
     const arrowIconContainer =
-        await iframeDoc.evaluateHandle(node => node.parentElementOrShadowHost().parentElement.parentElement);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await iframeDoc.evaluateHandle(node => (node as any).parentElementOrShadowHost().parentElement.parentElement);
     assertNotNullOrUndefined(arrowIconContainer);
     await click('.arrow-icon', {root: arrowIconContainer});
     await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');

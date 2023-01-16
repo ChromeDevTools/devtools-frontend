@@ -94,15 +94,15 @@ export async function selectCookieByName(name: string) {
   const {frontend} = getBrowserAndPages();
   await waitFor('.cookies-table');
   const cell = await waitForFunction(async () => {
-    const tmp = await frontend.evaluateHandle(name => {
-      const result = [...document.querySelectorAll('.cookies-table .name-column')]
-                         .map(c => ({cell: c, textContent: c.textContent || ''}))
-                         .find(({textContent}) => textContent.trim() === name);
-      return result ? result.cell : undefined;
-    }, name);
+                 const tmp = await frontend.evaluateHandle(name => {
+                   const result = [...document.querySelectorAll('.cookies-table .name-column')]
+                                      .map(c => ({cell: c, textContent: c.textContent || ''}))
+                                      .find(({textContent}) => textContent.trim() === name);
+                   return result ? result.cell : undefined;
+                 }, name);
 
-    return tmp.asElement() || undefined;
-  });
+                 return tmp.asElement() || undefined;
+               }) as puppeteer.ElementHandle<Element>;
   await cell.click();
 }
 

@@ -58,7 +58,7 @@ describe('The Console Tab', async () => {
     const result = await getCurrentConsoleMessages(false, Level.Info);
     // Check that fetching is not logged
     assert.isEmpty(
-        result.slice(0, -1).filter(value => expectedResults.includes(value)),
+        result.slice(0, -1).filter(value => expectedResults.includes(value as string)),
         'Fetching was logged after it was turned off');
   });
 });

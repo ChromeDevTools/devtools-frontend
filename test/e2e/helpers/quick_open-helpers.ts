@@ -113,5 +113,5 @@ export const getSelectedItemText = async () => {
   if (!textContent) {
     assert.fail('Quick open: could not get selected item textContent');
   }
-  return await textContent.jsonValue<string>();
+  return await textContent.jsonValue();
 };

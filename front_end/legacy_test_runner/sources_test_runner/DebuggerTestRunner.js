@@ -490,6 +490,9 @@ SourcesTestRunner.toggleBreakpoint = async function(sourceFrame, lineNumber, dis
 };
 
 SourcesTestRunner.waitBreakpointSidebarPane = function(waitUntilResolved) {
+  if (Root.Runtime.experiments.isEnabled('breakpointView')) {
+    throw new Error('The breakpoint sidebar pane content is only available for the old breakpoint sidebar.');
+  }
   return new Promise(
              resolve =>
                  TestRunner.addSniffer(Sources.JavaScriptBreakpointsSidebarPane.prototype, 'didUpdateForTest', resolve))
@@ -509,6 +512,9 @@ SourcesTestRunner.waitBreakpointSidebarPane = function(waitUntilResolved) {
 };
 
 SourcesTestRunner.breakpointsSidebarPaneContent = function() {
+  if (Root.Runtime.experiments.isEnabled('breakpointView')) {
+    throw new Error('The breakpoint sidebar pane content is only available for the old breakpoint sidebar.');
+  }
   const pane = Sources.JavaScriptBreakpointsSidebarPane.instance();
   const empty = pane.emptyElement;
 

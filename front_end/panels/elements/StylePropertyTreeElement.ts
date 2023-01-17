@@ -256,6 +256,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       const {data} = event;
       swatch.firstElementChild && swatch.firstElementChild.remove();
       swatch.createChild('span').textContent = data.text;
+      void this.applyStyleText(this.renderedPropertyText(), false);
     };
 
     swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);

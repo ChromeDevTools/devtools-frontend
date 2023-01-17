@@ -3,9 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+
+import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
+
 import type * as puppeteer from 'puppeteer';
 
-import {goToResource} from '../../shared/helper.js';
+import {click, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clickNthChildOfSelectedElementNode,
@@ -129,6 +132,8 @@ describe('The color swatch', async () => {
     }
     await shiftClickColorSwatch(property, 0);
 
+    const menu = await waitForSoftContextMenu();
+    await click('[aria-label="#f00"]', {root: menu});
     await waitForCSSPropertyValue('#inspected', 'color', '#f00');
   });
 
@@ -144,6 +149,9 @@ describe('The color swatch', async () => {
 
     await waitForPropertyValueInComputedPane('color', 'rgb(255, 0, 0)');
     await shiftClickColorSwatch(property, 0);
+
+    const menu = await waitForSoftContextMenu();
+    await click('[aria-label="hsl(0deg 100% 50%)"]', {root: menu});
     await waitForPropertyValueInComputedPane('color', 'hsl(0deg 100% 50%)');
   });
 
@@ -157,6 +165,8 @@ describe('The color swatch', async () => {
     }
     await shiftClickColorSwatch(property, 0);
 
+    const menu = await waitForSoftContextMenu();
+    await click('[aria-label="#00f"]', {root: menu});
     await waitForCSSPropertyValue('#inspected', 'background-color', '#00f');
   });
 

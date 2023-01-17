@@ -106,44 +106,6 @@ describeWithLocale('ColorSwatch', () => {
     assertSwatch(swatch, {tooltip: 'This is a custom tooltip'});
   });
 
-  it('cycles through color format on shift-click', () => {
-    const swatch = createSwatch('red');
-    assertSwatch(swatch, {colorTextInSlot: 'red'});
-
-    const target = getClickTarget(swatch);
-
-    dispatchClickEvent(target);
-    assertSwatch(swatch, {colorTextInSlot: 'red'});
-
-    dispatchClickEvent(target, {shiftKey: true});
-    assertSwatch(swatch, {colorTextInSlot: '#f00'});
-    dispatchClickEvent(target, {shiftKey: true});
-    assertSwatch(swatch, {colorTextInSlot: '#ff0000'});
-    dispatchClickEvent(target, {shiftKey: true});
-    assertSwatch(swatch, {colorTextInSlot: 'rgb(255 0 0)'});
-    dispatchClickEvent(target, {shiftKey: true});
-    assertSwatch(swatch, {colorTextInSlot: 'hsl(0deg 100% 50%)'});
-    dispatchClickEvent(target, {shiftKey: true});
-    assertSwatch(swatch, {colorTextInSlot: 'hwb(0deg 0% 0%)'});
-    dispatchClickEvent(target, {shiftKey: true});
-    assertSwatch(swatch, {colorTextInSlot: 'red'});
-  });
-
-  it('dispatches an event when the format changes', () => {
-    const swatch = createSwatch('red');
-    const target = getClickTarget(swatch);
-
-    let currentFormat = swatch.getFormat();
-    swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, () => {
-      currentFormat = swatch.getFormat();
-    });
-
-    assert.strictEqual(currentFormat, Common.Color.Format.Nickname);
-
-    dispatchClickEvent(target, {shiftKey: true});
-    assert.strictEqual(currentFormat, Common.Color.Format.ShortHEX);
-  });
-
   it('dispatches an event on clicks', () => {
     const swatch = createSwatch('red');
     const target = getClickTarget(swatch);

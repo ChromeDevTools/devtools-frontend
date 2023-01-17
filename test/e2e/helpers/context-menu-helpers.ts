@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 
-import {$, $$, $textContent, platform, waitForFunction, type puppeteer} from '../../shared/helper.js';
+import {$, $$, $textContent, platform, waitFor, waitForFunction, type puppeteer} from '../../shared/helper.js';
 
 export function platformSpecificTextForSubMenuEntryItem(text: string): string {
   /**
@@ -12,6 +12,10 @@ export function platformSpecificTextForSubMenuEntryItem(text: string): string {
    * Mac, we append the search text with the icon, else we do not.
    */
   return platform === 'mac' ? `${text}▶` : text;
+}
+
+export function waitForSoftContextMenu(): Promise<puppeteer.ElementHandle<Element>> {
+  return waitFor('.soft-context-menu');
 }
 
 export async function assertTopLevelContextMenuItemsText(expectedOptions: string[]): Promise<void> {

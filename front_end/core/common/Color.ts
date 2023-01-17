@@ -642,6 +642,7 @@ export interface Color {
   asLegacyColor(): Legacy;
   isInGamut(): boolean;
   clipToGamut(): Color;
+  getUnclippedColor(): Color;
 }
 
 function stringifyWithPrecision(s: number, precision = 2): string {
@@ -762,6 +763,9 @@ export class Lab implements Color {
     return true;
   }
   clipToGamut(): Lab {
+    return this;
+  }
+  getUnclippedColor(): Color {
     return this;
   }
 
@@ -888,6 +892,9 @@ export class LCH implements Color {
   clipToGamut(): LCH {
     return this;
   }
+  getUnclippedColor(): Color {
+    return this;
+  }
 
   static fromSpec(spec: ColorParameterSpec, text: string): LCH|null {
     const L = parsePercentage(spec[0], [0, 100]) ?? parseNumber(spec[0]);
@@ -1010,6 +1017,9 @@ export class Oklab implements Color {
     return true;
   }
   clipToGamut(): Oklab {
+    return this;
+  }
+  getUnclippedColor(): Color {
     return this;
   }
 
@@ -1137,6 +1147,9 @@ export class Oklch implements Color {
     return true;
   }
   clipToGamut(): Oklch {
+    return this;
+  }
+  getUnclippedColor(): Color {
     return this;
   }
 
@@ -1300,7 +1313,10 @@ export class ColorFunction implements Color {
     }
     return new ColorFunction(
         this.colorSpace, clamp(this.p0, {min: 0, max: 1}), clamp(this.p1, {min: 0, max: 1}),
-        clamp(this.p2, {min: 0, max: 1}), this.alpha, undefined);
+        clamp(this.p2, {min: 0, max: 1}), this.alpha, undefined, this);
+  }
+  getUnclippedColor(): Color {
+    return this.#origin?.format() === this.format() && !this.#origin?.isInGamut() ? this.#origin : this;
   }
 
   /**
@@ -1471,7 +1487,10 @@ export class Legacy implements Color {
           clamp(this.#rgbaInternal[2], {min: 0, max: 1}),
           this.#rgbaInternal[3],
         ],
-        this.#formatInternal);
+        this.#formatInternal, undefined, this);
+  }
+  getUnclippedColor(): Color {
+    return this.#origin?.format() === this.format() && !this.#origin?.isInGamut() ? this.#origin : this;
   }
   asLegacyColor(): Legacy {
     return this;

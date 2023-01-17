@@ -5,7 +5,9 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
+import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as UI from '../../legacy.js';
 
 import colorSwatchStyles from './colorSwatch.css.js';
 
@@ -14,6 +16,11 @@ const UIStrings = {
    *@description Icon element title in Color Swatch of the inline editor in the Styles tab
    */
   shiftclickToChangeColorFormat: 'Shift-click to change color format',
+  /**
+   *@description Tooltip text describing that a color was clipped after conversion to match the target gamut
+   *@example {rgb(255 255 255)} PH1
+   */
+  colorClippedTooltipText: 'This color was clipped to match the format\'s gamut. The actual result was {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/ColorSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -128,7 +135,7 @@ export class ColorSwatch extends HTMLElement {
       LitHtml.html`<span class="color-swatch circular read-only">
           <span class="color-swatch-inner circular"
           style="background-color: ${this.text};"
-          @click=${this.consume}
+          @click=${this.onClick}
           @mousedown=${this.consume}
           @dblclick=${this.consume}></span>
         </span><slot><span>${this.text}</span></slot>`,
@@ -155,36 +162,81 @@ export class ColorSwatch extends HTMLElement {
   }
 
   private onClick(e: KeyboardEvent): void {
-    e.stopPropagation();
-
     if (e.shiftKey) {
-      this.toggleNextFormat();
+      e.stopPropagation();
+      this.showFormatPicker(e);
       return;
     }
-
-    this.dispatchEvent(new ClickEvent());
+    if (this.color instanceof Common.Color.Legacy) {
+      e.stopPropagation();
+      this.dispatchEvent(new ClickEvent());
+    }
   }
 
   private consume(e: Event): void {
     e.stopPropagation();
   }
 
-  private toggleNextFormat(): void {
+  setFormat(format: Common.Color.Format): void {
+    const newColor = this.color?.as(format);
+    const text = newColor?.asString();
+    if (!newColor || !text) {
+      return;
+    }
+    this.color = newColor;
+    this.format = this.color.format();
+    this.text = text;
+    if (!(this.color instanceof Common.Color.Legacy)) {
+      this.renderCircularColorSwatch();
+    } else {
+      this.render();
+    }
+    this.dispatchEvent(new ColorChangedEvent(this.text));
+  }
+
+  private showFormatPicker(e: Event): void {
     if (!this.color || !this.format) {
       return;
     }
+    const formats = [
+      Common.Color.Format.Nickname, Common.Color.Format.HEX,          Common.Color.Format.ShortHEX,
+      Common.Color.Format.HEXA,     Common.Color.Format.ShortHEXA,    Common.Color.Format.RGB,
+      Common.Color.Format.RGBA,     Common.Color.Format.HSL,          Common.Color.Format.HSLA,
+      Common.Color.Format.HWB,      Common.Color.Format.HWBA,         Common.Color.Format.LCH,
+      Common.Color.Format.OKLCH,    Common.Color.Format.LAB,          Common.Color.Format.OKLAB,
+      Common.Color.Format.SRGB,     Common.Color.Format.SRGB_LINEAR,  Common.Color.Format.DISPLAY_P3,
+      Common.Color.Format.A98_RGB,  Common.Color.Format.PROPHOTO_RGB, Common.Color.Format.REC_2020,
+      Common.Color.Format.XYZ,      Common.Color.Format.XYZ_D50,      Common.Color.Format.XYZ_D65,
+    ];
+    const menu = new UI.ContextMenu.ContextMenu(e, {useSoftMenu: true});
+    const legacySection = menu.section('legacy');
+    const wideSection = menu.section('wide');
+    const colorFunctionSection = menu.section('color-function').appendSubMenuItem('color()').section();
+    for (const format of formats) {
+      if (format === this.format) {
+        continue;
+      }
+      const newColor = this.color.as(format);
+      const label = newColor.asString();
+      if (!label) {
+        continue;
+      }
 
-    let currentValue;
-    do {
-      this.format = nextColorFormat(this.color.asLegacyColor(), this.format);
-      currentValue = this.color.asString(this.format);
-    } while (currentValue === this.text);
+      const unclippedColor = newColor.getUnclippedColor();
+      const icon = unclippedColor.isInGamut() ? undefined : new IconButton.Icon.Icon();
+      if (icon) {
+        icon.data = {iconName: 'ic_warning_black_18dp', color: 'black', width: '14px', height: '14px'};
+      }
+      const tooltip =
+          icon ? i18nString(UIStrings.colorClippedTooltipText, {PH1: unclippedColor.asString() ?? 'none'}) : undefined;
 
-    if (currentValue) {
-      this.text = currentValue;
-      this.render();
+      const handler = (): void => this.setFormat(format);
 
-      this.dispatchEvent(new ColorChangedEvent(this.text));
+      const section = newColor instanceof Common.Color.Legacy ? legacySection :
+          newColor instanceof Common.Color.ColorFunction      ? colorFunctionSection :
+                                                                wideSection;
+      section.appendItem(label, handler, false, icon, tooltip);
+      void menu.show();
     }
   }
 }
@@ -199,44 +251,5 @@ declare global {
   interface HTMLElementEventMap {
     [ColorChangedEvent.eventName]: ColorChangedEvent;
     [ClickEvent.eventName]: Event;
-  }
-}
-
-function nextColorFormat(color: Common.Color.Legacy, curFormat: Common.Color.Format): Common.Color.Format {
-  // The format loop is as follows:
-  // * original
-  // * rgb(a)
-  // * hsl(a)
-  // * hwb(a)
-  // * nickname (if the color has a nickname)
-  // * shorthex (if has short hex)
-  // * hex
-  switch (curFormat) {
-    case Common.Color.Format.RGB:
-    case Common.Color.Format.RGBA:
-      return !color.hasAlpha() ? Common.Color.Format.HSL : Common.Color.Format.HSLA;
-
-    case Common.Color.Format.HSL:
-    case Common.Color.Format.HSLA:
-      return !color.hasAlpha() ? Common.Color.Format.HWB : Common.Color.Format.HWBA;
-
-    case Common.Color.Format.HWB:
-    case Common.Color.Format.HWBA:
-      if (color.nickname()) {
-        return Common.Color.Format.Nickname;
-      }
-      return color.detectHEXFormat();
-
-    case Common.Color.Format.ShortHEX:
-      return Common.Color.Format.HEX;
-
-    case Common.Color.Format.ShortHEXA:
-      return Common.Color.Format.HEXA;
-
-    case Common.Color.Format.Nickname:
-      return color.detectHEXFormat();
-
-    default:
-      return Common.Color.Format.RGBA;
   }
 }

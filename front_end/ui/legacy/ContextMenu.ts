@@ -30,6 +30,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
 import {ActionRegistry} from './ActionRegistry.js';
@@ -47,14 +48,18 @@ export class Item {
   protected idInternal: number|undefined;
   customElement?: Element;
   private shortcut?: string;
+  #tooltip: Common.UIString.LocalizedString|undefined;
 
-  constructor(contextMenu: ContextMenu|null, type: string, label?: string, disabled?: boolean, checked?: boolean) {
+  constructor(
+      contextMenu: ContextMenu|null, type: string, label?: string, disabled?: boolean, checked?: boolean,
+      tooltip?: Platform.UIString.LocalizedString) {
     this.typeInternal = type;
     this.label = label;
     this.disabled = disabled;
     this.checked = checked;
     this.contextMenu = contextMenu;
     this.idInternal = undefined;
+    this.#tooltip = tooltip;
     if (type === 'item' || type === 'checkbox') {
       this.idInternal = contextMenu ? contextMenu.nextId() : 0;
     }
@@ -89,6 +94,7 @@ export class Item {
           enabled: !this.disabled,
           checked: undefined,
           subItems: undefined,
+          tooltip: this.#tooltip,
         };
         if (this.customElement) {
           const resultAsSoftContextMenuItem = (result as SoftContextMenuDescriptor);
@@ -142,8 +148,10 @@ export class Section {
     this.items = [];
   }
 
-  appendItem(label: string, handler: () => void, disabled?: boolean, additionalElement?: Element): Item {
-    const item = new Item(this.contextMenu, 'item', label, disabled);
+  appendItem(
+      label: string, handler: () => void, disabled?: boolean, additionalElement?: Element,
+      tooltip?: Platform.UIString.LocalizedString): Item {
+    const item = new Item(this.contextMenu, 'item', label, disabled, undefined, tooltip);
     if (additionalElement) {
       item.customElement = additionalElement;
     }

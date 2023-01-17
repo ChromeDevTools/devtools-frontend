@@ -6,6 +6,8 @@ import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/p
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
+import * as Common from '../../../../../front_end/core/common/common.js';
+import * as InlineEditor from '../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 import type * as LegacyUI from '../../../../../front_end/ui/legacy/legacy.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 
@@ -17,6 +19,7 @@ const mockCssStyleDeclaration = {
 
 const mockMatchedStyles = {
   computeValue: () => null,
+  availableCSSVariables: () => [],
 } as unknown as SDK.CSSMatchedStyles.CSSMatchedStyles;
 
 const mockCssProperty = {} as unknown as SDK.CSSProperty.CSSProperty;
@@ -25,7 +28,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
   let Elements: typeof ElementsModule;
   let mockStylesSidebarPane: ElementsModule.StylesSidebarPane.StylesSidebarPane;
 
-  before(async () => {
+  beforeEach(async () => {
     Elements = await import('../../../../../front_end/panels/elements/elements.js');
 
     mockStylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance();
@@ -50,6 +53,38 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         assertNotNullOrUndefined(colorSwatches.find(colorSwatch => colorSwatch.textContent === 'blue'));
       });
     });
+  });
+
+  it('applies the new style when the color format is changed', async () => {
+    const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
+        mockCssStyleDeclaration, 0, 'color', 'color(srgb .5 .5 1)', true, false, true, false, '', undefined);
+    const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+        mockStylesSidebarPane, mockMatchedStyles, cssPropertyWithColorMix, false, false, false, true);
+
+    const applyStyleTextStub = sinon.stub(stylePropertyTreeElement, 'applyStyleText');
+    // Make sure we don't leave a dangling promise behind:
+    const returnValue = (async () => {})();
+    await returnValue;
+    applyStyleTextStub.returns(returnValue);
+
+    stylePropertyTreeElement.updateTitle();
+
+    const {valueElement} = stylePropertyTreeElement;
+    assertNotNullOrUndefined(valueElement);
+
+    const swatch = valueElement.querySelector<InlineEditor.ColorSwatch.ColorSwatch>(
+        `${InlineEditor.ColorSwatch.ColorSwatch.litTagName.value}`);
+
+    assertNotNullOrUndefined(swatch);
+
+    const expectedColorString = swatch.getColor()?.asString(Common.Color.Format.LAB);
+    assertNotNullOrUndefined(expectedColorString);
+    assert.match(expectedColorString, /lab\([-.0-9]* [-.0-9]* [-.0-9]*\)/);
+
+    swatch.setFormat(Common.Color.Format.LAB);
+    assert.deepEqual(stylePropertyTreeElement.renderedPropertyText(), `color: ${expectedColorString}`);
+
+    assert.isTrue(applyStyleTextStub.alwaysCalledWith(`color: ${expectedColorString}`, false));
   });
 
   describe('Context menu', () => {

@@ -93,8 +93,7 @@ function findColorsAndCurves(
     state: CodeMirror.EditorState,
     from: number,
     to: number,
-    // TODO(crbug/1385379): Remove `null` from here and use `color` after implementing changes in Color class
-    onColor: (pos: number, parsedColor: Common.Color.Legacy, text: string) => void,
+    onColor: (pos: number, parsedColor: Common.Color.Color, text: string) => void,
     onCurve: (pos: number, curve: UI.Geometry.CubicBezier, text: string) => void,
     ): void {
   let line = state.doc.lineAt(from);
@@ -118,11 +117,11 @@ function findColorsAndCurves(
         content = getToken(node.from, node.to);
       } else if (
           node.name === 'Callee' &&
-          /^(?:(?:rgba?|hsla?|lch|oklch|lab|oklab|color)|cubic-bezier)$/.test(getToken(node.from, node.to))) {
+          /^(?:(?:rgba?|hsla?|hwba?|lch|oklch|lab|oklab|color)|cubic-bezier)$/.test(getToken(node.from, node.to))) {
         content = state.sliceDoc(node.from, (node.node.parent as CodeMirror.SyntaxNode).to);
       }
       if (content) {
-        const parsedColor = Common.Color.parse(content)?.asLegacyColor();
+        const parsedColor = Common.Color.parse(content);
         if (parsedColor) {
           onColor(node.from, parsedColor, content);
         } else {
@@ -137,29 +136,43 @@ function findColorsAndCurves(
 }
 
 class ColorSwatchWidget extends CodeMirror.WidgetType {
-  constructor(readonly color: Common.Color.Legacy, readonly text: string) {
+  #text: string;
+  #color: Common.Color.Color;
+  readonly #from: number;
+
+  constructor(color: Common.Color.Color, text: string, from: number) {
     super();
+    this.#color = color;
+    this.#text = text;
+    this.#from = from;
   }
 
   eq(other: ColorSwatchWidget): boolean {
-    return this.color.equal(other.color) && this.text === other.text;
+    return this.#color.equal(other.#color) && this.#text === other.#text && this.#from === other.#from;
   }
 
   toDOM(view: CodeMirror.EditorView): HTMLElement {
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-    swatch.renderColor(this.color, false, i18nString(UIStrings.openColorPicker));
+    swatch.renderColor(this.#color, false, i18nString(UIStrings.openColorPicker));
     const value = swatch.createChild('span');
-    value.textContent = this.text;
+    value.textContent = this.#text;
     value.setAttribute('hidden', 'true');
+    swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, event => {
+      view.dispatch({
+        changes: {from: this.#from, to: this.#from + this.#text.length, insert: event.data.text},
+      });
+      this.#text = event.data.text;
+      this.#color = swatch.getColor() as Common.Color.Color;
+    });
     swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, event => {
       event.consume(true);
       view.dispatch({
         effects: setTooltip.of({
           type: TooltipType.Color,
           pos: view.posAtDOM(swatch),
-          text: this.text,
+          text: this.#text,
           swatch,
-          color: this.color,
+          color: this.#color,
         }),
       });
     });
@@ -214,7 +227,7 @@ type ActiveTooltip = {
   type: TooltipType.Color,
   pos: number,
   text: string,
-  color: Common.Color.Legacy,
+  color: Common.Color.Color,
   swatch: InlineEditor.ColorSwatch.ColorSwatch,
 }|{
   type: TooltipType.Curve,
@@ -237,7 +250,8 @@ function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
           spectrum.addEventListener(ColorPicker.Spectrum.Events.ColorChanged, handler);
         };
         spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, () => view.requestMeasure());
-        spectrum.setColor(active.color, active.color.format());
+        const color = active.color.asLegacyColor();
+        spectrum.setColor(color, color.format());
         widget = spectrum;
       } else {
         const spectrum = new InlineEditor.BezierEditor.BezierEditor(active.curve);
@@ -319,7 +333,8 @@ function computeSwatchDeco(state: CodeMirror.EditorState, from: number, to: numb
   findColorsAndCurves(
       state, from, to,
       (pos, parsedColor, colorText) => {
-        builder.add(pos, pos, CodeMirror.Decoration.widget({widget: new ColorSwatchWidget(parsedColor, colorText)}));
+        builder.add(
+            pos, pos, CodeMirror.Decoration.widget({widget: new ColorSwatchWidget(parsedColor, colorText, pos)}));
       },
       (pos, curve, text) => {
         builder.add(pos, pos, CodeMirror.Decoration.widget({widget: new CurveSwatchWidget(curve, text)}));

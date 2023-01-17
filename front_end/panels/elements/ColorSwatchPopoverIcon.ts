@@ -232,11 +232,6 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
       this.swatch.createChild('span').textContent = text;
     }
 
-    // TODO(crbug.com/1402233): This component should only care about its own
-    // responsibilities. It shouldn't apply style text by itself but
-    // emit an event that will be handled from the parent
-    await this.treeElement.applyStyleText(this.treeElement.renderedPropertyText(), false);
-
     // `asString` somehow can return null.
     if (text) {
       this.dispatchEventToListeners(ColorSwatchPopoverIconEvents.ColorChanged, text);

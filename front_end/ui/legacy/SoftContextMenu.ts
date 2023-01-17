@@ -39,6 +39,7 @@ import * as ThemeSupport from './theme_support/theme_support.js';
 import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 import softContextMenuStyles from './softContextMenu.css.legacy.js';
 import {InspectorView} from './InspectorView.js';
+import {Tooltip} from './Tooltip.js';
 
 const UIStrings = {
   /**
@@ -218,6 +219,9 @@ export class SoftContextMenu {
     menuItemElement.appendChild(checkMarkElement);
     if (!item.checked) {
       checkMarkElement.style.opacity = '0';
+    }
+    if (item.tooltip) {
+      Tooltip.install(menuItemElement, item.tooltip);
     }
     const detailsForElement: ElementMenuDetails = {
       actionId: undefined,
@@ -586,6 +590,7 @@ export interface SoftContextMenuDescriptor {
   subItems?: SoftContextMenuDescriptor[];
   element?: Element;
   shortcut?: string;
+  tooltip?: Platform.UIString.LocalizedString;
 }
 interface ElementMenuDetails {
   customElement?: HTMLElement;

@@ -114,21 +114,20 @@ describe('TraceModel helpers', function() {
       assert.strictEqual(navigationForSecondRequest?.ts, TraceModel.Types.Timing.MicroSeconds(636471400029));
     });
 
-    // TODO(jacktfranklin): re-enable once PageLoadMetrics handler is implemented.
-    // it('returns the correct navigation for a page load event', async () => {
-    //   const {PageLoadMetrics, Meta} = await loadModelDataFromTraceFile('multiple-navigations.json.gz');
-    //   const firstNavigationId = Meta.navigationsByNavigationId.keys().next().value;
+    it('returns the correct navigation for a page load event', async () => {
+      const {PageLoadMetrics, Meta} = await loadModelDataFromTraceFile('multiple-navigations.json.gz');
+      const firstNavigationId = Meta.navigationsByNavigationId.keys().next().value;
 
-    //   const fcp = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId)
-    //                   ?.get(firstNavigationId)
-    //                   ?.get(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP);
-    //   if (!fcp || !fcp.event) {
-    //     assert.fail('FCP not found');
-    //     return;
-    //   }
-    //   const navigationForFirstRequest =
-    //       TraceModel.Helpers.Trace.getNavigationForTraceEvent(fcp.event, Meta.mainFrameId, Meta.navigationsByFrameId);
-    //   assert.strictEqual(navigationForFirstRequest?.args.data?.navigationId, firstNavigationId);
-    // });
+      const fcp = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId)
+                      ?.get(firstNavigationId)
+                      ?.get(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP);
+      if (!fcp || !fcp.event) {
+        assert.fail('FCP not found');
+        return;
+      }
+      const navigationForFirstRequest =
+          TraceModel.Helpers.Trace.getNavigationForTraceEvent(fcp.event, Meta.mainFrameId, Meta.navigationsByFrameId);
+      assert.strictEqual(navigationForFirstRequest?.args.data?.navigationId, firstNavigationId);
+    });
   });
 });

@@ -478,6 +478,7 @@ grd_files_release_sources = [
   "front_end/third_party/codemirror.next/chunk/php.js",
   "front_end/third_party/codemirror.next/chunk/python.js",
   "front_end/third_party/codemirror.next/chunk/svelte.js",
+  "front_end/third_party/codemirror.next/chunk/vue.js",
   "front_end/third_party/codemirror.next/chunk/wast.js",
   "front_end/third_party/codemirror.next/chunk/xml.js",
   "front_end/third_party/codemirror.next/codemirror.next.js",

@@ -4907,6 +4907,23 @@ declare namespace _codemirror_lang_wast {
   };
 }
 
+/**
+A language provider for Vue templates.
+*/
+declare const vueLanguage: LRLanguage;
+/**
+Vue template support.
+*/
+declare function vue$1(): LanguageSupport;
+
+declare const _codemirror_lang_vue_vueLanguage: typeof vueLanguage;
+declare namespace _codemirror_lang_vue {
+  export {
+    vue$1 as vue,
+    _codemirror_lang_vue_vueLanguage as vueLanguage,
+  };
+}
+
 declare const parser: Parser
 
 declare const svelteLanguage: LRLanguage;
@@ -5766,7 +5783,8 @@ declare function scss(): Promise<StreamLanguage<unknown>>;
 declare function shell(): Promise<StreamLanguage<unknown>>;
 declare function svelte(): Promise<typeof _replit_codemirror_lang_svelte>;
 declare function cssStreamParser(): Promise<any>;
+declare function vue(): Promise<typeof _codemirror_lang_vue>;
 declare function wast(): Promise<typeof _codemirror_lang_wast>;
 declare function xml(): Promise<typeof _codemirror_lang_xml>;
 
-export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, index_d$2 as css, cssStreamParser, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, index_d as javascript, json, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, scss, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, wast, xml };
+export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, index_d$2 as css, cssStreamParser, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, index_d as javascript, json, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, scss, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, vue, wast, xml };

@@ -109,6 +109,9 @@ export async function svelte() {
 export async function cssStreamParser() {
   return (await import('@codemirror/legacy-modes/mode/css') as any).css;
 }
+export function vue() {
+  return import('@codemirror/lang-vue');
+}
 export function wast() {
   return import('@codemirror/lang-wast');
 }

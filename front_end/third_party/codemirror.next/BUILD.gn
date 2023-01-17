@@ -13,10 +13,10 @@ group("bundle") {
 
 devtools_pre_built("codemirror.next-sources") {
   sources = [
-    "chunk/codemirror.js",
-    "chunk/codemirror.js.map",
     "chunk/angular.js",
     "chunk/angular.js.map",
+    "chunk/codemirror.js",
+    "chunk/codemirror.js.map",
     "chunk/cpp.js",
     "chunk/cpp.js.map",
     "chunk/java.js",
@@ -33,6 +33,8 @@ devtools_pre_built("codemirror.next-sources") {
     "chunk/python.js.map",
     "chunk/svelte.js",
     "chunk/svelte.js.map",
+    "chunk/vue.js",
+    "chunk/vue.js.map",
     "chunk/wast.js",
     "chunk/wast.js.map",
     "chunk/xml.js",

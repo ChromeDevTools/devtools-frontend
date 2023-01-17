@@ -17,6 +17,7 @@
     "chunk/php.js",
     "chunk/python.js",
     "chunk/svelte.js",
+    "chunk/vue.js",
     "chunk/wast.js",
     "chunk/xml.js"
   ]

@@ -6,14 +6,14 @@ import {assert} from 'chai';
 
 import {click, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getPausedMessages, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON} from '../helpers/sources-helpers.js';
+import {getPausedMessages, openSourcesPanel, PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR} from '../helpers/sources-helpers.js';
 
 describe('Breakpoints on CSP Violation', async () => {
   it('CSP Violations should come up before break on exceptions', async () => {
     await openSourcesPanel();
     await click('[aria-label="CSP Violation Breakpoints"]');
     await click('[aria-label="Trusted Type Violations"]');
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
 
     const resource = goToResource('network/trusted-type-violations-enforced.rawresponse');
 

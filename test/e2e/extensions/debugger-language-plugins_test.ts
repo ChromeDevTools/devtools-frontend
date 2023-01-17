@@ -40,12 +40,12 @@ import {
   openFileInEditor,
   openSourceCodeEditorForFile,
   openSourcesPanel,
-  PAUSE_ON_EXCEPTION_BUTTON,
   RESUME_BUTTON,
   switchToCallFrame,
   WasmLocationLabels,
   type LabelMapping,
   captureAddedSourceFiles,
+  PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR,
 } from '../helpers/sources-helpers.js';
 import {expectError} from '../../conductor/events.js';
 
@@ -130,7 +130,8 @@ describe('The Debugger Language Plugins', async () => {
     }, locationLabels.getMappingsForPlugin());
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
+
     await goToResource('extensions/wasm_module.html?module=unreachable.wasm&autorun=Main');
     await waitFor('.paused-status');
 
@@ -280,7 +281,7 @@ describe('The Debugger Language Plugins', async () => {
     });
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
@@ -355,7 +356,7 @@ describe('The Debugger Language Plugins', async () => {
     });
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
@@ -448,7 +449,7 @@ describe('The Debugger Language Plugins', async () => {
     });
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
@@ -481,7 +482,7 @@ describe('The Debugger Language Plugins', async () => {
     });
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
@@ -551,7 +552,7 @@ describe('The Debugger Language Plugins', async () => {
     });
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
@@ -720,7 +721,7 @@ describe('The Debugger Language Plugins', async () => {
     });
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
@@ -897,7 +898,7 @@ describe('The Debugger Language Plugins', async () => {
     });
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
@@ -992,7 +993,7 @@ describe('The Debugger Language Plugins', async () => {
     });
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await openSourceCodeEditorForFile('unreachable.ll', 'wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
@@ -1091,7 +1092,7 @@ describe('The Debugger Language Plugins', async () => {
     });
 
     await openSourcesPanel();
-    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
     const locals = await getValuesForScope('LOCAL', 0, 1);

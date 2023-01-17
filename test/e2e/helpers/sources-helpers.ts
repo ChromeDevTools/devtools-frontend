@@ -18,6 +18,7 @@ import {
   getPendingEvents,
   getTestServerPort,
   goToResource,
+  isEnabledExperiment,
   pasteText,
   platform,
   pressKey,
@@ -31,7 +32,6 @@ import {
 } from '../../shared/helper.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
-export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';
 export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
 export const RESUME_BUTTON = '[aria-label="Resume script execution"]';
 export const SOURCES_LINES_SELECTOR = '.CodeMirror-code > div';
@@ -50,6 +50,11 @@ export const MORE_TABS_SELECTOR = '[aria-label="More tabs"]';
 const OVERRIDES_TAB_SELECTOR = '[aria-label="Overrides"]';
 export const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
 const CLEAR_CONFIGURATION_SELECTOR = '[aria-label="Clear configuration"]';
+const BREAKPOINT_VIEW_PAUSE_ON_UNCAUGHT_SELECTOR = '.pause-on-uncaught-exceptions';
+const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';
+export const PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR =
+    `${PAUSE_ON_EXCEPTION_BUTTON},${BREAKPOINT_VIEW_PAUSE_ON_UNCAUGHT_SELECTOR}`;
+export const BREAKPOINT_ITEM_SELECTOR = '.breakpoint-item,.breakpoint-entry';
 
 export async function toggleNavigatorSidebar(frontend: puppeteer.Page) {
   const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
@@ -175,6 +180,23 @@ export async function getSelectedSource(): Promise<string> {
   const sourceTabPane = await waitFor('#sources-panel-sources-view .tabbed-pane');
   const sourceTabs = await waitFor('.tabbed-pane-header-tab.selected', sourceTabPane);
   return sourceTabs.evaluate(node => node.getAttribute('aria-label')) as Promise<string>;
+}
+
+export async function getBreakpointHitLocation() {
+  if (await isEnabledExperiment('breakpointView')) {
+    const breakpointHitHandle = await waitFor('.breakpoint-item.hit');
+    const locationHandle = await waitFor('.location', breakpointHitHandle);
+    const locationText = await locationHandle.evaluate(location => location.textContent);
+
+    const groupHandle = await breakpointHitHandle.evaluateHandle(x => x.parentElement);
+    const groupHeaderTitleHandle = await waitFor('.group-header-title', groupHandle);
+    const groupHeaderTitle = await groupHeaderTitleHandle?.evaluate(header => header.textContent);
+
+    return `${groupHeaderTitle}:${locationText}`;
+  }
+  const breakpointHandle = await $('label', await waitFor('.breakpoint-hit'));
+  const breakpointLocation = await breakpointHandle?.evaluate(label => label.textContent);
+  return breakpointLocation;
 }
 
 export async function getOpenSources() {

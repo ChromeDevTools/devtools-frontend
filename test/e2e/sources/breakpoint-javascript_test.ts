@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {
-  $,
   click,
   enableExperiment,
   getBrowserAndPages,
@@ -18,6 +17,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,
+  getBreakpointHitLocation,
   isEqualOrAbbreviation,
   openSourceCodeEditorForFile,
   PAUSE_INDICATOR_SELECTOR,
@@ -59,8 +59,7 @@ describe('The Sources Tab', async function() {
     const scriptLocation = await retrieveTopCallFrameWithoutResuming();
     assert.deepEqual(scriptLocation, 'click-breakpoint.js:4');
 
-    const breakpointHandle = await $('label', await waitFor('.breakpoint-hit'));
-    const breakpointLocation = await breakpointHandle?.evaluate(label => label.textContent);
+    const breakpointLocation = await getBreakpointHitLocation();
     assert.deepEqual(breakpointLocation, scriptLocation);
 
     await click(RESUME_BUTTON);

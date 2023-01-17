@@ -379,6 +379,13 @@ async function setExperimentEnabled(experiment: string, enabled: boolean, option
   await reloadDevTools(options);
 }
 
+export const isEnabledExperiment = async (experiment: string) => {
+  const {frontend} = getBrowserAndPages();
+  return await frontend.evaluate((experiment): Promise<boolean> => {
+    return globalThis.Root.Runtime.experiments.isEnabled(experiment);
+  }, experiment);
+};
+
 export const enableExperiment = (experiment: string, options?: DevToolsFrontendReloadOptions) =>
     setExperimentEnabled(experiment, true, options);
 

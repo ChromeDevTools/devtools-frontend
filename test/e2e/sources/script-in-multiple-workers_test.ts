@@ -17,6 +17,7 @@ import {
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   addBreakpointForLine,
+  BREAKPOINT_ITEM_SELECTOR,
   createSelectorsForWorkerFile,
   getBreakpointDecorators,
   getOpenSources,
@@ -121,8 +122,8 @@ describe('Multi-Workers', async function() {
       // Set a breakpoint
       await addBreakpointForLine(frontend, 6);
 
-      await waitFor('.breakpoint-entry');
-      const breakpoints = (await $$('.breakpoint-entry')).length;
+      await waitFor(BREAKPOINT_ITEM_SELECTOR);
+      const breakpoints = (await $$(BREAKPOINT_ITEM_SELECTOR)).length;
       assert.strictEqual(breakpoints, 1);
     });
 
@@ -148,7 +149,7 @@ describe('Multi-Workers', async function() {
         });
 
         await step('Disable first breakpoint', async () => {
-          const bpEntry = await waitFor('.breakpoint-entry');
+          const bpEntry = await waitFor(BREAKPOINT_ITEM_SELECTOR);
           const bpCheckbox = await waitFor('input', bpEntry);
           await bpCheckbox.evaluate(n => (n as HTMLElement).click());
           await waitFor('.cm-breakpoint-disabled');

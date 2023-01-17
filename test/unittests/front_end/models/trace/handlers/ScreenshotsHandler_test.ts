@@ -4,9 +4,10 @@
 
 const {assert} = chai;
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile, defaultTraceEvent} from '../../../helpers/TraceHelpers.js';
+import {loadEventsFromTraceFile, defaultTraceEvent, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
-describe('ScreenshotHandler', async () => {
+describe('ScreenshotHandler', function() {
+  setTraceModelTimeout(this);
   const baseEvent = {
     ...defaultTraceEvent,
     name: 'Screenshot',

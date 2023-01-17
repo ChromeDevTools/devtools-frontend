@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile, defaultTraceEvent} from '../../../helpers/TraceHelpers.js';
+import {loadEventsFromTraceFile, defaultTraceEvent, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
 /**
  * Builds a mock TraceEventComplete.
@@ -93,7 +93,8 @@ async function handleEventsFromTraceFile(name: string):
   return TraceModel.Handlers.ModelHandlers.Samples.data();
 }
 
-describe('SamplesHandler', () => {
+describe('SamplesHandler', function() {
+  setTraceModelTimeout(this);
   const withAllowedCodeType = {codeType: 'JS'};
   const withAllowedUrl = {url: 'http://example.com/script.js'};
   const withDisallowedCodeType = {codeType: 'C++'};

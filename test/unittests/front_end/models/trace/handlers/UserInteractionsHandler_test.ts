@@ -5,9 +5,10 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {loadEventsFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
-describe('UserInteractions', () => {
+describe('UserInteractions', function() {
+  setTraceModelTimeout(this);
   beforeEach(async () => {
     TraceModel.Handlers.ModelHandlers.UserInteractions.reset();
   });

@@ -116,6 +116,16 @@ async function generateModelDataForTraceFile(name: string, emulateFreshRecording
   });
 }
 
+/**
+ * Parsing some trace files easily takes up more than our default Mocha timeout
+ * which is 2seconds. So for most tests that include parsing a trace, we have to
+ * increase the timeout. We use this function to ensure we set a consistent
+ * timeout across all trace model tests.
+ **/
+export function setTraceModelTimeout(context: Mocha.Context|Mocha.Suite): void {
+  context.timeout(10_000);
+}
+
 export async function loadModelDataFromTraceFile(name: string): Promise<TraceModel.Handlers.Types.TraceParseData> {
   let trace: TraceModel.Handlers.Types.TraceParseData;
   try {

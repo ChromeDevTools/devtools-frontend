@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {loadModelDataFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
 function countMetricOcurrences(
     scoresByMetricName:
@@ -20,7 +20,8 @@ function countMetricOcurrences(
   }, 0);
 }
 
-describe('PageLoadMetricsHandler', () => {
+describe('PageLoadMetricsHandler', function() {
+  setTraceModelTimeout(this);
   describe('contentful paints', () => {
     it('obtains all the FCP and LCP events for all frames', async () => {
       const {Meta, PageLoadMetrics} = await loadModelDataFromTraceFile('multiple-navigations-with-iframes.json.gz');

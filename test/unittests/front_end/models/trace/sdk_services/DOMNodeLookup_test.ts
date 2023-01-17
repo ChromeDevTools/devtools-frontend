@@ -13,13 +13,14 @@ import {
 
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
-import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {loadModelDataFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
 function nodeId<T extends Protocol.DOM.BackendNodeId|Protocol.DOM.NodeId>(x: number): T {
   return x as T;
 }
 
-describeWithMockConnection('DOMNodeLookup', () => {
+describeWithMockConnection('DOMNodeLookup', function() {
+  setTraceModelTimeout(this);
   beforeEach(async () => {
     clearAllMockConnectionResponseHandlers();
     TraceModel.SDKServices.DOMNodeLookup._TEST_clearCache();

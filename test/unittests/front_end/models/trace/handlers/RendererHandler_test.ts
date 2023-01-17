@@ -14,6 +14,7 @@ import {
   makeCompleteEventInMilliseconds,
   makeInstantEvent,
   prettyPrint,
+  setTraceModelTimeout,
 
 } from '../../../helpers/TraceHelpers.js';
 
@@ -50,7 +51,8 @@ async function handleEventsFromTraceFile(
   return TraceModel.Handlers.ModelHandlers.Renderer.data();
 }
 
-describe('RendererHandler', () => {
+describe('RendererHandler', function() {
+  setTraceModelTimeout(this);
   it('finds all the renderers in a real world profile', async () => {
     const renderers = await handleEventsFromTraceFile('multiple-navigations-with-iframes.json.gz');
     assert.strictEqual(renderers.processes.size, 4);

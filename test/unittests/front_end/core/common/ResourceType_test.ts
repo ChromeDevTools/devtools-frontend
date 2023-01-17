@@ -462,7 +462,7 @@ describe('ResourceType', () => {
     });
 
     it('returns correct MIME type for .vue files', () => {
-      assert.strictEqual(ResourceType.mimeFromExtension('vue'), 'text/html');
+      assert.strictEqual(ResourceType.mimeFromExtension('vue'), 'text/x.vue');
     });
 
     it('returns correct MIME type for .webmanifest files', () => {
@@ -527,7 +527,7 @@ describe('ResourceType', () => {
 
     it('returns correct MIME type for .vue files', () => {
       const url = 'http://localhost/App.vue' as Platform.DevToolsPath.UrlString;
-      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/html');
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'text/x.vue');
     });
 
     it('returns correct MIME type for .webmanifest files', () => {

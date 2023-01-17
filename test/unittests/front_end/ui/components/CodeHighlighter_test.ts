@@ -120,10 +120,10 @@ it('can highlight Angular Templates', testHighlight(`
 
   it('can highlight Vue Templates', testHighlight(`
 <[tag template]>
-  <[tag Header] [attribute v-show]=[attribute-value "view"] />
-  <[tag Main] [attribute @hide]=[attribute-value "onHide"] />
+  <[tag Header] [keyword v-show]=[attribute-value "][variable view][attribute-value "] />
+  <[tag Main] @[variable hide]=[attribute-value "][variable onHide][attribute-value "] />
   <[tag router-view] />
-</[tag template]>`, 'text/html'));
+</[tag template]>`, 'text/x.vue'));
 
   it('can highlight CSS', testHighlight(`
 [tag span].[type cls]#[atom id] {

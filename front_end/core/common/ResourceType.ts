@@ -563,5 +563,5 @@ export const mimeTypeByExtension = new Map([
   ['svelte', 'text/x.svelte'],
 
   // Vue
-  ['vue', 'text/html'],
+  ['vue', 'text/x.vue'],
 ]);

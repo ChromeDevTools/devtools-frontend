@@ -166,6 +166,9 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
     case 'text/x.svelte':
       return (await CodeMirror.svelte()).svelte();
 
+    case 'text/x.vue':
+      return (await CodeMirror.vue()).vue();
+
     default:
       return null;
   }

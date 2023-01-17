@@ -212,4 +212,79 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
     ]);
     assert.strictEqual(style.getPropertyValue('-webkit-background-clip'), 'border-box');
   });
+
+  it('should parse invalid property texts while skipping comment and nested blocks', () => {
+    const target = createTarget();
+    const cssModel = new SDK.CSSModel.CSSModel(target);
+    const stubCSSStyle = {
+      styleSheetId: 'STYLE_SHEET_ID' as Protocol.CSS.StyleSheetId,
+      cssProperties: [
+        {
+          name: 'margin-top',
+          value: '12px',
+          disabled: false,
+          implicit: false,
+          longhandProperties: [],
+          range: {startLine: 2, startColumn: 4, endLine: 2, endColumn: 21},
+          text: 'margin: 12px;',
+        },
+        {
+          name: 'color',
+          value: 'red',
+          disabled: false,
+          implicit: false,
+          longhandProperties: [],
+          range: {startLine: 4, startColumn: 4, endLine: 4, endColumn: 15},
+          text: 'color: red;',
+        },
+        {
+          name: 'display',
+          value: 'grid',
+          disabled: false,
+          implicit: false,
+          longhandProperties: [],
+          range: {startLine: 9, startColumn: 4, endLine: 9, endColumn: 18},
+          text: 'display: grid;',
+        },
+      ],
+      shorthandEntries: [],
+      cssText:
+          '\n    margin-top: 10px;\n    /* some-property: 10px; */\n    color: red; /* here is {\n    multiline-comment}*/\n    .block {\n      color: blue;\n    }\n    display: grid; & div { color: green; }\n    .block {color: yellow;} invalid.property: 1px; .block {color: white;}\n    @media (min-width: 1px) {\n      & div { margin-left: 10px; }\n    }\n  ',
+      range: {startLine: 1, startColumn: 11, endLine: 14, endColumn: 2},
+    } as Protocol.CSS.CSSStyle;
+
+    const style = new SDK.CSSStyleDeclaration.CSSStyleDeclaration(
+        cssModel, null, stubCSSStyle, SDK.CSSStyleDeclaration.Type.Regular);
+    assertPropertValues(style.allProperties()[0], [
+      ['name', 'margin-top'],
+      ['value', '12px'],
+      ['implicit', false],
+      ['index', 0],
+    ]);
+    assert.strictEqual(style.allProperties()[0].activeInStyle(), true);
+
+    assertPropertValues(style.allProperties()[1], [
+      ['name', 'color'],
+      ['value', 'red'],
+      ['implicit', false],
+      ['index', 1],
+    ]);
+    assert.strictEqual(style.allProperties()[1].activeInStyle(), true);
+
+    assertPropertValues(style.allProperties()[2], [
+      ['name', 'display'],
+      ['value', 'grid'],
+      ['implicit', false],
+      ['index', 2],
+    ]);
+    assert.strictEqual(style.allProperties()[2].activeInStyle(), true);
+
+    assertPropertValues(style.allProperties()[3], [
+      ['name', 'invalid.property'],
+      ['value', '1px'],
+      ['parsedOk', false],
+      ['index', 3],
+    ]);
+    assert.strictEqual(style.allProperties()[3].activeInStyle(), false);
+  });
 });

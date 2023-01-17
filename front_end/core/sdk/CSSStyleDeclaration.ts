@@ -26,7 +26,7 @@ export class CSSStyleDeclaration {
   constructor(cssModel: CSSModel, parentRule: CSSRule|null, payload: Protocol.CSS.CSSStyle, type: Type) {
     this.#cssModelInternal = cssModel;
     this.parentRule = parentRule;
-    this.reinitialize(payload);
+    this.#reinitialize(payload);
     this.type = type;
   }
 
@@ -35,7 +35,7 @@ export class CSSStyleDeclaration {
       return;
     }
     if (edit.oldRange.equal(this.range)) {
-      this.reinitialize((edit.payload as Protocol.CSS.CSSStyle));
+      this.#reinitialize((edit.payload as Protocol.CSS.CSSStyle));
     } else {
       this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
       for (let i = 0; i < this.#allPropertiesInternal.length; ++i) {
@@ -44,7 +44,7 @@ export class CSSStyleDeclaration {
     }
   }
 
-  private reinitialize(payload: Protocol.CSS.CSSStyle): void {
+  #reinitialize(payload: Protocol.CSS.CSSStyle): void {
     this.styleSheetId = payload.styleSheetId;
     this.range = payload.range ? TextUtils.TextRange.TextRange.fromObject(payload.range) : null;
 
@@ -70,7 +70,7 @@ export class CSSStyleDeclaration {
         if (!range) {
           continue;
         }
-        parseUnusedText.call(this, cssText, start.line, start.column, range.startLine, range.startColumn);
+        this.#parseUnusedText(cssText, start.line, start.column, range.startLine, range.startColumn);
         start = {line: range.endLine, column: range.endColumn};
         const parsedProperty = CSSProperty.parsePayload(this, this.#allPropertiesInternal.length, cssProperty);
         this.#allPropertiesInternal.push(parsedProperty);
@@ -82,7 +82,7 @@ export class CSSStyleDeclaration {
         longhand.index = this.#allPropertiesInternal.length;
         this.#allPropertiesInternal.push(longhand);
       }
-      parseUnusedText.call(this, cssText, start.line, start.column, this.range.endLine, this.range.endColumn);
+      this.#parseUnusedText(cssText, start.line, start.column, this.range.endLine, this.range.endColumn);
     } else {
       for (const cssProperty of payload.cssProperties) {
         this.#allPropertiesInternal.push(
@@ -90,8 +90,8 @@ export class CSSStyleDeclaration {
       }
     }
 
-    this.generateSyntheticPropertiesIfNeeded();
-    this.computeInactiveProperties();
+    this.#generateSyntheticPropertiesIfNeeded();
+    this.#computeInactiveProperties();
 
     // TODO(changhaohan): verify if this #activePropertyMap is still necessary, or if it is
     // providing different information against the activeness in allPropertiesInternal.
@@ -105,70 +105,79 @@ export class CSSStyleDeclaration {
 
     this.cssText = payload.cssText;
     this.#leadingPropertiesInternal = null;
+  }
 
-    function parseUnusedText(
-        this: CSSStyleDeclaration, cssText: TextUtils.Text.Text, startLine: number, startColumn: number,
-        endLine: number, endColumn: number): void {
-      const tr = new TextUtils.TextRange.TextRange(startLine, startColumn, endLine, endColumn);
-      if (!this.range) {
-        return;
+  #parseUnusedText(
+      cssText: TextUtils.Text.Text, startLine: number, startColumn: number, endLine: number, endColumn: number): void {
+    const tr = new TextUtils.TextRange.TextRange(startLine, startColumn, endLine, endColumn);
+    if (!this.range) {
+      return;
+    }
+    const missingText = cssText.extract(tr.relativeTo(this.range.startLine, this.range.startColumn));
+
+    // Try to fit the malformed css into properties.
+    const lines = missingText.split('\n');
+    const context: SkipBlockContext = {
+      inComment: false,
+      nestedBlocks: 0,
+      validContent: '',
+    };
+    for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+      skipBlocks(lines[lineNumber], context);
+      if (context.nestedBlocks > 0 || !context.validContent) {
+        // We skip the whole line if we have entered a nested block.
+        continue;
       }
-      const missingText = cssText.extract(tr.relativeTo(this.range.startLine, this.range.startColumn));
 
-      // Try to fit the malformed css into properties.
-      const lines = missingText.split('\n');
-      let lineNumber = 0;
-      let inComment = false;
-      for (const line of lines) {
-        let column = 0;
-        for (const property of line.split(';')) {
-          const strippedProperty = stripComments(property, inComment);
-          const trimmedProperty = strippedProperty.text.trim();
-          inComment = strippedProperty.inComment;
-
-          if (trimmedProperty) {
-            let name;
-            let value;
-            const colonIndex = trimmedProperty.indexOf(':');
-            if (colonIndex === -1) {
-              name = trimmedProperty;
-              value = '';
-            } else {
-              name = trimmedProperty.substring(0, colonIndex).trim();
-              value = trimmedProperty.substring(colonIndex + 1).trim();
-            }
-            const range = new TextUtils.TextRange.TextRange(lineNumber, column, lineNumber, column + property.length);
-            this.#allPropertiesInternal.push(new CSSProperty(
-                this, this.#allPropertiesInternal.length, name, value, false, false, false, false, property,
-                range.relativeFrom(startLine, startColumn)));
+      let column = 0;
+      for (const property of context.validContent.split(';')) {
+        const trimmedProperty = property.trim();
+        if (trimmedProperty) {
+          let name;
+          let value;
+          const colonIndex = trimmedProperty.indexOf(':');
+          if (colonIndex === -1) {
+            name = trimmedProperty;
+            value = '';
+          } else {
+            name = trimmedProperty.substring(0, colonIndex).trim();
+            value = trimmedProperty.substring(colonIndex + 1).trim();
           }
-          column += property.length + 1;
+          const range = new TextUtils.TextRange.TextRange(lineNumber, column, lineNumber, column + property.length);
+          this.#allPropertiesInternal.push(new CSSProperty(
+              this, this.#allPropertiesInternal.length, name, value, false, false, false, false, property,
+              range.relativeFrom(startLine, startColumn)));
         }
-        lineNumber++;
+        column += property.length + 1;
       }
     }
 
-    function stripComments(text: string, inComment: boolean): {
-      text: string,
-      inComment: boolean,
-    } {
-      let output = '';
+    function skipBlocks(text: string, context: SkipBlockContext): void {
+      context.validContent = '';
       for (let i = 0; i < text.length; i++) {
-        if (!inComment && text.substring(i, i + 2) === '/*') {
-          inComment = true;
+        if (!context.inComment) {
+          if (text[i] === '{') {
+            context.nestedBlocks++;
+            // Since we don't retrospectively parse the block's selector, we treat anything
+            // between the last `;` and `{` as the block's selector and ignore it.
+            context.validContent = context.validContent.substring(0, context.validContent.lastIndexOf(';') + 1);
+          } else if (text[i] === '}') {
+            context.nestedBlocks--;
+          } else if (text.substring(i, i + 2) === '/*') {
+            context.inComment = true;
+            i++;
+          } else if (context.nestedBlocks === 0) {
+            context.validContent += text[i];
+          }
+        } else if (text.substring(i, i + 2) === '*/') {
+          context.inComment = false;
           i++;
-        } else if (inComment && text.substring(i, i + 2) === '*/') {
-          inComment = false;
-          i++;
-        } else if (!inComment) {
-          output += text[i];
         }
       }
-      return {text: output, inComment};
     }
   }
 
-  private generateSyntheticPropertiesIfNeeded(): void {
+  #generateSyntheticPropertiesIfNeeded(): void {
     if (this.range) {
       return;
     }
@@ -207,7 +216,7 @@ export class CSSStyleDeclaration {
     this.#allPropertiesInternal = this.#allPropertiesInternal.concat(generatedProperties);
   }
 
-  private computeLeadingProperties(): CSSProperty[] {
+  #computeLeadingProperties(): CSSProperty[] {
     function propertyHasRange(property: CSSProperty): boolean {
       return Boolean(property.range);
     }
@@ -236,7 +245,7 @@ export class CSSStyleDeclaration {
 
   leadingProperties(): CSSProperty[] {
     if (!this.#leadingPropertiesInternal) {
-      this.#leadingPropertiesInternal = this.computeLeadingProperties();
+      this.#leadingPropertiesInternal = this.#computeLeadingProperties();
     }
     return this.#leadingPropertiesInternal;
   }
@@ -249,7 +258,7 @@ export class CSSStyleDeclaration {
     return this.#cssModelInternal;
   }
 
-  private computeInactiveProperties(): void {
+  #computeInactiveProperties(): void {
     const activeProperties = new Map<string, CSSProperty>();
     // The order of the properties are:
     // 1. regular property, including shorthands
@@ -321,7 +330,7 @@ export class CSSStyleDeclaration {
     return 0;
   }
 
-  private insertionRange(index: number): TextUtils.TextRange.TextRange {
+  #insertionRange(index: number): TextUtils.TextRange.TextRange {
     const property = this.propertyAt(index);
     if (property && property.range) {
       return property.range.collapseToStart();
@@ -334,7 +343,7 @@ export class CSSStyleDeclaration {
 
   newBlankProperty(index?: number): CSSProperty {
     index = (typeof index === 'undefined') ? this.pastLastSourcePropertyIndex() : index;
-    const property = new CSSProperty(this, index, '', '', false, false, true, false, '', this.insertionRange(index));
+    const property = new CSSProperty(this, index, '', '', false, false, true, false, '', this.#insertionRange(index));
     return property;
   }
 
@@ -361,3 +370,9 @@ export enum Type {
   Inline = 'Inline',
   Attributes = 'Attributes',
 }
+
+type SkipBlockContext = {
+  inComment: boolean,
+  nestedBlocks: number,
+  validContent: string,
+};

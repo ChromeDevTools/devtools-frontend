@@ -164,7 +164,7 @@ describe('The Network Tab', async function() {
   });
 
   it('can invert text filters', async () => {
-    const invertCheckbox = await (await waitForAria('Invert')).toElement('input');
+    const invertCheckbox = await waitForAria('Invert');
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
     await typeText('5');
     await click(invertCheckbox);
@@ -182,7 +182,7 @@ describe('The Network Tab', async function() {
   });
 
   it('can invert regex filters', async () => {
-    const invertCheckbox = await (await waitForAria('Invert')).toElement('input');
+    const invertCheckbox = await waitForAria('Invert');
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
     await typeText('/4/');
     await click(invertCheckbox);
@@ -200,7 +200,7 @@ describe('The Network Tab', async function() {
   });
 
   it('can invert negated text filters', async () => {
-    const invertCheckbox = await (await waitForAria('Invert')).toElement('input');
+    const invertCheckbox = await waitForAria('Invert');
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
     await typeText('-10');
     await click(invertCheckbox);
@@ -214,7 +214,7 @@ describe('The Network Tab', async function() {
   });
 
   it('can invert negated regex filters', async () => {
-    const invertCheckbox = await (await waitForAria('Invert')).toElement('input');
+    const invertCheckbox = await waitForAria('Invert');
     expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
     await typeText('-/10/');
     await click(invertCheckbox);
@@ -230,7 +230,7 @@ describe('The Network Tab', async function() {
   it('can persist the invert checkbox', async () => {
     // Start with invert disabled, then enable it.
     {
-      const invertCheckbox = await (await waitForAria('Invert')).toElement('input');
+      const invertCheckbox = await waitForAria('Invert');
       expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
       await click(invertCheckbox);
       expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
@@ -238,7 +238,7 @@ describe('The Network Tab', async function() {
     // Verify persistence when enabled.
     await reloadDevTools({queryParams: {panel: 'network'}});
     {
-      const invertCheckbox = await (await waitForAria('Invert')).toElement('input');
+      const invertCheckbox = await waitForAria('Invert');
       expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
       await click(invertCheckbox);
       expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
@@ -246,7 +246,7 @@ describe('The Network Tab', async function() {
     // Verify persistence when disabled.
     await reloadDevTools({queryParams: {panel: 'network'}});
     {
-      const invertCheckbox = await (await waitForAria('Invert')).toElement('input');
+      const invertCheckbox = await waitForAria('Invert');
       expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
     }
   });

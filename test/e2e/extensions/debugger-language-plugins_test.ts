@@ -90,14 +90,8 @@ describe('The Debugger Language Plugins', async () => {
     await goToResource(
         'extensions/wasm_module.html?module=/test/e2e/resources/extensions/global_variable.wasm&defer=1');
     await openSourcesPanel();
-    const capturedFileNames = await captureAddedSourceFiles(3, async () => {
-      await target.evaluate('loadModule();');
-    });
-    assert.deepEqual(capturedFileNames, [
-      '//__puppeteer_evaluation_script__/(index)',
-      '/test/e2e/resources/extensions/global_variable.wasm',
-      '/source_file.c',
-    ]);
+    const capturedFileNames = await captureAddedSourceFiles(2, () => target.evaluate('loadModule();'));
+    assert.deepEqual(capturedFileNames, ['/test/e2e/resources/extensions/global_variable.wasm', '/source_file.c']);
   });
 
   // Resolve a single code offset to a source line to test the correctness of offset computations.
@@ -145,9 +139,9 @@ describe('The Debugger Language Plugins', async () => {
     await click(RESUME_BUTTON);
     const error = await waitForFunction(async () => {
       const messages = await getStructuredConsoleMessages();
-      return messages.find(message => message.message?.startsWith('Uncaught (in promise) RuntimeError: unreachable'));
+      return messages.find(message => message.message.startsWith('Uncaught (in promise) RuntimeError: unreachable'));
     });
-    const callframes = error.message?.split('\n').slice(1);
+    const callframes = error.message.split('\n').slice(1);
     assert.deepEqual(callframes, [
       `    at Main (unreachable.wat:${pauseLocation.sourceLine})`,
       '    at window.loadModule (wasm_module.html?mod…&autorun=Main:24:46)',
@@ -1246,12 +1240,8 @@ describe('The Debugger Language Plugins', async () => {
     await openSourcesPanel();
 
     {
-      const capturedFileNames = await captureAddedSourceFiles(2, async () => {
-        await target.evaluate('loadModule();');
-      });
-      assert.deepEqual(
-          capturedFileNames,
-          ['//__puppeteer_evaluation_script__/(index)', '/test/e2e/resources/extensions/global_variable.wasm']);
+      const capturedFileNames = await captureAddedSourceFiles(1, () => target.evaluate('loadModule();'));
+      assert.deepEqual(capturedFileNames, ['/test/e2e/resources/extensions/global_variable.wasm']);
     }
 
     {

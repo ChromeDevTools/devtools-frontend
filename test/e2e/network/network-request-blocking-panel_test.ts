@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
-
+import {assert} from 'chai';
+import {expect} from 'chai';
 import {type ElementHandle} from 'puppeteer';
 
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
@@ -24,7 +24,8 @@ async function checkboxIsChecked(element: ElementHandle<HTMLInputElement>): Prom
   return await element.evaluate(node => node.checked);
 }
 
-async function isVisible(element: ElementHandle<HTMLElement>, container: ElementHandle<HTMLElement>): Promise<boolean> {
+async function isVisible(
+    element: ElementHandle<HTMLInputElement>, container: ElementHandle<HTMLInputElement>): Promise<boolean> {
   const elementBox = JSON.parse(await element.evaluate(e => JSON.stringify(e.getBoundingClientRect())));
   const containerBox = JSON.parse(await container.evaluate(e => JSON.stringify(e.getBoundingClientRect())));
 
@@ -33,8 +34,7 @@ async function isVisible(element: ElementHandle<HTMLElement>, container: Element
 }
 
 async function disableNetworkRequestBlocking() {
-  const networkRequestBlockingCheckbox =
-      await (await waitForAria('Enable network request blocking')).toElement('input');
+  const networkRequestBlockingCheckbox = await waitForAria('Enable network request blocking');
   expect(await checkboxIsChecked(networkRequestBlockingCheckbox)).to.equal(true);
   await networkRequestBlockingCheckbox.click();
   expect(await checkboxIsChecked(networkRequestBlockingCheckbox)).to.equal(false);
@@ -61,8 +61,7 @@ describe('Network request blocking panel', async () => {
     await waitForAriaNone('Remove');
 
     const firstListItem = await waitFor('.blocked-url');
-    const firstCheckbox =
-        await (await waitFor('.widget > .list > .list-item > .blocked-url > .blocked-url-checkbox')).toElement('input');
+    const firstCheckbox = await waitFor('.widget > .list > .list-item > .blocked-url > .blocked-url-checkbox');
     expect(await checkboxIsChecked(firstCheckbox)).to.equal(true);
     await firstListItem.click();
     expect(await checkboxIsChecked(firstCheckbox)).to.equal(true);
@@ -72,7 +71,7 @@ describe('Network request blocking panel', async () => {
     await setup();
     await disableNetworkRequestBlocking();
 
-    const list = await waitFor('.list') as ElementHandle<HTMLElement>;
+    const list = await waitFor('.list');
     const listBB = await list.boundingBox();
     if (listBB) {
       const {frontend} = getBrowserAndPages();
@@ -84,7 +83,7 @@ describe('Network request blocking panel', async () => {
       assert.fail('Could not obtain a bounding box for the pattern list.');
     }
 
-    const lastListItem = await waitForElementWithTextContent('19') as ElementHandle<HTMLElement>;
+    const lastListItem = await waitForElementWithTextContent('19');
     await waitForFunction(() => isVisible(lastListItem, list));
   });
 });

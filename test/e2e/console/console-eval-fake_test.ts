@@ -43,7 +43,7 @@ describe('The Console Tab', async () => {
     });
 
     await step('retrieve the console log', async () => {
-      messages = await getCurrentConsoleMessages() as string[];
+      messages = await getCurrentConsoleMessages();
     });
 
     await step('check that the expected output is logged', async () => {

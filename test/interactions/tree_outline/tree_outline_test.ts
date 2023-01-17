@@ -36,7 +36,7 @@ async function buildTreeNode(handler: ElementHandle<HTMLLIElement>): Promise<Vis
     item.children = [];
     const childNodes = await $$(`ul[role="group"] > li[role="treeitem"][aria-level="${parentNodeLevel + 1}"]`, handler);
     for (const child of childNodes) {
-      const newNode = await buildTreeNode(await child.toElement('li'));
+      const newNode = await buildTreeNode(child);
       item.children.push(newNode);
     }
   }
@@ -49,7 +49,7 @@ async function getRenderedNodesTextAsTree(treeOutline: ElementHandle<HTMLElement
 
   const rootNodes = await $$('ul[role="tree"]>li[role="treeitem"]', treeOutline);
   for (const root of rootNodes) {
-    const newNode = await buildTreeNode(await root.toElement('li'));
+    const newNode = await buildTreeNode(root);
     tree.push(newNode);
   }
 
@@ -62,7 +62,7 @@ describe('TreeOutline', () => {
   it('renders the top level nodes by default', async () => {
     await loadComponentDocExample('tree_outline/basic.html');
     const treeOutline = await getTreeOutline();
-    const renderedNodeTree = await getRenderedNodesTextAsTree(treeOutline as ElementHandle<HTMLElement>);
+    const renderedNodeTree = await getRenderedNodesTextAsTree(treeOutline);
     assert.deepEqual(renderedNodeTree, [
       {key: 'Offices'},
       {key: 'Products'},
@@ -82,7 +82,7 @@ describe('TreeOutline', () => {
       // 3: 2 original root nodes, and the 1 child of the first root node.
       return visibleNodes.length === 3;
     });
-    const renderedNodeTree = await getRenderedNodesTextAsTree(treeOutline as ElementHandle<HTMLElement>);
+    const renderedNodeTree = await getRenderedNodesTextAsTree(treeOutline);
     assert.deepEqual(renderedNodeTree, [
       {key: 'Offices', children: [{key: 'Europe'}]},
       {key: 'Products'},

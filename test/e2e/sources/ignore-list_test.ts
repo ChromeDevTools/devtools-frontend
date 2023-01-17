@@ -112,15 +112,9 @@ describe('Ignore list', async function() {
     await setIgnoreListPattern('thirdparty');
     await goToResource('sources/multi-files.html');
     await openSourcesPanel();
-    assert.deepEqual(await readSourcesTreeView(), [
-      'top',
-      'localhost:XXXX',
-      'test/e2e/resources/sources',
-      'multi-files.html',
-      'multi-files-mycode.js',
-      '__puppeteer_evaluation_script__',
-      '(index)',
-    ]);
+    assert.deepEqual(
+        await readSourcesTreeView(),
+        ['top', 'localhost:XXXX', 'test/e2e/resources/sources', 'multi-files.html', 'multi-files-mycode.js']);
     await toggleIgnoreListing(false);
     assert.deepEqual(await readSourcesTreeView(), [
       'top',
@@ -129,18 +123,10 @@ describe('Ignore list', async function() {
       'multi-files.html',
       'multi-files-mycode.js',
       'multi-files-thirdparty.js',
-      '__puppeteer_evaluation_script__',
-      '(index)',
     ]);
     await toggleIgnoreListing(true);
-    assert.deepEqual(await readSourcesTreeView(), [
-      'top',
-      'localhost:XXXX',
-      'test/e2e/resources/sources',
-      'multi-files.html',
-      'multi-files-mycode.js',
-      '__puppeteer_evaluation_script__',
-      '(index)',
-    ]);
+    assert.deepEqual(
+        await readSourcesTreeView(),
+        ['top', 'localhost:XXXX', 'test/e2e/resources/sources', 'multi-files.html', 'multi-files-mycode.js']);
   });
 });

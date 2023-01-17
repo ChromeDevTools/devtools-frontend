@@ -423,20 +423,17 @@ describe('The Network Tab', async function() {
   });
 
   it('shows the main service worker request as complete', async () => {
-    const {target, frontend} = getBrowserAndPages();
-    const promises = [
-      waitForFunction(async () => {
-        const {status, type} = await getRequestRowInfo(frontend, 'service-worker.html/test/e2e/resources/network');
-        return status === '200OK' && type === 'document';
-      }),
-      waitForFunction(async () => {
-        const {status, type} =
-            await getRequestRowInfo(frontend, '⚙ service-worker.jslocalhost/test/e2e/resources/network');
-        return status === 'Finished' && type === 'script';
-      }),
-    ];
     await navigateToNetworkTab('service-worker.html');
+    const {target, frontend} = getBrowserAndPages();
     await target.waitForXPath('//div[@id="content" and text()="pong"]');
-    await Promise.all(promises);
+    await waitForFunction(async () => {
+      const {status, type} = await getRequestRowInfo(frontend, 'service-worker.html/test/e2e/resources/network');
+      return status === '200OK' && type === 'document';
+    });
+    await waitForFunction(async () => {
+      const {status, type} =
+          await getRequestRowInfo(frontend, '⚙ service-worker.jslocalhost/test/e2e/resources/network');
+      return status === '200OK' && type === 'script';
+    });
   });
 });

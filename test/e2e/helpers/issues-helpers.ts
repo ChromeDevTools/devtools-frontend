@@ -42,7 +42,7 @@ export async function getUnhideAllIssuesBtn() {
 }
 
 export async function getHideIssuesMenuItem(): Promise<puppeteer.ElementHandle<HTMLElement>|null> {
-  const menuItem = await waitFor<HTMLElement>(`[aria-label="${HIDE_THIS_ISSUE}"]`);
+  const menuItem = await waitFor(`[aria-label="${HIDE_THIS_ISSUE}"]`);
   if (menuItem) {
     return menuItem;
   }
@@ -80,7 +80,7 @@ async function getIssueByTitleElement(issueMessageElement: puppeteer.ElementHand
   if (header) {
     const headerClassList = await header.evaluate(el => el.classList.toString());
     assert.include(headerClassList, 'header');
-    const issue = await header.evaluateHandle(el => el.parentElement?.nextSibling);
+    const issue = await header.evaluateHandle(el => el.parentElement.nextSibling);
     if (issue) {
       return issue as puppeteer.ElementHandle<HTMLElement>;
     }

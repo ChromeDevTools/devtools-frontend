@@ -9,6 +9,7 @@ import {
   waitFor,
   waitForAria,
   waitForElementWithTextContent,
+  type puppeteer,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openSettingsTab} from '../helpers/settings-helpers.js';
@@ -19,12 +20,7 @@ describe('Preferences settings tab', () => {
     const appearance = await waitForAria('Appearance');
 
     const label = await waitForElementWithTextContent('Color format:', appearance);
-    const select = await label.evaluateHandle(label => {
-      if (label.nextSibling instanceof HTMLSelectElement) {
-        return label.nextSibling;
-      }
-      throw new Error('Could not find select element');
-    });
+    const select = await label.evaluateHandle<puppeteer.ElementHandle<HTMLSelectElement>>(label => label.nextSibling);
     assert.isTrue(await select.evaluate(select => select.disabled));
     assert.deepEqual(await select.evaluate(select => select.value), 'original');
 

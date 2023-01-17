@@ -55,7 +55,7 @@ export async function deleteConsoleMessagesFilter(frontend: puppeteer.Page) {
   await waitFor('.console-main-toolbar');
   const main = await $('.console-main-toolbar');
   await frontend.evaluate(n => {
-    const deleteButton = n.shadowRoot?.querySelector('.search-cancel-button') as HTMLElement;
+    const deleteButton = n.shadowRoot.querySelector('.search-cancel-button');
     if (deleteButton) {
       deleteButton.click();
     }
@@ -66,7 +66,7 @@ export async function filterConsoleMessages(frontend: puppeteer.Page, filter: st
   await waitFor('.console-main-toolbar');
   const main = await $('.console-main-toolbar');
   await frontend.evaluate(n => {
-    const toolbar = n.shadowRoot?.querySelector('.toolbar-input-prompt.text-prompt') as HTMLElement;
+    const toolbar = n.shadowRoot.querySelector('.toolbar-input-prompt.text-prompt');
     toolbar.focus();
   }, main);
   await pasteText(filter);
@@ -135,7 +135,7 @@ export async function getCurrentConsoleMessages(withAnchor = false, level = Leve
 
   // Get the messages from the console.
   return frontend.evaluate(selector => {
-    return Array.from(document.querySelectorAll(selector)).map(message => message.textContent as string);
+    return Array.from(document.querySelectorAll(selector)).map(message => message.textContent);
   }, selector);
 }
 
@@ -189,8 +189,7 @@ export async function getStructuredConsoleMessages() {
       const consoleMessage = wrapper.querySelector('.console-message');
       const repeatCount = wrapper.querySelector('.console-message-repeat-count');
       const stackPreviewRoot = wrapper.querySelector('.hidden > span');
-      const stackPreview =
-          stackPreviewRoot ? (stackPreviewRoot.shadowRoot as ShadowRoot).querySelector(STACK_PREVIEW_CONTAINER) : null;
+      const stackPreview = stackPreviewRoot ? stackPreviewRoot.shadowRoot.querySelector(STACK_PREVIEW_CONTAINER) : null;
       return {
         message,
         messageClasses: consoleMessage?.className,
@@ -357,5 +356,5 @@ export async function getLastConsoleStacktrace(offset: number = 0) {
 
 export async function checkCommandStacktrace(command: string, expected: string, offset: number = 0) {
   await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, command);
-  await unifyLogVM(await getLastConsoleStacktrace(offset) as string, expected);
+  await unifyLogVM(await getLastConsoleStacktrace(offset), expected);
 }

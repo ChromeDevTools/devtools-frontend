@@ -3,8 +3,8 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ExplorerBase = void 0;
 exports.getExtensionDescription = getExtensionDescription;
+exports.ExplorerBase = void 0;
 
 var _path = _interopRequireDefault(require("path"));
 

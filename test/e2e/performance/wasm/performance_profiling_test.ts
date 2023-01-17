@@ -39,7 +39,7 @@ async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActi
       if (!treeItem) {
         return false;
       }
-      const treeItemText = await frontend.evaluate(el => (el as HTMLElement).innerText, treeItem);
+      const treeItemText = await frontend.evaluate(el => el.innerText, treeItem);
       if (expectedActivities[index] === treeItemText) {
         parentItem = treeItem;
         return true;
@@ -112,7 +112,7 @@ describe('The Performance panel', async function() {
     await step('navigate to the Performance tab and uplaod performance profile', async () => {
       await navigateToPerformanceTab('wasm/profiling');
 
-      const uploadProfileHandle = await (await waitFor('input[type=file]')).toElement('input');
+      const uploadProfileHandle = await waitFor('input[type=file]');
       assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
       await uploadProfileHandle.uploadFile('test/e2e/resources/performance/wasm/mainWasm_profile.json');
     });

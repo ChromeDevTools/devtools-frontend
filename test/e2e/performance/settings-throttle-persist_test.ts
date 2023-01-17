@@ -26,7 +26,7 @@ describe('The Performance panel', async function() {
   it('can persist throttling conditions', async () => {
     // Start with no throttling, select an option "A".
     {
-      const select = await (await waitFor('select', await waitForAria('Network conditions'))).toElement('select');
+      const select = await waitFor('select', await waitForAria('Network conditions'));
       await assertOption(select, 'Disabled: No throttling');
       await select.select('Fast 3G');
       await assertOption(select, 'Presets: Fast 3G');
@@ -34,7 +34,7 @@ describe('The Performance panel', async function() {
     // Verify persistence for "A", select another option "B".
     await reloadDevTools({queryParams: {panel: 'timeline'}});
     {
-      const select = await (await waitFor('select', await waitForAria('Network conditions'))).toElement('select');
+      const select = await waitFor('select', await waitForAria('Network conditions'));
       await assertOption(select, 'Presets: Fast 3G');
       await select.select('Slow 3G');
       await assertOption(select, 'Presets: Slow 3G');
@@ -42,7 +42,7 @@ describe('The Performance panel', async function() {
     // Verify persistence for "B", disable throttling.
     await reloadDevTools({queryParams: {panel: 'timeline'}});
     {
-      const select = await (await waitFor('select', await waitForAria('Network conditions'))).toElement('select');
+      const select = await waitFor('select', await waitForAria('Network conditions'));
       await assertOption(select, 'Presets: Slow 3G');
       await select.select('No throttling');
       await assertOption(select, 'Disabled: No throttling');
@@ -50,7 +50,7 @@ describe('The Performance panel', async function() {
     // Verify persistence of disabled throttling.
     await reloadDevTools({queryParams: {panel: 'timeline'}});
     {
-      const select = await (await waitFor('select', await waitForAria('Network conditions'))).toElement('select');
+      const select = await waitFor('select', await waitForAria('Network conditions'));
       await assertOption(select, 'Disabled: No throttling');
     }
   });

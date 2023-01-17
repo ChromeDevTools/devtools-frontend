@@ -78,8 +78,8 @@ export const registerHandlers = () => {
     return;
   }
   puppeteer.registerCustomQueryHandler('pierceShadowText', {
-    queryOne: querySelectorShadowTextOne as (node: Node, selector: string) => Node | null,
-    queryAll: querySelectorShadowTextAll as unknown as (node: Node, selector: string) => Node[],
+    queryOne: querySelectorShadowTextOne,
+    queryAll: querySelectorShadowTextAll,
   });
   handlerRegistered = true;
 };

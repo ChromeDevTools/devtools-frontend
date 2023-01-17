@@ -173,9 +173,6 @@ describe('Navigation', async function() {
 
         const htmlContent = await waitForHtml();
         const iframeHandle = await renderHtmlInIframe(htmlContent);
-        if (!iframeHandle) {
-          throw new Error('Could not find iFrame document.');
-        }
         const iframeAuditDivs = await iframeHandle.$$('.lh-audit');
         const frontendAuditDivs = await reportEl.$$('.lh-audit');
         assert.strictEqual(frontendAuditDivs.length, iframeAuditDivs.length);

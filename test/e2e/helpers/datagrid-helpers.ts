@@ -7,23 +7,24 @@ import {$, $$, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/
 import {assert} from 'chai';
 
 export async function getDataGridRows(
-    expectedNumberOfRows: number, root?: ElementHandle<Node>,
-    matchExactNumberOfRows: boolean = true): Promise<ElementHandle<HTMLTableCellElement>[][]> {
-  const dataGrid = !root ? await waitFor('devtools-data-grid') : root;
-  const handlers = await (async () => {
+    expectedNumberOfRows: number, root?: ElementHandle<Element>,
+    matchExactNumberOfRows: boolean = true): Promise<ElementHandle<Element>[][]> {
+  const dataGrid = await waitFor('devtools-data-grid', root);
+  const rowsSelector = 'tbody > tr:not(.padding-row):not(.hidden)';
+  const rowsHandler = await waitForFunction(async () => {
+    const rows = (await $$(rowsSelector, dataGrid));
     if (matchExactNumberOfRows) {
-      return await waitForFunction(async () => {
-        const rows = await $$('tbody > tr:not(.padding-row):not(.hidden)', dataGrid);
-        return rows.length === expectedNumberOfRows ? rows : undefined;
-      });
+      return (rows.length === expectedNumberOfRows) ? rows : undefined;
     }
-    return await waitForFunction(async () => {
-      const rows = await $$('tbody > tr:not(.padding-row):not(.hidden)', dataGrid);
-      return rows.length >= expectedNumberOfRows ? rows : undefined;
-    });
-  })();
+    return (rows.length >= expectedNumberOfRows) ? rows : undefined;
+  });
 
-  return Promise.all(handlers.map(handler => $$<HTMLTableCellElement>('td[data-row-index]:not(.hidden)', handler)));
+  const tableElements = [];
+  for (const rowHandler of rowsHandler) {
+    const cells = await $$('td[data-row-index]:not(.hidden)', rowHandler);
+    tableElements.push(cells);
+  }
+  return tableElements;
 }
 
 export async function getDataGrid(root?: ElementHandle) {

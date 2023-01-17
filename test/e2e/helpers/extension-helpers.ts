@@ -10,7 +10,6 @@
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 
 import type * as puppeteer from 'puppeteer';
-import {type CDPPage} from '../../../node_modules/puppeteer-core/lib/esm/puppeteer/common/Page.js';
 import {getBrowserAndPages, getDevToolsFrontendHostname, getResourcesPath, waitFor} from '../../shared/helper.js';
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -46,7 +45,8 @@ export async function loadExtension(name: string, startPage?: string) {
   return load;
 
   async function doLoad(frontend: puppeteer.Page, extensionInfo: {startPage: string, name: string}) {
-    const session = await (frontend as unknown as CDPPage)._client();
+    // @ts-ignore The pptr API doesn't allow us to remove the API injection after we're done.
+    const session = await frontend._client;
     // TODO(chromium:1246836) remove once real extension tests are available
     const injectedAPI = await frontend.evaluate(
         extensionInfo => globalThis.buildExtensionAPIInjectedScript(

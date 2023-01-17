@@ -96,7 +96,7 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
       if (logLevel === 'E') {
         let message = `${logLevel}> `;
         if (msg.text() === 'JSHandle@error') {
-          const errorHandle = msg.args()[0] as puppeteer.JSHandle<Error>;
+          const errorHandle: puppeteer.JSHandle<Error> = msg.args()[0];
           message += await errorHandle.evaluate(error => {
             return error.stack;
           });

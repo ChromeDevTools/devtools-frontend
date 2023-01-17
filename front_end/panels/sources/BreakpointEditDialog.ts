@@ -49,11 +49,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/BreakpointEditDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface BreakpointEditDialogResult {
+  committed: boolean;
+  condition: string;
+}
+
 export class BreakpointEditDialog extends UI.Widget.Widget {
-  private readonly onFinish: (arg0: {
-    committed: boolean,
-    condition: string,
-  }) => Promise<void>;
+  private readonly onFinish: (result: BreakpointEditDialogResult) => void;
   private finished: boolean;
   private editor: TextEditor.TextEditor.TextEditor;
   private isLogpoint: boolean;
@@ -61,11 +63,8 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   private placeholderCompartment: CodeMirror.Compartment;
 
   constructor(
-      editorLineNumber: number,
-      oldCondition: string,
-      preferLogpoint: boolean,
-      onFinish: (arg0: {committed: boolean, condition: string}) => Promise<void>,
-  ) {
+      editorLineNumber: number, oldCondition: string, preferLogpoint: boolean,
+      onFinish: (result: BreakpointEditDialogResult) => void) {
     super(true);
 
     const editorConfig = [
@@ -214,7 +213,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     if (this.isLogpoint) {
       condition = BreakpointEditDialog.conditionForLogpoint(condition);
     }
-    void this.onFinish({committed, condition});
+    this.onFinish({committed, condition});
   }
 
   wasShown(): void {

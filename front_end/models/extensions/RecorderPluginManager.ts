@@ -7,8 +7,17 @@ import * as Common from '../../core/common/common.js';
 
 let instance: RecorderPluginManager|null = null;
 
+export type ViewDescriptor = {
+  id: string,
+  title: string,
+  pagePath: string,
+  onShown: () => void,
+  onHidden: () => void,
+};
+
 export class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #plugins: Set<RecorderExtensionEndpoint> = new Set();
+  #views: Map<string, ViewDescriptor> = new Map();
 
   static instance(): RecorderPluginManager {
     if (!instance) {
@@ -30,6 +39,27 @@ export class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   plugins(): RecorderExtensionEndpoint[] {
     return Array.from(this.#plugins.values());
   }
+
+  registerView(descriptor: ViewDescriptor): void {
+    this.#views.set(descriptor.id, descriptor);
+    this.dispatchEventToListeners(Events.ViewRegistered, descriptor);
+  }
+
+  views(): ViewDescriptor[] {
+    return Array.from(this.#views.values());
+  }
+
+  getViewDescriptor(id: string): ViewDescriptor|undefined {
+    return this.#views.get(id);
+  }
+
+  showView(id: string): void {
+    const descriptor = this.#views.get(id);
+    if (!descriptor) {
+      throw new Error(`View with id ${id} is not found.`);
+    }
+    this.dispatchEventToListeners(Events.ShowViewRequested, descriptor);
+  }
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -37,9 +67,13 @@ export class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper<Ev
 export enum Events {
   PluginAdded = 'pluginAdded',
   PluginRemoved = 'pluginRemoved',
+  ViewRegistered = 'viewRegistered',
+  ShowViewRequested = 'showViewRequested',
 }
 
 export type EventTypes = {
   [Events.PluginAdded]: RecorderExtensionEndpoint,
   [Events.PluginRemoved]: RecorderExtensionEndpoint,
+  [Events.ViewRegistered]: ViewDescriptor,
+  [Events.ShowViewRequested]: ViewDescriptor,
 };

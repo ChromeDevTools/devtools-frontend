@@ -4,6 +4,7 @@
 
 import * as Extensions from '../../../../../front_end/models/extensions/extensions.js';
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 interface ExtensionContext {
   chrome: Partial<Chrome.DevTools.Chrome>;
@@ -41,7 +42,7 @@ export function describeWithDummyExtension(title: string, fn: (this: Mocha.Suite
     beforeEach(setup);
     afterEach(cleanup);
 
-    describe(title, fn.bind(this, context));
+    describeWithEnvironment(title, fn.bind(this, context));
   });
 }
 

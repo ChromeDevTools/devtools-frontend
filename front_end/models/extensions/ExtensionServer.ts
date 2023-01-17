@@ -147,6 +147,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(PrivateAPI.Commands.GetWasmOp, this.onGetWasmOp.bind(this));
     this.registerHandler(
         PrivateAPI.Commands.RegisterRecorderExtensionPlugin, this.registerRecorderExtensionEndpoint.bind(this));
+    this.registerHandler(PrivateAPI.Commands.CreateRecorderView, this.onCreateRecorderView.bind(this));
+    this.registerHandler(PrivateAPI.Commands.ShowRecorderView, this.onShowRecorderView.bind(this));
     window.addEventListener('message', this.onWindowMessage, false);  // Only for main window.
 
     const existingTabId =
@@ -303,8 +305,44 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (message.command !== PrivateAPI.Commands.RegisterRecorderExtensionPlugin) {
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.RegisterRecorderExtensionPlugin}`);
     }
-    const {pluginName, mediaType, port} = message;
-    RecorderPluginManager.instance().addPlugin(new RecorderExtensionEndpoint(pluginName, mediaType, port));
+    const {pluginName, mediaType, port, capabilities} = message;
+    RecorderPluginManager.instance().addPlugin(
+        new RecorderExtensionEndpoint(pluginName, port, capabilities, mediaType));
+    return this.status.OK();
+  }
+
+  private onShowRecorderView(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.ShowRecorderView) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ShowRecorderView}`);
+    }
+    RecorderPluginManager.instance().showView(message.id);
+    return undefined;
+  }
+
+  private onCreateRecorderView(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
+    if (message.command !== PrivateAPI.Commands.CreateRecorderView) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.CreateRecorderView}`);
+    }
+    const id = message.id;
+    // The ids are generated on the client API side and must be unique, so the check below
+    // shouldn't be hit unless someone is bypassing the API.
+    if (this.clientObjects.has(id)) {
+      return this.status.E_EXISTS(id);
+    }
+
+    const pagePath = ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.pagePath);
+    if (pagePath === undefined) {
+      return this.status.E_BADARG('pagePath', 'Resources paths cannot point to non-extension resources');
+    }
+    const onShown = (): void => this.notifyViewShown(id);
+    const onHidden = (): void => this.notifyViewHidden(id);
+    RecorderPluginManager.instance().registerView({
+      id,
+      pagePath,
+      title: message.title,
+      onShown,
+      onHidden,
+    });
     return this.status.OK();
   }
 

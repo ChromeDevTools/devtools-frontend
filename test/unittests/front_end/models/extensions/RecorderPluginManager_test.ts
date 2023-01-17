@@ -17,7 +17,7 @@ describe('RecorderPluginManager', () => {
         Extensions.RecorderPluginManager.Events.PluginRemoved,
         event => events.push({event: 'pluginRemoved', plugin: event.data}));
     const plugin = new Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(
-        'test', 'application/javascript', new MessageChannel().port1);
+        'test', new MessageChannel().port1, ['export'], 'application/javascript');
 
     manager.addPlugin(plugin);
     manager.removePlugin(plugin);

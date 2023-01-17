@@ -91,6 +91,8 @@ export namespace PrivateAPI {
     GetWasmGlobal = 'getWasmGlobal',
     GetWasmOp = 'getWasmOp',
     RegisterRecorderExtensionPlugin = 'registerRecorderExtensionPlugin',
+    CreateRecorderView = 'createRecorderView',
+    ShowRecorderView = 'showRecorderView',
   }
 
   export const enum LanguageExtensionPluginCommands {
@@ -119,6 +121,7 @@ export namespace PrivateAPI {
   export const enum RecorderExtensionPluginCommands {
     Stringify = 'stringify',
     StringifyStep = 'stringifyStep',
+    Replay = 'replay',
   }
 
   export const enum RecorderExtensionPluginEvents {
@@ -137,11 +140,21 @@ export namespace PrivateAPI {
     port: MessagePort,
     supportedScriptTypes: PublicAPI.Chrome.DevTools.SupportedScriptTypes,
   };
+  export type RecordingExtensionPluginCapability = 'export'|'replay';
   type RegisterRecorderExtensionPluginRequest = {
     command: Commands.RegisterRecorderExtensionPlugin,
     pluginName: string,
-    mediaType: string,
-    port: MessagePort,
+    mediaType?: string, capabilities: RecordingExtensionPluginCapability[], port: MessagePort,
+  };
+  type CreateRecorderViewRequest = {
+    command: Commands.CreateRecorderView,
+    id: string,
+    title: string,
+    pagePath: string,
+  };
+  type ShowRecorderViewRequest = {
+    command: Commands.ShowRecorderView,
+    id: string,
   };
   type SubscribeRequest = {command: Commands.Subscribe, type: string};
   type UnsubscribeRequest = {command: Commands.Unsubscribe, type: string};
@@ -222,14 +235,14 @@ export namespace PrivateAPI {
   };
   type GetWasmOpRequest = {command: Commands.GetWasmOp, op: number, stopId: unknown};
 
-  export type ServerRequests = RegisterRecorderExtensionPluginRequest|RegisterLanguageExtensionPluginRequest|
-      SubscribeRequest|UnsubscribeRequest|AddRequestHeadersRequest|ApplyStyleSheetRequest|CreatePanelRequest|
-      ShowPanelRequest|CreateToolbarButtonRequest|UpdateButtonRequest|CompleteTraceSessionRequest|
-      CreateSidebarPaneRequest|SetSidebarHeightRequest|SetSidebarContentRequest|SetSidebarPageRequest|
-      OpenResourceRequest|SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|ReloadRequest|
-      EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|
-      AddTraceProviderRequest|ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest|
-      GetWasmLinearMemoryRequest|GetWasmLocalRequest|GetWasmGlobalRequest|GetWasmOpRequest;
+  export type ServerRequests = ShowRecorderViewRequest|CreateRecorderViewRequest|RegisterRecorderExtensionPluginRequest|
+      RegisterLanguageExtensionPluginRequest|SubscribeRequest|UnsubscribeRequest|AddRequestHeadersRequest|
+      ApplyStyleSheetRequest|CreatePanelRequest|ShowPanelRequest|CreateToolbarButtonRequest|UpdateButtonRequest|
+      CompleteTraceSessionRequest|CreateSidebarPaneRequest|SetSidebarHeightRequest|SetSidebarContentRequest|
+      SetSidebarPageRequest|OpenResourceRequest|SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|
+      ReloadRequest|EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|
+      SetResourceContentRequest|AddTraceProviderRequest|ForwardKeyboardEventRequest|GetHARRequest|
+      GetPageResourcesRequest|GetWasmLinearMemoryRequest|GetWasmLocalRequest|GetWasmGlobalRequest|GetWasmOpRequest;
   export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
 
   type AddRawModuleRequest = {
@@ -321,7 +334,12 @@ export namespace PrivateAPI {
     parameters: {step: Record<string, unknown>},
   };
 
-  export type RecorderExtensionRequests = StringifyRequest|StringifyStepRequest;
+  type ReplayRequest = {
+    method: RecorderExtensionPluginCommands.Replay,
+    parameters: {recording: Record<string, unknown>},
+  };
+
+  export type RecorderExtensionRequests = StringifyRequest|StringifyStepRequest|ReplayRequest;
 }
 
 declare global {
@@ -433,6 +451,8 @@ namespace APIImpl {
     show(): void;
   }
 
+  export interface RecorderView extends ExtensionView, PublicAPI.Chrome.DevTools.RecorderView {}
+
   export interface Button extends PublicAPI.Chrome.DevTools.Button {
     _id: string;
   }
@@ -473,6 +493,7 @@ self.injectedExtensionAPI = function(
     return;
   }
   let userAction = false;
+  let userRecorderAction = false;
 
   // Here and below, all constructors are private to API implementation.
   // For a public type Foo, if internal fields are present, these are on
@@ -750,48 +771,73 @@ self.injectedExtensionAPI = function(
     this._plugins = new Map();
   }
 
-  (RecorderServicesAPIImpl.prototype as
-   Pick<APIImpl.RecorderExtensions, 'registerRecorderExtensionPlugin'|'unregisterRecorderExtensionPlugin'>) = {
-    registerRecorderExtensionPlugin: async function(
-        this: APIImpl.RecorderExtensions, plugin: PublicAPI.Chrome.DevTools.RecorderExtensionPlugin, pluginName: string,
-        mediaType: string): Promise<void> {
-      if (this._plugins.has(plugin)) {
-        throw new Error(`Tried to register plugin '${pluginName}' twice`);
+  async function registerRecorderExtensionPluginImpl(
+      this: APIImpl.RecorderExtensions, plugin: PublicAPI.Chrome.DevTools.RecorderExtensionPlugin, pluginName: string,
+      mediaType?: string): Promise<void> {
+    if (this._plugins.has(plugin)) {
+      throw new Error(`Tried to register plugin '${pluginName}' twice`);
+    }
+    const channel = new MessageChannel();
+    const port = channel.port1;
+    this._plugins.set(plugin, port);
+    port.onmessage = ({data}: MessageEvent<{requestId: number}&PrivateAPI.RecorderExtensionRequests>): void => {
+      const {requestId} = data;
+      dispatchMethodCall(data)
+          .then(result => port.postMessage({requestId, result}))
+          .catch(error => port.postMessage({requestId, error: {message: error.message}}));
+    };
+
+    async function dispatchMethodCall(request: PrivateAPI.RecorderExtensionRequests): Promise<unknown> {
+      switch (request.method) {
+        case PrivateAPI.RecorderExtensionPluginCommands.Stringify:
+          return (plugin as PublicAPI.Chrome.DevTools.RecorderExtensionExportPlugin)
+              .stringify(request.parameters.recording);
+        case PrivateAPI.RecorderExtensionPluginCommands.StringifyStep:
+          return (plugin as PublicAPI.Chrome.DevTools.RecorderExtensionExportPlugin)
+              .stringifyStep(request.parameters.step);
+        case PrivateAPI.RecorderExtensionPluginCommands.Replay:
+          try {
+            userAction = true;
+            userRecorderAction = true;
+            return (plugin as PublicAPI.Chrome.DevTools.RecorderExtensionReplayPlugin)
+                .replay(request.parameters.recording);
+          } finally {
+            userAction = false;
+            userRecorderAction = false;
+          }
+        default:
+          // @ts-expect-error
+          throw new Error(`'${request.method}' is not recognized`);
       }
-      const channel = new MessageChannel();
-      const port = channel.port1;
-      this._plugins.set(plugin, port);
-      port.onmessage = ({data}: MessageEvent<{requestId: number}&PrivateAPI.RecorderExtensionRequests>): void => {
-        const {requestId} = data;
-        dispatchMethodCall(data)
-            .then(result => port.postMessage({requestId, result}))
-            .catch(error => port.postMessage({requestId, error: {message: error.message}}));
-      };
+    }
 
-      async function dispatchMethodCall(request: PrivateAPI.RecorderExtensionRequests): Promise<unknown> {
-        switch (request.method) {
-          case PrivateAPI.RecorderExtensionPluginCommands.Stringify:
-            return plugin.stringify(request.parameters.recording);
-          case PrivateAPI.RecorderExtensionPluginCommands.StringifyStep:
-            return plugin.stringifyStep(request.parameters.step);
-          default:
-            // @ts-expect-error
-            throw new Error(`'${request.method}' is not recognized`);
-        }
-      }
+    const capabilities: PrivateAPI.RecordingExtensionPluginCapability[] = [];
 
-      await new Promise<void>(resolve => {
-        extensionServer.sendRequest(
-            {
-              command: PrivateAPI.Commands.RegisterRecorderExtensionPlugin,
-              pluginName,
-              mediaType,
-              port: channel.port2,
-            },
-            () => resolve(), [channel.port2]);
-      });
-    },
+    if ('stringify' in plugin && 'stringifyStep' in plugin) {
+      capabilities.push('export');
+    }
 
+    if ('replay' in plugin) {
+      capabilities.push('replay');
+    }
+
+    await new Promise<void>(resolve => {
+      extensionServer.sendRequest(
+          {
+            command: PrivateAPI.Commands.RegisterRecorderExtensionPlugin,
+            pluginName,
+            mediaType,
+            capabilities,
+            port: channel.port2,
+          },
+          () => resolve(), [channel.port2]);
+    });
+  }
+
+  (RecorderServicesAPIImpl.prototype as Pick<
+       APIImpl.RecorderExtensions,
+       'registerRecorderExtensionPlugin'|'unregisterRecorderExtensionPlugin'|'createView'>) = {
+    registerRecorderExtensionPlugin: registerRecorderExtensionPluginImpl,
     unregisterRecorderExtensionPlugin: async function(
         this: APIImpl.RecorderExtensions, plugin: PublicAPI.Chrome.DevTools.RecorderExtensionPlugin): Promise<void> {
       const port = this._plugins.get(plugin);
@@ -802,6 +848,15 @@ self.injectedExtensionAPI = function(
       port.postMessage({event: PrivateAPI.RecorderExtensionPluginEvents.UnregisteredRecorderExtensionPlugin});
       port.close();
     },
+    createView: async function(this: APIImpl.RecorderExtensions, title: string, pagePath: string):
+        Promise<PublicAPI.Chrome.DevTools.RecorderView> {
+          const id = 'recorder-extension-view-' + extensionServer.nextObjectId();
+          await new Promise(resolve => {
+            extensionServer.sendRequest(
+                {command: PrivateAPI.Commands.CreateRecorderView, id, title, pagePath}, resolve);
+          });
+          return new (Constructor(RecorderView))(id);
+        },
   };
 
   function LanguageServicesAPIImpl(this: APIImpl.LanguageExtensions): void {
@@ -973,6 +1028,7 @@ self.injectedExtensionAPI = function(
   const Button = declareInterfaceClass(ButtonImpl);
   const EventSink = declareInterfaceClass(EventSinkImpl);
   const ExtensionPanel = declareInterfaceClass(ExtensionPanelImpl);
+  const RecorderView = declareInterfaceClass(RecorderViewImpl);
   const ExtensionSidebarPane = declareInterfaceClass(ExtensionSidebarPaneImpl);
   const PanelWithSidebarClass = declareInterfaceClass(PanelWithSidebarImpl);
   const Request = declareInterfaceClass(RequestImpl);
@@ -1021,6 +1077,22 @@ self.injectedExtensionAPI = function(
       }
 
       extensionServer.sendRequest({command: PrivateAPI.Commands.ShowPanel, id: this._id as string});
+    },
+
+    __proto__: ExtensionViewImpl.prototype,
+  };
+
+  function RecorderViewImpl(this: APIImpl.RecorderView, id: string): void {
+    ExtensionViewImpl.call(this, id);
+  }
+
+  (RecorderViewImpl.prototype as Pick<APIImpl.RecorderView, 'show'>& {__proto__: APIImpl.ExtensionView}) = {
+    show: function(this: APIImpl.RecorderView): void {
+      if (!userAction || !userRecorderAction) {
+        return;
+      }
+
+      extensionServer.sendRequest({command: PrivateAPI.Commands.ShowRecorderView, id: this._id as string});
     },
 
     __proto__: ExtensionViewImpl.prototype,

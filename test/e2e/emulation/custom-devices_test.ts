@@ -85,7 +85,16 @@ describe('Custom devices', async () => {
     await typeText('1.1');
 
     await tabForward();  // Focus second row delete button.
-    await tabForward();  // Focus Add browser button.
+    await tabForward();  // Focus Add brand button.
+
+    await tabForward();  // focus full-version-list brand
+    await typeText('Ready Rover');
+
+    await tabForward();  // focus full-version-list brand version
+    await typeText('2.4.9');
+
+    await tabForward();  // focus delete full-version-list brand button
+    await tabForward();  // focus add full-version-list brand button
     await tabForward();  // Focus full version.
     await typeText('1.1.2345');
 
@@ -141,7 +150,7 @@ describe('Custom devices', async () => {
     await waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
 
     // Skip over to the version field.
-    for (let i = 0; i < 15; ++i) {
+    for (let i = 0; i < 19; ++i) {
       if (i === 7) {
         await pressKey('ArrowRight');
       }

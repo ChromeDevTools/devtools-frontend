@@ -24,6 +24,7 @@ function dump() {
     logValue('res-brand-' + i + '-name', navigator.userAgentData.brands[i].brand);
     logValue('res-brand-' + i + '-version', navigator.userAgentData.brands[i].version);
   }
+  // (note that full-version-list is not in the NavigatorUAData type)
   navigator.userAgentData.getHighEntropyValues(['platform', 'platformVersion', 'architecture', 'model', 'uaFullVersion']).then(finishDump);
 }
 

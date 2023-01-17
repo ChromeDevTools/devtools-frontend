@@ -14,6 +14,10 @@ interface Navigator {
       brand: string,
       version: string,
     }[],
+    fullVersionList: {
+      brand: string,
+      version: string,
+    }[],
     mobile: string,
     getHighEntropyValues: (metaDataKeys: string[]) => Promise<string[]>,
   };
@@ -45,6 +49,7 @@ describe('The Network Tab', async function() {
       const nav = <Navigator>navigator;
       return {
         brands: nav.userAgentData?.brands,
+        fullVersionList: nav.userAgentData?.fullVersionList,
         mobile: nav.userAgentData?.mobile,
         ...(await nav.userAgentData?.getHighEntropyValues([
           'uaFullVersion',
@@ -220,6 +225,8 @@ describe('The Network Tab', async function() {
     await tabForward();       // focus help button
     await pressKey('Space');  // open client hints section
     await tabForward();       // focus help link
+
+    // UA brands
     await tabForward();       // focus brand name
     await typeText('Test Brand 1');
     await tabForward();  // focus brand version
@@ -227,19 +234,26 @@ describe('The Network Tab', async function() {
     await tabForward();       // focus delete brand button
     await tabForward();       // focus add brand button
     await pressKey('Enter');  // add a second brand
-
     await typeText('Test Brand 2');
     await tabForward();  // focus brand version
     await typeText('100');
     await tabForward();       // focus delete brand button
     await tabForward();       // focus add brand button
     await pressKey('Enter');  // add a third brand
-
     await typeText('Test Brand 3');
     await tabForward();  // focus brand version
     await typeText('101');
     await tabForward();  // focus delete brand button
     await tabForward();  // focus add brand button
+
+    // full-version brands
+    await tabForward();  // focus brand
+    await typeText('FV Brand 1');
+    await tabForward();  // focus brand version
+    await typeText('9.8.7');
+    await tabForward();  // focus delete brand button
+    await tabForward();  // focus add brand button
+
     await tabForward();  // focus browser full version
     await typeText('99.99');
     await tabForward();  // focus platform name

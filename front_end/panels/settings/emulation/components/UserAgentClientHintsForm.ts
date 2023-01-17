@@ -26,10 +26,14 @@ const UIStrings = {
    */
   useragent: 'User agent (Sec-CH-UA)',
   /**
+   * @description Heading for full-version-list section.
+   */
+  fullVersionList: 'Full version list (Sec-CH-UA-Full-Version-List)',
+  /**
    * @description ARIA label for a form with properties for a single brand in a brand list. The form includes a brand name input field, a version
    * input field and a delete icon. Brand refer to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
    */
-  useragentProperties: 'User agent properties',
+  brandProperties: 'User agent properties',
   /**
    * @description Input field placeholder for brands browser name.
    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
@@ -42,10 +46,15 @@ const UIStrings = {
    */
   brandNameAriaLabel: 'Brand {PH1}',
   /**
+   * @description Input field placeholder for significant brand version.
+   * Brands here relate to different browser brands/vendors like Google Chrome (v89), Microsoft Edge (v92) etc.
+   */
+  significantBrandVersionPlaceholder: 'Significant version (e.g. 87)',
+  /**
    * @description Input field placeholder for brand version.
    * Brands here relate to different browser brands/vendors like Google Chrome (v89), Microsoft Edge (v92) etc.
    */
-  brandVersionPlaceholder: 'Significant version (e.g. 87)',
+  brandVersionPlaceholder: 'Version (e.g. 87.0.4280.88)',
   /**
    * @description Aria label for brands browser version input field.
    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
@@ -169,6 +178,12 @@ const DEFAULT_METADATA = {
       version: '',
     },
   ],
+  fullVersionList: [
+    {
+      brand: '',
+      version: '',
+    },
+  ],
   fullVersion: '',
   platform: '',
   platformVersion: '',
@@ -267,6 +282,32 @@ export class UserAgentClientHintsForm extends HTMLElement {
     this.#render();
   };
 
+  #handleFullVersionListInputChange =
+      (value: string, index: number, brandInputType: 'brandName'|'brandVersion'): void => {
+        const fullVersionList = this.#metaData.fullVersionList?.map((browserBrand, brandIndex) => {
+          if (brandIndex === index) {
+            const {brand, version} = browserBrand;
+            if (brandInputType === 'brandName') {
+              return {
+                brand: value,
+                version,
+              };
+            }
+            return {
+              brand,
+              version: value,
+            };
+          }
+          return browserBrand;
+        });
+        this.#metaData = {
+          ...this.#metaData,
+          fullVersionList,
+        };
+        this.dispatchEvent(new ClientHintsChangeEvent());
+        this.#render();
+      };
+
   #handleUseragentDelete = (index: number): void => {
     const {brands = []} = this.#metaData;
     brands.splice(index, 1);
@@ -280,9 +321,29 @@ export class UserAgentClientHintsForm extends HTMLElement {
 
     // after deleting a brand row, focus on next Brand input if available,
     // otherwise focus on the "Add Brand" button
-    let nextFocusElement = this.shadowRoot?.getElementById(`brand-${index + 1}-input`);
+    let nextFocusElement = this.shadowRoot?.getElementById(`ua-brand-${index + 1}-input`);
     if (!nextFocusElement) {
       nextFocusElement = this.shadowRoot?.getElementById('add-brand-button');
+    }
+    (nextFocusElement as HTMLElement)?.focus();
+  };
+
+  #handleFullVersionListDelete = (index: number): void => {
+    const {fullVersionList = []} = this.#metaData;
+    fullVersionList.splice(index, 1);
+    this.#metaData = {
+      ...this.#metaData,
+      fullVersionList,
+    };
+    this.dispatchEvent(new ClientHintsChangeEvent());
+    this.#useragentModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
+    this.#render();
+
+    // after deleting a brand row, focus on next Brand input if available,
+    // otherwise focus on the "Add Brand" button
+    let nextFocusElement = this.shadowRoot?.getElementById(`fvl-brand-${index + 1}-input`);
+    if (!nextFocusElement) {
+      nextFocusElement = this.shadowRoot?.getElementById('add-fvl-brand-button');
     }
     (nextFocusElement as HTMLElement)?.focus();
   };
@@ -302,7 +363,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     this.dispatchEvent(new ClientHintsChangeEvent());
     this.#useragentModifiedAriaMessage = i18nString(UIStrings.addedBrand);
     this.#render();
-    const brandInputElements = this.shadowRoot?.querySelectorAll('.brand-name-input');
+    const brandInputElements = this.shadowRoot?.querySelectorAll('.ua-brand-name-input');
     if (brandInputElements) {
       const lastBrandInputElement = Array.from(brandInputElements).pop();
       if (lastBrandInputElement) {
@@ -315,6 +376,37 @@ export class UserAgentClientHintsForm extends HTMLElement {
     if (event.code === 'Space' || event.code === 'Enter') {
       event.preventDefault();
       this.#handleAddUseragentBrandClick();
+    }
+  };
+
+  #handleAddFullVersionListBrandClick = (): void => {
+    const {fullVersionList} = this.#metaData;
+    this.#metaData = {
+      ...this.#metaData,
+      fullVersionList: [
+        ...(Array.isArray(fullVersionList) ? fullVersionList : []),
+        {
+          brand: '',
+          version: '',
+        },
+      ],
+    };
+    this.dispatchEvent(new ClientHintsChangeEvent());
+    this.#useragentModifiedAriaMessage = i18nString(UIStrings.addedBrand);
+    this.#render();
+    const brandInputElements = this.shadowRoot?.querySelectorAll('.fvl-brand-name-input');
+    if (brandInputElements) {
+      const lastBrandInputElement = Array.from(brandInputElements).pop();
+      if (lastBrandInputElement) {
+        (lastBrandInputElement as HTMLInputElement).focus();
+      }
+    }
+  };
+
+  #handleAddFullVersionListBrandKeyPress = (event: KeyboardEvent): void => {
+    if (event.code === 'Space' || event.code === 'Enter') {
+      event.preventDefault();
+      this.#handleAddFullVersionListBrandClick();
     }
   };
 
@@ -451,22 +543,22 @@ export class UserAgentClientHintsForm extends HTMLElement {
           handleDeleteClick();
         }
       };
-      const handleUseragentBrowserChange = (event: KeyboardEvent): void => {
+      const handleBrandChange = (event: KeyboardEvent): void => {
         const value = (event.target as HTMLInputElement).value;
         this.#handleUseragentInputChange(value, index, 'brandName');
       };
-      const handleUseragentVersionChange = (event: KeyboardEvent): void => {
+      const handleVersionChange = (event: KeyboardEvent): void => {
         const value = (event.target as HTMLInputElement).value;
         this.#handleUseragentInputChange(value, index, 'brandVersion');
       };
       return LitHtml.html`
-        <div class="full-row brand-row" aria-label=${i18nString(UIStrings.useragentProperties)} role="group">
+        <div class="full-row brand-row" aria-label=${i18nString(UIStrings.brandProperties)} role="group">
           <input
-            class="input-field brand-name-input"
+            class="input-field ua-brand-name-input"
             type="text"
-            @input=${handleUseragentBrowserChange}
+            @input=${handleBrandChange}
             .value=${brand}
-            id="brand-${index + 1}-input"
+            id="ua-brand-${index + 1}-input"
             placeholder=${i18nString(UIStrings.brandName)}
             aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
         PH1: index + 1,
@@ -475,9 +567,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
           <input
             class="input-field"
             type="text"
-            @input=${handleUseragentVersionChange}
+            @input=${handleVersionChange}
             .value=${version}
-            placeholder=${i18nString(UIStrings.brandVersionPlaceholder)}
+            placeholder=${i18nString(UIStrings.significantBrandVersionPlaceholder)}
             aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
         PH1: index + 1,
       })}
@@ -523,9 +615,103 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
+  #renderFullVersionList(): LitHtml.TemplateResult {
+    const {
+      fullVersionList =
+          [
+            {
+              brand: '',
+              version: '',
+            },
+          ],
+    } = this.#metaData;
+    const elements = fullVersionList.map((brandRow, index) => {
+      const {brand, version} = brandRow;
+      const handleDeleteClick = (): void => {
+        this.#handleFullVersionListDelete(index);
+      };
+      const handleKeyPress = (event: KeyboardEvent): void => {
+        if (event.code === 'Space' || event.code === 'Enter') {
+          event.preventDefault();
+          handleDeleteClick();
+        }
+      };
+      const handleBrandChange = (event: KeyboardEvent): void => {
+        const value = (event.target as HTMLInputElement).value;
+        this.#handleFullVersionListInputChange(value, index, 'brandName');
+      };
+      const handleVersionChange = (event: KeyboardEvent): void => {
+        const value = (event.target as HTMLInputElement).value;
+        this.#handleFullVersionListInputChange(value, index, 'brandVersion');
+      };
+      return LitHtml.html`
+        <div class="full-row brand-row" aria-label=${i18nString(UIStrings.brandProperties)} role="group">
+          <input
+            class="input-field fvl-brand-name-input"
+            type="text"
+            @input=${handleBrandChange}
+            .value=${brand}
+            id="fvl-brand-${index + 1}-input"
+            placeholder=${i18nString(UIStrings.brandName)}
+            aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
+        PH1: index + 1,
+      })}
+          />
+          <input
+            class="input-field"
+            type="text"
+            @input=${handleVersionChange}
+            .value=${version}
+            placeholder=${i18nString(UIStrings.brandVersionPlaceholder)}
+            aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
+        PH1: index + 1,
+      })}
+          />
+          <${IconButton.Icon.Icon.litTagName}
+            .data=${
+          {color: 'var(--client-hints-form-icon-color)', iconName: 'trash_bin_icon', width: '10px', height: '14px'} as
+          IconButton.Icon.IconData}
+            title=${i18nString(UIStrings.deleteTooltip)}
+            class="delete-icon"
+            tabindex="0"
+            role="button"
+            @click=${handleDeleteClick}
+            @keypress=${handleKeyPress}
+            aria-label=${i18nString(UIStrings.brandDeleteAriaLabel, {
+        PH1: index + 1,
+      })}
+          >
+          </${IconButton.Icon.Icon.litTagName}>
+        </div>
+      `;
+    });
+    return LitHtml.html`
+      <span class="full-row label">${i18nString(UIStrings.fullVersionList)}</span>
+      ${elements}
+      <div
+        class="add-container full-row"
+        role="button"
+        tabindex="0"
+        id="add-fvl-brand-button"
+        aria-label=${i18nString(UIStrings.addBrand)}
+        @click=${this.#handleAddFullVersionListBrandClick}
+        @keypress=${this.#handleAddFullVersionListBrandKeyPress}
+      >
+        <${IconButton.Icon.Icon.litTagName}
+          aria-hidden="true"
+          .data=${
+        {color: 'var(--client-hints-form-icon-color)', iconName: 'add-icon', width: '10px'} as IconButton.Icon.IconData}
+        >
+        </${IconButton.Icon.Icon.litTagName}>
+        ${i18nString(UIStrings.addBrand)}
+      </div>
+    `;
+  }
+
   #render(): void {
     const {fullVersion, architecture} = this.#metaData;
-    const brandSection = this.#renderUseragent();
+    const useragentSection = this.#renderUseragent();
+    const fullVersionListSection = this.#renderFullVersionList();
     const fullBrowserInput = this.#renderInputWithLabel(
         i18nString(UIStrings.fullBrowserVersion), i18nString(UIStrings.fullBrowserVersionPlaceholder),
         fullVersion || '', 'fullVersion');
@@ -586,7 +772,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
           class="form-container ${this.#isFormOpened ? '' : 'hide-container'}"
           @submit=${this.#handleSubmit}
         >
-          ${brandSection}
+          ${useragentSection}
+          ${fullVersionListSection}
           ${fullBrowserInput}
           ${platformSection}
           ${architectureInput}
@@ -603,7 +790,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
 
   validate = (): UI.ListWidget.ValidatorResult => {
     for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
-      if (metaDataKey === 'brands') {
+      if (metaDataKey === 'brands' || metaDataKey === 'fullVersionList') {
+        // for sturctured fields, check each individual brand/version
         const isBrandValid = this.#metaData.brands?.every(({brand, version}) => {
           const brandNameResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
               brand, i18nString(UIStrings.notRepresentable));
@@ -615,6 +803,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           return {valid: false, errorMessage: i18nString(UIStrings.notRepresentable)};
         }
       } else {
+        // otherwise, validate the value as a string
         const metaDataError = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
             metaDataValue, i18nString(UIStrings.notRepresentable));
         if (!metaDataError.valid) {

@@ -25,6 +25,12 @@ describeWithLocale('UserAgentClientHintsForm', () => {
         version: 'v2',
       },
     ],
+    fullVersionList: [
+      {
+        brand: 'Brand3',
+        version: '1.2.3',
+      },
+    ],
     fullVersion: '',
     platform: '',
     platformVersion: '',
@@ -39,15 +45,26 @@ describeWithLocale('UserAgentClientHintsForm', () => {
     return component;
   };
 
-  it('renders the form with brand values', () => {
+  it('renders the UA brands form with brand values', () => {
     const component = renderUserAgentClientHintsForm();
     component.value = {
       metaData: testMetaData,
     };
 
-    const brandInputs = getElementsWithinComponent(component, '.brand-name-input', HTMLInputElement);
+    const brandInputs = getElementsWithinComponent(component, '.ua-brand-name-input', HTMLInputElement);
     const brandInputValues = [...brandInputs].map(brandInput => brandInput.value);
     assert.deepEqual(brandInputValues, ['Brand1', 'Brand2']);
+  });
+
+  it('renders the full-version-list brands form with brand values', () => {
+    const component = renderUserAgentClientHintsForm();
+    component.value = {
+      metaData: testMetaData,
+    };
+
+    const brandInputs = getElementsWithinComponent(component, '.fvl-brand-name-input', HTMLInputElement);
+    const brandInputValues = [...brandInputs].map(brandInput => brandInput.value);
+    assert.deepEqual(brandInputValues, ['Brand3']);
   });
 
   it('Submitting the form returns metaData', async () => {

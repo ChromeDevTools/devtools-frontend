@@ -8,12 +8,11 @@ ts_library("trace") {
   testonly = true
   sources = [
     "ModelImpl_test.ts",
-    "Processor_test.ts",
+    "TraceProcessor_test.ts",
   ]
 
   deps = [
     "../../../../../front_end/models/trace:bundle",
-    "../../../../../front_end/models/trace/worker:bundle",
     "../../helpers",
   ]
 }

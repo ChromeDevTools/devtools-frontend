@@ -42,7 +42,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -332,10 +331,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
   private selection?: TimelineSelection|null;
-  #traceEngineModel: TraceEngine.TraceModel.Model;
   constructor() {
     super('timeline');
-    this.#traceEngineModel = new TraceEngine.TraceModel.Model();
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],
@@ -1275,7 +1272,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async loadingComplete(tracingModel: SDK.TracingModel.TracingModel|null): Promise<void> {
-    this.#traceEngineModel.reset();
     delete this.loader;
     this.setState(State.Idle);
 
@@ -1301,31 +1297,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     this.historyManager.addRecording(this.performanceModel);
-
-    /**
-     * Call into the new Trace Engine to parse the data. We don't currently do
-     * anything with this data, but we are calling it here to ensure that all the
-     * pieces are connected together and we are able to parse data in the new engine
-     * from OPP.
-     *
-     * The trace engine model runs the parsing in a worker, so this should not
-     * impact the main thread, as we `void` it to ensure we don't want for the
-     * parsing to complete.
-     **/
-    void this.#traceEngineModel.parse(
-        // OPP's data layer uses `EventPayload` as the type to represent raw JSON from the trace.
-        // When we pass this into the new data engine, we need to tell TS to use the new TraceEventData type.
-        tracingModel.allRawEvents() as unknown as TraceEngine.Types.TraceEvents.TraceEventData[],
-        // TODO(crbug.com/1406847): This object represents metadata, which can be stored by the
-        // Performance Panel in a trace file. If the user imports a file that has
-        // it, we can pass it in here. If we don't have it, we should fetch &
-        // store it.
-        {},
-        // TODO(crbug.com/1406847): this value needs to be set to `true` if this
-        // is a fresh recording (e.g. it hasn't been imported from a file), and
-        // `false` otherwise.
-        true,
-    );
 
     if (this.startCoverage.get()) {
       void UI.ViewManager.ViewManager.instance()

@@ -26,7 +26,6 @@ export class TracingModel {
   readonly #profileGroups: Map<string, ProfileEventsGroup>;
   readonly #parsedCategories: Map<string, Set<string>>;
   readonly #mainFrameNavStartTimes: Map<string, Event>;
-  readonly #allEventsPayload: EventPayload[] = [];
 
   constructor(backingStorage: BackingStorage, shouldSaveToFile = true, title?: string) {
     this.#backingStorageInternal = backingStorage;
@@ -120,10 +119,6 @@ export class TracingModel {
     return null;
   }
 
-  allRawEvents(): readonly EventPayload[] {
-    return this.#allEventsPayload;
-  }
-
   devToolsMetadataEvents(): Event[] {
     return this.#devToolsMetadataEventsInternal;
   }
@@ -176,7 +171,6 @@ export class TracingModel {
   }
 
   private addEvent(payload: EventPayload): void {
-    this.#allEventsPayload.push(payload);
     let process = this.#processById.get(payload.pid);
     if (!process) {
       process = new Process(this, payload.pid);

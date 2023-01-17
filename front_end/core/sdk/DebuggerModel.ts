@@ -618,7 +618,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       breakpointIds: string[], asyncStackTrace?: Protocol.Runtime.StackTrace,
       asyncStackTraceId?: Protocol.Runtime.StackTraceId): Promise<void> {
     if (reason === Protocol.Debugger.PausedEventReason.Instrumentation) {
-      const script = this.scriptForId(callFrames[0].location.scriptId);
+      const script = this.scriptForId((auxData as PausedOnInstrumentationData).scriptId);
       if (this.#synchronizeBreakpointsCallback && script) {
         await this.#synchronizeBreakpointsCallback(script);
       }
@@ -1549,4 +1549,8 @@ export interface FunctionDetails {
 export interface SetBreakpointResult {
   breakpointId: Protocol.Debugger.BreakpointId|null;
   locations: Location[];
+}
+
+interface PausedOnInstrumentationData {
+  scriptId: Protocol.Runtime.ScriptId;
 }

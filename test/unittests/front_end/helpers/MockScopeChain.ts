@@ -59,28 +59,41 @@ export class MockProtocolBackend {
       script: SDK.Script.Script, reason: Protocol.Debugger.PausedEventReason, functionName: string = '',
       scopeChain: Protocol.Debugger.Scope[] = []): void {
     const target = script.debuggerModel.target();
-    const callFrames: Protocol.Debugger.CallFrame[] = [
-      {
-        callFrameId: '1' as Protocol.Debugger.CallFrameId,
-        functionName,
-        url: script.sourceURL,
-        scopeChain,
-        location: {
-          scriptId: script.scriptId,
-          lineNumber: 0,
-        },
-        this: {type: 'object'} as Protocol.Runtime.RemoteObject,
-      },
-
-    ];
-    dispatchEvent(
-        target,
-        'Debugger.paused',
+    if (reason === Protocol.Debugger.PausedEventReason.Instrumentation) {
+      // Instrumentation pauses don't pass call frames, they only pass the script id in the 'data' field.
+      dispatchEvent(
+          target,
+          'Debugger.paused',
+          {
+            callFrames: [],
+            reason,
+            data: {scriptId: script.scriptId},
+          },
+      );
+    } else {
+      const callFrames: Protocol.Debugger.CallFrame[] = [
         {
-          callFrames,
-          reason,
+          callFrameId: '1' as Protocol.Debugger.CallFrameId,
+          functionName,
+          url: script.sourceURL,
+          scopeChain,
+          location: {
+            scriptId: script.scriptId,
+            lineNumber: 0,
+          },
+          this: {type: 'object'} as Protocol.Runtime.RemoteObject,
         },
-    );
+
+      ];
+      dispatchEvent(
+          target,
+          'Debugger.paused',
+          {
+            callFrames,
+            reason,
+          },
+      );
+    }
   }
 
   dispatchDebuggerPauseWithNoCallFrames(target: SDK.Target.Target, reason: Protocol.Debugger.PausedEventReason): void {

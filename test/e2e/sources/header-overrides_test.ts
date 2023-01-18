@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {
+  activeElement,
   activeElementTextContent,
   click,
   enableExperiment,
@@ -69,6 +70,12 @@ async function editorTabHasPurpleDot(): Promise<boolean> {
   return await tabHeaderIcon?.evaluate(node => node.classList.contains('purple-dot'));
 }
 
+async function correspondingFileTreeEntryIconHasPurpleDot(): Promise<boolean> {
+  await clickOnContextMenu('.tabbed-pane-header-tab[aria-label=".headers"]', 'Reveal in sidebar');
+  const fileTreeIcon = await waitFor('.icon', await activeElement());
+  return await fileTreeIcon?.evaluate(node => node.classList.contains('largeicon-navigator-file-sync'));
+}
+
 async function editHeaderItem(newValue: string, previousValue: string): Promise<void> {
   let focusedTextContent = await activeElementTextContent();
   assert.strictEqual(focusedTextContent, previousValue);
@@ -122,6 +129,7 @@ describe('The Overrides Panel', async function() {
     await waitFor('[title="Refresh the page/request for these changes to take effect"]');
     await click('[title="Reveal header override definitions"]');
     assert.isTrue(await editorTabHasPurpleDot());
+    assert.isTrue(await correspondingFileTreeEntryIconHasPurpleDot());
 
     await navigateToNetworkTab('hello.html');
     await waitForSomeRequestsToAppear(1);
@@ -133,10 +141,12 @@ describe('The Overrides Panel', async function() {
     assert.deepStrictEqual(await getTextFromHeadersRow(row), ['foo:', 'bar']);
     await click('[title="Reveal header override definitions"]');
     assert.isTrue(await editorTabHasPurpleDot());
+    assert.isTrue(await correspondingFileTreeEntryIconHasPurpleDot());
 
     await goToResource('pages/hello-world.html');
     await waitForFunction(async () => {
-      return (await editorTabHasPurpleDot()) === false;
+      return (await editorTabHasPurpleDot()) === false &&
+          (await correspondingFileTreeEntryIconHasPurpleDot()) === false;
     });
   });
 });

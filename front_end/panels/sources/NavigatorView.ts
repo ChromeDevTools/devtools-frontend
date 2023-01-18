@@ -219,6 +219,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
         Persistence.Persistence.Events.BindingCreated, this.onBindingChanged, this);
     Persistence.Persistence.PersistenceImpl.instance().addEventListener(
         Persistence.Persistence.Events.BindingRemoved, this.onBindingChanged, this);
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
+        Persistence.NetworkPersistenceManager.Events.RequestsForHeaderOverridesFileChanged,
+        this.#onRequestsForHeaderOverridesFileChanged, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.NameChanged, this.targetNameChanged, this);
 
@@ -338,6 +341,15 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     const fileSystemRoot = this.rootOrDeployedNode().child(binding.fileSystem.project().id());
     if (fileSystemRoot) {
       fileSystemRoot.updateTitle();
+    }
+  }
+
+  #onRequestsForHeaderOverridesFileChanged(
+      event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const headersFileUiSourceCode = event.data;
+    const networkNodes = this.uiSourceCodeNodes.get(headersFileUiSourceCode);
+    for (const networkNode of networkNodes) {
+      networkNode.updateTitle();
     }
   }
 
@@ -1236,26 +1248,36 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   updateIcon(): void {
-    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal);
-    if (binding) {
+    const appendFileSyncIconWithBadge = (iconType: string, badgeIsPurple = true): HTMLSpanElement => {
       const container = document.createElement('span');
       container.classList.add('icon-stack');
-      let iconType = 'largeicon-navigator-file-sync';
-      if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(binding.fileSystem)) {
-        iconType = 'largeicon-navigator-snippet';
-      }
       const icon = UI.Icon.Icon.create(iconType, 'icon');
       const badge = UI.Icon.Icon.create('badge-navigator-file-sync', 'icon-badge');
       // TODO(allada) This does not play well with dark theme. Add an actual icon and use it.
-      if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() ===
-          binding.fileSystem.project()) {
+      if (badgeIsPurple) {
         badge.style.filter = 'hue-rotate(160deg)';
       }
       container.appendChild(icon);
       container.appendChild(badge);
+      this.setLeadingIcons([(container as UI.Icon.Icon)]);
+      return container;
+    };
+
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal);
+    if (binding) {
+      const iconType = Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(binding.fileSystem) ?
+          'largeicon-navigator-snippet' :
+          'largeicon-navigator-file-sync';
+      const badgeIsPurple = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() ===
+          binding.fileSystem.project();
+      const container = appendFileSyncIconWithBadge(iconType, badgeIsPurple);
       UI.Tooltip.Tooltip.install(
           container, Persistence.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(this.uiSourceCodeInternal));
-      this.setLeadingIcons([(container as UI.Icon.Icon)]);
+    } else if (
+        this.uiSourceCodeInternal.url().endsWith(Persistence.NetworkPersistenceManager.HEADERS_FILENAME) &&
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance()
+            .hasMatchingNetworkUISourceCodeForHeaderOverridesFile(this.uiSourceCodeInternal)) {
+      appendFileSyncIconWithBadge('largeicon-navigator-file-sync');
     } else {
       let iconType = 'largeicon-navigator-file';
       if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCodeInternal)) {

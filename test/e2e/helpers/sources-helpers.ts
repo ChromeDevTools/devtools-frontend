@@ -164,6 +164,18 @@ export async function createNewSnippet(snippetName: string, content?: string) {
   }
 }
 
+export async function openOverridesSubPane() {
+  const root = await waitFor('.navigator-tabbed-pane');
+
+  await waitFor('[aria-label="More tabs"]', root);
+  await click('[aria-label="More tabs"]', {root});
+
+  await waitFor('[aria-label="Overrides"]');
+
+  await click('[aria-label="Overrides"]');
+  await waitFor('[aria-label="Overrides panel"]');
+}
+
 export async function openFileInEditor(sourceFile: string) {
   await waitForSourceFiles(
       SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith(sourceFile)),

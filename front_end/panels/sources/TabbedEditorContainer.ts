@@ -98,6 +98,9 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
         Persistence.Persistence.Events.BindingCreated, this.onBindingCreated, this);
     Persistence.Persistence.PersistenceImpl.instance().addEventListener(
         Persistence.Persistence.Events.BindingRemoved, this.onBindingRemoved, this);
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
+        Persistence.NetworkPersistenceManager.Events.RequestsForHeaderOverridesFileChanged,
+        this.#onRequestsForHeaderOverridesFileChanged, this);
 
     this.tabIds = new Map();
     this.files = new Map();
@@ -144,6 +147,11 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     }
 
     this.updateHistory();
+  }
+
+  #onRequestsForHeaderOverridesFileChanged(
+      event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    this.updateFileTitle(event.data);
   }
 
   private onBindingRemoved(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>):

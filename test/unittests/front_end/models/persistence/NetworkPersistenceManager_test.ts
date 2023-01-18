@@ -13,6 +13,7 @@ import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {initializeGlobalVars, deinitializeGlobalVars, createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../helpers/OverridesHelpers.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 
 describeWithMockConnection('NetworkPersistenceManager', () => {
   let networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
@@ -543,6 +544,43 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
           networkPersistenceManager.encodedPathFromUrl(testStrings.url as Platform.DevToolsPath.UrlString),
           testStrings.encoded);
     });
+  });
+
+  it('is aware of which \'.headers\' files are currently active', done => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const networkUISourceCode = {
+      url: () => 'https://www.example.com/hello/world/index.html',
+      project: () => ({
+        type: () => Workspace.Workspace.projectTypes.Network,
+      }),
+    } as Workspace.UISourceCode.UISourceCode;
+
+    const eventURLs: string[] = [];
+    networkPersistenceManager.addEventListener(
+        Persistence.NetworkPersistenceManager.Events.RequestsForHeaderOverridesFileChanged, event => {
+          eventURLs.push(event.data.url());
+        });
+
+    workspace.dispatchEventToListeners(Workspace.Workspace.Events.UISourceCodeAdded, networkUISourceCode);
+
+    assert.isTrue(networkPersistenceManager.hasMatchingNetworkUISourceCodeForHeaderOverridesFile({
+      url: () => 'file:///path/to/overrides/www.example.com/.headers',
+      project: () => networkPersistenceManager.project(),
+    } as Workspace.UISourceCode.UISourceCode));
+    assert.isTrue(networkPersistenceManager.hasMatchingNetworkUISourceCodeForHeaderOverridesFile({
+      url: () => 'file:///path/to/overrides/.headers',
+      project: () => networkPersistenceManager.project(),
+    } as Workspace.UISourceCode.UISourceCode));
+    assert.isFalse(networkPersistenceManager.hasMatchingNetworkUISourceCodeForHeaderOverridesFile({
+      url: () => 'file:///path/to/overrides/www.foo.com/.headers',
+      project: () => networkPersistenceManager.project(),
+    } as Workspace.UISourceCode.UISourceCode));
+
+    setTimeout(() => {
+      assert.deepStrictEqual(
+          eventURLs, ['file:///path/to/overrides/.headers', 'file:///path/to/overrides/www.example.com/.headers']);
+      done();
+    }, 0);
   });
 });
 

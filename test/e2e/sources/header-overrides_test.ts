@@ -5,9 +5,11 @@
 import {assert} from 'chai';
 
 import {
+  activeElementTextContent,
   click,
   enableExperiment,
   goToResource,
+  pasteText,
   pressKey,
   typeText,
   waitFor,
@@ -20,7 +22,12 @@ import {
   selectRequestByName,
   waitForSomeRequestsToAppear,
 } from '../helpers/network-helpers.js';
-import {clickOnContextMenu, enableLocalOverrides, openSourcesPanel} from '../helpers/sources-helpers.js';
+import {
+  clickOnContextMenu,
+  enableLocalOverrides,
+  openOverridesSubPane,
+  openSourcesPanel,
+} from '../helpers/sources-helpers.js';
 
 const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
 const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';
@@ -57,11 +64,26 @@ async function openHeadersTab() {
   await waitFor(ACTIVE_HEADERS_TAB_SELECTOR, networkView);
 }
 
+async function editorTabHasPurpleDot(): Promise<boolean> {
+  const tabHeaderIcon = await waitFor('.tabbed-pane-header-tab-icon .spritesheet-mediumicons');
+  return await tabHeaderIcon?.evaluate(node => node.classList.contains('purple-dot'));
+}
+
+async function editHeaderItem(newValue: string, previousValue: string): Promise<void> {
+  let focusedTextContent = await activeElementTextContent();
+  assert.strictEqual(focusedTextContent, previousValue);
+  await pasteText(newValue);
+  focusedTextContent = await activeElementTextContent();
+  assert.strictEqual(focusedTextContent, newValue);
+  await pressKey('Tab');
+}
+
 describe('The Overrides Panel', async function() {
   this.timeout(10000);
 
   afterEach(async () => {
     await openSourcesPanel();
+    await openOverridesSubPane();
     await click('[aria-label="Clear configuration"]');
     await waitFor(ENABLE_OVERRIDES_SELECTOR);
   });
@@ -80,5 +102,41 @@ describe('The Overrides Panel', async function() {
     const responseHeaderSection = await waitFor(RESPONSE_HEADERS_SELECTOR);
     const row = await waitFor(HEADER_ROW_SELECTOR, responseHeaderSection);
     assert.deepStrictEqual(await getTextFromHeadersRow(row), ['aaa:', 'bbb']);
+  });
+
+  it('can override headers via network panel', async () => {
+    await enableExperiment('headerOverrides');
+    await navigateToNetworkTab('hello.html');
+    await waitForSomeRequestsToAppear(1);
+    await selectRequestByName('hello.html');
+    await openHeadersTab();
+
+    await click('.enable-editing');
+    await click('[aria-label="Select a folder to store override files in."] button');
+    await click('.add-header-button');
+
+    await waitFor('.row.header-overridden.header-editable');
+    await editHeaderItem('foo', 'header-name');
+    await editHeaderItem('bar', 'header value');
+
+    await waitFor('[title="Refresh the page/request for these changes to take effect"]');
+    await click('[title="Reveal header override definitions"]');
+    assert.isTrue(await editorTabHasPurpleDot());
+
+    await navigateToNetworkTab('hello.html');
+    await waitForSomeRequestsToAppear(1);
+    await selectRequestByName('hello.html');
+    await openHeadersTab();
+
+    const responseHeaderSection = await waitFor(RESPONSE_HEADERS_SELECTOR);
+    const row = await waitFor('.row.header-overridden.header-editable', responseHeaderSection);
+    assert.deepStrictEqual(await getTextFromHeadersRow(row), ['foo:', 'bar']);
+    await click('[title="Reveal header override definitions"]');
+    assert.isTrue(await editorTabHasPurpleDot());
+
+    await goToResource('pages/hello-world.html');
+    await waitForFunction(async () => {
+      return (await editorTabHasPurpleDot()) === false;
+    });
   });
 });

@@ -48,6 +48,7 @@ export async function createWorkspaceProject(
     fileSystemInternal: {
       type: () => 'filesystem',
     },
+    fileSystemBaseURL: baseUrl + '/',
   } as unknown as Workspace.Workspace.Project;
   await networkPersistenceManager.setProject(mockProject);
 

@@ -71,16 +71,6 @@
       ],
     },
 
-    // Properties which are writable have setters on ComputedStyle.
-    // All other properties must use the ComputedStyleBuilder for setting
-    // the values of properties.
-    //
-    // TODO(crbug.com/1377295): Eventually nothing should be writable.
-    writable: {
-      default: false,
-      valid_type: "bool",
-    },
-
     // Affects how the style building functions are generated.
     //
     // Several property groups (e.g. color properties) deviate from the default
@@ -262,6 +252,15 @@
         // Field is stored as a bool, whose default value is false
         // and can only be set to true. Has a initial/getter/setter.
         "monotonic_flag",
+        // A derived flag is derived from other information on ComputedStyle.
+        // It has no setters, and is instead calculated on first access by
+        // the function specified by 'derived_from'.
+        //
+        // Derived flags must be marked as 'mutable', and can not have a
+        // 'field_group' (i.e. must exist on the top level of ComputedStyle).
+        //
+        // See computed_style_extra_fields.json5 for examples of derived flags.
+        "derived_flag",
         // Field has type specified at type_name and has a getter/setter.
         // Also has a setter taking an rvalue reference. Cannot be packed.
         "external",
@@ -272,6 +271,12 @@
         // entries in CSSFieldAlias.json5.
         "<[a-z]+>"
       ],
+    },
+
+    // Valid for field_template:derived_flag only. This specifies the function
+    // on ComputedStyle used to calculate the flag.
+    derived_from: {
+      valid_type: "str",
     },
 
     // - include_paths: ["path/to/file1.h", "path/to/file2.h"]
@@ -866,6 +871,32 @@
       valid_for_keyframe: false,
     },
     {
+      name: "animation-range-start",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      style_builder_template: "animation",
+      style_builder_template_args: {
+        attribute: "RangeStart",
+      },
+      separator: ",",
+      valid_for_marker: true,
+      is_animation_property: true,
+      valid_for_keyframe: false,
+      runtime_flag: "CSSScrollTimeline",
+    },
+    {
+      name: "animation-range-end",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      style_builder_template: "animation",
+      style_builder_template_args: {
+        attribute: "RangeEnd",
+      },
+      separator: ",",
+      valid_for_marker: true,
+      is_animation_property: true,
+      valid_for_keyframe: false,
+      runtime_flag: "CSSScrollTimeline",
+    },
+    {
       name: "animation-timeline",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "animation",
@@ -1045,6 +1076,7 @@
       inherited: true,
       font: true,
       name_for_methods: "Kerning",
+      converter: "ConvertFontKerning",
       type_name: "FontDescription::Kerning",
       priority: "High",
       keywords: ["auto", "normal", "none"],
@@ -1061,6 +1093,7 @@
       inherited: true,
       font: true,
       name_for_methods: "FontOpticalSizing",
+      converter: "ConvertFontOpticalSizing",
       type_name: "OpticalSizing",
       priority: "High",
       keywords: ["auto", "none"],
@@ -1144,6 +1177,7 @@
       name: "font-style",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       is_descriptor: true,
+      interpolable: true,
       inherited: true,
       font: true,
       name_for_methods: "Style",
@@ -1657,6 +1691,7 @@
       style_builder_template_args: {
         fill_type: "Clip",
       },
+      style_builder_custom_functions: ["value"],
       valid_for_first_letter: true,
       valid_for_first_line: true,
       valid_for_cue: true,
@@ -3744,6 +3779,7 @@
       name: "overscroll-behavior-x",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_template: "keyword",
+      field_group: "*",
       keywords: ["auto", "contain", "none"],
       default_value: "auto",
       type_name: "EOverscrollBehavior",
@@ -3758,6 +3794,7 @@
       name: "overscroll-behavior-y",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_template: "keyword",
+      field_group: "*",
       keywords: ["auto", "contain", "none"],
       default_value: "auto",
       type_name: "EOverscrollBehavior",
@@ -6526,6 +6563,15 @@
       runtime_flag: 'CSSScrollTimeline',
     },
     {
+      name: "animation-range",
+      longhands: [
+        "animation-range-start", "animation-range-end",
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      valid_for_keyframe: false,
+      runtime_flag: 'CSSScrollTimeline',
+    },
+    {
       name: "background",
       longhands: [
         "background-image", "background-position-x", "background-position-y",
@@ -6795,16 +6841,16 @@
         "font-style", "font-variant-ligatures", "font-variant-caps",
         "font-variant-numeric", "font-variant-east-asian", "font-variant-alternates",
         "font-variant-position", "font-weight", "font-stretch", "font-size",
-        "line-height", "font-family"
+        "line-height", "font-family", "font-optical-sizing", "font-size-adjust",
+        "font-kerning", "font-feature-settings", "font-variation-settings"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
     },
     {
       name: "font-variant",
       longhands: [
-        "font-variant-ligatures", "font-variant-caps",
-        "font-variant-alternates", "font-variant-numeric",
-        "font-variant-east-asian", "font-variant-position"
+        "font-variant-ligatures", "font-variant-caps", "font-variant-alternates",
+        "font-variant-numeric", "font-variant-east-asian", "font-variant-position"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       is_descriptor: true,
@@ -7021,7 +7067,7 @@
     },
     {
       name: "scroll-timeline",
-      longhands: ["scroll-timeline-axis", "scroll-timeline-name"],
+      longhands: ["scroll-timeline-name", "scroll-timeline-axis"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       runtime_flag: "CSSScrollTimeline",
     },

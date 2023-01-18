@@ -1288,7 +1288,7 @@ export const NativeFunctions = [
   {
     name: 'delete',
     signatures: [['name']],
-    receivers: ['FormData','URLSearchParams','StorageBucketManager','NativeIOFileManager']
+    receivers: ['FormData','URLSearchParams','StorageBucketManager']
   },
   {
     name: 'delete',
@@ -1434,11 +1434,6 @@ export const NativeFunctions = [
     name: 'open',
     signatures: [['?options']],
     receivers: ['EyeDropper']
-  },
-  {
-    name: 'open',
-    signatures: [['name']],
-    receivers: ['NativeIOFileManager']
   },
   {
     name: 'drawImage',
@@ -1781,11 +1776,6 @@ export const NativeFunctions = [
     receivers: ['FileSystemSyncAccessHandle']
   },
   {
-    name: 'read',
-    signatures: [['buffer','file_offset']],
-    receivers: ['NativeIOFileSync','NativeIOFile']
-  },
-  {
     name: 'write',
     signatures: [['data']],
     receivers: ['Clipboard','FileSystemWritableFileStream','FileWriterSync','FileWriter']
@@ -1809,11 +1799,6 @@ export const NativeFunctions = [
     name: 'write',
     signatures: [['buffer','?options']],
     receivers: ['FileSystemSyncAccessHandle']
-  },
-  {
-    name: 'write',
-    signatures: [['buffer','file_offset']],
-    receivers: ['NativeIOFileSync','NativeIOFile']
   },
   {
     name: 'write',
@@ -3955,13 +3940,7 @@ export const NativeFunctions = [
   },
   {
     name: 'deleteSync',
-    signatures: [['sync']],
-    receivers: ['WebGL2RenderingContext']
-  },
-  {
-    name: 'deleteSync',
-    signatures: [['name']],
-    receivers: ['NativeIOFileManager']
+    signatures: [['sync']]
   },
   {
     name: 'deleteTransformFeedback',
@@ -5351,7 +5330,13 @@ export const NativeFunctions = [
   },
   {
     name: 'any',
-    signatures: [['values']]
+    signatures: [['values']],
+    receivers: ['PromiseConstructor']
+  },
+  {
+    name: 'any',
+    signatures: [['signals']],
+    receivers: ['AbortSignal']
   },
   {
     name: 'replaceAll',
@@ -6030,10 +6015,6 @@ export const NativeFunctions = [
     signatures: [['origin']]
   },
   {
-    name: 'hasTrustToken',
-    signatures: [['issuer']]
-  },
-  {
     name: 'hasPrivateToken',
     signatures: [['issuer','type']]
   },
@@ -6138,10 +6119,6 @@ export const NativeFunctions = [
     signatures: [['type','?eventInitDict']]
   },
   {
-    name: 'BeforeToggleEvent',
-    signatures: [['type','?eventInitDict']]
-  },
-  {
     name: 'ClipboardEvent',
     signatures: [['type','?eventInitDict']]
   },
@@ -6195,6 +6172,10 @@ export const NativeFunctions = [
   },
   {
     name: 'PopStateEvent',
+    signatures: [['type','?eventInitDict']]
+  },
+  {
+    name: 'PopoverToggleEvent',
     signatures: [['type','?eventInitDict']]
   },
   {
@@ -7294,6 +7275,10 @@ export const NativeFunctions = [
     signatures: [['?options']]
   },
   {
+    name: 'createContextSync',
+    signatures: [['?options']]
+  },
+  {
     name: 'MLGraphBuilder',
     signatures: [['context']]
   },
@@ -7356,38 +7341,6 @@ export const NativeFunctions = [
   {
     name: 'getFileSystemAccessTransferToken',
     signatures: [['fileHandle']]
-  },
-  {
-    name: 'openSync',
-    signatures: [['name']]
-  },
-  {
-    name: 'rename',
-    signatures: [['old_name','new_name']]
-  },
-  {
-    name: 'renameSync',
-    signatures: [['old_name','new_name']]
-  },
-  {
-    name: 'requestCapacity',
-    signatures: [['requested_capacity']]
-  },
-  {
-    name: 'requestCapacitySync',
-    signatures: [['released_capacity']]
-  },
-  {
-    name: 'releaseCapacity',
-    signatures: [['released_capacity']]
-  },
-  {
-    name: 'releaseCapacitySync',
-    signatures: [['released_capacity']]
-  },
-  {
-    name: 'setLength',
-    signatures: [['length']]
   },
   {
     name: 'unregisterProtocolHandler',
@@ -7488,6 +7441,10 @@ export const NativeFunctions = [
   {
     name: 'RTCDTMFToneChangeEvent',
     signatures: [['type','eventInitDict']]
+  },
+  {
+    name: 'setMetadata',
+    signatures: [['metadata']]
   },
   {
     name: 'RTCErrorEvent',
@@ -7724,6 +7681,10 @@ export const NativeFunctions = [
   {
     name: 'run',
     signatures: [['name','?options']]
+  },
+  {
+    name: 'SmartCardError',
+    signatures: [['message','options']]
   },
   {
     name: 'addFromUri',
@@ -7998,10 +7959,6 @@ export const NativeFunctions = [
   {
     name: 'getMappedRange',
     signatures: [['?offset','?size']]
-  },
-  {
-    name: 'getPreferredFormat',
-    signatures: [['adapter']]
   },
   {
     name: 'configure',

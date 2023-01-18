@@ -744,6 +744,8 @@ experimental domain Audits
     enum
       CrossOriginPortalPostMessageError
       FormLabelForNameError
+      FormDuplicateIdForInputError
+      FormInputWithNoLabelError
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -781,6 +783,7 @@ experimental domain Audits
       NoSysexWebMIDIWithoutPermission
       NotificationInsecureOrigin
       NotificationPermissionRequestedIframe
+      ObsoleteCreateImageBitmapImageOrientationNone
       ObsoleteWebRtcCipherSuite
       OpenWebDatabaseInsecureContext
       OverflowVisibleOnReplacedElement
@@ -843,6 +846,7 @@ experimental domain Audits
       WellKnownHttpNotFound
       WellKnownNoResponse
       WellKnownInvalidResponse
+      WellKnownListEmpty
       ConfigNotInWellKnown
       WellKnownTooBig
       ConfigHttpNotFound
@@ -857,6 +861,7 @@ experimental domain Audits
       AccountsHttpNotFound
       AccountsNoResponse
       AccountsInvalidResponse
+      AccountsListEmpty
       IdTokenHttpNotFound
       IdTokenNoResponse
       IdTokenInvalidResponse
@@ -1092,6 +1097,7 @@ domain Browser
       protectedMediaIdentifier
       sensors
       storageAccess
+      topLevelStorageAccess
       videoCapture
       videoCapturePanTiltZoom
       wakeLockScreen
@@ -3676,7 +3682,9 @@ domain Emulation
   # Missing optional values will be filled in by the target with what it would normally use.
   experimental type UserAgentMetadata extends object
     properties
+      # Brands appearing in Sec-CH-UA.
       optional array of UserAgentBrandVersion brands
+      # Brands appearing in Sec-CH-UA-Full-Version-List.
       optional array of UserAgentBrandVersion fullVersionList
       deprecated optional string fullVersion
       string platform
@@ -5867,7 +5875,8 @@ domain Network
 
   # Returns all browser cookies. Depending on the backend support, will return detailed cookie
   # information in the `cookies` field.
-  command getAllCookies
+  # Deprecated. Use Storage.getCookies instead.
+  deprecated command getAllCookies
     returns
       # Array of cookie objects.
       array of Cookie cookies
@@ -7216,12 +7225,14 @@ domain Page
       otp-credentials
       payment
       picture-in-picture
+      private-aggregation
       publickey-credentials-get
       run-ad-auction
       screen-wake-lock
       serial
       shared-autofill
       shared-storage
+      shared-storage-select-url
       smart-card
       storage-access
       sync-xhr
@@ -7230,6 +7241,8 @@ domain Page
       usb
       vertical-scroll
       web-share
+      # Alias for 'window-placement' (crbug.com/1328581).
+      window-management
       window-placement
       xr-spatial-tracking
 
@@ -8553,6 +8566,11 @@ domain Page
       ActivationNavigationParameterMismatch
       ActivatedInBackground
       EmbedderHostDisallowed
+      ActivationNavigationDestroyedBeforeSuccess
+      TabClosedByUserGesture
+      TabClosedWithoutUserGesture
+      PrimaryMainFrameRendererProcessCrashed
+      PrimaryMainFrameRendererProcessKilled
 
   # Fired when a prerender attempt is completed.
   experimental event prerenderAttemptCompleted
@@ -10537,6 +10555,10 @@ experimental domain WebAuthn
       # https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension
       # Defaults to false.
       optional boolean hasMinPinLength
+      # If set to true, the authenticator will support the prf extension.
+      # https://w3c.github.io/webauthn/#prf-extension
+      # Defaults to false.
+      optional boolean hasPrf
       # If set to true, tests of user presence will succeed immediately.
       # Otherwise, they will not be resolved. Defaults to true.
       optional boolean automaticPresenceSimulation

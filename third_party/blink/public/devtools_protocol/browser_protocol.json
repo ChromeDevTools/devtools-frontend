@@ -1535,7 +1535,9 @@
                     "type": "string",
                     "enum": [
                         "CrossOriginPortalPostMessageError",
-                        "FormLabelForNameError"
+                        "FormLabelForNameError",
+                        "FormDuplicateIdForInputError",
+                        "FormInputWithNoLabelError"
                     ]
                 },
                 {
@@ -1590,6 +1592,7 @@
                         "NoSysexWebMIDIWithoutPermission",
                         "NotificationInsecureOrigin",
                         "NotificationPermissionRequestedIframe",
+                        "ObsoleteCreateImageBitmapImageOrientationNone",
                         "ObsoleteWebRtcCipherSuite",
                         "OpenWebDatabaseInsecureContext",
                         "OverflowVisibleOnReplacedElement",
@@ -1669,6 +1672,7 @@
                         "WellKnownHttpNotFound",
                         "WellKnownNoResponse",
                         "WellKnownInvalidResponse",
+                        "WellKnownListEmpty",
                         "ConfigNotInWellKnown",
                         "WellKnownTooBig",
                         "ConfigHttpNotFound",
@@ -1683,6 +1687,7 @@
                         "AccountsHttpNotFound",
                         "AccountsNoResponse",
                         "AccountsInvalidResponse",
+                        "AccountsListEmpty",
                         "IdTokenHttpNotFound",
                         "IdTokenNoResponse",
                         "IdTokenInvalidResponse",
@@ -2175,6 +2180,7 @@
                         "protectedMediaIdentifier",
                         "sensors",
                         "storageAccess",
+                        "topLevelStorageAccess",
                         "videoCapture",
                         "videoCapturePanTiltZoom",
                         "wakeLockScreen",
@@ -8007,6 +8013,7 @@
                     "properties": [
                         {
                             "name": "brands",
+                            "description": "Brands appearing in Sec-CH-UA.",
                             "optional": true,
                             "type": "array",
                             "items": {
@@ -8015,6 +8022,7 @@
                         },
                         {
                             "name": "fullVersionList",
+                            "description": "Brands appearing in Sec-CH-UA-Full-Version-List.",
                             "optional": true,
                             "type": "array",
                             "items": {
@@ -12789,7 +12797,8 @@
                 },
                 {
                     "name": "getAllCookies",
-                    "description": "Returns all browser cookies. Depending on the backend support, will return detailed cookie\ninformation in the `cookies` field.",
+                    "description": "Returns all browser cookies. Depending on the backend support, will return detailed cookie\ninformation in the `cookies` field.\nDeprecated. Use Storage.getCookies instead.",
+                    "deprecated": true,
                     "returns": [
                         {
                             "name": "cookies",
@@ -15372,12 +15381,14 @@
                         "otp-credentials",
                         "payment",
                         "picture-in-picture",
+                        "private-aggregation",
                         "publickey-credentials-get",
                         "run-ad-auction",
                         "screen-wake-lock",
                         "serial",
                         "shared-autofill",
                         "shared-storage",
+                        "shared-storage-select-url",
                         "smart-card",
                         "storage-access",
                         "sync-xhr",
@@ -15386,6 +15397,7 @@
                         "usb",
                         "vertical-scroll",
                         "web-share",
+                        "window-management",
                         "window-placement",
                         "xr-spatial-tracking"
                     ]
@@ -16442,7 +16454,12 @@
                         "SameSiteCrossOriginNavigationNotOptIn",
                         "ActivationNavigationParameterMismatch",
                         "ActivatedInBackground",
-                        "EmbedderHostDisallowed"
+                        "EmbedderHostDisallowed",
+                        "ActivationNavigationDestroyedBeforeSuccess",
+                        "TabClosedByUserGesture",
+                        "TabClosedWithoutUserGesture",
+                        "PrimaryMainFrameRendererProcessCrashed",
+                        "PrimaryMainFrameRendererProcessKilled"
                     ]
                 }
             ],
@@ -22282,6 +22299,12 @@
                             "type": "boolean"
                         },
                         {
+                            "name": "hasPrf",
+                            "description": "If set to true, the authenticator will support the prf extension.\nhttps://w3c.github.io/webauthn/#prf-extension\nDefaults to false.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
                             "name": "automaticPresenceSimulation",
                             "description": "If set to true, tests of user presence will succeed immediately.\nOtherwise, they will not be resolved. Defaults to true.",
                             "optional": true,
@@ -25703,6 +25726,13 @@
                             "type": "boolean"
                         },
                         {
+                            "name": "uniqueContextId",
+                            "description": "An alternative way to specify the execution context to call function on.\nCompared to contextId that may be reused across processes, this is guaranteed to be\nsystem-unique, so it can be used to prevent accidental function call\nin context different than intended (e.g. as a result of navigation across process\nboundaries).\nThis is mutually exclusive with `executionContextId`.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
                             "name": "generateWebDriverValue",
                             "description": "Whether the result should contain `webDriverValue`, serialized according to\nhttps://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but\nresulting `objectId` is still provided.",
                             "experimental": true,
@@ -26362,7 +26392,14 @@
                         {
                             "name": "executionContextId",
                             "description": "Id of the destroyed context",
+                            "deprecated": true,
                             "$ref": "ExecutionContextId"
+                        },
+                        {
+                            "name": "executionContextUniqueId",
+                            "description": "Unique Id of the destroyed context",
+                            "experimental": true,
+                            "type": "string"
                         }
                     ]
                 },

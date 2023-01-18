@@ -34,7 +34,7 @@ interface KarmaConfig {
   config: {remoteDebuggingPort: string};
 }
 
-function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
+function describeBody(fn: () => void) {
   before(async function() {
     if (initialized) {
       return;
@@ -75,6 +75,8 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
     Common.Settings.Settings.instance().clearAll();
   });
 
+  fn();
+
   afterEach(async () => {
     const runAfterPendingDispatches = ProtocolClient.InspectorBackend.test.deprecatedRunAfterPendingDispatches;
     if (!runAfterPendingDispatches) {
@@ -82,8 +84,6 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
     }
     await new Promise<void>(resolve => runAfterPendingDispatches(resolve));
   });
-
-  describe(title, fn);
 }
 
 export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite) => void) {
@@ -97,8 +97,8 @@ export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite
         if (hasOnly || event.hasOnly) {
           return;
         }
-        describe(`real-${title}`, () => {
-          describeBody(title, fn);
+        describe(title, function() {
+          describeBody(fn.bind(this));
         });
       })
       .catch(e => {
@@ -109,8 +109,8 @@ export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite
 describeWithRealConnection.only = function(title: string, fn: (this: Mocha.Suite) => void) {
   hasOnly = true;
   // eslint-disable-next-line rulesdir/no_only
-  describe.only(`real-${title}`, () => {
-    describeBody(title, fn);
+  describe.only(title, function() {
+    describeBody(fn.bind(this));
   });
 };
 

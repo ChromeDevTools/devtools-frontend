@@ -45,12 +45,11 @@ export async function loadTraceEventsLegacyEventPayload(name: string):
 // are safe to cache their contents once we've loaded them once.
 const traceFileCache = new Map<string, TraceModel.TraceModel.TraceFileContents>();
 
-export async function loadTraceFile(name: string): Promise<TraceModel.TraceModel.TraceFileContents> {
-  const cachedFile = traceFileCache.get(name);
+export async function loadTraceFileFromURL(url: URL): Promise<TraceModel.TraceModel.TraceFileContents> {
+  const cachedFile = traceFileCache.get(url.toString());
   if (cachedFile) {
     return cachedFile;
   }
-  const url = `/fixtures/traces/${name}`;
   const response = await fetch(url);
   if (response.status !== 200) {
     throw new Error(`Unable to load ${url}`);
@@ -64,13 +63,17 @@ export async function loadTraceFile(name: string): Promise<TraceModel.TraceModel
   }
   const decoder = new TextDecoder('utf-8');
   const contents = JSON.parse(decoder.decode(buffer)) as TraceModel.TraceModel.TraceFileContents;
-  traceFileCache.set(name, contents);
+  traceFileCache.set(url.toString(), contents);
   return contents;
+}
+export async function loadTraceFileFromFixtures(name: string): Promise<TraceModel.TraceModel.TraceFileContents> {
+  const url = new URL(`/fixtures/traces/${name}`, window.location.origin);
+  return loadTraceFileFromURL(url);
 }
 
 export async function loadEventsFromTraceFile(name: string):
     Promise<readonly TraceModel.Types.TraceEvents.TraceEventData[]> {
-  const trace = await loadTraceFile(name);
+  const trace = await loadTraceFileFromFixtures(name);
   if ('traceEvents' in trace) {
     return trace.traceEvents;
   }

@@ -35,6 +35,7 @@ group("docs") {
     "./panel_feedback",
     "./panel_introduction_steps",
     "./perf_piechart",
+    "./performance_panel",
     "./report",
     "./request_link_icon",
     "./style_property_editor",

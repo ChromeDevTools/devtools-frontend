@@ -95,6 +95,10 @@ const REGISTERED_EXPERIMENTS = [
   'instrumentationBreakpoints',
   'cssTypeComponentLength',
   'timelineDoNotSkipSystemNodesOfCpuProfile',
+  'recordCoverageWithPerformanceTracing',
+  'timelineEventInitiators',
+  'inputEventsOnTimelineOverview',
+  'timelineAsConsoleProfileResultPanel',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -221,6 +225,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.PERFORMANCE, 'showNativeFunctionsInJSProfile', false,
         Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.PERFORMANCE, 'flamechartMouseWheelAction', false,
+        Common.Settings.SettingType.ENUM),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);

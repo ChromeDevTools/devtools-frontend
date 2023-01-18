@@ -76,9 +76,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     const {forceNew, debuggerWorkspaceBinding} = opts;
     if (!ignoreListManagerInstance || forceNew) {
       if (!debuggerWorkspaceBinding) {
-        throw new Error(
-            `Unable to create settings: targetManager, workspace, and debuggerWorkspaceBinding must be provided: ${
-                new Error().stack}`);
+        throw new Error(`Unable to create settings: debuggerWorkspaceBinding must be provided: ${new Error().stack}`);
       }
 
       ignoreListManagerInstance = new IgnoreListManager(debuggerWorkspaceBinding);

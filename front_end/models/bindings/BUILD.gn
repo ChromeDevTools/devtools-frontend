@@ -66,6 +66,7 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/ui/legacy/components/utils/*",
     "../../panels/elements/*",
     "../../panels/emulation/*",
+    "../../ui/components/docs/performance_panel/*",
     "../../ui/components/linkifier/*",
     "../../ui/legacy/components/inline_editor/*",
     "../../ui/legacy/components/perf_ui/*",

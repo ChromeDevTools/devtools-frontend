@@ -54,6 +54,7 @@ devtools_entrypoint("bundle") {
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../../../test/unittests/front_end/ui/legacy/components/utils/*",
     "../../panels/elements/*",
+    "../../ui/components/docs/performance_panel/*",
     "../../ui/legacy/components/perf_ui/*",
     "../../ui/legacy/components/source_frame/*",
     "../../ui/legacy/components/utils/*",

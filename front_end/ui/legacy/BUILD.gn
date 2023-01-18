@@ -155,6 +155,7 @@ devtools_entrypoint("bundle") {
     "../../legacy_test_runner/*",
     "../../panels/*",
     "../../services/window_bounds/*",
+    "../components/docs/performance_panel/*",
     "./*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents

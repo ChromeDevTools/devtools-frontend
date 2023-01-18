@@ -748,7 +748,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
-  private async loadFromFile(file: File): Promise<void> {
+  async loadFromFile(file: File): Promise<void> {
     if (this.state !== State.Idle) {
       return;
     }

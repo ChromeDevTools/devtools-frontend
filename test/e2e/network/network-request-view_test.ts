@@ -20,6 +20,7 @@ import {
   getBrowserAndPages,
   getResourcesPath,
   assertNotNullOrUndefined,
+  pasteText,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
@@ -52,7 +53,7 @@ const configureAndCheckHeaderOverrides = async () => {
   await waitForFunction(async () => {
     await click('.header-name', {root: row});
     await click('.header-value', {root: row});
-    await typeText('Foo');
+    await pasteText('Foo');
     return (await getTextFromHeadersRow(row))[1] === 'Foo';
   });
 

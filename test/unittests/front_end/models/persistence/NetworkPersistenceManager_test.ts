@@ -4,16 +4,17 @@
 
 const {assert} = chai;
 
-import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
+import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
-import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-import {initializeGlobalVars, deinitializeGlobalVars, createTarget} from '../../helpers/EnvironmentHelpers.js';
-import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
-import {createWorkspaceProject, setUpEnvironment} from '../../helpers/OverridesHelpers.js';
+import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
+import {createTarget, deinitializeGlobalVars, initializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {createWorkspaceProject, setUpEnvironment} from '../../helpers/OverridesHelpers.js';
+import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 describeWithMockConnection('NetworkPersistenceManager', () => {
   let networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
@@ -553,6 +554,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
       project: () => ({
         type: () => Workspace.Workspace.projectTypes.Network,
       }),
+      contentType: () => Common.ResourceType.resourceTypes.Document,
     } as Workspace.UISourceCode.UISourceCode;
 
     const eventURLs: string[] = [];

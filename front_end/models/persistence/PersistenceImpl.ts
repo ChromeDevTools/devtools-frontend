@@ -140,7 +140,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this);
 
     this.filePathPrefixesToBindingCount.remove(binding.fileSystem.url());
-    await this.breakpointManager.copyBreakpoints(binding.network.url(), binding.fileSystem);
+    await this.breakpointManager.copyBreakpoints(binding.network, binding.fileSystem);
 
     this.notifyBindingEvent(binding.network);
     this.notifyBindingEvent(binding.fileSystem);

@@ -531,7 +531,7 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       const script = await backend.addScript(target, scriptInfo, null);
 
       // Get the uiSourceCode for the source.
-      const uiSourceCode = await debuggerWorkspaceBinding.uiSourceCodeForScript(script);
+      const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
       assertNotNullOrUndefined(uiSourceCode);
 
       // Set the breakpoint on the front-end/model side.
@@ -1093,7 +1093,7 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     });
   });
 
-  it('removes breakpoints that reoslve to the same uiLocation as a previous breakpoint', async () => {
+  it('removes breakpoints that resolve to the same uiLocation as a previous breakpoint', async () => {
     const scriptInfo = {url: URL, content: 'console.log(\'hello\');'};
     const script = await backend.addScript(target, scriptInfo, null);
 

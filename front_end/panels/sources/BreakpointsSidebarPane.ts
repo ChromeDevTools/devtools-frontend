@@ -245,12 +245,13 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       this.#getHitUILocation(),
     ]);
 
-    const urlToGroup = new Map<Platform.DevToolsPath.UrlString, SourcesComponents.BreakpointsView.BreakpointGroup>();
+    const scriptIdToGroup = new Map<string, SourcesComponents.BreakpointsView.BreakpointGroup>();
 
     for (let idx = 0; idx < locationsGroupedById.length; idx++) {
       const locations = locationsGroupedById[idx];
       const fstLocation = locations[0];
       const sourceURL = fstLocation.uiLocation.uiSourceCode.url();
+      const scriptId = fstLocation.uiLocation.uiSourceCode.canononicalScriptId();
       const uiLocation = fstLocation.uiLocation;
 
       const isHit = selectedUILocation !== null &&
@@ -282,7 +283,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       };
       this.#breakpointItemToLocationMap.set(item, locations);
 
-      let group = urlToGroup.get(sourceURL);
+      let group = scriptIdToGroup.get(scriptId);
       if (group) {
         group.breakpointItems.push(item);
         group.expanded ||= expanded;
@@ -295,7 +296,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
           expanded,
           breakpointItems: [item],
         };
-        urlToGroup.set(sourceURL, group);
+        scriptIdToGroup.set(scriptId, group);
       }
     }
     return {
@@ -303,7 +304,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       pauseOnCaughtExceptions,
       pauseOnUncaughtExceptions,
       independentPauseToggles,
-      groups: Array.from(urlToGroup.values()),
+      groups: Array.from(scriptIdToGroup.values()),
     };
   }
 

@@ -18,6 +18,7 @@ import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} fr
 import {
   addBreakpointForLine,
   getBreakpointHitLocation,
+  isBreakpointSet,
   isEqualOrAbbreviation,
   openSourceCodeEditorForFile,
   PAUSE_INDICATOR_SELECTOR,
@@ -64,6 +65,18 @@ describe('The Sources Tab', async function() {
 
     await click(RESUME_BUTTON);
     await scriptEvaluation;
+  });
+
+  it('doesn\'t synchronize breakpoints between scripts and source-mapped scripts', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    // Navigate to page with sourceURL annotation and set breakpoint in line 2.
+    await openSourceCodeEditorForFile('breakpoint-conflict.js', 'breakpoint-conflict-source-url.html');
+    await addBreakpointForLine(frontend, 2);
+
+    // Navigate to page with sourceMappingURL annotation and check that breakpoint did not sync.
+    await openSourceCodeEditorForFile('breakpoint-conflict.js', 'breakpoint-conflict-source-map.html');
+    assert.isFalse(await isBreakpointSet(2), 'Breakpoint found on line 2 which shouldn\'t be there');
   });
 
   it('stops at each breakpoint on resume (using F8) on target', async () => {

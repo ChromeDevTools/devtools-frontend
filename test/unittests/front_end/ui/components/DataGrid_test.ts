@@ -16,6 +16,7 @@ import {
   renderElementIntoDOM,
   stripLitHtmlCommentNodes,
 } from '../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 import {withMutations} from '../../helpers/MutationHelpers.js';
 
 import {
@@ -350,7 +351,7 @@ describe('DataGrid', () => {
     });
   });
 
-  describe('navigating with the keyboard', () => {
+  describeWithLocale('navigating with the keyboard', () => {
     it('makes the first body cell focusable by default when no columns are sortable', async () => {
       const component = renderDataGrid({rows, columns: columnsWithNoneSortable});
       assertShadowRoot(component.shadowRoot);
@@ -538,57 +539,58 @@ describe('DataGrid', () => {
       assertCurrentFocusedCellIs(component.shadowRoot, {column: 0, row: 2});
     });
   });
+  describeWithLocale('emits an event', () => {
+    it('when the user clicks a column header', async () => {
+      const component = renderDataGrid({rows, columns});
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
 
-  it('emits an event when the user clicks a column header', async () => {
-    const component = renderDataGrid({rows, columns});
-    renderElementIntoDOM(component);
-    assertShadowRoot(component.shadowRoot);
-    await coordinator.done();
+      const columnHeaderClickEvent =
+          getEventPromise<DataGrid.DataGridEvents.ColumnHeaderClickEvent>(component, 'columnheaderclick');
+      const cityColumn = getHeaderCellForColumnId(component.shadowRoot, 'city');
+      dispatchClickEvent(cityColumn);
 
-    const columnHeaderClickEvent =
-        getEventPromise<DataGrid.DataGridEvents.ColumnHeaderClickEvent>(component, 'columnheaderclick');
-    const cityColumn = getHeaderCellForColumnId(component.shadowRoot, 'city');
-    dispatchClickEvent(cityColumn);
+      const clickEvent = await columnHeaderClickEvent;
+      assert.deepEqual(clickEvent.data, {column: columns[0], columnIndex: 0});
+    });
 
-    const clickEvent = await columnHeaderClickEvent;
-    assert.deepEqual(clickEvent.data, {column: columns[0], columnIndex: 0});
-  });
+    it('when the user "clicks" a column header with the enter key', async () => {
+      const component = renderDataGrid({rows, columns});
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
 
-  it('emits an event when the user "clicks" a column header with the enter key', async () => {
-    const component = renderDataGrid({rows, columns});
-    renderElementIntoDOM(component);
-    assertShadowRoot(component.shadowRoot);
-    await coordinator.done();
+      const columnHeaderClickEvent =
+          getEventPromise<DataGrid.DataGridEvents.ColumnHeaderClickEvent>(component, 'columnheaderclick');
+      const focusableCell = getFocusableCell(component.shadowRoot);
+      // Check that the focusable cell is the header cell as it's a table with
+      // sortable columns.
+      assert.strictEqual(focusableCell.getAttribute('data-row-index'), '0');
+      assert.strictEqual(focusableCell.getAttribute('data-col-index'), '0');
+      focusableCell.focus();
+      await coordinator.done();
 
-    const columnHeaderClickEvent =
-        getEventPromise<DataGrid.DataGridEvents.ColumnHeaderClickEvent>(component, 'columnheaderclick');
-    const focusableCell = getFocusableCell(component.shadowRoot);
-    // Check that the focusable cell is the header cell as it's a table with
-    // sortable columns.
-    assert.strictEqual(focusableCell.getAttribute('data-row-index'), '0');
-    assert.strictEqual(focusableCell.getAttribute('data-col-index'), '0');
-    focusableCell.focus();
-    await coordinator.done();
+      const table = component.shadowRoot.querySelector('table');
+      assertElement(table, HTMLTableElement);
+      dispatchKeyDownEvent(table, {key: 'Enter'});
+      const clickEvent = await columnHeaderClickEvent;
+      assert.deepEqual(clickEvent.data, {column: columns[0], columnIndex: 0});
+    });
 
-    const table = component.shadowRoot.querySelector('table');
-    assertElement(table, HTMLTableElement);
-    dispatchKeyDownEvent(table, {key: 'Enter'});
-    const clickEvent = await columnHeaderClickEvent;
-    assert.deepEqual(clickEvent.data, {column: columns[0], columnIndex: 0});
-  });
+    it('when the user focuses a cell', async () => {
+      const component = renderDataGrid({rows, columns: columnsWithNoneSortable});
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
 
-  it('emits an event when the user focuses a cell', async () => {
-    const component = renderDataGrid({rows, columns: columnsWithNoneSortable});
-    renderElementIntoDOM(component);
-    assertShadowRoot(component.shadowRoot);
-    await coordinator.done();
-
-    const bodyCellFocusedEvent =
-        getEventPromise<DataGrid.DataGridEvents.BodyCellFocusedEvent>(component, 'cellfocused');
-    const focusableCell = getFocusableCell(component.shadowRoot);
-    focusableCell.focus();
-    const cellFocusedEvent = await bodyCellFocusedEvent;
-    assert.deepEqual(cellFocusedEvent.data, {cell: rows[0].cells[0], row: rows[0]});
+      const bodyCellFocusedEvent =
+          getEventPromise<DataGrid.DataGridEvents.BodyCellFocusedEvent>(component, 'cellfocused');
+      const focusableCell = getFocusableCell(component.shadowRoot);
+      focusableCell.focus();
+      const cellFocusedEvent = await bodyCellFocusedEvent;
+      assert.deepEqual(cellFocusedEvent.data, {cell: rows[0].cells[0], row: rows[0]});
+    });
   });
 
   describe('adding new rows', () => {

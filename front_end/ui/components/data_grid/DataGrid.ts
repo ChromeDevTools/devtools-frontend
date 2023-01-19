@@ -44,6 +44,10 @@ const UIStrings = {
    *@description A context menu item in data grids to list header options.
    */
   headerOptions: 'Header Options',
+  /**
+   *@description Text for screen reader to announce when focusing on a sortable column in data grid.
+   */
+  enterToSort: 'Press enter to apply sorting filter',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/data_grid/DataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -286,6 +290,10 @@ export class DataGrid extends HTMLElement {
      * focus, ensure we actually focus the cell.
      */
     this.#focusTableCellInDOM(tableCell);
+    // If it's a sortable column header, screen reader announce the information for sorting
+    if (newRowIndex === 0 && this.#columns[newColumnIndex].sortable) {
+      UI.ARIAUtils.alert(i18nString(UIStrings.enterToSort));
+    }
   }
 
   #onTableKeyDown(event: KeyboardEvent): void {
@@ -774,6 +782,7 @@ export class DataGrid extends HTMLElement {
                   }}
                   title=${col.title}
                   aria-sort=${LitHtml.Directives.ifDefined(this.#ariaSortForHeader(col))}
+                  role=${col.sortable ? 'button' : 'columnheader'}
                   aria-colindex=${columnIndex + 1}
                   data-row-index='0'
                   data-col-index=${columnIndex}

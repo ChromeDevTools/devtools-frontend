@@ -60,7 +60,6 @@ group("front_end") {
     "panels/settings/emulation/components",
     "panels/sources",
     "panels/timeline",
-    "panels/timeline/components",
     "panels/utils",
     "panels/webauthn",
     "test_setup",

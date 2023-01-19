@@ -19,6 +19,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) {
+  containerElement: HTMLDivElement;
+
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static get ITEM_CLASS_NAME(): string {
     return 'overview-sidebar-panel-item';
@@ -35,18 +37,25 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     this.contentElement.classList.add('overview-sidebar-panel');
     this.contentElement.addEventListener('click', this.#onItemClick.bind(this));
 
+    // We need a container so that each item covers the full width of the
+    // longest item, so that the selected item's background expands fully
+    // even when the sidebar overflows.
+    // Also see crbug/1408003
+    this.containerElement =
+        this.contentElement.createChild('div', 'overview-sidebar-panel-container') as HTMLDivElement;
+
     // Clear overview.
     const clearResultsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearOverview), 'largeicon-clear');
     clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.#reset, this);
 
     // Toolbar.
-    const toolbarElement = this.contentElement.createChild('div', 'overview-toolbar');
+    const toolbarElement = this.containerElement.createChild('div', 'overview-toolbar');
     const toolbar = new UI.Toolbar.Toolbar('', toolbarElement);
     toolbar.appendToolbarItem(clearResultsButton);
   }
 
   addItem(name: string, id: string): void {
-    const item = this.contentElement.createChild('div', CSSOverviewSidebarPanel.ITEM_CLASS_NAME);
+    const item = this.containerElement.createChild('div', CSSOverviewSidebarPanel.ITEM_CLASS_NAME);
     item.textContent = name;
     item.dataset.id = id;
   }
@@ -56,7 +65,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
   }
 
   #deselectAllItems(): void {
-    const items = this.contentElement.querySelectorAll(`.${CSSOverviewSidebarPanel.ITEM_CLASS_NAME}`);
+    const items = this.containerElement.querySelectorAll(`.${CSSOverviewSidebarPanel.ITEM_CLASS_NAME}`);
     items.forEach(item => {
       item.classList.remove(CSSOverviewSidebarPanel.SELECTED);
     });
@@ -77,7 +86,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
   }
 
   select(id: string): void {
-    const target = this.contentElement.querySelector(`[data-id=${CSS.escape(id)}]`);
+    const target = this.containerElement.querySelector(`[data-id=${CSS.escape(id)}]`);
     if (!target) {
       return;
     }

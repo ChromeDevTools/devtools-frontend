@@ -15,9 +15,12 @@
   padding-left: 30px;
   display: flex;
   align-items: center;
-  cursor: pointer;
   color: var(--color-text-primary);
   white-space: nowrap;
+}
+
+.overview-sidebar-panel-container {
+  min-width: fit-content;
 }
 
 .overview-sidebar-panel-item:hover,

@@ -220,6 +220,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     super.wasShown();
     this.registerCSSFiles([breakpointEditDialogStyles]);
   }
+
+  get editorForTest(): TextEditor.TextEditor.TextEditor {
+    return this.editor;
+  }
 }
 
 export const LogpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';

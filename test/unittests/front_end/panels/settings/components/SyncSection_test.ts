@@ -6,27 +6,24 @@ import * as PanelComponents from '../../../../../../front_end/panels/settings/co
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as SettingComponents from '../../../../../../front_end/ui/components/settings/settings.js';
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
-import {createFakeSetting} from '../../../helpers/EnvironmentHelpers.js';
+import {createFakeSetting, describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 async function renderSyncSection(data: PanelComponents.SyncSection.SyncSectionData):
     Promise<{section: PanelComponents.SyncSection.SyncSection, shadowRoot: ShadowRoot}> {
   const section = new PanelComponents.SyncSection.SyncSection();
-  section.data = data;
   renderElementIntoDOM(section);
+  section.data = data;
   await Coordinator.RenderCoordinator.RenderCoordinator.instance().done();
   assertShadowRoot(section.shadowRoot);
   return {section, shadowRoot: section.shadowRoot};
 }
 
-// TODO: reenable after stabilized. https://crbug.com/1245541
-xdescribe('SyncSection', () => {
+describeWithLocale('SyncSection', () => {
   it('shows a warning when sync is not active', async () => {
     const syncSetting = createFakeSetting<boolean>('setting', true);
     const {shadowRoot} = await renderSyncSection({syncInfo: {isSyncActive: false}, syncSetting});
-
     const warning = shadowRoot.querySelector('.warning');
     assertElement(warning, HTMLElement);
-
     assert.include(warning.innerText, 'To turn this setting on');
   });
 

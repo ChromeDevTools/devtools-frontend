@@ -327,6 +327,7 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.BREAKPOINT_VIEW, 'Enable re-designed Breakpoint Sidebar Pane in the Sources Panel',
         true);
+    Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.BREAKPOINT_VIEW, true);
 
     // Dual-screen
     Root.Runtime.experiments.register(

@@ -57,6 +57,32 @@ describeWithEnvironment('BreakpointEditDialog', () => {
     assert.include(condition, 'console.log(x)');
   });
 
+  it('result includes isLogpoint for logpoints', async () => {
+    const resultPromise = new Promise<Sources.BreakpointEditDialog.BreakpointEditDialogResult>(resolve => {
+      const dialog = new Sources.BreakpointEditDialog.BreakpointEditDialog(0, '', true, resolve);
+      const {editorForTest: {editor}} = dialog;
+      setCodeMirrorContent(editor, 'x');
+
+      dispatchKeyDownEvent(editor.contentDOM, {key: 'Enter'});
+    });
+
+    const {isLogpoint} = await resultPromise;
+    assert.isTrue(isLogpoint);
+  });
+
+  it('result includes isLogpoint for conditional breakpoints', async () => {
+    const resultPromise = new Promise<Sources.BreakpointEditDialog.BreakpointEditDialogResult>(resolve => {
+      const dialog = new Sources.BreakpointEditDialog.BreakpointEditDialog(0, '', false, resolve);
+      const {editorForTest: {editor}} = dialog;
+      setCodeMirrorContent(editor, 'x === 5');
+
+      dispatchKeyDownEvent(editor.contentDOM, {key: 'Enter'});
+    });
+
+    const {isLogpoint} = await resultPromise;
+    assert.isFalse(isLogpoint);
+  });
+
   it('prefills the input with the old condition', async () => {
     const dialog = new Sources.BreakpointEditDialog.BreakpointEditDialog(0, 'x === 42', false, () => {});
     const {editorForTest: {editor}} = dialog;

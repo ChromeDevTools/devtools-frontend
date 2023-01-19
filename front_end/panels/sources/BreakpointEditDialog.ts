@@ -52,6 +52,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface BreakpointEditDialogResult {
   committed: boolean;
   condition: string;
+  isLogpoint: boolean;
 }
 
 export class BreakpointEditDialog extends UI.Widget.Widget {
@@ -213,7 +214,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     if (this.isLogpoint) {
       condition = BreakpointEditDialog.conditionForLogpoint(condition);
     }
-    this.onFinish({committed, condition});
+    this.onFinish({committed, condition, isLogpoint: this.isLogpoint});
   }
 
   wasShown(): void {

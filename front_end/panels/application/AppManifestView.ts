@@ -614,6 +614,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       helpIcon.data = {iconName: 'help_outline', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
       helpIcon.classList.add('inline-icon');
       helpIcon.title = i18nString(UIStrings.appIdExplainer);
+      helpIcon.tabIndex = 0;
       appIdField.appendChild(helpIcon);
 
       appIdField.appendChild(UI.XLink.XLink.create(

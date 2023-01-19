@@ -29,3 +29,7 @@
 .learn-more {
   padding-left: 4px;
 }
+
+.inline-icon:focus-visible {
+  outline-width: unset;
+}

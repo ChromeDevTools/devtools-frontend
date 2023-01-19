@@ -218,6 +218,7 @@ module.exports = function(config) {
           `--remote-debugging-port=${REMOTE_DEBUGGING_PORT}`,
           '--use-mock-keychain',
           '--disable-features=DialMediaRouteProvider',
+          '--password-store=basic',
         ],
       }
     },

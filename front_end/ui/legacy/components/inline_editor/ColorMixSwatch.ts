@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../../core/common/common.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 
@@ -11,9 +11,9 @@ import colorMixSwatchStyles from './colorMixSwatch.css.js';
 export class ColorMixSwatch extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-color-mix-swatch`;
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private text: string = 'color-mix(in srgb, hotpink, white)';
-  private firstColorText: string = 'hotpink';
-  private secondColorText: string = 'white';
+  private colorMixText: string = '';     // color-mix(in srgb, hotpink, white)
+  private firstColorText: string = '';   // hotpink
+  private secondColorText: string = '';  // white
 
   constructor() {
     super();
@@ -22,41 +22,40 @@ export class ColorMixSwatch extends HTMLElement {
     ];
   }
 
-  setText(text: string): void {
-    this.text = text;
-
-    const parametersMatch = text.match(/color-mix\(in\s+(?:\w+)\s*,(?<firstColor>.+),(?<secondColor>.+)\)/);
-    if (!parametersMatch || !parametersMatch.groups || parametersMatch.length !== 3) {
-      this.#renderTextOnly();
-      return;
+  setFirstColor(text: string): void {
+    // We need to replace `colorMixText` because it is the CSS for the
+    // the middle section where we actually show the mixed colors.
+    // So, when a color changed, we need to update colorMixText to
+    // reflect the new color (not the old one).
+    if (this.firstColorText) {
+      this.colorMixText = this.colorMixText.replace(this.firstColorText, text);
     }
-
-    const firstColorAndPercentage = parametersMatch.groups['firstColor'];
-    const secondColorAndPercentage = parametersMatch.groups['secondColor'];
-
-    const firstColorMatch = firstColorAndPercentage.match(Common.Color.Regex);
-    if (!firstColorMatch) {
-      this.#renderTextOnly();
-      return;
-    }
-
-    const secondColorMatch = secondColorAndPercentage.match(Common.Color.Regex);
-    if (!secondColorMatch) {
-      this.#renderTextOnly();
-      return;
-    }
-
-    this.firstColorText = firstColorMatch[0];
-    this.secondColorText = secondColorMatch[0];
-
+    this.firstColorText = text;
     this.#render();
   }
 
-  #renderTextOnly(): void {
-    LitHtml.render(this.text, this.shadow, {host: this});
+  setSecondColor(text: string): void {
+    // We need to replace from the last to handle the same colors case
+    // i.e. replacing the second color of `color-mix(in srgb, red 50%, red 10%)`
+    // to `blue` should result in `color-mix(in srgb, red 50%, blue 10%)`.
+    if (this.secondColorText) {
+      this.colorMixText = Platform.StringUtilities.replaceLast(this.colorMixText, this.secondColorText, text);
+    }
+    this.secondColorText = text;
+    this.#render();
+  }
+
+  setColorMixText(text: string): void {
+    this.colorMixText = text;
+    this.#render();
   }
 
   #render(): void {
+    if (!this.colorMixText || !this.firstColorText || !this.secondColorText) {
+      LitHtml.render(this.colorMixText, this.shadow, {host: this});
+      return;
+    }
+
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
 
@@ -68,8 +67,8 @@ export class ColorMixSwatch extends HTMLElement {
       LitHtml.html`<div class="swatch-icon">
         <span class="swatch swatch-left" id="swatch-1" style="--color: ${this.firstColorText}"></span>
         <span class="swatch swatch-right" id="swatch-2" style="--color: ${this.secondColorText}"></span>
-        <span class="swatch swatch-mix" id="mix-result" style="--color: ${this.text}"></span>
-      </div><slot>${this.text}</slot>`,
+        <span class="swatch swatch-mix" id="mix-result" style="--color: ${this.colorMixText}"></span>
+      </div><slot>${this.colorMixText}</slot>`,
       this.shadow, {host: this});
     // clang-format on
   }

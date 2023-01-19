@@ -2154,12 +2154,21 @@ export class StylesSidebarPropertyRenderer {
       UI.Tooltip.Tooltip.install(valueElement, unescapeCssString(this.propertyValue));
     }
 
-    const regexes = [SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex];
-    const processors = [this.varHandler, this.processURL.bind(this)];
+    const regexes = [];
+    const processors = [];
+
+    // Push `color-mix` handler before pushing regex handler because
+    // `color-mix` can contain variables inside and we want to handle
+    // it as `color-mix` swatch that displays a variable swatch inside
+    // `color: color-mix(in srgb, var(--a), var(--b))` should be handled
+    // by colorMixHandler not varHandler.
     if (this.colorMixHandler && metadata.isColorAwareProperty(this.propertyName)) {
       regexes.push(Common.Color.ColorMixRegex);
       processors.push(this.colorMixHandler);
     }
+
+    regexes.push(SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex);
+    processors.push(this.varHandler, this.processURL.bind(this));
     // Handle `color` properties before handling other ones
     // because color Regex is fairly narrow to only select real colors.
     // However, some other Regexes like Bezier is very wide (text that

@@ -1684,6 +1684,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/inline_editor/CSSLengthUtils.js",
   "front_end/ui/legacy/components/inline_editor/CSSShadowEditor.js",
   "front_end/ui/legacy/components/inline_editor/CSSShadowModel.js",
+  "front_end/ui/legacy/components/inline_editor/ColorMixModel.js",
   "front_end/ui/legacy/components/inline_editor/ColorMixSwatch.js",
   "front_end/ui/legacy/components/inline_editor/ColorSwatch.js",
   "front_end/ui/legacy/components/inline_editor/FontEditor.js",

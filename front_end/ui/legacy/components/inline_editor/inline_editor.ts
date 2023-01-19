@@ -4,6 +4,7 @@
 
 import * as BezierEditor from './BezierEditor.js';
 import * as BezierUI from './BezierUI.js';
+import * as ColorMixModel from './ColorMixModel.js';
 import * as ColorMixSwatch from './ColorMixSwatch.js';
 import * as ColorSwatch from './ColorSwatch.js';
 import * as CSSAngle from './CSSAngle.js';
@@ -23,6 +24,7 @@ import * as SwatchPopoverHelper from './SwatchPopoverHelper.js';
 export {
   BezierEditor,
   BezierUI,
+  ColorMixModel,
   ColorMixSwatch,
   ColorSwatch,
   CSSAngle,

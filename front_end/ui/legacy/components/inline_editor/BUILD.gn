@@ -38,6 +38,7 @@ devtools_module("inline_editor") {
     "CSSLengthUtils.ts",
     "CSSShadowEditor.ts",
     "CSSShadowModel.ts",
+    "ColorMixModel.ts",
     "ColorMixSwatch.ts",
     "ColorSwatch.ts",
     "FontEditor.ts",

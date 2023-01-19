@@ -10,6 +10,7 @@ ts_library("inline_editor") {
     "BezierUI_test.ts",
     "CSSAngle_test.ts",
     "CSSLength_test.ts",
+    "ColorMixModel_test.ts",
     "ColorMixSwatch_test.ts",
     "ColorSwatch_test.ts",
     "FontEditorUnitConverter_test.ts",

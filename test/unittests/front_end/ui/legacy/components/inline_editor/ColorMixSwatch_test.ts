@@ -10,16 +10,18 @@ import {describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
-function createSwatch(text: string) {
+function createSwatch(text: string, firstColor: string, secondColor: string) {
   const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
   renderElementIntoDOM(swatch);
-  swatch.setText(text);
+  swatch.setColorMixText(text);
+  swatch.setFirstColor(firstColor);
+  swatch.setSecondColor(secondColor);
   return swatch;
 }
 
 describeWithLocale('ColorMixSwatch', () => {
   it('should render color-mix swatch with icon and text when the syntax is correct', () => {
-    const swatch = createSwatch('color-mix(in srgb, red, blue)');
+    const swatch = createSwatch('color-mix(in srgb, red, blue)', 'red', 'blue');
 
     const swatchIcon = swatch.shadowRoot?.querySelector('.swatch-icon');
 
@@ -27,12 +29,13 @@ describeWithLocale('ColorMixSwatch', () => {
     assert.isNotNull(swatchIcon);
   });
 
-  it('should render color-mix swatch with only text when the syntax is not correct', () => {
-    const swatch = createSwatch('color-mix(in srgb not, blue)');
+  it('should changing the second color work correctly when the colors are the same', () => {
+    const swatch = createSwatch('color-mix(in srgb, red, red)', 'red', 'red');
+    swatch.setSecondColor('blue');
 
     const swatchIcon = swatch.shadowRoot?.querySelector('.swatch-icon');
 
-    assert.strictEqual(swatch.shadowRoot?.textContent?.trim(), 'color-mix(in srgb not, blue)');
-    assert.isNull(swatchIcon);
+    assert.strictEqual(swatch.shadowRoot?.textContent?.trim(), 'color-mix(in srgb, red, blue)');
+    assert.isNotNull(swatchIcon);
   });
 });

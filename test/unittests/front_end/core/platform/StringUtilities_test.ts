@@ -543,4 +543,21 @@ describe('StringUtilities', () => {
     const lower = Platform.StringUtilities.toLowerCaseString('lower case string');
     fnExpectingLowerCaseString(lower);
   });
+
+  describe('replaceLast', () => {
+    it('should return the input string when the search is not found', () => {
+      const output = Platform.StringUtilities.replaceLast('input', 'search', 'repl');
+      assert.strictEqual(output, 'input');
+    });
+
+    it('should replace the occurrance when the search exists inside the input', () => {
+      const output = Platform.StringUtilities.replaceLast('input', 'pu', 'r');
+      assert.strictEqual(output, 'inrt');
+    });
+
+    it('should replace the last occurrence when there are multiple matches', () => {
+      const output = Platform.StringUtilities.replaceLast('inpuput', 'pu', 'r');
+      assert.strictEqual(output, 'inpurt');
+    });
+  });
 });

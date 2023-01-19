@@ -19,7 +19,20 @@ const mockCssStyleDeclaration = {
 
 const mockMatchedStyles = {
   computeValue: () => null,
-  availableCSSVariables: () => [],
+  computeSingleVariableValue: (_: unknown, param: string) => {
+    const mockVariableMap: Record<string, string> = {
+      'var(--a)': 'red',
+      'var(--b)': 'blue',
+    };
+
+    if (!mockVariableMap[param]) {
+      return;
+    }
+
+    return {
+      computedValue: mockVariableMap[param],
+    };
+  },
 } as unknown as SDK.CSSMatchedStyles.CSSMatchedStyles;
 
 const mockCssProperty = {} as unknown as SDK.CSSProperty.CSSProperty;
@@ -36,7 +49,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
 
   describe('updateTitle', () => {
     describe('color-mix swatch', () => {
-      it('should show color mix swatch when color-mix is used', () => {
+      it('should show color mix swatch when color-mix is used with a color', () => {
         const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
             mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, red, blue)', true, false, true, false, '',
             undefined);
@@ -51,6 +64,23 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         assertNotNullOrUndefined(colorMixSwatch);
         assertNotNullOrUndefined(colorSwatches.find(colorSwatch => colorSwatch.textContent === 'red'));
         assertNotNullOrUndefined(colorSwatches.find(colorSwatch => colorSwatch.textContent === 'blue'));
+      });
+
+      it('should show color mix swatch when color-mix is used with a known variable', () => {
+        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
+            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, var(--a), var(--b))', true, false, true, false, '',
+            undefined);
+        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+            mockStylesSidebarPane, mockMatchedStyles, cssPropertyWithColorMix, false, false, false, true);
+
+        stylePropertyTreeElement.updateTitle();
+
+        const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+        const cssVarSwatches =
+            Array.from(stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-css-var-swatch') || []);
+        assertNotNullOrUndefined(colorMixSwatch);
+        assertNotNullOrUndefined(cssVarSwatches.find(cssVarSwatch => cssVarSwatch.textContent === 'var(--a)'));
+        assertNotNullOrUndefined(cssVarSwatches.find(cssVarSwatch => cssVarSwatch.textContent === 'var(--b)'));
       });
     });
   });

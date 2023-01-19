@@ -5,6 +5,7 @@
 import * as Common from '../../../../../../../front_end/core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as InlineEditor from '../../../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
+import * as UI from '../../../../../../../front_end/ui/legacy/legacy.js';
 import {
   assertElement,
   assertShadowRoot,
@@ -176,5 +177,65 @@ describeWithLocale('ColorSwatch', () => {
 
     assertNotNullOrUndefined(swatchEl);
     assertNotNullOrUndefined(innerSwatchEl);
+  });
+
+  it('produces a color conversion menu', () => {
+    const menuEntries: string[] = [];
+    sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+    sinon.stub(UI.ContextMenu.Section.prototype, 'appendItem').callsFake((label: string): UI.ContextMenu.Item => {
+      menuEntries.push(label);
+      return new UI.ContextMenu.Item(null, 'item');
+    });
+
+    // Without alpha:
+    const swatch = createSwatch('#ff0000');
+    const target = getClickTarget(swatch);
+    dispatchClickEvent(target, {shiftKey: true});
+    assert.deepEqual(menuEntries, [
+      'red',
+      // HEX is skipped because it is the input format
+      '#f00',
+      'rgb(255 0 0)',
+      'hsl(0deg 100% 50%)',
+      'hwb(0deg 0% 0%)',
+      'lch(54.29 106.85 40.86)',
+      'oklch(0.63 0.26 29.23)',
+      'lab(54.29 80.82 69.9)',
+      'oklab(0.63 0.22 0.13)',
+      'color(srgb 1 0 0)',
+      'color(srgb-linear 1 0 0)',
+      'color(display-p3 0.92 0.2 0.14)',
+      'color(a98-rgb 0.86 0 0)',
+      'color(prophoto-rgb 0.7 0.28 0.1)',
+      'color(rec2020 0.79 0.23 0.07)',
+      'color(xyz 0.41 0.21 0.02)',
+      'color(xyz-d50 0.44 0.22 0.01)',
+      'color(xyz-d65 0.41 0.21 0.02)',
+    ]);
+
+    // With alpha:
+    menuEntries.splice(0);
+    swatch.renderColor('#ff000080');
+    dispatchClickEvent(target, {shiftKey: true});
+
+    assert.deepEqual(menuEntries, [
+      // HEXA is skipped because it's the input
+      'rgb(255 0 0 / 50%)',
+      'hsl(0deg 100% 50% / 50.2%)',
+      'hwb(0deg 0% 0% / 50.2%)',
+      'lch(54.29 106.85 40.86 / 0.5)',
+      'oklch(0.63 0.26 29.23 / 0.5)',
+      'lab(54.29 80.82 69.9 / 0.5)',
+      'oklab(0.63 0.22 0.13 / 0.5)',
+      'color(srgb 1 0 0 / 0.5)',
+      'color(srgb-linear 1 0 0 / 0.5)',
+      'color(display-p3 0.92 0.2 0.14 / 0.5)',
+      'color(a98-rgb 0.86 0 0 / 0.5)',
+      'color(prophoto-rgb 0.7 0.28 0.1 / 0.5)',
+      'color(rec2020 0.79 0.23 0.07 / 0.5)',
+      'color(xyz 0.41 0.21 0.02 / 0.5)',
+      'color(xyz-d50 0.44 0.22 0.01 / 0.5)',
+      'color(xyz-d65 0.41 0.21 0.02 / 0.5)',
+    ]);
   });
 });

@@ -217,6 +217,17 @@ export class ColorSwatch extends HTMLElement {
         continue;
       }
       const newColor = this.color.as(format);
+      if (newColor instanceof Common.Color.Legacy) {
+        // The legacy alpha formats (HEXA, ShortHEXA, RGBA, HSLA, HWBA) will only be stringified differently when alpha
+        // isn't opaque (i.e., 100%).
+        const isAlphaFormat = newColor.alpha !== null;
+        const alphaIsOpaque = !newColor.hasAlpha();
+
+        // Print either the alpha or non-alpha format, but not both:
+        if (isAlphaFormat === alphaIsOpaque) {
+          continue;
+        }
+      }
       const label = newColor.asString();
       if (!label) {
         continue;

@@ -3,9 +3,8 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import type * as Protocol from '../../../generated/protocol.js';
-
 import * as Helpers from '../helpers/helpers.js';
+
 import {KnownEventName, type TraceEventHandlerName, type HandlerData, type Handlers} from './types.js';
 
 import * as Types from '../types/types.js';
@@ -454,15 +453,6 @@ export async function finalize(): Promise<void> {
     }
   }
   estimateTotalBlockingTimes();
-
-  // Now we have the final LCP candidate for each frame, let's try to fetch its
-  // DOMNode. This means that we can highlight it in the page, for example.
-  const lcpNodeIds = new Set<Protocol.DOM.BackendNodeId>();
-  for (const lcpEvent of selectedLCPCandidateEvents) {
-    if (lcpEvent.args.data) {
-      lcpNodeIds.add(lcpEvent.args.data.nodeId);
-    }
-  }
 }
 
 export function data(): {

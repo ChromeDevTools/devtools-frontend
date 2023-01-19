@@ -2549,6 +2549,9 @@ export class TimelineUIUtils {
         break;
       }
       // COHERENT BEGIN
+      case recordTypes.Coherent_ImmediateLayout: {
+        break;
+      }
       case recordTypes.Coherent_JSEvent:
       case recordTypes.Coherent_TriggerEvent: {
         contentHelper.appendTextRow(UIStrings.eventName, event.args['stringData']);
@@ -2561,14 +2564,16 @@ export class TimelineUIUtils {
         break;
       }
       case recordTypes.Coherent_Advance:
-      case recordTypes.Coherent_ImmediateLayout:
       case recordTypes.Coherent_ExecuteTimers:
       case recordTypes.Coherent_RecalcVisualStyle:
       case recordTypes.Coherent_UpdateNodeTransforms:
       case recordTypes.Coherent_Paint:
       case recordTypes.Coherent_WaitPendingFrame:
       case recordTypes.Coherent_MatchElements: {
-        contentHelper.appendTextRow(UIStrings.frameId, event.args['frameId']);
+        const frameId = event.args['frameId'];
+        if (frameId !== -1) {
+          contentHelper.appendTextRow(UIStrings.frameId, frameId);
+        }
         break;
       }
       case recordTypes.Coherent_RecordRendering: {
@@ -2579,7 +2584,10 @@ export class TimelineUIUtils {
         break;
       }
       case recordTypes.Coherent_Layout: {
-        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
+        const frameId = event.args['int0'];
+        if (frameId !== -1) {
+          contentHelper.appendTextRow(UIStrings.frameId, frameId);
+        }
         contentHelper.appendTextRow(
             UIStrings.nodesThatNeedLayout,
             i18nString(UIStrings.sOfS, {PH1: event.args['int1'], PH2: event.args['int2']}));

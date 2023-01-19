@@ -87,6 +87,11 @@ const UIStrings = {
    */
   sendRawCDPCommandExplanation:
       'Format: `\'Domain.commandName\'` for a command without parameters, or `\'{"command":"Domain.commandName", "parameters": {...}}\'` as a JSON object for a command with parameters. `\'cmd\'`/`\'method\'` and `\'args\'`/`\'params\'`/`\'arguments\'` are also supported as alternative keys for the `JSON` object.',
+
+  /**
+   * @description A label for a select input that allows selecting a CDP target to send the commands to.
+   */
+  selectTarget: 'Select a target',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -126,6 +131,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   private isRecording: boolean = false;
 
   #historyAutocompleteDataProvider = new HistoryAutocompleteDataProvider();
+  #selectedTargetId?: string;
 
   constructor() {
     super(true);
@@ -297,6 +303,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
     const bottomToolbar = new UI.Toolbar.Toolbar('protocol-monitor-bottom-toolbar', this.contentElement);
     bottomToolbar.appendToolbarItem(this.#createCommandInput());
+    bottomToolbar.appendToolbarItem(this.#createTargetSelector());
   }
 
   #createCommandInput(): UI.Toolbar.ToolbarInput {
@@ -312,14 +319,33 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     return input;
   }
 
+  #createTargetSelector(): UI.Toolbar.ToolbarComboBox {
+    const selector = new UI.Toolbar.ToolbarComboBox(() => {
+      this.#selectedTargetId = selector.selectedOption()?.value;
+    }, i18nString(UIStrings.selectTarget));
+    selector.setMaxWidth(120);
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const syncTargets = (): void => {
+      selector.removeOptions();
+      for (const target of targetManager.targets()) {
+        selector.createOption(`${target.name()} (${target.inspectedURL()})`, target.id());
+      }
+    };
+    targetManager.addEventListener(SDK.TargetManager.Events.AvailableTargetsChanged, syncTargets);
+    return selector;
+  }
+
   #onCommandSend(input: UI.Toolbar.ToolbarInput): void {
     const value = input.value();
     const {command, parameters} = parseCommandInput(value);
     const test = ProtocolClient.InspectorBackend.test;
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const selectedTarget = this.#selectedTargetId ? targetManager.targetById(this.#selectedTargetId) : null;
+    const sessionId = selectedTarget ? selectedTarget.sessionId : '';
     // TODO: TS thinks that properties are read-only because
     // in TS test is defined as a namespace.
     // @ts-ignore
-    test.sendRawMessage(command, parameters, () => {});
+    test.sendRawMessage(command, parameters, () => {}, sessionId);
     this.#historyAutocompleteDataProvider.addEntry(value);
   }
 

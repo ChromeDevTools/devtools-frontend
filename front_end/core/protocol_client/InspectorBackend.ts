@@ -353,9 +353,10 @@ export class SessionRouter {
     this.#connectionInternal.sendRawMessage(JSON.stringify(messageObject));
   }
 
-  private sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null): void {
+  private sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null, sessionId = ''):
+      void {
     const domain = method.split('.')[0];
-    this.sendMessage('', domain, method, params, callback || ((): void => {}));
+    this.sendMessage(sessionId, domain, method, params, callback || ((): void => {}));
   }
 
   private onMessage(message: string|Object): void {

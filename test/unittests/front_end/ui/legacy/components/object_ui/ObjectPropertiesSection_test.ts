@@ -184,7 +184,8 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
     assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
   });
 
-  it('visually distinguishes important DOM properties for the window object', async () => {
+  // Flaky
+  it.skip('[crbug.com/1408761] visually distinguishes important DOM properties for the window object', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
     const treeOutline = await setupTreeOutline(
         `(() => {

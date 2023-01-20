@@ -144,7 +144,7 @@ const ResultsDBReporter = function(baseReporterDecorator, formatError, config) {
 
     let summaryHtml = undefined;
     if (!expected || consoleLog.length > 0) {
-      const messages = [...consoleLog, ...log];
+      const messages = [...consoleLog, ...log.map(formatError)];
       // Prepare resultsdb summary
       summaryHtml = messages.map(m => `<p><pre>${m}</pre></p>`).join('\n');
 

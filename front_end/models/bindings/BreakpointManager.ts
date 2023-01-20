@@ -1155,33 +1155,14 @@ class Storage {
 
   breakpointItems(url: Platform.DevToolsPath.UrlString, resourceTypeName?: string): BreakpointStorageState[] {
     const breakpoints = [];
-    let dirty = false;
     for (const breakpoint of this.breakpoints.values()) {
       if (breakpoint.url !== url) {
         continue;
       }
-      if (breakpoint.resourceTypeName !== resourceTypeName) {
-        // Automatically migrate matching breakpoints that don't have a `resourceTypeName`
-        // to the requested `resourceTypeName`, meaning breakpoints set prior to updating
-        // to this version of Chrome will adopt the resource type of the first UISourceCode
-        // with the same `url`.
-        if (breakpoint.resourceTypeName === undefined) {
-          breakpoint.resourceTypeName = resourceTypeName;
-          dirty = true;
-        } else if (resourceTypeName !== undefined) {
-          continue;
-        }
+      if (breakpoint.resourceTypeName !== resourceTypeName && resourceTypeName !== undefined) {
+        continue;
       }
       breakpoints.push(breakpoint);
-    }
-    if (dirty) {
-      // Some breakpoint keys changed, we need to recompute the
-      const breakpoints = [...this.breakpoints.values()];
-      this.breakpoints.clear();
-      for (const breakpoint of breakpoints) {
-        this.breakpoints.set(Storage.computeId(breakpoint), breakpoint);
-      }
-      this.save();
     }
     return breakpoints;
   }
@@ -1214,11 +1195,7 @@ class Storage {
     if (!url) {
       return '';
     }
-    let id: string = url;
-    if (resourceTypeName !== undefined) {
-      id += `:${resourceTypeName}`;
-    }
-    id += `:${lineNumber}`;
+    let id = `${url}:${resourceTypeName}:${lineNumber}`;
     if (columnNumber !== undefined) {
       id += `:${columnNumber}`;
     }
@@ -1232,7 +1209,7 @@ class Storage {
  */
 interface BreakpointStorageState {
   readonly url: Platform.DevToolsPath.UrlString;
-  resourceTypeName?: string;
+  readonly resourceTypeName: string;
   readonly lineNumber: number;
   readonly columnNumber?: number;
   readonly condition: string;

@@ -194,3 +194,47 @@ describe('Settings instance', () => {
        });
   });
 });
+
+describe('VersionController', () => {
+  let settings: Common.Settings.Settings;
+
+  beforeEach(() => {
+    const mockStore = new MockStore();
+    const settingsStorage = new Common.Settings.SettingsStorage({}, mockStore);
+    settings = Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: settingsStorage,
+      globalStorage: settingsStorage,
+      localStorage: settingsStorage,
+    });
+  });
+
+  afterEach(() => {
+    Common.Settings.Settings.removeInstance();
+  });
+
+  describe('updateVersionFrom31To32', () => {
+    it('correctly adds resourceTypeName to breakpoints', () => {
+      const versionController = new Common.Settings.VersionController();
+      const breakpointsSetting = settings.createLocalSetting('breakpoints', [
+        {url: 'webpack:///src/foo.ts', lineNumber: 4, condition: '', enabled: false},
+        {url: 'foo.js', lineNumber: 1, columnNumber: 42, condition: 'false', enabled: true},
+      ]);
+      versionController.updateVersionFrom31To32();
+      const breakpoints = breakpointsSetting.get();
+      assert.lengthOf(breakpoints, 2);
+      assert.propertyVal(breakpoints[0], 'url', 'webpack:///src/foo.ts');
+      assert.propertyVal(breakpoints[0], 'resourceTypeName', 'script');
+      assert.propertyVal(breakpoints[0], 'lineNumber', 4);
+      assert.notProperty(breakpoints[0], 'columnNumber');
+      assert.propertyVal(breakpoints[0], 'condition', '');
+      assert.propertyVal(breakpoints[0], 'enabled', false);
+      assert.propertyVal(breakpoints[1], 'url', 'foo.js');
+      assert.propertyVal(breakpoints[1], 'resourceTypeName', 'script');
+      assert.propertyVal(breakpoints[1], 'lineNumber', 1);
+      assert.propertyVal(breakpoints[1], 'columnNumber', 42);
+      assert.propertyVal(breakpoints[1], 'condition', 'false');
+      assert.propertyVal(breakpoints[1], 'enabled', true);
+    });
+  });
+});

@@ -585,7 +585,7 @@ export class VersionController {
   }
 
   static get currentVersion(): number {
-    return 31;
+    return 32;
   }
 
   updateVersion(): void {
@@ -1087,6 +1087,21 @@ export class VersionController {
     // by an old recorder experiment.
     const recordingsSetting = Settings.instance().createSetting('recorder_recordings', []);
     removeSetting(recordingsSetting);
+  }
+
+  updateVersionFrom31To32(): void {
+    // Introduce the new 'resourceTypeName' property on stored breakpoints. Prior to
+    // this change we synchronized the breakpoint only by URL, but since we don't
+    // know on which resource type the given breakpoint was set, we just assume
+    // 'script' here to keep things simple.
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const breakpointsSetting = Settings.instance().createLocalSetting<any>('breakpoints', []);
+    const breakpoints = breakpointsSetting.get();
+    for (const breakpoint of breakpoints) {
+      breakpoint['resourceTypeName'] = 'script';
+    }
+    breakpointsSetting.set(breakpoints);
   }
 
   private migrateSettingsFromLocalStorage(): void {

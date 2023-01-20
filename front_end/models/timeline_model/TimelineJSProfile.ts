@@ -118,6 +118,10 @@ export class TimelineJSProfileProcessor {
         case RecordType.V8Execute:
           return true;
       }
+      // Also consider any new v8 trace events. (eg 'V8.RunMicrotasks' and 'v8.run')
+      if (e.name.startsWith('v8') || e.name.startsWith('V8')) {
+        return true;
+      }
       return false;
     }
 
@@ -125,9 +129,19 @@ export class TimelineJSProfileProcessor {
     const jsFramesStack: SDK.TracingModel.Event[] = [];
     const lockedJsStackDepth: number[] = [];
     let ordinal = 0;
+    /**
+     * `isJSInvocationEvent()` relies on an allowlist of invocation events that will parent JSFrames.
+     * However in some situations (workers), we don't have those trace events.
+     * "fake" JSInvocations are created when we have active JSSamples but seemingly no explicit invocation.
+     */
     let fakeJSInvocation = false;
     const {showAllEvents, showRuntimeCallStats, showNativeFunctions} = config;
 
+    /**
+     * JSSamples are instant events, so any start events are not the samples.
+     * We expect they'll either be trace events happening within JS (eg forced layout),
+     * or, in the fakeJSInvocation case, the JS finished and we're seeing the subsequent event.
+     */
     function onStartEvent(e: SDK.TracingModel.Event): void {
       if (fakeJSInvocation) {
         truncateJSStack((lockedJsStackDepth.pop() as number), e.startTime);
@@ -143,7 +157,7 @@ export class TimelineJSProfileProcessor {
       e.ordinal = ++ordinal;
       if ((parent && isJSInvocationEvent(parent)) || fakeJSInvocation) {
         extractStackTrace(e);
-      } else if (e.name === RecordType.JSSample && jsFramesStack.length === 0) {
+      } else if (e.name === RecordType.JSSample && e.args?.data?.stackTrace?.length && jsFramesStack.length === 0) {
         // Force JS Samples to show up even if we are not inside a JS invocation event, because we
         // can be missing the start of JS invocation events if we start tracing half-way through.
         // Pretend we have a top-level JS invocation event.
@@ -158,6 +172,10 @@ export class TimelineJSProfileProcessor {
       truncateJSStack((lockedJsStackDepth.pop() as number), (e.endTime as number));
     }
 
+    /**
+     * Set an explicit endTime for all active JSFrames.
+     * Basically, terminate them by defining their right edge.
+     */
     function truncateJSStack(depth: number, time: number): void {
       if (lockedJsStackDepth.length) {
         const lockedDepth = (lockedJsStackDepth[lockedJsStackDepth.length - 1] as number);
@@ -222,6 +240,7 @@ export class TimelineJSProfileProcessor {
         if (!equalFrames(newFrame, oldFrame)) {
           break;
         }
+        // Scoot the right edge of this callFrame to the right
         jsFramesStack[i].setEndTime(Math.max((jsFramesStack[i].endTime as number), endTime));
       }
       truncateJSStack(i, e.startTime);

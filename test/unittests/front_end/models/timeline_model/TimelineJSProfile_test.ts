@@ -95,4 +95,42 @@ describe('TimelineJSProfile', () => {
     assert.strictEqual(returnedEvents[1].startTime, 9);
     assert.strictEqual(returnedEvents[1].endTime, 15);
   });
+
+  // EvaluateScript and FunctionCall are two obvious "invocation events", but there are others (and sometimes none)
+  // We must ensure we get reasonable JSFrames even when the invocation events are unexpected.
+  // http://crbug.com/1384182
+  it('generateJSFrameEvents creates JS frame events with v8.run trace event as parent', () => {
+    const evaluateEvent =
+        new SDK.TracingModel.Event('devtools.timeline', 'EvaluateScript', SDK.TracingModel.Phase.Complete, 5, thread);
+    evaluateEvent.setEndTime(25);
+
+    const v8RunEvent = new SDK.TracingModel.Event('v8', 'v8.run', SDK.TracingModel.Phase.Complete, 10, thread);
+    v8RunEvent.addArgs({data: {fileName: 'bundle.js'}});
+    v8RunEvent.setEndTime(20);
+
+    const sampleEvent3 =
+        new SDK.TracingModel.Event('devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 12, thread);
+    sampleEvent3.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
+
+    // The presence of this (unshown) event once incorrectedly triggered an early truncateJSStack
+    const v8ParseFnEvent = new SDK.TracingModel.Event(
+        'disabled-by-default-v8.compile', 'V8.ParseFunction', SDK.TracingModel.Phase.Complete, 10, thread);
+    v8ParseFnEvent.setEndTime(11);
+
+    const sampleEvent4 =
+        new SDK.TracingModel.Event('devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 14, thread);
+    sampleEvent4.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
+    const sampleEvent5 =
+        new SDK.TracingModel.Event('devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 16, thread);
+    sampleEvent5.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
+    const events = [evaluateEvent, v8RunEvent, sampleEvent3, v8ParseFnEvent, sampleEvent4, sampleEvent5];
+
+    const returnedEvents =
+        TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
+
+    assert.strictEqual(returnedEvents.length, 1);
+    assert.strictEqual(returnedEvents[0].name, 'JSFrame');
+    assert.strictEqual(returnedEvents[0].startTime, 12);
+    assert.strictEqual(returnedEvents[0].endTime, 20);
+  });
 });

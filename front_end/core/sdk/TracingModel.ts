@@ -569,6 +569,23 @@ export class Event {
     return a.startTime - b.startTime || (b.endTime !== undefined && a.endTime !== undefined && b.endTime - a.endTime) ||
         0;
   }
+
+  // V8 and COHTML are mixed. For events starting or ending at the same time we need to
+  // sort them such that a begin is matched with the correct end. Cohtml events are placed
+  // before V8 events as it seems natural - cohtml triggers v8.
+  // NOT OK: V8_START COHTML_START V8_END COHTML_END
+  // NOT_OK: COHTML_START V8_START COHTML_END V8_END
+  // NOT_OK: V8_START COHTML_START COHTML_END V8_END
+  // OK    : COHTML_START V8_START V8_END COHTML_END
+  //
+  static compareStartTimeForMixedCohtmlAndV8Events(a: Event|null, b: Event|null): number {
+    if (!a || !b) {
+      return 0;
+    }
+    const order = (a.phase === b.phase && a.phase === "E") ? -1 : 1;
+    return a.startTime - b.startTime || order * (Number(b.name.startsWith("Coherent_")) - Number(a.name.startsWith("Coherent_")));
+    return a.startTime - b.startTime || order * (Number(a.name.startsWith("Coherent_")) - Number(b.name.startsWith("Coherent_")));
+  }
   // COHERENT END
 
   static compareStartTime(a: Event|null, b: Event|null): number {
@@ -851,10 +868,9 @@ export class Thread extends NamedObject {
 
   tracingComplete(): void {
     // COHERENT BEGIN
-    // this.asyncEventsInternal.sort(Event.compareStartTime);
     this.asyncEventsInternal.sort(Event.compareStartAndEndTime);
+    this.eventsInternal.sort(Event.compareStartTimeForMixedCohtmlAndV8Events);
     // COHERENT END
-    this.eventsInternal.sort(Event.compareStartTime);
     const phases = Phase;
     const stack = [];
     const toDelete = new Set<number>();

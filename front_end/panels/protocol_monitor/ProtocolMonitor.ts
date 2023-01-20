@@ -332,6 +332,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       }
     };
     targetManager.addEventListener(SDK.TargetManager.Events.AvailableTargetsChanged, syncTargets);
+    syncTargets();
     return selector;
   }
 

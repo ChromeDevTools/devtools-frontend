@@ -18,6 +18,7 @@ ts_library("sources") {
     "ScriptSnippetFileSystem_test.ts",
     "SourcesNavigator_test.ts",
     "SourcesView_test.ts",
+    "TabbedEditorContainer_test.ts",
   ]
 
   deps = [

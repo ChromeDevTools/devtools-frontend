@@ -237,4 +237,44 @@ describe('VersionController', () => {
       assert.propertyVal(breakpoints[1], 'enabled', true);
     });
   });
+
+  describe('updateVersionFrom32To33', () => {
+    it('correctly discards previously viewed files without url properties', () => {
+      const versionController = new Common.Settings.VersionController();
+      const previouslyViewedFilesSetting = settings.createLocalSetting('previouslyViewedFiles', [
+        {url: 'http://localhost:3000', scrollLineNumber: 1},
+        {scrollLineNumber: 1},
+        {},
+        {url: 'webpack:///src/foo.ts'},
+      ]);
+      versionController.updateVersionFrom32To33();
+      const previouslyViewedFiles = previouslyViewedFilesSetting.get();
+      assert.lengthOf(previouslyViewedFiles, 2);
+      assert.propertyVal(previouslyViewedFiles[0], 'url', 'http://localhost:3000');
+      assert.notProperty(previouslyViewedFiles[0], 'selectionRange');
+      assert.propertyVal(previouslyViewedFiles[0], 'scrollLineNumber', 1);
+      assert.propertyVal(previouslyViewedFiles[1], 'url', 'webpack:///src/foo.ts');
+      assert.notProperty(previouslyViewedFiles[1], 'selectionRange');
+      assert.notProperty(previouslyViewedFiles[1], 'scrollLineNumber');
+    });
+
+    it('correctly adds resourceTypeName to previously viewed files', () => {
+      const versionController = new Common.Settings.VersionController();
+      const previouslyViewedFilesSetting = settings.createLocalSetting('previouslyViewedFiles', [
+        {url: 'http://localhost:3000', scrollLineNumber: 1},
+        {url: 'webpack:///src/foo.ts'},
+      ]);
+      versionController.updateVersionFrom32To33();
+      const previouslyViewedFiles = previouslyViewedFilesSetting.get();
+      assert.lengthOf(previouslyViewedFiles, 2);
+      assert.propertyVal(previouslyViewedFiles[0], 'url', 'http://localhost:3000');
+      assert.propertyVal(previouslyViewedFiles[0], 'resourceTypeName', 'script');
+      assert.notProperty(previouslyViewedFiles[0], 'selectionRange');
+      assert.propertyVal(previouslyViewedFiles[0], 'scrollLineNumber', 1);
+      assert.propertyVal(previouslyViewedFiles[1], 'url', 'webpack:///src/foo.ts');
+      assert.propertyVal(previouslyViewedFiles[1], 'resourceTypeName', 'script');
+      assert.notProperty(previouslyViewedFiles[1], 'selectionRange');
+      assert.notProperty(previouslyViewedFiles[1], 'scrollLineNumber');
+    });
+  });
 });

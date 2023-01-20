@@ -585,7 +585,7 @@ export class VersionController {
   }
 
   static get currentVersion(): number {
-    return 32;
+    return 33;
   }
 
   updateVersion(): void {
@@ -1102,6 +1102,26 @@ export class VersionController {
       breakpoint['resourceTypeName'] = 'script';
     }
     breakpointsSetting.set(breakpoints);
+  }
+
+  updateVersionFrom32To33(): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const previouslyViewedFilesSetting = Settings.instance().createLocalSetting<any>('previouslyViewedFiles', []);
+    let previouslyViewedFiles = previouslyViewedFilesSetting.get();
+
+    // Discard old 'previouslyViewedFiles' items that don't have a 'url' property.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    previouslyViewedFiles = previouslyViewedFiles.filter((previouslyViewedFile: any) => 'url' in previouslyViewedFile);
+
+    // Introduce the new 'resourceTypeName' property on previously viewed files.
+    // Prior to this change we only keyed them based on the URL, but since we
+    // don't know which resource type the given file had, we just assume 'script'
+    // here to keep things simple.
+    for (const previouslyViewedFile of previouslyViewedFiles) {
+      previouslyViewedFile['resourceTypeName'] = 'script';
+    }
+
+    previouslyViewedFilesSetting.set(previouslyViewedFiles);
   }
 
   private migrateSettingsFromLocalStorage(): void {

@@ -213,10 +213,6 @@ Sources.TabbedEditorContainer = SourcesModule.TabbedEditorContainer.TabbedEditor
 /** @enum {symbol} */
 Sources.TabbedEditorContainer.Events = SourcesModule.TabbedEditorContainer.Events;
 
-Sources.TabbedEditorContainer._tabId = SourcesModule.TabbedEditorContainer.tabId;
-Sources.TabbedEditorContainer.maximalPreviouslyViewedFilesCount =
-    SourcesModule.TabbedEditorContainer.maximalPreviouslyViewedFilesCount;
-
 /** @constructor */
 Sources.TabbedEditorContainer.HistoryItem = SourcesModule.TabbedEditorContainer.HistoryItem;
 

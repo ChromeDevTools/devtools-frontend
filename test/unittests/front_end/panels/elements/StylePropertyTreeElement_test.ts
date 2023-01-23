@@ -23,6 +23,8 @@ const mockMatchedStyles = {
     const mockVariableMap: Record<string, string> = {
       'var(--a)': 'red',
       'var(--b)': 'blue',
+      'var(--space)': 'shorter hue',
+      'var(--garbage-space)': 'this-is-garbage-text',
     };
 
     if (!mockVariableMap[param]) {
@@ -66,7 +68,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         assertNotNullOrUndefined(colorSwatches.find(colorSwatch => colorSwatch.textContent === 'blue'));
       });
 
-      it('should show color mix swatch when color-mix is used with a known variable', () => {
+      it('should show color mix swatch when color-mix is used with a known variable as color', () => {
         const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
             mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, var(--a), var(--b))', true, false, true, false, '',
             undefined);
@@ -82,6 +84,62 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         assertNotNullOrUndefined(cssVarSwatches.find(cssVarSwatch => cssVarSwatch.textContent === 'var(--a)'));
         assertNotNullOrUndefined(cssVarSwatches.find(cssVarSwatch => cssVarSwatch.textContent === 'var(--b)'));
       });
+
+      it('should not show color mix swatch when color-mix is used with an unknown variable as color', () => {
+        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
+            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, var(--unknown-a), var(--b))', true, false, true,
+            false, '', undefined);
+        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+            mockStylesSidebarPane, mockMatchedStyles, cssPropertyWithColorMix, false, false, false, true);
+
+        stylePropertyTreeElement.updateTitle();
+
+        const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+        assert.isNull(colorMixSwatch);
+      });
+
+      it('should show color mix swatch when color-mix is used with a known variable in interpolation method', () => {
+        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
+            mockCssStyleDeclaration, 0, 'color', 'color-mix(in lch var(--space), var(--a), var(--b))', true, false,
+            true, false, '', undefined);
+        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+            mockStylesSidebarPane, mockMatchedStyles, cssPropertyWithColorMix, false, false, false, true);
+
+        stylePropertyTreeElement.updateTitle();
+
+        const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+        assertNotNullOrUndefined(colorMixSwatch);
+        assert.isTrue(colorMixSwatch.textContent?.includes('var(--space)'));
+      });
+
+      it('should show color mix swatch when color-mix is used with an known variable in interpolation method even if it is not a valid method',
+         () => {
+           const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
+               mockCssStyleDeclaration, 0, 'color', 'color-mix(in lch var(--garbage-space), var(--a), var(--b))', true,
+               false, true, false, '', undefined);
+           const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+               mockStylesSidebarPane, mockMatchedStyles, cssPropertyWithColorMix, false, false, false, true);
+
+           stylePropertyTreeElement.updateTitle();
+
+           const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+           assertNotNullOrUndefined(colorMixSwatch);
+           assert.isTrue(colorMixSwatch.textContent?.includes('var(--garbage-space)'));
+         });
+
+      it('should not show color mix swatch when color-mix is used with an unknown variable in interpolation method',
+         () => {
+           const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
+               mockCssStyleDeclaration, 0, 'color', 'color-mix(in lch var(--not-existing-space), var(--a), var(--b))',
+               true, false, true, false, '', undefined);
+           const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+               mockStylesSidebarPane, mockMatchedStyles, cssPropertyWithColorMix, false, false, false, true);
+
+           stylePropertyTreeElement.updateTitle();
+
+           const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+           assert.isNull(colorMixSwatch);
+         });
     });
   });
 

@@ -51,6 +51,28 @@ describe('ColorMixModel', () => {
     ]);
   });
 
+  it('should parse interpolation method with variable', () => {
+    const colorMixModel = InlineEditor.ColorMixModel.ColorMixModel.parse('color-mix(in lch var(--space), red, blue)');
+
+    assert.deepEqual(colorMixModel?.parts, [
+      {
+        name: InlineEditor.ColorMixModel.PartName.InterpolationMethod,
+        value: 'in lch var(--space)',
+      },
+      {
+        name: InlineEditor.ColorMixModel.PartName.Param,
+        value: [{
+          name: InlineEditor.ColorMixModel.PartName.Value,
+          value: 'red',
+        }],
+      },
+      {
+        name: InlineEditor.ColorMixModel.PartName.Param,
+        value: [{name: InlineEditor.ColorMixModel.PartName.Value, value: 'blue'}],
+      },
+    ]);
+  });
+
   describe('for different kinds of values', () => {
     it('should parse with a variable in first position', () => {
       const colorMixModel = InlineEditor.ColorMixModel.ColorMixModel.parse('color-mix(in srgb, var(--a), blue)');

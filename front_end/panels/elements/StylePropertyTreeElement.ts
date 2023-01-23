@@ -300,11 +300,34 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   private processColorMix(text: string): Node {
     let colorMixText = text;
+    let interpolationMethodResolvedCorrectly = false;
     const paramColorValues: string[] = [];
     const colorMixModel = InlineEditor.ColorMixModel.ColorMixModel.parse(text);
     if (!colorMixModel) {
       return document.createTextNode(text);
     }
+
+    const handleInterpolationMethod = (interpolationMethod: string): void => {
+      const matches =
+          TextUtils.TextUtils.Utils.splitStringByRegexes(interpolationMethod, [SDK.CSSMetadata.VariableRegex]);
+      for (const match of matches) {
+        if (match.regexIndex === 0) {
+          const computedSingleValue = this.matchedStylesInternal.computeSingleVariableValue(this.style, match.value);
+          if (!computedSingleValue || !computedSingleValue.computedValue) {
+            return;
+          }
+
+          colorMixText = colorMixText.replace(match.value, computedSingleValue.computedValue);
+          const varSwatch = this.processVar(match.value);
+          contentChild.appendChild(varSwatch);
+        } else {
+          contentChild.appendChild(document.createTextNode(match.value));
+        }
+      }
+
+      interpolationMethodResolvedCorrectly = true;
+      return;
+    };
 
     const handleValue = (value: string, onChange: (newColorText: string) => void): void => {
       // Parameter is a CSS variable
@@ -370,7 +393,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
     const contentChild = document.createElement('span');
     contentChild.appendChild(document.createTextNode('color-mix('));
-    contentChild.appendChild(document.createTextNode(`${interpolationMethod.value}, `));
+    handleInterpolationMethod(interpolationMethod.value);
+    contentChild.appendChild(document.createTextNode(', '));
     handleParam(firstParam.value, (color: string) => {
       swatch.setFirstColor(color);
     });
@@ -380,7 +404,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     });
     contentChild.appendChild(document.createTextNode(')'));
 
-    if (paramColorValues.length !== 2) {
+    if (paramColorValues.length !== 2 || !interpolationMethodResolvedCorrectly) {
       return document.createTextNode(text);
     }
     swatch.appendChild(contentChild);

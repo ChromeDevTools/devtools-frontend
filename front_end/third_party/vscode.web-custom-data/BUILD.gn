@@ -1,0 +1,9 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/minify_json.gni")
+
+minify_json("web_custom_data") {
+  sources = [ "package/data/browsers.css-data.json" ]
+}

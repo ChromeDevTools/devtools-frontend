@@ -1,0 +1,17 @@
+Name: @vscode/web-custom-data
+Short Name: @vscode/web-custom-data
+URL: https://github.com/microsoft/vscode-custom-data
+Version: 0.4.4
+License: MIT
+License File: package/LICENSE.md
+Security Critical: no
+
+Description:
+Documentation, sample and data for using VS Code's HTML/CSS custom data format.
+
+Includes MDN documentation and Chrome status entries for various HTML/CSS features.
+
+To update this package, run the following command (replace version number with updated version number):
+```bash
+wget -qO- https://registry.npmjs.org/@vscode/web-custom-data/-/web-custom-data-0.4.4.tgz | tar xzf -
+```

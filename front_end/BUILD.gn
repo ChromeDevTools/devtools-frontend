@@ -29,6 +29,7 @@ group("front_end") {
     "entrypoints/wasmparser_worker:worker_entrypoint",
     "entrypoints/worker_app:entrypoint",
     "legacy_test_runner",
+    "third_party/vscode.web-custom-data:web_custom_data",
   ]
 }
 

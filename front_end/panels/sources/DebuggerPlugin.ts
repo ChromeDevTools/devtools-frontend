@@ -46,7 +46,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
 import {AddDebugInfoURLDialog} from './AddSourceMapURLDialog.js';
-import {BreakpointEditDialog, LogpointPrefix} from './BreakpointEditDialog.js';
+import {BreakpointEditDialog, type BreakpointEditDialogResult} from './BreakpointEditDialog.js';
 import {Plugin} from './Plugin.js';
 import {ScriptFormatterEditorAction} from './ScriptFormatterEditorAction.js';
 import {SourcesPanel} from './SourcesPanel.js';
@@ -814,7 +814,7 @@ export class DebuggerPlugin extends Plugin {
         return;
       }
 
-      recordBreakpointWithConditionAdded(breakpoint?.condition(), result.condition);
+      recordBreakpointWithConditionAdded(result);
       if (breakpoint) {
         breakpoint.setCondition(result.condition);
       } else if (location) {
@@ -842,11 +842,11 @@ export class DebuggerPlugin extends Plugin {
     dialog.focusEditor();
     this.activeBreakpointDialog = dialog;
 
-    function recordBreakpointWithConditionAdded(oldCondition: string|undefined, newCondition: string): void {
-      const isLogpoint = newCondition.includes(LogpointPrefix);
+    function recordBreakpointWithConditionAdded(result: BreakpointEditDialogResult): void {
+      const {condition: newCondition, isLogpoint} = result;
       const isConditionalBreakpoint = newCondition.length !== 0 && !isLogpoint;
 
-      const wasLogpoint = oldCondition && oldCondition.includes(LogpointPrefix);
+      const wasLogpoint = breakpoint?.isLogpoint();
       const wasConditionalBreakpoint = oldCondition && oldCondition.length !== 0 && !wasLogpoint;
       if (isLogpoint && !wasLogpoint) {
         Host.userMetrics.breakpointWithConditionAdded(Host.UserMetrics.BreakpointWithConditionAdded.Logpoint);

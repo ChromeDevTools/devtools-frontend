@@ -1124,6 +1124,30 @@ export class VersionController {
     previouslyViewedFilesSetting.set(previouslyViewedFiles);
   }
 
+  updateVersionFrom33To34(): void {
+    // Introduces the 'isLogpoint' property on stored breakpoints. This information was
+    // previously encoded in the 'condition' itself. This migration leaves the condition
+    // alone but ensures that 'isLogpoint' is accurate for already stored breakpoints.
+    // This enables us to use the 'isLogpoint' property in code.
+    // A separate migration will remove the special encoding from the condition itself
+    // once all refactorings are done.
+
+    // The prefix/suffix are hardcoded here, since these constants will be removed in
+    // the future.
+    const logpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';
+    const logpointSuffix = ')';
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const breakpointsSetting = Settings.instance().createLocalSetting<any>('breakpoints', []);
+    const breakpoints = breakpointsSetting.get();
+    for (const breakpoint of breakpoints) {
+      const isLogpoint =
+          breakpoint.condition.startsWith(logpointPrefix) && breakpoint.condition.endsWith(logpointSuffix);
+      breakpoint['isLogpoint'] = isLogpoint;
+    }
+    breakpointsSetting.set(breakpoints);
+  }
+
   private migrateSettingsFromLocalStorage(): void {
     // This step migrates all the settings except for the ones below into the browser profile.
     const localSettings = new Set<string>([

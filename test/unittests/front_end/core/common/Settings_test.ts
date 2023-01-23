@@ -277,4 +277,35 @@ describe('VersionController', () => {
       assert.notProperty(previouslyViewedFiles[1], 'scrollLineNumber');
     });
   });
+
+  describe('updateVersionFrom33To34', () => {
+    it('correctly adds isLogpoint to breakpoints', () => {
+      const versionController = new Common.Settings.VersionController();
+      const breakpointsSetting = settings.createLocalSetting('breakpoints', [
+        {
+          url: 'webpack:///src/foo.ts',
+          lineNumber: 4,
+          resourceTypeName: 'script',
+          condition: '/** DEVTOOLS_LOGPOINT */ console.log(foo.property)',
+          enabled: true,
+        },
+        {
+          url: 'foo.js',
+          lineNumber: 1,
+          columnNumber: 42,
+          resourceTypeName: 'script',
+          condition: 'x === 42',
+          enabled: true,
+        },
+        {url: 'bar.js', lineNumber: 5, columnNumber: 1, resourceTypeName: 'script', condition: '', enabled: true},
+      ]);
+
+      versionController.updateVersionFrom33To34();
+      const breakpoints = breakpointsSetting.get();
+
+      assert.propertyVal(breakpoints[0], 'isLogpoint', true);
+      assert.propertyVal(breakpoints[1], 'isLogpoint', false);
+      assert.propertyVal(breakpoints[2], 'isLogpoint', false);
+    });
+  });
 });

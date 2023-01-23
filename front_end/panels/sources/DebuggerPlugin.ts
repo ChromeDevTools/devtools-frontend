@@ -821,9 +821,9 @@ export class DebuggerPlugin extends Plugin {
         breakpoint.setCondition(result.condition);
       } else if (location) {
         await this.setBreakpoint(
-            location.lineNumber, location.columnNumber, result.condition, /* enabled */ true, /* isLogpoint */ false);
+            location.lineNumber, location.columnNumber, result.condition, /* enabled */ true, result.isLogpoint);
       } else {
-        await this.createNewBreakpoint(line, result.condition, /* enabled */ true, /* isLogpoint */ false);
+        await this.createNewBreakpoint(line, result.condition, /* enabled */ true, result.isLogpoint);
       }
     });
     editor.dispatch({

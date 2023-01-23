@@ -10,7 +10,6 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {LogpointPrefix} from './BreakpointEditDialog.js';
 
 import javaScriptBreakpointsSidebarPaneStyles from './javaScriptBreakpointsSidebarPane.css.js';
 
@@ -289,7 +288,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     element.addEventListener('contextmenu', this.breakpointContextMenu.bind(this), true);
     element.addEventListener('click', this.revealLocation.bind(this, element), false);
 
-    const hasLogpoint = item.locations.some(location => location.breakpoint.condition().includes(LogpointPrefix));
+    const hasLogpoint = item.locations.some(location => location.breakpoint.isLogpoint());
     const hasConditional = item.locations.some(location => Boolean(location.breakpoint.condition()));
     const lineElement = element.createChild('div', 'decoration-and-content');
     if (hasLogpoint) {

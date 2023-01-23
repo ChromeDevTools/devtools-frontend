@@ -707,6 +707,20 @@ describe('SourceMap', () => {
            assert.strictEqual(sourceURLs[0], expected);
          });
     }
+
+    it('does not touch sourceURLs that conflict with the compiled URL', () => {
+      const sourceURL = 'http://localhost:12345/index.js' as Platform.DevToolsPath.UrlString;
+      const sourceMappingURL = `${sourceURL}.map` as Platform.DevToolsPath.UrlString;
+      const sourceMap = new SDK.SourceMap.SourceMap(sourceURL, sourceMappingURL, {
+        version: 3,
+        sources: [sourceURL],
+        sourcesContent: ['console.log(42)'],
+        mappings: '',
+      });
+      const sourceURLs = sourceMap.sourceURLs();
+      assert.lengthOf(sourceURLs, 1);
+      assert.strictEqual(sourceURLs[0], sourceURL);
+    });
   });
 
   describe('automatic ignore-listing', () => {

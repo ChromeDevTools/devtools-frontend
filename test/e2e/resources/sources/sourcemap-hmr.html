@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset=utf-8>
+    <script>"use strict";
+const INITIAL = `globalThis.hello=()=>{console.log("Hello world!")};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJnbG9iYWxUaGlzIiwiaGVsbG8iLCJjb25zb2xlIiwibG9nIl0sInNvdXJjZXMiOlsiaW5kZXguanMiXSwic291cmNlc0NvbnRlbnQiOlsiZ2xvYmFsVGhpcy5oZWxsbyA9ICgpID0+IHtcbiAgY29uc29sZS5sb2coXCJIZWxsbyB3b3JsZCFcIik7XG59XG4iXSwibWFwcGluZ3MiOiJBQUFBQSxXQUFXQyxNQUFRLEtBQ2pCQyxRQUFRQyxJQUFJLGVBQWUifQ==
+//# sourceURL=index.js`;
+
+const UPDATE = `globalThis.hello=()=>{console.log("Hello UPDATED world!")};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJnbG9iYWxUaGlzIiwiaGVsbG8iLCJjb25zb2xlIiwibG9nIl0sInNvdXJjZXMiOlsiaW5kZXguanMiXSwic291cmNlc0NvbnRlbnQiOlsiZ2xvYmFsVGhpcy5oZWxsbyA9ICgpID0+IHtcbiAgY29uc29sZS5sb2coXCJIZWxsbyBVUERBVEVEIHdvcmxkIVwiKTtcbn1cbiJdLCJtYXBwaW5ncyI6IkFBQUFBLFdBQVdDLE1BQVEsS0FDakJDLFFBQVFDLElBQUksdUJBQXVCIn0=
+//# sourceURL=index.js?ts=12345678`;
+
+eval(INITIAL);
+
+function update() {
+  eval(UPDATE);
+}
+    </script>
+  </head>
+</html>

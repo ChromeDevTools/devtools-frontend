@@ -414,12 +414,9 @@ export class SourceMap {
           href = sourceRoot.concat(href);
         }
       }
-      let url =
+      const url =
           Common.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || (href as Platform.DevToolsPath.UrlString);
       const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
-      if (url === this.#compiledURLInternal && source) {
-        url = Common.ParsedURL.ParsedURL.concatenate(url, '? [sm]');
-      }
       sourcesList.push(url);
       if (!this.#sourceInfos.has(url)) {
         const content = source ?? null;

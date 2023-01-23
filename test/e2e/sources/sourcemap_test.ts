@@ -31,13 +31,16 @@ import {
   getBreakpointDecorators,
   getCallFrameNames,
   getValuesForScope,
+  isBreakpointSet,
   openFileInEditor,
   openSourceCodeEditorForFile,
   openSourcesPanel,
   PAUSE_INDICATOR_SELECTOR,
   refreshDevToolsAndRemoveBackendState,
+  reloadPageAndWaitForSourceFile,
   removeBreakpointForLine,
   RESUME_BUTTON,
+  retrieveCodeMirrorEditorContent,
   retrieveTopCallFrameScriptLocation,
   retrieveTopCallFrameWithoutResuming,
   STEP_INTO_BUTTON,
@@ -441,6 +444,101 @@ describe('The Sources Tab', async function() {
     await step('Check origin of source-mapped SASS', async () => {
       await openFileInEditor('sourcemap-origin.scss');
       await waitFor('.toolbar-item > .devtools-link[title$="sourcemap-origin.css"]');
+    });
+  });
+
+  describe('can deal with hot module replacement', () => {
+    // The tests in here simulate Hot Module Replacement (HMR) workflows related
+    // to how DevTools deals with source maps in these situations.
+
+    it('correctly handles URL clashes between compiled and source-mapped scripts', async () => {
+      const {target} = getBrowserAndPages();
+
+      // Load the "initial bundle"...
+      await openSourceCodeEditorForFile('index.js', 'sourcemap-hmr.html');
+
+      // ...and check that index.js content is as expected.
+      // In particular, this asserts that the front-end does not get creative in
+      // appending suffixes like '? [sm]' to the index.js here.
+      const initialContent = await retrieveCodeMirrorEditorContent();
+      assert.deepEqual(initialContent, [
+        'globalThis.hello = () => {',
+        '  console.log("Hello world!");',
+        '}',
+        '',
+      ]);
+
+      // Simulate the hot module replacement for index.js...
+      await target.evaluate('update();');
+
+      // ...and wait for its content to load (should just replace
+      // the existing tab contents for index.js). We perform this
+      // check by waiting until the editor contents differ from
+      // the initial contents, and then asserting that it looks
+      // as expected afterwards.
+      const updatedContent = await waitForFunction(async () => {
+        const content = await retrieveCodeMirrorEditorContent();
+        if (content.length !== initialContent.length) {
+          return content;
+        }
+        for (let i = 0; i < content.length; ++i) {
+          if (content[i] !== initialContent[i]) {
+            return content;
+          }
+        }
+        return undefined;
+      });
+      assert.deepEqual(updatedContent, [
+        'globalThis.hello = () => {',
+        '  console.log("Hello UPDATED world!");',
+        '}',
+        '',
+      ]);
+    });
+
+    it('correctly maintains breakpoints from initial bundle to replacement', async () => {
+      const {target, frontend} = getBrowserAndPages();
+
+      // Load the "initial bundle" and set a breakpoint on the second line.
+      await openSourceCodeEditorForFile('index.js', 'sourcemap-hmr.html');
+      await addBreakpointForLine(frontend, 2);
+
+      // Simulate the hot module replacement for index.js
+      await target.evaluate('update();');
+
+      // Wait for the "hot module replacement" to take effect for index.js.
+      await waitForFunction(async () => {
+        const content = await retrieveCodeMirrorEditorContent();
+        return content[1].includes('UPDATED');
+      });
+
+      // Check that the breakpoint still exists on line 2.
+      assert.isTrue(await isBreakpointSet(2));
+    });
+
+    it('correctly maintains breakpoints from replacement to initial bundle (across reloads)', async () => {
+      const {target, frontend} = getBrowserAndPages();
+
+      // Load the "initial bundle".
+      await openSourceCodeEditorForFile('index.js', 'sourcemap-hmr.html');
+
+      // Simulate the hot module replacement for index.js
+      await target.evaluate('update();');
+
+      // Wait for the "hot module replacement" to take effect for index.js.
+      await waitForFunction(async () => {
+        const content = await retrieveCodeMirrorEditorContent();
+        return content[1].includes('UPDATED');
+      });
+
+      // Set a breakpoint on the second line.
+      await addBreakpointForLine(frontend, 2);
+
+      // Reload the page and re-open (the initial) index.js.
+      await reloadPageAndWaitForSourceFile(target, 'index.js');
+
+      // Check that the breakpoint still exists on line 2.
+      assert.isTrue(await isBreakpointSet(2));
     });
   });
 });

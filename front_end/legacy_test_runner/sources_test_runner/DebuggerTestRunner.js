@@ -430,7 +430,7 @@ SourcesTestRunner.showScriptSourcePromise = function(scriptName) {
   return new Promise(resolve => SourcesTestRunner.showScriptSource(scriptName, resolve));
 };
 
-SourcesTestRunner.waitForScriptSource = function(scriptName, callback) {
+SourcesTestRunner.waitForScriptSource = function(scriptName, callback, contentType) {
   const panel = UI.panels.sources;
   const uiSourceCodes = panel.workspace.uiSourceCodes();
 
@@ -439,7 +439,8 @@ SourcesTestRunner.waitForScriptSource = function(scriptName, callback) {
       continue;
     }
 
-    if (uiSourceCodes[i].name() === scriptName) {
+    if (uiSourceCodes[i].name() === scriptName &&
+        (uiSourceCodes[i].contentType() === contentType || contentType === undefined)) {
       callback(uiSourceCodes[i]);
       return;
     }
@@ -447,7 +448,7 @@ SourcesTestRunner.waitForScriptSource = function(scriptName, callback) {
 
   TestRunner.addSniffer(
       Sources.SourcesView.prototype, 'addUISourceCode',
-      SourcesTestRunner.waitForScriptSource.bind(SourcesTestRunner, scriptName, callback));
+      SourcesTestRunner.waitForScriptSource.bind(SourcesTestRunner, scriptName, callback, contentType));
 };
 
 SourcesTestRunner.objectForPopover = function(sourceFrame, lineNumber, columnNumber) {

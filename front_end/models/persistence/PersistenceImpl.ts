@@ -267,7 +267,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       await breakpoint.remove(false /* keepInStorage */);
       return this.breakpointManager.setBreakpoint(
           to, breakpoint.lineNumber(), breakpoint.columnNumber(), breakpoint.condition(), breakpoint.enabled(),
-          Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+          breakpoint.isLogpoint(), Bindings.BreakpointManager.BreakpointOrigin.OTHER);
     }));
   }
 

@@ -524,6 +524,13 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
 });
 
 describeWithRealConnection('BreakpointsSidebarController', () => {
+  const DEFAULT_BREAKPOINT: [string, boolean, boolean, Bindings.BreakpointManager.BreakpointOrigin] = [
+    '',     // condition
+    true,   // enabled
+    false,  // isLogpoint
+    Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION,
+  ];
+
   it('auto-expands if a user adds a new  breakpoint', async () => {
     const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
     const settings = Common.Settings.Settings.instance();
@@ -533,8 +540,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
         {forceNew: false, breakpointManager, settings});
 
     // Add one breakpoint and collapse the tree.
-    const b1 = await breakpointManager.setBreakpoint(
-        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+    const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
     {
       controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
       const data = await controller.getUpdatedBreakpointViewData();
@@ -544,8 +550,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
     }
 
     // Add a new breakpoint and check if it's expanded as expected.
-    const b2 = await breakpointManager.setBreakpoint(
-        uiSourceCode, 0, 3, '', true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+    const b2 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 3, ...DEFAULT_BREAKPOINT);
     {
       const data = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(data.groups, 1);
@@ -568,8 +573,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
         {forceNew: false, breakpointManager, settings});
 
     // Add one breakpoint and collapse the tree.
-    const b1 = await breakpointManager.setBreakpoint(
-        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+    const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
     {
       controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
       const data = await controller.getUpdatedBreakpointViewData();
@@ -580,7 +584,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
 
     // Add a new non-user triggered breakpoint and check if it's still collapsed.
     const b2 = await breakpointManager.setBreakpoint(
-        uiSourceCode, 0, 3, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+        uiSourceCode, 0, 3, '', true, false, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
     {
       const data = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(data.groups, 1);
@@ -618,8 +622,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
 
     // Add one breakpoint and collapse its group.
     const b1 = await breakpointManager.setBreakpoint(
-        uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, '', true,
-        Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+        uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, ...DEFAULT_BREAKPOINT);
     const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
         {forceNew: false, breakpointManager, settings: Common.Settings.Settings.instance()});
     controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);

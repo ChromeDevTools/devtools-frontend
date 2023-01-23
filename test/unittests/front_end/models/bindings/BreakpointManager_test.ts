@@ -52,6 +52,13 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     hasSourceURL: false,
   };
 
+  const DEFAULT_BREAKPOINT: [string, boolean, boolean, Bindings.BreakpointManager.BreakpointOrigin] = [
+    '',     // condition
+    true,   // enabled
+    false,  // isLogpoint
+    Bindings.BreakpointManager.BreakpointOrigin.OTHER,
+  ];
+
   let target: SDK.Target.Target;
   let backend: MockProtocolBackend;
   let breakpointManager: Bindings.BreakpointManager.BreakpointManager;
@@ -117,8 +124,8 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       backend.setBreakpointByUrlToFail(URL, BREAKPOINT_SCRIPT_LINE);
 
       // Set the breakpoint.
-      const breakpoint = await breakpointManager.setBreakpoint(
-          uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+      const breakpoint =
+          await breakpointManager.setBreakpoint(uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, ...DEFAULT_BREAKPOINT);
 
       const removedSpy = sinon.spy(breakpoint, 'remove');
       await breakpoint.updateBreakpoint();
@@ -135,8 +142,7 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     assertNotNullOrUndefined(debuggerModel);
 
     const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
 
     // Make sure that we await all updates that are triggered by adding the model.
     await breakpoint.updateBreakpoint();
@@ -183,8 +189,7 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     assertNotNullOrUndefined(debuggerModel);
 
     const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, 13, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 13, 0, ...DEFAULT_BREAKPOINT);
 
     // Make sure that we await all updates that are triggered by adding the model.
     await breakpoint.updateBreakpoint();
@@ -239,8 +244,7 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       ],
     });
 
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, 13, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 13, 0, ...DEFAULT_BREAKPOINT);
     await breakpoint.updateBreakpoint();
 
     // Retrieve the ModelBreakpoint that is linked to our DebuggerModel.
@@ -273,8 +277,8 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     const breakpointResponder = backend.responderToBreakpointByUrlRequest(URL, BREAKPOINT_SCRIPT_LINE);
 
     // Set the breakpoint.
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    const breakpoint =
+        await breakpointManager.setBreakpoint(uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, ...DEFAULT_BREAKPOINT);
 
     // Await the breakpoint request at the mock backend and send a CDP response once the request arrives.
     // Concurrently, enforce update of the breakpoint in the debugger.
@@ -322,8 +326,8 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     const breakpointResponder = backend.responderToBreakpointByUrlRequest(URL_HTML, INLINE_BREAKPOINT_RAW_LINE);
 
     // Set the breakpoint.
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    const breakpoint =
+        await breakpointManager.setBreakpoint(uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, ...DEFAULT_BREAKPOINT);
 
     // Await the breakpoint request at the mock backend and send a CDP response once the request arrives.
     // Concurrently, enforce update of the breakpoint in the debugger.
@@ -361,8 +365,8 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     const breakpointResponder = backend.responderToBreakpointByUrlRequest(URL_HTML, INLINE_BREAKPOINT_RAW_LINE);
 
     // Set the breakpoint on the front-end/model side.
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    const breakpoint =
+        await breakpointManager.setBreakpoint(uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, ...DEFAULT_BREAKPOINT);
     assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [uiSourceCode]);
 
     // Await the breakpoint request at the mock backend and send a CDP response once the request arrives.
@@ -478,8 +482,7 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       const resolvedBreakpointLine = 1;
 
       // Set the breakpoint on the file system uiSourceCode.
-      await breakpointManager.setBreakpoint(
-          fileSystem.uiSourceCode, breakpointLine, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+      await breakpointManager.setBreakpoint(fileSystem.uiSourceCode, breakpointLine, 0, ...DEFAULT_BREAKPOINT);
 
       // Add the script.
       const script = await backend.addScript(target, scriptDescription, null);
@@ -535,8 +538,7 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       assertNotNullOrUndefined(uiSourceCode);
 
       // Set the breakpoint on the front-end/model side.
-      const breakpoint = await breakpointManager.setBreakpoint(
-          uiSourceCode, breakpointLine, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, breakpointLine, 0, ...DEFAULT_BREAKPOINT);
 
       // Set the breakpoint response for our upcoming request.
       void backend.responderToBreakpointByUrlRequest(URL, breakpointLine)({
@@ -623,8 +625,8 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       assert.strictEqual(uiSourceCode.project().type(), Workspace.Workspace.projectTypes.Debugger);
 
       // Set the breakpoint on the front-end/model side. The line number is relative to the v8 script.
-      const breakpoint = await breakpointManager.setBreakpoint(
-          uiSourceCode, BREAKPOINT_SCRIPT_LINE, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+      const breakpoint =
+          await breakpointManager.setBreakpoint(uiSourceCode, BREAKPOINT_SCRIPT_LINE, 0, ...DEFAULT_BREAKPOINT);
 
       // Set the breakpoint response for our upcoming request.
       void backend.responderToBreakpointByUrlRequest(URL_HTML, INLINE_BREAKPOINT_RAW_LINE)({
@@ -730,8 +732,8 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       assert.strictEqual(uiSourceCode.project().type(), Workspace.Workspace.projectTypes.Network);
 
       // Set the breakpoint on the front-end/model side of the html uiSourceCode.
-      const breakpoint = await breakpointManager.setBreakpoint(
-          uiSourceCode, INLINE_BREAKPOINT_RAW_LINE, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+      const breakpoint =
+          await breakpointManager.setBreakpoint(uiSourceCode, INLINE_BREAKPOINT_RAW_LINE, 0, ...DEFAULT_BREAKPOINT);
 
       // Set the breakpoint response for our upcoming request to set a breakpoint on the raw location.
       void backend.responderToBreakpointByUrlRequest(URL_HTML, INLINE_BREAKPOINT_RAW_LINE)({
@@ -837,8 +839,7 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       assertNotNullOrUndefined(uiSourceCode);
 
       // Set the breakpoint on the front-end/model side.
-      const breakpoint = await breakpointManager.setBreakpoint(
-          uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
 
       // Set the breakpoint response for our upcoming request.
       void backend.responderToBreakpointByUrlRequest(URL, 0)({
@@ -980,8 +981,7 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
       assertNotNullOrUndefined(uiSourceCode);
 
       // Set the breakpoint on the front-end/model side.
-      const breakpoint = await breakpointManager.setBreakpoint(
-          uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
 
       // Set the breakpoint response for our upcoming request.
       void backend.responderToBreakpointByUrlRequest(URL, 0)({
@@ -1124,13 +1124,11 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     assertNotNullOrUndefined(uiSourceCode);
 
     // Set the breakpoint on the front-end/model side.
-    const breakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, 0, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
 
     // This breakpoint will slide to lineNumber: 0, columnNumber: 0 and thus
     // clash with the previous breakpoint.
-    const slidingBreakpoint = await breakpointManager.setBreakpoint(
-        uiSourceCode, 2, 0, '', true, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    const slidingBreakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 2, 0, ...DEFAULT_BREAKPOINT);
 
     // Wait until both breakpoints have run their updates.
     await breakpoint.refreshInDebugger();

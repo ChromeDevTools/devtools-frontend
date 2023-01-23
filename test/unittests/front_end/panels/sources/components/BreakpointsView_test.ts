@@ -441,6 +441,122 @@ describeWithEnvironment('BreakpointsView', () => {
     assert.strictEqual(editBreakpointButton.title, 'Edit condition');
   });
 
+  describe('group checkboxes', () => {
+    async function waitForCheckboxToggledEventsWithCheckedUpdate(
+        component: SourcesComponents.BreakpointsView.BreakpointsView, numBreakpointItems: number, checked: boolean) {
+      return new Promise<void>(resolve => {
+        let numCheckboxToggledEvents = 0;
+        component.addEventListener(SourcesComponents.BreakpointsView.CheckboxToggledEvent.eventName, (e: Event) => {
+          const event = e as SourcesComponents.BreakpointsView.CheckboxToggledEvent;
+          assert.strictEqual(event.data.checked, checked);
+          ++numCheckboxToggledEvents;
+          if (numCheckboxToggledEvents === numBreakpointItems) {
+            resolve();
+          }
+        });
+      });
+    }
+    it('show a checked group checkbox if at least one breakpoint in that group is enabled', async () => {
+      const {component, data} = await renderMultipleBreakpoints();
+
+      // Make sure that at least one breakpoint is enabled.
+      data.groups[0].breakpointItems[0].status = SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED;
+      component.data = data;
+      await coordinator.done();
+
+      await hover(component, SUMMARY_SELECTOR);
+
+      assertShadowRoot(component.shadowRoot);
+      const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
+      assertNotNullOrUndefined(firstGroupSummary);
+      const groupCheckbox = firstGroupSummary.querySelector('input');
+      assertElement(groupCheckbox, HTMLInputElement);
+
+      assert.isTrue(groupCheckbox.checked);
+    });
+
+    it('show an unchecked group checkbox if no breakpoint in that group is enabled', async () => {
+      const {component, data} = await renderMultipleBreakpoints();
+
+      // Make sure that all breakpoints are disabled.
+      const breakpointItems = data.groups[0].breakpointItems;
+      for (let i = 0; i < breakpointItems.length; ++i) {
+        breakpointItems[i].status = SourcesComponents.BreakpointsView.BreakpointStatus.DISABLED;
+      }
+
+      component.data = data;
+      await coordinator.done();
+
+      await hover(component, SUMMARY_SELECTOR);
+
+      assertShadowRoot(component.shadowRoot);
+      const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
+      assertNotNullOrUndefined(firstGroupSummary);
+      const groupCheckbox = firstGroupSummary.querySelector('input');
+      assertElement(groupCheckbox, HTMLInputElement);
+
+      assert.isFalse(groupCheckbox.checked);
+    });
+
+    it('disable all breakpoints on unchecking', async () => {
+      const {component, data} = await renderMultipleBreakpoints();
+
+      const numBreakpointItems = data.groups[0].breakpointItems.length;
+      assert.isTrue(numBreakpointItems > 1);
+
+      // Make sure that all breakpoints are enabled.
+      for (let i = 0; i < numBreakpointItems; ++i) {
+        data.groups[0].breakpointItems[i].status = SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED;
+      }
+      component.data = data;
+      await coordinator.done();
+
+      await hover(component, SUMMARY_SELECTOR);
+
+      // Uncheck the group checkbox.
+      assertShadowRoot(component.shadowRoot);
+      const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
+      assertNotNullOrUndefined(firstGroupSummary);
+      const groupCheckbox = firstGroupSummary.querySelector('input');
+      assertElement(groupCheckbox, HTMLInputElement);
+
+      // Wait until we receive all events fired that notify us of disabled breakpoints.
+      const waitForEventPromise = waitForCheckboxToggledEventsWithCheckedUpdate(component, numBreakpointItems, false);
+
+      groupCheckbox.click();
+      await waitForEventPromise;
+    });
+
+    it('enable all breakpoints on unchecking', async () => {
+      const {component, data} = await renderMultipleBreakpoints();
+
+      const numBreakpointItems = data.groups[0].breakpointItems.length;
+      assert.isTrue(numBreakpointItems > 1);
+
+      // Make sure that all breakpoints are disabled.
+      for (let i = 0; i < numBreakpointItems; ++i) {
+        data.groups[0].breakpointItems[i].status = SourcesComponents.BreakpointsView.BreakpointStatus.DISABLED;
+      }
+      component.data = data;
+      await coordinator.done();
+
+      await hover(component, SUMMARY_SELECTOR);
+
+      // Uncheck the group checkbox.
+      assertShadowRoot(component.shadowRoot);
+      const firstGroupSummary = component.shadowRoot.querySelector(SUMMARY_SELECTOR);
+      assertNotNullOrUndefined(firstGroupSummary);
+      const groupCheckbox = firstGroupSummary.querySelector('input');
+      assertElement(groupCheckbox, HTMLInputElement);
+
+      // Wait until we receive all events fired that notify us of enabled breakpoints.
+      const waitForEventPromise = waitForCheckboxToggledEventsWithCheckedUpdate(component, numBreakpointItems, true);
+
+      groupCheckbox.click();
+      await waitForEventPromise;
+    });
+  });
+
   it('only renders edit button for breakpoints in editable groups', async () => {
     const component = new SourcesComponents.BreakpointsView.BreakpointsView();
     renderElementIntoDOM(component);

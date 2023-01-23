@@ -64,7 +64,8 @@ details > summary::before {
   background-color: var(--color-text-secondary);
   content: "";
   height: 12px;
-  min-width: 9px;
+  min-width: 10px;
+  max-width: 10px;
   overflow: hidden;
 }
 
@@ -78,6 +79,13 @@ details[open] > summary::before {
   width: 100%;
   padding-right: 8px;
   overflow: hidden;
+}
+
+.group-icon-or-disable {
+  justify-content: center;
+  display: flex;
+  width: 16px;
+  margin-left: 2px;
 }
 
 .group-header-title {
@@ -146,7 +154,7 @@ button:hover devtools-icon {
   display: flex;
   align-items: center;
   line-height: 13px;
-  height: 18px;
+  height: 20px;
   padding-right: 8px;
 }
 
@@ -193,6 +201,19 @@ button:hover devtools-icon {
   margin-right: 6px;
 }
 
+summary:hover .file-icon {
+  display: none;
+}
+
+.group-checkbox {
+  margin: 0;
+  display: none;
+}
+
+summary:hover .group-checkbox {
+  display: flex;
+}
+
 .location {
   line-height: 14px;
   text-overflow: ellipsis;
@@ -205,6 +226,10 @@ button:hover devtools-icon {
 
 .pause-on-uncaught-exceptions {
   margin-top: 3px;
+}
+
+.pause-on-caught-exceptions {
+  margin-bottom: 3px;
 }
 
 /* TODO(crbug.com/1382762): Remove special casing with dependent toggles as soon as Node LTS caught up on independent pause of exception toggles. */

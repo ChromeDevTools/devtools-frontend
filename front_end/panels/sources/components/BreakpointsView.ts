@@ -485,23 +485,45 @@ export class BreakpointsView extends HTMLElement {
                    tabindex='-1'
                    @keydown=${this.#keyDownHandler}
                    @click=${clickHandler}>
-          <span class='group-header' aria-hidden=true>${this.#renderFileIcon()}<span class='group-header-title' title='${group.url}'>${group.name}</span></span>
-          <span class='group-hover-actions'>
-            ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
-          </span>
-        </summary>
+            <span class='group-header' aria-hidden=true><span class='group-icon-or-disable'>${this.#renderFileIcon()}${this.#renderGroupCheckbox(group)}</span><span class='group-header-title' title='${group.url}'>${group.name}</span></span>
+            <span class='group-hover-actions'>
+              ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
+            </span>
+          </summary>
         ${LitHtml.Directives.repeat(
           group.breakpointItems,
           item => item.id,
           (item, breakpointItemIndex) => this.#renderBreakpointEntry(item, group.editable, groupIndex, breakpointItemIndex))}
-      </div>
+      </details>
       `;
     // clang-format on
   }
 
+  #renderGroupCheckbox(group: BreakpointGroup): LitHtml.TemplateResult {
+    const groupCheckboxToggled = (e: Event): void => {
+      const element = e.target as HTMLInputElement;
+      const updatedStatus = element.checked ? BreakpointStatus.ENABLED : BreakpointStatus.DISABLED;
+      const itemsToUpdate = group.breakpointItems.filter(item => item.status !== updatedStatus);
+
+      itemsToUpdate.forEach(item => {
+        this.dispatchEvent(new CheckboxToggledEvent(item, element.checked));
+      });
+      e.consume();
+    };
+
+    const checked = group.breakpointItems.some(item => item.status === BreakpointStatus.ENABLED);
+    return LitHtml.html`
+      <input class='group-checkbox' type='checkbox'
+            aria-label=''
+            .checked=${checked}
+            @change=${groupCheckboxToggled}
+            tabindex=-1>
+    `;
+  }
+
   #renderFileIcon(): LitHtml.TemplateResult {
     return LitHtml.html`
-      <${IconButton.Icon.Icon.litTagName} .data=${
+      <${IconButton.Icon.Icon.litTagName} class='file-icon' .data=${
         {iconName: 'ic_file_script', color: 'var(--color-ic-file-script)', width: '16px', height: '16px'} as
         IconButton.Icon.IconWithName}></${IconButton.Icon.Icon.litTagName}>
     `;
@@ -580,7 +602,7 @@ export class BreakpointsView extends HTMLElement {
         <input type='checkbox'
               aria-label=${breakpointItem.location}
               ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE}
-              ?checked=${breakpointItem.status === BreakpointStatus.ENABLED}
+              .checked=${breakpointItem.status === BreakpointStatus.ENABLED}
               @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}
               tabindex=-1>
       </label>
@@ -643,7 +665,7 @@ export class BreakpointsView extends HTMLElement {
       const pauseOnCaughtCheckbox = this.#shadow.querySelector<HTMLInputElement>('[data-pause-on-caught-checkbox]');
       assertNotNullOrUndefined(pauseOnCaughtCheckbox);
       if (!checked && pauseOnCaughtCheckbox.checked) {
-        // If we can only pause on caught excpetions if we pause on uncaught exceptions, make sure to
+        // If we can only pause on caught exceptions if we pause on uncaught exceptions, make sure to
         // uncheck the pause on caught exception checkbox.
         pauseOnCaughtCheckbox.click();
       }

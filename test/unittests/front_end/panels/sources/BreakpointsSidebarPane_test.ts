@@ -28,6 +28,7 @@ interface LocationTestData {
   enabled: boolean;
   content: string;
   condition: string;
+  isLogpoint: boolean;
   hoverText?: string;
 }
 
@@ -40,6 +41,7 @@ function createBreakpointLocations(testData: LocationTestData[]): Bindings.Break
     const breakpoint = sinon.createStubInstance(Bindings.BreakpointManager.Breakpoint);
     breakpoint.enabled.returns(data.enabled);
     breakpoint.condition.returns(data.condition);
+    breakpoint.isLogpoint.returns(data.isLogpoint);
     breakpoint.breakpointStorageId.returns(`${data.url}:${data.lineNumber}:${data.columnNumber}`);
     return new Bindings.BreakpointManager.BreakpointLocation(breakpoint, uiLocation);
   });
@@ -72,7 +74,7 @@ function createStubBreakpointManagerAndSettingsWithMockdata(testData: LocationTe
 
 function createLocationTestData(
     url: string, lineNumber: number, columnNumber: number, enabled: boolean = true, content: string = '',
-    condition: string = '', hoverText?: string): LocationTestData {
+    condition: string = '', isLogpoint: boolean = false, hoverText?: string): LocationTestData {
   return {
     url: url as Platform.DevToolsPath.UrlString,
     lineNumber,
@@ -80,6 +82,7 @@ function createLocationTestData(
     enabled,
     content,
     condition,
+    isLogpoint,
     hoverText,
   };
 }
@@ -425,7 +428,8 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
     it('correctly extracts conditional breakpoints', async () => {
       const condition = 'x < a';
       const testData = [
-        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, condition),
+        createLocationTestData(
+            TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, false /* isLogpoint */, condition),
       ];
 
       const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
@@ -444,7 +448,8 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       const condition =
           `${Sources.BreakpointEditDialog.LogpointPrefix}${logDetail}${Sources.BreakpointEditDialog.LogpointSuffix}`;
       const testData = [
-        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, logDetail),
+        createLocationTestData(
+            TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, true /* isLogpoint */, logDetail),
       ];
 
       const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);

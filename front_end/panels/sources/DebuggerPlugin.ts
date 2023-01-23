@@ -330,10 +330,9 @@ export class DebuggerPlugin extends Plugin {
         const line = selectionLine(this.editor);
         const breakpoint =
             this.breakpoints.find(b => b.position >= line.from && b.position <= line.to)?.breakpoint || null;
-        const isLogpoint = breakpoint ? breakpoint.condition().includes(LogpointPrefix) : false;
         Host.userMetrics.breakpointEditDialogRevealedFrom(
             Host.UserMetrics.BreakpointEditDialogRevealedFrom.KeyboardShortcut);
-        this.editBreakpointCondition(line, breakpoint, null, isLogpoint);
+        this.editBreakpointCondition(line, breakpoint, null, breakpoint?.isLogpoint());
         return true;
       },
     });
@@ -446,8 +445,7 @@ export class DebuggerPlugin extends Plugin {
     if (!line) {
       return;
     }
-    const isLogpoint = breakpoint.condition().includes(LogpointPrefix);
-    this.editBreakpointCondition(line, breakpoint, null, isLogpoint);
+    this.editBreakpointCondition(line, breakpoint, null, breakpoint.isLogpoint());
   }
 
   populateLineGutterContextMenu(contextMenu: UI.ContextMenu.ContextMenu, editorLineNumber: number): void {
@@ -1170,7 +1168,7 @@ export class DebuggerPlugin extends Plugin {
       if (!main.bound()) {
         gutterClass += ' cm-breakpoint-unbound';
       }
-      if (main.condition().includes(LogpointPrefix)) {
+      if (main.isLogpoint()) {
         gutterClass += ' cm-breakpoint-logpoint';
       } else if (main.condition()) {
         gutterClass += ' cm-breakpoint-conditional';
@@ -1724,10 +1722,9 @@ class BreakpointInlineMarker extends CodeMirror.WidgetType {
     super();
     // Eagerly compute DOM class so that the widget is recreated when it changes.
     this.class = 'cm-inlineBreakpoint';
-    const condition = breakpoint ? breakpoint.condition() : '';
-    if (condition.includes(LogpointPrefix)) {
+    if (breakpoint?.isLogpoint()) {
       this.class += ' cm-inlineBreakpoint-logpoint';
-    } else if (condition) {
+    } else if (breakpoint?.condition()) {
       this.class += ' cm-inlineBreakpoint-conditional';
     }
     if (!breakpoint?.enabled()) {

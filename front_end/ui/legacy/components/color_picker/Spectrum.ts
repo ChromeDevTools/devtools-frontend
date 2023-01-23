@@ -40,9 +40,11 @@ import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
 import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetails.js';
+import {FormatPickerContextMenu} from './FormatPickerContextMenu.js';
 
 import {type ContrastInfo} from './ContrastInfo.js';
 import {ContrastOverlay} from './ContrastOverlay.js';
+import {colorFormatSpec, type SpectrumColorFormat} from './ColorFormatSpec.js';
 import spectrumStyles from './spectrum.css.js';
 
 const UIStrings = {
@@ -128,7 +130,28 @@ const colorElementToMutable = new WeakMap<HTMLElement, boolean>();
 
 const colorElementToColor = new WeakMap<HTMLElement, string>();
 
+function convertColorFormat(colorFormat: Common.Color.Format): SpectrumColorFormat {
+  if (colorFormat === Common.Color.Format.RGBA) {
+    return Common.Color.Format.RGB;
+  }
+  if (colorFormat === Common.Color.Format.HSLA) {
+    return Common.Color.Format.HSL;
+  }
+  if (colorFormat === Common.Color.Format.HWBA) {
+    return Common.Color.Format.HWB;
+  }
+  if (colorFormat === Common.Color.Format.HEXA) {
+    return Common.Color.Format.HEX;
+  }
+  if (colorFormat === Common.Color.Format.ShortHEXA) {
+    return Common.Color.Format.ShortHEX;
+  }
+
+  return colorFormat;
+}
+
 export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+  private color!: Common.Color.Color;
   private colorElement: HTMLElement;
   private colorDragElement: HTMLElement;
   private dragX: number;
@@ -181,11 +204,17 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private dragElement?: HTMLElement;
   private dragHotSpotX?: number;
   private dragHotSpotY?: number;
-  private originalFormat?: string;
   private colorNameInternal?: string;
-  private colorStringInternal?: string;
-  private colorFormat?: Common.Color.Format;
+  private colorFormat: SpectrumColorFormat = Common.Color.Format.RGB;
   private eyeDropperAbortController: AbortController|null = null;
+  private isFormatPickerShown = false;
+  // Used to represent how the current color
+  // should be stringified externally (emitted event etc.).
+  // For example, this is used when a color variable
+  // selected form the palettes. That time, we don't
+  // want to return the value of the variable but the
+  // actual variable string.
+  private colorStringInternal?: string;
   constructor(contrastInfo?: ContrastInfo|null) {
     super(true);
 
@@ -265,15 +294,13 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     label.textContent = i18nString(UIStrings.hex);
     UI.ARIAUtils.setAccessibleName(this.hexValue, label.textContent);
 
-    const displaySwitcher = toolsContainer.createChild('div', 'spectrum-display-switcher spectrum-switcher');
+    const displaySwitcher = toolsContainer.createChild('button', 'spectrum-display-switcher spectrum-switcher');
     appendSwitcherIcon(displaySwitcher);
     UI.UIUtils.setTitle(displaySwitcher, i18nString(UIStrings.changeColorFormat));
     displaySwitcher.tabIndex = 0;
-    self.onInvokeElement(displaySwitcher, event => {
-      this.formatViewSwitch();
-      event.consume(true);
+    displaySwitcher.addEventListener('click', (ev: MouseEvent) => {
+      void this.showFormatPicker(ev);
     });
-    UI.ARIAUtils.markAsButton(displaySwitcher);
 
     UI.UIUtils.installDragHandle(
         this.hueElement, this.dragStart.bind(this, positionHue.bind(this)), positionHue.bind(this), null, 'ew-resize',
@@ -336,6 +363,18 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
     this.numPaletteRowsShown = -1;
 
+    this.contentElement.addEventListener('focusout', ev => {
+      // Do not propagate 'focusout' event when the format picker
+      // context menu is shown. The reason is, when it is shown,
+      // 'focusout' event is emitted and SwatchPopoverHelper listens
+      // to it and closes the color picker. However, we don't want
+      // color picker to be closed when the focus is gone for the
+      // format picker context menu. That's why we stop the propagation.
+      if (this.isFormatPickerShown) {
+        ev.stopImmediatePropagation();
+      }
+    });
+
     this.loadPalettes();
     new PaletteGenerator(palette => {
       if (palette.colors.length) {
@@ -367,8 +406,9 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
       const newHue = 1 - positionFraction;
       hsva[0] = Platform.NumberUtilities.clamp(newHue, 0, 1);
-      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
-      const colorValues = this.color().canonicalHSLA();
+      const color = Common.Color.Legacy.fromHSVA(hsva);
+      this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      const colorValues = color.canonicalHSLA();
       UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
     }
 
@@ -379,8 +419,9 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
       const newAlpha = Math.round(positionFraction * 100) / 100;
       hsva[3] = Platform.NumberUtilities.clamp(newAlpha, 0, 1);
-      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
-      const colorValues = this.color().canonicalHSLA();
+      const color = Common.Color.Legacy.fromHSVA(hsva);
+      this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      const colorValues = color.canonicalHSLA();
       UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
     }
 
@@ -390,8 +431,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       this.colorOffset = this.colorElement.totalOffset();
       hsva[1] = Platform.NumberUtilities.clamp((colorPosition.x - this.colorOffset.left) / this.dragWidth, 0, 1);
       hsva[2] = Platform.NumberUtilities.clamp(1 - (colorPosition.y - this.colorOffset.top) / this.dragHeight, 0, 1);
-
-      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      const color = Common.Color.Legacy.fromHSVA(hsva);
+      this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
     }
 
     function getUpdatedColorPosition(dragElement: Element, event: Event): {
@@ -822,12 +863,12 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private paletteColorSelected(colorText: string, colorName: string|undefined, matchUserFormat: boolean): void {
-    const color = Common.Color.parse(colorText)?.asLegacyColor();
+    const color = Common.Color.parse(colorText);
     if (!color) {
       return;
     }
     this.innerSetColor(
-        color.hsva(), colorText, colorName, matchUserFormat ? this.colorFormat : color.format(), ChangeSource.Other);
+        color, colorText, colorName, matchUserFormat ? this.colorFormat : color.format(), ChangeSource.Other);
   }
 
   private onPaletteColorKeydown(colorIndex: number, event: Event): void {
@@ -917,41 +958,41 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.showPalette(palette, false);
   }
 
-  setColor(color: Common.Color.Legacy, colorFormat: Common.Color.Format): void {
-    this.originalFormat = colorFormat;
-    this.innerSetColor(color.hsva(), '', undefined /* colorName */, colorFormat, ChangeSource.Model);
-    const colorValues = this.color().canonicalHSLA();
+  setColor(color: Common.Color.Color, colorFormat: Common.Color.Format): void {
+    this.innerSetColor(color, '', undefined /* colorName */, colorFormat, ChangeSource.Model);
+    const colorValues = color.asLegacyColor().canonicalHSLA();
     UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
     UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
   }
 
-  colorSelected(color: Common.Color.Legacy): void {
-    this.innerSetColor(color.hsva(), '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
+  colorSelectedForTest(color: Common.Color.Legacy): void {
+    this.colorSelected(color);
+  }
+
+  private colorSelected(color: Common.Color.Legacy): void {
+    this.innerSetColor(color, '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
   }
 
   private innerSetColor(
-      hsva: number[]|undefined, colorString: string|undefined, colorName: string|undefined,
+      color: Common.Color.Color|undefined, colorString: string|undefined, colorName: string|undefined,
       colorFormat: Common.Color.Format|undefined, changeSource: string): void {
-    if (hsva !== undefined) {
-      this.hsv = hsva;
-    }
-    this.colorNameInternal = colorName;
+    // It is important to do `undefined` check here since we want to update the
+    // `colorStringInternal` to be empty specifically. The difference is:
+    // * If we give `undefined` as an argument to this function, it means
+    // we don't want to change `colorStringInternal`
+    // * If we give "" as an argument to this funciton, it means
+    // we want to clear the `colorStringInternal`.
     if (colorString !== undefined) {
       this.colorStringInternal = colorString;
     }
+
+    if (color !== undefined) {
+      this.color = color;
+      this.hsv = color.asLegacyColor().hsva();
+    }
+    this.colorNameInternal = colorName;
     if (colorFormat !== undefined) {
-      if (colorFormat === Common.Color.Format.RGBA) {
-        colorFormat = Common.Color.Format.RGB;
-      } else if (colorFormat === Common.Color.Format.HSLA) {
-        colorFormat = Common.Color.Format.HSL;
-      } else if (colorFormat === Common.Color.Format.HWBA) {
-        colorFormat = Common.Color.Format.HWB;
-      } else if (colorFormat === Common.Color.Format.HEXA) {
-        colorFormat = Common.Color.Format.HEX;
-      } else if (colorFormat === Common.Color.Format.ShortHEXA) {
-        colorFormat = Common.Color.Format.ShortHEX;
-      }
-      this.colorFormat = colorFormat;
+      this.colorFormat = convertColorFormat(colorFormat);
     }
 
     if (this.contrastInfo) {
@@ -969,29 +1010,36 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
   }
 
-  private color(): Common.Color.Legacy {
-    return Common.Color.Legacy.fromHSVA(this.hsv);
-  }
-
   colorName(): string|undefined {
     return this.colorNameInternal;
   }
 
-  colorString(): string {
+  // Only needed for unit tests
+  colorStringForTest(): string {
+    return this.colorString();
+  }
+
+  private colorString(): string {
+    // If the `colorStringInternal` exists and
+    // if it is not an empty string, we will show that.
+    // Empty string check is important here since we use
+    // that to point that the colorStringInternal is cleared
+    // and should not be used.
     if (this.colorStringInternal) {
       return this.colorStringInternal;
     }
-    const color = this.color();
 
+    const color = this.color;
     let colorString = color.asString(this.colorFormat);
     if (colorString) {
       return colorString;
     }
 
     if (this.colorFormat === Common.Color.Format.Nickname) {
-      colorString = color.asString(color.hasAlpha() ? Common.Color.Format.HEXA : Common.Color.Format.HEX);
+      colorString =
+          color.asString(color.asLegacyColor().hasAlpha() ? Common.Color.Format.HEXA : Common.Color.Format.HEX);
     } else if (this.colorFormat === Common.Color.Format.ShortHEX) {
-      colorString = color.asString(color.detectHEXFormat());
+      colorString = color.asString(color.asLegacyColor().detectHEXFormat());
     } else if (this.colorFormat === Common.Color.Format.HEX) {
       colorString = color.asString(Common.Color.Format.HEXA);
     } else if (this.colorFormat === Common.Color.Format.HSL) {
@@ -1038,28 +1086,20 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       this.hexContainer.hidden = false;
       this.displayContainer.hidden = true;
       if (this.colorFormat === Common.Color.Format.ShortHEX) {
-        this.hexValue.value = String(this.color().asString(this.color().detectHEXFormat()));
+        this.hexValue.value = String(this.color.asString(this.color.asLegacyColor().detectHEXFormat()));
       } else {  // Don't use ShortHEX if original was not in that format.
-        this.hexValue.value =
-            String(this.color().asString(this.color().hasAlpha() ? Common.Color.Format.HEXA : Common.Color.Format.HEX));
+        this.hexValue.value = String(this.color.asString(
+            this.color.asLegacyColor().hasAlpha() ? Common.Color.Format.HEXA : Common.Color.Format.HEX));
       }
     } else {
-      // RGBA, HSLA, HWBA display.
+      // RGBA, HSLA, HWBA, color() display.
       this.hexContainer.hidden = true;
       this.displayContainer.hidden = false;
-      let colorValues;
-      if (this.colorFormat === Common.Color.Format.RGB) {
-        this.textLabels.textContent = 'RGBA';
-        colorValues = this.color().canonicalRGBA();
-      } else if (this.colorFormat === Common.Color.Format.HSL) {
-        this.textLabels.textContent = 'HSLA';
-        colorValues = this.color().canonicalHSLA();
-      } else {
-        this.textLabels.textContent = 'HWBA';
-        colorValues = this.color().canonicalHWBA();
-      }
+      const spec = colorFormatSpec[this.colorFormat];
+      const colorValues = spec.toValues(this.color);
+      this.textLabels.textContent = spec.label;
 
-      for (let i = 0; i < 3; ++i) {
+      for (let i = 0; i < this.textValues.length; ++i) {
         UI.ARIAUtils.setAccessibleName(
             this.textValues[i],
             /** R in RGBA */ i18nString(UIStrings.sInS, {
@@ -1067,17 +1107,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
               PH2: this.textLabels.textContent,
             }));
         this.textValues[i].value = String(colorValues[i]);
-        if (this.colorFormat !== Common.Color.Format.RGB && (i === 1 || i === 2)) {
-          this.textValues[i].value += '%';
-        }
       }
-      UI.ARIAUtils.setAccessibleName(
-          this.textValues[3],
-          /** A in RGBA */ i18nString(UIStrings.sInS, {
-            PH1: this.textLabels.textContent.charAt(3),
-            PH2: this.textLabels.textContent,
-          }));
-      this.textValues[3].value = String(Math.round(colorValues[3] * 100) / 100);
     }
   }
 
@@ -1088,26 +1118,20 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       this.contrastOverlay.setDimensions(this.dragWidth, this.dragHeight);
     }
 
-    this.swatch.setColor(this.color(), this.colorString());
-    this.colorDragElement.style.backgroundColor = this.color().asString(Common.Color.Format.RGBA) as string;
+    this.swatch.setColor(this.color.asLegacyColor(), this.colorString());
+    this.colorDragElement.style.backgroundColor = this.color.asString(Common.Color.Format.RGBA) as string;
     const noAlpha = Common.Color.Legacy.fromHSVA(this.hsv.slice(0, 3).concat(1));
     this.alphaElementBackground.style.backgroundImage = Platform.StringUtilities.sprintf(
         'linear-gradient(to right, rgba(0,0,0,0), %s)', noAlpha.asString(Common.Color.Format.RGB));
   }
 
-  private formatViewSwitch(): void {
-    let format = Common.Color.Format.RGB;
-    if (this.colorFormat === Common.Color.Format.RGB) {
-      format = Common.Color.Format.HSL;
-    } else if (this.colorFormat === Common.Color.Format.HSL) {
-      format = Common.Color.Format.HWB;
-    } else if (this.colorFormat === Common.Color.Format.HWB) {
-      format = (this.originalFormat === Common.Color.Format.ShortHEX ||
-                this.originalFormat === Common.Color.Format.ShortHEXA) ?
-          Common.Color.Format.ShortHEX :
-          Common.Color.Format.HEX;
-    }
-    this.innerSetColor(undefined, '', undefined /* colorName */, format, ChangeSource.Other);
+  private async showFormatPicker(event: MouseEvent): Promise<void> {
+    const contextMenu = new FormatPickerContextMenu(this.color, this.colorFormat);
+    this.isFormatPickerShown = true;
+    await contextMenu.show(event, (format: Common.Color.Format) => {
+      this.innerSetColor(undefined, undefined, undefined, format, ChangeSource.Other);
+    });
+    this.isFormatPickerShown = false;
   }
 
   /**
@@ -1118,19 +1142,15 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       return;
     }
     const text = event.clipboardData.getData('text');
-    const color = Common.Color.parse(text)?.asLegacyColor();
+    const color = Common.Color.parse(text);
     if (!color) {
       return;
     }
-    this.innerSetColor(color.hsva(), text, undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
+    this.innerSetColor(color, text, undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
     event.preventDefault();
   }
 
   private inputChanged(event: Event): void {
-    function elementValue(element: HTMLInputElement): string {
-      return element.value;
-    }
-
     const inputElement = event.currentTarget as HTMLInputElement;
     const newValue = UI.UIUtils.createReplacementString(inputElement.value, event);
     if (newValue) {
@@ -1140,26 +1160,29 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       event.consume(true);
     }
 
-    let colorString;
-    if (this.colorFormat === Common.Color.Format.Nickname || this.colorFormat === Common.Color.Format.HEX ||
-        this.colorFormat === Common.Color.Format.ShortHEX) {
-      colorString = this.hexValue.value;
+    let color: Common.Color.Color|null = null;
+    let colorFormat: Common.Color.Format|undefined;
+    if (this.colorFormat === Common.Color.Format.HEX || this.colorFormat === Common.Color.Format.ShortHEX ||
+        this.colorFormat === Common.Color.Format.Nickname) {
+      color = Common.Color.parse(this.hexValue.value);
     } else {
-      const values = this.textValues.slice(0, -1).map(elementValue).join(' ');
-      const alpha = this.textValues.slice(-1).map(elementValue).join(' ');
-      colorString = Platform.StringUtilities.sprintf('%s(%s)', this.colorFormat, [values, alpha].join(' / '));
+      const spec = colorFormatSpec[this.colorFormat];
+      const colorTextValues = this.textValues.map(element => element.value);
+      if (colorTextValues.length !== 4) {
+        // Somehow the `textValues` array updated to contain more elements
+        // This shouldn't happen.
+        return;
+      }
+      // Since we know that `textValues` is an array with 4 elements we're safe
+      // to assert that `colorTextValues` is an array with 4 strings.
+      color = spec.fromValues(colorTextValues as [string, string, string, string]);
     }
 
-    const color = Common.Color.parse(colorString)?.asLegacyColor();
     if (!color) {
       return;
     }
 
-    let colorFormat: Common.Color.Format|undefined = undefined;
-    if (this.colorFormat === Common.Color.Format.HEX || this.colorFormat === Common.Color.Format.ShortHEX) {
-      colorFormat = color.detectHEXFormat();
-    }
-    this.innerSetColor(color.hsva(), colorString, undefined /* colorName */, colorFormat, ChangeSource.Input);
+    this.innerSetColor(color, undefined, undefined /* colorName */, colorFormat, ChangeSource.Input);
   }
 
   wasShown(): void {
@@ -1231,9 +1254,9 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
       try {
         const hexColor = await eyeDropper.open({signal: this.eyeDropperAbortController.signal});
-        const color = Common.Color.parse(hexColor.sRGBHex)?.asLegacyColor();
+        const color = Common.Color.parse(hexColor.sRGBHex);
 
-        this.innerSetColor(color?.hsva(), '', undefined /* colorName */, undefined, ChangeSource.Other);
+        this.innerSetColor(color ?? undefined, '', undefined /* colorName */, undefined, ChangeSource.Other);
       } catch (error) {
         if (error.name !== 'AbortError') {
           console.error(error);
@@ -1252,7 +1275,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.EyeDropperPickedColorEvent>): void {
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
     const color = Common.Color.Legacy.fromRGBA(rgba);
-    this.innerSetColor(color.hsva(), '', undefined /* colorName */, undefined, ChangeSource.Other);
+    this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
   }
 }

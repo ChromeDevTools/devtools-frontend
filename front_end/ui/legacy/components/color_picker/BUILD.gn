@@ -13,9 +13,11 @@ generate_css("css_files") {
 
 devtools_module("color_picker") {
   sources = [
+    "ColorFormatSpec.ts",
     "ContrastDetails.ts",
     "ContrastInfo.ts",
     "ContrastOverlay.ts",
+    "FormatPickerContextMenu.ts",
     "Spectrum.ts",
   ]
 

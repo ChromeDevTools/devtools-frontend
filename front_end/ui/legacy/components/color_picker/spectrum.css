@@ -378,6 +378,9 @@
   height: 20px;
   width: 20px;
   padding: 2px;
+  border: none;
+  background: none;
+  margin: 0;
 }
 
 .spectrum-display-switcher {

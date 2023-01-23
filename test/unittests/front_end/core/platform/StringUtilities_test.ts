@@ -560,4 +560,14 @@ describe('StringUtilities', () => {
       assert.strictEqual(output, 'inpurt');
     });
   });
+
+  describe('stringifyWithPrecision', () => {
+    it('should stringify with 2 precision if precision argument is not given', () => {
+      assert.strictEqual('0.69', Platform.StringUtilities.stringifyWithPrecision(0.685733));
+    });
+
+    it('should stringify with given precision', () => {
+      assert.strictEqual('0.686', Platform.StringUtilities.stringifyWithPrecision(0.685733, 3));
+    });
+  });
 });

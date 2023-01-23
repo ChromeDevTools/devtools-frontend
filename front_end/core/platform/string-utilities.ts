@@ -472,3 +472,8 @@ export const replaceLast = function(input: string, search: string, replacement: 
 
   return input.slice(0, replacementStartIndex) + input.slice(replacementStartIndex).replace(search, replacement);
 };
+
+export const stringifyWithPrecision = function stringifyWithPrecision(s: number, precision = 2): string {
+  const string = s.toFixed(precision).replace(/\.?0*$/, '');
+  return string === '-0' ? '0' : string;
+};

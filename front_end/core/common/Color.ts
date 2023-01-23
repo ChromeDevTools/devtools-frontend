@@ -645,11 +645,6 @@ export interface Color {
   getUnclippedColor(): Color;
 }
 
-function stringifyWithPrecision(s: number, precision = 2): string {
-  const string = s.toFixed(precision).replace(/\.?0*$/, '');
-  return string === '-0' ? '0' : string;
-}
-
 const EPSILON = 0.001;
 function equals(a: number|null, b: number|null, accuracy = EPSILON): boolean {
   if (a === null || b === null) {
@@ -754,9 +749,12 @@ export class Lab implements Color {
     if (this.#originalText && this.isInGamut()) {
       return this.#originalText;
     }
-    const alpha = this.alpha === null || equals(this.alpha, 1) ? '' : ` / ${stringifyWithPrecision(this.alpha)}`;
-    return `lab(${stringifyWithPrecision(this.l)} ${stringifyWithPrecision(this.a)} ${stringifyWithPrecision(this.b)}${
-        alpha})`;
+    const alpha = this.alpha === null || equals(this.alpha, 1) ?
+        '' :
+        ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
+    return `lab(${Platform.StringUtilities.stringifyWithPrecision(this.l)} ${
+        Platform.StringUtilities.stringifyWithPrecision(
+            this.a)} ${Platform.StringUtilities.stringifyWithPrecision(this.b)}${alpha})`;
   }
 
   isInGamut(): boolean {
@@ -881,9 +879,12 @@ export class LCH implements Color {
     if (this.#originalText && this.isInGamut()) {
       return this.#originalText;
     }
-    const alpha = this.alpha === null || equals(this.alpha, 1) ? '' : ` / ${stringifyWithPrecision(this.alpha)}`;
-    return `lch(${stringifyWithPrecision(this.l)} ${stringifyWithPrecision(this.c)} ${stringifyWithPrecision(this.h)}${
-        alpha})`;
+    const alpha = this.alpha === null || equals(this.alpha, 1) ?
+        '' :
+        ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
+    return `lch(${Platform.StringUtilities.stringifyWithPrecision(this.l)} ${
+        Platform.StringUtilities.stringifyWithPrecision(
+            this.c)} ${Platform.StringUtilities.stringifyWithPrecision(this.h)}${alpha})`;
   }
 
   isInGamut(): boolean {
@@ -1008,9 +1009,12 @@ export class Oklab implements Color {
     if (this.#originalText && this.isInGamut()) {
       return this.#originalText;
     }
-    const alpha = this.alpha === null || equals(this.alpha, 1) ? '' : ` / ${stringifyWithPrecision(this.alpha)}`;
-    return `oklab(${stringifyWithPrecision(this.l)} ${stringifyWithPrecision(this.a)} ${
-        stringifyWithPrecision(this.b)}${alpha})`;
+    const alpha = this.alpha === null || equals(this.alpha, 1) ?
+        '' :
+        ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
+    return `oklab(${Platform.StringUtilities.stringifyWithPrecision(this.l)} ${
+        Platform.StringUtilities.stringifyWithPrecision(
+            this.a)} ${Platform.StringUtilities.stringifyWithPrecision(this.b)}${alpha})`;
   }
 
   isInGamut(): boolean {
@@ -1138,9 +1142,12 @@ export class Oklch implements Color {
     if (this.#originalText && this.isInGamut()) {
       return this.#originalText;
     }
-    const alpha = this.alpha === null || equals(this.alpha, 1) ? '' : ` / ${stringifyWithPrecision(this.alpha)}`;
-    return `oklch(${stringifyWithPrecision(this.l)} ${stringifyWithPrecision(this.c)} ${
-        stringifyWithPrecision(this.h)}${alpha})`;
+    const alpha = this.alpha === null || equals(this.alpha, 1) ?
+        '' :
+        ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
+    return `oklch(${Platform.StringUtilities.stringifyWithPrecision(this.l)} ${
+        Platform.StringUtilities.stringifyWithPrecision(
+            this.c)} ${Platform.StringUtilities.stringifyWithPrecision(this.h)}${alpha})`;
   }
 
   isInGamut(): boolean {
@@ -1295,9 +1302,12 @@ export class ColorFunction implements Color {
     if (this.#originalText && this.isInGamut()) {
       return this.#originalText;
     }
-    const alpha = this.alpha === null || equals(this.alpha, 1) ? '' : ` / ${stringifyWithPrecision(this.alpha)}`;
-    return `color(${this.colorSpace} ${stringifyWithPrecision(this.p0)} ${stringifyWithPrecision(this.p1)} ${
-        stringifyWithPrecision(this.p2)}${alpha})`;
+    const alpha = this.alpha === null || equals(this.alpha, 1) ?
+        '' :
+        ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
+    return `color(${this.colorSpace} ${Platform.StringUtilities.stringifyWithPrecision(this.p0)} ${
+        Platform.StringUtilities.stringifyWithPrecision(
+            this.p1)} ${Platform.StringUtilities.stringifyWithPrecision(this.p2)}${alpha})`;
   }
 
   isInGamut(): boolean {
@@ -1721,10 +1731,13 @@ export class Legacy implements Color {
       case Format.HSLA: {
         const hsla = this.hsla();
         const start = Platform.StringUtilities.sprintf(
-            'hsl(%sdeg %s% %s%', stringifyWithPrecision(hsla[0] * 360), stringifyWithPrecision(hsla[1] * 100),
-            stringifyWithPrecision(hsla[2] * 100));
+            'hsl(%sdeg %s% %s%', Platform.StringUtilities.stringifyWithPrecision(hsla[0] * 360),
+            Platform.StringUtilities.stringifyWithPrecision(hsla[1] * 100),
+            Platform.StringUtilities.stringifyWithPrecision(hsla[2] * 100));
         if (this.hasAlpha()) {
-          return start + Platform.StringUtilities.sprintf(' / %s%)', stringifyWithPrecision(hsla[3] * 100));
+          return start +
+              Platform.StringUtilities.sprintf(
+                  ' / %s%)', Platform.StringUtilities.stringifyWithPrecision(hsla[3] * 100));
         }
         return start + ')';
       }
@@ -1732,10 +1745,13 @@ export class Legacy implements Color {
       case Format.HWBA: {
         const hwba = this.hwba();
         const start = Platform.StringUtilities.sprintf(
-            'hwb(%sdeg %s% %s%', stringifyWithPrecision(hwba[0] * 360), stringifyWithPrecision(hwba[1] * 100),
-            stringifyWithPrecision(hwba[2] * 100));
+            'hwb(%sdeg %s% %s%', Platform.StringUtilities.stringifyWithPrecision(hwba[0] * 360),
+            Platform.StringUtilities.stringifyWithPrecision(hwba[1] * 100),
+            Platform.StringUtilities.stringifyWithPrecision(hwba[2] * 100));
         if (this.hasAlpha()) {
-          return start + Platform.StringUtilities.sprintf(' / %s%)', stringifyWithPrecision(hwba[3] * 100));
+          return start +
+              Platform.StringUtilities.sprintf(
+                  ' / %s%)', Platform.StringUtilities.stringifyWithPrecision(hwba[3] * 100));
         }
         return start + ')';
       }

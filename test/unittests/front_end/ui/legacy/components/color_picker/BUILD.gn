@@ -6,7 +6,7 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("color_picker") {
   testonly = true
-  sources = [ "Spectrum_test.ts" ]
+  sources = [ "ColorFormatSpec_test.ts" ]
 
   deps = [
     "../../../../../../../front_end/ui/legacy:bundle",

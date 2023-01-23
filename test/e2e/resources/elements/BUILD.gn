@@ -54,6 +54,7 @@ copy_to_gen("elements") {
     "simple-styled-page.html",
     "slot-element.html",
     "style-pane-properties.html",
+    "styles-disable-inherited.html",
     "stylesheets-with-various-sources.html",
     "target.html",
   ]

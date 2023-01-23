@@ -48,6 +48,7 @@ export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
 const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = '.elements input[type=checkbox]';
 const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector"]';
 const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-text';
+const STYLE_PROPERTIES_SELECTOR = '.tree-outline-disclosure [role="treeitem"]';
 const CSS_AUTHORING_HINTS_ICON_SELECTOR = '.hint';
 const SEARCH_BOX_SELECTOR = '.search-bar';
 const SEARCH_RESULTS_MATCHES = '.search-results-matches';
@@ -742,6 +743,12 @@ export const toggleClassesPaneCheckbox = async (checkboxLabel: string) => {
   await waitForSelectedNodeChange(initialValue);
 };
 
+export const uncheckStylesPaneCheckbox = async (checkboxLabel: string) => {
+  const initialValue = await getContentOfSelectedNode();
+  await click(`.enabled-button[aria-label="${checkboxLabel}"]`);
+  await waitForSelectedNodeChange(initialValue);
+};
+
 export const assertSelectedNodeClasses = async (expectedClasses: string[]) => {
   const nodeText = await getContentOfSelectedNode();
   const match = nodeText.match(/class=\u200B"([^"]*)/);
@@ -813,4 +820,10 @@ export const goToResourceAndWaitForStyleSection = async (path: string) => {
 
   // Check to make sure we have the correct node selected after opening a file.
   await waitForPartialContentOfSelectedElementsNode('<body>\u200B');
+};
+
+export const checkStyleAttributes = async (expectedStyles: string[]) => {
+  const result = await $$(STYLE_PROPERTIES_SELECTOR, undefined, 'pierce');
+  const actual = await Promise.all(result.map(e => e.evaluate(e => e.textContent?.trim())));
+  return actual.sort().join(' ') === expectedStyles.sort().join(' ');
 };

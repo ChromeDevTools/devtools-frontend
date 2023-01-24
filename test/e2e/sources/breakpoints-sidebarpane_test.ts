@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   addBreakpointForLine,
   getLineNumberElement,
@@ -43,7 +44,8 @@ describe('The Breakpoints Sidebar', () => {
   });
 
   describe('for source mapped files', () => {
-    it('correctly shows the breakpoint location on reload', async () => {
+    // Flaky on mac.
+    it.skipOnPlatforms(['mac'], '[crbug.com/1409770] correctly shows the breakpoint location on reload', async () => {
       const testBreakpointContent = async (expectedFileName: string, expectedLineNumber: number) => {
         await checkFileGroupName(expectedFileName);
         await checkLineNumber(await waitFor(BREAKPOINT_ITEM_SELECTOR), expectedLineNumber);

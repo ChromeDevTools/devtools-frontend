@@ -215,7 +215,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
         let type = SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT;
 
         if (testData.condition) {
-          if (testData.condition.startsWith(Sources.BreakpointEditDialog.LogpointPrefix)) {
+          if (testData.isLogpoint) {
             type = SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT;
           } else {
             type = SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT;

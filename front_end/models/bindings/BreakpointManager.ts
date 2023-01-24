@@ -988,13 +988,12 @@ export class ModelBreakpoint {
     return DebuggerUpdateResult.OK;
   }
 
-  async #setBreakpointOnBackend(newState: Breakpoint.State): Promise<{
+  async #setBreakpointOnBackend({positions, condition}: Breakpoint.State): Promise<{
     breakpointIds: Protocol.Debugger.BreakpointId[],
     locations: SDK.DebuggerModel.Location[],
     serverError: boolean,
   }> {
-    const condition = this.#breakpoint.condition();
-    const results = await Promise.all(newState.positions.map(pos => {
+    const results = await Promise.all(positions.map(pos => {
       if (pos.url) {
         return this.#debuggerModel.setBreakpointByURL(pos.url, pos.lineNumber, pos.columnNumber, condition);
       }

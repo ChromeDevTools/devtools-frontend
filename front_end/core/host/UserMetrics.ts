@@ -653,7 +653,8 @@ export enum KeyboardShortcutAction {
   'chrome_recorder.start-recording' = 108,
   'chrome_recorder.replay-recording' = 109,
   'chrome_recorder.toggle-code-view' = 110,
-  MaxValue = 111,
+  'chrome_recorder.copy-recording-or-step' = 111,
+  MaxValue = 112,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

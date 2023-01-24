@@ -5,6 +5,7 @@
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -35,6 +36,10 @@ const UIStrings = {
    *@description Type selector element title in Breakpoint Edit Dialog of the Sources panel
    */
   pauseOnlyWhenTheConditionIsTrue: 'Pause only when the condition is true',
+  /**
+   * @description Link text in the Breakpoint Edit Dialog of the Sources panel
+   */
+  learnMoreOnBreakpointTypes: 'Learn more: Breakpoint Types',
   /**
    *@description Text in Breakpoint Edit Dialog of the Sources panel. It is used as
    *the placeholder for a text input field before the user enters text. Provides the user with
@@ -143,6 +148,15 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       ],
     }));
     editorWrapper.appendChild(this.editor);
+
+    const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href='https://goo.gle/devtools-loc'>${
+                     i18nString(UIStrings.learnMoreOnBreakpointTypes)}</x-link>` as UI.XLink.XLink;
+    const linkIcon = new IconButton.Icon.Icon();
+    linkIcon.data = {iconName: 'link_icon', color: 'var(--color-link)', width: '15px', height: '15px'};
+    linkIcon.classList.add('link-icon');
+    link.prepend(linkIcon);
+
+    this.contentElement.appendChild(link);
 
     this.updateTooltip();
 

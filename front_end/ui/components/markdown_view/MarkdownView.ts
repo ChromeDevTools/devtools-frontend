@@ -90,6 +90,23 @@ const renderText = (token: Marked.Marked.Token): LitHtml.TemplateResult => {
   return html`${unescape('text' in token ? token.text : '')}`;
 };
 
+const renderHeading = (heading: Marked.Marked.Tokens.Heading): LitHtml.TemplateResult => {
+  switch (heading.depth) {
+    case 1:
+      return html`<h1>${renderText(heading)}</h1>`;
+    case 2:
+      return html`<h2>${renderText(heading)}</h2>`;
+    case 3:
+      return html`<h3>${renderText(heading)}</h3>`;
+    case 4:
+      return html`<h4>${renderText(heading)}</h4>`;
+    case 5:
+      return html`<h5>${renderText(heading)}</h5>`;
+    default:
+      return html`<h6>${renderText(heading)}</h6>`;
+  }
+};
+
 function templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
   switch (token.type) {
     case 'paragraph':
@@ -110,6 +127,12 @@ function templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|nu
     case 'image':
       return html`<${MarkdownImage.litTagName} .data=${{key: token.href, title: token.text} as MarkdownImageData}></${
           MarkdownImage.litTagName}>`;
+    case 'heading':
+      return renderHeading(token);
+    case 'strong':
+      return html`<strong>${renderText(token)}</strong>`;
+    case 'em':
+      return html`<em>${renderText(token)}</em>`;
     default:
       return null;
   }

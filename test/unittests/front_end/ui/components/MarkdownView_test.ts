@@ -15,6 +15,7 @@ type TestToken = {
   text?: string,
   href?: string,
   items?: Object[],
+  depth?: number,
 };
 
 function getFakeToken(token: TestToken): Marked.Marked.Token {
@@ -109,6 +110,25 @@ describe('MarkdownView', async () => {
 
     it('throws an error if invalid image key is provided', () => {
       assert.throws(() => MarkdownView.MarkdownImagesMap.getMarkdownImage('testErrorImageLink'));
+    });
+    it('renders a heading correctly', () => {
+      const renderResult =
+          MarkdownView.MarkdownView.renderToken(getFakeToken({type: 'heading', text: 'a heading text', depth: 3}))
+              .strings.join('');
+
+      assert.isTrue(renderResult.includes('<h3'));
+    });
+    it('renders strong correctly', () => {
+      const renderResult =
+          MarkdownView.MarkdownView.renderToken(getFakeToken({type: 'strong', text: 'a strong text'})).strings.join('');
+
+      assert.isTrue(renderResult.includes('<strong'));
+    });
+    it('renders em correctly', () => {
+      const renderResult =
+          MarkdownView.MarkdownView.renderToken(getFakeToken({type: 'em', text: 'em text'})).strings.join('');
+
+      assert.isTrue(renderResult.includes('<em'));
     });
   });
 

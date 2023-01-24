@@ -272,13 +272,32 @@ describe('SourceMap', () => {
     assertReverseMapping(sourceMap.sourceLineMapping(sourceUrlExample, 1, 0), 3, 1);
   });
 
+  it('can parse source maps with mappings in reverse direction', () => {
+    /*
+        example.js:
+        ABCD
+
+        compiled.js:
+        DCBA
+     */
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, {
+      // mappings go in reversed direction.
+      mappings: 'GAAA,DAAC,DAAC,DAAC',
+      sources: ['example.js'],
+      version: 3,
+    });
+
+    assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 3);
+    assertMapping(sourceMap.findEntry(0, 1), 'example.js', 0, 2);
+    assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 1);
+    assertMapping(sourceMap.findEntry(0, 3), 'example.js', 0, 0);
+  });
+
   it('can parse the multiple sections format', () => {
     const mappingPayload: SDK.SourceMap.SourceMapV3 = {
-      mappings: '',
-      sources: [],
       sections: [
         {
-          offset: {line: 0, 'column': 0},
+          offset: {line: 0, column: 0},
           map: {
             mappings: 'AAAA,CAEC',
             sources: ['source1.js', 'source2.js'],
@@ -286,7 +305,7 @@ describe('SourceMap', () => {
           },
         },
         {
-          offset: {line: 2, 'column': 10},
+          offset: {line: 2, column: 10},
           map: {
             mappings: 'AAAA,CAEC',
             sources: ['source3.js'],
@@ -303,6 +322,52 @@ describe('SourceMap', () => {
     assertMapping(sourceMap.findEntry(0, 1), 'source1.js', 2, 1);
     assertMapping(sourceMap.findEntry(2, 10), 'source3.js', 0, 0);
     assertMapping(sourceMap.findEntry(2, 11), 'source3.js', 2, 1);
+  });
+
+  it('can parse source maps with ClosureScript names', () => {
+    /*
+      ------------------------------------------------------------------------------------
+      chrome_issue_611738.clj:
+      (ns devtools-sample.chrome-issue-611738)
+
+      (defmacro m []
+        `(let [generated# "value2"]))
+      ------------------------------------------------------------------------------------
+      chrome_issue_611738.cljs:
+      (ns devtools-sample.chrome-issue-611738
+      (:require-macros [devtools-sample.chrome-issue-611738 :refer [m]]))
+
+      (let [name1 "value1"]
+        (m))
+      ------------------------------------------------------------------------------------
+      chrome_issue_611738.js:
+      // Compiled by ClojureScript 1.9.89 {}
+      goog.provide('devtools_sample.chrome_issue_611738');
+      goog.require('cljs.core');
+      var name1_31466 = "value1";
+      var generated31465_31467 = "value2";
+
+      //# sourceMappingURL=chrome_issue_611738.js.map
+      ------------------------------------------------------------------------------------
+      chrome_issue_611738.js.map:
+      {"version":3,"file":"\/Users\/darwin\/code\/cljs-devtools-sample\/resources\/public\/_compiled\/demo\/devtools_sample\/chrome_issue_611738.js","sources":["chrome_issue_611738.cljs"],"lineCount":7,"mappings":";AAAA;;AAGA,kBAAA,dAAMA;AAAN,AACE,IAAAC,uBAAA;AAAA,AAAA","names":["name1","generated31465"]}
+      ------------------------------------------------------------------------------------
+    */
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, {
+      version: 3,
+      sources: ['chrome_issue_611738.cljs'],
+      mappings: ';AAAA;;AAGA,kBAAA,dAAMA;AAAN,AACE,IAAAC,uBAAA;AAAA,AAAA',
+      names: ['name1', 'generated31465'],
+    });
+
+    assert.propertyVal(sourceMap.findEntry(1, 0), 'name', undefined);
+    assert.propertyVal(sourceMap.findEntry(3, 0), 'name', undefined);
+    assert.propertyVal(sourceMap.findEntry(3, 4), 'name', 'name1');
+    assert.propertyVal(sourceMap.findEntry(3, 18), 'name', undefined);
+    assert.propertyVal(sourceMap.findEntry(4, 0), 'name', undefined);
+    assert.propertyVal(sourceMap.findEntry(4, 4), 'name', 'generated31465');
+    assert.propertyVal(sourceMap.findEntry(4, 27), 'name', undefined);
+    assert.propertyVal(sourceMap.findEntry(5, 0), 'name', undefined);
   });
 
   it('resolves duplicate canonical urls', () => {

@@ -468,12 +468,12 @@ export class DebuggerPlugin extends Plugin {
           contextMenu.debugSection().appendItem(i18nString(UIStrings.addConditionalBreakpoint), () => {
             Host.userMetrics.breakpointEditDialogRevealedFrom(
                 Host.UserMetrics.BreakpointEditDialogRevealedFrom.LineGutterContextMenu);
-            this.editBreakpointCondition(line, null, null, false /* preferLogpoint */);
+            this.editBreakpointCondition(line, null, null, false /* isLogpoint */);
           });
           contextMenu.debugSection().appendItem(i18nString(UIStrings.addLogpoint), () => {
             Host.userMetrics.breakpointEditDialogRevealedFrom(
                 Host.UserMetrics.BreakpointEditDialogRevealedFrom.LineGutterContextMenu);
-            this.editBreakpointCondition(line, null, null, true /* preferLogpoint */);
+            this.editBreakpointCondition(line, null, null, true /* isLogpoint */);
           });
           contextMenu.debugSection().appendItem(
               i18nString(UIStrings.neverPauseHere),
@@ -491,7 +491,7 @@ export class DebuggerPlugin extends Plugin {
         contextMenu.debugSection().appendItem(i18nString(UIStrings.editBreakpoint), () => {
           Host.userMetrics.breakpointEditDialogRevealedFrom(
               Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
-          this.editBreakpointCondition(line, breakpoints[0], null, false /* preferLogpoint */);
+          this.editBreakpointCondition(line, breakpoints[0], null);
         });
       }
       const hasEnabled = breakpoints.some(breakpoint => breakpoint.enabled());
@@ -801,12 +801,13 @@ export class DebuggerPlugin extends Plugin {
         lineNumber: number,
         columnNumber: number,
       }|null,
-      preferLogpoint?: boolean): void {
+      isLogpoint?: boolean): void {
     const editor = this.editor as TextEditor.TextEditor.TextEditor;
     const oldCondition = breakpoint ? breakpoint.condition() : '';
+    const isLogpointForDialog = breakpoint?.isLogpoint() ?? Boolean(isLogpoint);
     const decorationElement = document.createElement('div');
     const compartment = new CodeMirror.Compartment();
-    const dialog = new BreakpointEditDialog(line.number - 1, oldCondition, Boolean(preferLogpoint), async result => {
+    const dialog = new BreakpointEditDialog(line.number - 1, oldCondition, isLogpointForDialog, async result => {
       this.activeBreakpointDialog = null;
       dialog.detach();
       editor.dispatch({effects: compartment.reconfigure([])});
@@ -1286,7 +1287,7 @@ export class DebuggerPlugin extends Plugin {
       contextMenu.debugSection().appendItem(i18nString(UIStrings.editBreakpoint), () => {
         Host.userMetrics.breakpointEditDialogRevealedFrom(
             Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
-        this.editBreakpointCondition(line, breakpoint, null, false /* preferLogpoint */);
+        this.editBreakpointCondition(line, breakpoint, null);
       });
     } else {
       const uiLocation = this.transformer.editorLocationToUILocation(line.number - 1, position - line.from);

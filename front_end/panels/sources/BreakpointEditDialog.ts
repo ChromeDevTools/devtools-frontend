@@ -64,7 +64,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   private placeholderCompartment: CodeMirror.Compartment;
 
   constructor(
-      editorLineNumber: number, oldCondition: string, preferLogpoint: boolean,
+      editorLineNumber: number, oldCondition: string, isLogpoint: boolean,
       onFinish: (result: BreakpointEditDialogResult) => void) {
     super(true);
 
@@ -82,13 +82,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.finished = false;
     this.element.tabIndex = -1;
 
-    const logpointPrefix = LogpointPrefix;
-    const logpointSuffix = LogpointSuffix;
-    this.isLogpoint = oldCondition.startsWith(logpointPrefix) && oldCondition.endsWith(logpointSuffix);
+    this.isLogpoint = isLogpoint;
     if (this.isLogpoint) {
-      oldCondition = oldCondition.substring(logpointPrefix.length, oldCondition.length - logpointSuffix.length);
+      oldCondition = oldCondition.substring(LogpointPrefix.length, oldCondition.length - LogpointSuffix.length);
     }
-    this.isLogpoint = this.isLogpoint || preferLogpoint;
 
     this.element.classList.add('sources-edit-breakpoint-dialog');
     const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);

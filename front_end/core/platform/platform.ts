@@ -29,6 +29,7 @@
  */
 
 import * as ArrayUtilities from './array-utilities.js';
+import * as Brand from './brand.js';
 import * as DateUtilities from './date-utilities.js';
 import * as DevToolsPath from './DevToolsPath.js';
 import * as DOMUtilities from './dom-utilities.js';
@@ -50,6 +51,7 @@ export {DCHECK} from './dcheck.js';
 export {assertNever, assertNotNullOrUndefined, assertUnhandled} from './typescript-utilities.js';
 export {
   ArrayUtilities,
+  Brand,
   DateUtilities,
   DevToolsPath,
   DOMUtilities,

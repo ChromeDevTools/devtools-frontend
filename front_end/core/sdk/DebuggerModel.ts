@@ -443,7 +443,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
   async setBreakpointByURL(
       url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber?: number,
-      condition?: string): Promise<SetBreakpointResult> {
+      condition?: BackendCondition): Promise<SetBreakpointResult> {
     // Convert file url to node-js path.
     let urlRegex;
     if (this.target().type() === Type.Node && url.startsWith('file://')) {
@@ -483,7 +483,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   async setBreakpointInAnonymousScript(
-      scriptHash: string, lineNumber: number, columnNumber?: number, condition?: string): Promise<SetBreakpointResult> {
+      scriptHash: string, lineNumber: number, columnNumber?: number,
+      condition?: BackendCondition): Promise<SetBreakpointResult> {
     const response = await this.agent.invoke_setBreakpointByUrl(
         {lineNumber: lineNumber, scriptHash: scriptHash, columnNumber: columnNumber, condition: condition});
     if (response.getError()) {
@@ -1554,3 +1555,9 @@ export interface SetBreakpointResult {
 interface PausedOnInstrumentationData {
   scriptId: Protocol.Runtime.ScriptId;
 }
+
+/**
+ * A breakpoint condition as sent to V8. This helps distinguish
+ * the breakpoint condition as it is entered by the user.
+ */
+export type BackendCondition = Platform.Brand.Brand<string, 'BackendCondition'>;

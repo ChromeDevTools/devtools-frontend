@@ -713,6 +713,12 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     return this.#storageState.condition;
   }
 
+  backendCondition(): SDK.DebuggerModel.BackendCondition {
+    // TODO(crbug.com/1027458): Add sourceUrl comment and do the logpoint
+    //                          wrapping here.
+    return this.#storageState.condition as SDK.DebuggerModel.BackendCondition;
+  }
+
   setCondition(condition: string): void {
     this.updateState({...this.#storageState, condition});
   }
@@ -879,7 +885,7 @@ export class ModelBreakpoint {
     }
     const lineNumber = this.#breakpoint.lineNumber();
     const columnNumber = this.#breakpoint.columnNumber();
-    const condition = this.#breakpoint.condition();
+    const condition = this.#breakpoint.backendCondition();
 
     // Calculate the new state.
     let newState: Breakpoint.State|null = null;
@@ -1100,9 +1106,9 @@ export const enum BreakpointOrigin {
 export namespace Breakpoint {
   export class State {
     positions: Position[];
-    condition: string;
+    condition: SDK.DebuggerModel.BackendCondition;
 
-    constructor(positions: Position[], condition: string) {
+    constructor(positions: Position[], condition: SDK.DebuggerModel.BackendCondition) {
       this.positions = positions;
       this.condition = condition;
     }

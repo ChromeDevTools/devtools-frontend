@@ -719,8 +719,8 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     return this.#storageState.condition as SDK.DebuggerModel.BackendCondition;
   }
 
-  setCondition(condition: string): void {
-    this.updateState({...this.#storageState, condition});
+  setCondition(condition: string, isLogpoint: boolean): void {
+    this.updateState({...this.#storageState, condition, isLogpoint});
   }
 
   isLogpoint(): boolean {

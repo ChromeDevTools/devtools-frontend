@@ -816,7 +816,7 @@ export class DebuggerPlugin extends Plugin {
 
       recordBreakpointWithConditionAdded(result);
       if (breakpoint) {
-        breakpoint.setCondition(result.condition);
+        breakpoint.setCondition(result.condition, result.isLogpoint);
       } else if (location) {
         await this.setBreakpoint(
             location.lineNumber, location.columnNumber, result.condition, /* enabled */ true, result.isLogpoint);

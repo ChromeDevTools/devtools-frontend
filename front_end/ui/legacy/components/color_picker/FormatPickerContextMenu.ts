@@ -69,13 +69,12 @@ export class FormatPickerContextMenu {
         continue;
       }
 
-      const unclippedColor = newColor.getUnclippedColor();
-      const icon = unclippedColor.isInGamut() ? undefined : new IconButton.Icon.Icon();
+      const icon = newColor.isGamutClipped() ? new IconButton.Icon.Icon() : undefined;
       if (icon) {
         icon.data = {iconName: 'ic_warning_black_18dp', color: 'black', width: '14px', height: '14px'};
       }
       const tooltip =
-          icon ? i18nString(UIStrings.colorClippedTooltipText, {PH1: unclippedColor.asString() ?? 'none'}) : undefined;
+          icon ? i18nString(UIStrings.colorClippedTooltipText, {PH1: newColor.getAsRawString() ?? 'none'}) : undefined;
 
       const handler = (): void => onSelect(format);
 

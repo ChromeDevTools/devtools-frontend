@@ -108,7 +108,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
         this.colorSwatchInternal.renderColor(model.color());
         const value = this.colorSwatchInternal.querySelector('span');
         if (value) {
-          value.textContent = model.color().asString();
+          value.textContent = model.color().getAuthoredText() ?? model.color().asString();
         }
         this.contentElement.appendChild(this.colorSwatchInternal);
       } else {

@@ -248,7 +248,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!valueChild) {
       valueChild = swatch.createChild('span');
       const color = swatch.getColor();
-      valueChild.textContent = color ? color.asString(swatch.getFormat() ?? undefined) : text;
+      valueChild.textContent =
+          color ? (color.getAuthoredText() ?? color.asString(swatch.getFormat() ?? undefined)) : text;
     }
     swatch.appendChild(valueChild);
 

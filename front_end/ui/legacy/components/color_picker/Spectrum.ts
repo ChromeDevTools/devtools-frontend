@@ -1088,7 +1088,9 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
 
     const color = this.color;
-    let colorString = color.asString(this.colorFormat);
+    let colorString = this.colorFormat && this.colorFormat !== color.format() ?
+        color.asString(this.colorFormat) :
+        (color.getAuthoredText() ?? color.asString());
     if (colorString) {
       return colorString;
     }

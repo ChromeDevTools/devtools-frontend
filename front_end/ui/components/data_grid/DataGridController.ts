@@ -123,7 +123,7 @@ export class DataGridController extends HTMLElement {
     this.#render();
   }
 
-  #testRowWithFilter(row: Row, filter: TextUtils.TextUtils.ParsedFilter): boolean {
+  #testRowWithFilter(row: Row, filter: TextUtils.TextUtils.ParsedFilter, visibleColumnIds: Set<string>): boolean {
     let rowMatchesFilter = false;
 
     const {key, text, negative, regex} = filter;
@@ -132,7 +132,7 @@ export class DataGridController extends HTMLElement {
     if (key) {
       dataToTest = getStringifiedCellValues([getRowEntryForColumnId(row, key)]);
     } else {
-      dataToTest = getStringifiedCellValues(row.cells);
+      dataToTest = getStringifiedCellValues(row.cells.filter(cell => visibleColumnIds.has(cell.columnId)));
     }
 
     if (regex) {
@@ -155,11 +155,12 @@ export class DataGridController extends HTMLElement {
       return [...rows];
     }
 
+    const visibleColumnIds = new Set(this.#columns.filter(column => column.visible).map(column => column.id));
     return rows.map(row => {
       // We assume that the row should be visible by default.
       let rowShouldBeVisible = true;
       for (const filter of filters) {
-        const rowMatchesFilter = this.#testRowWithFilter(row, filter);
+        const rowMatchesFilter = this.#testRowWithFilter(row, filter, visibleColumnIds);
         // If there are multiple filters, if any return false we hide the row.
         // So if we get a false from testRowWithFilter, we can break early and return false.
         if (!rowMatchesFilter) {

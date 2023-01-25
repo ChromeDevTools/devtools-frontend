@@ -40,7 +40,7 @@ export type CellValue = string|number|boolean|IconButton.Icon.Icon|null;
 
 /**
  * A cell contains a `columnId`, which is the ID of the column the cell
- * reprsents, and the `value`, which is a string value for that cell.
+ * represents, and the `value`, which is a string value for that cell.
  *
  * Note that currently cells cannot render complex data (e.g. nested HTML) but
  * in future we may extend the DataGrid to support this.

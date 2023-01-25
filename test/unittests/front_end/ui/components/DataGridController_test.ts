@@ -262,6 +262,31 @@ describe('DataGridController', () => {
       ]);
     });
 
+    it('only compares visible columns when matching filter', async () => {
+      const component = new DataGrid.DataGridController.DataGridController();
+      component.data = {rows, columns, filters: [createPlainTextFilter('e')]};
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+      let renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [
+        ['Letter A', 'Alpha'],
+        ['Letter B', 'Bravo'],
+        ['Letter C', 'Charlie'],
+      ]);
+
+      const columnsWithInvisible = structuredClone(columns);
+      columnsWithInvisible[0].visible = false;
+      component.data = {
+        ...component.data,
+        columns: columnsWithInvisible,
+      };
+      await coordinator.done();
+      renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [['Charlie']]);
+    });
+
     it('renders only visible rows, but maintains proper aria-rowindexes for the rows that are rendered', async () => {
       const component = new DataGrid.DataGridController.DataGridController();
       component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};

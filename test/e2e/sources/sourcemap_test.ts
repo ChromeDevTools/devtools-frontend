@@ -496,27 +496,25 @@ describe('The Sources Tab', async function() {
       ]);
     });
 
-    // Fails flakily on Mac
-    it.skipOnPlatforms(
-        ['mac'], '[crbug.com/1409857] correctly maintains breakpoints from initial bundle to replacement', async () => {
-          const {target, frontend} = getBrowserAndPages();
+    it('correctly maintains breakpoints from initial bundle to replacement', async () => {
+      const {target, frontend} = getBrowserAndPages();
 
-          // Load the "initial bundle" and set a breakpoint on the second line.
-          await openSourceCodeEditorForFile('index.js', 'sourcemap-hmr.html');
-          await addBreakpointForLine(frontend, 2);
+      // Load the "initial bundle" and set a breakpoint on the second line.
+      await openSourceCodeEditorForFile('index.js', 'sourcemap-hmr.html');
+      await addBreakpointForLine(frontend, 2);
 
-          // Simulate the hot module replacement for index.js
-          await target.evaluate('update();');
+      // Simulate the hot module replacement for index.js
+      await target.evaluate('update();');
 
-          // Wait for the "hot module replacement" to take effect for index.js.
-          await waitForFunction(async () => {
-            const content = await retrieveCodeMirrorEditorContent();
-            return content[1].includes('UPDATED');
-          });
+      // Wait for the "hot module replacement" to take effect for index.js.
+      await waitForFunction(async () => {
+        const content = await retrieveCodeMirrorEditorContent();
+        return content[1].includes('UPDATED');
+      });
 
-          // Check that the breakpoint still exists on line 2.
-          assert.isTrue(await isBreakpointSet(2));
-        });
+      // Wait for the breakpoint to appear on line 2 of the updated index.js.
+      await waitForFunction(async () => await isBreakpointSet(2));
+    });
 
     it('correctly maintains breakpoints from replacement to initial bundle (across reloads)', async () => {
       const {target, frontend} = getBrowserAndPages();

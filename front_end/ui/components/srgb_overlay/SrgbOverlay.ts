@@ -63,6 +63,18 @@ export class SrgbOverlay extends HTMLElement {
       }
     }
 
+    if (linePoints.length === 0) {
+      return null;
+    }
+
+    const lastPoint = linePoints[linePoints.length - 1];
+    if (lastPoint.x < width) {
+      linePoints.push({
+        y: lastPoint.y,
+        x: width,
+      });
+    }
+
     return linePoints;
   }
 
@@ -70,7 +82,7 @@ export class SrgbOverlay extends HTMLElement {
     let min = Infinity;
     let closestPoint = null;
     for (const point of points) {
-      if (Math.abs(atHeight - point.y) < min) {
+      if (Math.abs(atHeight - point.y) <= min) {
         min = Math.abs(atHeight - point.y);
         closestPoint = point;
       }

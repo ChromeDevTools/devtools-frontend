@@ -183,7 +183,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
       return;
     }
 
-    const color = this.swatch.getColor()?.asLegacyColor();
+    const color = this.swatch.getColor();
     const format = this.swatch.getFormat();
     if (!color || !format) {
       return;

@@ -1,0 +1,37 @@
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/generate_css.gni")
+import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "srgbOverlay.css" ]
+}
+
+devtools_module("srgb_overlay") {
+  sources = [ "SrgbOverlay.ts" ]
+
+  deps = [
+    "../../../core/common:bundle",
+    "../../../ui/components/helpers:bundle",
+    "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/lit-html:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "srgb_overlay.ts"
+
+  deps = [
+    ":css_files",
+    ":srgb_overlay",
+  ]
+
+  visibility = [
+    "../../../../test/unittests/front_end/ui/components/*",
+    "../../legacy/components/color_picker/*",
+  ]
+}

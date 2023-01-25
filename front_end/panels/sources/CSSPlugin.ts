@@ -250,8 +250,7 @@ function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
           spectrum.addEventListener(ColorPicker.Spectrum.Events.ColorChanged, handler);
         };
         spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, () => view.requestMeasure());
-        const color = active.color.asLegacyColor();
-        spectrum.setColor(color, color.format());
+        spectrum.setColor(active.color, active.color.format());
         widget = spectrum;
       } else {
         const spectrum = new InlineEditor.BezierEditor.BezierEditor(active.curve);

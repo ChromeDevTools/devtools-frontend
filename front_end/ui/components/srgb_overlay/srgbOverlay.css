@@ -1,0 +1,27 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gamut-line {
+  /* We want to show 50% white color in all themes since this is drawn over a color rectangle */
+  stroke: rgb(255 255 255 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  fill: none;
+}
+
+.label {
+  position: absolute;
+  bottom: 3px;
+  margin-right: 5px;
+  /* We want to show 50% white color in all themes since this is drawn over a color rectangle */
+  color: rgb(255 255 255 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+}

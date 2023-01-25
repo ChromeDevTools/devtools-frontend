@@ -29,6 +29,7 @@ devtools_module("color_picker") {
     "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
     "../../../../ui/components/icon_button:bundle",
+    "../../../../ui/components/srgb_overlay:bundle",
     "../../../../ui/legacy:bundle",
   ]
 }

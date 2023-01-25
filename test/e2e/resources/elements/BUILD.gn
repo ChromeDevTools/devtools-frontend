@@ -56,6 +56,7 @@ copy_to_gen("elements") {
     "style-pane-properties.html",
     "styles-disable-inherited.html",
     "stylesheets-with-various-sources.html",
+    "switch-panels-while-editing-as-html.html",
     "target.html",
   ]
 }

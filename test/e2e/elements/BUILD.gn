@@ -27,6 +27,7 @@ node_ts_library("elements") {
     "sidebar-event-listeners_test.ts",
     "style-pane-properties_test.ts",
     "styles-disable-inherited_test.ts",
+    "switch-panels-while-editing-as-html_test.ts",
   ]
 
   deps = [

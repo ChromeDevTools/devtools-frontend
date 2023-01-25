@@ -60,7 +60,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   private readonly onFinish: (result: BreakpointEditDialogResult) => void;
   private finished: boolean;
   private editor: TextEditor.TextEditor.TextEditor;
-  private isLogpoint: boolean;
   private readonly typeSelector: UI.Toolbar.ToolbarComboBox;
   private placeholderCompartment: CodeMirror.Compartment;
 
@@ -83,8 +82,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.finished = false;
     this.element.tabIndex = -1;
 
-    this.isLogpoint = isLogpoint;
-
     this.element.classList.add('sources-edit-breakpoint-dialog');
     const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);
     toolbar.appendText(`Line ${editorLineNumber + 1}:`);
@@ -95,7 +92,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     const conditionalOption =
         this.typeSelector.createOption(i18nString(UIStrings.conditionalBreakpoint), BreakpointType.Conditional);
     const logpointOption = this.typeSelector.createOption(i18nString(UIStrings.logpoint), BreakpointType.Logpoint);
-    this.typeSelector.select(this.isLogpoint ? logpointOption : conditionalOption);
+    this.typeSelector.select(isLogpoint ? logpointOption : conditionalOption);
     toolbar.appendToolbarItem(this.typeSelector);
 
     const content = oldCondition || '';
@@ -162,9 +159,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   }
 
   private onTypeChanged(): void {
-    const type = this.breakpointType;
-    this.isLogpoint = type === BreakpointType.Logpoint;
-    if (type === BreakpointType.Breakpoint) {
+    if (this.breakpointType === BreakpointType.Breakpoint) {
       this.finishEditing(true, '');
       return;
     }
@@ -203,8 +198,8 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     }
     this.finished = true;
     this.editor.remove();
-    this.onFinish(
-        {committed, condition: condition as Bindings.BreakpointManager.UserCondition, isLogpoint: this.isLogpoint});
+    const isLogpoint = this.breakpointType === BreakpointType.Logpoint;
+    this.onFinish({committed, condition: condition as Bindings.BreakpointManager.UserCondition, isLogpoint});
   }
 
   wasShown(): void {

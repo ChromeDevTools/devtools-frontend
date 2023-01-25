@@ -308,7 +308,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   async setBreakpoint(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number|undefined,
-      condition: string, enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin): Promise<Breakpoint> {
+      condition: UserCondition, enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin): Promise<Breakpoint> {
     let uiLocation: Workspace.UISourceCode.UILocation =
         new Workspace.UISourceCode.UILocation(uiSourceCode, lineNumber, columnNumber);
     const normalizedLocation = await this.debuggerWorkspaceBinding.normalizeUILocation(uiLocation);
@@ -324,7 +324,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   private innerSetBreakpoint(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number|undefined,
-      condition: string, enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin): Breakpoint {
+      condition: UserCondition, enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin): Breakpoint {
     const url = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode)?.sourceURL ?? uiSourceCode.url();
     const resourceTypeName = uiSourceCode.contentType().name();
     const storageId =
@@ -537,8 +537,8 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
 
   constructor(
       breakpointManager: BreakpointManager, primaryUISourceCode: Workspace.UISourceCode.UISourceCode,
-      url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number|undefined, condition: string,
-      enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin) {
+      url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number|undefined,
+      condition: UserCondition, enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin) {
     this.breakpointManager = breakpointManager;
     this.#origin = origin;
 
@@ -712,7 +712,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   /**
    * The breakpoint condition as entered by the user.
    */
-  condition(): string {
+  condition(): UserCondition {
     return this.#storageState.condition;
   }
 
@@ -725,10 +725,10 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
       return `${LOGPOINT_PREFIX}${this.#storageState.condition}${LOGPOINT_SUFFIX}` as
           SDK.DebuggerModel.BackendCondition;
     }
-    return this.#storageState.condition as SDK.DebuggerModel.BackendCondition;
+    return this.#storageState.condition as unknown as SDK.DebuggerModel.BackendCondition;
   }
 
-  setCondition(condition: string, isLogpoint: boolean): void {
+  setCondition(condition: UserCondition, isLogpoint: boolean): void {
     this.updateState({...this.#storageState, condition, isLogpoint});
   }
 
@@ -1227,6 +1227,14 @@ class Storage {
 }
 
 /**
+ * A breakpoint condition as entered by the user. We use the type to
+ * distinguish from {@link SDK.DebuggerModel.BackendCondition}.
+ */
+export type UserCondition = Platform.Brand.Brand<string, 'UserCondition'>;
+export const EMPTY_BREAKPOINT_CONDITION = '' as UserCondition;
+export const NEVER_PAUSE_HERE_CONDITION = 'false' as UserCondition;
+
+/**
  * All the data for a single `Breakpoint` thats stored in the settings.
  * Whenever any of these change, we need to update the settings.
  */
@@ -1235,7 +1243,7 @@ interface BreakpointStorageState {
   readonly resourceTypeName: string;
   readonly lineNumber: number;
   readonly columnNumber?: number;
-  readonly condition: string;
+  readonly condition: UserCondition;
   readonly enabled: boolean;
   readonly isLogpoint: boolean;
 }

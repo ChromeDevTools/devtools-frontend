@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Bindings from '../../models/bindings/bindings.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -51,7 +52,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface BreakpointEditDialogResult {
   committed: boolean;
-  condition: string;
+  condition: Bindings.BreakpointManager.UserCondition;
   isLogpoint: boolean;
 }
 
@@ -202,7 +203,8 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     }
     this.finished = true;
     this.editor.remove();
-    this.onFinish({committed, condition, isLogpoint: this.isLogpoint});
+    this.onFinish(
+        {committed, condition: condition as Bindings.BreakpointManager.UserCondition, isLogpoint: this.isLogpoint});
   }
 
   wasShown(): void {

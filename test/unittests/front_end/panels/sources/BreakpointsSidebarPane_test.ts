@@ -27,7 +27,7 @@ interface LocationTestData {
   columnNumber: number;
   enabled: boolean;
   content: string;
-  condition: string;
+  condition: Bindings.BreakpointManager.UserCondition;
   isLogpoint: boolean;
   hoverText?: string;
 }
@@ -74,7 +74,8 @@ function createStubBreakpointManagerAndSettingsWithMockdata(testData: LocationTe
 
 function createLocationTestData(
     url: string, lineNumber: number, columnNumber: number, enabled: boolean = true, content: string = '',
-    condition: string = '', isLogpoint: boolean = false, hoverText?: string): LocationTestData {
+    condition: Bindings.BreakpointManager.UserCondition = Bindings.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
+    isLogpoint: boolean = false, hoverText?: string): LocationTestData {
   return {
     url: url as Platform.DevToolsPath.UrlString,
     lineNumber,
@@ -426,7 +427,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
     });
 
     it('correctly extracts conditional breakpoints', async () => {
-      const condition = 'x < a';
+      const condition = 'x < a' as Bindings.BreakpointManager.UserCondition;
       const testData = [
         createLocationTestData(
             TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, false /* isLogpoint */, condition),
@@ -444,7 +445,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
     });
 
     it('correctly extracts logpoints', async () => {
-      const logExpression = 'x';
+      const logExpression = 'x' as Bindings.BreakpointManager.UserCondition;
       const testData = [
         createLocationTestData(
             TEST_JS_FILE, 3, 15, true /* enabled */, '', logExpression, true /* isLogpoint */, logExpression),
@@ -527,12 +528,13 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
 });
 
 describeWithRealConnection('BreakpointsSidebarController', () => {
-  const DEFAULT_BREAKPOINT: [string, boolean, boolean, Bindings.BreakpointManager.BreakpointOrigin] = [
-    '',     // condition
-    true,   // enabled
-    false,  // isLogpoint
-    Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION,
-  ];
+  const DEFAULT_BREAKPOINT:
+      [Bindings.BreakpointManager.UserCondition, boolean, boolean, Bindings.BreakpointManager.BreakpointOrigin] = [
+        Bindings.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
+        true,   // enabled
+        false,  // isLogpoint
+        Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION,
+      ];
 
   it('auto-expands if a user adds a new  breakpoint', async () => {
     const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
@@ -587,7 +589,8 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
 
     // Add a new non-user triggered breakpoint and check if it's still collapsed.
     const b2 = await breakpointManager.setBreakpoint(
-        uiSourceCode, 0, 3, '', true, false, Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+        uiSourceCode, 0, 3, Bindings.BreakpointManager.EMPTY_BREAKPOINT_CONDITION, true, false,
+        Bindings.BreakpointManager.BreakpointOrigin.OTHER);
     {
       const data = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(data.groups, 1);

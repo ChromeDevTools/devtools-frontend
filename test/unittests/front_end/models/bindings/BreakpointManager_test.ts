@@ -52,12 +52,13 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     hasSourceURL: false,
   };
 
-  const DEFAULT_BREAKPOINT: [string, boolean, boolean, Bindings.BreakpointManager.BreakpointOrigin] = [
-    '',     // condition
-    true,   // enabled
-    false,  // isLogpoint
-    Bindings.BreakpointManager.BreakpointOrigin.OTHER,
-  ];
+  const DEFAULT_BREAKPOINT:
+      [Bindings.BreakpointManager.UserCondition, boolean, boolean, Bindings.BreakpointManager.BreakpointOrigin] = [
+        Bindings.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
+        true,   // enabled
+        false,  // isLogpoint
+        Bindings.BreakpointManager.BreakpointOrigin.OTHER,
+      ];
 
   let target: SDK.Target.Target;
   let backend: MockProtocolBackend;

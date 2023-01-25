@@ -52,6 +52,8 @@ import {ScriptFormatterEditorAction} from './ScriptFormatterEditorAction.js';
 import {SourcesPanel} from './SourcesPanel.js';
 import {getRegisteredEditorActions} from './SourcesView.js';
 
+const {EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION} = Bindings.BreakpointManager;
+
 const UIStrings = {
   /**
    *@description Text in Debugger Plugin of the Sources panel
@@ -463,7 +465,8 @@ export class DebuggerPlugin extends Plugin {
       if (this.editor && SourceFrame.SourceFrame.isBreakableLine(this.editor.state, line)) {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.addBreakpoint),
-            this.createNewBreakpoint.bind(this, line, '', /* enabled */ true, /* isLogpoint */ false));
+            this.createNewBreakpoint.bind(
+                this, line, EMPTY_BREAKPOINT_CONDITION, /* enabled */ true, /* isLogpoint */ false));
         if (supportsConditionalBreakpoints) {
           contextMenu.debugSection().appendItem(i18nString(UIStrings.addConditionalBreakpoint), () => {
             Host.userMetrics.breakpointEditDialogRevealedFrom(
@@ -477,7 +480,8 @@ export class DebuggerPlugin extends Plugin {
           });
           contextMenu.debugSection().appendItem(
               i18nString(UIStrings.neverPauseHere),
-              this.createNewBreakpoint.bind(this, line, 'false', /* enabled */ true, /* isLogpoint */ false));
+              this.createNewBreakpoint.bind(
+                  this, line, NEVER_PAUSE_HERE_CONDITION, /* enabled */ true, /* isLogpoint */ false));
         }
       }
     } else {
@@ -1265,7 +1269,8 @@ export class DebuggerPlugin extends Plugin {
       const line = this.editor.state.doc.lineAt(editorLocation);
       const uiLocation = this.transformer.editorLocationToUILocation(line.number - 1, editorLocation - line.from);
       void this.setBreakpoint(
-          uiLocation.lineNumber, uiLocation.columnNumber, '', /* enabled */ true, /* isLogpoint */ false);
+          uiLocation.lineNumber, uiLocation.columnNumber, EMPTY_BREAKPOINT_CONDITION, /* enabled */ true,
+          /* isLogpoint */ false);
     }
   }
 
@@ -1305,7 +1310,8 @@ export class DebuggerPlugin extends Plugin {
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.neverPauseHere),
           () => this.setBreakpoint(
-              uiLocation.lineNumber, uiLocation.columnNumber, 'false', /* enabled */ true, /* isLogpoint */ false));
+              uiLocation.lineNumber, uiLocation.columnNumber, NEVER_PAUSE_HERE_CONDITION, /* enabled */ true,
+              /* isLogpoint */ false));
     }
     void contextMenu.show();
   }
@@ -1469,7 +1475,7 @@ export class DebuggerPlugin extends Plugin {
 
     const breakpoints = this.lineBreakpoints(line);
     if (!breakpoints.length) {
-      await this.createNewBreakpoint(line, '', /* enabled */ true, /* isLogpoint */ false);
+      await this.createNewBreakpoint(line, EMPTY_BREAKPOINT_CONDITION, /* enabled */ true, /* isLogpoint */ false);
       return;
     }
     const hasDisabled = breakpoints.some(b => !b.enabled());
@@ -1482,8 +1488,9 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  private async createNewBreakpoint(line: CodeMirror.Line, condition: string, enabled: boolean, isLogpoint: boolean):
-      Promise<void> {
+  private async createNewBreakpoint(
+      line: CodeMirror.Line, condition: Bindings.BreakpointManager.UserCondition, enabled: boolean,
+      isLogpoint: boolean): Promise<void> {
     if (!this.editor || !SourceFrame.SourceFrame.isBreakableLine(this.editor.state, line)) {
       return;
     }
@@ -1493,8 +1500,8 @@ export class DebuggerPlugin extends Plugin {
   }
 
   private async setBreakpoint(
-      lineNumber: number, columnNumber: number|undefined, condition: string, enabled: boolean,
-      isLogpoint: boolean): Promise<void> {
+      lineNumber: number, columnNumber: number|undefined, condition: Bindings.BreakpointManager.UserCondition,
+      enabled: boolean, isLogpoint: boolean): Promise<void> {
     Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(true);
     await this.breakpointManager.setBreakpoint(
         this.uiSourceCode, lineNumber, columnNumber, condition, enabled, isLogpoint,

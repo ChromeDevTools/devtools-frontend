@@ -137,6 +137,26 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     });
   });
 
+  describe('Breakpoint#backendCondition()', () => {
+    it('wraps logpoints in console.log', () => {
+      const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
+      const breakpoint = new Bindings.BreakpointManager.Breakpoint(
+          breakpointManager, uiSourceCode, URL, 5, undefined, 'x' as Bindings.BreakpointManager.UserCondition,
+          /* enabled */ true, /* isLogpoint */ true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+
+      assert.include(breakpoint.backendCondition(), 'console.log(x)');
+    });
+
+    it('leaves conditional breakpoints alone', () => {
+      const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
+      const breakpoint = new Bindings.BreakpointManager.Breakpoint(
+          breakpointManager, uiSourceCode, URL, 5, undefined, 'x === 42' as Bindings.BreakpointManager.UserCondition,
+          /* enabled */ true, /* isLogpoint */ false, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+
+      assert.strictEqual(breakpoint.backendCondition(), 'x === 42');
+    });
+  });
+
   it('allows awaiting the restoration of breakpoints', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);

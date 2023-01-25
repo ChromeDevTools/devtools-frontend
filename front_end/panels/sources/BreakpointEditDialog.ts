@@ -83,9 +83,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.element.tabIndex = -1;
 
     this.isLogpoint = isLogpoint;
-    if (this.isLogpoint) {
-      oldCondition = oldCondition.substring(LogpointPrefix.length, oldCondition.length - LogpointSuffix.length);
-    }
 
     this.element.classList.add('sources-edit-breakpoint-dialog');
     const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);
@@ -162,9 +159,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   focusEditor(): void {
     this.editor.editor.focus();
   }
-  private static conditionForLogpoint(condition: string): string {
-    return `${LogpointPrefix}${condition}${LogpointSuffix}`;
-  }
 
   private onTypeChanged(): void {
     const type = this.breakpointType;
@@ -208,9 +202,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     }
     this.finished = true;
     this.editor.remove();
-    if (this.isLogpoint) {
-      condition = BreakpointEditDialog.conditionForLogpoint(condition);
-    }
     this.onFinish({committed, condition, isLogpoint: this.isLogpoint});
   }
 
@@ -223,9 +214,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     return this.editor;
   }
 }
-
-export const LogpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';
-export const LogpointSuffix = ')';
 
 export const BreakpointType = {
   Breakpoint: 'Breakpoint',

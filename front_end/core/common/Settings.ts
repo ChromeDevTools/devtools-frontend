@@ -585,7 +585,7 @@ export class VersionController {
   }
 
   static get currentVersion(): number {
-    return 33;
+    return 35;
   }
 
   updateVersion(): void {
@@ -1144,6 +1144,28 @@ export class VersionController {
       const isLogpoint =
           breakpoint.condition.startsWith(logpointPrefix) && breakpoint.condition.endsWith(logpointSuffix);
       breakpoint['isLogpoint'] = isLogpoint;
+    }
+    breakpointsSetting.set(breakpoints);
+  }
+
+  updateVersionFrom34To35(): void {
+    // Uses the 'isLogpoint' property on stored breakpoints to remove the prefix/suffix
+    // from logpoints. This way, we store the entered log point condition as the user
+    // entered it.
+
+    // The prefix/suffix are hardcoded here, since these constants will be removed in
+    // the future.
+    const logpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';
+    const logpointSuffix = ')';
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const breakpointsSetting = Settings.instance().createLocalSetting<any>('breakpoints', []);
+    const breakpoints = breakpointsSetting.get();
+    for (const breakpoint of breakpoints) {
+      const {condition, isLogpoint} = breakpoint;
+      if (isLogpoint) {
+        breakpoint.condition = condition.slice(logpointPrefix.length, condition.length - logpointSuffix.length);
+      }
     }
     breakpointsSetting.set(breakpoints);
   }

@@ -444,12 +444,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
     });
 
     it('correctly extracts logpoints', async () => {
-      const logDetail = 'x';
-      const condition =
-          `${Sources.BreakpointEditDialog.LogpointPrefix}${logDetail}${Sources.BreakpointEditDialog.LogpointSuffix}`;
+      const logExpression = 'x';
       const testData = [
         createLocationTestData(
-            TEST_JS_FILE, 3, 15, true /* enabled */, '', condition, true /* isLogpoint */, logDetail),
+            TEST_JS_FILE, 3, 15, true /* enabled */, '', logExpression, true /* isLogpoint */, logExpression),
       ];
 
       const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
@@ -460,7 +458,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
       const breakpointItem = actualViewData.groups[0].breakpointItems[0];
       assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT);
-      assert.strictEqual(breakpointItem.hoverText, logDetail);
+      assert.strictEqual(breakpointItem.hoverText, logExpression);
     });
 
     describe('breakpoint groups', () => {

@@ -308,4 +308,43 @@ describe('VersionController', () => {
       assert.propertyVal(breakpoints[2], 'isLogpoint', false);
     });
   });
+
+  describe('updateVersionFrom34To35', () => {
+    it('removes the logpoint prefix/suffix from logpoints', () => {
+      const versionController = new Common.Settings.VersionController();
+      const breakpointsSetting =
+          settings.createLocalSetting('breakpoints', [{
+                                        url: 'webpack:///src/foo.ts',
+                                        lineNumber: 4,
+                                        resourceTypeName: 'script',
+                                        condition: '/** DEVTOOLS_LOGPOINT */ console.log(foo.property)',
+                                        enabled: true,
+                                        isLogpoint: true,
+                                      }]);
+
+      versionController.updateVersionFrom34To35();
+
+      const breakpoints = breakpointsSetting.get();
+      assert.lengthOf(breakpoints, 1);
+      assert.propertyVal(breakpoints[0], 'condition', 'foo.property');
+    });
+
+    it('leaves conditional breakpoints alone', () => {
+      const versionController = new Common.Settings.VersionController();
+      const breakpointsSetting = settings.createLocalSetting('breakpoints', [{
+                                                               url: 'webpack:///src/foo.ts',
+                                                               lineNumber: 4,
+                                                               resourceTypeName: 'script',
+                                                               condition: 'x === 42',
+                                                               enabled: true,
+                                                               isLogpoint: false,
+                                                             }]);
+
+      versionController.updateVersionFrom34To35();
+
+      const breakpoints = breakpointsSetting.get();
+      assert.lengthOf(breakpoints, 1);
+      assert.propertyVal(breakpoints[0], 'condition', 'x === 42');
+    });
+  });
 });

@@ -44,7 +44,7 @@ describeWithEnvironment('BreakpointEditDialog', () => {
     assert.isFalse(committed);
   });
 
-  it('wraps the condition in a console.log for logpoints', async () => {
+  it('leaves the condition as-is for logpoints', async () => {
     const resultPromise = new Promise<Sources.BreakpointEditDialog.BreakpointEditDialogResult>(resolve => {
       const dialog = new Sources.BreakpointEditDialog.BreakpointEditDialog(0, '', true, resolve);
       const {editorForTest: {editor}} = dialog;
@@ -54,7 +54,7 @@ describeWithEnvironment('BreakpointEditDialog', () => {
     });
 
     const {condition} = await resultPromise;
-    assert.include(condition, 'console.log(x)');
+    assert.strictEqual(condition, 'x');
   });
 
   it('result includes isLogpoint for logpoints', async () => {

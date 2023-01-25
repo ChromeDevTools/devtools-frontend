@@ -11,7 +11,6 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {LogpointPrefix, LogpointSuffix} from './BreakpointEditDialog.js';
 import * as SourcesComponents from './components/components.js';
 
 let breakpointsSidebarPaneInstance: BreakpointsSidebarPane;
@@ -350,8 +349,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
     const condition = breakpoint.condition();
     if (breakpoint.isLogpoint()) {
-      const logCondition = condition.slice(LogpointPrefix.length, condition.length - LogpointSuffix.length);
-      return {type: SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT, hoverText: logCondition};
+      return {type: SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT, hoverText: condition};
     }
 
     return {type: SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT, hoverText: condition};

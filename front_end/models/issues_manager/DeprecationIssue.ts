@@ -396,6 +396,18 @@ const UIStrings = {
    */
   overflowVisibleOnReplacedElement:
       'Specifying `overflow: visible` on img, video and canvas tags may cause them to produce visual content outside of the element bounds. See https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md.',
+  /**
+   * @description Warning displayed to developers that the API
+   * `chrome.privacy.websites.privacySandboxEnabled` is being deprecated in
+   * favour of three new more granular APIs: topicsEnabled, FledgeEnabled and
+   * adMeasurementEnabled. The `privacySandboxEnabled` API allowed extensions to
+   * control the homologous Chrome Setting. The existing Chrome Setting for
+   * Privacy Sandbox is also going away in favor of more granular settings that
+   * are matched by the new extensions APIs- topicsEnabled, FledgeEnabled and
+   * adMeasurementEnabled.
+   */
+  privacySandboxExtensionsAPI:
+      'We’re deprecating the API `chrome.privacy.websites.privacySandboxEnabled`, though it will remain active for backward compatibility until release M113. Instead, please use `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` and `chrome.privacy.websites.adMeasurementEnabled`. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled.',
 };
 // clang-format on
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/DeprecationIssue.ts', UIStrings);
@@ -598,6 +610,10 @@ export class DeprecationIssue extends Issue {
         messageFunction = i18nLazyString(
             UIStrings.deprecatedWithReplacement,
             {PH1: 'HTMLVideoElement.webkitSupportsFullscreen', PH2: 'Document.fullscreenEnabled'});
+        break;
+      case Protocol.Audits.DeprecationIssueType.PrivacySandboxExtensionsAPI:
+        messageFunction = i18nLazyString(UIStrings.privacySandboxExtensionsAPI);
+        milestone = 113;
         break;
       case Protocol.Audits.DeprecationIssueType.RangeExpand:
         messageFunction =

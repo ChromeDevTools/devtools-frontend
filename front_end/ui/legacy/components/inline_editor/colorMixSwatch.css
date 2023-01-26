@@ -10,7 +10,6 @@
   grid: [stack] 1fr / [stack] 1fr;
   margin-left: 1px;
   margin-right: 2px;
-  vertical-align: middle;
 }
 
 /* stylelint-disable */

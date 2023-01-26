@@ -810,9 +810,9 @@ describe('Color', () => {
     assert.deepEqual(new Color.Legacy([-1, 0, 1.1, 1], Color.Format.RGBA).asString(), 'rgb(0 0 255)');
 
     assert.isTrue(Color.parse('hsl(-120deg 130% 50%)')?.isGamutClipped());
-    assert.deepEqual(Color.parse('hsl(-120deg 130% 50%)')?.asString(), 'hsl(-120deg 100% 50%)');
+    assert.deepEqual(Color.parse('hsl(-120deg 130% 50%)')?.asString(), 'hsl(240deg 100% 50%)');
     assert.isFalse(Color.parse('hwb(-120deg -130% 50%)')?.isGamutClipped());
-    assert.deepEqual(Color.parse('hwb(-120deg -130% 50%)')?.asString(), 'hwb(-120deg 0% 50%)');
+    assert.deepEqual(Color.parse('hwb(-120deg -130% 50%)')?.asString(), 'hwb(240deg 0% 50%)');
 
     assert.isFalse(Color.parse('lch(110 -70 -70)')?.isGamutClipped());
     assert.deepEqual(Color.parse('lch(110 70 -70)')?.asString(), 'lch(100 0 0)');
@@ -827,10 +827,10 @@ describe('Color', () => {
     assert.deepEqual(Color.parse('oklab(1.5 -70 -70)')?.asString(), 'oklab(1 0 0)');
 
     assert.isFalse(Color.parse('lch(10 70 -70)')?.isGamutClipped());
-    assert.deepEqual(Color.parse('lch(10 70 -70)')?.asString(), 'lch(10 70 -70)');
+    assert.deepEqual(Color.parse('lch(10 70 -70)')?.asString(), 'lch(10 70 290)');
 
     assert.isFalse(Color.parse('oklch(0.5 70 -70)')?.isGamutClipped());
-    assert.deepEqual(Color.parse('oklch(0.5 70 -70)')?.asString(), 'oklch(0.5 70 -70)');
+    assert.deepEqual(Color.parse('oklch(0.5 70 -70)')?.asString(), 'oklch(0.5 70 290)');
 
     assert.isFalse(Color.parse('lab(10 -70 -70)')?.isGamutClipped());
     assert.deepEqual(Color.parse('lab(10 -70 -70)')?.asString(), 'lab(10 -70 -70)');

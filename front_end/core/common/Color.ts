@@ -48,6 +48,19 @@ import {
   type Color4DOr3D,
 } from './ColorUtils.js';
 
+// <hue> is defined as a <number> or <angle>
+// and we hold this in degrees. However, after
+// the conversions, these degrees can result in
+// negative values. That's why we normalize the hue to be
+// between [0 - 360].
+function normalizeHue(hue: number): number {
+  // Even though it is highly unlikely, hue can be
+  // very negative like -400. The initial modulo
+  // operation makes sure that the if the number is
+  // negative, it is between [-360, 0].
+  return ((hue % 360) + 360) % 360;
+}
+
 // Parses angle in the form of
 // `<angle>deg`, `<angle>turn`, `<angle>grad and `<angle>rad`
 // and returns the canonicalized `degree`.
@@ -918,7 +931,7 @@ export class LCH implements Color {
     c = equals(this.l, 0) || equals(this.l, 100) ? 0 : c;
     this.c = clamp(c, {min: 0});
     h = equals(c, 0) ? 0 : h;
-    this.h = h;
+    this.h = normalizeHue(h);
     this.alpha = clamp(alpha, {min: 0, max: 1});
     this.#authoredText = authoredText;
   }
@@ -1190,7 +1203,7 @@ export class Oklch implements Color {
     c = equals(this.l, 0) || equals(this.l, 1) ? 0 : c;
     this.c = clamp(c, {min: 0});
     h = equals(c, 0) ? 0 : h;
-    this.h = h;
+    this.h = normalizeHue(h);
     this.alpha = clamp(alpha, {min: 0, max: 1});
     this.#authoredText = authoredText;
   }
@@ -1569,7 +1582,7 @@ export class HSL implements Color {
     s = equals(this.l, 0) || equals(this.l, 1) ? 0 : s;
     this.s = clamp(s, {min: 0, max: 1});
     h = equals(this.s, 0) ? 0 : h;
-    this.h = h;
+    this.h = normalizeHue(h * 360) / 360;
     this.alpha = clamp(alpha ?? null, {min: 0, max: 1});
     this.#authoredText = authoredText;
   }
@@ -1719,7 +1732,7 @@ export class HWB implements Color {
     this.w = clamp(w, {min: 0, max: 1});
     this.b = clamp(b, {min: 0, max: 1});
     h = lessOrEquals(1, this.w + this.b) ? 0 : h;
-    this.h = h;
+    this.h = normalizeHue(h * 360) / 360;
     this.alpha = clamp(alpha, {min: 0, max: 1});
     if (lessOrEquals(1, this.w + this.b)) {
       // normalize to a sum of 100% respecting the ratio, see https://www.w3.org/TR/css-color-4/#the-hwb-notation
@@ -1771,7 +1784,12 @@ export class HWB implements Color {
   }
 
   canonicalHWBA(): number[] {
-    return [Math.round(this.h * 360), Math.round(this.w * 100), Math.round(this.b * 100), this.alpha ?? 1];
+    return [
+      Math.round(this.h * 360),
+      Math.round(this.w * 100),
+      Math.round(this.b * 100),
+      this.alpha ?? 1,
+    ];
   }
   getRawParameters(): Color3D {
     return [...this.#rawParams];

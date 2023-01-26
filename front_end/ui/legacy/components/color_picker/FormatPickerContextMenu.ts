@@ -87,6 +87,7 @@ export class FormatPickerContextMenu {
       const icon = newColor.isGamutClipped() ? new IconButton.Icon.Icon() : undefined;
       if (icon) {
         icon.data = {iconName: 'ic_warning_black_18dp', color: 'black', width: '14px', height: '14px'};
+        icon.style.marginLeft = '1px';
       }
       const tooltip =
           icon ? i18nString(UIStrings.colorClippedTooltipText, {PH1: newColor.getAsRawString() ?? 'none'}) : undefined;

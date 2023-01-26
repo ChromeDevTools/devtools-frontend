@@ -3178,9 +3178,7 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
         const link =
             linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, {showColumnNumber: true, inlineFrameIndex: 0});
         if (link) {
-          // Linkifier is using a workaround with the 'zero width space' (\u200b).
-          // TODO(szuend): Remove once the Linkifier is no longer using the workaround.
-          if (!link.textContent || link.textContent === '\u200b') {
+          if (!link.textContent) {
             link.textContent = i18nString(UIStrings.unknown);
           }
           stack.createChild('span').textContent = ' @ ';

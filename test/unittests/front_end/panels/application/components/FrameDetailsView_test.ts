@@ -168,7 +168,7 @@ describeWithRealConnection('FrameDetailsView', () => {
       '<iframe>',
       '',
       '',
-      '\u200b',
+      '',
       'Yes\xA0Localhost is always a secure context',
       'Yes',
       'None',
@@ -199,7 +199,7 @@ describeWithRealConnection('FrameDetailsView', () => {
 
     const adScriptLink = component.shadowRoot.querySelector('devtools-report-value.ad-script-link');
     assertNotNullOrUndefined(adScriptLink);
-    assert.strictEqual(adScriptLink.textContent, '\u200b');
+    assert.strictEqual(adScriptLink.textContent, '');
   });
 
   it('renders report keys and values with on-going prerendering', async () => {

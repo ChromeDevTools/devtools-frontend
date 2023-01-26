@@ -92,7 +92,7 @@ describeWithMockConnection('Linkifier', async () => {
     const url = Platform.DevToolsPath.EmptyUrlString;
     const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId1, url, lineNumber);
     assertNotNullOrUndefined(anchor);
-    assert.strictEqual(anchor.textContent, '\u200b');
+    assert.strictEqual(anchor.textContent, '');
 
     const info = Components.Linkifier.Linkifier.linkInfo(anchor);
     assertNotNullOrUndefined(info);
@@ -111,7 +111,7 @@ describeWithMockConnection('Linkifier', async () => {
     const url = Platform.DevToolsPath.EmptyUrlString;
     const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId1, url, lineNumber);
     assertNotNullOrUndefined(anchor);
-    assert.strictEqual(anchor.textContent, '\u200b');
+    assert.strictEqual(anchor.textContent, '');
 
     void debuggerModel.resumeModel();
     const scriptParsedEvent: Protocol.Debugger.ScriptParsedEvent = {
@@ -226,7 +226,7 @@ describeWithMockConnection('Linkifier', async () => {
     const url = Platform.DevToolsPath.EmptyUrlString;
     const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId1, url, lineNumber, options);
     assertNotNullOrUndefined(anchor);
-    assert.strictEqual(anchor.textContent, '\u200b');
+    assert.strictEqual(anchor.textContent, '');
 
     void debuggerModel.resumeModel();
     const scriptParsedEvent: Protocol.Debugger.ScriptParsedEvent = {

@@ -130,9 +130,7 @@ export function buildStackTraceRows(
                 uiLocation.uiSourceCode)) {
           ignoreListHide = true;
         }
-        // Linkifier is using a workaround with the 'zero width space' (\u200b).
-        // TODO(szuend): Remove once the Linkfier is no longer using the workaround.
-        if (!link.textContent || link.textContent === '\u200b') {
+        if (!link.textContent) {
           link.textContent = i18nString(UIStrings.unknownSource);
         }
       }

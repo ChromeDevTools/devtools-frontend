@@ -232,12 +232,8 @@ export class Linkifier implements SDK.TargetManager.Observer {
     const createLinkOptions: _CreateLinkOptions = {
       tabStop: options?.tabStop,
     };
-    // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
-    // in the layout engine.
-    // TODO(szuend): Remove comment and workaround once the crash is fixed.
     const {link, linkInfo} = Linkifier.createLink(
-        fallbackAnchor && fallbackAnchor.textContent ? fallbackAnchor.textContent : '\u200b', className,
-        createLinkOptions);
+        fallbackAnchor && fallbackAnchor.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
     linkInfo.enableDecorator = this.useLinkDecorator;
     linkInfo.fallback = fallbackAnchor;
 
@@ -339,10 +335,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     // All targets that can report stack traces also have a debugger model.
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
 
-    // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
-    // in the layout engine.
-    // TODO(szuend): Remove comment and workaround once the crash is fixed.
-    const {link, linkInfo} = Linkifier.createLink('\u200b', '');
+    const {link, linkInfo} = Linkifier.createLink('', '');
     linkInfo.enableDecorator = this.useLinkDecorator;
     linkInfo.fallback = fallbackAnchor;
 
@@ -369,10 +362,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     const createLinkOptions: _CreateLinkOptions = {
       tabStop: true,
     };
-    // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
-    // in the layout engine.
-    // TODO(szuend): Remove comment and workaround once the crash is fixed.
-    const {link, linkInfo} = Linkifier.createLink('\u200b', classes || '', createLinkOptions);
+    const {link, linkInfo} = Linkifier.createLink('', classes || '', createLinkOptions);
     linkInfo.enableDecorator = this.useLinkDecorator;
 
     const pool = this.locationPoolByTarget.get(rawLocation.cssModel().target());

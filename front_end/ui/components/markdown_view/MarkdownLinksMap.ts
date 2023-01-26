@@ -45,6 +45,10 @@ export const markdownLinks = new Map<string, string>([
     'https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md',
     'https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md',
   ],
+  [
+    'https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled',
+    'https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled',
+  ],
 ]);
 
 export const getMarkdownLink = (key: string): string => {

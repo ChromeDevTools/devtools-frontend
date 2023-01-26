@@ -25,6 +25,7 @@ node_ts_library("issues") {
     "issue-view-reparent_test.ts",
     "low-text-contrast-issues_test.ts",
     "navigator-user-agent-issues_test.ts",
+    "privacy-sandbox-extensions-api_test.ts",
     "quirks-mode-issues_test.ts",
     "quota-issues_test.ts",
     "report-only_test.ts",

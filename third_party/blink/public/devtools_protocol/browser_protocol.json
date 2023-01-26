@@ -1609,6 +1609,7 @@
                         "PrefixedVideoExitFullscreen",
                         "PrefixedVideoExitFullScreen",
                         "PrefixedVideoSupportsFullscreen",
+                        "PrivacySandboxExtensionsAPI",
                         "RangeExpand",
                         "RequestedSubresourceWithEmbeddedCredentials",
                         "RTCConstraintEnableDtlsSrtpFalse",

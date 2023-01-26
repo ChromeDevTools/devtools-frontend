@@ -96,8 +96,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   private async computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame):
-      Promise<RawLocationRange[]> {
-    function contained(location: SDK.DebuggerModel.Location, range: RawLocationRange): boolean {
+      Promise<SDK.DebuggerModel.LocationRange[]> {
+    function contained(location: SDK.DebuggerModel.Location, range: SDK.DebuggerModel.LocationRange): boolean {
       const {start, end} = range;
       if (start.scriptId !== location.scriptId) {
         return false;
@@ -119,7 +119,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       return [];
     }
     const pluginManager = this.pluginManager;
-    let ranges: RawLocationRange[] = [];
+    let ranges: SDK.DebuggerModel.LocationRange[] = [];
     if (pluginManager) {
       if (mode === SDK.DebuggerModel.StepMode.StepOut) {
         // Step out of inline function.
@@ -648,11 +648,6 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
     }
     void this.update();
   }
-}
-
-export interface RawLocationRange {
-  start: SDK.DebuggerModel.Location;
-  end: SDK.DebuggerModel.Location;
 }
 
 export interface DebuggerSourceMapping {

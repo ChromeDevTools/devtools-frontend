@@ -39,7 +39,6 @@ import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {
   type DebuggerSourceMapping,
   type DebuggerWorkspaceBinding,
-  type RawLocationRange,
 } from './DebuggerWorkspaceBinding.js';
 import {IgnoreListManager} from './IgnoreListManager.js';
 import {NetworkProject} from './NetworkProject.js';
@@ -125,7 +124,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     return [...compiledURLs];
   }
 
-  getLocationRangesForSameSourceLocation(rawLocation: SDK.DebuggerModel.Location): RawLocationRange[] {
+  getLocationRangesForSameSourceLocation(rawLocation: SDK.DebuggerModel.Location): SDK.DebuggerModel.LocationRange[] {
     const debuggerModel = rawLocation.debuggerModel;
     const script = rawLocation.script();
     if (!script) {

@@ -177,25 +177,27 @@ function convertColorFormat(colorFormat: Common.Color.Format): SpectrumColorForm
 // show an sRGB color. Though, if there was a function `color-hsl(<color-space> h s l)`
 // it was going to show the color in the color-space represented with `hsl`.
 // This function, gets the HSV values by interpreting them in the given gamut.
-function getHsvFromColor(gamut: SpectrumGamut, color: Common.Color.Color): number[] {
+function getHsvFromColor(gamut: SpectrumGamut, color: Common.Color.Color): Common.ColorUtils.Color4D {
   switch (gamut) {
     case SpectrumGamut.DISPLAY_P3: {
       const displayP3color = color.as(Common.Color.Format.DISPLAY_P3);
-      return Common.Color.rgba2hsva(
-          [displayP3color.p0, displayP3color.p1, displayP3color.p2, displayP3color.alpha || 1]);
+      return [
+        ...Common.Color.rgb2hsv([displayP3color.p0, displayP3color.p1, displayP3color.p2]),
+        displayP3color.alpha || 1,
+      ];
     }
     case SpectrumGamut.SRGB: {
-      return color.as(Common.Color.Format.RGB).hsva();
+      return color.as(Common.Color.Format.HSL).hsva();
     }
   }
 }
 
 // Interprets the given `hsva` values in the given gamut and returns the concrete `Color` object.
-function getColorFromHsva(gamut: SpectrumGamut, hsva: number[]): Common.Color.Color {
+function getColorFromHsva(gamut: SpectrumGamut, hsva: Common.ColorUtils.Color4D): Common.Color.Color {
   const color: Common.Color.Legacy = Common.Color.Legacy.fromHSVA(hsva);
   switch (gamut) {
     case SpectrumGamut.DISPLAY_P3: {
-      const rgba: number[] = [];
+      const rgba: Common.ColorUtils.Color4D = [0, 0, 0, 0];
       Common.Color.hsva2rgba(hsva, rgba);
       return new Common.Color.ColorFunction(
           Common.Color.Format.DISPLAY_P3, rgba[0], rgba[1], rgba[2], rgba[3], undefined);
@@ -242,7 +244,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private readonly addColorToolbar: UI.Toolbar.Toolbar;
   private readonly colorPickedBound:
       (event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.EyeDropperPickedColorEvent>) => void;
-  private hsv!: number[];
+  private hsv!: Common.ColorUtils.Color4D;
   private hueAlphaWidth!: number;
   dragWidth!: number;
   dragHeight!: number;
@@ -459,7 +461,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
 
     function positionHue(this: Spectrum, event: Event): void {
-      const hsva = this.hsv.slice();
+      const hsva = this.hsv.slice() as Common.ColorUtils.Color4D;
       const sliderPosition = getUpdatedSliderPosition(this.hueSlider, event);
       const hueAlphaLeft = this.hueElement.getBoundingClientRect().left;
       const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
@@ -467,12 +469,12 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       hsva[0] = Platform.NumberUtilities.clamp(newHue, 0, 1);
       const color = getColorFromHsva(this.gamut, hsva);
       this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
-      const colorValues = color.asLegacyColor().canonicalHSLA();
+      const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
       UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
     }
 
     function positionAlpha(this: Spectrum, event: Event): void {
-      const hsva = this.hsv.slice();
+      const hsva = this.hsv.slice() as Common.ColorUtils.Color4D;
       const sliderPosition = getUpdatedSliderPosition(this.alphaSlider, event);
       const hueAlphaLeft = this.hueElement.getBoundingClientRect().left;
       const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
@@ -480,12 +482,12 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       hsva[3] = Platform.NumberUtilities.clamp(newAlpha, 0, 1);
       const color = getColorFromHsva(this.gamut, hsva);
       this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
-      const colorValues = color.asLegacyColor().canonicalHSLA();
+      const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
       UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
     }
 
     function positionColor(this: Spectrum, event: Event): void {
-      const hsva = this.hsv.slice();
+      const hsva = this.hsv.slice() as Common.ColorUtils.Color4D;
       const colorPosition = getUpdatedColorPosition(this.colorDragElement, event);
       this.colorOffset = this.colorElement.totalOffset();
       hsva[1] = Platform.NumberUtilities.clamp((colorPosition.x - this.colorOffset.left) / this.dragWidth, 0, 1);
@@ -1025,7 +1027,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
   setColor(color: Common.Color.Color, colorFormat: Common.Color.Format): void {
     this.innerSetColor(color, '', undefined /* colorName */, colorFormat, ChangeSource.Model);
-    const colorValues = color.asLegacyColor().canonicalHSLA();
+    const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
     UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
     UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
   }
@@ -1210,7 +1212,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
     this.swatch.setColor(this.color, this.colorString());
     this.colorDragElement.style.backgroundColor = this.color.asString(Common.Color.Format.LCH) as string;
-    const noAlpha = Common.Color.Legacy.fromHSVA(this.hsv.slice(0, 3).concat(1));
+    const noAlpha = Common.Color.Legacy.fromHSVA(this.hsv.slice(0, 3).concat(1) as Common.ColorUtils.Color4D);
     this.alphaElementBackground.style.backgroundImage = Platform.StringUtilities.sprintf(
         'linear-gradient(to right, rgba(0,0,0,0), %s)', noAlpha.asString(Common.Color.Format.LCH));
 
@@ -1420,8 +1422,8 @@ export class PaletteGenerator {
 
   private finish(): void {
     function hueComparator(a: string, b: string): number {
-      const hsva = (paletteColors.get(a) as Common.Color.Legacy).hsva();
-      const hsvb = (paletteColors.get(b) as Common.Color.Legacy).hsva();
+      const hsva = (paletteColors.get(a) as Common.Color.Legacy).as(Common.Color.Format.HSL).hsva();
+      const hsvb = (paletteColors.get(b) as Common.Color.Legacy).as(Common.Color.Format.HSL).hsva();
 
       // First trim the shades of gray
       if (hsvb[1] < 0.12 && hsva[1] < 0.12) {

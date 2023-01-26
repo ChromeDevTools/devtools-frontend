@@ -34,9 +34,9 @@ export const HotColorScheme = ['#ffba08', '#faa307', '#f48c06', '#e85d04', '#dc2
 export const ColdColorScheme = ['#7400b8', '#6930c3', '#5e60ce', '#5390d9', '#4ea8de', '#48bfe3', '#56cfe1', '#64dfdf'];
 
 function calculateFontColor(backgroundColor: string): string {
-  const parsedColor = Common.Color.parse(backgroundColor)?.asLegacyColor();
+  const parsedColor = Common.Color.parse(backgroundColor)?.as(Common.Color.Format.HSL);
   // Dark background needs a light font.
-  if (parsedColor && parsedColor.hsla()[2] < 0.5) {
+  if (parsedColor && parsedColor.l < 0.5) {
     return '#eee';
   }
   return '#444';

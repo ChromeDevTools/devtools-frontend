@@ -5,7 +5,10 @@
 /**
  * Combine the two given colors according to alpha blending.
  */
-export function blendColors(fgRGBA: number[], bgRGBA: number[]): number[] {
+export type Color4D = [number, number, number, number];
+export type Color3D = [number, number, number];
+export type Color4DOr3D = [number, number, number, number | undefined];
+export function blendColors(fgRGBA: Color4D, bgRGBA: Color4D): Color4D {
   const alpha = fgRGBA[3];
   return [
     ((1 - alpha) * bgRGBA[0]) + (alpha * fgRGBA[0]),
@@ -33,7 +36,11 @@ function rgbToHue([r, g, b]: number[]): number {
   return h;
 }
 
-export function rgbaToHsla([r, g, b, a]: number[]): number[] {
+export function rgbToHsl(rgb: Color3D): Color3D {
+  const [h, s, l] = rgbaToHsla([...rgb, undefined]);
+  return [h, s, l];
+}
+export function rgbaToHsla([r, g, b, a]: Color4DOr3D): Color4DOr3D {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   const diff = max - min;
@@ -56,7 +63,11 @@ export function rgbaToHsla([r, g, b, a]: number[]): number[] {
   return [h, s, l, a];
 }
 
-export function rgbaToHwba([r, g, b, a]: number[]): number[] {
+export function rgbToHwb(rgb: Color3D): Color3D {
+  const [h, w, b] = rgbaToHwba([...rgb, undefined]);
+  return [h, w, b];
+}
+export function rgbaToHwba([r, g, b, a]: Color4DOr3D): Color4DOr3D {
   const h = rgbToHue([r, g, b]);
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
@@ -81,7 +92,7 @@ export function luminance([rSRGB, gSRGB, bSRGB]: number[]): number {
  * Returns the ratio to 1, for example for two two colors with a contrast ratio of 21:1, this function will return 21.
  * See http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
  */
-export function contrastRatio(fgRGBA: number[], bgRGBA: number[]): number {
+export function contrastRatio(fgRGBA: Color4D, bgRGBA: Color4D): number {
   const blendedFg = blendColors(fgRGBA, bgRGBA);
   const fgLuminance = luminance(blendedFg);
   const bgLuminance = luminance(bgRGBA);
@@ -123,7 +134,7 @@ export function luminanceAPCA([rSRGB, gSRGB, bSRGB]: number[]): number {
  * Returns the percentage of the predicted visual contrast.
  * See https://github.com/Myndex/SAPC-APCA
  */
-export function contrastRatioAPCA(fgRGBA: number[], bgRGBA: number[]): number {
+export function contrastRatioAPCA(fgRGBA: Color4D, bgRGBA: Color4D): number {
   const blendedFg = blendColors(fgRGBA, bgRGBA);
   return contrastRatioByLuminanceAPCA(luminanceAPCA(blendedFg), luminanceAPCA(bgRGBA));
 }

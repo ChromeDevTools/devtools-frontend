@@ -28,7 +28,12 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {rgbaToHsla, rgbaToHwba} from '../front_end/core/common/ColorUtils.js';  // eslint-disable-line rulesdir/es_modules_import
+// eslint-disable-next-line rulesdir/es_modules_import
+import {
+  rgbaToHsla,
+  rgbaToHwba,
+  type Color4D,
+} from '../front_end/core/common/ColorUtils.js';
 
 import {type Bounds, type PathCommands, type Quad} from './common.js';
 
@@ -254,11 +259,11 @@ export function createPathForQuad(
   return buildPath(commands, bounds, emulationScaleFactor);
 }
 
-export function parseHexa(hexa: string): Array<number> {
-  return (hexa.match(/#(\w\w)(\w\w)(\w\w)(\w\w)/) || []).slice(1).map(c => parseInt(c, 16) / 255);
+export function parseHexa(hexa: string): Color4D {
+  return (hexa.match(/#(\w\w)(\w\w)(\w\w)(\w\w)/) || []).slice(1).map(c => parseInt(c, 16) / 255) as Color4D;
 }
 
-export function formatRgba(rgba: number[], colorFormat: 'rgb'|'hsl'|'hwb'): string {
+export function formatRgba(rgba: Color4D, colorFormat: 'rgb'|'hsl'|'hwb'): string {
   if (colorFormat === 'rgb') {
     const [r, g, b, a] = rgba;
     // rgb(r g b [ / a])
@@ -270,14 +275,14 @@ export function formatRgba(rgba: number[], colorFormat: 'rgb'|'hsl'|'hwb'): stri
     const [h, s, l, a] = rgbaToHsla(rgba);
     // hsl(hdeg s l [ / a])
     return `hsl(${Math.round(h * 360)}deg ${Math.round(s * 100)} ${Math.round(l * 100)}${
-        a === 1 ? '' : ' / ' + Math.round(a * 100) / 100})`;
+        a === 1 ? '' : ' / ' + Math.round((a ?? 1) * 100) / 100})`;
   }
 
   if (colorFormat === 'hwb') {
     const [h, w, b, a] = rgbaToHwba(rgba);
     // hwb(hdeg w b [ / a])
     return `hwb(${Math.round(h * 360)}deg ${Math.round(w * 100)} ${Math.round(b * 100)}${
-        a === 1 ? '' : ' / ' + Math.round(a * 100) / 100})`;
+        a === 1 ? '' : ' / ' + Math.round((a ?? 1) * 100) / 100})`;
   }
 
   throw new Error('NOT_REACHED');

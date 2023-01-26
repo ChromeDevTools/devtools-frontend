@@ -95,7 +95,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     // background, draw the line for the "worst case" scenario: where
     // the unknown background is the same color as the text.
     if (bgColor.hasAlpha()) {
-      const blendedRGBA: number[] = Common.ColorUtils.blendColors(bgColor.rgba(), fgRGBA);
+      const blendedRGBA = Common.ColorUtils.blendColors(bgColor.rgba(), fgRGBA);
       this.bgColorInternal = new Common.Color.Legacy(blendedRGBA, Common.Color.Format.RGBA);
     }
 

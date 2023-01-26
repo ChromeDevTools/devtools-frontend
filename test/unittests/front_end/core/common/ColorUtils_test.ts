@@ -8,8 +8,8 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 
 describe('ColorUtils', async () => {
   it('is able to blend two colors according to alpha blending', () => {
-    const firstColor = [1, 0, 0, 1];
-    const secondColor = [0, 0, 1, 1];
+    const firstColor: Common.ColorUtils.Color4D = [1, 0, 0, 1];
+    const secondColor: Common.ColorUtils.Color4D = [0, 0, 1, 1];
     const result = Common.ColorUtils.blendColors(firstColor, secondColor);
     assert.deepEqual(result, [1, 0, 0, 1], 'colors were not blended successfully');
   });
@@ -35,8 +35,8 @@ describe('ColorUtils', async () => {
   });
 
   it('is able to calculate the contrast ratio between two colors', () => {
-    const firstColor = [1, 0, 0, 1];
-    const secondColor = [0, 0, 1, 1];
+    const firstColor: Common.ColorUtils.Color4D = [1, 0, 0, 1];
+    const secondColor: Common.ColorUtils.Color4D = [0, 0, 1, 1];
     assert.strictEqual(
         Common.ColorUtils.contrastRatio(firstColor, secondColor), 2.148936170212766,
         'contrast ratio was not calculated correctly');

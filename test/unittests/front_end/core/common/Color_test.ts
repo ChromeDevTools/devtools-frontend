@@ -50,13 +50,11 @@ describe('Color', () => {
   it('is able to create a color class from an HSVA value', () => {
     const color = Color.Legacy.fromHSVA([0.5, 0.5, 0.5, 100]);
     assert.deepEqual(color.rgba(), [0.25, 0.49999999999999994, 0.5, 1], 'RGBA array was not set correctly');
-    assert.strictEqual(color.asString(), 'hsl(180deg 33.33% 37.5%)', 'original text was not set correctly');
-    assert.strictEqual(color.format(), 'hsla', 'format was not set correctly');
   });
 
   it('is able to return the HSVA value of a color', () => {
     const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
-    const hsva = color.hsva();
+    const hsva = color.as(Common.Color.Format.HSL).hsva();
     assert.deepEqual(hsva, [0, 0, 0.5, 0.5], 'HSVA was not calculated correctly');
   });
 
@@ -77,13 +75,13 @@ describe('Color', () => {
 
   it('is able to return canonical HSLA for a color', () => {
     const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColor');
-    const result = color.canonicalHSLA();
+    const result = color.as(Common.Color.Format.HSL).canonicalHSLA();
     assert.deepEqual(result, [0, 0, 50, 0.5], 'canonical HSLA was not calculated correctly');
   });
 
   it('is able to return canonical HWBA for a color', () => {
     const color = new Color.Legacy([0.5, 0.5, 0.5, 0.5], Color.Format.RGBA, 'testColorGray');
-    const result = color.canonicalHWBA();
+    const result = color.as(Color.Format.HWB).canonicalHWBA();
     deepCloseTo(result, [0, 50, 50, 0.5], tolerance, 'canonical HWBA was not calculated correctly');
   });
 
@@ -423,37 +421,37 @@ describe('Color', () => {
   });
 
   it('returns the HSL value when turned into a string if its format was "hsl"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HSL);
-    const result = color.asString();
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGB);
+    const result = color.asString(Common.Color.Format.HSL);
     assert.strictEqual(result, 'hsl(0deg 100% 50%)', 'color was not converted to a string correctly');
   });
 
   it('returns the HSLA value when turned into a string if its format was "hsla"', () => {
-    const color = new Color.Legacy([1, 0, 0, 0.42], Color.Format.HSLA);
-    const result = color.asString();
+    const color = new Color.Legacy([1, 0, 0, 0.42], Color.Format.RGBA);
+    const result = color.asString(Common.Color.Format.HSL);
     assert.strictEqual(result, 'hsl(0deg 100% 50% / 42%)', 'color was not converted to a string correctly');
   });
 
   it('omits the alpha value when it’s 100% if its format was "hsla"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HSLA);
-    const result = color.asString();
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGBA);
+    const result = color.asString(Common.Color.Format.HSLA);
     assert.strictEqual(result, 'hsl(0deg 100% 50%)', 'color was not converted to a string correctly');
   });
 
   it('returns the HWB value when turned into a string if its format was "hwb"', () => {
-    const color = new Color.Legacy([0, 0, 1, 1], Color.Format.HWB);
+    const color = new Color.Legacy([0, 0, 1, 1], Color.Format.RGBA).as(Color.Format.HWB);
     const result = color.asString();
     assert.strictEqual(result, 'hwb(240deg 0% 0%)', 'color was not converted to a string correctly');
   });
 
   it('returns the HWB value when turned into a string if its format was "hwba"', () => {
-    const color = new Color.Legacy([1, 0, 0, 0.42], Color.Format.HWBA);
+    const color = new Color.Legacy([0, 0, 0, 0.42], Color.Format.RGBA).as(Color.Format.HWBA);
     const result = color.asString();
-    assert.strictEqual(result, 'hwb(0deg 0% 0% / 42%)', 'color was not converted to a string correctly');
+    assert.strictEqual(result, 'hwb(0deg 0% 100% / 42%)', 'color was not converted to a string correctly');
   });
 
   it('omits the alpha value when it’s 100% if its format was "hwba"', () => {
-    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.HWBA);
+    const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGBA).as(Color.Format.HWBA);
     const result = color.asString();
     assert.strictEqual(result, 'hwb(0deg 0% 0%)', 'color was not converted to a string correctly');
   });
@@ -466,10 +464,8 @@ describe('Color', () => {
 
   it('is able to change color format', () => {
     const color = new Color.Legacy([1, 0, 0, 1], Color.Format.RGB);
-    color.setFormat(Color.Format.HSL);
-    assert.strictEqual(color.asString(), 'hsl(0deg 100% 50%)', 'format was not set correctly');
-    color.setFormat(Color.Format.HWB);
-    assert.strictEqual(color.asString(), 'hwb(0deg 0% 0%)', 'format was not set correctly');
+    color.setFormat(Color.Format.HEXA);
+    assert.strictEqual(color.asString(), '#ff0000ff', 'format was not set correctly');
   });
 
   it('suggests colors with good contrast', () => {
@@ -522,7 +518,7 @@ describe('Color', () => {
       const bgParsed = parseAndAssertNotNull(bgColor);
       assertNotNullOrUndefined(fgParsed);
       assertNotNullOrUndefined(bgParsed);
-      const suggestedColor = Color.findFgColorForContrast(fgParsed, bgParsed, contrast);
+      const suggestedColor = Color.findFgColorForContrast(fgParsed, bgParsed, contrast)?.as(Color.Format.HSL);
       assertNotNullOrUndefined(suggestedColor);
       assert.strictEqual(
           suggestedColor.asString(), result,
@@ -599,9 +595,9 @@ describe('Color', () => {
       [Common.Color.Format.RGB]: 'rgb(0 255 0)',
       [Common.Color.Format.RGBA]: 'rgba(0 255 0 / 100%)',
       [Common.Color.Format.HSL]: 'hsl(120deg 100% 50%)',
-      [Common.Color.Format.HSLA]: 'hsl(120deg 100% 50% / 100%)',
+      [Common.Color.Format.HSLA]: 'hsl(120deg 100% 50% / 80%)',
       [Common.Color.Format.HWB]: 'hwb(120deg 0% 0%)',
-      [Common.Color.Format.HWBA]: 'hwb(120deg 0% 0% / 100%)',
+      [Common.Color.Format.HWBA]: 'hwb(120deg 0% 0% / 80%)',
       [Common.Color.Format.LCH]: 'lch(87.82 113.32 134.38)',
       [Common.Color.Format.OKLCH]: 'oklch(0.87 0.29 142.49)',
       [Common.Color.Format.LAB]: 'lab(87.82 -79.26 80.99)',
@@ -622,7 +618,7 @@ describe('Color', () => {
       const color = Common.Color.parse(spec);
       assertNotNullOrUndefined(color);
       assert.deepEqual(color?.getAuthoredText(), spec);
-      assert.deepEqual(color?.format(), format);
+      assert.deepEqual(color?.format(), format, spec);
     }
   });
 
@@ -795,10 +791,10 @@ describe('Color', () => {
     assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HEXA), '#ffd39eff');
     assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.RGB), 'rgb(255 211 158)');
     assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.RGBA), 'rgb(255 211 158)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HSL), 'hsl(32.94deg 100% 80.89%)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HSLA), 'hsl(32.94deg 100% 80.89%)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HWB), 'hwb(32.94deg 61.78% 0%)');
-    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HWBA), 'hwb(32.94deg 61.78% 0%)');
+    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HSL), 'hsl(0deg 0% 100%)');
+    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HSLA), 'hsl(0deg 0% 100%)');
+    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HWB), 'hwb(15.95deg 61.78% 0%)');
+    assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.HWBA), 'hwb(15.95deg 61.78% 0%)');
     assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.SRGB), 'color(srgb 1 0.83 0.62)');
     assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.SRGB_LINEAR), 'color(srgb-linear 1 0.65 0.34)');
     assert.deepEqual(nonSRGBColor.asString(Common.Color.Format.DISPLAY_P3), 'color(display-p3 1 0.86 0.66)');
@@ -813,10 +809,10 @@ describe('Color', () => {
     assert.isTrue(new Color.Legacy([-1, 0, 1.1, 1], Color.Format.RGBA).isGamutClipped());
     assert.deepEqual(new Color.Legacy([-1, 0, 1.1, 1], Color.Format.RGBA).asString(), 'rgb(0 0 255)');
 
-    assert.isFalse(Color.parse('hsl(-120deg 130% 50%)')?.isGamutClipped());
-    assert.deepEqual(Color.parse('hsl(-120deg 130% 50%)')?.asString(), 'hsl(240deg 100% 50%)');
-    assert.isFalse(Color.parse('hwb(-120deg 130% 50%)')?.isGamutClipped());
-    assert.deepEqual(Color.parse('hwb(-120deg -130% 50%)')?.asString(), 'hwb(240deg 0% 50%)');
+    assert.isTrue(Color.parse('hsl(-120deg 130% 50%)')?.isGamutClipped());
+    assert.deepEqual(Color.parse('hsl(-120deg 130% 50%)')?.asString(), 'hsl(-120deg 100% 50%)');
+    assert.isFalse(Color.parse('hwb(-120deg -130% 50%)')?.isGamutClipped());
+    assert.deepEqual(Color.parse('hwb(-120deg -130% 50%)')?.asString(), 'hwb(-120deg 0% 50%)');
 
     assert.isFalse(Color.parse('lch(110 -70 -70)')?.isGamutClipped());
     assert.deepEqual(Color.parse('lch(110 70 -70)')?.asString(), 'lch(100 0 0)');

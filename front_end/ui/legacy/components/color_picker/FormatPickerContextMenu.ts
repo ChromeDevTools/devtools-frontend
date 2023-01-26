@@ -34,21 +34,37 @@ export class FormatPickerContextMenu {
       resolveShowPromise = resolve;
     });
 
-    const formats = [
-      Common.Color.Format.Nickname, Common.Color.Format.HEX,          Common.Color.Format.ShortHEX,
-      Common.Color.Format.HEXA,     Common.Color.Format.ShortHEXA,    Common.Color.Format.RGB,
-      Common.Color.Format.RGBA,     Common.Color.Format.HSL,          Common.Color.Format.HSLA,
-      Common.Color.Format.HWB,      Common.Color.Format.HWBA,         Common.Color.Format.LCH,
-      Common.Color.Format.OKLCH,    Common.Color.Format.LAB,          Common.Color.Format.OKLAB,
-      Common.Color.Format.SRGB,     Common.Color.Format.SRGB_LINEAR,  Common.Color.Format.DISPLAY_P3,
-      Common.Color.Format.A98_RGB,  Common.Color.Format.PROPHOTO_RGB, Common.Color.Format.REC_2020,
-      Common.Color.Format.XYZ,      Common.Color.Format.XYZ_D50,      Common.Color.Format.XYZ_D65,
+    const legacyFormats = [
+      Common.Color.Format.Nickname,
+      Common.Color.Format.HEX,
+      Common.Color.Format.ShortHEX,
+      Common.Color.Format.HEXA,
+      Common.Color.Format.ShortHEXA,
+      Common.Color.Format.RGB,
+      Common.Color.Format.RGBA,
+      Common.Color.Format.HSL,
+      Common.Color.Format.HWB,
+    ];
+    const modernFormats = [
+      Common.Color.Format.LCH,
+      Common.Color.Format.OKLCH,
+      Common.Color.Format.LAB,
+      Common.Color.Format.OKLAB,
+      Common.Color.Format.SRGB,
+      Common.Color.Format.SRGB_LINEAR,
+      Common.Color.Format.DISPLAY_P3,
+      Common.Color.Format.A98_RGB,
+      Common.Color.Format.PROPHOTO_RGB,
+      Common.Color.Format.REC_2020,
+      Common.Color.Format.XYZ,
+      Common.Color.Format.XYZ_D50,
+      Common.Color.Format.XYZ_D65,
     ];
     const menu = new UI.ContextMenu.ContextMenu(e, {useSoftMenu: true, onSoftMenuClosed: () => resolveShowPromise?.()});
     const legacySection = menu.section('legacy');
     const wideSection = menu.section('wide');
     const colorFunctionSection = menu.section('color-function').appendSubMenuItem('color()').section();
-    for (const format of formats) {
+    for (const format of [...legacyFormats, ...modernFormats]) {
       if (format === this.#format) {
         continue;
       }
@@ -78,9 +94,9 @@ export class FormatPickerContextMenu {
 
       const handler = (): void => onSelect(format);
 
-      const section = newColor instanceof Common.Color.Legacy ? legacySection :
-          newColor instanceof Common.Color.ColorFunction      ? colorFunctionSection :
-                                                                wideSection;
+      const section = legacyFormats.includes(format)     ? legacySection :
+          newColor instanceof Common.Color.ColorFunction ? colorFunctionSection :
+                                                           wideSection;
       section.appendItem(label, handler, false, icon, tooltip);
     }
     await menu.show();

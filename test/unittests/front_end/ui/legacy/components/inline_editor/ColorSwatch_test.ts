@@ -91,7 +91,9 @@ describeWithLocale('ColorSwatch', () => {
     const swatch = createSwatch('red', Common.Color.Format.RGB);
     assertSwatch(swatch, {colorTextInSlot: 'red'});
 
-    swatch.renderColor(new Common.Color.Legacy([1, .5, .2, .5], Common.Color.Format.HSLA), Common.Color.Format.RGB);
+    swatch.renderColor(
+        new Common.Color.Legacy([1, .5, .2, .5], Common.Color.Format.RGBA).as(Common.Color.Format.HSL),
+        Common.Color.Format.RGBA);
     assertSwatch(swatch, {colorTextInSlot: 'rgb(255 128 51 / 50%)'});
   });
 

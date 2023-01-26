@@ -60,16 +60,16 @@ function patchHSLA(hsla: number[], colorUsage: ColorUsage): void {
 }
 
 function patchColor(colorAsText: string, colorUsage: ColorUsage): string {
-  const color = Common.Color.parse(colorAsText)?.asLegacyColor();
+  const color = Common.Color.parse(colorAsText)?.as(Common.Color.Format.HSL);
   if (!color) {
     return colorAsText;
   }
-  const hsla = color.hsla();
+  const hsla: Common.ColorUtils.Color4D = [color.h, color.s, color.l, color.alpha ?? 1];
   patchHSLA(hsla, colorUsage);
 
-  const rgba: number[] = [];
+  const rgba: Common.ColorUtils.Color4D = [0, 0, 0, 0];
   Common.Color.hsl2rgb(hsla, rgba);
-  const outColor = new Common.Color.Legacy(rgba, color.format());
+  const outColor = new Common.Color.Legacy(rgba, Common.Color.Format.RGBA);
   let outText = outColor.asString();
   if (!outText) {
     outText = outColor.asString(outColor.hasAlpha() ? Common.Color.Format.RGBA : Common.Color.Format.RGB);

@@ -24,8 +24,8 @@ const SRGB_TEXT_UPPER_POINT_FROM_BOTTOM = SRGB_LABEL_HEIGHT + SRGB_LABEL_BOTTOM;
 
 const EPSILON = 0.001;
 // TODO(crbug.com/1409892): Use `Color` class here for a better code (and not duplicate isInGamut logic here)
-function isColorInSrgbGamut(hsv: number[]): boolean {
-  const rgba: number[] = [];
+function isColorInSrgbGamut(hsv: Common.ColorUtils.Color3D): boolean {
+  const rgba: Common.ColorUtils.Color4D = [0, 0, 0, 0];
   Common.Color.hsva2rgba([...hsv, 1], rgba);
   const xyzd50 = Common.ColorConverter.ColorConverter.displayP3ToXyzd50(rgba[0], rgba[1], rgba[2]);
   const srgb = Common.ColorConverter.ColorConverter.xyzd50ToSrgb(xyzd50[0], xyzd50[1], xyzd50[2]);

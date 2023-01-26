@@ -572,8 +572,8 @@ export function createElementDescription(elementInfo: ElementInfo, colorFormat: 
   }
 
   function addContrastRow(fgColor: ColorRgba, contrast: ContrastInfo) {
-    const parsedFgColor = fgColor.slice();
-    const parsedBgColor = contrast.backgroundColorUnclampedRgba.slice();
+    const parsedFgColor = fgColor.slice() as ColorRgba;
+    const parsedBgColor = contrast.backgroundColorUnclampedRgba.slice() as ColorRgba;
     // Merge text opacity into the alpha channel of the color.
     parsedFgColor[3] *= contrast.textOpacity;
     const valueElement = addRow('Contrast', '', 'element-info-value-contrast');

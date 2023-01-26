@@ -212,7 +212,7 @@ export interface OverviewData {
 export type FontInfo = Map<string, Map<string, Map<string, number[]>>>;
 
 function getBorderString(color: Common.Color.Legacy): string {
-  let [h, s, l] = color.hsla();
+  let {h, s, l} = color.as(Common.Color.Format.HSL);
   h = Math.round(h * 360);
   s = Math.round(s * 100);
   l = Math.round(l * 100);

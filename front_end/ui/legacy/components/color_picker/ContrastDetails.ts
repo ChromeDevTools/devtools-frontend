@@ -484,6 +484,6 @@ export class Swatch {
     this.textPreview.style.color = fgColor.asString(Common.Color.Format.RGBA) as string;
     this.swatchInnerElement.style.backgroundColor = bgColor.asString(Common.Color.Format.RGBA) as string;
     // Show border if the swatch is white.
-    this.swatchElement.classList.toggle('swatch-inner-white', bgColor.hsla()[2] > 0.9);
+    this.swatchElement.classList.toggle('swatch-inner-white', bgColor.as(Common.Color.Format.HSL).l > 0.9);
   }
 }

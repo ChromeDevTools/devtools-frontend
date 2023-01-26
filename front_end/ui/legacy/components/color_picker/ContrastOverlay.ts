@@ -110,7 +110,7 @@ export class ContrastRatioLineBuilder {
     }
 
     const fgRGBA = color.rgba();
-    const fgHSVA = color.hsva();
+    const fgHSVA = color.as(Common.Color.Format.HSL).hsva();
     const bgRGBA = bgColor.rgba();
     const bgLuminance = Common.ColorUtils.luminance(bgRGBA);
     let blendedRGBA: number[] = Common.ColorUtils.blendColors(fgRGBA, bgRGBA);
@@ -128,20 +128,20 @@ export class ContrastRatioLineBuilder {
 
     let lastV: number = fgHSVA[V];
     let currentSlope = 0;
-    const candidateHSVA = [fgHSVA[H], 0, 0, fgHSVA[A]];
+    const candidateHSVA: Common.ColorUtils.Color4D = [fgHSVA[H], 0, 0, fgHSVA[A]];
     let pathBuilder: string[] = [];
-    const candidateRGBA: number[] = [];
+    const candidateRGBA: Common.ColorUtils.Color4D = [0, 0, 0, 0];
     Common.Color.hsva2rgba(candidateHSVA, candidateRGBA);
     blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
 
-    let candidateLuminance: ((candidateHSVA: number[]) => number)|((candidateHSVA: number[]) => number) =
-        (candidateHSVA: number[]): number => {
+    let candidateLuminance: ((candidateHSVA: Common.ColorUtils.Color4D) => number)|
+        ((candidateHSVA: Common.ColorUtils.Color4D) => number) = (candidateHSVA: Common.ColorUtils.Color4D): number => {
           return Common.ColorUtils.luminance(
               Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
         };
 
     if (Root.Runtime.experiments.isEnabled('APCA')) {
-      candidateLuminance = (candidateHSVA: number[]): number => {
+      candidateLuminance = (candidateHSVA: Common.ColorUtils.Color4D): number => {
         return Common.ColorUtils.luminanceAPCA(
             Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
       };

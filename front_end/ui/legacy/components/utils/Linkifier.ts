@@ -308,13 +308,11 @@ export class Linkifier implements SDK.TargetManager.Observer {
         linkifyOptions);
   }
 
-  linkifyStackTraceTopFrame(
-      target: SDK.Target.Target|null, stackTrace: Protocol.Runtime.StackTrace, className?: string): HTMLElement {
+  linkifyStackTraceTopFrame(target: SDK.Target.Target|null, stackTrace: Protocol.Runtime.StackTrace): HTMLElement {
     console.assert(stackTrace.callFrames.length > 0);
 
     const {url, lineNumber, columnNumber} = stackTrace.callFrames[0];
     const fallbackAnchor = Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, {
-      className,
       lineNumber,
       columnNumber,
       showColumnNumber: false,
@@ -344,7 +342,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
     // in the layout engine.
     // TODO(szuend): Remove comment and workaround once the crash is fixed.
-    const {link, linkInfo} = Linkifier.createLink('\u200b', className ?? '');
+    const {link, linkInfo} = Linkifier.createLink('\u200b', '');
     linkInfo.enableDecorator = this.useLinkDecorator;
     linkInfo.fallback = fallbackAnchor;
 

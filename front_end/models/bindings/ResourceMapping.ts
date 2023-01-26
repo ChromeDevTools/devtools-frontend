@@ -14,9 +14,17 @@ import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 import {resourceMetadata} from './ResourceUtils.js';
 
-const styleSheetOffsetMap = new WeakMap<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, TextUtils.TextRange.TextRange>();
-const scriptOffsetMap = new WeakMap<SDK.Script.Script, TextUtils.TextRange.TextRange>();
+const styleSheetRangeMap = new WeakMap<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, TextUtils.TextRange.TextRange>();
+const scriptRangeMap = new WeakMap<SDK.Script.Script, TextUtils.TextRange.TextRange>();
 const boundUISourceCodes = new WeakSet<Workspace.UISourceCode.UISourceCode>();
+
+function computeScriptRange(script: SDK.Script.Script): TextUtils.TextRange.TextRange {
+  return new TextUtils.TextRange.TextRange(script.lineOffset, script.columnOffset, script.endLine, script.endColumn);
+}
+
+function computeStyleSheetRange(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): TextUtils.TextRange.TextRange {
+  return new TextUtils.TextRange.TextRange(header.startLine, header.startColumn, header.endLine, header.endColumn);
+}
 
 export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.ResourceTreeModel.ResourceTreeModel> {
   readonly workspace: Workspace.Workspace.WorkspaceImpl;
@@ -70,8 +78,7 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     if (!uiSourceCode) {
       return null;
     }
-    const offset = styleSheetOffsetMap.get(header) ||
-        TextUtils.TextRange.TextRange.createFromLocation(header.startLine, header.startColumn);
+    const offset = styleSheetRangeMap.get(header) ?? computeStyleSheetRange(header);
     const lineNumber = cssLocation.lineNumber + offset.startLine - header.startLine;
     let columnNumber = cssLocation.columnNumber;
     if (cssLocation.lineNumber === header.startLine) {
@@ -97,13 +104,12 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     if (!uiSourceCode) {
       return null;
     }
-    const offset = scriptOffsetMap.get(script) ||
-        TextUtils.TextRange.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
-    let lineNumber = jsLocation.lineNumber + offset.startLine - script.lineOffset;
-    let columnNumber = jsLocation.columnNumber;
-    if (jsLocation.lineNumber === script.lineOffset) {
-      columnNumber += offset.startColumn - script.columnOffset;
+    const {startLine, startColumn} = scriptRangeMap.get(script) ?? computeScriptRange(script);
+    let {lineNumber, columnNumber} = jsLocation;
+    if (lineNumber === script.lineOffset) {
+      columnNumber += startColumn - script.columnOffset;
     }
+    lineNumber += startLine - script.lineOffset;
     if (script.hasSourceURL) {
       if (lineNumber === 0) {
         columnNumber += script.columnOffset;
@@ -131,23 +137,16 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
       if (script.embedderName() !== uiSourceCode.url()) {
         continue;
       }
-      const {startLine, startColumn} = scriptOffsetMap.get(script) ||
-          TextUtils.TextRange.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
-      if (lineNumber < startLine || (lineNumber === startLine && columnNumber < startColumn)) {
-        continue;
-      }
-      const endLine = startLine + (script.endLine - script.lineOffset);
-      const endColumn =
-          startLine === endLine ? startColumn + (script.endColumn - script.columnOffset) : script.endColumn;
-      if (lineNumber > endLine || (lineNumber === endLine && columnNumber > endColumn)) {
+      const range = scriptRangeMap.get(script) ?? computeScriptRange(script);
+      if (!range.containsLocation(lineNumber, columnNumber)) {
         continue;
       }
       let scriptLineNumber = lineNumber;
       let scriptColumnNumber = columnNumber;
       if (script.hasSourceURL) {
-        scriptLineNumber -= startLine;
+        scriptLineNumber -= range.startLine;
         if (scriptLineNumber === 0) {
-          scriptColumnNumber -= startColumn;
+          scriptColumnNumber -= range.startColumn;
         }
       }
       locations.push(debuggerModel.createRawLocation(script, scriptLineNumber, scriptColumnNumber));
@@ -172,9 +171,7 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
       if (script.embedderName() !== uiSourceCode.url()) {
         continue;
       }
-      const {startLine} = scriptOffsetMap.get(script) ||
-          TextUtils.TextRange.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
-      const endLine = startLine + (script.endLine - script.lineOffset);
+      const {startLine, endLine} = scriptRangeMap.get(script) ?? computeScriptRange(script);
       for (let line = startLine; line <= endLine; ++line) {
         mappedLines.add(line);
       }
@@ -421,29 +418,26 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
         continue;
       }
       const stylesheet = data.stylesheet;
-      const startLocation = styleSheetOffsetMap.get(stylesheet) ||
-          TextUtils.TextRange.TextRange.createFromLocation(stylesheet.startLine, stylesheet.startColumn);
+      const startLocation = styleSheetRangeMap.get(stylesheet) ?? computeStyleSheetRange(stylesheet);
 
       const oldRange = edit.oldRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
       const newRange = edit.newRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
       text = new TextUtils.Text.Text(text.replaceRange(oldRange, edit.newText));
       const updatePromises = [];
       for (const script of scripts) {
-        const scriptOffset = scriptOffsetMap.get(script) ||
-            TextUtils.TextRange.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
-        if (!scriptOffset.follows(oldRange)) {
+        const range = scriptRangeMap.get(script) ?? computeScriptRange(script);
+        if (!range.follows(oldRange)) {
           continue;
         }
-        scriptOffsetMap.set(script, scriptOffset.rebaseAfterTextEdit(oldRange, newRange));
+        scriptRangeMap.set(script, range.rebaseAfterTextEdit(oldRange, newRange));
         updatePromises.push(DebuggerWorkspaceBinding.instance().updateLocations(script));
       }
       for (const style of styles) {
-        const styleOffset = styleSheetOffsetMap.get(style) ||
-            TextUtils.TextRange.TextRange.createFromLocation(style.startLine, style.startColumn);
-        if (!styleOffset.follows(oldRange)) {
+        const range = styleSheetRangeMap.get(style) ?? computeStyleSheetRange(style);
+        if (!range.follows(oldRange)) {
           continue;
         }
-        styleSheetOffsetMap.set(style, styleOffset.rebaseAfterTextEdit(oldRange, newRange));
+        styleSheetRangeMap.set(style, range.rebaseAfterTextEdit(oldRange, newRange));
         updatePromises.push(CSSWorkspaceBinding.instance().updateLocations(style));
       }
       await Promise.all(updatePromises);

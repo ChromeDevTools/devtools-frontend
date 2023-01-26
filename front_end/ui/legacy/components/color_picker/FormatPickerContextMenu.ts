@@ -70,13 +70,12 @@ export class FormatPickerContextMenu {
       }
       const newColor = this.#color.as(format);
       if (newColor instanceof Common.Color.Legacy) {
-        // The legacy alpha formats (HEXA, ShortHEXA, RGBA, HSLA, HWBA) will only be stringified differently when alpha
-        // isn't opaque (i.e., 100%).
+        const originalHasAlpha = (this.#color.alpha ?? 1) !== 1;
         const isAlphaFormat = newColor.alpha !== null;
-        const alphaIsOpaque = !newColor.hasAlpha();
 
-        // Print either the alpha or non-alpha format, but not both:
-        if (isAlphaFormat === alphaIsOpaque) {
+        // When the original color has alpha, only print alpha legacy formats. Otherwise, only print non-alpha legacy
+        // formats.
+        if (isAlphaFormat !== originalHasAlpha) {
           continue;
         }
       }

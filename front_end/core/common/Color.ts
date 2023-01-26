@@ -648,6 +648,8 @@ interface ColorConversions<T = void> {
 }
 
 export interface Color {
+  readonly alpha: number|null;
+
   equal(color: Color): boolean;
   asString(format?: Format): string|null;
   setAlpha(alpha: number): Color;

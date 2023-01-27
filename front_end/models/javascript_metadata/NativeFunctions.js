@@ -1268,7 +1268,7 @@ export const NativeFunctions = [
   },
   {
     name: 'add',
-    signatures: [['sub_apps']],
+    signatures: [['sub_apps_to_add']],
     receivers: ['SubApps']
   },
   {
@@ -8018,14 +8018,6 @@ export const NativeFunctions = [
   },
   {
     name: 'dispatchWorkgroupsIndirect',
-    signatures: [['indirectBuffer','indirectOffset']]
-  },
-  {
-    name: 'dispatch',
-    signatures: [['workgroupCountX','?workgroupCountY','?workgroupCountZ']]
-  },
-  {
-    name: 'dispatchIndirect',
     signatures: [['indirectBuffer','indirectOffset']]
   },
   {

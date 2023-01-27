@@ -158,7 +158,7 @@ export class RequestTrustTokensReport extends HTMLElement {
     return LitHtml.html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.parameters)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
-      ${renderRowWithCodeValue(i18nString(UIStrings.type), this.#trustTokenData.params.type.toString())}
+      ${renderRowWithCodeValue(i18nString(UIStrings.type), this.#trustTokenData.params.operation.toString())}
       ${this.#renderRefreshPolicy(this.#trustTokenData.params)}
       ${this.#renderIssuers(this.#trustTokenData.params)}
       ${this.#renderIssuerAndTopLevelOriginFromResult()}
@@ -168,7 +168,7 @@ export class RequestTrustTokensReport extends HTMLElement {
   }
 
   #renderRefreshPolicy(params: Protocol.Network.TrustTokenParams): LitHtml.LitTemplate {
-    if (params.type !== Protocol.Network.TrustTokenOperationType.Redemption) {
+    if (params.operation !== Protocol.Network.TrustTokenOperationType.Redemption) {
       return LitHtml.nothing;
     }
     return renderRowWithCodeValue(i18nString(UIStrings.refreshPolicy), params.refreshPolicy.toString());

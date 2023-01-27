@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-import {expect} from 'chai';
+import {assert, expect} from 'chai';
+
 import {type ElementHandle} from 'puppeteer';
 
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
@@ -24,8 +24,7 @@ async function checkboxIsChecked(element: ElementHandle<HTMLInputElement>): Prom
   return await element.evaluate(node => node.checked);
 }
 
-async function isVisible(
-    element: ElementHandle<HTMLInputElement>, container: ElementHandle<HTMLInputElement>): Promise<boolean> {
+async function isVisible(element: ElementHandle, container: ElementHandle): Promise<boolean> {
   const elementBox = JSON.parse(await element.evaluate(e => JSON.stringify(e.getBoundingClientRect())));
   const containerBox = JSON.parse(await container.evaluate(e => JSON.stringify(e.getBoundingClientRect())));
 
@@ -34,7 +33,8 @@ async function isVisible(
 }
 
 async function disableNetworkRequestBlocking() {
-  const networkRequestBlockingCheckbox = await waitForAria('Enable network request blocking');
+  const networkRequestBlockingCheckbox =
+      await (await waitForAria('Enable network request blocking')).toElement('input');
   expect(await checkboxIsChecked(networkRequestBlockingCheckbox)).to.equal(true);
   await networkRequestBlockingCheckbox.click();
   expect(await checkboxIsChecked(networkRequestBlockingCheckbox)).to.equal(false);
@@ -61,7 +61,8 @@ describe('Network request blocking panel', async () => {
     await waitForAriaNone('Remove');
 
     const firstListItem = await waitFor('.blocked-url');
-    const firstCheckbox = await waitFor('.widget > .list > .list-item > .blocked-url > .blocked-url-checkbox');
+    const firstCheckbox =
+        await (await waitFor('.widget > .list > .list-item > .blocked-url > .blocked-url-checkbox')).toElement('input');
     expect(await checkboxIsChecked(firstCheckbox)).to.equal(true);
     await firstListItem.click();
     expect(await checkboxIsChecked(firstCheckbox)).to.equal(true);

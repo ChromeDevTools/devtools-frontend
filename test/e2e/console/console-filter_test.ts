@@ -27,7 +27,7 @@ function createUrlFilter(url: string) {
 function collectSourceUrlsFromConsoleOutput(frontend: puppeteer.Page) {
   return frontend.evaluate(CONSOLE_MESSAGE_WRAPPER_SELECTOR => {
     return Array.from(document.querySelectorAll(CONSOLE_MESSAGE_WRAPPER_SELECTOR)).map(wrapper => {
-      return wrapper.querySelector('.devtools-link').textContent.split(':')[0];
+      return ((wrapper.querySelector('.devtools-link') as HTMLElement).textContent as string).split(':')[0];
     });
   }, CONSOLE_MESSAGE_WRAPPER_SELECTOR);
 }

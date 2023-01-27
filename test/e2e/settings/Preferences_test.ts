@@ -4,13 +4,7 @@
 
 import {assert} from 'chai';
 
-import {
-  click,
-  waitFor,
-  waitForAria,
-  waitForElementWithTextContent,
-  type puppeteer,
-} from '../../shared/helper.js';
+import {click, waitFor, waitForAria, waitForElementWithTextContent} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openSettingsTab} from '../helpers/settings-helpers.js';
 
@@ -20,9 +14,9 @@ describe('Preferences settings tab', () => {
     const appearance = await waitForAria('Appearance');
 
     const label = await waitForElementWithTextContent('Color format:', appearance);
-    const select = await label.evaluateHandle<puppeteer.ElementHandle<HTMLSelectElement>>(label => label.nextSibling);
-    assert.isTrue(await select.evaluate(select => select.disabled));
-    assert.deepEqual(await select.evaluate(select => select.value), 'original');
+    const select = await (await label.evaluateHandle(label => label.nextSibling)).asElement()?.toElement('select');
+    assert.isTrue(await select?.evaluate(select => select.disabled));
+    assert.deepEqual(await select?.evaluate(select => select.value), 'original');
 
     const icon = await waitFor('devtools-icon', label);
     assert.include(await icon.evaluate(icon => icon.getAttribute('title')), 'This setting is deprecated');

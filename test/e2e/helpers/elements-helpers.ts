@@ -326,7 +326,8 @@ export const removePseudoState = async (pseudoState: string) => {
   await click(`[aria-label="${pseudoState}"]`);
 };
 
-export const getComputedStylesForDomNode = async (elementSelector: string, styleAttribute: string) => {
+export const getComputedStylesForDomNode =
+    async (elementSelector: string, styleAttribute: keyof CSSStyleDeclaration) => {
   const {target} = getBrowserAndPages();
 
   return target.evaluate((elementSelector, styleAttribute) => {
@@ -558,11 +559,10 @@ export const getCSSPropertyInRule =
   const propertyNames = await $$(CSS_PROPERTY_NAME_SELECTOR, ruleSection);
   for (const node of propertyNames) {
     const parent =
-        await node.evaluateHandle((node, name) => (name === node.textContent) ? node.parentNode : undefined, name);
-    // Note that evaluateHandle always returns a handle, even if it points to an undefined remote object, so we need to
-    // check it's defined here or continue iterating.
-    if (await parent.evaluate(n => Boolean(n))) {
-      return parent as puppeteer.ElementHandle;
+        (await node.evaluateHandle((node, name) => (name === node.textContent) ? node.parentNode : undefined, name))
+            .asElement();
+    if (parent) {
+      return parent as puppeteer.ElementHandle<HTMLElement>;
     }
   }
   return undefined;
@@ -660,7 +660,7 @@ export async function waitForPropertyToHighlight(ruleSelector: string, propertyN
     }
     // StylePropertyHighlighter temporarily highlights the property using the Web Animations API, so the only way to
     // know it's happening is by listing all animations.
-    const animationCount = await property.evaluate(node => node.getAnimations().length);
+    const animationCount = await property.evaluate(node => (node as HTMLElement).getAnimations().length);
     return animationCount > 0;
   });
 }

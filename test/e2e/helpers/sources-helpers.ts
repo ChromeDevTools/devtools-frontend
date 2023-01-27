@@ -397,7 +397,7 @@ export async function waitForSourceFiles<T>(
     }
     const handler = (event: Event) => {
       const {detail} = event as CustomEvent<string>;
-      if (!detail.endsWith('/__puppeteer_evaluation_script__')) {
+      if (!detail.includes('__puppeteer_evaluation_script__')) {
         window.__sourceFileEvents.get(eventHandlerId)?.files.push(detail);
       }
     };

@@ -28,7 +28,9 @@ describe('The Sources Tab', async () => {
     await openFileInSourcesPanel('dynamic-loading-javascript.html');
 
     // Load the JavaScript files by executing the function in `dynamic-loading.html`
-    const capturedFileNames = await captureAddedSourceFiles(2, () => target.evaluate('go();'));
+    const capturedFileNames = await captureAddedSourceFiles(2, async () => {
+      await target.evaluate('go();');
+    });
 
     assert.deepEqual(capturedFileNames, [
       '/test/e2e/resources/sources/minified-sourcecode.js',
@@ -65,8 +67,6 @@ describe('The Sources Tab', async () => {
       await openSourcesPanel();
     });
 
-    assert.deepEqual(capturedFileNames, [
-      '/test/e2e/resources/pages/hello-world.html',
-    ]);
+    assert.deepEqual(capturedFileNames, ['/test/e2e/resources/pages/hello-world.html']);
   });
 });

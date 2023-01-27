@@ -27,7 +27,7 @@ describe('The Console\'s errors', () => {
            return false;
          }
          const [{message}] = messages;
-         return /^MyError.*error-with-sourcemap.ts:6/.test(message.replace('\n', ''));
+         return /^MyError.*error-with-sourcemap.ts:6/.test((message as string).replace('\n', ''));
        });
      });
 
@@ -53,7 +53,7 @@ describe('The Console\'s errors', () => {
     await showVerboseMessages();
     await waitForConsoleMessagesToBeNonEmpty(5);
     const messages = await getStructuredConsoleMessages();
-    messages.sort((m1, m2) => m1.message.localeCompare(m2.message));
+    messages.sort((m1, m2) => (m1.message as string).localeCompare(m2.message as string));
     assert.deepEqual(messages, [
       {
         message:

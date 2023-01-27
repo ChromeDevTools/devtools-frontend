@@ -13,7 +13,7 @@ import {navigateToPerformanceTab, openCaptureSettings} from '../helpers/performa
 async function waitForChangedConcurrency(lastConcurrency: number|undefined) {
   const {target} = getBrowserAndPages();
   return waitForFunction(async () => {
-    const newConcurrency = await target.evaluate('navigator.hardwareConcurrency');
+    const newConcurrency = await target.evaluate('navigator.hardwareConcurrency') as number;
     if (newConcurrency !== lastConcurrency) {
       return newConcurrency;
     }

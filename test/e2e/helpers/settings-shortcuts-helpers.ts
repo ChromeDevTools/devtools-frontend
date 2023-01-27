@@ -57,7 +57,7 @@ if (platform === 'mac') {
 
 export const selectKeyboardShortcutPreset = async (option: string) => {
   const presetSelectElement = await waitForElementWithTextContent(SHORTCUT_SELECT_TEXT);
-  await selectOption(presetSelectElement, option);
+  await selectOption(await presetSelectElement.toElement('select'), option);
 };
 
 export const getShortcutListItemElement = async (shortcutText: string) => {
@@ -96,7 +96,7 @@ export const shortcutsForAction = async (shortcutText: string) => {
   const shortcutElementsTextContent =
       await Promise.all(shortcutElements.map(element => element.getProperty('textContent')));
   return Promise.all(
-      shortcutElementsTextContent.map(async textContent => textContent ? await textContent.jsonValue<string>() : []));
+      shortcutElementsTextContent.map(async textContent => textContent ? await textContent.jsonValue() : []));
 };
 
 export const shortcutInputValues = async () => {
@@ -105,7 +105,7 @@ export const shortcutInputValues = async () => {
     assert.fail('shortcut input not found');
   }
   const shortcutValues = await Promise.all(shortcutInputs.map(async input => input.getProperty('value')));
-  return Promise.all(shortcutValues.map(async value => value ? await value.jsonValue<string>() : []));
+  return Promise.all(shortcutValues.map(async value => value ? await value.jsonValue() : []));
 };
 
 export const clickAddShortcutLink = async () => {

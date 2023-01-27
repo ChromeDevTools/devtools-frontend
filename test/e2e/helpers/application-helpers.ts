@@ -101,7 +101,7 @@ export async function selectCookieByName(name: string) {
       return result ? result.cell : undefined;
     }, name);
 
-    return tmp.asElement() || undefined;
+    return tmp.asElement() as puppeteer.ElementHandle<HTMLElement>|| undefined;
   });
   await cell.click();
 }

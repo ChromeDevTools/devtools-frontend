@@ -194,7 +194,7 @@ export const $ =
     async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root as puppeteer.ElementHandle : frontend;
-  const element = await rootElement.$<ElementType>(`${handler}/${selector}`);
+  const element = await rootElement.$(`${handler}/${selector}`) as puppeteer.ElementHandle<ElementType>;
   return element;
 };
 
@@ -203,7 +203,7 @@ export const $$ =
     async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root.asElement() || frontend : frontend;
-  const elements = await rootElement.$$<ElementType>(`${handler}/${selector}`);
+  const elements = await rootElement.$$(`${handler}/${selector}`) as puppeteer.ElementHandle<ElementType>[];
   return elements;
 };
 
@@ -460,7 +460,7 @@ export const waitForAnimationFrame = async () => {
   });
 };
 
-export const activeElement = async(): Promise<puppeteer.ElementHandle> => {
+export const activeElement = async () => {
   const {frontend} = getBrowserAndPages();
 
   await waitForAnimationFrame();
@@ -470,6 +470,10 @@ export const activeElement = async(): Promise<puppeteer.ElementHandle> => {
 
     while (activeElement && activeElement.shadowRoot) {
       activeElement = activeElement.shadowRoot.activeElement;
+    }
+
+    if (!activeElement) {
+      throw new Error('No active element found');
     }
 
     return activeElement;
@@ -512,16 +516,17 @@ export const tabBackward = async (page?: puppeteer.Page) => {
   await targetPage.keyboard.up('Shift');
 };
 
+type Awaitable<T> = T|PromiseLike<T>;
+
 export const selectTextFromNodeToNode = async (
-    from: puppeteer.JSHandle|Promise<puppeteer.JSHandle>, to: puppeteer.JSHandle|Promise<puppeteer.JSHandle>,
-    direction: 'up'|'down') => {
+    from: Awaitable<puppeteer.ElementHandle>, to: Awaitable<puppeteer.ElementHandle>, direction: 'up'|'down') => {
   const {target} = getBrowserAndPages();
 
   // The clipboard api does not allow you to copy, unless the tab is focused.
   await target.bringToFront();
 
   return target.evaluate(async (from, to, direction) => {
-    const selection = from.getRootNode().getSelection();
+    const selection = (from.getRootNode() as Document).getSelection();
     const range = document.createRange();
     if (direction === 'down') {
       range.setStartBefore(from);
@@ -531,8 +536,10 @@ export const selectTextFromNodeToNode = async (
       range.setEndAfter(from);
     }
 
-    selection.removeAllRanges();
-    selection.addRange(range);
+    if (selection) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
 
     document.execCommand('copy');
 

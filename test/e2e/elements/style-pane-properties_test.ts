@@ -307,7 +307,7 @@ describe('The Styles pane', async () => {
     // Verify that computed styles correspond to the changes made.
     const computedStyles = [
       await getComputedStylesForDomNode(RULE1_SELECTOR, 'color'),
-      await getComputedStylesForDomNode(RULE1_SELECTOR, 'background-color'),
+      await getComputedStylesForDomNode(RULE1_SELECTOR, 'backgroundColor'),
     ];
     assert.deepEqual(computedStyles, ['rgb(255, 0, 0)', 'rgb(255, 0, 0)'], 'Styles are not correct after the update');
   });

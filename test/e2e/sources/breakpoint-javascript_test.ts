@@ -93,7 +93,7 @@ describe('The Sources Tab', async function() {
 
     let scriptEvaluation: Promise<void>;
     await step('trigger evaluation of script', async () => {
-      scriptEvaluation = target.evaluate('f2();');
+      scriptEvaluation = target.evaluate('f2();') as Promise<void>;
     });
 
     await step('wait for pause and check if we stopped at line 3', async () => {

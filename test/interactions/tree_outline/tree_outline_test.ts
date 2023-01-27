@@ -10,7 +10,7 @@ import {it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
 async function getTreeOutline(root?: ElementHandle) {
-  const treeOutline = await waitFor('devtools-tree-outline', root);
+  const treeOutline = await waitFor<HTMLElement>('devtools-tree-outline', root);
   if (!treeOutline) {
     assert.fail('Could not find tree-outline.');
   }
@@ -34,7 +34,8 @@ async function buildTreeNode(handler: ElementHandle<HTMLLIElement>): Promise<Vis
     // Figure out the aria-level of the parent, so we only select its immediate children that are one level down.
     const parentNodeLevel = await handler.evaluate(elem => window.parseInt(elem.getAttribute('aria-level') || ''));
     item.children = [];
-    const childNodes = await $$(`ul[role="group"] > li[role="treeitem"][aria-level="${parentNodeLevel + 1}"]`, handler);
+    const childNodes =
+        await $$<HTMLLIElement>(`ul[role="group"] > li[role="treeitem"][aria-level="${parentNodeLevel + 1}"]`, handler);
     for (const child of childNodes) {
       const newNode = await buildTreeNode(child);
       item.children.push(newNode);
@@ -47,7 +48,7 @@ async function buildTreeNode(handler: ElementHandle<HTMLLIElement>): Promise<Vis
 async function getRenderedNodesTextAsTree(treeOutline: ElementHandle<HTMLElement>): Promise<VisibleTreeNodeFromDOM[]> {
   const tree: VisibleTreeNodeFromDOM[] = [];
 
-  const rootNodes = await $$('ul[role="tree"]>li[role="treeitem"]', treeOutline);
+  const rootNodes = await $$<HTMLLIElement>('ul[role="tree"]>li[role="treeitem"]', treeOutline);
   for (const root of rootNodes) {
     const newNode = await buildTreeNode(root);
     tree.push(newNode);

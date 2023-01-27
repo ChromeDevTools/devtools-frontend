@@ -185,7 +185,7 @@ export async function postFileTeardown() {
 export function collectCoverageFromPage(): Promise<CoverageMapData|undefined> {
   const {frontend} = getBrowserAndPages();
 
-  return frontend.evaluate('window.__coverage__');
+  return frontend.evaluate('window.__coverage__') as Promise<CoverageMapData|undefined>;
 }
 
 export function getDevToolsFrontendHostname(): string {

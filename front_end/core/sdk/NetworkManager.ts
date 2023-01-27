@@ -866,8 +866,16 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
   }
 
-  responseReceivedExtraInfo({requestId, blockedCookies, headers, headersText, resourceIPAddressSpace, statusCode}:
-                                Protocol.Network.ResponseReceivedExtraInfoEvent): void {
+  responseReceivedExtraInfo({
+    requestId,
+    blockedCookies,
+    headers,
+    headersText,
+    resourceIPAddressSpace,
+    statusCode,
+    cookiePartitionKey,
+    cookiePartitionKeyOpaque,
+  }: Protocol.Network.ResponseReceivedExtraInfoEvent): void {
     const extraResponseInfo: ExtraResponseInfo = {
       blockedResponseCookies: blockedCookies.map(blockedCookie => {
         return {
@@ -880,6 +888,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       responseHeadersText: headersText,
       resourceIPAddressSpace,
       statusCode,
+      cookiePartitionKey,
+      cookiePartitionKeyOpaque,
     };
     this.getExtraInfoBuilder(requestId).addResponseExtraInfo(extraResponseInfo);
   }

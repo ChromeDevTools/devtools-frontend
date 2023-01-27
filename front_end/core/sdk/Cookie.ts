@@ -93,8 +93,16 @@ export class Cookie {
     return this.#attributes['partitionkey'] as string;
   }
 
+  setPartitionKey(key: string): void {
+    this.addAttribute('partitionKey', key);
+  }
+
   partitionKeyOpaque(): boolean {
     return (this.#attributes['partitionkey'] === OPAQUE_PARITION_KEY);
+  }
+
+  setPartitionKeyOpaque(): void {
+    this.addAttribute('partitionKey', OPAQUE_PARITION_KEY);
   }
 
   priority(): Protocol.Network.CookiePriority {

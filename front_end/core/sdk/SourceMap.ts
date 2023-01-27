@@ -509,39 +509,82 @@ export class SourceMap {
     return negative ? -result : result;
   }
 
-  reverseMapTextRange(url: Platform.DevToolsPath.UrlString, textRange: TextUtils.TextRange.TextRange):
-      TextUtils.TextRange.TextRange|null {
-    function comparator(
-        position: {
-          lineNumber: number,
-          columnNumber: number,
-        },
-        mappingIndex: number): number {
-      if (position.lineNumber !== mappings[mappingIndex].sourceLineNumber) {
-        return position.lineNumber - mappings[mappingIndex].sourceLineNumber;
-      }
-
-      return position.columnNumber - mappings[mappingIndex].sourceColumnNumber;
-    }
-
+  /**
+   * Finds all the reverse mappings that intersect with the given `textRange` within the
+   * source entity identified by the `url`. If the `url` does not have any reverse mappings
+   * within this source map, an empty array is returned.
+   *
+   * @param url the URL of the source entity to query.
+   * @param textRange the range of text within the entity to check, considered `[start,end[`.
+   * @returns the list of ranges in the generated file that map to locations overlapping the
+   *          {@link textRange} in the source file identified by the {@link url}, or `[]`
+   *          if the {@link url} does not identify an entity in this source map.
+   */
+  reverseMapTextRanges(url: Platform.DevToolsPath.UrlString, textRange: TextUtils.TextRange.TextRange):
+      TextUtils.TextRange.TextRange[] {
     const reverseMappings = this.reversedMappings(url);
     const mappings = this.mappings();
-    if (!reverseMappings.length) {
-      return null;
-    }
-    const startIndex = Platform.ArrayUtilities.lowerBound(
-        reverseMappings, {lineNumber: textRange.startLine, columnNumber: textRange.startColumn}, comparator);
-    const endIndex = Platform.ArrayUtilities.upperBound(
-        reverseMappings, {lineNumber: textRange.endLine, columnNumber: textRange.endColumn}, comparator);
-
-    if (endIndex >= reverseMappings.length) {
-      return null;
+    if (reverseMappings.length === 0) {
+      return [];
     }
 
-    const startMapping = mappings[reverseMappings[startIndex]];
-    const endMapping = mappings[reverseMappings[endIndex]];
-    return new TextUtils.TextRange.TextRange(
-        startMapping.lineNumber, startMapping.columnNumber, endMapping.lineNumber, endMapping.columnNumber);
+    // Determine the first reverse mapping that contains the starting point of the `textRange`.
+    let startReverseIndex =
+        Platform.ArrayUtilities.lowerBound(reverseMappings, textRange, ({startLine, startColumn}, index) => {
+          const {sourceLineNumber, sourceColumnNumber} = mappings[index];
+          return startLine - sourceLineNumber || startColumn - sourceColumnNumber;
+        });
+
+    // Check if the current mapping does not start on the exact start of the `textRange`, and if
+    // so we know that a previous mapping entry (if any) would also overlap. If we reach the end
+    // of the reverse mappings table, we just take the last entry and report that.
+    while (startReverseIndex === reverseMappings.length ||
+           startReverseIndex > 0 &&
+               (mappings[reverseMappings[startReverseIndex]].sourceLineNumber > textRange.startLine ||
+                mappings[reverseMappings[startReverseIndex]].sourceColumnNumber > textRange.startColumn)) {
+      startReverseIndex--;
+    }
+
+    // Determine the last reverse mapping that contains the end point of the `textRange`.
+    let endReverseIndex = startReverseIndex + 1;
+    for (; endReverseIndex < reverseMappings.length; ++endReverseIndex) {
+      const {sourceLineNumber, sourceColumnNumber} = mappings[reverseMappings[endReverseIndex]];
+      if (sourceLineNumber < textRange.endLine ||
+          (sourceLineNumber === textRange.endLine && sourceColumnNumber < textRange.endColumn)) {
+        continue;
+      }
+      break;
+    }
+
+    // Create the ranges...
+    const ranges = [];
+    for (let reverseIndex = startReverseIndex; reverseIndex < endReverseIndex; ++reverseIndex) {
+      const startIndex = reverseMappings[reverseIndex], endIndex = startIndex + 1;
+      const range = TextUtils.TextRange.TextRange.createUnboundedFromLocation(
+          mappings[startIndex].lineNumber, mappings[startIndex].columnNumber);
+      if (endIndex < mappings.length) {
+        range.endLine = mappings[endIndex].lineNumber;
+        range.endColumn = mappings[endIndex].columnNumber;
+      }
+      ranges.push(range);
+    }
+
+    // ...sort them...
+    ranges.sort(TextUtils.TextRange.TextRange.comparator);
+
+    // ...and ensure they are maximally merged.
+    let j = 0;
+    for (let i = 1; i < ranges.length; ++i) {
+      if (ranges[j].immediatelyPrecedes(ranges[i])) {
+        ranges[j].endLine = ranges[i].endLine;
+        ranges[j].endColumn = ranges[i].endColumn;
+      } else {
+        ranges[++j] = ranges[i];
+      }
+    }
+    ranges.length = j + 1;
+
+    return ranges;
   }
 
   mapsOrigin(): boolean {

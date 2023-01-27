@@ -262,6 +262,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #blockedRequestCookiesInternal: BlockedCookieWithReason[];
   #includedRequestCookiesInternal: Cookie[];
   #blockedResponseCookiesInternal: BlockedSetCookieWithReason[];
+  #responseCookiesPartitionKey: string|null;
+  #responseCookiesPartitionKeyOpaque: boolean|null;
   #siteHasCookieInOtherPartition: boolean;
   localizedFailDescription: string|null;
   #urlInternal!: Platform.DevToolsPath.UrlString;
@@ -373,6 +375,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#includedRequestCookiesInternal = [];
     this.#blockedResponseCookiesInternal = [];
     this.#siteHasCookieInOtherPartition = false;
+    this.#responseCookiesPartitionKey = null;
+    this.#responseCookiesPartitionKeyOpaque = null;
 
     this.localizedFailDescription = null;
     this.#isSameSiteInternal = null;
@@ -1010,6 +1014,15 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (!this.#responseCookiesInternal) {
       this.#responseCookiesInternal =
           CookieParser.parseSetCookie(this.responseHeaderValue('Set-Cookie'), this.domain) || [];
+      if (this.#responseCookiesPartitionKey) {
+        for (const cookie of this.#responseCookiesInternal) {
+          cookie.setPartitionKey(this.#responseCookiesPartitionKey);
+        }
+      } else if (this.#responseCookiesPartitionKeyOpaque) {
+        for (const cookie of this.#responseCookiesInternal) {
+          cookie.setPartitionKeyOpaque();
+        }
+      }
     }
     return this.#responseCookiesInternal;
   }
@@ -1427,6 +1440,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   addExtraResponseInfo(extraResponseInfo: ExtraResponseInfo): void {
     this.#blockedResponseCookiesInternal = extraResponseInfo.blockedResponseCookies;
+    this.#responseCookiesPartitionKey = extraResponseInfo.cookiePartitionKey || null;
+    this.#responseCookiesPartitionKeyOpaque = extraResponseInfo.cookiePartitionKeyOpaque || null;
     this.responseHeaders = extraResponseInfo.responseHeaders;
     // We store a copy of the headers we initially received, so that after
     // potential header overrides, we can compare actual with original headers.
@@ -1481,6 +1496,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   blockedResponseCookies(): BlockedSetCookieWithReason[] {
     return this.#blockedResponseCookiesInternal;
+  }
+
+  responseCookiesPartitionKey(): string|null {
+    return this.#responseCookiesPartitionKey;
+  }
+
+  responseCookiesPartitionKeyOpaque(): boolean|null {
+    return this.#responseCookiesPartitionKeyOpaque;
   }
 
   redirectSourceSignedExchangeInfoHasNoErrors(): boolean {
@@ -1767,6 +1790,8 @@ export interface ExtraResponseInfo {
   responseHeadersText?: string;
   resourceIPAddressSpace: Protocol.Network.IPAddressSpace;
   statusCode: number|undefined;
+  cookiePartitionKey: string|undefined;
+  cookiePartitionKeyOpaque: boolean|undefined;
 }
 
 export interface WebBundleInfo {

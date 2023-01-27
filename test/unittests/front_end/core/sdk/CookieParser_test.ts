@@ -7,66 +7,14 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 
+import {expectCookie, type CookieExpectation} from '../../helpers/Cookies.js';
+
 function ensureCookiesExistOrFailTest(cookies: SDK.Cookie.Cookie[]|null): cookies is SDK.Cookie.Cookie[] {
   if (!cookies) {
     assert.fail('expected cookies to exist');
     return false;
   }
   return true;
-}
-
-interface CookieExpectation {
-  name: string;
-  value: string;
-  httpOnly?: boolean;
-  sameSite?: Protocol.Network.CookieSameSite;
-  secure?: boolean;
-  session?: boolean;
-  path?: string;
-  domain?: string;
-  expires?: null|number|string;
-  size?: number;
-  priority?: Protocol.Network.CookiePriority;
-}
-
-const requestDate = new Date('Mon Oct 18 2010 17:00:00 GMT+0000');
-
-const cookieExpectationDefaults: CookieExpectation = {
-  name: 'name',
-  value: 'value',
-  httpOnly: false,
-  sameSite: undefined,
-  secure: false,
-  session: true,
-  path: undefined,
-  domain: undefined,
-  expires: null,
-  size: undefined,
-  priority: Protocol.Network.CookiePriority.Medium,
-};
-
-function expectCookie(cookie: SDK.Cookie.Cookie, cookieExpectation: CookieExpectation) {
-  const expectation = {...cookieExpectationDefaults, ...cookieExpectation};
-  assert.strictEqual(cookie.name(), expectation.name, 'name');
-  assert.strictEqual(cookie.value(), expectation.value, 'value');
-  assert.strictEqual(cookie.httpOnly(), expectation.httpOnly, 'httpOnly');
-  assert.strictEqual(cookie.sameSite(), expectation.sameSite, 'sameSite');
-  assert.strictEqual(cookie.secure(), expectation.secure, 'secure');
-  assert.strictEqual(cookie.session(), expectation.session, 'session');
-  assert.strictEqual(cookie.path(), expectation.path, 'path');
-  assert.strictEqual(cookie.domain(), expectation.domain, 'domain');
-  const date = cookie.expiresDate(requestDate);
-  if (typeof expectation.expires === 'string') {
-    assert.isNotNull(date);
-    assert.strictEqual((date as Date).toISOString(), expectation.expires, 'expires');
-  } else if (typeof expectation.expires === 'number') {
-    assert.isNotNull(date);
-    assert.strictEqual((date as Date).getTime(), expectation.expires, 'expires');
-  } else {
-    assert.strictEqual(date, expectation.expires, 'expires');
-  }
-  assert.strictEqual(cookie.size(), expectation.size, 'size');
-  assert.strictEqual(cookie.priority(), expectation.priority, 'priority');
 }
 
 describe('CookieParser', () => {

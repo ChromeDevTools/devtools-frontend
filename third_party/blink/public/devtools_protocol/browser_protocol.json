@@ -1537,7 +1537,9 @@
                         "CrossOriginPortalPostMessageError",
                         "FormLabelForNameError",
                         "FormDuplicateIdForInputError",
-                        "FormInputWithNoLabelError"
+                        "FormInputWithNoLabelError",
+                        "FormAutocompleteAttributeEmptyError",
+                        "FormEmptyIdAndNameAttributesForInputError"
                     ]
                 },
                 {
@@ -2497,7 +2499,7 @@
                         },
                         {
                             "name": "delta",
-                            "description": "If true, retrieve delta since last call.",
+                            "description": "If true, retrieve delta since last delta call.",
                             "optional": true,
                             "type": "boolean"
                         }
@@ -2525,7 +2527,7 @@
                         },
                         {
                             "name": "delta",
-                            "description": "If true, retrieve delta since last call.",
+                            "description": "If true, retrieve delta since last delta call.",
                             "optional": true,
                             "type": "boolean"
                         }
@@ -11389,12 +11391,12 @@
                     "type": "object",
                     "properties": [
                         {
-                            "name": "type",
+                            "name": "operation",
                             "$ref": "TrustTokenOperationType"
                         },
                         {
                             "name": "refreshPolicy",
-                            "description": "Only set for \"token-redemption\" type and determine whether\nto request a fresh SRR or use a still valid cached SRR.",
+                            "description": "Only set for \"token-redemption\" operation and determine whether\nto request a fresh SRR or use a still valid cached SRR.",
                             "type": "string",
                             "enum": [
                                 "UseCached",
@@ -13929,6 +13931,18 @@
                             "description": "Raw response header text as it was received over the wire. The raw text may not always be\navailable, such as in the case of HTTP/2 or QUIC.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "cookiePartitionKey",
+                            "description": "The cookie partition key that will be used to store partitioned cookies set in this response.\nOnly sent when partitioned cookies are enabled.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "cookiePartitionKeyOpaque",
+                            "description": "True if partitioned cookies are enabled, but the partition key is not serializeable to string.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -16460,7 +16474,10 @@
                         "TabClosedByUserGesture",
                         "TabClosedWithoutUserGesture",
                         "PrimaryMainFrameRendererProcessCrashed",
-                        "PrimaryMainFrameRendererProcessKilled"
+                        "PrimaryMainFrameRendererProcessKilled",
+                        "ActivationFramePolicyNotCompatible",
+                        "PreloadingDisabled",
+                        "BatterySaverEnabled"
                     ]
                 }
             ],

@@ -27,7 +27,7 @@ describeWithLocale('RequestTrustTokensView', () => {
     const component = renderRequestTrustTokensView();
     component.data = {
       params: {
-        type: Protocol.Network.TrustTokenOperationType.Redemption,
+        operation: Protocol.Network.TrustTokenOperationType.Redemption,
         refreshPolicy: Protocol.Network.TrustTokenParamsRefreshPolicy.UseCached,
       },
     } as NetworkComponents.RequestTrustTokensView.RequestTrustTokensReportData;
@@ -43,7 +43,7 @@ describeWithLocale('RequestTrustTokensView', () => {
     const expectedIssuers = ['example.org', 'foo.dev', 'bar.com'];
     component.data = {
       params: {
-        type: Protocol.Network.TrustTokenOperationType.Signing,
+        operation: Protocol.Network.TrustTokenOperationType.Signing,
         issuers: expectedIssuers,
       },
     } as NetworkComponents.RequestTrustTokensView.RequestTrustTokensReportData;

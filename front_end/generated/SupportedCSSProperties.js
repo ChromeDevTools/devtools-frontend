@@ -382,6 +382,14 @@ export const generatedProperties = [
   "name": "animation"
  },
  {
+  "keywords": [
+   "replace",
+   "add",
+   "accumulate"
+  ],
+  "name": "animation-composition"
+ },
+ {
   "name": "animation-delay"
  },
  {
@@ -2941,12 +2949,6 @@ export const generatedProperties = [
   "name": "scroll-timeline"
  },
  {
-  "keywords": [
-   "block",
-   "inline",
-   "vertical",
-   "horizontal"
-  ],
   "name": "scroll-timeline-axis"
  },
  {
@@ -3336,6 +3338,13 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "none",
+   "browser"
+  ],
+  "name": "top-layer"
+ },
+ {
+  "keywords": [
    "auto",
    "none",
    "pan-x",
@@ -3675,6 +3684,13 @@ export const generatedPropertyValues = {
  "anchor-scroll": {
   "values": [
    "none"
+  ]
+ },
+ "animation-composition": {
+  "values": [
+   "replace",
+   "add",
+   "accumulate"
   ]
  },
  "animation-direction": {
@@ -5059,14 +5075,6 @@ export const generatedPropertyValues = {
    "proximity"
   ]
  },
- "scroll-timeline-axis": {
-  "values": [
-   "block",
-   "inline",
-   "vertical",
-   "horizontal"
-  ]
- },
  "scrollbar-gutter": {
   "values": [
    "auto",
@@ -5296,6 +5304,12 @@ export const generatedPropertyValues = {
  "top": {
   "values": [
    "auto"
+  ]
+ },
+ "top-layer": {
+  "values": [
+   "none",
+   "browser"
   ]
  },
  "touch-action": {

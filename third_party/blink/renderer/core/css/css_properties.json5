@@ -732,6 +732,22 @@
 
     // Animation Priority properties
     {
+      name: "animation-composition",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
+      keywords: ["replace", "add", "accumulate"],
+      style_builder_template: "animation",
+      style_builder_template_args: {
+        attribute: "Composition",
+      },
+      typedom_types: ["Keyword"],
+      separator: ",",
+      include_paths: ["third_party/blink/renderer/core/animation/effect_model.h"],
+      default_value: "EffectModel::kCompositeReplace",
+      type_name: "EffectModel::CompositeOperation",
+      valid_for_marker: true,
+      runtime_flag: "CSSAnimationComposition"
+    },
+    {
       name: "animation-delay",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "animation",
@@ -905,7 +921,6 @@
       },
       keywords: ["none", "auto"],
       typedom_types: ["Keyword"],
-      tree_scoped_value: true,
       separator: ",",
       valid_for_marker: true,
       runtime_flag: "CSSScrollTimeline",
@@ -1066,7 +1081,6 @@
       valid_for_first_line: true,
       valid_for_cue: true,
       valid_for_marker: true,
-      tree_scoped_value: true,
       valid_for_formatted_text: true,
       valid_for_formatted_text_run: true,
     },
@@ -1591,7 +1605,6 @@
       keywords: ["none"],
       typedom_types: ["Keyword"],
       runtime_flag: "CSSAnchorPositioning",
-      tree_scoped_value: true,
     },
     {
       name: "anchor-scroll",
@@ -1606,7 +1619,6 @@
       keywords: ["none"],
       typedom_types: ["Keyword"],
       runtime_flag: "CSSAnchorPositioning",
-      tree_scoped_value: true,
     },
     {
       name: "aspect-ratio",
@@ -2277,7 +2289,6 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
     },
     {
       name: "box-shadow",
@@ -2529,7 +2540,6 @@
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       type_name: "ScopedCSSNameList",
       wrapper_pointer_name: "Persistent",
-      tree_scoped_value: true,
       default_value: "nullptr",
       field_group: "*",
       field_template: "external",
@@ -2562,7 +2572,6 @@
       computed_style_custom_functions: ["getter"],
       style_builder_custom_functions: ["initial", "inherit", "value"],
       valid_for_marker: true,
-      tree_scoped_value: true,
       supports_incremental_style: true,
     },
     {
@@ -2992,7 +3001,6 @@
       supports_incremental_style: true,
       valid_for_formatted_text: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
     },
     {
       name: "hyphenate-limit-chars",
@@ -3116,7 +3124,6 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
     },
     {
       name: "letter-spacing",
@@ -3205,7 +3212,6 @@
         "decimal", "none"
       ],
       style_builder_custom_functions: ["value"],
-      tree_scoped_value: true,
     },
     {
       name: "margin-bottom",
@@ -3385,7 +3391,6 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
     },
     {
       name: "max-width",
@@ -3403,7 +3408,6 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
     },
     {
       name: "min-height",
@@ -3420,7 +3424,6 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
     },
     {
       name: "min-width",
@@ -3437,7 +3440,6 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
     },
     {
       name: "mix-blend-mode",
@@ -3982,7 +3984,6 @@
       keywords: ["none"],
       typedom_types: ["Keyword"],
       runtime_flag: "CSSAnchorPositioning",
-      tree_scoped_value: true,
     },
     {
       name: "quotes",
@@ -4040,7 +4041,6 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
     },
     {
       name: "r",
@@ -4376,12 +4376,11 @@
       name: "scroll-timeline-axis",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       field_group: "*->timeline",
-      field_template: "primitive",
-      field_size: 2,
-      type_name: "TimelineAxis",
-      default_value: "TimelineAxis::kBlock",
-      keywords: ["block", "inline", "vertical", "horizontal"],
-      typedom_types: ["Keyword"],
+      field_template: "external",
+      default_value: "Vector<TimelineAxis>()",
+      type_name: "Vector<TimelineAxis>",
+      converter: "ConvertViewTimelineAxis",
+      separator: ",",
       runtime_flag: "CSSScrollTimeline",
     },
     {
@@ -4389,11 +4388,11 @@
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       field_group: "*->timeline",
       field_template: "external",
-      type_name: "ScopedCSSName",
-      wrapper_pointer_name: "Persistent",
       default_value: "nullptr",
-      tree_scoped_value: true,
-      converter: "ConvertNoneOrCustomIdent",
+      type_name: "ScopedCSSNameList",
+      wrapper_pointer_name: "Persistent",
+      converter: "ConvertViewTimelineName",
+      separator: ",",
       runtime_flag: "CSSScrollTimeline",
     },
     {
@@ -4962,7 +4961,16 @@
       },
       supports_incremental_style: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
+    },
+    {
+      name: "top-layer",
+      runtime_flag: "CSSTopLayerForTransitions",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      field_group: "*",
+      field_template: "keyword",
+      keywords: ["none", "browser"],
+      default_value: "none",
+      typedom_types: ["Keyword"],
     },
     {
       name: "touch-action",
@@ -5141,7 +5149,6 @@
       default_value: "nullptr",
       type_name: "ScopedCSSNameList",
       wrapper_pointer_name: "Persistent",
-      tree_scoped_value: true,
       converter: "ConvertViewTimelineName",
       separator: ",",
       runtime_flag: "CSSViewTimeline",
@@ -5886,7 +5893,6 @@
       supports_incremental_style: true,
       valid_for_formatted_text: true,
       valid_for_position_fallback: true,
-      tree_scoped_value: true,
     },
     {
       name: "will-change",

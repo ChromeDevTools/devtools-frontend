@@ -89,7 +89,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
   private readonly maxLength: number;
   private readonly anchorsByTarget: Map<SDK.Target.Target, Element[]>;
   private readonly locationPoolByTarget: Map<SDK.Target.Target, Bindings.LiveLocation.LiveLocationPool>;
-  private onLiveLocationUpdate: (() => void)|undefined;
+  private onLiveLocationUpdate: (() => void);
   private useLinkDecorator: boolean;
 
   constructor(
@@ -250,8 +250,6 @@ export class Linkifier implements SDK.TargetManager.Observer {
         .then(liveLocation => {
           if (liveLocation) {
             linkInfo.liveLocation = liveLocation;
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // @ts-expect-error
             currentOnLiveLocationUpdate();
           }
         });
@@ -348,8 +346,6 @@ export class Linkifier implements SDK.TargetManager.Observer {
             this.updateAnchor.bind(this, link, linkDisplayOptions), pool)
         .then(liveLocation => {
           linkInfo.liveLocation = liveLocation;
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-          // @ts-expect-error
           currentOnLiveLocationUpdate();
         });
 
@@ -377,8 +373,6 @@ export class Linkifier implements SDK.TargetManager.Observer {
         .createLiveLocation(rawLocation, this.updateAnchor.bind(this, link, linkDisplayOptions), pool)
         .then(liveLocation => {
           linkInfo.liveLocation = liveLocation;
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-          // @ts-expect-error
           currentOnLiveLocationUpdate();
         });
 

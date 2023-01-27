@@ -12,19 +12,17 @@ import {
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Elements tab', async function() {
-  // fails on Mac
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/1410776] does not break when switching panels while editing as HTML', async () => {
-        await goToResource('elements/switch-panels-while-editing-as-html.html');
-        await expandSelectedNodeRecursively();
-        const elementsContentPanel = await waitFor('#elements-content');
-        const selectedNode = await waitForElementWithTextContent('Inspected Node', elementsContentPanel);
-        await selectedNode.click({button: 'right'});
-        const editAsHTMLOption = await findSubMenuEntryItem('Edit as HTML');
-        await editAsHTMLOption.click();
-        await waitFor('.elements-disclosure devtools-text-editor');
-        await openSourcesPanel();
-        await navigateToElementsTab();
-        await waitForNone('.elements-disclosure devtools-text-editor');
-      });
+  it('does not break when switching panels while editing as HTML', async () => {
+    await goToResource('elements/switch-panels-while-editing-as-html.html');
+    await expandSelectedNodeRecursively();
+    const elementsContentPanel = await waitFor('#elements-content');
+    const selectedNode = await waitForElementWithTextContent('Inspected Node', elementsContentPanel);
+    await selectedNode.click({button: 'right'});
+    const editAsHTMLOption = await findSubMenuEntryItem('Edit as HTML', false);
+    await editAsHTMLOption.click();
+    await waitFor('.elements-disclosure devtools-text-editor');
+    await openSourcesPanel();
+    await navigateToElementsTab();
+    await waitForNone('.elements-disclosure devtools-text-editor');
+  });
 });

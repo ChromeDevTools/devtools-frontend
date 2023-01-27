@@ -29,20 +29,21 @@ export async function assertTopLevelContextMenuItemsText(expectedOptions: string
 
   assert.deepEqual(allItemsText, expectedOptions);
 }
-export async function findSubMenuEntryItem(text: string): Promise<puppeteer.ElementHandle<Element>> {
-  const textToSearchFor = platformSpecificTextForSubMenuEntryItem(text);
+export async function findSubMenuEntryItem(
+    text: string, hasSubmenu: boolean): Promise<puppeteer.ElementHandle<Element>> {
+  const textToSearchFor = hasSubmenu ? platformSpecificTextForSubMenuEntryItem(text) : text;
   const matchingElement = await $textContent(textToSearchFor);
 
   if (!matchingElement) {
     const allItems = await $$('.soft-context-menu > .soft-context-menu-item');
     const allItemsText = await Promise.all(allItems.map(item => item.evaluate(div => div.textContent)));
-    assert.fail(`Could not find "${text}" option on context menu. Found items: ${allItemsText.join(' | ')}`);
+    assert.fail(`Could not find "${textToSearchFor}" option on context menu. Found items: ${allItemsText.join(' | ')}`);
   }
   return matchingElement;
 }
 
 export async function assertSubMenuItemsText(subMenuText: string, expectedOptions: string[]): Promise<void> {
-  const subMenuEntryItem = await findSubMenuEntryItem(subMenuText);
+  const subMenuEntryItem = await findSubMenuEntryItem(subMenuText, true);
   if (!subMenuEntryItem) {
     const allItems = await $$('.soft-context-menu > .soft-context-menu-item');
     const allItemsText = await Promise.all(allItems.map(item => item.evaluate(div => div.textContent)));

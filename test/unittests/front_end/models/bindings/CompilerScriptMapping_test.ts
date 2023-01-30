@@ -59,6 +59,24 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     ]);
   });
 
+  it('removes webpack hashes from display names', async () => {
+    const target = createTarget();
+
+    const sourceRoot = 'http://example.com';
+    const sources = ['foo.js?a1b2', 'two%20words.ts?c3d4', '?e5f6'];
+    const scriptInfo = {url: `${sourceRoot}/bundle.js`, content: '1;\n'};
+    const sourceMapInfo = {url: `${scriptInfo.url}.map`, content: {version: 3, mappings: '', sourceRoot, sources}};
+
+    const namesPromise = Promise.all(
+        sources.map(
+            name =>
+                waitForUISourceCodeAdded(`${sourceRoot}/${name}`, target).then(uiSourceCode => uiSourceCode.name())),
+    );
+    await backend.addScript(target, scriptInfo, sourceMapInfo);
+
+    assert.deepEqual(await namesPromise, ['foo.js', 'two words.ts', '?e5f6']);
+  });
+
   it('creates UISourceCodes with the correct media type', async () => {
     const target = createTarget();
 

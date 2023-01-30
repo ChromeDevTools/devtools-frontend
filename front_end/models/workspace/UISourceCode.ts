@@ -83,9 +83,9 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       this.originInternal = parsedURL.securityOrigin();
       this.parentURLInternal =
           Common.ParsedURL.ParsedURL.concatenate(this.originInternal, parsedURL.folderPathComponents);
-      if (parsedURL.queryParams) {
-        // in case file name contains query params, it doesn't look like a normal file name anymore
-        // so it can as well remain encoded
+      if (parsedURL.queryParams && !(parsedURL.lastPathComponent && contentType.isFromSourceMap())) {
+        // If there is a query param, display it like a URL. Unless it is from a source map,
+        // in which case the query param is probably a hash that is best left hidden.
         this.nameInternal = parsedURL.lastPathComponent + '?' + parsedURL.queryParams;
       } else {
         // file name looks best decoded

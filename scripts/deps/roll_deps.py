@@ -8,6 +8,7 @@ Update manually maintained dependencies from Chromium.
 """
 
 import argparse
+import enum
 import os
 import shutil
 import subprocess
@@ -49,8 +50,23 @@ for f in FILES:
     FILE_MAPPINGS[f] = f
 
 
+class ReferenceMode(enum.Enum):
+    Tot = 'tot'
+    WorkingTree = 'working-tree'
+
+    def __str__(self):
+        return self.value
+
+
 def parse_options(cli_args):
     parser = argparse.ArgumentParser(description='Roll dependencies from Chromium.')
+    parser.add_argument(
+        '--ref',
+        type=ReferenceMode,
+        choices=list(ReferenceMode),
+        help='Defaults to tot. '
+        'If tot, fetch origin/main of Chromium repository and use it. '
+        'If working-tree, use working tree as is.')
     parser.add_argument('chromium_dir', help='path to chromium/src directory')
     parser.add_argument('devtools_dir',
                         help='path to devtools/devtools-frontend directory')
@@ -93,7 +109,8 @@ def generate_dom_pinned_properties(options):
 
 if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
-    update(OPTIONS)
+    if OPTIONS.ref == ReferenceMode.Tot:
+        update(OPTIONS)
     copy_files(OPTIONS)
     generate_signatures(OPTIONS)
     generate_dom_pinned_properties(OPTIONS)

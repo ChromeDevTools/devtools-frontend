@@ -8,6 +8,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as Input from '../../../ui/components/input/input.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -229,7 +230,7 @@ export class BreakpointsView extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [breakpointsViewStyles];
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, breakpointsViewStyles];
   }
 
   async #render(): Promise<void> {

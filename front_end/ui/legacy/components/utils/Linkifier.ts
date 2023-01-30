@@ -291,11 +291,9 @@ export class Linkifier implements SDK.TargetManager.Observer {
       target: SDK.Target.Target|null, callFrame: Protocol.Runtime.CallFrame, options?: LinkifyOptions): HTMLElement
       |null {
     const linkifyOptions: LinkifyOptions = {
+      ...options,
       columnNumber: callFrame.columnNumber,
-      showColumnNumber: Boolean(options?.showColumnNumber),
       inlineFrameIndex: options?.inlineFrameIndex ?? 0,
-      tabStop: options?.tabStop,
-      className: options?.className,
     };
     return this.maybeLinkifyScriptLocation(
         target, callFrame.scriptId, callFrame.url as Platform.DevToolsPath.UrlString, callFrame.lineNumber,

@@ -15,6 +15,7 @@ import {
   waitFor,
   waitForElementWithTextContent,
   waitForFunction,
+  withControlOrMetaKey,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
@@ -553,7 +554,7 @@ describe('The Elements Tab', async () => {
       await clickNthChildOfSelectedElementNode(1);
     });
     const value = await waitForCSSPropertyValue('body .text', 'color', 'green', 'app.scss:6');
-    await click(value, {clickOptions: {modifier: 'ControlOrMeta'}});
+    await withControlOrMetaKey(() => click(value));
     await waitForElementWithTextContent('Line 12, Column 9');
   });
 
@@ -566,7 +567,7 @@ describe('The Elements Tab', async () => {
       await clickNthChildOfSelectedElementNode(1);
     });
     const value = await waitForCSSPropertyValue('body .text', 'color', 'green', 'app.scss:6');
-    await click(value, {clickOptions: {modifier: 'ControlOrMeta'}});
+    await withControlOrMetaKey(() => click(value));
     await waitForElementWithTextContent('Line 12, Column 9');
   });
 
@@ -579,7 +580,7 @@ describe('The Elements Tab', async () => {
       await clickNthChildOfSelectedElementNode(1);
     });
     const value = await waitForCSSPropertyValue('body .text', 'color', 'green', 'app.scss:6');
-    await click(value, {clickOptions: {modifier: 'ControlOrMeta'}});
+    await withControlOrMetaKey(() => click(value));
     await waitForElementWithTextContent('Line 12, Column 9');
   });
 
@@ -592,7 +593,7 @@ describe('The Elements Tab', async () => {
       await clickNthChildOfSelectedElementNode(1);
     });
     const value = await waitForCSSPropertyValue('body .text', 'color', 'green', 'app.scss:6');
-    await click(value, {clickOptions: {modifier: 'ControlOrMeta'}});
+    await withControlOrMetaKey(() => click(value));
     await waitForElementWithTextContent('Line 12, Column 9');
   });
 });

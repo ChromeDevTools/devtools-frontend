@@ -2,19 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {type Chrome} from '../../../extension-api/ExtensionAPI.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';  // eslint-disable-line rulesdir/es_modules_import
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import {type DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 const UIStrings = {
   /**
@@ -1218,6 +1219,39 @@ export class DebuggerLanguagePluginManager implements
       return null;
     }
     return locationRanges.map(({start}) => start);
+  }
+
+  async uiLocationRangeToRawLocationRanges(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      textRange: TextUtils.TextRange.TextRange): Promise<SDK.DebuggerModel.LocationRange[]|null> {
+    const locationRangesPromises = [];
+    for (let line = textRange.startLine; line <= textRange.endLine; ++line) {
+      locationRangesPromises.push(this.uiLocationToRawLocationRanges(uiSourceCode, line));
+    }
+    const ranges = [];
+    for (const locationRanges of await Promise.all(locationRangesPromises)) {
+      if (locationRanges === null) {
+        return null;
+      }
+      for (const range of locationRanges) {
+        const [startLocation, endLocation] = await Promise.all([
+          this.rawLocationToUILocation(range.start),
+          this.rawLocationToUILocation(range.end),
+        ]);
+        if (startLocation === null || endLocation === null) {
+          continue;
+        }
+        // Report all ranges that somehow intersect with the `textRange`. It's the
+        // responsibility of the caller to filter / clamp these ranges appropriately.
+        const overlap = textRange.intersection(new TextUtils.TextRange.TextRange(
+            startLocation.lineNumber, startLocation.columnNumber ?? 0, endLocation.lineNumber,
+            endLocation.columnNumber ?? Infinity));
+        if (!overlap.isEmpty()) {
+          ranges.push(range);
+        }
+      }
+    }
+    return ranges;
   }
 
   scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {

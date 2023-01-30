@@ -154,6 +154,48 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     return locations;
   }
 
+  uiLocationRangeToJSLocationRanges(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      textRange: TextUtils.TextRange.TextRange): SDK.DebuggerModel.LocationRange[]|null {
+    if (!boundUISourceCodes.has(uiSourceCode)) {
+      return null;
+    }
+    const target = NetworkProject.targetForUISourceCode(uiSourceCode);
+    if (!target) {
+      return null;
+    }
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    if (!debuggerModel) {
+      return null;
+    }
+    const ranges = [];
+    for (const script of debuggerModel.scripts()) {
+      if (script.embedderName() !== uiSourceCode.url()) {
+        continue;
+      }
+      const scriptTextRange = scriptRangeMap.get(script) ?? computeScriptRange(script);
+      const range = scriptTextRange.intersection(textRange);
+      if (range.isEmpty()) {
+        continue;
+      }
+      let {startLine, startColumn, endLine, endColumn} = range;
+      if (script.hasSourceURL) {
+        startLine -= range.startLine;
+        if (startLine === 0) {
+          startColumn -= range.startColumn;
+        }
+        endLine -= range.startLine;
+        if (endLine === 0) {
+          endColumn -= range.startColumn;
+        }
+      }
+      const start = debuggerModel.createRawLocation(script, startLine, startColumn);
+      const end = debuggerModel.createRawLocation(script, endLine, endColumn);
+      ranges.push({start, end});
+    }
+    return ranges;
+  }
+
   getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Set<number>|null {
     if (!boundUISourceCodes.has(uiSourceCode)) {
       return null;

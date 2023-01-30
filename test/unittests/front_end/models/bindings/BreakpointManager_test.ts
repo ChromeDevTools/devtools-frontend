@@ -2,31 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const {assert} = chai;
+import * as Common from '../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as Common from '../../../../../front_end/core/common/common.js';
+import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import type * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 
+import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
-import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
+import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
 import {
-  dispatchEvent,
   describeWithMockConnection,
+  dispatchEvent,
   registerListenerOnOutgoingMessage,
 } from '../../helpers/MockConnection.js';
-import {
-  createContentProviderUISourceCode,
-  createFileSystemUISourceCode,
-} from '../../helpers/UISourceCodeHelpers.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
-import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
-import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
+import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+
+const {assert} = chai;
 
 describeWithMockConnection('BreakpointManager (mock backend)', () => {
   const URL_HTML = 'http://site/index.html' as Platform.DevToolsPath.UrlString;
@@ -1172,6 +1171,10 @@ function createFakeScriptMapping(
     uiLocationToRawLocations:
         (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _lineNumber: number,
          _columnNumber?: number) => [sdkLocation],
+    uiLocationRangeToRawLocationRanges:
+        (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _textRange: TextUtils.TextRange.TextRange) => {
+          throw new Error('Not implemented');
+        },
   };
   return mapping;
 }

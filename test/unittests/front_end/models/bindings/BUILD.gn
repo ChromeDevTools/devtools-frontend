@@ -15,6 +15,7 @@ ts_library("bindings") {
     "IgnoreListManager_test.ts",
     "LiveLocation_test.ts",
     "ResourceMapping_test.ts",
+    "ResourceScriptMapping_test.ts",
     "ResourceUtils_test.ts",
   ]
 

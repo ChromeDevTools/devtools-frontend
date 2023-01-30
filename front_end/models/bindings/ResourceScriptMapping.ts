@@ -33,6 +33,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {BreakpointManager, type Breakpoint} from './BreakpointManager.js';
@@ -145,6 +146,25 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     }
 
     return [this.debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
+  }
+
+  uiLocationRangeToRawLocationRanges(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      {startLine, startColumn, endLine, endColumn}: TextUtils.TextRange.TextRange):
+      SDK.DebuggerModel.LocationRange[]|null {
+    const scriptFile = this.#uiSourceCodeToScriptFile.get(uiSourceCode);
+    if (!scriptFile) {
+      return null;
+    }
+
+    const {script} = scriptFile;
+    if (!script) {
+      return null;
+    }
+
+    const start = this.debuggerModel.createRawLocation(script, startLine, startColumn);
+    const end = this.debuggerModel.createRawLocation(script, endLine, endColumn);
+    return [{start, end}];
   }
 
   private inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {

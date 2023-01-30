@@ -204,6 +204,25 @@ class ScriptMapping implements Bindings.DebuggerWorkspaceBinding.DebuggerSourceM
     return [];
   }
 
+  uiLocationRangeToRawLocationRanges(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      {startLine, startColumn, endLine, endColumn}: TextUtils.TextRange.TextRange):
+      SDK.DebuggerModel.LocationRange[]|null {
+    // The ranges aren't guaranteed to be contiguous here (inline scripts within
+    // formatted documents), but given that the SourceFormatter is deprecated and
+    // soon to be removed (in-place pretty printing is enabled by default as of
+    // M-111), there's no point in investing a lot of resources here now. So we
+    // just retain the former behavior (which is incorrect in the case of multiple
+    // inline scripts within a range).
+    const startLocations = this.uiLocationToRawLocations(uiSourceCode, startLine, startColumn);
+    const endLocations = this.uiLocationToRawLocations(uiSourceCode, endLine, endColumn);
+    if (startLocations.length !== 1 || endLocations.length !== 1) {
+      return null;
+    }
+    const [start] = startLocations, [end] = endLocations;
+    return [{start, end}];
+  }
+
   async setSourceMappingEnabled(formatData: SourceFormatData, enabled: boolean): Promise<void> {
     const scripts = this.scriptsForUISourceCode(formatData.originalSourceCode);
     if (!scripts.length) {

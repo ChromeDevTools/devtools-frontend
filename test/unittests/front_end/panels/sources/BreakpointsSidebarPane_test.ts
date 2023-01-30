@@ -9,6 +9,7 @@ import * as Workspace from '../../../../../front_end/models/workspace/workspace.
 import * as SourcesComponents from '../../../../../front_end/panels/sources/components/components.js';
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {createContentProviderUISourceCode, setupMockedUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
@@ -623,6 +624,10 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
       uiLocationToRawLocations:
           (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _lineNumber: number,
            _columnNumber?: number) => [sdkLocation],
+      uiLocationRangeToRawLocationRanges:
+          (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _textRange: TextUtils.TextRange.TextRange) => {
+            throw new Error('Not implemented');
+          },
     };
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
 

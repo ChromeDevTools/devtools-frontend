@@ -36,10 +36,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 
-import {
-  type DebuggerSourceMapping,
-  type DebuggerWorkspaceBinding,
-} from './DebuggerWorkspaceBinding.js';
+import {type DebuggerSourceMapping, type DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {IgnoreListManager} from './IgnoreListManager.js';
 import {NetworkProject} from './NetworkProject.js';
 
@@ -271,6 +268,31 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
       locations.push(script.debuggerModel.createRawLocation(script, location.lineNumber, location.columnNumber));
     }
     return locations;
+  }
+
+  uiLocationRangeToRawLocationRanges(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      textRange: TextUtils.TextRange.TextRange): SDK.DebuggerModel.LocationRange[]|null {
+    if (!this.#uiSourceCodeToSourceMaps.has(uiSourceCode)) {
+      return null;
+    }
+    const ranges = [];
+    for (const sourceMap of this.#uiSourceCodeToSourceMaps.get(uiSourceCode)) {
+      const script = this.#sourceMapManager.clientForSourceMap(sourceMap);
+      if (!script) {
+        continue;
+      }
+
+      for (const scriptTextRange of sourceMap.reverseMapTextRanges(uiSourceCode.url(), textRange)) {
+        const startLocation = script.relativeLocationToRawLocation(scriptTextRange.start);
+        const endLocation = script.relativeLocationToRawLocation(scriptTextRange.end);
+        const start =
+            script.debuggerModel.createRawLocation(script, startLocation.lineNumber, startLocation.columnNumber);
+        const end = script.debuggerModel.createRawLocation(script, endLocation.lineNumber, endLocation.columnNumber);
+        ranges.push({start, end});
+      }
+    }
+    return ranges;
   }
 
   /**

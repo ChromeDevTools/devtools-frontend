@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../front_end/core/common/common.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
@@ -142,6 +143,34 @@ describeWithMockConnection('ResourceMapping', () => {
         assert.deepEqual(resourceMapping.uiLocationToJSLocations(uiSourceCode, startLine, column), [
           debuggerModel.createRawLocationByScriptId(scriptId, startLine, column),
         ]);
+      }
+    });
+  });
+
+  describe('uiLocationRangeToRSLocationRanges', () => {
+    it('correctly reports all inline <script>s when querying the whole document', () => {
+      const rawLocationRanges = resourceMapping.uiLocationRangeToJSLocationRanges(
+          uiSourceCode, new TextUtils.TextRange.TextRange(0, 0, 14, 0));
+      assertNotNullOrUndefined(rawLocationRanges);
+      assert.lengthOf(rawLocationRanges, SCRIPTS.length);
+      for (let i = 0; i < SCRIPTS.length; ++i) {
+        let {startLine, startColumn, endLine, endColumn} = SCRIPTS[i];
+        const {scriptId, hasSourceURLComment} = SCRIPTS[i];
+        const {start, end} = rawLocationRanges[i];
+        assert.strictEqual(start.scriptId, scriptId);
+        assert.strictEqual(end.scriptId, scriptId);
+        if (hasSourceURLComment) {
+          if (endLine === startLine) {
+            endColumn -= startColumn;
+          }
+          endLine -= startLine;
+          startLine = 0;
+          startColumn = 0;
+        }
+        assert.strictEqual(start.lineNumber, startLine);
+        assert.strictEqual(start.columnNumber, startColumn);
+        assert.strictEqual(end.lineNumber, endLine);
+        assert.strictEqual(end.columnNumber, endColumn);
       }
     });
   });

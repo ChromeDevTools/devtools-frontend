@@ -31,6 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
@@ -103,6 +104,23 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     }
     ({lineNumber, columnNumber} = script.relativeLocationToRawLocation({lineNumber, columnNumber}));
     return [script.debuggerModel.createRawLocation(script, lineNumber, columnNumber ?? 0)];
+  }
+
+  uiLocationRangeToRawLocationRanges(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      {startLine, startColumn, endLine, endColumn}: TextUtils.TextRange.TextRange):
+      SDK.DebuggerModel.LocationRange[]|null {
+    const script = this.#uiSourceCodeToScript.get(uiSourceCode);
+    if (!script) {
+      return [];
+    }
+    ({lineNumber: startLine, columnNumber: startColumn} =
+         script.relativeLocationToRawLocation({lineNumber: startLine, columnNumber: startColumn}));
+    ({lineNumber: endLine, columnNumber: endColumn} =
+         script.relativeLocationToRawLocation({lineNumber: endLine, columnNumber: endColumn}));
+    const start = script.debuggerModel.createRawLocation(script, startLine, startColumn);
+    const end = script.debuggerModel.createRawLocation(script, endLine, endColumn);
+    return [{start, end}];
   }
 
   private parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {

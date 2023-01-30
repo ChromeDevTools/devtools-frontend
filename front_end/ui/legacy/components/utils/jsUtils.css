@@ -26,6 +26,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-inline: 2px;
 }
 
 .stack-preview-container .function-name {

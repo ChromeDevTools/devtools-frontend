@@ -48,6 +48,7 @@ copy_to_gen("elements") {
     "quirks-mode-iframes.html",
     "quirks-mode.html",
     "selection-after-delete.html",
+    "shadow-dom-modify-chardata.html",
     "shadow-roots.html",
     "sidebar-event-listeners.html",
     "simple-body-color.html",

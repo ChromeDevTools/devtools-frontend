@@ -22,6 +22,7 @@ node_ts_library("elements") {
     "reveal-correct-node_test.ts",
     "search-elements_test.ts",
     "selection-after-delete_test.ts",
+    "shadow-dom-modify-chardata_test.ts",
     "shadowroot-styles_test.ts",
     "sidebar-event-listeners-remove_test.ts",
     "sidebar-event-listeners_test.ts",

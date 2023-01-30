@@ -28,8 +28,8 @@ export async function getPlayerButton() {
 }
 
 export async function getPlayerErrors(count: number) {
-  await click(await waitFor('.player-entry-player-title'));
-  await click(await waitFor('#tab-messages'));
+  await click('.player-entry-player-title');
+  await click('#tab-messages');
   return await waitForMany('.media-message-error', count);
 }
 

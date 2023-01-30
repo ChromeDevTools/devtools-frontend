@@ -10,6 +10,7 @@ import {
   platform,
   selectOption,
   waitFor,
+  clickElement,
   waitForElementsWithTextContent,
   waitForElementWithTextContent,
   waitForFunction,
@@ -80,7 +81,7 @@ export const getShortcutListItemElement = async (shortcutText: string) => {
 export const editShortcutListItem = async (shortcutText: string) => {
   const listItemElement = await getShortcutListItemElement(shortcutText) as ElementHandle;
 
-  await click(listItemElement);
+  await clickElement(listItemElement);
   await waitFor(EDIT_BUTTON_SELECTOR, listItemElement);
   await click(EDIT_BUTTON_SELECTOR, {root: listItemElement});
 
@@ -122,7 +123,7 @@ export const clickAddShortcutLink = async () => {
     assert.fail('could not find add shortcut link');
   }
 
-  await click(addShortcutLinkElement);
+  await clickElement(addShortcutLinkElement);
 };
 
 export const clickShortcutConfirmButton = async () => {
@@ -142,7 +143,7 @@ export const clickShortcutDeleteButton = async (index: number) => {
   if (deleteButtons.length <= index) {
     assert.fail(`shortcut delete button #${index} not found`);
   }
-  await click(deleteButtons[index]);
+  await clickElement(deleteButtons[index]);
 };
 
 export const waitForEmptyShortcutInput = async () => {

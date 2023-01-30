@@ -47,52 +47,6 @@ switch (os.platform()) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
 
-/**
- * Returns an {x, y} position within the element identified by the selector within the root.
- * By default the position is the center of the bounding box. If the element's bounding box
- * extends beyond that of a containing element, this position may not correspond to the element.
- * In this case, specifying maxPixelsFromLeft will constrain the returned point to be close to
- * the left edge of the bounding box.
- */
-export const getElementPosition =
-    async (selector: string|puppeteer.ElementHandle, root?: puppeteer.JSHandle, maxPixelsFromLeft?: number) => {
-  const rectData = await waitForFunction(async () => {
-    let element: puppeteer.ElementHandle;
-    if (typeof selector === 'string') {
-      element = await waitFor(selector, root);
-    } else {
-      element = selector;
-    }
-
-    return element.evaluate((element: Element) => {
-      if (!element) {
-        return {};
-      }
-
-      if (!element.isConnected) {
-        return undefined;
-      }
-
-      const {left, top, width, height} = element.getBoundingClientRect();
-      return {left, top, width, height};
-    });
-  });
-
-  if (rectData.left === undefined) {
-    throw new Error(`Unable to find element with selector "${selector}"`);
-  }
-
-  let pixelsFromLeft = rectData.width * 0.5;
-  if (maxPixelsFromLeft && pixelsFromLeft > maxPixelsFromLeft) {
-    pixelsFromLeft = maxPixelsFromLeft;
-  }
-
-  return {
-    x: rectData.left + pixelsFromLeft,
-    y: rectData.top + rectData.height * 0.5,
-  };
-};
-
 export interface ClickOptions {
   root?: puppeteer.JSHandle;
   clickOptions?: puppeteer.ClickOptions;
@@ -112,22 +66,44 @@ export const withControlOrMetaKey = async (action: () => Promise<void>, root = g
   });
 };
 
-export const click = async (selector: string|puppeteer.ElementHandle, options?: ClickOptions) => {
-  const {frontend} = getBrowserAndPages();
-  const clickableElement =
-      await getElementPosition(selector, options && options.root, options && options.maxPixelsFromLeft);
-
-  if (!clickableElement) {
-    throw new Error(`Unable to locate clickable element "${selector}".`);
+export const click = async(selector: string, options?: ClickOptions): Promise<puppeteer.ElementHandle> => {
+  // TODO(crbug.com/1410168): we should refactor waitFor to be compatible with
+  // Puppeteer's syntax for selectors.
+  const queryHandlers = new Set([
+    'pierceShadowText',
+    'pierce',
+    'aria',
+    'xpath',
+    'text',
+  ]);
+  let queryHandler = 'pierce';
+  for (const handler of queryHandlers) {
+    const prefix = handler + '/';
+    if (selector.startsWith(prefix)) {
+      queryHandler = handler;
+      selector = selector.substring(prefix.length);
+      break;
+    }
   }
-
-  // Click on the button and wait for the console to load. The reason we use this method
-  // rather than elementHandle.click() is because the frontend attaches the behavior to
-  // a 'mousedown' event (not the 'click' event). To avoid attaching the test behavior
-  // to a specific event we instead locate the button in question and ask Puppeteer to
-  // click on it instead.
-  await frontend.mouse.click(clickableElement.x, clickableElement.y, options && options.clickOptions);
+  return waitForFunction(async () => {
+    const element = await waitFor(selector, options?.root, undefined, queryHandler);
+    try {
+      await element.click(options?.clickOptions);
+      return element;
+    } catch (err) {
+      // A bit of delay to not retry too often.
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    return undefined;
+  });
 };
+
+/**
+ * @deprecated This method is not able to recover from unstable DOM. Use click() instead.
+ */
+export async function clickElement(element: puppeteer.ElementHandle, options?: ClickOptions): Promise<void> {
+  await element.click(options?.clickOptions);
+}
 
 export const doubleClick =
     async (selector: string, options?: {root?: puppeteer.JSHandle, clickOptions?: puppeteer.ClickOptions}) => {

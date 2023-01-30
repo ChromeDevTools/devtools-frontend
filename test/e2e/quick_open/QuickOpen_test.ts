@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {$$, click, enableExperiment, goToResource, step, waitFor} from '../../shared/helper.js';
+import {$$, clickElement, enableExperiment, goToResource, step, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
@@ -22,7 +22,7 @@ async function openAFileWithQuickMenu() {
           await goToResource('pages/hello-world.html');
           await openFileQuickOpen();
           const firstItem = await getMenuItemAtPosition(0);
-          await click(firstItem);
+          await clickElement(firstItem);
         });
         await step('check the sources panel is open with the selected file', async () => {
           await waitFor('.navigator-file-tree-item');

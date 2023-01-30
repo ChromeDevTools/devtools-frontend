@@ -49,15 +49,17 @@ describe('IssueView cache', async () => {
     await triggerIssue();
     await navigateToIssuesTab();
     async function waitForResources(numberOfAggregatedIssues: number, expectedTableRows: string[][]) {
-      await expandIssue();
-      const issueElement = await getIssueByTitle('Ensure CORS requests include credentials only when allowed');
-      assertNotNullOrUndefined(issueElement);
-      const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
       await waitForFunction(async () => {
+        await expandIssue();
+        const issueElement = await getIssueByTitle('Ensure CORS requests include credentials only when allowed');
+        assertNotNullOrUndefined(issueElement);
+        const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
         const text = await section.label.evaluate(el => el.textContent);
         const expected = numberOfAggregatedIssues === 1 ? '1 request' : `${numberOfAggregatedIssues} requests`;
         return text === expected;
       });
+      const issueElement = await getIssueByTitle('Ensure CORS requests include credentials only when allowed');
+      const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
       await ensureResourceSectionIsExpanded(section);
       await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
       const adorner = await waitFor('devtools-adorner');

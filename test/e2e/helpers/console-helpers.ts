@@ -333,8 +333,7 @@ export async function waitForIssueButtonLabel(expectedLabel: string) {
 }
 
 export async function clickOnContextMenu(selectorForNode: string, ctxMenuItemName: string) {
-  const node = await waitFor(selectorForNode);
-  await click(node, {clickOptions: {button: 'right'}});
+  await click(selectorForNode, {clickOptions: {button: 'right'}});
   const copyButton = await waitForAria(ctxMenuItemName);
   await copyButton.click();
 }

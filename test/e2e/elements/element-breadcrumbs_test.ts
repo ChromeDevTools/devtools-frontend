@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
+import {clickElement, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   assertSelectedElementsNodeTextIncludes,
@@ -29,7 +29,7 @@ describe('Element breadcrumbs', async () => {
     // expand the tree and then navigate down to the target node
     await expandSelectedNodeRecursively();
     const targetChildNode = await waitForElementWithTextContent(EXPECTED_TEXT_CONTENT);
-    await click(targetChildNode);
+    await clickElement(targetChildNode);
 
     // double check we got to the node we expect
     await waitForSelectedTreeElementSelectorWithTextcontent(EXPECTED_TEXT_CONTENT);

@@ -2,7 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, getBrowserAndPages, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
+import {
+  clickElement,
+  getBrowserAndPages,
+  goToResource,
+  waitForElementWithTextContent,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   expandSelectedNodeRecursively,
@@ -27,7 +32,7 @@ describe('The Elements tab', async () => {
 
     // Wait for the expansion and select the final child in the tree.
     const child = await waitForElementWithTextContent('child2');
-    await click(child);
+    await clickElement(child);
 
     const expected = [
       '<div class=\u200B"child3">\u200B</div>\u200B',

@@ -60,8 +60,9 @@ async function createHeaderOverride() {
 
 async function openHeadersTab() {
   const networkView = await waitFor(NETWORK_VIEW_SELECTOR);
-  const headersTabHeader = await waitFor(HEADERS_TAB_SELECTOR, networkView);
-  await click(headersTabHeader);
+  await click(HEADERS_TAB_SELECTOR, {
+    root: networkView,
+  });
   await waitFor(ACTIVE_HEADERS_TAB_SELECTOR, networkView);
 }
 

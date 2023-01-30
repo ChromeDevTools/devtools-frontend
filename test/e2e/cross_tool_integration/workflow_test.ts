@@ -5,6 +5,7 @@
 import {
   assertNotNullOrUndefined,
   click,
+  clickElement,
   reloadDevTools,
   waitFor,
   waitForFunction,
@@ -88,7 +89,7 @@ describe('A user can navigate across', async function() {
     });
 
     assertNotNullOrUndefined(link);
-    await click(link);
+    await clickElement(link);
     await waitFor('.panel[aria-label="sources"]');
   });
 });

@@ -8,6 +8,7 @@ import {
   $textContent,
   assertNotNullOrUndefined,
   click,
+  clickElement,
   getBrowserAndPages,
   goToResource,
   hasClass,
@@ -47,7 +48,7 @@ describe('The Console Tab', async () => {
     await step('switch to the iframe context', async () => {
       await contextSelectorButton.press('Enter');
       const frameMenuItem = await waitForMenuItemWithText(FRAME_CONTEXT_LABEL);
-      await click(frameMenuItem);
+      await clickElement(frameMenuItem);
       await pressKey('Enter');
       contextSelectorButton = await waitFor(`[aria-label="JavaScript context: ${FRAME_CONTEXT_LABEL}"]`);
     });

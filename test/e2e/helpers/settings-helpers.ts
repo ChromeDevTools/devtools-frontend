@@ -2,20 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, scrollElementIntoView, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+import {
+  click,
+  clickElement,
+  scrollElementIntoView,
+  waitFor,
+  waitForAria,
+  waitForFunction,
+} from '../../shared/helper.js';
 
 export const openPanelViaMoreTools = async (panelTitle: string) => {
   // Head to the triple dot menu.
-  const tripleDotMenu = await waitForAria('Customize and control DevTools');
-  await click(tripleDotMenu);
+  await click('aria/Customize and control DevTools');
 
   // Open the “More Tools” option.
   const moreTools = await waitForAria('More tools[role="menuitem"]');
   await moreTools.hover();
 
   // Click the desired menu item
-  const menuItem = await waitForAria(`${panelTitle}[role="menuitem"]`);
-  await click(menuItem);
+  await click(`aria/${panelTitle}[role="menuitem"]`);
 
   // Wait for the corresponding panel to appear.
   await waitForAria(`${panelTitle} panel[role="tabpanel"]`);
@@ -49,7 +54,7 @@ export const togglePreferenceInSettingsTab = async (label: string, shouldBeCheck
   const value = await preference.evaluate(checkbox => (checkbox as HTMLInputElement).checked);
 
   if (value !== shouldBeChecked) {
-    await click(preference);
+    await clickElement(preference);
 
     await waitForFunction(async () => {
       const newValue = await preference.evaluate(checkbox => (checkbox as HTMLInputElement).checked);
@@ -64,7 +69,7 @@ export const setIgnoreListPattern = async (pattern: string) => {
   await openSettingsTab('Ignore List');
   await click('[aria-label="Add filename pattern"]');
   const textBox = await waitFor('[aria-label="Add Pattern"]');
-  await click(textBox);
+  await clickElement(textBox);
   await textBox.type(pattern);
   await textBox.type('\n');
   await waitFor(`[title="Ignore scripts whose names match '${pattern}'"]`);

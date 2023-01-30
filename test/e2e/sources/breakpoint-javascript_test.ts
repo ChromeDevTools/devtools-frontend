@@ -6,6 +6,7 @@ import {assert} from 'chai';
 
 import {
   click,
+  clickElement,
   enableExperiment,
   getBrowserAndPages,
   goToResource,
@@ -198,7 +199,7 @@ describe('The Sources Tab', async function() {
          const firstItemTitle = await getMenuItemTitleAtPosition(0);
          const firstItem = await getMenuItemAtPosition(0);
          assert.strictEqual(firstItemTitle, 'hello.js');
-         await click(firstItem);
+         await clickElement(firstItem);
        });
 
        await step('add a breakpoint to the beginning of the inline script with sourceURL', async () => {

@@ -96,8 +96,9 @@ describe('The Computed pane', async function() {
     await frontend.keyboard.press('ArrowDown');
     const colorProperty = await waitFor(
         'CSS property name: color : CSS property value: rgb(255, 0, 102) ;', undefined, undefined, 'aria');
-    const arrowIcon = await waitFor('.arrow-icon', colorProperty);
-    await click(arrowIcon);
+    await click('.arrow-icon', {
+      root: colorProperty,
+    });
     const isExpandedBefore = await colorProperty.evaluate(element => element.ariaExpanded);
     assert(isExpandedBefore);
     await focusElementsTree();

@@ -73,11 +73,9 @@ describe('TreeOutline', () => {
   it('lets the user click to expand a node', async () => {
     await loadComponentDocExample('tree_outline/basic.html');
     const treeOutline = await getTreeOutline();
-    const firstArrow = await $('.arrow-icon', treeOutline);
-    if (!firstArrow) {
-      assert.fail('Could not find arrow icon to click');
-    }
-    await click(firstArrow);
+    await click('.arrow-icon', {
+      root: treeOutline,
+    });
     await waitForFunction(async () => {
       const visibleNodes = await $$('li[role="treeitem"]', treeOutline);
       // 3: 2 original root nodes, and the 1 child of the first root node.

@@ -7,6 +7,7 @@ import {
   $textContent,
   assertNotNullOrUndefined,
   click,
+  clickElement,
   prepareWaitForEvent,
   waitFor,
   waitForEvent,
@@ -20,7 +21,7 @@ describe('ColorPicker', () => {
     await goToResourceAndWaitForStyleSection('elements/css-variables-many.html');
 
     const swatch = await waitForFunction(() => getColorSwatch(/* parent*/ undefined, 0));
-    await click(swatch);
+    await clickElement(swatch);
 
     const panel = await waitFor('.palette-panel');
     await click('.spectrum-palette-switcher');
@@ -33,7 +34,7 @@ describe('ColorPicker', () => {
     assertNotNullOrUndefined(overlay);
 
     await prepareWaitForEvent(overlay, 'transitionend');
-    await click(palette);
+    await clickElement(palette);
     await waitForEvent(overlay, 'transitionend');
 
     await click('.spectrum-palette-switcher');

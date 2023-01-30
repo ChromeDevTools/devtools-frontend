@@ -11,7 +11,7 @@ import {
   platformSpecificTextForSubMenuEntryItem,
 } from '../../e2e/helpers/context-menu-helpers.js';
 import {getDataGrid, getDataGridController, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
-import {$, $$, $textContent, click, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, $textContent, click, clickElement, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
@@ -22,7 +22,7 @@ async function activateContextMenuOnColumnHeader(headerText: string) {
   if (!headerCell) {
     assert.fail(`Could not find header cell with text ${headerText}`);
   }
-  await click(headerCell, {
+  await clickElement(headerCell, {
     clickOptions: {
       button: 'right',
     },
@@ -37,7 +37,7 @@ async function activateContextMenuOnBodyCell(cellText: string) {
   if (!headerCell) {
     assert.fail(`Could not find body cell with text ${cellText}`);
   }
-  await click(headerCell, {
+  await clickElement(headerCell, {
     clickOptions: {
       button: 'right',
     },
@@ -72,11 +72,7 @@ describe('data grid controller', () => {
     await activateContextMenuOnColumnHeader('Key');
     const contextMenu = await $('.soft-context-menu');
     assert.isNotNull(contextMenu);
-    const valueColumnOption = await $('[aria-label="Value, checked"]');
-    if (!valueColumnOption) {
-      assert.fail('Could not find Value column in context menu.');
-    }
-    await click(valueColumnOption);
+    await click('[aria-label="Value, checked"]');
     const dataGrid = await getDataGrid();
 
     await waitForFunction(async () => {

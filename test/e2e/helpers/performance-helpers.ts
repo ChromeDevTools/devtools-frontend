@@ -90,6 +90,5 @@ export async function navigateToPerformanceSidebarTab(tabName: string) {
 }
 
 export async function clickOnFunctionLink() {
-  const link = await waitFor('.timeline-details.devtools-link');
-  await click(link);
+  await click('.timeline-details.devtools-link');
 }

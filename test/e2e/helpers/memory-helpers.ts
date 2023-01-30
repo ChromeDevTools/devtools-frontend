@@ -6,7 +6,16 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
 import {$, platform, waitForElementWithTextContent} from '../../shared/helper.js';
-import {$$, click, getBrowserAndPages, pasteText, waitFor, waitForFunction, waitForNone} from '../../shared/helper.js';
+import {
+  $$,
+  click,
+  clickElement,
+  getBrowserAndPages,
+  pasteText,
+  waitFor,
+  waitForFunction,
+  waitForNone,
+} from '../../shared/helper.js';
 
 const NEW_HEAP_SNAPSHOT_BUTTON = 'button[aria-label="Take heap snapshot"]';
 const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
@@ -22,7 +31,7 @@ export async function navigateToMemoryTab() {
 
 export async function takeAllocationProfile() {
   const radioButton = await $('//label[text()="Allocation sampling"]', undefined, 'xpath');
-  await click(radioButton);
+  await clickElement(radioButton);
   await click('button[aria-label="Start heap profiling"]');
   await new Promise(r => setTimeout(r, 200));
   await click('button[aria-label="Stop heap profiling"]');
@@ -34,7 +43,7 @@ export async function takeAllocationTimelineProfile({recordStacks}: {recordStack
   recordStacks: false,
 }) {
   const radioButton = await $('//label[text()="Allocation instrumentation on timeline"]', undefined, 'xpath');
-  await click(radioButton);
+  await clickElement(radioButton);
   if (recordStacks) {
     await click('input[aria-label="Record stack traces of allocations (extra performance overhead)"]');
   }

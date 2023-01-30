@@ -38,12 +38,14 @@ const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
 
 const configureAndCheckHeaderOverrides = async () => {
   const infoBar = await waitForAria('Select a folder to store override files in.');
-  const button = await waitFor('.infobar-main-row .infobar-button', infoBar);
-  await click(button);
+  await click('.infobar-main-row .infobar-button', {
+    root: infoBar,
+  });
 
   let networkView = await waitFor('.network-item-view');
-  let headersTabHeader = await waitFor('#tab-headersComponent', networkView);
-  await click(headersTabHeader);
+  await click('#tab-headersComponent', {
+    root: networkView,
+  });
   await waitFor('#tab-headersComponent[role=tab][aria-selected=true]', networkView);
   let responseHeaderSection = await waitFor('[aria-label="Response Headers"]', networkView);
 
@@ -66,8 +68,9 @@ const configureAndCheckHeaderOverrides = async () => {
   await navigateToNetworkTab('hello.html');
   await selectRequestByName('hello.html');
   networkView = await waitFor('.network-item-view');
-  headersTabHeader = await waitFor('#tab-headersComponent', networkView);
-  await click(headersTabHeader);
+  await click('#tab-headersComponent', {
+    root: networkView,
+  });
 
   responseHeaderSection = await waitFor('[aria-label="Response Headers"]');
   row = await waitFor('.row.header-overridden', responseHeaderSection);
@@ -89,8 +92,9 @@ describe('The Network Request view', async () => {
 
        await step('select the "Timing" tab', async () => {
          const networkView = await waitFor('.network-item-view');
-         const timingTabHeader = await waitFor('[aria-label=Timing][role="tab"]', networkView);
-         await click(timingTabHeader);
+         await click('[aria-label=Timing][role="tab"]', {
+           root: networkView,
+         });
          await waitFor('[aria-label=Timing][role=tab][aria-selected=true]', networkView);
        });
 
@@ -121,8 +125,9 @@ describe('The Network Request view', async () => {
     await selectRequestByName('webbundle.wbn');
 
     const networkView = await waitFor('.network-item-view');
-    const previewTabHeader = await waitFor('[aria-label=Preview][role=tab]', networkView);
-    await click(previewTabHeader);
+    await click('[aria-label=Preview][role=tab]', {
+      root: networkView,
+    });
     await waitFor('[aria-label=Preview][role=tab][aria-selected=true]', networkView);
 
     await waitForElementWithTextContent('webbundle.wbn', networkView);
@@ -155,8 +160,9 @@ describe('The Network Request view', async () => {
 
     const styleSrcError = expectError(`Refused to load the stylesheet '${stylesheet}'`);
     const networkView = await waitFor('.network-item-view');
-    const previewTabHeader = await waitFor('[aria-label=Preview][role=tab]', networkView);
-    await click(previewTabHeader);
+    await click('[aria-label=Preview][role=tab]', {
+      root: networkView,
+    });
     await waitFor('[aria-label=Preview][role=tab][aria-selected=true]', networkView);
 
     const frame = await waitFor('.html-preview-frame');
@@ -187,8 +193,9 @@ describe('The Network Request view', async () => {
     await selectRequestByName(name);
 
     const networkView = await waitFor('.network-item-view');
-    const previewTabHeader = await waitFor('[aria-label=Preview][role=tab]', networkView);
-    await click(previewTabHeader);
+    await click('[aria-label=Preview][role=tab]', {
+      root: networkView,
+    });
     await waitFor('[aria-label=Preview][role=tab][aria-selected=true]', networkView);
 
     const frame = await waitFor('.html-preview-frame');
@@ -209,8 +216,9 @@ describe('The Network Request view', async () => {
       await selectRequestByName('localhost');
 
       const networkView = await waitFor('.network-item-view');
-      const messagesTabHeader = await waitFor('[aria-label=Messages][role=tab]', networkView);
-      await click(messagesTabHeader);
+      await click('[aria-label=Messages][role=tab]', {
+        root: networkView,
+      });
       await waitFor('[aria-label=Messages][role=tab][aria-selected=true]', networkView);
       return waitFor('.websocket-frame-view');
     };
@@ -264,8 +272,9 @@ describe('The Network Request view', async () => {
     await selectRequestByName('image.svg?id=42&param=a%20b');
 
     const networkView = await waitFor('.network-item-view');
-    const headersTabHeader = await waitFor('[aria-label=Headers][role="tab"]', networkView);
-    await click(headersTabHeader);
+    await click('[aria-label=Headers][role="tab"]', {
+      root: networkView,
+    });
     await waitFor('[aria-label=Headers][role=tab][aria-selected=true]', networkView);
     const headersView = await waitFor('.request-headers-view');
     const headersOutline = await $$('[role=treeitem]:not(.hidden)', headersView);
@@ -312,8 +321,9 @@ describe('The Network Request view', async () => {
 
     await assertOutlineMatches(expectedHeadersContent, headersOutline);
 
-    const payloadTabHeader = await waitFor('[aria-label=Payload][role="tab"]', networkView);
-    await click(payloadTabHeader);
+    await click('[aria-label=Payload][role="tab"]', {
+      root: networkView,
+    });
     await waitFor('[aria-label=Payload][role=tab][aria-selected=true]', networkView);
     const payloadView = await waitFor('.request-payload-view');
     const payloadOutline = await $$('[role=treeitem]:not(.hidden)', payloadView);
@@ -340,13 +350,15 @@ describe('The Network Request view', async () => {
     await selectRequestByName('image.svg?id=42&param=a%20b');
 
     const networkView = await waitFor('.network-item-view');
-    const headersTabHeader = await waitFor('[aria-label=Headers][role="tab"]', networkView);
-    await click(headersTabHeader);
+    await click('[aria-label=Headers][role="tab"]', {
+      root: networkView,
+    });
     await waitFor('[aria-label=Headers][role=tab][aria-selected=true]', networkView);
     const headersView = await waitFor('.request-headers-view');
     const responseHeadersTitle = await waitForElementWithTextContent('Response Headers (7)View source');
-    const rawHeadersToggle = await waitFor('.header-toggle', responseHeadersTitle);
-    await click(rawHeadersToggle);
+    await click('.header-toggle', {
+      root: responseHeadersTitle,
+    });
 
     const headersOutline = await $$('[role=treeitem]:not(.hidden)', headersView);
     const expectedHeadersContent = [
@@ -402,8 +414,9 @@ describe('The Network Request view', async () => {
     await selectRequestByName('image.svg?id=42&param=a%20b');
 
     const networkView = await waitFor('.network-item-view');
-    const payloadTabHeader = await waitFor('[aria-label=Payload][role="tab"]', networkView);
-    await click(payloadTabHeader);
+    await click('[aria-label=Payload][role="tab"]', {
+      root: networkView,
+    });
     await waitFor('[aria-label=Payload][role=tab][aria-selected=true]', networkView);
 
     await selectRequestByName('image.svg');
@@ -425,8 +438,7 @@ describe('The Network Request view', async () => {
     await navigateToNetworkTab('hello.html');
     await selectRequestByName('hello.html', {button: 'right'});
 
-    const createHeaderOverrideMenuEntry = await waitForAria('Override headers');
-    await click(createHeaderOverrideMenuEntry);
+    await click('aria/Override headers');
 
     await configureAndCheckHeaderOverrides();
   });
@@ -437,8 +449,9 @@ describe('The Network Request view', async () => {
     await selectRequestByName('hello.html');
 
     const networkView = await waitFor('.network-item-view');
-    const headersTabHeader = await waitFor('#tab-headersComponent', networkView);
-    await click(headersTabHeader);
+    await click('#tab-headersComponent', {
+      root: networkView,
+    });
 
     await click('devtools-button.enable-editing');
     await configureAndCheckHeaderOverrides();

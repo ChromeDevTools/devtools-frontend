@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {
   $,
   click,
+  clickElement,
   getBrowserAndPages,
   getTestServerPort,
   goToResource,
@@ -38,7 +39,7 @@ describe('The Reporting API Page', async () => {
     assert.strictEqual(innerText[0][5], reportBody);
 
     const rows = await getDataGridRows(1, dataGrid, false);
-    await click(rows[rows.length - 1][0]);
+    await clickElement(rows[rows.length - 1][0]);
 
     const jsonView = await waitFor('.json-view');
     const jsonViewText = await jsonView.evaluate(el => (el as HTMLElement).innerText);

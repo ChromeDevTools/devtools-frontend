@@ -15,8 +15,7 @@ export async function navigateToCrossToolIntegrationSite() {
 
 export async function clickOnContextMenuItemFromTab(tabId: string, menuItemSelector: string) {
   // Find the selected node, right click.
-  const selectedNode = await waitFor(tabId);
-  await click(selectedNode, {clickOptions: {button: 'right'}});
+  await click(tabId, {clickOptions: {button: 'right'}});
 
   // Click on the context menu option
   await click(menuItemSelector);

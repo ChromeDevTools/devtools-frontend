@@ -5,7 +5,16 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {$$, click, hasClass, matchStringTable, waitFor, waitForClass, waitForFunction} from '../../shared/helper.js';
+import {
+  $$,
+  click,
+  hasClass,
+  matchStringTable,
+  waitFor,
+  waitForClass,
+  clickElement,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
 export const CATEGORY = '.issue-category:not(.hidden-issues)';
@@ -109,7 +118,7 @@ export async function getAndExpandSpecificIssueByTitle(issueMessage: string):
     }
     return undefined;
   });
-  await click(issueMessageElement);
+  await clickElement(issueMessageElement);
   await waitFor('.message');
   return getIssueByTitleElement(issueMessageElement);
 }
@@ -159,8 +168,8 @@ export async function expandIssue() {
     await expandCategory();
   }
 
-  await waitFor(ISSUE);
-  await click(ISSUE);
+  const issue = await waitFor(ISSUE);
+  await clickElement(issue);
   await waitFor('.message');
 }
 

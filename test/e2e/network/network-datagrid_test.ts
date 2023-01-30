@@ -11,7 +11,6 @@ import {
   pressKey,
   step,
   waitFor,
-  waitForAria,
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../shared/helper.js';
@@ -86,13 +85,11 @@ describe('The Network Tab', async function() {
     });
 
     await step('Click "Response Headers" submenu', async () => {
-      const responseHeaders = await waitForAria('Response Headers');
-      await click(responseHeaders);
+      await click('aria/Response Headers');
     });
 
     await step('Enable the Last-Modified column in the network datagrid', async () => {
-      const lastModified = await waitForAria('Last-Modified, unchecked');
-      await click(lastModified);
+      await click('aria/Last-Modified, unchecked');
     });
 
     await step('Wait for the "Last-Modified" column to have the expected values', async () => {
@@ -231,8 +228,7 @@ describe('The Network Tab', async function() {
     });
 
     await step('Enable the Initiator Address Space column in the network datagrid', async () => {
-      const initiatorAddressSpace = await waitForAria('Initiator Address Space, unchecked');
-      await click(initiatorAddressSpace);
+      await click('aria/Initiator Address Space, unchecked');
     });
 
     await step('Wait for the Initiator Address Space column to have the expected values', async () => {
@@ -262,8 +258,7 @@ describe('The Network Tab', async function() {
     });
 
     await step('Enable the Remote Address Space column in the network datagrid', async () => {
-      const remoteAddressSpace = await waitForAria('Remote Address Space, unchecked');
-      await click(remoteAddressSpace);
+      await click('aria/Remote Address Space, unchecked');
     });
 
     await step('Wait for the Remote Address Space column to have the expected values', async () => {

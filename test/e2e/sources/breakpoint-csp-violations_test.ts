@@ -8,8 +8,7 @@ import {click, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getPausedMessages, openSourcesPanel, PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR} from '../helpers/sources-helpers.js';
 
-// Fails flakily on Mac
-describe.skipOnPlatforms(['mac'], '[crbug.com/1409768] Breakpoints on CSP Violation', async () => {
+describe('Breakpoints on CSP Violation', async () => {
   it('CSP Violations should come up before break on exceptions', async () => {
     await openSourcesPanel();
     await click('[aria-label="CSP Violation Breakpoints"]');

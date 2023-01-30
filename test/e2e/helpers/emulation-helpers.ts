@@ -11,6 +11,7 @@ import {
   goToResource,
   reloadDevTools,
   waitFor,
+  clickElement,
 } from '../../shared/helper.js';
 
 const DEVICE_TOOLBAR_TOGGLER_SELECTOR = '[aria-label="Toggle device toolbar"]';
@@ -36,7 +37,7 @@ export const openDeviceToolbar = async () => {
   if (isOpen) {
     return;
   }
-  await click(deviceToolbarToggler);
+  await clickElement(deviceToolbarToggler);
   await waitFor(DEVICE_TOOLBAR_SELECTOR);
 };
 
@@ -66,15 +67,15 @@ export const getButtonDisabled = async (spanButton: puppeteer.ElementHandle<HTML
 };
 
 export const clickDevicesDropDown = async () => {
+  // TODO(crbug.com/1411196): the dropdown might be clickable but not handling the events properly.
+  await new Promise(resolve => setTimeout(resolve, 100));
   const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
-  const button = await waitFor(DEVICE_LIST_DROPDOWN_SELECTOR, toolbar);
-  await click(button);
+  await click(DEVICE_LIST_DROPDOWN_SELECTOR, {root: toolbar});
 };
 
 export const clickZoomDropDown = async () => {
   const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
-  const button = await waitFor(ZOOM_LIST_DROPDOWN_SELECTOR, toolbar);
-  await click(button);
+  await click(ZOOM_LIST_DROPDOWN_SELECTOR, {root: toolbar});
 };
 
 export const selectToggleButton = async () => {
@@ -85,33 +86,29 @@ export const selectToggleButton = async () => {
 
 export const selectEdit = async () => {
   await clickDevicesDropDown();
-  const edit = await waitFor(EDIT_MENU_ITEM_SELECTOR);
-  await click(edit);
+  await click(EDIT_MENU_ITEM_SELECTOR);
 };
 
 export const selectDevice = async (name: string) => {
   await clickDevicesDropDown();
-  const edit = await waitFor(`[aria-label*="${name}, unchecked"]`);
-  await click(edit);
+  await click(`[aria-label*="${name}, unchecked"]`);
 };
 
 export const selectTestDevice = async () => {
   await clickDevicesDropDown();
-  const edit = await waitFor(TEST_DEVICE_MENU_ITEM_SELECTOR);
-  await click(edit);
+  await click(TEST_DEVICE_MENU_ITEM_SELECTOR);
 };
 
 // Test if span button works when emulating a dual screen device.
 export const selectDualScreen = async () => {
   await clickDevicesDropDown();
-  const duo = await waitFor(SURFACE_DUO_MENU_ITEM_SELECTOR);
-  await click(duo);
+  await click(SURFACE_DUO_MENU_ITEM_SELECTOR);
 };
 
 export const clickToggleButton = async () => {
   // make sure the toggle button is clickable.
   const toggleButton = await selectToggleButton();
-  await click(toggleButton);
+  await clickElement(toggleButton);
 };
 
 export const getWidthOfDevice = async () => {
@@ -125,6 +122,5 @@ const IPAD_MENU_ITEM_SELECTOR = '[aria-label*="iPad"]';
 // Test if span button is clickable when emulating a non-dual-screen device.
 export const selectNonDualScreenDevice = async () => {
   await clickDevicesDropDown();
-  const nonDual = await waitFor(IPAD_MENU_ITEM_SELECTOR);
-  await click(nonDual);
+  await click(IPAD_MENU_ITEM_SELECTOR);
 };

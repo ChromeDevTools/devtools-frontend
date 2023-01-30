@@ -18,7 +18,6 @@ import {
   pressKey,
   typeText,
   waitFor,
-  waitForAria,
   waitForFunction,
   waitForMany,
   waitForNone,
@@ -1256,10 +1255,8 @@ describe('The Debugger Language Plugins', async () => {
       const capturedFileNames = await captureAddedSourceFiles(1, async () => {
         await openFileInEditor('global_variable.wasm');
 
-        const editor = await waitForAria('Code editor');
-        await click(editor, {clickOptions: {button: 'right'}});
-        const menuItem = await waitForAria('Add DWARF debug info…');
-        await click(menuItem);
+        await click('aria/Code editor', {clickOptions: {button: 'right'}});
+        await click('aria/Add DWARF debug info…');
         await waitFor('.add-source-map');
         await typeText('foobar81');
         await pressKey('Enter');

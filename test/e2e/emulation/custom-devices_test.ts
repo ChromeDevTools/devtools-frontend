@@ -12,6 +12,7 @@ import {
   typeText,
   waitFor,
   waitForAria,
+  clickElement,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
@@ -52,8 +53,7 @@ describe('Custom devices', async () => {
 
   it('can add and then edit a custom device with UA-CH emulation', async () => {
     await selectEdit();
-    const add = await waitFor(ADD_DEVICE_BUTTON_SELECTOR);
-    await click(add);
+    await click(ADD_DEVICE_BUTTON_SELECTOR);
     await waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
     await typeText('Test device');
 
@@ -115,7 +115,7 @@ describe('Custom devices', async () => {
     const finishAdd = await waitFor(FOCUSED_SELECTOR);
     const finishAddText = await elementTextContent(finishAdd);
     assert.strictEqual(finishAddText, 'Add');
-    await click(finishAdd);
+    await clickElement(finishAdd);
 
     // Select the device in the menu.
     await selectTestDevice();
@@ -183,8 +183,7 @@ describe('Custom devices', async () => {
 
   it('can add and properly display a device with a custom resolution', async () => {
     await selectEdit();
-    const add = await waitFor(ADD_DEVICE_BUTTON_SELECTOR);
-    await click(add);
+    await click(ADD_DEVICE_BUTTON_SELECTOR);
     await waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
     await typeText('Prime numbers');
 
@@ -200,7 +199,7 @@ describe('Custom devices', async () => {
     const finishAdd = await waitFor(EDITOR_ADD_BUTTON_SELECTOR);
     const finishAddText = await elementTextContent(finishAdd);
     assert.strictEqual(finishAddText, 'Add');
-    await click(finishAdd);
+    await clickElement(finishAdd);
 
     // Select the device in the menu.
     await selectDevice('Prime numbers');
@@ -216,7 +215,7 @@ describe('Custom devices', async () => {
     assert.strictEqual(await elementTextContent(zoomButton), '51%');
 
     const zoomTo100Button = await waitFor('[aria-label*="100%"]');
-    await click(zoomTo100Button);
+    await clickElement(zoomTo100Button);
     assert.strictEqual(await elementTextContent(fitButton), 'Fit to window (51%)');
     assert.strictEqual(await elementTextContent(zoomButton), '100%');
   });

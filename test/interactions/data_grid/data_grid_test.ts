@@ -171,11 +171,7 @@ describe('data grid', async () => {
         /**
          * The value column is visible by default, so clicking this will hide it.
          */
-        const toggleValueColumnButton = await $('.value-visibility-toggle');
-        if (!toggleValueColumnButton) {
-          assert.fail('Could not find value column toggle button.');
-        }
-        await click(toggleValueColumnButton);
+        await click('.value-visibility-toggle');
 
         await waitForFunction(async () => {
           const dataGrid = await getDataGrid();
@@ -263,8 +259,7 @@ describe('data grid', async () => {
     assertNumberBetween(columnPixelWidths[0], 348, 352);  // 58.35% of 600 = ~350
     assertNumberBetween(columnPixelWidths[1], 247, 252);  // 42% of 600 = ~249
 
-    const addButton = await waitFor('#add');
-    await click(addButton);
+    await click('#add');
     await getDataGridRows(11, dataGrid);
 
     const newColumnPixelWidths = await getColumnPixelWidths(columns);
@@ -299,11 +294,7 @@ describe('data grid', async () => {
       const dataGrid = await getDataGrid();
       await assertDataGridNotScrolled(dataGrid);
 
-      const firstBodyCell = await $('tr[aria-rowindex="1"] > td[aria-colindex="1"]', dataGrid);
-      if (!firstBodyCell) {
-        throw new Error('Could not find first body cell to click.');
-      }
-      await click(firstBodyCell);
+      await click('tr[aria-rowindex="1"] > td[aria-colindex="1"]');
       await waitFor('tr.selected', dataGrid);
       const {frontend} = getBrowserAndPages();
       await frontend.evaluate('window.addNewRow()');
@@ -327,11 +318,7 @@ describe('data grid', async () => {
          const dataGrid = await getDataGrid();
          await assertDataGridNotScrolled(dataGrid);
 
-         const firstBodyCell = await $('tr[aria-rowindex="1"] > td[aria-colindex="1"]', dataGrid);
-         if (!firstBodyCell) {
-           throw new Error('Could not find first body cell to click.');
-         }
-         await click(firstBodyCell);
+         await click('tr[aria-rowindex="1"] > td[aria-colindex="1"]');
          await waitFor('tr.selected', dataGrid);
          await clickAddButton();
          await getDataGridRows(11, dataGrid);
@@ -344,11 +331,7 @@ describe('data grid', async () => {
           const dataGrid = await getDataGrid();
           await assertDataGridNotScrolled(dataGrid);
 
-          const firstBodyCell = await $('tr[aria-rowindex="1"] > td[aria-colindex="1"]', dataGrid);
-          if (!firstBodyCell) {
-            throw new Error('Could not find first body cell to click.');
-          }
-          await click(firstBodyCell);
+          await click('tr[aria-rowindex="1"] > td[aria-colindex="1"]');
           await waitFor('tr.selected', dataGrid);
           // And new row and ensure we have not auto scrolled as we have a cell selected.
           await frontend.evaluate('window.addNewRow()');

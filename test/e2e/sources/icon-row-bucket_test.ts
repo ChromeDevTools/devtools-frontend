@@ -11,6 +11,7 @@ import {
   disableExperiment,
   goToResource,
   waitFor,
+  clickElement,
   waitForFunction,
   waitForWithTries,
 } from '../../shared/helper.js';
@@ -65,7 +66,7 @@ async function getExpandedIssuesTitle(): Promise<Set<string>> {
 
 async function waitForExpandedIssueTitle(issueIconComponent: puppeteer.ElementHandle<Element>): Promise<Set<string>> {
   return await waitForFunction(async () => {
-    await click(issueIconComponent);
+    await clickElement(issueIconComponent);
     const expandedIssues = await getExpandedIssuesTitle();
     if (expandedIssues.size) {
       return expandedIssues;
@@ -152,7 +153,7 @@ describe('The row\'s icon bucket', async function() {
     const bucketIssueIconComponents = await getIconComponents('cm-messageIcon-issue');
     assert.strictEqual(bucketIssueIconComponents.length, 1);
     const issueIconComponent = bucketIssueIconComponents[0];
-    await click(issueIconComponent);
+    await clickElement(issueIconComponent);
 
     const expandedIssues = await waitForExpandedIssueTitle(issueIconComponent);
     assert.isTrue(expandedIssues.has('Trusted Type policy creation blocked by Content Security Policy'));

@@ -120,8 +120,10 @@ describe('Scope View', async () => {
         return sharedBufferTab.evaluate(e => e.getAttribute('aria-selected') === 'true');
       });
       // There should only be two tabs
-      const tabs = await $$(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR, lmiTabbedPane);
-      assert.strictEqual(tabs.length, 2);
+      await waitForFunction(async () => {
+        const tabs = await $$(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR, lmiTabbedPane);
+        return tabs.length === 2;
+      });
     });
 
     await step('resume and pause in other worker (hitting a debugger statement)', async () => {
@@ -141,8 +143,10 @@ describe('Scope View', async () => {
         return sharedBufferTab.evaluate(e => e.getAttribute('aria-selected') === 'false');
       });
       // Now there are three tabs
-      const tabs = await $$(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR, lmiTabbedPane);
-      assert.strictEqual(tabs.length, 3);
+      await waitForFunction(async () => {
+        const tabs = await $$(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR, lmiTabbedPane);
+        return tabs.length === 3;
+      });
     });
 
     await step('open shared buffer in other worker', async () => {
@@ -152,8 +156,10 @@ describe('Scope View', async () => {
         return sharedBufferTab.evaluate(e => e.getAttribute('aria-selected') === 'true');
       });
       // Still three tabs
-      const tabs = await $$(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR, lmiTabbedPane);
-      assert.strictEqual(tabs.length, 3);
+      await waitForFunction(async () => {
+        const tabs = await $$(LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR, lmiTabbedPane);
+        return tabs.length === 3;
+      });
     });
   });
 });

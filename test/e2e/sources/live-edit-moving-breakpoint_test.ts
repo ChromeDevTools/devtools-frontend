@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {
   $textContent,
   assertNotNullOrUndefined,
-  click,
+  clickElement,
   getBrowserAndPages,
   pressKey,
   step,
@@ -34,7 +34,7 @@ describe('Live edit', async () => {
 
       // Place the caret at the end of the marker line by clicking in the middle of the
       // line element and then pressing 'End'.
-      await click(markerLine);
+      await clickElement(markerLine);
       await frontend.keyboard.press('End');
 
       await frontend.keyboard.press('Enter');

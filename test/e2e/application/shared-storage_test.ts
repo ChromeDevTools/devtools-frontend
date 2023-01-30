@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {expectError} from '../../conductor/events.js';
 import {
   $$,
-  click,
+  clickElement,
   getBrowserAndPages,
   getTestServerPort,
   goToResource,
@@ -77,7 +77,7 @@ describe('The Application Tab', async () => {
           innerText[2][3], '{"key":"secondKey","value":"{\\"field\\":\\"complexValue\\",\\"primitive\\":2}"}');
 
       const rows = await getDataGridRows(3, dataGrid, false);
-      await click(rows[rows.length - 1][0]);
+      await clickElement(rows[rows.length - 1][0]);
 
       const jsonView = await waitFor('.json-view');
       const jsonViewText = await jsonView.evaluate(el => (el as HTMLElement).innerText);
@@ -134,7 +134,7 @@ describe('The Application Tab', async () => {
 
     await step('verify that preview loads', async () => {
       const dataGridNodes = await $$('.data-grid-data-grid-node:not(.creation-node)');
-      await click(dataGridNodes[dataGridNodes.length - 1]);
+      await clickElement(dataGridNodes[dataGridNodes.length - 1]);
 
       const jsonView = await waitFor('.json-view');
       const jsonViewText = await jsonView.evaluate(el => (el as HTMLElement).innerText);

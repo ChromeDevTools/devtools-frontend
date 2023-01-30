@@ -33,6 +33,7 @@ const PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR = '.pause-on-uncaught-exceptions';
 const PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR = '.pause-on-caught-exceptions';
 const TABBABLE_SELECTOR = '[tabindex="0"]';
 const SUMMARY_SELECTOR = 'summary';
+const GROUP_DIFFERENTIATOR_SELECTOR = '.group-header-differentiator';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -295,7 +296,58 @@ describeWithEnvironment('BreakpointsView', () => {
     }
   });
 
-  it('renders breakpoints with their location', async () => {
+  it('renders breakpoint groups with a differentiator if the file names are not unique', async () => {
+    const component = new SourcesComponents.BreakpointsView.BreakpointsView();
+    renderElementIntoDOM(component);
+
+    const groupTemplate = {
+      name: 'index.js',
+      url: '' as Platform.DevToolsPath.UrlString,
+      editable: true,
+      expanded: true,
+      breakpointItems: [
+        {
+          id: '1',
+          type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+          location: '234',
+          codeSnippet: 'const a = x;',
+          isHit: false,
+          status: SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED,
+        },
+      ],
+    };
+
+    // Create two groups with the same file name, but different url.
+    const group1 = {...groupTemplate};
+    group1.url = 'https://google.com/lib/index.js' as Platform.DevToolsPath.UrlString;
+
+    const group2 = {...groupTemplate};
+    group2.url = 'https://google.com/src/index.js' as Platform.DevToolsPath.UrlString;
+
+    const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
+      breakpointsActive: true,
+      pauseOnUncaughtExceptions: false,
+      pauseOnCaughtExceptions: false,
+      independentPauseToggles: true,
+      groups: [
+        group1,
+        group2,
+      ],
+    };
+    component.data = data;
+    await coordinator.done();
+
+    assertShadowRoot(component.shadowRoot);
+    const groupSummaries = Array.from(component.shadowRoot.querySelectorAll(SUMMARY_SELECTOR));
+    const differentiatingPath = groupSummaries.map(group => {
+      const differentiatorElement = group.querySelector(GROUP_DIFFERENTIATOR_SELECTOR);
+      assertElement(differentiatorElement, HTMLSpanElement);
+      return differentiatorElement.textContent;
+    });
+    assert.deepEqual(differentiatingPath, ['lib/', 'src/']);
+  });
+
+  it('renders breakpoints with a differentiating path', async () => {
     const {component, data} = await renderMultipleBreakpoints();
     assertShadowRoot(component.shadowRoot);
 

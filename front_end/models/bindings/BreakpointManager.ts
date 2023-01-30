@@ -370,72 +370,33 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   async possibleBreakpoints(
       uiSourceCode: Workspace.UISourceCode.UISourceCode,
       textRange: TextUtils.TextRange.TextRange): Promise<Workspace.UISourceCode.UILocation[]> {
-    const {pluginManager} = this.debuggerWorkspaceBinding;
-    if (pluginManager) {
-      // TODO(bmeurer): Refactor this logic, as for DWARF and sourcemaps, it doesn't make sense
-      //                to even ask V8 for possible break locations, since these are determined
-      //                from the debugging information.
-      const rawLocations = await pluginManager.uiLocationToRawLocations(uiSourceCode, textRange.startLine);
-      if (rawLocations) {
-        const uiLocations = [];
-        for (const rawLocation of rawLocations) {
-          const uiLocation = await this.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
-          if (uiLocation) {
-            uiLocations.push(uiLocation);
-          }
-        }
-        return uiLocations;
-      }
-    }
-    const startLocationsPromise = this.debuggerWorkspaceBinding.uiLocationToRawLocations(
-        uiSourceCode, textRange.startLine, textRange.startColumn);
-    const endLocationsPromise = DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
-        uiSourceCode, textRange.endLine, textRange.endColumn);
-    const [startLocations, endLocations] = await Promise.all([startLocationsPromise, endLocationsPromise]);
-    const endLocationByModel = new Map<SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Location>();
-    for (const location of endLocations) {
-      endLocationByModel.set(location.debuggerModel, location);
-    }
-    let startLocation: SDK.DebuggerModel.Location|null = null;
-    let endLocation: SDK.DebuggerModel.Location|null = null;
-    for (const location of startLocations) {
-      const endLocationCandidate = endLocationByModel.get(location.debuggerModel);
-      if (endLocationCandidate) {
-        startLocation = location;
-        endLocation = endLocationCandidate;
-        break;
-      }
-    }
-    if (!startLocation || !endLocation) {
-      return [];
-    }
+    const rawLocationRanges =
+        await this.debuggerWorkspaceBinding.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
+    const breakLocationLists = await Promise.all(rawLocationRanges.map(
+        ({start, end}) => start.debuggerModel.getPossibleBreakpoints(start, end, /* restrictToFunction */ false)));
+    const breakLocations = breakLocationLists.flat();
 
-    return startLocation.debuggerModel
-        .getPossibleBreakpoints(startLocation, endLocation, /* restrictToFunction */ false)
-        .then(toUILocations.bind(this));
+    const uiLocations = new Map<string, Workspace.UISourceCode.UILocation>();
+    await Promise.all(breakLocations.map(async breakLocation => {
+      const uiLocation = await this.debuggerWorkspaceBinding.rawLocationToUILocation(breakLocation);
+      if (uiLocation === null) {
+        return;
+      }
 
-    async function toUILocations(this: BreakpointManager, locations: SDK.DebuggerModel.BreakLocation[]):
-        Promise<Workspace.UISourceCode.UILocation[]> {
-      const sortedLocationsPromises =
-          locations.map(location => this.debuggerWorkspaceBinding.rawLocationToUILocation(location));
-      const nullableLocations = await Promise.all(sortedLocationsPromises);
-      const sortedLocations =
-          (nullableLocations.filter(location => location && location.uiSourceCode === uiSourceCode) as
-           Workspace.UISourceCode.UILocation[]);
-      if (!sortedLocations.length) {
-        return [];
+      // The "canonical" UI locations don't need to be in our `uiSourceCode`.
+      if (uiLocation.uiSourceCode !== uiSourceCode) {
+        return;
       }
-      sortedLocations.sort(Workspace.UISourceCode.UILocation.comparator);
-      let lastLocation: Workspace.UISourceCode.UILocation = sortedLocations[0];
-      const result = [lastLocation];
-      for (const location of sortedLocations) {
-        if (location.id() !== lastLocation.id()) {
-          result.push(location);
-          lastLocation = location;
-        }
+
+      // Since we ask for all overlapping ranges above, we might also get breakable locations
+      // outside of the `textRange`.
+      if (!textRange.containsLocation(uiLocation.lineNumber, uiLocation.columnNumber ?? 0)) {
+        return;
       }
-      return result;
-    }
+
+      uiLocations.set(uiLocation.id(), uiLocation);
+    }));
+    return [...uiLocations.values()];
   }
 
   breakpointLocationsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): BreakpointLocation[] {

@@ -8,7 +8,7 @@ import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
-import type * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
@@ -20,6 +20,7 @@ import {
   describeWithMockConnection,
   dispatchEvent,
   registerListenerOnOutgoingMessage,
+  setMockConnectionResponseHandler,
 } from '../../helpers/MockConnection.js';
 import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
@@ -27,7 +28,7 @@ import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '.
 
 const {assert} = chai;
 
-describeWithMockConnection('BreakpointManager (mock backend)', () => {
+describeWithMockConnection('BreakpointManager', () => {
   const URL_HTML = 'http://site/index.html' as Platform.DevToolsPath.UrlString;
   const INLINE_SCRIPT_START = 41;
   const BREAKPOINT_SCRIPT_LINE = 1;
@@ -104,6 +105,58 @@ describeWithMockConnection('BreakpointManager (mock backend)', () => {
     const uiLocation = await breakpointManager.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
     return uiLocation?.uiSourceCode ?? null;
   }
+
+  describe('possibleBreakpoints', () => {
+    it('correctly asks the back-end for breakable positions', async () => {
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assertNotNullOrUndefined(debuggerModel);
+
+      // Create an inline script and get a UI source code instance for it.
+      const script = await backend.addScript(target, scriptDescription, null);
+      const {scriptId} = script;
+      const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
+      assertNotNullOrUndefined(uiSourceCode);
+
+      function getPossibleBreakpointsStub(_request: Protocol.Debugger.GetPossibleBreakpointsRequest):
+          Protocol.Debugger.GetPossibleBreakpointsResponse {
+        return {
+          locations: [
+            {scriptId, lineNumber: 0, columnNumber: 4},
+            {scriptId, lineNumber: 0, columnNumber: 8},
+          ],
+          getError() {
+            return undefined;
+          },
+        };
+      }
+      const getPossibleBreakpoints = sinon.spy(getPossibleBreakpointsStub);
+      setMockConnectionResponseHandler('Debugger.getPossibleBreakpoints', getPossibleBreakpoints);
+
+      const uiTextRange = new TextUtils.TextRange.TextRange(0, 0, 1, 0);
+      const possibleBreakpoints = await breakpointManager.possibleBreakpoints(uiSourceCode, uiTextRange);
+
+      assert.lengthOf(possibleBreakpoints, 2);
+      assert.strictEqual(possibleBreakpoints[0].uiSourceCode, uiSourceCode);
+      assert.strictEqual(possibleBreakpoints[0].lineNumber, 0);
+      assert.strictEqual(possibleBreakpoints[0].columnNumber, 4);
+      assert.strictEqual(possibleBreakpoints[1].uiSourceCode, uiSourceCode);
+      assert.strictEqual(possibleBreakpoints[1].lineNumber, 0);
+      assert.strictEqual(possibleBreakpoints[1].columnNumber, 8);
+      assert.isTrue(getPossibleBreakpoints.calledOnceWith(sinon.match({
+        start: {
+          scriptId,
+          lineNumber: 0,
+          columnNumber: 0,
+        },
+        end: {
+          scriptId,
+          lineNumber: 1,
+          columnNumber: 0,
+        },
+        restrictToFunction: false,
+      })));
+    });
+  });
 
   describe('Breakpoints', () => {
     it('are removed and kept in storage after a back-end error', async () => {

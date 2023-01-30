@@ -250,6 +250,40 @@ export class TextRange {
   get end(): {lineNumber: number, columnNumber: number} {
     return {lineNumber: this.endLine, columnNumber: this.endColumn};
   }
+
+  /**
+   * Checks whether this and `that` {@link TextRange} overlap and if they do, computes the
+   * intersection range. If they don't overlap an empty text range is returned instead (for
+   * which {@link #isEmpty()} yields `true`).
+   *
+   * The beginning of text ranges is considered to be includes while the end of the text
+   * ranges is considered exclusive for the intersection, meaning that for example intersecting
+   * `(0,1)-(1,4)` and `(1,4)-(1,6)` yields an empty range.
+   *
+   * @param that the other text range.
+   * @returns the intersection of this and `that` text range, which might be empty if their don't
+   *          overlap.
+   */
+  intersection(that: TextRange): TextRange {
+    let {startLine, startColumn} = this;
+    if (startLine < that.startLine) {
+      startLine = that.startLine;
+      startColumn = that.startColumn;
+    } else if (startLine === that.startLine) {
+      startColumn = Math.max(startColumn, that.startColumn);
+    }
+    let {endLine, endColumn} = this;
+    if (endLine > that.endLine) {
+      endLine = that.endLine;
+      endColumn = that.endColumn;
+    } else if (endLine === that.endLine) {
+      endColumn = Math.min(endColumn, that.endColumn);
+    }
+    if (startLine > endLine || (startLine === endLine && startColumn >= endColumn)) {
+      return new TextRange(0, 0, 0, 0);
+    }
+    return new TextRange(startLine, startColumn, endLine, endColumn);
+  }
 }
 
 export class SourceRange {

@@ -408,4 +408,58 @@ describe('TextRange', () => {
         TextUtils.TextRange.TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 3, endColumn: 4});
     assert.isTrue(typeof textRange.toString() === 'string', 'toString should return a string');
   });
+
+  describe('intersection', () => {
+    const {TextRange} = TextUtils.TextRange;
+
+    it('yields empty range for empty inputs', () => {
+      const range1 = new TextRange(0, 0, 0, 0);
+      const range2 = new TextRange(1, 4, 1, 4);
+      assert.isTrue(range1.intersection(range2).isEmpty(), 'intersection should be empty');
+      assert.isTrue(range2.intersection(range1).isEmpty(), 'intersection should be empty');
+    });
+
+    it('yields empty range for non-overlapping inputs', () => {
+      const range1 = new TextRange(1, 0, 2, 0);
+      const range2 = new TextRange(3, 0, 4, 0);
+      assert.isTrue(range1.intersection(range2).isEmpty(), 'intersection should be empty');
+      assert.isTrue(range2.intersection(range1).isEmpty(), 'intersection should be empty');
+
+      const range3 = new TextRange(7, 1, 8, 4);
+      const range4 = new TextRange(8, 4, 8, 9);
+      assert.isTrue(range3.intersection(range4).isEmpty(), 'intersection should be empty');
+      assert.isTrue(range4.intersection(range3).isEmpty(), 'intersection should be empty');
+    });
+
+    it('yields same range for identical inputs', () => {
+      const range = new TextRange(1, 2, 3, 4);
+      assert.deepEqual(range.intersection(range), range);
+    });
+
+    it('yields a point range for inputs overlapping on a single character', () => {
+      const range1 = new TextRange(7, 1, 7, 4);
+      const range2 = new TextRange(7, 3, 9, 9);
+      const result = new TextRange(range2.startLine, range2.startColumn, range1.endLine, range1.endColumn);
+      assert.deepEqual(range1.intersection(range2), result);
+      assert.deepEqual(range2.intersection(range1), result);
+    });
+
+    it('yields a copy and never the input', () => {
+      const range = new TextRange(8, 0, 8, 9);
+      const empty = new TextRange(7, 0, 7, 0);
+      assert.notStrictEqual(range.intersection(range), range);
+      assert.notStrictEqual(empty.intersection(empty), empty);
+      assert.notStrictEqual(empty.intersection(range), empty);
+      assert.notStrictEqual(empty.intersection(range), range);
+      assert.notStrictEqual(range.intersection(empty), empty);
+      assert.notStrictEqual(range.intersection(empty), range);
+    });
+
+    it('yields the smaller range if it is fully contained in the other', () => {
+      const large = new TextRange(0, 1, 10, 0);
+      const small = new TextRange(0, 2, 9, 25);
+      assert.deepEqual(large.intersection(small), small);
+      assert.deepEqual(small.intersection(large), small);
+    });
+  });
 });

@@ -368,7 +368,8 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   backgroundColor(): string {
     const bgColors = _backgroundColors;
     const hasFocus = document.hasFocus();
-    const isSelected = this.dataGrid && this.dataGrid.element === document.activeElement;
+    const isSelected = this.dataGrid &&
+        (this.dataGrid.element === document.activeElement || this.dataGrid.element.contains(document.activeElement));
     const isFailed = this.isFailed();
 
     if (this.selected && hasFocus && isSelected && isFailed) {
@@ -993,6 +994,18 @@ export class NetworkRequestNode extends NetworkNode {
   select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
     this.parentView().dispatchEventToListeners(Events.RequestSelected, this.requestInternal);
+    const selectedElement = (this.dataGrid?.selectedNode?.elementInternal?.firstElementChild as HTMLElement);
+    if (selectedElement) {
+      selectedElement.tabIndex = 0;
+    }
+  }
+
+  deselect(suppressSelectedEvent?: boolean): void {
+    super.deselect(suppressSelectedEvent);
+    const deselectedElement = (this.elementInternal?.firstElementChild as HTMLElement);
+    if (deselectedElement) {
+      deselectedElement.tabIndex = -1;
+    }
   }
 
   highlightMatchedSubstring(regexp: RegExp|null): Object[] {
@@ -1069,6 +1082,7 @@ export class NetworkRequestNode extends NetworkNode {
       iconElement.classList.add('icon');
 
       cell.appendChild(iconElement);
+      cell.tabIndex = this.selected ? 0 : -1;
     }
 
     if (columnId === 'name') {

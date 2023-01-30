@@ -15,6 +15,12 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     super(title, expandable);
     this.resourcesPanel = resourcesPanel;
     UI.ARIAUtils.setAccessibleName(this.listItemElement, title);
+    this.listItemElement.tabIndex = -1;
+  }
+
+  deselect(): void {
+    super.deselect();
+    this.listItemElement.tabIndex = -1;
   }
 
   get itemURL(): Platform.DevToolsPath.UrlString {

@@ -405,6 +405,23 @@ describe('The Network Tab', async function() {
     assert.deepStrictEqual(updatedRequestNames, ['xhr.html', 'image.svg', 'image.svg']);
   });
 
+  it('displays focused background color when request is selected via keyboard navigation', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await navigateToNetworkTab('xhr.html');
+    await target.reload({waitUntil: 'networkidle0'});
+    await waitForSomeRequestsToAppear(2);
+    await selectRequestByName('xhr.html');
+    await pressKey('ArrowDown');
+
+    const getSelectedRequestBgColor = () => frontend.evaluate(() => {
+      return document.querySelector('.network-log-grid tbody tr.selected')?.getAttribute('style');
+    });
+
+    assert.deepStrictEqual(
+        await getSelectedRequestBgColor(), 'background-color: var(--network-grid-focus-selected-color);');
+  });
+
   it('shows the request panel when clicked during a websocket message (https://crbug.com/1222382)', async () => {
     await navigateToNetworkTab('websocket.html?infiniteMessages=true');
 

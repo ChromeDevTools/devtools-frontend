@@ -13,7 +13,8 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import breakpointsViewStyles from './breakpointsView.css.js';
-import {findNextNodeForKeyboardNavigation} from './BreakpointsViewUtils.js';
+
+import {findNextNodeForKeyboardNavigation, getDifferentiatingPathMap, type TitleInfo} from './BreakpointsViewUtils.js';
 
 const UIStrings = {
   /**
@@ -215,6 +216,8 @@ export class BreakpointsView extends HTMLElement {
 
   #breakpointsActive: boolean = true;
   #breakpointGroups: BreakpointGroup[] = [];
+  #urlToDifferentiatingPath: Map<Platform.DevToolsPath.UrlString, string> = new Map();
+
   #scheduledRender = false;
   #enqueuedRender = false;
 
@@ -224,6 +227,12 @@ export class BreakpointsView extends HTMLElement {
     this.#independentPauseToggles = data.independentPauseToggles;
     this.#breakpointsActive = data.breakpointsActive;
     this.#breakpointGroups = data.groups;
+
+    const titleInfos: TitleInfo[] = [];
+    for (const group of data.groups) {
+      titleInfos.push({name: group.name, url: group.url});
+    }
+    this.#urlToDifferentiatingPath = getDifferentiatingPathMap(titleInfos);
 
     void this.#render();
   }
@@ -485,7 +494,7 @@ export class BreakpointsView extends HTMLElement {
                    tabindex='-1'
                    @keydown=${this.#keyDownHandler}
                    @click=${clickHandler}>
-            <span class='group-header' aria-hidden=true><span class='group-icon-or-disable'>${this.#renderFileIcon()}${this.#renderGroupCheckbox(group)}</span><span class='group-header-title' title='${group.url}'>${group.name}</span></span>
+            <span class='group-header' aria-hidden=true><span class='group-icon-or-disable'>${this.#renderFileIcon()}${this.#renderGroupCheckbox(group)}</span><span class='group-header-title' title='${group.url}'>${group.name}<span class='group-header-differentiator'>${this.#urlToDifferentiatingPath.get(group.url)}</span></span></span>
             <span class='group-hover-actions'>
               ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
             </span>

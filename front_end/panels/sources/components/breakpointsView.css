@@ -97,6 +97,12 @@ details[open] > summary::before {
   white-space: nowrap;
 }
 
+.group-header-differentiator {
+  font-weight: normal;
+  color: var(--color-text-disabled);
+  margin-left: 8px;
+}
+
 .group-hover-actions {
   display: flex;
   align-items: center;

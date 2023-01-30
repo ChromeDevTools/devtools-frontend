@@ -37,7 +37,7 @@ function assertIsUnitTextRange(
   assert.strictEqual(range.startColumn, column, `${prefix}the column was not set correctly`);
 }
 
-describe('TextUtils.TextRange.TextRange', () => {
+describe('TextRange', () => {
   it('can be instantiated successfully', () => {
     const startLine = 1;
     const startColumn = 2;
@@ -309,23 +309,25 @@ describe('TextUtils.TextRange.TextRange', () => {
         relativeTextRangeF, expectedRangeF, 'relativating range with endLine 0 should change end column');
   });
 
-  it('can check if a position is contained', () => {
-    const textRangeA =
-        TextUtils.TextRange.TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 3, endColumn: 4});
-    assert.isFalse(textRangeA.containsLocation(0, 3), 'position before range should not be contained');
-    assert.isFalse(textRangeA.containsLocation(1, 1), 'position before range should not be contained');
-    assert.isTrue(textRangeA.containsLocation(1, 2), 'start position should be contained');
-    assert.isTrue(textRangeA.containsLocation(1, 4), 'position in range should be contained');
-    assert.isTrue(textRangeA.containsLocation(3, 4), 'end position should be contained');
-    assert.isFalse(textRangeA.containsLocation(3, 5), 'position after range should compare greater');
-    assert.isFalse(textRangeA.containsLocation(4, 4), 'position after range should compare greater');
+  describe('containsLocation', () => {
+    it('can check if a position is contained', () => {
+      const textRangeA =
+          TextUtils.TextRange.TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 3, endColumn: 4});
+      assert.isFalse(textRangeA.containsLocation(0, 3), 'position before range should not be contained');
+      assert.isFalse(textRangeA.containsLocation(1, 1), 'position before range should not be contained');
+      assert.isTrue(textRangeA.containsLocation(1, 2), 'start position should be contained');
+      assert.isTrue(textRangeA.containsLocation(1, 4), 'position in range should be contained');
+      assert.isFalse(textRangeA.containsLocation(3, 4), 'end position should not be contained');
+      assert.isFalse(textRangeA.containsLocation(3, 5), 'position after range should compare greater');
+      assert.isFalse(textRangeA.containsLocation(4, 4), 'position after range should compare greater');
 
-    const textRangeB =
-        TextUtils.TextRange.TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 1, endColumn: 4});
-    assert.isFalse(textRangeB.containsLocation(1, 1), 'position before range should not be contained');
-    assert.isTrue(textRangeB.containsLocation(1, 2), 'start position should be contained');
-    assert.isTrue(textRangeB.containsLocation(1, 4), 'position in range should be contained');
-    assert.isFalse(textRangeB.containsLocation(1, 5), 'end position should be contained');
+      const textRangeB =
+          TextUtils.TextRange.TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 1, endColumn: 4});
+      assert.isFalse(textRangeB.containsLocation(1, 1), 'position before range should not be contained');
+      assert.isTrue(textRangeB.containsLocation(1, 2), 'start position should be contained');
+      assert.isFalse(textRangeB.containsLocation(1, 4), 'end position should not be contained');
+      assert.isFalse(textRangeB.containsLocation(1, 5), 'position after range should not be contained');
+    });
   });
 
   describe('fromEdit()', () => {

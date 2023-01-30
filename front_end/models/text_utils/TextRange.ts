@@ -218,15 +218,27 @@ export class TextRange {
     return JSON.stringify(this);
   }
 
+  /**
+   * Checks whether this {@link TextRange} contains the location identified by the
+   * {@link lineNumber} and {@link columnNumber}. The beginning of the text range is
+   * considered inclusive while the end of the text range is considered exclusive
+   * for this comparison, meaning that for example a range `(0,1)-(1,4)` contains the
+   * location `(0,1)` but does not contain the location `(1,4)`.
+   *
+   * @param lineNumber the location's line offset.
+   * @param columnNumber the location's column offset.
+   * @returns `true` if the location identified by {@link lineNumber} and {@link columnNumber}
+   *          is contained within this text range.
+   */
   containsLocation(lineNumber: number, columnNumber: number): boolean {
     if (this.startLine === this.endLine) {
-      return this.startLine === lineNumber && this.startColumn <= columnNumber && columnNumber <= this.endColumn;
+      return this.startLine === lineNumber && this.startColumn <= columnNumber && columnNumber < this.endColumn;
     }
     if (this.startLine === lineNumber) {
       return this.startColumn <= columnNumber;
     }
     if (this.endLine === lineNumber) {
-      return columnNumber <= this.endColumn;
+      return columnNumber < this.endColumn;
     }
     return this.startLine < lineNumber && lineNumber < this.endLine;
   }

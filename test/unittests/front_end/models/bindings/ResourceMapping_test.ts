@@ -106,7 +106,7 @@ describeWithMockConnection('ResourceMapping', () => {
       assert.isEmpty(resourceMapping.uiLocationToJSLocations(uiSourceCode, 0, 0));
       SCRIPTS.forEach(({startLine, startColumn, endLine, endColumn}) => {
         assert.isEmpty(resourceMapping.uiLocationToJSLocations(uiSourceCode, startLine, startColumn - 1));
-        assert.isEmpty(resourceMapping.uiLocationToJSLocations(uiSourceCode, endLine, endColumn + 1));
+        assert.isEmpty(resourceMapping.uiLocationToJSLocations(uiSourceCode, endLine, endColumn));
       });
       assert.isEmpty(resourceMapping.uiLocationToJSLocations(uiSourceCode, 12, 1));
     });
@@ -127,8 +127,8 @@ describeWithMockConnection('ResourceMapping', () => {
       assert.deepEqual(resourceMapping.uiLocationToJSLocations(uiSourceCode, startLine + 1, 5), [
         debuggerModel.createRawLocationByScriptId(scriptId, 1, 5),
       ]);
-      assert.deepEqual(resourceMapping.uiLocationToJSLocations(uiSourceCode, endLine, endColumn), [
-        debuggerModel.createRawLocationByScriptId(scriptId, endLine - startLine, endColumn),
+      assert.deepEqual(resourceMapping.uiLocationToJSLocations(uiSourceCode, endLine - 1, endColumn), [
+        debuggerModel.createRawLocationByScriptId(scriptId, endLine - startLine - 1, endColumn),
       ]);
     });
 
@@ -138,7 +138,7 @@ describeWithMockConnection('ResourceMapping', () => {
       // Debugger locations in scripts without sourceURL annotations are relative to the
       // beginning of the surrounding document, so this is basically a 1-1 mapping.
       assert.strictEqual(endLine, startLine);
-      for (let column = startColumn; column <= endColumn; ++column) {
+      for (let column = startColumn; column < endColumn; ++column) {
         assert.deepEqual(resourceMapping.uiLocationToJSLocations(uiSourceCode, startLine, column), [
           debuggerModel.createRawLocationByScriptId(scriptId, startLine, column),
         ]);
@@ -187,7 +187,7 @@ describeWithMockConnection('ResourceMapping', () => {
       // Debugger locations in scripts without sourceURL annotations are relative to the
       // beginning of the surrounding document, so this is basically a 1-1 mapping.
       assert.strictEqual(endLine, startLine);
-      for (let column = startColumn; column <= endColumn; ++column) {
+      for (let column = startColumn; column < endColumn; ++column) {
         assert.deepEqual(
             resourceMapping.jsLocationToUILocation(
                 debuggerModel.createRawLocationByScriptId(scriptId, startLine, column)),

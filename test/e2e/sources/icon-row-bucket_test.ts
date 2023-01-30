@@ -84,7 +84,8 @@ describe('The row\'s icon bucket', async function() {
     await disableExperiment('sourcesPrettyPrint');
   });
 
-  it('should display error messages', async () => {
+  // Fails flakily on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1411185] should display error messages', async () => {
     await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');
     const iconComponents = await getIconComponents('cm-messageIcon-error');
     const messages: string[] = [];
@@ -100,7 +101,8 @@ describe('The row\'s icon bucket', async function() {
     assert.deepEqual(messages, expectedMessages);
   });
 
-  it('should use the correct error icon', async () => {
+  // Fails flakily on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1411185] should use the correct error icon', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIconComponents = await getIconComponents('cm-messageIcon-error');
     for (const bucketIconComponent of bucketIconComponents) {
@@ -114,7 +116,8 @@ describe('The row\'s icon bucket', async function() {
     }
   });
 
-  it('should display issue messages', async () => {
+  // Fails flakily on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1411185] should display issue messages', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const issueIconComponents = await getIconComponents('cm-messageIcon-issue');
 

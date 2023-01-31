@@ -133,10 +133,14 @@ describe('The Memory Panel', async function() {
     await setSearchFilter('Pending activities');
     // Here and below we have to wait until the elements are actually created
     // and visible.
-    const pendingActivitiesSpan = await waitFor('//span[text()="Pending activities"]', undefined, undefined, 'xpath');
-    const pendingActiviesRow = await $('ancestor-or-self::tr', pendingActivitiesSpan, 'xpath');
     await waitForFunction(async () => {
-      await clickElement(pendingActivitiesSpan);
+      const pendingActivitiesSpan = await waitFor('//span[text()="Pending activities"]', undefined, undefined, 'xpath');
+      const pendingActiviesRow = await waitFor('ancestor-or-self::tr', pendingActivitiesSpan, undefined, 'xpath');
+      try {
+        await clickElement(pendingActivitiesSpan);
+      } catch {
+        return false;
+      }
       const res = await pendingActiviesRow.evaluate(x => x.classList.toString());
       return res.includes('selected');
     });

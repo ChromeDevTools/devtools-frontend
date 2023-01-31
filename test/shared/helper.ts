@@ -67,6 +67,19 @@ export const withControlOrMetaKey = async (action: () => Promise<void>, root = g
 };
 
 export const click = async(selector: string, options?: ClickOptions): Promise<puppeteer.ElementHandle> => {
+  return await performActionOnSelector(
+      selector, {root: options?.root}, element => element.click(options?.clickOptions));
+};
+
+export const hover =
+    async(selector: string, options?: {root?: puppeteer.JSHandle}): Promise<puppeteer.ElementHandle> => {
+  return await performActionOnSelector(selector, {root: options?.root}, element => element.hover());
+};
+
+type Action = (element: puppeteer.ElementHandle) => Promise<void>;
+
+async function performActionOnSelector(
+    selector: string, options: {root?: puppeteer.JSHandle}, action: Action): Promise<puppeteer.ElementHandle> {
   // TODO(crbug.com/1410168): we should refactor waitFor to be compatible with
   // Puppeteer's syntax for selectors.
   const queryHandlers = new Set([
@@ -88,7 +101,7 @@ export const click = async(selector: string, options?: ClickOptions): Promise<pu
   return waitForFunction(async () => {
     const element = await waitFor(selector, options?.root, undefined, queryHandler);
     try {
-      await element.click(options?.clickOptions);
+      await action(element);
       return element;
     } catch (err) {
       // A bit of delay to not retry too often.
@@ -96,13 +109,28 @@ export const click = async(selector: string, options?: ClickOptions): Promise<pu
     }
     return undefined;
   });
-};
+}
 
 /**
- * @deprecated This method is not able to recover from unstable DOM. Use click() instead.
+ * @deprecated This method is not able to recover from unstable DOM. Use click(selector) instead.
  */
 export async function clickElement(element: puppeteer.ElementHandle, options?: ClickOptions): Promise<void> {
   await element.click(options?.clickOptions);
+}
+
+/**
+ * @deprecated This method is not able to recover from unstable DOM. Use hover(selector) instead.
+ */
+export async function hoverElement(element: puppeteer.ElementHandle): Promise<void> {
+  // Retries here just in case the element gets connected to DOM / becomes visible.
+  await waitForFunction(async () => {
+    try {
+      await element.hover();
+      return true;
+    } catch {
+      return false;
+    }
+  });
 }
 
 export const doubleClick =

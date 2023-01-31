@@ -14,6 +14,7 @@ import {
   clickElement,
   waitForFunction,
   waitForWithTries,
+  hoverElement,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToIssuesTab} from '../helpers/issues-helpers.js';
@@ -85,8 +86,11 @@ describe('The row\'s icon bucket', async function() {
     await disableExperiment('sourcesPrettyPrint');
   });
 
-  // Fails flakily on mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1411185] should display error messages', async () => {
+  // This test and the tests below require the use of unsafe hoverElement/clickElement helpers
+  // because they return a list of elements and check each one of them. Perhaps, the tests
+  // can be changed to check the elements one by one using the safer hover/click helpers.
+  // Or perhaps the tests only ever check a single element and the list checks are not needed at all.
+  it('should display error messages', async () => {
     await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');
     const iconComponents = await getIconComponents('cm-messageIcon-error');
     const messages: string[] = [];
@@ -94,7 +98,7 @@ describe('The row\'s icon bucket', async function() {
       '[Report Only] Refused to create a TrustedTypePolicy named \'policy2\' because it violates the following Content Security Policy directive: "trusted-types policy1".',
     ];
     for (const iconComponent of iconComponents) {
-      await iconComponent.hover();
+      await hoverElement(iconComponent);
       const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
       const rowMessages = await getRowsText(vbox);
       messages.push(...rowMessages);
@@ -102,12 +106,11 @@ describe('The row\'s icon bucket', async function() {
     assert.deepEqual(messages, expectedMessages);
   });
 
-  // Fails flakily on mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1411185] should use the correct error icon', async () => {
+  it('should use the correct error icon', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIconComponents = await getIconComponents('cm-messageIcon-error');
     for (const bucketIconComponent of bucketIconComponents) {
-      await bucketIconComponent.hover();
+      await hoverElement(bucketIconComponent);
       const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
       const iconComponents = await getIconComponents('text-editor-row-message-icon', vbox);
       for (const iconComponent of iconComponents) {
@@ -117,8 +120,7 @@ describe('The row\'s icon bucket', async function() {
     }
   });
 
-  // Fails flakily on mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1411185] should display issue messages', async () => {
+  it('should display issue messages', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const issueIconComponents = await getIconComponents('cm-messageIcon-issue');
 
@@ -128,7 +130,7 @@ describe('The row\'s icon bucket', async function() {
       'Trusted Type expected, but String received',
     ];
     for (const issueIconComponent of issueIconComponents) {
-      await issueIconComponent.hover();
+      await hoverElement(issueIconComponent);
       const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
       const rowMessages = await getRowsText(vbox);
       issueMessages.push(...rowMessages);

@@ -22,19 +22,12 @@ describeWithMockConnection('AppManifestView', () => {
     let reportView: UI.ReportView.ReportView;
     let throttler: Common.Throttler.Throttler;
     let view: Application.AppManifestView.AppManifestView;
-    let onScheduled: () => void;
     beforeEach(() => {
       stubNoopSettings();
       target = targetFactory();
       emptyView = new UI.EmptyWidget.EmptyWidget('');
       reportView = new UI.ReportView.ReportView('');
       throttler = new Common.Throttler.Throttler(0);
-      onScheduled = () => {};
-      sinon.stub(throttler, 'schedule').callsFake(async (work: () => (Promise<unknown>), _?: boolean) => {
-        await work();
-        onScheduled();
-        return Promise.resolve();
-      });
     });
 
     afterEach(() => {
@@ -57,15 +50,15 @@ describeWithMockConnection('AppManifestView', () => {
       view.markAsRoot();
       view.show(document.body);
 
-      await new Promise<void>(resolve => {
-        onScheduled = resolve;
+      await new Promise<Event>(resolve => {
+        view.contentElement.addEventListener('manifestDetection', resolve, {once: true});
       });
       assert.isTrue(emptyView.isShowing());
       assert.isFalse(reportView.isShowing());
 
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
-      await new Promise<void>(resolve => {
-        onScheduled = resolve;
+      await new Promise<Event>(resolve => {
+        view.contentElement.addEventListener('manifestDetection', resolve, {once: true});
       });
       assert.isFalse(emptyView.isShowing());
       assert.isTrue(reportView.isShowing());

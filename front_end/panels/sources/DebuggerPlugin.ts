@@ -806,6 +806,12 @@ export class DebuggerPlugin extends Plugin {
         columnNumber: number,
       }|null,
       isLogpoint?: boolean): void {
+    if (breakpoint?.isRemoved) {
+      // This method can get called for stale breakpoints, e.g. via the revealer.
+      // In that case we don't show the edit dialog as to not resurrect the breakpoint
+      // unintentionally.
+      return;
+    }
     const editor = this.editor as TextEditor.TextEditor.TextEditor;
     const oldCondition = breakpoint ? breakpoint.condition() : '';
     const isLogpointForDialog = breakpoint?.isLogpoint() ?? Boolean(isLogpoint);

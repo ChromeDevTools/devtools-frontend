@@ -24,7 +24,8 @@ import {
 } from '../../helpers/MockConnection.js';
 import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
-import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createContentProviderUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createFileSystemFileForPersistenceTests} from '../../helpers/PersistenceHelpers.js';
 
 const {assert} = chai;
 
@@ -540,43 +541,19 @@ describeWithMockConnection('BreakpointManager', () => {
     });
 
     async function testBreakpointMovedOnInstrumentationBreak(
-        fileSystemDescription: {fileSystemPath: string, url: string, content: string, type?: string}) {
+        fileSystemPath: Platform.DevToolsPath.UrlString, fileSystemFileUrl: Platform.DevToolsPath.UrlString,
+        content: string, type?: string) {
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assertNotNullOrUndefined(debuggerModel);
-      const mimeType = 'text/javascript';
-      const mainFrameId = 'main' as Protocol.Page.FrameId;
 
-      // Create resource that is required for binding the file system uiSourceCode and the
-      // network uiSourceCode.
-      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
-
-      const resource = new SDK.Resource.Resource(
-          resourceTreeModel, null, scriptDescription.url, scriptDescription.url, mainFrameId, null,
-          Common.ResourceType.ResourceType.fromMimeType('text/javascript'), mimeType, null,
-          scriptDescription.content.length);
-      const frame = resourceTreeModel.frameForId(mainFrameId);
-      assertNotNullOrUndefined(frame);
-
-      frame.addResource(resource);
-
-      // Create the file system uiSourceCode with the same metadata as the script's resource file.
-      const metadata = new Workspace.UISourceCode.UISourceCodeMetadata(resource.lastModified(), resource.contentSize());
-      const fileSystem = createFileSystemUISourceCode({
-        url: fileSystemDescription.url as Platform.DevToolsPath.UrlString,
-        content: fileSystemDescription.content,
-        fileSystemPath: fileSystemDescription.fileSystemPath,
-        mimeType,
-        metadata,
-        autoMapping: true,
-        type: fileSystemDescription.type,
-      });
+      const {uiSourceCode: fileSystemUiSourceCode, project} = createFileSystemFileForPersistenceTests(
+          {fileSystemFileUrl, fileSystemPath, type: type}, scriptDescription.url, content, target);
 
       const breakpointLine = 0;
       const resolvedBreakpointLine = 1;
 
       // Set the breakpoint on the file system uiSourceCode.
-      await breakpointManager.setBreakpoint(fileSystem.uiSourceCode, breakpointLine, 0, ...DEFAULT_BREAKPOINT);
+      await breakpointManager.setBreakpoint(fileSystemUiSourceCode, breakpointLine, 0, ...DEFAULT_BREAKPOINT);
 
       // Add the script.
       const script = await backend.addScript(target, scriptDescription, null);
@@ -613,7 +590,7 @@ describeWithMockConnection('BreakpointManager', () => {
       assert.strictEqual(resolvedBreakpointLine, reloadedBoundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.columnNumber);
 
-      fileSystem.project.dispose();
+      project.dispose();
     }
 
     it('can restore breakpoints in scripts', async () => {
@@ -1155,15 +1132,11 @@ describeWithMockConnection('BreakpointManager', () => {
       const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
       const fileName = Common.ParsedURL.ParsedURL.extractName(scriptDescription.url);
-      const fileSystemPath = 'file://path/to/filesystem';
 
-      const fileSystemResourceDescription = {
-        url: fileSystemPath + '/' + fileName,
-        fileSystemPath,
-        content: scriptDescription.content,
-      };
+      const fileSystemPath = 'file://path/to/filesystem' as Platform.DevToolsPath.UrlString;
+      const fileSystemFileUrl = fileSystemPath + '/' + fileName as Platform.DevToolsPath.UrlString;
 
-      await testBreakpointMovedOnInstrumentationBreak(fileSystemResourceDescription);
+      await testBreakpointMovedOnInstrumentationBreak(fileSystemPath, fileSystemFileUrl, scriptDescription.content);
     });
 
     it('can move breakpoints to network files that are set in override files', async () => {
@@ -1175,15 +1148,12 @@ describeWithMockConnection('BreakpointManager', () => {
       Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
           {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
 
-      const fileSystemPath = 'file://path/to/overrides';
-      const fileSystemResourceDescription = {
-        url: fileSystemPath + '/site/script.js',
-        fileSystemPath,
-        content: scriptDescription.content,
-        type: 'overrides',
-      };
+      const fileSystemPath = 'file://path/to/overrides' as Platform.DevToolsPath.UrlString;
+      const fielSystemFileUrl = fileSystemPath + '/site/script.js' as Platform.DevToolsPath.UrlString;
+      const type = 'overrides';
+      const content = '';
 
-      await testBreakpointMovedOnInstrumentationBreak(fileSystemResourceDescription);
+      await testBreakpointMovedOnInstrumentationBreak(fileSystemPath, fielSystemFileUrl, content, type);
     });
   });
 

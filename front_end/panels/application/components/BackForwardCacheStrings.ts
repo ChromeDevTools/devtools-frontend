@@ -368,12 +368,12 @@ const UIStrings = {
    * @description Description text for not restored reason InjectedJavascript.
    */
   injectedJavascript:
-      'IPages that JavaScript is injected into by extensions are not currently eligible for back/forward cache.',
+      'Pages that `JavaScript` is injected into by extensions are not currently eligible for back/forward cache.',
   /**
    * @description Description text for not restored reason InjectedStyleSheet.
    */
   injectedStyleSheet:
-      'Pages that StyleSheet is injected into by extensions are not currently eligible for back/forward cache.',
+      'Pages that a `StyleSheet` is injected into by extensions are not currently eligible for back/forward cache.',
   /**
    * @description Description text for not restored reason ContentSecurityHandler.
    */

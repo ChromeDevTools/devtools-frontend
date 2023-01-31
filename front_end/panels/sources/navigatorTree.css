@@ -68,6 +68,10 @@
   --override-image-font-tree-item-color: rgb(101 170 85);
 }
 
+.navigator-file-tree-item.pending-display {
+  display: none;
+}
+
 .navigator-file-tree-item .icon {
   background: var(--override-file-tree-item-color);
 }

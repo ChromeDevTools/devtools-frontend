@@ -12,6 +12,7 @@ node_ts_library("shared") {
     "mocha-extensions.ts",
     "mocha-resultsdb-reporter.ts",
     "resultsdb.ts",
+    "screenshots.ts",
     "text-color.ts",
   ]
   deps = [ "../conductor:implementation" ]

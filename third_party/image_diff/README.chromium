@@ -1,0 +1,12 @@
+Name: image_diff
+Short Name: image_diff
+URL: https://source.chromium.org/chromium/chromium/src/+/main:tools/imagediff/
+Version: 0
+License: Chromium
+Security Critical: No
+
+Description:
+The image_diff binaries as built by Chromium in `tools/imagediff`.
+
+Local Modifications:
+n/a

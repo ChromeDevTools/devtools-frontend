@@ -38,10 +38,9 @@ async function checkboxIsChecked(element: ElementHandle<HTMLInputElement>): Prom
 
 async function clearFilter() {
   await click('.filter-input-container');
-  try {
-    await clickElement(await waitFor('.filter-input-clear-button'));
-  } catch {
-    // if the field is empty, clicking fails.
+  const clearFilter = await waitFor('.filter-input-clear-button');
+  if (await clearFilter.isIntersectingViewport()) {
+    await clickElement(clearFilter);
   }
 }
 

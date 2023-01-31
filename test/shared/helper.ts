@@ -115,7 +115,15 @@ async function performActionOnSelector(
  * @deprecated This method is not able to recover from unstable DOM. Use click(selector) instead.
  */
 export async function clickElement(element: puppeteer.ElementHandle, options?: ClickOptions): Promise<void> {
-  await element.click(options?.clickOptions);
+  // Retries here just in case the element gets connected to DOM / becomes visible.
+  await waitForFunction(async () => {
+    try {
+      await element.click(options?.clickOptions);
+      return true;
+    } catch {
+      return false;
+    }
+  });
 }
 
 /**

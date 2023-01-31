@@ -344,6 +344,10 @@ export class SourceMap {
     if (this.#mappingsInternal === null) {
       this.#mappingsInternal = [];
       this.eachSection(this.parseMap.bind(this));
+
+      // As per spec, mappings are not necessarily sorted.
+      this.mappings().sort(SourceMapEntry.compare);
+
       this.#computeReverseMappings(this.#mappingsInternal);
       this.#json = null;
     }
@@ -483,9 +487,6 @@ export class SourceMap {
       this.mappings().push(new SourceMapEntry(
           lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
-
-    // As per spec, mappings are not necessarily sorted.
-    this.mappings().sort(SourceMapEntry.compare);
   }
 
   private isSeparator(char: string): boolean {

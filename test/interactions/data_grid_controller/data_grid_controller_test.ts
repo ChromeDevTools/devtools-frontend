@@ -11,38 +11,30 @@ import {
   platformSpecificTextForSubMenuEntryItem,
 } from '../../e2e/helpers/context-menu-helpers.js';
 import {getDataGrid, getDataGridController, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
-import {$, $$, $textContent, click, clickElement, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, click, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
 async function activateContextMenuOnColumnHeader(headerText: string) {
   const dataGridController = await getDataGridController();
   const dataGrid = await getDataGrid(dataGridController);
-  const headerCell = await $textContent(headerText, dataGrid);
-  if (!headerCell) {
-    assert.fail(`Could not find header cell with text ${headerText}`);
-  }
-  await clickElement(headerCell, {
+  return await click(`pierceShadowText/${headerText}`, {
+    root: dataGrid,
     clickOptions: {
       button: 'right',
     },
   });
-  return headerCell;
 }
 
 async function activateContextMenuOnBodyCell(cellText: string) {
   const dataGridController = await getDataGridController();
   const dataGrid = await getDataGrid(dataGridController);
-  const headerCell = await $textContent(cellText, dataGrid);
-  if (!headerCell) {
-    assert.fail(`Could not find body cell with text ${cellText}`);
-  }
-  await clickElement(headerCell, {
+  return await click(`pierceShadowText/${cellText}`, {
+    root: dataGrid,
     clickOptions: {
       button: 'right',
     },
   });
-  return headerCell;
 }
 
 async function waitForFirstBodyCellText(cellText: string) {

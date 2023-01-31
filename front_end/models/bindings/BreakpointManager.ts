@@ -681,12 +681,17 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
    * The breakpoint condition as it is sent to V8.
    */
   backendCondition(): SDK.DebuggerModel.BackendCondition {
-    // TODO(crbug.com/1027458): Add sourceUrl comment.
-    if (this.isLogpoint()) {
-      return `${LOGPOINT_PREFIX}${this.#storageState.condition}${LOGPOINT_SUFFIX}` as
-          SDK.DebuggerModel.BackendCondition;
+    let condition: string = this.condition();
+    if (condition === '') {
+      return '' as SDK.DebuggerModel.BackendCondition;
     }
-    return this.#storageState.condition as unknown as SDK.DebuggerModel.BackendCondition;
+
+    let sourceUrl = COND_BREAKPOINT_SOURCE_URL;
+    if (this.isLogpoint()) {
+      condition = `${LOGPOINT_PREFIX}${condition}${LOGPOINT_SUFFIX}`;
+      sourceUrl = LOGPOINT_SOURCE_URL;
+    }
+    return `${condition}\n\n//# sourceURL=${sourceUrl}` as SDK.DebuggerModel.BackendCondition;
   }
 
   setCondition(condition: UserCondition, isLogpoint: boolean): void {
@@ -1221,3 +1226,6 @@ export class BreakpointLocation {
 
 const LOGPOINT_PREFIX = '/** DEVTOOLS_LOGPOINT */ console.log(';
 const LOGPOINT_SUFFIX = ')';
+
+const LOGPOINT_SOURCE_URL = 'debugger://logpoint';
+const COND_BREAKPOINT_SOURCE_URL = 'debugger://breakpoint';

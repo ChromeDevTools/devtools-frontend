@@ -190,22 +190,43 @@ describeWithMockConnection('BreakpointManager', () => {
   });
 
   describe('Breakpoint#backendCondition()', () => {
-    it('wraps logpoints in console.log', () => {
+    function createBreakpoint(condition: string, isLogpoint: boolean): Bindings.BreakpointManager.Breakpoint {
       const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
-      const breakpoint = new Bindings.BreakpointManager.Breakpoint(
-          breakpointManager, uiSourceCode, URL, 5, undefined, 'x' as Bindings.BreakpointManager.UserCondition,
-          /* enabled */ true, /* isLogpoint */ true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+      return new Bindings.BreakpointManager.Breakpoint(
+          breakpointManager, uiSourceCode, URL, 5, undefined, condition as Bindings.BreakpointManager.UserCondition,
+          /* enabled */ true, isLogpoint, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+    }
+
+    it('wraps logpoints in console.log', () => {
+      const breakpoint = createBreakpoint('x', /* isLogpoint */ true);
 
       assert.include(breakpoint.backendCondition(), 'console.log(x)');
     });
 
     it('leaves conditional breakpoints alone', () => {
-      const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
-      const breakpoint = new Bindings.BreakpointManager.Breakpoint(
-          breakpointManager, uiSourceCode, URL, 5, undefined, 'x === 42' as Bindings.BreakpointManager.UserCondition,
-          /* enabled */ true, /* isLogpoint */ false, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+      const breakpoint = createBreakpoint('x === 42', /* isLogpoint */ false);
 
-      assert.strictEqual(breakpoint.backendCondition(), 'x === 42');
+      // Split of sourceURL.
+      const lines = breakpoint.backendCondition().split('\n');
+      assert.strictEqual(lines[0], 'x === 42');
+    });
+
+    it('has a sourceURL for logpoints', () => {
+      const breakpoint = createBreakpoint('x', /* isLogpoint */ true);
+
+      assert.include(breakpoint.backendCondition(), '//# sourceURL=');
+    });
+
+    it('has a sourceURL for conditional breakpoints', () => {
+      const breakpoint = createBreakpoint('x === 42', /* isLogpoint */ false);
+
+      assert.include(breakpoint.backendCondition(), '//# sourceURL=');
+    });
+
+    it('has no sourceURL for normal breakpoints', () => {
+      const breakpoint = createBreakpoint('', /* isLogpoint */ false);
+
+      assert.notInclude(breakpoint.backendCondition(), '//# sourceURL=');
     });
   });
 

@@ -8,6 +8,7 @@ ts_library("persistence") {
   testonly = true
   sources = [
     "NetworkPersistenceManager_test.ts",
+    "PersistenceImpl_test.ts",
     "PlatformFileSystem_test.ts",
   ]
 

@@ -115,7 +115,7 @@ export function createFileSystemUISourceCode(options: {
   autoMapping?: boolean,
   type?: string,
   metadata?: Workspace.UISourceCode.UISourceCodeMetadata,
-}) {
+}): {uiSourceCode: Workspace.UISourceCode.UISourceCode, project: Persistence.FileSystemWorkspaceBinding.FileSystem} {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
   const isolatedFileSystemManager = Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
   const fileSystemWorkspaceBinding =

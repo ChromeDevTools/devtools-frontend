@@ -86,8 +86,8 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     });
   };
 
-  describe('without tab tatget', () => revealMainTarget(createTarget));
-  describe('with tab tatget', () => revealMainTarget(() => {
+  describe('without tab target', () => revealMainTarget(createTarget));
+  describe('with tab target', () => revealMainTarget(() => {
                                 const tabTarget = createTarget({type: SDK.Target.Type.Tab});
                                 createTarget({parentTarget: tabTarget, subtype: 'prerender'});
                                 return createTarget({parentTarget: tabTarget});

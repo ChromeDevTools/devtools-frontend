@@ -67,6 +67,7 @@ export function stubNoopSettings() {
       setDisabled: () => {},
       setTitle: () => {},
       title: () => {},
+      asRegExp: () => {},
     }),
     moduleSetting: () => ({
       get: () => [],
@@ -76,6 +77,7 @@ export function stubNoopSettings() {
       setDisabled: () => {},
       setTitle: () => {},
       title: () => {},
+      asRegExp: () => {},
     }),
   } as unknown as Common.Settings.Settings);
 }

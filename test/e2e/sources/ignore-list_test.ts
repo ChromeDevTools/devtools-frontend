@@ -25,6 +25,7 @@ import {
   openSourceCodeEditorForFile,
   openSourcesPanel,
   PAUSE_INDICATOR_SELECTOR,
+  readIgnoreListedSources,
   readSourcesTreeView,
   RESUME_BUTTON,
   stepIn,
@@ -105,6 +106,27 @@ describe('Ignore list', async function() {
 
     await click(RESUME_BUTTON);
     await scriptEvaluation;
+  });
+
+  it('indicates ignored sources in page source tree', async function() {
+    await setIgnoreListPattern('/sources/');
+    await goToResource('sources/multi-files.html');
+    await openSourcesPanel();
+    assert.deepEqual(await readIgnoreListedSources(), [
+      'test/e2e/resources/sources',
+      'multi-files.html',
+      'multi-files-mycode.js',
+      'multi-files-thirdparty.js',
+    ]);
+    await toggleIgnoreListing(false);
+    assert.deepEqual(await readIgnoreListedSources(), []);
+    await toggleIgnoreListing(true);
+    assert.deepEqual(await readIgnoreListedSources(), [
+      'test/e2e/resources/sources',
+      'multi-files.html',
+      'multi-files-mycode.js',
+      'multi-files-thirdparty.js',
+    ]);
   });
 
   it('removes ignored sources from page source tree', async function() {

@@ -506,6 +506,13 @@ export async function readSourcesTreeView(): Promise<string[]> {
   return results.map(item => item.replace(/localhost:[0-9]+/, 'localhost:XXXX'));
 }
 
+export async function readIgnoreListedSources(): Promise<string[]> {
+  const items = await $$('.navigator-folder-tree-item.is-ignore-listed,.navigator-file-tree-item.is-ignore-listed');
+  const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
+  const results = await Promise.all(promises);
+  return results.map(item => item.replace(/localhost:[0-9]+/, 'localhost:XXXX'));
+}
+
 async function hasPausedEvents(frontend: puppeteer.Page): Promise<boolean> {
   const events = await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
   return Boolean(events && events.length);

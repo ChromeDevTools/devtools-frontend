@@ -82,6 +82,10 @@
   opacity: 50%;
 }
 
+.is-ignore-listed {
+  opacity: 50%;
+}
+
 .tree-outline li {
   min-height: 20px;
 }

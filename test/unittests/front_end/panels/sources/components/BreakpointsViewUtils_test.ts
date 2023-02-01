@@ -115,7 +115,7 @@ describe('getDifferentiatingPathMap', () => {
 
     const differentiatingPathMap = SourcesComponents.BreakpointsViewUtils.getDifferentiatingPathMap(titleInfos);
     assert.strictEqual(differentiatingPathMap.get(titleInfos[0].url), 'e/' as Platform.DevToolsPath.UrlString);
-    assert.strictEqual(differentiatingPathMap.get(titleInfos[1].url), 'src/a/' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[1].url), 'a/' as Platform.DevToolsPath.UrlString);
   });
 
   it('can extract the differentiating segment if parts of the differentiating foldername is overlapping', () => {
@@ -128,6 +128,62 @@ describe('getDifferentiatingPathMap', () => {
     assert.strictEqual(differentiatingPathMap.get(titleInfos[0].url), 'cfile/' as Platform.DevToolsPath.UrlString);
     assert.strictEqual(differentiatingPathMap.get(titleInfos[1].url), 'c/' as Platform.DevToolsPath.UrlString);
   });
+
+  it('can extract the differentiating segment if part of suffix is unique', () => {
+    const titleInfos: SourcesComponents.BreakpointsViewUtils.TitleInfo[] = createTitleInfos({
+      ambiguous: [
+        'http://www.google.com/src/a/y',
+        'http://www.google.com/src2/a/x',
+        'http://www.google.com/src/b/y',
+        'http://www.google.com/src2/b/x',
+      ],
+      nonAmbiguous: [],
+    });
+    const differentiatingPathMap = SourcesComponents.BreakpointsViewUtils.getDifferentiatingPathMap(titleInfos);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[0].url), 'a/y/' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[1].url), 'a/x/' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[2].url), 'b/y/' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[3].url), 'b/x/' as Platform.DevToolsPath.UrlString);
+  });
+
+  it('can extract the differentiating segment if separate paths of urls are unique', () => {
+    const titleInfos: SourcesComponents.BreakpointsViewUtils.TitleInfo[] = createTitleInfos({
+      ambiguous: ['http://www.google.com/src/d/y', 'http://www.google.com/src2/c/y', 'http://www.google.com/src3/c/y'],
+      nonAmbiguous: [],
+    });
+    const differentiatingPathMap = SourcesComponents.BreakpointsViewUtils.getDifferentiatingPathMap(titleInfos);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[0].url), 'd/…/' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[1].url), 'src2/c/…/' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[2].url), 'src3/c/…/' as Platform.DevToolsPath.UrlString);
+  });
+
+  it('can extract the differentiating segment if paths have different length', () => {
+    const titleInfos: SourcesComponents.BreakpointsViewUtils.TitleInfo[] = createTitleInfos({
+      ambiguous: [
+        'http://www.google.com/src/d',
+        'http://www.google.com/src/c/y/d',
+        'http://www.google.com/src2/c/y/d',
+        'http://www.google.com/src3/c/y/d',
+      ],
+      nonAmbiguous: [],
+    });
+    const differentiatingPathMap = SourcesComponents.BreakpointsViewUtils.getDifferentiatingPathMap(titleInfos);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[0].url), 'src/…/' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[1].url), 'src/c/y/…/' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[2].url), 'src2/c/y/…/' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(differentiatingPathMap.get(titleInfos[3].url), 'src3/c/y/…/' as Platform.DevToolsPath.UrlString);
+  });
+
+  it('can extract the differentiating segment if paths have different length and are completely overlapping otherwise',
+     () => {
+       const titleInfos: SourcesComponents.BreakpointsViewUtils.TitleInfo[] = createTitleInfos({
+         ambiguous: ['http://www.google.com/src/d', 'http://www.google.com/x/src/d'],
+         nonAmbiguous: [],
+       });
+       const differentiatingPathMap = SourcesComponents.BreakpointsViewUtils.getDifferentiatingPathMap(titleInfos);
+       assert.strictEqual(differentiatingPathMap.get(titleInfos[0].url), '/…/' as Platform.DevToolsPath.UrlString);
+       assert.strictEqual(differentiatingPathMap.get(titleInfos[1].url), 'x/…/' as Platform.DevToolsPath.UrlString);
+     });
 
   function createTitleInfos(data: {ambiguous: string[], nonAmbiguous: string[]}):
       SourcesComponents.BreakpointsViewUtils.TitleInfo[] {

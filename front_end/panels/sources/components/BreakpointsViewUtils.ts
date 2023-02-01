@@ -5,7 +5,6 @@
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
-import * as Persistence from '../../../models/persistence/persistence.js';
 
 const SUMMARY_ELEMENT_SELECTOR = 'summary';
 
@@ -202,81 +201,72 @@ export interface TitleInfo {
   url: Platform.DevToolsPath.UrlString;
 }
 
-// This function tries to find a subpath (if available) that we can use to differentiate
-// urls that have the same file name.
-// It does so by looking for overlapping prefixes and suffixes, and makes use of the
-// last segment (folder name) from the middle path that is non-overlapping.
-// Example:
-//     Paths:  'http://www.google.com/src/a/b/c/index.js', 'http://www.google.com/src/c/d/e/index.js', 'http://www.google.com//src2/a/b/c/index.js'
-//     Output: 'src/a/b/c/', 'e/', 'src2/../'
-function populateDifferentiatingPathMap(
-    encoder: Persistence.Persistence.PathEncoder, urls: Platform.DevToolsPath.UrlString[],
-    urlToDifferentiator: Map<Platform.DevToolsPath.UrlString, string>): void {
-  // Create a trie for matching paths, and one for matching the reversed paths to find the differentiator between paths.
-  const forwardTrie = new Common.Trie.Trie();
-  const reversedTrie = new Common.Trie.Trie();
-  const urlInfo = new Map<Platform.DevToolsPath.UrlString, {path: string, encoded: string, reverseEncoded: string}>();
-
-  // Populate the tries with the encoded path / encoded reversed path.
-  urls.forEach(url => {
-    const path = Common.ParsedURL.ParsedURL.fromString(url)?.folderPathComponents;
-    assertNotNullOrUndefined(path);
-
-    const encoded = encoder.encode(path);
-    const reverseEncoded = encoder.encode(Platform.StringUtilities.reverse(path));
-    forwardTrie.add(encoded);
-    reversedTrie.add(reverseEncoded);
-
-    urlInfo.set(url, {path, encoded, reverseEncoded});
-  });
-
-  for (const url of urls) {
-    const info = urlInfo.get(url);
-    assertNotNullOrUndefined(info);
-    const {path, encoded, reverseEncoded} = info;
-
-    forwardTrie.remove(encoded);
-    const longestEncodedPrefix = forwardTrie.longestPrefix(encoded, false /* fullWordsOnly */);
-    forwardTrie.add(encoded);
-
-    reversedTrie.remove(reverseEncoded);
-    const longestReversedEncodedSuffix = reversedTrie.longestPrefix(reverseEncoded, false /* fullWordsOnly */);
-    reversedTrie.add(reverseEncoded);
-
-    const longestPrefix = encoder.decode(longestEncodedPrefix);
-    const longestReversedSuffix = encoder.decode(longestReversedEncodedSuffix);
-    const longestSuffix = Platform.StringUtilities.reverse(longestReversedSuffix);
-
-    // The longest common forward and reverse path overlap. This happens if the whole
-    // path overlaps (+1 accounts for the slash in between the prefix and suffix).
-    // In this case, we show the whole path:
-    // Example:
-    //          Tries contain:           'src/a/b', 'src2/a/c'
-    //          Find differentiator for: 'src/a/c'
-    //          longestPrefix:           'src/a'
-    //          longestSuffix:           'c'
-    //          differentiator:          'src/a/c'
-    if (longestPrefix.length + longestSuffix.length + 1 >= path.length) {
-      urlToDifferentiator.set(url, path.substring(1) + '/');
-    } else {
-      // We have some part of the path that is unique to this url. Extract the differentiating path.
-      const differentiatorStart = longestPrefix.length ? longestPrefix.length + 1 : 0;
-      const differentiatorEnd = longestSuffix.length ? path.length - longestSuffix.length - 1 : path.length;
-      const differentiatorPath = path.substring(differentiatorStart, differentiatorEnd);
-
-      // Extract the last segment of the differentiator.
-      const lastSegment = differentiatorPath.substring(differentiatorPath.lastIndexOf('/') + 1);
-
-      if (longestSuffix.length === 0) {
-        // If the file name follows directly after the last segment, append a '/'.
-        urlToDifferentiator.set(url, lastSegment + '/');
-      } else
-      // Else, append a '…/'.
-      {
-        urlToDifferentiator.set(url, lastSegment + '/\u2026/');
+function findFirstDifferingSegmentIndex(splitUrls: string[][]): number {
+  const firstUrl = splitUrls[0];
+  let firstDifferingIndex = -1;
+  for (let segmentIndex = 0; segmentIndex < firstUrl.length && firstDifferingIndex === -1; ++segmentIndex) {
+    const segment = firstUrl[segmentIndex];
+    for (let urlIndex = 1; urlIndex < splitUrls.length; ++urlIndex) {
+      const url = splitUrls[urlIndex];
+      if (url.length <= segmentIndex || url[segmentIndex] !== segment) {
+        firstDifferingIndex = segmentIndex;
+        break;
       }
     }
   }
+
+  return firstDifferingIndex === -1 ? firstUrl.length : firstDifferingIndex;
+}
+
+function findDifferentiatingPath(url: string[], allUrls: string[][], startIndex: number): string[] {
+  const differentiatingPath = [];
+  let remainingUrlsToDifferentiate = allUrls.filter(other => other !== url);
+
+  for (let segmentIndex = startIndex; segmentIndex < url.length; ++segmentIndex) {
+    const segment = url[segmentIndex];
+    differentiatingPath.push(segment);
+    remainingUrlsToDifferentiate =
+        remainingUrlsToDifferentiate.filter(url => url.length > segmentIndex && url[segmentIndex] === segment);
+    if (remainingUrlsToDifferentiate.length === 0) {
+      break;
+    }
+  }
+  return differentiatingPath;
+}
+
+// This function tries to find a subpath (if available) that we can use to differentiate
+// urls that have the same file name.
+// It does so by 1. removing common suffixes, 2. taking segments of the path (from right to left) until the path is
+// unique.
+//
+// Example:
+//
+//     Paths:  'http://www.google.com/src/a/index.js', 'http://www.google.com/src2/a/index.js'
+//     Output: 'src/…/', 'src2/…/'
+function populateDifferentiatingPathMap(
+    urls: Platform.DevToolsPath.UrlString[], urlToDifferentiator: Map<Platform.DevToolsPath.UrlString, string>): void {
+  const splitReversedUrls = urls.map(url => {
+    // Get the folder path components without the first '/'.
+    const paths = Common.ParsedURL.ParsedURL.fromString(url)?.folderPathComponents.slice(1);
+    assertNotNullOrUndefined(paths);
+    return paths.split('/').reverse();
+  });
+
+  const startIndex = findFirstDifferingSegmentIndex(splitReversedUrls);
+
+  for (let i = 0; i < splitReversedUrls.length; ++i) {
+    const splitUrl = splitReversedUrls[i];
+    const differentiator = findDifferentiatingPath(splitUrl, splitReversedUrls, startIndex);
+    const reversed = differentiator.reverse().join('/');
+    // If we start to collect the differentiator from the last segment (startIndex === 0),
+    // only append a '/', otherwise' …/'.
+    if (startIndex === 0) {
+      urlToDifferentiator.set(urls[i], reversed + '/');
+    } else {
+      urlToDifferentiator.set(urls[i], reversed + '/\u2026/');
+    }
+  }
+  console.assert(new Set(urlToDifferentiator.values()).size === urls.length, 'Differentiators should be unique.');
 }
 
 export function getDifferentiatingPathMap(titleInfos: TitleInfo[]): Map<Platform.DevToolsPath.UrlString, string> {
@@ -290,10 +280,9 @@ export function getDifferentiatingPathMap(titleInfos: TitleInfo[]): Map<Platform
     nameToUrl.get(name)?.push(url);
   }
 
-  const encoder = new Persistence.Persistence.PathEncoder();
   for (const urlsGroupedByName of nameToUrl.values()) {
     if (urlsGroupedByName.length > 1) {
-      populateDifferentiatingPathMap(encoder, urlsGroupedByName, urlToDifferentiatingPath);
+      populateDifferentiatingPathMap(urlsGroupedByName, urlToDifferentiatingPath);
     }
   }
   return urlToDifferentiatingPath;

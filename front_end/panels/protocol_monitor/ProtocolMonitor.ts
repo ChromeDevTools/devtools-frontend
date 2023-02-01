@@ -177,6 +177,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
     const dataGridInitialData: DataGrid.DataGridController.DataGridControllerData = {
       paddingRowsCount: 100,
+      showScrollbar: true,
       columns: [
         {
           id: 'type',

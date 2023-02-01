@@ -12,12 +12,20 @@ import type * as Protocol from '../../../../../../../front_end/generated/protoco
 import {createTarget} from '../../../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../../../helpers/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
+import {MockProtocolBackend} from '../../../../helpers/MockScopeChain.js';
 
 const {assert} = chai;
 
 const scriptId1 = '1' as Protocol.Runtime.ScriptId;
 const scriptId2 = '2' as Protocol.Runtime.ScriptId;
 const executionContextId = 1234 as Protocol.Runtime.ExecutionContextId;
+
+const simpleScriptContent = `
+function foo(x) {
+  const y = x + 3;
+  return y;
+}
+`;
 
 describeWithMockConnection('Linkifier', async () => {
   let SDK: typeof SDKModule;
@@ -46,7 +54,10 @@ describeWithMockConnection('Linkifier', async () => {
       targetManager,
     });
     Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew, debuggerWorkspaceBinding});
-    return {target, linkifier};
+    Bindings.BreakpointManager.BreakpointManager.instance(
+        {forceNew, targetManager, workspace, debuggerWorkspaceBinding});
+    const backend = new MockProtocolBackend();
+    return {target, linkifier, backend};
   }
 
   describe('Linkifier.linkifyURL', () => {
@@ -277,5 +288,50 @@ describeWithMockConnection('Linkifier', async () => {
 
     assertNotNullOrUndefined(anchor);
     assert.strictEqual(anchor.textContent, `w.com/a.js:${lineNumber + 1}`);
+  });
+
+  describe('maybeLinkifyScriptLocation', () => {
+    it('uses the BreakLocation as a revealable if the option is provided and a breakpoint is at the given location',
+       async () => {
+         const {target, linkifier, backend} = setUpEnvironment();
+         const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
+         const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+         const lineNumber = 1;
+         const columnNumber = 0;
+         const url = 'https://www.google.com/script.js' as Platform.DevToolsPath.UrlString;
+
+         const script = await backend.addScript(target, {content: simpleScriptContent, url}, null);
+         const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
+         assertNotNullOrUndefined(uiSourceCode);
+
+         const responder = backend.responderToBreakpointByUrlRequest(url, lineNumber);
+         void responder({
+           breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+           locations: [
+             {
+               scriptId: script.scriptId,
+               lineNumber,
+               columnNumber,
+             },
+           ],
+         });
+         const breakpoint = await breakpointManager.setBreakpoint(
+             uiSourceCode, lineNumber, columnNumber, 'x' as BindingsModule.BreakpointManager.UserCondition,
+             /* enabled */ true, /* isLogpoint */ true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+
+         // Create a link that matches exactly the breakpoint location.
+         const anchor = linkifier.maybeLinkifyScriptLocation(
+             target, script.scriptId, url, lineNumber, {inlineFrameIndex: 0, revealBreakpoint: true});
+         assertNotNullOrUndefined(anchor);
+
+         await debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();
+
+         // Assert that the linkinfo has the `BreakLocation` as its revealable.
+         // When clicking the link, `revealables` have predecence over e.g. the
+         // UILocation or url.
+         const linkInfo = Components.Linkifier.Linkifier.linkInfo(anchor);
+         assertNotNullOrUndefined(linkInfo);
+         assert.propertyVal(linkInfo.revealable, 'breakpoint', breakpoint);
+       });
   });
 });

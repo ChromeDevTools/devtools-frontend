@@ -161,6 +161,33 @@ export class Linkifier implements SDK.TargetManager.Observer {
     }
   }
 
+  /**
+   * When we link to a breakpoint condition, we need to stash the BreakpointLocation as the revealable
+   * in the LinkInfo.
+   */
+  private static bindBreakpoint(anchor: Element, uiLocation: Workspace.UISourceCode.UILocation): void {
+    const info = Linkifier.linkInfo(anchor);
+    if (!info) {
+      return;
+    }
+
+    const breakpoint = Bindings.BreakpointManager.BreakpointManager.instance().findBreakpoint(uiLocation);
+    if (breakpoint) {
+      info.revealable = breakpoint;
+    }
+  }
+
+  /**
+   * When we link to a breakpoint condition, we store the BreakpointLocation in the revealable.
+   * Clear it when the LiveLocation updates.
+   */
+  private static unbindBreakpoint(anchor: Element): void {
+    const info = Linkifier.linkInfo(anchor);
+    if (info && info.revealable) {
+      info.revealable = null;
+    }
+  }
+
   targetAdded(target: SDK.Target.Target): void {
     this.anchorsByTarget.set(target, []);
     this.locationPoolByTarget.set(target, new Bindings.LiveLocation.LiveLocationPool());
@@ -242,7 +269,10 @@ export class Linkifier implements SDK.TargetManager.Observer {
       return fallbackAnchor;
     }
 
-    const linkDisplayOptions = {showColumnNumber: linkifyURLOptions.showColumnNumber};
+    const linkDisplayOptions: LinkDisplayOptions = {
+      showColumnNumber: linkifyURLOptions.showColumnNumber,
+      revealBreakpoint: options?.revealBreakpoint,
+    };
 
     const currentOnLiveLocationUpdate = this.onLiveLocationUpdate;
     void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
@@ -400,6 +430,9 @@ export class Linkifier implements SDK.TargetManager.Observer {
       anchor: HTMLElement, options: LinkDisplayOptions,
       liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
     Linkifier.unbindUILocation(anchor);
+    if (options.revealBreakpoint) {
+      Linkifier.unbindBreakpoint(anchor);
+    }
     const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
       if (liveLocation instanceof Bindings.CSSWorkspaceBinding.LiveLocation) {
@@ -421,6 +454,9 @@ export class Linkifier implements SDK.TargetManager.Observer {
     }
 
     Linkifier.bindUILocation(anchor, uiLocation);
+    if (options.revealBreakpoint) {
+      Linkifier.bindBreakpoint(anchor, uiLocation);
+    }
     const text = uiLocation.linkText(true /* skipTrim */, options.showColumnNumber);
     Linkifier.setTrimmedText(anchor, text, this.maxLength);
 
@@ -967,6 +1003,11 @@ export interface LinkifyOptions {
   showColumnNumber?: boolean;
   inlineFrameIndex: number;
   tabStop?: boolean;
+
+  /**
+   * {@link LinkDisplayOptions.revealBreakpoint}
+   */
+  revealBreakpoint?: boolean;
 }
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -982,6 +1023,14 @@ export interface _CreateLinkOptions {
 
 interface LinkDisplayOptions {
   showColumnNumber: boolean;
+
+  /**
+   * If true, we'll check if there is a breakpoint at the UILocation we get
+   * from the LiveLocation. If we find a breakpoint, we'll reveal the corresponding
+   * {@link Bindings.BreakpointManager.BreakpointLocation}. Which opens the
+   * breakpoint edit dialog.
+   */
+  revealBreakpoint?: boolean;
 }
 
 export type LinkHandler = (arg0: TextUtils.ContentProvider.ContentProvider, arg1: number) => void;

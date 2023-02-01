@@ -42,6 +42,10 @@ const UIStrings = {
    */
   timestamp: 'Timestamp',
   /**
+   *@description Title of a cell content in protocol monitor. It describes the time between sending a request and receiving a response.
+   */
+  elapsedTime: 'Elapsed time',
+  /**
    *@description Text in Protocol Monitor of the Protocol Monitor tab
    */
   target: 'Target',
@@ -96,7 +100,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const timestampRenderer = (value: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult => {
+const timeRenderer = (value: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult => {
   return LitHtml.html`${i18nString(UIStrings.sMs, {PH1: String(value)})}`;
 };
 
@@ -121,6 +125,7 @@ let protocolMonitorImplInstance: ProtocolMonitorImpl;
 export class ProtocolMonitorImpl extends UI.Widget.VBox {
   private started: boolean;
   private startTime: number;
+  private readonly requestTimeForId: Map<number, number>;
   private readonly dataGridRowForId: Map<number, DataGrid.DataGridUtils.Row>;
   private readonly infoWidget: InfoWidget;
   private readonly dataGridIntegrator: DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator;
@@ -138,6 +143,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this.started = false;
     this.startTime = 0;
     this.dataGridRowForId = new Map();
+    this.requestTimeForId = new Map();
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
 
     this.contentElement.classList.add('protocol-monitor');
@@ -204,6 +210,14 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
           title: i18nString(UIStrings.response),
           sortable: false,
           widthWeighting: 5,
+          visible: true,
+          hideable: true,
+        },
+        {
+          id: 'elapsedTime',
+          title: i18nString(UIStrings.elapsedTime),
+          sortable: true,
+          widthWeighting: 2,
           visible: true,
           hideable: true,
         },
@@ -417,6 +431,18 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
             };
           }
+
+          if (cell.columnId === 'elapsedTime') {
+            const requestTime = this.requestTimeForId.get(message.id as number);
+            if (requestTime) {
+              return {
+                ...cell,
+                value: Date.now() - requestTime,
+                renderer: timeRenderer,
+              };
+            }
+          }
+
           return cell;
         }),
       };
@@ -448,8 +474,9 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         {
           columnId: 'timestamp',
           value: Date.now() - this.startTime,
-          renderer: timestampRenderer,
+          renderer: timeRenderer,
         },
+        {columnId: 'elapsedTime', value: ''},
         {columnId: 'type', value: responseIcon, title: 'received'},
         {columnId: 'target', value: this.targetToString(sdkTarget)},
         {columnId: 'session', value: message.sessionId || ''},
@@ -489,14 +516,16 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         {
           columnId: 'timestamp',
           value: Date.now() - this.startTime,
-          renderer: timestampRenderer,
+          renderer: timeRenderer,
         },
+        {columnId: 'elapsedTime', value: '(pending)'},
         {columnId: 'type', value: requestResponseIcon, title: 'sent'},
         {columnId: 'target', value: this.targetToString(sdkTarget)},
         {columnId: 'session', value: message.sessionId || ''},
       ],
       hidden: false,
     };
+    this.requestTimeForId.set(message.id, Date.now());
     this.dataGridRowForId.set(message.id, newRow);
     this.dataGridIntegrator.update({
       ...this.dataGridIntegrator.data(),

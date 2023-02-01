@@ -1027,7 +1027,8 @@ export enum RecordingReplaySpeed {
 export enum RecordingReplayStarted {
   ReplayOnly = 1,
   ReplayWithPerformanceTracing = 2,
-  MaxValue = 3,
+  ReplayViaExtension = 3,
+  MaxValue = 4,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

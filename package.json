@@ -24,8 +24,8 @@
     "auto-debug-unittest": "DEBUG_TEST=1 npm run auto-unittest --",
     "auto-e2etest": "npm run build && npm run e2etest --",
     "auto-interactionstest": "npm run build && npm run interactionstest --",
-    "auto-unittest": "scripts/test/run_auto_unittests.py --no-text-coverage",
-    "auto-unittest-coverage": "scripts/test/run_auto_unittests.py --no-text-coverage --coverage",
+    "auto-unittest": "vpython scripts/test/run_auto_unittests.py --no-text-coverage",
+    "auto-unittest-coverage": "vpython scripts/test/run_auto_unittests.py --no-text-coverage --coverage",
     "prebuild": "gn gen out/Default",
     "bake-strings": "npm run collect-strings && vpython third_party/node/node.py --output third_party/i18n/bake-strings.js front_end/core/i18n/locales",
     "build": "autoninja -C out/Default",
@@ -55,7 +55,7 @@
     "test": "vpython third_party/node/node.py --output scripts/npm_test.js",
     "test-local": "vpython third_party/node/node.py --output scripts/npm_test.js --layout-tests-directory=test/webtests/",
     "ts_library-test": "./third_party/typescript/tests/verify_ts_libary.sh",
-    "unittest": "scripts/test/run_unittests.py --no-text-coverage",
+    "unittest": "vpython scripts/test/run_unittests.py --no-text-coverage",
     "watch": "vpython third_party/node/node.py --output scripts/watch_build.js"
   }
 }

@@ -1210,6 +1210,7 @@ const UIStrings = {
   // COHERENT BEGIN
 
   advance: 'Advance',
+  immediateLayout: 'Immediate Layout',
   executeScript: 'Execute Script',
   jsEvent: 'JS Event',
   synchronizeModels: 'Synchronize Models',
@@ -1468,6 +1469,7 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_UpdateNodeTransforms] = new TimelineRecordStyle(UIStrings.updateNodeTransforms, rendering);
     eventStyles[type.Coherent_ExecuteTimers] = new TimelineRecordStyle(UIStrings.executeTimers, scripting);
     eventStyles[type.Coherent_Layout] = new TimelineRecordStyle(UIStrings.layout, rendering);
+    eventStyles[type.Coherent_ImmediateLayout] = new TimelineRecordStyle(UIStrings.immediateLayout, rendering);
     eventStyles[type.Coherent_InvalidateLayout] = new TimelineRecordStyle(UIStrings.invalidateLayout, rendering);
     eventStyles[type.Coherent_RecordRendering] = new TimelineRecordStyle(UIStrings.recordRendering, painting);
     eventStyles[type.Coherent_Paint] = new TimelineRecordStyle(UIStrings.paint, painting);
@@ -2184,7 +2186,7 @@ export class TimelineUIUtils {
     const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
     const initiator = timelineData.initiator();
     // COHERENT BEGIN
-    const initiators = timelineData.initiators();
+    const initiators = timelineData.getInitiators();
     // COHERENT END
     let url: (string|null)|null = null;
 
@@ -2547,6 +2549,9 @@ export class TimelineUIUtils {
         break;
       }
       // COHERENT BEGIN
+      case recordTypes.Coherent_ImmediateLayout: {
+        break;
+      }
       case recordTypes.Coherent_JSEvent:
       case recordTypes.Coherent_TriggerEvent: {
         contentHelper.appendTextRow(UIStrings.eventName, event.args['stringData']);
@@ -2565,7 +2570,10 @@ export class TimelineUIUtils {
       case recordTypes.Coherent_Paint:
       case recordTypes.Coherent_WaitPendingFrame:
       case recordTypes.Coherent_MatchElements: {
-        contentHelper.appendTextRow(UIStrings.frameId, event.args['frameId']);
+        const frameId = event.args['frameId'];
+        if (frameId !== -1) {
+          contentHelper.appendTextRow(UIStrings.frameId, frameId);
+        }
         break;
       }
       case recordTypes.Coherent_RecordRendering: {
@@ -2576,7 +2584,10 @@ export class TimelineUIUtils {
         break;
       }
       case recordTypes.Coherent_Layout: {
-        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
+        const frameId = event.args['int0'];
+        if (frameId !== -1) {
+          contentHelper.appendTextRow(UIStrings.frameId, frameId);
+        }
         contentHelper.appendTextRow(
             UIStrings.nodesThatNeedLayout,
             i18nString(UIStrings.sOfS, {PH1: event.args['int1'], PH2: event.args['int2']}));
@@ -2678,8 +2689,7 @@ export class TimelineUIUtils {
       contentHelper.appendElementRow('', event[previewElementSymbol]);
     }
 
-    if (initiator || timelineData.stackTraceForSelfOrInitiator() ||
-        (initiators && initiators.length > 0) ||
+    if (initiator || timelineData.stackTraceForSelfOrInitiator() || initiators.length > 0 ||
         TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event)) {
       TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
     }
@@ -2989,8 +2999,8 @@ export class TimelineUIUtils {
     }
 
     // COHERENT BEGIN
-    const initiators = TimelineModel.TimelineModel.TimelineData.forEvent(event).initiators();
-    if (initiators && initiators.length) {
+    const initiators = TimelineModel.TimelineModel.TimelineData.forEvent(event).getInitiators();
+    if (initiators.length) {
       var delay = event.startTime - initiators[0].startTime;
       contentHelper.appendTextRow(UIStrings.pendingFor, i18n.TimeUtilities.preciseMillisToString(delay, 1));
 

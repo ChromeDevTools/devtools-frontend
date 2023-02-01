@@ -121,7 +121,8 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
         return loader.reportErrorAndCancelLoading(errorDescription.message);
       }
       const txt = stream.data();
-      const events = JSON.parse(txt);
+      const trace = JSON.parse(txt);
+      const events = Array.isArray(trace.traceEvents) ? trace.traceEvents : trace;
       void loader.addEvents(events);
     }
 

@@ -1726,6 +1726,7 @@ export enum RecordType {
   SetLayerTreeId = 'SetLayerTreeId',
   TracingStartedInPage = 'TracingStartedInPage',
   TracingSessionIdForWorker = 'TracingSessionIdForWorker',
+  StartProfiling = 'CpuProfiler::StartProfiling',
 
   DecodeImage = 'Decode Image',
   ResizeImage = 'Resize Image',

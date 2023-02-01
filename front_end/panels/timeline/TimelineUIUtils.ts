@@ -96,6 +96,11 @@ const UIStrings = {
    */
   drawFrame: 'Draw Frame',
   /**
+   *@description Noun for an event in the Performance panel. This marks time
+   spent in an operation that only happens when the profiler is active.
+   */
+  profilingOverhead: 'Profiling Overhead',
+  /**
    *@description The process the browser uses to determine a target element for a
    *pointer event. Typically, this is determined by considering the pointer's
    *location and also the visual layout of elements on the screen.
@@ -1158,6 +1163,7 @@ export class TimelineUIUtils {
     const eventStyles: EventStylesMap = {};
     eventStyles[type.Task] = new TimelineRecordStyle(i18nString(UIStrings.task), other);
     eventStyles[type.Program] = new TimelineRecordStyle(i18nString(UIStrings.other), other);
+    eventStyles[type.StartProfiling] = new TimelineRecordStyle(UIStrings.profilingOverhead, other);
     eventStyles[type.Animation] = new TimelineRecordStyle(i18nString(UIStrings.animation), rendering);
     eventStyles[type.EventDispatch] = new TimelineRecordStyle(i18nString(UIStrings.event), scripting);
     eventStyles[type.RequestMainThreadFrame] =

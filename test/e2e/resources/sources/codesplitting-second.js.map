@@ -1,0 +1,1 @@
+{"version":3,"sections":[{"offset": {"line": 2, "column": 0}, "map": {"sources":["codesplitting-bar.ts"],"names":[],"mappings":"AAAA,SAAS,GAAG,CAAC,CAAC;IACb,OAAO,CAAC,GAAG,CAAC,CAAC,CAAC,CAAC;AAChB,CAAC","sourcesContent":["function bar(s) {\n\tconsole.log(s);\n}\n"]}}]}

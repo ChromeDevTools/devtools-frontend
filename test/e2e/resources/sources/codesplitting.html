@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src=codesplitting-first.js></script>
+    <script>
+function addSecond() {
+  const script = document.createElement('script');
+  script.src = 'codesplitting-second.js';
+  document.head.appendChild(script);
+}
+    </script>
+  </head>
+  <body>
+    <h2>Steps</h2>
+    <ol>
+      <li>Open DevTools</li>
+      <li>Open <code>codesplitting-bar.ts</code> and set a breakpoint on line 2</li>
+      <li>Click <button onclick="first()">here</button> and observe that debugger stops in <code>codesplitting-bar.ts</code> on line 2</li>
+      <li>Click <button onclick="addSecond()">here</button> to add <code>codesplitting-second.js</code> which also includes <code>bar.ts</code></li>
+      <li>Click <button onclick="second()">here</button> and notice that the debugger does not stop on <code>codesplitting-bar.ts</code> despite executing <code>bar()</code></li>
+    </ol>
+  </body>
+</html>

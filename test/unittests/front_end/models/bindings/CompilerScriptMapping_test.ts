@@ -369,7 +369,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
         url: `${route1ScriptInfo.url}.map`,
         content: encodeSourceMap(['0:0 => shared.ts:0:0', '1:0 => route1.ts:0:0'], sourceRoot),
       };
-      const [route1UISourceCode, sharedUISourceCode, route1Script] = await Promise.all([
+      const [route1UISourceCode, firstSharedUISourceCode, route1Script] = await Promise.all([
         waitForUISourceCodeAdded(`${sourceRoot}/route1.ts`, target),
         waitForUISourceCodeAdded(`${sourceRoot}/shared.ts`, target),
         backend.addScript(target, route1ScriptInfo, route1SourceMapInfo),
@@ -379,11 +379,12 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       assert.deepEqual(await debuggerWorkspaceBinding.uiLocationToRawLocations(route1UISourceCode, 0), [
         route1Script.debuggerModel.createRawLocation(route1Script, 1, 0),
       ]);
-      assert.deepEqual(await debuggerWorkspaceBinding.uiLocationToRawLocations(sharedUISourceCode, 0), [
+      assert.deepEqual(await debuggerWorkspaceBinding.uiLocationToRawLocations(firstSharedUISourceCode, 0), [
         route1Script.debuggerModel.createRawLocation(route1Script, 0, 0),
       ]);
 
-      // Load the script and source map for the second route.
+      // Load the script and source map for the second route. At this point a new `shared.ts` should
+      // appear, replacing the original `shared.ts` UISourceCode.
       const route2ScriptInfo = {
         url: 'http://example.com/route2.js',
         content: 'function f(x){}\nf(2)',
@@ -392,9 +393,11 @@ describeWithMockConnection('CompilerScriptMapping', () => {
         url: `${route2ScriptInfo.url}.map`,
         content: encodeSourceMap(['0:0 => shared.ts:0:0', '1:0 => route2.ts:0:0'], sourceRoot),
       };
-      const [route2UISourceCode, route2Script] = await Promise.all([
+      const [route2UISourceCode, secondSharedUISourceCode, route2Script] = await Promise.all([
         waitForUISourceCodeAdded(`${sourceRoot}/route2.ts`, target),
+        waitForUISourceCodeAdded(`${sourceRoot}/shared.ts`, target),
         backend.addScript(target, route2ScriptInfo, route2SourceMapInfo),
+        waitForUISourceCodeRemoved(firstSharedUISourceCode),
       ]);
 
       // Now `route1.ts` is provided exclusively by `route1.js`...
@@ -416,7 +419,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       assert.deepEqual(await debuggerWorkspaceBinding.rawLocationToUILocation(route2Location), route2UILocation);
 
       // ...but `shared.ts` is provided by both `route1.js` and `route2.js`.
-      const sharedUILocation = sharedUISourceCode.uiLocation(0, 0);
+      const sharedUILocation = secondSharedUISourceCode.uiLocation(0, 0);
       const sharedLocations = await debuggerWorkspaceBinding.uiLocationToRawLocations(
           sharedUILocation.uiSourceCode, sharedUILocation.lineNumber, sharedUILocation.columnNumber);
       assert.sameMembers(sharedLocations.map(location => location.script()), [route1Script, route2Script]);

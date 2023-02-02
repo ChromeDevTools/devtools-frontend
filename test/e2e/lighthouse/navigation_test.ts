@@ -107,11 +107,11 @@ describe('Navigation', async function() {
         }
 
         assert.deepStrictEqual(artifacts.ViewportDimensions, {
-          innerHeight: 640,
-          innerWidth: 360,
-          outerHeight: 640,
-          outerWidth: 360,
-          devicePixelRatio: 3,
+          innerHeight: 823,
+          innerWidth: 412,
+          outerHeight: 823,
+          outerWidth: 412,
+          devicePixelRatio: 1.75,
         });
 
         const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);

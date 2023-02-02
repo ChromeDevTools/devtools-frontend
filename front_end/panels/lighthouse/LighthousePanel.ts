@@ -466,7 +466,7 @@ export class LighthousePanel extends UI.Panel.Panel {
       emulationModel.deviceOutlineSetting().set(true);
 
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
-        if (device.title === 'Moto G4') {
+        if (device.title === 'Moto G Power') {
           emulationModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
         }
       }

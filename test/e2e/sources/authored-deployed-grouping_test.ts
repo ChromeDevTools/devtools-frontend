@@ -269,7 +269,8 @@ describe('Source Panel grouping', async function() {
     await validateNavigationTree();
   }
 
-  it('can enable and disable group by authored/deployed', async () => {
+  // Flaky on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1412336] can enable and disable group by authored/deployed', async () => {
     // Have the target load the page.
     await goToResource(targetPage);
     await openSourcesPanel();

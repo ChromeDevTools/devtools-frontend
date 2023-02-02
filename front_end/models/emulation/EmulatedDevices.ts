@@ -1749,5 +1749,31 @@ const emulatedDevices = [
         {'platform': 'Android', 'platformVersion': '6.0.1', 'architecture': '', 'model': 'Moto G (4)', 'mobile': true},
     'type': 'phone',
   },
+  {
+    'show-by-default': false,
+    'title': 'Moto G Power',
+    'screen': {
+      'device-pixel-ratio': 1.75,
+      'horizontal': {
+        'width': 823,
+        'height': 412,
+      },
+      'vertical': {
+        'width': 412,
+        'height': 823,
+      },
+    },
+    'capabilities': ['touch', 'mobile'],
+    'user-agent':
+        'Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
+    'user-agent-metadata': {
+      'platform': 'Android',
+      'platformVersion': '11',
+      'architecture': '',
+      'model': 'moto g power (2022)',
+      'mobile': true,
+    },
+    'type': 'phone',
+  },
   // DEVICE-LIST-END
 ];

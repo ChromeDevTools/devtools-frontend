@@ -84,6 +84,12 @@ export class Importer {
       protocol = 'h2';
     }
     request.protocol = protocol.replace(/^http\/2\.0?\+quic/, 'http/2+quic');
+    
+    const errorText = entry.response.customAsString('error') || '';
+    if (errorText && !(entry.response.status > 0)) {
+      request.localizedFailDescription = errorText;
+      request.failed = true;
+    }
 
     // Timing data.
     const issueTime = entry.startedDateTime.getTime() / 1000;
@@ -148,8 +154,10 @@ export class Importer {
             {time: message.time, text: message.data, opCode: message.opcode, mask: mask, type: message.type});
       }
     }
-
-    request.finished = true;
+    
+    if (request.statusCode > 0) {
+      request.finished = true;
+    }
   }
 
   static getResourceType(

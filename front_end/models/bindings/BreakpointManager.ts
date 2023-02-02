@@ -1227,5 +1227,5 @@ export class BreakpointLocation {
 const LOGPOINT_PREFIX = '/** DEVTOOLS_LOGPOINT */ console.log(';
 const LOGPOINT_SUFFIX = ')';
 
-const LOGPOINT_SOURCE_URL = 'debugger://logpoint';
-const COND_BREAKPOINT_SOURCE_URL = 'debugger://breakpoint';
+export const LOGPOINT_SOURCE_URL = 'debugger://logpoint';
+export const COND_BREAKPOINT_SOURCE_URL = 'debugger://breakpoint';

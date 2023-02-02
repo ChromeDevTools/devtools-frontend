@@ -10,13 +10,18 @@ Run unit tests on a pinned version of chrome after automatically compiling the r
 import argparse
 import subprocess
 import sys
+import os
 from os import path
 
 ROOT_DIRECTORY = path.join(path.dirname(path.abspath(__file__)), '..', '..')
 
 
 def recompile(ninja_build_name, ninja_target_name):
-    ninja_proc = subprocess.Popen(['autoninja', '-C', 'out/{}'.format(ninja_build_name), ninja_target_name], cwd=ROOT_DIRECTORY)
+    ninja_proc = subprocess.Popen([
+        'autoninja.bat' if os.name == 'nt' else 'autoninja', '-C',
+        'out/{}'.format(ninja_build_name), ninja_target_name
+    ],
+                                  cwd=ROOT_DIRECTORY)
 
     ninja_proc.communicate()
 

@@ -36,6 +36,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
           {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
       Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
       UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
       target = targetFactory();
       stubNoopSettings();

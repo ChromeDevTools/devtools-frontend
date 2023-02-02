@@ -3189,28 +3189,16 @@ export const NativeFunctions = [
   },
   {
     name: 'getEntries',
-    signatures: [['?includeFrames']],
+    signatures: [['?options']],
     receivers: ['Performance']
   },
   {
     name: 'getEntriesByName',
-    signatures: [['name','?type'],['name','?entryType','?includeFrames']],
-    receivers: ['Performance']
-  },
-  {
-    name: 'getEntriesByName',
-    signatures: [['name','?type'],['name','?entryType']],
-    receivers: ['PerformanceObserverEntryList']
+    signatures: [['name','?type'],['name','?entryType']]
   },
   {
     name: 'getEntriesByType',
-    signatures: [['type'],['entryType','?includeFrames']],
-    receivers: ['Performance']
-  },
-  {
-    name: 'getEntriesByType',
-    signatures: [['type'],['entryType']],
-    receivers: ['PerformanceObserverEntryList']
+    signatures: [['type'],['entryType']]
   },
   {
     name: 'mark',
@@ -6175,10 +6163,6 @@ export const NativeFunctions = [
     signatures: [['type','?eventInitDict']]
   },
   {
-    name: 'PopoverToggleEvent',
-    signatures: [['type','?eventInitDict']]
-  },
-  {
     name: 'ProgressEvent',
     signatures: [['type','?eventInitDict']]
   },
@@ -6193,6 +6177,10 @@ export const NativeFunctions = [
   {
     name: 'initTextEvent',
     signatures: [['?type','?bubbles','?cancelable','?view','?data']]
+  },
+  {
+    name: 'ToggleEvent',
+    signatures: [['type','?eventInitDict']]
   },
   {
     name: 'TouchEvent',
@@ -6364,6 +6352,10 @@ export const NativeFunctions = [
   },
   {
     name: 'reportEvent',
+    signatures: [['event']]
+  },
+  {
+    name: 'setReportEventDataForAutomaticBeacons',
     signatures: [['event']]
   },
   {

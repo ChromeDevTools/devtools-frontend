@@ -1017,6 +1017,9 @@ export namespace Audits {
     FormInputWithNoLabelError = 'FormInputWithNoLabelError',
     FormAutocompleteAttributeEmptyError = 'FormAutocompleteAttributeEmptyError',
     FormEmptyIdAndNameAttributesForInputError = 'FormEmptyIdAndNameAttributesForInputError',
+    FormAriaLabelledByToNonExistingId = 'FormAriaLabelledByToNonExistingId',
+    FormInputAssignedAutocompleteValueToIdOrNameAttributeError = 'FormInputAssignedAutocompleteValueToIdOrNameAttributeError',
+    FormLabelHasNeitherForNorNestedInput = 'FormLabelHasNeitherForNorNestedInput',
   }
 
   /**
@@ -11279,6 +11282,7 @@ export namespace Page {
     ActivationFramePolicyNotCompatible = 'ActivationFramePolicyNotCompatible',
     PreloadingDisabled = 'PreloadingDisabled',
     BatterySaverEnabled = 'BatterySaverEnabled',
+    ActivatedDuringMainFrameNavigation = 'ActivatedDuringMainFrameNavigation',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {
@@ -13345,17 +13349,6 @@ export namespace Storage {
 
   export interface GetTrustTokensResponse extends ProtocolResponseWithError {
     tokens: TrustTokens[];
-  }
-
-  export interface ClearTrustTokensRequest {
-    issuerOrigin: string;
-  }
-
-  export interface ClearTrustTokensResponse extends ProtocolResponseWithError {
-    /**
-     * True if any tokens were deleted, false otherwise.
-     */
-    didDeleteTokens: boolean;
   }
 
   export interface GetInterestGroupDetailsRequest {

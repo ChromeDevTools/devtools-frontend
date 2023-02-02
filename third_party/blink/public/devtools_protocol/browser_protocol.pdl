@@ -748,6 +748,9 @@ experimental domain Audits
       FormInputWithNoLabelError
       FormAutocompleteAttributeEmptyError
       FormEmptyIdAndNameAttributesForInputError
+      FormAriaLabelledByToNonExistingId
+      FormInputAssignedAutocompleteValueToIdOrNameAttributeError
+      FormLabelHasNeitherForNorNestedInput
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -8582,6 +8585,7 @@ domain Page
       ActivationFramePolicyNotCompatible
       PreloadingDisabled
       BatterySaverEnabled
+      ActivatedDuringMainFrameNavigation
 
   # Fired when a prerender attempt is completed.
   experimental event prerenderAttemptCompleted
@@ -9352,15 +9356,6 @@ experimental domain Storage
   experimental command getTrustTokens
     returns
       array of TrustTokens tokens
-
-  # Removes all Trust Tokens issued by the provided issuerOrigin.
-  # Leaves other stored data, including the issuer's Redemption Records, intact.
-  experimental command clearTrustTokens
-    parameters
-      string issuerOrigin
-    returns
-      # True if any tokens were deleted, false otherwise.
-      boolean didDeleteTokens
 
   # Gets details for a named interest group.
   experimental command getInterestGroupDetails

@@ -30,6 +30,7 @@ FILES = [
     'third_party/blink/renderer/core/css/css_properties.json5',
     'third_party/blink/renderer/core/html/aria_properties.json5',
     'third_party/blink/public/devtools_protocol/browser_protocol.pdl',
+    'third_party/blink/renderer/core/frame/deprecation/deprecation.json5',
 ]
 
 # Files whose location within devtools-frontend differs from the upstream location.

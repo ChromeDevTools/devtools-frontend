@@ -2952,12 +2952,6 @@ declare namespace ProtocolProxyApi {
     invoke_getTrustTokens(): Promise<Protocol.Storage.GetTrustTokensResponse>;
 
     /**
-     * Removes all Trust Tokens issued by the provided issuerOrigin.
-     * Leaves other stored data, including the issuer's Redemption Records, intact.
-     */
-    invoke_clearTrustTokens(params: Protocol.Storage.ClearTrustTokensRequest): Promise<Protocol.Storage.ClearTrustTokensResponse>;
-
-    /**
      * Gets details for a named interest group.
      */
     invoke_getInterestGroupDetails(params: Protocol.Storage.GetInterestGroupDetailsRequest): Promise<Protocol.Storage.GetInterestGroupDetailsResponse>;

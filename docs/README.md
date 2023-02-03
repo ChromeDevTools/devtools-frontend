@@ -70,6 +70,7 @@ used when committed.
 
 ### Testing
 *   [E2E test guide](../test/e2e/README.md)
+*   [Unit test guide](../test/unittests/README.md)
 *   [Web tests in the DevTools repo guide](../test/webtests/README)
 
 ### Architectural Documentation

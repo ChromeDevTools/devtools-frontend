@@ -112,11 +112,11 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Console category in Settings that controls whether `console.trace()` messages appear expanded by default.
    */
-  expandConsoleTraceMessagesByDefault: 'Expand `console.trace()` messages by default',
+  expandConsoleTraceMessagesByDefault: 'Automatically expand `console.trace()` messages',
   /**
    * @description Title of a setting under the Console category in Settings that controls whether `console.trace()` messages appear collapsed by default.
    */
-  collapseConsoleTraceMessagesByDefault: 'Collapse `console.trace()` messages by default',
+  collapseConsoleTraceMessagesByDefault: 'Do not automatically expand `console.trace()` messages',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/console-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

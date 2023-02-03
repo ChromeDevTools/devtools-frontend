@@ -938,6 +938,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
+    // Different rules apply to SVG nodes altogether. We currently don't have SVG-specific hints.
+    if (this.node()?.isSVGNode()) {
+      return;
+    }
+
     const localName = this.node()?.localName();
     for (const validator of cssRuleValidatorsMap.get(propertyName) || []) {
       const hint = validator.getHint(

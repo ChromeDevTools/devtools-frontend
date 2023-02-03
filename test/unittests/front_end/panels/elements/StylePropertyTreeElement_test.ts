@@ -203,4 +203,60 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       verifySection(expectedFooterSectionItemsLabels, footerSection.items);
     });
   });
+
+  describe('CSS hints', () => {
+    let Elements: typeof ElementsModule;
+    let mockStylesSidebarPane: ElementsModule.StylesSidebarPane.StylesSidebarPane;
+
+    beforeEach(async () => {
+      Elements = await import('../../../../../front_end/panels/elements/elements.js');
+      mockStylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance();
+    });
+
+    it('should create a hint for inline elements', () => {
+      sinon.stub(mockStylesSidebarPane, 'node').returns({
+        localName() {
+          return 'span';
+        },
+        isSVGNode() {
+          return false;
+        },
+      } as SDK.DOMModel.DOMNode);
+      const cssPropertyWidth = new SDK.CSSProperty.CSSProperty(
+          mockCssStyleDeclaration, 0, 'width', '100px', true, false, true, false, '', undefined);
+      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+          mockStylesSidebarPane, mockMatchedStyles, cssPropertyWidth, false, false, false, true);
+      stylePropertyTreeElement.setComputedStyles(new Map([
+        ['width', '100px'],
+        ['display', 'inline'],
+      ]));
+      stylePropertyTreeElement.updateAuthoringHint();
+      assert(
+          stylePropertyTreeElement.listItemElement.classList.contains('inactive-property'),
+          'CSS hint was not rendered.');
+    });
+
+    it('should not create a hint for SVG elements', () => {
+      sinon.stub(mockStylesSidebarPane, 'node').returns({
+        localName() {
+          return 'rect';
+        },
+        isSVGNode() {
+          return true;
+        },
+      } as SDK.DOMModel.DOMNode);
+      const cssPropertyWidth = new SDK.CSSProperty.CSSProperty(
+          mockCssStyleDeclaration, 0, 'width', '100px', true, false, true, false, '', undefined);
+      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+          mockStylesSidebarPane, mockMatchedStyles, cssPropertyWidth, false, false, false, true);
+      stylePropertyTreeElement.setComputedStyles(new Map([
+        ['width', '100px'],
+        ['display', 'inline'],
+      ]));
+      stylePropertyTreeElement.updateAuthoringHint();
+      assert(
+          !stylePropertyTreeElement.listItemElement.classList.contains('inactive-property'),
+          'CSS hint was rendered unexpectedly.');
+    });
+  });
 });

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as puppeteer from 'puppeteer';
+
 import {
   $,
   $$,
@@ -11,7 +13,6 @@ import {
   setCheckBox,
   waitFor,
   waitForFunction,
-  type puppeteer,
 } from '../../shared/helper.js';
 
 const REQUEST_LIST_SELECTOR = '.network-log-grid tbody';

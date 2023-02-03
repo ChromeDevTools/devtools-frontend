@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 
-import {$, $$, $textContent, platform, waitFor, waitForFunction, type puppeteer} from '../../shared/helper.js';
+import type * as puppeteer from 'puppeteer';
+
+import {$, $$, $textContent, platform, waitFor, waitForFunction} from '../../shared/helper.js';
 
 export function platformSpecificTextForSubMenuEntryItem(text: string): string {
   /**

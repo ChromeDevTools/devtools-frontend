@@ -9,6 +9,7 @@ import {assert} from 'chai';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import type * as puppeteer from 'puppeteer';
 
 import {getTestRunnerConfigSetting} from '../conductor/test_runner_config.js';
 import {makeCustomWrappedIt} from '../shared/mocha-extensions.js';
@@ -16,7 +17,6 @@ import {makeCustomWrappedIt} from '../shared/mocha-extensions.js';
 import {
   platform,
   getBrowserAndPages,
-  type puppeteer,
 } from '../shared/helper.js';
 
 /**

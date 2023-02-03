@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import type * as puppeteer from 'puppeteer';
+
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   addBreakpointForLine,
@@ -21,7 +23,6 @@ import {
   waitForFunction,
   waitFor,
   activeElementTextContent,
-  type puppeteer,
   getBrowserAndPages,
   waitForMany,
   clickElement,

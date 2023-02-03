@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import type * as puppeteer from 'puppeteer';
+
 import {
   $$,
   $,
@@ -17,7 +19,6 @@ import {
   waitForElementWithTextContent,
   waitForFunction,
   waitForNoElementsWithTextContent,
-  type puppeteer,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {

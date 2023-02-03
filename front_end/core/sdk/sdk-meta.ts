@@ -224,35 +224,35 @@ const UIStrings = {
   /**
    *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
    */
-  emulateProtanopia: 'Emulate protanopia',
+  emulateProtanopia: 'Emulate protanopia (no red)',
   /**
    *@description Name of a color vision deficiency that can be emulated via the Rendering drawer
    */
-  protanopia: 'Protanopia',
+  protanopia: 'Protanopia (no red)',
   /**
    *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
    */
-  emulateDeuteranopia: 'Emulate deuteranopia',
+  emulateDeuteranopia: 'Emulate deuteranopia (no green)',
   /**
    *@description Name of a color vision deficiency that can be emulated via the Rendering drawer
    */
-  deuteranopia: 'Deuteranopia',
+  deuteranopia: 'Deuteranopia (no green)',
   /**
    *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
    */
-  emulateTritanopia: 'Emulate tritanopia',
+  emulateTritanopia: 'Emulate tritanopia (no blue)',
   /**
    *@description Name of a color vision deficiency that can be emulated via the Rendering drawer
    */
-  tritanopia: 'Tritanopia',
+  tritanopia: 'Tritanopia (no blue)',
   /**
    *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
    */
-  emulateAchromatopsia: 'Emulate achromatopsia',
+  emulateAchromatopsia: 'Emulate achromatopsia (no color)',
   /**
    *@description Name of a color vision deficiency that can be emulated via the Rendering drawer
    */
-  achromatopsia: 'Achromatopsia',
+  achromatopsia: 'Achromatopsia (no color)',
   /**
    *@description Title of a setting under the Rendering drawer
    */

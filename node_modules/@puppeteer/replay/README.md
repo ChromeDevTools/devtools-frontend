@@ -246,6 +246,19 @@ console.log(
 
 ## Others
 
+### Test your extensions using the replay lib
+
+The replay lib offers a canonical recording and a test page that allows to
+verify that your extension produces all expected side effects on a page.
+
+The test command supports both stringify and runner extensions. The stringify
+extension will be tested by running the stringified script using node. Run the
+test using the following command.
+
+```
+npx -p @puppeteer/replay replay-extension-test --ext path-to-your-extension-js
+```
+
 ### Create a Chrome extension for Recorder (Available from Chrome 104 onwards)
 
 You can create a Chrome extension for [Recorder](https://goo.gle/devtools-recorder). Refer to the [Chrome Extensions documentation](https://developer.chrome.com/docs/extensions/mv3/devtools/) for more details on how to extend DevTools.

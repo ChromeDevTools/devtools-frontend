@@ -4,9 +4,11 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, hover, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
+
+const LAST_ELEMENT_SELECTOR = '.cm-executionLine > span:last-child';
 
 describe('Sources Tab', async function() {
   it('shows correct preview for `object.foo` member expressions', async () => {
@@ -16,8 +18,7 @@ describe('Sources Tab', async function() {
     await addBreakpointForLine(frontend, 5);
 
     const scriptEvaluation = target.evaluate('f1();');
-    const lastElement = await waitFor('.cm-executionLine > span:last-child');
-    await lastElement.hover();
+    await hover(LAST_ELEMENT_SELECTOR);
 
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
     const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
@@ -34,8 +35,7 @@ describe('Sources Tab', async function() {
     await addBreakpointForLine(frontend, 9);
 
     const scriptEvaluation = target.evaluate('f2();');
-    const lastElement = await waitFor('.cm-executionLine > span:last-child');
-    await lastElement.hover();
+    await hover(LAST_ELEMENT_SELECTOR);
 
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
     const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
@@ -52,8 +52,7 @@ describe('Sources Tab', async function() {
     await addBreakpointForLine(frontend, 13);
 
     const scriptEvaluation = target.evaluate('f3(3);');
-    const lastElement = await waitFor('.cm-executionLine > span:last-child');
-    await lastElement.hover();
+    await hover(LAST_ELEMENT_SELECTOR);
 
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
     const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
@@ -70,8 +69,7 @@ describe('Sources Tab', async function() {
     await addBreakpointForLine(frontend, 5);
 
     const scriptEvaluation = target.evaluate('test();');
-    const lastElement = await waitFor('.cm-executionLine > span:last-child');
-    await lastElement.hover();
+    await hover(LAST_ELEMENT_SELECTOR);
 
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
     const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
@@ -88,8 +86,7 @@ describe('Sources Tab', async function() {
     await addBreakpointForLine(frontend, 5);
 
     const scriptEvaluation = target.evaluate('test();');
-    const lastElement = await waitFor('.cm-executionLine > span:last-child');
-    await lastElement.hover();
+    await hover(LAST_ELEMENT_SELECTOR);
 
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
     const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));

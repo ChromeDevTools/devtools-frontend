@@ -462,13 +462,6 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return response.installabilityErrors || [];
   }
 
-  async getManifestIcons(): Promise<{
-    primaryIcon: string | null,
-  }> {
-    const response = await this.agent.invoke_getManifestIcons();
-    return {primaryIcon: response.primaryIcon || null};
-  }
-
   async getAppId(): Promise<Protocol.Page.GetAppIdResponse> {
     return this.agent.invoke_getAppId();
   }

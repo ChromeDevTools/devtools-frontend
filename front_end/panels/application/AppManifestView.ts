@@ -144,15 +144,6 @@ const UIStrings = {
    */
   needHelpReadOurS: 'Need help? Read {PH1}.',
   /**
-   *@description Label for the primary icon loaded from the manifest
-   *@example {https://example.com/} PH1
-   */
-  primaryManifestIconFromS: 'Primary manifest icon from {PH1}',
-  /**
-   *@description Label for the primary icon loaded from the manifest
-   */
-  primaryIconasUsedByChrome: 'Primary icon as used by `Chrome`',
-  /**
    *@description Text in App Manifest View of the Application panel
    *@example {1} PH1
    */
@@ -545,22 +536,19 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     if (!this.resourceTreeModel) {
       return;
     }
-    const [{url, data, errors}, installabilityErrors, manifestIcons, appId] = await Promise.all([
+    const [{url, data, errors}, installabilityErrors, appId] = await Promise.all([
       this.resourceTreeModel.fetchAppManifest(),
       this.resourceTreeModel.getInstallabilityErrors(),
-      this.resourceTreeModel.getManifestIcons(),
       this.resourceTreeModel.getAppId(),
     ]);
 
     void this.throttler.schedule(
-        () => this.renderManifest(url, data, errors, installabilityErrors, manifestIcons, appId), immediately);
+        () => this.renderManifest(url, data, errors, installabilityErrors, appId), immediately);
   }
 
   private async renderManifest(
       url: Platform.DevToolsPath.UrlString, data: string|null, errors: Protocol.Page.AppManifestError[],
-      installabilityErrors: Protocol.Page.InstallabilityError[], manifestIcons: {
-        primaryIcon: string|null,
-      },
+      installabilityErrors: Protocol.Page.InstallabilityError[],
       appIdResponse: Protocol.Page.GetAppIdResponse): Promise<void> {
     const appId = appIdResponse?.appId || null;
     const recommendedId = appIdResponse?.recommendedId || null;
@@ -749,20 +737,6 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         UI.XLink.XLink.create('https://web.dev/maskable-icon/', i18nString(UIStrings.documentationOnMaskableIcons));
     this.iconsSection.appendRow().appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOurS, {PH1: documentationLink}));
-
-    if (manifestIcons && manifestIcons.primaryIcon) {
-      const wrapper = document.createElement('div');
-      wrapper.classList.add('image-wrapper');
-      const image = document.createElement('img');
-      image.style.maxWidth = '200px';
-      image.style.maxHeight = '200px';
-      image.src = 'data:image/png;base64,' + manifestIcons.primaryIcon;
-      image.alt = i18nString(UIStrings.primaryManifestIconFromS, {PH1: url});
-      const title = i18nString(UIStrings.primaryIconasUsedByChrome);
-      const field = this.iconsSection.appendFlexedField(title);
-      wrapper.appendChild(image);
-      field.appendChild(wrapper);
-    }
 
     let squareSizedIconAvailable = false;
     for (const icon of icons) {

@@ -43,7 +43,6 @@ describeWithMockConnection('AppManifestView', () => {
       fetchAppManifest.onCall(0).resolves({url: URL, data: null, errors: []});
       fetchAppManifest.onCall(1).resolves({url: URL, data: '{}', errors: []});
       sinon.stub(resourceTreeModel, 'getInstallabilityErrors').resolves([]);
-      sinon.stub(resourceTreeModel, 'getManifestIcons').resolves({primaryIcon: null});
       sinon.stub(resourceTreeModel, 'getAppId').resolves({} as Protocol.Page.GetAppIdResponse);
 
       view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);

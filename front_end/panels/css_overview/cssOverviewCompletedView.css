@@ -368,3 +368,7 @@
 .nodeId-column:hover .show-element {
   display: inline-block;
 }
+
+.results-section.colors {
+  forced-color-adjust: none; /* show colors in high contrast theme */
+}

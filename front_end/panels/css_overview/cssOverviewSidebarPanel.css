@@ -37,3 +37,17 @@
   border-bottom: 1px solid var(--color-details-hairline);
   flex: 0 0 auto;
 }
+
+@media (forced-colors: active) {
+  .overview-sidebar-panel-item.selected {
+    forced-color-adjust: none; /* crbug.com/1166705 workaround */
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .overview-sidebar-panel-item:hover {
+    forced-color-adjust: none; /* crbug.com/1166705 workaround */
+    background: Highlight;
+    color: HighlightText;
+  }
+}

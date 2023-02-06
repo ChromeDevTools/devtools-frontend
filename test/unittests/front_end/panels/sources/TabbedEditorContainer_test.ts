@@ -63,6 +63,18 @@ describe('TabbedEditorContainer', () => {
         assert.strictEqual(history.selectionRange(keys[2]), undefined);
         assert.strictEqual(history.scrollLineNumber(keys[2]), undefined);
       });
+
+      it('gracefully ignores items with invalid resource type names', () => {
+        const history = History.fromObject([
+          {url: 'http://localhost/foo.js', resourceTypeName: 'script'},
+          {url: 'http://localhost/baz.js', resourceTypeName: 'some-invalid-resource-type-name'},
+          {url: 'http://localhost/bar.js', resourceTypeName: 'sm-script'},
+        ]);
+        const keys = history.keys();
+        assert.lengthOf(keys, 2);
+        assert.propertyVal(keys[0], 'url', 'http://localhost/foo.js');
+        assert.propertyVal(keys[1], 'url', 'http://localhost/bar.js');
+      });
     });
 
     describe('toObject', () => {

@@ -733,8 +733,14 @@ export class History {
   }
 
   static fromObject(serializedHistoryItems: SerializedHistoryItem[]): History {
-    return new History(
-        serializedHistoryItems.map(serializedHistoryItem => HistoryItem.fromObject(serializedHistoryItem)));
+    const items = [];
+    for (const serializedHistoryItem of serializedHistoryItems) {
+      try {
+        items.push(HistoryItem.fromObject(serializedHistoryItem));
+      } catch {
+      }
+    }
+    return new History(items);
   }
 
   index({url, resourceType}: HistoryItemKey): number {

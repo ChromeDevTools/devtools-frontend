@@ -25,7 +25,7 @@ export function getRemoteBase(location: string = self.location.toString()): {
     return null;
   }
 
-  return {base: `${url.origin}/remote/serve_file/${version[1]}/`, version: version[1]};
+  return {base: `devtools://devtools/remote/serve_file/${version[1]}/`, version: version[1]};
 }
 
 export class Runtime {

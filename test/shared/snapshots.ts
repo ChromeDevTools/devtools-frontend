@@ -29,9 +29,9 @@ let snapshotIndex = 0;
 beforeEach(function() {
   if (this.currentTest) {
     // The test file path is always the coloned beginning part of a test's full title.
-    [currentTestPath, currentTestTitle] = this.currentTest.fullTitle().split(':', 2);
-    currentTestTitle = currentTestTitle?.trim();
-    currentTestPath = currentTestPath && normalize(currentTestPath.trim());
+    const [testPath, ...testTitleParts] = this.currentTest.fullTitle().split(':');
+    currentTestTitle = testTitleParts?.join(':').trim();
+    currentTestPath = testPath && normalize(testPath.trim());
     snapshotIndex = 0;
   }
 });

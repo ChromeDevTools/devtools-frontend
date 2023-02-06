@@ -15,6 +15,7 @@ ts_library("elements") {
     "StylePropertyUtils_test.ts",
     "StylesSidebarPane_test.ts",
     "TopLayerContainer_test.ts",
+    "WebCustomData_test.ts",
   ]
 
   deps = [

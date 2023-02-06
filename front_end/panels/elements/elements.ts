@@ -58,6 +58,7 @@ import * as StylePropertyTreeElement from './StylePropertyTreeElement.js';
 import * as StylePropertyUtils from './StylePropertyUtils.js';
 import * as StylesSidebarPane from './StylesSidebarPane.js';
 import * as TopLayerContainer from './TopLayerContainer.js';
+import * as WebCustomData from './WebCustomData.js';
 
 export {
   ClassesPaneWidget,
@@ -89,4 +90,5 @@ export {
   StylePropertyUtils,
   StylesSidebarPane,
   TopLayerContainer,
+  WebCustomData,
 };

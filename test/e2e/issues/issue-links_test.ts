@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {click, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 
@@ -23,7 +23,7 @@ describe('Issue links in the console tab', async () => {
       }
       return undefined;
     });
-    issueLinkIcon.click();
+    await click('devtools-issue-link-icon');
     const selectedIssueTitleElement = await waitFor('li.issue.expanded.selected');
     const selectedIssueTitle = await selectedIssueTitleElement.evaluate(el => el.textContent);
     // The '1' is the number of issues aggregated.

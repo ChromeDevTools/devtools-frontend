@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "थांबवत आहे"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} साठी आशय लोड करता आला नाही: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1} साठी आशय पार्स करता आला नाही: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "रंगांधळेपणा"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमध्ये सर्व आशय स्क्रिप्ट जोडा"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमध्ये सर्व तृतीय पक्ष स्क्रिप्ट जोडा"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमध्ये डिरेक्टरी जोडा"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमध्ये स्क्रिप्ट जोडा"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "क्रॉस-ओरिजिन आयफ्रेमला आता सूचना API साठी परवानगीची विनंती केली जाऊ शकत नाही. तुम्ही उच्च पातळीवरील फ्रेमला परवानगीची विनंती करणे किंवा त्याऐवजी नवीन विंडो उघडणे विचारात घ्यावे."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap मधील imageOrientation: \"none\" पर्याय डेप्रिकेट केलेला आहे. त्याऐवजी कृपया {imageOrientation: \"from-image\"} पर्यायासह createImageBitmap वापरा."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "तुमचा भागीदार अप्रचलित (D)TLS आवृत्ती निगोशिएट करत आहे. याचे निराकरण करण्यासाठी कृपया तुमच्या भागीदाराशी संपर्क साधा."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo हे डेप्रिकेट केले आहे. कृपया त्याऐवजी मानक navigator.storage चा वापर करा."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "आम्ही डेप्रिकेट करत आहोत API chrome.privacy.websites.privacySandboxEnabled, पण ते M113 रिलीझ होईपर्यंत बॅकवर्ड कंपॅटिबिलिटीसाठी अ‍ॅक्टिव्ह राहील. त्याऐवजी, कृपया chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled आणि chrome.privacy.websites.adMeasurementEnabled वापरा. पहा\nhttps://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "ज्यांच्या URL मध्ये एम्बेड केलेली क्रेडेंशियल (उदा. https://user:pass@host/) आहेत अशा सबरिसोर्स विनंत्या ब्लॉक केल्या गेल्या आहेत."
@@ -2313,7 +2319,7 @@
     "message": "मॅनिफेस्टमध्ये 'name' किंवा 'short_name' फील्ड नाही"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "मॅनिफेस्टमध्ये योग्य आयकन नाही - किमान {PH1} px चा PNG किंवा SVG फॉरमॅट आवश्यक आहे, sizes ॲट्रिब्यूट सेट केली जाणे आवश्यक आहे आणि 'purpose' ॲट्रिब्यूट सेट केली असल्यास, तिच्यामध्ये \"any\" चा समावेश असावा."
+    "message": "मॅनिफेस्टमध्ये योग्य आयकन नाही - PNG, SVG किंवा किमान {PH1}px चा WebP फॉरमॅट आवश्यक आहे, sizes विशेषता सेट केली जाणे आवश्यक आहे आणि purpose विशेषता सेट केली असल्यास, तिच्यामध्ये any चा समावेश असावा."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "मॅनिफेस्ट 'prefer_related_applications: true' नमूद करते"
@@ -2337,7 +2343,7 @@
     "message": "Play Store आयडी दिलेला नाही"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "पुरवलेला कोणताही आयकन, उद्देश ॲट्रिब्यूट सेट न केलेला किंवा 'any' वर सेट केलेला, किमान {PH1} चौरस पिक्सेलचा PNG किंवा SVG फॉरमॅटमध्ये नाही."
+    "message": "पुरवलेला कोणताही आयकन, उद्देश ॲट्रिब्यूट सेट न केलेला किंवा any वर सेट केलेला, किमान {PH1} चौरस पिक्सेलचा PNG, SVG किंवा 'WebP' फॉरमॅटमध्ये नाही."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "टीप:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "थीमचा रंग"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "बॅक/फॉरवर्ड कॅशे"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "कॅशे स्टोरेज"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "हटवा"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "कॅशे रिफ्रेश करा"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "प्रीफेच करणे आणि रेंडरपूर्व प्रक्रिया"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: मॅनिफेस्टमधील या विभागात स्क्रोल करणे सुरू करा"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "कॅशे"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "साफ करा"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "वर्कर"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "बॅक/फॉरवर्ड कॅशे"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "बॅकग्राउंड फेच"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "रिपोर्टिंग API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "कॅशे स्टोरेज"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "हटवा"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "कॅशे रिफ्रेश करा"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "कॅशे"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "ओरिजिन"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "बजेट रीसेट करा"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "शेअर केलेले स्टोरेज"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "रेंडरपूर्व प्रक्रिया"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools उघडे असल्यामुळे प्रीलोड करणे सक्तीने सुरू झाले. DevTools बंद असताना, रेंडरपूर्व प्रक्रिया बंद केली जाईल, कारण हे ब्राउझर सेशन परफॉर्मन्स तुलनांसाठी वापरल्या जाणार्‍या होल्डबॅक गटाचा भाग आहे."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools उघडे असल्यामुळे रेंडरपूर्व प्रक्रिया सक्तीने सुरू झाले. DevTools बंद असताना, रेंडरपूर्व प्रक्रिया बंद केली जाईल, कारण हे ब्राउझर सेशन परफॉर्मन्स तुलनांसाठी वापरल्या जाणार्‍या होल्डबॅक गटाचा भाग आहे."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "प्रीलोड करणे बंद होते, पण आता सक्तीने सुरू झाले"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "रेंडरपूर्व प्रक्रिया बंद होती, पण आता सक्तीने सुरू झाली"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "मूलभूत माहिती"
@@ -8133,7 +8151,7 @@
     "message": "हेडर ओव्हरराइड करा"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "हेडरच्या नावांमध्ये फक्त अक्षरे, अंक, डॅश किंवा अंडरस्कोअर असावेत"
+    "message": "हेडरच्या नावांमध्ये फक्त अक्षरे, अंक, हायफन किंवा अंडरस्कोअर असावेत"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "अधिक जाणून घ्या"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "सेव्ह करा"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "लक्ष्य निवडा"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "रॉ CDP कमांड पाठवा"
   },
@@ -9888,7 +9909,7 @@
     "message": "ब्रँड पंक्ती जोडली"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "स्थापत्य"
+    "message": "आर्किटेक्चर (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "आर्किटेक्चर (उदा. x८६)"
@@ -9903,13 +9924,13 @@
     "message": "{PH1} ब्रँड"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "ब्रँडच्या प्रॉपर्टी"
+    "message": "वापरकर्ता एजंट प्रॉपर्टी"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "आवृत्ती {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ब्रँड"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "आवृत्ती (उदा. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "हटवा"
@@ -9918,16 +9939,19 @@
     "message": "ब्रँड पंक्ती हटवली"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "डिव्हाइस मॉडेल"
+    "message": "डिव्हाइस मॉडेल (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "डिव्हाइसच्या प्रॉपर्टी"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "संपूर्ण ब्राउझर आवृत्ती"
+    "message": "पूर्ण ब्राउझर आवृत्ती (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "पूर्ण ब्राउझर आवृत्ती (उदा. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "पूर्ण आवृत्तीची सूची (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "मोबाइल"
@@ -9936,7 +9960,7 @@
     "message": "संरचित हेडर स्ट्रिंग म्हणून प्रतिनिधित्व करू शकत नाही."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "प्लॅटफॉर्म"
+    "message": "प्लॅटफॉर्म (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Platform (उदा. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "प्लॅटफॉर्म आवृत्ती"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "लक्षणीय आवृत्ती (उदा. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "वापरकर्ता एजंट क्लायंट सूचना"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "वापरकर्ता एजंट क्लायंट सूचना या अधिक संरचित मार्गाने, अधिक उत्तम गोपनीयता अकाउंटिंगसह ब्राउझर आणि डिव्हाइसला ओळखणार्‍या वापरकर्ता एजंट स्ट्रिंगचा पर्याय आहेत. अधिक जाणून घेण्यासाठी बटणावर क्लिक करा."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "आवृत्ती"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "वापरकर्ता एजंट (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "डिव्हाइस"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "थांबवण्यापूर्वी तपासण्यासाठी एक्स्प्रेशन, उदा. x > ५"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "अधिक जाणून घ्या: ब्रेकपॉइंटचे प्रकार"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "मेसेज कन्सोलवर लॉग करा, खंडित करू नका"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "क्रमाने लावा फिल्टर लागू करण्यासाठी एंटर प्रेस करा"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "हेडरचे पर्याय"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "यानुसार क्रमाने लावा"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} चढत्या क्रमाने लावले आहे"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} उतरत्या क्रमाने लावले आहे"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1}क्रमाने लावणे रद्द केले"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … वगळत आहे {PH1} ओळी जुळवत आहे … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "कमी काँट्रास्टचे निराकरण करण्यासाठी सुचवलेले रंग {PH1} वापरा"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "फॉरमॅटच्या श्रेणीशी जुळण्यासाठी हा रंग क्लिप केला होता. मूळ परिणाम {PH1} होता"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "पॅलेटमध्ये जोडा"

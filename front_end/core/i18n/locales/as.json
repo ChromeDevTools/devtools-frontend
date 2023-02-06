@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "বন্ধ কৰি থকা হৈছে"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1}ৰ বাবে সমল ল’ড কৰিব পৰা নগ’ল: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1}ৰ বাবে সমল পাৰ্ছ কৰিব পৰা নগ’ল: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "এক্ৰ’মেট’পছিয়া"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "উপেক্ষা সূচীত আটাইবোৰ সমলৰ স্ক্ৰিপ্ট যোগ দিয়ক"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "উপেক্ষা সূচীত আটাইবোৰ তৃতীয় পক্ষৰ স্ক্ৰিপ্ট যোগ দিয়ক"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "উপেক্ষা সূচীত ডাইৰেক্টৰী যোগ দিয়ক"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "উপেক্ষা কৰা বস্তুৰ সূচীত স্ক্ৰিপ্ট যোগ দিয়ক"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "ক্ৰছ-অৰিজিন আইফ্ৰে’মৰ পৰা হয়তো Notification APIৰ অনুমতিৰ বাবে আৰু অনুৰোধ জনোৱা নহ’বও পাৰে। তাৰ পৰিৱৰ্তে আপুনি এটা শীৰ্ষ-স্তৰৰ ফ্ৰে’মৰ পৰা অনুমতি বিচৰা অথবা এখন নতুন ৱিণ্ড’ খোলাৰ কথা বিবেচনা কৰ উচিত।"
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmapত imageOrientation: \"none\" বিকল্পটোৰ প্ৰচন বন্ধ হৈছে। ইয়াৰ পৰিৱৰ্তে অনুগ্ৰহ কৰি {imageOrientation: \"from-image\"} বিকল্পৰ জৰিয়তে createImageBitmap ব্যৱহাৰ কৰক।"
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "আপোনাৰ অংশীদাৰে এটা অপ্ৰচলিত (D)TLS সংস্কৰণৰ আলোচনা কৰি আছে। এইটো ঠিক কৰিবলৈ অনুগ্ৰহ কৰি আপোনাৰ অংশীদাৰৰ সৈতে পৰীক্ষা কৰক।"
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo অপ্ৰচলিত। তাৰ পৰিৱৰ্তে উন্নত কৰা navigator.storage ব্যৱহাৰ কৰক।"
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "আমি chrome.privacy.websites.privacySandboxEnabled APIটোৰ প্ৰচলন বন্ধ কৰিছোঁ, কিন্তু পশ্চাৎমুখী সুসংগতাৰ বাবে এইটো ৰিলীজ M113 পৰ্যন্ত সক্ৰিয় হৈ থাকিব। ইয়াৰ পৰিৱৰ্তে, অনুগ্ৰহ কৰি chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled আৰু chrome.privacy.websites.adMeasurementEnabled ব্যৱহাৰ কৰক। https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled চাওক।"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "উপসম্পদৰ অনুৰোধসমূহ যাৰ URLসমূহত এম্বেড কৰা ক্ৰেডেনশ্বিয়েল (যেনে, https://user:pass@host/) থাকে, সেয়া অৱৰোধ কৰা হয়।"
@@ -2313,7 +2319,7 @@
     "message": "মেনিফেষ্টটোত এখন 'name' অথবা 'short_name' ক্ষেত্ৰ নাই"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "মেনিফেষ্টটোত কোনো সুবিধাজনক চিহ্ন নাই - অতি কমেও {PH1}pxৰ PNG অথবা SVG ফৰ্মেট আৱশ্যক, 'sizes' এট্ৰিবিউট ছেট কৰিবই লাগিব আৰু যদি 'purpose' বিষয়ক এট্ৰিবিউট ছেট কৰা হয়, তেন্তে 'any' অন্তৰ্ভুক্ত হ’বই লাগিব।"
+    "message": "মেনিফেষ্টটোত কোনো সুবিধাজনক চিহ্ন নাই - অতি কমেও {PH1}pxৰ PNG, SVG অথবা ৱেব ফৰ্মেটৰ আৱশ্যক, 'sizes' এট্ৰিবিউট ছেট কৰিবই লাগিব আৰু যদি 'purpose' বিষয়ক এট্ৰিবিউট ছেট কৰা হয়, তেন্তে 'any' অন্তৰ্ভুক্ত হ’বই লাগিব।"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "মেনিফেষ্টে 'prefer_related_applications: সঁচা' বুলি নিৰ্দিষ্ট কৰে"
@@ -2337,7 +2343,7 @@
     "message": "Play storeৰ কোনো আইডি প্ৰদান কৰা হোৱা নাই"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "যোগান ধৰা কোনো চিহ্ন PNG অথবা SVG ফৰ্মেটত অতি কমেও {PH1}px বৰ্গ নহয়, যাৰ উদ্দেশ্য বিষয়ক এট্ৰিবিউট ছেট কৰা হোৱা নাই অথবা 'any' হিচাপে ছেট কৰা হৈছে।"
+    "message": "উদ্দেশ্য বিষয়ক এট্ৰিবিউট ছেট কৰা নথকা অথবা any হিচাপে ছেট কৰি থোৱা যোগান ধৰা কোনো চিহ্ন PNG, SVG অথবা WebP ফৰ্মেটত অতি কমেও {PH1} পিক্সেল বৰ্গ নহয়।"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "টোকা:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "থীমৰ ৰং"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "বেক-ফৰৱাৰ্ড কেশ্ব"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "কেশ্বৰ ষ্ট’ৰেজ"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "মচক"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "কেশ্ব ৰিফ্ৰেশ্ব কৰক"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "প্ৰিফেট্‌চিং আৰু প্ৰিৰেণ্ডাৰিং"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: মেনিফেষ্টত এই শাখাটোলৈ স্ক্ৰ’ল কৰিবলৈ আহ্বান জনাওক"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "কেশ্ব"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "মচক"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "শ্ৰমিক"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "বেক-ফৰৱাৰ্ড কেশ্ব"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "নেপথ্যৰ আহৰণ"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "ৰিপ’ৰ্টিং API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "কেশ্বৰ ষ্ট’ৰেজ"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "মচক"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "কেশ্ব ৰিফ্ৰেশ্ব কৰক"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "কেশ্ব"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "উৎস"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "বাজেট ৰিছেট কৰক"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "শ্বেয়াৰ কৰা ষ্ট’ৰেজ"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "প্ৰিৰেণ্ডাৰিং"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools খোলা থকাৰ বাবে আগতীয়াকৈ ল’ড কৰাটো বলপূৰ্বকভাৱে সক্ষম কৰা হৈছে। DevTools বন্ধ থাকিলে, প্ৰিৰেণ্ডাৰিং নিষ্ক্ৰিয় কৰা হ’ব কাৰণ এই ব্ৰাউজাৰ ছেশ্বন কাৰ্যক্ষমতা তুলনাৰ বাবে ব্যৱহাৰ কৰা এটা হ’ল্ডবেক গোটৰ অংশ।"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools খোলা থকাৰ বাবে প্ৰিৰেণ্ডাৰিং বলপূৰ্বকভাৱে সক্ষম কৰা হৈছে। DevTools বন্ধ থাকিলে, প্ৰিৰেণ্ডাৰিং নিষ্ক্ৰিয় কৰা হ’ব কাৰণ এই ব্ৰাউজাৰ ছেশ্বন কাৰ্যক্ষমতা তুলনাৰ বাবে ব্যৱহাৰ কৰা এটা হ’ল্ডবেক গোটৰ অংশ।"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "আগতীয়াকৈ ল’ড কৰা অক্ষম কৰা হৈছিল কিন্তু এতিয়া বলপূৰ্বকভাৱে সক্ষম কৰা হৈছে"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "প্ৰিৰেণ্ডাৰিং অক্ষম কৰা হৈছিল কিন্তু এতিয়া বলপূৰ্বকভাৱে সক্ষম কৰা হৈছে"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "প্ৰাথমিক তথ্য"
@@ -8133,7 +8151,7 @@
     "message": "হে’ডাৰ অ’ভাৰৰাইড কৰক"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "হেডাৰৰ নামত কেৱল আখৰ, সংখ্যা, ডেশ্ব অথবা আণ্ডাৰস্ক’ৰ থাকিব লাগে"
+    "message": "হেডাৰৰ নামত কেৱল আখৰ, সংখ্যা, হাইফেন অথবা আণ্ডাৰস্ক’ৰ থাকিব লাগে"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "অধিক জানক"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "ছেভ কৰক"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "এটা লক্ষ্য বাছনি কৰক"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "এটা নিৰ্ভেজাল CDP নিৰ্দেশ পঠিয়াওক"
   },
@@ -9888,7 +9909,7 @@
     "message": "যোগ দিয়া ব্ৰেণ্ডৰ শাৰী"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "স্থাপত্য-বিদ্যা"
+    "message": "আৰ্কিটে’কচ্চাৰ (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "আৰ্কিটে’কচ্চাৰ (যেনে, x৮৬)"
@@ -9903,13 +9924,13 @@
     "message": "ব্ৰেণ্ড {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "ব্ৰেণ্ডৰ বৈশিষ্ট্য"
+    "message": "ব্যৱহাৰকাৰী এজেণ্টৰ বৈশিষ্ট্যসমূহ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "সংস্কৰণ {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ব্ৰেণ্ড"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "সংস্কৰণ (যেনে, ৮৭.০.৪২৮০.৮৮)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "মচক"
@@ -9918,16 +9939,19 @@
     "message": "মচা ব্ৰেণ্ডৰ শাৰী"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "ডিভাইচৰ মডেল"
+    "message": "ডিভাইচ মডেল (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "ডিভাইচৰ বৈশিষ্ট্য"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Full ব্ৰাউজাৰৰ সংস্কৰণ"
+    "message": "পূৰ্ণ ব্ৰাউজাৰৰ সংস্কৰণ (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "পূৰ্ণ ব্ৰাউজাৰৰ সংস্কৰণ (যেনে, ৮৭.০.৪২৮০.৮৮)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "পূৰ্ণ ব্ৰাউজাৰৰ সূচী (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "ম’বাইল"
@@ -9936,7 +9960,7 @@
     "message": "সংগঠিত হেডাৰ ষ্ট্ৰীং হিচাপে দেখুৱাব পৰা নাযায়।"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "প্লেটফ’ৰ্ম"
+    "message": "প্লেটফৰ্ম (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "প্লেটফর্ম (যেনে, Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "প্লেটফৰ্ম সংস্কৰণ"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "উল্লেখযোগ্য সংস্কৰণ (যেনে, ৮৭)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "ইউজাৰ এজেণ্ট ক্লায়েণ্ট হিণ্ট"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "ব্যৱহাৰকাৰীৰ এজেণ্ট ক্লায়েণ্ট হিণ্ট ব্যৱহাৰকাৰীৰ এজেণ্ট ষ্ট্ৰীঙৰ বাবে এটা বিকল্প, যিয়ে ব্ৰাউজাৰ আৰু ডিভাইচটো এটা অধিক সংগঠিত উপায়ে অধিক ভাল গোপনীয়তাৰ সৈতে চিনাক্ত কৰে। অধিক জানিবলৈ বুটামটোত ক্লিক কৰক।"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "সংস্কৰণ"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "ব্যৱহাৰকাৰী এজেণ্ট (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "ডিভাইচ"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "পজ কৰাৰ আগতে পৰীক্ষা কৰিবলগীয়া অভিব্যক্তি, যেনে, x > ৫"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "অধিক জানক: ব্ৰেকপইণ্টৰ প্ৰকাৰ"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "এটা বাৰ্তা ক’নছললৈ ল’গ কৰক, বিচ্ছেদ নকৰিব"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "ক্ৰম অনুসৰি সজোৱাৰ ফিল্টাৰ প্ৰয়োগ কৰিবলৈ এণ্টাৰ টিপক"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "হে’ডাৰৰ বিকল্প"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "এই অনুসৰি সজাওক"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} ঊৰ্ধ্বক্ৰমত সজোৱা হৈছে"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} অধঃক্ৰমত সজোৱা হৈছে"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} অনুসৰি সজোৱাটা বাতিল কৰা হৈছে"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} টা মিলা শাৰী বাদ দি … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "কম কনট্ৰাষ্টৰ সমস্যা সমাধান কৰিলৈ পৰামৰ্শ হিচাপে আগবঢ়োৱা ৰং {PH1}ব্যৱহাৰ কৰক"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "এই ৰংটো ফৰ্মেটৰ পৰিসৰৰ সৈতে মিলাবলৈ ক্লিপ কৰা হৈছিল। প্ৰকৃত ফলাফলটো আছিল {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "পেলেটত যোগ দিয়ক"

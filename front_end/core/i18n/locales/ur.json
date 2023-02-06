@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "روکا جا رہا ہے…"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} کے لیے مواد لوڈ نہیں کیا جا سکا: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1} کے لیے مواد کو پارس نہیں کیا جا سکا: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "اکروماٹوپسیا"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "نظر انداز کرنے کی فہرست میں مواد کی سبھی اسکرپٹس شامل کریں"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "نظر انداز کرنے کی فہرست میں فریق ثالث کی سبھی اسکرپٹس شامل کریں"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "فہرست کو نظر انداز کرنے کے لیے ڈائریکٹری شامل کریں"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "نظر انداز کی فہرست میں اسکرپٹ شامل کریں"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "نوٹیفکیشن API کی اجازت کی مزید درخواست کراس اوریجن iframe سے نہیں کی جا سکتی ہے۔ آپ کو اعلی لیول کے فریم سے اجازت کی درخواست کرنے، یا اس کے بجائے ایک نئی ونڈو کھولنے پر غور کرنا چاہیے۔"
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap میں موجود imageOrientation: \"none\" اختیار فرسودہ ہے۔ براہ کرم اس کے بجائے {imageOrientation: \"from-image\"} اختیار کے ساتھ createImageBitmap کا استعمال کریں۔"
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "آپ کا پارٹنر ایک پرانے ‎(D)TLS ورژن پر بات چیت کر رہا ہے۔ اس کو درست کروانے کے لیے براہ کرم اپنے پارٹنر سے رابطہ کریں۔"
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo پرانا ہو چکا ہے۔ براہ کرم اس کے بجائے معیاری navigator.storage استعمال کریں۔"
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "ہم API chrome.privacy.websites.privacySandboxEnabled کو فرسودہ کر رہے ہیں، حالانکہ یہ M113 کے ریلیز ہونے تک بیک ورڈ موافقت کے لیے فعال رہے گا۔ اس کے بجائے، براہ کرم chrome.privacy.websites.topicsEnabled، chrome.privacy.websites.fledgeEnabled اور chrome.privacy.websites.adMeasurementEnabled استعمال کریں۔ https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled ملاحظہ کریں۔"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "ذیلی وسائل کی درخواستیں جن کے URLs میں سرایت شدہ اسناد ہیں (جیسے https://user:pass@host/) کو مسدود کر دیا گیا ہے۔"
@@ -2313,7 +2319,7 @@
     "message": "مینی فیسٹ میں name یا short_name فیلڈ شامل نہیں ہے"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "مینی فیسٹ میں ایک مناسب آئیکن شامل نہیں ہوتا ہے - کم سے کم px{PH1} کے PNG یا SVG فارمیٹ کی ضرورت ہوتی ہے، 'sizes' انتساب سیٹ ہونا ضروری ہے، اور اگر 'purpose' انتساب سیٹ ہو تو اس میں 'any' شامل ہونا چاہیے۔"
+    "message": "مینی فیسٹ میں ایک مناسب آئیکن شامل نہیں ہوتا ہے - کم سے کم px{PH1} کے PNG, SVG یا WebP فارمیٹ کی ضرورت ہوتی ہے، sizes انتساب سیٹ ہونا ضروری ہے، اور اگر purpose انتساب سیٹ ہو تو اس میں any شامل ہونا چاہیے۔"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "مینی فیسٹ 'prefer_related_applications کا تعین کرتا ہے: درست'"
@@ -2337,7 +2343,7 @@
     "message": "کوئی Play اسٹور ID فراہم نہیں کی گئی"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "'any' پر سیٹ یا غیر سیٹ انتساب کے مقصد کے لیے PNG یا SVG فارمیٹ میں کم از کم {PH1} پکسلز اسکوائر کا سپلائی کردہ کوئی آئیکن نہیں ہے۔"
+    "message": "any پر سیٹ یا غیر سیٹ مقصد کے انتساب سے PNG، SVG یا WebP فارمیٹ میں کم از کم {PH1} پکسلز اسکوائر کا کوئی سپلائی کیا گيا آئیکن نہیں ہے۔"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "نوٹ:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "تھیم کا رنگ"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "بیک/فارورڈ کیش"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "کیش اسٹوریج"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "حذف کریں"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "کیشز ریفریش کریں"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "پیشگی بازیافت اور پری رینڈرنگ"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: مینی فیسٹ میں اس سیکشن تک سکرول کرنے کی درخواست کریں"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "کیش"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "صاف کریں"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "کارکن"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "بیک/فارورڈ کیش"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "پس منظر کی بازیابی"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "کیش اسٹوریج"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "حذف کریں"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "کیشز ریفریش کریں"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "کیش"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "اوریجن"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "بجٹ ری سیٹ کریں"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "مشترکہ اسٹوریج"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "پری رینڈرنگ"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "پیشگی لوڈنگ کو زبردستی فعال کیا گیا ہے کیونکہ DevTools کھلا ہوا ہے۔ DevTools کے بند ہونے پر، پری رینڈرنگ کو غیر فعال کر دیا جائے گا کیونکہ براؤزر کا یہ سیشن کارکردگی کے موازنہ کے لیے استعمال ہونے والے ہولڈ بیک گروپ کا حصہ ہے۔"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "پری رینڈرنگ کو زبردستی فعال کیا گیا ہے کیونکہ DevTools کھلا ہے۔ DevTools کے بند ہونے پر، پری رینڈرنگ کو غیر فعال کر دیا جائے گا کیونکہ براؤزر کا یہ سیشن کارکردگی کے موازنہ کے لیے استعمال ہونے والے ہولڈ بیک گروپ کا حصہ ہے۔"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "پیشگی لوڈنگ کو غیر فعال کر دیا گیا تھا، لیکن اب فورس فعال ہے"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "پری رینڈرنگ کو غیر فعال کر دیا گیا تھا، لیکن اب زبردستی فعال ہے"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "بنیادی معلومات"
@@ -8133,7 +8151,7 @@
     "message": "اوور رائیڈ ہیڈر"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "ہیڈر کے ناموں میں صرف حروف، ہندسے، ڈیشز یا انڈر اسکورز شامل ہونے چاہئیں"
+    "message": "ہیڈر کے ناموں میں صرف حروف، ہندسے، ہائفنز یا انڈر اسکورز شامل ہونے چاہئیں"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "مزید جانیں"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "محفوظ کریں"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "ہدف منتخب کریں"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ایک CDP RAW کمانڈ بھیجیں"
   },
@@ -9888,7 +9909,7 @@
     "message": "برانڈ کی قطار کو شامل کر دیا گیا"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "فن تعمیر"
+    "message": "فن تعمیر (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "آرکیٹیکچر (مثال کے طور پر، x86)"
@@ -9903,13 +9924,13 @@
     "message": "برانڈ {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "برانڈ کی خصوصیات"
+    "message": "صارف کے ایجنٹ کی خصوصیات"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "ورژن {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "برانڈز"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "ورژن (مثلاً 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "حذف کریں"
@@ -9918,16 +9939,19 @@
     "message": "حذف کردہ برانڈ کی قطار"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "آلے کا ماڈل"
+    "message": "آلہ کا ماڈل (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "آلے کی خصوصیات"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "براؤزر کا مکمل ورژن"
+    "message": "براؤزر کا مکمل ورژن (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "براؤزر کا مکمل ورژن (جیسے 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "مکمل ورژن کی فہرست (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "موبائل"
@@ -9936,7 +9960,7 @@
     "message": "اسٹرکچرڈ ہیڈرز اسٹرنگ کے بطور نمائیدگی کے قابل نہیں۔"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "پلیٹ فارم"
+    "message": "پلیٹ فارم (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "پلیٹ فارم (جیسے Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "پلیٹ فارم ورژن"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "اہم ورژن (مثلاً 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "صارف کے ایجنٹ کلائنٹ کے اشارے"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "صارف ایجنٹ کلائنٹ کے اشارے صارف ایجنٹ اسٹرنگ کے متبادل ہیں جو بہتر رازداری اکاؤنٹنگ کے ذریعے زیادہ منظم انداز میں براؤزر اور آلے کی شناخت کرتے ہیں۔ مزید جاننے کے لیے بٹن پر کلک کریں۔"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "ورژن"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "صارف کا ایجنٹ (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "آلات"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "رکنے سے پہلے ایکسپریشن کو چیک کرنا ، جیسے، x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "مزید جانیں: بریک پوائنٹ کی اقسام"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "کنسول پر ایک پیغام لاگ کریں، بریک نہ کریں"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "ترتیب دینے والے فلٹر کو لاگو کرنے کے لیے اینٹر دبائیں"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ہیڈر کے اختیارات"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ترتیب دیں بلحاظ"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} کو صعودی ترتیب میں ترتیب دیا گیا"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} کو نزولی آرڈر میں ترتیب دیا گیا"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} کو ترتیب دینے کا عمل منسوخ ہو گیا"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} مماثل لائنز نظر انداز کی جا رہی ہیں … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "تجویز کردہ رنگ کے ذریعے {PH1}کم تناسب امتزاج درست کریں"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "اس رنگ کو فارمیٹ کے گیمٹ سے مماثل کرنے کے لیے تراش دیا گیا تھا۔ اصل نتیجہ {PH1} تھا"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "پیلیٹ میں شامل کریں"

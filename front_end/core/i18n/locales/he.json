@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "מופסק"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "לא ניתן לטעון את התוכן עבור {PH1}: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "לא ניתן היה לנתח תוכן עבור {PH1}: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "אכרומטופסיה"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "הוספת כל הסקריפטים של התוכן כדי להתעלם מהרשימה"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Add all third-party scripts to ignore list"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Add directory to ignore list"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "הוספה של סקריפט לרשימת הפריטים להתעלמות"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "לא ניתן יותר לבקש הרשאה ל-Notification API מ-iframe ממקורות שונים. במקום זאת, כדאי לבקש הרשאה ממסגרת ברמה עליונה או לפתוח חלון חדש."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Option imageOrientation: \"none\" in createImageBitmap is deprecated. Please use createImageBitmap with option {imageOrientation: \"from-image\"} instead."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "השותף שלך מנהל משא ומתן על גרסת ‎(D)TLS מיושנת. עליך לפנות לשותף שלך כדי לתקן זאת."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "האפשרות window.webkitStorageInfo הוצאה משימוש. במקומה יש להשתמש באפשרות navigator.storage רגילה."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "We’re deprecating the API chrome.privacy.websites.privacySandboxEnabled, though it will remain active for backward compatibility until release M113. Instead, please use chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled and chrome.privacy.websites.adMeasurementEnabled. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "בקשות למשאבי משנה שכתובות ה-URL שלהן מכילות פרטי כניסה מוטמעים (למשל https://user:pass@host/) חסומות."
@@ -2313,7 +2319,7 @@
     "message": "קובץ המניפסט אינו מכיל את השדות 'name' או 'short_name'"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "קובץ המניפסט לא מכיל סמל מתאים. דרוש פורמט PNG או SVG ברזולוציה של {PH1} פיקסלים לפחות, ויש להגדיר את המאפיין 'sizes'. אם הוגדר המאפיין 'purpose', הוא חייב לציין 'any'."
+    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the 'sizes' attribute must be set, and the 'purpose' attribute, if set, must include 'any'."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "המניפסט מציין 'prefer_related_applications:‏ true'"
@@ -2337,7 +2343,7 @@
     "message": "לא סופק מזהה חנות Play"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "לא סופק סמל ברזולוציה של {PH1} פיקסלים לפחות, בצורת ריבוע, בפורמט PNG או SVG עם מאפיין מטרה לא מוגדר או מוגדר לערך 'any'."
+    "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG or WebP format, with the purpose attribute unset or set to 'any'."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "הערה:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "צבע עיצוב"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "מטמון לדף הקודם/הבא"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "אחסון קובצי מטמון"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "מחיקה"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "רענון מטמונים"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "שליפה מראש (prefetch) ועיבוד מראש"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: יש להפעיל כדי לגלול לקטע הזה במניפסט"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "מטמון"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "ניקוי"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "מטמון לדף הקודם/הבא"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "אחזור רקע"
@@ -2849,6 +2843,15 @@
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "אחסון קובצי מטמון"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "מחיקה"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "רענון מטמונים"
+  },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "מטמון"
   },
@@ -3009,7 +3012,7 @@
     "message": "לוחצים על אירוע כלשהו של נפח אחסון משותף כדי להציג את הפרמטרים של האירוע."
   },
   "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "מפתח"
+    "message": "Key"
   },
   "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
     "message": "בחירה של ערך לצפייה בתצוגה מקדימה"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "מקור"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Reset Budget"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "נפח אחסון משותף"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "עיבוד מראש"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Preloading is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Prerendering is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Preloading was disabled, but is force-enabled now"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Prerendering was disabled, but is force-enabled now"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "מידע בסיסי"
@@ -8133,7 +8151,7 @@
     "message": "שינוי הכותרת"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "שמות של כותרות צריכים להכיל רק אותיות, ספרות, מקפים או קווים תחתונים"
+    "message": "Header names should contain only letters, digits, hyphens or underscores"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "מידע נוסף"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "שמירה"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Select a target"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "שליחת פקודת RAW מסוג CDP"
   },
@@ -9888,7 +9909,7 @@
     "message": "שורת המותג נוספה"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ארכיטקטורה"
+    "message": "Architecture (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ארכיטקטורה (לדוגמה: x86)"
@@ -9903,13 +9924,13 @@
     "message": "מותג: {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "מאפייני המותג"
+    "message": "User agent properties"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "גרסה {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "מותגים"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Version (e.g. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "מחיקה"
@@ -9918,16 +9939,19 @@
     "message": "שורת המותג נמחקה"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "דגם המכשיר"
+    "message": "Device model (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "מאפייני המכשיר"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "גרסת דפדפן מלא"
+    "message": "Full browser version (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "גרסת דפדפן מלאה (לדוגמה: 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Full version list (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "נייד"
@@ -9936,7 +9960,7 @@
     "message": "לא ניתן לייצוג כמחרוזת כותרות מובנית."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "פלטפורמה"
+    "message": "Platform (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "פלטפורמה (לדוגמה: Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "גרסת הפלטפורמה"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Significant version (e.g. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "רמזים על הלקוח (Client Hints) לגבי הסוכן המשתמש"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "עצות ללקוח של סוכן משתמש הן חלופה למחרוזת של סוכן משתמש. הן מזהות את הדפדפן והמכשיר באופן מובנה יותר ועם ניהול פרטיות טוב יותר. יש ללחוץ על הלחצן למידע נוסף."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "גרסה"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "User agent (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "מכשירים"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "ביטוי לבדיקה לפני השהיה, לדוגמה, x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Learn more: Breakpoint Types"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "הוספת הודעה למסוף, ללא הפסקה"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Press enter to apply sorting filter"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "אפשרויות של כותרות"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "מיון לפי"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} sorted in ascending order"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} sorted in descending order"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} sorting canceled"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … מתבצע דילוג על {PH1} שורות תואמות … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "שימוש בצבע המוצע {PH1}לתיקון יחס הניגודיות הנמוך"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "This color was clipped to match the format's gamut. The actual result was {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "הוספה ללוח התצוגות"

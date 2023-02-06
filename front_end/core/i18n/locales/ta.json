@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "நிறுத்துகிறது"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} தளத்திலுள்ள உள்ளடக்கத்தை ஏற்ற முடியவில்லை: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1} தளத்திற்கான உள்ளடக்கத்தைப் பாகுபடுத்த முடியவில்லை: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "அக்ரமடோப்ஸியா"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "உள்ளடக்க ஸ்கிரிப்ட்டுகள் அனைத்தையும் புறக்கணிப்புப் பட்டியலில் சேர்"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "புறக்கணிப்புப் பட்டியலில் அனைத்து மூன்றாம் தரப்பு ஸ்கிரிப்ட்டுகளையும் சேர்"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "புறக்கணிப்புப் பட்டியலில் டைரக்டரியைச் சேர்க்கவும்"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "புறக்கணிப்புப் பட்டியலில் ஸ்கிரிப்ட்டைச் சேர்"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Notification APIக்கான அனுமதியை கிராஸ் ஆரிஜின் iframeமில் இருந்து இனி கோர முடியாது. உயர்நிலை ஃபிரேமிடம் அனுமதி கோரவும் அல்லது புதிய சாளரத்தைத் திறக்கவும்."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmapபில் imageOrientation: \"none\" விருப்பம் நிறுத்தப்பட்டது. அதற்குப் பதிலாக {imageOrientation: \"from-image\"} விருப்பத்துடன் createImageBitmapபைப் பயன்படுத்தவும்."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "காலாவதியான (D)TLS பதிப்பை உங்கள் கூட்டாளர் பரிமாற்றம் செய்கிறார். இதைச் சரிசெய்ய உங்கள் கூட்டாளரைத் தொடர்புகொள்ளவும்."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo நிறுத்தப்பட்டது. இதற்குப் பதிலாக நிலையான navigator.storage ஐப் பயன்படுத்தவும்."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "நாங்கள் chrome.privacy.websites.privacySandboxEnabled APIயை நிறுத்துகிறோம், இருப்பினும் இது M113 வெளியீட்டின் வரை பின்தங்கிய இணக்கத்தன்மையில் தொடர்ந்து இயக்கத்தில் இருக்கும். அதற்குப் பதிலாக, chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled மற்றும் chrome.privacy.websites.adMeasurementEnabled ஐப் பயன்படுத்தவும். https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled தளத்தைப் பார்வையிடவும்."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "உட்பொதிந்த அனுமதிச் சான்றுகள் இருக்கும் URLகளின் துணை ஆதாரக் கோரிக்கைகள் (எ.கா. https://user:pass@host/) தடுக்கப்பட்டன."
@@ -2313,7 +2319,7 @@
     "message": "மெனிஃபெஸ்ட்டில் 'name'/'short_name' புலம் இருக்காது"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "பொருத்தமான ஐகானை மெனிஃபெஸ்ட் கொண்டிருக்கவில்லை. PNG அல்லது SVG வடிவமைப்பில் குறைந்தபட்சம் {PH1}பிக்சல்களுடன் இருக்க வேண்டும். 'sizes' பண்புக்கூறு அமைக்கப்பட வேண்டும், மேலும் 'purpose' பண்புக்கூறு அமைக்கப்பட்டால் அதில் 'any' இருக்க வேண்டும்."
+    "message": "பொருத்தமான ஐகானை மெனிஃபெஸ்ட் கொண்டிருக்கவில்லை. PNG, SVG, WebP போன்ற வடிவமைப்பில் குறைந்தபட்சம் {PH1}பிக்சல்களுடன் இருக்க வேண்டும், 'sizes' பண்புக்கூறு அமைக்கப்பட வேண்டும், 'purpose' பண்புக்கூறு அமைக்கப்பட்டால் அதில் 'any' இருக்க வேண்டும்."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "’prefer_related_applications: சரி’ என மெனிஃபெஸ்ட் குறிக்கிறது"
@@ -2337,7 +2343,7 @@
     "message": "Play Store ஐடி வழங்கப்படவில்லை"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "வழங்கப்பட்ட எந்தவொரு ஐகானும் PNG அல்லது SVG போன்ற வடிவமைப்பில் குறைந்தபட்சம் {PH1} சதுர பிக்சல்களுடன் இல்லை. purpose பண்புக்கூறு any என்று அமைக்கப்பட்டோ அமைக்கப்படாமலோ உள்ளது."
+    "message": "வழங்கப்பட்ட எந்தவொரு ஐகானும் PNG, SVG, WebP போன்ற வடிவமைப்பில் குறைந்தபட்சம் {PH1} சதுர பிக்சல்களுடன் இல்லை. purpose பண்புக்கூறு any என்று அமைக்கப்பட்டோ அமைக்கப்படாமலோ உள்ளது."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "குறிப்பு:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "தீமின் வண்ணம்"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "தற்காலிகச் சேமிப்பகம்"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "நீக்கு"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "தற்காலிகச் சேமிப்பை ரெஃப்ரெஷ் செய்"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "ப்ரீஃபெட்ச்சிங் மற்றும் ப்ரீரெண்டரிங்"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: Manifestடில் உள்ள இந்தப் பிரிவிற்குச் செல்ல இயக்கலாம்"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "தற்காலிகச் சேமிப்பு"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "அழி"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "பின்னணியில் பெறுக"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "தற்காலிகச் சேமிப்பகம்"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "நீக்கு"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "தற்காலிகச் சேமிப்பை ரெஃப்ரெஷ் செய்"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "தற்காலிகச் சேமிப்பு"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "ஆரிஜின்"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "பட்ஜெட்டை ரீசெட் செய்"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "பகிர்ந்த சேமிப்பகம்"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "ப்ரீரெண்டரிங்"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "டெவெலப்பர் கருவிகள் திறந்திருப்பதால் 'முன்கூட்டியே ஏற்றுதல்' கட்டாயமாக இயக்கப்பட்டுள்ளது. செயல்திறன் ஒப்பீடுகளுக்காகப் பயன்படுத்தப்படும் ஹோல்டுபேக் குழுவின் பகுதியாக இந்த உலாவி அமர்வு இருப்பதால் டெவெலப்பர் கருவிகள் மூடப்பட்டிருக்கும்போது ப்ரீரெண்டரிங் முடக்கப்பட்டிருக்கும்."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "டெவெலப்பர் கருவிகள் திறந்திருப்பதால் ப்ரீரெண்டரிங் கட்டாயமாக இயக்கப்பட்டுள்ளது. செயல்திறன் ஒப்பீடுகளுக்காகப் பயன்படுத்தப்படும் ஹோல்டுபேக் குழுவின் பகுதியாக இந்த உலாவி அமர்வு இருப்பதால் டெவெலப்பர் கருவிகள் மூடப்பட்டிருக்கும்போது ப்ரீரெண்டரிங் முடக்கப்பட்டிருக்கும்."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "'முன்கூட்டியே ஏற்றுதல்' முடக்கப்பட்டிருந்தது. ஆனால் தற்போது கட்டாயமாக இயக்கப்பட்டுள்ளது"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "ப்ரீரெண்டரிங் முடக்கப்பட்டிருந்தது. ஆனால் தற்போது கட்டாயமாக இயக்கப்பட்டுள்ளது"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "அடிப்படைத் தகவல்கள்"
@@ -8133,7 +8151,7 @@
     "message": "தலைப்பிற்கான ஓவர்-ரைடு"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "தலைப்பின் பெயர்களில் எழுத்துகள், எண்கள், கோடுகள், அடிக்கோடுகள் போன்றவை மட்டுமே இருக்க வேண்டும்"
+    "message": "தலைப்பின் பெயர்களில் எழுத்துகள், எண்கள், இடைக்கோடுகள், அடிக்கோடுகள் போன்றவை மட்டுமே இருக்க வேண்டும்"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "மேலும் அறிக"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "சேமி"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "இலக்கைத் தேர்ந்தெடுக்கவும்"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "செயல்படுத்தப்படாத CDP கட்டளையை அனுப்பு"
   },
@@ -9888,7 +9909,7 @@
     "message": "பிராண்டு வரிசை சேர்க்கப்பட்டது"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "கட்டமைப்பு"
+    "message": "கட்டமைப்பு (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "கட்டமைப்பு (எ.கா. x86)"
@@ -9903,13 +9924,13 @@
     "message": "{PH1} பிராண்டு"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "பிராண்டின் பண்புகள்"
+    "message": "பயனர் ஏஜெண்ட் பண்புகள்"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "பதிப்பு {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "பிராண்டுகள்"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "பதிப்பு (எ.கா. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "நீக்கும்"
@@ -9918,16 +9939,19 @@
     "message": "பிராண்டு வரிசை நீக்கப்பட்டது"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "சாதன மாடல்"
+    "message": "சாதன மாடல் (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "சாதனத்தின் பண்புகள்"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "உலாவியின் முழுப் பதிப்பு"
+    "message": "உலாவியின் முழுப் பதிப்பு (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "உலாவியின் முழுப் பதிப்பு (எ.கா. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "முழுப் பதிப்புப் பட்டியல் (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "மொபைல்"
@@ -9936,7 +9960,7 @@
     "message": "கட்டமைக்கப்பட்ட தலைப்பு வார்த்தைகளாகக் குறிப்பிட முடியாது."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "பிளாட்ஃபார்ம்"
+    "message": "பிளாட்ஃபார்ம் (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "பிளாட்ஃபார்ம் (எ.கா. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "பிளாட்ஃபார்ம் பதிப்பு"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "குறிப்பிடத்தக்க பதிப்பு (எ.கா. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "பயனர் ஏஜெண்ட் கிளையண்ட் குறிப்புகள்"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "பயனர் ஏஜெண்ட் கிளையண்ட் குறிப்புகள், பயனர் ஏஜெண்ட் உள்ளீட்டிற்கான ஒரு மாற்று முறையாகும். இது தனியுரிமைக்கு அதிக முக்கியத்துவம் அளிப்பதால் உலாவியையும் சாதனத்தையும் சரியான முறையில் அடையாளம் காண்கிறது. மேலும் அறிய, பட்டனைக் கிளிக் செய்யவும்."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "பதிப்பு"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "பயனர் ஏஜெண்ட் (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "சாதனங்கள்"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "இடைநிறுத்துவதற்கு முன் சரிபார்க்க வேண்டிய எக்ஸ்ப்ரெஷன், எ.கா. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "மேலும் அறிக: பிரேக்பாயிண்ட் வகைகள்"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "மெசேஜைக் கன்சோலில் பதிவு செய், பிரிக்காதே"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "வரிசைப்படுத்துதல் வடிப்பானைப் பயன்படுத்த Enter பட்டனை அழுத்தவும்"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "தலைப்பிற்கான விருப்பங்கள்"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "இதன்படி வரிசைப்படுத்து"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} ஏறுவரிசையில் வரிசைப்படுத்தப்பட்டது"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} இறங்குவரிசையில் வரிசைப்படுத்தப்பட்டது"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} வரிசைப்படுத்துதல் ரத்துசெய்யப்பட்டது"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … பொருந்தும் {PH1} வரிகளைத் தவிர்க்கிறது … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "குறைவான ஒளி மாறுபாட்டைச் சரிசெய்ய, பரிந்துரைக்கப்படும் வண்ணத்தைப் பயன்படுத்தவும்: {PH1}"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "இலக்கு வடிவமைப்பின் வண்ண வரம்புடன் பொருந்துவதற்காக இந்த வண்ணத்தின் வரம்பு மதிப்பு மாற்றப்பட்டது. இதன் சரியான இறுதி வடிவம்: {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "வண்ணத் தட்டைச் சேர்க்கும்"

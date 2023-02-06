@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "interruzione in corso…"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Impossibile caricare il contenuto per {PH1}: {PH2}."
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Impossibile analizzare i contenuti per {PH1}: {PH2}."
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Acromatopsia"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Aggiungi tutti gli script di contenuti all'elenco degli elementi da ignorare"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Aggiungi tutti gli script di terze parti all'elenco degli elementi da ignorare"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Aggiungi directory all'elenco degli elementi da ignorare"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Aggiungi script all'elenco di elementi da ignorare"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "L'autorizzazione per l'API Notification potrebbe non essere più richiesta da un iframe multiorigine. Considera di richiedere l'autorizzazione da un frame di primo livello o aprire invece una nuova finestra."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "L'opzione imageOrientation: \"none\" in createImageBitmap è deprecata. Usa invece createImageBitmap con l'opzione {imageOrientation: \"from-image\"}."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Il tuo partner sta negoziando una versione (D)TLS obsoleta. Rivolgiti al tuo partner per correggere questo problema."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "L'API window.webkitStorageInfo è deprecata. Utilizza invece il criterio navigator.storage standardizzato."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Stiamo ritirando l'API chrome.privacy.websites.privacySandboxEnabled, ma rimarrà attiva per garantire la compatibilità con le versioni precedenti fino alla release M113. Usa i criteri chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled e chrome.privacy.websites.adMeasurementEnabled. Visita la pagina https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Le richieste di sottorisorse i cui URL contengono credenziali incorporate (ad es. https://user:pass@host/) sono bloccate."
@@ -2313,7 +2319,7 @@
     "message": "Il file manifest non contiene un campo \"name'\" o \"short_name\""
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Il file manifest non contiene un'icona adatta, deve essere in formato PNG o SVG e avere una dimensione di almeno {PH1} px. L'attributo \"sizes\" deve essere impostato e l'attributo \"purpose\", se configurato, deve includere \"any\"."
+    "message": "Il file manifest non contiene un'icona adatta. L'icona deve essere nel formato PNG, SVG o WebP e avere una dimensione di almeno {PH1} px. L'attributo \"sizes\" deve essere impostato e l'attributo \"purpose\", se impostato, deve includere \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Il file manifest specifica \"prefer_related_applications\": true"
@@ -2337,7 +2343,7 @@
     "message": "Nessun ID Play Store fornito"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Nessuna delle icone fornite è quadrata, con dimensione minima di {PH1} pixel, in formato PNG o SVG, con l'attributo purpose non impostato o impostato su \"any\"."
+    "message": "Nessuna delle icone fornite è quadrata, con dimensione minima di {PH1} pixel, in formato PNG, SVG o WebP, con l'attributo purpose non impostato o impostato su \"any\"."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Nota:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Colore tema"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Cache back-forward"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Spazio di archiviazione cache"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Elimina"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Aggiorna cache"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Precaricamento e prerendering"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: richiama per scorrere fino a questa sezione nel file manifest"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Cache"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Cancella"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Cache back-forward"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Recupero dello sfondo"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API di reporting"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Spazio di archiviazione cache"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Elimina"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Aggiorna cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Cache"
@@ -3972,7 +3975,7 @@
     "message": "Protocollo di test"
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
-    "message": "Parametro di ricerca o endpoint per il gestore di protocollo"
+    "message": "Parametro di query o endpoint per il gestore di protocollo"
   },
   "panels/application/components/ProtocolHandlersView.ts | textboxPlaceholder": {
     "message": "Inserisci URL"
@@ -4023,7 +4026,7 @@
     "message": "Voci"
   },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
-    "message": "Budget a entropia per Fenced Frames"
+    "message": "Budget entropia per frame isolati"
   },
   "panels/application/components/SharedStorageMetadataView.ts | metadata": {
     "message": "Metadati"
@@ -4036,6 +4039,9 @@
   },
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Origine"
+  },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Reimposta budget"
   },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Spazio di archiviazione condiviso"
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Prerendering"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Il precaricamento è attivato forzatamente perché DevTools è aperto. Quando DevTools viene chiuso, il precaricamento viene disattivato perché questa sessione del browser fa parte di un gruppo di isolamento utilizzato per i confronti delle prestazioni."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Il prerendering è attivato forzatamente perché DevTools è aperto. Quando DevTools viene chiuso, il prerendering viene disattivato perché questa sessione del browser fa parte di un gruppo di isolamento utilizzato per i confronti delle prestazioni."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Il precaricamento è stato disattivato, ma al momento è attivato forzatamente"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Il prerendering è stato disattivato, ma al momento è attivato forzatamente"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Informazioni di base"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Salva"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Seleziona un target"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Invia un comando CDP non elaborato"
   },
@@ -9888,7 +9909,7 @@
     "message": "Riga del brand aggiunta"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Architettura"
+    "message": "Architettura (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Architettura (ad es. x86)"
@@ -9903,13 +9924,13 @@
     "message": "Brand {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Proprietà brand"
+    "message": "Proprietà dello user agent"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versione {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Brand"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Versione (ad es. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Elimina"
@@ -9918,16 +9939,19 @@
     "message": "Riga del brand eliminata"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Modello dispositivo"
+    "message": "Modello del dispositivo (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Proprietà dispositivo"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Versione completa del browser"
+    "message": "Versione completa del browser (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Versione completa del browser (ad es. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Elenco di versioni complete (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Dispositivi mobili"
@@ -9936,7 +9960,7 @@
     "message": "Non rappresentabile come stringa di intestazioni strutturate."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Piattaforma"
+    "message": "Piattaforma (Sec-CH-UA-Platform/Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Piattaforma (ad es. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Versione piattaforma"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Versione significativa (ad es. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Suggerimenti client dello user agent"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "I suggerimenti client dello user agent sono un'alternativa alla stringa user agent e identificano il browser e il dispositivo in modo più strutturato e con una migliore gestione delle privacy. Fai clic sul pulsante per scoprire di più."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versione"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "User agent (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Dispositivi"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Espressioni da controllare prima di mettere in pausa, ad es. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Scopri di più: tipi di punti di interruzione"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Registra un messaggio nella Console senza interruzioni"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Premi Invio per applicare il filtro di ordinamento"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Opzioni intestazione"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Ordina per"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "Colonna {PH1} ordinata in ordine crescente"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "Colonna {PH1} ordinata in ordine decrescente"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "Ordinamento della colonna {PH1} annullato"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Omissione {PH1} righe corrispondenti … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Usa il colore suggerito {PH1}per correggere il contrasto insufficiente"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Questo colore è stato rimosso per rispettare la gamma di colori del formato. Risultato effettivo: {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Aggiungi alla tavolozza"

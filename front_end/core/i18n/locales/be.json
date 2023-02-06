@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "ідзе спыненне"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Не ўдалося загрузіць змесціва для {PH1}: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Не ўдалося правесці сінтаксічны аналіз для {PH1}: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Поўная колеравая слепата"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Дадаць усе сцэнарыі змесціва ў спіс ігнаравання"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Дадаць усе староннія сцэнарыі ў спіс ігнаравання"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Дадаць каталог у спіс ігнаравання"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Дадаць сцэнарый у ліст ігнаравання"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "З вокнаў iframe у іншых крыніцах больш нельга запытваць дазвол на выкарыстанне Notification API. Запытайце дазвол у фрэйма верхняга ўзроўню або адкрыйце новае акно."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Параметр imageOrientation: \"none\" для createImageBitmap больш не падтрымліваецца. Замест яго выкарыстоўвайце createImageBitmap з параметрам {imageOrientation: \"from-image\"}."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Ваш партнёр абменьваецца данымі з выкарыстаннем устарэлай версіі пратакола (D)TLS. Укажыце партнёру на неабходнасць выправіць гэта."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo больш не падтрымліваецца. Выкарыстоўвайце стандартную ўласцівасць navigator.storage."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Мы спыняем падтрымку API chrome.privacy.websites.privacySandboxEnabled, хоць гэты інтэрфейс праграмавання будзе прымяняцца, каб забяспечыць зваротную сумяшчальнасць, да выпуску M113. Замест яго выкарыстоўвайце chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled і chrome.privacy.websites.adMeasurementEnabled. Даведацца больш: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Запыты субрэсурсаў, чые URL-адрасы змяшчаюць убудаваныя ўліковыя даныя (напрыклад, https://user:pass@host/), блакіруюцца."
@@ -2313,7 +2319,7 @@
     "message": "Маніфест не змяшчае поле \"name\" або \"short_name\""
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Маніфест не змяшчае прыдатнага значка – у фармаце PNG або SVG і памерам як мінімум {PH1} пікс.; атрыбут sizes павінен быць зададзены, а атрыбут purpose, калі ён зададзены, павінен уключаць у сябе any."
+    "message": "У маніфесце адсутнічае прыдатны значок – у фармаце PNG, SVG або WebP, памерам не менш за {PH1} пікс і з зададзеным атрыбутам sizes. Калі зададзены атрыбут purpose, для яго трэба ўказаць значэнне any."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Значэнне атрыбута prefer_related_applications у файле маніфеста: true"
@@ -2337,7 +2343,7 @@
     "message": "Не ўказаны ідэнтыфікатар Крамы Play"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Няма значка з мінімальным памерам {PH1} пікс. (квадрат) у фармаце PNG або SVG або з атрыбутам purpose, які не вызначаны або мае значэнне any."
+    "message": "Адсутнічае квадратны значок у фармаце PNG, SVG або WebP і памерам не менш за {PH1} пікс, для якога атрыбут purpose не зададзены ці мае значэнне any."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Заўвага:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Колер тэмы"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Кэш пераходу назад і наперад"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Сховішча кэша"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Выдаліць"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Абнавіць кэшы"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Папярэдняя загрузка і папярэдняя візуалізацыя"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: выклічце, каб прагартаць да гэтага раздзела ў маніфесце"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Кэш"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Ачысціць"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "працэс worker"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Кэш пераходу назад і наперад"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фонавае атрыманне даных"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Сховішча кэша"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Выдаліць"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Абнавіць кэшы"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Кэш"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Паходжанне"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Скінуць бюджэт"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Абагуленае сховішча"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Папярэдняя візуалізацыя"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Перадзагрузка прымусова ўключана, бо адкрыты інструменты распрацоўшчыка. Пры закрыцці інструментаў распрацоўшчыка папярэдняя візуалізацыя будзе адключана, бо гэты сеанс браўзера адносіцца да абмежаванай групы, якая выкарыстоўваецца для параўнання прадукцыйнасці."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Папярэдняя візуалізацыя прымусова ўключана, бо адкрыты інструменты распрацоўшчыка. Пры закрыцці інструментаў распрацоўшчыка папярэдняя візуалізацыя будзе адключана, бо гэты сеанс браўзера адносіцца да абмежаванай групы, якая выкарыстоўваецца для параўнання прадукцыйнасці."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Перадзагрузка была адключана, але цяпер прымусова ўключана"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Папярэдняя візуалізацыя была адключана, але цяпер прымусова ўключана"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Асноўная інфармацыя"
@@ -8133,7 +8151,7 @@
     "message": "Перавызначыць загаловак"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Назвы загалоўкаў павінны ўтрымліваць толькі літары, лічбы, злучкі ці сімвалы падкрэслівання"
+    "message": "Назвы загалоўкаў павінны змяшчаць толькі літары, лічбы, злучкі ці сімвалы падкрэслівання"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Даведацца больш"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Захаваць"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Выберыце мэтавы аб'ект"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Адпраўце неапрацаваную каманду CDP"
   },
@@ -9888,7 +9909,7 @@
     "message": "Радок брэнда дададзены"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Архітэктура"
+    "message": "Архітэктура (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Архітэктура (напрыклад, x86)"
@@ -9903,13 +9924,13 @@
     "message": "Брэнд {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Уласцівасці брэнда"
+    "message": "Уласцівасці агента карыстальніка"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Версія {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Брэнды"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Версія (напрыклад, 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Выдаліць"
@@ -9918,16 +9939,19 @@
     "message": "Радок брэнда выдалены"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Мадэль прылады"
+    "message": "Мадэль прылады (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Уласцівасці прылады"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Поўная версія браўзера"
+    "message": "Поўная версія браўзера (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Поўная версія браўзера (напрыклад, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Спіс поўных версій (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Мабільная прылада"
@@ -9936,7 +9960,7 @@
     "message": "Значэнне не можа быць прадстаўлена як структураваны радок загалоўкаў."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Платформа"
+    "message": "Платформа (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Платформа (напрыклад, Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Версія платформы"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Асноўная версія (напрыклад, 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Падказкі адносна кліента ў user agent"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Падказкі адносна кліента ў user agent з'яўляюцца альтэрнатывай радку user agent і ідэнтыфікуюць браўзер і прыладу больш паслядоўным спосабам і з большай увагай да прыватнасці. Націсніце на кнопку, каб даведацца больш."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Версія"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Агент карыстальніка (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Прылады"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Выраз, які трэба праверыць перад прыпыненнем, напрыклад: x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Даведацца больш: тыпы пунктаў прыпынення"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Вывесці паведамленне ў кансоль, не прыпыняцца"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Націсніце Увод, каб прымяніць фільтр сартавання"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Параметры загалоўка"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Парадак сартавання"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1}: адсартавана па ўзрастанні"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1}: адсартавана па ўбыванні"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1}: сартаванне скасавана"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … прапускаецца наступная колькасць супадаючых радкоў: {PH1} … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Выкарыстаць прапанаваны колер – {PH1} – для выпраўлення нізкай кантраснасці"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Гэты колер быў скарэкціраваны ў адпаведнасці з гамай мэтавага фармату. Зыходнае значэнне: {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Дадаць у палітру"

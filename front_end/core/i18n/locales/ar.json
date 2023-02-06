@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "جارٍ الإيقاف"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "تعذَّر تحميل المحتوى في {PH1}: {PH2}."
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "تعذَّر تحليل المحتوى في {PH1}: {PH2}."
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "عمى الألوان التام"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "إضافة كل نصوص المحتوى البرمجية إلى قائمة التجاهل"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "إضافة جميع النصوص البرمجية التابعة لجهات خارجية إلى قائمة التجاهل"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "إضافة دليل إلى قائمة التجاهل"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "إضافة نص برمجي إلى قائمة التجاهل"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "قد تتوقّف إمكانية طلب إذن لواجهة برمجة التطبيقات Notification API من أحد إطارات iframe من مصادر متعددة. يجب مراعاة طلب إذن من إطار عالٍ المستوى أو فتح نافذة جديدة بدلاً من ذلك."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "تم إيقاف خيار ‎imageOrientation: \"none\"‎ في createImageBitmap. يُرجى استخدام createImageBitmap مع خيار {‎imageOrientation: \"from-image\"‎} بدلاً من ذلك."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "يتفاوض شريكك لاستخدام إصدار (D) القديم من بروتوكول أمان طبقة النقل (TLS). يُرجى التحقّق من الأمر مع شريكك لحلّ هذه المشكلة."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "تم إيقاف window.webkitStorageInfo نهائيًا. يُرجى استخدام navigator.storage الموحّدة بدلاً منها."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "سيتم إيقاف واجهة برمجة التطبيقات chrome.privacy.websites.privacySandboxEnabled نهائيًا، علمًا بأنّها ستظل نشطة للتوافق مع الأنظمة القديمة إلى أن يتم طرح الإصدار الرئيسي M113. بدلاً من هذه الواجهة، يُرجى استخدام واجهات برمجة التطبيقات chrome.privacy.websites.topicsEnabled وchrome.privacy.websites.fledgeEnabled وchrome.privacy.websites.adMeasurementEnabled. لمعرفة مزيد من المعلومات، يمكنك الانتقال إلى https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "يتم حظر طلبات المصادر الفرعية التي تتضمّن عناوين URL الخاصة بها بيانات اعتماد مُضمَّنة (مثل https://user:pass@host/)."
@@ -2313,7 +2319,7 @@
     "message": "لا يتضمّن ملف البيان حقل \"name\" أو \"short_name\"."
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "لا يتضمّن ملف البيان رمزًا مناسبًا. يجب استخدام تنسيق PNG أو SVG بحجم {PH1} بكسل على الأقل، ويجب ضبط سمة \"sizes\" وأن تتضمّن سمة \"purpose\" القيمة \"any\"."
+    "message": "لا يتضمّن ملف البيان رمزًا مناسبًا. يجب استخدام تنسيق PNG أو SVG أو WebP بحجم {PH1} بكسل على الأقل، ويجب ضبط سمة \"sizes\" وأن تتضمّن سمة \"purpose\"، في حال ضبطها، القيمة \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "يضبط ملف البيان سمة \"prefer_related_applications\" على \"صحيح\"."
@@ -2337,7 +2343,7 @@
     "message": "لم يتم توفير رقم تعريف \"متجر Play\"."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "لا يتوفّر رمز بحجم {PH1} بكسل مربّع على الأقل بتنسيق PNG أو SVG، علمًا بأنّه لم يتم ضبط سمة \"purpose\" أو تم ضبطها على \"any\"."
+    "message": "لا يتوفّر رمز بحجم {PH1} بكسل مربّع على الأقل بتنسيق PNG أو SVG أو WebP، علمًا بأنّه لم يتم ضبط سمة \"purpose\" أو تم ضبطها على \"any\"."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "ملاحظة:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "لون المظهر"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "ميزة \"التخزين المؤقت للصفحات\""
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "مساحة التخزين لذاكرة التخزين المؤقت"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "حذف"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "إعادة تحميل ذاكرات التخزين المؤقت"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "الجلب المُسبَق والعرض المُسبَق"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: يمكن استدعاء الوظيفة للانتقال إلى هذا القسم في ملف البيان."
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "ذاكرة التخزين المؤقت"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "محو"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "عامل"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "ميزة \"التخزين المؤقت للصفحات\""
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "استرجاع في الخلفية"
@@ -2849,6 +2843,15 @@
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "واجهة برمجة التطبيقات لإعداد التقارير"
   },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "مساحة التخزين لذاكرة التخزين المؤقت"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "حذف"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "إعادة تحميل ذاكرات التخزين المؤقت"
+  },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "ذاكرة التخزين المؤقت"
   },
@@ -3009,7 +3012,7 @@
     "message": "انقر على أي حدث في مساحة تخزين مشتركة لعرض مَعلَمات الحدث."
   },
   "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "مفتاح"
+    "message": "المفتاح"
   },
   "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
     "message": "اختَر قيمة لمعاينتها."
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "المصدر"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "إعادة ضبط الميزانية"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "مساحة التخزين المشتركة"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "العرض المُسبَق"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "تم فرض تفعيل ميزة \"التحميل المُسبَق\" لأنّ أدوات مطوّري البرامج مفتوحة. عند إغلاق أدوات مطوّري البرامج، سيتم إيقاف ميزة \"العرض المُسبَق\" لأنّ جلسة المتصفِّح هذه ضمن مجموعة جلسات مستثناة من تفعيل الميزة، وذلك لأغراض مقارنة الأداء."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "تم فرض تفعيل ميزة \"العرض المُسبَق\" لأنّ أدوات مطوّري البرامج مفتوحة. عند إغلاق أدوات مطوّري البرامج، سيتم إيقاف ميزة \"العرض المُسبَق\" لأنّ جلسة المتصفِّح هذه ضمن مجموعة جلسات مستثناة من تفعيل الميزة، وذلك لأغراض مقارنة الأداء."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "ميزة \"التحميل المُسبَق\" كانت غير مفعَّلة، ولكن تم فرض تفعيلها الآن"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "ميزة \"العرض المُسبَق\" كانت غير مفعَّلة، ولكن تم فرض تفعيلها الآن"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "المعلومات الأساسية"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "حفظ"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "اختيار هدف"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "إرسال أمر صف CDP"
   },
@@ -9888,7 +9909,7 @@
     "message": "تمت إضافة صف العلامات التجارية."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "البنية"
+    "message": "البنية (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "بنية وحدة المعالجة المركزية (مثل x86)"
@@ -9903,13 +9924,13 @@
     "message": "العلامة التجارية {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "خصائص العلامة التجارية"
+    "message": "سمات وكيل المستخدم"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "الإصدار {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "العلامات التجارية"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "الإصدار (مثل 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "حذف"
@@ -9918,16 +9939,19 @@
     "message": "تم حذف صف العلامات التجارية."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "طراز الجهاز"
+    "message": "طراز الجهاز (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "خصائص الجهاز"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "إصدار المتصفّح الكامل"
+    "message": "إصدار المتصفِّح الكامل (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "إصدار المتصفّح الكامل (الإصدار 87.0.4280.88 مثلاً)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "قائمة الإصدارات الكاملة (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "جهاز جوّال"
@@ -9936,7 +9960,7 @@
     "message": "لا يمكن تمثيل أحرف القيمة كسلسلة نصية من العناوين المنظّمة."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "النظام الأساسي"
+    "message": "النظام الأساسي (Sec-CH-UA-Platform ‏/ Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "النظام الأساسي (على سبيل المثال، Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "إصدار النظام الأساسي"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "إصدار يتضمّن تحديثات مهمّة (مثل إصدار 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "تعديلات برنامج وكيل المستخدم"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "تعديلات برنامج وكيل المستخدم هي بديل لسلسلة وكيل المستخدم التي توفِّر معلومات منظّمَة بشكل أكبر عن المتصفِّح والجهاز مع مراعاة الخصوصية بطريقة أفضل. انقر على الزر لمزيد من المعلومات."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "الإصدار"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "وكيل المستخدم (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "الأجهزة"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "التعبير الذي يجب التحقّق منه قبل الإيقاف المؤقت، مثل. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "مزيد من المعلومات: أنواع نقاط الإيقاف"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "تسجيل رسالة في وحدة التحكّم، بدون فواصل"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "معيار WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "اضغط على مفتاح Enter لتطبيق فلتر الترتيب."
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "خيارات العنوان"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "الترتيب حسب"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "تم ترتيب العمود \"{PH1}\" تصاعديًا."
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "تم ترتيب العمود \"{PH1}\" تنازليًا."
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "تم إلغاء ترتيب العمود \"{PH1}\"."
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … جارٍ تخطّي {PH1} سطر مطابق … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "استخدام اللون المقترَح {PH1}لإصلاح نسبة التباين المنخفضة"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "تمت إزالة هذا اللون للتوافق مع السلسلة اللونية للتنسيق. النتيجة الفعلية كانت ‎{PH1}."
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "الإضافة إلى لوحة الألوان"

@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "dayandırılır"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} üçün məzmunu yükləmək mümkün olmadı: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1}: {PH2} üçün məzmunu parselləmək mümkün olmadı"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Axromatopsiya"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Bütün məzmun skriptlərini nəzərə almama siyahısına əlavə edin"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Bütün üçüncü tərəf skriptlərini nəzərə alınmayanlar siyahısına əlavə edin"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Nəzərə almama siyahısına kataloq əlavə edin"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Nəzərə almama siyahısına skript əlavə edin"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Bildiriş API üçün icazə artıq çarpaz mənşəli iFrame-dən tələb oluna bilməz. Yuxarı səviyyəli çərçivədən icazə tələb etməyi və ya yeni pəncərə açmağı düşünməlisiniz."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap'də imageOrientation: \"none\" seçimi köhnəlmişdir. Onun əvəzinə {imageOrientation: \"from-image\"} seçimi ilə createImageBitmap istifadə edin."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Partnyorunuz köhnəlmiş (D)TLS versiyasını müzakirə edir. Bunun düzəldilməsi üçün partnyorunuzla əlaqə saxlayın."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo köhnəlib. Onun əvəzinə standart navigator.storage istifadə edin."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "chrome.privacy.websites.privacySandboxEnabled API'ni ləğv edirik, lakin o, M113 buraxılışına qədər geri uyğunluq üçün aktiv qalacaq. Onun əvəzinə chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled və chrome.privacy.websites.adMeasurementEnabled istifadə edin. Baxın: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "URL-lərində daxil edilmiş giriş məlumatları (məsələn, https://user:pass@host/) olan subresurs sorğuları bloklanıb."
@@ -2313,7 +2319,7 @@
     "message": "Manifest \"name\" və ya \"short_name\" sahəsini ehtiva etmir"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest müvafiq işarəni ehtiva etmir - ən az {PH1} piksel ölçüyə malik PNG və ya SVG formatı tələb edilir. 'sizes' atributu ayarlanmalıdır və 'purpose' atributu ayarlandığı halda 'any' seçimi daxil edilməlidir."
+    "message": "Manifest müvafiq işarəni ehtiva etmir - ən az {PH1} piksel ölçüyə malik PNG, SVG və ya WebP formatı tələb edilir. 'sizes' atributu ayarlanmalıdır və 'purpose' atributu ayarlandığı halda 'any' seçimi daxil edilməlidir."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifest 'prefer_related_applications: doğru' olaraq göstərir"
@@ -2337,7 +2343,7 @@
     "message": "Heç bir Play market ID-si təmin edilməyib"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Təchiz edilən heç bir işarə məqsəd atributu təyin edilmədən, yaxud 'any' seçiminə təyin edilərək PNG və ya SVG formatında ən az {PH1} piksel kvadrat ölçüsündə deyil."
+    "message": "Təchiz edilən heç bir işarə məqsəd atributu təyin edilmədən, yaxud 'any' seçiminə təyin edilərək PNG, SVG və ya WebP formatında ən az {PH1} piksel kvadrat ölçüsündə deyil."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Qeyd:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Tema rəngi"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Geri/irəli keş"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Keş Yaddaşı"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Silin"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Keşləri təzələyin"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Öncədən göstərmə və Öncədən yükləmə"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: Manifestdə bu bölməyə keçməyi tələb edin"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Keş"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Silin"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "işçi"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Geri/irəli keş"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Arxa fon sorğusu"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Hesabat API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Keş Yaddaşı"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Silin"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Keşləri təzələyin"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Keş"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Mənşə"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Büdcəni sıfırlayın"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Paylaşılan Yaddaş"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Ön yükləmə icra edilir"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools açıq olduğu üçün əvvəlcədən yükləmə məcburi aktivləşdirilib. DevTools bağlandıqda, bu brauzer sessiyası performans müqayisəsi üçün istifadə edilən saxlama qrupunun bir hissəsi olduğuna görə ön yükləmə deaktiv ediləcək."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools açıq olduğu üçün ön yükləmə məcburi aktivləşdirilib. DevTools bağlandıqda, bu brauzer sessiyası performans müqayisəsi üçün istifadə edilən saxlama qrupunun bir hissəsi olduğuna görə ön yükləmə deaktiv ediləcək."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Əvvəlcədən yükləmə deaktiv edilib, lakin indi məcburi şəkildə aktivləşdirilib"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Ön yükləmə deaktiv edilib, lakin indi məcburi şəkildə aktivləşdirilib"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Təməl məlumat"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Saxlayın"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Hədəf seçin"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Emalsız CDP əmri göndərin"
   },
@@ -9888,7 +9909,7 @@
     "message": "Əlavə edilmiş brend sırası"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Memarlıq"
+    "message": "Arxitektura (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arxitektura (məs, x86)"
@@ -9903,13 +9924,13 @@
     "message": "Brend {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Brend xüsusiyyətləri"
+    "message": "İstifadəçi agenti xüsusiyyətləri"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versiya {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Brendlər"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Versiya (məs. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Silin"
@@ -9918,16 +9939,19 @@
     "message": "Silinmiş brend sırası"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Cihaz modeli"
+    "message": "Cihaz modeli (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Cihaz xüsusiyyətləri"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Tam brauzer versiyası"
+    "message": "Tam brauzer versiyası (Sec-CH-UA-Tam-Brauzer-Versiyası)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Tam brauzer versiyası (məs, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Tam versiya siyahısı (Sec-CH-UA-Tam-Versiya-Siyahısı)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobil"
@@ -9936,7 +9960,7 @@
     "message": "Strukturlaşdırılmış başlıqlar sətri kimi təmsil olunmur."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platforma"
+    "message": "Platforma (Sec-CH-UA-Platforması / Sec-CH-UA-Platforma-Versiyası)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Platforma (məs. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Platforma versiyası"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Önəmli versiya (məs. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "İstifadəçi agenti üzrə kliyent göstərişləri"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "İstifadəçi agenti üzrə kliyent ipucuları brauzeri və cihazı daha yaxşı məxfilik siyasəti ilə daha strukturlaşdırılmış şəkildə müəyyənləşdirən istifadəçi agenti sətirinə alternativdir. Ətraflı məlumat üçün düyməyə klikləyin."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versiya"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "İstifadəçi agenti (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Cihazlar"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Pauzadan əvvəl yoxlanılmalı ifadə, məs, x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Ətraflı məlumat: Kəsilmə Nöqtəsi Növləri"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Konsola mesaj qeyd edin, ayırmayın"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Sıralama filtrini tətbiq etmək üçün enter düyməsini basın"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Başlıq Seçimləri"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Çeşidləyin"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} artan sıra ilə çeşidlənib"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} azalan sıra ilə çeşidlənib"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} sıralaması ləğv edilib"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} uyğunlaşdırma sətri ötürülür … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Aşağı kontrastı düzəltmək üçün təklif edilən rəngdən {PH1} istifadə edin"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Bu rəng formatın qammasına uyğun olaraq kəsilmişdir. Faktiki nəticə {PH1} idi"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Palitraya əlavə edin"

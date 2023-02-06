@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "ఆపివేస్తోంది"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1}: {PH2}కు కంటెంట్‌ను లోడ్ చేయడం సాధ్యం కాలేదు"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1}: {PH2}కు కంటెంట్‌ను అన్వయించడం సాధ్యం కాలేదు"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "అక్రోమాటోప్సియా"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "'విస్మరించు' లిస్ట్‌కు కంటెంట్ స్క్రిప్ట్‌లు అన్నింటినీ జోడించండి"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "'విస్మరించు' లిస్ట్‌కు అన్ని థర్డ్-పార్టీ స్క్రిప్ట్‌లను జోడించండి"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "'విస్మరించు' లిస్ట్‌కు డైరెక్టరీని జోడించండి"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "'విస్మరించు' లిస్ట్‌కు స్క్రిప్ట్‌ను జోడించండి"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "నోటిఫికేషన్ APIకి అనుమతిని ఇకపై క్రాస్-ఆరిజిన్ iframe నుండి రిక్వెస్ట్ చేయలేకపోవచ్చు. టాప్ లెవెల్ ఫ్రేమ్ నుండి అనుమతిని రిక్వెస్ట్ చేయడాన్ని, లేదా బదులుగా కొత్త విండోను తెరవడాన్ని పరిగణించండి."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmapలో ఆప్షన్ imageOrientation: \"none\" విస్మరించబడింది. బదులుగా దయచేసి {imageOrientation: \"from-image\"} ఆప్షన్‌తో createImageBitmapను ఉపయోగించండి."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "మీ పార్ట్‌నర్ వాడుకలో లేని (D)TLS వెర్షన్‌ను ఉపయోగిస్తున్నారు. దీనిని పరిష్కరించడం గురించి దయచేసి మీ పార్ట్‌నర్‌తో సంప్రదించండి."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo విస్మరించబడింది. బదులుగా దయచేసి ప్రామాణిక navigator.storage‌ను ఉపయోగించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "మేము API chrome.privacy.websites.privacySandboxEnabled‌ను విస్మరిస్తున్నాము, అయినప్పటికీ M113 రిలీజ్ అయ్యే వరకు పాత బ్రౌజర్‌లతో అనుకూలంగా ఉండటం కోసం ఇది యాక్టివ్‌గానే ఉంటుంది. బదులుగా, దయచేసి chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled, chrome.privacy.websites.adMeasurementEnabled‌ను ఉపయోగించండి. ఈ లింక్‌ను చూడండి https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "సబ్‌రిసోర్స్ రిక్వెస్ట్‌లు వేటి URLలు అయితే పొందుపరిచిన ఆధారాలు (ఉదా. https://user:pass@host/) కలిగి ఉన్నాయో, అవి బ్లాక్ చేయబడ్డాయి."
@@ -2313,7 +2319,7 @@
     "message": "మ్యానిఫెస్ట్ 'name' లేదా 'short_name' ఫీల్డ్ కలిగి ఉండదు"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "మ్యానిఫెస్ట్‌లో తగిన చిహ్నం లేదు - కనీసం {PH1}px ఉండే PNG, లేదా SVG ఫార్మాట్ అవసరం, 'sizes' లక్షణాన్ని తప్పనిసరిగా సెట్ చేయాలి, 'purpose' లక్షణాన్ని సెట్ చేసి ఉంటే, తప్పనిసరిగా 'any'ను కలిగి ఉండాలి."
+    "message": "మ్యానిఫెస్ట్‌లో తగిన చిహ్నం లేదు - కనీసం {PH1}px ఉండే PNG, SVG లేదా WebP ఫార్మాట్ అవసరం, sizes లక్షణాన్ని తప్పనిసరిగా సెట్ చేయాలి, అలాగే purpose లక్షణం, సెట్ చేసి ఉంటే, తప్పనిసరిగా any ఎంపికను కలిగి ఉండాలి."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "మ్యానిఫెస్ట్ 'prefer_related_applications: నిజం' అని పేర్కొంది"
@@ -2337,7 +2343,7 @@
     "message": "Play Store IDని అందించలేదు"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "దాని ప్రయోజన లక్షణం అన్‌సెట్ చేయబడి గానీ లేదా 'any'కు సెట్ చేయబడి గానీ ఉన్న, కనీసం {PH1} పిక్సెల్స్ స్క్వేర్‌తో PNG, లేదాSVG ఫార్మాట్‌లోని చిహ్నం ఏదీ అందించబడలేదు."
+    "message": "దాని ప్రయోజన లక్షణం అన్‌సెట్ చేయబడి గానీ లేదా 'any'కు సెట్ చేయబడి గానీ ఉన్న, కనీసం {PH1} పిక్సెల్స్ స్క్వేర్‌తో ఉన్న చిహ్నం ఏదీ PNG, SVG, లేదా WebP ఫార్మాట్‌లో అందించబడలేదు."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "గమనిక:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "రూపం రంగు"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "వెనుకకు/ముందుకు కాష్"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "కాష్ స్టోరేజ్"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "తొలగించండి"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "కాష్‌లను రిఫ్రెష్ చేయండి"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "ప్రీఫెచింగ్ & ప్రీరెండరింగ్"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: మ్యానిఫెస్ట్‌లోని ఈ విభాగానికి స్క్రోల్ చేయడానికి రిక్వెస్ట్ చేయండి"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "కాష్"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "క్లియర్ చేయండి"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "వర్కర్"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "వెనుకకు/ముందుకు కాష్"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "బ్యాక్‌గ్రౌండ్‌లో పొందు"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "రిపోర్టింగ్ API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "కాష్ స్టోరేజ్"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "తొలగించండి"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "కాష్‌లను రిఫ్రెష్ చేయండి"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "కాష్"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "ఆరిజిన్"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "బడ్జెట్‌ను రీసెట్ చేయండి"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "షేర్ చేయబడిన స్టోరేజ్"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "ప్రీరెండరింగ్"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools తెరిచి ఉన్న కారణంగా ప్రీలోడింగ్ ఫోర్స్-ఎనేబుల్ చేయబడింది. DevToolsను మూసివేసినప్పుడు, ప్రీరెండరింగ్ డిజేబుల్ చేయబడుతుంది, ఎందుకంటే ఈ బ్రౌజర్ సెషన్, పనితీరును సరిపోల్చడం కోసం ఉపయోగించే హోల్డ్‌బ్యాక్ గ్రూప్‌లో భాగం."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools తెరిచి ఉన్న కారణంగా ప్రీరెండరింగ్ ఫోర్స్-ఎనేబుల్ చేయబడింది. DevToolsను మూసివేసినప్పుడు, ప్రీరెండరింగ్ డిజేబుల్ చేయబడుతుంది, ఎందుకంటే ఈ బ్రౌజర్ సెషన్, పనితీరును సరిపోల్చడం కోసం ఉపయోగించే హోల్డ్‌బ్యాక్ గ్రూప్‌లో భాగం."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "ప్రీలోడింగ్ డిజేబుల్ చేయబడింది, కానీ ఇప్పుడు అది ఫోర్స్-ఎనేబుల్ చేయబడింది"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "ప్రీరెండరింగ్ డిజేబుల్ చేయబడింది, కానీ ఇప్పుడు అది ఫోర్స్-ఎనేబుల్ చేయబడింది"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "ప్రాథమిక సమాచారం"
@@ -8133,7 +8151,7 @@
     "message": "హెడర్‌ను ఓవర్‌రైడ్ చేయండి"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "హెడర్ పేర్లలో కేవలం అక్షరాలు, అంకెలు, డాష్‌లు లేదా అండర్‌స్కోర్‌లు మాత్రమే ఉండాలి"
+    "message": "హెడర్ పేర్లలో కేవలం అక్షరాలు, అంకెలు, హైఫన్‌లు, లేదా అండర్‌స్కోర్‌లు మాత్రమే ఉండాలి"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "సేవ్ చేయండి"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "టార్గెట్‌ను ఎంచుకోండి"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ప్రాసెస్ చేయని CDP కమాండ్‌ను పంపండి"
   },
@@ -9888,7 +9909,7 @@
     "message": "బ్రాండ్ అడ్డు వరుస జోడించబడింది"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ఆర్కిటెక్చర్"
+    "message": "ఆర్కిటెక్చర్ (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ఆర్కిటెక్చర్ (ఉదా. x86)"
@@ -9903,13 +9924,13 @@
     "message": "{PH1} బ్రాండ్"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "బ్రాండ్ ప్రాపర్టీలు"
+    "message": "వెబ్‌సైట్ యాక్సెస్ సాధనం యొక్క ప్రాపర్టీలు"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "వెర్షన్ {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "బ్రాండ్‌లు"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "వెర్షన్ (e.g. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "తొలగించండి"
@@ -9918,16 +9939,19 @@
     "message": "బ్రాండ్ అడ్డు వరుస తొలగించబడింది"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "పరికరం మోడల్"
+    "message": "పరికర మోడల్ (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "పరికర ప్రాపర్టీలు"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "పూర్తి బ్రౌజర్ వెర్షన్"
+    "message": "పూర్తి బ్రౌజర్ వెర్షన్ (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "పూర్తి బ్రౌజర్ వెర్షన్ (ఉదా. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "పూర్తి వెర్షన్ లిస్ట్ (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "మొబైల్"
@@ -9936,7 +9960,7 @@
     "message": "నిర్మాణాత్మక హెడర్‌ల స్ట్రింగ్‌లాగా ప్రాతినిధ్యం వహించదు."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "ప్లాట్‌ఫామ్"
+    "message": "ప్లాట్‌ఫామ్ (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "ప్లాట్‌ఫామ్ (ఉదా. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "ప్లాట్‌ఫారమ్ వెర్షన్"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "ముఖ్యమైన వెర్షన్ (e.g. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "వెబ్‌సైట్ యాక్సెస్ సాధన క్లయింట్ సూచనలు"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "వెబ్‌సైట్ యాక్సెస్ సాధన క్లయింట్ సూచనలు బ్రౌజర్, పరికరాన్ని మెరుగైన గోప్యతా అకౌంటింగ్‌తో మరింత నిర్మాణాత్మకంగా గుర్తించే వెబ్‌సైట్ యాక్సెస్ సాధన స్ట్రింగ్‌కు ప్రత్యామ్నాయం. మరింత తెలుసుకోవడానికి బటన్‌ను నొక్కండి."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "వెర్షన్"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "వెబ్‌సైట్ యాక్సెస్ సాధనం (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "పరికరాలు"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "పాజ్ చేసే ముందు చెక్ చేసే ఎక్స్‌ప్రెషన్, ఉదా. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "వీటి గురించి మరింత తెలుసుకోండి: బ్రేక్ పాయింట్ రకాలు"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "మెసేజ్‌ను కన్సోల్‌లోకి లాగ్ చేయండి, బ్రేక్ చేయకండి"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "enterను నొక్కి, క్రమపద్ధతిలో అమర్చే ఫిల్టర్‌ను వర్తింపజేయండి"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "హెడర్ ఆప్షన్‌లు"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "దీని ఆధారంగా క్రమపద్ధతిలో అమర్చు"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} ఆరోహణ క్రమంలో అమర్చబడింది"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} అవరోహణ క్రమంలో అమర్చబడింది"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1}‌ను క్రమపద్ధతిలో అమర్చడం రద్దు చేయబడింది"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} మ్యాచ్ అయ్యే లైన్‌లను స్కిప్ చేస్తోంది … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "తక్కువ కాంట్రాస్ట్ సమస్యను పరిష్కరించడానికి సూచించిన రంగు {PH1}ను ఉపయోగించండి"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "ఫార్మాట్ పరిధికి మ్యాచ్ అవ్వడం కోసం ఈ రంగు క్లిప్ చేయబడింది. అసలు ఫలితం {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "పాలెట్‌కు జోడిస్తుంది"

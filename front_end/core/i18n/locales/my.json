@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "ရပ်နေသည်"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} အတွက် အကြောင်းအရာကို ဖွင့်၍မရပါ- {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1} အတွက် အကြောင်းအရာကို ခွဲခြမ်းစိတ်ဖြာ၍မရပါ- {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "အရောင်မခွဲခြားနိုင်ခြင်း"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "အကြောင်းအရာ script အားလုံးကို လျစ်လျူရှုစာရင်းတွင် ထည့်ရန်"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "ပြင်ပကုမ္ပဏီ script များကို လျစ်လျူရှုစာရင်းတွင်ထည့်ရန်"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "ဖိုင်လမ်းညွှန်ကို လျစ်လျူရှုစာရင်းတွင်ထည့်ရန်"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Script ကို လျစ်လျူရှုစာရင်းတွင် ထည့်ရန်"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "‘အကြောင်းကြားချက် API’ အတွက် ခွင့်ပြုချက်ကို iframe ဇာစ်မြစ်များကြားတွင် တောင်းဆိုမည် မဟုတ်တော့ပါ။ ထိပ်ဆုံးအဆင့် ဖရိမ်တစ်ခုမှ ခွင့်ပြုချက်တောင်းရန် (သို့) ဝင်းဒိုးသစ်တစ်ခုဖွင့်ရန် စဉ်းစားသင့်သည်။"
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap ရှိ imageOrientation: \"none\" ရွေးချယ်စရာကို ဆက်မသုံးတော့ပါ။ ၎င်းအစား {imageOrientation: \"from-image\"} ရွေးချယ်စရာ ပါဝင်သည့် createImageBitmap ကိုသုံးပါ။"
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "သင့်ပါတနာသည် (D)TLS ဗားရှင်းအဟောင်းကို ဆက်သုံးနေသည်။ ၎င်းကိုဖြေရှင်းရန် သင့်ပါတနာနှင့် ဆက်သွယ်ပါ။"
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား စံသတ်မှတ်ထားသည့် navigator.storage ကို အသုံးပြုပါ။"
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "API chrome.privacy.websites.privacySandboxEnabled ကို ရပ်ဆိုင်းတော့မည် ဖြစ်သော်လည်း M113 ဖြန့်ချိမှု မတိုင်မီအထိ ယခင်စနစ်နှင့် တွဲဖက်သုံးနိုင်ရန်အတွက် ဆက်လက်ထားရှိပါမည်။ ၎င်းအစား chrome.privacy.websites.topicsEnabled၊ chrome.privacy.websites.fledgeEnabled နှင့် chrome.privacy.websites.adMeasurementEnabled တို့ကို အသုံးပြုပါ။ https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled တွင်ကြည့်ပါ။"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "ရင်းမြစ်ခွဲ တောင်းဆိုမှုများ၏ URL များတွင် ပါဝင်သော မြှုပ်သွင်းထားသည့် အထောက်အထားများ (ဥပမာ- https://user:pass@host/) ကို ပိတ်ထားသည်။"
@@ -2313,7 +2319,7 @@
     "message": "မန်နီးဖက်စ်တွင် ‘name’ (သို့) ‘short_name’ အကွက် မပါဝင်ပါ"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "မန်နီးဖက်စ်တွင် အနည်းဆုံး {PH1}px သတ်မှတ်ထားသည့် PNG (သို့) SVG ဖော်မက်ရှိသည့် သင့်လျော်သောသင်္ကေတမပါရှိပါ။ ‘sizes’ ရည်ညွှန်းချက် သတ်မှတ်ပေးရမည်ဖြစ်ပြီး ‘purpose’ ရည်ညွှန်းချက် သတ်မှတ်လိုက်ပါက ‘any’ ပါရှိရမည်။"
+    "message": "မန်နီးဖက်စ်တွင် သင့်လျော်သောသင်္ကေတ မပါဝင်ပါ - အနည်းဆုံး {PH1}px ရှိသည့် PNG၊ SVG (သို့) WebP ဖော်မက် လိုအပ်သည်။ 'sizes' ရည်ညွှန်းချက် ထည့်သွင်းရမည်ဖြစ်ပြီး 'purpose' ရည်ညွှန်းချက်ကို ထည့်သွင်းထားပါက 'any' ပါဝင်ရမည်။"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "မန်နီးဖက်စ်က ‘prefer_related_applications- အမှန်’ ဟု သတ်မှတ်သည်"
@@ -2337,7 +2343,7 @@
     "message": "Play Store ID ပေးမထားပါ"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "ရည်ရွယ်ချက်၏ ရည်ညွှန်းချက်ကို သတ်မှတ်မထားသော (သို့) ‘any’ အဖြစ် သတ်မှတ်ထားသော အနည်းဆုံး PNG (သို့) SVG ဖော်မက်ဖြင့် {PH1} စတုရန်းပစ်ဆယ်ရှိသည့် ပံ့ပိုးထားသောသင်္ကေတ မရှိပါ။"
+    "message": "ရည်ရွယ်ချက်၏ ရည်ညွှန်းချက်ကို ထည့်သွင်းမထားဘဲ (သို့) 'any' အဖြစ် သတ်မှတ်ထားပြီး အနည်းဆုံး {PH1} စတုရန်းပစ်ဆယ်နှင့် PNG၊ SVG (သို့) WebP ဖော်မက်ရှိသည့် ပံ့ပိုးထားသောသင်္ကေတ မရှိပါ။"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "မှတ်ချက်−"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "အပြင်အဆင် အရောင်"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "ရှေ့-နောက် ကက်ရှ်"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "ကက်ရှ် သိုလှောင်ခန်း"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "ဖျက်ရန်"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "ကက်ရှ်များ ပြန်လည်စတင်ရန်"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "ကြိုတင်ရယူခြင်းနှင့် ကြိုတင်ပုံဖော်ခြင်း"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}- မန်နီးဖက်စ်တွင် ဤကဏ္ဍသို့လှိမ့်ရန် ညွှန်ကြားသည်"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "ကက်ရှ်"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "ရှင်းထုတ်ရန်"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "လုပ်သား"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "ရှေ့-နောက် ကက်ရှ်"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "နောက်ခံတွင် ရယူမှု"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API အစီရင်ခံခြင်း"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "ကက်ရှ် သိုလှောင်ခန်း"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "ဖျက်ရန်"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "ကက်ရှ်များ ပြန်လည်စတင်ရန်"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "ကက်ရှ်"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "ဇာစ်မြစ်"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "အသုံးစရိတ် ပြင်ဆင်သတ်မှတ်ရန်"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "မျှသုံးသိုလှောင်ခန်း"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "ကြိုတင်ပုံဖော်ခြင်း"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "‘ဆောဖ့်ဝဲတူးလ်များ’ ဖွင့်ထားသဖြင့် ကြိုဖွင့်ခြင်းကို အတင်းအကျပ် ဖွင့်ထားသည်။ ဤဘရောင်ဇာစက်ရှင်သည် စွမ်းဆောင်ရည်နှိုင်းယှဉ်ခြင်းများအတွက် အသုံးပြုထားသည့် ထိန်းချုပ်အုပ်စု၏ တစ်စိတ်တစ်ပိုင်းဖြစ်သောကြောင့် ‘ဆောဖ့်ဝဲတူးလ်များ’ ပိတ်ထားသောအခါ ကြိုတင်ပုံဖော်ခြင်းကို ပိတ်ပါမည်။"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "‘ဆောဖ့်ဝဲတူးလ်များ’ ဖွင့်ထားသဖြင့် ကြိုတင်ပုံဖော်ခြင်းကို အတင်းအကျပ် ဖွင့်ထားသည်။ ဤဘရောင်ဇာစက်ရှင်သည် စွမ်းဆောင်ရည်နှိုင်းယှဉ်ခြင်းများအတွက် အသုံးပြုထားသည့် ထိန်းချုပ်အုပ်စု၏ တစ်စိတ်တစ်ပိုင်းဖြစ်သောကြောင့် ‘ဆောဖ့်ဝဲတူးလ်များ’ ပိတ်ထားသောအခါ ကြိုတင်ပုံဖော်ခြင်းကို ပိတ်ပါမည်။"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "ကြိုဖွင့်ခြင်းကို ပိတ်ထားသော်လည်း ယခုအတင်းအကျပ် ဖွင့်လိုက်သည်"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းကို ပိတ်ထားသော်လည်း ယခုအတင်းအကျပ် ဖွင့်လိုက်သည်"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "အခြေခံ အချက်အလက်များ"
@@ -8133,7 +8151,7 @@
     "message": "ခေါင်းစီး အစားထိုးရန်"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "ခေါင်းစီးအမည်များတွင် စာလုံး၊ ဂဏန်း၊ မျဉ်းတို (သို့) အောက်မျဉ်းများသာ ပါဝင်ရမည်"
+    "message": "ခေါင်းစီးအမည်တွင် စာလုံး၊ ဂဏန်း၊ တုံးတို (သို့) အောက်မျဉ်းများသာ ပါဝင်ရမည်"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "သိမ်းရန်"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "ပစ်မှတ်ရွေးရန်"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "CDP ကွန်မန်း အကြမ်း ပို့ရန်"
   },
@@ -9888,7 +9909,7 @@
     "message": "အမှတ်တံဆိပ်အတန်း ထည့်ပြီးပြီ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "တည်ဆောက်ပုံ"
+    "message": "တည်ဆောက်ပုံ (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "တည်ဆောက်ပုံ (ဥပမာ x86)"
@@ -9903,13 +9924,13 @@
     "message": "အမှတ်တံဆိပ် {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "အမှတ်တံဆိပ် သတ်မှတ်ချက်များ"
+    "message": "အသုံးပြုသူအေးဂျင့်ဆိုင်ရာ သတ်မှတ်ချက်များ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "ဗားရှင်း {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "အမှတ်တံဆိပ်များ"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "ဗားရှင်း (ဥပမာ 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "ဖျက်ရန်"
@@ -9918,16 +9939,19 @@
     "message": "အမှတ်တံဆိပ်အတန်း ဖျက်ပြီးပြီ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "စက် မော်ဒယ်"
+    "message": "စက်မော်ဒယ် (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "စက်သတ်မှတ်ချက်များ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "ဘရောင်ဇာဗားရှင်း အပြည့်အစုံ"
+    "message": "ဘရောင်ဇာဗားရှင်း အပြည့်အစုံ (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "ဘရောင်ဇာဗားရှင်း အပြည့်အစုံ (ဥပမာ 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "ဗားရှင်းစာရင်း အပြည့်အစုံ (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "မိုဘိုင်း"
@@ -9936,7 +9960,7 @@
     "message": "ပုံစံတကျ ခေါင်းစီးစာကြောင်းအဖြစ် ကိုယ်စားမပြုနိုင်ပါ။"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "ပလက်ဖောင်း"
+    "message": "စနစ် (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "စနစ် (ဥပမာ Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "ပလက်ဖောင်း ဗားရှင်း"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "ထင်ရှားသည့် ဗားရှင်း (ဥပမာ 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ် ကလိုင်းယင့် အရိပ်အမြွက်များ"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ် ကလိုင်းယင့် အရိပ်အမြွက်များသည် ပိုကောင်းမွန်သော ပုဂ္ဂိုလ်ရေးလုံခြုံမှုတာဝန်ခံယူချက် ပါဝင်သည့် ပုံစံတကျနည်းလမ်းဖြင့် ဘရောင်ဇာနှင့် စက်ကို စိစစ်သတ်မှတ်ပေးသော ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ်ဆိုင်ရာ လိုင်းအတွက် အစားထိုးနည်းလမ်းတစ်ခု ဖြစ်သည်။ ပိုမိုလေ့လာရန် ခလုတ်ကို နှိပ်ပါ။"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "ဗားရှင်း"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "အသုံးပြုသူ အေးဂျင့် (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "စက်များ"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "ခဏမရပ်မီ စစ်ဆေးရန် ဖော်ပြချက်၊ ဥပမာ x > ၅"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "ပိုမိုလေ့လာရန်- ဖြတ်တောက်မှတ် အမျိုးအစားများ"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "ကွန်ဆိုးလ်တွင် မက်ဆေ့ဂျ်ကို မှတ်တမ်းတင်ပါ၊ မဖြတ်တောက်ပါနှင့်"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "အစီအစဉ်တကျစီသည့် စစ်ထုတ်မှုသုံးရန် Enter ခလုတ် နှိပ်ပါ"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ခေါင်းစီး ရွေးစရာများ"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "စီရန်"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} ငယ်စဉ်ကြီးလိုက် စီထားသည်"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} ကို ကြီးစဉ်ငယ်လိုက် စီထားသည်"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} အစီအစဉ်တကျ စီခြင်းကို ပယ်ဖျက်လိုက်သည်"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … တူညီသောစာကြောင်း {PH1} ကြောင်းကို ကျော်ခြင်း … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "အရောင်ခြားနားချက် နိမ့်ခြင်းကို ပြင်ဆင်ရန် အကြံပြုထားသောအရောင် {PH1} သုံးရန်"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "ပုံစံ၏ အရောင်အပိုင်းအခြားနှင့် တူညီရန် ဤအရောင်ကို ပိုင်းခြားထားသည်။ ရလဒ်အမှန်မှာ {PH1} ဖြစ်သည်"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "အရောင်အစုအဖွဲ့တွင် ထည့်ရန်"

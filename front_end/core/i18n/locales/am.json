@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "በማቆም ላይ"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "ለ{PH1} ይዘትን መጫን አልተቻለም፦ {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "ይዘትን ለ{PH1} መተንተን አልተቻለም፦ {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "አክሮማቶፕሲያ"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "ሁሉንም የይዘት ስክሪፕቶችን ወደ ችላ የሚባሉ ዝርዝር አክል"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "ሁሉንም የሦስተኛ ወገን ስክሪፕቶች ችላ ወደሚባል ዝርዝር ያክሉ"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "ማውጫን ችላ ወደሚባል ዝርዝር ያክሉ"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "ዝርዝርን ችላ ለማለት ስክሪፕት ያክሉ"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "የማሳወቂያ ኤፒአይ ፈቃድ ከአሁን በኋላ ከ መነሻ-ተሻጋሪ iframe ሊጠየቅ አይችልም። ከከፍተኛ ደረጃ ክፍለ ገጸ ድር ፈቃድ ለመጠየቅ ወይም በምትኩ አዲስ መስኮት መክፈትን ያስቡበት።"
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "በcreateImageBitmap ውስጥ አማራጭ imageOrientation: \"none\" ተቋርጧል። እባክዎ በምትኩ createImageBitmapን ከ {imageOrientation: \"from-image\"} አማራጭ ጋር ይጠቀሙ።"
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "አጋርዎ ጊዜው ያለፈበት (D)ቲኤልኤስ ስሪት እየተደራደረ ነው። እባክዎ ይህ እንዲስተካከል ከባልደረባዎ ጋር ያረጋግጡ።"
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo ተቋርጧል። እባክዎ በምትኩ ደረጃውን የጠበቀውን navigator.storage ይጠቀሙ።"
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "chrome.privacy.websites.privacySandboxEnabled ኤፒአይን እያቋረጥን ነው፣ ቢሆንም እስከ ልቀት M113 ድረስ ለኋላ ተኳዃኝነት ንቁ ሆኖ ይቆያል። በምትኩ እባክዎ chrome.privacy.websites.topicsEnabled፣ chrome.privacy.websites.fledgeEnabled እና chrome.privacy.websites.adMeasurementEnabledን ይጠቀሙ። https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabledን ይመልከቱ።"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "ዩአርኤሎቻቸው የተካተቱ የመግቢያ ማስረጃዎችን (ምሳሌ፦ https://user:pass@host/) የያዙ የንዑስ ምንጭ ጥያቄዎች ታግደዋል።"
@@ -2313,7 +2319,7 @@
     "message": "የዝርዝር ሰነድ «name» ወይም «short_name»መስክ የለውም"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "የዝርዝር ሰነድ ተገቢነት ያለው አዶ አልያዘም - ቢያንስ {PH1} ፒክስል PNG ወይም SVG ቅርጸት ያስፈልጋል፤ የ«sizes» መገለጫ ባህሪው መቀናበር አለበት እና የ«purpose» መገለጫ ባህሪው ከተቀናበረ «any»ን ማካተት አለበት።"
+    "message": "የዝርዝር ሰነድ ተገቢነት ያለው አዶ አልያዘም - ቢያንስ {PH1} ፒክስል PNG፣ SVG ወይም WebP ቅርጸት ያስፈልጋል፣ የ«sizes» መገለጫ ባህሪው መቀናበር አለበት እና የ«purpose» መገለጫ ባህሪው ከተቀናበረ «any»ን ማካተት አለበት።"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "የዝርዝር ሰነድ «prefer_related_applications፦ እውነት»ን ይገልጻል"
@@ -2337,7 +2343,7 @@
     "message": "ምንም የPlay መደብር መታወቂያ አልተሰጠም"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "የዓላማ መገለጫ ባህሪው ያልተቀናበረ ወይም ወደ any የተቀናበረ ሆኖ በPNG ወይም SVG ቅርጸት ላይ ቢያንስ {PH1} ፒክስል ካሬ የሆነ የቀረበ አዶ የለም።"
+    "message": "የዓላማ መገለጫ ባህሪው ያልተቀናበረ ወይም ወደ «any»  የተቀናበረ ሆኖ በPNG፣ SVG ወይም WebP ቅርጸት ውስጥ ቢያንስ {PH1} ፒክስል ካሬ የሆነ የቀረበ አዶ የለም።"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "ማስታወሻ፦"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "የገጽታ ቀለም"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "የጀርባ/ፊት መሸጎጫ"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "የመሸጎጫ ማከማቻ"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "ሰርዝ"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "መሸጎጫዎችን ዓድስ"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "አስቀድሞ ማምጣት እና ቅድመ-ምስል መስራት"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}፦ በየዝርዝር ሰነድ ውስጥ ወደዚህ ክፍል ለማሸብለል ጥራ"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "መሸጎጫ"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "አጽዳ"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ሠራተኛ"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "የጀርባ/ፊት መሸጎጫ"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "የዳራ አወጣ"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "ኤፒአይ ሪፖርት ማድረግ"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "የመሸጎጫ ማከማቻ"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "ሰርዝ"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "መሸጎጫዎችን ዓድስ"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "መሸጎጫ"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "ምንጭ"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "በጀትን ዳግም አስጀምር"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "የተጋራ ማከማቻ"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "ቅድመ-ምስል ስራ"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools ክፍት ስለሆነ ቅድሚያ በመጫን ላይ በግዳጅ ነቅቷል። DevTools ዝግ በሚሆንበት ጊዜ ቅድመ-ምስል ሥራ ይሰናከላል፣ ምክንያቱም ይህ የአሳሽ ክፍለ ጊዜ ለአፈጻጸም ንጽጽሮች ሥራ ላይ የሚውል የታቃቢ ቡድን አንድ አካል ነው።"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools ክፍት ስለሆነ ቅድመ-ምስል ሥራ በግዳጅ ነቅቷል። DevTools ዝግ በሚሆንበት ጊዜ ቅድመ-ምስል ሥራ ይሰናከላል፣ ምክንያቱም ይህ የአሳሽ ክፍለ ጊዜ ለአፈጻጸም ንጽጽሮች ሥራ ላይ የሚውል የታቃቢ ቡድን አንድ አካል ነው።"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "ቅድሚያ በመጫን ላይ ተሰናክሎ ነበር፣ ነገር ግን አሁን ላይ በግዳጅ ነቅቷል"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "ቅድመ-ምስል ሥራ ተሰናክሎ ነበር፣ ነገር ግን አሁን ላይ በግዳጅ ነቅቷል"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "መሠረታዊ መረጃ"
@@ -8133,7 +8151,7 @@
     "message": "ራስጌን ሻር"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "ራስጌ ስሞች ፊደሎች፣ አሃዞች፣ ዳሾች ወይም የሥር መስመሮችን ብቻ መያዝ አለባቸው"
+    "message": "የራስጌ ስሞች ፊደሎች፣ አሃዞች፣ ሰረዞች ወይም የሥር መስመሮችን ብቻ መያዝ አለባቸው"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "የበለጠ ለመረዳት"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "አስቀምጥ"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "ዒላማ ይምረጡ"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ጥሬ የCDP ትዕዛዝ ላክ"
   },
@@ -9888,7 +9909,7 @@
     "message": "የምርት ስም ረድፍ ታክሏል"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ሥነ ህንፃ"
+    "message": "ስነ-ሕንጻ (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "መዋቅረ ኮምፒውተር (ለምሳሌ፦ x86)"
@@ -9903,13 +9924,13 @@
     "message": "የምርት ስም {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "የምርት ስም ባህሪዎች"
+    "message": "የተጠቃሚ ወኪል ባህሪያት"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "ስሪት {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "የምርት ስሞች"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "ስሪት (ለምሳሌ 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "ሰርዝ"
@@ -9918,16 +9939,19 @@
     "message": "የምርት ስም ረድፍ ተሰርዟል"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "የመሣሪያ ሞዴል"
+    "message": "የመሣሪያ ሞዴል (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "የመሣሪያ ባህሪዎች"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "ሙሉ የአሳሽ ስሪት"
+    "message": "ሙሉ የአሳሽ ስሪት (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "ሙሉ የአሳሽ ስሪት (ለምሳሌ፦ 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "የሙሉ ስሪት ዝርዝር (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "ተንቀሳቃሽ ስልክ"
@@ -9936,7 +9960,7 @@
     "message": "እንደ ተዋቀረ የራስጌዎች ሕብረቁምፊ አይወክልም።"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "መሠረተ ሥርዓት"
+    "message": "መሰረተ ስርዓት (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "መሰረተ ስርዓት (ለምሳሌ፦ Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "የመሰረተ ስርዓት ሥሪት"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "ጉልህ ስሪት (ለምሳሌ 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "የተጠቃሚ ወኪል ደንበኛ ፍንጮች"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "የተጠቃሚ ወኪል ደንበኛ ፍንጮች በተሻለ የግላዊነት መለያ አማካኝነት አሳሹን እና መሣሪያውን በተሻለ በተዋቀረ መልኩ ለይቶ የሚያውቅ የተጠቃሚ ወኪል ሕብረቁምፊ አማራጭ ነው። የበለጠ ለመረዳት አዝራርን ጠቅ ያድርጉ።"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "ስሪት"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "የተጠቃሚ ወኪል (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "መሣሪያዎች"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "ከማቆሙ በፊት የሚጣራ አገላለጽ ለምሳሌ x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "የበለጠ ለመረዳት፦ የመግቻ ቦታ ዓይነቶች"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "አንድ መልዕክት ወደ Console ያስግቡ፣ አይግቱ"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "የመደርደሪያን ማጣሪያ ለመተግበር አስገባን ይጫኑ"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "የራስጌ አማራጮች"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ደርድር በ"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} እየጨመረ በሚሄድ ቅደም ተከተል ተደርድሯል"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} እየቀነሰ በሚሄድ ቅደም-ተከተል ተደርድሯል"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} መደርደር ተሰርዟል"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} የተጣጣሙ መስመሮች መዝለል … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "ዝቅተኛ ንጽጽርን ለማስተካከል በአስተያየት የተጠቆመውን {PH1} ቀለም ይጠቀሙ"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "ይህ ቀለም ከቅርጸቱ ክልል ጋር እንዲመሳሰል ተቀንጥቧል። ትክክለኛው ውጤት {PH1} ነበር"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "ወደ ቤተ-ሥዕል አክል"

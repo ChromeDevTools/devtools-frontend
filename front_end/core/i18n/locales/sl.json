@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "ustavljanje"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Ni bilo mogoče naložiti vsebine za {PH1}: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Vsebine za {PH1} ni bilo mogoče razčleniti: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Akromatopsija"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Dodaj vse skripte vsebine na seznam prezrtih"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Dodaj vse skripte drugih ponudnikov na seznam prezrtih"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Dodajanje imenika na seznam prezrtih"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Dodaj skript na seznam prezrtih"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Dovoljenja za obvestilni API ni več mogoče zahtevati iz elementa iframe iz več izvorov. Razmislite o tem, da bi namesto tega zahtevali dovoljenje od okvira na visoki ravni ali odprli novo okno."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Možnost »imageOrientation: \"none\"« v elementu »createImageBitmap« je zastarela. Namesto tega uporabite element »imageImageBitmap« z možnostjo {imageOrientation: \"from-image\"}."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Vaš partner poskuša pri pogajanju uporabiti zastarelo različico (D)TLS. Obrnite se na partnerja, da to popravi."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "Možnost »window.webkitStorageInfo« je zastarela. Namesto tega uporabite standardizirano navigator.storage."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "API chrome.privacy.websites.privacySandboxEnabled bo označen kot zastarel, vendar bo do izdaje različice M113 aktiven zaradi povratne združljivosti. Namesto tega API-ja uporabite chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled in chrome.privacy.websites.adMeasurementEnabled. Glejte https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Zahteve za podsredstva, katerih URL-ji vsebujejo vdelane poverilnice (npr. »https://user:pass@host/«), so blokirane."
@@ -2313,7 +2319,7 @@
     "message": "Manifest ne vsebuje polja »name« ali »short_name«"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest ne vsebuje ustrezne ikone – zahtevana je oblika PNG ali SVG z najmanj toliko slikovnimi pikami: {PH1}. Nastaviti je treba tudi atribut »sizes«, če je nastavljen atribut »purpose«, pa mora vključevati »any«."
+    "message": "Manifest ne vsebuje ustrezne ikone – zahtevana je oblika PNG, SVG ali WebP z najmanj toliko slikovnimi pikami: {PH1}. Nastaviti je treba tudi atribut »sizes«, če je nastavljen atribut »purpose«, pa mora vključevati »any«."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifest določa »prefer_related_applications: true«"
@@ -2337,7 +2343,7 @@
     "message": "ID Trgovine Play ni naveden"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Nobena priložena ikona ni v obliki PNG ali SVG in ni kvadrat najmanj toliko slikovnih pik: {PH1}, pri čemer atribut namena ni nastavljen oziroma je nastavljen na »any«."
+    "message": "Nobena priložena ikona ni v obliki PNG, SVG ali WebP in ni kvadrat najmanj toliko slikovnih pik: {PH1}, pri čemer atribut namena ni nastavljen oziroma je nastavljen na »any«."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Opomba:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Barva teme"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Predpomnilnik za hitro obnovitev strani"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Shramba predpomnilnika"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Izbriši"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Osveži predpomnilnike"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Vnaprejšnje pridobivanje in vnaprejšnje upodabljanje"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: sprožite za pomik na ta razdelek v manifestu"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Predpomnilnik"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Izbriši"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "proces"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Predpomnilnik za hitro obnovitev strani"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Prenos v ozadju"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API za poročanje"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Shramba predpomnilnika"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Izbriši"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Osveži predpomnilnike"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Predpomnilnik"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Izvor"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Ponastavi proračun"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Deljena shramba"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Vnaprejšnje upodabljanje"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Vnaprejšnje nalaganje je vsiljeno omogočeno, ker so odprta orodja za razvijalce. Ko so orodja za razvijalce zaprta, je vnaprejšnje upodabljanje onemogočeno, ker je ta seja brskalnika del skupine, ki se uporablja za primerjave uspešnosti."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Vnaprejšnje upodabljanje je vsiljeno omogočeno, ker so odprta orodja za razvijalce. Ko so orodja za razvijalce zaprta, je vnaprejšnje upodabljanje onemogočeno, ker je ta seja brskalnika del skupine, ki se uporablja za primerjave uspešnosti."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Vnaprejšnje nalaganje je bilo onemogočeno, vendar je zdaj vsiljeno omogočeno"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Vnaprejšnje upodabljanje je bilo onemogočeno, vendar je zdaj vsiljeno omogočeno"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Osnovni podatki"
@@ -8133,7 +8151,7 @@
     "message": "Preglasitev glave"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Imena naslovov morajo vsebovati samo črke, števke, pomišljaje ali podčrtaje."
+    "message": "Imena naslovov morajo vsebovati samo črke, števke, vezaje ali podčrtaje."
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Več o tem"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Shrani"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Izberite cilj"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Pošiljanje neobdelanega ukaza CDP"
   },
@@ -9888,7 +9909,7 @@
     "message": "Vrstica blagovne znamke je bila dodana."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arhitektura"
+    "message": "Arhitektura (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arhitektura (npr. x86)"
@@ -9903,13 +9924,13 @@
     "message": "Blagovna znamka {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Lastnosti blagovne znamke"
+    "message": "Lastnosti uporabnikovega posrednika"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Različica {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Blagovne znamke"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Različica (npr. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Izbriši"
@@ -9918,16 +9939,19 @@
     "message": "Vrstica blagovne znamke je bila izbrisana."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Model naprave"
+    "message": "Model naprave (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Lastnosti naprave"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Popolna različica brskalnika"
+    "message": "Polna različica brskalnika (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Polna različica brskalnika (npr. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Celoten seznam različic (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobilni telefon"
@@ -9936,7 +9960,7 @@
     "message": "Ni mogoče predstaviti kot niz strukturiranih glav."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Okolje"
+    "message": "Platforma (Sec-CH-UA-Platform/Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Okolje (npr. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Različica platforme"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Pomembna različica (npr. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Namigi za odjemalce uporabnikovega posrednika"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Namigi za odjemalce uporabnikovega posrednika so nadomestna možnost za niz uporabnikovega posrednika, ki brskalnik in napravo prepoznajo bolj strukturirano z boljšim spremljanjem zasebnosti. Kliknite gumb, če želite izvedeti več."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Različica"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Uporabnikov posrednik (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Naprave"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Izraz, ki ga je treba preveriti pred začasno zaustavitvijo, npr. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Preberite več o tem: Vrste prekinitvenih točk"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Zabeleži sporočilo v konzolo, brez prekinitve"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Pritisnite Enter, če želite uporabiti filter za razvrščanje"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Možnosti glave"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Razvrsti po"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "Stolpec {PH1} je razvrščen v naraščajočem vrstnem redu"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "Stolpec {PH1} je razvrščen v padajočem vrstnem redu"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "Razvrščanje stolpca {PH1} je preklicano"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "(… preskočitev toliko ujemajočih se vrstic: {PH1} …)"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Uporabi predlagano barvo {PH1} popravek nizkega kontrasta"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Vrednosti barve so bile skrčene, da se ujema z barvno lestvico oblike. Dejanski rezultat je bil {PH1}."
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Dodaj paleti"

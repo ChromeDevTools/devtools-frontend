@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "zatrzymywanie"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Nie udało się wczytać treści mapy źródeł {PH1}: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Nie udało się przeanalizować treści skryptu {PH1}: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsja"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Dodaj wszystkie skrypty treści do listy ignorowanych"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Dodaj wszystkie skrypty innych firm do listy ignorowanych"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Dodaj katalog do listy ignorowanych"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Dodaj skrypt do listy ignorowanych"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Żądanie uprawnienia dla interfejsu Notification API nie może już być wysyłane z elementów iframe z innych domen. Rozważ wysłanie żądania o przyznanie uprawnienia z ramki najwyższego poziomu lub otwarcie nowego okna."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Opcja imageOrientation: \"none\" w metodzie createImageBitmap została wycofana. Użyj tej metody z opcją {imageOrientation: \"from-image\"}."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Partner negocjuje przestarzałą wersję (D)TLS. Poproś go o rozwiązanie problemu."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "Wycofano interfejs window.webkitStorageInfo. Zamiast niego użyj standaryzowanego interfejsu navigator.storage."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Wycofujemy interfejs API chrome.privacy.websites.privacySandboxEnabled, ale pozostanie on aktywny, aby zapewniał zgodność wsteczną do czasu opublikowania wersji M113. Zamiast niego używaj interfejsów chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled i chrome.privacy.websites.adMeasurementEnabled. Więcej informacji znajdziesz na stronie https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled (w języku angielskim)."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Żądania zasobów podrzędnych, których adresy URL zawierają umieszczone dane logowania (np. https://user:pass@host/), są blokowane."
@@ -2313,7 +2319,7 @@
     "message": "Plik manifestu nie zawiera pola „name” ani „short_name”"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Plik manifestu nie zawiera odpowiedniej ikony. Ikona musi być w formacie PNG lub SVG, mieć co najmniej {PH1} piks. i ustawiony atrybut „sizes”. Jeśli jest ustawiony atrybut „purpose”, musi on zawierać wartość „any”."
+    "message": "Plik manifestu nie zawiera odpowiedniej ikony. Ikona musi być w formacie PNG, SVG lub WebP, mieć co najmniej {PH1} piks. i zawierać atrybut „sizes”. Jeśli jest ustawiony atrybut „purpose”, musi on zawierać wartość „any”."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Plik manifestu określa „prefer_related_applications: true”"
@@ -2337,7 +2343,7 @@
     "message": "Nie podano identyfikatora w Sklepie Play"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Żadna z podanych ikon nie jest kwadratem o boku co najmniej {PH1} piks. w formacie PNG lub SVG z atrybutem o nieustawionej wartości lub wartości „any”."
+    "message": "Żadna z podanych ikon nie jest kwadratem o boku o długości co najmniej {PH1} piks. w formacie PNG, SVG lub WebP z atrybutem celu bez ustawionej wartości lub z wartością „any”."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Uwaga:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Kolor motywu"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Pamięć podręczna stanu strony internetowej"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Pamięć podręczna"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Usuń"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Odśwież pamięć podręczną"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Pobieranie z wyprzedzeniem i wstępne renderowanie"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: wywołaj, aby przewinąć do tej sekcji w pliku manifestu"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Pamięć podręczna"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Wyczyść"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "moduł roboczy"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Pamięć podręczna stanu strony internetowej"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Pobranie w tle"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Interfejs API do raportowania"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Pamięć podręczna"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Usuń"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Odśwież pamięć podręczną"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Pamięć podręczna"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Pochodzenie"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Resetuj budżet"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Pamięć współdzielona"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Renderowanie wstępne"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Wstępne wczytywanie jest wymuszane, ponieważ Narzędzia deweloperskie są otwarte. Po zamknięciu Narzędzi deweloperskich renderowanie wstępne zostanie wyłączone, ponieważ ta sesja przeglądarki należy do grupy odizolowanej, która służy do porównań wydajności."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Renderowanie wstępne jest wymuszane, ponieważ Narzędzia deweloperskie są otwarte. Po zamknięciu Narzędzi deweloperskich renderowanie wstępne zostanie wyłączone, ponieważ ta sesja przeglądarki należy do grupy odizolowanej, która służy do porównań wydajności."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Wstępne wczytywanie było wyłączone, ale teraz zostało wymuszone jego włączenie"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Renderowanie wstępne było wyłączone, ale teraz zostało wymuszone jego włączenie"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Informacje podstawowe"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Zapisz"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Wybierz cel"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Wyślij polecenie nieprzetworzonego CDP"
   },
@@ -9888,7 +9909,7 @@
     "message": "Wiersz marki został dodany"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Architektura"
+    "message": "Architektura (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Architektura (np. x86)"
@@ -9903,13 +9924,13 @@
     "message": "Marka {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Właściwości marki"
+    "message": "Właściwości klienta użytkownika"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Wersja {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Marki"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Wersja (np. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Usuń"
@@ -9918,16 +9939,19 @@
     "message": "Wiersz marki został usunięty"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Model urządzenia"
+    "message": "Model urządzenia (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Właściwości urządzenia"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Pełna wersja przeglądarki"
+    "message": "Pełna wersja przeglądarki (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Pełna wersja przeglądarki (np. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Lista pełnych wersji (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Telefon komórkowy"
@@ -9936,7 +9960,7 @@
     "message": "Wartości nie można przedstawić jako uporządkowanego ciągu nagłówków."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platforma"
+    "message": "Platforma (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Platforma (np. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Wersja platformy"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Ważna wersja (np. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Wskazówki dotyczące klienta użytkownika"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Wskazówki dotyczące klienta użytkownika to zamienniki ciągu klienta użytkownika, które identyfikują przeglądarkę i urządzenie w bardziej uporządkowany sposób z większą ochroną prywatności. Aby uzyskać więcej informacji, kliknij przycisk."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Wersja"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Klient użytkownika (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Urządzenia"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Wyrażenie do sprawdzenia przed wstrzymaniem, np. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Więcej informacji: typy punktów przerwania"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Zarejestruj komunikat w konsoli, nie przerywaj"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Naciśnij Enter, aby zastosować filtr sortowania"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Opcje nagłówka"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sortuj według"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "Kolumnę {PH1} posortowano w kolejności rosnącej"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "Kolumnę {PH1} posortowano w kolejności malejącej"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "Sortowanie kolumny {PH1} zostało anulowane"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "(…pomijanie {PH1} pasujących wierszy…)"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Użyj sugerowanego koloru {PH1}, aby zlikwidować niski kontrast"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Kolor został ograniczony w celu dopasowania do gamy formatu. Rzeczywisty wynik to {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Dodaj do palety"

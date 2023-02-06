@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "stop tans"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Kon nie inhoud vir {PH1} laai nie: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Kon nie inhoud vir {PH1} ontleed nie: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsie"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Voeg alle inhoudskripte by ignoreerlys"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Voeg alle derdepartyskripte by ignoreerlys"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Voeg indeks by ignoreerlys"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Voeg skrip by ignoreerlys"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Toestemming vir die Notification API mag nie meer van ’n kruisoorsprong-i-raam af versoek word nie. Jy moet dit oorweeg om pleks daarvan toestemming van ’n topvlakraam af te versoek, of om ’n nuwe venster oop te maak."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Opsie imageOrientation: \"none\" in createImageBitmap is opgeskort. Gebruik pleks daarvan createImageBitmap met opsie {imageOrientation: \"from-image\"}."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Jou vennoot onderhandel tans ’n verouderde (D)TLS-weergawe. Kontroleer met jou vennoot om dit reg te stel."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo is opgeskort. Gebruik pleks daarvan gestandaardiseerdenavigator.storage."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Ons skort die API chrome.privacy.websites.privacySandboxEnabled op, maar dit sal aktief bly vir terugwaartse versoenbaarheid totdat M113 vrygestel word. Gebruik pleks daarvan chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled en chrome.privacy.websites.adMeasurementEnabled. Sien https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Subhulpbronversoeke waarvan URL'e ingebedde eiebewyse (byvoorbeeld https://user:pass@host/) bevat, word geblokkeer."
@@ -2313,7 +2319,7 @@
     "message": "Manifes bevat nie 'n \"name\"- of \"short_name\"-veld nie"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifes bevat nie ’n geskikte ikoon nie – PNG- of SVG-formaat van minstens {PH1} px word vereis, die \"sizes\"-kenmerk moet gestel wees, en as die \"purpose\"-kenmerk gestel word, moet dit \"any\" insluit."
+    "message": "Manifes bevat nie 'n geskikte ikoon nie – PNG-, SVG- of WebP-formaat van minstens {PH1} px word vereis, die “sizes”-kenmerk moet gestel word, en die “purpose”-kenmerk, as dit gestel is, moet “any” insluit."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifes spesifiseer \"prefer_related_applications: waar\""
@@ -2337,7 +2343,7 @@
     "message": "Geen Play Winkel-ID verskaf nie"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Geen ikoon wat verskaf is, is minstens {PH1} pieksels vierkantig in PNG- ofSVG-formaat, met die doelkenmerk nie gestel nie of gestel op \"any\" nie."
+    "message": "Geen ikoon wat verskaf is, is minstens {PH1} pieksels vierkantig in PNG-, SVG- of WebP-formaat met die doelkenmerk nie gestel nie of gestel op “any” nie."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Let wel:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Temakleur"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Terug-vorentoe-kasgeheue"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Kasgeheueberging"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Vee uit"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Herlaai kasgeheues"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Voorafhaling en vooraflewering"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: Roep op om na hierdie afdeling in manifes te rollees"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Kasgeheue"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Vee uit"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "werker"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Terug-vorentoe-kasgeheue"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Agtergrondophaling"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Verslaggewing-API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Kasgeheueberging"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Vee uit"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Herlaai kasgeheues"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Kasgeheue"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Oorsprong"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Stel begroting terug"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Gedeelde berging"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Vooraflewering"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Aktivering van vooraflaai is afgedwing omdat Ontwikkelaarnutsgoed oop is. Wanneer Ontwikkelaarnutsgoed toe is, sal vooraflewering gedeaktiveer word omdat die blaaiersessie deel van ’n terughougroep is wat vir werkverrigtingvergelykings gebruik word."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Aktivering van vooraflewering is afgedwing omdat Ontwikkelaarnutsgoed oop is. Wanneer Ontwikkelaarnutsgoed toe is, sal vooraflewering gedeaktiveer word omdat die blaaiersessie deel van ’n terughougroep is wat vir werkverrigtingvergelykings gebruik word."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Vooraflaai is gedeaktiveer, maar aktivering daarvan word nou afgedwing"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Vooraflewering is gedeaktiveer, maar aktivering daarvan word nou afgedwing"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Basiese inligting"
@@ -8133,7 +8151,7 @@
     "message": "Stel opskrif ter syde"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Opskrifname moet slegs letters, syfers, aandagstrepe en onderstrepe bevat"
+    "message": "Opskrifname moet slegs letters, syfers, koppeltekens en onderstrepe bevat"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Kom meer te wete"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Stoor"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Kies ’n teiken"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Stuur 'n rou CDP-bevel"
   },
@@ -9888,7 +9909,7 @@
     "message": "Handelsmerkry is bygevoeg"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Argitektuur"
+    "message": "Argitektuur (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Argitektuur (byvoorbeeld x86)"
@@ -9903,13 +9924,13 @@
     "message": "Handelsmerk {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Handelsmerkeienskappe"
+    "message": "Gebruikeragent-kenmerke"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Weergawe {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Handelsmerke"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Weergawe (bv. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Vee uit"
@@ -9918,16 +9939,19 @@
     "message": "Handelsmerkry is uitgevee"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Toestelmodel"
+    "message": "Toestelmodel (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Toesteleiendomme"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Weergawe van volledige blaaier"
+    "message": "Volledige blaaierweergawe (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Volledige blaaierweergawe (byvoorbeeld 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Volleweergawelys (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Selfoon"
@@ -9936,7 +9960,7 @@
     "message": "Kan nie as gestruktureerde opskriftestring weergegee word nie."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platform"
+    "message": "Platform (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Platform (byvoorbeeld Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Platformweergawe"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Noemenswaardige weergawe (bv. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Gebruikeragentkliëntwenke"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Gebruikeragentkliëntwenke is 'n alternatief vir die gebruikeragentstring wat die blaaier en die toestel op 'n meer gestruktureerde manier met beter privaatheidtoerekening identifiseer. Klik die knoppie om meer te wete te kom."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Weergawe"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Gebruikeragent (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Toestelle"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Uitdrukking om na te gaan voor onderbreking, byvoorbeeld x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Kom meer te wete: Soort breekpunte"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Teken 'n boodskap in konsole aan; moenie breek nie"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Druk Enter om sorteringfilter toe te pas"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Opskrifopsies"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Rangskik volgens"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} gesorteer in stygende volgorde"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} gesorteer in dalende volgorde"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} sortering is gekanselleer"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … slaan tans {PH1} passende reëls oor … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Gebruik voorgestelde kleur {PH1}om lae kontras reg te stel"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Hierde kleur is geknip om by die formaat se gamut te pas. Die werklike resultaat was {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Voeg by palet"

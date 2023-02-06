@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "توقف"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "محتوا برای {PH1} بار نشد: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "محتوا برای {PH1} تجزیه نشد: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "رنگ‌کوری کامل"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "افزودن همه متون محتوا به فهرست نادیده گرفتن"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "افزودن همه متون شخص ثالث به فهرست نادیده گرفتن"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "افزودن فهرست راهنما به فهرست نادیده گرفتن"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "افزودن متن به فهرست نادیده گرفتن"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "اجازه برای میانای برنامه‌سازی کاربردی «اعلان» ممکن است دیگر از iframe بین‌مبدائی درخواست نشود. توصیه می‌کنیم اجازه را درعوض از قاب سطح بالا درخواست کنید یا پنجره جدیدی باز کنید."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "گزینه imageOrientation: \"none\" در createImageBitmap منسوخ شده است. لطفاً درعوض از createImageBitmap به‌همراه گزینه {imageOrientation: \"from-image\"‎} استفاده کنید."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "شریک شما درحال مذاکره با نسخه منسوخی از ‎(D)TLS است. لطفاً برای برطرف کردن این مشکل با شریکتان تماس بگیرید."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo منسوخ شده است. لطفاً درعوض از navigator.storage استانداردشده استفاده کنید."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "قصد داریم میانای برنامه‌سازی کاربردی chrome.privacy.websites.privacySandboxEnabled را منسوخ کنیم، اما به‌دلیل سازگاری با نسخه قدیمی، این میانا تا انتشار نسخه M113 فعال خواد ماند. درعوض، لطفاً از chrome.privacy.websites.topicsEnabled، chrome.privacy.websites.fledgeEnabled، و chrome.privacy.websites.adMeasurementEnabled استفاده کنید. به این نشانی مراجعه کنید: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "درخواست‌های منبع فرعی‌ای که نشانی‌های وب آن‌ها حاوی اطلاعات کاربری جاسازی‌شده (مثل https://user:pass@host/) است مسدود می‌شود."
@@ -2313,7 +2319,7 @@
     "message": "مانیفست حاوی فیلد «name» یا «short_name» نیست"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "مانیفست نماد مناسبی ندارد - قالب PNG یا SVG با حداقل {PH1} پیکسل لازم است، مشخصه «sizes» باید تنظیم شود، و مشخصه «purpose» (اگر تنظیم شده باشد) باید حاوی «any» باشد."
+    "message": "مانیفست نماد مناسبی ندارد - قالب PNG،‏ SVG، یا WebP با حداقل {PH1} پیکسل لازم است، مشخصه «sizes» باید تنظیم شده باشد، و مشخصه «purpose» (اگر تنظیم شده است) باید حاوی «any» باشد."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "مانیفست «prefer_related_applications: درست» را مشخص می‌کند"
@@ -2337,7 +2343,7 @@
     "message": "هیچ شناسه «فروشگاه Play» ارائه نشده است"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "هیچ نمادی با حداقل {PH1} پیکسل مربع در قالب PNG یا SVG ارائه نشده است که مشخصه هدف آن تنظیم نشده باشد یا روی any تنظیم شده باشد."
+    "message": "هیچ نمادی با حداقل {PH1} پیکسل مربع در قالب PNG، SVG، یا WebP ارائه نشده است که مشخصه هدف آن تنظیم نشده باشد یا روی «any» تنظیم شده باشد."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "توجه:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "رنگ زمینه"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "حافظه پنهان عقب-جلو"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "فضای حافظه پنهان"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "حذف"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "بازآوری حافظه‌های پنهان"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "واکشی اولیه و پیش‌پرداززنی"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: برای پیمایش به این بخش در مانیفست، فراخوان دهید"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "حافظهٔ پنهان"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "پاک کردن"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "عامل"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "حافظه پنهان عقب-جلو"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "واکشی پس‌زمینه"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "میانای برنامه‌سازی کاربردی گزارش‌دهی"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "فضای حافظه پنهان"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "حذف"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "بازآوری حافظه‌های پنهان"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "حافظهٔ پنهان"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "مبدأ"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "بازنشانی بودجه"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "فضای ذخیره‌سازی مشترک"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "پیش‌پرداززنی"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "پیش‌بارگذاری به‌اجبار فعال شد چون DevTools باز است. وقتی DevTools بسته شود، پیش‌پرداززنی غیرفعال خواهد شد چون این جلسه مرورگر بخشی از گروه بازدارنده مورداستفاده برای مقایسه عملکرد است."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "پیش‌پرداززنی به‌اجبار فعال شد چون DevTools باز است. وقتی DevTools بسته شود، پیش‌پرداززنی غیرفعال خواهد شد چون این جلسه مرورگر بخشی از گروه بازدارنده مورداستفاده برای مقایسه عملکرد است."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "پیش‌بارگذاری غیرفعال بود، اما اکنون به‌اجبار فعال شد"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "پیش‌پرداززنی غیرفعال بود، اما اکنون به‌اجبار فعال شد"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "اطلاعات اصلی"
@@ -8133,7 +8151,7 @@
     "message": "ابطال سرصفحه"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "نام سرصفحه فقط می‌تواند حاوی حرف، عدد، خط تیره، و زیرخط باشد"
+    "message": "نام سرصفحه فقط می‌تواند حاوی حرف، عدد، خط تیره، یا زیرخط باشد"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "بیشتر بدانید"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "ذخیره"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "انتخاب هدف"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ارسال فرمان CDP خام"
   },
@@ -9888,7 +9909,7 @@
     "message": "ردیف نمانام اضافه شد"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "معماری"
+    "message": "معماری (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "معماری (برای نمونه x86)"
@@ -9903,13 +9924,13 @@
     "message": "نمانام {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "مشخصات نمانام"
+    "message": "خصوصیت‌های نماینده کاربر"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "نسخه {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "نمانام‌ها"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "نسخه (برای نمونه ۸۷.۰.۴۲۸۰.۸۸)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "حذف"
@@ -9918,16 +9939,19 @@
     "message": "ردیف نمانام حذف شد"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "مدل دستگاه"
+    "message": "مدل دستگاه (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "مشخصات دستگاه"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "نسخه کامل مرورگر"
+    "message": "نسخه کامل مرورگر (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "نسخه کامل مرورگر (برای نمونه ۸۷.۰.۴۲۸۰.۸۸)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "فهرست کامل نسخه‌ها (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "تلفن همراه"
@@ -9936,7 +9960,7 @@
     "message": "نمی‌تواند به‌صورت رشته سرصفحه‌های ساخت‌یافته ارائه شود."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "سکو"
+    "message": "پلاتفرم (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "پلاتفرم (برای نمونه Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "نسخه پلاتفرم"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "نسخه اصلی (برای نمونه ۸۷)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "نکات کارخواه نماینده کاربر"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "نکات کارخواه نماینده کاربر یک جایگزین برای رشته نماینده کاربر است که مرورگر و دستگاه را به‌طور ساختاریافته‌تری شناسایی می‌کند و توجه بیشتر به حریم خصوصی می‌کند. برای اطلاعات بیشتر، روی دکمه کلیک کنید."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "نسخه"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "نماینده کاربر (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "دستگاه‌ها"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "عبارتی که قبل از مکث بررسی می‌شود؛ برای نمونه x > ۵"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "بیشتر بدانید: انواع نقطه توقف"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "پیامی در کنسول گزارش شود، متوقف نشود"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "برای اعمال فیلتر مرتب‌سازی، کلید Enter را فشار دهید"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "گزینه‌های سرصفحه"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ترتیب براساس"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} به‌ترتیب صعودی مرتب شد"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} به‌ترتیب نزولی مرتب شد"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "مرتب‌سازی {PH1} لغو شد"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … درحال رد کردن {PH1} خط منطبق … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "برای برطرف کردن کنتراست، از رنگ پیشنهادی {PH1} استفاده کنید"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "شدت این رنگ تغییر کرد تا با طیف قالب مطابقت یابد. نتیجه واقعی {PH1} بود"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "افزودن به پالت"

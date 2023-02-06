@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "դադարեցում"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Չհաջողվեց բեռնել բովանդակությունը {PH1} էջի համար՝ {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Չհաջողվեց վերլուծել բովանդակությունը {PH1} էջի համար՝ {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Աքրոմատոպսիա"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Բովանդակության բոլոր սկրիպտներն ավելացնել անտեսվածների ցուցակում"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Բոլոր կողմնակի սկրիպտներն ավելացնել անտեսվածների ցուցակում"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Ավելացնել գրացուցակը անտեսվածների ցուցակում"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Ավելացնել սկրիպտը անտեսվածների ցուցակում"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Այլ աղբյուրների iframe պատուհաններից այլևս հնարավոր չէ Notification API-ի օգտագործման թույլտվություն հայցել։ Հայցեք թույլտվություն վերին մակարդակի շրջանակից կամ նոր պատուհան բացեք։"
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "CreateImageBitmap-ի imageOrientation: \"none\" պարամետրը հնացած է։ Դրա փոխարեն createImageBitmap-ն օգտագործեք {imageOrientation: \"from-image\"} պարամետրով։"
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Ձեր գործընկերը տվյալներ է փոխանակում (D)TLS-ի հնացած տարբերակի միջոցով։ Հայտնեք նրան այս խնդիրը լուծելու անհրաժեշտության մասին։"
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo API-ն այլևս չի աջակցվում։ Դրա փոխարեն օգտագործեք ստանդարտ navigator.storage։"
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Մենք դադարեցնում ենք chrome.privacy.websites.privacySandboxEnabled API-ի աջակցությունը, թեև այն ակտիվ կմնա հետադարձ համատեղելիության համար մինչև M113-ի թողարկումը։ Փոխարենը կարող եք օգտագործել chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled և chrome.privacy.websites.adMeasurementEnabled API-ները։ Մանրամասների համար անցեք https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled էջ։"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Ենթառեսուրսների հարցումները, որոնց URL-ներում պարունակվում են մուտքի զետեղված տվյալներ (օր․՝ https://user:pass@host/), արգելափակվում են։"
@@ -2313,7 +2319,7 @@
     "message": "Մանիֆեստը «name» կամ «short_name» դաշտ չի պարունակում"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Մանիֆեստը չի պարունակում համապատասխան պատկերակ։ Անհրաժեշտ է առնվազն {PH1} պքս և PNG կամ SVG ձևաչափով ֆայլ, «sizes» հատկանիշը պետք է նշված լինի, ինչպես նաև «purpose» հատկանիշը (եթե նշված է) պետք է պարունակի «any» պարամետրը։"
+    "message": "Մանիֆեստը չի պարունակում համապատասխան պատկերակ։ Անհրաժեշտ է առնվազն {PH1} պքս չափսի PNG, SVG կամ WebP ձևաչափով ֆայլ, «sizes» հատկանիշը պետք է նշված լինի, իսկ «purpose» հատկանիշը (եթե նշված է) պետք է պարունակի any։"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Մանիֆեստի ֆայլում սահմանված է «prefer_related_applications: true» արժեքը"
@@ -2337,7 +2343,7 @@
     "message": "Google Play Խանութի ID-ն նշված չէ"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Մանիֆեստի ֆայլում չկա առնվազն {PH1} պքս, քառակուսու տեսքով, PNG կամ SVG ձևաչափով պիտակ, որի purpose հատկանիշը սահմանված չէ կամ սահմանված է որպես «any»։"
+    "message": "Մանիֆեստի ֆայլում չկա առնվազն {PH1} պիքսելանոց, քառակուսու տեսքով, PNG, SVG կամ WebP ձևաչափով պիտակ, որի purpose հատկանիշը սահմանված չէ կամ սահմանված է որպես any։"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Նշում."
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Թեմայի գույնը"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Ամբողջ էջի քեշավորում"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Քեշի պահոց"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Ջնջել"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Թարմացնել քեշերը"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Նախաբեռնում և նախաարտապատկերում"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}․ կանչեք՝ մանիֆեստի այս բաժին անցնելու համար"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Քեշ"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Մաքրել"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "մշակող"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Ամբողջ էջի քեշավորում"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Ֆոնային առբերում"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Քեշի պահոց"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Ջնջել"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Թարմացնել քեշերը"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Քեշ"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Աղբյուրը"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Վերակայել բյուջեն"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Ընդհանուր պահոց"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Նախաարտապատկերում"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Նախաբեռնումը հարկադրաբար միացված է, քանի որ ծրագրավորողի գործիքները բացված են։ Երբ դրանք փակվեն, նախաարտապատկերումը կանջատվի, քանի որ դիտարկիչի այս աշխատաշրջանը պատկանում է մի խմբի, որի տվյալների հիման վրա կատարվում են արդյունավետության համեմատություններ։"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Նախաարտապատկերումը հարկադրաբար միացված է, քանի որ ծրագրավորողի գործիքները բացված են։ Երբ դրանք փակվեն, նախաարտապատկերումը կանջատվի, քանի որ դիտարկիչի այս աշխատաշրջանը պատկանում է մի խմբի, որի տվյալների հիման վրա կատարվում են արդյունավետության համեմատություններ։"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Նախաբեռնումն անջատված էր, սակայն այժմ հարկադրաբար միացվեց"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Նախաարտապատկերումն անջատված էր, սակայն այժմ հարկադրաբար միացվեց"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Հիմնական տեղեկություններ"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Պահել"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Ընտրեք թիրախ"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Ուղարկել չմշակված CDP հրաման"
   },
@@ -9888,7 +9909,7 @@
     "message": "Բրենդի տողն ավելացվեց"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Ճարտարապետություն"
+    "message": "Ճարտարապետություն (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Համակառույց (օր.՝ x86)"
@@ -9903,13 +9924,13 @@
     "message": "Ապրանքանիշ {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Ապրանքանիշի հատկություններ"
+    "message": "Գործակալ ծրագրի կարգավորումներ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Տարբերակ {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Ապրանքանիշներ"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Տարբերակ (օր․՝ 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Ջնջել"
@@ -9918,16 +9939,19 @@
     "message": "Բրենդի տողը ջնջվեց"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Սարքի մոդելը"
+    "message": "Սարքի մոդելը (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Սարքի հատկություններ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Դիտարկիչի լրիվ տարբերակը"
+    "message": "Դիտարկիչի ամբողջական տարբերակը (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Դիտարկիչի լրիվ տարբերակը (օր.՝ 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Տարբերակների ամբողջական ցանկը (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Բջջային"
@@ -9936,7 +9960,7 @@
     "message": "Չի կարող ներկայացվել գլխագրերի կառուցվածքավորված տողի տեսքով։"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Հարթակ"
+    "message": "Հարթակ (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Հարթակ (օր.՝ Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Հարթակի տարբերակը"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Նշանակալի տարբերակը (օր․՝ 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Գործակալ ծրագրի սպասառուի հուշումներ"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Գործակալ ծրագրի սպասառուի հուշումներ օգտագործվում են գործակալ ծրագրի տողի փոխարեն, որը որոշում է դիտարկիչը և սարքն ավելի ստրուկտուրավորված եղանակով՝ ավելի լավ ապահովելով գաղտնիությունը։ Ավելին իմանալու համար սեղմեք կոճակը։"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Տարբերակ"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Գործակալ ծրագիր (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Սարքեր"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Արտահայտություն, որը պետք է ստուգվի դադարից առաջ, օրինակ՝ x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Իմանալ ավելին կանգի կետերի տեսակների մասին"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Ավելացրեք հաղորդագրություն Վահանակում, մի՛ դադարեցրեք աշխատանքը"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Սեղմեք Enter՝ տեսակավորման զտիչ կիրառելու համար"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Գլխագրի պարամետրեր"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Տեսակավորել ըստ"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "«{PH1}» սյունակի տվյալները տեսակավորված են աճման կարգով"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "«{PH1}» սյունակի տվյալները տեսակավորված են նվազման կարգով"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "«{PH1}» սյունակում տվյալների տեսակավորումը չեղարկվեց"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Բաց է թողնվում համընկնող {PH1} տող … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Օգտագործել առաջարկվող գույնը {PH1}կոնտրաստն ավելացնելու համար"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Գունային արժեքները սեղմվել են՝ ձևաչափի գունային գամմային համապատասխանելու համար։ Փաստացի արդյունքը՝ {PH1}։"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Ավելացնել պնակին"

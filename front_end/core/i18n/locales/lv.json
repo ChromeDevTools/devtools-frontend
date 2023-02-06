@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "darbība tiek pārtraukta"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Nevarēja ielādēt {PH1} saturu: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Nevarēja analizēt saturu vietnē {PH1}: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ahromatopsija"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Pievienot visus satura skriptus ignorēto sarakstam"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Pievienot visus trešo pušu skriptus ignorēto sarakstam"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Pievienot katalogu ignorēto sarakstam"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Pievienot skriptu ignorēto sarakstam"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "No citas izcelsmes iframe ietvara vairs nevar pieprasīt atļauju saskarnei Paziņojumu API. Apsveriet iespēju pieprasīt atļauju no augšējā līmeņa ietvara vai atvērt jaunu logu."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Metodes createImageBitmap opcijai imageOrientation: \"none\" ir pārtraukts atbalsts. Tās vietā izmantojiet metodi createImageBitmap ar opciju {imageOrientation: \"from-image\"}."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "Saskarne window.webkitStorageInfo vairs netiek atbalstīta. Tās vietā, lūdzu, izmantojiet standartizētu navigator.storage."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Plānojam pārtraukt atbalstu API chrome.privacy.websites.privacySandboxEnabled, kaut gan atpakaļsaderības nolūkiem tas būs aktīvs līdz laidiena M113 publicēšanai. Tā vietā izmantojiet chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled un chrome.privacy.websites.adMeasurementEnabled. Skatiet vietni https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
@@ -2313,7 +2319,7 @@
     "message": "Manifestā nav lauka “name” vai “short_name”"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifestā nav piemērotas ikonas. Nepieciešams PNG vai SVG formāta fails, kura izmērs ir vismaz {PH1} px. Atribūtam “sizes” ir jābūt iestatītam. Ja ir iestatīts atribūts “purpose”, tā vērtībām jāietver “any”."
+    "message": "Manifestā nav piemērotas ikonas. Nepieciešams PNG, SVG vai WebP formāta fails, kura izmērs ir vismaz {PH1} px. Atribūtam “sizes” ir jābūt iestatītam. Ja ir iestatīts atribūts “purpose”, tā vērtībām jāietver “any”."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifestā ir norādīta “prefer_related_applications” vērtība “true”"
@@ -2337,7 +2343,7 @@
     "message": "Nav norādīts Play veikala ID"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Nav nodrošināta neviena PNG vai SVG formāta ikona, kurai abi izmēri ir vismaz {PH1} pikseļi un kuras atribūts “purpose” vai nu nav iestatīts, vai ir ar vērtību “any”."
+    "message": "Nav nodrošināta neviena PNG, SVG vai WebP formāta ikona, kurai abi izmēri ir vismaz {PH1} pikseļi un kuras atribūts “purpose” vai nu nav iestatīts, vai ir ar vērtību “any”."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Piezīme."
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Motīva krāsa"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Pilnīga saglabāšana kešatmiņā"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Kešatmiņas krātuve"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Dzēst"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Atsvaidzināt kešatmiņu"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Priekšienešana un iepriekšēja atveidošana"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: izsauciet, lai ritinātu uz šo manifesta sadaļu"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Kešatmiņa"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Notīrīt"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "skripts"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Pilnīga saglabāšana kešatmiņā"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Ienešana fonā"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Pārskatu API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Kešatmiņas krātuve"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Dzēst"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Atsvaidzināt kešatmiņu"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Kešatmiņa"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Izcelsme"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Atiestatīt budžetu"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Kopīga krātuve"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Notiek iepriekšēja atveidošana"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Iepriekšēja ielāde ir piespiedu kārtā iespējota, jo ir atvērti izstrādātāja rīki. Aizverot izstrādātāja rīkus, iepriekšēja atveidošana tiks atspējota, jo šī pārlūkprogrammas sesija ir ietverta aizturēšanas grupā, kas tiek izmantota veiktspējas salīdzinājumiem."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Iepriekšēja atveidošana ir piespiedu kārtā iespējota, jo ir atvērti izstrādātāja rīki. Aizverot izstrādātāja rīkus, iepriekšēja atveidošana tiks atspējota, jo šī pārlūkprogrammas sesija ir ietverta aizturēšanas grupā, kas tiek izmantota veiktspējas salīdzinājumiem."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Iepriekšēja ielāde bija atspējota, taču tagad ir piespiedu kārtā iespējota"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Iepriekšēja atveidošana bija atspējota, taču tagad ir piespiedu kārtā iespējota"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Pamatinformācija"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Saglabāt"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Atlasiet mērķi"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Nosūtiet neapstrādātu CDP komandu"
   },
@@ -9888,7 +9909,7 @@
     "message": "Zīmola rinda ir pievienota."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arhitektūra"
+    "message": "Arhitektūra (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arhitektūra (piem., x86)"
@@ -9903,13 +9924,13 @@
     "message": "Zīmols {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Zīmola rekvizīti"
+    "message": "Lietotāja aģenta rekvizīti"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versija {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Zīmoli"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Versija (piemēram, 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Dzēst"
@@ -9918,16 +9939,19 @@
     "message": "Zīmola rinda ir izdzēsta."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Ierīces modelis"
+    "message": "Ierīces modelis (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Ierīces rekvizīti"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Pilna pārlūkprogrammas versija"
+    "message": "Pilna pārlūkprogrammas versija (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Pilna pārlūka versija (piemēram, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Pilns versiju saraksts (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobilā ierīce"
@@ -9936,7 +9960,7 @@
     "message": "Nevar attēlot kā strukturētu galveņu virkni."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platforma"
+    "message": "Platforma (Sec-CH-UA-Platform/Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Platforma (piem., Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Platformas versija"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Nozīmīgās versijas numurs (piemēram, 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Lietotāja aģenta klienta norādes"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Lietotāja aģenta klienta norādes var izmantot kā alternatīvu lietotāja aģenta virknei — tās strukturētākā veidā identificē pārlūku un ierīci, kā arī nodrošina labākas konfidencialitātes aizsardzības iespējas. Lai uzzinātu vairāk, noklikšķiniet uz pogas."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versija"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Lietotāja aģents (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Ierīces"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Pirms pārtraukšanas pārbaudāmā izteiksme, piemēram, x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Uzzināt vairāk par pārtraukumpunktu veidiem"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Reģistrēt ziņojumu konsolē bez pārtraukumpunktiem"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Lai lietotu kārtošanas filtru, nospiediet Enter"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Galvenes opcijas"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Kārtot pēc"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "Sleja “{PH1}” ir sakārtota augošā secībā"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "Sleja “{PH1}” ir sakārtota dilstošā secībā"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "Slejas “{PH1}” kārtošana ir atcelta"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Tiek izlaistas {PH1} atbilstošas rindiņas … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Izmantot ieteikto krāsu ({PH1}), lai novērstu ar zemu kontrastu saistītas problēmas"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Šīs krāsas vērtības tika apgrieztas, lai nodrošinātu atbilstību formāta gammai. Faktiskais rezultāts bija {PH1}."
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Pievienot paletei"

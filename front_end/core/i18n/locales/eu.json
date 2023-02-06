@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "gelditzen"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Ezin izan da kargatu {PH1} baliabidearen edukia: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Ezin izan da analizatu {PH1} webgunearen edukia: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Akromatopsia"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Gehitu eduki-script guztiak ez ikusi egitekoen zerrendan"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Gehitu hirugarrenen script guztiak ez ikusi egitekoen zerrendan"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Gehitu direktorioa ez ikusi egitekoen zerrendan"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Gehitu script bat ez ikusi egitekoen zerrendan"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Baliteke Notification APIrako baimena jatorri anitzeko iframe batetik ez eskatzea jada. Baimena goi-mailako marko batetik eskatzea edo beste leiho bat irekitzea gomendatzen dugu."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap-eko imageOrientation: \"none\" aukera zaharkituta dago. Horren ordez, erabili createImageBitmap {imageOrientation: \"from-image\"} aukerarekin."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Zure bazkidea (D)TLSaren bertsio zaharkitu bat negoziatzen ari da. Arazo hori konpontzeko, jarri harekin harremanetan."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo zaharkituta dago. Haren ordez, erabili navigator.storage estandarra."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "chrome.privacy.websites.privacySandboxEnabled APIa zaharkituta geldituko da, baina M113 bertsiora arte aktibo egongo da, aurreko bertsioekiko bateragarritasuna lortzeko. Horren ordez, erabili chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled eta chrome.privacy.websites.adMeasurementEnabled. Joan https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled helbidera."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Azpibaliabideen eskaerei dagozkien URLek kapsulatutako kredentzialak badituzte (adibidez, https://user:pass@host/), eskaera horiek blokeatuta egongo dira."
@@ -2313,7 +2319,7 @@
     "message": "Manifestuak ez dauka \"name\" edo\"'short_name\" izeneko eremurik"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifestuak ez du ikono egokirik; gutxienez {PH1} px dituen PNG edo SVG formatuko ikono bat behar da, sizes atributua ezarri behar da eta, purpose atributua ezarriz gero, any eduki behar du."
+    "message": "Manifestuak ez du ikono egokirik; gutxienez {PH1} px dituen PNG, SVG edo WebP formatuko ikono bat behar da, sizes atributua ezarri behar da eta, purpose atributua ezarriz gero, any eduki behar du."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifestuaren arabera, prefer_related_applications egiazkoa da"
@@ -2337,7 +2343,7 @@
     "message": "Ez da eman Play Store-ko IDrik"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Emandako ikono batek ere ez ditu gutxienez {PH1} pixel karratu PNG edo SVG formatuan, helburu-atributua ezarri gabe edo any gisa duena."
+    "message": "Emandako ikono batek ere ez ditu gutxienez {PH1} pixel karratu PNG, SVG edo WebP formatuan, helburu-atributua ezarri gabe edo any gisa duena."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Oharra:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Gaiaren kolorea"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Aurreko orria cachean gordetzeko eginbidea"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Cache-biltegiratzea"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Ezabatu"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Freskatu cacheak"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Aurrez eskuratzea eta errendatzea"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: abiarazi manifestuaren atal honetara joateko"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Cachea"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Garbitu"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "langilea"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Aurreko orria cachean gordetzeko eginbidea"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Atzeko planoan eskuratzeko ekintza"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting APIa"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Cache-biltegiratzea"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Ezabatu"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Freskatu cacheak"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Cachea"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Jatorria"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Berrezarri aurrekontua"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Biltegi partekatua"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Aurrez errendatzea"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Aurrez kargatzeko aukera derrigorrean gaitu da, garatzaileentzako tresnak irekita daudelako. Garatzaileentzako tresnak ixten direnean, aurrez errendatzeko aukera desgaituko da, arakatzaileko saio hau errendimendua alderatzeko kontrol-talde batekoa delako."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Aurrez errendatzeko aukera derrigorrean gaitu da, garatzaileentzako tresnak irekita daudelako. Garatzaileentzako tresnak ixten direnean, aurrez errendatzeko aukera desgaituko da, arakatzaileko saio hau errendimendua alderatzeko kontrol-talde batekoa delako."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Aurrez kargatzeko aukera desgaituta zegoen, baina orain derrigorrean gaitu da"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Aurrez errendatzeko aukera desgaituta zegoen, baina orain derrigorrean gaitu da"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Oinarrizko informazioa"
@@ -5082,10 +5100,10 @@
     "message": "Aldatu DOMaren zuhaitzaren ikuspegira"
   },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
-    "message": "Atzeratutako DOM nodoa ezin izan da ebatzi baliozko nodo batean."
+    "message": "Atzeratutako DOM nodoa ezin izan da ebatzi balio duen nodo batean."
   },
   "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
-    "message": "Urruneko objektua ezin izan da ebatzi baliozko nodo batean."
+    "message": "Urruneko objektua ezin izan da ebatzi balio duen nodo batean."
   },
   "panels/elements/ElementsTreeElement.ts | addAttribute": {
     "message": "Gehitu atributua"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Gorde"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Hautatu helburu bat"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Bidali formaturik gabeko CDP agindu bat"
   },
@@ -9888,7 +9909,7 @@
     "message": "Gehitu da markaren errenkada"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arkitektura"
+    "message": "Arkitektura (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arkitektura (adibidez, x86)"
@@ -9903,13 +9924,13 @@
     "message": "Marka: {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Markaren propietateak"
+    "message": "Erabiltzaile-agentearen propietateak"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "{PH1} bertsioa"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Markak"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Bertsioa (adibidez, 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Ezabatu"
@@ -9918,16 +9939,19 @@
     "message": "Ezabatu da markaren errenkada"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Gailuaren modeloa"
+    "message": "Gailuaren modeloa (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Gailuaren propietateak"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Arakatzailearen bertsio osoa"
+    "message": "Arakatzailearen bertsio osoa (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Arakatzailearen bertsio osoa (adibidez, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Bertsioen zerrenda osoa (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mugikorra"
@@ -9936,7 +9960,7 @@
     "message": "Ezin da ordezkatu goiburu egituratuen kate gisa."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Plataforma"
+    "message": "Plataforma (Sec-CH-UA-Platform/Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Plataforma (adibidez, Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Plataformaren bertsioa"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Bertsio garrantzitsua (adibidez, 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Erabiltzaile-agentearen bezero-doikuntzak"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Erabiltzaile-agentearen katearen ordez erabil daitezke erabiltzaile-agentearen bezero-doikuntzak; era egituratuagoan identifikatzen ditu arakatzailea eta gailua eta hobeto zaintzen du pribatutasuna. Egin klik botoian informazio gehiago lortzeko."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Bertsioa"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Erabiltzaile-agentea (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Gailuak"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Pausatu aurretik egiaztatu beharreko adierazpena; adibidez, x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Lortu informazio gehiago: eten-puntu motak"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Erregistratu mezu bat kontsolan; ez eten"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Ordenatzeko iragazkia aplikatzeko, sakatu Sartu"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Goiburuen aukerak"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Ordenatzeko irizpidea"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} gorantz dago ordenatuta"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} beherantz dago ordenatuta"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} ordenatzeari utzi zaio"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Bat datozen {PH1} lerro saltatzen … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Erabili iradokitako kolorea ({PH1}) kontraste baxua konpontzeko"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Kolore hau egokitu da, formatuaren gamut-arekin bat etortzeko. Hau izan da benetako emaitza: {PH1}."
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Gehitu paletan"

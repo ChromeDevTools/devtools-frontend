@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "toʻxtatilmoqda"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} uchun kontent yuklanmadi: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1} uchun kontent tahlil qilinmadi: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Axromatopsiya"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Barcha kontent skriptlarini inkor etish roʻyxatiga kiritish"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Inkor etish roʻyxatiga barcha tashqi skriptlarni qoʻshish"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Inkor etish roʻyxatiga katalog qoʻshish"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Inkor etish roʻyxatiga skript kiritish"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Notification API ishlatishga ruxsat soʻrovi begona ichki freymdan kelmagan boʻlishi mumkin. Ruxsat soʻrovini yuqori darajali freym yoki yangi ochilgan oyna orqali yuboring."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap ichidagi imageOrientation: \"none\" parametri eskirgan. Oʻrniga {imageOrientation: \"from-image\"} parametrli createImageBitmap ishlating."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Hamkoringiz eskirgan (D)TLS versiyasi yuzasidan muzokara olib boryapti. Buni tuzatish uchun hamkoringizga murojaat qiling."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo tugatilgan. Oʻrniga standartlashtirilgan navigator.storage ishlating."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "API chrome.privacy.websites.privacySandboxEnabled tugatilmoqda, lekin u M113 chiqarilgunga qadar eski versiyalarga moslik uchun faol qoladi. Oʻrniga chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled va chrome.privacy.websites.adMeasurementEnabled ishlating. Batafsil: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Tarkibida joylangan hisob maʼlumotlari (https://user:pass@host/ kabi) mavjud quyi resurs soʻrovlari bloklanadi."
@@ -2313,7 +2319,7 @@
     "message": "Manifestda “name” yoki “short_name” qiymatlari mavjud emas"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest faylida berilgan belgilarning hech qaysi biri talabga mos emas: PNG yoki SVG formatidagi kamida {PH1}px, “purpose” qiymatidagi “sizes” atributiga ega, “any” atrubutli boʻlishi zarur."
+    "message": "Manifest faylida berilgan belgilarning hech qaysi biri talabga mos emas: PNG, SVG yoki WebP formatidagi kamida {PH1}px, “purpose” qiymatidagi “sizes” atributiga ega, “any” atrubutli boʻlishi zarur."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifestdagi prefer_related_applications: true"
@@ -2337,7 +2343,7 @@
     "message": "Play Market idenfitikatori berilmadi"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Berilgan belgilarning hech qaysi biri talabga mos emas: PNG yoki SVG formatidagi kamida {PH1}px kvadrat, atributsiz yoki “any” atrubutli."
+    "message": "Berilgan belgilarning hech qaysi biri talabga mos emas: PNG, SVG yoki WebP formatidagi kamida {PH1}px kvadrat, atributsiz yoki “any” atrubutli."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Eslatma:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Mavzu rangi"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Orqaga qaytadigan kesh"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Kesh xotirasi"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Oʻchirish"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Keshlarni yangilash"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Oldindan yuklash va renderlash"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: Manifestning shu boʻlimiga varaqlash chaqiruvi"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Kesh"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Tozalash"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Orqaga qaytadigan kesh"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Fondagi fetch"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Kesh xotirasi"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Oʻchirish"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Keshlarni yangilash"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Kesh"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Manba"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Budjetni asliga qaytarish"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Umumiy xotira"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Erta renderlash"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools ochiqligi sababli oldindan yuklash majburiy yoqilgan. DevTools yopiqligida oldindan renderlash faolsizlantiriladi, chunki bu brauzer seansi unumdorlikni taqqoslash uchun foydalaniladigan ushlab turish guruhining bir qismidir."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools ochiqligi sababli oldindan renderlash majburiy yoqilgan. DevTools yopiqligida oldindan renderlash faolsizlantiriladi, chunki bu brauzer seansi unumdorlikni taqqoslash uchun foydalaniladigan ushlab turish guruhining bir qismidir."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Oldindan yuklash faolsizlantirilgan, lekin hozir majburiy yoqildi"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Oldindan renderlash faolsizlantirilgan, lekin hozir majburiy yoqildi"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Asosiy axborot"
@@ -8133,7 +8151,7 @@
     "message": "Almashadigan sarlavha"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Sarlavha nomi faqat harf, raqam, tire va pastki chiziqchadan iborat boʻlsin"
+    "message": "Sarlavha nomi faqat harf, raqam, chiziqcha va pastki chiziqchadan iborat boʻlsin"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Batafsil"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Saqlash"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Maqsadni tanlang"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Qayta ishlanmagan CDP buyrugʻini yuborish"
   },
@@ -9888,7 +9909,7 @@
     "message": "Brend qatori kiritildi"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arxitektura"
+    "message": "Arxitektura (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arxitekturasi (x86 kabi)"
@@ -9903,13 +9924,13 @@
     "message": "Brend: {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Brend xususiyatlari"
+    "message": "Foydalanuvchi agenti xususiyatlari"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "{PH1} versiyasi"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Brendlar"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Versiyasi (m-n, 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Oʻchirish"
@@ -9918,16 +9939,19 @@
     "message": "Brend qatori oʻchirildi"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Qurilma modeli"
+    "message": "Qurilma modeli (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Qurilma xususiyatlari"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Brauzerning toʻliq versiyasi"
+    "message": "Toʻliq brauzer versiyasi (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Toʻliq brauzer versiyasi (87.0.4280.88 kabi)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Toʻliq versiya roʻyxati (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobil"
@@ -9936,7 +9960,7 @@
     "message": "Tartibli sarlavhalar qatori sifatida chiqmaydi."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platforma"
+    "message": "Platformasi (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Platforma (Android kabi)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Platforma versiyasi"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Muhim versiya (m-n, 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Foydalanuvchi agenti mijoz bildirgilari"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Foydalanuvchi agenti mijoz bildirgilari hisoblar maxfiyligi yaxshiroq tuzilgan brauzer va qurilmalarga muqobil qatorlar hisoblanadi. Batafsil axborot uchun tugmani bosing."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versiya"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Foydalanuvchi agenti (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Qurilmalar"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "x > 5 kabi pauza qilishdan oldin tekshiriladigan ifoda"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Batafsil: uzilish nuqtasi turlari"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Terminalga yuboriladigan xabarlarni jurnalga yozish, uzmasdan"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Saralash filtrini ishlatish uchun enter tugmasini bosing"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Sarlavha parametrlari"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Saralash"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} oshib borish tartibida saralandi"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} kamayish tartibida saralandi"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} saralanishi bekor qilindi"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} bilan mos qatorlar tashlab ketilmoqda … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Kontrastni tuzatish uchun taklif qilingan rangdan{PH1} foydalanish"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Bu rang format gamutiga mos kelishi uchun qirqib olingan. Asl natija: {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Palitraga kiritish"

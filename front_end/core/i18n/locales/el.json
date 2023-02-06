@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "διακόπτεται"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Δεν ήταν δυνατή η φόρτωση περιεχομένου για {PH1}: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Δεν ήταν δυνατή η ανάλυση περιεχομένου για {PH1}: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Αχρωματοψία"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Προσθήκη όλων των σεναρίων περιεχομένου στη λίστα παράβλεψης"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Προσθήκη όλων των σεναρίων τρίτου μέρους στη λίστα παράβλεψης"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Προσθήκη καταλόγου στη λίστα παράβλεψης"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Προσθήκη σεναρίου σε λίστα παράβλεψης"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Δεν επιτρέπεται πλέον να ζητείται άδεια για το Notification API από ένα iframe διασταυρούμενων προελεύσεων. Θα πρέπει να εξετάσετε το ενδεχόμενο να ζητήσετε άδεια από ένα πλαίσιο ανώτερου επιπέδου ή, εναλλακτικά, να ανοίξετε ένα νέο παράθυρο."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Η επιλογή imageOrientation: \"none\" στο createImageBitmap έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το createImageBitmap με την επιλογή {imageOrientation: \"from-image\"}."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "Το window.webkitStorageInfo καταργήθηκε. Αντ' αυτού, χρησιμοποιήστε το τυποποιημένο navigator.storage."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Το API chrome.privacy.websites.privacySandboxEnabled καταργείται αλλά θα παραμείνει ενεργό για συμβατότητα με παλιότερη έκδοση, έως την κυκλοφορία του M113. Εναλλακτικά, χρησιμοποιήστε τα chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled και chrome.privacy.websites.adMeasurementEnabled. Ανατρέξτε στη διεύθυνση https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
@@ -2313,7 +2319,7 @@
     "message": "Το μανιφέστο δεν περιέχει πεδίο name ή short_name"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Το μανιφέστο δεν περιέχει κατάλληλο εικονίδιο. Απαιτείται μορφή PNG ή SVG τουλάχιστον {PH1} px. Το χαρακτηριστικό sizes πρέπει να οριστεί και το χαρακτηριστικό purpose, εάν οριστεί, πρέπει να περιλαμβάνει το any."
+    "message": "Το μανιφέστο δεν περιέχει κατάλληλο εικονίδιο. Απαιτείται μορφή PNG, SVG ή WebP, μεγέθους τουλάχιστον {PH1} px. Το χαρακτηριστικό sizes θα πρέπει να οριστεί και το χαρακτηριστικό purpose, εάν οριστεί, θα πρέπει να περιλαμβάνει το any."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Το μανιφέστο προσδιορίζει ότι \"prefer_related_applications: true\""
@@ -2337,7 +2343,7 @@
     "message": "Δεν παρασχέθηκε αναγνωριστικό Play Store"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Κανένα παρεχόμενο εικονίδιο δεν είναι τετράγωνο μεγέθους τουλάχιστον {PH1} pixel σε μορφή PNG ή SVG με το χαρακτηριστικό σκοπού μη ορισμένο ή ορισμένο σε any."
+    "message": "Κανένα παρεχόμενο εικονίδιο δεν είναι τετράγωνο μεγέθους {PH1} τουλάχιστον pixel σε μορφή PNG, SVG ή WebP, με το χαρακτηριστικό σκοπού μη ορισμένο ή ορισμένο σε \"any\"."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Σημείωση:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Χρώμα θέματος"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Κρυφή μνήμη πίσω-εμπρός"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Αποθηκευτικός χώρος κρυφής μνήμης"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Διαγραφή"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Ανανέωση κρυφών μνημών"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Προαναζήτηση και προαπόδοση"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: κλήση για κύλιση σε αυτήν την ενότητα στο μανιφέστο"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Κρυφή μνήμη"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Διαγραφή"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Κρυφή μνήμη πίσω-εμπρός"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Λήψη παρασκηνίου"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Αποθηκευτικός χώρος κρυφής μνήμης"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Διαγραφή"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Ανανέωση κρυφών μνημών"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Κρυφή μνήμη"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Προέλευση"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Επαναφορά προϋπολογισμού"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Κοινόχρηστος αποθηκευτικός χώρος"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Προαπόδοση"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Η προφόρτωση ενεργοποιείται υποχρεωτικά, επειδή τα Εργαλεία για προγραμματιστές είναι ανοιχτά. Όταν τα Εργαλεία για προγραμματιστές κλείσουν, η προαπόδοση θα απενεργοποιηθεί επειδή αυτή η περίοδος λειτουργίας προγράμματος περιήγησης είναι μέρος μιας ομάδας Holdback που χρησιμοποιείται για συγκρίσεις απόδοσης."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Η προαπόδοση ενεργοποιείται υποχρεωτικά, επειδή τα Εργαλεία για προγραμματιστές είναι ανοιχτά. Όταν τα Εργαλεία για προγραμματιστές κλείσουν, η προαπόδοση θα απενεργοποιηθεί επειδή αυτή η περίοδος λειτουργίας προγράμματος περιήγησης είναι μέρος μιας ομάδας Holdback που χρησιμοποιείται για συγκρίσεις απόδοσης."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Η προφόρτωση ήταν απενεργοποιημένη αλλά τώρα ενεργοποιήθηκε υποχρεωτικά"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Η προαπόδοση ήταν απενεργοποιημένη αλλά τώρα ενεργοποιήθηκε υποχρεωτικά"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Βασικές πληροφορίες"
@@ -8133,7 +8151,7 @@
     "message": "Παράκαμψη κεφαλίδας"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Τα ονόματα κεφαλίδων πρέπει να περιέχουν μόνο γράμματα, ψηφία, παύλες ή σύμβολα υπογράμμισης."
+    "message": "Τα ονόματα κεφαλίδων πρέπει να περιέχουν μόνο γράμματα, ψηφία, ενωτικά ή σύμβολα υπογράμμισης."
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Μάθετε περισσότερα"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Αποθήκευση"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Επιλέξτε στόχο"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Αποστολή μη επεξεργασμένης εντολής CDP"
   },
@@ -9888,7 +9909,7 @@
     "message": "Η σειρά επωνυμίας προστέθηκε."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Αρχιτεκτονική"
+    "message": "Αρχιτεκτονική (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Αρχιτεκτονική (π.χ. x86)"
@@ -9903,13 +9924,13 @@
     "message": "Επωνυμία {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Ιδιότητες επωνυμίας"
+    "message": "Ιδιότητες παράγοντα χρήστη"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Έκδοση {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Επωνυμίες"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Έκδοση (π.χ. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Διαγραφή"
@@ -9918,16 +9939,19 @@
     "message": "Η σειρά επωνυμίας διαγράφηκε."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Μοντέλο συσκευής"
+    "message": "Μοντέλο συσκευής (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Ιδιότητες συσκευής"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Πλήρης έκδοση προγράμματος περιήγησης"
+    "message": "Πλήρης έκδοση προγράμματος περιήγησης (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Πλήρης έκδοση προγράμματος περιήγησης (π.χ. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Πλήρης λίστα εκδόσεων (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Κινητό"
@@ -9936,7 +9960,7 @@
     "message": "Δεν είναι δυνατή η αντιπροσώπευση ως δομημένης συμβολοσειράς κεφαλίδων."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Πλατφόρμα"
+    "message": "Πλατφόρμα (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Πλατφόρμα (π.χ. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Έκδοση πλατφόρμας"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Σημαντική έκδοση (π.χ. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Υποδείξεις εφαρμογής πελάτη παράγοντα χρήστη"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Οι υποδείξεις εφαρμογής πελάτη παράγοντα χρήστη αποτελούν μια εναλλακτική στη συμβολοσειρά παράγοντα χρήστη και υποδεικνύουν το πρόγραμμα περιήγησης και τη συσκευή με πιο δομημένο τρόπο και λαμβάνοντας καλύτερα υπόψη το απόρρητο. Κάντε κλικ στο κουμπί για να μάθετε περισσότερα."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Έκδοση"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Παράγοντας χρήστη (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Συσκευές"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Έκφραση για έλεγχο πριν από την παύση, π.χ. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Μάθετε περισσότερα: Τύποι σημείων διακοπής"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Καταγραφή μηνύματος στην κονσόλα, χωρίς διακοπή"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Πατήστε το Enter για εφαρμογή του φίλτρου ταξινόμησης"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Επιλογές κεφαλίδας"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Ταξινόμηση κατά"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "Η στήλη {PH1} ταξινομήθηκε με αύξουσα σειρά"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "Η στήλη {PH1} ταξινομήθηκε με φθίνουσα σειρά"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "Η ταξινόμηση της στήλης {PH1} ακυρώθηκε"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Παράβλεψη {PH1} γραμμών που αντιστοιχούν … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Χρήση προτεινόμενου χρώματος {PH1}για τη διόρθωση της χαμηλής αντίθεσης"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Οι τιμές του χρώματος περικόπηκαν για να αντιστοιχούν στο φάσμα χρωμάτων της μορφής. Το πραγματικό αποτέλεσμα ήταν {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Προσθήκη στην παλέτα"

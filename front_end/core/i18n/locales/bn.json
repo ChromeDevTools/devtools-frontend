@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "থামানো হচ্ছে"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1}-এর জন্য কন্টেন্ট লোড করা যায়নি: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1}-এর জন্য কন্টেন্ট পার্স করা যায়নি: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "অ্যাক্রম্যাটপসিয়া"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "উপেক্ষা তালিকায় সব কন্টেন্ট স্ক্রিপ্ট যোগ করুন"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "উপেক্ষা তালিকায় সব থার্ড-পার্টি স্ক্রিপ্ট যোগ করুন"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "তালিকা উপেক্ষা করতে ডিরেক্টরি যোগ করুন"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "উপেক্ষা তালিকায় স্ক্রিপ্ট যোগ করুন"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "নোটিফিকেশন এপিআই (Notification API)-এর জন্য অনুরোধ আর হয়ত ক্রস-অরিজিন iframe থেকে করা যাবে না। এর পরিবর্তে সেরা লেভেলের ফ্রেম থেকে অনুরোধের জন্য অনুরোধ করা বা নতুন উইন্ডো খোলার কথা আপনাকে বিবেচনা করতে হবে।"
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap-এ বিকল্প imageOrientation: \"none\" বন্ধ করে দেওয়া হয়েছে। পরিবর্তে {imageOrientation: \"from-image\"} বিকল্প সহ createImageBitmap ব্যবহার করুন।"
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "আপনার পার্টনার পুরনো (D)TLS ভার্সন ব্যবহার করছেন। আপনার পার্টনার এটি সমাধান করেছেন কিনা তা চেক করে দেখে নিন।"
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo বন্ধ করে দেওয়া হয়েছে। পরিবর্তে স্ট্যান্ডার্ড navigator.storage ব্যবহার করুন।"
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "আমরা API chrome.privacy.websites.privacySandboxEnabled শীঘ্রই বন্ধ করছি, তবে M113 রিলিজ না হওয়া পর্যন্ত, এটি পুরনো ভার্সনের ইন্টারফেস ব্যবহার করে যেতে পারবে। পরিবর্তে, chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled এবং chrome.privacy.websites.adMeasurementEnabled ব্যবহার করুন। https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "সেইসব রিসোর্স সম্পর্কিত অনুরোধ যার URL-এ এম্বেড করা ক্রেডেনশিয়াল (যেমন https://user:pass@host/) রয়েছে, তা ব্লক করা হয়েছে।"
@@ -2313,7 +2319,7 @@
     "message": "ম্যানিফেস্টে 'name' বা 'short_name' ফিল্ড নেই"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "ম্যানিফেস্টে উপযুক্ত আইকন নেই - কমপক্ষে {PH1}পিক্সেলের PNG বা SVG ফর্ম্যাট প্রয়োজন, 'sizes' অ্যাট্রিবিউট অবশ্যই সেট করতে হবে ও 'purpose' অ্যাট্রিবিউট সেট করা হলে, তার মধ্যে 'any' অন্তর্ভুক্ত থাকতে হবে।"
+    "message": "ম্যানিফেস্টে উপযুক্ত আইকন নেই - কমপক্ষে {PH1}পিক্সেলের PNG, SVG বা WebP ফর্ম্যাট প্রয়োজন, sizes অ্যাট্রিবিউট অবশ্যই সেট করতে হবে এবং purpose অ্যাট্রিবিউট সেট করা হলে, সেটিতে any থাকতে হবে।"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "ম্যানিফেস্ট 'prefer_related_applications-এর ব্যাপারে নির্দিষ্ট করে বলে: ট্রু'"
@@ -2337,7 +2343,7 @@
     "message": "কোনও Play Store আইডি প্রদান করা হয়নি"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "আনসেট করা বা 'any'-এর উপর সেট করার উদ্দেশ্য রয়েছে এমন অ্যাট্রিবিউট সহ কোনও আইকন PNG বা SVG ফর্ম্যাটে নেই, যার সাইজ অন্তত {PH1} পিক্সেল স্কোয়ার।"
+    "message": "আনসেট করা বা 'any'-এর উপর সেট করার উদ্দেশ্য রয়েছে এমন অ্যাট্রিবিউট সহ কোনও আইকন PNG, SVG বা WebP ফর্ম্যাটে নেই, যার সাইজ অন্তত {PH1} পিক্সেল স্কোয়ার।"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "মনে রাখবেন:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "থিমের রঙ"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "ব্যাক/ফরোয়ার্ড ক্যাশে"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "ক্যাশে স্টোরেজ"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "মুছুন"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "ক্যাশে রিফ্রেশ করুন"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "প্রিফেচিং ও প্রিরেন্ডারিং"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: ম্যানিফেস্টের এই বিভাগে যাওয়ার জন্য অনুরোধ করুন"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "ক্যাশে"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "মুছুন"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ওয়ার্কার"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "ব্যাক/ফরোয়ার্ড ক্যাশে"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "ব্যাকগ্রাউন্ড ফেচ"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "রিপোর্টিং API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "ক্যাশে স্টোরেজ"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "মুছুন"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "ক্যাশে রিফ্রেশ করুন"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "ক্যাশে"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "অরিজিন"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "বাজেট রিসেট করুন"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "শেয়ার করা স্টোরেজ"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "প্রি-রেন্ডারিং"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools খোলা থাকার কারণে প্রিলোড করার ফিচার জোর করে চালু করা হয়েছে। যখন DevTools বন্ধ থাকে, তখন প্রি-রেন্ডারিং বন্ধ করা হয় কারণ এই ব্রাউজার সেশনটি হল কর্মক্ষমতা তুলনা করতে ব্যবহৃত হোল্ডব্যাক গ্রুপের অংশ।"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools খোলা থাকার কারণে প্রিরেন্ডারিং জোর করে চালু করা হয়েছে। যখন DevTools বন্ধ থাকে, তখন প্রি-রেন্ডারিং বন্ধ করা হয় কারণ এই ব্রাউজার সেশনটি হল কর্মক্ষমতা তুলনা করতে ব্যবহৃত হোল্ডব্যাক গ্রুপের অংশ।"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "প্রিলোড করার ফিচার বন্ধ ছিল, কিন্তু এখন জোর করে চালু করা হয়েছে"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "প্রিরেন্ডারিং বন্ধ ছিল, কিন্তু এখন জোর করে চালু করা হয়েছে"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "সাধারণ তথ্য"
@@ -8133,7 +8151,7 @@
     "message": "হেডার ওভাররাইড করা"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "হেডারের নামে শুধুমাত্র অক্ষর, ডিজিট, ড্যাশ বা আন্ডারস্কোর থাকা উচিত"
+    "message": "হেডারের নামে শুধুমাত্র অক্ষর, ডিজিট, হাইফেন বা আন্ডারস্কোর থাকা উচিত"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "আরও জানুন"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "সেভ করুন"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "টার্গেট বেছে নিন"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "একটি 'র' CDP কমান্ড পাঠান"
   },
@@ -9888,7 +9909,7 @@
     "message": "ব্র্যান্ডের সারি যোগ করা হয়েছে"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "স্থাপত্যশিল্প"
+    "message": "স্থাপত্যশিল্প (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "সিস্টেম আর্কিটেকচার (উদাহরণ: x86)"
@@ -9903,13 +9924,13 @@
     "message": "ব্র্যান্ড {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "ব্র্যান্ডের প্রপার্টি"
+    "message": "ইউজার এজেন্ট প্রপার্টি"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "ভার্সন {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ব্র্যান্ডস"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "ভার্সন (যেমন 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "মুছুন"
@@ -9918,16 +9939,19 @@
     "message": "ব্র্যান্ডের সারি মোছা হয়েছে"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "ডিভাইস মডেল"
+    "message": "ডিভাইস মডেল (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "ডিভাইসের প্রপার্টি"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "ব্রাউজারের সম্পূর্ণ ভার্সন"
+    "message": "সম্পূর্ণ ব্রাউজার ভার্সন (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "সম্পূর্ণ ব্রাউজার ভার্সন (উদাহরণ, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "সম্পূর্ণ ভার্সনের তালিকা (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "মোবাইল"
@@ -9936,7 +9960,7 @@
     "message": "স্ট্রাকচারড হেডার স্ট্রিং হিসেবে উপস্থাপন করা যাবে না।"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "প্ল্যাটফর্ম"
+    "message": "প্ল্যাটফর্ম (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "প্ল্যাটফর্ম (উদাহরণ: Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "প্ল্যাটফর্ম ভার্সন"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "উল্লেখযোগ্য ভার্সন (যেমন 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "ইউজার এজেন্ট ক্লায়েন্ট হিন্ট"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "ইউজার এজেন্ট ক্লায়েন্ট হিন্ট হল ইউজার এজেন্ট স্ট্রিংয়ের বিকল্প ব্যবস্থা যা আরও সুসংগঠিতভাবে এবং আরও বেশি গোপনীয়তার সাথে ব্রাউজার ও ডিভাইস শনাক্ত করে। আরও জানতে বোতামে ক্লিক করুন।"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "ভার্সন"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "ইউজার এজেন্ট (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "ডিভাইস"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "পজ করার আগে চেক করা এক্সপ্রেশন, যেমন x > ৫"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "আরও জানুন: ব্রেকপয়েন্টের ধরন"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "কনসোলে একটি মেসেজ লগ করুন, ব্রেক করবেন না"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "সাজানো বিকল্পের ফিল্টার প্রয়োগ করার জন্য Enter প্রেস করুন"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "হেডার সংক্রান্ত বিকল্প"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "এটি অনুযায়ী সাজান"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} ছোট থেকে বড় ক্রম অনুসারে সাজানো হয়েছে"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} বড় থেকে ছোট ক্রম অনুসারে সাজানো হয়েছে"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} সাজানো বাতিল করা হয়েছে"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … মিলছে এমন {PH1}টি লাইন এড়িয়ে যাওয়া হচ্ছে … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "কম কনট্রাস্টের সমস্যা সমাধান করতে সাজেস্ট করা {PH1} রঙ ব্যবহার করুন"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "ফর্ম্যাটের রেঞ্জের সাথে এই রঙটি মেলাতে, এটি ক্লিপ করা হয়। আসল রেজাল্ট হল {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "প্যালেটে যোগ করুন"

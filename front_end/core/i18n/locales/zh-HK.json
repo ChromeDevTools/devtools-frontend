@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "正在停止"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "無法載入 {PH1} 的內容：{PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "無法剖析 {PH1} 的內容：{PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "全色盲"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "將內容指令碼全部新增至忽略清單"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "將所有第三方指令碼新增至忽略清單"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "將目錄新增至忽略清單"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "新增指令碼至忽略清單"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "系統可能無法再透過跨來源 iframe 要求 Notification API。請考慮透過頂層頁框要求權限，或改為開啟新視窗。"
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap 中的 imageOrientation: \"none\" 選項已淘汰。使用 createImageBitmap 時請改為選擇 {imageOrientation: \"from-image\"} 選項。"
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "您的合作夥伴正在交涉已過時的傳輸層安全標準 (TLS)/DTLS 版本。請向您的合作夥伴查詢，以便修正問題。"
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo 已淘汰。請改用標準化的 navigator.storage。"
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "我們已淘汰此 API chrome.privacy.websites.privacySandboxEnabled，但為提供回溯兼容性，此 API 可持續使用至版本 M113。請改用 chrome.privacy.websites.topicsEnabled、chrome.privacy.websites.fledgeEnabled 和 chrome.privacy.websites.adMeasurementEnabled。詳情請參閱 https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled。"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "系統將封鎖網址包含嵌入憑證 (例如 https://user:pass@host/) 的子資源要求。"
@@ -2313,7 +2319,7 @@
     "message": "資訊清單未包含「name」或「short_name」欄位"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "資訊清單未包含合適的圖示 - 必須採用至少 {PH1}像素的 PNG 或 SVG 格式；必須設定「sizes」；如設定「purpose」格式，則必須包含「any」。"
+    "message": "資訊清單未包含合適的圖示 - 必須採用至少 {PH1}像素的 PNG、SVG 或 WebP 格式；必須設定「sizes」；如設定「purpose」格式，則必須包含「any」。"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "資訊清單指定「prefer_related_applications: true」"
@@ -2337,7 +2343,7 @@
     "message": "沒有提供「Play 商店」ID"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "所有提供的圖示均並非至少為 {PH1} 像素的 PNG 或SVG 格式正方形圖像，而且沒有設定目的屬性或將目的屬性設定為「any」。"
+    "message": "所有提供的圖示均並非至少為 {PH1} 像素的 PNG、SVG 或 WebP 格式正方形圖像，而且沒有設定目的屬性或將目的屬性設定為「any」。"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "注意："
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "主題顏色"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "向前/返回快取"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "快取儲存空間"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "刪除"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "重新整理快取"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "預先擷取和預先輸出"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}：調用嘅時候會碌去資訊清單嘅呢個部分"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "快取"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "清除"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "向前/返回快取"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "背景擷取"
@@ -2849,6 +2843,15 @@
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "快取儲存空間"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "刪除"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "重新整理快取"
+  },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "快取"
   },
@@ -3009,7 +3012,7 @@
     "message": "按一下任何共用儲存空間事件即可顯示事件參數。"
   },
   "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "密鑰"
+    "message": "鍵"
   },
   "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
     "message": "選取要預覽的值"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "來源"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "重設預算"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "共用儲存空間"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "預先輸出"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "開發人員工具已開啟，因此系統已強制啟用預先載入功能。由於此瀏覽器工作階段屬於用來比較效能的保留群組，因此預先輸出功能會在開發人員工具關閉後停用。"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "開發人員工具已開啟，因此系統已強制啟用預先載入功能。由於此瀏覽器工作階段屬於用來比較效能的保留群組，因此預先輸出功能會在開發人員工具關閉後停用。"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "預先載入功能先前曾停用，但目前已強制啟用"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "預先輸出功能先前曾停用，但目前已強制啟用"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "基本資料"
@@ -8133,7 +8151,7 @@
     "message": "覆寫標題"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "標題名稱應只包含字母、數字、破折號或底線"
+    "message": "標題名稱應只包含字母、數字、連字號或底線"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "瞭解詳情"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "儲存"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "選取目標"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "傳送原始 CDP 指令"
   },
@@ -9888,7 +9909,7 @@
     "message": "已新增品牌列"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "架構"
+    "message": "架構 (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "架構 (例如 x86)"
@@ -9903,13 +9924,13 @@
     "message": "品牌：{PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "品牌屬性"
+    "message": "用戶代理程式屬性"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "版本：{PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "品牌"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "版本 (例如 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "刪除"
@@ -9918,16 +9939,19 @@
     "message": "已刪除品牌列"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "裝置型號"
+    "message": "裝置型號 (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "裝置屬性"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "完整瀏覽器版本"
+    "message": "完整瀏覽器版本 (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "完整瀏覽器版本 (例如 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "完整版本清單 (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "流動裝置"
@@ -9936,7 +9960,7 @@
     "message": "無法顯示為結構化標題字串。"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "平台"
+    "message": "平台 (Sec-CH-UA-Platform/Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "平台 (例如 Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "平台版本"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "重要版本 (例如 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "用戶代理程式用戶端提示"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "用戶代理程式用戶端提示可代替用戶代理程式字串，以結構更完善的方式識別瀏覽器和裝置，同時進一步保障私隱權。如需瞭解詳情，請按一下說明按鈕。"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "版本"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "用戶代理程式 (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "裝置"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "在暫停之前檢查的運算式，例如 x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "瞭解詳情：中斷點類型"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "將訊息記錄到控制器中，不要中斷"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "㩒 Enter 掣就可以套用排序篩選器"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "標題選項"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "排序方式"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "根據遞增順序排{PH1}"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "根據遞減順序排{PH1}"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "取消咗{PH1}排序"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … 正在略過 {PH1} 行相符的項目 … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "使用建議的顏色「{PH1}」以修正低對比度的問題"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "為配合格式的色域，系統已移除此顏色。實際結果為 {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "新增至調色碟"

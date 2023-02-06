@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "stöðvar"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Ekki var hægt að hlaða efni fyrir {PH1}: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Ekki var hægt að þátta efni fyrir {PH1}: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Allitblinda"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Setja allar efnisskriftur á hunsunarlista"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Bæta öllum skriftum þriðju aðila á hunsunarlista"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Bæta lista á hunsunarlista"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Setja skriftu á hunsunarlista"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Óvíst er að beðið verði um heimild fyrir forritaskilum tilkynninga frá iframe þvert á uppruna. Íhugaðu að biðja um heimild frá ramma á efsta stigi eða opna nýjan glugga í staðinn."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Valkosturinn imageOrientation: \"none\" í createImageBitmap er úreltur. Nota skal createImageBitmap með valkostinum {imageOrientation: \"from-image\"} í staðinn."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo er úrelt. Nota skal staðlað navigator.storage í staðinn."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Við úreldum forritaskilin chrome.privacy.websites.privacySandboxEnabled en þau verða áfram virk til að viðhalda samhæfi við eldri útgáfur fram að útgáfu M113. Nota skal chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled og chrome.privacy.websites.adMeasurementEnabled í staðinn. Sjá https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
@@ -2313,7 +2319,7 @@
     "message": "Upplýsingaskrá inniheldur ekki reitinn „name“ eða „short_name“"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Upplýsingaskrá inniheldur ekki nothæft tákn. Krafist er tákns á PNG- eða SVG-sniði sem er minnst {PH1} pixlar að stærð, eigindin „sizes“ þarf að vera stillt og ef eigindin „purpose“ er stillt þarf hún að innihalda „any“."
+    "message": "Upplýsingaskrá inniheldur ekki nothæft tákn. Krafist er tákns á PNG-, SVG- eða WebP-sniði sem er minnst {PH1} pixlar, eigindin „sizes“ þarf að vera stillt og eigindin „purpose“ verður að innihalda „any“ ef hún er stillt."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Upplýsingaskrá tilgreinir „prefer_related_applications“: já"
@@ -2337,7 +2343,7 @@
     "message": "Ekkert Play Store auðkenni gefið upp"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Ekkert tiltækt tákn er minnst {PH1} pixlar að stærð og ferhyrnt á PNG- eða SVG-sniði með eigindina „tilgangur“ óstillta eða stillta á „any“."
+    "message": "Ekkert tiltækt tákn er minnst {PH1} pixlar og ferhyrnt á PNG-, SVG- eða WebP-sniði með eigindina „purpose“ auða eða stillta á „any“."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Athugaðu:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Þemalitur"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Skyndiminni til baka/áfram"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Geymslurými fyrir skyndiminni"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Eyða"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Uppfæra skyndiminni"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Forhleðsla"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: Keyra til að fletta að þessum hluta í upplýsingaskránni"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Skyndiminni"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Hreinsa"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "virki"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Skyndiminni til baka/áfram"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Gagnaflutningur í bakgrunni"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Skýrsluforritaskil"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Geymslurými fyrir skyndiminni"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Eyða"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Uppfæra skyndiminni"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Skyndiminni"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Uppruni"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Endurstilla kostnaðarhámark"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Samnýtt geymslurými"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Forhleðsla"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Þvingað er að hafa kveikt á forhleðslu vegna þessa að DevTools eru opin. Þegar DevTools er lokað verður slökkt á forhleðslu því þessi vafralota tilheyrir útilokunarhópi sem er notaður við afkastasamanburð."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Þvingað er að hafa kveikt á forhleðslu vegna þessa að DevTools eru opin. Þegar DevTools er lokað verður slökkt á forhleðslu því þessi vafralota tilheyrir útilokunarhópi sem er notaður við afkastasamanburð."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Slökkt var á forhleðslu en nú hefur verið kveikt á henni með þvingun"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Slökkt var á forhleðslu en nú hefur verið kveikt á henni með þvingun"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Grunnupplýsingar"
@@ -8133,7 +8151,7 @@
     "message": "Hnekkja haus"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Heiti hausa ætti aðeins að innihalda bókstafi, tölustafi, bandstrik eða undirstrik."
+    "message": "Heiti hausa ætti aðeins að innihalda bókstafi, tölustafi, bandstrik eða undirstrik"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Frekari upplýsingar"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Vista"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Veldu miðun"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Senda óunna CDP skipun"
   },
@@ -9888,7 +9909,7 @@
     "message": "Vörumerkjalínu bætt við"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arkitektúr"
+    "message": "Uppbygging (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Skipulag (t.d. x86)"
@@ -9903,13 +9924,13 @@
     "message": "Vörumerki {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Eiginleikar vörumerkis"
+    "message": "Eiginleikar aðgangsbúnaðar"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Útgáfa {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Vörumerki"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Útgáfa (t.d. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Eyða"
@@ -9918,16 +9939,19 @@
     "message": "Vörumerkjalínu var eytt"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Gerð tækis"
+    "message": "Gerð tækis (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Eiginleikar tækis"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Full útgáfa vafra"
+    "message": "Útgáfa vafra í heild sinni (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Fullt útgáfunúmer vafra (t.d. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Listi yfir útgáfur í heild sinni (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Farsímakerfi"
@@ -9936,7 +9960,7 @@
     "message": "Ekki hægt að birta sem streng skipulagðra hausa."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Verkvangur"
+    "message": "Kerfi (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Verkvangur (t.d. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Kerfisútgáfa"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Merkingarbær útgáfa (t.d. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Leiðréttingar aðgangsbúnaðar biðlara"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Leiðréttingar aðgangsbúnaðar biðlara eru önnur leið fyrir streng aðgangsbúnaðar til að auðkenna vafrann og tækið á skipulagðari hátt og ná fram betri úrvinnslu persónuverndar. Smelltu á hnappinn til að fá frekari upplýsingar."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Útgáfa"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Aðgangsbúnaður (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Tæki"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Segð sem skal athuga áður en hlé er gert, t.d. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Nánar: Gerðir stopppunkta"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Skrá skilaboð í stjórnborð, ekkert bil"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Ýttu á „Enter“ til að nota flokkunarsíu"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Valkostir hauss"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Raða eftir"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} raðað í hækkandi röð"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} raðað í lækkandi röð"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1}: hætt við flokkun"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Sleppir {PH1} samsvarandi línum … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Nota litatillöguna {PH1} til að bæta léleg birtuskil"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Þessi litur var styttur í samræmi við litaskala sniðsins. Raunveruleg niðurstaða var {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Bæta við litaspjald"

@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "កំពុង​បញ្ឈប់"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "មិនអាច​ផ្ទុក​ខ្លឹមសារ​សម្រាប់ {PH1}៖ {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "មិនអាចញែក​ខ្លឹមសារ​សម្រាប់ {PH1}៖ {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "ការមើលឃើញ​តែពណ៌ស ខ្មៅ និងប្រផេះ"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "បញ្ចូល​ស្គ្រីបខ្លឹមសារ​ទាំងអស់​ទៅក្នុង​បញ្ជីមិនអើពើ"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "បញ្ចូលគ្រប់​ស្គ្រីប​ភាគីទីបី​ទៅ​ក្នុង​បញ្ជី​មិនអើពើ"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "បញ្ចូលបញ្ជី​ទៅក្នុង​បញ្ជីមិនអើពើ"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "បញ្ចូល​ស្គ្រីបទៅ​បញ្ជីមិនអើពើ"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "ការអនុញ្ញាតសម្រាប់ Notification API ប្រហែលលែងត្រូវបានស្នើសុំពី iframe ដែលមានប្រភពដើមផ្សេងទៀតហើយ។ អ្នកគួរតែពិចារណាស្នើសុំការអនុញ្ញាតពីស៊ុមកម្រិតខ្ពស់ ឬបើកវិនដូថ្មីជំនួសវិញ។"
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "ជម្រើស imageOrientation: \"none\" នៅ​ក្នុង createImageBitmap ត្រូវ​បាន​បញ្ឈប់។ សូម​ប្រើ​ createImageBitmap ជា​មួយ​ជម្រើស {imageOrientation: \"from-image\"} ជំនួស​វិញ។"
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "ដៃគូរបស់អ្នកកំពុងចរចាលើកំណែ (D)TLS ដែលលែងប្រើ។ សូមផ្ទៀងផ្ទាត់ជាមួយដៃគូរបស់អ្នក ដើម្បីដោះស្រាយបញ្ហានេះ។"
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ navigator.storage ស្តង់ដារ​ជំនួសវិញ។"
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "យើងកំពុង​បញ្ឈប់ API chrome.privacy.websites.privacySandboxEnabled ទោះបីជាវា​នឹងនៅតែ​ដំណើរការ​សម្រាប់​ភាពត្រូវគ្នា​ជាមួយកំណែចាស់ៗ​រហូត​ដល់​ការ​ចេញផ្សាយកំណែ M113 ក៏ដោយ។ សូម​ប្រើ chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled និង chrome.privacy.websites.adMeasurementEnabled ជំនួស​វិញ។ សូមមើល https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled។"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "សំណើធនធានរងដែល URL របស់​ពួក​វា​មានព័ត៌មានផ្ទៀងផ្ទាត់បង្កប់ (ឧ. https://user:pass@host/) ត្រូវបានទប់ស្កាត់។"
@@ -2313,7 +2319,7 @@
     "message": "មេនីហ្វេសថ៍មិនមានកន្លែងបញ្ចូល 'name' ឬ 'short_name' ទេ"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "មេនីហ្វេសថ៍មិនមាន​រូបតំណាង​ដែល​សមស្រប​ទេ។ តម្រូវ​ឱ្យ​មាន​ទម្រង់ PNG ឬ SVG ដែល​មាន​យ៉ាងហោចណាស់ {PH1}px។ ត្រូវតែ​កំណត់​លក្ខណៈនៃ 'sizes' និង​លក្ខណៈ​នៃ 'purpose'។ ប្រសិនបើ​​កំណត់ ត្រូវតែ​រួម​បញ្ចូល 'any'។"
+    "message": "មេនីហ្វេសថ៍​មិនមាន​រូបតំណាង​ដែលសមស្របទេ។ តម្រូវឱ្យមាន​ទម្រង់ PNG, SVG ឬ WebP ដែលមាន​យ៉ាងហោចណាស់ {PH1}px។ ត្រូវតែកំណត់​លក្ខណៈនៃ 'sizes' និងលក្ខណៈនៃ 'purpose' ។ ប្រសិនបើ​កំណត់ ត្រូវតែរួមបញ្ចូល 'any'។"
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "មេនីហ្វេសថ៍​បញ្ជាក់ 'prefer_related_applications៖ ពិត'"
@@ -2337,7 +2343,7 @@
     "message": "មិនបានផ្ដល់​លេខសម្គាល់ Play store ទេ"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "មិនមាន​រូបតំណាង​ដែលបានផ្ដល់​យ៉ាងហោចណាស់ {PH1} ភីកសែល​រាងការ៉េ​ជាទម្រង់ PNG ឬ SVG ដោយបានកំណត់ ឬមិនបាន​កំណត់លក្ខណៈ​នៃគោលបំណងទៅជា 'any'។"
+    "message": "មិនមាន​រូបតំណាង​ដែលបានផ្ដល់​យ៉ាងហោចណាស់ {PH1} ភីកសែល​រាងការ៉េ​ជាទម្រង់ PNG, SVG ឬ WebP ដោយបានកំណត់ ឬមិនបាន​កំណត់លក្ខណៈ​នៃគោលបំណងទៅ 'any' ទេ។"
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "ចំណាំ៖"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "ពណ៌​រចនាប័ទ្ម"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "ឃ្លាំងបម្រុងទុក​ទំព័រក្នុងសភាពដើម​ទាំងស្រុង"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "ទំហំផ្ទុក​ឃ្លាំងបម្រុង"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "លុប"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "ផ្ទុកឃ្លាំងបម្រុងឡើងវិញ"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "ការទាញយកជាមុន និង​ការបំប្លែង​ជា​មុន"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}៖ យកមកប្រើ​ដើម្បីរំកិល​ទៅ​ផ្នែក​នេះ​នៅក្នុង​មេនីហ្វេសថ៍"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "ឃ្លាំងបម្រុង"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "សម្អាត"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "បុគ្គលិក"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "ឃ្លាំងបម្រុងទុក​ទំព័រក្នុងសភាពដើម​ទាំងស្រុង"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "ការទាញយកនៅផ្ទៃខាងក្រោយ"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API រាយការណ៍"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "ទំហំផ្ទុក​ឃ្លាំងបម្រុង"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "លុប"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "ផ្ទុកឃ្លាំងបម្រុងឡើងវិញ"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "ឃ្លាំងបម្រុង"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "ប្រភពដើម"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "កំណត់​ថវិកា​ឡើងវិញ"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "ទំហំផ្ទុករួម"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "ការបំប្លែងជាមុន"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "ការផ្ទុកជាមុនត្រូវ​បានបើក​ដោយ​បង្ខំ ដោយសារឧបករណ៍អ្នកអភិវឌ្ឍន៍​បើក។ នៅ​ពេល​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ត្រូវ​បានបិទ ការបំប្លែង​ជា​មុន​នឹង​ត្រូវ​បានបិទ ដោយសារ​វគ្គកម្មវិធីរុករកតាមអ៊ីនធឺណិត​នេះ​គឺ​ជា​ផ្នែក​មួយរបស់​ក្រុម​ដែលស្ថិតក្រោមការដាក់កំហិត​ ដែលត្រូវ​បាន​ប្រើសម្រាប់​ការ​ប្រៀបធៀប​ប្រតិបត្តិការ។"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "ការបំប្លែង​ជា​មុនត្រូវ​បានបើក​ដោយ​បង្ខំ ដោយសារឧបករណ៍អ្នកអភិវឌ្ឍន៍បើក។ នៅ​ពេល​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ត្រូវ​បានបិទ ការបំប្លែង​ជា​មុន​នឹង​ត្រូវ​បានបិទ ដោយសារ​វគ្គកម្មវិធីរុករកតាមអ៊ីនធឺណិត​នេះ​គឺ​ជា​ផ្នែក​មួយរបស់​ក្រុម​ដែលស្ថិតក្រោមការដាក់កំហិត​ ដែលត្រូវ​បាន​ប្រើសម្រាប់​ការ​ប្រៀបធៀប​ប្រតិបត្តិការ។"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "ការផ្ទុកជា​មុន​ត្រូវ​បាន​បិទ ប៉ុន្តែ​ឥឡូវ​ត្រូ​វបានបើក​ដោយ​បង្ខំ"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "ការបំប្លែង​ជា​មុន​ត្រូវ​បាន​បិទ ប៉ុន្តែ​ឥឡូវ​ត្រូ​វបានបើក​ដោយ​បង្ខំ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "ព័ត៌មាន​មូលដ្ឋាន"
@@ -8133,7 +8151,7 @@
     "message": "លុបពីលើផ្នែកក្បាល"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "ឈ្មោះ​ផ្នែក​ក្បាល​គួរ​មាន​តែ​អក្សរ លេខ សញ្ញាត្រេ ឬ​សញ្ញា (_) ប៉ុណ្ណោះ"
+    "message": "ឈ្មោះ​ផ្នែក​ក្បាល​គួរ​មាន​តែ​អក្សរ លេខ សហសញ្ញា ឬ​សញ្ញា (_) ប៉ុណ្ណោះ"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "ស្វែងយល់បន្ថែម"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "រក្សាទុក"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "ជ្រើសរើស​គោលដៅ"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ផ្ញើការបញ្ជា CDP ដែលមិនទាន់ដំណើរការ"
   },
@@ -9888,7 +9909,7 @@
     "message": "បានបញ្ចូលជួរដេកអំពីម៉ាកហើយ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ស្ថាបត្យកម្ម"
+    "message": "ស្ថាបត្យកម្ម (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ស្ថាបត្យកម្ម (ឧ. x86)"
@@ -9903,13 +9924,13 @@
     "message": "ម៉ាក {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "លក្ខណសម្បត្តិ​ម៉ាក"
+    "message": "លក្ខណៈ​ភ្នាក់ងារ​អ្នក​ប្រើប្រាស់"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "កំណែ {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ម៉ាក"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "កំណែ (ឧ. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "លុប"
@@ -9918,16 +9939,19 @@
     "message": "បានលុបជួរដេកអំពីម៉ាកហើយ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "ម៉ូដែល​ឧបករណ៍"
+    "message": "ម៉ូដែល​​ឧបករណ៍ (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "លក្ខណសម្បត្តិ​ឧបករណ៍"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "កំណែ​កម្មវិធីរុករកតាមអ៊ីនធឺណិត​ពេញលេញ"
+    "message": "កំណែកម្មវិធីរុករកតាមអ៊ីនធឺណិត​ពេញលេញ (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "កំណែ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ពេញលេញ (ឧ. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "បញ្ជី​កំណែ​ពេញលេញ (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "ឧបករណ៍​ចល័ត"
@@ -9936,7 +9960,7 @@
     "message": "មិនអាច​តំណាង​ជាជួរអក្សរ​ផ្នែកក្បាល​ដែលរៀបចំ​តាមរចនាសម្ព័ន្ធ​បានទេ​។"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "ប្រព័ន្ធ"
+    "message": "ប្រព័ន្ធ (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "ប្រព័ន្ធ (ឧ. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "កំណែ​ប្រព័ន្ធ"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "កំណែ​សំខាន់ (ឧ. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "តម្រុយ​កម្មវិធីភ្ញៀវ​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "តម្រុយ​កម្មវិធីភ្ញៀវ​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់​គឺជាជម្រើសផ្សេងទៀត​សម្រាប់ជួរអក្សរ​នៃភ្នាក់ងារអ្នកប្រើប្រាស់​ដែលសម្គាល់​កម្មវិធីរុករកតាមអ៊ីនធឺណិត និងឧបករណ៍​តាមរបៀបដែលមាន​ការរៀបចំរចនាសម្ព័ន្ធត្រឹមត្រូវជាង និង​មានទំនួលខុសត្រូវ​លើឯកជនភាព​កាន់តែប្រសើរ។ សូមចុច​ប៊ូតុង ដើម្បី​ស្វែងយល់​បន្ថែម​។"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "កំណែ"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "ភ្នាក់ងារ​អ្នក​ប្រើប្រាស់ (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "ឧបករណ៍"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "កន្សោម​ដែលត្រូវ​ពិនិត្យមើល មុនពេល​ផ្អាក ឧ. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "ស្វែងយល់បន្ថែម៖ ប្រភេទ​ចំណុចផ្អាក"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "កត់ត្រា​សារ​ក្នុង​កុងសូល កុំ​ផ្អាក"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "ចុច enter ដើម្បី​ប្រើ​តម្រង​តម្រៀប"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ជម្រើស​ផ្នែកក្បាល"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "តម្រៀបតាម"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} ត្រូវបាន​តម្រៀប​តាមលំដាប់ឡើង"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} ត្រូវបាន​តម្រៀប​តាម​លំដាប់​ចុះ"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} បានបោះបង់​ការ​តម្រៀប"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … កំពុងរំលងជួរដែលត្រូវគ្នា {PH1} … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "ប្រើពណ៌ {PH1} ដែលបានណែនាំ ដើម្បីកែ​ពន្លឺបញ្រ្ចាសកម្រិតទាប"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "ពណ៌​នេះ​ត្រូវ​បានកាត់ចេញ​ ដើម្បី​ឱ្យត្រូវគ្នានឹងកាមុតរបស់​ទម្រង់។ លទ្ធផល​ជាក់ស្ដែង​គឺ {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "បញ្ចូល​ទៅក្ដារលាយពណ៌"

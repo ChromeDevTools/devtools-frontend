@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "നിർത്തുന്നു"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} എന്നതിനായി ഉള്ളടക്കം ലോഡ് ചെയ്യാനായില്ല: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1} എന്നതിനായി ഉള്ളടക്കം വിശകലനം ചെയ്യാനായില്ല: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "അക്രോമാറ്റോപ്സിയ"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "എല്ലാ ഉള്ളടക്ക സ്ക്രിപ്റ്റുകളും നിരസിക്കൽ ലിസ്റ്റിലേക്ക് ചേർക്കുക"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "അവഗണിക്കൽ ലിസ്റ്റിലേക്ക് എല്ലാ മൂന്നാം കക്ഷി സ്ക്രിപ്റ്റുകളും ചേർക്കുക"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "അവഗണിക്കൽ ലിസ്റ്റിലേക്ക് ഡയറക്റ്ററി ചേർക്കുക"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "നിരസിച്ച ലിസ്റ്റിലേക്ക് സ്ക്രിപ്റ്റ് ചേർക്കുക"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "അറിയിപ്പ് API-ക്കുള്ള അനുമതി ഇനി ഒരു ക്രോസ് ഒറിജിൻ iframe-ൽ നിന്ന് അഭ്യർത്ഥിക്കാനില്ല. ഒരു ടോപ്പ് ലെവൽ ഫ്രെയിമിൽ നിന്ന് അനുമതി അഭ്യർത്ഥിക്കുന്നതോ പുതിയൊരു വിൻഡോ തുറക്കുന്നതോ പരിഗണിക്കുക."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap എന്നതിലെ imageOrientation: \"none\" ഓപ്ഷൻ അവസാനിപ്പിച്ചു. പകരം {imageOrientation: \"from-image\"} ഓപ്ഷനൊപ്പം createImageBitmap ഉപയോഗിക്കൂ."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "കാലഹരണപ്പെട്ട ഒരു (D)TLS പതിപ്പാണ് നിങ്ങളുടെ പങ്കാളി ഉപയോഗിക്കുന്നത്. ഇത് പരിഹരിക്കാൻ നിങ്ങളുടെ പങ്കാളിയെ ബന്ധപ്പെടുക."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo അവസാനിപ്പിച്ചു. പകരം, ഏകീകൃത navigator.storage ഉപയോഗിക്കുക."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "ഞങ്ങൾ API chrome.privacy.websites.privacySandboxEnabled അവസാനിപ്പിക്കുകയാണ്, എന്നിരുന്നാലും M113 റിലീസ് ചെയ്യുന്നത് വരെ അനുയോജ്യത കുറഞ്ഞ പതിപ്പുകളിൽ ഇത് സജീവമായിരിക്കും. പകരം chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled,chrome.privacy.websites.adMeasurementEnabled എന്നിവ ഉപയോഗിക്കുക. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled കാണുക."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "URL-കളിൽ ക്രെഡൻഷ്യലുകൾ ഉൾച്ചേർത്ത സബ്റിസോഴ്‌സ് അഭ്യർത്ഥനകൾ (ഉദാ. https://user:pass@host/) ബ്ലോക്ക് ചെയ്യുന്നു."
@@ -2313,7 +2319,7 @@
     "message": "മാനിഫെസ്റ്റിൽ 'name' അല്ലെങ്കിൽ 'short_name' ഫീൽഡ് അടങ്ങിയിട്ടില്ല"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "മാനിഫെസ്റ്റിൽ അനുയോജ്യമായ ഐക്കൺ അടങ്ങിയിട്ടില്ല - കുറഞ്ഞത് {PH1}px ഉള്ള PNG അല്ലെങ്കിൽ SVG ഫോർമാറ്റ് ആവശ്യമാണ് 'sizes' ആട്രിബ്യൂട്ട് സജ്ജീകരിച്ചിരിക്കണം, 'purpose' ആട്രിബ്യൂട്ട് സജ്ജീകരിച്ചിട്ടുണ്ടെങ്കിൽ അതിൽ'any' ഉൾപ്പെടുത്തണം."
+    "message": "മാനിഫെസ്റ്റിൽ അനുയോജ്യമായ ഐക്കൺ അടങ്ങിയിട്ടില്ല - കുറഞ്ഞത് {PH1}px ഉള്ള PNG, SVG അല്ലെങ്കിൽ WebP ഫോർമാറ്റ് ആവശ്യമാണ്, 'sizes' ആട്രിബ്യൂട്ട് സജ്ജീകരിച്ചിരിക്കണം, 'purpose' ആട്രിബ്യൂട്ട് സജ്ജീകരിച്ചിട്ടുണ്ടെങ്കിൽ അതിൽ'any' ഉൾപ്പെടുത്തണം."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "മാനിഫെസ്റ്റ് 'prefer_related_applications വ്യക്തമാക്കുന്നു: ശരി'"
@@ -2337,7 +2343,7 @@
     "message": "Play Store ഐഡി നൽകിയിട്ടില്ല"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "'any' എന്ന് സജ്ജീകരിക്കുകയോ സജ്ജീകരിച്ചത് മാറ്റുകയോ ചെയ്യാനുള്ള ഉദ്ദേശ്യ ആട്രിബ്യൂട്ട് ഉപയോഗിച്ച് PNG അല്ലെങ്കിൽ SVG ഫോർമാറ്റിൽ, കുറഞ്ഞത് {PH1} പിക്സൽ സ്ക്വയർ ഉള്ള സപ്ലൈ ചെയ്ത ഐക്കണുകൾ ഒന്നുമില്ല."
+    "message": "'any' എന്ന് സജ്ജീകരിക്കുകയോ സജ്ജീകരിച്ചത് മാറ്റുകയോ ചെയ്യാനുള്ള ഉദ്ദേശ്യ ആട്രിബ്യൂട്ട് ഉപയോഗിച്ച് PNG, SVG അല്ലെങ്കിൽ WebP ഫോർമാറ്റിൽ, കുറഞ്ഞത് {PH1} പിക്‌സൽ സ്ക്വയർ ഉള്ള സപ്ലൈ ചെയ്‌ത ഐക്കണുകൾ ഒന്നുമില്ല."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "ശ്രദ്ധിക്കുക:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "തീമിന്റെ നിറം"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "ബാക്ക്/ഫോർവേഡ് കാഷെ"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "കാഷെ സ്‌റ്റോറേജ്"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "ഇല്ലാതാക്കുക"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "കാഷെകൾ റീഫ്രഷ് ചെയ്യുക"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "പ്രീഫെച്ചിംഗും പ്രീറെൻഡറിംഗും"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: മാനിഫെസ്റ്റിലെ ഈ വിഭാഗത്തിലേക്ക് സ്ക്രോൾ ചെയ്യാൻ അഭ്യർത്ഥിക്കുക"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "കാഷെ"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "മായ്ക്കുക"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "വർക്കർ"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "ബാക്ക്/ഫോർവേഡ് കാഷെ"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "പശ്ചാത്തലം ലഭ്യമാക്കൽ"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "റിപ്പോർട്ടിംഗ് API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "കാഷെ സ്‌റ്റോറേജ്"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "ഇല്ലാതാക്കുക"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "കാഷെകൾ റീഫ്രഷ് ചെയ്യുക"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "കാഷെ"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "ഉറവിടം"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "ബജറ്റ് റീസെറ്റ് ചെയ്യുക"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "പങ്കിട്ട സ്റ്റോറേജ്"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "പ്രീറെൻഡറിംഗ്"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools ഓണായിരിക്കുന്നതിനാൽ പ്രീലോഡിംഗ് നിർബന്ധിതമായി പ്രവർത്തനക്ഷമമാക്കിയിരിക്കുന്നു. ഈ ബ്രൗസർ സെഷൻ, പ്രകടന താരതമ്യത്തിന് ഉപയോഗിക്കുന്ന ഒരു ഹോൾഡ്ബാക്ക് സെഷന്റെ ഭാഗമായതിനാൽ DevTools ഓഫായിരിക്കുമ്പോൾ പ്രീറെൻഡറിംഗ് പ്രവർത്തനരഹിതമാക്കും."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools ഓണായിരിക്കുന്നതിനാൽ പ്രീറെൻഡറിംഗ് നിർബന്ധിതമായി പ്രവർത്തനക്ഷമമാക്കിയിരിക്കുന്നു. ഈ ബ്രൗസർ സെഷൻ, പ്രകടന താരതമ്യത്തിന് ഉപയോഗിക്കുന്ന ഒരു ഹോൾഡ്ബാക്ക് സെഷന്റെ ഭാഗമായതിനാൽ DevTools ഓഫായിരിക്കുമ്പോൾ പ്രീറെൻഡറിംഗ് പ്രവർത്തനരഹിതമാക്കും."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "പ്രീലോഡിംഗ് പ്രവർത്തനരഹിതമായിരുന്നു, എന്നാൽ ഇപ്പോൾ നിർബന്ധിതമായി പ്രവർത്തനക്ഷമമാക്കിയിട്ടുണ്ട്"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "പ്രീറെൻഡറിംഗ് പ്രവർത്തനരഹിതമായിരുന്നു, എന്നാൽ ഇപ്പോൾ നിർബന്ധിതമായി പ്രവർത്തനക്ഷമമാക്കിയിട്ടുണ്ട്"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "അടിസ്ഥാന വിവരങ്ങൾ"
@@ -8133,7 +8151,7 @@
     "message": "അസാധുവാക്കൽ ഹെഡ്ഡർ"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "ഹെഡ്ഡറിന്റെ പേരുകളിൽ അക്ഷരങ്ങൾ, അക്കങ്ങൾ, ഡാഷുകൾ, അണ്ടർസ്‌കോറുകൾ എന്നിവ മാത്രമേ ഉണ്ടാകാവൂ"
+    "message": "ഹെഡ്ഡറിന്റെ പേരുകളിൽ അക്ഷരങ്ങൾ, അക്കങ്ങൾ, ഹൈഫനുകൾ, അണ്ടർസ്‌കോറുകൾ എന്നിവ മാത്രമേ ഉണ്ടാകാവൂ"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "കൂടുതലറിയുക"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "സംരക്ഷിക്കുക"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "ഒരു ടാർഗറ്റ് തിരഞ്ഞെടുക്കുക"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "റോ CDP കമാൻഡ് അയയ്‌ക്കുക"
   },
@@ -9888,7 +9909,7 @@
     "message": "ബ്രാൻഡ് വരി ചേർത്തു"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ആർക്കിടെക്ച്ചർ"
+    "message": "ആർക്കിടെക്ച്ചർ (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ആർക്കി‌ടെക്‌ച്ചർ (ഉദാ. x86)"
@@ -9903,13 +9924,13 @@
     "message": "ബ്രാൻഡ് {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "ബ്രാൻഡിന്റെ പ്രോപ്പർട്ടികൾ"
+    "message": "ഉപയോക്തൃ ഏജന്റ് പ്രോപ്പർട്ടികൾ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "പതിപ്പ് {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ബ്രാൻഡുകൾ"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "പതിപ്പ് (ഉദാ. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "ഇല്ലാതാക്കുക"
@@ -9918,16 +9939,19 @@
     "message": "ബ്രാൻഡ് വരി ഇല്ലാതാക്കി"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "ഉപകരണ മോഡൽ"
+    "message": "ഉപകരണ മോഡൽ (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "ഉപകരണ പ്രോപ്പർട്ടികൾ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "മുഴുവൻ ബ്രൗസർ പതിപ്പ്"
+    "message": "പൂർണ്ണ ബ്രൗസർ പതിപ്പ് (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "പൂർണ്ണ ബ്രൗസർ പതിപ്പ് (ഉദാ. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "പൂർണ്ണമായ പതിപ്പിന്റെ ലിസ്റ്റ് (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "മൊബൈൽ"
@@ -9936,7 +9960,7 @@
     "message": "ഘടനാപരമായ ഹെഡ്ഡറുകളുടെ സ്ട്രിംഗായി പ്രതിനിധീകരിക്കാൻ കഴിയില്ല."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "പ്ലാറ്റ്‌ഫോം"
+    "message": "പ്ലാറ്റ്‌ഫോം (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "പ്ലാറ്റ്‌ഫോം (ഉദാ. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "പ്ലാറ്റ്‌ഫോം പതിപ്പ്"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "പ്രധാന പതിപ്പ് (ഉദാ. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "ഉപയോക്തൃ-ഏജന്റ് ക്ലയന്റ് സൂചനകൾ"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "മികച്ച സ്വകാര്യതാ പരിരക്ഷ കണക്കിലെടുത്ത് കൂടുതൽ ഘടനാപരമായ രീതിയിൽ ബ്രൗസറിനെയും ഉപകരണത്തെയും തിരിച്ചറിയുന്ന, ഉപയോക്തൃ-ഏജന്റ് സ്ട്രിംഗിന്റെ ഒരു ബദലാണ് ഉപയോക്തൃ-ഏജന്റ് ക്ലയന്റ് സൂചനകൾ. കൂടുതലറിയാൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുക."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "പതിപ്പ്"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "ഉപയോക്തൃ ഏജന്റ് (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "ഉപകരണങ്ങൾ"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "താൽക്കാലികമായി നിർത്തുന്നതിനുമുമ്പ് പരിശോധിക്കാനുള്ള എക്‌സ്‌പ്രഷൻ, ഉദാ. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "കൂടുതലറിയുക: ബ്രേക്ക്പോയിന്റ് തരങ്ങൾ"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "കൺസോളിലേക്ക് ഒരു സന്ദേശം ലോഗ് ചെയ്യുക, അത് വിഭജിക്കരുത്"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "അടുക്കൽ ഫിൽട്ടർ ബാധകമാക്കാൻ Enter അമർത്തുക"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ഹെഡ്ഡർ ഓപ്ഷനുകൾ"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ഇപ്രകാരം അടുക്കുക"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} ആരോഹണക്രമത്തിൽ അടുക്കി"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} അവരോഹണക്രമത്തിൽ അടുക്കി"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} അടുക്കൽ റദ്ദാക്കി"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} പൊരുത്തപ്പെടുന്ന വരികൾ ഒഴിവാക്കുന്നു … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "കുറഞ്ഞ ദൃശ്യതീവ്രത പരിഹരിക്കാൻ, നിർദ്ദേശിക്കുന്ന {PH1} കളർ ഉപയോഗിക്കുക"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "ഫോർമാറ്റിന്റെ gamut-മായി പൊരുത്തപ്പെടാൻ ഈ നിറം ക്ലിപ്പ് ചെയ്‌തു. യഥാർത്ഥ ഫലം {PH1} ആയിരുന്നു"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "പാലെറ്റിലേക്ക് ചേർക്കുക"

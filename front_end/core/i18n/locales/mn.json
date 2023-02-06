@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "зогсоож байна"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1}-д контентыг ачаалж чадсангүй: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1}-д контентыг шинжилж чадсангүй: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ахроматопси"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Үл хэрэгсэх жагсаалтад контентын бүх скриптийг нэмэх"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Үл хэрэгсэх жагсаалтын бүх гуравдагч талын скриптийг нэмнэ үү"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Үл тоох жагсаалтад лавлах нэмнэ үү"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Үл хэрэгсэх жагсаалтад скрипт нэмэх"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Мэдэгдлийн API-н зөвшөөрлийг цаашид хөндлөнгийн эхийн iframe-с хүсэх боломжгүй байж магадгүй. Та оронд нь дээд түвшиний фреймээс зөвшөөрөл хүсэх эсвэл шинэ цонх нээж үзэх талаар бодож үзэх хэрэгтэй."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap дахь imageOrientation: \"none\" сонголтыг зогсоосон. Оронд нь {imageOrientation: \"from-image\"} сонголттой createImageBitmap-г ашиглана уу."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Таны түнш хуучирсан (D)TLS хувилбарыг хэлэлцэж байна. Үүнийг засуулахын тулд түншээсээ лавлана уу."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo-г зогсоосон. Оронд нь стандартжуулсан navigator.storage-г ашиглана уу."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Бид API-г chrome.privacy.websites.privacySandboxEnabled зогсоож байгаа ч M113-г шинээр гаргах хүртэл хуучин тохиргоонд нийцүүлэх байдлаар API-г идэвхтэй хэвээр байлгана. Оронд нь, chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled болон chrome.privacy.websites.adMeasurementEnabled-г ашиглана уу. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled -г харна уу."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "URL-ууд нь мандат үнэмлэх (ж.нь https://user:pass@host/) агуулсан дэд нөөцийн хүсэлтүүдийг блоклосон."
@@ -2313,7 +2319,7 @@
     "message": "Тодорхойлогч файлд 'name' эсвэл 'short_name' талбар агуулаагүй байна"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Тодорхойлогч файлд тохирох дүрс тэмдэг агуулаагүй байна. Хамгийн багадаа {PH1} пикселтэй PNG эсвэл SVG формат шаардлагатай. 'sizes' атрибутыг тохируулсан байх ёстой бөгөөд хэрэв 'purpose' атрибутыг тохируулсан бол 'any'-г агуулж байх ёстой."
+    "message": "Тодорхойлогч тохирох дүрс тэмдэг агуулаагүй байна. - Хамгийн багадаа {PH1}пиксел хэмжээтэй PNG, SVG эсвэл WebP формат шаардлагатай, 'sizes' атрибутыг тохируулсан байх ёстой бөгөөд 'purpose' атрибутыг тохируулсан бол 'any'-г агуулж байх ёстой."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Тодорхойлогч файл 'prefer_related_applications-г зааж байна: үнэн'"
@@ -2337,7 +2343,7 @@
     "message": "Play Store ID өгөөгүй"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "PNG эсвэл SVG форматтай, зорилгын атрибутыг тохируулаагүй эсвэл 'any' гэж тохируулсан хамгийн багадаа {PH1} пиксел дөрвөлжин хэлбэртэй дүрс тэмдэг олгоогүй."
+    "message": "PNG, SVG эсвэл WebP форматаар хамгийн багадаа {PH1} дөрвөлжин пикселтэй, зорилгын атрибутыг тохируулаагүй эсвэл 'any' гэж тохируулсан дүрс тэмдэг олгоогүй байна."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Санамж:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Загварын өнгө"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Back/forward cache"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Завсрын санах ойн хадгалах сан"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Устгах"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Завсрын санах ойг сэргээх"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Урьдчилан татаж авах ба Урьдчилан рэндэрлэх"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: Тодорхойлогч файлын энэ хэсэг рүү гүйлгэхийн тулд дуудна уу"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Завсрын санах ой"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Арилгах"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ажилтан"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Back/forward cache"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Дэвсгэрийг дуудах"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Тайлагнах API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Завсрын санах ойн хадгалах сан"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Устгах"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Завсрын санах ойг сэргээх"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Завсрын санах ой"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Эх"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Төсвийг дахин тохируулах"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Дундын хадгалах сан"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Урьдчилан рэндэрлэх"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools нээлттэй байгаа тул урьдчилан ачаалахыг албадан идэвхжүүлсэн. DevTools хаалттай үед энэ хөтчийн харилцан үйлдэл нь гүйцэтгэлийн харьцуулалт хийхэд ашигладаг саатуулах бүлгийн нэг хэсэг тул урьдчилан рэндэрлэхийг идэвхгүй болгоно."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools нээлттэй байгаа тул урьдчилан рэндэрлэхийг албадан идэвхжүүлсэн. DevTools хаалттай үед энэ хөтчийн харилцан үйлдэл нь гүйцэтгэлийн харьцуулалт хийхэд ашигладаг саатуулах бүлгийн нэг хэсэг тул урьдчилан рэндэрлэхийг идэвхгүй болгоно."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Урьдчилан ачаалахыг идэвхгүй болгосон боловч одоо албадан идэвхжүүлсэн"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Урьдчилан рэндэрлэхийг идэвхгүй болгосон боловч одоо албадан идэвхжүүлсэн"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Үндсэн мэдээлэл"
@@ -8133,7 +8151,7 @@
     "message": "Толгой хэсгийг дарах"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Толгой хэсгийн нэр нь зөвхөн үсэг, цифр, зураас эсвэл доогуур зураас агуулсан байх ёстой"
+    "message": "Толгойн нэр нь зөвхөн үсэг, цифр, зураас эсвэл доогуур зураас агуулсан байх ёстой"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Нэмэлт мэдээлэл авах"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Хадгалах"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Зорилгоо сонгоно уу"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "CDP-н боловсруулаагүй тушаалыг илгээх"
   },
@@ -9888,7 +9909,7 @@
     "message": "Брэндийн мөрийг нэмсэн"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Архитектур"
+    "message": "Архитектур (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Архитектур (ж.нь x86)"
@@ -9903,13 +9924,13 @@
     "message": "{PH1} брэнд"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Брэндийн өмч"
+    "message": "Хэрэглэгчийн агентын шинж чанарууд"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Хувилбар {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Брэндүүд"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Хувилбар (жш.нь. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Устгах"
@@ -9918,16 +9939,19 @@
     "message": "Брэндийн мөрийг устгасан"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Төхөөрөмжийн загвар"
+    "message": "Төхөөрөмжийн загвар (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Төхөөрөмжийн өмч"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Хөтчийн бүтэн хувилбар"
+    "message": "Хөтчийн бүрэн хувилбар (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Хөтчийн бүтэн хувилбар (ж.нь 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Бүрэн хувилбарын жагсаалт (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Мобайл"
@@ -9936,7 +9960,7 @@
     "message": "Бүтэцлэгдсэн толгой хэсгийн мөр байдлаар төлөөлөх боломжгүй."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Платформ"
+    "message": "Платформ (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Платформ (ж.нь Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Платформын хувилбар"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Ач холбогдол бүхий хувилбар (жш.нь. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Хэрэглэгчийн агентын заавар"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Хэрэглэгчийн агентын клиентийн заавар нь хөтөч болон төхөөрөмжийг бүртгэлийн илүү сайн нууцлалын тусламжтай илүү бүтэцлэгдсэн байдлаар тодорхойлдог хэрэглэгчийн агентын өөр хувилбар юм. Нэмэлт мэдээлэл авахын тулд товчлуурыг товшино уу."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Хувилбар"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Хэрэглэгчийн агент (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Төхөөрөмж"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Түр зогсоохоос өмнө шалгах илэрхийлэл. Ж.нь x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Дэлгэрэнгүй үзэх: Хугарлын цэгийн төрлүүд"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Консолд мессеж бүртгэх, бүү тасал"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Enter дарж эрэмбэлэх шүүлтүүрийг хэрэглэнэ үү"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Толгой хэсгийн сонголт"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Дараахаар эрэмбэлэх"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} өсөх дарааллаар эрэмбэлсэн"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} буурах дарааллаар эрэмбэлсэн"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} эрэмбэлэхийг цуцалсан"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} тохирох мөрийг алгасаж байна … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Бага ялгарлыг засахын тулд {PH1} зөвлөсөн өнгийг ашиглана уу"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Энэ өнгийг форматын gamut-д тохируулан хайчилж авав. Бодит үр дүн нь {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Өнгөний нийлүүрт нэмэх"

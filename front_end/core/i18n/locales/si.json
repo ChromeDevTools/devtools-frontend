@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "නතර කරමින්"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} සඳහා අන්තර්ගතය පූරණය කළ නොහැකි විය: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1} සඳහා අන්තර්ගතය විග්‍රහ කළ නොහැකි විය: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "ඇක්‍රොමැටොප්සියා"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "ලැයිස්තුව නොසලකා හැරීමට සියලු අන්තර්ගත ස්ක්‍රිප්ට එක් කරන්න"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "නොසලකා හැරීමේ ලැයිස්තුවට සියලු තෙවන පාර්ශ්වීය ස්ක්‍රිප්ට එක් කරන්න"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "නාමාවලිය නොසලකා හැරීමේ ලැයිස්තුවට එක් කරන්න"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "නොසලකා හරින්න ලැයිස්තුවට ස්ක්‍රිප්ටය එක් කරන්න"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Notification API සඳහා අවසරය හරස් සම්භවයක් ඇති iframe වෙතින් තවදුරටත් ඉල්ලිය නොහැකිය. ඔබ ඉහළ මට්ටමේ රාමුවකින් අවසර ඉල්ලීම හෝ ඒ වෙනුවට නව කවුළුවක් විවෘත කිරීම සලකා බැලිය යුතුය."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap හි imageOrientation: \"none\" විකල්පය අත්හැර ඇත. ඒ වෙනුවට {imageOrientation: \"from-image\"} විකල්පය සමග createImageBitmap භාවිතා කරන්න."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "ඔබගේ සහායක යල් පැන ගිය (D)TLS අනුවාදයක් ගැන සාකච්ඡා කරමින් සිටී. මෙය නිවැරදි කිරීමට කරුණාකර ඔබගේ සහායක සමඟ පරීක්ෂා කරන්න."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo අත්හරිනු ලැබේ. ඒ වෙනුවට ප්‍රමිත navigator.storage භාවිතා කරන්න."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "M113 නිකුත් කරන තෙක් එය පසුගාමී ගැළපුම සඳහා සක්‍රියව පවතිනු ඇතත්, අපි API chrome.privacy.websites.privacySandboxEnabled අත්හරිමු. ඒ වෙනුවට, chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled සහ chrome.privacy.websites.adMeasurementEnabled භාවිතා කරන්න. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled බලන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "URL හි කාවැද්දූ අක්තපත්‍ර අඩංගු උප සම්පත් ඉල්ලීම් (උදා. https://user:pass@host/) අවහිර කර ඇත."
@@ -2313,7 +2319,7 @@
     "message": "මැනිෆෙස්ටයෙහි 'name' හෝ 'short_name' ක්ෂේත්‍රයක් අඩංගු නැත"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "මැනිෆෙස්ටයේ සුදුසු නිරූපකයක් අඩංගු නොවේ - අඩු තරමින් {PH1}px හි PNG හෝ SVG ආකෘතිය අවශ්‍යයි, 'sizes' උපලක්ෂණය සැකසිය යුතු අතර, 'purpose' උපලක්ෂණය සැකසුවහොත්, 'any' අඩංගු විය යුතු වේ."
+    "message": "මැනිෆෙස්ටයේ සුදුසු නිරූපකයක් අඩංගු නොවේ - අඩු තරමින් {PH1}px හි PNG, SVG හෝ WebP ආකෘතිය අවශ්‍යයි, 'sizes' උපලක්ෂණය සැකසිය යුතු අතර, 'purpose' උපලක්ෂණය සැකසුවහොත්, 'any' අඩංගු විය යුතු වේ."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "මැනිෆෙ‍ස්ටය 'prefer_related_applications: සත්‍ය' සඳහන් කරයි:"
@@ -2337,7 +2343,7 @@
     "message": "Play store ID සපයා නැත"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "සපයන ලද නිරූපකයක් අරමුණු උපලක්ෂණය නොසකසා හෝ 'any' වෙත සකසා, අඩු තරමින් පික්සල {PH1}ක් PNG හෝ SVG ආකෘතියෙන් හතරැස් නොවේ."
+    "message": "සපයන ලද නිරූපකයක් අරමුණු උපලක්ෂණය නොසකසා හෝ 'any' වෙත සකසා, අඩු තරමින් පික්සල {PH1}ක් PNG, SVG හෝ WebP ආකෘතියෙන් හතරැස් නොවේ."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "සටහන:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "තේමා වර්ණය"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "පසුපසට ඉදිරියට හැඹිලිය"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "හැඹිලි ගබඩාව"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "මකන්න"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "හැඹිලි නැවුම් කරන්න"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "පූර්ව ලබා ගැනීම සහ පූර්ව යෙදීම"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: මැනිෆෙස්ට් තුළ මෙම කොටසට අනුචලන කිරීමට යදින්න"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "හැඹිලිය"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "හිස් කරන්න"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "වැඩකරු"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "පසුපසට ඉදිරියට හැඹිලිය"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "පසුබිම යළි ලබා ගැනීම"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "හැඹිලි ගබඩාව"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "මකන්න"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "හැඹිලි නැවුම් කරන්න"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "හැඹිලිය"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "මූලාරම්භය"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "අයවැය යළි සකසන්න"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "බෙදා ගත් ආචයනය"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "පූර්ව ඉදිරිපත් කිරීම"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "DevTools විවෘත නිසා පූර්ව පූරණය බලෙන් සබල කර ඇත. DevTools වසා ඇති විට, මෙම බ්‍රව්සර සැසිය කාර්ය සාධනය සැසඳීම් සඳහා භාවිතා කරන රඳවා තබා ගැනීමේ සමූහයක කොටසක් වන නිසා පූර්ව යෙදීම අබල වනු ඇත."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "DevTools විවෘත නිසා පූර්ව යෙදීම බලෙන් සබල කර ඇත. DevTools වසා ඇති විට, මෙම බ්‍රව්සර සැසිය කාර්ය සාධනය සැසඳීම් සඳහා භාවිතා කරන රඳවා තබා ගැනීමේ සමූහයක කොටසක් වන නිසා පූර්ව යෙදීම අබල වනු ඇත."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "පූර්ව පූරණය අබල කර ඇති නමුත්, දැන් බලෙන් සබල කර ඇත"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "පූර්ව යෙදීම අබල කර ඇති නමුත්, දැන් බලෙන් සබල කර ඇත"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "මූලික තොරතුරු"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "සුරකින්න"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "ඉලක්කයක් තෝරන්න"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "අමු CDP විධානයක් යවන්න"
   },
@@ -9888,7 +9909,7 @@
     "message": "බ්‍රවුසර සන්නම් තීරුව එක් කරන ලදි"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "සැකසුම"
+    "message": "නිර්මාණ ශිල්පය (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ගෘහ නිර්මාණ ශිල්පය (උදා. x86)"
@@ -9903,13 +9924,13 @@
     "message": "{PH1} සන්නම"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "සන්නම් ගුණාංග"
+    "message": "පරිශීලක කාරක ගුණාංග"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "අනුවාදය {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "සන්නම්"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "අනුවාදය (උදා. 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "මකන්න"
@@ -9918,16 +9939,19 @@
     "message": "බ්‍රවුසර සන්නම් තීරුව මකන ලදි"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "උපාංග මාදිලිය"
+    "message": "උපාංග මාදිලිය (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "උපාංග දේපළ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "සම්පූර්ණ බ්‍රව්සර අනුවාදය"
+    "message": "පූර්ණ බ්‍රව්සර අනුවාදය (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "සම්පූර්ණ බ්‍රවුසර අනුවාදය (උදා. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "පූර්ණ අනුවාද ලැයිස්තුව (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "ජංගම"
@@ -9936,7 +9960,7 @@
     "message": "ව්‍යුහාත්මක ශීර්ෂක අනුලකුණුවැල ලෙස නිරූපණය කළ නොහැකිය."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "වේදිකාව"
+    "message": "වේදිකාව (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "වේදිකාව (උදා. Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "වේදිකා අනුවාදය"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "සැලකිය යුතු අනුවාදය (උදා. 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "පරිශීලක නියෝජිත සේවාලාභී ඉඟි"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "පරිශීලක නියෝජිත සේවාලාභී ඉඟි යනු වඩා හොඳ රහස්‍යතා ගිණුම්කරණයකින් බ්‍රවුසරය සහ උපාංගය වඩාත් ව්‍යුහාත්මක ආකාරයකින් හඳුනා ගන්නා පරිශීලක නියෝජිත අනුලකුණුවැලට විකල්පයකි. තව දැන ගැනීමට බොත්තම ක්ලික් කරන්න."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "අනුවාදය"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "පරිශීලක කාරක (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "උපාංග"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "විරාමයට පෙර පරීක්ෂා කිරීමට ප්‍රකාශනය, උදා. x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "තව දැන ගන්න: බිඳුම් ලක්ෂ්‍ය වර්ග"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "කොන්සෝලය වෙත පණිවිඩයක් ලොග් කරන්න, නොබිඳින්න"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "වර්ග කිරීමේ පෙරහන යෙදීමට enter ඔබන්න"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ශීර්ෂක විකල්ප"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "මේ අනුව අනුපිළිවෙළට සකසන්න"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} ආරෝහණ අනුපිළිවෙලට වර්ග කර ඇත"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} අවරෝහණ අනුපිළිවෙලට වර්ග කර ඇත"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} වර්ග කිරීම අවලංගු කර ඇත"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … ගැළපෙන පේළි {PH1}ක් මග හරිමින් … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "අඩු ප්‍රභේදනය නිවැරදි කිරීමට {PH1}යෝජිත වර්ණය භාවිත කරන්න"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "මෙම වර්ණය ආකෘතියේ සර්වස්වයට ගැළපෙන පරිදි කපා ඇත. සැබෑ ප්‍රතිඵලය {PH1} විය"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "ඵලකයට එක් කරන්න"

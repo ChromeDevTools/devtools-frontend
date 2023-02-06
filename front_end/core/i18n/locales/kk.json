@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "тоқтатылуда"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} үшін контент жүктелмеді: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "{PH1} үшін контент талданбады: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ахроматопсия"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Тізімді елемеу үшін барлық контент скриптісін қосу"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Тізімді елемеу үшін барлық үшінші тарап скриптісін қосу"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Тізімді елемеу үшін каталог қосу"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Тізімді елемеу үшін скрипт қосу"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Хабарландыру API-ы бойынша рұқсатты бұдан былай дереккөзаралық iframe кадрынан сұрау мүмкін емес. Оның орнына жоғары деңгейлі кадрдан рұқсат сұрау немесе жаңа терезеде ашу нұсқаларын қарастырып көріңіз."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "createImageBitmap ішіндегі imageOrientation: \"none\" опциясы ескірген. Оның орнына {imageOrientation: \"from-image\"} опциясы бар createImageBitmap пайдаланыңыз."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Серіктес ескірген (D)TLS нұсқасын қарастыруда. Мәселені шешу үшін серіктеске жүгініңіз."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo қолданыстан шығарылды. Оның орнына стандартты navigator.storage пайдаланыңыз."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "M113 шығарылымына дейін кері үйлесімділік үшін белсенді болып қалатынымен, API chrome.privacy.websites.privacySandboxEnabled интерфейсін қолданыстан шығарып жатырмыз. Оның орнына chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled және chrome.privacy.websites.adMeasurementEnabled пайдаланыңыз. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled бетін көріңіз."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "URL мекенжайларында ендірілген тіркелу деректері (мысалы, https://user:pass@host/) бар қосалқы ресурс сұраулары бөгеледі."
@@ -2313,7 +2319,7 @@
     "message": "Манифесте \"name\" немесе \"short_name\" өрісі жоқ."
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Манифесте тиісті белгіше жоқ. Кемінде {PH1} пиксель болатын PNG немесе SVG форматындағы белгіше қажет. \"sizes\" төлсипаты орнатылуы керек. \"purpose\" төлсипаты орнатылса, оның құрамында \"any\" мәні болуы тиіс."
+    "message": "Манифесте тиісті белгіше жоқ. Кемінде {PH1} пиксель болатын PNG, SVG немесе WebP форматындағы белгіше қажет. \"sizes\" төлсипаты орнатылуы керек. \"purpose\" төлсипаты орнатылса, оның құрамында \"any\" болуы тиіс."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Манифест \"prefer_related_applications: TRUE\" деп көрсетеді."
@@ -2337,7 +2343,7 @@
     "message": "Play Store идентификаторы көрсетілмеген."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Берілген белгішенің ешқайсысы PNG немесе SVG форматында кемінде {PH1} шаршы пиксель емес, ал мақсат төлсипаты орнатылмаған не \"any\" төлсипатына орнатылған."
+    "message": "Берілген белгішенің ешқайсысы PNG, SVG немесе WebP форматында кемінде {PH1} шаршы пиксель емес, ал мақсат төлсипаты орнатылмаған немесе \"any\" төлсипатына орнатылған."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Ескертпе:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Тақырып түсі"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Алға-артқа өту кэші"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Кэш жады"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Жою"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Кэштерді жаңарту"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Алдын ала таңдау және алдын ала бейнелеу"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: манифестің осы бөліміне өту үшін шақырыңыз."
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Кэш"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Тазалау"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "жұмысшы"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Алға-артқа өту кэші"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фонды алу"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Кэш жады"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Жою"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Кэштерді жаңарту"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Кэш"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Түбір"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Бюджетті қайта орнату"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Ортақ жад"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Алдын ала бейнелеу"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Алдын ала жүктеу күштеп қосулы, себебі әзірлеуші құралдары ашық. Әзірлеуші құралдары жабылған кезде, алдын ала бейнелеу өшіріледі, себебі бұл браузер сеансы – өнімділікті салыстыру жұмыстары үшін пайдаланылатын ұстап қалу тобының бөлігі."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Алдын ала бейнелеу күштеп қосулы, себебі әзірлеуші құралдары ашық. Әзірлеуші құралдары жабылған кезде, алдын ала бейнелеу өшіріледі, себебі бұл браузер сеансы – өнімділікті салыстыру жұмыстары үшін пайдаланылатын ұстап қалу тобының бөлігі."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Алдын ала жүктеу өшірулі, бірақ қазір күштеп қосулы"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Алдын ала бейнелеу өшірулі, бірақ қазір күштеп қосулы"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Негізгі ақпарат"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Сақтау"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Мақсатты таңдау"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Әлі дайын емес CDP пәрменін жіберу"
   },
@@ -9888,7 +9909,7 @@
     "message": "Бренд қатары қосылды."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Сәулет"
+    "message": "Архитектура (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Құрылым (мысалы, x86)"
@@ -9903,13 +9924,13 @@
     "message": "Бренд: {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Бренд сипаттары"
+    "message": "Пайдаланушы агентінің сипаттары"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Нұсқасы: {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Брендтер"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Нұсқа (мысалы, 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Жою"
@@ -9918,16 +9939,19 @@
     "message": "Бренд қатарын жою"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Құрылғы үлгісі"
+    "message": "Құрылғы моделі (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Құрылғы сипаттары"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Браузердің толық нұсқасы"
+    "message": "Браузердің толық нұсқасы (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Браузердің толық нұсқасы (мысалы, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Толық нұсқалар тізімі (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Мобильдік"
@@ -9936,7 +9960,7 @@
     "message": "Құрылымдалған тақырыптар жолы ретінде көрсету мүмкін емес."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Платформа"
+    "message": "Платформа (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Платформа (мысалы, Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Платформа нұсқасы"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Қолтаңба нұсқасы (мысалы, 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Пайдаланушы агентінің клиент тұспалдары"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Пайдаланушы агенті клиентінің тұспалдары пайдаланушы агентінің жолына балама, ол браузерді және құрылғыны құпиялығы жақсырақ құрылымдалған тәсілмен анықтайды. Толық ақпарат алу үшін осы түймені басыңыз."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Нұсқа"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Пайдаланушы агенті (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Құрылғылар"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Кідіртуге дейін тексерілетін өрнек, мысалы, x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Толық ақпарат: тоқтату нүктесі түрлері"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Хабарды консольға тіркеңіз, тасымалдамаңыз"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Сұрыптау сүзгісін қолдану үшін Enter пернесін басыңыз"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Тақырып опциялары"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Сұрыптау шарты"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} арту ретімен сұрыпталды"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} кему ретімен сұрыпталды"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "{PH1} сұрыптау тоқтатылды"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} сәйкес жол өткізіп жіберілуде … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Төмен контраст мәселесін шешу үшін ұсынылған түсті ({PH1}) пайдаланыңыз."
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Бұл түс формат гаммасына сәйкес келуі үшін кесілген. Нақты нәтиже {PH1} болды"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Палитраға қосу"

@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "stabdoma"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Nepavyko įkelti {PH1} turinio: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Nepavyko išanalizuoti {PH1} turinio: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsija"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Pridėti visus turinio scenarijus prie nepaisomų elementų sąrašo"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Pridėti visus trečiųjų šalių scenarijus prie nepaisomų elementų sąrašo"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Pridėti katalogą prie nepaisomų elementų sąrašo"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Pridėti scenarijų, kad būtų nepaisoma sąrašo"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Pranešimų API leidimo užklausų nebegalima teikti iš skirtingų šaltinių „iframe“. Vietoj to turėtumėte apsvarstyti galimybę teikti leidimo užklausą iš aukščiausio lygio rėmelio arba atidaryti naują langą."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Parinktis „imageOrientation: \"none\"“, esanti „createImageBitmap“, nebenaudojama. Vietoje to naudokite „createImageBitmap“ su parinktimi {imageOrientation: \"from-image\"}."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Jūsų partneris derasi dėl pasenusios (D)TLS versijos. Susisiekite su partneriu, kad tai sutvarkytumėte."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "„window.webkitStorageInfo“ teikimas nutrauktas. Vietoj to naudokite standartizuotą „navigator.storage“."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Nebenaudosime API chrome.privacy.websites.privacySandboxEnabled, bet ji liks aktyvi, kad būtų užtikrintas atgalinis suderinamumas, kol bus išleista M113 versija. Dabar naudokite chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled ir chrome.privacy.websites.adMeasurementEnabled. Žr. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Papildomų šaltinių užklausos, kurių URL yra įterptų prisijungimo duomenų (pvz., „https://user:pass@host/“), yra užblokuotos."
@@ -2313,7 +2319,7 @@
     "message": "Apraše nėra lauko „name“ arba „short_name“"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Apraše nėra tinkamos piktogramos – reikia PNG ar SVG formato, ne mažiau kaip {PH1} tšk., turi būti nustatytas atributas „sizes“, o jei nustatytas atributas „purpose“, jis turi apimti „any“."
+    "message": "Apraše nėra tinkamos piktogramos – reikia PNG, SVG ar „WebP“ formato, ne mažiau kaip {PH1} tšk., turi būti nustatytas atributas „sizes“, o jei nustatytas atributas „purpose“, jis turi apimti parinktį „any“."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Apraše nurodoma „prefer_related_applications: true“"
@@ -2337,7 +2343,7 @@
     "message": "Nepateiktas „Play“ parduotuvės ID"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Neteikiama piktograma yra ne mažesnis nei {PH1} tšk. PNG arba SVG formato kvadratas, kurio paskirties atributas nenustatytas arba nustatytas kaip „any“."
+    "message": "Neteikiama piktograma yra ne mažesnis nei {PH1} tšk. PNG, SVG arba WebP formato kvadratas, kurio paskirties atributas nenustatytas arba nustatytas kaip „any“."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Pastaba."
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Temos spalva"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Ilgalaikis viso puslapio saugojimas talpykloje"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Talpyklos saugykla"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Ištrinti"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Atnaujinti talpyklas"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Gavimas ir pateikimas iš anksto"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: iškviesti, kad būtų slenkama į šią skiltį apraše"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Talpykla"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Išvalyti"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "darbuotojas"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Ilgalaikis viso puslapio saugojimas talpykloje"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Fono gavimas"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Ataskaitų teikimo API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Talpyklos saugykla"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Ištrinti"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Atnaujinti talpyklas"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Talpykla"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Šaltinis"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Iš naujo nustatyti biudžetą"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Bendrinama saugykla"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Pateikimas iš anksto"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Išankstinis įkėlimas priverstinai įgalintas, nes kūrėjo įrankiai atidaryti. Kai kūrėjo įrankiai uždaryti, pateikimas iš anksto išjungiamas, nes šis naršyklės seansas priklauso sulaikymo grupei, naudojamai našumui palyginti."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Pateikimas iš anksto priverstinai įgalintas, nes kūrėjo įrankiai atidaryti. Kai kūrėjo įrankiai uždaryti, pateikimas iš anksto išjungiamas, nes šis naršyklės seansas priklauso sulaikymo grupei, naudojamai našumui palyginti."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Išankstinis įkėlimas buvo išjungtas, bet dabar jis yra priverstinai įgalintas"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Pateikimas iš anksto buvo išjungtas, bet dabar jis yra priverstinai įgalintas"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Bendroji informacija"
@@ -8133,7 +8151,7 @@
     "message": "Nepaisyti antraštės"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Antraščių pavadinimus turi sudaryti tik raidės, skaitmenys, brūkšniai arba apatiniai brūkšniai"
+    "message": "Antraščių pavadinimus turi sudaryti tik raidės, skaitmenys, brūkšneliai arba apatiniai brūkšniai"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Sužinokite daugiau"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Išsaugoti"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Pasirinkite tikslą"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Siųsti neapdorotą CDP komandą"
   },
@@ -9888,7 +9909,7 @@
     "message": "Pridėta prekės ženklo eilutė"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Architektūra"
+    "message": "Architektūra (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Architektūra (pvz., x86)"
@@ -9903,13 +9924,13 @@
     "message": "Prekės ženklas: {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Prekės ženklo ypatybės"
+    "message": "Naudotojo priemonės nuosavybės"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "{PH1} versija"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Prekių ženklai"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Versija (pvz., 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Ištrinti"
@@ -9918,16 +9939,19 @@
     "message": "Ištrinta prekės ženklo eilutė"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Įrenginio modelis"
+    "message": "Įrenginio modelis (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Įrenginio ypatybės"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Visa naršyklės versija"
+    "message": "Visa naršyklės versija (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Visa naršyklės versija (pvz., 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Visų versijų sąrašas (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobilusis"
@@ -9936,7 +9960,7 @@
     "message": "Nenurodoma kaip struktūrinių antraščių eilutė."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platforma"
+    "message": "Platforma (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Platforma (pvz., „Android“)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Platformos versija"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Reikšminė versija (pvz., 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Naudotojo priemonės kliento nurodymai"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Naudotojo priemonės kliento nurodymai yra naudotojo priemonės eilutės alternatyva. Pagal juos galima labiau struktūruotai identifikuoti naršyklę ir įrenginį užtikrinant didesnį privatumą. Jei norite sužinoti daugiau, spustelėkite mygtuką."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versija"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Naudotojo priemonė (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Įrenginiai"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Išraiška, kurią reikia patikrinti prieš pristabdant, pvz., x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Sužinokite daugiau: stabdos taškų tipai"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Įrašyti pranešimą pulte, nesugadinti"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Paspauskite „Enter“, kad pritaikytumėte rūšiavimo filtrą"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Antraščių parinktys"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Rūšiuoti pagal"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "„{PH1}“ rūšiuojamas didėjimo tvarka"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "„{PH1}“ rūšiuojamas mažėjimo tvarka"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "„{PH1}“ rūšiavimas atšauktas"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Praleidžiamos atitinkančios eilutės ({PH1}) … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Naudoti siūlomą spalvą {PH1}norint sutvarkyti prastą kontrastą"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Ši spalva buvo apkirpta, kad atitiktų formato gamą. Gautas rezultatas buvo {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Pridėti prie paletės"

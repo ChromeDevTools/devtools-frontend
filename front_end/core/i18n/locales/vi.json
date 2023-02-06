@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "đang dừng"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "Không thể tải nội dung cho {PH1}: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "Không thể phân tích cú pháp nội dung cho {PH1}: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Mù màu"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Thêm mọi tập lệnh nội dung vào danh sách bỏ qua"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "Thêm tất cả tập lệnh của bên thứ ba vào danh sách bỏ qua"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "Thêm thư mục vào danh sách bỏ qua"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "Thêm tập lệnh vào danh sách bỏ qua"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "Có thể quyền cho Notification API không còn được yêu cầu qua một iframe nhiều nguồn gốc nữa. Thay vào đó, bạn nên cân nhắc việc yêu cầu quyền qua một khung cấp cao hoặc mở một cửa sổ mới."
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "Tuỳ chọn imageOrientation: \"none\" trong createImageBitmap không được dùng nữa. Thay vào đó, vui lòng sử dụng createImageBitmap với tuỳ chọn {imageOrientation: \"from-image\"}."
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Đối tác của bạn đang đàm phán một phiên bản (D)TLS đã lỗi thời. Vui lòng trao đổi với đối tác của bạn để khắc phục."
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo không còn hoạt động nữa. Vui lòng sử dụng navigator.storage đã chuẩn hoá."
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "Chúng tôi sẽ ngừng sử dụng API chrome.privacy.websites.privacySandboxEnabled. Tuy nhiên, API này sẽ vẫn hoạt động nhằm đảm bảo khả năng tương thích ngược cho đến khi phát hành phiên bản M113. Thay vào đó, vui lòng sử dụng chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled và chrome.privacy.websites.adMeasurementEnabled. Truy cập https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Yêu cầu tài nguyên phụ có URL chứa thông tin xác thực được nhúng (ví dụ: https://user:pass@host/) sẽ bị chặn."
@@ -2313,7 +2319,7 @@
     "message": "Tệp kê khai không chứa trường \"name\" hoặc \"short_name\""
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Tệp kê khai chứa biểu tượng không phù hợp. Tệp phải ở định dạng PNG hoặc SVG có kích thước tối thiểu {PH1} px, phải đặt thuộc tính \"sizes\", còn thuộc tính \"purpose\" (nếu được đặt) phải bao gồm \"any\"."
+    "message": "Tệp kê khai chứa biểu tượng không phù hợp. Tệp phải ở định dạng PNG, SVG hoặc WebP có kích thước tối thiểu {PH1} px, phải đặt thuộc tính \"sizes\", còn thuộc tính \"purpose\" (nếu được đặt) phải bao gồm \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Tệp kê khai chỉ định \"prefer_related_applications: true\""
@@ -2337,7 +2343,7 @@
     "message": "Chưa cung cấp mã nhận dạng trong Cửa hàng Play"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "Không có biểu tượng nào được cung cấp ở định dạng PNG hoặc SVG có kích thước tối thiểu là {PH1} pixel vuông và thuộc tính đích không được đặt hoặc được đặt thành \"any\"."
+    "message": "Không có biểu tượng nào được cung cấp ở định dạng PNG, SVG hoặc WebP có kích thước tối thiểu là {PH1} pixel vuông và thuộc tính \"purpose\" chưa được đặt hoặc đã được đặt thành \"any\"."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "Xin lưu ý:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Màu giao diện"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Bộ nhớ đệm cho thao tác tiến/lùi"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "Dung lượng lưu trữ của bộ nhớ đệm"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Xoá"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "Làm mới bộ nhớ đệm"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "Tìm nạp trước và kết xuất trước"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: Gọi để cuộn đến phần này trong tệp kê khai"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "Bộ nhớ đệm"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "Xóa"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "trình chạy dịch vụ"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "Bộ nhớ đệm cho thao tác tiến/lùi"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Tìm nạp ở chế độ nền"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API báo cáo"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "Dung lượng lưu trữ của bộ nhớ đệm"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "Xoá"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "Làm mới bộ nhớ đệm"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Bộ nhớ đệm"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "Nguồn gốc"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "Đặt lại ngân sách"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "Bộ nhớ dùng chung"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "Kết xuất trước"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "Quá trình tải trước buộc phải kích hoạt vì Công cụ cho nhà phát triển đang mở. Khi Công cụ cho nhà phát triển đóng, quá trình kết xuất trước sẽ bị vô hiệu hoá vì phiên hoạt động trên trình duyệt này là một phần của nhóm lưu giữ dùng để so sánh hiệu suất."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "Quá trình kết xuất trước buộc phải kích hoạt vì Công cụ cho nhà phát triển đang mở. Khi Công cụ cho nhà phát triển đóng, quá trình kết xuất trước sẽ bị vô hiệu hoá vì phiên hoạt động trên trình duyệt này là một phần của nhóm lưu giữ dùng để so sánh hiệu suất."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "Quá trình tải trước đã bị vô hiệu hoá nhưng buộc phải kích hoạt ngay bây giờ"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "Quá trình kết xuất trước đã bị vô hiệu hoá nhưng buộc phải kích hoạt ngay bây giờ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "Thông tin cơ bản"
@@ -8133,7 +8151,7 @@
     "message": "Ghi đè tiêu đề"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Tên tiêu đề chỉ được chứa chữ cái, chữ số, dấu gạch ngang hoặc dấu gạch dưới"
+    "message": "Tên tiêu đề chỉ được chứa chữ cái, chữ số, dấu gạch nối hoặc dấu gạch dưới"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "Tìm hiểu thêm"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Lưu"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "Chọn mục tiêu"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Gửi một lệnh CDP thô"
   },
@@ -9888,7 +9909,7 @@
     "message": "Đã thêm hàng tên thương hiệu"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Kiến trúc"
+    "message": "Cấu trúc (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Cấu trúc (ví dụ: x86)"
@@ -9903,13 +9924,13 @@
     "message": "Thương hiệu {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Thuộc tính của thương hiệu"
+    "message": "Thuộc tính tác nhân người dùng"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Phiên bản {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Thương hiệu"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "Phiên bản (ví dụ: 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Xoá"
@@ -9918,16 +9939,19 @@
     "message": "Đã xóa hàng tên thương hiệu"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Kiểu thiết bị"
+    "message": "Kiểu thiết bị (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "Thuộc tính của thiết bị"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Phiên bản trình duyệt đầy đủ"
+    "message": "Phiên bản trình duyệt đầy đủ (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "Phiên bản trình duyệt đầy đủ (ví dụ: 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "Danh sách phiên bản đầy đủ (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Di động"
@@ -9936,7 +9960,7 @@
     "message": "Không thể biểu thị dưới dạng chuỗi tiêu đề có cấu trúc."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Nền tảng"
+    "message": "Nền tảng (Sec-CH-UA-Platform/Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Nền tảng (ví dụ: Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Phiên bản nền tảng"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "Phiên bản quan trọng (ví dụ: 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "Thông tin mô tả về ứng dụng tác nhân người dùng"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "Thông tin mô tả của ứng dụng tác nhân người dùng là giải pháp thay thế cho chuỗi tác nhân người dùng, giúp nhận dạng trình duyệt và thiết bị theo cách có cấu trúc hơn nhờ khả năng xem xét toàn diện hơn về quyền riêng tư. Hãy nhấp vào nút này để tìm hiểu thêm."
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Phiên bản"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "Tác nhân người dùng (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "Thiết bị"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "Biểu thức cần kiểm tra trước khi tạm dừng, ví dụ: x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "Tìm hiểu thêm: Các loại điểm ngắt"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "Ghi nhật ký một thông báo vào Bảng điều khiển mà không ngắt"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "Nhấn phím Enter để áp dụng bộ lọc sắp xếp"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Tùy chọn tiêu đề"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sắp xếp theo"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} được sắp xếp theo thứ tự tăng dần"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} được sắp xếp theo thứ tự giảm dần"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "Đã huỷ sắp xếp {PH1}"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Đang bỏ qua {PH1} dòng trùng khớp … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "Sử dụng màu đề xuất {PH1} để khắc phục sự cố độ tương phản thấp"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "Màu này đã được cắt bớt cho phù hợp với gam màu của định dạng. Kết quả thực tế là {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "Thêm vào bảng màu"

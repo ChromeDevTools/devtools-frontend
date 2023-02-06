@@ -617,12 +617,6 @@
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "กำลังหยุด"
   },
-  "core/sdk/SourceMap.ts | couldNotLoadContentForSS": {
-    "message": "ไม่สามารถโหลดเนื้อหาสำหรับ {PH1}: {PH2}"
-  },
-  "core/sdk/SourceMap.ts | couldNotParseContentForSS": {
-    "message": "แยกวิเคราะห์เนื้อหาสำหรับ {PH1} ไม่ได้: {PH2}"
-  },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "ภาวะตาบอดสีทุกสี"
   },
@@ -1277,6 +1271,12 @@
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "เพิ่มสคริปต์เนื้อหาทั้งหมดลงในรายการละเว้น"
   },
+  "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
+    "message": "เพิ่มสคริปต์ของบุคคลที่สามทั้งหมดลงในรายการละเว้น"
+  },
+  "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
+    "message": "เพิ่มไดเรกทอรีลงในรายการละเว้น"
+  },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "เพิ่มสคริปต์ลงในรายการละเว้น"
   },
@@ -1460,6 +1460,9 @@
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
     "message": "iframe แบบข้ามต้นทางอาจไม่ขอสิทธิ์สำหรับ Notification API อีกต่อไป คุณควรพิจารณาขอสิทธิ์จากเฟรมระดับบนสุดหรือเปิดหน้าต่างใหม่แทน"
   },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
+    "message": "ตัวเลือก imageOrientation: \"none\" ใน createImageBitmap เลิกใช้งานแล้ว โปรดใช้ createImageBitmap กับตัวเลือก {imageOrientation: \"from-image\"} แทน"
+  },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "พาร์ทเนอร์ของคุณต่อรอง (D)TLS เวอร์ชันที่ล้าสมัย โปรดตรวจสอบกับพาร์ทเนอร์เพื่อดำเนินการแก้ไข"
   },
@@ -1483,6 +1486,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo เลิกใช้งานแล้ว โปรดใช้ navigator.storage มาตรฐานแทน"
+  },
+  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
+    "message": "เรากำลังจะเลิกใช้งาน API chrome.privacy.websites.privacySandboxEnabled แม้ว่า API นี้จะยังคงมีการใช้งานต่อไปเพื่อความเข้ากันได้แบบย้อนหลังจนกว่าจะเปิดตัวรุ่น M113 โปรดใช้ chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled และ chrome.privacy.websites.adMeasurementEnabled แทน ดู https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "คำขอทรัพยากรย่อยที่ URL มีข้อมูลเข้าสู่ระบบที่ฝังไว้ (เช่น https://user:pass@host/) ถูกบล็อก"
@@ -2313,7 +2319,7 @@
     "message": "ไฟล์ Manifest ไม่มีช่อง \"name\" หรือ \"short_name\""
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "ไฟล์ Manifest ไม่มีไอคอนที่เหมาะสม ไอคอนต้องอยู่ในรูปแบบ PNG หรือ SVG และมีขนาดอย่างน้อย {PH1} พิกเซล ต้องตั้งค่าแอตทริบิวต์ \"sizes\" และหากมีการตั้งค่าแอตทริบิวต์ \"purpose\" แอตทริบิวต์นั้นต้องมี \"any\""
+    "message": "ไฟล์ Manifest ไม่มีไอคอนที่เหมาะสม ไอคอนต้องอยู่ในรูปแบบ PNG, SVG หรือ WebP และมีขนาดอย่างน้อย {PH1} พิกเซล ต้องตั้งค่าแอตทริบิวต์ \"sizes\" และหากมีการตั้งค่าแอตทริบิวต์ \"purpose\" แอตทริบิวต์นั้นต้องมี \"any\""
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "ไฟล์ Manifest ระบุ \"prefer_related_applications: จริง\""
@@ -2337,7 +2343,7 @@
     "message": "ไม่ได้ระบุรหัส Play Store"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "ไม่ได้ให้ไอคอนที่เป็นรูปสี่เหลี่ยมจัตุรัสและมีขนาดอย่างน้อย {PH1} พิกเซลในรูปแบบ PNG หรือ SVG ซึ่งไม่ได้ตั้งค่าแอตทริบิวต์วัตถุประสงค์เอาไว้หรือตั้งค่าเป็น \"any\""
+    "message": "ไม่ได้ให้ไอคอนที่เป็นรูปสี่เหลี่ยมจัตุรัสและมีขนาดอย่างน้อย {PH1} พิกเซลในรูปแบบ PNG, SVG หรือ WebP และไม่ได้ตั้งค่าแอตทริบิวต์วัตถุประสงค์เอาไว้หรือตั้งค่าเป็น \"any\""
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "หมายเหตุ:"
@@ -2444,18 +2450,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "สีของธีม"
   },
-  "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "แคชย้อนหลัง"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
-    "message": "พื้นที่เก็บข้อมูลแคช"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "ลบ"
-  },
-  "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
-    "message": "รีเฟรชแคช"
-  },
   "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
     "message": "การดึงข้อมูลล่วงหน้าและการแสดงผลล่วงหน้า"
   },
@@ -2473,9 +2467,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: เรียกใช้เพื่อเลื่อนไปที่ส่วนนี้ในไฟล์ Manifest"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | cache": {
-    "message": "แคช"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "ล้าง"
@@ -2551,6 +2542,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ผู้ปฏิบัติงาน"
+  },
+  "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
+    "message": "แคชย้อนหลัง"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "การดึงข้อมูลในเบื้องหลัง"
@@ -2848,6 +2842,15 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
+    "message": "พื้นที่เก็บข้อมูลแคช"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
+    "message": "ลบ"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
+    "message": "รีเฟรชแคช"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "แคช"
@@ -4037,6 +4040,9 @@
   "panels/application/components/SharedStorageMetadataView.ts | origin": {
     "message": "ต้นทาง"
   },
+  "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
+    "message": "รีเซ็ตงบประมาณ"
+  },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "พื้นที่เก็บข้อมูลที่ใช้ร่วมกัน"
   },
@@ -4072,6 +4078,18 @@
   },
   "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
     "message": "การแสดงผลล่วงหน้า"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
+    "message": "ระบบบังคับเปิดการโหลดล่วงหน้าเนื่องจากมีการเปิดเครื่องมือสำหรับนักพัฒนาเว็บ เมื่อปิดเครื่องมือสำหรับนักพัฒนาเว็บไป ระบบจะปิดใช้การแสดงผลล่วงหน้าเนื่องจากเซสชันเบราว์เซอร์นี้อยู่ในกลุ่มยกเว้นซึ่งใช้สำหรับการเปรียบเทียบประสิทธิภาพ"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
+    "message": "ระบบบังคับเปิดการแสดงผลล่วงหน้าเนื่องจากมีการเปิดเครื่องมือสำหรับนักพัฒนาเว็บ เมื่อปิดเครื่องมือสำหรับนักพัฒนาเว็บไป ระบบจะปิดใช้การแสดงผลล่วงหน้าเนื่องจากเซสชันเบราว์เซอร์นี้อยู่ในกลุ่มยกเว้นซึ่งใช้สำหรับการเปรียบเทียบประสิทธิภาพ"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
+    "message": "การโหลดล่วงหน้าเคยถูกปิดไป แต่ระบบบังคับเปิดแล้วตอนนี้"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
+    "message": "การแสดงผลล่วงหน้าเคยถูกปิดไป แต่ระบบบังคับเปิดแล้วตอนนี้"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
     "message": "ข้อมูลพื้นฐาน"
@@ -8133,7 +8151,7 @@
     "message": "ลบล้างส่วนหัว"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "ชื่อของส่วนหัวควรมีเฉพาะตัวอักษร ตัวเลข ขีดกลางยาว หรือขีดล่างเท่านั้น"
+    "message": "ชื่อของส่วนหัวควรมีเฉพาะตัวอักษร ตัวเลข ขีดกลางสั้น หรือขีดล่างเท่านั้น"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
@@ -9053,6 +9071,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "บันทึก"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
+    "message": "เลือกเป้าหมาย"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ส่งคำสั่ง CDP ที่เป็นข้อมูลดิบ"
   },
@@ -9888,7 +9909,7 @@
     "message": "เพิ่มแถวแบรนด์แล้ว"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "สถาปัตยกรรม"
+    "message": "สถาปัตยกรรม (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "สถาปัตยกรรม (เช่น x86)"
@@ -9903,13 +9924,13 @@
     "message": "แบรนด์ {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "พร็อพเพอร์ตี้แบรนด์"
+    "message": "พร็อพเพอร์ตี้ User Agent"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "เวอร์ชัน {PH1}"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "แบรนด์"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
+    "message": "เวอร์ชัน (เช่น 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "ลบ"
@@ -9918,16 +9939,19 @@
     "message": "ลบแถวแบรนด์แล้ว"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "รุ่นของอุปกรณ์"
+    "message": "รุ่นอุปกรณ์ (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "พร็อพเพอร์ตี้อุปกรณ์"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "เวอร์ชันแบบเต็มของเบราว์เซอร์"
+    "message": "เวอร์ชันแบบเต็มของเบราว์เซอร์ (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "เวอร์ชันแบบเต็มของเบราว์เซอร์ (เช่น 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
+    "message": "รายการเวอร์ชันแบบเต็ม (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "อุปกรณ์เคลื่อนที่"
@@ -9936,7 +9960,7 @@
     "message": "แสดงเป็นสตริงส่วนหัวที่มีโครงสร้างไม่ได้"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "แพลตฟอร์ม"
+    "message": "แพลตฟอร์ม (Sec-CH-UA-Platform/Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "แพลตฟอร์ม (เช่น Android)"
@@ -9947,6 +9971,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "เวอร์ชันของแพลตฟอร์ม"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
+    "message": "เวอร์ชันสำคัญ (เช่น 87)"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "คำแนะนำสำหรับไคลเอ็นต์ User Agent"
   },
@@ -9956,8 +9983,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "คำแนะนำสำหรับไคลเอ็นต์ User Agent เป็นอีกทางเลือกสำหรับสตริง User Agent ซึ่งจะระบุถึงเบราว์เซอร์และอุปกรณ์ด้วยวิธีที่เป็นระบบระเบียบมากกว่าและมีการรับผิดชอบต่อความเป็นส่วนตัวที่ดีกว่า คลิกที่ปุ่มเพื่อดูข้อมูลเพิ่มเติม"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "เวอร์ชัน"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
+    "message": "User Agent (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "อุปกรณ์"
@@ -10030,6 +10057,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | expressionToCheckBeforePausingEg": {
     "message": "นิพจน์ที่ต้องตรวจสอบก่อนหยุดชั่วคราว เช่น x > 5"
+  },
+  "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
+    "message": "ดูข้อมูลเพิ่มเติม: ประเภทเบรกพอยท์"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "บันทึกข้อความลงในคอนโซล ไม่ต้องเบรก"
@@ -12320,6 +12350,9 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "ui/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "กด Enter เพื่อใช้ตัวกรองการจัดเรียง"
+  },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ตัวเลือกส่วนหัว"
   },
@@ -12328,6 +12361,15 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "จัดเรียงตาม"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
+    "message": "{PH1} เรียงลำดับจากน้อยไปหามาก"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
+    "message": "{PH1} เรียงลำดับจากมากไปหาน้อย"
+  },
+  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
+    "message": "ยกเลิกการจัดเรียง {PH1} แล้ว"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … ข้าม {PH1} บรรทัดที่ตรงกัน … )"
@@ -12754,6 +12796,9 @@
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | useSuggestedColorStoFixLow": {
     "message": "ใช้สีที่แนะนำ {PH1} เพื่อแก้ไขความคมชัดต่ำ"
+  },
+  "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
+    "message": "สีนี้ถูกตัดเพื่อให้ตรงกับขอบเขตของรูปแบบ ผลที่ได้จริงคือ {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "เพิ่มไปยังพาเล็ต"

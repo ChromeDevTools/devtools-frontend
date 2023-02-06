@@ -22,6 +22,9 @@
     'third_party': {
       'filepath': 'front_end/third_party/',
     },
+    'tests': {
+      'filepath': 'test/',
+    },
   },
 
   'WATCHLISTS': {
@@ -29,5 +32,6 @@
     'chromedriver': ['johnchen+watch@chromium.org'],
     'lighthouse': ['lighthouse-eng+devtools-cl@google.com'],
     'third_party': ['devtools-reviews+third_party@chromium.org'],
+    'tests': ['almuthanna+watch@chromium.org'],
   },
 }

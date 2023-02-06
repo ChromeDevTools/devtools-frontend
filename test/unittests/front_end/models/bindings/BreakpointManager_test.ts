@@ -26,6 +26,7 @@ import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
 import {createContentProviderUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 import {createFileSystemFileForPersistenceTests} from '../../helpers/PersistenceHelpers.js';
+import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
 
 const {assert} = chai;
 
@@ -1201,6 +1202,90 @@ describeWithMockConnection('BreakpointManager', () => {
     // The first breakpoint is kept on a clash, the second one should be removed.
     assert.isFalse(breakpoint.isRemoved);
     assert.isTrue(slidingBreakpoint.isRemoved);
+  });
+
+  describe('supports modern Web development workflows', () => {
+    it('supports webpack code splitting', async () => {
+      // This is basically the "Shared code with webpack entry point code-splitting" scenario
+      // outlined in http://go/devtools-source-identities, where two routes (`route1.ts` and
+      // `route2.ts`) share some common code (`shared.ts`), and webpack is configured to spit
+      // out a dedicated bundle for each route (`route1.js` and `route2.js`). The demo can be
+      // found at https://devtools-source-identities.glitch.me/webpack-code-split/ for further
+      // reference.
+      const sourceRoot = 'webpack:///src';
+
+      // Load the script and source map for the first route.
+      const route1ScriptInfo = {
+        url: 'http://example.com/route1.js',
+        content: 'function f(x){}\nf(1)',
+      };
+      const route1SourceMapInfo = {
+        url: `${route1ScriptInfo.url}.map`,
+        content: encodeSourceMap(['0:0 => shared.ts:0:0', '1:0 => route1.ts:0:0'], sourceRoot),
+      };
+      const [firstSharedUISourceCode, route1Script] = await Promise.all([
+        debuggerWorkspaceBinding.waitForUISourceCodeAdded(
+            `${sourceRoot}/shared.ts` as Platform.DevToolsPath.UrlString, target),
+        backend.addScript(target, route1ScriptInfo, route1SourceMapInfo),
+      ]);
+
+      // Set a breakpoint in `shared.ts`.
+      await Promise.all([
+        backend.responderToBreakpointByUrlRequest(route1ScriptInfo.url, 0)({
+          breakpointId: 'ROUTE1_JS_BREAK_INITIAL_ID' as Protocol.Debugger.BreakpointId,
+          locations: [
+            {
+              scriptId: route1Script.scriptId,
+              lineNumber: 0,
+              columnNumber: 0,
+            },
+          ],
+        }),
+        breakpointManager.setBreakpoint(firstSharedUISourceCode, 0, 0, ...DEFAULT_BREAKPOINT),
+      ]);
+
+      // Now inject a second route that also references `shared.ts`, which should trigger
+      // removal of the original breakpoint in `route1.js`.
+      const route2ScriptInfo = {
+        url: 'http://example.com/route2.js',
+        content: 'function f(x){}\nf(2)',
+      };
+      const route2SourceMapInfo = {
+        url: `${route2ScriptInfo.url}.map`,
+        content: encodeSourceMap(['0:0 => shared.ts:0:0', '1:0 => route2.ts:0:0'], sourceRoot),
+      };
+      const route1SetBreakpointByUrlRequest = backend.responderToBreakpointByUrlRequest(route1ScriptInfo.url, 0);
+      const route2SetBreakpointByUrlRequest = backend.responderToBreakpointByUrlRequest(route2ScriptInfo.url, 0);
+      const [, route2Script] = await Promise.all([
+        backend.breakpointRemovedPromise('ROUTE1_JS_BREAK_INITIAL_ID' as Protocol.Debugger.BreakpointId),
+        backend.addScript(target, route2ScriptInfo, route2SourceMapInfo),
+      ]);
+
+      // Now the BreakpointManager should migrate the breakpoints from the
+      // first `shared.ts` to the second `shared.ts`.
+      await Promise.all([
+        route1SetBreakpointByUrlRequest({
+          breakpointId: 'ROUTE1_JS_BREAK_ID' as Protocol.Debugger.BreakpointId,
+          locations: [
+            {
+              scriptId: route1Script.scriptId,
+              lineNumber: 0,
+              columnNumber: 0,
+            },
+          ],
+        }),
+        route2SetBreakpointByUrlRequest({
+          breakpointId: 'ROUTE2_JS_BREAK_ID' as Protocol.Debugger.BreakpointId,
+          locations: [
+            {
+              scriptId: route2Script.scriptId,
+              lineNumber: 0,
+              columnNumber: 0,
+            },
+          ],
+        }),
+      ]);
+    });
   });
 });
 

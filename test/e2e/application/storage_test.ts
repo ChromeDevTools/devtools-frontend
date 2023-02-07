@@ -10,6 +10,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   doubleClickSourceTreeItem,
   getPieChartLegendRows,
+  getQuotaUsage,
   getStorageItemsData,
   navigateToApplicationTab,
   waitForQuotaUsage,
@@ -144,8 +145,15 @@ describe('The Application Tab', async () => {
       });
 
       await waitForQuotaUsage(quota => quota > 20000);
-      await click(CLEAR_SITE_DATA_BUTTON_SELECTOR, {clickOptions: {delay: 250}});
-      await waitForQuotaUsage(quota => quota === 0);
+
+      // We may click too early. If the total quota exceeds 20000, some remaining
+      // quota may show. Instead,
+      // try to click another time, if necessary.
+      await waitForFunction(async () => {
+        await click(CLEAR_SITE_DATA_BUTTON_SELECTOR, {clickOptions: {delay: 250}});
+        const quota = await getQuotaUsage();
+        return quota === 0;
+      });
     });
 
     it('reports storage correctly, including the pie chart legend', async () => {

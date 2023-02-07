@@ -30,7 +30,6 @@ generate_css("css_files") {
 devtools_module("application") {
   sources = [
     "AppManifestView.ts",
-    "ApplicationPanelPreloadingSection.ts",
     "ApplicationPanelSidebar.ts",
     "ApplicationPanelTreeElement.ts",
     "BackForwardCacheTreeElement.ts",
@@ -48,6 +47,7 @@ devtools_module("application") {
     "InterestGroupStorageView.ts",
     "InterestGroupTreeElement.ts",
     "OpenedWindowDetailsView.ts",
+    "PreloadingTreeElement.ts",
     "ReportingApiReportsView.ts",
     "ReportingApiTreeElement.ts",
     "ReportingApiView.ts",

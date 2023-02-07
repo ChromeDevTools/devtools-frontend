@@ -11,7 +11,7 @@ import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Resources from '../../../../../front_end/panels/application/application.js';
 
-describeWithMockConnection('ApplicationPanelPreloadingSection', () => {
+describeWithMockConnection('PreloadingTreeElement', () => {
   it('shows view even if initialization happens after selection', () => {
     const target = createTarget();
     const prerenderingModel = target.model(SDK.PrerenderingModel.PrerenderingModel);
@@ -21,7 +21,7 @@ describeWithMockConnection('ApplicationPanelPreloadingSection', () => {
     const panel = {
       showView: spy,
     } as unknown as Resources.ResourcesPanel.ResourcesPanel;
-    const preloadingTreeElement = new Application.ApplicationPanelPreloadingSection.PreloadingTreeElement(panel);
+    const preloadingTreeElement = new Application.PreloadingTreeElement.PreloadingTreeElement(panel);
 
     preloadingTreeElement.onselect(false);
     assert.isTrue(spy.notCalled);

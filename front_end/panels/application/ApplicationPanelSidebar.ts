@@ -42,13 +42,13 @@ import * as Protocol from '../../generated/protocol.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {PreloadingTreeElement} from './ApplicationPanelPreloadingSection.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {AppManifestView} from './AppManifestView.js';
 import {BackForwardCacheTreeElement} from './BackForwardCacheTreeElement.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
 import * as ApplicationComponents from './components/components.js';
+import {PreloadingTreeElement} from './PreloadingTreeElement.js';
 import resourcesSidebarStyles from './resourcesSidebar.css.js';
 import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
 

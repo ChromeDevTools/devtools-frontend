@@ -18,7 +18,7 @@ const UIStrings = {
    */
   prefetchingAndPrerendering: 'Prefetching & Prerendering',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelPreloadingSection.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/PreloadingTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class PreloadingTreeElement extends ApplicationPanelTreeElement {

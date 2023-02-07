@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ApplicationPanelPreloadingSection from './ApplicationPanelPreloadingSection.js';
 import * as ApplicationPanelSidebar from './ApplicationPanelSidebar.js';
 import * as AppManifestView from './AppManifestView.js';
 import * as BackgroundServiceModel from './BackgroundServiceModel.js';
@@ -20,6 +19,7 @@ import * as InterestGroupStorageView from './InterestGroupStorageView.js';
 import * as InterestGroupTreeElement from './InterestGroupTreeElement.js';
 import * as OpenedWindowDetailsView from './OpenedWindowDetailsView.js';
 import * as PreloadingView from './preloading/PreloadingView.js';
+import * as PreloadingTreeElement from './PreloadingTreeElement.js';
 import * as ReportingApiReportsView from './ReportingApiReportsView.js';
 import * as ReportingApiView from './ReportingApiView.js';
 import * as ResourcesPanel from './ResourcesPanel.js';
@@ -36,7 +36,6 @@ import * as StorageView from './StorageView.js';
 import * as TrustTokensTreeElement from './TrustTokensTreeElement.js';
 
 export {
-  ApplicationPanelPreloadingSection,
   ApplicationPanelSidebar,
   AppManifestView,
   BackgroundServiceModel,
@@ -53,6 +52,7 @@ export {
   InterestGroupStorageView,
   InterestGroupTreeElement,
   OpenedWindowDetailsView,
+  PreloadingTreeElement,
   PreloadingView,
   ReportingApiReportsView,
   ReportingApiView,

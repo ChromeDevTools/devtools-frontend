@@ -24,12 +24,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PreloadingTreeElement extends ApplicationPanelTreeElement {
   private model?: SDK.PrerenderingModel.PrerenderingModel;
   private view?: PreloadingView;
+  #selectedInternal: boolean;
 
   constructor(resourcesPanel: ResourcesPanel) {
     super(resourcesPanel, i18nString(UIStrings.prefetchingAndPrerendering), false);
 
     const icon = UI.Icon.Icon.create('mediumicon-fetch', 'resource-tree-item');
     this.setLeadingIcons([icon]);
+    this.#selectedInternal = false;
 
     // TODO(https://crbug.com/1384419): Set link
   }
@@ -40,10 +42,15 @@ export class PreloadingTreeElement extends ApplicationPanelTreeElement {
 
   initialize(model: SDK.PrerenderingModel.PrerenderingModel): void {
     this.model = model;
+    // Show the view if the model was initialized after selection.
+    if (this.#selectedInternal && !this.view) {
+      this.onselect(false);
+    }
   }
 
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
+    this.#selectedInternal = true;
 
     if (!this.model) {
       return false;

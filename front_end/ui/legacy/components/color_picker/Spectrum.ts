@@ -1051,7 +1051,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
     if (colorFormat !== undefined) {
       this.colorFormat = convertColorFormat(colorFormat);
-      this.gamut = doesFormatSupportDisplayP3(colorFormat) ? SpectrumGamut.DISPLAY_P3 : SpectrumGamut.SRGB;
+      this.gamut = doesFormatSupportDisplayP3(this.colorFormat) ? SpectrumGamut.DISPLAY_P3 : SpectrumGamut.SRGB;
     }
 
     if (color !== undefined) {

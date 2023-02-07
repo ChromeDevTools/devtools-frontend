@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Deprecation from '../../generated/Deprecation.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 
@@ -435,37 +436,31 @@ export class DeprecationIssue extends Issue {
 
   getDescription(): MarkdownIssueDescription {
     let messageFunction = (): string => '';
-    let feature = 0;
-    let milestone = 0;
+    const deprecationMeta = Deprecation.DEPRECATIONS_METADATA[this.#issueDetails.type];
+    const feature = deprecationMeta?.chromeStatusFeature ?? 0;
+    const milestone = deprecationMeta?.milestone ?? 0;
     // Keep case statements alphabetized per DeprecationIssueType.
     switch (this.#issueDetails.type) {
       case Protocol.Audits.DeprecationIssueType.AuthorizationCoveredByWildcard:
         messageFunction = i18nLazyString(UIStrings.authorizationCoveredByWildcard);
-        milestone = 97;
         break;
       case Protocol.Audits.DeprecationIssueType.CanRequestURLHTTPContainingNewline:
         messageFunction = i18nLazyString(UIStrings.canRequestURLHTTPContainingNewline);
-        feature = 5735596811091968;
         break;
       case Protocol.Audits.DeprecationIssueType.ChromeLoadTimesConnectionInfo:
         messageFunction = i18nLazyString(UIStrings.chromeLoadTimesConnectionInfo);
-        feature = 5637885046816768;
         break;
       case Protocol.Audits.DeprecationIssueType.ChromeLoadTimesFirstPaintAfterLoadTime:
         messageFunction = i18nLazyString(UIStrings.chromeLoadTimesFirstPaintAfterLoadTime);
-        feature = 5637885046816768;
         break;
       case Protocol.Audits.DeprecationIssueType.ChromeLoadTimesWasAlternateProtocolAvailable:
         messageFunction = i18nLazyString(UIStrings.chromeLoadTimesWasAlternateProtocolAvailable);
-        feature = 5637885046816768;
         break;
       case Protocol.Audits.DeprecationIssueType.CookieWithTruncatingChar:
         messageFunction = i18nLazyString(UIStrings.cookieWithTruncatingChar);
-        milestone = 103;
         break;
       case Protocol.Audits.DeprecationIssueType.CrossOriginAccessBasedOnDocumentDomain:
         messageFunction = i18nLazyString(UIStrings.crossOriginAccessBasedOnDocumentDomain);
-        milestone = 109;
         break;
       case Protocol.Audits.DeprecationIssueType.CrossOriginWindowAlert:
         messageFunction = i18nLazyString(UIStrings.crossOriginWindowApi, {PH1: 'window.alert'});
@@ -475,26 +470,18 @@ export class DeprecationIssue extends Issue {
         break;
       case Protocol.Audits.DeprecationIssueType.CSSSelectorInternalMediaControlsOverlayCastButton:
         messageFunction = i18nLazyString(UIStrings.cssSelectorInternalMediaControlsOverlayCastButton);
-        feature = 5714245488476160;
         break;
       case Protocol.Audits.DeprecationIssueType.DeprecationExample:
         messageFunction = i18nLazyString(UIStrings.deprecationExample);
-        feature = 5684289032159232;
-        milestone = 100;
         break;
       case Protocol.Audits.DeprecationIssueType.DocumentDomainSettingWithoutOriginAgentClusterHeader:
         messageFunction = i18nLazyString(UIStrings.documentDomainSettingWithoutOriginAgentClusterHeader);
-        milestone = 109;
         break;
       case Protocol.Audits.DeprecationIssueType.EventPath:
         messageFunction = i18nLazyString(UIStrings.eventPath);
-        feature = 5726124632965120;
-        milestone = 109;
         break;
       case Protocol.Audits.DeprecationIssueType.ExpectCTHeader:
         messageFunction = i18nLazyString(UIStrings.expectCTHeader);
-        feature = 6244547273687040;
-        milestone = 107;
         break;
       case Protocol.Audits.DeprecationIssueType.GeolocationInsecureOrigin:
         messageFunction = i18nLazyString(UIStrings.geolocationInsecureOrigin);
@@ -510,62 +497,45 @@ export class DeprecationIssue extends Issue {
         break;
       case Protocol.Audits.DeprecationIssueType.IdentityInCanMakePaymentEvent:
         messageFunction = i18nLazyString(UIStrings.identityInCanMakePaymentEvent);
-        feature = 5190978431352832;
         break;
       case Protocol.Audits.DeprecationIssueType.InsecurePrivateNetworkSubresourceRequest:
         messageFunction = i18nLazyString(UIStrings.insecurePrivateNetworkSubresourceRequest);
-        feature = 5436853517811712;
-        milestone = 92;
         break;
       case Protocol.Audits.DeprecationIssueType.LocalCSSFileExtensionRejected:
         messageFunction = i18nLazyString(UIStrings.localCSSFileExtensionRejected);
-        milestone = 64;
         break;
       case Protocol.Audits.DeprecationIssueType.MediaSourceAbortRemove:
         messageFunction = i18nLazyString(UIStrings.mediaSourceAbortRemove);
-        feature = 6107495151960064;
         break;
       case Protocol.Audits.DeprecationIssueType.MediaSourceDurationTruncatingBuffered:
         messageFunction = i18nLazyString(UIStrings.mediaSourceDurationTruncatingBuffered);
-        feature = 6107495151960064;
         break;
       case Protocol.Audits.DeprecationIssueType.NoSysexWebMIDIWithoutPermission:
         messageFunction = i18nLazyString(UIStrings.noSysexWebMIDIWithoutPermission);
-        feature = 5138066234671104;
-        milestone = 82;
         break;
       case Protocol.Audits.DeprecationIssueType.NotificationInsecureOrigin:
         messageFunction = i18nLazyString(UIStrings.notificationInsecureOrigin);
         break;
       case Protocol.Audits.DeprecationIssueType.NotificationPermissionRequestedIframe:
         messageFunction = i18nLazyString(UIStrings.notificationPermissionRequestedIframe);
-        feature = 6451284559265792;
         break;
       case Protocol.Audits.DeprecationIssueType.ObsoleteWebRtcCipherSuite:
         messageFunction = i18nLazyString(UIStrings.obsoleteWebRtcCipherSuite);
-        milestone = 81;
         break;
       case Protocol.Audits.DeprecationIssueType.ObsoleteCreateImageBitmAPImageOrientationNone:
         messageFunction = i18nLazyString(UIStrings.obsoleteCreateImageBitmAPImageOrientationNone);
-        milestone = 111;
         break;
       case Protocol.Audits.DeprecationIssueType.OpenWebDatabaseInsecureContext:
         messageFunction = i18nLazyString(UIStrings.openWebDatabaseInsecureContext);
-        feature = 5175124599767040;
-        milestone = 105;
         break;
       case Protocol.Audits.DeprecationIssueType.PaymentInstruments:
         messageFunction = i18nLazyString(UIStrings.paymentInstruments);
-        feature = 5099285054488576;
         break;
       case Protocol.Audits.DeprecationIssueType.PaymentRequestCSPViolation:
         messageFunction = i18nLazyString(UIStrings.paymentRequestCSPViolation);
-        feature = 6286595631087616;
         break;
       case Protocol.Audits.DeprecationIssueType.PersistentQuotaType:
         messageFunction = i18nLazyString(UIStrings.persistentQuotaType);
-        feature = 5176235376246784;
-        milestone = 106;
         break;
       case Protocol.Audits.DeprecationIssueType.PictureSourceSrc:
         messageFunction = i18nLazyString(UIStrings.pictureSourceSrc);
@@ -613,7 +583,6 @@ export class DeprecationIssue extends Issue {
         break;
       case Protocol.Audits.DeprecationIssueType.PrivacySandboxExtensionsAPI:
         messageFunction = i18nLazyString(UIStrings.privacySandboxExtensionsAPI);
-        milestone = 113;
         break;
       case Protocol.Audits.DeprecationIssueType.RangeExpand:
         messageFunction =
@@ -621,58 +590,42 @@ export class DeprecationIssue extends Issue {
         break;
       case Protocol.Audits.DeprecationIssueType.RequestedSubresourceWithEmbeddedCredentials:
         messageFunction = i18nLazyString(UIStrings.requestedSubresourceWithEmbeddedCredentials);
-        feature = 5669008342777856;
         break;
       case Protocol.Audits.DeprecationIssueType.OverflowVisibleOnReplacedElement:
         messageFunction = i18nLazyString(UIStrings.overflowVisibleOnReplacedElement);
-        feature = 5137515594383360;
-        milestone = 108;
         break;
       case Protocol.Audits.DeprecationIssueType.RTCConstraintEnableDtlsSrtpFalse:
         messageFunction = i18nLazyString(UIStrings.rtcConstraintEnableDtlsSrtpFalse);
-        milestone = 97;
         break;
       case Protocol.Audits.DeprecationIssueType.RTCConstraintEnableDtlsSrtpTrue:
         messageFunction = i18nLazyString(UIStrings.rtcConstraintEnableDtlsSrtpTrue);
-        milestone = 97;
         break;
       case Protocol.Audits.DeprecationIssueType.RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics:
         messageFunction = i18nLazyString(UIStrings.rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics);
-        milestone = 72;
         break;
       case Protocol.Audits.DeprecationIssueType.RTCPeerConnectionSdpSemanticsPlanB:
         messageFunction = i18nLazyString(UIStrings.rtcPeerConnectionSdpSemanticsPlanB);
-        feature = 5823036655665152;
-        milestone = 93;
         break;
       case Protocol.Audits.DeprecationIssueType.RtcpMuxPolicyNegotiate:
         messageFunction = i18nLazyString(UIStrings.rtcpMuxPolicyNegotiate);
-        feature = 5654810086866944;
-        milestone = 62;
         break;
       case Protocol.Audits.DeprecationIssueType.SharedArrayBufferConstructedWithoutIsolation:
         messageFunction = i18nLazyString(UIStrings.sharedArrayBufferConstructedWithoutIsolation);
-        milestone = 106;
         break;
       case Protocol.Audits.DeprecationIssueType.TextToSpeech_DisallowedByAutoplay:
         messageFunction = i18nLazyString(UIStrings.textToSpeech_DisallowedByAutoplay);
-        feature = 5687444770914304;
-        milestone = 71;
         break;
       case Protocol.Audits.DeprecationIssueType.V8SharedArrayBufferConstructedInExtensionWithoutIsolation:
         messageFunction = i18nLazyString(UIStrings.v8SharedArrayBufferConstructedInExtensionWithoutIsolation);
-        milestone = 96;
         break;
       case Protocol.Audits.DeprecationIssueType.XHRJSONEncodingDetection:
         messageFunction = i18nLazyString(UIStrings.xhrJSONEncodingDetection);
-        milestone = 93;
         break;
       case Protocol.Audits.DeprecationIssueType.XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload:
         messageFunction = i18nLazyString(UIStrings.xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload);
         break;
       case Protocol.Audits.DeprecationIssueType.XRSupportsSession:
         messageFunction = i18nLazyString(UIStrings.xrSupportsSession);
-        milestone = 80;
         break;
     }
     const links = [];

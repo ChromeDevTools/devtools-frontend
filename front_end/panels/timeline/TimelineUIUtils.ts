@@ -365,9 +365,21 @@ const UIStrings = {
    */
   minorGc: 'Minor GC',
   /**
-   *@description Event category in the Performance panel for time spent to execute JavaScript
+   *@description Event category in the Performance panel for root node in CPUProfile
+   */
+  jsRoot: 'JS Root',
+  /**
+   *@description Event category in the Performance panel for JavaScript nodes in CPUProfile
    */
   jsFrame: 'JS Frame',
+  /**
+   *@description Event category in the Performance panel for idle nodes in CPUProfile
+   */
+  jsIdleFrame: 'JS Idle Frame',
+  /**
+   *@description Event category in the Performance panel for system nodes in CPUProfile
+   */
+  jsSystemFrame: 'JS System Frame',
   /**
    *@description Text for the request animation frame event
    */
@@ -1244,7 +1256,14 @@ export class TimelineUIUtils {
     eventStyles[type.GCEvent] = new TimelineRecordStyle(i18nString(UIStrings.gcEvent), scripting);
     eventStyles[type.MajorGC] = new TimelineRecordStyle(i18nString(UIStrings.majorGc), scripting);
     eventStyles[type.MinorGC] = new TimelineRecordStyle(i18nString(UIStrings.minorGc), scripting);
+
+    // Event types used to display CPU Profile.
+    eventStyles[type.JSRoot] = new TimelineRecordStyle(i18nString(UIStrings.jsRoot), idle, /* hidden*/ true);
     eventStyles[type.JSFrame] = new TimelineRecordStyle(i18nString(UIStrings.jsFrame), scripting);
+    eventStyles[type.JSIdleFrame] = new TimelineRecordStyle(i18nString(UIStrings.jsIdleFrame), idle);
+    // System nodes shoulde be other type. See categories() function in this file (TimelineUIUtils.ts).
+    eventStyles[type.JSSystemFrame] = new TimelineRecordStyle(i18nString(UIStrings.jsSystemFrame), other);
+
     eventStyles[type.RequestAnimationFrame] =
         new TimelineRecordStyle(i18nString(UIStrings.requestAnimationFrame), scripting);
     eventStyles[type.CancelAnimationFrame] =
@@ -1369,7 +1388,7 @@ export class TimelineUIUtils {
   }
 
   static eventColor(event: SDK.TracingModel.Event): string {
-    if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame) {
+    if (TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
       const frame = event.args['data'];
       if (TimelineUIUtils.isUserFrame(frame)) {
         return TimelineUIUtils.colorForId(frame.url);
@@ -1393,7 +1412,7 @@ export class TimelineUIUtils {
   static eventTitle(event: SDK.TracingModel.Event): string {
     const recordType = TimelineModel.TimelineModel.RecordType;
     const eventData = event.args['data'];
-    if (event.name === recordType.JSFrame) {
+    if (TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
       return TimelineUIUtils.frameDisplayName(eventData);
     }
 
@@ -1481,7 +1500,10 @@ export class TimelineUIUtils {
           detailsText = eventData.url + ':' + (eventData.lineNumber + 1) + ':' + (eventData.columnNumber + 1);
         }
         break;
+      case recordType.JSRoot:
       case recordType.JSFrame:
+      case recordType.JSIdleFrame:
+      case recordType.JSSystemFrame:
         detailsText = TimelineUIUtils.frameDisplayName(eventData);
         break;
       case recordType.EventDispatch:
@@ -1646,7 +1668,10 @@ export class TimelineUIUtils {
         break;
       }
 
+      case recordType.JSRoot:
       case recordType.FunctionCall:
+      case recordType.JSIdleFrame:
+      case recordType.JSSystemFrame:
       case recordType.JSFrame: {
         details = document.createElement('span');
         UI.UIUtils.createTextChild(details, TimelineUIUtils.frameDisplayName(eventData));
@@ -1851,7 +1876,10 @@ export class TimelineUIUtils {
         break;
       }
 
+      case recordTypes.JSRoot:
       case recordTypes.JSFrame:
+      case recordTypes.JSIdleFrame:
+      case recordTypes.JSSystemFrame:
       case recordTypes.FunctionCall: {
         const detailsNode =
             await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);

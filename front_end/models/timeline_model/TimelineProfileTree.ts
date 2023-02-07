@@ -514,7 +514,7 @@ export function eventURL(event: SDK.TracingModel.Event): Platform.DevToolsPath.U
 }
 
 export function eventStackFrame(event: SDK.TracingModel.Event): Protocol.Runtime.CallFrame|null {
-  if (event.name === RecordType.JSFrame) {
+  if (TimelineModelImpl.isJsFrameEvent(event)) {
     return event.args['data'] || null as Protocol.Runtime.CallFrame | null;
   }
   return TimelineData.forEvent(event).topFrame();
@@ -525,7 +525,7 @@ export function _eventId(event: SDK.TracingModel.Event): string {
   if (event.name === RecordType.TimeStamp) {
     return `${event.name}:${event.args.data.message}`;
   }
-  if (event.name !== RecordType.JSFrame) {
+  if (!TimelineModelImpl.isJsFrameEvent(event)) {
     return event.name;
   }
   const frame = event.args['data'];

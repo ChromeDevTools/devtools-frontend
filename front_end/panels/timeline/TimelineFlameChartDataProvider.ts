@@ -706,7 +706,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   private isIgnoreListedEvent(event: SDK.TracingModel.Event): boolean {
-    if (event.name !== TimelineModel.TimelineModel.RecordType.JSFrame) {
+    if (!TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
       return false;
     }
     const url = event.args['data']['url'] as Platform.DevToolsPath.UrlString;

@@ -22,7 +22,7 @@ import {
   type PopulateNodesEventNodes,
   type PopulateNodesEventNodeTypes,
 } from './CSSOverviewController.js';
-import {CSSOverviewSidebarPanel, SidebarEvents} from './CSSOverviewSidebarPanel.js';
+import {CSSOverviewSidebarPanel, SidebarEvents, type ItemSelectedEvent} from './CSSOverviewSidebarPanel.js';
 import {type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 const UIStrings = {
@@ -305,14 +305,19 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#domModel = domModel;
   }
 
-  #sideBarItemSelected(event: Common.EventTarget.EventTargetEvent<string>): void {
+  #sideBarItemSelected(event: Common.EventTarget.EventTargetEvent<ItemSelectedEvent>): void {
     const {data} = event;
-    const section = (this.#fragment as UI.Fragment.Fragment).$(data);
+    const section = (this.#fragment as UI.Fragment.Fragment).$(data.id);
     if (!section) {
       return;
     }
 
     section.scrollIntoView();
+    // Set focus for keyboard invoked event
+    if (!data.isMouseEvent) {
+      const focusableElement: HTMLElement|null = section.querySelector('button, [tabindex="0"]');
+      focusableElement?.focus();
+    }
   }
 
   #sideBarReset(): void {

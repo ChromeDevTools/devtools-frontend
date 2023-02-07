@@ -38,6 +38,10 @@
   flex: 0 0 auto;
 }
 
+.overview-sidebar-panel-item:focus-visible {
+  outline-width: unset;
+}
+
 @media (forced-colors: active) {
   .overview-sidebar-panel-item.selected {
     forced-color-adjust: none; /* crbug.com/1166705 workaround */

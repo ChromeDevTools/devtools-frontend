@@ -36,6 +36,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
 
     this.contentElement.classList.add('overview-sidebar-panel');
     this.contentElement.addEventListener('click', this.#onItemClick.bind(this));
+    this.contentElement.addEventListener('keydown', this.#onItemKeyDown.bind(this));
 
     // We need a container so that each item covers the full width of the
     // longest item, so that the selected item's background expands fully
@@ -58,6 +59,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     const item = this.containerElement.createChild('div', CSSOverviewSidebarPanel.ITEM_CLASS_NAME);
     item.textContent = name;
     item.dataset.id = id;
+    item.tabIndex = 0;
   }
 
   #reset(): void {
@@ -82,7 +84,25 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
       return;
     }
     this.select(id);
-    this.dispatchEventToListeners(SidebarEvents.ItemSelected, id);
+    this.dispatchEventToListeners(SidebarEvents.ItemSelected, {id, isMouseEvent: true});
+  }
+
+  #onItemKeyDown(event: KeyboardEvent): void {
+    if (event.key !== 'Enter') {
+      return;
+    }
+    const target = (event.composedPath()[0] as HTMLElement);
+    if (!target.classList.contains(CSSOverviewSidebarPanel.ITEM_CLASS_NAME)) {
+      return;
+    }
+
+    const {id} = target.dataset;
+    if (!id) {
+      return;
+    }
+    this.select(id);
+    this.dispatchEventToListeners(SidebarEvents.ItemSelected, {id, isMouseEvent: false});
+    event.consume(true);
   }
 
   select(id: string): void {
@@ -109,7 +129,12 @@ export const enum SidebarEvents {
   Reset = 'Reset',
 }
 
+export interface ItemSelectedEvent {
+  id: string;
+  isMouseEvent: boolean;
+}
+
 export type EventTypes = {
-  [SidebarEvents.ItemSelected]: string,
+  [SidebarEvents.ItemSelected]: ItemSelectedEvent,
   [SidebarEvents.Reset]: void,
 };

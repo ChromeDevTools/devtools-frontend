@@ -10,6 +10,7 @@ import {
   enableExperiment,
   getBrowserAndPages,
   goToResource,
+  hover,
   step,
   waitFor,
   waitForFunction,
@@ -45,6 +46,9 @@ async function assertScriptLocation(expectedLocation: string) {
 }
 
 describe('The Sources Tab', async function() {
+  const CLICK_BREAKPOINT_SCRIPT = 'click-breakpoint.js';
+  const CLICK_BREAKPOINT_HTML = 'click-breakpoint.html';
+
   // Some of these tests that use instrumentation breakpoints
   // can be slower on mac and windows. Increaese the timeout for them.
   if (this.timeout() !== 0) {
@@ -53,19 +57,62 @@ describe('The Sources Tab', async function() {
 
   it('sets and hits breakpoints in JavaScript', async () => {
     const {target, frontend} = getBrowserAndPages();
-    await openSourceCodeEditorForFile('click-breakpoint.js', 'click-breakpoint.html');
+    await openSourceCodeEditorForFile(CLICK_BREAKPOINT_SCRIPT, CLICK_BREAKPOINT_HTML);
     await addBreakpointForLine(frontend, 4);
 
     const scriptEvaluation = target.evaluate('f2();');
 
     const scriptLocation = await retrieveTopCallFrameWithoutResuming();
-    assert.deepEqual(scriptLocation, 'click-breakpoint.js:4');
+    assert.deepEqual(scriptLocation, `${CLICK_BREAKPOINT_SCRIPT}:4`);
 
     const breakpointLocation = await getBreakpointHitLocation();
     assert.deepEqual(breakpointLocation, scriptLocation);
 
     await click(RESUME_BUTTON);
     await scriptEvaluation;
+  });
+
+  it('can disable and re-enable breakpoints in JavaScript', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile(CLICK_BREAKPOINT_SCRIPT, CLICK_BREAKPOINT_HTML);
+
+    // After adding a breakpoint, we expect the script to pause. Resume afterwards.
+    await addBreakpointForLine(frontend, 4);
+    await testScriptPauseAndResume();
+
+    // Disable breakpoint. This time, we should not pause but be able to
+    // run the script until the end.
+    await click(`[aria-label="${CLICK_BREAKPOINT_SCRIPT}"] [aria-label="checked"] input`);
+    await target.evaluate('f2();');
+
+    // Re-enable breakpoint. Again, we should expect a pause and resume to finish the script.
+    await click(`[aria-label="${CLICK_BREAKPOINT_SCRIPT}"] [aria-label="unchecked"] input`);
+    await testScriptPauseAndResume();
+
+    async function testScriptPauseAndResume() {
+      const scriptEvaluation = target.evaluate('f2();');
+
+      const scriptLocation = await retrieveTopCallFrameWithoutResuming();
+      assert.deepEqual(scriptLocation, `${CLICK_BREAKPOINT_SCRIPT}:4`);
+
+      await click(RESUME_BUTTON);
+      await scriptEvaluation;
+    }
+  });
+
+  it('can set and remove breakpoints in JavaScript', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile(CLICK_BREAKPOINT_SCRIPT, CLICK_BREAKPOINT_HTML);
+    await addBreakpointForLine(frontend, 4);
+
+    // Hover over breakpoint.
+    await hover(`[aria-label="${CLICK_BREAKPOINT_SCRIPT}"] [aria-label="checked"]`);
+
+    // Remove breakpoint.
+    await click(`[aria-label="${CLICK_BREAKPOINT_SCRIPT}"] [aria-label="Remove breakpoint"]`);
+
+    // Running the function should not pause anywhere.
+    await target.evaluate('f2();');
   });
 
   it('doesn\'t synchronize breakpoints between scripts and source-mapped scripts', async () => {
@@ -83,7 +130,7 @@ describe('The Sources Tab', async function() {
   it('stops at each breakpoint on resume (using F8) on target', async () => {
     const {target, frontend} = getBrowserAndPages();
     await step('navigate to page', async () => {
-      await openSourceCodeEditorForFile('click-breakpoint.js', 'click-breakpoint.html');
+      await openSourceCodeEditorForFile(CLICK_BREAKPOINT_SCRIPT, CLICK_BREAKPOINT_HTML);
     });
 
     await step('add a breakpoint to line No.3, 4, and 9', async () => {
@@ -100,17 +147,17 @@ describe('The Sources Tab', async function() {
     await step('wait for pause and check if we stopped at line 3', async () => {
       await waitFor(PAUSE_INDICATOR_SELECTOR);
       const scriptLocation = await retrieveTopCallFrameWithoutResuming();
-      assert.deepEqual(scriptLocation, 'click-breakpoint.js:3');
+      assert.deepEqual(scriptLocation, `${CLICK_BREAKPOINT_SCRIPT}:3`);
     });
 
     await step('resume and wait until we have hit the next breakpoint (3->4)', async () => {
       await target.keyboard.press('F8');
-      await waitForTopCallFrameChanged('click-breakpoint.js:3', 'click-breakpoint.js:4');
+      await waitForTopCallFrameChanged(`${CLICK_BREAKPOINT_SCRIPT}:3`, `${CLICK_BREAKPOINT_SCRIPT}:4`);
     });
 
     await step('resume and wait until we have hit the next breakpoint (4->9)', async () => {
       await target.keyboard.press('F8');
-      await waitForTopCallFrameChanged('click-breakpoint.js:4', 'click-breakpoint.js:9');
+      await waitForTopCallFrameChanged(`${CLICK_BREAKPOINT_SCRIPT}:4`, `${CLICK_BREAKPOINT_SCRIPT}:9`);
     });
 
     await step('resume and wait until script finishes execution', async () => {

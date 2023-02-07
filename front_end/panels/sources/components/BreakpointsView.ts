@@ -412,7 +412,7 @@ export class BreakpointsView extends HTMLElement {
     };
     // clang-format off
     return LitHtml.html`
-    <button data-remove-breakpoint @click=${clickHandler} title=${tooltipText}>
+    <button data-remove-breakpoint @click=${clickHandler} title=${tooltipText} aria-label=${tooltipText}>
     <${IconButton.Icon.Icon.litTagName} .data=${{
         iconName: 'close-icon',
         width: '10px',

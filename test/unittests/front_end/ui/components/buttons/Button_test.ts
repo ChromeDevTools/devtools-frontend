@@ -20,7 +20,10 @@ describe('Button', async () => {
       text = 'Button'): Promise<Buttons.Button.Button> {
     const button = new Buttons.Button.Button();
     button.data = data;
-    button.innerText = text;
+    // Toolbar and round buttons do not take text, and error if you try to set any.
+    if (data.variant !== Buttons.Button.Variant.TOOLBAR && data.variant !== Buttons.Button.Variant.ROUND) {
+      button.innerText = text;
+    }
     renderElementIntoDOM(button);
     await coordinator.done();
     return button;

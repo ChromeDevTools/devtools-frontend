@@ -222,7 +222,7 @@ export class Button extends HTMLElement {
         throw new Error('Toolbar button requires an icon');
       }
       if (!this.#isEmpty) {
-        throw new Error('Tooblar button does not accept children');
+        throw new Error('Toolbar button does not accept children');
       }
     }
     if (this.#props.variant === Variant.ROUND) {

@@ -44,8 +44,7 @@ describe('The Application Tab', async () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
   });
 
-  // A shared storage update caused this test to time out.
-  it.skip('[crbug.com/1413130] shows Shared Storage events', async () => {
+  it('shows Shared Storage events', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to shared-storage resource and open Application tab', async () => {
@@ -88,8 +87,7 @@ describe('The Application Tab', async () => {
     });
   });
 
-  // A shared storage update caused this test to fail.
-  it.skip('[crbug.com/1413130] shows Shared Storage metadata', async () => {
+  it('shows Shared Storage metadata', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to shared-storage resource and open Application tab', async () => {
@@ -108,8 +106,7 @@ describe('The Application Tab', async () => {
     });
   });
 
-  // A shared storage update caused this test to fail.
-  it.skip('[crbug.com/1413130]  shows Shared Storage keys and values', async () => {
+  it('shows Shared Storage keys and values', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to shared-storage resource and open Application tab', async () => {

@@ -110,11 +110,15 @@ describe('data grid controller', () => {
   it('lets the user click on a column header to sort it', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');
 
-    const keyHeaderCell = await waitFor('th[data-grid-header-cell="key"]');
-    await keyHeaderCell.click();
+    const dataGrid = await getDataGrid();
+
+    // Wait until 3 rows have appeared.
+    await getInnerTextOfDataGridCells(dataGrid, 3);
+
+    // Sort and wait for the first row to be as expected.
+    await click('th[data-grid-header-cell="key"]');
     await waitForFirstBodyCellText('Alpha');
 
-    const dataGrid = await getDataGrid();
     const renderedText = await getInnerTextOfDataGridCells(dataGrid, 3);
     assert.deepEqual(
         [

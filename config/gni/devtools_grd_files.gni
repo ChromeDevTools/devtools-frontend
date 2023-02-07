@@ -724,6 +724,7 @@ grd_files_debug_sources = [
   "front_end/entrypoints/wasmparser_worker/WasmParserWorker.js",
   "front_end/entrypoints/worker_app/WorkerMain.js",
   "front_end/generated/ARIAProperties.js",
+  "front_end/generated/Deprecation.js",
   "front_end/generated/InspectorBackendCommands.js",
   "front_end/generated/SupportedCSSProperties.js",
   "front_end/generated/protocol.js",

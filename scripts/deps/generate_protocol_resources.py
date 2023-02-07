@@ -62,6 +62,8 @@ GENERATE_ARIA_SCRIPT = path.join(SCRIPTS_BUILD_PATH, 'generate_aria.py')
 GENERATE_SUPPORTED_CSS_SCRIPT = path.join(SCRIPTS_BUILD_PATH, 'generate_supported_css.py')
 GENERATE_PROTOCOL_DEFINITIONS_SCRIPT = path.join(SCRIPTS_BUILD_PATH, 'code_generator_frontend.py')
 CONCATENATE_PROTOCOL_SCRIPT = path.join(ROOT_DIRECTORY, 'third_party', 'inspector_protocol', 'concatenate_protocols.py')
+GENERATE_DEPRECATIONS_SCRIPT = path.join(SCRIPTS_BUILD_PATH,
+                                         'generate_deprecations.py')
 
 NODE_LOCATION = devtools_paths.node_path()
 TSC_LOCATION = devtools_paths.typescript_compiler_path()
@@ -120,6 +122,7 @@ def generate_protocol_typescript_definitions():
 def main():
     popen([GENERATE_ARIA_SCRIPT])
     popen([GENERATE_SUPPORTED_CSS_SCRIPT])
+    popen([GENERATE_DEPRECATIONS_SCRIPT])
 
     popen([CONCATENATE_PROTOCOL_SCRIPT] + [
         path.join(PROTOCOL_LOCATION, 'browser_protocol.pdl'),

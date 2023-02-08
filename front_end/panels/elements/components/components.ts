@@ -8,6 +8,7 @@ import * as AdornerSettingsPane from './AdornerSettingsPane.js';
 import * as ComputedStyleProperty from './ComputedStyleProperty.js';
 import * as ComputedStyleTrace from './ComputedStyleTrace.js';
 import * as CSSHintDetailsView from './CSSHintDetailsView.js';
+import * as CSSPropertyDocsView from './CSSPropertyDocsView.js';
 import * as CSSPropertyIconResolver from './CSSPropertyIconResolver.js';
 import * as CSSQuery from './CSSQuery.js';
 import * as ElementsBreadcrumbs from './ElementsBreadcrumbs.js';
@@ -27,6 +28,7 @@ export {
   ComputedStyleProperty,
   ComputedStyleTrace,
   CSSHintDetailsView,
+  CSSPropertyDocsView,
   CSSPropertyIconResolver,
   CSSQuery,
   ElementsBreadcrumbs,

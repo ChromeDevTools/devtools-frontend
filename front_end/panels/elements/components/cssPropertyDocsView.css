@@ -1,0 +1,31 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  padding: 6px;
+}
+
+.docs-popup-wrapper {
+  max-width: 350px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.docs-popup-section {
+  margin-top: 8px;
+}
+
+.clickable {
+  color: var(--color-link);
+}
+
+.underlined {
+  text-decoration: underline;
+}
+
+.unbreakable-text {
+  white-space: nowrap;
+}

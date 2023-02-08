@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 
 /**
@@ -36,7 +37,11 @@ export class WebCustomData {
    */
   static create(): WebCustomData {
     const remoteBase = Root.Runtime.getRemoteBase();
-    console.assert(Boolean(remoteBase?.base), 'No valid remote base found');
+    // Web tests run in hosted mode without setting up a remoteBase. We surpress
+    // the assertion in hosted mode but keep it otherwise.
+    console.assert(
+        !Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode() || Boolean(remoteBase?.base),
+        'No valid remote base found');
     return new WebCustomData(remoteBase?.base ?? '');
   }
 

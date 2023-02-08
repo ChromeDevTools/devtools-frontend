@@ -649,13 +649,13 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Stop tracking rule usage and return the list of rules that were used since last call to
-     * `takeCoverageDelta` (or since start of coverage instrumentation)
+     * `takeCoverageDelta` (or since start of coverage instrumentation).
      */
     invoke_stopRuleUsageTracking(): Promise<Protocol.CSS.StopRuleUsageTrackingResponse>;
 
     /**
      * Obtain list of rules that became used since last call to this method (or since start of coverage
-     * instrumentation)
+     * instrumentation).
      */
     invoke_takeCoverageDelta(): Promise<Protocol.CSS.TakeCoverageDeltaResponse>;
 
@@ -668,7 +668,7 @@ declare namespace ProtocolProxyApi {
   export interface CSSDispatcher {
     /**
      * Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
-     * web font
+     * web font.
      */
     fontsUpdated(params: Protocol.CSS.FontsUpdatedEvent): void;
 
@@ -841,6 +841,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Returns the root DOM node (and optionally the subtree) to the caller.
+     * Implicitly enables the DOM domain events for the current target.
      */
     invoke_getDocument(params: Protocol.DOM.GetDocumentRequest): Promise<Protocol.DOM.GetDocumentResponse>;
 
@@ -1521,7 +1522,7 @@ declare namespace ProtocolProxyApi {
     invoke_requestData(params: Protocol.IndexedDB.RequestDataRequest): Promise<Protocol.IndexedDB.RequestDataResponse>;
 
     /**
-     * Gets metadata of an object store
+     * Gets metadata of an object store.
      */
     invoke_getMetadata(params: Protocol.IndexedDB.GetMetadataRequest): Promise<Protocol.IndexedDB.GetMetadataResponse>;
 
@@ -2354,6 +2355,9 @@ declare namespace ProtocolProxyApi {
 
     invoke_getInstallabilityErrors(): Promise<Protocol.Page.GetInstallabilityErrorsResponse>;
 
+    /**
+     * Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation.
+     */
     invoke_getManifestIcons(): Promise<Protocol.Page.GetManifestIconsResponse>;
 
     /**
@@ -2572,6 +2576,12 @@ declare namespace ProtocolProxyApi {
      * https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
      */
     invoke_setSPCTransactionMode(params: Protocol.Page.SetSPCTransactionModeRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Extensions for Custom Handlers API:
+     * https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
+     */
+    invoke_setRPHRegistrationMode(params: Protocol.Page.SetRPHRegistrationModeRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Generates a report for testing.

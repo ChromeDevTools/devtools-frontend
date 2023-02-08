@@ -53,7 +53,7 @@ export namespace ProtocolMapping {
     'Browser.downloadProgress': [Protocol.Browser.DownloadProgressEvent];
     /**
      * Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
-     * web font
+     * web font.
      */
     'CSS.fontsUpdated': [Protocol.CSS.FontsUpdatedEvent];
     /**
@@ -1214,7 +1214,7 @@ export namespace ProtocolMapping {
     };
     /**
      * Stop tracking rule usage and return the list of rules that were used since last call to
-     * `takeCoverageDelta` (or since start of coverage instrumentation)
+     * `takeCoverageDelta` (or since start of coverage instrumentation).
      */
     'CSS.stopRuleUsageTracking': {
       paramsType: [];
@@ -1222,7 +1222,7 @@ export namespace ProtocolMapping {
     };
     /**
      * Obtain list of rules that became used since last call to this method (or since start of coverage
-     * instrumentation)
+     * instrumentation).
      */
     'CSS.takeCoverageDelta': {
       paramsType: [];
@@ -1402,6 +1402,7 @@ export namespace ProtocolMapping {
     };
     /**
      * Returns the root DOM node (and optionally the subtree) to the caller.
+     * Implicitly enables the DOM domain events for the current target.
      */
     'DOM.getDocument': {
       paramsType: [Protocol.DOM.GetDocumentRequest?];
@@ -2151,7 +2152,7 @@ export namespace ProtocolMapping {
       returnType: Protocol.IndexedDB.RequestDataResponse;
     };
     /**
-     * Gets metadata of an object store
+     * Gets metadata of an object store.
      */
     'IndexedDB.getMetadata': {
       paramsType: [Protocol.IndexedDB.GetMetadataRequest];
@@ -2964,6 +2965,9 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: Protocol.Page.GetInstallabilityErrorsResponse;
     };
+    /**
+     * Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation.
+     */
     'Page.getManifestIcons': {
       paramsType: [];
       returnType: Protocol.Page.GetManifestIconsResponse;
@@ -3265,6 +3269,14 @@ export namespace ProtocolMapping {
      */
     'Page.setSPCTransactionMode': {
       paramsType: [Protocol.Page.SetSPCTransactionModeRequest];
+      returnType: void;
+    };
+    /**
+     * Extensions for Custom Handlers API:
+     * https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
+     */
+    'Page.setRPHRegistrationMode': {
+      paramsType: [Protocol.Page.SetRPHRegistrationModeRequest];
       returnType: void;
     };
     /**

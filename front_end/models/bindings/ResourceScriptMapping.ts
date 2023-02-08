@@ -395,6 +395,8 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
           return 'Functions that are on the stack (currently being executed) can not be edited';
         case Protocol.Debugger.SetScriptSourceResponseStatus.BlockedByActiveGenerator:
           return 'Async functions/generators that are active can not be edited';
+        case Protocol.Debugger.SetScriptSourceResponseStatus.BlockedByTopLevelEsModuleChange:
+          return 'The top-level of ES modules can not be edited';
         case Protocol.Debugger.SetScriptSourceResponseStatus.CompileError:
         case Protocol.Debugger.SetScriptSourceResponseStatus.Ok:
           throw new Error('Compile errors and Ok status must not be reported on the console');

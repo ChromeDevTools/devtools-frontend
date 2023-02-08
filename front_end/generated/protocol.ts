@@ -288,7 +288,7 @@ export namespace Accessibility {
      */
     objectId?: Runtime.RemoteObjectId;
     /**
-     * Whether to fetch this nodes ancestors, siblings and children. Defaults to true.
+     * Whether to fetch this node's ancestors, siblings and children. Defaults to true.
      */
     fetchRelatives?: boolean;
   }
@@ -1020,6 +1020,7 @@ export namespace Audits {
     FormAriaLabelledByToNonExistingId = 'FormAriaLabelledByToNonExistingId',
     FormInputAssignedAutocompleteValueToIdOrNameAttributeError = 'FormInputAssignedAutocompleteValueToIdOrNameAttributeError',
     FormLabelHasNeitherForNorNestedInput = 'FormLabelHasNeitherForNorNestedInput',
+    FormLabelForMatchesNonExistingIdError = 'FormLabelForMatchesNonExistingIdError',
   }
 
   /**
@@ -1034,66 +1035,6 @@ export namespace Audits {
     violatingNodeId?: DOM.BackendNodeId;
   }
 
-  export const enum DeprecationIssueType {
-    AuthorizationCoveredByWildcard = 'AuthorizationCoveredByWildcard',
-    CanRequestURLHTTPContainingNewline = 'CanRequestURLHTTPContainingNewline',
-    ChromeLoadTimesConnectionInfo = 'ChromeLoadTimesConnectionInfo',
-    ChromeLoadTimesFirstPaintAfterLoadTime = 'ChromeLoadTimesFirstPaintAfterLoadTime',
-    ChromeLoadTimesWasAlternateProtocolAvailable = 'ChromeLoadTimesWasAlternateProtocolAvailable',
-    CookieWithTruncatingChar = 'CookieWithTruncatingChar',
-    CrossOriginAccessBasedOnDocumentDomain = 'CrossOriginAccessBasedOnDocumentDomain',
-    CrossOriginWindowAlert = 'CrossOriginWindowAlert',
-    CrossOriginWindowConfirm = 'CrossOriginWindowConfirm',
-    CSSSelectorInternalMediaControlsOverlayCastButton = 'CSSSelectorInternalMediaControlsOverlayCastButton',
-    DeprecationExample = 'DeprecationExample',
-    DocumentDomainSettingWithoutOriginAgentClusterHeader = 'DocumentDomainSettingWithoutOriginAgentClusterHeader',
-    EventPath = 'EventPath',
-    ExpectCTHeader = 'ExpectCTHeader',
-    GeolocationInsecureOrigin = 'GeolocationInsecureOrigin',
-    GeolocationInsecureOriginDeprecatedNotRemoved = 'GeolocationInsecureOriginDeprecatedNotRemoved',
-    GetUserMediaInsecureOrigin = 'GetUserMediaInsecureOrigin',
-    HostCandidateAttributeGetter = 'HostCandidateAttributeGetter',
-    IdentityInCanMakePaymentEvent = 'IdentityInCanMakePaymentEvent',
-    InsecurePrivateNetworkSubresourceRequest = 'InsecurePrivateNetworkSubresourceRequest',
-    LocalCSSFileExtensionRejected = 'LocalCSSFileExtensionRejected',
-    MediaSourceAbortRemove = 'MediaSourceAbortRemove',
-    MediaSourceDurationTruncatingBuffered = 'MediaSourceDurationTruncatingBuffered',
-    NoSysexWebMIDIWithoutPermission = 'NoSysexWebMIDIWithoutPermission',
-    NotificationInsecureOrigin = 'NotificationInsecureOrigin',
-    NotificationPermissionRequestedIframe = 'NotificationPermissionRequestedIframe',
-    ObsoleteCreateImageBitmAPImageOrientationNone = 'ObsoleteCreateImageBitmapImageOrientationNone',
-    ObsoleteWebRtcCipherSuite = 'ObsoleteWebRtcCipherSuite',
-    OpenWebDatabaseInsecureContext = 'OpenWebDatabaseInsecureContext',
-    OverflowVisibleOnReplacedElement = 'OverflowVisibleOnReplacedElement',
-    PaymentInstruments = 'PaymentInstruments',
-    PaymentRequestCSPViolation = 'PaymentRequestCSPViolation',
-    PersistentQuotaType = 'PersistentQuotaType',
-    PictureSourceSrc = 'PictureSourceSrc',
-    PrefixedCancelAnimationFrame = 'PrefixedCancelAnimationFrame',
-    PrefixedRequestAnimationFrame = 'PrefixedRequestAnimationFrame',
-    PrefixedStorageInfo = 'PrefixedStorageInfo',
-    PrefixedVideoDisplayingFullscreen = 'PrefixedVideoDisplayingFullscreen',
-    PrefixedVideoEnterFullscreen = 'PrefixedVideoEnterFullscreen',
-    PrefixedVideoEnterFullScreen = 'PrefixedVideoEnterFullScreen',
-    PrefixedVideoExitFullscreen = 'PrefixedVideoExitFullscreen',
-    PrefixedVideoExitFullScreen = 'PrefixedVideoExitFullScreen',
-    PrefixedVideoSupportsFullscreen = 'PrefixedVideoSupportsFullscreen',
-    PrivacySandboxExtensionsAPI = 'PrivacySandboxExtensionsAPI',
-    RangeExpand = 'RangeExpand',
-    RequestedSubresourceWithEmbeddedCredentials = 'RequestedSubresourceWithEmbeddedCredentials',
-    RTCConstraintEnableDtlsSrtpFalse = 'RTCConstraintEnableDtlsSrtpFalse',
-    RTCConstraintEnableDtlsSrtpTrue = 'RTCConstraintEnableDtlsSrtpTrue',
-    RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics = 'RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics',
-    RTCPeerConnectionSdpSemanticsPlanB = 'RTCPeerConnectionSdpSemanticsPlanB',
-    RtcpMuxPolicyNegotiate = 'RtcpMuxPolicyNegotiate',
-    SharedArrayBufferConstructedWithoutIsolation = 'SharedArrayBufferConstructedWithoutIsolation',
-    TextToSpeech_DisallowedByAutoplay = 'TextToSpeech_DisallowedByAutoplay',
-    V8SharedArrayBufferConstructedInExtensionWithoutIsolation = 'V8SharedArrayBufferConstructedInExtensionWithoutIsolation',
-    XHRJSONEncodingDetection = 'XHRJSONEncodingDetection',
-    XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload = 'XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload',
-    XRSupportsSession = 'XRSupportsSession',
-  }
-
   /**
    * This issue tracks information needed to print a deprecation message.
    * https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md
@@ -1101,7 +1042,10 @@ export namespace Audits {
   export interface DeprecationIssueDetails {
     affectedFrame?: AffectedFrame;
     sourceCodeLocation: SourceCodeLocation;
-    type: DeprecationIssueType;
+    /**
+     * One of the deprecation names from third_party/blink/renderer/core/frame/deprecation/deprecation.json5
+     */
+    type: string;
   }
 
   export const enum ClientHintIssueReason {
@@ -2693,7 +2637,7 @@ export namespace CSS {
 
   export interface TakeComputedStyleUpdatesResponse extends ProtocolResponseWithError {
     /**
-     * The list of node Ids that have their tracked computed styles updated
+     * The list of node Ids that have their tracked computed styles updated.
      */
     nodeIds: DOM.NodeId[];
   }
@@ -2829,7 +2773,7 @@ export namespace CSS {
 
   /**
    * Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
-   * web font
+   * web font.
    */
   export interface FontsUpdatedEvent {
     /**
@@ -5468,8 +5412,9 @@ export namespace Emulation {
 
   export const enum SetEmulatedVisionDeficiencyRequestType {
     None = 'none',
-    Achromatopsia = 'achromatopsia',
     BlurredVision = 'blurredVision',
+    ReducedContrast = 'reducedContrast',
+    Achromatopsia = 'achromatopsia',
     Deuteranopia = 'deuteranopia',
     Protanopia = 'protanopia',
     Tritanopia = 'tritanopia',
@@ -5477,7 +5422,8 @@ export namespace Emulation {
 
   export interface SetEmulatedVisionDeficiencyRequest {
     /**
-     * Vision deficiency to emulate.
+     * Vision deficiency to emulate. Order: best-effort emulations come first, followed by any
+     * physiologically accurate emulations for medically recognized color vision deficiencies.
      */
     type: SetEmulatedVisionDeficiencyRequestType;
   }
@@ -11046,6 +10992,16 @@ export namespace Page {
   }
 
   /**
+   * Enum of possible auto-reponse for permisison / prompt dialogs.
+   */
+  export const enum AutoResponseMode {
+    None = 'none',
+    AutoAccept = 'autoAccept',
+    AutoReject = 'autoReject',
+    AutoOptOut = 'autoOptOut',
+  }
+
+  /**
    * The type of a frameNavigated event.
    */
   export const enum NavigationType {
@@ -11283,6 +11239,7 @@ export namespace Page {
     PreloadingDisabled = 'PreloadingDisabled',
     BatterySaverEnabled = 'BatterySaverEnabled',
     ActivatedDuringMainFrameNavigation = 'ActivatedDuringMainFrameNavigation',
+    PreloadingUnsupportedByWebContents = 'PreloadingUnsupportedByWebContents',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {
@@ -11982,15 +11939,12 @@ export namespace Page {
     data: binary;
   }
 
-  export const enum SetSPCTransactionModeRequestMode {
-    None = 'none',
-    AutoAccept = 'autoAccept',
-    AutoReject = 'autoReject',
-    AutoOptOut = 'autoOptOut',
+  export interface SetSPCTransactionModeRequest {
+    mode: AutoResponseMode;
   }
 
-  export interface SetSPCTransactionModeRequest {
-    mode: SetSPCTransactionModeRequestMode;
+  export interface SetRPHRegistrationModeRequest {
+    mode: AutoResponseMode;
   }
 
   export interface GenerateTestReportRequest {
@@ -15956,6 +15910,7 @@ export namespace Debugger {
     CompileError = 'CompileError',
     BlockedByActiveGenerator = 'BlockedByActiveGenerator',
     BlockedByActiveFunction = 'BlockedByActiveFunction',
+    BlockedByTopLevelEsModuleChange = 'BlockedByTopLevelEsModuleChange',
   }
 
   export interface SetScriptSourceRequest {

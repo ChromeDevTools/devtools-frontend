@@ -70,8 +70,6 @@ with open(GENERATED_LOCATION, encoding="raw_unicode_escape", mode="w+") as f:
     f.write("// This file is auto-generated, do not edit manually.\n")
     f.write("// Re-generate with: npm run generate-protocol-resources\n")
     f.write("\n")
-    f.write("import {Audits} from './protocol.js';\n")
-    f.write("\n")
     f.write("export const UIStrings = {\n")
     for name, ui_string in ui_strings.items():
         message = ui_string["message"].replace("'", "\\'")
@@ -88,5 +86,5 @@ with open(GENERATED_LOCATION, encoding="raw_unicode_escape", mode="w+") as f:
     f.write("}\n")
     f.write("\n")
     f.write(
-        "export const DEPRECATIONS_METADATA: Partial<Record<Audits.DeprecationIssueType, DeprecationDescriptor>> = %s;\n"
+        "export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor>> = %s;\n"
         % json.dumps(meta, sort_keys=True, indent=2))

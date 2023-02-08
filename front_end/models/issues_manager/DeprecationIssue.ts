@@ -441,190 +441,190 @@ export class DeprecationIssue extends Issue {
     const milestone = deprecationMeta?.milestone ?? 0;
     // Keep case statements alphabetized per DeprecationIssueType.
     switch (this.#issueDetails.type) {
-      case Protocol.Audits.DeprecationIssueType.AuthorizationCoveredByWildcard:
+      case 'AuthorizationCoveredByWildcard':
         messageFunction = i18nLazyString(UIStrings.authorizationCoveredByWildcard);
         break;
-      case Protocol.Audits.DeprecationIssueType.CanRequestURLHTTPContainingNewline:
+      case 'CanRequestURLHTTPContainingNewline':
         messageFunction = i18nLazyString(UIStrings.canRequestURLHTTPContainingNewline);
         break;
-      case Protocol.Audits.DeprecationIssueType.ChromeLoadTimesConnectionInfo:
+      case 'ChromeLoadTimesConnectionInfo':
         messageFunction = i18nLazyString(UIStrings.chromeLoadTimesConnectionInfo);
         break;
-      case Protocol.Audits.DeprecationIssueType.ChromeLoadTimesFirstPaintAfterLoadTime:
+      case 'ChromeLoadTimesFirstPaintAfterLoadTime':
         messageFunction = i18nLazyString(UIStrings.chromeLoadTimesFirstPaintAfterLoadTime);
         break;
-      case Protocol.Audits.DeprecationIssueType.ChromeLoadTimesWasAlternateProtocolAvailable:
+      case 'ChromeLoadTimesWasAlternateProtocolAvailable':
         messageFunction = i18nLazyString(UIStrings.chromeLoadTimesWasAlternateProtocolAvailable);
         break;
-      case Protocol.Audits.DeprecationIssueType.CookieWithTruncatingChar:
+      case 'CookieWithTruncatingChar':
         messageFunction = i18nLazyString(UIStrings.cookieWithTruncatingChar);
         break;
-      case Protocol.Audits.DeprecationIssueType.CrossOriginAccessBasedOnDocumentDomain:
+      case 'CrossOriginAccessBasedOnDocumentDomain':
         messageFunction = i18nLazyString(UIStrings.crossOriginAccessBasedOnDocumentDomain);
         break;
-      case Protocol.Audits.DeprecationIssueType.CrossOriginWindowAlert:
+      case 'CrossOriginWindowAlert':
         messageFunction = i18nLazyString(UIStrings.crossOriginWindowApi, {PH1: 'window.alert'});
         break;
-      case Protocol.Audits.DeprecationIssueType.CrossOriginWindowConfirm:
+      case 'CrossOriginWindowConfirm':
         messageFunction = i18nLazyString(UIStrings.crossOriginWindowApi, {PH1: 'window.confirm'});
         break;
-      case Protocol.Audits.DeprecationIssueType.CSSSelectorInternalMediaControlsOverlayCastButton:
+      case 'CSSSelectorInternalMediaControlsOverlayCastButton':
         messageFunction = i18nLazyString(UIStrings.cssSelectorInternalMediaControlsOverlayCastButton);
         break;
-      case Protocol.Audits.DeprecationIssueType.DeprecationExample:
+      case 'DeprecationExample':
         messageFunction = i18nLazyString(UIStrings.deprecationExample);
         break;
-      case Protocol.Audits.DeprecationIssueType.DocumentDomainSettingWithoutOriginAgentClusterHeader:
+      case 'DocumentDomainSettingWithoutOriginAgentClusterHeader':
         messageFunction = i18nLazyString(UIStrings.documentDomainSettingWithoutOriginAgentClusterHeader);
         break;
-      case Protocol.Audits.DeprecationIssueType.EventPath:
+      case 'EventPath':
         messageFunction = i18nLazyString(UIStrings.eventPath);
         break;
-      case Protocol.Audits.DeprecationIssueType.ExpectCTHeader:
+      case 'ExpectCTHeader':
         messageFunction = i18nLazyString(UIStrings.expectCTHeader);
         break;
-      case Protocol.Audits.DeprecationIssueType.GeolocationInsecureOrigin:
+      case 'GeolocationInsecureOrigin':
         messageFunction = i18nLazyString(UIStrings.geolocationInsecureOrigin);
         break;
-      case Protocol.Audits.DeprecationIssueType.GeolocationInsecureOriginDeprecatedNotRemoved:
+      case 'GeolocationInsecureOriginDeprecatedNotRemoved':
         messageFunction = i18nLazyString(UIStrings.geolocationInsecureOriginDeprecatedNotRemoved);
         break;
-      case Protocol.Audits.DeprecationIssueType.GetUserMediaInsecureOrigin:
+      case 'GetUserMediaInsecureOrigin':
         messageFunction = i18nLazyString(UIStrings.getUserMediaInsecureOrigin);
         break;
-      case Protocol.Audits.DeprecationIssueType.HostCandidateAttributeGetter:
+      case 'HostCandidateAttributeGetter':
         messageFunction = i18nLazyString(UIStrings.hostCandidateAttributeGetter);
         break;
-      case Protocol.Audits.DeprecationIssueType.IdentityInCanMakePaymentEvent:
+      case 'IdentityInCanMakePaymentEvent':
         messageFunction = i18nLazyString(UIStrings.identityInCanMakePaymentEvent);
         break;
-      case Protocol.Audits.DeprecationIssueType.InsecurePrivateNetworkSubresourceRequest:
+      case 'InsecurePrivateNetworkSubresourceRequest':
         messageFunction = i18nLazyString(UIStrings.insecurePrivateNetworkSubresourceRequest);
         break;
-      case Protocol.Audits.DeprecationIssueType.LocalCSSFileExtensionRejected:
+      case 'LocalCSSFileExtensionRejected':
         messageFunction = i18nLazyString(UIStrings.localCSSFileExtensionRejected);
         break;
-      case Protocol.Audits.DeprecationIssueType.MediaSourceAbortRemove:
+      case 'MediaSourceAbortRemove':
         messageFunction = i18nLazyString(UIStrings.mediaSourceAbortRemove);
         break;
-      case Protocol.Audits.DeprecationIssueType.MediaSourceDurationTruncatingBuffered:
+      case 'MediaSourceDurationTruncatingBuffered':
         messageFunction = i18nLazyString(UIStrings.mediaSourceDurationTruncatingBuffered);
         break;
-      case Protocol.Audits.DeprecationIssueType.NoSysexWebMIDIWithoutPermission:
+      case 'NoSysexWebMIDIWithoutPermission':
         messageFunction = i18nLazyString(UIStrings.noSysexWebMIDIWithoutPermission);
         break;
-      case Protocol.Audits.DeprecationIssueType.NotificationInsecureOrigin:
+      case 'NotificationInsecureOrigin':
         messageFunction = i18nLazyString(UIStrings.notificationInsecureOrigin);
         break;
-      case Protocol.Audits.DeprecationIssueType.NotificationPermissionRequestedIframe:
+      case 'NotificationPermissionRequestedIframe':
         messageFunction = i18nLazyString(UIStrings.notificationPermissionRequestedIframe);
         break;
-      case Protocol.Audits.DeprecationIssueType.ObsoleteWebRtcCipherSuite:
+      case 'ObsoleteWebRtcCipherSuite':
         messageFunction = i18nLazyString(UIStrings.obsoleteWebRtcCipherSuite);
         break;
-      case Protocol.Audits.DeprecationIssueType.ObsoleteCreateImageBitmAPImageOrientationNone:
+      case 'ObsoleteCreateImageBitmAPImageOrientationNone':
         messageFunction = i18nLazyString(UIStrings.obsoleteCreateImageBitmAPImageOrientationNone);
         break;
-      case Protocol.Audits.DeprecationIssueType.OpenWebDatabaseInsecureContext:
+      case 'OpenWebDatabaseInsecureContext':
         messageFunction = i18nLazyString(UIStrings.openWebDatabaseInsecureContext);
         break;
-      case Protocol.Audits.DeprecationIssueType.PaymentInstruments:
+      case 'PaymentInstruments':
         messageFunction = i18nLazyString(UIStrings.paymentInstruments);
         break;
-      case Protocol.Audits.DeprecationIssueType.PaymentRequestCSPViolation:
+      case 'PaymentRequestCSPViolation':
         messageFunction = i18nLazyString(UIStrings.paymentRequestCSPViolation);
         break;
-      case Protocol.Audits.DeprecationIssueType.PersistentQuotaType:
+      case 'PersistentQuotaType':
         messageFunction = i18nLazyString(UIStrings.persistentQuotaType);
         break;
-      case Protocol.Audits.DeprecationIssueType.PictureSourceSrc:
+      case 'PictureSourceSrc':
         messageFunction = i18nLazyString(UIStrings.pictureSourceSrc);
         break;
-      case Protocol.Audits.DeprecationIssueType.PrefixedCancelAnimationFrame:
+      case 'PrefixedCancelAnimationFrame':
         messageFunction = i18nLazyString(
             UIStrings.vendorSpecificApi, {PH1: 'webkitCancelAnimationFrame', PH2: 'cancelAnimationFrame'});
         break;
-      case Protocol.Audits.DeprecationIssueType.PrefixedRequestAnimationFrame:
+      case 'PrefixedRequestAnimationFrame':
         messageFunction = i18nLazyString(
             UIStrings.vendorSpecificApi, {PH1: 'webkitRequestAnimationFrame', PH2: 'requestAnimationFrame'});
         break;
-      case Protocol.Audits.DeprecationIssueType.PrefixedStorageInfo:
+      case 'PrefixedStorageInfo':
         messageFunction = i18nLazyString(UIStrings.prefixedStorageInfo);
         break;
-      case Protocol.Audits.DeprecationIssueType.PrefixedVideoDisplayingFullscreen:
+      case 'PrefixedVideoDisplayingFullscreen':
         messageFunction = i18nLazyString(
             UIStrings.deprecatedWithReplacement,
             {PH1: 'HTMLVideoElement.webkitDisplayingFullscreen', PH2: 'Document.fullscreenElement'});
         break;
-      case Protocol.Audits.DeprecationIssueType.PrefixedVideoEnterFullScreen:
+      case 'PrefixedVideoEnterFullScreen':
         messageFunction = i18nLazyString(
             UIStrings.deprecatedWithReplacement,
             {PH1: 'HTMLVideoElement.webkitEnterFullScreen()', PH2: 'Element.requestFullscreen()'});
         break;
-      case Protocol.Audits.DeprecationIssueType.PrefixedVideoEnterFullscreen:
+      case 'PrefixedVideoEnterFullscreen':
         messageFunction = i18nLazyString(
             UIStrings.deprecatedWithReplacement,
             {PH1: 'HTMLVideoElement.webkitEnterFullscreen()', PH2: 'Element.requestFullscreen()'});
         break;
-      case Protocol.Audits.DeprecationIssueType.PrefixedVideoExitFullScreen:
+      case 'PrefixedVideoExitFullScreen':
         messageFunction = i18nLazyString(
             UIStrings.deprecatedWithReplacement,
             {PH1: 'HTMLVideoElement.webkitExitFullScreen()', PH2: 'Document.exitFullscreen()'});
         break;
-      case Protocol.Audits.DeprecationIssueType.PrefixedVideoExitFullscreen:
+      case 'PrefixedVideoExitFullscreen':
         messageFunction = i18nLazyString(
             UIStrings.deprecatedWithReplacement,
             {PH1: 'HTMLVideoElement.webkitExitFullscreen()', PH2: 'Document.exitFullscreen()'});
         break;
-      case Protocol.Audits.DeprecationIssueType.PrefixedVideoSupportsFullscreen:
+      case 'PrefixedVideoSupportsFullscreen':
         messageFunction = i18nLazyString(
             UIStrings.deprecatedWithReplacement,
             {PH1: 'HTMLVideoElement.webkitSupportsFullscreen', PH2: 'Document.fullscreenEnabled'});
         break;
-      case Protocol.Audits.DeprecationIssueType.PrivacySandboxExtensionsAPI:
+      case 'PrivacySandboxExtensionsAPI':
         messageFunction = i18nLazyString(UIStrings.privacySandboxExtensionsAPI);
         break;
-      case Protocol.Audits.DeprecationIssueType.RangeExpand:
+      case 'RangeExpand':
         messageFunction =
             i18nLazyString(UIStrings.deprecatedWithReplacement, {PH1: 'Range.expand()', PH2: 'Selection.modify()'});
         break;
-      case Protocol.Audits.DeprecationIssueType.RequestedSubresourceWithEmbeddedCredentials:
+      case 'RequestedSubresourceWithEmbeddedCredentials':
         messageFunction = i18nLazyString(UIStrings.requestedSubresourceWithEmbeddedCredentials);
         break;
-      case Protocol.Audits.DeprecationIssueType.OverflowVisibleOnReplacedElement:
+      case 'OverflowVisibleOnReplacedElement':
         messageFunction = i18nLazyString(UIStrings.overflowVisibleOnReplacedElement);
         break;
-      case Protocol.Audits.DeprecationIssueType.RTCConstraintEnableDtlsSrtpFalse:
+      case 'RTCConstraintEnableDtlsSrtpFalse':
         messageFunction = i18nLazyString(UIStrings.rtcConstraintEnableDtlsSrtpFalse);
         break;
-      case Protocol.Audits.DeprecationIssueType.RTCConstraintEnableDtlsSrtpTrue:
+      case 'RTCConstraintEnableDtlsSrtpTrue':
         messageFunction = i18nLazyString(UIStrings.rtcConstraintEnableDtlsSrtpTrue);
         break;
-      case Protocol.Audits.DeprecationIssueType.RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics:
+      case 'RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics':
         messageFunction = i18nLazyString(UIStrings.rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics);
         break;
-      case Protocol.Audits.DeprecationIssueType.RTCPeerConnectionSdpSemanticsPlanB:
+      case 'RTCPeerConnectionSdpSemanticsPlanB':
         messageFunction = i18nLazyString(UIStrings.rtcPeerConnectionSdpSemanticsPlanB);
         break;
-      case Protocol.Audits.DeprecationIssueType.RtcpMuxPolicyNegotiate:
+      case 'RtcpMuxPolicyNegotiate':
         messageFunction = i18nLazyString(UIStrings.rtcpMuxPolicyNegotiate);
         break;
-      case Protocol.Audits.DeprecationIssueType.SharedArrayBufferConstructedWithoutIsolation:
+      case 'SharedArrayBufferConstructedWithoutIsolation':
         messageFunction = i18nLazyString(UIStrings.sharedArrayBufferConstructedWithoutIsolation);
         break;
-      case Protocol.Audits.DeprecationIssueType.TextToSpeech_DisallowedByAutoplay:
+      case 'TextToSpeech_DisallowedByAutoplay':
         messageFunction = i18nLazyString(UIStrings.textToSpeech_DisallowedByAutoplay);
         break;
-      case Protocol.Audits.DeprecationIssueType.V8SharedArrayBufferConstructedInExtensionWithoutIsolation:
+      case 'V8SharedArrayBufferConstructedInExtensionWithoutIsolation':
         messageFunction = i18nLazyString(UIStrings.v8SharedArrayBufferConstructedInExtensionWithoutIsolation);
         break;
-      case Protocol.Audits.DeprecationIssueType.XHRJSONEncodingDetection:
+      case 'XHRJSONEncodingDetection':
         messageFunction = i18nLazyString(UIStrings.xhrJSONEncodingDetection);
         break;
-      case Protocol.Audits.DeprecationIssueType.XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload:
+      case 'XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload':
         messageFunction = i18nLazyString(UIStrings.xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload);
         break;
-      case Protocol.Audits.DeprecationIssueType.XRSupportsSession:
+      case 'XRSupportsSession':
         messageFunction = i18nLazyString(UIStrings.xrSupportsSession);
         break;
     }

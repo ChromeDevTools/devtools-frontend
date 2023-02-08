@@ -16,8 +16,7 @@ describeWithLocale('DeprecationIssue', async () => {
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
   const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
 
-  function createDeprecationIssue(type: Protocol.Audits.DeprecationIssueType):
-      IssuesManager.DeprecationIssue.DeprecationIssue {
+  function createDeprecationIssue(type: string): IssuesManager.DeprecationIssue.DeprecationIssue {
     return new IssuesManager.DeprecationIssue.DeprecationIssue(
         {
           sourceCodeLocation: {
@@ -30,7 +29,7 @@ describeWithLocale('DeprecationIssue', async () => {
         mockModel);
   }
 
-  function createDeprecationIssueDetails(type: Protocol.Audits.DeprecationIssueType): Protocol.Audits.InspectorIssue {
+  function createDeprecationIssueDetails(type: string): Protocol.Audits.InspectorIssue {
     return {
       code: Protocol.Audits.InspectorIssueCode.DeprecationIssue,
       details: {
@@ -47,15 +46,15 @@ describeWithLocale('DeprecationIssue', async () => {
   }
 
   it('normal deprecation issue works', () => {
-    const details = createDeprecationIssueDetails(Protocol.Audits.DeprecationIssueType.DeprecationExample);
+    const details = createDeprecationIssueDetails('DeprecationExample');
     const issue = IssuesManager.DeprecationIssue.DeprecationIssue.fromInspectorIssue(mockModel, details);
     assert.isNotEmpty(issue);
   });
 
   it('aggregates issues with the same type', () => {
     const issues = [
-      createDeprecationIssue(Protocol.Audits.DeprecationIssueType.DeprecationExample),
-      createDeprecationIssue(Protocol.Audits.DeprecationIssueType.DeprecationExample),
+      createDeprecationIssue('DeprecationExample'),
+      createDeprecationIssue('DeprecationExample'),
     ];
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {
@@ -70,8 +69,8 @@ describeWithLocale('DeprecationIssue', async () => {
 
   it('does not aggregate issues with different types', () => {
     const issues = [
-      createDeprecationIssue(Protocol.Audits.DeprecationIssueType.DeprecationExample),
-      createDeprecationIssue(Protocol.Audits.DeprecationIssueType.CrossOriginWindowAlert),
+      createDeprecationIssue('DeprecationExample'),
+      createDeprecationIssue('CrossOriginWindowAlert'),
     ];
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {

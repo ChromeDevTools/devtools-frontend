@@ -378,7 +378,7 @@
                         },
                         {
                             "name": "fetchRelatives",
-                            "description": "Whether to fetch this nodes ancestors, siblings and children. Defaults to true.",
+                            "description": "Whether to fetch this node's ancestors, siblings and children. Defaults to true.",
                             "optional": true,
                             "type": "boolean"
                         }
@@ -1542,7 +1542,8 @@
                         "FormEmptyIdAndNameAttributesForInputError",
                         "FormAriaLabelledByToNonExistingId",
                         "FormInputAssignedAutocompleteValueToIdOrNameAttributeError",
-                        "FormLabelHasNeitherForNorNestedInput"
+                        "FormLabelHasNeitherForNorNestedInput",
+                        "FormLabelForMatchesNonExistingIdError"
                     ]
                 },
                 {
@@ -1568,69 +1569,6 @@
                     ]
                 },
                 {
-                    "id": "DeprecationIssueType",
-                    "type": "string",
-                    "enum": [
-                        "AuthorizationCoveredByWildcard",
-                        "CanRequestURLHTTPContainingNewline",
-                        "ChromeLoadTimesConnectionInfo",
-                        "ChromeLoadTimesFirstPaintAfterLoadTime",
-                        "ChromeLoadTimesWasAlternateProtocolAvailable",
-                        "CookieWithTruncatingChar",
-                        "CrossOriginAccessBasedOnDocumentDomain",
-                        "CrossOriginWindowAlert",
-                        "CrossOriginWindowConfirm",
-                        "CSSSelectorInternalMediaControlsOverlayCastButton",
-                        "DeprecationExample",
-                        "DocumentDomainSettingWithoutOriginAgentClusterHeader",
-                        "EventPath",
-                        "ExpectCTHeader",
-                        "GeolocationInsecureOrigin",
-                        "GeolocationInsecureOriginDeprecatedNotRemoved",
-                        "GetUserMediaInsecureOrigin",
-                        "HostCandidateAttributeGetter",
-                        "IdentityInCanMakePaymentEvent",
-                        "InsecurePrivateNetworkSubresourceRequest",
-                        "LocalCSSFileExtensionRejected",
-                        "MediaSourceAbortRemove",
-                        "MediaSourceDurationTruncatingBuffered",
-                        "NoSysexWebMIDIWithoutPermission",
-                        "NotificationInsecureOrigin",
-                        "NotificationPermissionRequestedIframe",
-                        "ObsoleteCreateImageBitmapImageOrientationNone",
-                        "ObsoleteWebRtcCipherSuite",
-                        "OpenWebDatabaseInsecureContext",
-                        "OverflowVisibleOnReplacedElement",
-                        "PaymentInstruments",
-                        "PaymentRequestCSPViolation",
-                        "PersistentQuotaType",
-                        "PictureSourceSrc",
-                        "PrefixedCancelAnimationFrame",
-                        "PrefixedRequestAnimationFrame",
-                        "PrefixedStorageInfo",
-                        "PrefixedVideoDisplayingFullscreen",
-                        "PrefixedVideoEnterFullscreen",
-                        "PrefixedVideoEnterFullScreen",
-                        "PrefixedVideoExitFullscreen",
-                        "PrefixedVideoExitFullScreen",
-                        "PrefixedVideoSupportsFullscreen",
-                        "PrivacySandboxExtensionsAPI",
-                        "RangeExpand",
-                        "RequestedSubresourceWithEmbeddedCredentials",
-                        "RTCConstraintEnableDtlsSrtpFalse",
-                        "RTCConstraintEnableDtlsSrtpTrue",
-                        "RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics",
-                        "RTCPeerConnectionSdpSemanticsPlanB",
-                        "RtcpMuxPolicyNegotiate",
-                        "SharedArrayBufferConstructedWithoutIsolation",
-                        "TextToSpeech_DisallowedByAutoplay",
-                        "V8SharedArrayBufferConstructedInExtensionWithoutIsolation",
-                        "XHRJSONEncodingDetection",
-                        "XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload",
-                        "XRSupportsSession"
-                    ]
-                },
-                {
                     "id": "DeprecationIssueDetails",
                     "description": "This issue tracks information needed to print a deprecation message.\nhttps://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md",
                     "type": "object",
@@ -1646,7 +1584,8 @@
                         },
                         {
                             "name": "type",
-                            "$ref": "DeprecationIssueType"
+                            "description": "One of the deprecation names from third_party/blink/renderer/core/frame/deprecation/deprecation.json5",
+                            "type": "string"
                         }
                     ]
                 },
@@ -3983,7 +3922,7 @@
                     "returns": [
                         {
                             "name": "nodeIds",
-                            "description": "The list of node Ids that have their tracked computed styles updated",
+                            "description": "The list of node Ids that have their tracked computed styles updated.",
                             "type": "array",
                             "items": {
                                 "$ref": "DOM.NodeId"
@@ -4214,7 +4153,7 @@
                 },
                 {
                     "name": "stopRuleUsageTracking",
-                    "description": "Stop tracking rule usage and return the list of rules that were used since last call to\n`takeCoverageDelta` (or since start of coverage instrumentation)",
+                    "description": "Stop tracking rule usage and return the list of rules that were used since last call to\n`takeCoverageDelta` (or since start of coverage instrumentation).",
                     "returns": [
                         {
                             "name": "ruleUsage",
@@ -4227,7 +4166,7 @@
                 },
                 {
                     "name": "takeCoverageDelta",
-                    "description": "Obtain list of rules that became used since last call to this method (or since start of coverage\ninstrumentation)",
+                    "description": "Obtain list of rules that became used since last call to this method (or since start of coverage\ninstrumentation).",
                     "returns": [
                         {
                             "name": "coverage",
@@ -4259,7 +4198,7 @@
             "events": [
                 {
                     "name": "fontsUpdated",
-                    "description": "Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded\nweb font",
+                    "description": "Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded\nweb font.",
                     "parameters": [
                         {
                             "name": "font",
@@ -5413,7 +5352,7 @@
                 },
                 {
                     "name": "getDocument",
-                    "description": "Returns the root DOM node (and optionally the subtree) to the caller.",
+                    "description": "Returns the root DOM node (and optionally the subtree) to the caller.\nImplicitly enables the DOM domain events for the current target.",
                     "parameters": [
                         {
                             "name": "depth",
@@ -8317,12 +8256,13 @@
                     "parameters": [
                         {
                             "name": "type",
-                            "description": "Vision deficiency to emulate.",
+                            "description": "Vision deficiency to emulate. Order: best-effort emulations come first, followed by any\nphysiologically accurate emulations for medically recognized color vision deficiencies.",
                             "type": "string",
                             "enum": [
                                 "none",
-                                "achromatopsia",
                                 "blurredVision",
+                                "reducedContrast",
+                                "achromatopsia",
                                 "deuteranopia",
                                 "protanopia",
                                 "tritanopia"
@@ -9138,7 +9078,7 @@
                 },
                 {
                     "name": "getMetadata",
-                    "description": "Gets metadata of an object store",
+                    "description": "Gets metadata of an object store.",
                     "parameters": [
                         {
                             "name": "securityOrigin",
@@ -16219,6 +16159,18 @@
                     ]
                 },
                 {
+                    "id": "AutoResponseMode",
+                    "description": "Enum of possible auto-reponse for permisison / prompt dialogs.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "autoAccept",
+                        "autoReject",
+                        "autoOptOut"
+                    ]
+                },
+                {
                     "id": "NavigationType",
                     "description": "The type of a frameNavigated event.",
                     "experimental": true,
@@ -16481,7 +16433,8 @@
                         "ActivationFramePolicyNotCompatible",
                         "PreloadingDisabled",
                         "BatterySaverEnabled",
-                        "ActivatedDuringMainFrameNavigation"
+                        "ActivatedDuringMainFrameNavigation",
+                        "PreloadingUnsupportedByWebContents"
                     ]
                 }
             ],
@@ -16742,7 +16695,9 @@
                 },
                 {
                     "name": "getManifestIcons",
+                    "description": "Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation.",
                     "experimental": true,
+                    "deprecated": true,
                     "returns": [
                         {
                             "name": "primaryIcon",
@@ -17631,13 +17586,18 @@
                     "parameters": [
                         {
                             "name": "mode",
-                            "type": "string",
-                            "enum": [
-                                "none",
-                                "autoAccept",
-                                "autoReject",
-                                "autoOptOut"
-                            ]
+                            "$ref": "AutoResponseMode"
+                        }
+                    ]
+                },
+                {
+                    "name": "setRPHRegistrationMode",
+                    "description": "Extensions for Custom Handlers API:\nhttps://html.spec.whatwg.org/multipage/system-state.html#rph-automation",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "mode",
+                            "$ref": "AutoResponseMode"
                         }
                     ]
                 },
@@ -23846,7 +23806,8 @@
                                 "Ok",
                                 "CompileError",
                                 "BlockedByActiveGenerator",
-                                "BlockedByActiveFunction"
+                                "BlockedByActiveFunction",
+                                "BlockedByTopLevelEsModuleChange"
                             ]
                         },
                         {

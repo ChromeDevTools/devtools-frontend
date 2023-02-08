@@ -3689,6 +3689,11 @@ export const NativeFunctions = [
     receivers: ['SyncManager']
   },
   {
+    name: 'register',
+    signatures: [['configURL']],
+    receivers: ['IdentityProvider']
+  },
+  {
     name: 'getNotifications',
     signatures: [['?filter']]
   },
@@ -3705,6 +3710,11 @@ export const NativeFunctions = [
     name: 'unregister',
     signatures: [['tag']],
     receivers: ['PeriodicSyncManager']
+  },
+  {
+    name: 'unregister',
+    signatures: [['configURL']],
+    receivers: ['IdentityProvider']
   },
   {
     name: 'appendBuffer',
@@ -6368,7 +6378,7 @@ export const NativeFunctions = [
   },
   {
     name: 'FormData',
-    signatures: [['?form']]
+    signatures: [['?form','?submitter']]
   },
   {
     name: 'Option',
@@ -6700,11 +6710,11 @@ export const NativeFunctions = [
   },
   {
     name: 'deprecatedURNToURL',
-    signatures: [['uuid_url','?send_reports']]
+    signatures: [['urn_or_config','?send_reports']]
   },
   {
     name: 'deprecatedReplaceInURN',
-    signatures: [['uuid_url','replacements']]
+    signatures: [['urn_or_config','replacements']]
   },
   {
     name: 'createAdRequest',

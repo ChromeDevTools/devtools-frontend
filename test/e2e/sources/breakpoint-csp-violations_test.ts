@@ -31,7 +31,9 @@ describe('Breakpoints on CSP Violation', async () => {
     await click('[aria-label="Resume script execution"]');
     await resource;
   });
-  it('CSP Violations should show in report-only mode', async () => {
+
+  // Flaky on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1413970] CSP Violations should show in report-only mode', async () => {
     await openSourcesPanel();
     await click('[aria-label="CSP Violation Breakpoints"]');
     await click('[aria-label="Trusted Type Violations"]');

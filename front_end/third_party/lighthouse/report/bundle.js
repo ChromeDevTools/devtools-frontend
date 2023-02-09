@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-/** @template T @typedef {import('./i18n').I18n<T>} I18n */
+/** @typedef {import('../types/lhr/audit-details').default.SnippetValue} SnippetValue */
 
 const ELLIPSIS = '\u2026';
 const NBSP = '\xa0';
 const PASS_THRESHOLD = 0.9;
-const SCREENSHOT_PREFIX = 'data:image/jpeg;base64,';
 
-const RATINGS = {
+const RATINGS$1 = {
   PASS: {label: 'pass', minScore: PASS_THRESHOLD},
   AVERAGE: {label: 'average', minScore: 0.5},
   FAIL: {label: 'fail'},
@@ -38,9 +37,9 @@ const listOfTlds = [
 ];
 
 class Util {
-  /** @type {I18n<typeof UIStrings>} */
-  // @ts-expect-error: Is set in report renderer.
-  static i18n = null;
+  static get RATINGS() {
+    return RATINGS$1;
+  }
 
   static get PASS_THRESHOLD() {
     return PASS_THRESHOLD;
@@ -51,166 +50,40 @@ class Util {
   }
 
   /**
-   * Returns a new LHR that's reshaped for slightly better ergonomics within the report rendereer.
-   * Also, sets up the localized UI strings used within renderer and makes changes to old LHRs to be
-   * compatible with current renderer.
-   * The LHR passed in is not mutated.
-   * TODO(team): we all agree the LHR shape change is technical debt we should fix
-   * @param {LH.Result} result
-   * @return {LH.ReportResult}
+   * If LHR is older than 10.0 it will not have the `finalDisplayedUrl` property.
+   * Old LHRs should have the `finalUrl` property which will work fine for the report.
+   *
+   * @param {LH.Result} lhr
    */
-  static prepareReportResult(result) {
-    // If any mutations happen to the report within the renderers, we want the original object untouched
-    const clone = /** @type {LH.ReportResult} */ (JSON.parse(JSON.stringify(result)));
-
-    // If LHR is older (≤3.0.3), it has no locale setting. Set default.
-    if (!clone.configSettings.locale) {
-      clone.configSettings.locale = 'en';
-    }
-    if (!clone.configSettings.formFactor) {
-      // @ts-expect-error fallback handling for emulatedFormFactor
-      clone.configSettings.formFactor = clone.configSettings.emulatedFormFactor;
-    }
-
-    for (const audit of Object.values(clone.audits)) {
-      // Turn 'not-applicable' (LHR <4.0) and 'not_applicable' (older proto versions)
-      // into 'notApplicable' (LHR ≥4.0).
-      // @ts-expect-error tsc rightly flags that these values shouldn't occur.
-      // eslint-disable-next-line max-len
-      if (audit.scoreDisplayMode === 'not_applicable' || audit.scoreDisplayMode === 'not-applicable') {
-        audit.scoreDisplayMode = 'notApplicable';
-      }
-
-      if (audit.details) {
-        // Turn `auditDetails.type` of undefined (LHR <4.2) and 'diagnostic' (LHR <5.0)
-        // into 'debugdata' (LHR ≥5.0).
-        // @ts-expect-error tsc rightly flags that these values shouldn't occur.
-        if (audit.details.type === undefined || audit.details.type === 'diagnostic') {
-          // @ts-expect-error details is of type never.
-          audit.details.type = 'debugdata';
-        }
-
-        // Add the jpg data URL prefix to filmstrip screenshots without them (LHR <5.0).
-        if (audit.details.type === 'filmstrip') {
-          for (const screenshot of audit.details.items) {
-            if (!screenshot.data.startsWith(SCREENSHOT_PREFIX)) {
-              screenshot.data = SCREENSHOT_PREFIX + screenshot.data;
-            }
-          }
-        }
-      }
-    }
-
-    // For convenience, smoosh all AuditResults into their auditRef (which has just weight & group)
-    if (typeof clone.categories !== 'object') throw new Error('No categories provided.');
-
-    /** @type {Map<string, Array<LH.ReportResult.AuditRef>>} */
-    const relevantAuditToMetricsMap = new Map();
-
-    // This backcompat converts old LHRs (<9.0.0) to use the new "hidden" group.
-    // Old LHRs used "no group" to identify audits that should be hidden in performance instead of the "hidden" group.
-    // Newer LHRs use "no group" to identify opportunities and diagnostics whose groups are assigned by details type.
-    const [majorVersion] = clone.lighthouseVersion.split('.').map(Number);
-    const perfCategory = clone.categories['performance'];
-    if (majorVersion < 9 && perfCategory) {
-      if (!clone.categoryGroups) clone.categoryGroups = {};
-      clone.categoryGroups['hidden'] = {title: ''};
-      for (const auditRef of perfCategory.auditRefs) {
-        if (!auditRef.group) {
-          auditRef.group = 'hidden';
-        } else if (['load-opportunities', 'diagnostics'].includes(auditRef.group)) {
-          delete auditRef.group;
-        }
-      }
-    }
-
-    for (const category of Object.values(clone.categories)) {
-      // Make basic lookup table for relevantAudits
-      category.auditRefs.forEach(metricRef => {
-        if (!metricRef.relevantAudits) return;
-        metricRef.relevantAudits.forEach(auditId => {
-          const arr = relevantAuditToMetricsMap.get(auditId) || [];
-          arr.push(metricRef);
-          relevantAuditToMetricsMap.set(auditId, arr);
-        });
-      });
-
-      category.auditRefs.forEach(auditRef => {
-        const result = clone.audits[auditRef.id];
-        auditRef.result = result;
-
-        // Attach any relevantMetric auditRefs
-        if (relevantAuditToMetricsMap.has(auditRef.id)) {
-          auditRef.relevantMetrics = relevantAuditToMetricsMap.get(auditRef.id);
-        }
-
-        // attach the stackpacks to the auditRef object
-        if (clone.stackPacks) {
-          clone.stackPacks.forEach(pack => {
-            if (pack.descriptions[auditRef.id]) {
-              auditRef.stackPacks = auditRef.stackPacks || [];
-              auditRef.stackPacks.push({
-                title: pack.title,
-                iconDataURL: pack.iconDataURL,
-                description: pack.descriptions[auditRef.id],
-              });
-            }
-          });
-        }
-      });
-    }
-
-    return clone;
+  static getFinalDisplayedUrl(lhr) {
+    if (lhr.finalDisplayedUrl) return lhr.finalDisplayedUrl;
+    if (lhr.finalUrl) return lhr.finalUrl;
+    throw new Error('Could not determine final displayed URL');
   }
 
   /**
-   * Used to determine if the "passed" for the purposes of showing up in the "failed" or "passed"
-   * sections of the report.
+   * If LHR is older than 10.0 it will not have the `mainDocumentUrl` property.
+   * Old LHRs should have the `finalUrl` property which is the same as `mainDocumentUrl`.
    *
-   * @param {{score: (number|null), scoreDisplayMode: string}} audit
-   * @return {boolean}
+   * @param {LH.Result} lhr
    */
-  static showAsPassed(audit) {
-    switch (audit.scoreDisplayMode) {
-      case 'manual':
-      case 'notApplicable':
-        return true;
-      case 'error':
-      case 'informative':
-        return false;
-      case 'numeric':
-      case 'binary':
-      default:
-        return Number(audit.score) >= RATINGS.PASS.minScore;
-    }
+  static getMainDocumentUrl(lhr) {
+    return lhr.mainDocumentUrl || lhr.finalUrl;
   }
 
   /**
-   * Convert a score to a rating label.
-   * TODO: Return `'error'` for `score === null && !scoreDisplayMode`.
-   *
-   * @param {number|null} score
-   * @param {string=} scoreDisplayMode
-   * @return {string}
+   * @param {LH.Result} lhr
+   * @return {LH.Result.FullPageScreenshot=}
    */
-  static calculateRating(score, scoreDisplayMode) {
-    // Handle edge cases first, manual and not applicable receive 'pass', errored audits receive 'error'
-    if (scoreDisplayMode === 'manual' || scoreDisplayMode === 'notApplicable') {
-      return RATINGS.PASS.label;
-    } else if (scoreDisplayMode === 'error') {
-      return RATINGS.ERROR.label;
-    } else if (score === null) {
-      return RATINGS.FAIL.label;
+  static getFullPageScreenshot(lhr) {
+    if (lhr.fullPageScreenshot) {
+      return lhr.fullPageScreenshot;
     }
 
-    // At this point, we're rating a standard binary/numeric audit
-    let rating = RATINGS.FAIL.label;
-    if (score >= RATINGS.PASS.minScore) {
-      rating = RATINGS.PASS.label;
-    } else if (score >= RATINGS.AVERAGE.minScore) {
-      rating = RATINGS.AVERAGE.label;
-    }
-    return rating;
+    // Prior to 10.0.
+    const details = /** @type {LH.Result.FullPageScreenshot=} */ (
+      lhr.audits['full-page-screenshot']?.details);
+    return details;
   }
 
   /**
@@ -411,72 +284,11 @@ class Util {
     return hostname.split('.').slice(-splitTld.length).join('.');
   }
 
-
-  /**
-   * @param {LH.Result['configSettings']} settings
-   * @return {!{deviceEmulation: string, networkThrottling: string, cpuThrottling: string, summary: string}}
-   */
-  static getEmulationDescriptions(settings) {
-    let cpuThrottling;
-    let networkThrottling;
-    let summary;
-
-    const throttling = settings.throttling;
-
-    switch (settings.throttlingMethod) {
-      case 'provided':
-        summary = networkThrottling = cpuThrottling = Util.i18n.strings.throttlingProvided;
-        break;
-      case 'devtools': {
-        const {cpuSlowdownMultiplier, requestLatencyMs} = throttling;
-        cpuThrottling = `${Util.i18n.formatNumber(cpuSlowdownMultiplier)}x slowdown (DevTools)`;
-        networkThrottling = `${Util.i18n.formatNumber(requestLatencyMs)}${NBSP}ms HTTP RTT, ` +
-          `${Util.i18n.formatNumber(throttling.downloadThroughputKbps)}${NBSP}Kbps down, ` +
-          `${Util.i18n.formatNumber(throttling.uploadThroughputKbps)}${NBSP}Kbps up (DevTools)`;
-
-        const isSlow4G = () => {
-          return requestLatencyMs === 150 * 3.75 &&
-            throttling.downloadThroughputKbps === 1.6 * 1024 * 0.9 &&
-            throttling.uploadThroughputKbps === 750 * 0.9;
-        };
-        summary = isSlow4G() ? Util.i18n.strings.runtimeSlow4g : Util.i18n.strings.runtimeCustom;
-        break;
-      }
-      case 'simulate': {
-        const {cpuSlowdownMultiplier, rttMs, throughputKbps} = throttling;
-        cpuThrottling = `${Util.i18n.formatNumber(cpuSlowdownMultiplier)}x slowdown (Simulated)`;
-        networkThrottling = `${Util.i18n.formatNumber(rttMs)}${NBSP}ms TCP RTT, ` +
-          `${Util.i18n.formatNumber(throughputKbps)}${NBSP}Kbps throughput (Simulated)`;
-
-        const isSlow4G = () => {
-          return rttMs === 150 && throughputKbps === 1.6 * 1024;
-        };
-        summary = isSlow4G() ? Util.i18n.strings.runtimeSlow4g : Util.i18n.strings.runtimeCustom;
-        break;
-      }
-      default:
-        summary = cpuThrottling = networkThrottling = Util.i18n.strings.runtimeUnknown;
-    }
-
-    // TODO(paulirish): revise Runtime Settings strings: https://github.com/GoogleChrome/lighthouse/pull/11796
-    const deviceEmulation = {
-      mobile: Util.i18n.strings.runtimeMobileEmulation,
-      desktop: Util.i18n.strings.runtimeDesktopEmulation,
-    }[settings.formFactor] || Util.i18n.strings.runtimeNoEmulation;
-
-    return {
-      deviceEmulation,
-      cpuThrottling,
-      networkThrottling,
-      summary,
-    };
-  }
-
   /**
    * Returns only lines that are near a message, or the first few lines if there are
    * no line messages.
-   * @param {LH.Audit.Details.SnippetValue['lines']} lines
-   * @param {LH.Audit.Details.SnippetValue['lineMessages']} lineMessages
+   * @param {SnippetValue['lines']} lines
+   * @param {SnippetValue['lineMessages']} lineMessages
    * @param {number} surroundingLineCount Number of lines to include before and after
    * the message. If this is e.g. 2 this function might return 5 lines.
    */
@@ -513,196 +325,13 @@ class Util {
 
     return lines.filter(line => lineNumbersToKeep.has(line.lineNumber));
   }
-
-  /**
-   * @param {string} categoryId
-   */
-  static isPluginCategory(categoryId) {
-    return categoryId.startsWith('lighthouse-plugin-');
-  }
-
-  /**
-   * @param {LH.Result.GatherMode} gatherMode
-   */
-  static shouldDisplayAsFraction(gatherMode) {
-    return gatherMode === 'timespan' || gatherMode === 'snapshot';
-  }
-
-  /**
-   * @param {LH.ReportResult.Category} category
-   */
-  static calculateCategoryFraction(category) {
-    let numPassableAudits = 0;
-    let numPassed = 0;
-    let numInformative = 0;
-    let totalWeight = 0;
-    for (const auditRef of category.auditRefs) {
-      const auditPassed = Util.showAsPassed(auditRef.result);
-
-      // Don't count the audit if it's manual, N/A, or isn't displayed.
-      if (auditRef.group === 'hidden' ||
-          auditRef.result.scoreDisplayMode === 'manual' ||
-          auditRef.result.scoreDisplayMode === 'notApplicable') {
-        continue;
-      } else if (auditRef.result.scoreDisplayMode === 'informative') {
-        if (!auditPassed) {
-          ++numInformative;
-        }
-        continue;
-      }
-
-      ++numPassableAudits;
-      totalWeight += auditRef.weight;
-      if (auditPassed) numPassed++;
-    }
-    return {numPassed, numPassableAudits, numInformative, totalWeight};
-  }
 }
-
-/**
- * Some parts of the report renderer require data found on the LHR. Instead of wiring it
- * through, we have this global.
- * @type {LH.ReportResult | null}
- */
-Util.reportJson = null;
-
-/**
- * An always-increasing counter for making unique SVG ID suffixes.
- */
-Util.getUniqueSuffix = (() => {
-  let svgSuffix = 0;
-  return function() {
-    return svgSuffix++;
-  };
-})();
-
-/**
- * Report-renderer-specific strings.
- */
-const UIStrings = {
-  /** Disclaimer shown to users below the metric values (First Contentful Paint, Time to Interactive, etc) to warn them that the numbers they see will likely change slightly the next time they run Lighthouse. */
-  varianceDisclaimer: 'Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics.',
-  /** Text link pointing to an interactive calculator that explains Lighthouse scoring. The link text should be fairly short. */
-  calculatorLink: 'See calculator.',
-  /** Label preceding a radio control for filtering the list of audits. The radio choices are various performance metrics (FCP, LCP, TBT), and if chosen, the audits in the report are hidden if they are not relevant to the selected metric. */
-  showRelevantAudits: 'Show audits relevant to:',
-  /** Column heading label for the listing of opportunity audits. Each audit title represents an opportunity. There are only 2 columns, so no strict character limit.  */
-  opportunityResourceColumnLabel: 'Opportunity',
-  /** Column heading label for the estimated page load savings of opportunity audits. Estimated Savings is the total amount of time (in seconds) that Lighthouse computed could be reduced from the total page load time, if the suggested action is taken. There are only 2 columns, so no strict character limit. */
-  opportunitySavingsColumnLabel: 'Estimated Savings',
-
-  /** An error string displayed next to a particular audit when it has errored, but not provided any specific error message. */
-  errorMissingAuditInfo: 'Report error: no audit information',
-  /** A label, shown next to an audit title or metric title, indicating that there was an error computing it. The user can hover on the label to reveal a tooltip with the extended error message. Translation should be short (< 20 characters). */
-  errorLabel: 'Error!',
-  /** This label is shown above a bulleted list of warnings. It is shown directly below an audit that produced warnings. Warnings describe situations the user should be aware of, as Lighthouse was unable to complete all the work required on this audit. For example, The 'Unable to decode image (biglogo.jpg)' warning may show up below an image encoding audit. */
-  warningHeader: 'Warnings: ',
-  /** Section heading shown above a list of passed audits that contain warnings. Audits under this section do not negatively impact the score, but Lighthouse has generated some potentially actionable suggestions that should be reviewed. This section is expanded by default and displays after the failing audits. */
-  warningAuditsGroupTitle: 'Passed audits but with warnings',
-  /** Section heading shown above a list of audits that are passing. 'Passed' here refers to a passing grade. This section is collapsed by default, as the user should be focusing on the failed audits instead. Users can click this heading to reveal the list. */
-  passedAuditsGroupTitle: 'Passed audits',
-  /** Section heading shown above a list of audits that do not apply to the page. For example, if an audit is 'Are images optimized?', but the page has no images on it, the audit will be marked as not applicable. This is neither passing or failing. This section is collapsed by default, as the user should be focusing on the failed audits instead. Users can click this heading to reveal the list. */
-  notApplicableAuditsGroupTitle: 'Not applicable',
-  /** Section heading shown above a list of audits that were not computed by Lighthouse. They serve as a list of suggestions for the user to go and manually check. For example, Lighthouse can't automate testing cross-browser compatibility, so that is listed within this section, so the user is reminded to test it themselves. This section is collapsed by default, as the user should be focusing on the failed audits instead. Users can click this heading to reveal the list. */
-  manualAuditsGroupTitle: 'Additional items to manually check',
-
-  /** Label shown preceding any important warnings that may have invalidated the entire report. For example, if the user has Chrome extensions installed, they may add enough performance overhead that Lighthouse's performance metrics are unreliable. If shown, this will be displayed at the top of the report UI. */
-  toplevelWarningsMessage: 'There were issues affecting this run of Lighthouse:',
-
-  /** String of text shown in a graphical representation of the flow of network requests for the web page. This label represents the initial network request that fetches an HTML page. This navigation may be redirected (eg. Initial navigation to http://example.com redirects to https://www.example.com). */
-  crcInitialNavigation: 'Initial Navigation',
-  /** Label of value shown in the summary of critical request chains. Refers to the total amount of time (milliseconds) of the longest critical path chain/sequence of network requests. Example value: 2310 ms */
-  crcLongestDurationLabel: 'Maximum critical path latency:',
-
-  /** Label for button that shows all lines of the snippet when clicked */
-  snippetExpandButtonLabel: 'Expand snippet',
-  /** Label for button that only shows a few lines of the snippet when clicked */
-  snippetCollapseButtonLabel: 'Collapse snippet',
-
-  /** Explanation shown to users below performance results to inform them that the test was done with a 4G network connection and to warn them that the numbers they see will likely change slightly the next time they run Lighthouse. 'Lighthouse' becomes link text to additional documentation. */
-  lsPerformanceCategoryDescription: '[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysis of the current page on an emulated mobile network. Values are estimated and may vary.',
-  /** Title of the lab data section of the Performance category. Within this section are various speed metrics which quantify the pageload performance into values presented in seconds and milliseconds. "Lab" is an abbreviated form of "laboratory", and refers to the fact that the data is from a controlled test of a website, not measurements from real users visiting that site.  */
-  labDataTitle: 'Lab Data',
-
-  /** This label is for a checkbox above a table of items loaded by a web page. The checkbox is used to show or hide third-party (or "3rd-party") resources in the table, where "third-party resources" refers to items loaded by a web page from URLs that aren't controlled by the owner of the web page. */
-  thirdPartyResourcesLabel: 'Show 3rd-party resources',
-  /** This label is for a button that opens a new tab to a webapp called "Treemap", which is a nested visual representation of a heierarchy of data related to the reports (script bytes and coverage, resource breakdown, etc.) */
-  viewTreemapLabel: 'View Treemap',
-  /** This label is for a button that will show the user a trace of the page. */
-  viewTraceLabel: 'View Trace',
-  /** This label is for a button that will show the user a trace of the page. */
-  viewOriginalTraceLabel: 'View Original Trace',
-
-  /** Option in a dropdown menu that opens a small, summary report in a print dialog.  */
-  dropdownPrintSummary: 'Print Summary',
-  /** Option in a dropdown menu that opens a full Lighthouse report in a print dialog.  */
-  dropdownPrintExpanded: 'Print Expanded',
-  /** Option in a dropdown menu that copies the Lighthouse JSON object to the system clipboard. */
-  dropdownCopyJSON: 'Copy JSON',
-  /** Option in a dropdown menu that saves the Lighthouse report HTML locally to the system as a '.html' file. */
-  dropdownSaveHTML: 'Save as HTML',
-  /** Option in a dropdown menu that saves the Lighthouse JSON object to the local system as a '.json' file. */
-  dropdownSaveJSON: 'Save as JSON',
-  /** Option in a dropdown menu that opens the current report in the Lighthouse Viewer Application. */
-  dropdownViewer: 'Open in Viewer',
-  /** Option in a dropdown menu that saves the current report as a new GitHub Gist. */
-  dropdownSaveGist: 'Save as Gist',
-  /** Option in a dropdown menu that toggles the themeing of the report between Light(default) and Dark themes. */
-  dropdownDarkTheme: 'Toggle Dark Theme',
-
-  /** Label for a row in a table that describes the kind of device that was emulated for the Lighthouse run.  Example values for row elements: 'No Emulation', 'Emulated Desktop', etc. */
-  runtimeSettingsDevice: 'Device',
-  /** Label for a row in a table that describes the network throttling conditions that were used during a Lighthouse run, if any. */
-  runtimeSettingsNetworkThrottling: 'Network throttling',
-  /** Label for a row in a table that describes the CPU throttling conditions that were used during a Lighthouse run, if any.*/
-  runtimeSettingsCPUThrottling: 'CPU throttling',
-  /** Label for a row in a table that shows the User Agent that was used to send out all network requests during the Lighthouse run. */
-  runtimeSettingsUANetwork: 'User agent (network)',
-  /** Label for a row in a table that shows the estimated CPU power of the machine running Lighthouse. Example row values: 532, 1492, 783. */
-  runtimeSettingsBenchmark: 'CPU/Memory Power',
-  /** Label for a row in a table that shows the version of the Axe library used. Example row values: 2.1.0, 3.2.3 */
-  runtimeSettingsAxeVersion: 'Axe version',
-
-  /** Label for button to create an issue against the Lighthouse GitHub project. */
-  footerIssue: 'File an issue',
-
-  /** Descriptive explanation for emulation setting when no device emulation is set. */
-  runtimeNoEmulation: 'No emulation',
-  /** Descriptive explanation for emulation setting when emulating a Moto G4 mobile device. */
-  runtimeMobileEmulation: 'Emulated Moto G4',
-  /** Descriptive explanation for emulation setting when emulating a generic desktop form factor, as opposed to a mobile-device like form factor. */
-  runtimeDesktopEmulation: 'Emulated Desktop',
-  /** Descriptive explanation for a runtime setting that is set to an unknown value. */
-  runtimeUnknown: 'Unknown',
-  /** Descriptive label that this analysis run was from a single pageload of a browser (not a summary of hundreds of loads) */
-  runtimeSingleLoad: 'Single page load',
-  /** Descriptive label that this analysis only considers the initial load of the page, and no interaction beyond when the page had "fully loaded" */
-  runtimeAnalysisWindow: 'Initial page load',
-  /** Descriptive explanation that this analysis run was from a single pageload of a browser, whereas field data often summarizes hundreds+ of page loads */
-  runtimeSingleLoadTooltip: 'This data is taken from a single page load, as opposed to field data summarizing many sessions.', // eslint-disable-line max-len
-
-  /** Descriptive explanation for environment throttling that was provided by the runtime environment instead of provided by Lighthouse throttling. */
-  throttlingProvided: 'Provided by environment',
-  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Show' and 'Hide'. */
-  show: 'Show',
-  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Show' and 'Hide'. */
-  hide: 'Hide',
-  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Expand view' and 'Collapse view'. */
-  expandView: 'Expand view',
-  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Expand view' and 'Collapse view'. */
-  collapseView: 'Collapse view',
-  /** Label indicating that Lighthouse throttled the page to emulate a slow 4G network connection. */
-  runtimeSlow4g: 'Slow 4G throttling',
-  /** Label indicating that Lighthouse throttled the page using custom throttling settings. */
-  runtimeCustom: 'Custom throttling',
-};
-Util.UIStrings = UIStrings;
 
 // auto-generated by build/build-report-components.js
 
 /** @typedef {import('./dom.js').DOM} DOM */
 
-/* eslint-disable max-len */
+/* eslint-disable max-len, quotes, comma-spacing */
 
 
 /**
@@ -710,19 +339,19 @@ Util.UIStrings = UIStrings;
  */
 function create3pFilterComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('style');
-  el1.append('\n    .lh-3p-filter {\n      color: var(--color-gray-600);\n      float: right;\n      padding: 6px var(--stackpack-padding-horizontal);\n    }\n    .lh-3p-filter-label, .lh-3p-filter-input {\n      vertical-align: middle;\n      user-select: none;\n    }\n    .lh-3p-filter-input:disabled + .lh-3p-ui-string {\n      text-decoration: line-through;\n    }\n  ');
+  const el1 = dom.createElement("style");
+  el1.append("\n    .lh-3p-filter {\n      color: var(--color-gray-600);\n      float: right;\n      padding: 6px var(--stackpack-padding-horizontal);\n    }\n    .lh-3p-filter-label, .lh-3p-filter-input {\n      vertical-align: middle;\n      user-select: none;\n    }\n    .lh-3p-filter-input:disabled + .lh-3p-ui-string {\n      text-decoration: line-through;\n    }\n  ");
   el0.append(el1);
-  const el2 = dom.createElement('div', 'lh-3p-filter');
-  const el3 = dom.createElement('label', 'lh-3p-filter-label');
-  const el4 = dom.createElement('input', 'lh-3p-filter-input');
+  const el2 = dom.createElement("div", "lh-3p-filter");
+  const el3 = dom.createElement("label", "lh-3p-filter-label");
+  const el4 = dom.createElement("input", "lh-3p-filter-input");
   el4.setAttribute('type', 'checkbox');
   el4.setAttribute('checked', '');
-  const el5 = dom.createElement('span', 'lh-3p-ui-string');
-  el5.append('Show 3rd party resources');
-  const el6 = dom.createElement('span', 'lh-3p-filter-count');
-  el3.append(' ', el4, ' ', el5, ' (', el6, ') ');
-  el2.append(' ', el3, ' ');
+  const el5 = dom.createElement("span", "lh-3p-ui-string");
+  el5.append("Show 3rd party resources");
+  const el6 = dom.createElement("span", "lh-3p-filter-count");
+  el3.append(" ",el4," ",el5," (",el6,") ");
+  el2.append(" ",el3," ");
   el0.append(el2);
   return el0;
 }
@@ -732,22 +361,22 @@ function create3pFilterComponent(dom) {
  */
 function createAuditComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-audit');
-  const el2 = dom.createElement('details', 'lh-expandable-details');
-  const el3 = dom.createElement('summary');
-  const el4 = dom.createElement('div', 'lh-audit__header lh-expandable-details__summary');
-  const el5 = dom.createElement('span', 'lh-audit__score-icon');
-  const el6 = dom.createElement('span', 'lh-audit__title-and-text');
-  const el7 = dom.createElement('span', 'lh-audit__title');
-  const el8 = dom.createElement('span', 'lh-audit__display-text');
-  el6.append(' ', el7, ' ', el8, ' ');
-  const el9 = dom.createElement('div', 'lh-chevron-container');
-  el4.append(' ', el5, ' ', el6, ' ', el9, ' ');
-  el3.append(' ', el4, ' ');
-  const el10 = dom.createElement('div', 'lh-audit__description');
-  const el11 = dom.createElement('div', 'lh-audit__stackpacks');
-  el2.append(' ', el3, ' ', el10, ' ', el11, ' ');
-  el1.append(' ', el2, ' ');
+  const el1 = dom.createElement("div", "lh-audit");
+  const el2 = dom.createElement("details", "lh-expandable-details");
+  const el3 = dom.createElement("summary");
+  const el4 = dom.createElement("div", "lh-audit__header lh-expandable-details__summary");
+  const el5 = dom.createElement("span", "lh-audit__score-icon");
+  const el6 = dom.createElement("span", "lh-audit__title-and-text");
+  const el7 = dom.createElement("span", "lh-audit__title");
+  const el8 = dom.createElement("span", "lh-audit__display-text");
+  el6.append(" ",el7," ",el8," ");
+  const el9 = dom.createElement("div", "lh-chevron-container");
+  el4.append(" ",el5," ",el6," ",el9," ");
+  el3.append(" ",el4," ");
+  const el10 = dom.createElement("div", "lh-audit__description");
+  const el11 = dom.createElement("div", "lh-audit__stackpacks");
+  el2.append(" ",el3," ",el10," ",el11," ");
+  el1.append(" ",el2," ");
   el0.append(el1);
   return el0;
 }
@@ -757,12 +386,12 @@ function createAuditComponent(dom) {
  */
 function createCategoryHeaderComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-category-header');
-  const el2 = dom.createElement('div', 'lh-score__gauge');
+  const el1 = dom.createElement("div", "lh-category-header");
+  const el2 = dom.createElement("div", "lh-score__gauge");
   el2.setAttribute('role', 'heading');
   el2.setAttribute('aria-level', '2');
-  const el3 = dom.createElement('div', 'lh-category-header__description');
-  el1.append(' ', el2, ' ', el3, ' ');
+  const el3 = dom.createElement("div", "lh-category-header__description");
+  el1.append(" ",el2," ",el3," ");
   el0.append(el1);
   return el0;
 }
@@ -772,15 +401,15 @@ function createCategoryHeaderComponent(dom) {
  */
 function createChevronComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg', 'lh-chevron');
+  const el1 = dom.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-chevron");
   el1.setAttribute('viewBox', '0 0 100 100');
-  const el2 = dom.createElementNS('http://www.w3.org/2000/svg', 'g', 'lh-chevron__lines');
-  const el3 = dom.createElementNS('http://www.w3.org/2000/svg', 'path', 'lh-chevron__line lh-chevron__line-left');
+  const el2 = dom.createElementNS("http://www.w3.org/2000/svg", "g", "lh-chevron__lines");
+  const el3 = dom.createElementNS("http://www.w3.org/2000/svg", "path", "lh-chevron__line lh-chevron__line-left");
   el3.setAttribute('d', 'M10 50h40');
-  const el4 = dom.createElementNS('http://www.w3.org/2000/svg', 'path', 'lh-chevron__line lh-chevron__line-right');
+  const el4 = dom.createElementNS("http://www.w3.org/2000/svg", "path", "lh-chevron__line lh-chevron__line-right");
   el4.setAttribute('d', 'M90 50H50');
-  el2.append(' ', el3, ' ', el4, ' ');
-  el1.append(' ', el2, ' ');
+  el2.append(" ",el3," ",el4," ");
+  el1.append(" ",el2," ");
   el0.append(el1);
   return el0;
 }
@@ -790,22 +419,22 @@ function createChevronComponent(dom) {
  */
 function createClumpComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-audit-group');
-  const el2 = dom.createElement('details', 'lh-clump');
-  const el3 = dom.createElement('summary');
-  const el4 = dom.createElement('div', 'lh-audit-group__summary');
-  const el5 = dom.createElement('div', 'lh-audit-group__header');
-  const el6 = dom.createElement('span', 'lh-audit-group__title');
-  const el7 = dom.createElement('span', 'lh-audit-group__itemcount');
-  el5.append(' ', el6, ' ', el7, ' ', ' ', ' ');
-  const el8 = dom.createElement('div', 'lh-clump-toggle');
-  const el9 = dom.createElement('span', 'lh-clump-toggletext--show');
-  const el10 = dom.createElement('span', 'lh-clump-toggletext--hide');
-  el8.append(' ', el9, ' ', el10, ' ');
-  el4.append(' ', el5, ' ', el8, ' ');
-  el3.append(' ', el4, ' ');
-  el2.append(' ', el3, ' ');
-  el1.append(' ', ' ', el2, ' ');
+  const el1 = dom.createElement("div", "lh-audit-group");
+  const el2 = dom.createElement("details", "lh-clump");
+  const el3 = dom.createElement("summary");
+  const el4 = dom.createElement("div", "lh-audit-group__summary");
+  const el5 = dom.createElement("div", "lh-audit-group__header");
+  const el6 = dom.createElement("span", "lh-audit-group__title");
+  const el7 = dom.createElement("span", "lh-audit-group__itemcount");
+  el5.append(" ",el6," ",el7," "," "," ");
+  const el8 = dom.createElement("div", "lh-clump-toggle");
+  const el9 = dom.createElement("span", "lh-clump-toggletext--show");
+  const el10 = dom.createElement("span", "lh-clump-toggletext--hide");
+  el8.append(" ",el9," ",el10," ");
+  el4.append(" ",el5," ",el8," ");
+  el3.append(" ",el4," ");
+  el2.append(" ",el3," ");
+  el1.append(" "," ",el2," ");
   el0.append(el1);
   return el0;
 }
@@ -815,19 +444,19 @@ function createClumpComponent(dom) {
  */
 function createCrcComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-crc-container');
-  const el2 = dom.createElement('style');
-  el2.append('\n      .lh-crc .lh-tree-marker {\n        width: 12px;\n        height: 26px;\n        display: block;\n        float: left;\n        background-position: top left;\n      }\n      .lh-crc .lh-horiz-down {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><g fill="%23D8D8D8" fill-rule="evenodd"><path d="M16 12v2H-2v-2z"/><path d="M9 12v14H7V12z"/></g></svg>\');\n      }\n      .lh-crc .lh-right {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M16 12v2H0v-2z" fill="%23D8D8D8" fill-rule="evenodd"/></svg>\');\n      }\n      .lh-crc .lh-up-right {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v14H7zm2 12h7v2H9z" fill="%23D8D8D8" fill-rule="evenodd"/></svg>\');\n      }\n      .lh-crc .lh-vert-right {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v27H7zm2 12h7v2H9z" fill="%23D8D8D8" fill-rule="evenodd"/></svg>\');\n      }\n      .lh-crc .lh-vert {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v26H7z" fill="%23D8D8D8" fill-rule="evenodd"/></svg>\');\n      }\n      .lh-crc .lh-crc-tree {\n        font-size: 14px;\n        width: 100%;\n        overflow-x: auto;\n      }\n      .lh-crc .lh-crc-node {\n        height: 26px;\n        line-height: 26px;\n        white-space: nowrap;\n      }\n      .lh-crc .lh-crc-node__tree-value {\n        margin-left: 10px;\n      }\n      .lh-crc .lh-crc-node__tree-value div {\n        display: inline;\n      }\n      .lh-crc .lh-crc-node__chain-duration {\n        font-weight: 700;\n      }\n      .lh-crc .lh-crc-initial-nav {\n        color: #595959;\n        font-style: italic;\n      }\n      .lh-crc__summary-value {\n        margin-bottom: 10px;\n      }\n    ');
-  const el3 = dom.createElement('div');
-  const el4 = dom.createElement('div', 'lh-crc__summary-value');
-  const el5 = dom.createElement('span', 'lh-crc__longest_duration_label');
-  const el6 = dom.createElement('b', 'lh-crc__longest_duration');
-  el4.append(' ', el5, ' ', el6, ' ');
-  el3.append(' ', el4, ' ');
-  const el7 = dom.createElement('div', 'lh-crc');
-  const el8 = dom.createElement('div', 'lh-crc-initial-nav');
-  el7.append(' ', el8, ' ', ' ');
-  el1.append(' ', el2, ' ', el3, ' ', el7, ' ');
+  const el1 = dom.createElement("div", "lh-crc-container");
+  const el2 = dom.createElement("style");
+  el2.append("\n      .lh-crc .lh-tree-marker {\n        width: 12px;\n        height: 26px;\n        display: block;\n        float: left;\n        background-position: top left;\n      }\n      .lh-crc .lh-horiz-down {\n        background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"%23D8D8D8\" fill-rule=\"evenodd\"><path d=\"M16 12v2H-2v-2z\"/><path d=\"M9 12v14H7V12z\"/></g></svg>');\n      }\n      .lh-crc .lh-right {\n        background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16 12v2H0v-2z\" fill=\"%23D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n      }\n      .lh-crc .lh-up-right {\n        background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0h2v14H7zm2 12h7v2H9z\" fill=\"%23D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n      }\n      .lh-crc .lh-vert-right {\n        background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0h2v27H7zm2 12h7v2H9z\" fill=\"%23D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n      }\n      .lh-crc .lh-vert {\n        background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0h2v26H7z\" fill=\"%23D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n      }\n      .lh-crc .lh-crc-tree {\n        font-size: 14px;\n        width: 100%;\n        overflow-x: auto;\n      }\n      .lh-crc .lh-crc-node {\n        height: 26px;\n        line-height: 26px;\n        white-space: nowrap;\n      }\n      .lh-crc .lh-crc-node__tree-value {\n        margin-left: 10px;\n      }\n      .lh-crc .lh-crc-node__tree-value div {\n        display: inline;\n      }\n      .lh-crc .lh-crc-node__chain-duration {\n        font-weight: 700;\n      }\n      .lh-crc .lh-crc-initial-nav {\n        color: #595959;\n        font-style: italic;\n      }\n      .lh-crc__summary-value {\n        margin-bottom: 10px;\n      }\n    ");
+  const el3 = dom.createElement("div");
+  const el4 = dom.createElement("div", "lh-crc__summary-value");
+  const el5 = dom.createElement("span", "lh-crc__longest_duration_label");
+  const el6 = dom.createElement("b", "lh-crc__longest_duration");
+  el4.append(" ",el5," ",el6," ");
+  el3.append(" ",el4," ");
+  const el7 = dom.createElement("div", "lh-crc");
+  const el8 = dom.createElement("div", "lh-crc-initial-nav");
+  el7.append(" ",el8," "," ");
+  el1.append(" ",el2," ",el3," ",el7," ");
   el0.append(el1);
   return el0;
 }
@@ -837,10 +466,10 @@ function createCrcComponent(dom) {
  */
 function createCrcChainComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-crc-node');
-  const el2 = dom.createElement('span', 'lh-crc-node__tree-marker');
-  const el3 = dom.createElement('span', 'lh-crc-node__tree-value');
-  el1.append(' ', el2, ' ', el3, ' ');
+  const el1 = dom.createElement("div", "lh-crc-node");
+  const el2 = dom.createElement("span", "lh-crc-node__tree-marker");
+  const el3 = dom.createElement("span", "lh-crc-node__tree-value");
+  el1.append(" ",el2," ",el3," ");
   el0.append(el1);
   return el0;
 }
@@ -850,22 +479,23 @@ function createCrcChainComponent(dom) {
  */
 function createElementScreenshotComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-element-screenshot');
-  const el2 = dom.createElement('div', 'lh-element-screenshot__content');
-  const el3 = dom.createElement('div', 'lh-element-screenshot__mask');
-  const el4 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  el4.setAttribute('height', '0');
-  el4.setAttribute('width', '0');
-  const el5 = dom.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  const el6 = dom.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-  el6.setAttribute('clipPathUnits', 'objectBoundingBox');
-  el5.append(' ', el6, ' ', ' ');
-  el4.append(' ', el5, ' ');
-  el3.append(' ', el4, ' ');
-  const el7 = dom.createElement('div', 'lh-element-screenshot__image');
-  const el8 = dom.createElement('div', 'lh-element-screenshot__element-marker');
-  el2.append(' ', el3, ' ', el7, ' ', el8, ' ');
-  el1.append(' ', el2, ' ');
+  const el1 = dom.createElement("div", "lh-element-screenshot");
+  const el2 = dom.createElement("div", "lh-element-screenshot__content");
+  const el3 = dom.createElement("div", "lh-element-screenshot__image");
+  const el4 = dom.createElement("div", "lh-element-screenshot__mask");
+  const el5 = dom.createElementNS("http://www.w3.org/2000/svg", "svg");
+  el5.setAttribute('height', '0');
+  el5.setAttribute('width', '0');
+  const el6 = dom.createElementNS("http://www.w3.org/2000/svg", "defs");
+  const el7 = dom.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+  el7.setAttribute('clipPathUnits', 'objectBoundingBox');
+  el6.append(" ",el7," "," ");
+  el5.append(" ",el6," ");
+  el4.append(" ",el5," ");
+  const el8 = dom.createElement("div", "lh-element-screenshot__element-marker");
+  el3.append(" ",el4," ",el8," ");
+  el2.append(" ",el3," ");
+  el1.append(" ",el2," ");
   el0.append(el1);
   return el0;
 }
@@ -875,23 +505,23 @@ function createElementScreenshotComponent(dom) {
  */
 function createFooterComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('style');
-  el1.append('\n    .lh-footer {\n      padding: var(--footer-padding-vertical) calc(var(--default-padding) * 2);\n      max-width: var(--report-content-max-width);\n      margin: 0 auto;\n    }\n    .lh-footer .lh-generated {\n      text-align: center;\n    }\n  ');
+  const el1 = dom.createElement("style");
+  el1.append("\n    .lh-footer {\n      padding: var(--footer-padding-vertical) calc(var(--default-padding) * 2);\n      max-width: var(--report-content-max-width);\n      margin: 0 auto;\n    }\n    .lh-footer .lh-generated {\n      text-align: center;\n    }\n  ");
   el0.append(el1);
-  const el2 = dom.createElement('footer', 'lh-footer');
-  const el3 = dom.createElement('ul', 'lh-meta__items');
-  el3.append(' ');
-  const el4 = dom.createElement('div', 'lh-generated');
-  const el5 = dom.createElement('b');
-  el5.append('Lighthouse');
-  const el6 = dom.createElement('span', 'lh-footer__version');
-  const el7 = dom.createElement('a', 'lh-footer__version_issue');
+  const el2 = dom.createElement("footer", "lh-footer");
+  const el3 = dom.createElement("ul", "lh-meta__items");
+  el3.append(" ");
+  const el4 = dom.createElement("div", "lh-generated");
+  const el5 = dom.createElement("b");
+  el5.append("Lighthouse");
+  const el6 = dom.createElement("span", "lh-footer__version");
+  const el7 = dom.createElement("a", "lh-footer__version_issue");
   el7.setAttribute('href', 'https://github.com/GoogleChrome/Lighthouse/issues');
   el7.setAttribute('target', '_blank');
   el7.setAttribute('rel', 'noopener');
-  el7.append('File an issue');
-  el4.append(' ', ' Generated by ', el5, ' ', el6, ' | ', el7, ' ');
-  el2.append(' ', el3, ' ', el4, ' ');
+  el7.append("File an issue");
+  el4.append(" "," Generated by ",el5," ",el6," | ",el7," ");
+  el2.append(" ",el3," ",el4," ");
   el0.append(el2);
   return el0;
 }
@@ -901,14 +531,14 @@ function createFooterComponent(dom) {
  */
 function createFractionComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('a', 'lh-fraction__wrapper');
-  const el2 = dom.createElement('div', 'lh-fraction__content-wrapper');
-  const el3 = dom.createElement('div', 'lh-fraction__content');
-  const el4 = dom.createElement('div', 'lh-fraction__background');
-  el3.append(' ', el4, ' ');
-  el2.append(' ', el3, ' ');
-  const el5 = dom.createElement('div', 'lh-fraction__label');
-  el1.append(' ', el2, ' ', el5, ' ');
+  const el1 = dom.createElement("a", "lh-fraction__wrapper");
+  const el2 = dom.createElement("div", "lh-fraction__content-wrapper");
+  const el3 = dom.createElement("div", "lh-fraction__content");
+  const el4 = dom.createElement("div", "lh-fraction__background");
+  el3.append(" ",el4," ");
+  el2.append(" ",el3," ");
+  const el5 = dom.createElement("div", "lh-fraction__label");
+  el1.append(" ",el2," ",el5," ");
   el0.append(el1);
   return el0;
 }
@@ -918,25 +548,25 @@ function createFractionComponent(dom) {
  */
 function createGaugeComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('a', 'lh-gauge__wrapper');
-  const el2 = dom.createElement('div', 'lh-gauge__svg-wrapper');
-  const el3 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg', 'lh-gauge');
+  const el1 = dom.createElement("a", "lh-gauge__wrapper");
+  const el2 = dom.createElement("div", "lh-gauge__svg-wrapper");
+  const el3 = dom.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-gauge");
   el3.setAttribute('viewBox', '0 0 120 120');
-  const el4 = dom.createElementNS('http://www.w3.org/2000/svg', 'circle', 'lh-gauge-base');
+  const el4 = dom.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-gauge-base");
   el4.setAttribute('r', '56');
   el4.setAttribute('cx', '60');
   el4.setAttribute('cy', '60');
   el4.setAttribute('stroke-width', '8');
-  const el5 = dom.createElementNS('http://www.w3.org/2000/svg', 'circle', 'lh-gauge-arc');
+  const el5 = dom.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-gauge-arc");
   el5.setAttribute('r', '56');
   el5.setAttribute('cx', '60');
   el5.setAttribute('cy', '60');
   el5.setAttribute('stroke-width', '8');
-  el3.append(' ', el4, ' ', el5, ' ');
-  el2.append(' ', el3, ' ');
-  const el6 = dom.createElement('div', 'lh-gauge__percentage');
-  const el7 = dom.createElement('div', 'lh-gauge__label');
-  el1.append(' ', ' ', el2, ' ', el6, ' ', ' ', el7, ' ');
+  el3.append(" ",el4," ",el5," ");
+  el2.append(" ",el3," ");
+  const el6 = dom.createElement("div", "lh-gauge__percentage");
+  const el7 = dom.createElement("div", "lh-gauge__label");
+  el1.append(" "," ",el2," ",el6," "," ",el7," ");
   el0.append(el1);
   return el0;
 }
@@ -946,97 +576,97 @@ function createGaugeComponent(dom) {
  */
 function createGaugePwaComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('style');
-  el1.append('\n    .lh-gauge--pwa .lh-gauge--pwa__component {\n      display: none;\n    }\n    .lh-gauge--pwa__wrapper:not(.lh-badged--all) .lh-gauge--pwa__logo > path {\n      /* Gray logo unless everything is passing. */\n      fill: #B0B0B0;\n    }\n\n    .lh-gauge--pwa__disc {\n      fill: var(--color-gray-200);\n    }\n\n    .lh-gauge--pwa__logo--primary-color {\n      fill: #304FFE;\n    }\n\n    .lh-gauge--pwa__logo--secondary-color {\n      fill: #3D3D3D;\n    }\n    .lh-dark .lh-gauge--pwa__logo--secondary-color {\n      fill: #D8B6B6;\n    }\n\n    /* No passing groups. */\n    .lh-gauge--pwa__wrapper:not([class*=\'lh-badged--\']) .lh-gauge--pwa__na-line {\n      display: inline;\n    }\n    /* Just optimized. Same n/a line as no passing groups. */\n    .lh-gauge--pwa__wrapper.lh-badged--pwa-optimized:not(.lh-badged--pwa-installable) .lh-gauge--pwa__na-line {\n      display: inline;\n    }\n\n    /* Just installable. */\n    .lh-gauge--pwa__wrapper.lh-badged--pwa-installable .lh-gauge--pwa__installable-badge {\n      display: inline;\n    }\n\n    /* All passing groups. */\n    .lh-gauge--pwa__wrapper.lh-badged--all .lh-gauge--pwa__check-circle {\n      display: inline;\n    }\n  ');
+  const el1 = dom.createElement("style");
+  el1.append("\n    .lh-gauge--pwa .lh-gauge--pwa__component {\n      display: none;\n    }\n    .lh-gauge--pwa__wrapper:not(.lh-badged--all) .lh-gauge--pwa__logo > path {\n      /* Gray logo unless everything is passing. */\n      fill: #B0B0B0;\n    }\n\n    .lh-gauge--pwa__disc {\n      fill: var(--color-gray-200);\n    }\n\n    .lh-gauge--pwa__logo--primary-color {\n      fill: #304FFE;\n    }\n\n    .lh-gauge--pwa__logo--secondary-color {\n      fill: #3D3D3D;\n    }\n    .lh-dark .lh-gauge--pwa__logo--secondary-color {\n      fill: #D8B6B6;\n    }\n\n    /* No passing groups. */\n    .lh-gauge--pwa__wrapper:not([class*='lh-badged--']) .lh-gauge--pwa__na-line {\n      display: inline;\n    }\n    /* Just optimized. Same n/a line as no passing groups. */\n    .lh-gauge--pwa__wrapper.lh-badged--pwa-optimized:not(.lh-badged--pwa-installable) .lh-gauge--pwa__na-line {\n      display: inline;\n    }\n\n    /* Just installable. */\n    .lh-gauge--pwa__wrapper.lh-badged--pwa-installable .lh-gauge--pwa__installable-badge {\n      display: inline;\n    }\n\n    /* All passing groups. */\n    .lh-gauge--pwa__wrapper.lh-badged--all .lh-gauge--pwa__check-circle {\n      display: inline;\n    }\n  ");
   el0.append(el1);
-  const el2 = dom.createElement('a', 'lh-gauge__wrapper lh-gauge--pwa__wrapper');
-  const el3 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg', 'lh-gauge lh-gauge--pwa');
+  const el2 = dom.createElement("a", "lh-gauge__wrapper lh-gauge--pwa__wrapper");
+  const el3 = dom.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-gauge lh-gauge--pwa");
   el3.setAttribute('viewBox', '0 0 60 60');
-  const el4 = dom.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  const el5 = dom.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+  const el4 = dom.createElementNS("http://www.w3.org/2000/svg", "defs");
+  const el5 = dom.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
   el5.setAttribute('id', 'lh-gauge--pwa__check-circle__gradient');
   el5.setAttribute('x1', '50%');
   el5.setAttribute('y1', '0%');
   el5.setAttribute('x2', '50%');
   el5.setAttribute('y2', '100%');
-  const el6 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  const el6 = dom.createElementNS("http://www.w3.org/2000/svg", "stop");
   el6.setAttribute('stop-color', '#00C852');
   el6.setAttribute('offset', '0%');
-  const el7 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  const el7 = dom.createElementNS("http://www.w3.org/2000/svg", "stop");
   el7.setAttribute('stop-color', '#009688');
   el7.setAttribute('offset', '100%');
-  el5.append(' ', el6, ' ', el7, ' ');
-  const el8 = dom.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+  el5.append(" ",el6," ",el7," ");
+  const el8 = dom.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
   el8.setAttribute('id', 'lh-gauge--pwa__installable__shadow-gradient');
   el8.setAttribute('x1', '76.056%');
   el8.setAttribute('x2', '24.111%');
   el8.setAttribute('y1', '82.995%');
   el8.setAttribute('y2', '24.735%');
-  const el9 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  const el9 = dom.createElementNS("http://www.w3.org/2000/svg", "stop");
   el9.setAttribute('stop-color', '#A5D6A7');
   el9.setAttribute('offset', '0%');
-  const el10 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  const el10 = dom.createElementNS("http://www.w3.org/2000/svg", "stop");
   el10.setAttribute('stop-color', '#80CBC4');
   el10.setAttribute('offset', '100%');
-  el8.append(' ', el9, ' ', el10, ' ');
-  const el11 = dom.createElementNS('http://www.w3.org/2000/svg', 'g');
+  el8.append(" ",el9," ",el10," ");
+  const el11 = dom.createElementNS("http://www.w3.org/2000/svg", "g");
   el11.setAttribute('id', 'lh-gauge--pwa__installable-badge');
-  const el12 = dom.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  const el12 = dom.createElementNS("http://www.w3.org/2000/svg", "circle");
   el12.setAttribute('fill', '#FFFFFF');
   el12.setAttribute('cx', '10');
   el12.setAttribute('cy', '10');
   el12.setAttribute('r', '10');
-  const el13 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const el13 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
   el13.setAttribute('fill', '#009688');
   el13.setAttribute('d', 'M10 4.167A5.835 5.835 0 0 0 4.167 10 5.835 5.835 0 0 0 10 15.833 5.835 5.835 0 0 0 15.833 10 5.835 5.835 0 0 0 10 4.167zm2.917 6.416h-2.334v2.334H9.417v-2.334H7.083V9.417h2.334V7.083h1.166v2.334h2.334v1.166z');
-  el11.append(' ', el12, ' ', el13, ' ');
-  el4.append(' ', el5, ' ', el8, ' ', el11, ' ');
-  const el14 = dom.createElementNS('http://www.w3.org/2000/svg', 'g');
+  el11.append(" ",el12," ",el13," ");
+  el4.append(" ",el5," ",el8," ",el11," ");
+  const el14 = dom.createElementNS("http://www.w3.org/2000/svg", "g");
   el14.setAttribute('stroke', 'none');
   el14.setAttribute('fill-rule', 'nonzero');
-  const el15 = dom.createElementNS('http://www.w3.org/2000/svg', 'circle', 'lh-gauge--pwa__disc');
+  const el15 = dom.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-gauge--pwa__disc");
   el15.setAttribute('cx', '30');
   el15.setAttribute('cy', '30');
   el15.setAttribute('r', '30');
-  const el16 = dom.createElementNS('http://www.w3.org/2000/svg', 'g', 'lh-gauge--pwa__logo');
-  const el17 = dom.createElementNS('http://www.w3.org/2000/svg', 'path', 'lh-gauge--pwa__logo--secondary-color');
+  const el16 = dom.createElementNS("http://www.w3.org/2000/svg", "g", "lh-gauge--pwa__logo");
+  const el17 = dom.createElementNS("http://www.w3.org/2000/svg", "path", "lh-gauge--pwa__logo--secondary-color");
   el17.setAttribute('d', 'M35.66 19.39l.7-1.75h2L37.4 15 38.6 12l3.4 9h-2.51l-.58-1.61z');
-  const el18 = dom.createElementNS('http://www.w3.org/2000/svg', 'path', 'lh-gauge--pwa__logo--primary-color');
+  const el18 = dom.createElementNS("http://www.w3.org/2000/svg", "path", "lh-gauge--pwa__logo--primary-color");
   el18.setAttribute('d', 'M33.52 21l3.65-9h-2.42l-2.5 5.82L30.5 12h-1.86l-1.9 5.82-1.35-2.65-1.21 3.72L25.4 21h2.38l1.72-5.2 1.64 5.2z');
-  const el19 = dom.createElementNS('http://www.w3.org/2000/svg', 'path', 'lh-gauge--pwa__logo--secondary-color');
+  const el19 = dom.createElementNS("http://www.w3.org/2000/svg", "path", "lh-gauge--pwa__logo--secondary-color");
   el19.setAttribute('fill-rule', 'nonzero');
   el19.setAttribute('d', 'M20.3 17.91h1.48c.45 0 .85-.05 1.2-.15l.39-1.18 1.07-3.3a2.64 2.64 0 0 0-.28-.37c-.55-.6-1.36-.91-2.42-.91H18v9h2.3V17.9zm1.96-3.84c.22.22.33.5.33.87 0 .36-.1.65-.29.87-.2.23-.59.35-1.15.35h-.86v-2.41h.87c.52 0 .89.1 1.1.32z');
-  el16.append(' ', el17, ' ', el18, ' ', el19, ' ');
-  const el20 = dom.createElementNS('http://www.w3.org/2000/svg', 'rect', 'lh-gauge--pwa__component lh-gauge--pwa__na-line');
+  el16.append(" ",el17," ",el18," ",el19," ");
+  const el20 = dom.createElementNS("http://www.w3.org/2000/svg", "rect", "lh-gauge--pwa__component lh-gauge--pwa__na-line");
   el20.setAttribute('fill', '#FFFFFF');
   el20.setAttribute('x', '20');
   el20.setAttribute('y', '32');
   el20.setAttribute('width', '20');
   el20.setAttribute('height', '4');
   el20.setAttribute('rx', '2');
-  const el21 = dom.createElementNS('http://www.w3.org/2000/svg', 'g', 'lh-gauge--pwa__component lh-gauge--pwa__installable-badge');
+  const el21 = dom.createElementNS("http://www.w3.org/2000/svg", "g", "lh-gauge--pwa__component lh-gauge--pwa__installable-badge");
   el21.setAttribute('transform', 'translate(20, 29)');
-  const el22 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const el22 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
   el22.setAttribute('fill', 'url(#lh-gauge--pwa__installable__shadow-gradient)');
   el22.setAttribute('d', 'M33.629 19.487c-4.272 5.453-10.391 9.39-17.415 10.869L3 17.142 17.142 3 33.63 19.487z');
-  const el23 = dom.createElementNS('http://www.w3.org/2000/svg', 'use');
+  const el23 = dom.createElementNS("http://www.w3.org/2000/svg", "use");
   el23.setAttribute('href', '#lh-gauge--pwa__installable-badge');
-  el21.append(' ', el22, ' ', el23, ' ');
-  const el24 = dom.createElementNS('http://www.w3.org/2000/svg', 'g', 'lh-gauge--pwa__component lh-gauge--pwa__check-circle');
+  el21.append(" ",el22," ",el23," ");
+  const el24 = dom.createElementNS("http://www.w3.org/2000/svg", "g", "lh-gauge--pwa__component lh-gauge--pwa__check-circle");
   el24.setAttribute('transform', 'translate(18, 28)');
-  const el25 = dom.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  const el25 = dom.createElementNS("http://www.w3.org/2000/svg", "circle");
   el25.setAttribute('fill', '#FFFFFF');
   el25.setAttribute('cx', '12');
   el25.setAttribute('cy', '12');
   el25.setAttribute('r', '12');
-  const el26 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const el26 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
   el26.setAttribute('fill', 'url(#lh-gauge--pwa__check-circle__gradient)');
   el26.setAttribute('d', 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z');
-  el24.append(' ', el25, ' ', el26, ' ');
-  el14.append(' ', ' ', el15, ' ', el16, ' ', ' ', el20, ' ', ' ', el21, ' ', ' ', el24, ' ');
-  el3.append(' ', el4, ' ', el14, ' ');
-  const el27 = dom.createElement('div', 'lh-gauge__label');
-  el2.append(' ', el3, ' ', el27, ' ');
+  el24.append(" ",el25," ",el26," ");
+  el14.append(" "," ",el15," ",el16," "," ",el20," "," ",el21," "," ",el24," ");
+  el3.append(" ",el4," ",el14," ");
+  const el27 = dom.createElement("div", "lh-gauge__label");
+  el2.append(" ",el3," ",el27," ");
   el0.append(el2);
   return el0;
 }
@@ -1046,12 +676,12 @@ function createGaugePwaComponent(dom) {
  */
 function createHeadingComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('style');
-  el1.append('\n    /* CSS Fireworks. Originally by Eddie Lin\n       https://codepen.io/paulirish/pen/yEVMbP\n    */\n    .lh-pyro {\n      display: none;\n      z-index: 1;\n      pointer-events: none;\n    }\n    .lh-score100 .lh-pyro {\n      display: block;\n    }\n    .lh-score100 .lh-lighthouse stop:first-child {\n      stop-color: hsla(200, 12%, 95%, 0);\n    }\n    .lh-score100 .lh-lighthouse stop:last-child {\n      stop-color: hsla(65, 81%, 76%, 1);\n    }\n\n    .lh-pyro > .lh-pyro-before, .lh-pyro > .lh-pyro-after {\n      position: absolute;\n      width: 5px;\n      height: 5px;\n      border-radius: 2.5px;\n      box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff;\n      animation: 1s bang ease-out infinite backwards,  1s gravity ease-in infinite backwards,  5s position linear infinite backwards;\n      animation-delay: 1s, 1s, 1s;\n    }\n\n    .lh-pyro > .lh-pyro-after {\n      animation-delay: 2.25s, 2.25s, 2.25s;\n      animation-duration: 1.25s, 1.25s, 6.25s;\n    }\n\n    @keyframes bang {\n      to {\n        box-shadow: -70px -115.67px #47ebbc, -28px -99.67px #eb47a4, 58px -31.67px #7eeb47, 13px -141.67px #eb47c5, -19px 6.33px #7347eb, -2px -74.67px #ebd247, 24px -151.67px #eb47e0, 57px -138.67px #b4eb47, -51px -104.67px #479eeb, 62px 8.33px #ebcf47, -93px 0.33px #d547eb, -16px -118.67px #47bfeb, 53px -84.67px #47eb83, 66px -57.67px #eb47bf, -93px -65.67px #91eb47, 30px -13.67px #86eb47, -2px -59.67px #83eb47, -44px 1.33px #eb47eb, 61px -58.67px #47eb73, 5px -22.67px #47e8eb, -66px -28.67px #ebe247, 42px -123.67px #eb5547, -75px 26.33px #7beb47, 15px -52.67px #a147eb, 36px -51.67px #eb8347, -38px -12.67px #eb5547, -46px -59.67px #47eb81, 78px -114.67px #eb47ba, 15px -156.67px #eb47bf, -36px 1.33px #eb4783, -72px -86.67px #eba147, 31px -46.67px #ebe247, -68px 29.33px #47e2eb, -55px 19.33px #ebe047, -56px 27.33px #4776eb, -13px -91.67px #eb5547, -47px -138.67px #47ebc7, -18px -96.67px #eb47ac, 11px -88.67px #4783eb, -67px -28.67px #47baeb, 53px 10.33px #ba47eb, 11px 19.33px #5247eb, -5px -11.67px #eb4791, -68px -4.67px #47eba7, 95px -37.67px #eb478b, -67px -162.67px #eb5d47, -54px -120.67px #eb6847, 49px -12.67px #ebe047, 88px 8.33px #47ebda, 97px 33.33px #eb8147, 6px -71.67px #ebbc47;\n      }\n    }\n    @keyframes gravity {\n      to {\n        transform: translateY(80px);\n        opacity: 0;\n      }\n    }\n    @keyframes position {\n      0%, 19.9% {\n        margin-top: 4%;\n        margin-left: 47%;\n      }\n      20%, 39.9% {\n        margin-top: 7%;\n        margin-left: 30%;\n      }\n      40%, 59.9% {\n        margin-top: 6%;\n        margin-left: 70%;\n      }\n      60%, 79.9% {\n        margin-top: 3%;\n        margin-left: 20%;\n      }\n      80%, 99.9% {\n        margin-top: 3%;\n        margin-left: 80%;\n      }\n    }\n  ');
+  const el1 = dom.createElement("style");
+  el1.append("\n    /* CSS Fireworks. Originally by Eddie Lin\n       https://codepen.io/paulirish/pen/yEVMbP\n    */\n    .lh-pyro {\n      display: none;\n      z-index: 1;\n      pointer-events: none;\n    }\n    .lh-score100 .lh-pyro {\n      display: block;\n    }\n    .lh-score100 .lh-lighthouse stop:first-child {\n      stop-color: hsla(200, 12%, 95%, 0);\n    }\n    .lh-score100 .lh-lighthouse stop:last-child {\n      stop-color: hsla(65, 81%, 76%, 1);\n    }\n\n    .lh-pyro > .lh-pyro-before, .lh-pyro > .lh-pyro-after {\n      position: absolute;\n      width: 5px;\n      height: 5px;\n      border-radius: 2.5px;\n      box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff;\n      animation: 1s bang ease-out infinite backwards,  1s gravity ease-in infinite backwards,  5s position linear infinite backwards;\n      animation-delay: 1s, 1s, 1s;\n    }\n\n    .lh-pyro > .lh-pyro-after {\n      animation-delay: 2.25s, 2.25s, 2.25s;\n      animation-duration: 1.25s, 1.25s, 6.25s;\n    }\n\n    @keyframes bang {\n      to {\n        box-shadow: -70px -115.67px #47ebbc, -28px -99.67px #eb47a4, 58px -31.67px #7eeb47, 13px -141.67px #eb47c5, -19px 6.33px #7347eb, -2px -74.67px #ebd247, 24px -151.67px #eb47e0, 57px -138.67px #b4eb47, -51px -104.67px #479eeb, 62px 8.33px #ebcf47, -93px 0.33px #d547eb, -16px -118.67px #47bfeb, 53px -84.67px #47eb83, 66px -57.67px #eb47bf, -93px -65.67px #91eb47, 30px -13.67px #86eb47, -2px -59.67px #83eb47, -44px 1.33px #eb47eb, 61px -58.67px #47eb73, 5px -22.67px #47e8eb, -66px -28.67px #ebe247, 42px -123.67px #eb5547, -75px 26.33px #7beb47, 15px -52.67px #a147eb, 36px -51.67px #eb8347, -38px -12.67px #eb5547, -46px -59.67px #47eb81, 78px -114.67px #eb47ba, 15px -156.67px #eb47bf, -36px 1.33px #eb4783, -72px -86.67px #eba147, 31px -46.67px #ebe247, -68px 29.33px #47e2eb, -55px 19.33px #ebe047, -56px 27.33px #4776eb, -13px -91.67px #eb5547, -47px -138.67px #47ebc7, -18px -96.67px #eb47ac, 11px -88.67px #4783eb, -67px -28.67px #47baeb, 53px 10.33px #ba47eb, 11px 19.33px #5247eb, -5px -11.67px #eb4791, -68px -4.67px #47eba7, 95px -37.67px #eb478b, -67px -162.67px #eb5d47, -54px -120.67px #eb6847, 49px -12.67px #ebe047, 88px 8.33px #47ebda, 97px 33.33px #eb8147, 6px -71.67px #ebbc47;\n      }\n    }\n    @keyframes gravity {\n      to {\n        transform: translateY(80px);\n        opacity: 0;\n      }\n    }\n    @keyframes position {\n      0%, 19.9% {\n        margin-top: 4%;\n        margin-left: 47%;\n      }\n      20%, 39.9% {\n        margin-top: 7%;\n        margin-left: 30%;\n      }\n      40%, 59.9% {\n        margin-top: 6%;\n        margin-left: 70%;\n      }\n      60%, 79.9% {\n        margin-top: 3%;\n        margin-left: 20%;\n      }\n      80%, 99.9% {\n        margin-top: 3%;\n        margin-left: 80%;\n      }\n    }\n  ");
   el0.append(el1);
-  const el2 = dom.createElement('div', 'lh-header-container');
-  const el3 = dom.createElement('div', 'lh-scores-wrapper-placeholder');
-  el2.append(' ', el3, ' ');
+  const el2 = dom.createElement("div", "lh-header-container");
+  const el3 = dom.createElement("div", "lh-scores-wrapper-placeholder");
+  el2.append(" ",el3," ");
   el0.append(el2);
   return el0;
 }
@@ -1061,14 +691,14 @@ function createHeadingComponent(dom) {
  */
 function createMetricComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-metric');
-  const el2 = dom.createElement('div', 'lh-metric__innerwrap');
-  const el3 = dom.createElement('div', 'lh-metric__icon');
-  const el4 = dom.createElement('span', 'lh-metric__title');
-  const el5 = dom.createElement('div', 'lh-metric__value');
-  const el6 = dom.createElement('div', 'lh-metric__description');
-  el2.append(' ', el3, ' ', el4, ' ', el5, ' ', el6, ' ');
-  el1.append(' ', el2, ' ');
+  const el1 = dom.createElement("div", "lh-metric");
+  const el2 = dom.createElement("div", "lh-metric__innerwrap");
+  const el3 = dom.createElement("div", "lh-metric__icon");
+  const el4 = dom.createElement("span", "lh-metric__title");
+  const el5 = dom.createElement("div", "lh-metric__value");
+  const el6 = dom.createElement("div", "lh-metric__description");
+  el2.append(" ",el3," ",el4," ",el5," ",el6," ");
+  el1.append(" ",el2," ");
   el0.append(el1);
   return el0;
 }
@@ -1078,31 +708,31 @@ function createMetricComponent(dom) {
  */
 function createOpportunityComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-audit lh-audit--load-opportunity');
-  const el2 = dom.createElement('details', 'lh-expandable-details');
-  const el3 = dom.createElement('summary');
-  const el4 = dom.createElement('div', 'lh-audit__header');
-  const el5 = dom.createElement('div', 'lh-load-opportunity__cols');
-  const el6 = dom.createElement('div', 'lh-load-opportunity__col lh-load-opportunity__col--one');
-  const el7 = dom.createElement('span', 'lh-audit__score-icon');
-  const el8 = dom.createElement('div', 'lh-audit__title');
-  el6.append(' ', el7, ' ', el8, ' ');
-  const el9 = dom.createElement('div', 'lh-load-opportunity__col lh-load-opportunity__col--two');
-  const el10 = dom.createElement('div', 'lh-load-opportunity__sparkline');
-  const el11 = dom.createElement('div', 'lh-sparkline');
-  const el12 = dom.createElement('div', 'lh-sparkline__bar');
+  const el1 = dom.createElement("div", "lh-audit lh-audit--load-opportunity");
+  const el2 = dom.createElement("details", "lh-expandable-details");
+  const el3 = dom.createElement("summary");
+  const el4 = dom.createElement("div", "lh-audit__header");
+  const el5 = dom.createElement("div", "lh-load-opportunity__cols");
+  const el6 = dom.createElement("div", "lh-load-opportunity__col lh-load-opportunity__col--one");
+  const el7 = dom.createElement("span", "lh-audit__score-icon");
+  const el8 = dom.createElement("div", "lh-audit__title");
+  el6.append(" ",el7," ",el8," ");
+  const el9 = dom.createElement("div", "lh-load-opportunity__col lh-load-opportunity__col--two");
+  const el10 = dom.createElement("div", "lh-load-opportunity__sparkline");
+  const el11 = dom.createElement("div", "lh-sparkline");
+  const el12 = dom.createElement("div", "lh-sparkline__bar");
   el11.append(el12);
-  el10.append(' ', el11, ' ');
-  const el13 = dom.createElement('div', 'lh-audit__display-text');
-  const el14 = dom.createElement('div', 'lh-chevron-container');
-  el9.append(' ', el10, ' ', el13, ' ', el14, ' ');
-  el5.append(' ', el6, ' ', el9, ' ');
-  el4.append(' ', el5, ' ');
-  el3.append(' ', el4, ' ');
-  const el15 = dom.createElement('div', 'lh-audit__description');
-  const el16 = dom.createElement('div', 'lh-audit__stackpacks');
-  el2.append(' ', el3, ' ', el15, ' ', el16, ' ');
-  el1.append(' ', el2, ' ');
+  el10.append(" ",el11," ");
+  const el13 = dom.createElement("div", "lh-audit__display-text");
+  const el14 = dom.createElement("div", "lh-chevron-container");
+  el9.append(" ",el10," ",el13," ",el14," ");
+  el5.append(" ",el6," ",el9," ");
+  el4.append(" ",el5," ");
+  el3.append(" ",el4," ");
+  const el15 = dom.createElement("div", "lh-audit__description");
+  const el16 = dom.createElement("div", "lh-audit__stackpacks");
+  el2.append(" ",el3," ",el15," ",el16," ");
+  el1.append(" ",el2," ");
   el0.append(el1);
   return el0;
 }
@@ -1112,10 +742,10 @@ function createOpportunityComponent(dom) {
  */
 function createOpportunityHeaderComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-load-opportunity__header lh-load-opportunity__cols');
-  const el2 = dom.createElement('div', 'lh-load-opportunity__col lh-load-opportunity__col--one');
-  const el3 = dom.createElement('div', 'lh-load-opportunity__col lh-load-opportunity__col--two');
-  el1.append(' ', el2, ' ', el3, ' ');
+  const el1 = dom.createElement("div", "lh-load-opportunity__header lh-load-opportunity__cols");
+  const el2 = dom.createElement("div", "lh-load-opportunity__col lh-load-opportunity__col--one");
+  const el3 = dom.createElement("div", "lh-load-opportunity__col lh-load-opportunity__col--two");
+  el1.append(" ",el2," ",el3," ");
   el0.append(el1);
   return el0;
 }
@@ -1125,14 +755,14 @@ function createOpportunityHeaderComponent(dom) {
  */
 function createScorescaleComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-scorescale');
-  const el2 = dom.createElement('span', 'lh-scorescale-range lh-scorescale-range--fail');
-  el2.append('0–49');
-  const el3 = dom.createElement('span', 'lh-scorescale-range lh-scorescale-range--average');
-  el3.append('50–89');
-  const el4 = dom.createElement('span', 'lh-scorescale-range lh-scorescale-range--pass');
-  el4.append('90–100');
-  el1.append(' ', el2, ' ', el3, ' ', el4, ' ');
+  const el1 = dom.createElement("div", "lh-scorescale");
+  const el2 = dom.createElement("span", "lh-scorescale-range lh-scorescale-range--fail");
+  el2.append("0–49");
+  const el3 = dom.createElement("span", "lh-scorescale-range lh-scorescale-range--average");
+  el3.append("50–89");
+  const el4 = dom.createElement("span", "lh-scorescale-range lh-scorescale-range--pass");
+  el4.append("90–100");
+  el1.append(" ",el2," ",el3," ",el4," ");
   el0.append(el1);
   return el0;
 }
@@ -1142,17 +772,17 @@ function createScorescaleComponent(dom) {
  */
 function createScoresWrapperComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('style');
-  el1.append('\n    .lh-scores-container {\n      display: flex;\n      flex-direction: column;\n      padding: var(--default-padding) 0;\n      position: relative;\n      width: 100%;\n    }\n\n    .lh-sticky-header {\n      --gauge-circle-size: var(--gauge-circle-size-sm);\n      --plugin-badge-size: 16px;\n      --plugin-icon-size: 75%;\n      --gauge-wrapper-width: 60px;\n      --gauge-percentage-font-size: 13px;\n      position: fixed;\n      left: 0;\n      right: 0;\n      top: var(--topbar-height);\n      font-weight: 500;\n      display: none;\n      justify-content: center;\n      background-color: var(--sticky-header-background-color);\n      border-bottom: 1px solid var(--color-gray-200);\n      padding-top: var(--score-container-padding);\n      padding-bottom: 4px;\n      z-index: 1;\n      pointer-events: none;\n    }\n\n    .lh-devtools .lh-sticky-header {\n      /* The report within DevTools is placed in a container with overflow, which changes the placement of this header unless we change `position` to `sticky.` */\n      position: sticky;\n    }\n\n    .lh-sticky-header--visible {\n      display: grid;\n      grid-auto-flow: column;\n      pointer-events: auto;\n    }\n\n    /* Disable the gauge arc animation for the sticky header, so toggling display: none\n       does not play the animation. */\n    .lh-sticky-header .lh-gauge-arc {\n      animation: none;\n    }\n\n    .lh-sticky-header .lh-gauge__label,\n    .lh-sticky-header .lh-fraction__label {\n      display: none;\n    }\n\n    .lh-highlighter {\n      width: var(--gauge-wrapper-width);\n      height: 1px;\n      background-color: var(--highlighter-background-color);\n      /* Position at bottom of first gauge in sticky header. */\n      position: absolute;\n      grid-column: 1;\n      bottom: -1px;\n    }\n\n    .lh-gauge__wrapper:first-of-type {\n      contain: none;\n    }\n  ');
+  const el1 = dom.createElement("style");
+  el1.append("\n    .lh-scores-container {\n      display: flex;\n      flex-direction: column;\n      padding: var(--default-padding) 0;\n      position: relative;\n      width: 100%;\n    }\n\n    .lh-sticky-header {\n      --gauge-circle-size: var(--gauge-circle-size-sm);\n      --plugin-badge-size: 16px;\n      --plugin-icon-size: 75%;\n      --gauge-wrapper-width: 60px;\n      --gauge-percentage-font-size: 13px;\n      position: fixed;\n      left: 0;\n      right: 0;\n      top: var(--topbar-height);\n      font-weight: 500;\n      display: none;\n      justify-content: center;\n      background-color: var(--sticky-header-background-color);\n      border-bottom: 1px solid var(--color-gray-200);\n      padding-top: var(--score-container-padding);\n      padding-bottom: 4px;\n      z-index: 1;\n      pointer-events: none;\n    }\n\n    .lh-devtools .lh-sticky-header {\n      /* The report within DevTools is placed in a container with overflow, which changes the placement of this header unless we change `position` to `sticky.` */\n      position: sticky;\n    }\n\n    .lh-sticky-header--visible {\n      display: grid;\n      grid-auto-flow: column;\n      pointer-events: auto;\n    }\n\n    /* Disable the gauge arc animation for the sticky header, so toggling display: none\n       does not play the animation. */\n    .lh-sticky-header .lh-gauge-arc {\n      animation: none;\n    }\n\n    .lh-sticky-header .lh-gauge__label,\n    .lh-sticky-header .lh-fraction__label {\n      display: none;\n    }\n\n    .lh-highlighter {\n      width: var(--gauge-wrapper-width);\n      height: 1px;\n      background-color: var(--highlighter-background-color);\n      /* Position at bottom of first gauge in sticky header. */\n      position: absolute;\n      grid-column: 1;\n      bottom: -1px;\n    }\n\n    .lh-gauge__wrapper:first-of-type {\n      contain: none;\n    }\n  ");
   el0.append(el1);
-  const el2 = dom.createElement('div', 'lh-scores-wrapper');
-  const el3 = dom.createElement('div', 'lh-scores-container');
-  const el4 = dom.createElement('div', 'lh-pyro');
-  const el5 = dom.createElement('div', 'lh-pyro-before');
-  const el6 = dom.createElement('div', 'lh-pyro-after');
-  el4.append(' ', el5, ' ', el6, ' ');
-  el3.append(' ', el4, ' ');
-  el2.append(' ', el3, ' ');
+  const el2 = dom.createElement("div", "lh-scores-wrapper");
+  const el3 = dom.createElement("div", "lh-scores-container");
+  const el4 = dom.createElement("div", "lh-pyro");
+  const el5 = dom.createElement("div", "lh-pyro-before");
+  const el6 = dom.createElement("div", "lh-pyro-after");
+  el4.append(" ",el5," ",el6," ");
+  el3.append(" ",el4," ");
+  el2.append(" ",el3," ");
   el0.append(el2);
   return el0;
 }
@@ -1162,10 +792,10 @@ function createScoresWrapperComponent(dom) {
  */
 function createSnippetComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-snippet');
-  const el2 = dom.createElement('style');
-  el2.append('\n          :root {\n            --snippet-highlight-light: #fbf1f2;\n            --snippet-highlight-dark: #ffd6d8;\n          }\n\n         .lh-snippet__header {\n          position: relative;\n          overflow: hidden;\n          padding: 10px;\n          border-bottom: none;\n          color: var(--snippet-color);\n          background-color: var(--snippet-background-color);\n          border: 1px solid var(--report-border-color-secondary);\n        }\n        .lh-snippet__title {\n          font-weight: bold;\n          float: left;\n        }\n        .lh-snippet__node {\n          float: left;\n          margin-left: 4px;\n        }\n        .lh-snippet__toggle-expand {\n          padding: 1px 7px;\n          margin-top: -1px;\n          margin-right: -7px;\n          float: right;\n          background: transparent;\n          border: none;\n          cursor: pointer;\n          font-size: 14px;\n          color: #0c50c7;\n        }\n\n        .lh-snippet__snippet {\n          overflow: auto;\n          border: 1px solid var(--report-border-color-secondary);\n        }\n        /* Container needed so that all children grow to the width of the scroll container */\n        .lh-snippet__snippet-inner {\n          display: inline-block;\n          min-width: 100%;\n        }\n\n        .lh-snippet:not(.lh-snippet--expanded) .lh-snippet__show-if-expanded {\n          display: none;\n        }\n        .lh-snippet.lh-snippet--expanded .lh-snippet__show-if-collapsed {\n          display: none;\n        }\n\n        .lh-snippet__line {\n          background: white;\n          white-space: pre;\n          display: flex;\n        }\n        .lh-snippet__line:not(.lh-snippet__line--message):first-child {\n          padding-top: 4px;\n        }\n        .lh-snippet__line:not(.lh-snippet__line--message):last-child {\n          padding-bottom: 4px;\n        }\n        .lh-snippet__line--content-highlighted {\n          background: var(--snippet-highlight-dark);\n        }\n        .lh-snippet__line--message {\n          background: var(--snippet-highlight-light);\n        }\n        .lh-snippet__line--message .lh-snippet__line-number {\n          padding-top: 10px;\n          padding-bottom: 10px;\n        }\n        .lh-snippet__line--message code {\n          padding: 10px;\n          padding-left: 5px;\n          color: var(--color-fail);\n          font-family: var(--report-font-family);\n        }\n        .lh-snippet__line--message code {\n          white-space: normal;\n        }\n        .lh-snippet__line-icon {\n          padding-top: 10px;\n          display: none;\n        }\n        .lh-snippet__line--message .lh-snippet__line-icon {\n          display: block;\n        }\n        .lh-snippet__line-icon:before {\n          content: "";\n          display: inline-block;\n          vertical-align: middle;\n          margin-right: 4px;\n          width: var(--score-icon-size);\n          height: var(--score-icon-size);\n          background-image: var(--fail-icon-url);\n        }\n        .lh-snippet__line-number {\n          flex-shrink: 0;\n          width: 40px;\n          text-align: right;\n          font-family: monospace;\n          padding-right: 5px;\n          margin-right: 5px;\n          color: var(--color-gray-600);\n          user-select: none;\n        }\n    ');
-  el1.append(' ', el2, ' ');
+  const el1 = dom.createElement("div", "lh-snippet");
+  const el2 = dom.createElement("style");
+  el2.append("\n          :root {\n            --snippet-highlight-light: #fbf1f2;\n            --snippet-highlight-dark: #ffd6d8;\n          }\n\n         .lh-snippet__header {\n          position: relative;\n          overflow: hidden;\n          padding: 10px;\n          border-bottom: none;\n          color: var(--snippet-color);\n          background-color: var(--snippet-background-color);\n          border: 1px solid var(--report-border-color-secondary);\n        }\n        .lh-snippet__title {\n          font-weight: bold;\n          float: left;\n        }\n        .lh-snippet__node {\n          float: left;\n          margin-left: 4px;\n        }\n        .lh-snippet__toggle-expand {\n          padding: 1px 7px;\n          margin-top: -1px;\n          margin-right: -7px;\n          float: right;\n          background: transparent;\n          border: none;\n          cursor: pointer;\n          font-size: 14px;\n          color: #0c50c7;\n        }\n\n        .lh-snippet__snippet {\n          overflow: auto;\n          border: 1px solid var(--report-border-color-secondary);\n        }\n        /* Container needed so that all children grow to the width of the scroll container */\n        .lh-snippet__snippet-inner {\n          display: inline-block;\n          min-width: 100%;\n        }\n\n        .lh-snippet:not(.lh-snippet--expanded) .lh-snippet__show-if-expanded {\n          display: none;\n        }\n        .lh-snippet.lh-snippet--expanded .lh-snippet__show-if-collapsed {\n          display: none;\n        }\n\n        .lh-snippet__line {\n          background: white;\n          white-space: pre;\n          display: flex;\n        }\n        .lh-snippet__line:not(.lh-snippet__line--message):first-child {\n          padding-top: 4px;\n        }\n        .lh-snippet__line:not(.lh-snippet__line--message):last-child {\n          padding-bottom: 4px;\n        }\n        .lh-snippet__line--content-highlighted {\n          background: var(--snippet-highlight-dark);\n        }\n        .lh-snippet__line--message {\n          background: var(--snippet-highlight-light);\n        }\n        .lh-snippet__line--message .lh-snippet__line-number {\n          padding-top: 10px;\n          padding-bottom: 10px;\n        }\n        .lh-snippet__line--message code {\n          padding: 10px;\n          padding-left: 5px;\n          color: var(--color-fail);\n          font-family: var(--report-font-family);\n        }\n        .lh-snippet__line--message code {\n          white-space: normal;\n        }\n        .lh-snippet__line-icon {\n          padding-top: 10px;\n          display: none;\n        }\n        .lh-snippet__line--message .lh-snippet__line-icon {\n          display: block;\n        }\n        .lh-snippet__line-icon:before {\n          content: \"\";\n          display: inline-block;\n          vertical-align: middle;\n          margin-right: 4px;\n          width: var(--score-icon-size);\n          height: var(--score-icon-size);\n          background-image: var(--fail-icon-url);\n        }\n        .lh-snippet__line-number {\n          flex-shrink: 0;\n          width: 40px;\n          text-align: right;\n          font-family: monospace;\n          padding-right: 5px;\n          margin-right: 5px;\n          color: var(--color-gray-600);\n          user-select: none;\n        }\n    ");
+  el1.append(" ",el2," ");
   el0.append(el1);
   return el0;
 }
@@ -1175,9 +805,9 @@ function createSnippetComponent(dom) {
  */
 function createSnippetContentComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-snippet__snippet');
-  const el2 = dom.createElement('div', 'lh-snippet__snippet-inner');
-  el1.append(' ', el2, ' ');
+  const el1 = dom.createElement("div", "lh-snippet__snippet");
+  const el2 = dom.createElement("div", "lh-snippet__snippet-inner");
+  el1.append(" ",el2," ");
   el0.append(el1);
   return el0;
 }
@@ -1187,14 +817,14 @@ function createSnippetContentComponent(dom) {
  */
 function createSnippetHeaderComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-snippet__header');
-  const el2 = dom.createElement('div', 'lh-snippet__title');
-  const el3 = dom.createElement('div', 'lh-snippet__node');
-  const el4 = dom.createElement('button', 'lh-snippet__toggle-expand');
-  const el5 = dom.createElement('span', 'lh-snippet__btn-label-collapse lh-snippet__show-if-expanded');
-  const el6 = dom.createElement('span', 'lh-snippet__btn-label-expand lh-snippet__show-if-collapsed');
-  el4.append(' ', el5, ' ', el6, ' ');
-  el1.append(' ', el2, ' ', el3, ' ', el4, ' ');
+  const el1 = dom.createElement("div", "lh-snippet__header");
+  const el2 = dom.createElement("div", "lh-snippet__title");
+  const el3 = dom.createElement("div", "lh-snippet__node");
+  const el4 = dom.createElement("button", "lh-snippet__toggle-expand");
+  const el5 = dom.createElement("span", "lh-snippet__btn-label-collapse lh-snippet__show-if-expanded");
+  const el6 = dom.createElement("span", "lh-snippet__btn-label-expand lh-snippet__show-if-collapsed");
+  el4.append(" ",el5," ",el6," ");
+  el1.append(" ",el2," ",el3," ",el4," ");
   el0.append(el1);
   return el0;
 }
@@ -1204,11 +834,11 @@ function createSnippetHeaderComponent(dom) {
  */
 function createSnippetLineComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-snippet__line');
-  const el2 = dom.createElement('div', 'lh-snippet__line-number');
-  const el3 = dom.createElement('div', 'lh-snippet__line-icon');
-  const el4 = dom.createElement('code');
-  el1.append(' ', el2, ' ', el3, ' ', el4, ' ');
+  const el1 = dom.createElement("div", "lh-snippet__line");
+  const el2 = dom.createElement("div", "lh-snippet__line-number");
+  const el3 = dom.createElement("div", "lh-snippet__line-icon");
+  const el4 = dom.createElement("code");
+  el1.append(" ",el2," ",el3," ",el4," ");
   el0.append(el1);
   return el0;
 }
@@ -1218,8 +848,8 @@ function createSnippetLineComponent(dom) {
  */
 function createStylesComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('style');
-  el1.append('/**\n * @license\n * Copyright 2017 The Lighthouse Authors. All Rights Reserved.\n *\n * Licensed under the Apache License, Version 2.0 (the "License");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *      http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an "AS-IS" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\n/*\n  Naming convention:\n\n  If a variable is used for a specific component: --{component}-{property name}-{modifier}\n\n  Both {component} and {property name} should be kebab-case. If the target is the entire page,\n  use \'report\' for the component. The property name should not be abbreviated. Use the\n  property name the variable is intended for - if it\'s used for multiple, a common descriptor\n  is fine (ex: \'size\' for a variable applied to \'width\' and \'height\'). If a variable is shared\n  across multiple components, either create more variables or just drop the "{component}-"\n  part of the name. Append any modifiers at the end (ex: \'big\', \'dark\').\n\n  For colors: --color-{hue}-{intensity}\n\n  {intensity} is the Material Design tag - 700, A700, etc.\n*/\n.lh-vars {\n  /* Palette using Material Design Colors\n   * https://www.materialui.co/colors */\n  --color-amber-50: #FFF8E1;\n  --color-blue-200: #90CAF9;\n  --color-blue-900: #0D47A1;\n  --color-blue-A700: #2962FF;\n  --color-blue-primary: #06f;\n  --color-cyan-500: #00BCD4;\n  --color-gray-100: #F5F5F5;\n  --color-gray-300: #CFCFCF;\n  --color-gray-200: #E0E0E0;\n  --color-gray-400: #BDBDBD;\n  --color-gray-50: #FAFAFA;\n  --color-gray-500: #9E9E9E;\n  --color-gray-600: #757575;\n  --color-gray-700: #616161;\n  --color-gray-800: #424242;\n  --color-gray-900: #212121;\n  --color-gray: #000000;\n  --color-green-700: #080;\n  --color-green: #0c6;\n  --color-lime-400: #D3E156;\n  --color-orange-50: #FFF3E0;\n  --color-orange-700: #C33300;\n  --color-orange: #fa3;\n  --color-red-700: #c00;\n  --color-red: #f33;\n  --color-teal-600: #00897B;\n  --color-white: #FFFFFF;\n\n  /* Context-specific colors */\n  --color-average-secondary: var(--color-orange-700);\n  --color-average: var(--color-orange);\n  --color-fail-secondary: var(--color-red-700);\n  --color-fail: var(--color-red);\n  --color-hover: var(--color-gray-50);\n  --color-informative: var(--color-blue-900);\n  --color-pass-secondary: var(--color-green-700);\n  --color-pass: var(--color-green);\n  --color-not-applicable: var(--color-gray-600);\n\n  /* Component variables */\n  --audit-description-padding-left: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right));\n  --audit-explanation-line-height: 16px;\n  --audit-group-margin-bottom: calc(var(--default-padding) * 6);\n  --audit-group-padding-vertical: 8px;\n  --audit-margin-horizontal: 5px;\n  --audit-padding-vertical: 8px;\n  --category-padding: calc(var(--default-padding) * 6) var(--edge-gap-padding) calc(var(--default-padding) * 4);\n  --chevron-line-stroke: var(--color-gray-600);\n  --chevron-size: 12px;\n  --default-padding: 8px;\n  --edge-gap-padding: calc(var(--default-padding) * 4);\n  --env-item-background-color: var(--color-gray-100);\n  --env-item-font-size: 28px;\n  --env-item-line-height: 36px;\n  --env-item-padding: 10px 0px;\n  --env-name-min-width: 220px;\n  --footer-padding-vertical: 16px;\n  --gauge-circle-size-big: 96px;\n  --gauge-circle-size: 48px;\n  --gauge-circle-size-sm: 32px;\n  --gauge-label-font-size-big: 18px;\n  --gauge-label-font-size: var(--report-font-size-secondary);\n  --gauge-label-line-height-big: 24px;\n  --gauge-label-line-height: var(--report-line-height-secondary);\n  --gauge-percentage-font-size-big: 38px;\n  --gauge-percentage-font-size: var(--report-font-size-secondary);\n  --gauge-wrapper-width: 120px;\n  --header-line-height: 24px;\n  --highlighter-background-color: var(--report-text-color);\n  --icon-square-size: calc(var(--score-icon-size) * 0.88);\n  --image-preview-size: 48px;\n  --link-color: var(--color-blue-primary);\n  --locale-selector-background-color: var(--color-white);\n  --metric-toggle-lines-fill: #7F7F7F;\n  --metric-value-font-size: calc(var(--report-font-size) * 1.8);\n  --metrics-toggle-background-color: var(--color-gray-200);\n  --plugin-badge-background-color: var(--color-white);\n  --plugin-badge-size-big: calc(var(--gauge-circle-size-big) / 2.7);\n  --plugin-badge-size: calc(var(--gauge-circle-size) / 2.7);\n  --plugin-icon-size: 65%;\n  --pwa-icon-margin: 0 var(--default-padding);\n  --pwa-icon-size: var(--topbar-logo-size);\n  --report-background-color: #fff;\n  --report-border-color-secondary: #ebebeb;\n  --report-font-family-monospace: \'Roboto Mono\', \'Menlo\', \'dejavu sans mono\', \'Consolas\', \'Lucida Console\', monospace;\n  --report-font-family: Roboto, Helvetica, Arial, sans-serif;\n  --report-font-size: 14px;\n  --report-font-size-secondary: 12px;\n  --report-icon-size: var(--score-icon-background-size);\n  --report-line-height: 24px;\n  --report-line-height-secondary: 20px;\n  --report-monospace-font-size: calc(var(--report-font-size) * 0.85);\n  --report-text-color-secondary: var(--color-gray-800);\n  --report-text-color: var(--color-gray-900);\n  --report-content-max-width: calc(60 * var(--report-font-size)); /* defaults to 840px */\n  --report-content-min-width: 360px;\n  --report-content-max-width-minus-edge-gap: calc(var(--report-content-max-width) - var(--edge-gap-padding) * 2);\n  --score-container-padding: 8px;\n  --score-icon-background-size: 24px;\n  --score-icon-margin-left: 6px;\n  --score-icon-margin-right: 14px;\n  --score-icon-margin: 0 var(--score-icon-margin-right) 0 var(--score-icon-margin-left);\n  --score-icon-size: 12px;\n  --score-icon-size-big: 16px;\n  --screenshot-overlay-background: rgba(0, 0, 0, 0.3);\n  --section-padding-vertical: calc(var(--default-padding) * 6);\n  --snippet-background-color: var(--color-gray-50);\n  --snippet-color: #0938C2;\n  --sparkline-height: 5px;\n  --stackpack-padding-horizontal: 10px;\n  --sticky-header-background-color: var(--report-background-color);\n  --table-higlight-background-color: hsla(210, 17%, 77%, 0.1);\n  --tools-icon-color: var(--color-gray-600);\n  --topbar-background-color: var(--color-white);\n  --topbar-height: 32px;\n  --topbar-logo-size: 24px;\n  --topbar-padding: 0 8px;\n  --toplevel-warning-background-color: hsla(30, 100%, 75%, 10%);\n  --toplevel-warning-message-text-color: var(--color-average-secondary);\n  --toplevel-warning-padding: 18px;\n  --toplevel-warning-text-color: var(--report-text-color);\n\n  /* SVGs */\n  --plugin-icon-url-dark: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="%23FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>\');\n  --plugin-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="%23757575"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>\');\n\n  --pass-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><title>check</title><path fill="%23178239" d="M24 4C12.95 4 4 12.95 4 24c0 11.04 8.95 20 20 20 11.04 0 20-8.96 20-20 0-11.05-8.96-20-20-20zm-4 30L10 24l2.83-2.83L20 28.34l15.17-15.17L38 16 20 34z"/></svg>\');\n  --average-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><title>info</title><path fill="%23E67700" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm2 30h-4V22h4v12zm0-16h-4v-4h4v4z"/></svg>\');\n  --fail-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><title>warn</title><path fill="%23C7221F" d="M2 42h44L24 4 2 42zm24-6h-4v-4h4v4zm0-8h-4v-8h4v8z"/></svg>\');\n\n  --pwa-installable-gray-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="nonzero"><circle fill="%23DAE0E3" cx="12" cy="12" r="12"/><path d="M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm3.5 7.7h-2.8v2.8h-1.4v-2.8H8.5v-1.4h2.8V8.5h1.4v2.8h2.8v1.4z" fill="%23FFF"/></g></svg>\');\n  --pwa-optimized-gray-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect fill="%23DAE0E3" width="24" height="24" rx="12"/><path fill="%23FFF" d="M12 15.07l3.6 2.18-.95-4.1 3.18-2.76-4.2-.36L12 6.17l-1.64 3.86-4.2.36 3.2 2.76-.96 4.1z"/><path d="M5 5h14v14H5z"/></g></svg>\');\n\n  --pwa-installable-gray-url-dark: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="nonzero"><circle fill="%23424242" cx="12" cy="12" r="12"/><path d="M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm3.5 7.7h-2.8v2.8h-1.4v-2.8H8.5v-1.4h2.8V8.5h1.4v2.8h2.8v1.4z" fill="%23FFF"/></g></svg>\');\n  --pwa-optimized-gray-url-dark: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect fill="%23424242" width="24" height="24" rx="12"/><path fill="%23FFF" d="M12 15.07l3.6 2.18-.95-4.1 3.18-2.76-4.2-.36L12 6.17l-1.64 3.86-4.2.36 3.2 2.76-.96 4.1z"/><path d="M5 5h14v14H5z"/></g></svg>\');\n\n  --pwa-installable-color-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill-rule="nonzero" fill="none"><circle fill="%230CCE6B" cx="12" cy="12" r="12"/><path d="M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm3.5 7.7h-2.8v2.8h-1.4v-2.8H8.5v-1.4h2.8V8.5h1.4v2.8h2.8v1.4z" fill="%23FFF"/></g></svg>\');\n  --pwa-optimized-color-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect fill="%230CCE6B" width="24" height="24" rx="12"/><path d="M5 5h14v14H5z"/><path fill="%23FFF" d="M12 15.07l3.6 2.18-.95-4.1 3.18-2.76-4.2-.36L12 6.17l-1.64 3.86-4.2.36 3.2 2.76-.96 4.1z"/></g></svg>\');\n\n  --swap-locale-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>\');\n}\n\n@media not print {\n  .lh-dark {\n    /* Pallete */\n    --color-gray-200: var(--color-gray-800);\n    --color-gray-300: #616161;\n    --color-gray-400: var(--color-gray-600);\n    --color-gray-700: var(--color-gray-400);\n    --color-gray-50: #757575;\n    --color-gray-600: var(--color-gray-500);\n    --color-green-700: var(--color-green);\n    --color-orange-700: var(--color-orange);\n    --color-red-700: var(--color-red);\n    --color-teal-600: var(--color-cyan-500);\n\n    /* Context-specific colors */\n    --color-hover: rgba(0, 0, 0, 0.2);\n    --color-informative: var(--color-blue-200);\n\n    /* Component variables */\n    --env-item-background-color: #393535;\n    --link-color: var(--color-blue-200);\n    --locale-selector-background-color: var(--color-gray-200);\n    --plugin-badge-background-color: var(--color-gray-800);\n    --report-background-color: var(--color-gray-900);\n    --report-border-color-secondary: var(--color-gray-200);\n    --report-text-color-secondary: var(--color-gray-400);\n    --report-text-color: var(--color-gray-100);\n    --snippet-color: var(--color-cyan-500);\n    --topbar-background-color: var(--color-gray);\n    --toplevel-warning-background-color: hsl(33deg 14% 18%);\n    --toplevel-warning-message-text-color: var(--color-orange-700);\n    --toplevel-warning-text-color: var(--color-gray-100);\n\n    /* SVGs */\n    --plugin-icon-url: var(--plugin-icon-url-dark);\n    --pwa-installable-gray-url: var(--pwa-installable-gray-url-dark);\n    --pwa-optimized-gray-url: var(--pwa-optimized-gray-url-dark);\n  }\n}\n\n@media only screen and (max-width: 480px) {\n  .lh-vars {\n    --audit-group-margin-bottom: 20px;\n    --edge-gap-padding: var(--default-padding);\n    --env-name-min-width: 120px;\n    --gauge-circle-size-big: 96px;\n    --gauge-circle-size: 72px;\n    --gauge-label-font-size-big: 22px;\n    --gauge-label-font-size: 14px;\n    --gauge-label-line-height-big: 26px;\n    --gauge-label-line-height: 20px;\n    --gauge-percentage-font-size-big: 34px;\n    --gauge-percentage-font-size: 26px;\n    --gauge-wrapper-width: 112px;\n    --header-padding: 16px 0 16px 0;\n    --image-preview-size: 24px;\n    --plugin-icon-size: 75%;\n    --pwa-icon-margin: 0 7px 0 -3px;\n    --report-font-size: 14px;\n    --report-line-height: 20px;\n    --score-icon-margin-left: 2px;\n    --score-icon-size: 10px;\n    --topbar-height: 28px;\n    --topbar-logo-size: 20px;\n  }\n\n  /* Not enough space to adequately show the relative savings bars. */\n  .lh-sparkline {\n    display: none;\n  }\n}\n\n.lh-vars.lh-devtools {\n  --audit-explanation-line-height: 14px;\n  --audit-group-margin-bottom: 20px;\n  --audit-group-padding-vertical: 12px;\n  --audit-padding-vertical: 4px;\n  --category-padding: 12px;\n  --default-padding: 12px;\n  --env-name-min-width: 120px;\n  --footer-padding-vertical: 8px;\n  --gauge-circle-size-big: 72px;\n  --gauge-circle-size: 64px;\n  --gauge-label-font-size-big: 22px;\n  --gauge-label-font-size: 14px;\n  --gauge-label-line-height-big: 26px;\n  --gauge-label-line-height: 20px;\n  --gauge-percentage-font-size-big: 34px;\n  --gauge-percentage-font-size: 26px;\n  --gauge-wrapper-width: 97px;\n  --header-line-height: 20px;\n  --header-padding: 16px 0 16px 0;\n  --screenshot-overlay-background: transparent;\n  --plugin-icon-size: 75%;\n  --pwa-icon-margin: 0 7px 0 -3px;\n  --report-font-family-monospace: \'Menlo\', \'dejavu sans mono\', \'Consolas\', \'Lucida Console\', monospace;\n  --report-font-family: \'.SFNSDisplay-Regular\', \'Helvetica Neue\', \'Lucida Grande\', sans-serif;\n  --report-font-size: 12px;\n  --report-line-height: 20px;\n  --score-icon-margin-left: 2px;\n  --score-icon-size: 10px;\n  --section-padding-vertical: 8px;\n}\n\n.lh-devtools.lh-root {\n  height: 100%;\n}\n.lh-devtools.lh-root img {\n  /* Override devtools default \'min-width: 0\' so svg without size in a flexbox isn\'t collapsed. */\n  min-width: auto;\n}\n.lh-devtools .lh-container {\n  overflow-y: scroll;\n  height: calc(100% - var(--topbar-height));\n}\n@media print {\n  .lh-devtools .lh-container {\n    overflow: unset;\n  }\n}\n.lh-devtools .lh-sticky-header {\n  /* This is normally the height of the topbar, but we want it to stick to the top of our scroll container .lh-container` */\n  top: 0;\n}\n.lh-devtools .lh-element-screenshot__overlay {\n  position: absolute;\n}\n\n@keyframes fadeIn {\n  0% { opacity: 0;}\n  100% { opacity: 0.6;}\n}\n\n.lh-root *, .lh-root *::before, .lh-root *::after {\n  box-sizing: border-box;\n}\n\n.lh-root {\n  font-family: var(--report-font-family);\n  font-size: var(--report-font-size);\n  margin: 0;\n  line-height: var(--report-line-height);\n  background: var(--report-background-color);\n  color: var(--report-text-color);\n}\n\n.lh-root :focus {\n    outline: -webkit-focus-ring-color auto 3px;\n}\n.lh-root summary:focus {\n    outline: none;\n    box-shadow: 0 0 0 1px hsl(217, 89%, 61%);\n}\n\n.lh-root [hidden] {\n  display: none !important;\n}\n\n.lh-root pre {\n  margin: 0;\n}\n\n.lh-root details > summary {\n  cursor: pointer;\n}\n\n.lh-hidden {\n  display: none !important;\n}\n\n.lh-container {\n  /*\n  Text wrapping in the report is so much FUN!\n  We have a `word-break: break-word;` globally here to prevent a few common scenarios, namely\n  long non-breakable text (usually URLs) found in:\n    1. The footer\n    2. .lh-node (outerHTML)\n    3. .lh-code\n\n  With that sorted, the next challenge is appropriate column sizing and text wrapping inside our\n  .lh-details tables. Even more fun.\n    * We don\'t want table headers ("Potential Savings (ms)") to wrap or their column values, but\n    we\'d be happy for the URL column to wrap if the URLs are particularly long.\n    * We want the narrow columns to remain narrow, providing the most column width for URL\n    * We don\'t want the table to extend past 100% width.\n    * Long URLs in the URL column can wrap. Util.getURLDisplayName maxes them out at 64 characters,\n      but they do not get any overflow:ellipsis treatment.\n  */\n  word-break: break-word;\n}\n\n.lh-audit-group a,\n.lh-category-header__description a,\n.lh-audit__description a,\n.lh-warnings a,\n.lh-footer a,\n.lh-table-column--link a {\n  color: var(--link-color);\n}\n\n.lh-audit__description, .lh-audit__stackpack {\n  --inner-audit-padding-right: var(--stackpack-padding-horizontal);\n  padding-left: var(--audit-description-padding-left);\n  padding-right: var(--inner-audit-padding-right);\n  padding-top: 8px;\n  padding-bottom: 8px;\n}\n\n.lh-details {\n  margin-top: var(--default-padding);\n  margin-bottom: var(--default-padding);\n  margin-left: var(--audit-description-padding-left);\n  /* whatever the .lh-details side margins are */\n  width: 100%;\n}\n\n.lh-audit__stackpack {\n  display: flex;\n  align-items: center;\n}\n\n.lh-audit__stackpack__img {\n  max-width: 30px;\n  margin-right: var(--default-padding)\n}\n\n/* Report header */\n\n.lh-report-icon {\n  display: flex;\n  align-items: center;\n  padding: 10px 12px;\n  cursor: pointer;\n}\n.lh-report-icon[disabled] {\n  opacity: 0.3;\n  pointer-events: none;\n}\n\n.lh-report-icon::before {\n  content: "";\n  margin: 4px;\n  background-repeat: no-repeat;\n  width: var(--report-icon-size);\n  height: var(--report-icon-size);\n  opacity: 0.7;\n  display: inline-block;\n  vertical-align: middle;\n}\n.lh-report-icon:hover::before {\n  opacity: 1;\n}\n.lh-dark .lh-report-icon::before {\n  filter: invert(1);\n}\n.lh-report-icon--print::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/><path fill="none" d="M0 0h24v24H0z"/></svg>\');\n}\n.lh-report-icon--copy::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>\');\n}\n.lh-report-icon--open::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>\');\n}\n.lh-report-icon--download::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>\');\n}\n.lh-report-icon--dark::before {\n  background-image:url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 100 125"><path d="M50 23.587c-16.27 0-22.799 12.574-22.799 21.417 0 12.917 10.117 22.451 12.436 32.471h20.726c2.32-10.02 12.436-19.554 12.436-32.471 0-8.843-6.528-21.417-22.799-21.417zM39.637 87.161c0 3.001 1.18 4.181 4.181 4.181h.426l.41 1.231C45.278 94.449 46.042 95 48.019 95h3.963c1.978 0 2.74-.551 3.365-2.427l.409-1.231h.427c3.002 0 4.18-1.18 4.18-4.181V80.91H39.637v6.251zM50 18.265c1.26 0 2.072-.814 2.072-2.073v-9.12C52.072 5.813 51.26 5 50 5c-1.259 0-2.072.813-2.072 2.073v9.12c0 1.259.813 2.072 2.072 2.072zM68.313 23.727c.994.774 2.135.634 2.91-.357l5.614-7.187c.776-.992.636-2.135-.356-2.909-.992-.776-2.135-.636-2.91.357l-5.613 7.186c-.778.993-.636 2.135.355 2.91zM91.157 36.373c-.306-1.222-1.291-1.815-2.513-1.51l-8.85 2.207c-1.222.305-1.814 1.29-1.51 2.512.305 1.223 1.291 1.814 2.513 1.51l8.849-2.206c1.223-.305 1.816-1.291 1.511-2.513zM86.757 60.48l-8.331-3.709c-1.15-.512-2.225-.099-2.736 1.052-.512 1.151-.1 2.224 1.051 2.737l8.33 3.707c1.15.514 2.225.101 2.736-1.05.513-1.149.1-2.223-1.05-2.737zM28.779 23.37c.775.992 1.917 1.131 2.909.357.992-.776 1.132-1.917.357-2.91l-5.615-7.186c-.775-.992-1.917-1.132-2.909-.357s-1.131 1.917-.356 2.909l5.614 7.187zM21.715 39.583c.305-1.223-.288-2.208-1.51-2.513l-8.849-2.207c-1.222-.303-2.208.289-2.513 1.511-.303 1.222.288 2.207 1.511 2.512l8.848 2.206c1.222.304 2.208-.287 2.513-1.509zM21.575 56.771l-8.331 3.711c-1.151.511-1.563 1.586-1.05 2.735.511 1.151 1.586 1.563 2.736 1.052l8.331-3.711c1.151-.511 1.563-1.586 1.05-2.735-.512-1.15-1.585-1.562-2.736-1.052z"/></svg>\');\n}\n.lh-report-icon--treemap::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="black"><path d="M3 5v14h19V5H3zm2 2h15v4H5V7zm0 10v-4h4v4H5zm6 0v-4h9v4h-9z"/></svg>\');\n}\n.lh-report-icon--date::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 11h2v2H7v-2zm14-5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6c0-1.1.9-2 2-2h1V2h2v2h8V2h2v2h1a2 2 0 012 2zM5 8h14V6H5v2zm14 12V10H5v10h14zm-4-7h2v-2h-2v2zm-4 0h2v-2h-2v2z"/></svg>\');\n}\n.lh-report-icon--devices::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 6h18V4H4a2 2 0 00-2 2v11H0v3h14v-3H4V6zm19 2h-6a1 1 0 00-1 1v10c0 .6.5 1 1 1h6c.6 0 1-.5 1-1V9c0-.6-.5-1-1-1zm-1 9h-4v-7h4v7z"/></svg>\');\n}\n.lh-report-icon--world::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm7 6h-3c-.3-1.3-.8-2.5-1.4-3.6A8 8 0 0 1 18.9 8zm-7-4a14 14 0 0 1 2 4h-4a14 14 0 0 1 2-4zM4.3 14a8.2 8.2 0 0 1 0-4h3.3a16.5 16.5 0 0 0 0 4H4.3zm.8 2h3a14 14 0 0 0 1.3 3.6A8 8 0 0 1 5.1 16zm3-8H5a8 8 0 0 1 4.3-3.6L8 8zM12 20a14 14 0 0 1-2-4h4a14 14 0 0 1-2 4zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.6 14.6 0 0 1 0 4zm.3 5.6c.6-1.2 1-2.4 1.4-3.6h3a8 8 0 0 1-4.4 3.6zm1.8-5.6a16.5 16.5 0 0 0 0-4h3.3a8.2 8.2 0 0 1 0 4h-3.3z"/></svg>\');\n}\n.lh-report-icon--stopwatch::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.1-6.6L20.5 6l-1.4-1.4L17.7 6A9 9 0 0 0 3 13a9 9 0 1 0 16-5.6zm-7 12.6a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"/></svg>\');\n}\n.lh-report-icon--networkspeed::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.9 5c-.2 0-.3 0-.4.2v.2L10.1 17a2 2 0 0 0-.2 1 2 2 0 0 0 4 .4l2.4-12.9c0-.3-.2-.5-.5-.5zM1 9l2 2c2.9-2.9 6.8-4 10.5-3.6l1.2-2.7C10 3.8 4.7 5.3 1 9zm20 2 2-2a15.4 15.4 0 0 0-5.6-3.6L17 8.2c1.5.7 2.9 1.6 4.1 2.8zm-4 4 2-2a9.9 9.9 0 0 0-2.7-1.9l-.5 3 1.2.9zM5 13l2 2a7.1 7.1 0 0 1 4-2l1.3-2.9C9.7 10.1 7 11 5 13z"/></svg>\');\n}\n.lh-report-icon--samples-one::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="7" cy="14" r="3"/><path d="M7 18a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm5.6 17.6a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>\');\n}\n.lh-report-icon--samples-many::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 18a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm5.6 17.6a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/><circle cx="7" cy="14" r="3"/><circle cx="11" cy="6" r="3"/></svg>\');\n}\n.lh-report-icon--chrome::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 562 562"><path d="M256 25.6v25.6a204 204 0 0 1 144.8 60 204 204 0 0 1 60 144.8 204 204 0 0 1-60 144.8 204 204 0 0 1-144.8 60 204 204 0 0 1-144.8-60 204 204 0 0 1-60-144.8 204 204 0 0 1 60-144.8 204 204 0 0 1 144.8-60V0a256 256 0 1 0 0 512 256 256 0 0 0 0-512v25.6z"/><path d="M256 179.2v25.6a51.3 51.3 0 0 1 0 102.4 51.3 51.3 0 0 1 0-102.4v-51.2a102.3 102.3 0 1 0-.1 204.7 102.3 102.3 0 0 0 .1-204.7v25.6z"/><path d="M256 204.8h217.6a25.6 25.6 0 0 0 0-51.2H256a25.6 25.6 0 0 0 0 51.2m44.3 76.8L191.5 470.1a25.6 25.6 0 1 0 44.4 25.6l108.8-188.5a25.6 25.6 0 1 0-44.4-25.6m-88.6 0L102.9 93.2a25.7 25.7 0 0 0-35-9.4 25.7 25.7 0 0 0-9.4 35l108.8 188.5a25.7 25.7 0 0 0 35 9.4 25.9 25.9 0 0 0 9.4-35.1"/></svg>\');\n}\n\n\n\n.lh-buttons {\n  display: flex;\n  flex-wrap: wrap;\n  margin: var(--default-padding) 0;\n}\n.lh-button {\n  height: 32px;\n  border: 1px solid var(--report-border-color-secondary);\n  border-radius: 3px;\n  color: var(--link-color);\n  background-color: var(--report-background-color);\n  margin: 5px;\n}\n\n.lh-button:first-of-type {\n  margin-left: 0;\n}\n\n/* Node */\n.lh-node__snippet {\n  font-family: var(--report-font-family-monospace);\n  color: var(--snippet-color);\n  font-size: var(--report-monospace-font-size);\n  line-height: 20px;\n}\n\n/* Score */\n\n.lh-audit__score-icon {\n  width: var(--score-icon-size);\n  height: var(--score-icon-size);\n  margin: var(--score-icon-margin);\n}\n\n.lh-audit--pass .lh-audit__display-text {\n  color: var(--color-pass-secondary);\n}\n.lh-audit--pass .lh-audit__score-icon,\n.lh-scorescale-range--pass::before {\n  border-radius: 100%;\n  background: var(--color-pass);\n}\n\n.lh-audit--average .lh-audit__display-text {\n  color: var(--color-average-secondary);\n}\n.lh-audit--average .lh-audit__score-icon,\n.lh-scorescale-range--average::before {\n  background: var(--color-average);\n  width: var(--icon-square-size);\n  height: var(--icon-square-size);\n}\n\n.lh-audit--fail .lh-audit__display-text {\n  color: var(--color-fail-secondary);\n}\n.lh-audit--fail .lh-audit__score-icon,\n.lh-audit--error .lh-audit__score-icon,\n.lh-scorescale-range--fail::before {\n  border-left: calc(var(--score-icon-size) / 2) solid transparent;\n  border-right: calc(var(--score-icon-size) / 2) solid transparent;\n  border-bottom: var(--score-icon-size) solid var(--color-fail);\n}\n\n.lh-audit--manual .lh-audit__display-text,\n.lh-audit--notapplicable .lh-audit__display-text {\n  color: var(--color-gray-600);\n}\n.lh-audit--manual .lh-audit__score-icon,\n.lh-audit--notapplicable .lh-audit__score-icon {\n  border: calc(0.2 * var(--score-icon-size)) solid var(--color-gray-400);\n  border-radius: 100%;\n  background: none;\n}\n\n.lh-audit--informative .lh-audit__display-text {\n  color: var(--color-gray-600);\n}\n\n.lh-audit--informative .lh-audit__score-icon {\n  border: calc(0.2 * var(--score-icon-size)) solid var(--color-gray-400);\n  border-radius: 100%;\n}\n\n.lh-audit__description,\n.lh-audit__stackpack {\n  color: var(--report-text-color-secondary);\n}\n.lh-audit__adorn {\n  border: 1px solid slategray;\n  border-radius: 3px;\n  margin: 0 3px;\n  padding: 0 2px;\n  line-height: 1.1;\n  display: inline-block;\n  font-size: 90%;\n}\n\n.lh-category-header__description  {\n  text-align: center;\n  color: var(--color-gray-700);\n  margin: 0px auto;\n  max-width: 400px;\n}\n\n\n.lh-audit__display-text,\n.lh-load-opportunity__sparkline,\n.lh-chevron-container {\n  margin: 0 var(--audit-margin-horizontal);\n}\n.lh-chevron-container {\n  margin-right: 0;\n}\n\n.lh-audit__title-and-text {\n  flex: 1;\n}\n\n.lh-audit__title-and-text code {\n  color: var(--snippet-color);\n  font-size: var(--report-monospace-font-size);\n}\n\n/* Prepend display text with em dash separator. But not in Opportunities. */\n.lh-audit__display-text:not(:empty):before {\n  content: \'—\';\n  margin-right: var(--audit-margin-horizontal);\n}\n.lh-audit-group.lh-audit-group--load-opportunities .lh-audit__display-text:not(:empty):before {\n  display: none;\n}\n\n/* Expandable Details (Audit Groups, Audits) */\n.lh-audit__header {\n  display: flex;\n  align-items: center;\n  padding: var(--default-padding);\n}\n\n.lh-audit--load-opportunity .lh-audit__header {\n  display: block;\n}\n\n\n.lh-metricfilter {\n  display: grid;\n  justify-content: end;\n  align-items: center;\n  grid-auto-flow: column;\n  gap: 4px;\n  color: var(--color-gray-700);\n}\n\n.lh-metricfilter__radio {\n  position: absolute;\n  left: -9999px;\n}\n.lh-metricfilter input[type=\'radio\']:focus-visible + label {\n  outline: -webkit-focus-ring-color auto 1px;\n}\n\n.lh-metricfilter__label {\n  display: inline-flex;\n  padding: 0 4px;\n  height: 16px;\n  text-decoration: underline;\n  align-items: center;\n  cursor: pointer;\n  font-size: 90%;\n}\n\n.lh-metricfilter__label--active {\n  background: var(--color-blue-primary);\n  color: var(--color-white);\n  border-radius: 3px;\n  text-decoration: none;\n}\n/* Give the \'All\' choice a more muted display */\n.lh-metricfilter__label--active[for="metric-All"] {\n  background-color: var(--color-blue-200) !important;\n  color: black !important;\n}\n\n.lh-metricfilter__text {\n  margin-right: 8px;\n}\n\n/* If audits are filtered, hide the itemcount for Passed Audits… */\n.lh-category--filtered .lh-audit-group .lh-audit-group__itemcount {\n  display: none;\n}\n\n\n.lh-audit__header:hover {\n  background-color: var(--color-hover);\n}\n\n/* We want to hide the browser\'s default arrow marker on summary elements. Admittedly, it\'s complicated. */\n.lh-root details > summary {\n  /* Blink 89+ and Firefox will hide the arrow when display is changed from (new) default of `list-item` to block.  https://chromestatus.com/feature/6730096436051968*/\n  display: block;\n}\n/* Safari and Blink <=88 require using the -webkit-details-marker selector */\n.lh-root details > summary::-webkit-details-marker {\n  display: none;\n}\n\n/* Perf Metric */\n\n.lh-metrics-container {\n  display: grid;\n  grid-auto-rows: 1fr;\n  grid-template-columns: 1fr 1fr;\n  grid-column-gap: var(--report-line-height);\n  margin-bottom: var(--default-padding);\n}\n\n.lh-metric {\n  border-top: 1px solid var(--report-border-color-secondary);\n}\n\n.lh-metric:nth-last-child(-n+2) {\n  border-bottom: 1px solid var(--report-border-color-secondary);\n}\n\n\n.lh-metric__innerwrap {\n  display: grid;\n  /**\n   * Icon -- Metric Name\n   *      -- Metric Value\n   */\n  grid-template-columns: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right)) 1fr;\n  align-items: center;\n  padding: var(--default-padding);\n}\n\n.lh-metric__details {\n  order: -1;\n}\n\n.lh-metric__title {\n  flex: 1;\n}\n\n.lh-calclink {\n  padding-left: calc(1ex / 3);\n}\n\n.lh-metric__description {\n  display: none;\n  grid-column-start: 2;\n  grid-column-end: 4;\n  color: var(--report-text-color-secondary);\n}\n\n.lh-metric__value {\n  font-size: var(--metric-value-font-size);\n  margin: calc(var(--default-padding) / 2) 0;\n  white-space: nowrap; /* No wrapping between metric value and the icon */\n  grid-column-start: 2;\n}\n\n\n@media screen and (max-width: 535px) {\n  .lh-metrics-container {\n    display: block;\n  }\n\n  .lh-metric {\n    border-bottom: none !important;\n  }\n  .lh-metric:nth-last-child(1) {\n    border-bottom: 1px solid var(--report-border-color-secondary) !important;\n  }\n\n  /* Change the grid to 3 columns for narrow viewport. */\n  .lh-metric__innerwrap {\n  /**\n   * Icon -- Metric Name -- Metric Value\n   */\n    grid-template-columns: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right)) 2fr 1fr;\n  }\n  .lh-metric__value {\n    justify-self: end;\n    grid-column-start: unset;\n  }\n}\n\n/* No-JS toggle switch */\n/* Keep this selector sync\'d w/ `magicSelector` in report-ui-features-test.js */\n .lh-metrics-toggle__input:checked ~ .lh-metrics-container .lh-metric__description {\n  display: block;\n}\n\n/* TODO get rid of the SVGS and clean up these some more */\n.lh-metrics-toggle__input {\n  opacity: 0;\n  position: absolute;\n  right: 0;\n  top: 0px;\n}\n\n.lh-metrics-toggle__input + div > label > .lh-metrics-toggle__labeltext--hide,\n.lh-metrics-toggle__input:checked + div > label > .lh-metrics-toggle__labeltext--show {\n  display: none;\n}\n.lh-metrics-toggle__input:checked + div > label > .lh-metrics-toggle__labeltext--hide {\n  display: inline;\n}\n.lh-metrics-toggle__input:focus + div > label {\n  outline: -webkit-focus-ring-color auto 3px;\n}\n\n.lh-metrics-toggle__label {\n  cursor: pointer;\n  font-size: var(--report-font-size-secondary);\n  line-height: var(--report-line-height-secondary);\n  color: var(--color-gray-700);\n}\n\n/* Pushes the metric description toggle button to the right. */\n.lh-audit-group--metrics .lh-audit-group__header {\n  display: flex;\n  justify-content: space-between;\n}\n\n.lh-metric__icon,\n.lh-scorescale-range::before {\n  content: \'\';\n  width: var(--score-icon-size);\n  height: var(--score-icon-size);\n  display: inline-block;\n  margin: var(--score-icon-margin);\n}\n\n.lh-metric--pass .lh-metric__value {\n  color: var(--color-pass-secondary);\n}\n.lh-metric--pass .lh-metric__icon {\n  border-radius: 100%;\n  background: var(--color-pass);\n}\n\n.lh-metric--average .lh-metric__value {\n  color: var(--color-average-secondary);\n}\n.lh-metric--average .lh-metric__icon {\n  background: var(--color-average);\n  width: var(--icon-square-size);\n  height: var(--icon-square-size);\n}\n\n.lh-metric--fail .lh-metric__value {\n  color: var(--color-fail-secondary);\n}\n.lh-metric--fail .lh-metric__icon,\n.lh-metric--error .lh-metric__icon {\n  border-left: calc(var(--score-icon-size) / 2) solid transparent;\n  border-right: calc(var(--score-icon-size) / 2) solid transparent;\n  border-bottom: var(--score-icon-size) solid var(--color-fail);\n}\n\n.lh-metric--error .lh-metric__value,\n.lh-metric--error .lh-metric__description {\n  color: var(--color-fail-secondary);\n}\n\n/* Perf load opportunity */\n\n.lh-load-opportunity__cols {\n  display: flex;\n  align-items: flex-start;\n}\n\n.lh-load-opportunity__header .lh-load-opportunity__col {\n  color: var(--color-gray-600);\n  display: unset;\n  line-height: calc(2.3 * var(--report-font-size));\n}\n\n.lh-load-opportunity__col {\n  display: flex;\n}\n\n.lh-load-opportunity__col--one {\n  flex: 5;\n  align-items: center;\n  margin-right: 2px;\n}\n.lh-load-opportunity__col--two {\n  flex: 4;\n  text-align: right;\n}\n\n.lh-audit--load-opportunity .lh-audit__display-text {\n  text-align: right;\n  flex: 0 0 calc(3 * var(--report-font-size));\n}\n\n\n/* Sparkline */\n\n.lh-load-opportunity__sparkline {\n  flex: 1;\n  margin-top: calc((var(--report-line-height) - var(--sparkline-height)) / 2);\n}\n\n.lh-sparkline {\n  height: var(--sparkline-height);\n  width: 100%;\n}\n\n.lh-sparkline__bar {\n  height: 100%;\n  float: right;\n}\n\n.lh-audit--pass .lh-sparkline__bar {\n  background: var(--color-pass);\n}\n\n.lh-audit--average .lh-sparkline__bar {\n  background: var(--color-average);\n}\n\n.lh-audit--fail .lh-sparkline__bar {\n  background: var(--color-fail);\n}\n\n/* Filmstrip */\n\n.lh-filmstrip-container {\n  /* smaller gap between metrics and filmstrip */\n  margin: -8px auto 0 auto;\n}\n\n.lh-filmstrip {\n  display: grid;\n  justify-content: space-between;\n  padding-bottom: var(--default-padding);\n  width: 100%;\n  grid-template-columns: repeat(auto-fit, 60px);\n}\n\n.lh-filmstrip__frame {\n  text-align: right;\n  position: relative;\n}\n\n.lh-filmstrip__thumbnail {\n  border: 1px solid var(--report-border-color-secondary);\n  max-height: 100px;\n  max-width: 60px;\n}\n\n/* Audit */\n\n.lh-audit {\n  border-bottom: 1px solid var(--report-border-color-secondary);\n}\n\n/* Apply border-top to just the first audit. */\n.lh-audit {\n  border-top: 1px solid var(--report-border-color-secondary);\n}\n.lh-audit ~ .lh-audit {\n  border-top: none;\n}\n\n\n.lh-audit--error .lh-audit__display-text {\n  color: var(--color-fail-secondary);\n}\n\n/* Audit Group */\n\n.lh-audit-group {\n  margin-bottom: var(--audit-group-margin-bottom);\n  position: relative;\n}\n.lh-audit-group--metrics {\n  margin-bottom: calc(var(--audit-group-margin-bottom) / 2);\n}\n\n.lh-audit-group__header::before {\n  /* By default, groups don\'t get an icon */\n  content: none;\n  width: var(--pwa-icon-size);\n  height: var(--pwa-icon-size);\n  margin: var(--pwa-icon-margin);\n  display: inline-block;\n  vertical-align: middle;\n}\n\n/* Style the "over budget" columns red. */\n.lh-audit-group--budgets #performance-budget tbody tr td:nth-child(4),\n.lh-audit-group--budgets #performance-budget tbody tr td:nth-child(5),\n.lh-audit-group--budgets #timing-budget tbody tr td:nth-child(3) {\n  color: var(--color-red-700);\n}\n\n/* Align the "over budget request count" text to be close to the "over budget bytes" column. */\n.lh-audit-group--budgets .lh-table tbody tr td:nth-child(4){\n  text-align: right;\n}\n\n.lh-audit-group--budgets .lh-details--budget {\n  width: 100%;\n  margin: 0 0 var(--default-padding);\n}\n\n.lh-audit-group--pwa-installable .lh-audit-group__header::before {\n  content: \'\';\n  background-image: var(--pwa-installable-gray-url);\n}\n.lh-audit-group--pwa-optimized .lh-audit-group__header::before {\n  content: \'\';\n  background-image: var(--pwa-optimized-gray-url);\n}\n.lh-audit-group--pwa-installable.lh-badged .lh-audit-group__header::before {\n  background-image: var(--pwa-installable-color-url);\n}\n.lh-audit-group--pwa-optimized.lh-badged .lh-audit-group__header::before {\n  background-image: var(--pwa-optimized-color-url);\n}\n\n.lh-audit-group--metrics .lh-audit-group__summary {\n  margin-top: 0;\n  margin-bottom: 0;\n}\n\n.lh-audit-group__summary {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.lh-audit-group__header .lh-chevron {\n  margin-top: calc((var(--report-line-height) - 5px) / 2);\n}\n\n.lh-audit-group__header {\n  letter-spacing: 0.8px;\n  padding: var(--default-padding);\n  padding-left: 0;\n}\n\n.lh-audit-group__header, .lh-audit-group__summary {\n  font-size: var(--report-font-size-secondary);\n  line-height: var(--report-line-height-secondary);\n  color: var(--color-gray-700);\n}\n\n.lh-audit-group__title {\n  text-transform: uppercase;\n  font-weight: 500;\n}\n\n.lh-audit-group__itemcount {\n  color: var(--color-gray-600);\n}\n\n.lh-audit-group__footer {\n  color: var(--color-gray-600);\n  display: block;\n  margin-top: var(--default-padding);\n}\n\n.lh-details,\n.lh-category-header__description,\n.lh-load-opportunity__header,\n.lh-audit-group__footer {\n  font-size: var(--report-font-size-secondary);\n  line-height: var(--report-line-height-secondary);\n}\n\n.lh-audit-explanation {\n  margin: var(--audit-padding-vertical) 0 calc(var(--audit-padding-vertical) / 2) var(--audit-margin-horizontal);\n  line-height: var(--audit-explanation-line-height);\n  display: inline-block;\n}\n\n.lh-audit--fail .lh-audit-explanation {\n  color: var(--color-fail-secondary);\n}\n\n/* Report */\n.lh-list > :not(:last-child) {\n  margin-bottom: calc(var(--default-padding) * 2);\n}\n\n.lh-header-container {\n  display: block;\n  margin: 0 auto;\n  position: relative;\n  word-wrap: break-word;\n}\n\n.lh-header-container .lh-scores-wrapper {\n  border-bottom: 1px solid var(--color-gray-200);\n}\n\n\n.lh-report {\n  min-width: var(--report-content-min-width);\n}\n\n.lh-exception {\n  font-size: large;\n}\n\n.lh-code {\n  white-space: normal;\n  margin-top: 0;\n  font-size: var(--report-monospace-font-size);\n}\n\n.lh-warnings {\n  --item-margin: calc(var(--report-line-height) / 6);\n  color: var(--color-average-secondary);\n  margin: var(--audit-padding-vertical) 0;\n  padding: var(--default-padding)\n    var(--default-padding)\n    var(--default-padding)\n    calc(var(--audit-description-padding-left));\n  background-color: var(--toplevel-warning-background-color);\n}\n.lh-warnings span {\n  font-weight: bold;\n}\n\n.lh-warnings--toplevel {\n  --item-margin: calc(var(--header-line-height) / 4);\n  color: var(--toplevel-warning-text-color);\n  margin-left: auto;\n  margin-right: auto;\n  max-width: var(--report-content-max-width-minus-edge-gap);\n  padding: var(--toplevel-warning-padding);\n  border-radius: 8px;\n}\n\n.lh-warnings__msg {\n  color: var(--toplevel-warning-message-text-color);\n  margin: 0;\n}\n\n.lh-warnings ul {\n  margin: 0;\n}\n.lh-warnings li {\n  margin: var(--item-margin) 0;\n}\n.lh-warnings li:last-of-type {\n  margin-bottom: 0;\n}\n\n.lh-scores-header {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n}\n.lh-scores-header__solo {\n  padding: 0;\n  border: 0;\n}\n\n/* Gauge */\n\n.lh-gauge__wrapper--pass {\n  color: var(--color-pass-secondary);\n  fill: var(--color-pass);\n  stroke: var(--color-pass);\n}\n\n.lh-gauge__wrapper--average {\n  color: var(--color-average-secondary);\n  fill: var(--color-average);\n  stroke: var(--color-average);\n}\n\n.lh-gauge__wrapper--fail {\n  color: var(--color-fail-secondary);\n  fill: var(--color-fail);\n  stroke: var(--color-fail);\n}\n\n.lh-gauge__wrapper--not-applicable {\n  color: var(--color-not-applicable);\n  fill: var(--color-not-applicable);\n  stroke: var(--color-not-applicable);\n}\n\n.lh-fraction__wrapper .lh-fraction__content::before {\n  content: \'\';\n  height: var(--score-icon-size);\n  width: var(--score-icon-size);\n  margin: var(--score-icon-margin);\n  display: inline-block;\n}\n.lh-fraction__wrapper--pass .lh-fraction__content {\n  color: var(--color-pass-secondary);\n}\n.lh-fraction__wrapper--pass .lh-fraction__background {\n  background-color: var(--color-pass);\n}\n.lh-fraction__wrapper--pass .lh-fraction__content::before {\n  background-color: var(--color-pass);\n  border-radius: 50%;\n}\n.lh-fraction__wrapper--average .lh-fraction__content {\n  color: var(--color-average-secondary);\n}\n.lh-fraction__wrapper--average .lh-fraction__background,\n.lh-fraction__wrapper--average .lh-fraction__content::before {\n  background-color: var(--color-average);\n}\n.lh-fraction__wrapper--fail .lh-fraction__content {\n  color: var(--color-fail);\n}\n.lh-fraction__wrapper--fail .lh-fraction__background {\n  background-color: var(--color-fail);\n}\n.lh-fraction__wrapper--fail .lh-fraction__content::before {\n  border-left: calc(var(--score-icon-size) / 2) solid transparent;\n  border-right: calc(var(--score-icon-size) / 2) solid transparent;\n  border-bottom: var(--score-icon-size) solid var(--color-fail);\n}\n.lh-fraction__wrapper--null .lh-fraction__content {\n  color: var(--color-gray-700);\n}\n.lh-fraction__wrapper--null .lh-fraction__background {\n  background-color: var(--color-gray-700);\n}\n.lh-fraction__wrapper--null .lh-fraction__content::before {\n  border-radius: 50%;\n  border: calc(0.2 * var(--score-icon-size)) solid var(--color-gray-700);\n}\n\n.lh-fraction__background {\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  border-radius: calc(var(--gauge-circle-size) / 2);\n  opacity: 0.1;\n  z-index: -1;\n}\n\n.lh-fraction__content-wrapper {\n  height: var(--gauge-circle-size);\n  display: flex;\n  align-items: center;\n}\n\n.lh-fraction__content {\n  display: flex;\n  position: relative;\n  align-items: center;\n  justify-content: center;\n  font-size: calc(0.3 * var(--gauge-circle-size));\n  line-height: calc(0.4 * var(--gauge-circle-size));\n  width: max-content;\n  min-width: calc(1.5 * var(--gauge-circle-size));\n  padding: calc(0.1 * var(--gauge-circle-size)) calc(0.2 * var(--gauge-circle-size));\n  --score-icon-size: calc(0.21 * var(--gauge-circle-size));\n  --score-icon-margin: 0 calc(0.15 * var(--gauge-circle-size)) 0 0;\n}\n\n.lh-gauge {\n  stroke-linecap: round;\n  width: var(--gauge-circle-size);\n  height: var(--gauge-circle-size);\n}\n\n.lh-category .lh-gauge {\n  --gauge-circle-size: var(--gauge-circle-size-big);\n}\n\n.lh-gauge-base {\n  opacity: 0.1;\n}\n\n.lh-gauge-arc {\n  fill: none;\n  transform-origin: 50% 50%;\n  animation: load-gauge var(--transition-length) ease forwards;\n  animation-delay: 250ms;\n}\n\n.lh-gauge__svg-wrapper {\n  position: relative;\n  height: var(--gauge-circle-size);\n}\n.lh-category .lh-gauge__svg-wrapper,\n.lh-category .lh-fraction__wrapper {\n  --gauge-circle-size: var(--gauge-circle-size-big);\n}\n\n/* The plugin badge overlay */\n.lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before {\n  width: var(--plugin-badge-size);\n  height: var(--plugin-badge-size);\n  background-color: var(--plugin-badge-background-color);\n  background-image: var(--plugin-icon-url);\n  background-repeat: no-repeat;\n  background-size: var(--plugin-icon-size);\n  background-position: 58% 50%;\n  content: "";\n  position: absolute;\n  right: -6px;\n  bottom: 0px;\n  display: block;\n  z-index: 100;\n  box-shadow: 0 0 4px rgba(0,0,0,.2);\n  border-radius: 25%;\n}\n.lh-category .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before {\n  width: var(--plugin-badge-size-big);\n  height: var(--plugin-badge-size-big);\n}\n\n@keyframes load-gauge {\n  from { stroke-dasharray: 0 352; }\n}\n\n.lh-gauge__percentage {\n  width: 100%;\n  height: var(--gauge-circle-size);\n  position: absolute;\n  font-family: var(--report-font-family-monospace);\n  font-size: calc(var(--gauge-circle-size) * 0.34 + 1.3px);\n  line-height: 0;\n  text-align: center;\n  top: calc(var(--score-container-padding) + var(--gauge-circle-size) / 2);\n}\n\n.lh-category .lh-gauge__percentage {\n  --gauge-circle-size: var(--gauge-circle-size-big);\n  --gauge-percentage-font-size: var(--gauge-percentage-font-size-big);\n}\n\n.lh-gauge__wrapper,\n.lh-fraction__wrapper {\n  position: relative;\n  display: flex;\n  align-items: center;\n  flex-direction: column;\n  text-decoration: none;\n  padding: var(--score-container-padding);\n\n  --transition-length: 1s;\n\n  /* Contain the layout style paint & layers during animation*/\n  contain: content;\n  will-change: opacity; /* Only using for layer promotion */\n}\n\n.lh-gauge__label,\n.lh-fraction__label {\n  font-size: var(--gauge-label-font-size);\n  font-weight: 500;\n  line-height: var(--gauge-label-line-height);\n  margin-top: 10px;\n  text-align: center;\n  color: var(--report-text-color);\n  word-break: keep-all;\n}\n\n/* TODO(#8185) use more BEM (.lh-gauge__label--big) instead of relying on descendant selector */\n.lh-category .lh-gauge__label,\n.lh-category .lh-fraction__label {\n  --gauge-label-font-size: var(--gauge-label-font-size-big);\n  --gauge-label-line-height: var(--gauge-label-line-height-big);\n  margin-top: 14px;\n}\n\n.lh-scores-header .lh-gauge__wrapper,\n.lh-scores-header .lh-fraction__wrapper,\n.lh-scores-header .lh-gauge--pwa__wrapper,\n.lh-sticky-header .lh-gauge__wrapper,\n.lh-sticky-header .lh-fraction__wrapper,\n.lh-sticky-header .lh-gauge--pwa__wrapper {\n  width: var(--gauge-wrapper-width);\n}\n\n.lh-scorescale {\n  display: inline-flex;\n\n  gap: calc(var(--default-padding) * 4);\n  margin: 16px auto 0 auto;\n  font-size: var(--report-font-size-secondary);\n  color: var(--color-gray-700);\n\n}\n\n.lh-scorescale-range {\n  display: flex;\n  align-items: center;\n  font-family: var(--report-font-family-monospace);\n  white-space: nowrap;\n}\n\n.lh-category-header__finalscreenshot .lh-scorescale {\n  border: 0;\n  display: flex;\n  justify-content: center;\n}\n\n.lh-category-header__finalscreenshot .lh-scorescale-range {\n  font-family: unset;\n  font-size: 12px;\n}\n\n.lh-scorescale-wrap {\n  display: contents;\n}\n\n/* Hide category score gauages if it\'s a single category report */\n.lh-header--solo-category .lh-scores-wrapper {\n  display: none;\n}\n\n\n.lh-categories {\n  width: 100%;\n  overflow: hidden;\n}\n\n.lh-category {\n  padding: var(--category-padding);\n  max-width: var(--report-content-max-width);\n  margin: 0 auto;\n\n  --sticky-header-height: calc(var(--gauge-circle-size-sm) + var(--score-container-padding) * 2);\n  --topbar-plus-sticky-header: calc(var(--topbar-height) + var(--sticky-header-height));\n  scroll-margin-top: var(--topbar-plus-sticky-header);\n\n  /* Faster recalc style & layout of the report. https://web.dev/content-visibility/ */\n  content-visibility: auto;\n  contain-intrinsic-size: 1000px;\n}\n\n.lh-category-wrapper {\n  border-bottom: 1px solid var(--color-gray-200);\n}\n\n.lh-category-header {\n  margin-bottom: var(--section-padding-vertical);\n}\n\n.lh-category-header .lh-score__gauge {\n  max-width: 400px;\n  width: auto;\n  margin: 0px auto;\n}\n\n.lh-category-header__finalscreenshot {\n  display: grid;\n  grid-template: none / 1fr 1px 1fr;\n  justify-items: center;\n  align-items: center;\n  gap: var(--report-line-height);\n  min-height: 288px;\n  margin-bottom: var(--default-padding);\n}\n\n.lh-final-ss-image {\n  /* constrain the size of the image to not be too large */\n  max-height: calc(var(--gauge-circle-size-big) * 2.8);\n  max-width: calc(var(--gauge-circle-size-big) * 3.5);\n  border: 1px solid var(--color-gray-200);\n  padding: 4px;\n  border-radius: 3px;\n  display: block;\n}\n\n.lh-category-headercol--separator {\n  background: var(--color-gray-200);\n  width: 1px;\n  height: var(--gauge-circle-size-big);\n}\n\n@media screen and (max-width: 780px) {\n  .lh-category-header__finalscreenshot {\n    grid-template: 1fr 1fr / none\n  }\n  .lh-category-headercol--separator {\n    display: none;\n  }\n}\n\n\n/* 964 fits the min-width of the filmstrip */\n@media screen and (max-width: 964px) {\n  .lh-report {\n    margin-left: 0;\n    width: 100%;\n  }\n}\n\n@media print {\n  body {\n    -webkit-print-color-adjust: exact; /* print background colors */\n  }\n  .lh-container {\n    display: block;\n  }\n  .lh-report {\n    margin-left: 0;\n    padding-top: 0;\n  }\n  .lh-categories {\n    margin-top: 0;\n  }\n}\n\n.lh-table {\n  border-collapse: collapse;\n  /* Can\'t assign padding to table, so shorten the width instead. */\n  width: calc(100% - var(--audit-description-padding-left) - var(--stackpack-padding-horizontal));\n  border: 1px solid var(--report-border-color-secondary);\n\n}\n\n.lh-table thead th {\n  font-weight: normal;\n  color: var(--color-gray-600);\n  /* See text-wrapping comment on .lh-container. */\n  word-break: normal;\n}\n\n.lh-row--even {\n  background-color: var(--table-higlight-background-color);\n}\n.lh-row--hidden {\n  display: none;\n}\n\n.lh-table th,\n.lh-table td {\n  padding: var(--default-padding);\n}\n\n.lh-table tr {\n  vertical-align: middle;\n}\n\n/* Looks unnecessary, but mostly for keeping the <th>s left-aligned */\n.lh-table-column--text,\n.lh-table-column--source-location,\n.lh-table-column--url,\n/* .lh-table-column--thumbnail, */\n/* .lh-table-column--empty,*/\n.lh-table-column--code,\n.lh-table-column--node {\n  text-align: left;\n}\n\n.lh-table-column--code {\n  min-width: 100px;\n}\n\n.lh-table-column--bytes,\n.lh-table-column--timespanMs,\n.lh-table-column--ms,\n.lh-table-column--numeric {\n  text-align: right;\n  word-break: normal;\n}\n\n\n\n.lh-table .lh-table-column--thumbnail {\n  width: var(--image-preview-size);\n}\n\n.lh-table-column--url {\n  min-width: 250px;\n}\n\n.lh-table-column--text {\n  min-width: 80px;\n}\n\n/* Keep columns narrow if they follow the URL column */\n/* 12% was determined to be a decent narrow width, but wide enough for column headings */\n.lh-table-column--url + th.lh-table-column--bytes,\n.lh-table-column--url + .lh-table-column--bytes + th.lh-table-column--bytes,\n.lh-table-column--url + .lh-table-column--ms,\n.lh-table-column--url + .lh-table-column--ms + th.lh-table-column--bytes,\n.lh-table-column--url + .lh-table-column--bytes + th.lh-table-column--timespanMs {\n  width: 12%;\n}\n\n.lh-text__url-host {\n  display: inline;\n}\n\n.lh-text__url-host {\n  margin-left: calc(var(--report-font-size) / 2);\n  opacity: 0.6;\n  font-size: 90%\n}\n\n.lh-thumbnail {\n  object-fit: cover;\n  width: var(--image-preview-size);\n  height: var(--image-preview-size);\n  display: block;\n}\n\n.lh-unknown pre {\n  overflow: scroll;\n  border: solid 1px var(--color-gray-200);\n}\n\n.lh-text__url > a {\n  color: inherit;\n  text-decoration: none;\n}\n\n.lh-text__url > a:hover {\n  text-decoration: underline dotted #999;\n}\n\n.lh-sub-item-row {\n  margin-left: 20px;\n  margin-bottom: 0;\n  color: var(--color-gray-700);\n}\n.lh-sub-item-row td {\n  padding-top: 4px;\n  padding-bottom: 4px;\n  padding-left: 20px;\n}\n\n/* Chevron\n   https://codepen.io/paulirish/pen/LmzEmK\n */\n.lh-chevron {\n  --chevron-angle: 42deg;\n  /* Edge doesn\'t support transform: rotate(calc(...)), so we define it here */\n  --chevron-angle-right: -42deg;\n  width: var(--chevron-size);\n  height: var(--chevron-size);\n  margin-top: calc((var(--report-line-height) - 12px) / 2);\n}\n\n.lh-chevron__lines {\n  transition: transform 0.4s;\n  transform: translateY(var(--report-line-height));\n}\n.lh-chevron__line {\n stroke: var(--chevron-line-stroke);\n stroke-width: var(--chevron-size);\n stroke-linecap: square;\n transform-origin: 50%;\n transform: rotate(var(--chevron-angle));\n transition: transform 300ms, stroke 300ms;\n}\n\n.lh-expandable-details .lh-chevron__line-right,\n.lh-expandable-details[open] .lh-chevron__line-left {\n transform: rotate(var(--chevron-angle-right));\n}\n\n.lh-expandable-details[open] .lh-chevron__line-right {\n  transform: rotate(var(--chevron-angle));\n}\n\n\n.lh-expandable-details[open]  .lh-chevron__lines {\n transform: translateY(calc(var(--chevron-size) * -1));\n}\n\n.lh-expandable-details[open] {\n  animation: 300ms openDetails forwards;\n  padding-bottom: var(--default-padding);\n}\n\n@keyframes openDetails {\n  from {\n    outline: 1px solid var(--report-background-color);\n  }\n  to {\n   outline: 1px solid;\n   box-shadow: 0 2px 4px rgba(0, 0, 0, .24);\n  }\n}\n\n@media screen and (max-width: 780px) {\n  /* no black outline if we\'re not confident the entire table can be displayed within bounds */\n  .lh-expandable-details[open] {\n    animation: none;\n  }\n}\n\n.lh-expandable-details[open] summary, details.lh-clump > summary {\n  border-bottom: 1px solid var(--report-border-color-secondary);\n}\ndetails.lh-clump[open] > summary {\n  border-bottom-width: 0;\n}\n\n\n\ndetails .lh-clump-toggletext--hide,\ndetails[open] .lh-clump-toggletext--show { display: none; }\ndetails[open] .lh-clump-toggletext--hide { display: block;}\n\n\n/* Tooltip */\n.lh-tooltip-boundary {\n  position: relative;\n}\n\n.lh-tooltip {\n  position: absolute;\n  display: none; /* Don\'t retain these layers when not needed */\n  opacity: 0;\n  background: #ffffff;\n  white-space: pre-line; /* Render newlines in the text */\n  min-width: 246px;\n  max-width: 275px;\n  padding: 15px;\n  border-radius: 5px;\n  text-align: initial;\n  line-height: 1.4;\n}\n/* shrink tooltips to not be cutoff on left edge of narrow viewports\n   45vw is chosen to be ~= width of the left column of metrics\n*/\n@media screen and (max-width: 535px) {\n  .lh-tooltip {\n    min-width: 45vw;\n    padding: 3vw;\n  }\n}\n\n.lh-tooltip-boundary:hover .lh-tooltip {\n  display: block;\n  animation: fadeInTooltip 250ms;\n  animation-fill-mode: forwards;\n  animation-delay: 850ms;\n  bottom: 100%;\n  z-index: 1;\n  will-change: opacity;\n  right: 0;\n  pointer-events: none;\n}\n\n.lh-tooltip::before {\n  content: "";\n  border: solid transparent;\n  border-bottom-color: #fff;\n  border-width: 10px;\n  position: absolute;\n  bottom: -20px;\n  right: 6px;\n  transform: rotate(180deg);\n  pointer-events: none;\n}\n\n@keyframes fadeInTooltip {\n  0% { opacity: 0; }\n  75% { opacity: 1; }\n  100% { opacity: 1;  filter: drop-shadow(1px 0px 1px #aaa) drop-shadow(0px 2px 4px hsla(206, 6%, 25%, 0.15)); pointer-events: auto; }\n}\n\n/* Element screenshot */\n.lh-element-screenshot {\n  position: relative;\n  overflow: hidden;\n  float: left;\n  margin-right: 20px;\n}\n.lh-element-screenshot__content {\n  overflow: hidden;\n}\n.lh-element-screenshot__image {\n  /* Set by ElementScreenshotRenderer.installFullPageScreenshotCssVariable */\n  background-image: var(--element-screenshot-url);\n  outline: 2px solid #777;\n  background-color: white;\n  background-repeat: no-repeat;\n}\n.lh-element-screenshot__mask {\n  position: absolute;\n  background: #555;\n  opacity: 0.8;\n}\n.lh-element-screenshot__element-marker {\n  position: absolute;\n  outline: 2px solid var(--color-lime-400);\n}\n.lh-element-screenshot__overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 2000; /* .lh-topbar is 1000 */\n  background: var(--screenshot-overlay-background);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: zoom-out;\n}\n\n.lh-element-screenshot__overlay .lh-element-screenshot {\n  margin-right: 0; /* clearing margin used in thumbnail case */\n  outline: 1px solid var(--color-gray-700);\n}\n\n.lh-screenshot-overlay--enabled .lh-element-screenshot {\n  cursor: zoom-out;\n}\n.lh-screenshot-overlay--enabled .lh-node .lh-element-screenshot {\n  cursor: zoom-in;\n}\n\n\n.lh-meta__items {\n  --meta-icon-size: calc(var(--report-icon-size) * 0.667);\n  padding: var(--default-padding);\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  background-color: var(--env-item-background-color);\n  border-radius: 3px;\n  margin: 0 0 var(--default-padding) 0;\n  font-size: 12px;\n  column-gap: var(--default-padding);\n  color: var(--color-gray-700);\n}\n\n.lh-meta__item {\n  display: block;\n  list-style-type: none;\n  position: relative;\n  padding: 0 0 0 calc(var(--meta-icon-size) + var(--default-padding) * 2);\n  cursor: unset; /* disable pointer cursor from report-icon */\n}\n\n.lh-meta__item.lh-tooltip-boundary {\n  text-decoration: dotted underline var(--color-gray-500);\n  cursor: help;\n}\n\n.lh-meta__item.lh-report-icon::before {\n  position: absolute;\n  left: var(--default-padding);\n  width: var(--meta-icon-size);\n  height: var(--meta-icon-size);\n}\n\n.lh-meta__item.lh-report-icon:hover::before {\n  opacity: 0.7;\n}\n\n.lh-meta__item .lh-tooltip {\n  color: var(--color-gray-800);\n}\n\n.lh-meta__item .lh-tooltip::before {\n  right: auto; /* Set the tooltip arrow to the leftside */\n  left: 6px;\n}\n\n/* Change the grid for narrow viewport. */\n@media screen and (max-width: 640px) {\n  .lh-meta__items {\n    grid-template-columns: 1fr 1fr;\n  }\n}\n@media screen and (max-width: 535px) {\n  .lh-meta__items {\n    display: block;\n  }\n}\n\n\n/*# sourceURL=report-styles.css */\n');
+  const el1 = dom.createElement("style");
+  el1.append("/**\n * @license\n * Copyright 2017 The Lighthouse Authors. All Rights Reserved.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *      http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS-IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\n/*\n  Naming convention:\n\n  If a variable is used for a specific component: --{component}-{property name}-{modifier}\n\n  Both {component} and {property name} should be kebab-case. If the target is the entire page,\n  use 'report' for the component. The property name should not be abbreviated. Use the\n  property name the variable is intended for - if it's used for multiple, a common descriptor\n  is fine (ex: 'size' for a variable applied to 'width' and 'height'). If a variable is shared\n  across multiple components, either create more variables or just drop the \"{component}-\"\n  part of the name. Append any modifiers at the end (ex: 'big', 'dark').\n\n  For colors: --color-{hue}-{intensity}\n\n  {intensity} is the Material Design tag - 700, A700, etc.\n*/\n.lh-vars {\n  /* Palette using Material Design Colors\n   * https://www.materialui.co/colors */\n  --color-amber-50: #FFF8E1;\n  --color-blue-200: #90CAF9;\n  --color-blue-900: #0D47A1;\n  --color-blue-A700: #2962FF;\n  --color-blue-primary: #06f;\n  --color-cyan-500: #00BCD4;\n  --color-gray-100: #F5F5F5;\n  --color-gray-300: #CFCFCF;\n  --color-gray-200: #E0E0E0;\n  --color-gray-400: #BDBDBD;\n  --color-gray-50: #FAFAFA;\n  --color-gray-500: #9E9E9E;\n  --color-gray-600: #757575;\n  --color-gray-700: #616161;\n  --color-gray-800: #424242;\n  --color-gray-900: #212121;\n  --color-gray: #000000;\n  --color-green-700: #080;\n  --color-green: #0c6;\n  --color-lime-400: #D3E156;\n  --color-orange-50: #FFF3E0;\n  --color-orange-700: #C33300;\n  --color-orange: #fa3;\n  --color-red-700: #c00;\n  --color-red: #f33;\n  --color-teal-600: #00897B;\n  --color-white: #FFFFFF;\n\n  /* Context-specific colors */\n  --color-average-secondary: var(--color-orange-700);\n  --color-average: var(--color-orange);\n  --color-fail-secondary: var(--color-red-700);\n  --color-fail: var(--color-red);\n  --color-hover: var(--color-gray-50);\n  --color-informative: var(--color-blue-900);\n  --color-pass-secondary: var(--color-green-700);\n  --color-pass: var(--color-green);\n  --color-not-applicable: var(--color-gray-600);\n\n  /* Component variables */\n  --audit-description-padding-left: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right));\n  --audit-explanation-line-height: 16px;\n  --audit-group-margin-bottom: calc(var(--default-padding) * 6);\n  --audit-group-padding-vertical: 8px;\n  --audit-margin-horizontal: 5px;\n  --audit-padding-vertical: 8px;\n  --category-padding: calc(var(--default-padding) * 6) var(--edge-gap-padding) calc(var(--default-padding) * 4);\n  --chevron-line-stroke: var(--color-gray-600);\n  --chevron-size: 12px;\n  --default-padding: 8px;\n  --edge-gap-padding: calc(var(--default-padding) * 4);\n  --env-item-background-color: var(--color-gray-100);\n  --env-item-font-size: 28px;\n  --env-item-line-height: 36px;\n  --env-item-padding: 10px 0px;\n  --env-name-min-width: 220px;\n  --footer-padding-vertical: 16px;\n  --gauge-circle-size-big: 96px;\n  --gauge-circle-size: 48px;\n  --gauge-circle-size-sm: 32px;\n  --gauge-label-font-size-big: 18px;\n  --gauge-label-font-size: var(--report-font-size-secondary);\n  --gauge-label-line-height-big: 24px;\n  --gauge-label-line-height: var(--report-line-height-secondary);\n  --gauge-percentage-font-size-big: 38px;\n  --gauge-percentage-font-size: var(--report-font-size-secondary);\n  --gauge-wrapper-width: 120px;\n  --header-line-height: 24px;\n  --highlighter-background-color: var(--report-text-color);\n  --icon-square-size: calc(var(--score-icon-size) * 0.88);\n  --image-preview-size: 48px;\n  --link-color: var(--color-blue-primary);\n  --locale-selector-background-color: var(--color-white);\n  --metric-toggle-lines-fill: #7F7F7F;\n  --metric-value-font-size: calc(var(--report-font-size) * 1.8);\n  --metrics-toggle-background-color: var(--color-gray-200);\n  --plugin-badge-background-color: var(--color-white);\n  --plugin-badge-size-big: calc(var(--gauge-circle-size-big) / 2.7);\n  --plugin-badge-size: calc(var(--gauge-circle-size) / 2.7);\n  --plugin-icon-size: 65%;\n  --pwa-icon-margin: 0 var(--default-padding);\n  --pwa-icon-size: var(--topbar-logo-size);\n  --report-background-color: #fff;\n  --report-border-color-secondary: #ebebeb;\n  --report-font-family-monospace: 'Roboto Mono', 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;\n  --report-font-family: Roboto, Helvetica, Arial, sans-serif;\n  --report-font-size: 14px;\n  --report-font-size-secondary: 12px;\n  --report-icon-size: var(--score-icon-background-size);\n  --report-line-height: 24px;\n  --report-line-height-secondary: 20px;\n  --report-monospace-font-size: calc(var(--report-font-size) * 0.85);\n  --report-text-color-secondary: var(--color-gray-800);\n  --report-text-color: var(--color-gray-900);\n  --report-content-max-width: calc(60 * var(--report-font-size)); /* defaults to 840px */\n  --report-content-min-width: 360px;\n  --report-content-max-width-minus-edge-gap: calc(var(--report-content-max-width) - var(--edge-gap-padding) * 2);\n  --score-container-padding: 8px;\n  --score-icon-background-size: 24px;\n  --score-icon-margin-left: 6px;\n  --score-icon-margin-right: 14px;\n  --score-icon-margin: 0 var(--score-icon-margin-right) 0 var(--score-icon-margin-left);\n  --score-icon-size: 12px;\n  --score-icon-size-big: 16px;\n  --screenshot-overlay-background: rgba(0, 0, 0, 0.3);\n  --section-padding-vertical: calc(var(--default-padding) * 6);\n  --snippet-background-color: var(--color-gray-50);\n  --snippet-color: #0938C2;\n  --sparkline-height: 5px;\n  --stackpack-padding-horizontal: 10px;\n  --sticky-header-background-color: var(--report-background-color);\n  --sticky-header-buffer: calc(var(--topbar-height) + var(--sticky-header-height));\n  --sticky-header-height: calc(var(--gauge-circle-size-sm) + var(--score-container-padding) * 2);\n  --table-higlight-background-color: hsla(210, 17%, 77%, 0.1);\n  --tools-icon-color: var(--color-gray-600);\n  --topbar-background-color: var(--color-white);\n  --topbar-height: 32px;\n  --topbar-logo-size: 24px;\n  --topbar-padding: 0 8px;\n  --toplevel-warning-background-color: hsla(30, 100%, 75%, 10%);\n  --toplevel-warning-message-text-color: var(--color-average-secondary);\n  --toplevel-warning-padding: 18px;\n  --toplevel-warning-text-color: var(--report-text-color);\n\n  /* SVGs */\n  --plugin-icon-url-dark: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24px\" height=\"24px\" viewBox=\"0 0 24 24\" fill=\"%23FFFFFF\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z\"/></svg>');\n  --plugin-icon-url: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24px\" height=\"24px\" viewBox=\"0 0 24 24\" fill=\"%23757575\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z\"/></svg>');\n\n  --pass-icon-url: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 48 48\"><title>check</title><path fill=\"%23178239\" d=\"M24 4C12.95 4 4 12.95 4 24c0 11.04 8.95 20 20 20 11.04 0 20-8.96 20-20 0-11.05-8.96-20-20-20zm-4 30L10 24l2.83-2.83L20 28.34l15.17-15.17L38 16 20 34z\"/></svg>');\n  --average-icon-url: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 48 48\"><title>info</title><path fill=\"%23E67700\" d=\"M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm2 30h-4V22h4v12zm0-16h-4v-4h4v4z\"/></svg>');\n  --fail-icon-url: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 48 48\"><title>warn</title><path fill=\"%23C7221F\" d=\"M2 42h44L24 4 2 42zm24-6h-4v-4h4v4zm0-8h-4v-8h4v8z\"/></svg>');\n\n  --pwa-installable-gray-url: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"nonzero\"><circle fill=\"%23DAE0E3\" cx=\"12\" cy=\"12\" r=\"12\"/><path d=\"M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm3.5 7.7h-2.8v2.8h-1.4v-2.8H8.5v-1.4h2.8V8.5h1.4v2.8h2.8v1.4z\" fill=\"%23FFF\"/></g></svg>');\n  --pwa-optimized-gray-url: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><rect fill=\"%23DAE0E3\" width=\"24\" height=\"24\" rx=\"12\"/><path fill=\"%23FFF\" d=\"M12 15.07l3.6 2.18-.95-4.1 3.18-2.76-4.2-.36L12 6.17l-1.64 3.86-4.2.36 3.2 2.76-.96 4.1z\"/><path d=\"M5 5h14v14H5z\"/></g></svg>');\n\n  --pwa-installable-gray-url-dark: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"nonzero\"><circle fill=\"%23424242\" cx=\"12\" cy=\"12\" r=\"12\"/><path d=\"M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm3.5 7.7h-2.8v2.8h-1.4v-2.8H8.5v-1.4h2.8V8.5h1.4v2.8h2.8v1.4z\" fill=\"%23FFF\"/></g></svg>');\n  --pwa-optimized-gray-url-dark: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><rect fill=\"%23424242\" width=\"24\" height=\"24\" rx=\"12\"/><path fill=\"%23FFF\" d=\"M12 15.07l3.6 2.18-.95-4.1 3.18-2.76-4.2-.36L12 6.17l-1.64 3.86-4.2.36 3.2 2.76-.96 4.1z\"/><path d=\"M5 5h14v14H5z\"/></g></svg>');\n\n  --pwa-installable-color-url: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\"><g fill-rule=\"nonzero\" fill=\"none\"><circle fill=\"%230CCE6B\" cx=\"12\" cy=\"12\" r=\"12\"/><path d=\"M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm3.5 7.7h-2.8v2.8h-1.4v-2.8H8.5v-1.4h2.8V8.5h1.4v2.8h2.8v1.4z\" fill=\"%23FFF\"/></g></svg>');\n  --pwa-optimized-color-url: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><rect fill=\"%230CCE6B\" width=\"24\" height=\"24\" rx=\"12\"/><path d=\"M5 5h14v14H5z\"/><path fill=\"%23FFF\" d=\"M12 15.07l3.6 2.18-.95-4.1 3.18-2.76-4.2-.36L12 6.17l-1.64 3.86-4.2.36 3.2 2.76-.96 4.1z\"/></g></svg>');\n\n  --swap-locale-icon-url: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"#000000\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z\"/></svg>');\n}\n\n@media not print {\n  .lh-dark {\n    /* Pallete */\n    --color-gray-200: var(--color-gray-800);\n    --color-gray-300: #616161;\n    --color-gray-400: var(--color-gray-600);\n    --color-gray-700: var(--color-gray-400);\n    --color-gray-50: #757575;\n    --color-gray-600: var(--color-gray-500);\n    --color-green-700: var(--color-green);\n    --color-orange-700: var(--color-orange);\n    --color-red-700: var(--color-red);\n    --color-teal-600: var(--color-cyan-500);\n\n    /* Context-specific colors */\n    --color-hover: rgba(0, 0, 0, 0.2);\n    --color-informative: var(--color-blue-200);\n\n    /* Component variables */\n    --env-item-background-color: #393535;\n    --link-color: var(--color-blue-200);\n    --locale-selector-background-color: var(--color-gray-200);\n    --plugin-badge-background-color: var(--color-gray-800);\n    --report-background-color: var(--color-gray-900);\n    --report-border-color-secondary: var(--color-gray-200);\n    --report-text-color-secondary: var(--color-gray-400);\n    --report-text-color: var(--color-gray-100);\n    --snippet-color: var(--color-cyan-500);\n    --topbar-background-color: var(--color-gray);\n    --toplevel-warning-background-color: hsl(33deg 14% 18%);\n    --toplevel-warning-message-text-color: var(--color-orange-700);\n    --toplevel-warning-text-color: var(--color-gray-100);\n\n    /* SVGs */\n    --plugin-icon-url: var(--plugin-icon-url-dark);\n    --pwa-installable-gray-url: var(--pwa-installable-gray-url-dark);\n    --pwa-optimized-gray-url: var(--pwa-optimized-gray-url-dark);\n  }\n}\n\n@media only screen and (max-width: 480px) {\n  .lh-vars {\n    --audit-group-margin-bottom: 20px;\n    --edge-gap-padding: var(--default-padding);\n    --env-name-min-width: 120px;\n    --gauge-circle-size-big: 96px;\n    --gauge-circle-size: 72px;\n    --gauge-label-font-size-big: 22px;\n    --gauge-label-font-size: 14px;\n    --gauge-label-line-height-big: 26px;\n    --gauge-label-line-height: 20px;\n    --gauge-percentage-font-size-big: 34px;\n    --gauge-percentage-font-size: 26px;\n    --gauge-wrapper-width: 112px;\n    --header-padding: 16px 0 16px 0;\n    --image-preview-size: 24px;\n    --plugin-icon-size: 75%;\n    --pwa-icon-margin: 0 7px 0 -3px;\n    --report-font-size: 14px;\n    --report-line-height: 20px;\n    --score-icon-margin-left: 2px;\n    --score-icon-size: 10px;\n    --topbar-height: 28px;\n    --topbar-logo-size: 20px;\n  }\n\n  /* Not enough space to adequately show the relative savings bars. */\n  .lh-sparkline {\n    display: none;\n  }\n}\n\n.lh-vars.lh-devtools {\n  --audit-explanation-line-height: 14px;\n  --audit-group-margin-bottom: 20px;\n  --audit-group-padding-vertical: 12px;\n  --audit-padding-vertical: 4px;\n  --category-padding: 12px;\n  --default-padding: 12px;\n  --env-name-min-width: 120px;\n  --footer-padding-vertical: 8px;\n  --gauge-circle-size-big: 72px;\n  --gauge-circle-size: 64px;\n  --gauge-label-font-size-big: 22px;\n  --gauge-label-font-size: 14px;\n  --gauge-label-line-height-big: 26px;\n  --gauge-label-line-height: 20px;\n  --gauge-percentage-font-size-big: 34px;\n  --gauge-percentage-font-size: 26px;\n  --gauge-wrapper-width: 97px;\n  --header-line-height: 20px;\n  --header-padding: 16px 0 16px 0;\n  --screenshot-overlay-background: transparent;\n  --plugin-icon-size: 75%;\n  --pwa-icon-margin: 0 7px 0 -3px;\n  --report-font-family-monospace: 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;\n  --report-font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;\n  --report-font-size: 12px;\n  --report-line-height: 20px;\n  --score-icon-margin-left: 2px;\n  --score-icon-size: 10px;\n  --section-padding-vertical: 8px;\n}\n\n.lh-container:not(.lh-topbar + .lh-container) {\n  --topbar-height: 0;\n  --sticky-header-height: 0;\n  --sticky-header-buffer: 0;\n}\n\n.lh-devtools.lh-root {\n  height: 100%;\n}\n.lh-devtools.lh-root img {\n  /* Override devtools default 'min-width: 0' so svg without size in a flexbox isn't collapsed. */\n  min-width: auto;\n}\n.lh-devtools .lh-container {\n  overflow-y: scroll;\n  height: calc(100% - var(--topbar-height));\n  /** The .lh-container is the scroll parent in DevTools so we exclude the topbar from the sticky header buffer. */\n  --sticky-header-buffer: calc(var(--sticky-header-height));\n}\n@media print {\n  .lh-devtools .lh-container {\n    overflow: unset;\n  }\n}\n.lh-devtools .lh-sticky-header {\n  /* This is normally the height of the topbar, but we want it to stick to the top of our scroll container .lh-container` */\n  top: 0;\n}\n.lh-devtools .lh-element-screenshot__overlay {\n  position: absolute;\n}\n\n@keyframes fadeIn {\n  0% { opacity: 0;}\n  100% { opacity: 0.6;}\n}\n\n.lh-root *, .lh-root *::before, .lh-root *::after {\n  box-sizing: border-box;\n}\n\n.lh-root {\n  font-family: var(--report-font-family);\n  font-size: var(--report-font-size);\n  margin: 0;\n  line-height: var(--report-line-height);\n  background: var(--report-background-color);\n  color: var(--report-text-color);\n}\n\n.lh-root :focus-visible {\n    outline: -webkit-focus-ring-color auto 3px;\n}\n.lh-root summary:focus {\n    outline: none;\n    box-shadow: 0 0 0 1px hsl(217, 89%, 61%);\n}\n\n.lh-root [hidden] {\n  display: none !important;\n}\n\n.lh-root pre {\n  margin: 0;\n}\n\n.lh-root details > summary {\n  cursor: pointer;\n}\n\n.lh-hidden {\n  display: none !important;\n}\n\n.lh-container {\n  /*\n  Text wrapping in the report is so much FUN!\n  We have a `word-break: break-word;` globally here to prevent a few common scenarios, namely\n  long non-breakable text (usually URLs) found in:\n    1. The footer\n    2. .lh-node (outerHTML)\n    3. .lh-code\n\n  With that sorted, the next challenge is appropriate column sizing and text wrapping inside our\n  .lh-details tables. Even more fun.\n    * We don't want table headers (\"Potential Savings (ms)\") to wrap or their column values, but\n    we'd be happy for the URL column to wrap if the URLs are particularly long.\n    * We want the narrow columns to remain narrow, providing the most column width for URL\n    * We don't want the table to extend past 100% width.\n    * Long URLs in the URL column can wrap. Util.getURLDisplayName maxes them out at 64 characters,\n      but they do not get any overflow:ellipsis treatment.\n  */\n  word-break: break-word;\n}\n\n.lh-audit-group a,\n.lh-category-header__description a,\n.lh-audit__description a,\n.lh-warnings a,\n.lh-footer a,\n.lh-table-column--link a {\n  color: var(--link-color);\n}\n\n.lh-audit__description, .lh-audit__stackpack {\n  --inner-audit-padding-right: var(--stackpack-padding-horizontal);\n  padding-left: var(--audit-description-padding-left);\n  padding-right: var(--inner-audit-padding-right);\n  padding-top: 8px;\n  padding-bottom: 8px;\n}\n\n.lh-details {\n  margin-top: var(--default-padding);\n  margin-bottom: var(--default-padding);\n  margin-left: var(--audit-description-padding-left);\n  /* whatever the .lh-details side margins are */\n  width: 100%;\n}\n\n.lh-audit__stackpack {\n  display: flex;\n  align-items: center;\n}\n\n.lh-audit__stackpack__img {\n  max-width: 30px;\n  margin-right: var(--default-padding)\n}\n\n/* Report header */\n\n.lh-report-icon {\n  display: flex;\n  align-items: center;\n  padding: 10px 12px;\n  cursor: pointer;\n}\n.lh-report-icon[disabled] {\n  opacity: 0.3;\n  pointer-events: none;\n}\n\n.lh-report-icon::before {\n  content: \"\";\n  margin: 4px;\n  background-repeat: no-repeat;\n  width: var(--report-icon-size);\n  height: var(--report-icon-size);\n  opacity: 0.7;\n  display: inline-block;\n  vertical-align: middle;\n}\n.lh-report-icon:hover::before {\n  opacity: 1;\n}\n.lh-dark .lh-report-icon::before {\n  filter: invert(1);\n}\n.lh-report-icon--print::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z\"/><path fill=\"none\" d=\"M0 0h24v24H0z\"/></svg>');\n}\n.lh-report-icon--copy::before {\n  background-image: url('data:image/svg+xml;utf8,<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z\"/></svg>');\n}\n.lh-report-icon--open::before {\n  background-image: url('data:image/svg+xml;utf8,<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z\"/></svg>');\n}\n.lh-report-icon--download::before {\n  background-image: url('data:image/svg+xml;utf8,<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg>');\n}\n.lh-report-icon--dark::before {\n  background-image:url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 0 100 125\"><path d=\"M50 23.587c-16.27 0-22.799 12.574-22.799 21.417 0 12.917 10.117 22.451 12.436 32.471h20.726c2.32-10.02 12.436-19.554 12.436-32.471 0-8.843-6.528-21.417-22.799-21.417zM39.637 87.161c0 3.001 1.18 4.181 4.181 4.181h.426l.41 1.231C45.278 94.449 46.042 95 48.019 95h3.963c1.978 0 2.74-.551 3.365-2.427l.409-1.231h.427c3.002 0 4.18-1.18 4.18-4.181V80.91H39.637v6.251zM50 18.265c1.26 0 2.072-.814 2.072-2.073v-9.12C52.072 5.813 51.26 5 50 5c-1.259 0-2.072.813-2.072 2.073v9.12c0 1.259.813 2.072 2.072 2.072zM68.313 23.727c.994.774 2.135.634 2.91-.357l5.614-7.187c.776-.992.636-2.135-.356-2.909-.992-.776-2.135-.636-2.91.357l-5.613 7.186c-.778.993-.636 2.135.355 2.91zM91.157 36.373c-.306-1.222-1.291-1.815-2.513-1.51l-8.85 2.207c-1.222.305-1.814 1.29-1.51 2.512.305 1.223 1.291 1.814 2.513 1.51l8.849-2.206c1.223-.305 1.816-1.291 1.511-2.513zM86.757 60.48l-8.331-3.709c-1.15-.512-2.225-.099-2.736 1.052-.512 1.151-.1 2.224 1.051 2.737l8.33 3.707c1.15.514 2.225.101 2.736-1.05.513-1.149.1-2.223-1.05-2.737zM28.779 23.37c.775.992 1.917 1.131 2.909.357.992-.776 1.132-1.917.357-2.91l-5.615-7.186c-.775-.992-1.917-1.132-2.909-.357s-1.131 1.917-.356 2.909l5.614 7.187zM21.715 39.583c.305-1.223-.288-2.208-1.51-2.513l-8.849-2.207c-1.222-.303-2.208.289-2.513 1.511-.303 1.222.288 2.207 1.511 2.512l8.848 2.206c1.222.304 2.208-.287 2.513-1.509zM21.575 56.771l-8.331 3.711c-1.151.511-1.563 1.586-1.05 2.735.511 1.151 1.586 1.563 2.736 1.052l8.331-3.711c1.151-.511 1.563-1.586 1.05-2.735-.512-1.15-1.585-1.562-2.736-1.052z\"/></svg>');\n}\n.lh-report-icon--treemap::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 0 24 24\" width=\"24px\" fill=\"black\"><path d=\"M3 5v14h19V5H3zm2 2h15v4H5V7zm0 10v-4h4v4H5zm6 0v-4h9v4h-9z\"/></svg>');\n}\n.lh-report-icon--date::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M7 11h2v2H7v-2zm14-5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6c0-1.1.9-2 2-2h1V2h2v2h8V2h2v2h1a2 2 0 012 2zM5 8h14V6H5v2zm14 12V10H5v10h14zm-4-7h2v-2h-2v2zm-4 0h2v-2h-2v2z\"/></svg>');\n}\n.lh-report-icon--devices::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M4 6h18V4H4a2 2 0 00-2 2v11H0v3h14v-3H4V6zm19 2h-6a1 1 0 00-1 1v10c0 .6.5 1 1 1h6c.6 0 1-.5 1-1V9c0-.6-.5-1-1-1zm-1 9h-4v-7h4v7z\"/></svg>');\n}\n.lh-report-icon--world::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm7 6h-3c-.3-1.3-.8-2.5-1.4-3.6A8 8 0 0 1 18.9 8zm-7-4a14 14 0 0 1 2 4h-4a14 14 0 0 1 2-4zM4.3 14a8.2 8.2 0 0 1 0-4h3.3a16.5 16.5 0 0 0 0 4H4.3zm.8 2h3a14 14 0 0 0 1.3 3.6A8 8 0 0 1 5.1 16zm3-8H5a8 8 0 0 1 4.3-3.6L8 8zM12 20a14 14 0 0 1-2-4h4a14 14 0 0 1-2 4zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.6 14.6 0 0 1 0 4zm.3 5.6c.6-1.2 1-2.4 1.4-3.6h3a8 8 0 0 1-4.4 3.6zm1.8-5.6a16.5 16.5 0 0 0 0-4h3.3a8.2 8.2 0 0 1 0 4h-3.3z\"/></svg>');\n}\n.lh-report-icon--stopwatch::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.1-6.6L20.5 6l-1.4-1.4L17.7 6A9 9 0 0 0 3 13a9 9 0 1 0 16-5.6zm-7 12.6a7 7 0 1 1 0-14 7 7 0 0 1 0 14z\"/></svg>');\n}\n.lh-report-icon--networkspeed::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M15.9 5c-.2 0-.3 0-.4.2v.2L10.1 17a2 2 0 0 0-.2 1 2 2 0 0 0 4 .4l2.4-12.9c0-.3-.2-.5-.5-.5zM1 9l2 2c2.9-2.9 6.8-4 10.5-3.6l1.2-2.7C10 3.8 4.7 5.3 1 9zm20 2 2-2a15.4 15.4 0 0 0-5.6-3.6L17 8.2c1.5.7 2.9 1.6 4.1 2.8zm-4 4 2-2a9.9 9.9 0 0 0-2.7-1.9l-.5 3 1.2.9zM5 13l2 2a7.1 7.1 0 0 1 4-2l1.3-2.9C9.7 10.1 7 11 5 13z\"/></svg>');\n}\n.lh-report-icon--samples-one::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><circle cx=\"7\" cy=\"14\" r=\"3\"/><path d=\"M7 18a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm5.6 17.6a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z\"/></svg>');\n}\n.lh-report-icon--samples-many::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M7 18a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm5.6 17.6a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z\"/><circle cx=\"7\" cy=\"14\" r=\"3\"/><circle cx=\"11\" cy=\"6\" r=\"3\"/></svg>');\n}\n.lh-report-icon--chrome::before {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-50 -50 562 562\"><path d=\"M256 25.6v25.6a204 204 0 0 1 144.8 60 204 204 0 0 1 60 144.8 204 204 0 0 1-60 144.8 204 204 0 0 1-144.8 60 204 204 0 0 1-144.8-60 204 204 0 0 1-60-144.8 204 204 0 0 1 60-144.8 204 204 0 0 1 144.8-60V0a256 256 0 1 0 0 512 256 256 0 0 0 0-512v25.6z\"/><path d=\"M256 179.2v25.6a51.3 51.3 0 0 1 0 102.4 51.3 51.3 0 0 1 0-102.4v-51.2a102.3 102.3 0 1 0-.1 204.7 102.3 102.3 0 0 0 .1-204.7v25.6z\"/><path d=\"M256 204.8h217.6a25.6 25.6 0 0 0 0-51.2H256a25.6 25.6 0 0 0 0 51.2m44.3 76.8L191.5 470.1a25.6 25.6 0 1 0 44.4 25.6l108.8-188.5a25.6 25.6 0 1 0-44.4-25.6m-88.6 0L102.9 93.2a25.7 25.7 0 0 0-35-9.4 25.7 25.7 0 0 0-9.4 35l108.8 188.5a25.7 25.7 0 0 0 35 9.4 25.9 25.9 0 0 0 9.4-35.1\"/></svg>');\n}\n\n\n\n.lh-buttons {\n  display: flex;\n  flex-wrap: wrap;\n  margin: var(--default-padding) 0;\n}\n.lh-button {\n  height: 32px;\n  border: 1px solid var(--report-border-color-secondary);\n  border-radius: 3px;\n  color: var(--link-color);\n  background-color: var(--report-background-color);\n  margin: 5px;\n}\n\n.lh-button:first-of-type {\n  margin-left: 0;\n}\n\n/* Node */\n.lh-node__snippet {\n  font-family: var(--report-font-family-monospace);\n  color: var(--snippet-color);\n  font-size: var(--report-monospace-font-size);\n  line-height: 20px;\n}\n\n/* Score */\n\n.lh-audit__score-icon {\n  width: var(--score-icon-size);\n  height: var(--score-icon-size);\n  margin: var(--score-icon-margin);\n}\n\n.lh-audit--pass .lh-audit__display-text {\n  color: var(--color-pass-secondary);\n}\n.lh-audit--pass .lh-audit__score-icon,\n.lh-scorescale-range--pass::before {\n  border-radius: 100%;\n  background: var(--color-pass);\n}\n\n.lh-audit--average .lh-audit__display-text {\n  color: var(--color-average-secondary);\n}\n.lh-audit--average .lh-audit__score-icon,\n.lh-scorescale-range--average::before {\n  background: var(--color-average);\n  width: var(--icon-square-size);\n  height: var(--icon-square-size);\n}\n\n.lh-audit--fail .lh-audit__display-text {\n  color: var(--color-fail-secondary);\n}\n.lh-audit--fail .lh-audit__score-icon,\n.lh-audit--error .lh-audit__score-icon,\n.lh-scorescale-range--fail::before {\n  border-left: calc(var(--score-icon-size) / 2) solid transparent;\n  border-right: calc(var(--score-icon-size) / 2) solid transparent;\n  border-bottom: var(--score-icon-size) solid var(--color-fail);\n}\n\n.lh-audit--manual .lh-audit__display-text,\n.lh-audit--notapplicable .lh-audit__display-text {\n  color: var(--color-gray-600);\n}\n.lh-audit--manual .lh-audit__score-icon,\n.lh-audit--notapplicable .lh-audit__score-icon {\n  border: calc(0.2 * var(--score-icon-size)) solid var(--color-gray-400);\n  border-radius: 100%;\n  background: none;\n}\n\n.lh-audit--informative .lh-audit__display-text {\n  color: var(--color-gray-600);\n}\n\n.lh-audit--informative .lh-audit__score-icon {\n  border: calc(0.2 * var(--score-icon-size)) solid var(--color-gray-400);\n  border-radius: 100%;\n}\n\n.lh-audit__description,\n.lh-audit__stackpack {\n  color: var(--report-text-color-secondary);\n}\n.lh-audit__adorn {\n  border: 1px solid slategray;\n  border-radius: 3px;\n  margin: 0 3px;\n  padding: 0 2px;\n  line-height: 1.1;\n  display: inline-block;\n  font-size: 90%;\n}\n\n.lh-category-header__description  {\n  text-align: center;\n  color: var(--color-gray-700);\n  margin: 0px auto;\n  max-width: 400px;\n}\n\n\n.lh-audit__display-text,\n.lh-load-opportunity__sparkline,\n.lh-chevron-container {\n  margin: 0 var(--audit-margin-horizontal);\n}\n.lh-chevron-container {\n  margin-right: 0;\n}\n\n.lh-audit__title-and-text {\n  flex: 1;\n}\n\n.lh-audit__title-and-text code {\n  color: var(--snippet-color);\n  font-size: var(--report-monospace-font-size);\n}\n\n/* Prepend display text with em dash separator. But not in Opportunities. */\n.lh-audit__display-text:not(:empty):before {\n  content: '—';\n  margin-right: var(--audit-margin-horizontal);\n}\n.lh-audit-group.lh-audit-group--load-opportunities .lh-audit__display-text:not(:empty):before {\n  display: none;\n}\n\n/* Expandable Details (Audit Groups, Audits) */\n.lh-audit__header {\n  display: flex;\n  align-items: center;\n  padding: var(--default-padding);\n}\n\n.lh-audit--load-opportunity .lh-audit__header {\n  display: block;\n}\n\n\n.lh-metricfilter {\n  display: grid;\n  justify-content: end;\n  align-items: center;\n  grid-auto-flow: column;\n  gap: 4px;\n  color: var(--color-gray-700);\n}\n\n.lh-metricfilter__radio {\n  position: absolute;\n  left: -9999px;\n}\n.lh-metricfilter input[type='radio']:focus-visible + label {\n  outline: -webkit-focus-ring-color auto 1px;\n}\n\n.lh-metricfilter__label {\n  display: inline-flex;\n  padding: 0 4px;\n  height: 16px;\n  text-decoration: underline;\n  align-items: center;\n  cursor: pointer;\n  font-size: 90%;\n}\n\n.lh-metricfilter__label--active {\n  background: var(--color-blue-primary);\n  color: var(--color-white);\n  border-radius: 3px;\n  text-decoration: none;\n}\n/* Give the 'All' choice a more muted display */\n.lh-metricfilter__label--active[for=\"metric-All\"] {\n  background-color: var(--color-blue-200) !important;\n  color: black !important;\n}\n\n.lh-metricfilter__text {\n  margin-right: 8px;\n}\n\n/* If audits are filtered, hide the itemcount for Passed Audits… */\n.lh-category--filtered .lh-audit-group .lh-audit-group__itemcount {\n  display: none;\n}\n\n\n.lh-audit__header:hover {\n  background-color: var(--color-hover);\n}\n\n/* We want to hide the browser's default arrow marker on summary elements. Admittedly, it's complicated. */\n.lh-root details > summary {\n  /* Blink 89+ and Firefox will hide the arrow when display is changed from (new) default of `list-item` to block.  https://chromestatus.com/feature/6730096436051968*/\n  display: block;\n}\n/* Safari and Blink <=88 require using the -webkit-details-marker selector */\n.lh-root details > summary::-webkit-details-marker {\n  display: none;\n}\n\n/* Perf Metric */\n\n.lh-metrics-container {\n  display: grid;\n  grid-auto-rows: 1fr;\n  grid-template-columns: 1fr 1fr;\n  grid-column-gap: var(--report-line-height);\n  margin-bottom: var(--default-padding);\n}\n\n.lh-metric {\n  border-top: 1px solid var(--report-border-color-secondary);\n}\n\n.lh-category:not(.lh--hoisted-meta) .lh-metric:nth-last-child(-n+2) {\n  border-bottom: 1px solid var(--report-border-color-secondary);\n}\n\n.lh-metric__innerwrap {\n  display: grid;\n  /**\n   * Icon -- Metric Name\n   *      -- Metric Value\n   */\n  grid-template-columns: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right)) 1fr;\n  align-items: center;\n  padding: var(--default-padding);\n}\n\n.lh-metric__details {\n  order: -1;\n}\n\n.lh-metric__title {\n  flex: 1;\n}\n\n.lh-calclink {\n  padding-left: calc(1ex / 3);\n}\n\n.lh-metric__description {\n  display: none;\n  grid-column-start: 2;\n  grid-column-end: 4;\n  color: var(--report-text-color-secondary);\n}\n\n.lh-metric__value {\n  font-size: var(--metric-value-font-size);\n  margin: calc(var(--default-padding) / 2) 0;\n  white-space: nowrap; /* No wrapping between metric value and the icon */\n  grid-column-start: 2;\n}\n\n\n@media screen and (max-width: 535px) {\n  .lh-metrics-container {\n    display: block;\n  }\n\n  .lh-metric {\n    border-bottom: none !important;\n  }\n  .lh-category:not(.lh--hoisted-meta) .lh-metric:nth-last-child(1) {\n    border-bottom: 1px solid var(--report-border-color-secondary) !important;\n  }\n\n  /* Change the grid to 3 columns for narrow viewport. */\n  .lh-metric__innerwrap {\n  /**\n   * Icon -- Metric Name -- Metric Value\n   */\n    grid-template-columns: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right)) 2fr 1fr;\n  }\n  .lh-metric__value {\n    justify-self: end;\n    grid-column-start: unset;\n  }\n}\n\n/* No-JS toggle switch */\n/* Keep this selector sync'd w/ `magicSelector` in report-ui-features-test.js */\n .lh-metrics-toggle__input:checked ~ .lh-metrics-container .lh-metric__description {\n  display: block;\n}\n\n/* TODO get rid of the SVGS and clean up these some more */\n.lh-metrics-toggle__input {\n  opacity: 0;\n  position: absolute;\n  right: 0;\n  top: 0px;\n}\n\n.lh-metrics-toggle__input + div > label > .lh-metrics-toggle__labeltext--hide,\n.lh-metrics-toggle__input:checked + div > label > .lh-metrics-toggle__labeltext--show {\n  display: none;\n}\n.lh-metrics-toggle__input:checked + div > label > .lh-metrics-toggle__labeltext--hide {\n  display: inline;\n}\n.lh-metrics-toggle__input:focus + div > label {\n  outline: -webkit-focus-ring-color auto 3px;\n}\n\n.lh-metrics-toggle__label {\n  cursor: pointer;\n  font-size: var(--report-font-size-secondary);\n  line-height: var(--report-line-height-secondary);\n  color: var(--color-gray-700);\n}\n\n/* Pushes the metric description toggle button to the right. */\n.lh-audit-group--metrics .lh-audit-group__header {\n  display: flex;\n  justify-content: space-between;\n}\n\n.lh-metric__icon,\n.lh-scorescale-range::before {\n  content: '';\n  width: var(--score-icon-size);\n  height: var(--score-icon-size);\n  display: inline-block;\n  margin: var(--score-icon-margin);\n}\n\n.lh-metric--pass .lh-metric__value {\n  color: var(--color-pass-secondary);\n}\n.lh-metric--pass .lh-metric__icon {\n  border-radius: 100%;\n  background: var(--color-pass);\n}\n\n.lh-metric--average .lh-metric__value {\n  color: var(--color-average-secondary);\n}\n.lh-metric--average .lh-metric__icon {\n  background: var(--color-average);\n  width: var(--icon-square-size);\n  height: var(--icon-square-size);\n}\n\n.lh-metric--fail .lh-metric__value {\n  color: var(--color-fail-secondary);\n}\n.lh-metric--fail .lh-metric__icon,\n.lh-metric--error .lh-metric__icon {\n  border-left: calc(var(--score-icon-size) / 2) solid transparent;\n  border-right: calc(var(--score-icon-size) / 2) solid transparent;\n  border-bottom: var(--score-icon-size) solid var(--color-fail);\n}\n\n.lh-metric--error .lh-metric__value,\n.lh-metric--error .lh-metric__description {\n  color: var(--color-fail-secondary);\n}\n\n/* Perf load opportunity */\n\n.lh-load-opportunity__cols {\n  display: flex;\n  align-items: flex-start;\n}\n\n.lh-load-opportunity__header .lh-load-opportunity__col {\n  color: var(--color-gray-600);\n  display: unset;\n  line-height: calc(2.3 * var(--report-font-size));\n}\n\n.lh-load-opportunity__col {\n  display: flex;\n}\n\n.lh-load-opportunity__col--one {\n  flex: 5;\n  align-items: center;\n  margin-right: 2px;\n}\n.lh-load-opportunity__col--two {\n  flex: 4;\n  text-align: right;\n}\n\n.lh-audit--load-opportunity .lh-audit__display-text {\n  text-align: right;\n  flex: 0 0 7.5ch;\n}\n\n\n/* Sparkline */\n\n.lh-load-opportunity__sparkline {\n  flex: 1;\n  margin-top: calc((var(--report-line-height) - var(--sparkline-height)) / 2);\n}\n\n.lh-sparkline {\n  height: var(--sparkline-height);\n  width: 100%;\n}\n\n.lh-sparkline__bar {\n  height: 100%;\n  float: right;\n}\n\n.lh-audit--pass .lh-sparkline__bar {\n  background: var(--color-pass);\n}\n\n.lh-audit--average .lh-sparkline__bar {\n  background: var(--color-average);\n}\n\n.lh-audit--fail .lh-sparkline__bar {\n  background: var(--color-fail);\n}\n\n/* Filmstrip */\n\n.lh-filmstrip-container {\n  /* smaller gap between metrics and filmstrip */\n  margin: -8px auto 0 auto;\n}\n\n.lh-filmstrip {\n  display: grid;\n  justify-content: space-between;\n  padding-bottom: var(--default-padding);\n  width: 100%;\n  grid-template-columns: repeat(auto-fit, 90px);\n}\n\n.lh-filmstrip__frame {\n  text-align: right;\n  position: relative;\n}\n\n.lh-filmstrip__thumbnail {\n  border: 1px solid var(--report-border-color-secondary);\n  max-height: 150px;\n  max-width: 120px;\n}\n\n/* Audit */\n\n.lh-audit {\n  border-bottom: 1px solid var(--report-border-color-secondary);\n}\n\n/* Apply border-top to just the first audit. */\n.lh-audit {\n  border-top: 1px solid var(--report-border-color-secondary);\n}\n.lh-audit ~ .lh-audit {\n  border-top: none;\n}\n\n\n.lh-audit--error .lh-audit__display-text {\n  color: var(--color-fail-secondary);\n}\n\n/* Audit Group */\n\n.lh-audit-group {\n  margin-bottom: var(--audit-group-margin-bottom);\n  position: relative;\n}\n.lh-audit-group--metrics {\n  margin-bottom: calc(var(--audit-group-margin-bottom) / 2);\n}\n\n.lh-audit-group__header::before {\n  /* By default, groups don't get an icon */\n  content: none;\n  width: var(--pwa-icon-size);\n  height: var(--pwa-icon-size);\n  margin: var(--pwa-icon-margin);\n  display: inline-block;\n  vertical-align: middle;\n}\n\n/* Style the \"over budget\" columns red. */\n.lh-audit-group--budgets #performance-budget tbody tr td:nth-child(4),\n.lh-audit-group--budgets #performance-budget tbody tr td:nth-child(5),\n.lh-audit-group--budgets #timing-budget tbody tr td:nth-child(3) {\n  color: var(--color-red-700);\n}\n\n/* Align the \"over budget request count\" text to be close to the \"over budget bytes\" column. */\n.lh-audit-group--budgets .lh-table tbody tr td:nth-child(4){\n  text-align: right;\n}\n\n.lh-audit-group--budgets .lh-details--budget {\n  width: 100%;\n  margin: 0 0 var(--default-padding);\n}\n\n.lh-audit-group--pwa-installable .lh-audit-group__header::before {\n  content: '';\n  background-image: var(--pwa-installable-gray-url);\n}\n.lh-audit-group--pwa-optimized .lh-audit-group__header::before {\n  content: '';\n  background-image: var(--pwa-optimized-gray-url);\n}\n.lh-audit-group--pwa-installable.lh-badged .lh-audit-group__header::before {\n  background-image: var(--pwa-installable-color-url);\n}\n.lh-audit-group--pwa-optimized.lh-badged .lh-audit-group__header::before {\n  background-image: var(--pwa-optimized-color-url);\n}\n\n.lh-audit-group--metrics .lh-audit-group__summary {\n  margin-top: 0;\n  margin-bottom: 0;\n}\n\n.lh-audit-group__summary {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.lh-audit-group__header .lh-chevron {\n  margin-top: calc((var(--report-line-height) - 5px) / 2);\n}\n\n.lh-audit-group__header {\n  letter-spacing: 0.8px;\n  padding: var(--default-padding);\n  padding-left: 0;\n}\n\n.lh-audit-group__header, .lh-audit-group__summary {\n  font-size: var(--report-font-size-secondary);\n  line-height: var(--report-line-height-secondary);\n  color: var(--color-gray-700);\n}\n\n.lh-audit-group__title {\n  text-transform: uppercase;\n  font-weight: 500;\n}\n\n.lh-audit-group__itemcount {\n  color: var(--color-gray-600);\n}\n\n.lh-audit-group__footer {\n  color: var(--color-gray-600);\n  display: block;\n  margin-top: var(--default-padding);\n}\n\n.lh-details,\n.lh-category-header__description,\n.lh-load-opportunity__header,\n.lh-audit-group__footer {\n  font-size: var(--report-font-size-secondary);\n  line-height: var(--report-line-height-secondary);\n}\n\n.lh-audit-explanation {\n  margin: var(--audit-padding-vertical) 0 calc(var(--audit-padding-vertical) / 2) var(--audit-margin-horizontal);\n  line-height: var(--audit-explanation-line-height);\n  display: inline-block;\n}\n\n.lh-audit--fail .lh-audit-explanation {\n  color: var(--color-fail-secondary);\n}\n\n/* Report */\n.lh-list > :not(:last-child) {\n  margin-bottom: calc(var(--default-padding) * 2);\n}\n\n.lh-header-container {\n  display: block;\n  margin: 0 auto;\n  position: relative;\n  word-wrap: break-word;\n}\n\n.lh-header-container .lh-scores-wrapper {\n  border-bottom: 1px solid var(--color-gray-200);\n}\n\n\n.lh-report {\n  min-width: var(--report-content-min-width);\n}\n\n.lh-exception {\n  font-size: large;\n}\n\n.lh-code {\n  white-space: normal;\n  margin-top: 0;\n  font-size: var(--report-monospace-font-size);\n}\n\n.lh-warnings {\n  --item-margin: calc(var(--report-line-height) / 6);\n  color: var(--color-average-secondary);\n  margin: var(--audit-padding-vertical) 0;\n  padding: var(--default-padding)\n    var(--default-padding)\n    var(--default-padding)\n    calc(var(--audit-description-padding-left));\n  background-color: var(--toplevel-warning-background-color);\n}\n.lh-warnings span {\n  font-weight: bold;\n}\n\n.lh-warnings--toplevel {\n  --item-margin: calc(var(--header-line-height) / 4);\n  color: var(--toplevel-warning-text-color);\n  margin-left: auto;\n  margin-right: auto;\n  max-width: var(--report-content-max-width-minus-edge-gap);\n  padding: var(--toplevel-warning-padding);\n  border-radius: 8px;\n}\n\n.lh-warnings__msg {\n  color: var(--toplevel-warning-message-text-color);\n  margin: 0;\n}\n\n.lh-warnings ul {\n  margin: 0;\n}\n.lh-warnings li {\n  margin: var(--item-margin) 0;\n}\n.lh-warnings li:last-of-type {\n  margin-bottom: 0;\n}\n\n.lh-scores-header {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n}\n.lh-scores-header__solo {\n  padding: 0;\n  border: 0;\n}\n\n/* Gauge */\n\n.lh-gauge__wrapper--pass {\n  color: var(--color-pass-secondary);\n  fill: var(--color-pass);\n  stroke: var(--color-pass);\n}\n\n.lh-gauge__wrapper--average {\n  color: var(--color-average-secondary);\n  fill: var(--color-average);\n  stroke: var(--color-average);\n}\n\n.lh-gauge__wrapper--fail {\n  color: var(--color-fail-secondary);\n  fill: var(--color-fail);\n  stroke: var(--color-fail);\n}\n\n.lh-gauge__wrapper--not-applicable {\n  color: var(--color-not-applicable);\n  fill: var(--color-not-applicable);\n  stroke: var(--color-not-applicable);\n}\n\n.lh-fraction__wrapper .lh-fraction__content::before {\n  content: '';\n  height: var(--score-icon-size);\n  width: var(--score-icon-size);\n  margin: var(--score-icon-margin);\n  display: inline-block;\n}\n.lh-fraction__wrapper--pass .lh-fraction__content {\n  color: var(--color-pass-secondary);\n}\n.lh-fraction__wrapper--pass .lh-fraction__background {\n  background-color: var(--color-pass);\n}\n.lh-fraction__wrapper--pass .lh-fraction__content::before {\n  background-color: var(--color-pass);\n  border-radius: 50%;\n}\n.lh-fraction__wrapper--average .lh-fraction__content {\n  color: var(--color-average-secondary);\n}\n.lh-fraction__wrapper--average .lh-fraction__background,\n.lh-fraction__wrapper--average .lh-fraction__content::before {\n  background-color: var(--color-average);\n}\n.lh-fraction__wrapper--fail .lh-fraction__content {\n  color: var(--color-fail);\n}\n.lh-fraction__wrapper--fail .lh-fraction__background {\n  background-color: var(--color-fail);\n}\n.lh-fraction__wrapper--fail .lh-fraction__content::before {\n  border-left: calc(var(--score-icon-size) / 2) solid transparent;\n  border-right: calc(var(--score-icon-size) / 2) solid transparent;\n  border-bottom: var(--score-icon-size) solid var(--color-fail);\n}\n.lh-fraction__wrapper--null .lh-fraction__content {\n  color: var(--color-gray-700);\n}\n.lh-fraction__wrapper--null .lh-fraction__background {\n  background-color: var(--color-gray-700);\n}\n.lh-fraction__wrapper--null .lh-fraction__content::before {\n  border-radius: 50%;\n  border: calc(0.2 * var(--score-icon-size)) solid var(--color-gray-700);\n}\n\n.lh-fraction__background {\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  border-radius: calc(var(--gauge-circle-size) / 2);\n  opacity: 0.1;\n  z-index: -1;\n}\n\n.lh-fraction__content-wrapper {\n  height: var(--gauge-circle-size);\n  display: flex;\n  align-items: center;\n}\n\n.lh-fraction__content {\n  display: flex;\n  position: relative;\n  align-items: center;\n  justify-content: center;\n  font-size: calc(0.3 * var(--gauge-circle-size));\n  line-height: calc(0.4 * var(--gauge-circle-size));\n  width: max-content;\n  min-width: calc(1.5 * var(--gauge-circle-size));\n  padding: calc(0.1 * var(--gauge-circle-size)) calc(0.2 * var(--gauge-circle-size));\n  --score-icon-size: calc(0.21 * var(--gauge-circle-size));\n  --score-icon-margin: 0 calc(0.15 * var(--gauge-circle-size)) 0 0;\n}\n\n.lh-gauge {\n  stroke-linecap: round;\n  width: var(--gauge-circle-size);\n  height: var(--gauge-circle-size);\n}\n\n.lh-category .lh-gauge {\n  --gauge-circle-size: var(--gauge-circle-size-big);\n}\n\n.lh-gauge-base {\n  opacity: 0.1;\n}\n\n.lh-gauge-arc {\n  fill: none;\n  transform-origin: 50% 50%;\n  animation: load-gauge var(--transition-length) ease both;\n  animation-delay: 250ms;\n}\n\n.lh-gauge__svg-wrapper {\n  position: relative;\n  height: var(--gauge-circle-size);\n}\n.lh-category .lh-gauge__svg-wrapper,\n.lh-category .lh-fraction__wrapper {\n  --gauge-circle-size: var(--gauge-circle-size-big);\n}\n\n/* The plugin badge overlay */\n.lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before {\n  width: var(--plugin-badge-size);\n  height: var(--plugin-badge-size);\n  background-color: var(--plugin-badge-background-color);\n  background-image: var(--plugin-icon-url);\n  background-repeat: no-repeat;\n  background-size: var(--plugin-icon-size);\n  background-position: 58% 50%;\n  content: \"\";\n  position: absolute;\n  right: -6px;\n  bottom: 0px;\n  display: block;\n  z-index: 100;\n  box-shadow: 0 0 4px rgba(0,0,0,.2);\n  border-radius: 25%;\n}\n.lh-category .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before {\n  width: var(--plugin-badge-size-big);\n  height: var(--plugin-badge-size-big);\n}\n\n@keyframes load-gauge {\n  from { stroke-dasharray: 0 352; }\n}\n\n.lh-gauge__percentage {\n  width: 100%;\n  height: var(--gauge-circle-size);\n  position: absolute;\n  font-family: var(--report-font-family-monospace);\n  font-size: calc(var(--gauge-circle-size) * 0.34 + 1.3px);\n  line-height: 0;\n  text-align: center;\n  top: calc(var(--score-container-padding) + var(--gauge-circle-size) / 2);\n}\n\n.lh-category .lh-gauge__percentage {\n  --gauge-circle-size: var(--gauge-circle-size-big);\n  --gauge-percentage-font-size: var(--gauge-percentage-font-size-big);\n}\n\n.lh-gauge__wrapper,\n.lh-fraction__wrapper {\n  position: relative;\n  display: flex;\n  align-items: center;\n  flex-direction: column;\n  text-decoration: none;\n  padding: var(--score-container-padding);\n\n  --transition-length: 1s;\n\n  /* Contain the layout style paint & layers during animation*/\n  contain: content;\n  will-change: opacity; /* Only using for layer promotion */\n}\n\n.lh-gauge__label,\n.lh-fraction__label {\n  font-size: var(--gauge-label-font-size);\n  font-weight: 500;\n  line-height: var(--gauge-label-line-height);\n  margin-top: 10px;\n  text-align: center;\n  color: var(--report-text-color);\n  word-break: keep-all;\n}\n\n/* TODO(#8185) use more BEM (.lh-gauge__label--big) instead of relying on descendant selector */\n.lh-category .lh-gauge__label,\n.lh-category .lh-fraction__label {\n  --gauge-label-font-size: var(--gauge-label-font-size-big);\n  --gauge-label-line-height: var(--gauge-label-line-height-big);\n  margin-top: 14px;\n}\n\n.lh-scores-header .lh-gauge__wrapper,\n.lh-scores-header .lh-fraction__wrapper,\n.lh-scores-header .lh-gauge--pwa__wrapper,\n.lh-sticky-header .lh-gauge__wrapper,\n.lh-sticky-header .lh-fraction__wrapper,\n.lh-sticky-header .lh-gauge--pwa__wrapper {\n  width: var(--gauge-wrapper-width);\n}\n\n.lh-scorescale {\n  display: inline-flex;\n\n  gap: calc(var(--default-padding) * 4);\n  margin: 16px auto 0 auto;\n  font-size: var(--report-font-size-secondary);\n  color: var(--color-gray-700);\n\n}\n\n.lh-scorescale-range {\n  display: flex;\n  align-items: center;\n  font-family: var(--report-font-family-monospace);\n  white-space: nowrap;\n}\n\n.lh-category-header__finalscreenshot .lh-scorescale {\n  border: 0;\n  display: flex;\n  justify-content: center;\n}\n\n.lh-category-header__finalscreenshot .lh-scorescale-range {\n  font-family: unset;\n  font-size: 12px;\n}\n\n.lh-scorescale-wrap {\n  display: contents;\n}\n\n/* Hide category score gauages if it's a single category report */\n.lh-header--solo-category .lh-scores-wrapper {\n  display: none;\n}\n\n\n.lh-categories {\n  width: 100%;\n}\n\n.lh-category {\n  padding: var(--category-padding);\n  max-width: var(--report-content-max-width);\n  margin: 0 auto;\n\n  scroll-margin-top: var(--sticky-header-buffer);\n\n  /* Faster recalc style & layout of the report. https://web.dev/content-visibility/ */\n  content-visibility: auto;\n  contain-intrinsic-size: 1000px;\n}\n\n.lh-category-wrapper {\n  border-bottom: 1px solid var(--color-gray-200);\n}\n.lh-category-wrapper:last-of-type {\n  border-bottom: 0;\n}\n\n.lh-category-header {\n  margin-bottom: var(--section-padding-vertical);\n}\n\n.lh-category-header .lh-score__gauge {\n  max-width: 400px;\n  width: auto;\n  margin: 0px auto;\n}\n\n.lh-category-header__finalscreenshot {\n  display: grid;\n  grid-template: none / 1fr 1px 1fr;\n  justify-items: center;\n  align-items: center;\n  gap: var(--report-line-height);\n  min-height: 288px;\n  margin-bottom: var(--default-padding);\n}\n\n.lh-final-ss-image {\n  /* constrain the size of the image to not be too large */\n  max-height: calc(var(--gauge-circle-size-big) * 2.8);\n  max-width: calc(var(--gauge-circle-size-big) * 3.5);\n  border: 1px solid var(--color-gray-200);\n  padding: 4px;\n  border-radius: 3px;\n  display: block;\n}\n\n.lh-category-headercol--separator {\n  background: var(--color-gray-200);\n  width: 1px;\n  height: var(--gauge-circle-size-big);\n}\n\n@media screen and (max-width: 780px) {\n  .lh-category-header__finalscreenshot {\n    grid-template: 1fr 1fr / none\n  }\n  .lh-category-headercol--separator {\n    display: none;\n  }\n}\n\n\n/* 964 fits the min-width of the filmstrip */\n@media screen and (max-width: 964px) {\n  .lh-report {\n    margin-left: 0;\n    width: 100%;\n  }\n}\n\n@media print {\n  body {\n    -webkit-print-color-adjust: exact; /* print background colors */\n  }\n  .lh-container {\n    display: block;\n  }\n  .lh-report {\n    margin-left: 0;\n    padding-top: 0;\n  }\n  .lh-categories {\n    margin-top: 0;\n  }\n}\n\n.lh-table {\n  position: relative;\n  border-collapse: separate;\n  border-spacing: 0;\n  /* Can't assign padding to table, so shorten the width instead. */\n  width: calc(100% - var(--audit-description-padding-left) - var(--stackpack-padding-horizontal));\n  border: 1px solid var(--report-border-color-secondary);\n}\n\n.lh-table thead th {\n  position: sticky;\n  top: calc(var(--sticky-header-buffer) + 1em);\n  z-index: 1;\n  background-color: var(--report-background-color);\n  border-bottom: 1px solid var(--report-border-color-secondary);\n  font-weight: normal;\n  color: var(--color-gray-600);\n  /* See text-wrapping comment on .lh-container. */\n  word-break: normal;\n}\n\n.lh-row--even {\n  background-color: var(--table-higlight-background-color);\n}\n.lh-row--hidden {\n  display: none;\n}\n\n.lh-table th,\n.lh-table td {\n  padding: var(--default-padding);\n}\n\n.lh-table tr {\n  vertical-align: middle;\n}\n\n/* Looks unnecessary, but mostly for keeping the <th>s left-aligned */\n.lh-table-column--text,\n.lh-table-column--source-location,\n.lh-table-column--url,\n/* .lh-table-column--thumbnail, */\n/* .lh-table-column--empty,*/\n.lh-table-column--code,\n.lh-table-column--node {\n  text-align: left;\n}\n\n.lh-table-column--code {\n  min-width: 100px;\n}\n\n.lh-table-column--bytes,\n.lh-table-column--timespanMs,\n.lh-table-column--ms,\n.lh-table-column--numeric {\n  text-align: right;\n  word-break: normal;\n}\n\n\n\n.lh-table .lh-table-column--thumbnail {\n  width: var(--image-preview-size);\n}\n\n.lh-table-column--url {\n  min-width: 250px;\n}\n\n.lh-table-column--text {\n  min-width: 80px;\n}\n\n/* Keep columns narrow if they follow the URL column */\n/* 12% was determined to be a decent narrow width, but wide enough for column headings */\n.lh-table-column--url + th.lh-table-column--bytes,\n.lh-table-column--url + .lh-table-column--bytes + th.lh-table-column--bytes,\n.lh-table-column--url + .lh-table-column--ms,\n.lh-table-column--url + .lh-table-column--ms + th.lh-table-column--bytes,\n.lh-table-column--url + .lh-table-column--bytes + th.lh-table-column--timespanMs {\n  width: 12%;\n}\n\n.lh-text__url-host {\n  display: inline;\n}\n\n.lh-text__url-host {\n  margin-left: calc(var(--report-font-size) / 2);\n  opacity: 0.6;\n  font-size: 90%\n}\n\n.lh-thumbnail {\n  object-fit: cover;\n  width: var(--image-preview-size);\n  height: var(--image-preview-size);\n  display: block;\n}\n\n.lh-unknown pre {\n  overflow: scroll;\n  border: solid 1px var(--color-gray-200);\n}\n\n.lh-text__url > a {\n  color: inherit;\n  text-decoration: none;\n}\n\n.lh-text__url > a:hover {\n  text-decoration: underline dotted #999;\n}\n\n.lh-sub-item-row {\n  margin-left: 20px;\n  margin-bottom: 0;\n  color: var(--color-gray-700);\n}\n.lh-sub-item-row td {\n  padding-top: 4px;\n  padding-bottom: 4px;\n  padding-left: 20px;\n}\n\n/* Chevron\n   https://codepen.io/paulirish/pen/LmzEmK\n */\n.lh-chevron {\n  --chevron-angle: 42deg;\n  /* Edge doesn't support transform: rotate(calc(...)), so we define it here */\n  --chevron-angle-right: -42deg;\n  width: var(--chevron-size);\n  height: var(--chevron-size);\n  margin-top: calc((var(--report-line-height) - 12px) / 2);\n}\n\n.lh-chevron__lines {\n  transition: transform 0.4s;\n  transform: translateY(var(--report-line-height));\n}\n.lh-chevron__line {\n stroke: var(--chevron-line-stroke);\n stroke-width: var(--chevron-size);\n stroke-linecap: square;\n transform-origin: 50%;\n transform: rotate(var(--chevron-angle));\n transition: transform 300ms, stroke 300ms;\n}\n\n.lh-expandable-details .lh-chevron__line-right,\n.lh-expandable-details[open] .lh-chevron__line-left {\n transform: rotate(var(--chevron-angle-right));\n}\n\n.lh-expandable-details[open] .lh-chevron__line-right {\n  transform: rotate(var(--chevron-angle));\n}\n\n\n.lh-expandable-details[open]  .lh-chevron__lines {\n transform: translateY(calc(var(--chevron-size) * -1));\n}\n\n.lh-expandable-details[open] {\n  animation: 300ms openDetails forwards;\n  padding-bottom: var(--default-padding);\n}\n\n@keyframes openDetails {\n  from {\n    outline: 1px solid var(--report-background-color);\n  }\n  to {\n   outline: 1px solid;\n   box-shadow: 0 2px 4px rgba(0, 0, 0, .24);\n  }\n}\n\n@media screen and (max-width: 780px) {\n  /* no black outline if we're not confident the entire table can be displayed within bounds */\n  .lh-expandable-details[open] {\n    animation: none;\n  }\n}\n\n.lh-expandable-details[open] summary, details.lh-clump > summary {\n  border-bottom: 1px solid var(--report-border-color-secondary);\n}\ndetails.lh-clump[open] > summary {\n  border-bottom-width: 0;\n}\n\n\n\ndetails .lh-clump-toggletext--hide,\ndetails[open] .lh-clump-toggletext--show { display: none; }\ndetails[open] .lh-clump-toggletext--hide { display: block;}\n\n\n/* Tooltip */\n.lh-tooltip-boundary {\n  position: relative;\n}\n\n.lh-tooltip {\n  position: absolute;\n  display: none; /* Don't retain these layers when not needed */\n  opacity: 0;\n  background: #ffffff;\n  white-space: pre-line; /* Render newlines in the text */\n  min-width: 246px;\n  max-width: 275px;\n  padding: 15px;\n  border-radius: 5px;\n  text-align: initial;\n  line-height: 1.4;\n}\n/* shrink tooltips to not be cutoff on left edge of narrow viewports\n   45vw is chosen to be ~= width of the left column of metrics\n*/\n@media screen and (max-width: 535px) {\n  .lh-tooltip {\n    min-width: 45vw;\n    padding: 3vw;\n  }\n}\n\n.lh-tooltip-boundary:hover .lh-tooltip {\n  display: block;\n  animation: fadeInTooltip 250ms;\n  animation-fill-mode: forwards;\n  animation-delay: 850ms;\n  bottom: 100%;\n  z-index: 1;\n  will-change: opacity;\n  right: 0;\n  pointer-events: none;\n}\n\n.lh-tooltip::before {\n  content: \"\";\n  border: solid transparent;\n  border-bottom-color: #fff;\n  border-width: 10px;\n  position: absolute;\n  bottom: -20px;\n  right: 6px;\n  transform: rotate(180deg);\n  pointer-events: none;\n}\n\n@keyframes fadeInTooltip {\n  0% { opacity: 0; }\n  75% { opacity: 1; }\n  100% { opacity: 1;  filter: drop-shadow(1px 0px 1px #aaa) drop-shadow(0px 2px 4px hsla(206, 6%, 25%, 0.15)); pointer-events: auto; }\n}\n\n/* Element screenshot */\n.lh-element-screenshot {\n  float: left;\n  margin-right: 20px;\n}\n.lh-element-screenshot__content {\n  overflow: hidden;\n  min-width: 110px;\n  display: flex;\n  justify-content: center;\n  background-color: var(--report-background-color);\n}\n.lh-element-screenshot__image {\n  position: relative;\n  /* Set by ElementScreenshotRenderer.installFullPageScreenshotCssVariable */\n  background-image: var(--element-screenshot-url);\n  outline: 2px solid #777;\n  background-color: white;\n  background-repeat: no-repeat;\n}\n.lh-element-screenshot__mask {\n  position: absolute;\n  background: #555;\n  opacity: 0.8;\n}\n.lh-element-screenshot__element-marker {\n  position: absolute;\n  outline: 2px solid var(--color-lime-400);\n}\n.lh-element-screenshot__overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 2000; /* .lh-topbar is 1000 */\n  background: var(--screenshot-overlay-background);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: zoom-out;\n}\n\n.lh-element-screenshot__overlay .lh-element-screenshot {\n  margin-right: 0; /* clearing margin used in thumbnail case */\n  outline: 1px solid var(--color-gray-700);\n}\n\n.lh-screenshot-overlay--enabled .lh-element-screenshot {\n  cursor: zoom-out;\n}\n.lh-screenshot-overlay--enabled .lh-node .lh-element-screenshot {\n  cursor: zoom-in;\n}\n\n\n.lh-meta__items {\n  --meta-icon-size: calc(var(--report-icon-size) * 0.667);\n  padding: var(--default-padding);\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  background-color: var(--env-item-background-color);\n  border-radius: 3px;\n  margin: 0 0 var(--default-padding) 0;\n  font-size: 12px;\n  column-gap: var(--default-padding);\n  color: var(--color-gray-700);\n}\n\n.lh-meta__item {\n  display: block;\n  list-style-type: none;\n  position: relative;\n  padding: 0 0 0 calc(var(--meta-icon-size) + var(--default-padding) * 2);\n  cursor: unset; /* disable pointer cursor from report-icon */\n}\n\n.lh-meta__item.lh-tooltip-boundary {\n  text-decoration: dotted underline var(--color-gray-500);\n  cursor: help;\n}\n\n.lh-meta__item.lh-report-icon::before {\n  position: absolute;\n  left: var(--default-padding);\n  width: var(--meta-icon-size);\n  height: var(--meta-icon-size);\n}\n\n.lh-meta__item.lh-report-icon:hover::before {\n  opacity: 0.7;\n}\n\n.lh-meta__item .lh-tooltip {\n  color: var(--color-gray-800);\n}\n\n.lh-meta__item .lh-tooltip::before {\n  right: auto; /* Set the tooltip arrow to the leftside */\n  left: 6px;\n}\n\n/* Change the grid for narrow viewport. */\n@media screen and (max-width: 640px) {\n  .lh-meta__items {\n    grid-template-columns: 1fr 1fr;\n  }\n}\n@media screen and (max-width: 535px) {\n  .lh-meta__items {\n    display: block;\n  }\n}\n\n\n/*# sourceURL=report-styles.css */\n");
   el0.append(el1);
   return el0;
 }
@@ -1229,214 +859,131 @@ function createStylesComponent(dom) {
  */
 function createTopbarComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('style');
-  el1.append('\n    .lh-topbar {\n      position: sticky;\n      top: 0;\n      left: 0;\n      right: 0;\n      z-index: 1000;\n      display: flex;\n      align-items: center;\n      height: var(--topbar-height);\n      padding: var(--topbar-padding);\n      font-size: var(--report-font-size-secondary);\n      background-color: var(--topbar-background-color);\n      border-bottom: 1px solid var(--color-gray-200);\n    }\n\n    .lh-topbar__logo {\n      width: var(--topbar-logo-size);\n      height: var(--topbar-logo-size);\n      user-select: none;\n      flex: none;\n    }\n\n    .lh-topbar__url {\n      margin: var(--topbar-padding);\n      text-decoration: none;\n      color: var(--report-text-color);\n      text-overflow: ellipsis;\n      overflow: hidden;\n      white-space: nowrap;\n    }\n\n    .lh-tools {\n      display: flex;\n      align-items: center;\n      margin-left: auto;\n      will-change: transform;\n      min-width: var(--report-icon-size);\n    }\n    .lh-tools__button {\n      width: var(--report-icon-size);\n      min-width: 24px;\n      height: var(--report-icon-size);\n      cursor: pointer;\n      margin-right: 5px;\n      /* This is actually a button element, but we want to style it like a transparent div. */\n      display: flex;\n      background: none;\n      color: inherit;\n      border: none;\n      padding: 0;\n      font: inherit;\n      outline: inherit;\n    }\n    .lh-tools__button svg {\n      fill: var(--tools-icon-color);\n    }\n    .lh-dark .lh-tools__button svg {\n      filter: invert(1);\n    }\n    .lh-tools__button.lh-active + .lh-tools__dropdown {\n      opacity: 1;\n      clip: rect(-1px, 194px, 242px, -3px);\n      visibility: visible;\n    }\n    .lh-tools__dropdown {\n      position: absolute;\n      background-color: var(--report-background-color);\n      border: 1px solid var(--report-border-color);\n      border-radius: 3px;\n      padding: calc(var(--default-padding) / 2) 0;\n      cursor: pointer;\n      top: 36px;\n      right: 0;\n      box-shadow: 1px 1px 3px #ccc;\n      min-width: 125px;\n      clip: rect(0, 164px, 0, 0);\n      visibility: hidden;\n      opacity: 0;\n      transition: all 200ms cubic-bezier(0,0,0.2,1);\n    }\n    .lh-tools__dropdown a {\n      color: currentColor;\n      text-decoration: none;\n      white-space: nowrap;\n      padding: 0 6px;\n      line-height: 2;\n    }\n    .lh-tools__dropdown a:hover,\n    .lh-tools__dropdown a:focus {\n      background-color: var(--color-gray-200);\n      outline: none;\n    }\n    /* save-gist option hidden in report. */\n    .lh-tools__dropdown a[data-action=\'save-gist\'] {\n      display: none;\n    }\n\n    .lh-locale-selector {\n      width: 100%;\n      color: var(--report-text-color);\n      background-color: var(--locale-selector-background-color);\n      padding: 2px;\n    }\n    .lh-tools-locale {\n      display: flex;\n      align-items: center;\n      flex-direction: row-reverse;\n    }\n    .lh-tools-locale__selector-wrapper {\n      transition: opacity 0.15s;\n      opacity: 0;\n      max-width: 200px;\n    }\n    .lh-button.lh-tool-locale__button {\n      height: var(--topbar-height);\n      color: var(--tools-icon-color);\n      padding: calc(var(--default-padding) / 2);\n    }\n    .lh-tool-locale__button.lh-active + .lh-tools-locale__selector-wrapper {\n      opacity: 1;\n      clip: rect(-1px, 194px, 242px, -3px);\n      visibility: visible;\n      margin: 0 4px;\n    }\n\n    @media screen and (max-width: 964px) {\n      .lh-tools__dropdown {\n        right: 0;\n        left: initial;\n      }\n    }\n    @media print {\n      .lh-topbar {\n        position: static;\n        margin-left: 0;\n      }\n\n      .lh-tools__dropdown {\n        display: none;\n      }\n    }\n  ');
+  const el1 = dom.createElement("style");
+  el1.append("\n    .lh-topbar {\n      position: sticky;\n      top: 0;\n      left: 0;\n      right: 0;\n      z-index: 1000;\n      display: flex;\n      align-items: center;\n      height: var(--topbar-height);\n      padding: var(--topbar-padding);\n      font-size: var(--report-font-size-secondary);\n      background-color: var(--topbar-background-color);\n      border-bottom: 1px solid var(--color-gray-200);\n    }\n\n    .lh-topbar__logo {\n      width: var(--topbar-logo-size);\n      height: var(--topbar-logo-size);\n      user-select: none;\n      flex: none;\n    }\n\n    .lh-topbar__url {\n      margin: var(--topbar-padding);\n      text-decoration: none;\n      color: var(--report-text-color);\n      text-overflow: ellipsis;\n      overflow: hidden;\n      white-space: nowrap;\n    }\n\n    .lh-tools {\n      display: flex;\n      align-items: center;\n      margin-left: auto;\n      will-change: transform;\n      min-width: var(--report-icon-size);\n    }\n    .lh-tools__button {\n      width: var(--report-icon-size);\n      min-width: 24px;\n      height: var(--report-icon-size);\n      cursor: pointer;\n      margin-right: 5px;\n      /* This is actually a button element, but we want to style it like a transparent div. */\n      display: flex;\n      background: none;\n      color: inherit;\n      border: none;\n      padding: 0;\n      font: inherit;\n      outline: inherit;\n    }\n    .lh-tools__button svg {\n      fill: var(--tools-icon-color);\n    }\n    .lh-dark .lh-tools__button svg {\n      filter: invert(1);\n    }\n    .lh-tools__button.lh-active + .lh-tools__dropdown {\n      opacity: 1;\n      clip: rect(-1px, 194px, 242px, -3px);\n      visibility: visible;\n    }\n    .lh-tools__dropdown {\n      position: absolute;\n      background-color: var(--report-background-color);\n      border: 1px solid var(--report-border-color);\n      border-radius: 3px;\n      padding: calc(var(--default-padding) / 2) 0;\n      cursor: pointer;\n      top: 36px;\n      right: 0;\n      box-shadow: 1px 1px 3px #ccc;\n      min-width: 125px;\n      clip: rect(0, 164px, 0, 0);\n      visibility: hidden;\n      opacity: 0;\n      transition: all 200ms cubic-bezier(0,0,0.2,1);\n    }\n    .lh-tools__dropdown a {\n      color: currentColor;\n      text-decoration: none;\n      white-space: nowrap;\n      padding: 0 6px;\n      line-height: 2;\n    }\n    .lh-tools__dropdown a:hover,\n    .lh-tools__dropdown a:focus {\n      background-color: var(--color-gray-200);\n      outline: none;\n    }\n    /* save-gist option hidden in report. */\n    .lh-tools__dropdown a[data-action='save-gist'] {\n      display: none;\n    }\n\n    .lh-locale-selector {\n      width: 100%;\n      color: var(--report-text-color);\n      background-color: var(--locale-selector-background-color);\n      padding: 2px;\n    }\n    .lh-tools-locale {\n      display: flex;\n      align-items: center;\n      flex-direction: row-reverse;\n    }\n    .lh-tools-locale__selector-wrapper {\n      transition: opacity 0.15s;\n      opacity: 0;\n      max-width: 200px;\n    }\n    .lh-button.lh-tool-locale__button {\n      height: var(--topbar-height);\n      color: var(--tools-icon-color);\n      padding: calc(var(--default-padding) / 2);\n    }\n    .lh-tool-locale__button.lh-active + .lh-tools-locale__selector-wrapper {\n      opacity: 1;\n      clip: rect(-1px, 194px, 242px, -3px);\n      visibility: visible;\n      margin: 0 4px;\n    }\n\n    @media screen and (max-width: 964px) {\n      .lh-tools__dropdown {\n        right: 0;\n        left: initial;\n      }\n    }\n    @media print {\n      .lh-topbar {\n        position: static;\n        margin-left: 0;\n      }\n\n      .lh-tools__dropdown {\n        display: none;\n      }\n    }\n  ");
   el0.append(el1);
-  const el2 = dom.createElement('div', 'lh-topbar');
-  const el3 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg', 'lh-topbar__logo');
-  el3.setAttribute('viewBox', '0 0 24 24');
-  const el4 = dom.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  const el5 = dom.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-  el5.setAttribute('x1', '57.456%');
-  el5.setAttribute('y1', '13.086%');
-  el5.setAttribute('x2', '18.259%');
-  el5.setAttribute('y2', '72.322%');
-  el5.setAttribute('id', 'lh-topbar__logo--a');
-  const el6 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
-  el6.setAttribute('stop-color', '#262626');
-  el6.setAttribute('stop-opacity', '.1');
-  el6.setAttribute('offset', '0%');
-  const el7 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
-  el7.setAttribute('stop-color', '#262626');
-  el7.setAttribute('stop-opacity', '0');
-  el7.setAttribute('offset', '100%');
-  el5.append(' ', el6, ' ', el7, ' ');
-  const el8 = dom.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-  el8.setAttribute('x1', '100%');
-  el8.setAttribute('y1', '50%');
-  el8.setAttribute('x2', '0%');
-  el8.setAttribute('y2', '50%');
-  el8.setAttribute('id', 'lh-topbar__logo--b');
-  const el9 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
-  el9.setAttribute('stop-color', '#262626');
-  el9.setAttribute('stop-opacity', '.1');
-  el9.setAttribute('offset', '0%');
-  const el10 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
-  el10.setAttribute('stop-color', '#262626');
-  el10.setAttribute('stop-opacity', '0');
-  el10.setAttribute('offset', '100%');
-  el8.append(' ', el9, ' ', el10, ' ');
-  const el11 = dom.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-  el11.setAttribute('x1', '58.764%');
-  el11.setAttribute('y1', '65.756%');
-  el11.setAttribute('x2', '36.939%');
-  el11.setAttribute('y2', '50.14%');
-  el11.setAttribute('id', 'lh-topbar__logo--c');
-  const el12 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
-  el12.setAttribute('stop-color', '#262626');
-  el12.setAttribute('stop-opacity', '.1');
-  el12.setAttribute('offset', '0%');
-  const el13 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
-  el13.setAttribute('stop-color', '#262626');
-  el13.setAttribute('stop-opacity', '0');
-  el13.setAttribute('offset', '100%');
-  el11.append(' ', el12, ' ', el13, ' ');
-  const el14 = dom.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-  el14.setAttribute('x1', '41.635%');
-  el14.setAttribute('y1', '20.358%');
-  el14.setAttribute('x2', '72.863%');
-  el14.setAttribute('y2', '85.424%');
-  el14.setAttribute('id', 'lh-topbar__logo--d');
-  const el15 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
-  el15.setAttribute('stop-color', '#FFF');
-  el15.setAttribute('stop-opacity', '.1');
-  el15.setAttribute('offset', '0%');
-  const el16 = dom.createElementNS('http://www.w3.org/2000/svg', 'stop');
-  el16.setAttribute('stop-color', '#FFF');
-  el16.setAttribute('stop-opacity', '0');
-  el16.setAttribute('offset', '100%');
-  el14.append(' ', el15, ' ', el16, ' ');
-  el4.append(' ', el5, ' ', el8, ' ', el11, ' ', el14, ' ');
-  const el17 = dom.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const el2 = dom.createElement("div", "lh-topbar");
+  const el3 = dom.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-topbar__logo");
+  el3.setAttribute('role', 'img');
+  el3.setAttribute('title', 'Lighthouse logo');
+  el3.setAttribute('fill', 'none');
+  el3.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  el3.setAttribute('viewBox', '0 0 48 48');
+  const el4 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
+  el4.setAttribute('d', 'm14 7 10-7 10 7v10h5v7h-5l5 24H9l5-24H9v-7h5V7Z');
+  el4.setAttribute('fill', '#F63');
+  const el5 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
+  el5.setAttribute('d', 'M31.561 24H14l-1.689 8.105L31.561 24ZM18.983 48H9l1.022-4.907L35.723 32.27l1.663 7.98L18.983 48Z');
+  el5.setAttribute('fill', '#FFA385');
+  const el6 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
+  el6.setAttribute('fill', '#FF3');
+  el6.setAttribute('d', 'M20.5 10h7v7h-7z');
+  el3.append(" ",el4," ",el5," ",el6," ");
+  const el7 = dom.createElement("a", "lh-topbar__url");
+  el7.setAttribute('href', '');
+  el7.setAttribute('target', '_blank');
+  el7.setAttribute('rel', 'noopener');
+  const el8 = dom.createElement("div", "lh-tools");
+  const el9 = dom.createElement("div", "lh-tools-locale lh-hidden");
+  const el10 = dom.createElement("button", "lh-button lh-tool-locale__button");
+  el10.setAttribute('id', 'lh-button__swap-locales');
+  el10.setAttribute('title', 'Show Language Picker');
+  el10.setAttribute('aria-label', 'Toggle language picker');
+  el10.setAttribute('aria-haspopup', 'menu');
+  el10.setAttribute('aria-expanded', 'false');
+  el10.setAttribute('aria-controls', 'lh-tools-locale__selector-wrapper');
+  const el11 = dom.createElementNS("http://www.w3.org/2000/svg", "svg");
+  el11.setAttribute('width', '20px');
+  el11.setAttribute('height', '20px');
+  el11.setAttribute('viewBox', '0 0 24 24');
+  el11.setAttribute('fill', 'currentColor');
+  const el12 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
+  el12.setAttribute('d', 'M0 0h24v24H0V0z');
+  el12.setAttribute('fill', 'none');
+  const el13 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
+  el13.setAttribute('d', 'M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z');
+  el11.append(el12,el13);
+  el10.append(" ",el11," ");
+  const el14 = dom.createElement("div", "lh-tools-locale__selector-wrapper");
+  el14.setAttribute('id', 'lh-tools-locale__selector-wrapper');
+  el14.setAttribute('role', 'menu');
+  el14.setAttribute('aria-labelledby', 'lh-button__swap-locales');
+  el14.setAttribute('aria-hidden', 'true');
+  el14.append(" "," ");
+  el9.append(" ",el10," ",el14," ");
+  const el15 = dom.createElement("button", "lh-tools__button");
+  el15.setAttribute('id', 'lh-tools-button');
+  el15.setAttribute('title', 'Tools menu');
+  el15.setAttribute('aria-label', 'Toggle report tools menu');
+  el15.setAttribute('aria-haspopup', 'menu');
+  el15.setAttribute('aria-expanded', 'false');
+  el15.setAttribute('aria-controls', 'lh-tools-dropdown');
+  const el16 = dom.createElementNS("http://www.w3.org/2000/svg", "svg");
+  el16.setAttribute('width', '100%');
+  el16.setAttribute('height', '100%');
+  el16.setAttribute('viewBox', '0 0 24 24');
+  const el17 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
+  el17.setAttribute('d', 'M0 0h24v24H0z');
   el17.setAttribute('fill', 'none');
-  el17.setAttribute('fill-rule', 'evenodd');
-  const el18 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el18.setAttribute('d', 'M12 3l4.125 2.625v3.75H18v2.25h-1.688l1.5 9.375H6.188l1.5-9.375H6v-2.25h1.875V5.648L12 3zm2.201 9.938L9.54 14.633 9 18.028l5.625-2.062-.424-3.028zM12.005 5.67l-1.88 1.207v2.498h3.75V6.86l-1.87-1.19z');
-  el18.setAttribute('fill', '#F44B21');
-  const el19 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el19.setAttribute('fill', '#FFF');
-  el19.setAttribute('d', 'M14.201 12.938L9.54 14.633 9 18.028l5.625-2.062z');
-  const el20 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el20.setAttribute('d', 'M6 18c-2.042 0-3.95-.01-5.813 0l1.5-9.375h4.326L6 18z');
-  el20.setAttribute('fill', 'url(#lh-topbar__logo--a)');
-  el20.setAttribute('fill-rule', 'nonzero');
-  el20.setAttribute('transform', 'translate(6 3)');
-  const el21 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el21.setAttribute('fill', '#FFF176');
-  el21.setAttribute('fill-rule', 'nonzero');
-  el21.setAttribute('d', 'M13.875 9.375v-2.56l-1.87-1.19-1.88 1.207v2.543z');
-  const el22 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el22.setAttribute('fill', 'url(#lh-topbar__logo--b)');
-  el22.setAttribute('fill-rule', 'nonzero');
-  el22.setAttribute('d', 'M0 6.375h6v2.25H0z');
-  el22.setAttribute('transform', 'translate(6 3)');
-  const el23 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el23.setAttribute('fill', 'url(#lh-topbar__logo--c)');
-  el23.setAttribute('fill-rule', 'nonzero');
-  el23.setAttribute('d', 'M6 6.375H1.875v-3.75L6 0z');
-  el23.setAttribute('transform', 'translate(6 3)');
-  const el24 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el24.setAttribute('fill', 'url(#lh-topbar__logo--d)');
-  el24.setAttribute('fill-rule', 'nonzero');
-  el24.setAttribute('d', 'M6 0l4.125 2.625v3.75H12v2.25h-1.688l1.5 9.375H.188l1.5-9.375H0v-2.25h1.875V2.648z');
-  el24.setAttribute('transform', 'translate(6 3)');
-  el17.append(' ', el18, ' ', el19, ' ', el20, ' ', el21, ' ', el22, ' ', el23, ' ', el24, ' ');
-  el3.append(' ', el4, ' ', el17, ' ');
-  const el25 = dom.createElement('a', 'lh-topbar__url');
-  el25.setAttribute('href', '');
-  el25.setAttribute('target', '_blank');
-  el25.setAttribute('rel', 'noopener');
-  const el26 = dom.createElement('div', 'lh-tools');
-  const el27 = dom.createElement('div', 'lh-tools-locale lh-hidden');
-  const el28 = dom.createElement('button', 'lh-button lh-tool-locale__button');
-  el28.setAttribute('id', 'lh-button__swap-locales');
-  el28.setAttribute('title', 'Show Language Picker');
-  el28.setAttribute('aria-label', 'Toggle language picker');
-  el28.setAttribute('aria-haspopup', 'menu');
-  el28.setAttribute('aria-expanded', 'false');
-  el28.setAttribute('aria-controls', 'lh-tools-locale__selector-wrapper');
-  const el29 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  el29.setAttribute('width', '20px');
-  el29.setAttribute('height', '20px');
-  el29.setAttribute('viewBox', '0 0 24 24');
-  el29.setAttribute('fill', 'currentColor');
-  const el30 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el30.setAttribute('d', 'M0 0h24v24H0V0z');
-  el30.setAttribute('fill', 'none');
-  const el31 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el31.setAttribute('d', 'M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z');
-  el29.append(el30, el31);
-  el28.append(' ', el29, ' ');
-  const el32 = dom.createElement('div', 'lh-tools-locale__selector-wrapper');
-  el32.setAttribute('id', 'lh-tools-locale__selector-wrapper');
-  el32.setAttribute('role', 'menu');
-  el32.setAttribute('aria-labelledby', 'lh-button__swap-locales');
-  el32.setAttribute('aria-hidden', 'true');
-  el32.append(' ', ' ');
-  el27.append(' ', el28, ' ', el32, ' ');
-  const el33 = dom.createElement('button', 'lh-tools__button');
-  el33.setAttribute('id', 'lh-tools-button');
-  el33.setAttribute('title', 'Tools menu');
-  el33.setAttribute('aria-label', 'Toggle report tools menu');
-  el33.setAttribute('aria-haspopup', 'menu');
-  el33.setAttribute('aria-expanded', 'false');
-  el33.setAttribute('aria-controls', 'lh-tools-dropdown');
-  const el34 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  el34.setAttribute('width', '100%');
-  el34.setAttribute('height', '100%');
-  el34.setAttribute('viewBox', '0 0 24 24');
-  const el35 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el35.setAttribute('d', 'M0 0h24v24H0z');
-  el35.setAttribute('fill', 'none');
-  const el36 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el36.setAttribute('d', 'M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z');
-  el34.append(' ', el35, ' ', el36, ' ');
-  el33.append(' ', el34, ' ');
-  const el37 = dom.createElement('div', 'lh-tools__dropdown');
-  el37.setAttribute('id', 'lh-tools-dropdown');
-  el37.setAttribute('role', 'menu');
-  el37.setAttribute('aria-labelledby', 'lh-tools-button');
-  const el38 = dom.createElement('a', 'lh-report-icon lh-report-icon--print');
-  el38.setAttribute('role', 'menuitem');
-  el38.setAttribute('tabindex', '-1');
-  el38.setAttribute('href', '#');
-  el38.setAttribute('data-i18n', 'dropdownPrintSummary');
-  el38.setAttribute('data-action', 'print-summary');
-  const el39 = dom.createElement('a', 'lh-report-icon lh-report-icon--print');
-  el39.setAttribute('role', 'menuitem');
-  el39.setAttribute('tabindex', '-1');
-  el39.setAttribute('href', '#');
-  el39.setAttribute('data-i18n', 'dropdownPrintExpanded');
-  el39.setAttribute('data-action', 'print-expanded');
-  const el40 = dom.createElement('a', 'lh-report-icon lh-report-icon--copy');
-  el40.setAttribute('role', 'menuitem');
-  el40.setAttribute('tabindex', '-1');
-  el40.setAttribute('href', '#');
-  el40.setAttribute('data-i18n', 'dropdownCopyJSON');
-  el40.setAttribute('data-action', 'copy');
-  const el41 = dom.createElement('a', 'lh-report-icon lh-report-icon--download lh-hidden');
-  el41.setAttribute('role', 'menuitem');
-  el41.setAttribute('tabindex', '-1');
-  el41.setAttribute('href', '#');
-  el41.setAttribute('data-i18n', 'dropdownSaveHTML');
-  el41.setAttribute('data-action', 'save-html');
-  const el42 = dom.createElement('a', 'lh-report-icon lh-report-icon--download');
-  el42.setAttribute('role', 'menuitem');
-  el42.setAttribute('tabindex', '-1');
-  el42.setAttribute('href', '#');
-  el42.setAttribute('data-i18n', 'dropdownSaveJSON');
-  el42.setAttribute('data-action', 'save-json');
-  const el43 = dom.createElement('a', 'lh-report-icon lh-report-icon--open');
-  el43.setAttribute('role', 'menuitem');
-  el43.setAttribute('tabindex', '-1');
-  el43.setAttribute('href', '#');
-  el43.setAttribute('data-i18n', 'dropdownViewer');
-  el43.setAttribute('data-action', 'open-viewer');
-  const el44 = dom.createElement('a', 'lh-report-icon lh-report-icon--open');
-  el44.setAttribute('role', 'menuitem');
-  el44.setAttribute('tabindex', '-1');
-  el44.setAttribute('href', '#');
-  el44.setAttribute('data-i18n', 'dropdownSaveGist');
-  el44.setAttribute('data-action', 'save-gist');
-  const el45 = dom.createElement('a', 'lh-report-icon lh-report-icon--dark');
-  el45.setAttribute('role', 'menuitem');
-  el45.setAttribute('tabindex', '-1');
-  el45.setAttribute('href', '#');
-  el45.setAttribute('data-i18n', 'dropdownDarkTheme');
-  el45.setAttribute('data-action', 'toggle-dark');
-  el37.append(' ', el38, ' ', el39, ' ', el40, ' ', ' ', el41, ' ', el42, ' ', el43, ' ', el44, ' ', el45, ' ');
-  el26.append(' ', el27, ' ', el33, ' ', el37, ' ');
-  el2.append(' ', ' ', el3, ' ', el25, ' ', el26, ' ');
+  const el18 = dom.createElementNS("http://www.w3.org/2000/svg", "path");
+  el18.setAttribute('d', 'M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z');
+  el16.append(" ",el17," ",el18," ");
+  el15.append(" ",el16," ");
+  const el19 = dom.createElement("div", "lh-tools__dropdown");
+  el19.setAttribute('id', 'lh-tools-dropdown');
+  el19.setAttribute('role', 'menu');
+  el19.setAttribute('aria-labelledby', 'lh-tools-button');
+  const el20 = dom.createElement("a", "lh-report-icon lh-report-icon--print");
+  el20.setAttribute('role', 'menuitem');
+  el20.setAttribute('tabindex', '-1');
+  el20.setAttribute('href', '#');
+  el20.setAttribute('data-i18n', 'dropdownPrintSummary');
+  el20.setAttribute('data-action', 'print-summary');
+  const el21 = dom.createElement("a", "lh-report-icon lh-report-icon--print");
+  el21.setAttribute('role', 'menuitem');
+  el21.setAttribute('tabindex', '-1');
+  el21.setAttribute('href', '#');
+  el21.setAttribute('data-i18n', 'dropdownPrintExpanded');
+  el21.setAttribute('data-action', 'print-expanded');
+  const el22 = dom.createElement("a", "lh-report-icon lh-report-icon--copy");
+  el22.setAttribute('role', 'menuitem');
+  el22.setAttribute('tabindex', '-1');
+  el22.setAttribute('href', '#');
+  el22.setAttribute('data-i18n', 'dropdownCopyJSON');
+  el22.setAttribute('data-action', 'copy');
+  const el23 = dom.createElement("a", "lh-report-icon lh-report-icon--download lh-hidden");
+  el23.setAttribute('role', 'menuitem');
+  el23.setAttribute('tabindex', '-1');
+  el23.setAttribute('href', '#');
+  el23.setAttribute('data-i18n', 'dropdownSaveHTML');
+  el23.setAttribute('data-action', 'save-html');
+  const el24 = dom.createElement("a", "lh-report-icon lh-report-icon--download");
+  el24.setAttribute('role', 'menuitem');
+  el24.setAttribute('tabindex', '-1');
+  el24.setAttribute('href', '#');
+  el24.setAttribute('data-i18n', 'dropdownSaveJSON');
+  el24.setAttribute('data-action', 'save-json');
+  const el25 = dom.createElement("a", "lh-report-icon lh-report-icon--open");
+  el25.setAttribute('role', 'menuitem');
+  el25.setAttribute('tabindex', '-1');
+  el25.setAttribute('href', '#');
+  el25.setAttribute('data-i18n', 'dropdownViewer');
+  el25.setAttribute('data-action', 'open-viewer');
+  const el26 = dom.createElement("a", "lh-report-icon lh-report-icon--open");
+  el26.setAttribute('role', 'menuitem');
+  el26.setAttribute('tabindex', '-1');
+  el26.setAttribute('href', '#');
+  el26.setAttribute('data-i18n', 'dropdownSaveGist');
+  el26.setAttribute('data-action', 'save-gist');
+  const el27 = dom.createElement("a", "lh-report-icon lh-report-icon--dark");
+  el27.setAttribute('role', 'menuitem');
+  el27.setAttribute('tabindex', '-1');
+  el27.setAttribute('href', '#');
+  el27.setAttribute('data-i18n', 'dropdownDarkTheme');
+  el27.setAttribute('data-action', 'toggle-dark');
+  el19.append(" ",el20," ",el21," ",el22," "," ",el23," ",el24," ",el25," ",el26," ",el27," ");
+  el8.append(" ",el9," ",el15," ",el19," ");
+  el2.append(" "," ",el3," ",el7," ",el8," ");
   el0.append(el2);
   return el0;
 }
@@ -1446,10 +993,10 @@ function createTopbarComponent(dom) {
  */
 function createWarningsToplevelComponent(dom) {
   const el0 = dom.createFragment();
-  const el1 = dom.createElement('div', 'lh-warnings lh-warnings--toplevel');
-  const el2 = dom.createElement('p', 'lh-warnings__msg');
-  const el3 = dom.createElement('ul');
-  el1.append(' ', el2, ' ', el3, ' ');
+  const el1 = dom.createElement("div", "lh-warnings lh-warnings--toplevel");
+  const el2 = dom.createElement("p", "lh-warnings__msg");
+  const el3 = dom.createElement("ul");
+  el1.append(" ",el2," ",el3," ");
   el0.append(el1);
   return el0;
 }
@@ -1583,7 +1130,7 @@ class DOM {
    */
   createChildOf(parentElem, elementName, className) {
     const element = this.createElement(elementName, className);
-    parentElem.appendChild(element);
+    parentElem.append(element);
     return element;
   }
 
@@ -1619,16 +1166,20 @@ class DOM {
     const element = this.createElement('span');
 
     for (const segment of Util.splitMarkdownLink(text)) {
+      const processedSegment = segment.text.includes('`') ?
+        this.convertMarkdownCodeSnippets(segment.text) :
+        segment.text;
+
       if (!segment.isLink) {
         // Plain text segment.
-        element.appendChild(this._document.createTextNode(segment.text));
+        element.append(processedSegment);
         continue;
       }
 
       // Otherwise, append any links found.
       const url = new URL(segment.linkHref);
 
-      const DOCS_ORIGINS = ['https://developers.google.com', 'https://web.dev'];
+      const DOCS_ORIGINS = ['https://developers.google.com', 'https://web.dev', 'https://developer.chrome.com'];
       if (DOCS_ORIGINS.includes(url.origin)) {
         url.searchParams.set('utm_source', 'lighthouse');
         url.searchParams.set('utm_medium', this._lighthouseChannel);
@@ -1637,9 +1188,9 @@ class DOM {
       const a = this.createElement('a');
       a.rel = 'noopener';
       a.target = '_blank';
-      a.textContent = segment.text;
+      a.append(processedSegment);
       this.safelySetHref(a, url.href);
-      element.appendChild(a);
+      element.append(a);
     }
 
     return element;
@@ -1696,9 +1247,9 @@ class DOM {
       if (segment.isCode) {
         const pre = this.createElement('code');
         pre.textContent = segment.text;
-        element.appendChild(pre);
+        element.append(pre);
       } else {
-        element.appendChild(this._document.createTextNode(segment.text));
+        element.append(this._document.createTextNode(segment.text));
       }
     }
 
@@ -1781,7 +1332,7 @@ class DOM {
     const a = this.createElement('a');
     a.download = filename;
     this.safelySetBlobHref(a, blob);
-    this._document.body.appendChild(a); // Firefox requires anchor to be in the DOM.
+    this._document.body.append(a); // Firefox requires anchor to be in the DOM.
     a.click();
 
     // cleanup.
@@ -1789,6 +1340,624 @@ class DOM {
     setTimeout(() => URL.revokeObjectURL(a.href), 500);
   }
 }
+
+/**
+ * @license Copyright 2023 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+/** @typedef {import('./i18n-formatter').I18nFormatter} I18nFormatter */
+
+let svgSuffix = 0;
+
+class Globals {
+  /** @type {I18nFormatter} */
+  // @ts-expect-error: Set in report renderer.
+  static i18n = null;
+
+  /** @type {typeof UIStrings} */
+  // @ts-expect-error: Set in report renderer.
+  static strings = {};
+
+  /** @type {LH.ReportResult | null} */
+  static reportJson = null;
+
+  /**
+   * @param {{providedStrings: Record<string, string>; i18n: I18nFormatter; reportJson: LH.ReportResult | null}} options
+   */
+  static apply(options) {
+    Globals.strings = {
+      // Set missing renderer strings to default (english) values.
+      ...UIStrings,
+      ...options.providedStrings,
+    };
+    Globals.i18n = options.i18n;
+    Globals.reportJson = options.reportJson;
+  }
+
+  static getUniqueSuffix() {
+    return svgSuffix++;
+  }
+
+  static resetUniqueSuffix() {
+    svgSuffix = 0;
+  }
+}
+
+/**
+ * @license Copyright 2023 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+const SCREENSHOT_PREFIX = 'data:image/jpeg;base64,';
+
+/** @typedef {import('../../types/lhr/audit-details').default.ItemValueType} ItemValueType */
+
+/**
+ * Upgrades an lhr object in-place to account for changes in the data structure over major versions.
+ * @param {LH.Result} lhr
+ */
+function upgradeLhrForCompatibility(lhr) {
+  // If LHR is older (≤3.0.3), it has no locale setting. Set default.
+  if (!lhr.configSettings.locale) {
+    lhr.configSettings.locale = 'en';
+  }
+  if (!lhr.configSettings.formFactor) {
+    // @ts-expect-error fallback handling for emulatedFormFactor
+    lhr.configSettings.formFactor = lhr.configSettings.emulatedFormFactor;
+  }
+
+  lhr.finalDisplayedUrl = Util.getFinalDisplayedUrl(lhr);
+  lhr.mainDocumentUrl = Util.getMainDocumentUrl(lhr);
+
+  for (const audit of Object.values(lhr.audits)) {
+    // Turn 'not-applicable' (LHR <4.0) and 'not_applicable' (older proto versions)
+    // into 'notApplicable' (LHR ≥4.0).
+    // @ts-expect-error tsc rightly flags that these values shouldn't occur.
+    // eslint-disable-next-line max-len
+    if (audit.scoreDisplayMode === 'not_applicable' || audit.scoreDisplayMode === 'not-applicable') {
+      audit.scoreDisplayMode = 'notApplicable';
+    }
+
+    if (audit.details) {
+      // Turn `auditDetails.type` of undefined (LHR <4.2) and 'diagnostic' (LHR <5.0)
+      // into 'debugdata' (LHR ≥5.0).
+      // @ts-expect-error tsc rightly flags that these values shouldn't occur.
+      if (audit.details.type === undefined || audit.details.type === 'diagnostic') {
+        // @ts-expect-error details is of type never.
+        audit.details.type = 'debugdata';
+      }
+
+      // Add the jpg data URL prefix to filmstrip screenshots without them (LHR <5.0).
+      if (audit.details.type === 'filmstrip') {
+        for (const screenshot of audit.details.items) {
+          if (!screenshot.data.startsWith(SCREENSHOT_PREFIX)) {
+            screenshot.data = SCREENSHOT_PREFIX + screenshot.data;
+          }
+        }
+      }
+
+      // Circa 10.0, table items were refactored.
+      if (audit.details.type === 'table') {
+        for (const heading of audit.details.headings) {
+          /** @type {{itemType: ItemValueType|undefined, text: string|undefined}} */
+          // @ts-expect-error
+          const {itemType, text} = heading;
+          if (itemType !== undefined) {
+            heading.valueType = itemType;
+            // @ts-expect-error
+            delete heading.itemType;
+          }
+          if (text !== undefined) {
+            heading.label = text;
+            // @ts-expect-error
+            delete heading.text;
+          }
+
+          // @ts-expect-error
+          const subItemsItemType = heading.subItemsHeading?.itemType;
+          if (heading.subItemsHeading && subItemsItemType !== undefined) {
+            heading.subItemsHeading.valueType = subItemsItemType;
+            // @ts-expect-error
+            delete heading.subItemsHeading.itemType;
+          }
+        }
+      }
+
+      // TODO: convert printf-style displayValue.
+      // Added:   #5099, v3
+      // Removed: #6767, v4
+    }
+  }
+
+  // This backcompat converts old LHRs (<9.0.0) to use the new "hidden" group.
+  // Old LHRs used "no group" to identify audits that should be hidden in performance instead of the "hidden" group.
+  // Newer LHRs use "no group" to identify opportunities and diagnostics whose groups are assigned by details type.
+  const [majorVersion] = lhr.lighthouseVersion.split('.').map(Number);
+  const perfCategory = lhr.categories['performance'];
+  if (majorVersion < 9 && perfCategory) {
+    if (!lhr.categoryGroups) lhr.categoryGroups = {};
+    lhr.categoryGroups['hidden'] = {title: ''};
+    for (const auditRef of perfCategory.auditRefs) {
+      if (!auditRef.group) {
+        auditRef.group = 'hidden';
+      } else if (['load-opportunities', 'diagnostics'].includes(auditRef.group)) {
+        delete auditRef.group;
+      }
+    }
+  }
+
+  // Add some minimal stuff so older reports still work.
+  if (!lhr.environment) {
+    // @ts-expect-error
+    lhr.environment = {benchmarkIndex: 0};
+  }
+  if (!lhr.configSettings.screenEmulation) {
+    // @ts-expect-error
+    lhr.configSettings.screenEmulation = {};
+  }
+  if (!lhr.i18n) {
+    // @ts-expect-error
+    lhr.i18n = {};
+  }
+
+  // In 10.0, full-page-screenshot became a top-level property on the LHR.
+  if (lhr.audits['full-page-screenshot']) {
+    const details = /** @type {LH.Result.FullPageScreenshot=} */ (
+      lhr.audits['full-page-screenshot'].details);
+    if (details) {
+      lhr.fullPageScreenshot = {
+        screenshot: details.screenshot,
+        nodes: details.nodes,
+      };
+    } else {
+      lhr.fullPageScreenshot = null;
+    }
+    delete lhr.audits['full-page-screenshot'];
+  }
+}
+
+/**
+ * @license Copyright 2023 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+const RATINGS = Util.RATINGS;
+
+class ReportUtils {
+  /**
+   * Returns a new LHR that's reshaped for slightly better ergonomics within the report rendereer.
+   * Also, sets up the localized UI strings used within renderer and makes changes to old LHRs to be
+   * compatible with current renderer.
+   * The LHR passed in is not mutated.
+   * TODO(team): we all agree the LHR shape change is technical debt we should fix
+   * @param {LH.Result} lhr
+   * @return {LH.ReportResult}
+   */
+  static prepareReportResult(lhr) {
+    // If any mutations happen to the report within the renderers, we want the original object untouched
+    const clone = /** @type {LH.ReportResult} */ (JSON.parse(JSON.stringify(lhr)));
+    upgradeLhrForCompatibility(clone);
+
+    for (const audit of Object.values(clone.audits)) {
+      // Attach table/opportunity items with entity information.
+      ReportUtils.classifyEntities(clone.entities, audit);
+    }
+
+    // For convenience, smoosh all AuditResults into their auditRef (which has just weight & group)
+    if (typeof clone.categories !== 'object') throw new Error('No categories provided.');
+
+    /** @type {Map<string, Array<LH.ReportResult.AuditRef>>} */
+    const relevantAuditToMetricsMap = new Map();
+
+    for (const category of Object.values(clone.categories)) {
+      // Make basic lookup table for relevantAudits
+      category.auditRefs.forEach(metricRef => {
+        if (!metricRef.relevantAudits) return;
+        metricRef.relevantAudits.forEach(auditId => {
+          const arr = relevantAuditToMetricsMap.get(auditId) || [];
+          arr.push(metricRef);
+          relevantAuditToMetricsMap.set(auditId, arr);
+        });
+      });
+
+      category.auditRefs.forEach(auditRef => {
+        const result = clone.audits[auditRef.id];
+        auditRef.result = result;
+
+        // Attach any relevantMetric auditRefs
+        if (relevantAuditToMetricsMap.has(auditRef.id)) {
+          auditRef.relevantMetrics = relevantAuditToMetricsMap.get(auditRef.id);
+        }
+
+        // attach the stackpacks to the auditRef object
+        if (clone.stackPacks) {
+          clone.stackPacks.forEach(pack => {
+            if (pack.descriptions[auditRef.id]) {
+              auditRef.stackPacks = auditRef.stackPacks || [];
+              auditRef.stackPacks.push({
+                title: pack.title,
+                iconDataURL: pack.iconDataURL,
+                description: pack.descriptions[auditRef.id],
+              });
+            }
+          });
+        }
+      });
+    }
+
+    return clone;
+  }
+
+  /**
+   * Given an audit's details, identify and return a URL locator function that
+   * can be called later with an `item` to extract the URL of it.
+   * @param {LH.FormattedIcu<LH.Audit.Details.TableColumnHeading[]>} headings
+   * @return {{(item: LH.FormattedIcu<LH.Audit.Details.TableItem>): string|undefined}=}
+   */
+  static getUrlLocatorFn(headings) {
+    // The most common type, valueType=url.
+    const urlKey = headings.find(heading => heading.valueType === 'url')?.key;
+    if (urlKey && typeof urlKey === 'string') {
+      // Return a function that extracts item.url.
+      return (item) => {
+        const url = item[urlKey];
+        if (typeof url === 'string') return url;
+      };
+    }
+
+    // The second common type, valueType=source-location.
+    const srcLocationKey = headings.find(heading => heading.valueType === 'source-location')?.key;
+    if (srcLocationKey) {
+      // Return a function that extracts item.source.url.
+      return (item) => {
+        const sourceLocation = item[srcLocationKey];
+        if (typeof sourceLocation === 'object' && sourceLocation.type === 'source-location') {
+          return sourceLocation.url;
+        }
+      };
+    }
+
+    // More specific tests go here, as we need to identify URLs in more audits.
+  }
+
+  /**
+   * Mark TableItems/OpportunityItems with entity names.
+   * @param {LH.Result.Entities|undefined} entities
+   * @param {import('../../types/lhr/audit-result').Result} audit
+   */
+  static classifyEntities(entities, audit) {
+    if (!entities) return;
+    if (audit.details?.type !== 'opportunity' && audit.details?.type !== 'table') {
+      return;
+    }
+
+    // If details.items are already marked with entity attribute during an audit, nothing to do here.
+    const {items, headings} = audit.details;
+    if (!items.length || items.some(item => item.entity)) return;
+
+    // Identify a URL-locator function that we could call against each item to get its URL.
+    const urlLocatorFn = ReportUtils.getUrlLocatorFn(headings);
+    if (!urlLocatorFn) return;
+
+    for (const item of items) {
+      const url = urlLocatorFn(item);
+      if (!url) continue;
+
+      let origin = '';
+      try {
+        // Non-URLs can appear in valueType: url columns, like 'Unattributable'
+        origin = Util.parseURL(url).origin;
+      } catch {}
+      if (!origin) continue;
+
+      const entity = entities.find(e => e.origins.includes(origin));
+      if (entity) item.entity = entity.name;
+    }
+  }
+
+  /**
+   * @param {LH.Result['configSettings']} settings
+   * @return {!{deviceEmulation: string, screenEmulation?: string, networkThrottling: string, cpuThrottling: string, summary: string}}
+   */
+  static getEmulationDescriptions(settings) {
+    let cpuThrottling;
+    let networkThrottling;
+    let summary;
+
+    const throttling = settings.throttling;
+    const i18n = Globals.i18n;
+    const strings = Globals.strings;
+
+    switch (settings.throttlingMethod) {
+      case 'provided':
+        summary = networkThrottling = cpuThrottling = strings.throttlingProvided;
+        break;
+      case 'devtools': {
+        const {cpuSlowdownMultiplier, requestLatencyMs} = throttling;
+        // eslint-disable-next-line max-len
+        cpuThrottling = `${i18n.formatNumber(cpuSlowdownMultiplier)}x slowdown (DevTools)`;
+        networkThrottling = `${i18n.formatMilliseconds(requestLatencyMs)} HTTP RTT, ` +
+          `${i18n.formatKbps(throttling.downloadThroughputKbps)} down, ` +
+          `${i18n.formatKbps(throttling.uploadThroughputKbps)} up (DevTools)`;
+
+        const isSlow4G = () => {
+          return requestLatencyMs === 150 * 3.75 &&
+            throttling.downloadThroughputKbps === 1.6 * 1024 * 0.9 &&
+            throttling.uploadThroughputKbps === 750 * 0.9;
+        };
+        summary = isSlow4G() ? strings.runtimeSlow4g : strings.runtimeCustom;
+        break;
+      }
+      case 'simulate': {
+        const {cpuSlowdownMultiplier, rttMs, throughputKbps} = throttling;
+        // eslint-disable-next-line max-len
+        cpuThrottling = `${i18n.formatNumber(cpuSlowdownMultiplier)}x slowdown (Simulated)`;
+        networkThrottling = `${i18n.formatMilliseconds(rttMs)} TCP RTT, ` +
+          `${i18n.formatKbps(throughputKbps)} throughput (Simulated)`;
+
+        const isSlow4G = () => {
+          return rttMs === 150 && throughputKbps === 1.6 * 1024;
+        };
+        summary = isSlow4G() ?
+          strings.runtimeSlow4g : strings.runtimeCustom;
+        break;
+      }
+      default:
+        summary = cpuThrottling = networkThrottling = strings.runtimeUnknown;
+    }
+
+    // devtools-entry.js always sets `screenEmulation.disabled` when using mobile emulation,
+    // because we handle the emulation outside of Lighthouse. Since the screen truly is emulated
+    // as a mobile device, ignore `.disabled` in devtools and just check the form factor
+    const isScreenEmulationDisabled = settings.channel === 'devtools' ?
+      false :
+      settings.screenEmulation.disabled;
+    const isScreenEmulationMobile = settings.channel === 'devtools' ?
+      settings.formFactor === 'mobile' :
+      settings.screenEmulation.mobile;
+
+    let deviceEmulation = strings.runtimeMobileEmulation;
+    if (isScreenEmulationDisabled) {
+      deviceEmulation = strings.runtimeNoEmulation;
+    } else if (!isScreenEmulationMobile) {
+      deviceEmulation = strings.runtimeDesktopEmulation;
+    }
+
+    const screenEmulation = isScreenEmulationDisabled ?
+      undefined :
+      // eslint-disable-next-line max-len
+      `${settings.screenEmulation.width}x${settings.screenEmulation.height}, DPR ${settings.screenEmulation.deviceScaleFactor}`;
+
+    return {
+      deviceEmulation,
+      screenEmulation,
+      cpuThrottling,
+      networkThrottling,
+      summary,
+    };
+  }
+
+  /**
+   * Used to determine if the "passed" for the purposes of showing up in the "failed" or "passed"
+   * sections of the report.
+   *
+   * @param {{score: (number|null), scoreDisplayMode: string}} audit
+   * @return {boolean}
+   */
+  static showAsPassed(audit) {
+    switch (audit.scoreDisplayMode) {
+      case 'manual':
+      case 'notApplicable':
+        return true;
+      case 'error':
+      case 'informative':
+        return false;
+      case 'numeric':
+      case 'binary':
+      default:
+        return Number(audit.score) >= RATINGS.PASS.minScore;
+    }
+  }
+
+  /**
+   * Convert a score to a rating label.
+   * TODO: Return `'error'` for `score === null && !scoreDisplayMode`.
+   *
+   * @param {number|null} score
+   * @param {string=} scoreDisplayMode
+   * @return {string}
+   */
+  static calculateRating(score, scoreDisplayMode) {
+    // Handle edge cases first, manual and not applicable receive 'pass', errored audits receive 'error'
+    if (scoreDisplayMode === 'manual' || scoreDisplayMode === 'notApplicable') {
+      return RATINGS.PASS.label;
+    } else if (scoreDisplayMode === 'error') {
+      return RATINGS.ERROR.label;
+    } else if (score === null) {
+      return RATINGS.FAIL.label;
+    }
+
+    // At this point, we're rating a standard binary/numeric audit
+    let rating = RATINGS.FAIL.label;
+    if (score >= RATINGS.PASS.minScore) {
+      rating = RATINGS.PASS.label;
+    } else if (score >= RATINGS.AVERAGE.minScore) {
+      rating = RATINGS.AVERAGE.label;
+    }
+    return rating;
+  }
+
+  /**
+   * @param {LH.ReportResult.Category} category
+   */
+  static calculateCategoryFraction(category) {
+    let numPassableAudits = 0;
+    let numPassed = 0;
+    let numInformative = 0;
+    let totalWeight = 0;
+    for (const auditRef of category.auditRefs) {
+      const auditPassed = ReportUtils.showAsPassed(auditRef.result);
+
+      // Don't count the audit if it's manual, N/A, or isn't displayed.
+      if (auditRef.group === 'hidden' ||
+          auditRef.result.scoreDisplayMode === 'manual' ||
+          auditRef.result.scoreDisplayMode === 'notApplicable') {
+        continue;
+      } else if (auditRef.result.scoreDisplayMode === 'informative') {
+        if (!auditPassed) {
+          ++numInformative;
+        }
+        continue;
+      }
+
+      ++numPassableAudits;
+      totalWeight += auditRef.weight;
+      if (auditPassed) numPassed++;
+    }
+    return {numPassed, numPassableAudits, numInformative, totalWeight};
+  }
+
+  /**
+   * @param {string} categoryId
+   */
+  static isPluginCategory(categoryId) {
+    return categoryId.startsWith('lighthouse-plugin-');
+  }
+
+  /**
+   * @param {LH.Result.GatherMode} gatherMode
+   */
+  static shouldDisplayAsFraction(gatherMode) {
+    return gatherMode === 'timespan' || gatherMode === 'snapshot';
+  }
+}
+
+/**
+ * Report-renderer-specific strings.
+ */
+const UIStrings = {
+  /** Disclaimer shown to users below the metric values (First Contentful Paint, Time to Interactive, etc) to warn them that the numbers they see will likely change slightly the next time they run Lighthouse. */
+  varianceDisclaimer: 'Values are estimated and may vary. The [performance score is calculated](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) directly from these metrics.',
+  /** Text link pointing to an interactive calculator that explains Lighthouse scoring. The link text should be fairly short. */
+  calculatorLink: 'See calculator.',
+  /** Label preceding a radio control for filtering the list of audits. The radio choices are various performance metrics (FCP, LCP, TBT), and if chosen, the audits in the report are hidden if they are not relevant to the selected metric. */
+  showRelevantAudits: 'Show audits relevant to:',
+  /** Column heading label for the listing of opportunity audits. Each audit title represents an opportunity. There are only 2 columns, so no strict character limit.  */
+  opportunityResourceColumnLabel: 'Opportunity',
+  /** Column heading label for the estimated page load savings of opportunity audits. Estimated Savings is the total amount of time (in seconds) that Lighthouse computed could be reduced from the total page load time, if the suggested action is taken. There are only 2 columns, so no strict character limit. */
+  opportunitySavingsColumnLabel: 'Estimated Savings',
+
+  /** An error string displayed next to a particular audit when it has errored, but not provided any specific error message. */
+  errorMissingAuditInfo: 'Report error: no audit information',
+  /** A label, shown next to an audit title or metric title, indicating that there was an error computing it. The user can hover on the label to reveal a tooltip with the extended error message. Translation should be short (< 20 characters). */
+  errorLabel: 'Error!',
+  /** This label is shown above a bulleted list of warnings. It is shown directly below an audit that produced warnings. Warnings describe situations the user should be aware of, as Lighthouse was unable to complete all the work required on this audit. For example, The 'Unable to decode image (biglogo.jpg)' warning may show up below an image encoding audit. */
+  warningHeader: 'Warnings: ',
+  /** Section heading shown above a list of passed audits that contain warnings. Audits under this section do not negatively impact the score, but Lighthouse has generated some potentially actionable suggestions that should be reviewed. This section is expanded by default and displays after the failing audits. */
+  warningAuditsGroupTitle: 'Passed audits but with warnings',
+  /** Section heading shown above a list of audits that are passing. 'Passed' here refers to a passing grade. This section is collapsed by default, as the user should be focusing on the failed audits instead. Users can click this heading to reveal the list. */
+  passedAuditsGroupTitle: 'Passed audits',
+  /** Section heading shown above a list of audits that do not apply to the page. For example, if an audit is 'Are images optimized?', but the page has no images on it, the audit will be marked as not applicable. This is neither passing or failing. This section is collapsed by default, as the user should be focusing on the failed audits instead. Users can click this heading to reveal the list. */
+  notApplicableAuditsGroupTitle: 'Not applicable',
+  /** Section heading shown above a list of audits that were not computed by Lighthouse. They serve as a list of suggestions for the user to go and manually check. For example, Lighthouse can't automate testing cross-browser compatibility, so that is listed within this section, so the user is reminded to test it themselves. This section is collapsed by default, as the user should be focusing on the failed audits instead. Users can click this heading to reveal the list. */
+  manualAuditsGroupTitle: 'Additional items to manually check',
+
+  /** Label shown preceding any important warnings that may have invalidated the entire report. For example, if the user has Chrome extensions installed, they may add enough performance overhead that Lighthouse's performance metrics are unreliable. If shown, this will be displayed at the top of the report UI. */
+  toplevelWarningsMessage: 'There were issues affecting this run of Lighthouse:',
+
+  /** String of text shown in a graphical representation of the flow of network requests for the web page. This label represents the initial network request that fetches an HTML page. This navigation may be redirected (eg. Initial navigation to http://example.com redirects to https://www.example.com). */
+  crcInitialNavigation: 'Initial Navigation',
+  /** Label of value shown in the summary of critical request chains. Refers to the total amount of time (milliseconds) of the longest critical path chain/sequence of network requests. Example value: 2310 ms */
+  crcLongestDurationLabel: 'Maximum critical path latency:',
+
+  /** Label for button that shows all lines of the snippet when clicked */
+  snippetExpandButtonLabel: 'Expand snippet',
+  /** Label for button that only shows a few lines of the snippet when clicked */
+  snippetCollapseButtonLabel: 'Collapse snippet',
+
+  /** Explanation shown to users below performance results to inform them that the test was done with a 4G network connection and to warn them that the numbers they see will likely change slightly the next time they run Lighthouse. 'Lighthouse' becomes link text to additional documentation. */
+  lsPerformanceCategoryDescription: '[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysis of the current page on an emulated mobile network. Values are estimated and may vary.',
+  /** Title of the lab data section of the Performance category. Within this section are various speed metrics which quantify the pageload performance into values presented in seconds and milliseconds. "Lab" is an abbreviated form of "laboratory", and refers to the fact that the data is from a controlled test of a website, not measurements from real users visiting that site.  */
+  labDataTitle: 'Lab Data',
+
+  /** This label is for a checkbox above a table of items loaded by a web page. The checkbox is used to show or hide third-party (or "3rd-party") resources in the table, where "third-party resources" refers to items loaded by a web page from URLs that aren't controlled by the owner of the web page. */
+  thirdPartyResourcesLabel: 'Show 3rd-party resources',
+  /** This label is for a button that opens a new tab to a webapp called "Treemap", which is a nested visual representation of a heierarchy of data related to the reports (script bytes and coverage, resource breakdown, etc.) */
+  viewTreemapLabel: 'View Treemap',
+  /** This label is for a button that will show the user a trace of the page. */
+  viewTraceLabel: 'View Trace',
+  /** This label is for a button that will show the user a trace of the page. */
+  viewOriginalTraceLabel: 'View Original Trace',
+
+  /** Option in a dropdown menu that opens a small, summary report in a print dialog.  */
+  dropdownPrintSummary: 'Print Summary',
+  /** Option in a dropdown menu that opens a full Lighthouse report in a print dialog.  */
+  dropdownPrintExpanded: 'Print Expanded',
+  /** Option in a dropdown menu that copies the Lighthouse JSON object to the system clipboard. */
+  dropdownCopyJSON: 'Copy JSON',
+  /** Option in a dropdown menu that saves the Lighthouse report HTML locally to the system as a '.html' file. */
+  dropdownSaveHTML: 'Save as HTML',
+  /** Option in a dropdown menu that saves the Lighthouse JSON object to the local system as a '.json' file. */
+  dropdownSaveJSON: 'Save as JSON',
+  /** Option in a dropdown menu that opens the current report in the Lighthouse Viewer Application. */
+  dropdownViewer: 'Open in Viewer',
+  /** Option in a dropdown menu that saves the current report as a new GitHub Gist. */
+  dropdownSaveGist: 'Save as Gist',
+  /** Option in a dropdown menu that toggles the themeing of the report between Light(default) and Dark themes. */
+  dropdownDarkTheme: 'Toggle Dark Theme',
+
+  /** Label for a row in a table that describes the kind of device that was emulated for the Lighthouse run.  Example values for row elements: 'No Emulation', 'Emulated Desktop', etc. */
+  runtimeSettingsDevice: 'Device',
+  /** Label for a row in a table that describes the network throttling conditions that were used during a Lighthouse run, if any. */
+  runtimeSettingsNetworkThrottling: 'Network throttling',
+  /** Label for a row in a table that describes the CPU throttling conditions that were used during a Lighthouse run, if any.*/
+  runtimeSettingsCPUThrottling: 'CPU throttling',
+  /** Label for a row in a table that shows the User Agent that was used to send out all network requests during the Lighthouse run. */
+  runtimeSettingsUANetwork: 'User agent (network)',
+  /** Label for a row in a table that shows the estimated CPU power of the machine running Lighthouse. Example row values: 532, 1492, 783. */
+  runtimeSettingsBenchmark: 'Unthrottled CPU/Memory Power',
+  /** Label for a row in a table that shows the version of the Axe library used. Example row values: 2.1.0, 3.2.3 */
+  runtimeSettingsAxeVersion: 'Axe version',
+  /** Label for a row in a table that shows the screen resolution and DPR that was emulated for the Lighthouse run. Example values: '800x600, DPR: 3' */
+  runtimeSettingsScreenEmulation: 'Screen emulation',
+
+  /** Label for button to create an issue against the Lighthouse GitHub project. */
+  footerIssue: 'File an issue',
+
+  /** Descriptive explanation for emulation setting when no device emulation is set. */
+  runtimeNoEmulation: 'No emulation',
+  /** Descriptive explanation for emulation setting when emulating a Moto G Power mobile device. */
+  runtimeMobileEmulation: 'Emulated Moto G Power',
+  /** Descriptive explanation for emulation setting when emulating a generic desktop form factor, as opposed to a mobile-device like form factor. */
+  runtimeDesktopEmulation: 'Emulated Desktop',
+  /** Descriptive explanation for a runtime setting that is set to an unknown value. */
+  runtimeUnknown: 'Unknown',
+  /** Descriptive label that this analysis run was from a single pageload of a browser (not a summary of hundreds of loads) */
+  runtimeSingleLoad: 'Single page load',
+  /** Descriptive label that this analysis only considers the initial load of the page, and no interaction beyond when the page had "fully loaded" */
+  runtimeAnalysisWindow: 'Initial page load',
+  /** Descriptive explanation that this analysis run was from a single pageload of a browser, whereas field data often summarizes hundreds+ of page loads */
+  runtimeSingleLoadTooltip: 'This data is taken from a single page load, as opposed to field data summarizing many sessions.', // eslint-disable-line max-len
+
+  /** Descriptive explanation for environment throttling that was provided by the runtime environment instead of provided by Lighthouse throttling. */
+  throttlingProvided: 'Provided by environment',
+  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Show' and 'Hide'. */
+  show: 'Show',
+  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Show' and 'Hide'. */
+  hide: 'Hide',
+  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Expand view' and 'Collapse view'. */
+  expandView: 'Expand view',
+  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Expand view' and 'Collapse view'. */
+  collapseView: 'Collapse view',
+  /** Label indicating that Lighthouse throttled the page to emulate a slow 4G network connection. */
+  runtimeSlow4g: 'Slow 4G throttling',
+  /** Label indicating that Lighthouse throttled the page using custom throttling settings. */
+  runtimeCustom: 'Custom throttling',
+};
 
 /**
  * @license
@@ -1824,10 +1993,10 @@ class CategoryRenderer {
    */
   get _clumpTitles() {
     return {
-      warning: Util.i18n.strings.warningAuditsGroupTitle,
-      manual: Util.i18n.strings.manualAuditsGroupTitle,
-      passed: Util.i18n.strings.passedAuditsGroupTitle,
-      notApplicable: Util.i18n.strings.notApplicableAuditsGroupTitle,
+      warning: Globals.strings.warningAuditsGroupTitle,
+      manual: Globals.strings.manualAuditsGroupTitle,
+      passed: Globals.strings.passedAuditsGroupTitle,
+      notApplicable: Globals.strings.notApplicableAuditsGroupTitle,
     };
   }
 
@@ -1847,7 +2016,7 @@ class CategoryRenderer {
    * @return {!Element}
    */
   populateAuditValues(audit, component) {
-    const strings = Util.i18n.strings;
+    const strings = Globals.strings;
     const auditEl = this.dom.find('.lh-audit', component);
     auditEl.id = audit.result.id;
     const scoreDisplayMode = audit.result.scoreDisplayMode;
@@ -1857,9 +2026,9 @@ class CategoryRenderer {
     }
 
     const titleEl = this.dom.find('.lh-audit__title', auditEl);
-    titleEl.appendChild(this.dom.convertMarkdownCodeSnippets(audit.result.title));
+    titleEl.append(this.dom.convertMarkdownCodeSnippets(audit.result.title));
     const descEl = this.dom.find('.lh-audit__description', auditEl);
-    descEl.appendChild(this.dom.convertMarkdownLinkSnippets(audit.result.description));
+    descEl.append(this.dom.convertMarkdownLinkSnippets(audit.result.description));
 
     for (const relevantMetric of audit.relevantMetrics || []) {
       const adornEl = this.dom.createChildOf(descEl, 'span', 'lh-audit__adorn');
@@ -1869,19 +2038,16 @@ class CategoryRenderer {
 
     if (audit.stackPacks) {
       audit.stackPacks.forEach(pack => {
-        const packElm = this.dom.createElement('div');
-        packElm.classList.add('lh-audit__stackpack');
-
-        const packElmImg = this.dom.createElement('img');
-        packElmImg.classList.add('lh-audit__stackpack__img');
+        const packElmImg = this.dom.createElement('img', 'lh-audit__stackpack__img');
         packElmImg.src = pack.iconDataURL;
         packElmImg.alt = pack.title;
-        packElm.appendChild(packElmImg);
 
-        packElm.appendChild(this.dom.convertMarkdownLinkSnippets(pack.description));
+        const snippets = this.dom.convertMarkdownLinkSnippets(pack.description);
+        const packElm = this.dom.createElement('div', 'lh-audit__stackpack');
+        packElm.append(packElmImg, snippets);
 
         this.dom.find('.lh-audit__stackpacks', auditEl)
-          .appendChild(packElm);
+          .append(packElm);
       });
     }
 
@@ -1890,12 +2056,12 @@ class CategoryRenderer {
       const elem = this.detailsRenderer.render(audit.result.details);
       if (elem) {
         elem.classList.add('lh-details');
-        header.appendChild(elem);
+        header.append(elem);
       }
     }
 
     // Add chevron SVG to the end of the summary
-    this.dom.find('.lh-chevron-container', auditEl).appendChild(this._createChevron());
+    this.dom.find('.lh-chevron-container', auditEl).append(this._createChevron());
     this._setRatingClass(auditEl, audit.result.score, scoreDisplayMode);
 
     if (audit.result.scoreDisplayMode === 'error') {
@@ -1917,7 +2083,7 @@ class CategoryRenderer {
     const warningsEl = this.dom.createChildOf(summaryEl, 'div', 'lh-warnings');
     this.dom.createChildOf(warningsEl, 'span').textContent = strings.warningHeader;
     if (warnings.length === 1) {
-      warningsEl.appendChild(this.dom.createTextNode(warnings.join('')));
+      warningsEl.append(this.dom.createTextNode(warnings.join('')));
     } else {
       const warningsUl = this.dom.createChildOf(warningsEl, 'ul');
       for (const warning of warnings) {
@@ -1973,7 +2139,7 @@ class CategoryRenderer {
    * @return {!Element}
    */
   _setRatingClass(element, score, scoreDisplayMode) {
-    const rating = Util.calculateRating(score, scoreDisplayMode);
+    const rating = ReportUtils.calculateRating(score, scoreDisplayMode);
     element.classList.add(`lh-audit--${scoreDisplayMode.toLowerCase()}`);
     if (scoreDisplayMode !== 'informative') {
       element.classList.add(`lh-audit--${rating}`);
@@ -1992,11 +2158,11 @@ class CategoryRenderer {
 
     const gaugeContainerEl = this.dom.find('.lh-score__gauge', component);
     const gaugeEl = this.renderCategoryScore(category, groupDefinitions, options);
-    gaugeContainerEl.appendChild(gaugeEl);
+    gaugeContainerEl.append(gaugeEl);
 
     if (category.description) {
       const descEl = this.dom.convertMarkdownLinkSnippets(category.description);
-      this.dom.find('.lh-category-header__description', component).appendChild(descEl);
+      this.dom.find('.lh-category-header__description', component).append(descEl);
     }
 
     return component;
@@ -2015,13 +2181,13 @@ class CategoryRenderer {
 
     this.dom.createChildOf(auditGroupHeader, 'span', 'lh-audit-group__title')
       .textContent = group.title;
-    groupEl.appendChild(auditGroupHeader);
+    groupEl.append(auditGroupHeader);
 
     let footerEl = null;
     if (group.description) {
       footerEl = this.dom.convertMarkdownLinkSnippets(group.description);
       footerEl.classList.add('lh-audit-group__description', 'lh-audit-group__footer');
-      groupEl.appendChild(footerEl);
+      groupEl.append(footerEl);
     }
 
     return [groupEl, footerEl];
@@ -2085,7 +2251,7 @@ class CategoryRenderer {
   renderUnexpandableClump(auditRefs, groupDefinitions) {
     const clumpElement = this.dom.createElement('div');
     const elements = this._renderGroupedAudits(auditRefs, groupDefinitions);
-    elements.forEach(elem => clumpElement.appendChild(elem));
+    elements.forEach(elem => clumpElement.append(elem));
     return clumpElement;
   }
 
@@ -2119,11 +2285,11 @@ class CategoryRenderer {
     if (description) {
       const descriptionEl = this.dom.convertMarkdownLinkSnippets(description);
       descriptionEl.classList.add('lh-audit-group__description', 'lh-audit-group__footer');
-      el.appendChild(descriptionEl);
+      el.append(descriptionEl);
     }
 
-    this.dom.find('.lh-clump-toggletext--show', el).textContent = Util.i18n.strings.show;
-    this.dom.find('.lh-clump-toggletext--hide', el).textContent = Util.i18n.strings.hide;
+    this.dom.find('.lh-clump-toggletext--show', el).textContent = Globals.strings.show;
+    this.dom.find('.lh-clump-toggletext--hide', el).textContent = Globals.strings.hide;
 
     clumpElement.classList.add(`lh-clump--${clumpId.toLowerCase()}`);
     return el;
@@ -2137,7 +2303,7 @@ class CategoryRenderer {
    */
   renderCategoryScore(category, groupDefinitions, options) {
     let categoryScore;
-    if (options && Util.shouldDisplayAsFraction(options.gatherMode)) {
+    if (options && ReportUtils.shouldDisplayAsFraction(options.gatherMode)) {
       categoryScore = this.renderCategoryFraction(category);
     } else {
       categoryScore = this.renderScoreGauge(category, groupDefinitions);
@@ -2165,7 +2331,7 @@ class CategoryRenderer {
     const tmpl = this.dom.createComponent('gauge');
     const wrapper = this.dom.find('a.lh-gauge__wrapper', tmpl);
 
-    if (Util.isPluginCategory(category.id)) {
+    if (ReportUtils.isPluginCategory(category.id)) {
       wrapper.classList.add('lh-gauge__wrapper--plugin');
     }
 
@@ -2181,16 +2347,16 @@ class CategoryRenderer {
     percentageEl.textContent = scoreOutOf100.toString();
     if (category.score === null) {
       percentageEl.textContent = '?';
-      percentageEl.title = Util.i18n.strings.errorLabel;
+      percentageEl.title = Globals.strings.errorLabel;
     }
 
     // Render a numerical score if the category has applicable audits, or no audits whatsoever.
     if (category.auditRefs.length === 0 || this.hasApplicableAudits(category)) {
-      wrapper.classList.add(`lh-gauge__wrapper--${Util.calculateRating(category.score)}`);
+      wrapper.classList.add(`lh-gauge__wrapper--${ReportUtils.calculateRating(category.score)}`);
     } else {
       wrapper.classList.add(`lh-gauge__wrapper--not-applicable`);
       percentageEl.textContent = '-';
-      percentageEl.title = Util.i18n.strings.notApplicableAuditsGroupTitle;
+      percentageEl.title = Globals.strings.notApplicableAuditsGroupTitle;
     }
 
     this.dom.find('.lh-gauge__label', tmpl).textContent = category.title;
@@ -2205,15 +2371,16 @@ class CategoryRenderer {
     const tmpl = this.dom.createComponent('fraction');
     const wrapper = this.dom.find('a.lh-fraction__wrapper', tmpl);
 
-    const {numPassed, numPassableAudits, totalWeight} = Util.calculateCategoryFraction(category);
+    const {numPassed, numPassableAudits, totalWeight} =
+      ReportUtils.calculateCategoryFraction(category);
 
     const fraction = numPassed / numPassableAudits;
     const content = this.dom.find('.lh-fraction__content', tmpl);
     const text = this.dom.createElement('span');
     text.textContent = `${numPassed}/${numPassableAudits}`;
-    content.appendChild(text);
+    content.append(text);
 
-    let rating = Util.calculateRating(fraction);
+    let rating = ReportUtils.calculateRating(fraction);
 
     // If none of the available audits can affect the score, a rating isn't useful.
     // The flow report should display the fraction with neutral icon and coloring in this case.
@@ -2278,7 +2445,7 @@ class CategoryRenderer {
       return scoreDisplayMode;
     }
 
-    if (Util.showAsPassed(auditRef.result)) {
+    if (ReportUtils.showAsPassed(auditRef.result)) {
       if (this._auditHasWarning(auditRef)) {
         return 'warning';
       } else {
@@ -2315,7 +2482,7 @@ class CategoryRenderer {
   render(category, groupDefinitions = {}, options) {
     const element = this.dom.createElement('div', 'lh-category');
     element.id = category.id;
-    element.appendChild(this.renderCategoryHeader(category, groupDefinitions, options));
+    element.append(this.renderCategoryHeader(category, groupDefinitions, options));
 
     // Top level clumps for audits, in order they will appear in the report.
     /** @type {Map<TopLevelClumpId, Array<LH.ReportResult.AuditRef>>} */
@@ -2348,13 +2515,13 @@ class CategoryRenderer {
       if (clumpId === 'failed') {
         const clumpElem = this.renderUnexpandableClump(auditRefs, groupDefinitions);
         clumpElem.classList.add(`lh-clump--failed`);
-        element.appendChild(clumpElem);
+        element.append(clumpElem);
         continue;
       }
 
       const description = clumpId === 'manual' ? category.manualDescription : undefined;
       const clumpElem = this.renderClump(clumpId, {auditRefs, description});
-      element.appendChild(clumpElem);
+      element.append(clumpElem);
     }
 
     return element;
@@ -2461,44 +2628,43 @@ class CriticalRequestChainRenderer {
 
     // Construct lines and add spacers for sub requests.
     segment.treeMarkers.forEach(separator => {
-      if (separator) {
-        treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker lh-vert'));
-        treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker'));
-      } else {
-        treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker'));
-        treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker'));
-      }
+      const classSeparator = separator ?
+        'lh-tree-marker lh-vert' :
+        'lh-tree-marker';
+      treeMarkeEl.append(
+        dom.createElement('span', classSeparator),
+        dom.createElement('span', 'lh-tree-marker')
+      );
     });
 
-    if (segment.isLastChild) {
-      treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker lh-up-right'));
-      treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker lh-right'));
-    } else {
-      treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker lh-vert-right'));
-      treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker lh-right'));
-    }
+    const classLastChild = segment.isLastChild ?
+      'lh-tree-marker lh-up-right' :
+      'lh-tree-marker lh-vert-right';
+    const classHasChildren = segment.hasChildren ?
+      'lh-tree-marker lh-horiz-down' :
+      'lh-tree-marker lh-right';
 
-    if (segment.hasChildren) {
-      treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker lh-horiz-down'));
-    } else {
-      treeMarkeEl.appendChild(dom.createElement('span', 'lh-tree-marker lh-right'));
-    }
+    treeMarkeEl.append(
+      dom.createElement('span', classLastChild),
+      dom.createElement('span', 'lh-tree-marker lh-right'),
+      dom.createElement('span', classHasChildren)
+    );
 
     // Fill in url, host, and request size information.
     const url = segment.node.request.url;
     const linkEl = detailsRenderer.renderTextURL(url);
     const treevalEl = dom.find('.lh-crc-node__tree-value', chainEl);
-    treevalEl.appendChild(linkEl);
+    treevalEl.append(linkEl);
 
     if (!segment.hasChildren) {
       const {startTime, endTime, transferSize} = segment.node.request;
       const span = dom.createElement('span', 'lh-crc-node__chain-duration');
-      span.textContent = ' - ' + Util.i18n.formatMilliseconds((endTime - startTime) * 1000) + ', ';
+      span.textContent =
+        ' - ' + Globals.i18n.formatMilliseconds((endTime - startTime) * 1000) + ', ';
       const span2 = dom.createElement('span', 'lh-crc-node__chain-duration');
-      span2.textContent = Util.i18n.formatBytesToKiB(transferSize, 0.01);
+      span2.textContent = Globals.i18n.formatBytesToKiB(transferSize, 0.01);
 
-      treevalEl.appendChild(span);
-      treevalEl.appendChild(span2);
+      treevalEl.append(span, span2);
     }
 
     return chainEl;
@@ -2514,7 +2680,7 @@ class CriticalRequestChainRenderer {
    * @param {DetailsRenderer} detailsRenderer
    */
   static buildTree(dom, tmpl, segment, elem, details, detailsRenderer) {
-    elem.appendChild(CRCRenderer.createChainNode(dom, segment, detailsRenderer));
+    elem.append(CRCRenderer.createChainNode(dom, segment, detailsRenderer));
     if (segment.node.children) {
       for (const key of Object.keys(segment.node.children)) {
         const childSegment = CRCRenderer.createSegment(segment.node.children, key,
@@ -2535,11 +2701,11 @@ class CriticalRequestChainRenderer {
     const containerEl = dom.find('.lh-crc', tmpl);
 
     // Fill in top summary.
-    dom.find('.lh-crc-initial-nav', tmpl).textContent = Util.i18n.strings.crcInitialNavigation;
+    dom.find('.lh-crc-initial-nav', tmpl).textContent = Globals.strings.crcInitialNavigation;
     dom.find('.lh-crc__longest_duration_label', tmpl).textContent =
-        Util.i18n.strings.crcLongestDurationLabel;
+        Globals.strings.crcLongestDurationLabel;
     dom.find('.lh-crc__longest_duration', tmpl).textContent =
-        Util.i18n.formatMilliseconds(details.longestChain.duration);
+        Globals.i18n.formatMilliseconds(details.longestChain.duration);
 
     // Construct visual tree.
     const root = CRCRenderer.initTree(details.chains);
@@ -2561,8 +2727,20 @@ const CRCRenderer = CriticalRequestChainRenderer;
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+/** @typedef {import('./dom.js').DOM} DOM */
+/** @typedef {LH.Audit.Details.Rect} Rect */
+/** @typedef {{width: number, height: number}} Size */
+
 /**
- * @param {LH.Audit.Details.FullPageScreenshot['screenshot']} screenshot
+ * @typedef InstallOverlayFeatureParams
+ * @property {DOM} dom
+ * @property {Element} rootEl
+ * @property {Element} overlayContainerEl
+ * @property {LH.Result.FullPageScreenshot} fullPageScreenshot
+ */
+
+/**
+ * @param {LH.Result.FullPageScreenshot['screenshot']} screenshot
  * @param {LH.Audit.Details.Rect} rect
  * @return {boolean}
  */
@@ -2639,7 +2817,7 @@ class ElementScreenshotRenderer {
    */
   static renderClipPathInScreenshot(dom, maskEl, positionClip, elementRect, elementPreviewSize) {
     const clipPathEl = dom.find('clipPath', maskEl);
-    const clipId = `clip-${Util.getUniqueSuffix()}`;
+    const clipId = `clip-${Globals.getUniqueSuffix()}`;
     clipPathEl.id = clipId;
     maskEl.style.clipPath = `url(#${clipId})`;
 
@@ -2668,7 +2846,7 @@ class ElementScreenshotRenderer {
    * Allows for multiple Lighthouse reports to be rendered on the page, each with their
    * own full page screenshot.
    * @param {HTMLElement} el
-   * @param {LH.Audit.Details.FullPageScreenshot['screenshot']} screenshot
+   * @param {LH.Result.FullPageScreenshot['screenshot']} screenshot
    */
   static installFullPageScreenshot(el, screenshot) {
     el.style.setProperty('--element-screenshot-url', `url('${screenshot.data}')`);
@@ -2723,7 +2901,7 @@ class ElementScreenshotRenderer {
         overlay.remove();
         return;
       }
-      overlay.appendChild(screenshotElement);
+      overlay.append(screenshotElement);
       overlay.addEventListener('click', () => overlay.remove());
     });
   }
@@ -2750,7 +2928,7 @@ class ElementScreenshotRenderer {
    * Used to render both the thumbnail preview in details tables and the full-page screenshot in the lightbox.
    * Returns null if element rect is outside screenshot bounds.
    * @param {DOM} dom
-   * @param {LH.Audit.Details.FullPageScreenshot['screenshot']} screenshot
+   * @param {LH.Result.FullPageScreenshot['screenshot']} screenshot
    * @param {Rect} elementRectSC Region of screenshot to highlight.
    * @param {Size} maxRenderSizeDC e.g. maxThumbnailSize or maxLightboxSize.
    * @return {Element|null}
@@ -2776,7 +2954,10 @@ class ElementScreenshotRenderer {
       width: maxRenderSizeDC.width / zoomFactor,
       height: maxRenderSizeDC.height / zoomFactor,
     };
+
     elementPreviewSizeSC.width = Math.min(screenshot.width, elementPreviewSizeSC.width);
+    elementPreviewSizeSC.height = Math.min(screenshot.height, elementPreviewSizeSC.height);
+
     /* This preview size is either the size of the thumbnail or size of the Lightbox */
     const elementPreviewSizeDC = {
       width: elementPreviewSizeSC.width * zoomFactor,
@@ -2788,9 +2969,6 @@ class ElementScreenshotRenderer {
       elementPreviewSizeSC,
       {width: screenshot.width, height: screenshot.height}
     );
-
-    const contentEl = dom.find('div.lh-element-screenshot__content', containerEl);
-    contentEl.style.top = `-${elementPreviewSizeDC.height}px`;
 
     const imageEl = dom.find('div.lh-element-screenshot__image', containerEl);
     imageEl.style.width = elementPreviewSizeDC.width + 'px';
@@ -2845,7 +3023,7 @@ const URL_PREFIXES = ['http://', 'https://', 'data:'];
 class DetailsRenderer {
   /**
    * @param {DOM} dom
-   * @param {{fullPageScreenshot?: LH.Audit.Details.FullPageScreenshot}} [options]
+   * @param {{fullPageScreenshot?: LH.Result.FullPageScreenshot}} [options]
    */
   constructor(dom, options = {}) {
     this._dom = dom;
@@ -2863,22 +3041,20 @@ class DetailsRenderer {
       case 'list':
         return this._renderList(details);
       case 'table':
+      case 'opportunity':
         return this._renderTable(details);
       case 'criticalrequestchain':
         return CriticalRequestChainRenderer.render(this._dom, details, this);
-      case 'opportunity':
-        return this._renderTable(details);
 
       // Internal-only details, not for rendering.
       case 'screenshot':
       case 'debugdata':
-      case 'full-page-screenshot':
       case 'treemap-data':
         return null;
 
       default: {
-        // @ts-expect-error tsc thinks this is unreachable, but be forward compatible
-        // with new unexpected detail types.
+        // @ts-expect-error - all detail types need to be handled above so tsc thinks this is unreachable.
+        // Call _renderUnknown() to be forward compatible with new, unexpected detail types.
         return this._renderUnknown(details.type, details);
       }
     }
@@ -2889,11 +3065,10 @@ class DetailsRenderer {
    * @return {Element}
    */
   _renderBytes(details) {
-    // TODO: handle displayUnit once we have something other than 'kb'
-    // Note that 'kb' is historical and actually represents KiB.
-    const value = Util.i18n.formatBytesToKiB(details.value, details.granularity);
+    // TODO: handle displayUnit once we have something other than 'KiB'
+    const value = Globals.i18n.formatBytesToKiB(details.value, details.granularity || 0.1);
     const textEl = this._renderText(value);
-    textEl.title = Util.i18n.formatBytes(details.value);
+    textEl.title = Globals.i18n.formatBytes(details.value);
     return textEl;
   }
 
@@ -2902,9 +3077,11 @@ class DetailsRenderer {
    * @return {Element}
    */
   _renderMilliseconds(details) {
-    let value = Util.i18n.formatMilliseconds(details.value, details.granularity);
+    let value;
     if (details.displayUnit === 'duration') {
-      value = Util.i18n.formatDuration(details.value);
+      value = Globals.i18n.formatDuration(details.value);
+    } else {
+      value = Globals.i18n.formatMilliseconds(details.value, details.granularity || 10);
     }
 
     return this._renderText(value);
@@ -2930,12 +3107,12 @@ class DetailsRenderer {
     }
 
     const element = this._dom.createElement('div', 'lh-text__url');
-    element.appendChild(this._renderLink({text: displayedPath, url}));
+    element.append(this._renderLink({text: displayedPath, url}));
 
     if (displayedHost) {
       const hostElem = this._renderText(displayedHost);
       hostElem.classList.add('lh-text__url-host');
-      element.appendChild(hostElem);
+      element.append(hostElem);
     }
 
     if (title) {
@@ -2983,7 +3160,7 @@ class DetailsRenderer {
    * @return {Element}
    */
   _renderNumeric(details) {
-    const value = Util.i18n.formatNumber(details.value, details.granularity);
+    const value = Globals.i18n.formatNumber(details.value, details.granularity || 0.1);
     const element = this._dom.createElement('div', 'lh-numeric');
     element.textContent = value;
     return element;
@@ -3024,7 +3201,7 @@ class DetailsRenderer {
    * based on the heading's valueType, unless the value itself has a `type`
    * property to override it.
    * @param {TableItemValue} value
-   * @param {LH.Audit.Details.OpportunityColumnHeading} heading
+   * @param {LH.Audit.Details.TableColumnHeading} heading
    * @return {Element|null}
    */
   _renderTableValue(value, heading) {
@@ -3110,72 +3287,13 @@ class DetailsRenderer {
   }
 
   /**
-   * Get the headings of a table-like details object, converted into the
-   * OpportunityColumnHeading type until we have all details use the same
-   * heading format.
-   * @param {Table|OpportunityTable} tableLike
-   * @return {OpportunityTable['headings']}
-   */
-  _getCanonicalizedHeadingsFromTable(tableLike) {
-    if (tableLike.type === 'opportunity') {
-      return tableLike.headings;
-    }
-
-    return tableLike.headings.map(heading => this._getCanonicalizedHeading(heading));
-  }
-
-  /**
-   * Get the headings of a table-like details object, converted into the
-   * OpportunityColumnHeading type until we have all details use the same
-   * heading format.
-   * @param {Table['headings'][number]} heading
-   * @return {OpportunityTable['headings'][number]}
-   */
-  _getCanonicalizedHeading(heading) {
-    let subItemsHeading;
-    if (heading.subItemsHeading) {
-      subItemsHeading = this._getCanonicalizedsubItemsHeading(heading.subItemsHeading, heading);
-    }
-
-    return {
-      key: heading.key,
-      valueType: heading.itemType,
-      subItemsHeading,
-      label: heading.text,
-      displayUnit: heading.displayUnit,
-      granularity: heading.granularity,
-    };
-  }
-
-  /**
-   * @param {Exclude<LH.Audit.Details.TableColumnHeading['subItemsHeading'], undefined>} subItemsHeading
-   * @param {LH.Audit.Details.TableColumnHeading} parentHeading
-   * @return {LH.Audit.Details.OpportunityColumnHeading['subItemsHeading']}
-   */
-  _getCanonicalizedsubItemsHeading(subItemsHeading, parentHeading) {
-    // Low-friction way to prevent committing a falsy key (which is never allowed for
-    // a subItemsHeading) from passing in CI.
-    if (!subItemsHeading.key) {
-      // eslint-disable-next-line no-console
-      console.warn('key should not be null');
-    }
-
-    return {
-      key: subItemsHeading.key || '',
-      valueType: subItemsHeading.itemType || parentHeading.itemType,
-      granularity: subItemsHeading.granularity || parentHeading.granularity,
-      displayUnit: subItemsHeading.displayUnit || parentHeading.displayUnit,
-    };
-  }
-
-  /**
    * Returns a new heading where the values are defined first by `heading.subItemsHeading`,
    * and secondly by `heading`. If there is no subItemsHeading, returns null, which will
    * be rendered as an empty column.
-   * @param {LH.Audit.Details.OpportunityColumnHeading} heading
-   * @return {LH.Audit.Details.OpportunityColumnHeading | null}
+   * @param {LH.Audit.Details.TableColumnHeading} heading
+   * @return {LH.Audit.Details.TableColumnHeading | null}
    */
-  _getDerivedsubItemsHeading(heading) {
+  _getDerivedSubItemsHeading(heading) {
     if (!heading.subItemsHeading) return null;
     return {
       key: heading.subItemsHeading.key || '',
@@ -3188,7 +3306,7 @@ class DetailsRenderer {
 
   /**
    * @param {TableItem} item
-   * @param {(LH.Audit.Details.OpportunityColumnHeading | null)[]} headings
+   * @param {(LH.Audit.Details.TableColumnHeading | null)[]} headings
    */
   _renderTableRow(item, headings) {
     const rowElem = this._dom.createElement('tr');
@@ -3208,7 +3326,7 @@ class DetailsRenderer {
 
       if (valueElement) {
         const classes = `lh-table-column--${heading.valueType}`;
-        this._dom.createChildOf(rowElem, 'td', classes).appendChild(valueElement);
+        this._dom.createChildOf(rowElem, 'td', classes).append(valueElement);
       } else {
         // Empty cell is rendered for a column if:
         // - the pair is null
@@ -3225,7 +3343,7 @@ class DetailsRenderer {
    * Renders one or more rows from a details table item. A single table item can
    * expand into multiple rows, if there is a subItemsHeading.
    * @param {TableItem} item
-   * @param {LH.Audit.Details.OpportunityColumnHeading[]} headings
+   * @param {LH.Audit.Details.TableColumnHeading[]} headings
    */
   _renderTableRowsFromItem(item, headings) {
     const fragment = this._dom.createFragment();
@@ -3233,7 +3351,7 @@ class DetailsRenderer {
 
     if (!item.subItems) return fragment;
 
-    const subItemsHeadings = headings.map(this._getDerivedsubItemsHeading);
+    const subItemsHeadings = headings.map(this._getDerivedSubItemsHeading);
     if (!subItemsHeadings.some(Boolean)) return fragment;
 
     for (const subItem of item.subItems.items) {
@@ -3246,7 +3364,7 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {OpportunityTable|Table} details
+   * @param {{headings: TableColumnHeading[], items: TableItem[]}} details
    * @return {Element}
    */
   _renderTable(details) {
@@ -3256,23 +3374,34 @@ class DetailsRenderer {
     const theadElem = this._dom.createChildOf(tableElem, 'thead');
     const theadTrElem = this._dom.createChildOf(theadElem, 'tr');
 
-    const headings = this._getCanonicalizedHeadingsFromTable(details);
-
-    for (const heading of headings) {
+    for (const heading of details.headings) {
       const valueType = heading.valueType || 'text';
       const classes = `lh-table-column--${valueType}`;
       const labelEl = this._dom.createElement('div', 'lh-text');
       labelEl.textContent = heading.label;
-      this._dom.createChildOf(theadTrElem, 'th', classes).appendChild(labelEl);
+      this._dom.createChildOf(theadTrElem, 'th', classes).append(labelEl);
     }
 
     const tbodyElem = this._dom.createChildOf(tableElem, 'tbody');
     let even = true;
     for (const item of details.items) {
-      const rowsFragment = this._renderTableRowsFromItem(item, headings);
+      const rowsFragment = this._renderTableRowsFromItem(item, details.headings);
+
+      // The attribute item.entity could be a string (entity-classification), or
+      // a LinkValue for ThirdPartySummary audit.
+      let entityName;
+      if (typeof item.entity === 'object' && item.entity.type === 'link') {
+        entityName = item.entity.text;
+      } else if (typeof item.entity === 'string') {
+        entityName = item.entity;
+      }
+
       for (const rowEl of this._dom.findAll('tr', rowsFragment)) {
         // For zebra styling.
         rowEl.classList.add(even ? 'lh-row--even' : 'lh-row--odd');
+        if (entityName && !rowEl.classList.contains('lh-sub-item-row')) {
+          rowEl.dataset.entity = entityName;
+        }
       }
       even = !even;
       tbodyElem.append(rowsFragment);
@@ -3306,13 +3435,13 @@ class DetailsRenderer {
     if (item.nodeLabel) {
       const nodeLabelEl = this._dom.createElement('div');
       nodeLabelEl.textContent = item.nodeLabel;
-      element.appendChild(nodeLabelEl);
+      element.append(nodeLabelEl);
     }
     if (item.snippet) {
       const snippetEl = this._dom.createElement('div');
       snippetEl.classList.add('lh-node__snippet');
       snippetEl.textContent = item.snippet;
-      element.appendChild(snippetEl);
+      element.append(snippetEl);
     }
     if (item.selector) {
       element.title = item.selector;
@@ -3423,37 +3552,87 @@ const NBSP2 = '\xa0';
 const KiB = 1024;
 const MiB = KiB * KiB;
 
-/**
- * @template T
- */
-class I18n {
+class I18nFormatter {
   /**
    * @param {LH.Locale} locale
-   * @param {T} strings
    */
-  constructor(locale, strings) {
+  constructor(locale) {
     // When testing, use a locale with more exciting numeric formatting.
     if (locale === 'en-XA') locale = 'de';
 
-    this._numberDateLocale = locale;
-    this._numberFormatter = new Intl.NumberFormat(locale);
-    this._percentFormatter = new Intl.NumberFormat(locale, {style: 'percent'});
-    this._strings = strings;
+    this._locale = locale;
+    this._cachedNumberFormatters = new Map();
   }
 
-  get strings() {
-    return this._strings;
+  /**
+   * @param {number} number
+   * @param {number|undefined} granularity
+   * @param {Intl.NumberFormatOptions=} opts
+   * @return {string}
+   */
+  _formatNumberWithGranularity(number, granularity, opts = {}) {
+    if (granularity !== undefined) {
+      const log10 = -Math.log10(granularity);
+      if (!Number.isInteger(log10)) {
+        console.warn(`granularity of ${granularity} is invalid. Using 1 instead`);
+        granularity = 1;
+      }
+
+      if (granularity < 1) {
+        opts = {...opts};
+        opts.minimumFractionDigits = opts.maximumFractionDigits = Math.ceil(log10);
+      }
+
+      number = Math.round(number / granularity) * granularity;
+
+      // Avoid displaying a negative value that rounds to zero as "0".
+      if (Object.is(number, -0)) number = 0;
+    } else if (Math.abs(number) < 0.0005) {
+      // Also avoids "-0".
+      number = 0;
+    }
+
+    let formatter;
+    // eslint-disable-next-line max-len
+    const cacheKey = [
+      opts.minimumFractionDigits,
+      opts.maximumFractionDigits,
+      opts.style,
+      opts.unit,
+      opts.unitDisplay,
+      this._locale,
+    ].join('');
+
+    formatter = this._cachedNumberFormatters.get(cacheKey);
+    if (!formatter) {
+      formatter = new Intl.NumberFormat(this._locale, opts);
+      this._cachedNumberFormatters.set(cacheKey, formatter);
+    }
+
+    return formatter.format(number).replace(' ', NBSP2);
   }
 
   /**
    * Format number.
    * @param {number} number
-   * @param {number=} granularity Number of decimal places to include. Defaults to 0.1.
+   * @param {number=} granularity Controls how coarse the displayed value is.
+   *                              If undefined, the number will be displayed as described
+   *                              by the Intl defaults: tinyurl.com/7s67w5x7
    * @return {string}
    */
-  formatNumber(number, granularity = 0.1) {
-    const coarseValue = Math.round(number / granularity) * granularity;
-    return this._numberFormatter.format(coarseValue);
+  formatNumber(number, granularity) {
+    return this._formatNumberWithGranularity(number, granularity);
+  }
+
+  /**
+   * Format integer.
+   * Just like {@link formatNumber} but uses a granularity of 1, rounding to the nearest
+   * whole number.
+   * @param {number} number
+   * @return {string}
+   */
+  formatInteger(number) {
+    return this._formatNumberWithGranularity(number, 1);
   }
 
   /**
@@ -3462,92 +3641,99 @@ class I18n {
    * @return {string}
    */
   formatPercent(number) {
-    return this._percentFormatter.format(number);
+    return new Intl.NumberFormat(this._locale, {style: 'percent'}).format(number);
   }
 
   /**
    * @param {number} size
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @param {number=} granularity Controls how coarse the displayed value is.
+   *                              If undefined, the number will be displayed in full.
    * @return {string}
    */
-  formatBytesToKiB(size, granularity = 0.1) {
-    const formatter = this._byteFormatterForGranularity(granularity);
-    const kbs = formatter.format(Math.round(size / 1024 / granularity) * granularity);
-    return `${kbs}${NBSP2}KiB`;
+  formatBytesToKiB(size, granularity = undefined) {
+    return this._formatNumberWithGranularity(size / KiB, granularity) + `${NBSP2}KiB`;
   }
 
   /**
    * @param {number} size
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @param {number=} granularity Controls how coarse the displayed value is.
+   *                              If undefined, the number will be displayed in full.
    * @return {string}
    */
-  formatBytesToMiB(size, granularity = 0.1) {
-    const formatter = this._byteFormatterForGranularity(granularity);
-    const kbs = formatter.format(Math.round(size / (1024 ** 2) / granularity) * granularity);
-    return `${kbs}${NBSP2}MiB`;
+  formatBytesToMiB(size, granularity = undefined) {
+    return this._formatNumberWithGranularity(size / MiB, granularity) + `${NBSP2}MiB`;
   }
 
   /**
    * @param {number} size
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 1
+   * @param {number=} granularity Controls how coarse the displayed value is.
+   *                              If undefined, the number will be displayed in full.
    * @return {string}
    */
   formatBytes(size, granularity = 1) {
-    const formatter = this._byteFormatterForGranularity(granularity);
-    const kbs = formatter.format(Math.round(size / granularity) * granularity);
-    return `${kbs}${NBSP2}bytes`;
+    return this._formatNumberWithGranularity(size, granularity, {
+      style: 'unit',
+      unit: 'byte',
+      unitDisplay: 'long',
+    });
   }
 
   /**
    * @param {number} size
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @param {number=} granularity Controls how coarse the displayed value is.
+   *                              If undefined, the number will be displayed in full.
    * @return {string}
    */
-  formatBytesWithBestUnit(size, granularity = 0.1) {
+  formatBytesWithBestUnit(size, granularity = undefined) {
     if (size >= MiB) return this.formatBytesToMiB(size, granularity);
     if (size >= KiB) return this.formatBytesToKiB(size, granularity);
-    return this.formatNumber(size, granularity) + '\xa0B';
+    return this._formatNumberWithGranularity(size, granularity, {
+      style: 'unit',
+      unit: 'byte',
+      unitDisplay: 'narrow',
+    });
   }
 
   /**
-   * Format bytes with a constant number of fractional digits, i.e. for a granularity of 0.1, 10 becomes '10.0'
-   * @param {number} granularity Controls how coarse the displayed value is
-   * @return {Intl.NumberFormat}
+   * @param {number} size
+   * @param {number=} granularity Controls how coarse the displayed value is.
+   *                              If undefined, the number will be displayed in full.
+   * @return {string}
    */
-  _byteFormatterForGranularity(granularity) {
-    // assume any granularity above 1 will not contain fractional parts, i.e. will never be 1.5
-    let numberOfFractionDigits = 0;
-    if (granularity < 1) {
-      numberOfFractionDigits = -Math.floor(Math.log10(granularity));
-    }
-
-    return new Intl.NumberFormat(this._numberDateLocale, {
-      ...this._numberFormatter.resolvedOptions(),
-      maximumFractionDigits: numberOfFractionDigits,
-      minimumFractionDigits: numberOfFractionDigits,
+  formatKbps(size, granularity = undefined) {
+    return this._formatNumberWithGranularity(size, granularity, {
+      style: 'unit',
+      unit: 'kilobit-per-second',
+      unitDisplay: 'short',
     });
   }
 
   /**
    * @param {number} ms
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 10
+   * @param {number=} granularity Controls how coarse the displayed value is.
+   *                              If undefined, the number will be displayed in full.
    * @return {string}
    */
-  formatMilliseconds(ms, granularity = 10) {
-    const coarseTime = Math.round(ms / granularity) * granularity;
-    return coarseTime === 0
-      ? `${this._numberFormatter.format(0)}${NBSP2}ms`
-      : `${this._numberFormatter.format(coarseTime)}${NBSP2}ms`;
+  formatMilliseconds(ms, granularity = undefined) {
+    return this._formatNumberWithGranularity(ms, granularity, {
+      style: 'unit',
+      unit: 'millisecond',
+      unitDisplay: 'short',
+    });
   }
 
   /**
    * @param {number} ms
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @param {number=} granularity Controls how coarse the displayed value is.
+   *                              If undefined, the number will be displayed in full.
    * @return {string}
    */
-  formatSeconds(ms, granularity = 0.1) {
-    const coarseTime = Math.round(ms / 1000 / granularity) * granularity;
-    return `${this._numberFormatter.format(coarseTime)}${NBSP2}s`;
+  formatSeconds(ms, granularity = undefined) {
+    return this._formatNumberWithGranularity(ms / 1000, granularity, {
+      style: 'unit',
+      unit: 'second',
+      unitDisplay: 'narrow',
+    });
   }
 
   /**
@@ -3567,10 +3753,10 @@ class I18n {
     // and https://github.com/GoogleChrome/lighthouse/pull/9822
     let formatter;
     try {
-      formatter = new Intl.DateTimeFormat(this._numberDateLocale, options);
+      formatter = new Intl.DateTimeFormat(this._locale, options);
     } catch (err) {
       options.timeZone = 'UTC';
-      formatter = new Intl.DateTimeFormat(this._numberDateLocale, options);
+      formatter = new Intl.DateTimeFormat(this._locale, options);
     }
 
     return formatter.format(new Date(date));
@@ -3582,6 +3768,10 @@ class I18n {
    * @return {string}
    */
   formatDuration(timeInMilliseconds) {
+    // There is a proposal for a Intl.DurationFormat.
+    // https://github.com/tc39/proposal-intl-duration-format
+    // Until then, we do things a bit more manually.
+
     let timeInSeconds = timeInMilliseconds / 1000;
     if (Math.round(timeInSeconds) === 0) {
       return 'None';
@@ -3590,19 +3780,24 @@ class I18n {
     /** @type {Array<string>} */
     const parts = [];
     /** @type {Record<string, number>} */
-    const unitLabels = {
-      d: 60 * 60 * 24,
-      h: 60 * 60,
-      m: 60,
-      s: 1,
+    const unitToSecondsPer = {
+      day: 60 * 60 * 24,
+      hour: 60 * 60,
+      minute: 60,
+      second: 1,
     };
 
-    Object.keys(unitLabels).forEach(label => {
-      const unit = unitLabels[label];
-      const numberOfUnits = Math.floor(timeInSeconds / unit);
+    Object.keys(unitToSecondsPer).forEach(unit => {
+      const secondsPerUnit = unitToSecondsPer[unit];
+      const numberOfUnits = Math.floor(timeInSeconds / secondsPerUnit);
       if (numberOfUnits > 0) {
-        timeInSeconds -= numberOfUnits * unit;
-        parts.push(`${numberOfUnits}\xa0${label}`);
+        timeInSeconds -= numberOfUnits * secondsPerUnit;
+        const part = this._formatNumberWithGranularity(numberOfUnits, 1, {
+          style: 'unit',
+          unit,
+          unitDisplay: 'narrow',
+        });
+        parts.push(part);
       }
     });
 
@@ -3636,7 +3831,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     const tmpl = this.dom.createComponent('metric');
     const element = this.dom.find('.lh-metric', tmpl);
     element.id = audit.result.id;
-    const rating = Util.calculateRating(audit.result.score, audit.result.scoreDisplayMode);
+    const rating = ReportUtils.calculateRating(audit.result.score, audit.result.scoreDisplayMode);
     element.classList.add(`lh-metric--${rating}`);
 
     const titleEl = this.dom.find('.lh-metric__title', tmpl);
@@ -3646,7 +3841,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     valueEl.textContent = audit.result.displayValue || '';
 
     const descriptionEl = this.dom.find('.lh-metric__description', tmpl);
-    descriptionEl.appendChild(this.dom.convertMarkdownLinkSnippets(audit.result.description));
+    descriptionEl.append(this.dom.convertMarkdownLinkSnippets(audit.result.description));
 
     if (audit.result.scoreDisplayMode === 'error') {
       descriptionEl.textContent = '';
@@ -3684,7 +3879,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       this.dom.find('span.lh-audit__display-text, div.lh-audit__display-text', element);
     const sparklineWidthPct = `${details.overallSavingsMs / scale * 100}%`;
     this.dom.find('div.lh-sparkline__bar', element).style.width = sparklineWidthPct;
-    displayEl.textContent = Util.i18n.formatSeconds(details.overallSavingsMs, 0.01);
+    displayEl.textContent = Globals.i18n.formatSeconds(details.overallSavingsMs, 0.01);
 
     // Set [title] tooltips
     if (audit.result.displayValue) {
@@ -3723,8 +3918,10 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
   _getScoringCalculatorHref(auditRefs) {
     // TODO: filter by !!acronym when dropping renderer support of v7 LHRs.
     const metrics = auditRefs.filter(audit => audit.group === 'metrics');
+    const tti = auditRefs.find(audit => audit.id === 'interactive');
     const fci = auditRefs.find(audit => audit.id === 'first-cpu-idle');
     const fmp = auditRefs.find(audit => audit.id === 'first-meaningful-paint');
+    if (tti) metrics.push(tti);
     if (fci) metrics.push(fci);
     if (fmp) metrics.push(fmp);
 
@@ -3749,9 +3946,9 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     });
     const paramPairs = [...metricPairs];
 
-    if (Util.reportJson) {
-      paramPairs.push(['device', Util.reportJson.configSettings.formFactor]);
-      paramPairs.push(['version', Util.reportJson.lighthouseVersion]);
+    if (Globals.reportJson) {
+      paramPairs.push(['device', Globals.reportJson.configSettings.formFactor]);
+      paramPairs.push(['version', Globals.reportJson.lighthouseVersion]);
     }
 
     const params = new URLSearchParams(paramPairs);
@@ -3783,10 +3980,10 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
    * @override
    */
   render(category, groups, options) {
-    const strings = Util.i18n.strings;
+    const strings = Globals.strings;
     const element = this.dom.createElement('div', 'lh-category');
     element.id = category.id;
-    element.appendChild(this.renderCategoryHeader(category, groups, options));
+    element.append(this.renderCategoryHeader(category, groups, options));
 
     // Metrics.
     const metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
@@ -3795,7 +3992,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
       // Metric descriptions toggle.
       const checkboxEl = this.dom.createElement('input', 'lh-metrics-toggle__input');
-      const checkboxId = `lh-metrics-toggle${Util.getUniqueSuffix()}`;
+      const checkboxId = `lh-metrics-toggle${Globals.getUniqueSuffix()}`;
       checkboxEl.setAttribute('aria-label', 'Toggle the display of metric descriptions');
       checkboxEl.type = 'checkbox';
       checkboxEl.id = checkboxId;
@@ -3805,13 +4002,13 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       labelEl.htmlFor = checkboxId;
       const showEl = this.dom.createChildOf(labelEl, 'span', 'lh-metrics-toggle__labeltext--show');
       const hideEl = this.dom.createChildOf(labelEl, 'span', 'lh-metrics-toggle__labeltext--hide');
-      showEl.textContent = Util.i18n.strings.expandView;
-      hideEl.textContent = Util.i18n.strings.collapseView;
+      showEl.textContent = Globals.strings.expandView;
+      hideEl.textContent = Globals.strings.collapseView;
 
       const metricsBoxesEl = this.dom.createElement('div', 'lh-metrics-container');
       metricsGroupEl.insertBefore(metricsBoxesEl, metricsFooterEl);
       metricAudits.forEach(item => {
-        metricsBoxesEl.appendChild(this._renderMetric(item));
+        metricsBoxesEl.append(this._renderMetric(item));
       });
 
       // Only add the disclaimer with the score calculator link if the category was rendered with a score gauge.
@@ -3819,7 +4016,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
         const descriptionEl = this.dom.find('.lh-category-header__description', element);
         const estValuesEl = this.dom.createChildOf(descriptionEl, 'div', 'lh-metrics__disclaimer');
         const disclaimerEl = this.dom.convertMarkdownLinkSnippets(strings.varianceDisclaimer);
-        estValuesEl.appendChild(disclaimerEl);
+        estValuesEl.append(disclaimerEl);
 
         // Add link to score calculator.
         const calculatorLink = this.dom.createChildOf(estValuesEl, 'a', 'lh-calclink');
@@ -3829,7 +4026,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       }
 
       metricsGroupEl.classList.add('lh-audit-group--metrics');
-      element.appendChild(metricsGroupEl);
+      element.append(metricsGroupEl);
     }
 
     // Filmstrip
@@ -3839,13 +4036,13 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     if (thumbnailResult?.details) {
       timelineEl.id = thumbnailResult.id;
       const filmstripEl = this.detailsRenderer.render(thumbnailResult.details);
-      filmstripEl && timelineEl.appendChild(filmstripEl);
+      filmstripEl && timelineEl.append(filmstripEl);
     }
 
     // Opportunities
     const opportunityAudits = category.auditRefs
         .filter(audit => this._classifyPerformanceAudit(audit) === 'load-opportunity')
-        .filter(audit => !Util.showAsPassed(audit.result))
+        .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((auditA, auditB) => this._getWastedMs(auditB) - this._getWastedMs(auditA));
 
     const filterableMetrics = metricAudits.filter(a => !!a.relevantAudits);
@@ -3873,13 +4070,13 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       opportunityAudits.forEach(item =>
         groupEl.insertBefore(this._renderOpportunity(item, scale), footerEl));
       groupEl.classList.add('lh-audit-group--load-opportunities');
-      element.appendChild(groupEl);
+      element.append(groupEl);
     }
 
     // Diagnostics
     const diagnosticAudits = category.auditRefs
         .filter(audit => this._classifyPerformanceAudit(audit) === 'diagnostic')
-        .filter(audit => !Util.showAsPassed(audit.result))
+        .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
           const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
           const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
@@ -3890,12 +4087,13 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       const [groupEl, footerEl] = this.renderAuditGroup(groups['diagnostics']);
       diagnosticAudits.forEach(item => groupEl.insertBefore(this.renderAudit(item), footerEl));
       groupEl.classList.add('lh-audit-group--diagnostics');
-      element.appendChild(groupEl);
+      element.append(groupEl);
     }
 
     // Passed audits
     const passedAudits = category.auditRefs
-        .filter(audit => this._classifyPerformanceAudit(audit) && Util.showAsPassed(audit.result));
+        .filter(audit =>
+          this._classifyPerformanceAudit(audit) && ReportUtils.showAsPassed(audit.result));
 
     if (!passedAudits.length) return element;
 
@@ -3904,7 +4102,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       groupDefinitions: groups,
     };
     const passedElem = this.renderClump('passed', clumpOpts);
-    element.appendChild(passedElem);
+    element.append(passedElem);
 
     // Budgets
     /** @type {Array<Element>} */
@@ -3924,7 +4122,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       const [groupEl, footerEl] = this.renderAuditGroup(groups.budgets);
       budgetTableEls.forEach(table => groupEl.insertBefore(table, footerEl));
       groupEl.classList.add('lh-audit-group--budgets');
-      element.appendChild(groupEl);
+      element.append(groupEl);
     }
 
     return element;
@@ -3938,7 +4136,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
   renderMetricAuditFilter(filterableMetrics, categoryEl) {
     const metricFilterEl = this.dom.createElement('div', 'lh-metricfilter');
     const textEl = this.dom.createChildOf(metricFilterEl, 'span', 'lh-metricfilter__text');
-    textEl.textContent = Util.i18n.strings.showRelevantAudits;
+    textEl.textContent = Globals.strings.showRelevantAudits;
 
     const filterChoices = /** @type {LH.ReportResult.AuditRef[]} */ ([
       ({acronym: 'All'}),
@@ -3947,7 +4145,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
     // Form labels need to reference unique IDs, but multiple reports rendered in the same DOM (eg PSI)
     // would mean ID conflict.  To address this, we 'scope' these radio inputs with a unique suffix.
-    const uniqSuffix = Util.getUniqueSuffix();
+    const uniqSuffix = Globals.getUniqueSuffix();
     for (const metric of filterChoices) {
       const elemId = `metric-${metric.acronym}-${uniqSuffix}`;
       const radioEl = this.dom.createChildOf(metricFilterEl, 'input', 'lh-metricfilter__radio');
@@ -4024,7 +4222,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
   render(category, groupDefinitions = {}) {
     const categoryElem = this.dom.createElement('div', 'lh-category');
     categoryElem.id = category.id;
-    categoryElem.appendChild(this.renderCategoryHeader(category, groupDefinitions));
+    categoryElem.append(this.renderCategoryHeader(category, groupDefinitions));
 
     const auditRefs = category.auditRefs;
 
@@ -4032,13 +4230,13 @@ class PwaCategoryRenderer extends CategoryRenderer {
     // all put in a top-level clump that isn't expandable/collapsible.
     const regularAuditRefs = auditRefs.filter(ref => ref.result.scoreDisplayMode !== 'manual');
     const auditsElem = this._renderAudits(regularAuditRefs, groupDefinitions);
-    categoryElem.appendChild(auditsElem);
+    categoryElem.append(auditsElem);
 
     // Manual audits are still in a manual clump.
     const manualAuditRefs = auditRefs.filter(ref => ref.result.scoreDisplayMode === 'manual');
     const manualElem = this.renderClump('manual',
       {auditRefs: manualAuditRefs, description: category.manualDescription});
-    categoryElem.appendChild(manualElem);
+    categoryElem.append(manualElem);
 
     return categoryElem;
   }
@@ -4098,7 +4296,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
 
     // Remove any that have a failing audit.
     for (const auditRef of auditRefs) {
-      if (!Util.showAsPassed(auditRef.result) && auditRef.group) {
+      if (!ReportUtils.showAsPassed(auditRef.result) && auditRef.group) {
         uniqueGroupIds.delete(auditRef.group);
       }
     }
@@ -4119,7 +4317,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
     for (const groupId of groupIds) {
       const groupAuditRefs = auditRefs.filter(ref => ref.group === groupId);
       const auditCount = groupAuditRefs.length;
-      const passedCount = groupAuditRefs.filter(ref => Util.showAsPassed(ref.result)).length;
+      const passedCount = groupAuditRefs.filter(ref => ReportUtils.showAsPassed(ref.result)).length;
 
       const title = groupDefinitions[groupId].title;
       tips.push(`${title}: ${passedCount}/${auditCount}`);
@@ -4159,7 +4357,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
     const defsEl = svgRoot.querySelector('defs');
     if (!defsEl) return;
 
-    const idSuffix = Util.getUniqueSuffix();
+    const idSuffix = Globals.getUniqueSuffix();
     const elementsToUpdate = defsEl.querySelectorAll('[id]');
     for (const el of elementsToUpdate) {
       const oldId = el.id;
@@ -4201,7 +4399,6 @@ class PwaCategoryRenderer extends CategoryRenderer {
  * (this is handled by terser)
  */
 
-
 class ReportRenderer {
   /**
    * @param {DOM} dom
@@ -4240,10 +4437,10 @@ class ReportRenderer {
 
     this._dom.setLighthouseChannel(lhr.configSettings.channel || 'unknown');
 
-    const report = Util.prepareReportResult(lhr);
+    const report = ReportUtils.prepareReportResult(lhr);
 
     this._dom.rootEl.textContent = ''; // Remove previous report.
-    this._dom.rootEl.appendChild(this._renderReport(report));
+    this._dom.rootEl.append(this._renderReport(report));
 
     return this._dom.rootEl;
   }
@@ -4255,9 +4452,9 @@ class ReportRenderer {
   _renderReportTopbar(report) {
     const el = this._dom.createComponent('topbar');
     const metadataUrl = this._dom.find('a.lh-topbar__url', el);
-    metadataUrl.textContent = report.finalUrl;
-    metadataUrl.title = report.finalUrl;
-    this._dom.safelySetHref(metadataUrl, report.finalUrl);
+    metadataUrl.textContent = report.finalDisplayedUrl;
+    metadataUrl.title = report.finalDisplayedUrl;
+    this._dom.safelySetHref(metadataUrl, report.finalDisplayedUrl);
     return el;
   }
 
@@ -4281,7 +4478,7 @@ class ReportRenderer {
 
     this._renderMetaBlock(report, footer);
 
-    this._dom.find('.lh-footer__version_issue', footer).textContent = Util.i18n.strings.footerIssue;
+    this._dom.find('.lh-footer__version_issue', footer).textContent = Globals.strings.footerIssue;
     this._dom.find('.lh-footer__version', footer).textContent = report.lighthouseVersion;
     return footer;
   }
@@ -4291,9 +4488,7 @@ class ReportRenderer {
    * @param {DocumentFragment} footer
    */
   _renderMetaBlock(report, footer) {
-    const envValues = Util.getEmulationDescriptions(report.configSettings || {});
-
-
+    const envValues = ReportUtils.getEmulationDescriptions(report.configSettings || {});
     const match = report.userAgent.match(/(\w*Chrome\/[\d.]+)/); // \w* to include 'HeadlessChrome'
     const chromeVer = Array.isArray(match)
       ? match[1].replace('/', ' ').replace('Chrome', 'Chromium')
@@ -4302,26 +4497,36 @@ class ReportRenderer {
     const benchmarkIndex = report.environment.benchmarkIndex.toFixed(0);
     const axeVersion = report.environment.credits?.['axe-core'];
 
+    const devicesTooltipTextLines = [
+      `${Globals.strings.runtimeSettingsBenchmark}: ${benchmarkIndex}`,
+      `${Globals.strings.runtimeSettingsCPUThrottling}: ${envValues.cpuThrottling}`,
+    ];
+    if (envValues.screenEmulation) {
+      devicesTooltipTextLines.push(
+        `${Globals.strings.runtimeSettingsScreenEmulation}: ${envValues.screenEmulation}`);
+    }
+    if (axeVersion) {
+      devicesTooltipTextLines.push(`${Globals.strings.runtimeSettingsAxeVersion}: ${axeVersion}`);
+    }
+
     // [CSS icon class, textContent, tooltipText]
     const metaItems = [
       ['date',
-        `Captured at ${Util.i18n.formatDateTime(report.fetchTime)}`],
+        `Captured at ${Globals.i18n.formatDateTime(report.fetchTime)}`],
       ['devices',
         `${envValues.deviceEmulation} with Lighthouse ${report.lighthouseVersion}`,
-        `${Util.i18n.strings.runtimeSettingsBenchmark}: ${benchmarkIndex}` +
-            `\n${Util.i18n.strings.runtimeSettingsCPUThrottling}: ${envValues.cpuThrottling}` +
-            (axeVersion ? `\n${Util.i18n.strings.runtimeSettingsAxeVersion}: ${axeVersion}` : '')],
+        devicesTooltipTextLines.join('\n')],
       ['samples-one',
-        Util.i18n.strings.runtimeSingleLoad,
-        Util.i18n.strings.runtimeSingleLoadTooltip],
+        Globals.strings.runtimeSingleLoad,
+        Globals.strings.runtimeSingleLoadTooltip],
       ['stopwatch',
-        Util.i18n.strings.runtimeAnalysisWindow],
+        Globals.strings.runtimeAnalysisWindow],
       ['networkspeed',
         `${envValues.summary}`,
-        `${Util.i18n.strings.runtimeSettingsNetworkThrottling}: ${envValues.networkThrottling}`],
+        `${Globals.strings.runtimeSettingsNetworkThrottling}: ${envValues.networkThrottling}`],
       ['chrome',
         `Using ${chromeVer}` + (channel ? ` with ${channel}` : ''),
-        `${Util.i18n.strings.runtimeSettingsUANetwork}: "${report.environment.networkUserAgent}"`],
+        `${Globals.strings.runtimeSettingsUANetwork}: "${report.environment.networkUserAgent}"`],
     ];
 
     const metaItemsEl = this._dom.find('.lh-meta__items', footer);
@@ -4349,13 +4554,15 @@ class ReportRenderer {
 
     const container = this._dom.createComponent('warningsToplevel');
     const message = this._dom.find('.lh-warnings__msg', container);
-    message.textContent = Util.i18n.strings.toplevelWarningsMessage;
+    message.textContent = Globals.strings.toplevelWarningsMessage;
 
-    const warnings = this._dom.find('ul', container);
+    const warnings = [];
     for (const warningString of report.runWarnings) {
-      const warning = warnings.appendChild(this._dom.createElement('li'));
-      warning.appendChild(this._dom.convertMarkdownLinkSnippets(warningString));
+      const warning = this._dom.createElement('li');
+      warning.append(this._dom.convertMarkdownLinkSnippets(warningString));
+      warnings.push(warning);
     }
+    this._dom.find('ul', container).append(...warnings);
 
     return container;
   }
@@ -4401,7 +4608,7 @@ class ReportRenderer {
       }
 
 
-      if (Util.isPluginCategory(category.id)) {
+      if (ReportUtils.isPluginCategory(category.id)) {
         pluginGauges.push(categoryGauge);
       } else if (renderer.renderCategoryScore === categoryRenderer.renderCategoryScore) {
         // The renderer for default categories is just the default CategoryRenderer.
@@ -4423,20 +4630,14 @@ class ReportRenderer {
    * @return {!DocumentFragment}
    */
   _renderReport(report) {
-    const i18n = new I18n(report.configSettings.locale, {
-      // Set missing renderer strings to default (english) values.
-      ...Util.UIStrings,
-      ...report.i18n.rendererFormattedStrings,
+    Globals.apply({
+      providedStrings: report.i18n.rendererFormattedStrings,
+      i18n: new I18nFormatter(report.configSettings.locale),
+      reportJson: report,
     });
-    Util.i18n = i18n;
-    Util.reportJson = report;
 
-    const fullPageScreenshot =
-      report.audits['full-page-screenshot']?.details &&
-      report.audits['full-page-screenshot'].details.type === 'full-page-screenshot' ?
-      report.audits['full-page-screenshot'].details : undefined;
     const detailsRenderer = new DetailsRenderer(this._dom, {
-      fullPageScreenshot,
+      fullPageScreenshot: report.fullPageScreenshot ?? undefined,
     });
 
     const categoryRenderer = new CategoryRenderer(this._dom, detailsRenderer);
@@ -4448,11 +4649,11 @@ class ReportRenderer {
     };
 
     const headerContainer = this._dom.createElement('div');
-    headerContainer.appendChild(this._renderReportHeader());
+    headerContainer.append(this._renderReportHeader());
 
     const reportContainer = this._dom.createElement('div', 'lh-container');
     const reportSection = this._dom.createElement('div', 'lh-report');
-    reportSection.appendChild(this._renderReportWarnings(report));
+    reportSection.append(this._renderReportWarnings(report));
 
     let scoreHeader;
     const isSoloCategory = Object.keys(report.categories).length === 1;
@@ -4469,23 +4670,23 @@ class ReportRenderer {
       const scoresContainer = this._dom.find('.lh-scores-container', headerContainer);
       scoreHeader.append(
         ...this._renderScoreGauges(report, categoryRenderer, specificCategoryRenderers));
-      scoresContainer.appendChild(scoreHeader);
-      scoresContainer.appendChild(scoreScale);
+      scoresContainer.append(scoreHeader, scoreScale);
 
       const stickyHeader = this._dom.createElement('div', 'lh-sticky-header');
       stickyHeader.append(
         ...this._renderScoreGauges(report, categoryRenderer, specificCategoryRenderers));
-      reportContainer.appendChild(stickyHeader);
+      reportContainer.append(stickyHeader);
     }
 
-    const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));
+    const categories = this._dom.createElement('div', 'lh-categories');
+    reportSection.append(categories);
     const categoryOptions = {gatherMode: report.gatherMode};
     for (const category of Object.values(report.categories)) {
       const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
       // .lh-category-wrapper is full-width and provides horizontal rules between categories.
       // .lh-category within has the max-width: var(--report-content-max-width);
       const wrapper = renderer.dom.createChildOf(categories, 'div', 'lh-category-wrapper');
-      wrapper.appendChild(renderer.render(
+      wrapper.append(renderer.render(
         category,
         report.categoryGroups,
         categoryOptions
@@ -4500,17 +4701,16 @@ class ReportRenderer {
     }
 
     if (!this._opts.omitTopbar) {
-      reportFragment.appendChild(this._renderReportTopbar(report));
+      reportFragment.append(this._renderReportTopbar(report));
     }
 
-    reportFragment.appendChild(reportContainer);
-    reportContainer.appendChild(headerContainer);
-    reportContainer.appendChild(reportSection);
-    reportSection.appendChild(this._renderReportFooter(report));
+    reportFragment.append(reportContainer);
+    reportSection.append(this._renderReportFooter(report));
+    reportContainer.append(headerContainer, reportSection);
 
-    if (fullPageScreenshot) {
+    if (report.fullPageScreenshot) {
       ElementScreenshotRenderer.installFullPageScreenshot(
-        this._dom.rootEl, fullPageScreenshot.screenshot);
+        this._dom.rootEl, report.fullPageScreenshot.screenshot);
     }
 
     return reportFragment;
@@ -4641,7 +4841,7 @@ function getAppsOrigin() {
   const isDev = new URLSearchParams(window.location.search).has('dev');
 
   if (isVercel) return `https://${window.location.host}/gh-pages`;
-  if (isDev) return 'http://localhost:8000';
+  if (isDev) return 'http://localhost:7333';
   return 'https://googlechrome.github.io/lighthouse';
 }
 
@@ -4654,7 +4854,7 @@ function computeWindowNameSuffix(json) {
   // @ts-expect-error - If this is a v2 LHR, use old `generatedTime`.
   const fallbackFetchTime = /** @type {string} */ (json.generatedTime);
   const fetchTime = json.fetchTime || fallbackFetchTime;
-  return `${json.lighthouseVersion}-${json.requestedUrl}-${fetchTime}`;
+  return `${json.lighthouseVersion}-${json.finalDisplayedUrl}-${fetchTime}`;
 }
 
 /**
@@ -4736,8 +4936,9 @@ function openTreemap(json) {
   /** @type {LH.Treemap.Options} */
   const treemapOptions = {
     lhr: {
-      requestedUrl: json.requestedUrl,
+      mainDocumentUrl: json.mainDocumentUrl,
       finalUrl: json.finalUrl,
+      finalDisplayedUrl: json.finalDisplayedUrl,
       audits: {
         'script-treemap-data': json.audits['script-treemap-data'],
       },
@@ -5198,7 +5399,8 @@ class TopbarFeatures {
    */
   _setUpCollapseDetailsAfterPrinting() {
     // FF and IE implement these old events.
-    if ('onbeforeprint' in self) {
+    const supportsOldPrintEvents = 'onbeforeprint' in self;
+    if (supportsOldPrintEvents) {
       self.addEventListener('afterprint', this.collapseAllDetails);
     } else {
       // Note: FF implements both window.onbeforeprint and media listeners. However,
@@ -5311,26 +5513,13 @@ function getFilenamePrefix(name, fetchTime) {
 
 /**
  * Generate a filenamePrefix of hostname_YYYY-MM-DD_HH-MM-SS.
- * @param {{finalUrl: string, fetchTime: string}} lhr
+ * @param {{finalDisplayedUrl: string, fetchTime: string}} lhr
  * @return {string}
  */
 function getLhrFilenamePrefix(lhr) {
-  const hostname = new URL(lhr.finalUrl).hostname;
+  const hostname = new URL(lhr.finalDisplayedUrl).hostname;
   return getFilenamePrefix(hostname, lhr.fetchTime);
 }
-
-/**
- * Generate a filenamePrefix of name_YYYY-MM-DD_HH-MM-SS.
- * @param {{name: string, steps: Array<{lhr: {fetchTime: string}}>}} flowResult
- * @return {string}
- */
-function getFlowResultFilenamePrefix(flowResult) {
-  const lhr = flowResult.steps[0].lhr;
-  const name = flowResult.name.replace(/\s/g, '-');
-  return getFilenamePrefix(name, lhr.fetchTime);
-}
-
-var fileNamer = {getLhrFilenamePrefix, getFilenamePrefix, getFlowResultFilenamePrefix};
 
 /**
  * @license
@@ -5380,6 +5569,7 @@ class ReportUIFeatures {
    */
   initFeatures(lhr) {
     this.json = lhr;
+    this._fullPageScreenshot = Util.getFullPageScreenshot(lhr);
 
     if (this._topbar) {
       this._topbar.enable(lhr);
@@ -5425,7 +5615,7 @@ class ReportUIFeatures {
       this.json.audits['script-treemap-data'] && this.json.audits['script-treemap-data'].details;
     if (showTreemapApp) {
       this.addButton({
-        text: Util.i18n.strings.viewTreemapLabel,
+        text: Globals.strings.viewTreemapLabel,
         icon: 'treemap',
         onClick: () => openTreemap(this.json),
       });
@@ -5434,8 +5624,8 @@ class ReportUIFeatures {
     if (this._opts.onViewTrace) {
       this.addButton({
         text: lhr.configSettings.throttlingMethod === 'simulate' ?
-          Util.i18n.strings.viewOriginalTraceLabel :
-          Util.i18n.strings.viewTraceLabel,
+          Globals.strings.viewOriginalTraceLabel :
+          Globals.strings.viewTraceLabel,
         onClick: () => this._opts.onViewTrace?.(),
       });
     }
@@ -5446,11 +5636,11 @@ class ReportUIFeatures {
 
     // Fill in all i18n data.
     for (const node of this._dom.findAll('[data-i18n]', this._dom.rootEl)) {
-      // These strings are guaranteed to (at least) have a default English string in Util.UIStrings,
+      // These strings are guaranteed to (at least) have a default English string in UIStrings,
       // so this cannot be undefined as long as `report-ui-features.data-i18n` test passes.
       const i18nKey = node.getAttribute('data-i18n');
-      const i18nAttr = /** @type {keyof typeof Util.i18n.strings} */ (i18nKey);
-      node.textContent = Util.i18n.strings[i18nAttr];
+      const i18nAttr = /** @type {keyof typeof Globals.strings} */ (i18nKey);
+      node.textContent = Globals.strings[i18nAttr];
     }
   }
 
@@ -5562,7 +5752,9 @@ class ReportUIFeatures {
 
     tablesWithUrls.forEach((tableEl) => {
       const rowEls = getTableRows(tableEl);
-      const thirdPartyRows = this._getThirdPartyRows(rowEls, this.json.finalUrl);
+      const primaryRowEls = rowEls.filter(rowEl => !rowEl.classList.contains('lh-sub-item-row'));
+      const thirdPartyRowEls = this._getThirdPartyRows(
+        primaryRowEls, Util.getFinalDisplayedUrl(this.json));
 
       // create input box
       const filterTemplate = this._dom.createComponent('3pFilter');
@@ -5571,9 +5763,9 @@ class ReportUIFeatures {
       filterInput.addEventListener('change', e => {
         const shouldHideThirdParty = e.target instanceof HTMLInputElement && !e.target.checked;
         let even = true;
-        let rowEl = rowEls[0];
+        let rowEl = primaryRowEls[0];
         while (rowEl) {
-          const shouldHide = shouldHideThirdParty && thirdPartyRows.includes(rowEl);
+          const shouldHide = shouldHideThirdParty && thirdPartyRowEls.includes(rowEl);
 
           // Iterate subsequent associated sub item rows.
           do {
@@ -5590,12 +5782,12 @@ class ReportUIFeatures {
       });
 
       this._dom.find('.lh-3p-filter-count', filterTemplate).textContent =
-          `${thirdPartyRows.length}`;
+          `${thirdPartyRowEls.length}`;
       this._dom.find('.lh-3p-ui-string', filterTemplate).textContent =
-          Util.i18n.strings.thirdPartyResourcesLabel;
+          Globals.strings.thirdPartyResourcesLabel;
 
-      const allThirdParty = thirdPartyRows.length === rowEls.length;
-      const allFirstParty = !thirdPartyRows.length;
+      const allThirdParty = thirdPartyRowEls.length === primaryRowEls.length;
+      const allFirstParty = !thirdPartyRowEls.length;
 
       // If all or none of the rows are 3rd party, hide the control.
       if (allThirdParty || allFirstParty) {
@@ -5619,18 +5811,13 @@ class ReportUIFeatures {
    * @param {Element} rootEl
    */
   _setupElementScreenshotOverlay(rootEl) {
-    const fullPageScreenshot =
-      this.json.audits['full-page-screenshot'] &&
-      this.json.audits['full-page-screenshot'].details &&
-      this.json.audits['full-page-screenshot'].details.type === 'full-page-screenshot' &&
-      this.json.audits['full-page-screenshot'].details;
-    if (!fullPageScreenshot) return;
+    if (!this._fullPageScreenshot) return;
 
     ElementScreenshotRenderer.installOverlayFeature({
       dom: this._dom,
       rootEl: rootEl,
       overlayContainerEl: rootEl,
-      fullPageScreenshot,
+      fullPageScreenshot: this._fullPageScreenshot,
     });
   }
 
@@ -5638,29 +5825,33 @@ class ReportUIFeatures {
    * From a table with URL entries, finds the rows containing third-party URLs
    * and returns them.
    * @param {HTMLElement[]} rowEls
-   * @param {string} finalUrl
+   * @param {string} finalDisplayedUrl
    * @return {Array<HTMLElement>}
    */
-  _getThirdPartyRows(rowEls, finalUrl) {
+  _getThirdPartyRows(rowEls, finalDisplayedUrl) {
+    const finalDisplayedUrlRootDomain = Util.getRootDomain(finalDisplayedUrl);
+    const firstPartyEntityName = this.json.entities?.find(e => e.isFirstParty === true)?.name;
+
     /** @type {Array<HTMLElement>} */
-    const thirdPartyRows = [];
-    const finalUrlRootDomain = Util.getRootDomain(finalUrl);
-
+    const thirdPartyRowEls = [];
     for (const rowEl of rowEls) {
-      if (rowEl.classList.contains('lh-sub-item-row')) continue;
+      if (firstPartyEntityName) {
+        // We rely on entity-classification for new LHRs that support it.
+        if (!rowEl.dataset.entity || rowEl.dataset.entity === firstPartyEntityName) continue;
+      } else {
+        // Without 10.0's entity classification, fallback to the older root domain-based filtering.
+        const urlItem = rowEl.querySelector('div.lh-text__url');
+        if (!urlItem) continue;
+        const datasetUrl = urlItem.dataset.url;
+        if (!datasetUrl) continue;
+        const isThirdParty = Util.getRootDomain(datasetUrl) !== finalDisplayedUrlRootDomain;
+        if (!isThirdParty) continue;
+      }
 
-      const urlItem = rowEl.querySelector('div.lh-text__url');
-      if (!urlItem) continue;
-
-      const datasetUrl = urlItem.dataset.url;
-      if (!datasetUrl) continue;
-      const isThirdParty = Util.getRootDomain(datasetUrl) !== finalUrlRootDomain;
-      if (!isThirdParty) continue;
-
-      thirdPartyRows.push(rowEl);
+      thirdPartyRowEls.push(rowEl);
     }
 
-    return thirdPartyRows;
+    return thirdPartyRowEls;
   }
 
   /**
@@ -5668,7 +5859,10 @@ class ReportUIFeatures {
    */
   _saveFile(blob) {
     const ext = blob.type.match('json') ? '.json' : '.html';
-    const filename = fileNamer.getLhrFilenamePrefix(this.json) + ext;
+    const filename = getLhrFilenamePrefix({
+      finalDisplayedUrl: Util.getFinalDisplayedUrl(this.json),
+      fetchTime: this.json.fetchTime,
+    }) + ext;
     if (this._opts.onSaveFileOverride) {
       this._opts.onSaveFileOverride(blob, filename);
     } else {
@@ -5728,6 +5922,16 @@ function swapLocale(lhr, requestedLocale) {
 function registerLocaleData(locale, lhlMessages) {
   // Stub function only included for types
 }
-const format = {registerLocaleData};
+
+/**
+ * Returns whether the requestedLocale is registered and available for use
+ * @param {LH.Locale} requestedLocale
+ * @return {boolean}
+ */
+function hasLocale(requestedLocale) {
+  // Stub function only included for types
+  return false;
+}
+const format = {registerLocaleData, hasLocale};
 
 export { DOM, ReportRenderer, ReportUIFeatures, format, renderReport, swapLocale };

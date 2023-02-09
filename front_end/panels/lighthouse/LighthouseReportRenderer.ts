@@ -69,7 +69,7 @@ export class LighthouseReportRenderer {
 
     function getStandaloneReportHTML(): string {
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      return Lighthouse.ReportGenerator.generateReportHtml(lhr);
+      return Lighthouse.ReportGenerator.ReportGenerator.generateReportHtml(lhr);
     }
 
     const reportEl = LighthouseReport.renderReport(lhr, {

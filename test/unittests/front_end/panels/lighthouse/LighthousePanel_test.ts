@@ -22,7 +22,7 @@ describeWithMockConnection('LighthousePanel', async () => {
     const URL = 'http://example.com';
     const LH_REPORT = {
       lhr: {
-        finalDisplayedUrl: '',
+        finalDisplayedUrl: URL,
         configSettings: {},
         audits: {},
         categories: {_: {auditRefs: [], id: ''}},

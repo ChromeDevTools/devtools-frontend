@@ -38,6 +38,9 @@ describe('Navigation', async function() {
   this.timeout(60_000);
 
   beforeEach(() => {
+    // https://github.com/GoogleChrome/lighthouse/issues/14572
+    expectError(/Request CacheStorage\.requestCacheNames failed/);
+
     // https://bugs.chromium.org/p/chromium/issues/detail?id=1357791
     expectError(/Protocol Error: the message with wrong session id/);
     expectError(/Protocol Error: the message with wrong session id/);
@@ -80,16 +83,18 @@ describe('Navigation', async function() {
           // 1 initial about:blank jump
           // 1 about:blank jump + 1 navigation for the default pass
           // 1 about:blank jump + 1 navigation for the offline pass
+          // 2 navigations to go to chrome://terms and back testing bfcache
           // 1 navigation after auditing to reset state
-          assert.strictEqual(numNavigations, 6);
+          assert.strictEqual(numNavigations, 8);
         } else {
           // 1 initial about:blank jump
           // 1 about:blank jump + 1 navigation for the default pass
+          // 2 navigations to go to chrome://terms and back testing bfcache
           // 1 navigation after auditing to reset state
-          assert.strictEqual(numNavigations, 4);
+          assert.strictEqual(numNavigations, 6);
         }
 
-        assert.strictEqual(lhr.lighthouseVersion, '9.6.8');
+        assert.strictEqual(lhr.lighthouseVersion, '10.0.0');
         assert.match(lhr.finalUrl, /^https:\/\/localhost:[0-9]+\/test\/e2e\/resources\/lighthouse\/hello.html/);
 
         assert.strictEqual(lhr.configSettings.throttlingMethod, 'simulate');
@@ -98,13 +103,7 @@ describe('Navigation', async function() {
         assert.strictEqual(lhr.configSettings.throttling.rttMs, 150);
         assert.strictEqual(lhr.configSettings.screenEmulation.disabled, true);
         assert.include(lhr.configSettings.emulatedUserAgent, 'Mobile');
-
-        // A bug in FR caused `networkUserAgent` to be excluded from the LHR.
-        // https://github.com/GoogleChrome/lighthouse/pull/14392
-        // TODO: Reenable once the fix lands in DT.
-        if (mode === 'legacy') {
-          assert.include(lhr.environment.networkUserAgent, 'Mobile');
-        }
+        assert.include(lhr.environment.networkUserAgent, 'Mobile');
 
         assert.deepStrictEqual(artifacts.ViewportDimensions, {
           innerHeight: 823,
@@ -115,18 +114,18 @@ describe('Navigation', async function() {
         });
 
         const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
-        assert.strictEqual(auditResults.length, 175);
-        assert.strictEqual(erroredAudits.length, 0);
+        assert.strictEqual(auditResults.length, 173);
+        assert.deepStrictEqual(erroredAudits, []);
         assert.deepStrictEqual(failedAudits.map(audit => audit.id), [
           'service-worker',
           'installable-manifest',
-          'apple-touch-icon',
           'splash-screen',
           'themed-omnibox',
           'maskable-icon',
           'document-title',
           'html-has-lang',
           'meta-description',
+          'bf-cache',
         ]);
 
         const viewTraceButton = await $textContent('View Original Trace', reportEl);
@@ -200,18 +199,18 @@ describe('Navigation', async function() {
         ];
 
         const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr, flakyAudits);
-        assert.strictEqual(auditResults.length, 152);
-        assert.strictEqual(erroredAudits.length, 0);
+        assert.strictEqual(auditResults.length, 150);
+        assert.deepStrictEqual(erroredAudits, []);
         assert.deepStrictEqual(failedAudits.map(audit => audit.id), [
           'service-worker',
           'installable-manifest',
-          'apple-touch-icon',
           'splash-screen',
           'themed-omnibox',
           'maskable-icon',
           'document-title',
           'html-has-lang',
           'meta-description',
+          'bf-cache',
         ]);
 
         const viewTraceButton = await $textContent('View Trace', reportEl);
@@ -239,7 +238,7 @@ describe('Navigation', async function() {
         assert.strictEqual(devicePixelRatio, 1);
 
         const {erroredAudits} = getAuditsBreakdown(lhr);
-        assert.strictEqual(erroredAudits.length, 0);
+        assert.deepStrictEqual(erroredAudits, []);
 
         assert.deepStrictEqual(Object.keys(lhr.categories), ['performance', 'best-practices']);
         assert.strictEqual(lhr.configSettings.disableStorageReset, true);
@@ -247,17 +246,9 @@ describe('Navigation', async function() {
         assert.strictEqual(lhr.configSettings.throttling.rttMs, 40);
         assert.strictEqual(lhr.configSettings.screenEmulation.disabled, true);
         assert.notInclude(lhr.configSettings.emulatedUserAgent, 'Mobile');
+        assert.notInclude(lhr.environment.networkUserAgent, 'Mobile');
 
-        // A bug in FR caused `networkUserAgent` to be excluded from the LHR.
-        // https://github.com/GoogleChrome/lighthouse/pull/14392
-        // TODO: Reenable once the fix lands in DT.
-        if (mode === 'legacy') {
-          assert.notInclude(lhr.environment.networkUserAgent, 'Mobile');
-        }
-
-        // This string is not translated in the Lighthouse roll yet.
-        // TODO: Use the translated version once the strings land in DT.
-        const viewTraceButton = await $textContent('View Original Trace', reportEl);
+        const viewTraceButton = await $textContent('Ver rastro original', reportEl);
         assert.ok(viewTraceButton);
 
         const footerIssueText = await reportEl.$eval('.lh-footer__version_issue', footerIssueEl => {

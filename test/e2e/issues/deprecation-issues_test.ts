@@ -31,7 +31,8 @@ describe('Deprecation Issues', async () => {
               lineNumber: 1,
               columnNumber: 1,
             },
-            type: 'DeprecationExample',
+            // This value needs maintanance to always point to an exising deprecation.
+            type: 'LocalCSSFileExtensionRejected',
           },
         },
       };

@@ -80,13 +80,13 @@ describe('ColorFormatSpec for inputs', () => {
 
   describe('lch() format', () => {
     it('should return values', () => {
-      const color = Common.Color.parse('lch(0.21 98 0)');
+      const color = Common.Color.parse('lch(21 98 0)');
       assertNotNullOrUndefined(color);
 
       const spec = ColorPicker.ColorFormatSpec.colorFormatSpec[Common.Color.Format.LCH];
       const values = spec.toValues(color);
 
-      assert.deepEqual(values, ['0.21', '98', '0', '1']);
+      assert.deepEqual(values, ['21', '98', '0', '1']);
     });
 
     it('should create the color from the input values', () => {
@@ -127,13 +127,13 @@ describe('ColorFormatSpec for inputs', () => {
 
   describe('lab() format', () => {
     it('should return values', () => {
-      const color = Common.Color.parse('lab(0.21 98 0)');
+      const color = Common.Color.parse('lab(21 98 0)');
       assertNotNullOrUndefined(color);
 
       const spec = ColorPicker.ColorFormatSpec.colorFormatSpec[Common.Color.Format.LAB];
       const values = spec.toValues(color);
 
-      assert.deepEqual(values, ['0.21', '98', '0', '1']);
+      assert.deepEqual(values, ['21', '98', '0', '1']);
     });
 
     it('should create the color from the input values', () => {

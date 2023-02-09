@@ -676,7 +676,8 @@ export interface Color {
   isGamutClipped(): boolean;
 }
 
-const EPSILON = 0.001;
+const EPSILON = 0.01;
+const WIDE_RANGE_EPSILON = 1;  // For comparisons on channels with a wider range than [0,1]
 function equals(a: number[], b: number[], accuracy?: number): boolean;
 function equals(a: number|null, b: number|null, accuracy?: number): boolean;
 function equals(a: number|null|number[], b: number|null|number[], accuracy = EPSILON): boolean {
@@ -697,7 +698,7 @@ function equals(a: number|null|number[], b: number|null|number[], accuracy = EPS
   if (a === null || b === null) {
     return a === b;
   }
-  return Math.abs(a - b) <= accuracy;
+  return Math.abs(a - b) < accuracy;
 }
 function lessOrEquals(a: number, b: number, accuracy = EPSILON): boolean {
   return a - b <= accuracy;
@@ -792,7 +793,7 @@ export class Lab implements Color {
   constructor(l: number, a: number, b: number, alpha: number|null, authoredText?: string|undefined) {
     this.#rawParams = [l, a, b];
     this.l = clamp(l, {min: 0, max: 100});
-    if (equals(this.l, 0) || equals(this.l, 100)) {
+    if (equals(this.l, 0, WIDE_RANGE_EPSILON) || equals(this.l, 100, WIDE_RANGE_EPSILON)) {
       a = b = 0;
     }
     this.a = a;
@@ -808,7 +809,8 @@ export class Lab implements Color {
   }
   equal(color: Color): boolean {
     const lab = color.as(Format.LAB);
-    return equals(lab.l, this.l) && equals(lab.a, this.a) && equals(lab.b, this.b) && equals(lab.alpha, this.alpha);
+    return equals(lab.l, this.l, WIDE_RANGE_EPSILON) && equals(lab.a, this.a) && equals(lab.b, this.b) &&
+        equals(lab.alpha, this.alpha);
   }
   format(): Format {
     return Format.LAB;
@@ -826,7 +828,7 @@ export class Lab implements Color {
     const alpha = this.alpha === null || equals(this.alpha, 1) ?
         '' :
         ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
-    return `lab(${Platform.StringUtilities.stringifyWithPrecision(l)} ${
+    return `lab(${Platform.StringUtilities.stringifyWithPrecision(l, 0)} ${
         Platform.StringUtilities.stringifyWithPrecision(
             a)} ${Platform.StringUtilities.stringifyWithPrecision(b)}${alpha})`;
   }
@@ -928,7 +930,7 @@ export class LCH implements Color {
   constructor(l: number, c: number, h: number, alpha: number|null, authoredText?: string|undefined) {
     this.#rawParams = [l, c, h];
     this.l = clamp(l, {min: 0, max: 100});
-    c = equals(this.l, 0) || equals(this.l, 100) ? 0 : c;
+    c = equals(this.l, 0, WIDE_RANGE_EPSILON) || equals(this.l, 100, WIDE_RANGE_EPSILON) ? 0 : c;
     this.c = clamp(c, {min: 0});
     h = equals(c, 0) ? 0 : h;
     this.h = normalizeHue(h);
@@ -943,7 +945,8 @@ export class LCH implements Color {
   }
   equal(color: Color): boolean {
     const lch = color.as(Format.LCH);
-    return equals(lch.l, this.l) && equals(lch.c, this.c) && equals(lch.h, this.h) && equals(lch.alpha, this.alpha);
+    return equals(lch.l, this.l, WIDE_RANGE_EPSILON) && equals(lch.c, this.c) && equals(lch.h, this.h) &&
+        equals(lch.alpha, this.alpha);
   }
   format(): Format {
     return Format.LCH;
@@ -961,7 +964,7 @@ export class LCH implements Color {
     const alpha = this.alpha === null || equals(this.alpha, 1) ?
         '' :
         ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
-    return `lch(${Platform.StringUtilities.stringifyWithPrecision(l)} ${
+    return `lch(${Platform.StringUtilities.stringifyWithPrecision(l, 0)} ${
         Platform.StringUtilities.stringifyWithPrecision(
             c)} ${Platform.StringUtilities.stringifyWithPrecision(h)}${alpha})`;
   }
@@ -1825,6 +1828,10 @@ export class HWB implements Color {
 
 type LegacyColor = Format.Nickname|Format.HEX|Format.ShortHEX|Format.HEXA|Format.ShortHEXA|Format.RGB|Format.RGBA;
 
+function toRgbValue(value: number): number {
+  return Math.round(value * 255);
+}
+
 export class Legacy implements Color {
   readonly #rawParams: Color3D;
   #rgbaInternal: Color4D;
@@ -2008,10 +2015,6 @@ export class Legacy implements Color {
       format = this.#formatInternal;
     }
 
-    function toRgbValue(value: number): number {
-      return Math.round(value * 255);
-    }
-
     function toHexValue(value: number): string {
       const hex = Math.round(value * 255).toString(16);
       return hex.length === 1 ? '0' + hex : hex;
@@ -2083,7 +2086,9 @@ export class Legacy implements Color {
     return this.#stringify(format, ...this.#rawParams);
   }
   isGamutClipped(): boolean {
-    return !equals(this.#rawParams, [this.#rgbaInternal[0], this.#rgbaInternal[1], this.#rgbaInternal[2]]);
+    return !equals(
+        this.#rawParams.map(toRgbValue),
+        [this.#rgbaInternal[0], this.#rgbaInternal[1], this.#rgbaInternal[2]].map(toRgbValue), WIDE_RANGE_EPSILON);
   }
 
   rgba(): Color4D {
@@ -2156,7 +2161,10 @@ export class Legacy implements Color {
 
   equal(other: Color): boolean {
     const legacy = other.as(this.#formatInternal);
-    return this.#rgbaInternal.every((v, i) => equals(v, legacy.#rgbaInternal[i]));
+    return equals(toRgbValue(this.#rgbaInternal[0]), toRgbValue(legacy.#rgbaInternal[0]), WIDE_RANGE_EPSILON) &&
+        equals(toRgbValue(this.#rgbaInternal[1]), toRgbValue(legacy.#rgbaInternal[1]), WIDE_RANGE_EPSILON) &&
+        equals(toRgbValue(this.#rgbaInternal[2]), toRgbValue(legacy.#rgbaInternal[2]), WIDE_RANGE_EPSILON) &&
+        equals(this.#rgbaInternal[3], legacy.#rgbaInternal[3]);
   }
 }
 

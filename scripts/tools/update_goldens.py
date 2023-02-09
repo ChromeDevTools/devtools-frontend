@@ -33,16 +33,25 @@ import time
 import subprocess
 import sys
 
+
+class ProjectConfig:
+    def __init__(self,
+                 name='devtools-frontend',
+                 gs_root='gs://devtools-frontend-screenshots',
+                 builder_prefix='devtools_screenshot'):
+        self.name = name
+        self.gs_root = gs_root
+        self.gs_folder = self.gs_root + '/screenshots'
+        self.builder_prefix = builder_prefix
+
+
 PLATFORMS = ['linux', 'win', 'mac']
-BUILDER_PREFIX = 'devtools_screenshot'
-GS_ROOT = 'gs://devtools-frontend-screenshots'
-GS_FOLDER = GS_ROOT + '/screenshots'
 
 TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.normpath(os.path.join(TOOLS_DIR, '..', '..'))
 DEPOT_TOOLS_DIR = os.path.join(BASE_DIR, 'third_party', 'depot_tools')
 GSUTIL = os.path.join(DEPOT_TOOLS_DIR, 'gsutil.py')
-VPYTHON = os.path.join(DEPOT_TOOLS_DIR, 'vpython')
+VPYTHON = os.path.join(DEPOT_TOOLS_DIR, 'vpython3')
 GOLDENS_DIR = os.path.join(BASE_DIR, 'test', 'interactions', 'goldens')
 
 WARNING_BUILDERS_STILL_RUNNING = 'Patchset %s has builders that are still ' \
@@ -67,13 +76,13 @@ INFO_PATCHES_APPLIED = 'Patches containing screenshot updates were ' \
     'status".'
 
 
-def main(*args):
+def main(project_config, *args):
     parser = build_parser()
     options = parser.parse_args(*args)
     if not options.command:
         parser.print_help()
         sys.exit(1)
-    options.func(options)
+    options.func(project_config, options)
 
 
 def build_parser():
@@ -130,19 +139,19 @@ def build_parser():
     return parser
 
 
-def trigger(options):
-    check_results_exist(options.ignore_triggered)
-    trigger_screenshots(options.verbose)
+def trigger(project_config, options):
+    check_results_exist(project_config, options.ignore_triggered)
+    trigger_screenshots(project_config, options.verbose)
 
 
-def update(options):
+def update(project_config, options):
     test_clean_git()
-    test_gsutil_connectivity()
+    test_gsutil_connectivity(project_config)
     wait_sec = options.wait_sec
     if wait_sec:
         wait_sec = max(wait_sec, 30)
-    apply_patch_to_local(options.patchset, wait_sec, options.ignore_failed,
-                         options.retry, options.verbose)
+    apply_patch_to_local(project_config, options.patchset, wait_sec,
+                         options.ignore_failed, options.retry, options.verbose)
 
 
 def get_help(parser, subparsers):
@@ -155,9 +164,9 @@ def get_help(parser, subparsers):
     return _help
 
 
-def check_results_exist(ignore_triggered):
+def check_results_exist(project_config, ignore_triggered):
     """Verify the existence of previously triggered builders."""
-    results = screenshot_results()
+    results = screenshot_results(project_config)
     if results:
         print(WARNING_RESULTS_EXIST)
         if not ignore_triggered:
@@ -165,11 +174,13 @@ def check_results_exist(ignore_triggered):
         print('Ignoring ...')
 
 
-def trigger_screenshots(verbose, builders=None):
+def trigger_screenshots(project_config, verbose, builders=None):
     """Trigger screenshot builders for the current patch."""
     if not builders:
-        builders = [f'{BUILDER_PREFIX}_{p}_rel' for p in PLATFORMS]
-    try_command = 'git cl try -B devtools-frontend/try ' + ' '.join(
+        builders = [
+            f'{project_config.builder_prefix}_{p}_rel' for p in PLATFORMS
+        ]
+    try_command = f'git cl try -B {project_config.name}/try ' + ' '.join(
         [f'-b {b}' for b in builders])
     run_command(try_command.split(), verbose)
     print(INFO_BUILDERS_TRIGGERED)
@@ -185,9 +196,9 @@ def test_clean_git():
         sys.exit(0)
 
 
-def test_gsutil_connectivity():
+def test_gsutil_connectivity(project_config):
     """Test if gsutil needs to be configured for current user."""
-    process = subprocess.Popen(gsutil_cmd('ls', GS_ROOT),
+    process = subprocess.Popen(gsutil_cmd('ls', project_config.gs_root),
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
     _, stderr = process.communicate()
@@ -197,32 +208,35 @@ def test_gsutil_connectivity():
         sys.exit(0)
 
 
-def apply_patch_to_local(patchset, wait_sec, ignore_failed, retry, verbose):
+def apply_patch_to_local(project_config, patchset, wait_sec, ignore_failed,
+                         retry, verbose):
     """Download and apply the patches from the builders."""
-    results = screenshot_results(patchset)
+    results = screenshot_results(project_config, patchset)
     check_not_empty(results)
     check_all_platforms(results)
     retry, should_wait = check_all_success(results, wait_sec, ignore_failed,
                                            retry)
     if retry:
         # Avoiding to force the user to run a 'trigger' command
-        trigger_screenshots(retry)
+        trigger_screenshots(project_config, retry)
         sys.exit(0)
     if not should_wait:
         with tempfile.TemporaryDirectory() as patch_dir:
-            patches = download_patches(results, patch_dir, verbose)
+            patches = download_patches(project_config, results, patch_dir,
+                                       verbose)
             git_apply_patch(patches, verbose)
         print(INFO_PATCHES_APPLIED)
         sys.exit(0)
     print(f'Waiting {wait_sec} seconds ...')
     time.sleep(wait_sec)
-    apply_patch_to_local(patchset, wait_sec, ignore_failed, retry, verbose)
+    apply_patch_to_local(project_config, patchset, wait_sec, ignore_failed,
+                         retry, verbose)
 
 
-def screenshot_results(patchset=None):
+def screenshot_results(project_config, patchset=None):
     """Select only screenshot builders results."""
     results = read_try_results(patchset)
-    screenshots = filter_screenshots(results)
+    screenshots = filter_screenshots(project_config, results)
     return filter_last_results(screenshots)
 
 
@@ -237,11 +251,11 @@ def read_try_results(patchset):
     return {}
 
 
-def filter_screenshots(results):
+def filter_screenshots(project_config, results):
     """Remove results comming from other builders."""
     sht_results = []
     for r in results:
-        if r['builder']['builder'].startswith(BUILDER_PREFIX):
+        if r['builder']['builder'].startswith(project_config.builder_prefix):
             sht_results.append(r)
     return sht_results
 
@@ -356,7 +370,7 @@ def builder_status(results, builders):
     return '\n  '.join(f'{b}: {results[b]["status"]}' for b in builders)
 
 
-def download_patches(results, destination_dir, verbose):
+def download_patches(project_config, results, destination_dir, verbose):
     """Interact with GS and retrieve the patches. Since we have build results
     from successfull screenshot builds we know that they uploaded patches in
     the expected location in the cloud.
@@ -364,7 +378,7 @@ def download_patches(results, destination_dir, verbose):
     patches = []
     for builder, result in results.items():
         gs_path = [
-            GS_FOLDER, builder,
+            project_config.gs_folder, builder,
             str(result['cl']),
             str(result['patch']), 'screenshot.patch'
         ]
@@ -421,4 +435,4 @@ def gsutil_cmd(*args):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main(ProjectConfig(), sys.argv[1:])

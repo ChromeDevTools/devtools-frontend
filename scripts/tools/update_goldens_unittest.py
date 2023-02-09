@@ -45,7 +45,7 @@ class UpdateGoldensTestCase(unittest.TestCase):
 
     def try_main(self, *args):
         try:
-            update_goldens.main(args)
+            update_goldens.main(update_goldens.ProjectConfig(), args)
         except RuntimeError as e:
             self.log.debug(e)
         finally:

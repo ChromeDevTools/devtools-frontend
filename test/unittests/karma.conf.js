@@ -60,7 +60,7 @@ const commonIstanbulReporters = [{type: 'json-summary'}, {type: 'json'}];
 const istanbulReportOutputs = commonIstanbulReporters;
 
 if (TEXT_COVERAGE_ENABLED) {
-  istanbulReportOutputs.push({type: process.env.COVERAGE_TEXT_REPORTER || 'text'});
+  istanbulReportOutputs.push({type: process.env.COVERAGE_TEXT_REPORTER || 'text', file: 'coverage.txt'});
 }
 
 if (HTML_COVERAGE_ENABLED) {

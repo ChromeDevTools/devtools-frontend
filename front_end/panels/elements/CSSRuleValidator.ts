@@ -113,20 +113,17 @@ export class AlignContentValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.AlignContent;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>): boolean {
-    if (computedStyles === null || computedStyles === undefined) {
-      return true;
-    }
-    if (!isFlexContainer(computedStyles)) {
-      return true;
-    }
-    return computedStyles.get('flex-wrap') !== 'nowrap';
-  }
-
   getHint(_propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
-    if (this.#isRuleValid(computedStyles)) {
+    if (!computedStyles) {
       return;
     }
+    if (!isFlexContainer(computedStyles)) {
+      return;
+    }
+    if (computedStyles.get('flex-wrap') !== 'nowrap') {
+      return;
+    }
+
     const reasonPropertyDeclaration = buildPropertyDefinitionText('flex-wrap', 'nowrap');
     const affectedPropertyDeclarationCode = buildPropertyName('align-content');
 
@@ -152,22 +149,17 @@ export class FlexItemValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FlexItem;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): boolean {
-    if (parentComputedStyles === null) {
-      return true;
-    }
-    return isFlexContainer(parentComputedStyles);
-  }
-
   getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
       |undefined {
-    if (this.#isRuleValid(computedStyles, parentComputedStyles)) {
+    if (!parentComputedStyles) {
+      return;
+    }
+    if (isFlexContainer(parentComputedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
     const targetParentPropertyDeclaration = buildPropertyDefinitionText('display', 'flex');
-
     return new Hint(
         i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -190,15 +182,11 @@ export class FlexContainerValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FlexContainer;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>): boolean {
-    if (computedStyles === null) {
-      return true;
-    }
-    return isFlexContainer(computedStyles);
-  }
-
   getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
-    if (this.#isRuleValid(computedStyles)) {
+    if (!computedStyles) {
+      return;
+    }
+    if (isFlexContainer(computedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
@@ -236,12 +224,8 @@ export class GridContainerValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.GridContainer;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>): boolean {
-    return isGridContainer(computedStyles);
-  }
-
   getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
-    if (this.#isRuleValid(computedStyles)) {
+    if (isGridContainer(computedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
@@ -281,16 +265,12 @@ export class GridItemValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.GridItem;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): boolean {
-    if (!parentComputedStyles) {
-      return true;
-    }
-    return isGridContainer(parentComputedStyles);
-  }
-
   getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
       |undefined {
-    if (this.#isRuleValid(computedStyles, parentComputedStyles)) {
+    if (!parentComputedStyles) {
+      return;
+    }
+    if (isGridContainer(parentComputedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
@@ -323,16 +303,12 @@ export class FlexOrGridItemValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FlexOrGridItem;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): boolean {
-    if (!parentComputedStyles) {
-      return true;
-    }
-    return isFlexContainer(parentComputedStyles) || isGridContainer(parentComputedStyles);
-  }
-
   getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
       |undefined {
-    if (this.#isRuleValid(computedStyles, parentComputedStyles)) {
+    if (!parentComputedStyles) {
+      return;
+    }
+    if (isFlexContainer(parentComputedStyles) || isGridContainer(parentComputedStyles)) {
       return;
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
@@ -367,15 +343,12 @@ export class FlexGridValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FlexGrid;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>): boolean {
-    if (computedStyles === null) {
-      return true;
-    }
-    return isFlexContainer(computedStyles) || isGridContainer(computedStyles);
-  }
-
   getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
-    if (this.#isRuleValid(computedStyles)) {
+    if (!computedStyles) {
+      return;
+    }
+
+    if (isFlexContainer(computedStyles) || isGridContainer(computedStyles)) {
       return;
     }
 
@@ -412,15 +385,12 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.MulticolFlexGrid;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>): boolean {
-    if (computedStyles === null) {
-      return true;
-    }
-    return isMulticolContainer(computedStyles) || isFlexContainer(computedStyles) || isGridContainer(computedStyles);
-  }
-
   getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
-    if (this.#isRuleValid(computedStyles)) {
+    if (!computedStyles) {
+      return;
+    }
+
+    if (isMulticolContainer(computedStyles) || isFlexContainer(computedStyles) || isGridContainer(computedStyles)) {
       return;
     }
 
@@ -455,18 +425,20 @@ export class PaddingValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.Padding;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>): boolean {
+  getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
     const display = computedStyles?.get('display');
     if (!display) {
-      return true;
+      return;
     }
-    return !['table-row-group', 'table-header-group', 'table-footer-group', 'table-row', 'table-column-group',
-             'table-column']
-                .includes(display);
-  }
-
-  getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
-    if (this.#isRuleValid(computedStyles)) {
+    const tableAttributes = [
+      'table-row-group',
+      'table-header-group',
+      'table-footer-group',
+      'table-row',
+      'table-column-group',
+      'table-column',
+    ];
+    if (!tableAttributes.includes(display)) {
       return;
     }
 
@@ -500,16 +472,12 @@ export class PositionValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.Position;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>): boolean {
-    const position = computedStyles?.get('position');
-    if (position === null || position === undefined) {
-      return true;
-    }
-    return position !== 'static';
-  }
-
   getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
-    if (this.#isRuleValid(computedStyles)) {
+    const position = computedStyles?.get('position');
+    if (!position) {
+      return;
+    }
+    if (position !== 'static') {
       return;
     }
 
@@ -540,17 +508,13 @@ export class ZIndexValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.ZIndex;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): boolean {
-    const position = computedStyles?.get('position');
-    if (!position) {
-      return true;
-    }
-    return ['absolute', 'relative', 'fixed', 'sticky'].includes(position) || isFlexContainer(parentComputedStyles);
-  }
-
   getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
       |undefined {
-    if (this.#isRuleValid(computedStyles, parentComputedStyles)) {
+    const position = computedStyles?.get('position');
+    if (!position) {
+      return;
+    }
+    if (['absolute', 'relative', 'fixed', 'sticky'].includes(position) || isFlexContainer(parentComputedStyles)) {
       return;
     }
 
@@ -587,21 +551,17 @@ export class SizingValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.Sizing;
   }
 
-  #isRuleValid(computedStyles?: Map<string, string>, nodeName?: string): boolean {
-    if (!computedStyles || !nodeName) {
-      return true;
-    }
-    if (!isInlineElement(computedStyles)) {
-      return true;
-    }
-    // See https://html.spec.whatwg.org/multipage/rendering.html#replaced-elements.
-    return isPossiblyReplacedElement(nodeName);
-  }
-
   getHint(
       propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>,
       nodeName?: string): Hint|undefined {
-    if (this.#isRuleValid(computedStyles, nodeName)) {
+    if (!computedStyles || !nodeName) {
+      return;
+    }
+    if (!isInlineElement(computedStyles)) {
+      return;
+    }
+    // See https://html.spec.whatwg.org/multipage/rendering.html#replaced-elements.
+    if (isPossiblyReplacedElement(nodeName)) {
       return;
     }
 

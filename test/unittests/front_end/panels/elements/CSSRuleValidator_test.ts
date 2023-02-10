@@ -312,6 +312,16 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       validator: () => new Elements.CSSRuleValidator.FlexOrGridItemValidator(),
       hintExpected: false,
     },
+    {
+      description: 'Does not show a hint for a flex item without a parent',
+      computedStyles: new Map<string, string>([
+        ['flex', 'none'],
+      ]),
+      nodeName: 'input',
+      parentsComputedStyles: undefined,
+      validator: () => new Elements.CSSRuleValidator.FlexItemValidator(),
+      hintExpected: false,
+    },
   ];
 
   before(async () => {

@@ -267,9 +267,22 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
   }
 
   private globalObjectCleared(): void {
-    for (const script of this.#scriptToUISourceCode.keys()) {
-      this.removeScript(script);
+    // Remove the scripts and UI source codes.
+    const scripts = Array.from(this.#scriptToUISourceCode.keys());
+    this.#uiSourceCodeToScriptFile.clear();
+    this.#scriptToUISourceCode.clear();
+
+    // Remove the projects.
+    for (const [id, project] of this.#projects) {
+      this.#projects.delete(id);
+      project.removeProject();
     }
+    const projectsToRemove = Array.from(this.#projects.values());
+    this.#projects.clear();
+    projectsToRemove.forEach(p => p.removeProject());
+
+    // Make sure live locations get updated.
+    scripts.forEach(s => this.debuggerWorkspaceBinding.updateLocations(s));
   }
 
   resetForTest(): void {
@@ -279,10 +292,6 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
   dispose(): void {
     Common.EventTarget.removeEventListeners(this.#eventListeners);
     this.globalObjectCleared();
-    for (const project of this.#projects.values()) {
-      project.removeProject();
-    }
-    this.#projects.clear();
   }
 }
 

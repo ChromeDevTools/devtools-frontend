@@ -533,8 +533,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   private uiSourceCodeRemovedCallback(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>):
       void {
-    const uiSourceCode = event.data;
-    this.removeUISourceCode(uiSourceCode);
+    this.removeUISourceCodes([event.data]);
   }
 
   tryAddProject(project: Workspace.Workspace.Project): void {
@@ -598,9 +597,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   private removeProject(project: Workspace.Workspace.Project): void {
-    for (const uiSourceCode of project.uiSourceCodes()) {
-      this.removeUISourceCode(uiSourceCode);
-    }
+    this.removeUISourceCodes(project.uiSourceCodes());
     if (project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }
@@ -818,11 +815,38 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     void Common.Revealer.reveal(uiSourceCode, !focusSource);
   }
 
-  private removeUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const nodes = this.uiSourceCodeNodes.get(uiSourceCode);
-    for (const node of nodes) {
-      this.removeUISourceCodeNode(node);
+  #isUISourceCodeOrAnyAncestorSelected(node: NavigatorUISourceCodeTreeNode): boolean {
+    const selectedTreeElement = (this.scriptsTree.selectedTreeElement as NavigatorSourceTreeElement | null);
+    const selectedNode = selectedTreeElement && selectedTreeElement.node;
+    let currentNode: NavigatorTreeNode|null = node;
+    while (currentNode) {
+      if (currentNode === selectedNode) {
+        return true;
+      }
+      currentNode = currentNode.parent;
+      if (!(node instanceof NavigatorGroupTreeNode || node instanceof NavigatorFolderTreeElement)) {
+        break;
+      }
     }
+    return false;
+  }
+
+  private removeUISourceCodes(uiSourceCodes: Iterable<Workspace.UISourceCode.UISourceCode>): void {
+    const nodesWithSelectionOnPath: NavigatorUISourceCodeTreeNode[] = [];
+    // First we remove source codes without any selection on their path to root, and only then
+    // the ones with selection. This to avoid layout work associated with moving the selection
+    // around (crbug.com/1409025).
+    for (const uiSourceCode of uiSourceCodes) {
+      const nodes = this.uiSourceCodeNodes.get(uiSourceCode);
+      for (const node of nodes) {
+        if (this.#isUISourceCodeOrAnyAncestorSelected(node)) {
+          nodesWithSelectionOnPath.push(node);
+        } else {
+          this.removeUISourceCodeNode(node);
+        }
+      }
+    }
+    nodesWithSelectionOnPath.forEach(this.removeUISourceCodeNode.bind(this));
   }
 
   private removeUISourceCodeNode(node: NavigatorUISourceCodeTreeNode): void {

@@ -667,13 +667,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (!languageDesc) {
       return [];
     }
-    if (this.contentType === 'text/jsx') {
-      return [
-        languageDesc,
-        CodeMirror.javascript.javascriptLanguage.data.of({autocomplete: CodeMirror.completeAnyWord}),
-      ];
-    }
-    return languageDesc;
+    return [
+      languageDesc,
+      CodeMirror.javascript.javascriptLanguage.data.of({autocomplete: CodeMirror.completeAnyWord}),
+    ];
   }
 
   async updateLanguageMode(): Promise<void> {

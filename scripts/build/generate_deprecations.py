@@ -28,7 +28,7 @@ READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer',
 
 
 def deprecations_from_file(file_name):
-    with open(file_name, encoding="utf-8") as json5_file:
+    with open(file_name) as json5_file:
         doc = json5.loads(json5_file.read())
 
     # We turn the list of deprecations into two maps, both keyed by the deprecation name.
@@ -47,9 +47,14 @@ def deprecations_from_file(file_name):
                 "chrome_status_feature"]
         if len(meta_for_entry): meta[name] = meta_for_entry
 
+        # The PRESUBMIT script in chromium prevents unicode characters,
+        # but there are still a few special cases we need to handle.
         ui_strings[name] = {
-            "message": entry["message"],
-            "note": entry["translation_note"]
+            "message":
+            entry["message"].replace("\\", "\\\\").replace("'", "\\'"),
+            "note":
+            entry["translation_note"].replace("\n",
+                                              "\\n").replace("\r", "\\r")
         }
 
     return meta, ui_strings
@@ -57,9 +62,7 @@ def deprecations_from_file(file_name):
 
 meta, ui_strings = deprecations_from_file(READ_LOCATION)
 now = datetime.datetime.now()
-# Windows PRESUBMIT doesn't like unicode characters in TypeScript string literals.
-# We use 'raw_unicode_escape' which is basically latin-1 and everything unknown as \uXXXX.
-with open(GENERATED_LOCATION, encoding="raw_unicode_escape", mode="w+") as f:
+with open(GENERATED_LOCATION, mode="w+") as f:
     f.write("// Copyright %d The Chromium Authors. All rights reserved.\n" %
             now.year)
     f.write(
@@ -72,8 +75,8 @@ with open(GENERATED_LOCATION, encoding="raw_unicode_escape", mode="w+") as f:
     f.write("\n")
     f.write("export const UIStrings = {\n")
     for name, ui_string in ui_strings.items():
-        message = ui_string["message"].replace("'", "\\'")
-        note = ui_string["note"].replace("\n", "\\n").replace("\r", "\\r")
+        message = ui_string["message"]
+        note = ui_string["note"]
         f.write("  /**\n")
         f.write("   * @description %s\n" % note)
         f.write("   */\n")

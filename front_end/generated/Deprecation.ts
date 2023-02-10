@@ -13,7 +13,7 @@ export const UIStrings = {
   /**
    * @description This warning occurs when a page attempts to request a resource whose URL contained both a newline character (`\n` or `\r`), and a less-than character (`<`). These resources are blocked.
    */
-  CanRequestURLHTTPContainingNewline: 'Resource requests whose URLs contained both removed whitespace `\(n|r|t)` characters and less-than characters (`<`) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources.',
+  CanRequestURLHTTPContainingNewline: 'Resource requests whose URLs contained both removed whitespace `\\(n|r|t)` characters and less-than characters (`<`) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources.',
   /**
    * @description This warning occurs when the website attempts to invoke the deprecated `chrome.loadTimes().connectionInfo` API.
    */
@@ -29,7 +29,7 @@ export const UIStrings = {
   /**
    * @description This warning occurs when the browser attempts to store a cookie containing a banned character. Rather than the cookie string being truncated at the banned character, the entire cookie will be rejected now.
    */
-  CookieWithTruncatingChar: 'Cookies containing a `\(0|r|n)` character will be rejected instead of truncated.',
+  CookieWithTruncatingChar: 'Cookies containing a `\\(0|r|n)` character will be rejected instead of truncated.',
   /**
    * @description This warning occurs when a frame accesses another frame's data after having set `document.domain` without having set the `Origin-Agent-Cluster` http header. This is a companion warning to `documentDomainSettingWithoutOriginAgentClusterHeader`, where that warning occurs when `document.domain` is set, and this warning occurs when an access has been made, based on that previous `document.domain` setting.
    */
@@ -173,7 +173,7 @@ export const UIStrings = {
   /**
    * @description Warning displayed to developers that the API `chrome.privacy.websites.privacySandboxEnabled` is being deprecated in favour of three new more granular APIs: topicsEnabled, FledgeEnabled and adMeasurementEnabled. The `privacySandboxEnabled` API allowed extensions to control the homologous Chrome Setting. The existing Chrome Setting for Privacy Sandbox is also going away in favor of more granular settings that are matched by the new extensions APIs- topicsEnabled, FledgeEnabled and adMeasurementEnabled.
    */
-  PrivacySandboxExtensionsAPI: 'We\u2019re deprecating the API `chrome.privacy.websites.privacySandboxEnabled`, though it will remain active for backward compatibility until release M113. Instead, please use `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` and `chrome.privacy.websites.adMeasurementEnabled`. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled.',
+  PrivacySandboxExtensionsAPI: 'We\'re deprecating the API `chrome.privacy.websites.privacySandboxEnabled`, though it will remain active for backward compatibility until release M113. Instead, please use `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` and `chrome.privacy.websites.adMeasurementEnabled`. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled.',
   /**
    * @description Standard message when one web API is deprecated in favor of another.
    */
@@ -213,7 +213,7 @@ export const UIStrings = {
   /**
    * @description Warning displayed to developers. It is shown when the `XMLHttpRequest` API is used in a way that it slows down the page load of the next page. The `main thread` refers to an operating systems thread used to run most of the processing of HTML documents, so please use a consistent wording.
    */
-  XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload: 'Synchronous `XMLHttpRequest` on the main thread is deprecated because of its detrimental effects to the end user\u2019s experience. For more help, check https://xhr.spec.whatwg.org/.',
+  XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload: 'Synchronous `XMLHttpRequest` on the main thread is deprecated because of its detrimental effects to the end user\'s experience. For more help, check https://xhr.spec.whatwg.org/.',
   /**
    * @description Warning displayed to developers that instead of using `supportsSession()`, which returns a promise that resolves if the XR session can be supported and rejects if not, they should use `isSessionSupported()` which will return a promise which resolves to a boolean indicating if the XR session can be supported or not, but may reject to throw an exception.
    */

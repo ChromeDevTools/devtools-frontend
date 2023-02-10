@@ -49,6 +49,8 @@ grd_files_release_sources = [
   "front_end/Images/circled_exclamation_icon.svg",
   "front_end/Images/clear-warning_icon.svg",
   "front_end/Images/close-icon.svg",
+  "front_end/Images/console-conditional-breakpoint.svg",
+  "front_end/Images/console-logpoint.svg",
   "front_end/Images/copy_icon.svg",
   "front_end/Images/cssoverview_icons_2x.avif",
   "front_end/Images/dropdown_7x6_icon.svg",

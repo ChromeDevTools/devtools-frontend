@@ -60,6 +60,8 @@ devtools_svg_sources = [
   "circled_exclamation_icon.svg",
   "clear-warning_icon.svg",
   "close-icon.svg",
+  "console-conditional-breakpoint.svg",
+  "console-logpoint.svg",
   "copy_icon.svg",
   "dropdown_7x6_icon.svg",
   "edit-icon.svg",

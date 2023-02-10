@@ -19,6 +19,7 @@ interface ScriptDescription {
   startColumn?: number;
   isContentScript?: boolean;
   embedderName?: string;
+  executionContextId?: number;
 }
 
 interface SetBreakpointByUrlResponse {
@@ -128,7 +129,7 @@ export class MockProtocolBackend {
       startColumn,
       endLine,
       endColumn,
-      executionContextId: 1,
+      executionContextId: scriptDescription?.executionContextId ?? 1,
       executionContextAuxData: {isDefault: !scriptDescription.isContentScript},
       hash: '',
       hasSourceURL: Boolean(scriptDescription.hasSourceURL),

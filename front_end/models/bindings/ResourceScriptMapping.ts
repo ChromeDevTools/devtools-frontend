@@ -30,7 +30,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
@@ -177,7 +177,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
 
     // Just remove and readd all scripts to ensure their URLs are reflected correctly.
     for (const script of Array.from(this.#scriptToUISourceCode.keys())) {
-      this.removeScript(script);
+      this.removeScripts([script]);
       this.addScript(script);
     }
   }
@@ -218,7 +218,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     if (oldUISourceCode) {
       const oldScriptFile = this.#uiSourceCodeToScriptFile.get(oldUISourceCode);
       if (oldScriptFile && oldScriptFile.script) {
-        this.removeScript(oldScriptFile.script);
+        this.removeScripts([oldScriptFile.script]);
       }
     }
 
@@ -242,47 +242,55 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     return this.#uiSourceCodeToScriptFile.get(uiSourceCode) || null;
   }
 
-  private removeScript(script: SDK.Script.Script): void {
-    const uiSourceCode = this.#scriptToUISourceCode.get(script);
-    if (!uiSourceCode) {
-      return;
+  private removeScripts(scripts: SDK.Script.Script[]): void {
+    const uiSourceCodesByProject =
+        new Platform.MapUtilities.Multimap<ContentProviderBasedProject, Workspace.UISourceCode.UISourceCode>();
+    for (const script of scripts) {
+      const uiSourceCode = this.#scriptToUISourceCode.get(script);
+      if (!uiSourceCode) {
+        continue;
+      }
+      const scriptFile = this.#uiSourceCodeToScriptFile.get(uiSourceCode);
+      if (scriptFile) {
+        scriptFile.dispose();
+      }
+
+      this.#uiSourceCodeToScriptFile.delete(uiSourceCode);
+      this.#scriptToUISourceCode.delete(script);
+
+      uiSourceCodesByProject.set(uiSourceCode.project() as ContentProviderBasedProject, uiSourceCode);
+      void this.debuggerWorkspaceBinding.updateLocations(script);
     }
-    const scriptFile = this.#uiSourceCodeToScriptFile.get(uiSourceCode);
-    if (scriptFile) {
-      scriptFile.dispose();
+    for (const project of uiSourceCodesByProject.keysArray()) {
+      const uiSourceCodes = uiSourceCodesByProject.get(project);
+      // Check if all the ui source codes in the project are in |uiSourceCodes|.
+      let allInProjectRemoved = true;
+      for (const projectSourceCode of project.uiSourceCodes()) {
+        if (!uiSourceCodes.has(projectSourceCode)) {
+          allInProjectRemoved = false;
+          break;
+        }
+      }
+      // Drop the whole project if no source codes are left in it.
+      if (allInProjectRemoved) {
+        this.#projects.delete(project.id());
+        project.removeProject();
+      } else {
+        // Otherwise, announce the removal of each UI source code individually.
+        uiSourceCodes.forEach(c => project.removeUISourceCode(c.url()));
+      }
     }
-    this.#uiSourceCodeToScriptFile.delete(uiSourceCode);
-    this.#scriptToUISourceCode.delete(script);
-    const project = uiSourceCode.project() as ContentProviderBasedProject;
-    project.removeUISourceCode(uiSourceCode.url());
-    void this.debuggerWorkspaceBinding.updateLocations(script);
   }
 
   private executionContextDestroyed(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext>):
       void {
     const executionContext = event.data;
-    for (const script of this.debuggerModel.scriptsForExecutionContext(executionContext)) {
-      this.removeScript(script);
-    }
+    this.removeScripts(this.debuggerModel.scriptsForExecutionContext(executionContext));
   }
 
   private globalObjectCleared(): void {
-    // Remove the scripts and UI source codes.
     const scripts = Array.from(this.#scriptToUISourceCode.keys());
-    this.#uiSourceCodeToScriptFile.clear();
-    this.#scriptToUISourceCode.clear();
-
-    // Remove the projects.
-    for (const [id, project] of this.#projects) {
-      this.#projects.delete(id);
-      project.removeProject();
-    }
-    const projectsToRemove = Array.from(this.#projects.values());
-    this.#projects.clear();
-    projectsToRemove.forEach(p => p.removeProject());
-
-    // Make sure live locations get updated.
-    scripts.forEach(s => this.debuggerWorkspaceBinding.updateLocations(s));
+    this.removeScripts(scripts);
   }
 
   resetForTest(): void {

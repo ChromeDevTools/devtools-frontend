@@ -12,7 +12,8 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConnection.js';
+import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {createContentProviderUISourceCodes} from '../../helpers/UISourceCodeHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
@@ -325,6 +326,57 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       assert.strictEqual(exampleComNode.childAt(0), nodeC);
 
       otherProject.removeProject();
+    });
+
+    it('selects just once when excution-context-destroyed event removes sibling source codes', async () => {
+      const backend = new MockProtocolBackend();
+
+      dispatchEvent(target, 'Runtime.executionContextCreated', {
+        context: {
+          id: 2,
+          origin: 'http://example.com',
+          name: 'c2',
+          uniqueId: 'c2',
+          auxData: {
+            frameId: 'f2',
+          },
+        },
+      });
+
+      await backend.addScript(
+          target, {content: '42', url: 'http://example.com/a.js', executionContextId: 2, hasSourceURL: false}, null);
+      await backend.addScript(
+          target, {content: '42', url: 'http://example.com/b.js', executionContextId: 2, hasSourceURL: false}, null);
+      await backend.addScript(target, {content: '42', url: 'http://example.com/c.js', hasSourceURL: false}, null);
+
+      const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
+      const rootElement = navigatorView.scriptsTree.rootElement();
+      assertNotNullOrUndefined(rootElement);
+
+      const exampleComNode = rootElement.firstChild();
+      assertNotNullOrUndefined(exampleComNode);
+      const nodeA = exampleComNode.childAt(0);
+      const nodeB = exampleComNode.childAt(1);
+      const nodeC = exampleComNode.childAt(2);
+      assertNotNullOrUndefined(nodeA);
+      assertNotNullOrUndefined(nodeB);
+      assertNotNullOrUndefined(nodeC);
+
+      // Select the 'http://example.com/a.js' node. Remove the project with a.js and b.js and verify
+      // that the selection is moved from 'a.js' to 'c.js', without temporarily selecting 'b.js'.
+      nodeA.select();
+
+      const nodeBSelectSpy = sinon.spy(nodeB, 'select');
+      const nodeCSelectSpy = sinon.spy(nodeC, 'select');
+
+      dispatchEvent(
+          target, 'Runtime.executionContextDestroyed', {executionContextId: 2, executionContextUniqueId: 'c2'});
+
+      assert.isTrue(nodeBSelectSpy.notCalled);
+      assert.isTrue(nodeCSelectSpy.called);
+
+      // Sanity check - we should have only one source now.
+      assert.strictEqual(exampleComNode.childCount(), 1);
     });
   });
 });

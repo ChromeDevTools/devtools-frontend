@@ -180,7 +180,8 @@ describe('Navigation', async function() {
         assert.strictEqual(await getServiceWorkerCount(), 0);
       });
 
-      it('successfully returns a Lighthouse report with DevTools throttling', async () => {
+      // Test is flaky after a lighthouse roll.
+      it.skip('[crbug.com/1414725] successfully returns a Lighthouse report with DevTools throttling', async () => {
         await navigateToLighthouseTab('lighthouse/hello.html');
 
         await setThrottlingMethod('devtools');

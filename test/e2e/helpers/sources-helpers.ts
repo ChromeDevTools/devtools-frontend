@@ -30,6 +30,7 @@ import {
   clickElement,
   waitForFunction,
   waitForFunctionWithTries,
+  waitForAria,
 } from '../../shared/helper.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
@@ -258,6 +259,26 @@ export async function removeBreakpointForLine(frontend: puppeteer.Page, index: n
   await waitForFunction(async () => await isBreakpointSet(index));
   await clickElement(breakpointLine);
   await waitForFunction(async () => !(await isBreakpointSet(index)));
+}
+
+export async function addLogpointForLine(index: number, condition: string) {
+  const {frontend} = getBrowserAndPages();
+  const breakpointLine = await getLineNumberElement(index);
+  assertNotNullOrUndefined(breakpointLine);
+
+  await waitForFunction(async () => !(await isBreakpointSet(index)));
+  await clickElement(breakpointLine, {clickOptions: {button: 'right'}});
+
+  await click('aria/Add logpoint…');
+
+  const editDialog = await waitFor('.sources-edit-breakpoint-dialog');
+  const conditionEditor = await waitForAria('Code editor', editDialog);
+  await conditionEditor.focus();
+
+  await typeText(condition);
+  await frontend.keyboard.press('Enter');
+
+  await waitForFunction(async () => await isBreakpointSet(index));
 }
 
 export async function isBreakpointSet(lineNumber: number|string) {

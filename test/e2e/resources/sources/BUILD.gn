@@ -40,6 +40,8 @@ copy_to_gen("sources") {
     "inline-variable.js",
     "live-edit-moving-breakpoint.html",
     "live-edit-moving-breakpoint.js",
+    "logpoint.html",
+    "logpoint.js",
     "memory-worker1.rawresponse",
     "memory-worker2.rawresponse",
     "memory-workers.rawresponse",

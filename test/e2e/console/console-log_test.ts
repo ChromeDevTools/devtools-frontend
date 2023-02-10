@@ -12,6 +12,7 @@ import {
   getBrowserAndPages,
   tabBackward,
   tabForward,
+  waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
@@ -23,8 +24,13 @@ import {
   getStructuredConsoleMessages,
   navigateToConsoleTab,
   showVerboseMessages,
+  waitForConsoleMessageAndClickOnLink,
   waitForLastConsoleMessageToHaveContent,
 } from '../helpers/console-helpers.js';
+import {
+  addLogpointForLine,
+  openSourceCodeEditorForFile,
+} from '../helpers/sources-helpers.js';
 
 /* eslint-disable no-console */
 
@@ -400,6 +406,20 @@ describe('The Console Tab', async () => {
       // Check that the 'BG' text has no bakcground image.
       const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['backgroundImage']);
       assert.deepEqual(textsAndStyles, [[['PRE', ''], ['BG', '']]]);
+    });
+  });
+
+  describe('message anchor', () => {
+    it('opens the breakpoint edit dialog for logpoint messages', async () => {
+      const {target} = getBrowserAndPages();
+      await openSourceCodeEditorForFile('logpoint.js', 'logpoint.html');
+      await addLogpointForLine(3, 'x');
+      await target.evaluate('triggerLogpoint(42)');
+
+      await navigateToConsoleTab();
+      await waitForConsoleMessageAndClickOnLink();
+
+      await waitFor('.sources-edit-breakpoint-dialog');
     });
   });
 });

@@ -4,7 +4,6 @@
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 import * as Logs from '../../../../../front_end/models/logs/logs.js';
 import * as Console from '../../../../../front_end/panels/console/console.js';
@@ -72,7 +71,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       const stackTrace = createStackTrace([
-        `LOG_ID::eval::${Bindings.BreakpointManager.LOGPOINT_SOURCE_URL}::0::15`,
+        `LOG_ID::eval::${SDK.DebuggerModel.LOGPOINT_SOURCE_URL}::0::15`,
         'USER_ID::userFunction::http://example.com/script.js::10::2',
         'APP_ID::entry::http://example.com/app.js::25::10',
       ]);
@@ -97,9 +96,9 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       const stackTrace = createStackTrace([
-        `LOG_ID::leakedClosure::${Bindings.BreakpointManager.LOGPOINT_SOURCE_URL}::2::3`,
+        `LOG_ID::leakedClosure::${SDK.DebuggerModel.LOGPOINT_SOURCE_URL}::2::3`,
         'USER_ID::callback::http://example.com/script.js::5::42',
-        `LOG_ID::eval::${Bindings.BreakpointManager.LOGPOINT_SOURCE_URL}::0::15`,
+        `LOG_ID::eval::${SDK.DebuggerModel.LOGPOINT_SOURCE_URL}::0::15`,
         'USER_ID::userFunction::http://example.com/script.js::10::2',
         'APP_ID::entry::http://example.com/app.js::25::10',
       ]);

@@ -55,6 +55,8 @@ import {
 import {type Target, Type} from './Target.js';
 import {TargetManager, type Observer} from './TargetManager.js';
 
+import {COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL} from './DebuggerModel.js';
+
 const UIStrings = {
   /**
    *@description Text shown when the main frame (page) of the website was navigated to a different URL.
@@ -562,6 +564,15 @@ export class ConsoleMessage {
   #affectedResources?: AffectedResources;
   category?: Protocol.Log.LogEntryCategory;
 
+  /**
+   * The parent frame of the `console.log` call of logpoints or conditional breakpoints
+   * if they called `console.*` explicitly. The parent frame is where V8 paused
+   * and consequently where the logpoint is set.
+   *
+   * Is `null` for page console.logs, commands, command results, etc.
+   */
+  readonly stackFrameWithBreakpoint: Protocol.Runtime.CallFrame|null = null;
+
   constructor(
       runtimeModel: RuntimeModel|null, source: MessageSource, level: Protocol.Log.LogEntryLevel|null,
       messageText: string, details?: ConsoleMessageDetails) {
@@ -593,6 +604,10 @@ export class ConsoleMessage {
     if (details?.context) {
       const match = details?.context.match(/[^#]*/);
       this.context = match?.[0];
+    }
+
+    if (this.stackTrace) {
+      this.stackFrameWithBreakpoint = ConsoleMessage.#stackFrameWithBreakpoint(this.stackTrace);
     }
   }
 
@@ -722,6 +737,26 @@ export class ConsoleMessage {
         (this.#executionContextId === msg.#executionContextId) &&
         areAffectedResourcesEquivalent(this.#affectedResources, msg.#affectedResources) &&
         areStackTracesEquivalent(this.stackTrace, msg.stackTrace);
+  }
+
+  static #stackFrameWithBreakpoint({callFrames}: Protocol.Runtime.StackTrace): Protocol.Runtime.CallFrame|null {
+    // Note that breakpoint condition code could in theory call into user JS and back into
+    // "condition-defined" functions. This means that the top-most
+    // stack frame is not necessarily the `console.log` call, but there could be other things
+    // on top. We want the LAST marker frame in the stack.
+    // We search FROM THE TOP for the last marked stack frame and
+    // return it's parent (successor).
+    const markerSourceUrls = [COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL];
+    // TODO(crbug.com/1412307): Remove with TypeScript 5.0
+    // @ts-expect-error
+    const lastBreakpointFrameIndex = callFrames.findLastIndex(({url}) => markerSourceUrls.includes(url));
+    if (lastBreakpointFrameIndex === -1 || lastBreakpointFrameIndex === callFrames.length - 1) {
+      // We either didn't find any breakpoint or we didn't capture enough stack
+      // frames and the breakpoint condition is the bottom-most frame.
+      return null;
+    }
+
+    return callFrames[lastBreakpointFrameIndex + 1];
   }
 }
 

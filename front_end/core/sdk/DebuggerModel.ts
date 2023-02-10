@@ -1521,3 +1521,6 @@ interface PausedOnInstrumentationData {
  * the breakpoint condition as it is entered by the user.
  */
 export type BackendCondition = Platform.Brand.Brand<string, 'BackendCondition'>;
+
+export const LOGPOINT_SOURCE_URL = 'debugger://logpoint';
+export const COND_BREAKPOINT_SOURCE_URL = 'debugger://breakpoint';

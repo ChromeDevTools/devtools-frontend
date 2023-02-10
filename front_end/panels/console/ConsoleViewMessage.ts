@@ -52,6 +52,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';  // eslint-disable-line rulesdir/es_modules_import
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 import {format, updateStyle} from './ConsoleFormat.js';
 import {type ConsoleViewportElement} from './ConsoleViewport.js';
@@ -461,7 +462,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
             message.scriptId, message.url || Platform.DevToolsPath.EmptyUrlString, message.line, message.column);
       }
       if (message.stackTrace && message.stackTrace.callFrames.length) {
-        return this.linkifyStackTrace(message.stackTrace);
+        return this.linkifyStackTrace(message);
       }
       if (message.url && message.url !== 'undefined') {
         return this.linkifyLocation(message.url, message.line, message.column);
@@ -555,48 +556,21 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         runtimeModel.target(), /* scriptId */ null, url, lineNumber, {columnNumber, inlineFrameIndex: 0});
   }
 
-  private linkifyStackTrace(stackTrace: Protocol.Runtime.StackTrace): HTMLElement|null {
+  private linkifyStackTrace({stackTrace, stackFrameWithBreakpoint}: SDK.ConsoleModel.ConsoleMessage): HTMLElement|null {
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
     }
+    assertNotNullOrUndefined(stackTrace);
     console.assert(stackTrace.callFrames.length > 0);
 
-    const maybeLogpointParentFrame = this.#stackFrameWithBreakpoint(stackTrace);
-    if (maybeLogpointParentFrame) {
-      return this.linkifier.maybeLinkifyConsoleCallFrame(runtimeModel.target(), maybeLogpointParentFrame, {
+    if (stackFrameWithBreakpoint) {
+      return this.linkifier.maybeLinkifyConsoleCallFrame(runtimeModel.target(), stackFrameWithBreakpoint, {
         inlineFrameIndex: 0,
         revealBreakpoint: true,
       });
     }
     return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
-  }
-
-  /**
-   * Returns the parent frame of the `console.log` call of logpoints
-   * or conditional breakpoints if they called `console.*` explicitly.
-   * The parent frame is where V8 paused and consequently where the logpoint
-   * was set.
-   */
-  #stackFrameWithBreakpoint({callFrames}: Protocol.Runtime.StackTrace): Protocol.Runtime.CallFrame|undefined {
-    // Note that breakpoint condition code could in theory call into user JS and back into
-    // "condition-defined" functions. This means that the top-most
-    // stack frame is not necessarily the `console.log` call, but there could be other things
-    // on top. We want the LAST marker frame in the stack.
-    // We search FROM THE TOP for the last marked stack frame and
-    // return it's parent (successor).
-    const markerSourceUrls =
-        [Bindings.BreakpointManager.COND_BREAKPOINT_SOURCE_URL, Bindings.BreakpointManager.LOGPOINT_SOURCE_URL];
-    // TODO(crbug.com/1412307): Remove with TypeScript 5.0
-    // @ts-expect-error
-    const lastBreakpointFrameIndex = callFrames.findLastIndex(({url}) => markerSourceUrls.includes(url));
-    if (lastBreakpointFrameIndex === -1 || lastBreakpointFrameIndex === callFrames.length - 1) {
-      // We either didn't find any breakpoint or we didn't capture enough stack
-      // frames and the breakpoint condition is the bottom-most frame.
-      return undefined;
-    }
-
-    return callFrames[lastBreakpointFrameIndex + 1];
   }
 
   private linkifyScriptId(

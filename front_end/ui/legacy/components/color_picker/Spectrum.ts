@@ -209,7 +209,7 @@ function getColorFromHsva(gamut: SpectrumGamut, hsva: Common.ColorUtils.Color4D)
 }
 
 export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
-  private color!: Common.Color.Color;
+  private colorInternal?: Common.Color.Color;
   private gamut: SpectrumGamut = SpectrumGamut.SRGB;
   private colorElement: HTMLElement;
   private colorDragElement: HTMLElement;
@@ -467,8 +467,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
       const newHue = 1 - positionFraction;
       hsva[0] = Platform.NumberUtilities.clamp(newHue, 0, 1);
+      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
       const color = getColorFromHsva(this.gamut, hsva);
-      this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
       const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
       UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
     }
@@ -480,8 +480,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
       const newAlpha = Math.round(positionFraction * 100) / 100;
       hsva[3] = Platform.NumberUtilities.clamp(newAlpha, 0, 1);
+      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
       const color = getColorFromHsva(this.gamut, hsva);
-      this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
       const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
       UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
     }
@@ -492,8 +492,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       this.colorOffset = this.colorElement.totalOffset();
       hsva[1] = Platform.NumberUtilities.clamp((colorPosition.x - this.colorOffset.left) / this.dragWidth, 0, 1);
       hsva[2] = Platform.NumberUtilities.clamp(1 - (colorPosition.y - this.colorOffset.top) / this.dragHeight, 0, 1);
-      const color = getColorFromHsva(this.gamut, hsva);
-      this.innerSetColor(color, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
     }
 
     function getUpdatedColorPosition(dragElement: Element, event: Event): {
@@ -1036,9 +1035,17 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.innerSetColor(color, '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
   }
 
+  private get color(): Common.Color.Color {
+    if (this.colorInternal) {
+      return this.colorInternal;
+    }
+
+    return getColorFromHsva(this.gamut, this.hsv);
+  }
+
   private innerSetColor(
-      color: Common.Color.Color|undefined, colorString: string|undefined, colorName: string|undefined,
-      colorFormat: Common.Color.Format|undefined, changeSource: string): void {
+      colorOrHsv: Common.Color.Color|Common.ColorUtils.Color4D|undefined, colorString: string|undefined,
+      colorName: string|undefined, colorFormat: Common.Color.Format|undefined, changeSource: string): void {
     // It is important to do `undefined` check here since we want to update the
     // `colorStringInternal` to be empty specifically. The difference is:
     // * If we give `undefined` as an argument to this function, it means
@@ -1054,9 +1061,40 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       this.gamut = doesFormatSupportDisplayP3(this.colorFormat) ? SpectrumGamut.DISPLAY_P3 : SpectrumGamut.SRGB;
     }
 
-    if (color !== undefined) {
-      this.color = color;
-      this.hsv = getHsvFromColor(this.gamut, color);
+    // For decreasing the conversion errors, if a color is given as is
+    // we're storing it in `colorInternal` and using it properly.
+    // Otherwise, if an `HSV` is given, we're discarding the `colorInternal`
+    // and keeping HSV values as the source of truth.
+    // This logic enables us to
+    // * Keep color picker and the reflected color consistent (ex: lch(100 55.30 34.40) is
+    //   shown with values 100, 55.30 and 34.40). If we were to get `HSV` from it
+    //   and convert that HSV to `lch` color when needed, it might have resulted in rounding errors
+    //   where color picker shows inconsistent values (i.e. inputs) with the selected color.
+    // * Allow `HSV` values to be set independently from the color it represents.
+    //   for example, lch(100 0 50) and lch(100 0 30) represents the same colors (both white)
+    //   and hue component is powerless. This results in converted `h` in `hsv` to be
+    //   0 as well. Meaning that, when the user comes to white, the hue will be reset to
+    //   `0` which will change the state of the color picker unintentionally.
+    if (Array.isArray(colorOrHsv)) {
+      this.colorInternal = undefined;
+      this.hsv = colorOrHsv;
+    } else if (colorOrHsv !== undefined) {
+      this.colorInternal = colorOrHsv;
+      const oldHue = this.hsv ? this.hsv[0] : null;
+      this.hsv = getHsvFromColor(this.gamut, colorOrHsv);
+      // When the hue is powerless in lch color space
+      // its `h` is directly set to 0 which results in
+      // hue in hsv representation being 0 too.
+      // For that case, we don't want to update the
+      // hue slider of the color picker to keep its state consistent.
+      // Otherwise, when the hue slider is set in the middle and the user
+      // drags the cursor to the left most line (where c is 0)
+      // it will reset hue slider of color picker to be 0 too and we don't want this.
+      // The reason we convert to LCH instead of HSL to check hue's powerlessness is that
+      // we don't want the color to be clipped for doing this check.
+      if (oldHue !== null && colorOrHsv.as(Common.Color.Format.LCH).isHuePowerless()) {
+        this.hsv[0] = oldHue;
+      }
     }
     this.colorNameInternal = colorName;
 

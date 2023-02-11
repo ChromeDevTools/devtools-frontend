@@ -984,7 +984,11 @@ export class LCH implements Color {
   isGamutClipped(): boolean {
     return false;
   }
-
+  // See "powerless" component definitions in
+  // https://www.w3.org/TR/css-color-4/#specifying-lab-lch
+  isHuePowerless(): boolean {
+    return equals(this.c, 0);
+  }
   static fromSpec(spec: ColorParameterSpec, text: string): LCH|null {
     const L = parsePercentage(spec[0], [0, 100]) ?? parseNumber(spec[0]);
     if (L === null) {

@@ -147,10 +147,6 @@ export const UIStrings = {
    */
   PrefixedRequestAnimationFrame: 'webkitRequestAnimationFrame is vendor-specific. Please use the standard requestAnimationFrame instead.',
   /**
-   * @description Warning displayed to developers when `window.webkitStorageInfo` is used to notify that the API is deprecated.
-   */
-  PrefixedStorageInfo: '`window.webkitStorageInfo` is deprecated. Please use standardized `navigator.storage` instead.',
-  /**
    * @description Standard message when one web API is deprecated in favor of another.
    */
   PrefixedVideoDisplayingFullscreen: 'HTMLVideoElement.webkitDisplayingFullscreen is deprecated. Please use Document.fullscreenElement instead.',

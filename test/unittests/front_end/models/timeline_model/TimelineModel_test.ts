@@ -180,24 +180,38 @@ function summarizeArray(tracks: TimelineModel.TimelineModel.Track[]): TrackSumma
 }
 
 describeWithEnvironment('TimelineModel', () => {
-  let tracingModel: SDK.TracingModel.TracingModel;
-  let timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
-
-  function traceWithEvents(events: readonly SDK.TracingManager.EventPayload[]) {
+  function traceWithEvents(events: readonly SDK.TracingManager.EventPayload[]): {
+    tracingModel: SDK.TracingModel.TracingModel,
+    timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
+  } {
+    const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+    const timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
     tracingModel.addEvents((preamble as unknown as SDK.TracingManager.EventPayload[]).concat(events));
     tracingModel.tracingComplete();
     timelineModel.setEvents(tracingModel);
+    return {
+      tracingModel,
+      timelineModel,
+    };
   }
 
-  beforeEach(() => {
-    tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
-    timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
-  });
+  async function traceModelFromTraceFile(file: string): Promise<
+      {tracingModel: SDK.TracingModel.TracingModel, timelineModel: TimelineModel.TimelineModel.TimelineModelImpl}> {
+    const events = await loadTraceEventsLegacyEventPayload(file);
+    const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+    const timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
+    tracingModel.addEvents(events);
+    tracingModel.tracingComplete();
+    timelineModel.setEvents(tracingModel);
+    return {
+      tracingModel,
+      timelineModel,
+    };
+  }
 
   describe('interaction events', () => {
     it('pulls out the expected interaction events from a trace', async () => {
-      const events = await loadTraceEventsLegacyEventPayload('slow-interaction-button-click.json.gz');
-      traceWithEvents(events);
+      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
       const interactionsTrack =
           timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
       if (!interactionsTrack) {
@@ -218,8 +232,7 @@ describeWithEnvironment('TimelineModel', () => {
     });
 
     it('detects correct events for a click and keydown interaction', async () => {
-      const events = await loadTraceEventsLegacyEventPayload('slow-interaction-keydown.json.gz');
-      traceWithEvents(events);
+      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-keydown.json.gz');
       const interactionsTrack =
           timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
       if (!interactionsTrack) {
@@ -248,7 +261,7 @@ describeWithEnvironment('TimelineModel', () => {
     });
 
     it('finds all interaction events with a duration and interactionId', async () => {
-      traceWithEvents([
+      const {timelineModel} = traceWithEvents([
         {
           cat: 'devtools.timeline',
           ph: 'b',
@@ -336,7 +349,7 @@ describeWithEnvironment('TimelineModel', () => {
   });
 
   it('creates tracks for auction worklets', () => {
-    traceWithEvents([
+    const {timelineModel} = traceWithEvents([
       {
         'args': {
           'data': {
@@ -450,7 +463,7 @@ describeWithEnvironment('TimelineModel', () => {
   it('handles auction worklets running in renderer', () => {
     // Also shows it merging the different types, and not
     // throwing away another thread there.
-    traceWithEvents([
+    const {timelineModel} = traceWithEvents([
       {
         'args': {
           'data': {
@@ -574,7 +587,7 @@ describeWithEnvironment('TimelineModel', () => {
   });
 
   it('handles different URLs in same auction worklet thread', () => {
-    traceWithEvents([
+    const {timelineModel} = traceWithEvents([
       {
         'args': {
           'data': {
@@ -698,7 +711,7 @@ describeWithEnvironment('TimelineModel', () => {
   });
 
   it('includes utility process main thread, too', () => {
-    traceWithEvents([
+    const {timelineModel} = traceWithEvents([
       {
         'args': {
           'data': {
@@ -825,7 +838,7 @@ describeWithEnvironment('TimelineModel', () => {
   });
 
   it('handles auction worklet exit events', () => {
-    traceWithEvents([
+    const {timelineModel} = traceWithEvents([
       {
         'args': {
           'data': {
@@ -981,6 +994,7 @@ describeWithEnvironment('TimelineModel', () => {
 
   describe('#isEventTimingInteractionEvent', () => {
     it('returns true for an event timing with a duration and interactionId', () => {
+      const {timelineModel} = traceWithEvents([]);
       const event = {
         name: 'EventTiming',
         args: {
@@ -994,6 +1008,7 @@ describeWithEnvironment('TimelineModel', () => {
     });
 
     it('returns false if the event has no duration', () => {
+      const {timelineModel} = traceWithEvents([]);
       const event = {
         name: 'EventTiming',
         args: {
@@ -1006,6 +1021,7 @@ describeWithEnvironment('TimelineModel', () => {
     });
 
     it('returns false if the event has no interaction ID', () => {
+      const {timelineModel} = traceWithEvents([]);
       const event = {
         name: 'EventTiming',
         args: {
@@ -1018,6 +1034,7 @@ describeWithEnvironment('TimelineModel', () => {
     });
 
     it('returns false if the duration is 0', () => {
+      const {timelineModel} = traceWithEvents([]);
       const event = {
         name: 'EventTiming',
         args: {
@@ -1031,6 +1048,7 @@ describeWithEnvironment('TimelineModel', () => {
     });
 
     it('returns false if the interactionId is 0', () => {
+      const {timelineModel} = traceWithEvents([]);
       const event = {
         name: 'EventTiming',
         args: {

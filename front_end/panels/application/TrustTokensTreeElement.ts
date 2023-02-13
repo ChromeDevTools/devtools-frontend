@@ -67,8 +67,7 @@ export class TrustTokensViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWi
     this.trustTokensView.data = {
       tokens,
       deleteClickHandler: (_issuer: string): void => {
-          // TODO(crbug.com/1408770): This needs to be removed or replaced.
-          // void mainTarget.storageAgent().invoke_clearTrustTokens({issuerOrigin: issuer});
+        void mainTarget.storageAgent().invoke_clearTrustTokens({issuerOrigin: _issuer});
       },
     };
 

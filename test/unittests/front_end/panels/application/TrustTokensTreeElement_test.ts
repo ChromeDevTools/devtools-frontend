@@ -44,7 +44,6 @@ describeWithMockConnection('TrustTokensViewWidgetWrapper', () => {
       assert.deepStrictEqual(data.tokens, TOKENS);
     });
 
-    /* TODO(crbug.com/1408770): This needs to be removed or replaced.
     it('sets delete handler', async () => {
       sinon.stub(target.storageAgent(), 'invoke_getTrustTokens').returns(Promise.resolve({
         tokens: TOKENS,
@@ -58,7 +57,6 @@ describeWithMockConnection('TrustTokensViewWidgetWrapper', () => {
       data.deleteClickHandler('test_issuer');
       assert.isTrue(clearTrustTokens.calledOnceWith({issuerOrigin: 'test_issuer'}));
     });
-    */
   };
   describe('without tab target', () => tests(() => createTarget()));
   describe('with tab target', () => tests(() => {

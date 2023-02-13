@@ -15,7 +15,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   navigateToConsoleTab,
   navigateToIssuesPanelViaInfoBar,
-  waitForConsoleMessageAndClickOnLink,
+  waitForConsoleInfoMessageAndClickOnLink,
 } from '../helpers/console-helpers.js';
 import {
   clickOnContextMenuItemFromTab,
@@ -48,7 +48,7 @@ describe('A user can navigate across', async function() {
 
   it('Console -> Sources', async () => {
     await navigateToConsoleTab();
-    await waitForConsoleMessageAndClickOnLink();
+    await waitForConsoleInfoMessageAndClickOnLink();
     await waitFor('.panel[aria-label="sources"]');
   });
 

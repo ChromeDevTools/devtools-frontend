@@ -284,8 +284,8 @@ export async function navigateToConsoleTab() {
   await waitFor(CONSOLE_VIEW_SELECTOR);
 }
 
-export async function waitForConsoleMessageAndClickOnLink() {
-  const consoleMessage = await waitFor('div.console-group-messages span.source-code');
+export async function waitForConsoleInfoMessageAndClickOnLink() {
+  const consoleMessage = await waitFor('div.console-group-messages .console-info-level span.source-code');
   await click('span.devtools-link', {root: consoleMessage});
 }
 

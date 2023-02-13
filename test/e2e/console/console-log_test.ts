@@ -24,7 +24,7 @@ import {
   getStructuredConsoleMessages,
   navigateToConsoleTab,
   showVerboseMessages,
-  waitForConsoleMessageAndClickOnLink,
+  waitForConsoleInfoMessageAndClickOnLink,
   waitForLastConsoleMessageToHaveContent,
 } from '../helpers/console-helpers.js';
 import {
@@ -417,7 +417,7 @@ describe('The Console Tab', async () => {
       await target.evaluate('triggerLogpoint(42)');
 
       await navigateToConsoleTab();
-      await waitForConsoleMessageAndClickOnLink();
+      await waitForConsoleInfoMessageAndClickOnLink();
 
       await waitFor('.sources-edit-breakpoint-dialog');
     });

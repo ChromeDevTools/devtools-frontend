@@ -4,29 +4,31 @@
 
 const {assert} = chai;
 
-import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
+import {makeEventWithStubbedThread, DevToolsTimelineCategory} from '../../helpers/TimelineHelpers.js';
 
-function makeFakeEventWithName(name: TimelineModel.TimelineModel.RecordType): SDK.TracingModel.Event {
-  const event = {
-    name,
-    hasCategory() {
-      // Stub out the hasCategory method to avoid test run errors.
-      return false;
-    },
-  };
-  return event as unknown as SDK.TracingModel.Event;
-}
-
-function makeFakeEventWithCategory(category: string): SDK.TracingModel.Event {
-  const event = {
-    name: 'fake-test-event',
-    hasCategory(c: string) {
-      return c === category;
-    },
-  };
-  return event as unknown as SDK.TracingModel.Event;
-}
+const consoleEvent = makeEventWithStubbedThread({
+  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console].join(','),
+  name: TimelineModel.TimelineModel.RecordType.ConsoleTime,
+  phase: SDK.TracingModel.Phase.Complete,
+  startTime: 1,
+  threadId: 1,
+});
+const latencyInfoEvent = makeEventWithStubbedThread({
+  categories: DevToolsTimelineCategory,
+  name: TimelineModel.TimelineModel.RecordType.LatencyInfo,
+  phase: SDK.TracingModel.Phase.Complete,
+  startTime: 1,
+  threadId: 1,
+});
+const userTimingEvent = makeEventWithStubbedThread({
+  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming].join(','),
+  name: TimelineModel.TimelineModel.RecordType.UserTiming,
+  phase: SDK.TracingModel.Phase.Complete,
+  startTime: 1,
+  threadId: 1,
+});
 
 describe('TimelineModelFilter', () => {
   describe('TimelineVisibleEventsFilter', () => {
@@ -36,37 +38,38 @@ describe('TimelineModelFilter', () => {
         TimelineModel.TimelineModel.RecordType.ConsoleTime,
       ]);
 
-      assert.isTrue(visibleFilter.accept(makeFakeEventWithName(TimelineModel.TimelineModel.RecordType.ConsoleTime)));
-      assert.isFalse(visibleFilter.accept(makeFakeEventWithName(TimelineModel.TimelineModel.RecordType.LatencyInfo)));
+      assert.isTrue(visibleFilter.accept(consoleEvent));
+      assert.isFalse(visibleFilter.accept(latencyInfoEvent));
     });
 
     describe('eventType', () => {
       it('returns ConsoleTime if the event has the Console category', () => {
-        const consoleEvent = makeFakeEventWithCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console);
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(consoleEvent),
             TimelineModel.TimelineModel.RecordType.ConsoleTime);
       });
 
       it('returns UserTiming if the event has the UserTiming category', () => {
-        const timingEvent =
-            makeFakeEventWithCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming);
         assert.strictEqual(
-            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(timingEvent),
+            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(userTimingEvent),
             TimelineModel.TimelineModel.RecordType.UserTiming);
       });
 
       it('returns LatencyInfo if the event has the LatencyInfo category', () => {
-        const latencyInfoEvent =
-            makeFakeEventWithCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo);
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(latencyInfoEvent),
             TimelineModel.TimelineModel.RecordType.LatencyInfo);
       });
 
       it('returns the event name if the event is any other category', () => {
-        const otherEvent = makeFakeEventWithCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading);
-        otherEvent.name = 'other';
+        const otherEvent = makeEventWithStubbedThread({
+          categories:
+              [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading].join(','),
+          name: 'other',
+          phase: SDK.TracingModel.Phase.Complete,
+          startTime: 1,
+          threadId: 1,
+        });
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(otherEvent), 'other');
       });

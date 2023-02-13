@@ -16,7 +16,7 @@ const consoleEvent = makeEventWithStubbedThread({
   threadId: 1,
 });
 const latencyInfoEvent = makeEventWithStubbedThread({
-  categories: DevToolsTimelineCategory,
+  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo].join(','),
   name: TimelineModel.TimelineModel.RecordType.LatencyInfo,
   phase: SDK.TracingModel.Phase.Complete,
   startTime: 1,
@@ -73,6 +73,45 @@ describe('TimelineModelFilter', () => {
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(otherEvent), 'other');
       });
+    });
+  });
+
+  describe('TimelineInvisibleEventsFilter', () => {
+    it('does not accept events that have been set as invisible', () => {
+      const invisibleFilter = new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([
+        // Set an random record type to be invisible - the exact type is not important for the test.
+        TimelineModel.TimelineModel.RecordType.ConsoleTime,
+      ]);
+      assert.isFalse(invisibleFilter.accept(consoleEvent));
+    });
+    it('accepts events that have not been set as invisible', () => {
+      const invisibleFilter = new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([
+        // Set an random record type to be invisible - the exact type is not important for the test.
+        TimelineModel.TimelineModel.RecordType.ConsoleTime,
+      ]);
+      assert.isTrue(invisibleFilter.accept(userTimingEvent));
+    });
+  });
+
+  describe('ExclusiveNameFilter', () => {
+    function makeEventWithName(name: string): SDK.TracingModel.Event {
+      return makeEventWithStubbedThread({
+        categories: DevToolsTimelineCategory,
+        name,
+        phase: SDK.TracingModel.Phase.Complete,
+        startTime: 1,
+        threadId: 1,
+      });
+    }
+    it('accepts events that do not match the provided set of names to exclude', () => {
+      const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter(['exclude-name']);
+      const event = makeEventWithName('some-event');
+      assert.isTrue(filter.accept(event));
+    });
+    it('rejects events that match the provided set of names to exclude', () => {
+      const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter(['exclude-name']);
+      const event = makeEventWithName('exclude-name');
+      assert.isFalse(filter.accept(event));
     });
   });
 });

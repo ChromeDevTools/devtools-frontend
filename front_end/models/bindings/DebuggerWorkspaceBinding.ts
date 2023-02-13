@@ -527,8 +527,10 @@ class ModelData {
   }
 
   getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Set<number>|null {
-    let mappedLines = this.compilerMapping.getMappedLines(uiSourceCode);
-    mappedLines = mappedLines ?? this.#resourceMapping.getMappedLines(uiSourceCode);
+    const mappedLines = this.compilerMapping.getMappedLines(uiSourceCode);
+    // TODO(crbug.com/1411431): The scripts from the ResourceMapping appear over time,
+    // and there's currently no way to inform the UI to update.
+    // mappedLines = mappedLines ?? this.#resourceMapping.getMappedLines(uiSourceCode);
     return mappedLines;
   }
 

@@ -373,7 +373,7 @@ export const showCompletionHint = CM.ViewPlugin.fromClass(class {
 
   update(update: CM.ViewUpdate): void {
     const top = this.currentHint = this.topCompletion(update.state);
-    if (!top) {
+    if (!top || update.state.field(conservativeCompletion, false)) {
       this.decorations = CM.Decoration.none;
     } else {
       this.decorations = CM.Decoration.set(

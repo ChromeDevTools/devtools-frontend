@@ -170,7 +170,7 @@ export class ScopeVariableAnalysis {
         break;
       case 'ArrowFunctionExpression': {
         this.#pushScope(node.start, node.end);
-        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Var));
+        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Var, false));
         if (node.body.type === 'BlockStatement') {
           // Include the body of the arrow function in the same scope as the arguments.
           node.body.body.forEach(this.#processNode.bind(this));
@@ -203,7 +203,7 @@ export class ScopeVariableAnalysis {
       }
       case 'CatchClause':
         this.#pushScope(node.start, node.end);
-        this.#processNodeAsDefinition(DefinitionKind.Let, node.param);
+        this.#processNodeAsDefinition(DefinitionKind.Let, false, node.param);
         this.#processNode(node.body);
         this.#popScope(false);
         break;
@@ -211,7 +211,7 @@ export class ScopeVariableAnalysis {
         node.body.forEach(this.#processNode.bind(this));
         break;
       case 'ClassDeclaration':
-        this.#processNodeAsDefinition(DefinitionKind.Let, node.id);
+        this.#processNodeAsDefinition(DefinitionKind.Let, false, node.id);
         this.#processNode(node.superClass ?? null);
         this.#processNode(node.body);
         break;
@@ -249,11 +249,11 @@ export class ScopeVariableAnalysis {
         this.#popScope(false);
         break;
       case 'FunctionDeclaration':
-        this.#processNodeAsDefinition(DefinitionKind.Var, node.id);
+        this.#processNodeAsDefinition(DefinitionKind.Var, false, node.id);
         this.#pushScope(node.id?.end ?? node.start, node.end);
         this.#addVariable('this', node.start, DefinitionKind.Fixed);
         this.#addVariable('arguments', node.start, DefinitionKind.Fixed);
-        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Let));
+        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Let, false));
         // Process the body of the block statement directly to avoid creating new scope.
         node.body.body.forEach(this.#processNode.bind(this));
         this.#popScope(true);
@@ -262,7 +262,7 @@ export class ScopeVariableAnalysis {
         this.#pushScope(node.id?.end ?? node.start, node.end);
         this.#addVariable('this', node.start, DefinitionKind.Fixed);
         this.#addVariable('arguments', node.start, DefinitionKind.Fixed);
-        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Let));
+        node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Let, false));
         // Process the body of the block statement directly to avoid creating new scope.
         node.body.body.forEach(this.#processNode.bind(this));
         this.#popScope(true);
@@ -324,7 +324,7 @@ export class ScopeVariableAnalysis {
         }
         break;
       case 'RestElement':
-        this.#processNodeAsDefinition(DefinitionKind.Let, node.argument);
+        this.#processNodeAsDefinition(DefinitionKind.Let, false, node.argument);
         break;
       case 'ReturnStatement':
         this.#processNode(node.argument ?? null);
@@ -442,21 +442,21 @@ export class ScopeVariableAnalysis {
   }
 
   #processNodeAsDefinition(
-      definitionKind: DefinitionKind.Let|DefinitionKind.Var,
+      definitionKind: DefinitionKind.Let|DefinitionKind.Var, isShorthandAssignmentProperty: boolean,
       node: Acorn.ESTree.Pattern|Acorn.ESTree.AssignmentProperty|null): void {
     if (node === null) {
       return;
     }
     switch (node.type) {
       case 'ArrayPattern':
-        node.elements.forEach(this.#processNodeAsDefinition.bind(this, definitionKind));
+        node.elements.forEach(this.#processNodeAsDefinition.bind(this, definitionKind, false));
         break;
       case 'AssignmentPattern':
-        this.#processNodeAsDefinition(definitionKind, node.left);
+        this.#processNodeAsDefinition(definitionKind, isShorthandAssignmentProperty, node.left);
         this.#processNode(node.right);
         break;
       case 'Identifier':
-        this.#addVariable(node.name, node.start, definitionKind);
+        this.#addVariable(node.name, node.start, definitionKind, isShorthandAssignmentProperty);
         break;
       case 'MemberExpression':
         this.#processNode(node.object);
@@ -465,31 +465,23 @@ export class ScopeVariableAnalysis {
         }
         break;
       case 'ObjectPattern':
-        node.properties.forEach(this.#processNodeAsDefinition.bind(this, definitionKind));
+        node.properties.forEach(this.#processNodeAsDefinition.bind(this, definitionKind, false));
         break;
       case 'Property':
-        // This is AssignmentProperty inside an object pattern.
-        if (node.shorthand) {
-          console.assert(node.value.type === 'Identifier');
-          console.assert(node.key.type === 'Identifier');
-          console.assert((node.value as Acorn.ESTree.Identifier).name === (node.key as Acorn.ESTree.Identifier).name);
-          this.#addVariable((node.value as Acorn.ESTree.Identifier).name, node.value.start, definitionKind, true);
-        } else {
-          if (node.computed) {
-            this.#processNode(node.key);
-          }
-          this.#processNodeAsDefinition(definitionKind, node.value);
+        if (node.computed) {
+          this.#processNode(node.key);
         }
+        this.#processNodeAsDefinition(definitionKind, node.shorthand, node.value);
         break;
       case 'RestElement':
-        this.#processNodeAsDefinition(definitionKind, node.argument);
+        this.#processNodeAsDefinition(definitionKind, false, node.argument);
         break;
     }
   }
 
   #processVariableDeclarator(
       definitionKind: DefinitionKind.Let|DefinitionKind.Var, decl: Acorn.ESTree.VariableDeclarator): void {
-    this.#processNodeAsDefinition(definitionKind, decl.id);
+    this.#processNodeAsDefinition(definitionKind, false, decl.id);
     this.#processNode(decl.init ?? null);
   }
 }

@@ -46,6 +46,7 @@ devtools_module("console") {
     "../../models/text_utils:bundle",
     "../../third_party/codemirror.next:bundle",
     "../../ui/components/code_highlighter:bundle",
+    "../../ui/components/icon_button:bundle",
     "../../ui/components/request_link_icon:bundle",
     "../../ui/components/text_editor:bundle",
     "../../ui/legacy:bundle",

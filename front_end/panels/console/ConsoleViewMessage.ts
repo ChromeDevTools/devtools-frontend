@@ -43,6 +43,7 @@ import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -217,7 +218,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   protected elementInternal: HTMLElement|null;
   private readonly previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
   private searchRegexInternal: RegExp|null;
-  protected messageIcon: UI.Icon.Icon|null;
+  protected messageIcon: IconButton.Icon.Icon|null;
   private traceExpanded: boolean;
   private expandTrace: ((arg0: boolean) => void)|null;
   protected anchorElement: HTMLElement|null;
@@ -1258,25 +1259,37 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   private updateMessageIcon(): void {
-    let iconType = '';
+    if (this.messageIcon) {
+      // Instead of updating the existing icon, we simply re-render. This happens only for
+      // revoked exceptions so it doesn't need to be terribly efficient.
+      this.messageIcon.remove();
+      this.messageIcon = null;
+    }
+
+    let iconName = '';
     let accessibleName = '';
     if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
-      iconType = 'smallicon-warning';
+      iconName = 'warning_icon';
       accessibleName = i18nString(UIStrings.warning);
     } else if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
-      iconType = 'smallicon-error';
+      iconName = 'error_icon';
       accessibleName = i18nString(UIStrings.error);
     }
-    if (!this.messageIcon) {
-      if (!iconType) {
-        return;
-      }
-      this.messageIcon = UI.Icon.Icon.create('', 'message-level-icon');
-      if (this.contentElementInternal) {
-        this.contentElementInternal.insertBefore(this.messageIcon, this.contentElementInternal.firstChild);
-      }
+    if (!iconName) {
+      return;
     }
-    this.messageIcon.setIconType(iconType);
+
+    this.messageIcon = new IconButton.Icon.Icon();
+    this.messageIcon.data = {
+      iconName,
+      color: '',
+      width: '10px',
+      height: '10px',
+    };
+    this.messageIcon.classList.add('message-level-icon');
+    if (this.contentElementInternal) {
+      this.contentElementInternal.insertBefore(this.messageIcon, this.contentElementInternal.firstChild);
+    }
     UI.ARIAUtils.setAccessibleName(this.messageIcon, accessibleName);
   }
 

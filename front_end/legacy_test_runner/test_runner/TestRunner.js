@@ -416,7 +416,7 @@ export function textContentWithLineBreaks(node) {
   let ignoreFirst = false;
   while (currentNode.traverseNextNode(node)) {
     currentNode = currentNode.traverseNextNode(node);
-    if (currentNode.nodeType === Node.TEXT_NODE) {
+    if (currentNode.nodeType === Node.TEXT_NODE && currentNode.parentNode?.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
       buffer += currentNode.nodeValue;
     } else if (currentNode.nodeName === 'LI' || currentNode.nodeName === 'TR') {
       if (!ignoreFirst) {

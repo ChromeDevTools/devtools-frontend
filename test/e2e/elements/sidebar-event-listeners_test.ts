@@ -4,7 +4,8 @@
 
 import {assert} from 'chai';
 
-import {doubleClick} from '../../shared/helper.js';
+import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
+import {waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   getDisplayedEventListenerNames,
@@ -27,6 +28,7 @@ describe('Event listeners in the elements sidebar', async () => {
   });
 
   it('shows the event listener properties when expanding it', async () => {
+    const {frontend} = getBrowserAndPages();
     await openEventListenersPaneAndWaitForListeners();
     const {
       firstListenerText,
@@ -37,9 +39,13 @@ describe('Event listeners in the elements sidebar', async () => {
     // we can't use assert.strictEqual() as the text also includes the "Remove" button
     assert.include(firstListenerText, 'button#test-button');
 
-    // we have to double click on the event to expand it
-    // as single click reveals it in the elements tree
-    await doubleClick(listenerSelector);
+    // we have to use keyboard navigation here to expand
+    // the event, as single click reveals it in the elements
+    // tree and double click triggers the "Remove" button on
+    // some platforms.
+    await frontend.keyboard.press('ArrowRight');  // select
+    await frontend.keyboard.press('ArrowRight');  // expand
+    await waitFor(`${listenerSelector}[aria-expanded="true"]`);
 
     const clickEventPropertiesSelector = `${listenerSelector} + ol .name-and-value`;
     const propertiesOutput = await getEventListenerProperties(clickEventPropertiesSelector);
@@ -53,6 +59,7 @@ describe('Event listeners in the elements sidebar', async () => {
   });
 
   it('shows custom event listeners and their properties correctly', async () => {
+    const {frontend} = getBrowserAndPages();
     await openEventListenersPaneAndWaitForListeners();
     const {
       firstListenerText,
@@ -63,9 +70,13 @@ describe('Event listeners in the elements sidebar', async () => {
     // we can't use assert.strictEqual() as the text also includes the "Remove" button
     assert.include(firstListenerText, 'body');
 
-    // we have to double click on the event to expand it
-    // as single click reveals it in the elements tree
-    await doubleClick(listenerSelector);
+    // we have to use keyboard navigation here to expand
+    // the event, as single click reveals it in the elements
+    // tree and double click triggers the "Remove" button on
+    // some platforms.
+    await frontend.keyboard.press('ArrowRight');  // select
+    await frontend.keyboard.press('ArrowRight');  // expand
+    await waitFor(`${listenerSelector}[aria-expanded="true"]`);
 
     const customEventProperties = `${listenerSelector} + ol .name-and-value`;
     const propertiesOutput = await getEventListenerProperties(customEventProperties);

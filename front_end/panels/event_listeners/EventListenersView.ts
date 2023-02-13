@@ -61,8 +61,6 @@ export class EventListenersView extends UI.Widget.VBox {
     this.changeCallback = changeCallback;
     this.enableDefaultTreeFocus = enableDefaultTreeFocus;
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this.treeOutline.hideOverflow();
-
     this.treeOutline.setComparator(EventListenersTreeElement.comparator);
     this.treeOutline.element.classList.add('monospace');
     this.treeOutline.setShowSelectionOnKeyboardFocus(true);

@@ -217,7 +217,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   protected elementInternal: HTMLElement|null;
   private readonly previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
   private searchRegexInternal: RegExp|null;
-  protected messageLevelIcon: UI.Icon.Icon|null;
+  protected messageIcon: UI.Icon.Icon|null;
   private traceExpanded: boolean;
   private expandTrace: ((arg0: boolean) => void)|null;
   protected anchorElement: HTMLElement|null;
@@ -257,7 +257,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     this.previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
     this.searchRegexInternal = null;
-    this.messageLevelIcon = null;
+    this.messageIcon = null;
     this.traceExpanded = false;
     this.expandTrace = null;
     this.anchorElement = null;
@@ -1159,8 +1159,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     const contentElement = document.createElement('div');
     contentElement.classList.add('console-message');
-    if (this.messageLevelIcon) {
-      contentElement.appendChild(this.messageLevelIcon);
+    if (this.messageIcon) {
+      contentElement.appendChild(this.messageIcon);
     }
     this.contentElementInternal = contentElement;
 
@@ -1237,7 +1237,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         this.elementInternal.classList.add('console-error-level');
         break;
     }
-    this.updateMessageLevelIcon();
+    this.updateMessageIcon();
     if (this.shouldRenderAsWarning()) {
       this.elementInternal.classList.add('console-warning-level');
     }
@@ -1257,7 +1257,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
          this.message.source === Protocol.Log.LogEntrySource.Recommendation);
   }
 
-  private updateMessageLevelIcon(): void {
+  private updateMessageIcon(): void {
     let iconType = '';
     let accessibleName = '';
     if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
@@ -1267,17 +1267,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       iconType = 'smallicon-error';
       accessibleName = i18nString(UIStrings.error);
     }
-    if (!this.messageLevelIcon) {
+    if (!this.messageIcon) {
       if (!iconType) {
         return;
       }
-      this.messageLevelIcon = UI.Icon.Icon.create('', 'message-level-icon');
+      this.messageIcon = UI.Icon.Icon.create('', 'message-level-icon');
       if (this.contentElementInternal) {
-        this.contentElementInternal.insertBefore(this.messageLevelIcon, this.contentElementInternal.firstChild);
+        this.contentElementInternal.insertBefore(this.messageIcon, this.contentElementInternal.firstChild);
       }
     }
-    this.messageLevelIcon.setIconType(iconType);
-    UI.ARIAUtils.setAccessibleName(this.messageLevelIcon, accessibleName);
+    this.messageIcon.setIconType(iconType);
+    UI.ARIAUtils.setAccessibleName(this.messageIcon, accessibleName);
   }
 
   setAdjacentUserCommandResult(adjacentUserCommandResult: boolean): void {
@@ -1867,8 +1867,8 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
 
     const newContentElement = document.createElement('div');
     newContentElement.classList.add('console-message');
-    if (this.messageLevelIcon) {
-      newContentElement.appendChild(this.messageLevelIcon);
+    if (this.messageIcon) {
+      newContentElement.appendChild(this.messageIcon);
     }
     this.setContentElement(newContentElement);
 

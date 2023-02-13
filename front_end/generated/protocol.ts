@@ -11242,6 +11242,17 @@ export namespace Page {
     PreloadingUnsupportedByWebContents = 'PreloadingUnsupportedByWebContents',
   }
 
+  /**
+   * List of Prefetch status, which refers to PreloadingTriggeringOutcome.
+   */
+  export const enum PrefetchStatus {
+    Running = 'Running',
+    Ready = 'Ready',
+    Success = 'Success',
+    Failure = 'Failure',
+    NotSupported = 'NotSupported',
+  }
+
   export interface AddScriptToEvaluateOnLoadRequest {
     scriptSource: string;
   }
@@ -12274,6 +12285,19 @@ export namespace Page {
     disallowedApiMethod?: string;
   }
 
+  /**
+   * TODO(crbug/1384419): Create a dedicated domain for preloading.
+   * Fired when a prefetch attempt is updated.
+   */
+  export interface PrefetchStatusUpdatedEvent {
+    /**
+     * The frame id of the frame initiating prefetch.
+     */
+    initiatingFrameId: FrameId;
+    prefetchUrl: string;
+    status: PrefetchStatus;
+  }
+
   export interface LoadEventFiredEvent {
     timestamp: Network.MonotonicTime;
   }
@@ -13303,6 +13327,17 @@ export namespace Storage {
 
   export interface GetTrustTokensResponse extends ProtocolResponseWithError {
     tokens: TrustTokens[];
+  }
+
+  export interface ClearTrustTokensRequest {
+    issuerOrigin: string;
+  }
+
+  export interface ClearTrustTokensResponse extends ProtocolResponseWithError {
+    /**
+     * True if any tokens were deleted, false otherwise.
+     */
+    didDeleteTokens: boolean;
   }
 
   export interface GetInterestGroupDetailsRequest {
@@ -15276,6 +15311,48 @@ export namespace Media {
    */
   export interface PlayersCreatedEvent {
     players: PlayerId[];
+  }
+}
+
+export namespace DeviceAccess {
+
+  /**
+   * Device request id.
+   */
+  export type RequestId = OpaqueIdentifier<string, 'Protocol.DeviceAccess.RequestId'>;
+
+  /**
+   * A device id.
+   */
+  export type DeviceId = OpaqueIdentifier<string, 'Protocol.DeviceAccess.DeviceId'>;
+
+  /**
+   * Device information displayed in a user prompt to select a device.
+   */
+  export interface PromptDevice {
+    id: DeviceId;
+    /**
+     * Display name as it appears in a device request user prompt.
+     */
+    name: string;
+  }
+
+  export interface SelectPromptRequest {
+    id: RequestId;
+    deviceId: DeviceId;
+  }
+
+  export interface CancelPromptRequest {
+    id: RequestId;
+  }
+
+  /**
+   * A device request opened a user prompt to select a device. Respond with the
+   * selectPrompt or cancelPrompt command.
+   */
+  export interface DeviceRequestPromptedEvent {
+    id: RequestId;
+    devices: PromptDevice[];
   }
 }
 

@@ -8555,6 +8555,25 @@ domain Page
       # that is incompatible with prerender and has caused the cancellation of the attempt
       optional string disallowedApiMethod
 
+  # List of Prefetch status, which refers to PreloadingTriggeringOutcome.
+  type PrefetchStatus extends string
+    enum
+      Running
+      Ready
+      Success
+      Failure
+      # PreloadingTriggeringOutcome which not used by prefetch.
+      NotSupported
+
+  # TODO(crbug/1384419): Create a dedicated domain for preloading.
+  # Fired when a prefetch attempt is updated.
+  experimental event prefetchStatusUpdated
+    parameters
+      # The frame id of the frame initiating prefetch.
+      FrameId initiatingFrameId
+      string prefetchUrl
+      PrefetchStatus status
+
   event loadEventFired
     parameters
       Network.MonotonicTime timestamp
@@ -9313,6 +9332,15 @@ experimental domain Storage
   experimental command getTrustTokens
     returns
       array of TrustTokens tokens
+
+  # Removes all Trust Tokens issued by the provided issuerOrigin.
+  # Leaves other stored data, including the issuer's Redemption Records, intact.
+  experimental command clearTrustTokens
+    parameters
+      string issuerOrigin
+    returns
+      # True if any tokens were deleted, false otherwise.
+      boolean didDeleteTokens
 
   # Gets details for a named interest group.
   experimental command getInterestGroupDetails
@@ -10748,3 +10776,41 @@ experimental domain Media
 
   # Disables the Media domain.
   command disable
+
+experimental domain DeviceAccess
+  # Device request id.
+  type RequestId extends string
+
+  # A device id.
+  type DeviceId extends string
+
+  # Device information displayed in a user prompt to select a device.
+  type PromptDevice extends object
+    properties
+      DeviceId id
+      # Display name as it appears in a device request user prompt.
+      string name
+
+  # Enable events in this domain.
+  command enable
+
+  # Disable events in this domain.
+  command disable
+
+  # Select a device in response to a DeviceAccess.deviceRequestPrompted event.
+  command selectPrompt
+    parameters
+      RequestId id
+      DeviceId deviceId
+
+  # Cancel a prompt in response to a DeviceAccess.deviceRequestPrompted event.
+  command cancelPrompt
+    parameters
+      RequestId id
+
+  # A device request opened a user prompt to select a device. Respond with the
+  # selectPrompt or cancelPrompt command.
+  event deviceRequestPrompted
+    parameters
+      RequestId id
+      array of PromptDevice devices

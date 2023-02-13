@@ -16436,6 +16436,18 @@
                         "ActivatedDuringMainFrameNavigation",
                         "PreloadingUnsupportedByWebContents"
                     ]
+                },
+                {
+                    "id": "PrefetchStatus",
+                    "description": "List of Prefetch status, which refers to PreloadingTriggeringOutcome.",
+                    "type": "string",
+                    "enum": [
+                        "Running",
+                        "Ready",
+                        "Success",
+                        "Failure",
+                        "NotSupported"
+                    ]
                 }
             ],
             "commands": [
@@ -18033,6 +18045,26 @@
                             "description": "This is used to give users more information about the name of the API call\nthat is incompatible with prerender and has caused the cancellation of the attempt",
                             "optional": true,
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "prefetchStatusUpdated",
+                    "description": "TODO(crbug/1384419): Create a dedicated domain for preloading.\nFired when a prefetch attempt is updated.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "initiatingFrameId",
+                            "description": "The frame id of the frame initiating prefetch.",
+                            "$ref": "FrameId"
+                        },
+                        {
+                            "name": "prefetchUrl",
+                            "type": "string"
+                        },
+                        {
+                            "name": "status",
+                            "$ref": "PrefetchStatus"
                         }
                     ]
                 },
@@ -19694,6 +19726,24 @@
                             "items": {
                                 "$ref": "TrustTokens"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "clearTrustTokens",
+                    "description": "Removes all Trust Tokens issued by the provided issuerOrigin.\nLeaves other stored data, including the issuer's Redemption Records, intact.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "issuerOrigin",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "didDeleteTokens",
+                            "description": "True if any tokens were deleted, false otherwise.",
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -22743,6 +22793,91 @@
                 {
                     "name": "disable",
                     "description": "Disables the Media domain."
+                }
+            ]
+        },
+        {
+            "domain": "DeviceAccess",
+            "experimental": true,
+            "types": [
+                {
+                    "id": "RequestId",
+                    "description": "Device request id.",
+                    "type": "string"
+                },
+                {
+                    "id": "DeviceId",
+                    "description": "A device id.",
+                    "type": "string"
+                },
+                {
+                    "id": "PromptDevice",
+                    "description": "Device information displayed in a user prompt to select a device.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "id",
+                            "$ref": "DeviceId"
+                        },
+                        {
+                            "name": "name",
+                            "description": "Display name as it appears in a device request user prompt.",
+                            "type": "string"
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "enable",
+                    "description": "Enable events in this domain."
+                },
+                {
+                    "name": "disable",
+                    "description": "Disable events in this domain."
+                },
+                {
+                    "name": "selectPrompt",
+                    "description": "Select a device in response to a DeviceAccess.deviceRequestPrompted event.",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "deviceId",
+                            "$ref": "DeviceId"
+                        }
+                    ]
+                },
+                {
+                    "name": "cancelPrompt",
+                    "description": "Cancel a prompt in response to a DeviceAccess.deviceRequestPrompted event.",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "$ref": "RequestId"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "name": "deviceRequestPrompted",
+                    "description": "A device request opened a user prompt to select a device. Respond with the\nselectPrompt or cancelPrompt command.",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "devices",
+                            "type": "array",
+                            "items": {
+                                "$ref": "PromptDevice"
+                            }
+                        }
+                    ]
                 }
             ]
         },

@@ -98,6 +98,8 @@ declare namespace ProtocolProxyApi {
 
     Media: MediaApi;
 
+    DeviceAccess: DeviceAccessApi;
+
     Debugger: DebuggerApi;
 
     HeapProfiler: HeapProfilerApi;
@@ -190,6 +192,8 @@ declare namespace ProtocolProxyApi {
     WebAuthn: WebAuthnDispatcher;
 
     Media: MediaDispatcher;
+
+    DeviceAccess: DeviceAccessDispatcher;
 
     Debugger: DebuggerDispatcher;
 
@@ -2709,6 +2713,12 @@ declare namespace ProtocolProxyApi {
      */
     prerenderAttemptCompleted(params: Protocol.Page.PrerenderAttemptCompletedEvent): void;
 
+    /**
+     * TODO(crbug/1384419): Create a dedicated domain for preloading.
+     * Fired when a prefetch attempt is updated.
+     */
+    prefetchStatusUpdated(params: Protocol.Page.PrefetchStatusUpdatedEvent): void;
+
     loadEventFired(params: Protocol.Page.LoadEventFiredEvent): void;
 
     /**
@@ -2960,6 +2970,12 @@ declare namespace ProtocolProxyApi {
      * current browsing context.
      */
     invoke_getTrustTokens(): Promise<Protocol.Storage.GetTrustTokensResponse>;
+
+    /**
+     * Removes all Trust Tokens issued by the provided issuerOrigin.
+     * Leaves other stored data, including the issuer's Redemption Records, intact.
+     */
+    invoke_clearTrustTokens(params: Protocol.Storage.ClearTrustTokensRequest): Promise<Protocol.Storage.ClearTrustTokensResponse>;
 
     /**
      * Gets details for a named interest group.
@@ -3562,6 +3578,37 @@ declare namespace ProtocolProxyApi {
      * list of player ids and all events again.
      */
     playersCreated(params: Protocol.Media.PlayersCreatedEvent): void;
+
+  }
+
+  export interface DeviceAccessApi {
+    /**
+     * Enable events in this domain.
+     */
+    invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Disable events in this domain.
+     */
+    invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Select a device in response to a DeviceAccess.deviceRequestPrompted event.
+     */
+    invoke_selectPrompt(params: Protocol.DeviceAccess.SelectPromptRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Cancel a prompt in response to a DeviceAccess.deviceRequestPrompted event.
+     */
+    invoke_cancelPrompt(params: Protocol.DeviceAccess.CancelPromptRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+  }
+  export interface DeviceAccessDispatcher {
+    /**
+     * A device request opened a user prompt to select a device. Respond with the
+     * selectPrompt or cancelPrompt command.
+     */
+    deviceRequestPrompted(params: Protocol.DeviceAccess.DeviceRequestPromptedEvent): void;
 
   }
 

@@ -406,6 +406,11 @@ export namespace ProtocolMapping {
      * Fired when a prerender attempt is completed.
      */
     'Page.prerenderAttemptCompleted': [Protocol.Page.PrerenderAttemptCompletedEvent];
+    /**
+     * TODO(crbug/1384419): Create a dedicated domain for preloading.
+     * Fired when a prefetch attempt is updated.
+     */
+    'Page.prefetchStatusUpdated': [Protocol.Page.PrefetchStatusUpdatedEvent];
     'Page.loadEventFired': [Protocol.Page.LoadEventFiredEvent];
     /**
      * Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.
@@ -624,6 +629,11 @@ export namespace ProtocolMapping {
      * list of player ids and all events again.
      */
     'Media.playersCreated': [Protocol.Media.PlayersCreatedEvent];
+    /**
+     * A device request opened a user prompt to select a device. Respond with the
+     * selectPrompt or cancelPrompt command.
+     */
+    'DeviceAccess.deviceRequestPrompted': [Protocol.DeviceAccess.DeviceRequestPromptedEvent];
     /**
      * Fired when breakpoint is resolved to an actual script and location.
      */
@@ -3549,6 +3559,14 @@ export namespace ProtocolMapping {
       returnType: Protocol.Storage.GetTrustTokensResponse;
     };
     /**
+     * Removes all Trust Tokens issued by the provided issuerOrigin.
+     * Leaves other stored data, including the issuer's Redemption Records, intact.
+     */
+    'Storage.clearTrustTokens': {
+      paramsType: [Protocol.Storage.ClearTrustTokensRequest];
+      returnType: Protocol.Storage.ClearTrustTokensResponse;
+    };
+    /**
      * Gets details for a named interest group.
      */
     'Storage.getInterestGroupDetails': {
@@ -4022,6 +4040,34 @@ export namespace ProtocolMapping {
      */
     'Media.disable': {
       paramsType: [];
+      returnType: void;
+    };
+    /**
+     * Enable events in this domain.
+     */
+    'DeviceAccess.enable': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
+     * Disable events in this domain.
+     */
+    'DeviceAccess.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
+     * Select a device in response to a DeviceAccess.deviceRequestPrompted event.
+     */
+    'DeviceAccess.selectPrompt': {
+      paramsType: [Protocol.DeviceAccess.SelectPromptRequest];
+      returnType: void;
+    };
+    /**
+     * Cancel a prompt in response to a DeviceAccess.deviceRequestPrompted event.
+     */
+    'DeviceAccess.cancelPrompt': {
+      paramsType: [Protocol.DeviceAccess.CancelPromptRequest];
       returnType: void;
     };
     /**

@@ -41,7 +41,6 @@ export async function openCSSOverviewPanelFromMoreTools() {
 }
 
 export async function startCaptureCSSOverview() {
-  const captureButton = await waitFor(CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR);
-  await captureButton.click();
+  await click(CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR);
   await waitFor(CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR);
 }

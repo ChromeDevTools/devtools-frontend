@@ -1061,4 +1061,87 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isFalse(timelineModel.isEventTimingInteractionEvent(event));
     });
   });
+
+  describe('rendering user timings in the correct order', () => {
+    it('correctly populates the track with basic performance measures', async () => {
+      const {timelineModel} = await traceModelFromTraceFile('user-timings.json.gz');
+      const userTimingEventNames: string[] = [];
+      for (const track of timelineModel.tracks()) {
+        if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
+          continue;
+        }
+        for (const event of track.asyncEvents) {
+          if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
+            userTimingEventNames.push(event.name);
+          }
+        }
+      }
+      assert.deepEqual(userTimingEventNames, [
+        'first measure',
+        'second measure',
+        'third measure',
+      ]);
+    });
+    it('correctly populates the track with nested timings in the correct order', async () => {
+      const {timelineModel} = await traceModelFromTraceFile('user-timings-complex.json.gz');
+      const userTimingEventNames: string[] = [];
+      for (const track of timelineModel.tracks()) {
+        if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
+          continue;
+        }
+        for (const event of track.asyncEvents) {
+          // This trace has multiple user timings events, in this instance we only care about the ones that include 'nested' in the name.
+          if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming) &&
+              event.name.includes('nested')) {
+            userTimingEventNames.push(event.name);
+          }
+        }
+      }
+      assert.deepEqual(userTimingEventNames, [
+        'nested-a',
+        'nested-b',
+        'nested-c',
+        'nested-d',
+      ]);
+    });
+
+    it('renders all the performance marks from the trace', async () => {
+      const {timelineModel} = await traceModelFromTraceFile('user-timings-complex.json.gz');
+      const userTimingPerformanceMarkNames: string[] = [];
+      for (const track of timelineModel.tracks()) {
+        if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
+          continue;
+        }
+        for (const event of track.syncEvents()) {
+          userTimingPerformanceMarkNames.push(event.name);
+        }
+      }
+      assert.deepEqual(
+          userTimingPerformanceMarkNames,
+          ['nested-a', 'nested-b', 'nested-c', 'nested-d', 'durationTimeTotal', 'durationTime1', 'durationTime2'],
+      );
+    });
+
+    it('correctly orders measures when one measure encapsulates the others', async () => {
+      const {timelineModel} = await traceModelFromTraceFile('user-timings-complex.json.gz');
+      const userTimingEventNames: string[] = [];
+      for (const track of timelineModel.tracks()) {
+        if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
+          continue;
+        }
+        for (const event of track.asyncEvents) {
+          // This trace has multiple user timings events, in this instance we only care about the ones that start with 'duration'
+          if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming) &&
+              event.name.startsWith('duration')) {
+            userTimingEventNames.push(event.name);
+          }
+        }
+      }
+      assert.deepEqual(userTimingEventNames, [
+        'durationTimeTotal',
+        'durationTime1',
+        'durationTime2',
+      ]);
+    });
+  });
 });

@@ -572,6 +572,7 @@ export class ConsoleMessage {
    * Is `null` for page console.logs, commands, command results, etc.
    */
   readonly stackFrameWithBreakpoint: Protocol.Runtime.CallFrame|null = null;
+  readonly #originatingBreakpointType: BreakpointType|null = null;
 
   constructor(
       runtimeModel: RuntimeModel|null, source: MessageSource, level: Protocol.Log.LogEntryLevel|null,
@@ -607,7 +608,9 @@ export class ConsoleMessage {
     }
 
     if (this.stackTrace) {
-      this.stackFrameWithBreakpoint = ConsoleMessage.#stackFrameWithBreakpoint(this.stackTrace);
+      const {callFrame, type} = ConsoleMessage.#stackFrameWithBreakpoint(this.stackTrace);
+      this.stackFrameWithBreakpoint = callFrame;
+      this.#originatingBreakpointType = type;
     }
   }
 
@@ -739,7 +742,17 @@ export class ConsoleMessage {
         areStackTracesEquivalent(this.stackTrace, msg.stackTrace);
   }
 
-  static #stackFrameWithBreakpoint({callFrames}: Protocol.Runtime.StackTrace): Protocol.Runtime.CallFrame|null {
+  get originatesFromLogpoint(): boolean {
+    return this.#originatingBreakpointType === BreakpointType.LOGPOINT;
+  }
+
+  /** @returns true, iff this was a console.* call in a conditional breakpoint */
+  get originatesFromConditionalBreakpoint(): boolean {
+    return this.#originatingBreakpointType === BreakpointType.CND_BREAKPOINT;
+  }
+
+  static #stackFrameWithBreakpoint({callFrames}: Protocol.Runtime.StackTrace):
+      {callFrame: Protocol.Runtime.CallFrame|null, type: BreakpointType|null} {
     // Note that breakpoint condition code could in theory call into user JS and back into
     // "condition-defined" functions. This means that the top-most
     // stack frame is not necessarily the `console.log` call, but there could be other things
@@ -753,11 +766,18 @@ export class ConsoleMessage {
     if (lastBreakpointFrameIndex === -1 || lastBreakpointFrameIndex === callFrames.length - 1) {
       // We either didn't find any breakpoint or we didn't capture enough stack
       // frames and the breakpoint condition is the bottom-most frame.
-      return null;
+      return {callFrame: null, type: null};
     }
 
-    return callFrames[lastBreakpointFrameIndex + 1];
+    const type = callFrames[lastBreakpointFrameIndex].url === LOGPOINT_SOURCE_URL ? BreakpointType.LOGPOINT :
+                                                                                    BreakpointType.CND_BREAKPOINT;
+    return {callFrame: callFrames[lastBreakpointFrameIndex + 1], type};
   }
+}
+
+const enum BreakpointType {
+  LOGPOINT = 'LOGPOINT',
+  CND_BREAKPOINT = 'CND_BREAKPOINT',
 }
 
 export type MessageSource = Protocol.Log.LogEntrySource|FrontendMessageSource;

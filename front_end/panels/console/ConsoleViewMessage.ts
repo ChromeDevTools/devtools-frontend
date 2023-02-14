@@ -122,6 +122,17 @@ const UIStrings = {
    */
   error: 'Error',
   /**
+   * @description Accessible label for an icon. The icon is used to mark console messages that
+   * originate from a logpoint. Logpoints are special breakpoints that log a user-provided JavaScript
+   * expression to the DevTools console.
+   */
+  logpoint: 'Logpoint',
+  /**
+   * @description Accessible label for an icon. The icon is used to mark console messages that
+   * originate from conditional breakpoints.
+   */
+  cndBreakpoint: 'Conditional Breakpoint',
+  /**
    * @description Announced by the screen reader to indicate how many times a particular message in
    * the console was repeated.
    */
@@ -1274,6 +1285,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     } else if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
       iconName = 'error_icon';
       accessibleName = i18nString(UIStrings.error);
+    } else if (this.message.originatesFromLogpoint) {
+      iconName = 'console-logpoint';
+      accessibleName = i18nString(UIStrings.logpoint);
+    } else if (this.message.originatesFromConditionalBreakpoint) {
+      iconName = 'console-conditional-breakpoint';
+      accessibleName = i18nString(UIStrings.cndBreakpoint);
     }
     if (!iconName) {
       return;

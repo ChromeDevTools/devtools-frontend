@@ -257,28 +257,6 @@ Event.prototype.consume = function(preventDefault?: boolean): void {
   this.handled = true;
 };
 
-Element.prototype.selectionLeftOffset = function(): number|null {
-  // Calculate selection offset relative to the current element.
-
-  const selection = this.getComponentSelection();
-  if (!selection.containsNode(this, true)) {
-    return null;
-  }
-
-  let leftOffset = selection.anchorOffset;
-  let node: ChildNode|(Node | null) = selection.anchorNode;
-
-  while (node !== this) {
-    while (node.previousSibling) {
-      node = node.previousSibling;
-      leftOffset += node.textContent.length;
-    }
-    node = node.parentNodeOrShadowHost();
-  }
-
-  return leftOffset;
-};
-
 Node.prototype.deepTextContent = function(): string {
   return this.childTextNodes()
       .map(function(node) {

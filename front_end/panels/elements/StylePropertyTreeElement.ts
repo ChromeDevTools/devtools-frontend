@@ -1404,7 +1404,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const keyboardEvent = (event as KeyboardEvent);
     const target = (keyboardEvent.target as HTMLElement);
     const keyChar = String.fromCharCode(keyboardEvent.charCode);
-    const selectionLeftOffset = target.selectionLeftOffset();
+    const selectionLeftOffset = this.#selectionLeftOffset(target);
     const isFieldInputTerminated =
         (context.isEditingName ? keyChar === ':' :
                                  keyChar === ';' && selectionLeftOffset !== null &&
@@ -1415,6 +1415,27 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       void this.editingCommitted(target.textContent || '', context, 'forward');
       return;
     }
+  }
+
+  /** @returns Selection offset relative to `element` */
+  #selectionLeftOffset(element: HTMLElement): number|null {
+    const selection = element.getComponentSelection();
+    if (!selection?.containsNode(element, true)) {
+      return null;
+    }
+
+    let leftOffset = selection.anchorOffset;
+    let node: ChildNode|(Node | null) = selection.anchorNode;
+
+    while (node !== element) {
+      while (node?.previousSibling) {
+        node = node.previousSibling;
+        leftOffset += node.textContent?.length ?? 0;
+      }
+      node = node?.parentNodeOrShadowHost() ?? null;
+    }
+
+    return leftOffset;
   }
 
   private async applyFreeFlowStyleTextEdit(context: Context): Promise<void> {

@@ -62,6 +62,7 @@
   margin: 0;
   overflow: hidden;
   max-width: 500px;
+  padding: 3px;
 }
 
 .network-discovery-footer > * {

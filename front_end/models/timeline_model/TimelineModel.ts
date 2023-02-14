@@ -220,6 +220,17 @@ export class TimelineModelImpl {
     return Math.max(index, 0);
   }
 
+  mainFrameID(): string {
+    return this.mainFrame.frameId;
+  }
+
+  /**
+   * Determines if an event is potentially a marker event. A marker event here
+   * is a single moment in time that we want to highlight on the timeline, such as
+   * the LCP point. This method does not filter out events: for example, it treats
+   * every LCP Candidate event as a potential marker event. The logic to pick the
+   * right candidate to use is implemeneted in the TimelineFlameChartDataProvider.
+   **/
   isMarkerEvent(event: SDK.TracingModel.Event): boolean {
     switch (event.name) {
       case RecordType.TimeStamp:

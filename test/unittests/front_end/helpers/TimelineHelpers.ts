@@ -27,6 +27,7 @@ export interface EventWithStubbedThreadOptions {
   phase: SDK.TracingModel.Phase;
   startTime: number;
   threadId: number;
+  args?: Record<string, unknown>;
 }
 
 /**
@@ -60,6 +61,9 @@ class StubbedThread {
 export function makeEventWithStubbedThread(options: EventWithStubbedThreadOptions): SDK.TracingModel.Event {
   const thread = StubbedThread.makeStubEvent(options.threadId);
   const event = new SDK.TracingModel.Event(options.categories, options.name, options.phase, options.startTime, thread);
+  if (options.args) {
+    event.args = options.args;
+  }
   return event;
 }
 export const DevToolsTimelineCategory = 'disabled-by-default-devtools.timeline';

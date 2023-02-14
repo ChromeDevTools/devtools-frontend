@@ -218,9 +218,17 @@ const UIStrings = {
    */
   emulateBlurredVision: 'Emulate blurred vision',
   /**
+   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
+   */
+  emulateReducedContrast: 'Emulate reduced contrast',
+  /**
    *@description Name of a vision deficiency that can be emulated via the Rendering drawer
    */
   blurredVision: 'Blurred vision',
+  /**
+   *@description Name of a vision deficiency that can be emulated via the Rendering drawer
+   */
+  reducedContrast: 'Reduced contrast',
   /**
    *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
    */
@@ -895,6 +903,11 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.emulateBlurredVision),
       text: i18nLazyString(UIStrings.blurredVision),
       value: 'blurredVision',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateReducedContrast),
+      text: i18nLazyString(UIStrings.reducedContrast),
+      value: 'reducedContrast',
     },
     {
       title: i18nLazyString(UIStrings.emulateProtanopia),

@@ -20,6 +20,7 @@ describe('Rendering pane', () => {
     const expected = [
       'No emulation',
       'Blurred vision',
+      'Reduced contrast',
       'Protanopia (no red)',
       'Deuteranopia (no green)',
       'Tritanopia (no blue)',

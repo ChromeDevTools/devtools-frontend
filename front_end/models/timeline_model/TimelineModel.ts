@@ -2220,7 +2220,6 @@ export class InvalidationTrackingEvent {
 
 export class InvalidationTracker {
   private lastRecalcStyle: SDK.TracingModel.Event|null;
-  private lastPaintWithLayer: SDK.TracingModel.Event|null;
   didPaint: boolean;
   private invalidations: {
     [x: string]: InvalidationTrackingEvent[],
@@ -2230,7 +2229,6 @@ export class InvalidationTracker {
   };
   constructor() {
     this.lastRecalcStyle = null;
-    this.lastPaintWithLayer = null;
     this.didPaint = false;
     this.initializePerFrameState();
     this.invalidations = {};
@@ -2428,7 +2426,6 @@ export class InvalidationTracker {
     this.invalidationsByNodeId = {};
 
     this.lastRecalcStyle = null;
-    this.lastPaintWithLayer = null;
     this.didPaint = false;
   }
 }

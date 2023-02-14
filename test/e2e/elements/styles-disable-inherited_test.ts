@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {goToResource, waitFor, waitForElementWithTextContent} from '../../shared/helper.js';
+import {click, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   checkStyleAttributes,
@@ -16,14 +16,18 @@ describe('The Elements tab', async function() {
     await goToResource('elements/styles-disable-inherited.html');
     await expandSelectedNodeRecursively();
     const elementsContentPanel = await waitFor('#elements-content');
-    const nested = await waitForElementWithTextContent('nested', elementsContentPanel);
-    await nested.click();
+    await click('text/nested', {
+      root: elementsContentPanel,
+    });
     await waitForElementsStyleSection();
     await checkStyleAttributes(['display: block;', 'font-weight: bold;']);
-    const container = await waitForElementWithTextContent('container', elementsContentPanel);
-    await container.click();
+    await click('text/container', {
+      root: elementsContentPanel,
+    });
     await uncheckStylesPaneCheckbox('font-weight bold');
-    await nested.click();
+    await click('text/nested', {
+      root: elementsContentPanel,
+    });
     await checkStyleAttributes(['display: block;']);
   });
 });

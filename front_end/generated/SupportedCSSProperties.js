@@ -3447,7 +3447,8 @@ export const generatedProperties = [
    "auto",
    "none",
    "text",
-   "all"
+   "all",
+   "contain"
   ],
   "name": "user-select"
  },
@@ -5389,7 +5390,8 @@ export const generatedPropertyValues = {
    "auto",
    "none",
    "text",
-   "all"
+   "all",
+   "contain"
   ]
  },
  "vector-effect": {

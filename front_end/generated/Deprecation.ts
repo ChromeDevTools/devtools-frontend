@@ -95,6 +95,10 @@ export const UIStrings = {
    */
   MediaSourceDurationTruncatingBuffered: 'Setting `MediaSource.duration` below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit `remove(newDuration, oldDuration)` on all `sourceBuffers`, where `newDuration < oldDuration`.',
   /**
+   * @description This warning is displayed when a site contains a `<template>` element with the `shadowroot` attribute.
+   */
+  NonStandardDeclarativeShadowDOM: 'The older, non-standardized `shadowroot` attribute is deprecated. Please use the new, standardized `shadowrootmode` attribute instead.',
+  /**
    * @description This warning occurs when the browser requests Web MIDI access as sysex (system exclusive messages) can be allowed via prompt even if the browser did not specifically request it.
    */
   NoSysexWebMIDIWithoutPermission: 'Web MIDI will ask a permission to use even if the sysex is not specified in the `MIDIOptions`.',
@@ -173,7 +177,7 @@ export const UIStrings = {
   /**
    * @description Warning displayed to developers that the API `chrome.privacy.websites.privacySandboxEnabled` is being deprecated in favour of three new more granular APIs: topicsEnabled, FledgeEnabled and adMeasurementEnabled. The `privacySandboxEnabled` API allowed extensions to control the homologous Chrome Setting. The existing Chrome Setting for Privacy Sandbox is also going away in favor of more granular settings that are matched by the new extensions APIs- topicsEnabled, FledgeEnabled and adMeasurementEnabled.
    */
-  PrivacySandboxExtensionsAPI: 'We’re deprecating the API `chrome.privacy.websites.privacySandboxEnabled`, though it will remain active for backward compatibility until release M113. Instead, please use `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` and `chrome.privacy.websites.adMeasurementEnabled`. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled.',
+  PrivacySandboxExtensionsAPI: 'We\'re deprecating the API `chrome.privacy.websites.privacySandboxEnabled`, though it will remain active for backward compatibility until release M113. Instead, please use `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` and `chrome.privacy.websites.adMeasurementEnabled`. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled.',
   /**
    * @description Standard message when one web API is deprecated in favor of another.
    */
@@ -280,6 +284,10 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   "NoSysexWebMIDIWithoutPermission": {
     "chromeStatusFeature": 5138066234671104,
     "milestone": 82
+  },
+  "NonStandardDeclarativeShadowDOM": {
+    "chromeStatusFeature": 6239658726391808,
+    "milestone": 112
   },
   "NotificationPermissionRequestedIframe": {
     "chromeStatusFeature": 6451284559265792

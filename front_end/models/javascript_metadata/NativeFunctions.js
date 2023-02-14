@@ -7337,7 +7337,11 @@ export const NativeFunctions = [
     signatures: [['?input']]
   },
   {
-    name: 'buildAsync',
+    name: 'build',
+    signatures: [['outputs']]
+  },
+  {
+    name: 'buildSync',
     signatures: [['outputs']]
   },
   {

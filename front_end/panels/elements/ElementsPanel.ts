@@ -44,7 +44,6 @@ import elementsPanelStyles from './elementsPanel.css.js';
 
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
@@ -80,10 +79,6 @@ const UIStrings = {
    * Accessibility Tree View, in the Elements panel.
    */
   switchToDomTreeView: 'Switch to DOM Tree view',
-  /**
-   * @description Label for a link to a rendering frame.
-   */
-  frame: 'Frame',
   /**
    * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
    * open/show the sidebar.
@@ -199,7 +194,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   private readonly computedStyleWidget: ComputedStyleWidget;
   private readonly metricsWidget: MetricsSidebarPane;
   private treeOutlines: Set<ElementsTreeOutline> = new Set();
-  private readonly treeOutlineHeaders: Map<ElementsTreeOutline, Element> = new Map();
   private searchResults!: {
     domModel: SDK.DOMModel.DOMModel,
     index: number,
@@ -373,12 +367,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       treeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, this.updateBreadcrumbIfNeeded, this);
       new ElementsTreeElementHighlighter(treeOutline);
       this.treeOutlines.add(treeOutline);
-      if (domModel.target().parentTarget()) {
-        const element = document.createElement('div');
-        element.classList.add('elements-tree-header');
-        this.treeOutlineHeaders.set(treeOutline, element);
-        this.targetNameChanged(domModel.target());
-      }
     }
     treeOutline.wireToDOMModel(domModel);
 
@@ -404,11 +392,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       return;
     }
     this.treeOutlines.delete(treeOutline);
-    const header = this.treeOutlineHeaders.get(treeOutline);
-    if (header) {
-      header.remove();
-    }
-    this.treeOutlineHeaders.delete(treeOutline);
     treeOutline.element.remove();
 
     this.removeStyleTracking(domModel.cssModel());
@@ -423,14 +406,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     if (!treeOutline) {
       return;
     }
-    const header = this.treeOutlineHeaders.get(treeOutline);
-    if (!header) {
-      return;
-    }
-    header.removeChildren();
-    header.createChild('div', 'elements-tree-header-frame').textContent = i18nString(UIStrings.frame);
-    header.appendChild(Components.Linkifier.Linkifier.linkifyURL(
-        target.inspectedURL(), ({text: target.name()} as Components.Linkifier.LinkifyURLOptions)));
   }
 
   private updateTreeOutlineVisibleWidth(): void {
@@ -467,10 +442,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     for (const treeOutline of this.treeOutlines) {
       // Attach heavy component lazily
       if (treeOutline.element.parentElement !== this.domTreeContainer) {
-        const header = this.treeOutlineHeaders.get(treeOutline);
-        if (header) {
-          this.domTreeContainer.appendChild(header);
-        }
         this.domTreeContainer.appendChild(treeOutline.element);
       }
     }
@@ -503,10 +474,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       treeOutline.setVisible(false);
       // Detach heavy component on hide
       this.domTreeContainer.removeChild(treeOutline.element);
-      const header = this.treeOutlineHeaders.get(treeOutline);
-      if (header) {
-        this.domTreeContainer.removeChild(header);
-      }
     }
     super.willHide();
     UI.Context.Context.instance().setFlavor(ElementsPanel, null);

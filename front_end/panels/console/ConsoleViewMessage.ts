@@ -53,7 +53,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';  // eslint-disable-line rulesdir/es_modules_import
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 import {format, updateStyle} from './ConsoleFormat.js';
 import {type ConsoleViewportElement} from './ConsoleViewport.js';
@@ -468,16 +467,30 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   protected buildMessageAnchor(): HTMLElement|null {
-    const linkify = (message: SDK.ConsoleModel.ConsoleMessage): HTMLElement|null => {
-      if (message.scriptId) {
-        return this.linkifyScriptId(
-            message.scriptId, message.url || Platform.DevToolsPath.EmptyUrlString, message.line, message.column);
+    const runtimeModel = this.message.runtimeModel();
+    if (!runtimeModel) {
+      return null;
+    }
+
+    const linkify = ({stackFrameWithBreakpoint, scriptId, stackTrace, url, line, column}:
+                         SDK.ConsoleModel.ConsoleMessage): HTMLElement|null => {
+      if (stackFrameWithBreakpoint) {
+        return this.linkifier.maybeLinkifyConsoleCallFrame(runtimeModel.target(), stackFrameWithBreakpoint, {
+          inlineFrameIndex: 0,
+          revealBreakpoint: true,
+        });
       }
-      if (message.stackTrace && message.stackTrace.callFrames.length) {
-        return this.linkifyStackTrace(message);
+      if (scriptId) {
+        return this.linkifier.linkifyScriptLocation(
+            runtimeModel.target(), scriptId, url || Platform.DevToolsPath.EmptyUrlString, line,
+            {columnNumber: column, inlineFrameIndex: 0});
       }
-      if (message.url && message.url !== 'undefined') {
-        return this.linkifyLocation(message.url, message.line, message.column);
+      if (stackTrace && stackTrace.callFrames.length) {
+        return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
+      }
+      if (url && url !== 'undefined') {
+        return this.linkifier.linkifyScriptLocation(
+            runtimeModel.target(), /* scriptId */ null, url, line, {columnNumber: column, inlineFrameIndex: 0});
       }
       return null;
     };
@@ -556,44 +569,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     // @ts-ignore
     toggleElement._expandStackTraceForTest = this.expandTrace.bind(this, true);
     return toggleElement;
-  }
-
-  private linkifyLocation(url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number): HTMLElement
-      |null {
-    const runtimeModel = this.message.runtimeModel();
-    if (!runtimeModel) {
-      return null;
-    }
-    return this.linkifier.linkifyScriptLocation(
-        runtimeModel.target(), /* scriptId */ null, url, lineNumber, {columnNumber, inlineFrameIndex: 0});
-  }
-
-  private linkifyStackTrace({stackTrace, stackFrameWithBreakpoint}: SDK.ConsoleModel.ConsoleMessage): HTMLElement|null {
-    const runtimeModel = this.message.runtimeModel();
-    if (!runtimeModel) {
-      return null;
-    }
-    assertNotNullOrUndefined(stackTrace);
-    console.assert(stackTrace.callFrames.length > 0);
-
-    if (stackFrameWithBreakpoint) {
-      return this.linkifier.maybeLinkifyConsoleCallFrame(runtimeModel.target(), stackFrameWithBreakpoint, {
-        inlineFrameIndex: 0,
-        revealBreakpoint: true,
-      });
-    }
-    return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
-  }
-
-  private linkifyScriptId(
-      scriptId: Protocol.Runtime.ScriptId, url: Platform.DevToolsPath.UrlString, lineNumber: number,
-      columnNumber: number): HTMLElement|null {
-    const runtimeModel = this.message.runtimeModel();
-    if (!runtimeModel) {
-      return null;
-    }
-    return this.linkifier.linkifyScriptLocation(
-        runtimeModel.target(), scriptId, url, lineNumber, {columnNumber, inlineFrameIndex: 0});
   }
 
   private format(rawParameters: (string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|undefined)[]):

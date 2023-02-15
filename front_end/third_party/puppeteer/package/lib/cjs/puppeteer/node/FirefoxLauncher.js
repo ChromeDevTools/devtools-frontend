@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,10 +30,8 @@ exports.FirefoxLauncher = void 0;
 const fs_1 = __importDefault(require("fs"));
 const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
-const Browser_js_1 = require("../common/bidi/Browser.js");
-const Browser_js_2 = require("../common/Browser.js");
+const Browser_js_1 = require("../common/Browser.js");
 const assert_js_1 = require("../util/assert.js");
-const BrowserFetcher_js_1 = require("./BrowserFetcher.js");
 const BrowserRunner_js_1 = require("./BrowserRunner.js");
 const ProductLauncher_js_1 = require("./ProductLauncher.js");
 /**
@@ -90,7 +111,9 @@ class FirefoxLauncher extends ProductLauncher_js_1.ProductLauncher {
                     slowMo,
                     preferredRevision: this.puppeteer.browserRevision,
                 });
-                browser = await Browser_js_1.Browser.create({
+                const BiDi = await Promise.resolve().then(() => __importStar(require(
+                /* webpackIgnore: true */ '../common/bidi/bidi.js')));
+                browser = await BiDi.Browser.create({
                     connection,
                     closeCallback: runner.close.bind(runner),
                     process: runner.proc,
@@ -110,7 +133,7 @@ class FirefoxLauncher extends ProductLauncher_js_1.ProductLauncher {
                 slowMo,
                 preferredRevision: this.puppeteer.browserRevision,
             });
-            browser = await Browser_js_2.CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
+            browser = await Browser_js_1.CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
         catch (error) {
             runner.kill();
@@ -132,13 +155,13 @@ class FirefoxLauncher extends ProductLauncher_js_1.ProductLauncher {
     executablePath() {
         // replace 'latest' placeholder with actual downloaded revision
         if (this.puppeteer.browserRevision === 'latest') {
-            const browserFetcher = new BrowserFetcher_js_1.BrowserFetcher({
+            const browserFetcher = this.puppeteer.createBrowserFetcher({
                 product: this.product,
                 path: this.puppeteer.defaultDownloadPath,
             });
             const localRevisions = browserFetcher.localRevisions();
             if (localRevisions[0]) {
-                this.puppeteer.configuration.browserRevision = localRevisions[0];
+                this.actualBrowserRevision = localRevisions[0];
             }
         }
         return this.resolveExecutablePath();

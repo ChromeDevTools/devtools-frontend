@@ -37,10 +37,10 @@ export class BrowserContext extends BrowserContextBase {
         __classPrivateFieldSet(this, _BrowserContext_connection, connection, "f");
     }
     async newPage() {
-        const result = (await __classPrivateFieldGet(this, _BrowserContext_connection, "f").send('browsingContext.create', {
+        const response = await __classPrivateFieldGet(this, _BrowserContext_connection, "f").send('browsingContext.create', {
             type: 'tab',
-        }));
-        return new Page(__classPrivateFieldGet(this, _BrowserContext_connection, "f"), result.context);
+        });
+        return new Page(__classPrivateFieldGet(this, _BrowserContext_connection, "f"), response.result.context);
     }
     async close() { }
 }

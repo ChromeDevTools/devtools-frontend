@@ -89,7 +89,7 @@ export class Connection extends EventEmitter {
                     callback.reject(createProtocolError(callback.error, callback.method, object));
                 }
                 else {
-                    callback.resolve(object.result);
+                    callback.resolve(object);
                 }
             }
         }
@@ -119,6 +119,9 @@ function rewriteError(error, message, originalMessage) {
     error.originalMessage = originalMessage !== null && originalMessage !== void 0 ? originalMessage : error.originalMessage;
     return error;
 }
+/**
+ * @internal
+ */
 function createProtocolError(error, method, object) {
     let message = `Protocol error (${method}): ${object.error} ${object.message}`;
     if (object.stacktrace) {

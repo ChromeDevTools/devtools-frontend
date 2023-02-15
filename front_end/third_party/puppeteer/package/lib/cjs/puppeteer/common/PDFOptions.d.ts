@@ -25,7 +25,7 @@ export interface PDFMargin {
 /**
  * @public
  */
-export declare type LowerCasePaperFormat = 'letter' | 'legal' | 'tabloid' | 'ledger' | 'a0' | 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6';
+export type LowerCasePaperFormat = 'letter' | 'legal' | 'tabloid' | 'ledger' | 'a0' | 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6';
 /**
  * All the valid paper format types when printing a PDF.
  *
@@ -57,7 +57,7 @@ export declare type LowerCasePaperFormat = 'letter' | 'legal' | 'tabloid' | 'led
  *
  * @public
  */
-export declare type PaperFormat = Uppercase<LowerCasePaperFormat> | Capitalize<LowerCasePaperFormat> | LowerCasePaperFormat;
+export type PaperFormat = Uppercase<LowerCasePaperFormat> | Capitalize<LowerCasePaperFormat> | LowerCasePaperFormat;
 /**
  * Valid options to configure PDF generation via {@link Page.pdf}.
  * @public
@@ -149,7 +149,7 @@ export interface PDFOptions {
      */
     omitBackground?: boolean;
     /**
-     * Timeout in milliseconds
+     * Timeout in milliseconds. Pass `0` to disable timeout.
      * @defaultValue 30000
      */
     timeout?: number;

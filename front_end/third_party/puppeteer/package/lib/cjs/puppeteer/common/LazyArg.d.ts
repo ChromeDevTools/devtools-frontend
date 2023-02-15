@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ExecutionContext } from './ExecutionContext.js';
 /**
  * @internal
  */
 export declare class LazyArg<T> {
     #private;
-    constructor(get: () => Promise<T>);
-    get(): Promise<T>;
+    static create: <T_1>(get: (context: ExecutionContext) => T_1 | Promise<T_1>) => T_1;
+    private constructor();
+    get(context: ExecutionContext): Promise<T>;
 }
 //# sourceMappingURL=LazyArg.d.ts.map

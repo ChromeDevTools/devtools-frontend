@@ -57,7 +57,7 @@ export interface ResponseForRequest {
  *
  * @public
  */
-export declare type ResourceType = Lowercase<Protocol.Network.ResourceType>;
+export type ResourceType = Lowercase<Protocol.Network.ResourceType>;
 /**
  * The default cooperative request interception resolution priority
  *
@@ -363,14 +363,14 @@ export declare enum InterceptResolutionAction {
  *
  * @deprecated please use {@link InterceptResolutionAction} instead.
  */
-export declare type InterceptResolutionStrategy = InterceptResolutionAction;
+export type InterceptResolutionStrategy = InterceptResolutionAction;
 /**
  * @public
  */
-export declare type ErrorCode = 'aborted' | 'accessdenied' | 'addressunreachable' | 'blockedbyclient' | 'blockedbyresponse' | 'connectionaborted' | 'connectionclosed' | 'connectionfailed' | 'connectionrefused' | 'connectionreset' | 'internetdisconnected' | 'namenotresolved' | 'timedout' | 'failed';
+export type ErrorCode = 'aborted' | 'accessdenied' | 'addressunreachable' | 'blockedbyclient' | 'blockedbyresponse' | 'connectionaborted' | 'connectionclosed' | 'connectionfailed' | 'connectionrefused' | 'connectionreset' | 'internetdisconnected' | 'namenotresolved' | 'timedout' | 'failed';
 /**
  * @public
  */
-export declare type ActionResult = 'continue' | 'abort' | 'respond';
+export type ActionResult = 'continue' | 'abort' | 'respond';
 export {};
 //# sourceMappingURL=HTTPRequest.d.ts.map

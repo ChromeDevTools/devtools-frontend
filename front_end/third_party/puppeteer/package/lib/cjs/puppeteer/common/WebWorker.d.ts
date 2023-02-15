@@ -19,15 +19,15 @@ import { ConsoleMessageType } from './ConsoleMessage.js';
 import { EvaluateFunc, HandleFor } from './types.js';
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
-import { JSHandle } from './JSHandle.js';
+import { JSHandle } from '../api/JSHandle.js';
 /**
  * @internal
  */
-export declare type ConsoleAPICalledCallback = (eventType: ConsoleMessageType, handles: JSHandle[], trace: Protocol.Runtime.StackTrace) => void;
+export type ConsoleAPICalledCallback = (eventType: ConsoleMessageType, handles: JSHandle[], trace: Protocol.Runtime.StackTrace) => void;
 /**
  * @internal
  */
-export declare type ExceptionThrownCallback = (details: Protocol.Runtime.ExceptionDetails) => void;
+export type ExceptionThrownCallback = (details: Protocol.Runtime.ExceptionDetails) => void;
 /**
  * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.

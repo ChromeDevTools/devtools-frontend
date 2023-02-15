@@ -16,7 +16,7 @@
 import { CDPSession } from './Connection.js';
 import { KeyInput } from './USKeyboardLayout.js';
 import { Protocol } from 'devtools-protocol';
-import { Point } from './JSHandle.js';
+import { Point } from '../api/ElementHandle.js';
 /**
  * Keyboard provides an api for managing a virtual keyboard.
  * The high level api is {@link Keyboard."type"},
@@ -91,10 +91,13 @@ export declare class Keyboard {
      * See {@link KeyInput} for a list of all key names.
      *
      * @param options - An object of options. Accepts text which, if specified,
-     * generates an input event with this text.
+     * generates an input event with this text. Accepts commands which, if specified,
+     * is the commands of keyboard shortcuts,
+     * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
      */
     down(key: KeyInput, options?: {
         text?: string;
+        commands?: string[];
     }): Promise<void>;
     /**
      * Dispatches a `keyup` event.
@@ -166,17 +169,20 @@ export declare class Keyboard {
      * @param options - An object of options. Accepts text which, if specified,
      * generates an input event with this text. Accepts delay which,
      * if specified, is the time to wait between `keydown` and `keyup` in milliseconds.
-     * Defaults to 0.
+     * Defaults to 0. Accepts commands which, if specified,
+     * is the commands of keyboard shortcuts,
+     * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
      */
     press(key: KeyInput, options?: {
         delay?: number;
         text?: string;
+        commands?: string[];
     }): Promise<void>;
 }
 /**
  * @public
  */
-export declare type MouseButton = 'left' | 'right' | 'middle' | 'back' | 'forward';
+export type MouseButton = 'left' | 'right' | 'middle' | 'back' | 'forward';
 /**
  * @public
  */
@@ -372,5 +378,21 @@ export declare class Touchscreen {
      * @param y - Vertical position of the tap.
      */
     tap(x: number, y: number): Promise<void>;
+    /**
+     * Dispatches a `touchstart` event.
+     * @param x - Horizontal position of the tap.
+     * @param y - Vertical position of the tap.
+     */
+    touchStart(x: number, y: number): Promise<void>;
+    /**
+     * Dispatches a `touchMove` event.
+     * @param x - Horizontal position of the move.
+     * @param y - Vertical position of the move.
+     */
+    touchMove(x: number, y: number): Promise<void>;
+    /**
+     * Dispatches a `touchend` event.
+     */
+    touchEnd(): Promise<void>;
 }
 //# sourceMappingURL=Input.d.ts.map

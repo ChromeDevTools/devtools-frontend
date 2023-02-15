@@ -765,7 +765,7 @@
     "message": "Avoids requesting the notification permission on page load"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | description": {
-    "message": "Preventing input pasting is a UX anti-pattern, and undermines good security policy. [Learn more about user-friendly input fields](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
+    "message": "Preventing input pasting is a bad practice for the UX, and weakens security by blocking password managers.[Learn more about user-friendly input fields](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | failureTitle": {
     "message": "Prevents users from pasting into input fields"

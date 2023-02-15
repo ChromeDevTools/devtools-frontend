@@ -765,7 +765,7 @@
     "message": "Âv́ôíd̂ś r̂éq̂úêśt̂ín̂ǵ t̂h́ê ńôt́îf́îćât́îón̂ ṕêŕm̂íŝśîón̂ ón̂ ṕâǵê ĺôád̂"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | description": {
-    "message": "P̂ŕêv́êńt̂ín̂ǵ îńp̂út̂ ṕâśt̂ín̂ǵ îś â ÚX̂ án̂t́î-ṕât́t̂ér̂ń, âńd̂ ún̂d́êŕm̂ín̂éŝ ǵôód̂ śêćûŕît́ŷ ṕôĺîćŷ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ úŝér̂-f́r̂íêńd̂ĺŷ ín̂ṕût́ f̂íêĺd̂ś](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
+    "message": "P̂ŕêv́êńt̂ín̂ǵ îńp̂út̂ ṕâśt̂ín̂ǵ îś â b́âd́ p̂ŕâćt̂íĉé f̂ór̂ t́ĥé ÛX́, âńd̂ ẃêák̂én̂ś ŝéĉúr̂ít̂ý b̂ý b̂ĺôćk̂ín̂ǵ p̂áŝśŵór̂d́ m̂án̂áĝér̂ś.[L̂éâŕn̂ ḿôŕê áb̂óût́ ûśêŕ-f̂ŕîén̂d́l̂ý îńp̂út̂ f́îél̂d́ŝ](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | failureTitle": {
     "message": "P̂ŕêv́êńt̂ś ûśêŕŝ f́r̂óm̂ ṕâśt̂ín̂ǵ îńt̂ó îńp̂út̂ f́îél̂d́ŝ"

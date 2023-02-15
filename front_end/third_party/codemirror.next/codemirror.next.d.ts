@@ -2057,7 +2057,7 @@ declare abstract class WidgetType {
     couldn't (in which case the widget will be redrawn). The default
     implementation just returns false.
     */
-    updateDOM(dom: HTMLElement): boolean;
+    updateDOM(dom: HTMLElement, view: EditorView): boolean;
     /**
     The estimated height this widget will have, to be used when
     estimating the height of content that hasn't been drawn. May
@@ -3936,9 +3936,9 @@ declare class LanguageDescription {
     static matchLanguageName(descs: readonly LanguageDescription[], name: string, fuzzy?: boolean): LanguageDescription | null;
 }
 /**
-Facet for overriding the unit by which indentation happens.
-Should be a string consisting either entirely of spaces or
-entirely of tabs. When not set, this defaults to 2 spaces.
+Facet for overriding the unit by which indentation happens. Should
+be a string consisting either entirely of the same whitespace
+character. When not set, this defaults to 2 spaces.
 */
 declare const indentUnit: Facet<string, string>;
 /**
@@ -3987,7 +3987,7 @@ declare class IndentContext {
         simulateBreak?: number;
         /**
         When `simulateBreak` is given, this can be used to make the
-        simulate break behave like a double line break.
+        simulated break behave like a double line break.
         */
         simulateDoubleBreak?: boolean;
     });
@@ -4280,6 +4280,7 @@ declare class StringStream {
     The current indent unit size.
     */
     indentUnit: number;
+    private overrideIndent?;
     /**
     The current position on the line.
     */
@@ -4301,7 +4302,7 @@ declare class StringStream {
     /**
     The current indent unit size.
     */
-    indentUnit: number);
+    indentUnit: number, overrideIndent?: number | undefined);
     /**
     True if we are at the end of the line.
     */
@@ -5363,6 +5364,13 @@ interface HistoryConfig {
     apart and still be grouped together. Defaults to 500.
     */
     newGroupDelay?: number;
+    /**
+    By default, when close enough together in time, changes are
+    joined into an existing undo event if they touch any of the
+    changed ranges from that event. You can pass a custom predicate
+    here to influence that logic.
+    */
+    joinToEvent?: (tr: Transaction, isAdjacent: boolean) => boolean;
 }
 /**
 Create a history extension with the given configuration.

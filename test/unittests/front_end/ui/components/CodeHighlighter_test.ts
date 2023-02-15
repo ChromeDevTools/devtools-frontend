@@ -190,7 +190,7 @@ Paragraph with [emphasis&meta *][emphasis emphasized][emphasis&meta *] text.
 
   it('can highlight Python', testHighlight(`
 [keyword def] [definition f]([variable x] = [atom True]):
-  [keyword return] [variable x] [keyword *] [number 10];
+  [keyword return] [variable x] * [number 10];
 `, 'text/x-python'));
 
 it('can highlight PHP', testHighlight(`

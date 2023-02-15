@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import * as path from 'path';
 
+import {expectError} from '../../conductor/events.js';
 import {getBrowserAndPages, waitFor, waitForAria, waitForElementWithTextContent} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openDeviceToolbar, reloadDockableFrontEnd, selectDevice} from '../helpers/emulation-helpers.js';
@@ -30,6 +31,18 @@ const IPAD_MINI_LANDSCAPE_VIEWPORT_DIMENSIONS = {
 describe('DevTools', function() {
   // The tests in this suite are particularly slow
   this.timeout(60_000);
+
+  beforeEach(async () => {
+    // https://github.com/GoogleChrome/lighthouse/issues/14572
+    expectError(/Request CacheStorage\.requestCacheNames failed/);
+
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=1357791
+    expectError(/Protocol Error: the message with wrong session id/);
+    expectError(/Protocol Error: the message with wrong session id/);
+    expectError(/Protocol Error: the message with wrong session id/);
+    expectError(/Protocol Error: the message with wrong session id/);
+    expectError(/Protocol Error: the message with wrong session id/);
+  });
 
   describe('request blocking', () => {
     // Start blocking *.css

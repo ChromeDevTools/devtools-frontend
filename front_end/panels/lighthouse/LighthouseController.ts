@@ -553,7 +553,7 @@ export const RuntimeSettings: RuntimeSetting[] = [
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
-        'lighthouse.legacy_navigation', true, Common.Settings.SettingStorageType.Synced),
+        'lighthouse.legacy_navigation', false, Common.Settings.SettingStorageType.Synced),
     title: i18nLazyString(UIStrings.legacyNavigation),
     description: i18nLazyString(UIStrings.useLegacyNavigation),
     setFlags: (flags: Flags, value: string|boolean): void => {

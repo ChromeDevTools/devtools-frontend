@@ -730,7 +730,8 @@ export class TimelineModelImpl {
         thread.events().filter(event => event.name === gpuEventName);
   }
 
-  private buildLoadingEvents(tracingModel: SDK.TracingModel.TracingModel, events: SDK.TracingModel.Event[]): void {
+  private buildLoadingEvents(tracingModel: SDK.TracingModel.TracingModel, layoutShiftEvents: SDK.TracingModel.Event[]):
+      void {
     const thread = tracingModel.getThreadByName('Renderer', 'CrRendererMain');
     if (!thread) {
       return;
@@ -738,7 +739,7 @@ export class TimelineModelImpl {
     const experienceCategory = 'experience';
     const track = this.ensureNamedTrack(TrackType.Experience);
     track.thread = thread;
-    track.events = events;
+    track.events = layoutShiftEvents;
 
     // Even though the event comes from 'loading', in order to color it differently we
     // rename its category.
@@ -754,6 +755,7 @@ export class TimelineModelImpl {
         }
       }
     }
+    assignLayoutShiftsToClusters(layoutShiftEvents);
   }
 
   private resetProcessingState(): void {
@@ -1619,6 +1621,51 @@ export class TimelineModelImpl {
   }
 }
 
+// TODO(crbug.com/1386091) This helper can be removed once the Experience track uses the data of the
+// new engine.
+export function assignLayoutShiftsToClusters(layoutShifts: readonly SDK.TracingModel.Event[]): void {
+  const gapTimeInMs = 1000;
+  const limitTimeInMs = 5000;
+  let firstTimestamp = Number.NEGATIVE_INFINITY;
+  let previousTimestamp = Number.NEGATIVE_INFINITY;
+  let currentClusterId = 0;
+  let currentClusterScore = 0;
+  let currentCluster = new Set<SDK.TracingModel.Event>();
+
+  for (const event of layoutShifts) {
+    if (event.args['data']['had_recent_input'] || event.args['data']['weighted_score_delta'] === undefined) {
+      continue;
+    }
+
+    if (event.startTime - firstTimestamp > limitTimeInMs || event.startTime - previousTimestamp > gapTimeInMs) {
+      // This means the event does not fit into the current session/cluster, so we need to start a new cluster.
+      firstTimestamp = event.startTime;
+
+      // Update all the layout shifts we found in this cluster to associate them with the cluster.
+      for (const layoutShift of currentCluster) {
+        layoutShift.args['data']['_current_cluster_score'] = currentClusterScore;
+        layoutShift.args['data']['_current_cluster_id'] = currentClusterId;
+      }
+
+      // Increment the cluster ID and reset the data.
+      currentClusterId += 1;
+      currentClusterScore = 0;
+      currentCluster = new Set();
+    }
+
+    // Store the timestamp of the previous layout shift.
+    previousTimestamp = event.startTime;
+    // Update the score of the current cluster and store this event in that cluster
+    currentClusterScore += event.args['data']['weighted_score_delta'];
+    currentCluster.add(event);
+  }
+
+  // The last cluster we find may not get closed out - so if not, update all the shifts that we associate with it.
+  for (const layoutShift of currentCluster) {
+    layoutShift.args['data']['_current_cluster_score'] = currentClusterScore;
+    layoutShift.args['data']['_current_cluster_id'] = currentClusterId;
+  }
+}
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum RecordType {

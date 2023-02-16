@@ -46,7 +46,7 @@ import {type PerformanceModel} from './PerformanceModel.js';
 import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
 
-import {TimelineUIUtils, assignLayoutShiftsToClusters, type TimelineCategory} from './TimelineUIUtils.js';
+import {TimelineUIUtils, type TimelineCategory} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
@@ -759,14 +759,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     const metricEvents: SDK.TracingModel.Event[] = [];
     const lcpEvents = [];
-    const layoutShifts: SDK.TracingModel.Event[] = [];
     const timelineModel = this.performanceModel.timelineModel();
     for (const track of this.model.tracks()) {
       for (const event of track.events) {
-        if (timelineModel.isLayoutShiftEvent(event)) {
-          layoutShifts.push(event);
-        }
-
         if (!timelineModel.isMarkerEvent(event)) {
           continue;
         }
@@ -795,10 +790,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const latestEvents = latestCandidates.filter(e => timelineModel.isLCPCandidateEvent(e));
 
       metricEvents.push(...latestEvents);
-    }
-
-    if (layoutShifts.length) {
-      assignLayoutShiftsToClusters(layoutShifts);
     }
 
     metricEvents.sort(SDK.TracingModel.Event.compareStartTime);

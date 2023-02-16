@@ -23,7 +23,7 @@ import { Protocol } from 'devtools-protocol';
  * @example
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();

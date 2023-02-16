@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 import { Protocol } from 'devtools-protocol';
-import { JSHandle } from '../api/JSHandle.js';
+import type PuppeteerUtil from '../injected/injected.js';
+import { ElementHandle } from './ElementHandle.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { Frame } from './Frame.js';
 import { MouseButton } from './Input.js';
-import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
+import { JSHandle } from './JSHandle.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
-import { EvaluateFunc, EvaluateFuncWith, HandleFor, InnerLazyParams, NodeFor } from './types.js';
+import { EvaluateFunc, HandleFor, InnerLazyParams, NodeFor } from './types.js';
 import { TaskManager } from './WaitTask.js';
-import type { ElementHandle } from '../api/ElementHandle.js';
-import { Binding } from './Binding.js';
 /**
  * @public
  */
@@ -59,6 +58,20 @@ export interface PageBinding {
     pptrFunction: Function;
 }
 /**
+ * A unique key for {@link IsolatedWorldChart} to denote the default world.
+ * Execution contexts are automatically created in the default world.
+ *
+ * @internal
+ */
+export declare const MAIN_WORLD: unique symbol;
+/**
+ * A unique key for {@link IsolatedWorldChart} to denote the puppeteer world.
+ * This world contains all puppeteer-internal bindings/code.
+ *
+ * @internal
+ */
+export declare const PUPPETEER_WORLD: unique symbol;
+/**
  * @internal
  */
 export interface IsolatedWorldChart {
@@ -71,8 +84,9 @@ export interface IsolatedWorldChart {
  */
 export declare class IsolatedWorld {
     #private;
+    get puppeteerUtil(): Promise<JSHandle<PuppeteerUtil>>;
     get taskManager(): TaskManager;
-    get _bindings(): Map<string, Binding>;
+    get _boundFunctions(): Map<string, Function>;
     constructor(frame: Frame);
     frame(): Frame;
     clearContext(): void;
@@ -86,8 +100,14 @@ export declare class IsolatedWorld {
     $$<Selector extends string>(selector: Selector): Promise<Array<ElementHandle<NodeFor<Selector>>>>;
     document(): Promise<ElementHandle<Document>>;
     $x(expression: string): Promise<Array<ElementHandle<Node>>>;
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<NodeFor<Selector>, Params> = EvaluateFuncWith<NodeFor<Selector>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+        ElementHandle<NodeFor<Selector>>,
+        ...Params
+    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+        Array<NodeFor<Selector>>,
+        ...Params
+    ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     content(): Promise<string>;
     setContent(html: string, options?: {
         timeout?: number;
@@ -106,10 +126,12 @@ export declare class IsolatedWorld {
         delay: number;
     }): Promise<void>;
     _addBindingToContext(context: ExecutionContext, name: string): Promise<void>;
+    _waitForSelectorInPage(queryOne: Function, root: ElementHandle<Node> | undefined, selector: string, options: WaitForSelectorOptions, bindings?: Map<string, (...args: never[]) => unknown>): Promise<JSHandle<unknown> | null>;
     waitForFunction<Params extends unknown[], Func extends EvaluateFunc<InnerLazyParams<Params>> = EvaluateFunc<InnerLazyParams<Params>>>(pageFunction: Func | string, options?: {
         polling?: 'raf' | 'mutation' | number;
         timeout?: number;
         root?: ElementHandle<Node>;
+        bindings?: Map<string, (...args: never[]) => unknown>;
     }, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     title(): Promise<string>;
     adoptBackendNode(backendNodeId?: Protocol.DOM.BackendNodeId): Promise<JSHandle<Node>>;

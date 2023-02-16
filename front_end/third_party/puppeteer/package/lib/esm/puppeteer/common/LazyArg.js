@@ -33,14 +33,9 @@ export class LazyArg {
         _LazyArg_get.set(this, void 0);
         __classPrivateFieldSet(this, _LazyArg_get, get, "f");
     }
-    async get(context) {
-        return __classPrivateFieldGet(this, _LazyArg_get, "f").call(this, context);
+    get() {
+        return __classPrivateFieldGet(this, _LazyArg_get, "f").call(this);
     }
 }
 _LazyArg_get = new WeakMap();
-LazyArg.create = (get) => {
-    // We don't want to introduce LazyArg to the type system, otherwise we would
-    // have to make it public.
-    return new LazyArg(get);
-};
 //# sourceMappingURL=LazyArg.js.map

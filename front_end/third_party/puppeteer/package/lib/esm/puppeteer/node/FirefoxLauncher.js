@@ -1,8 +1,10 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { Browser as BiDiBrowser } from '../common/bidi/Browser.js';
 import { CDPBrowser } from '../common/Browser.js';
 import { assert } from '../util/assert.js';
+import { BrowserFetcher } from './BrowserFetcher.js';
 import { BrowserRunner } from './BrowserRunner.js';
 import { ProductLauncher } from './ProductLauncher.js';
 /**
@@ -82,9 +84,7 @@ export class FirefoxLauncher extends ProductLauncher {
                     slowMo,
                     preferredRevision: this.puppeteer.browserRevision,
                 });
-                const BiDi = await import(
-                /* webpackIgnore: true */ '../common/bidi/bidi.js');
-                browser = await BiDi.Browser.create({
+                browser = await BiDiBrowser.create({
                     connection,
                     closeCallback: runner.close.bind(runner),
                     process: runner.proc,
@@ -126,13 +126,13 @@ export class FirefoxLauncher extends ProductLauncher {
     executablePath() {
         // replace 'latest' placeholder with actual downloaded revision
         if (this.puppeteer.browserRevision === 'latest') {
-            const browserFetcher = this.puppeteer.createBrowserFetcher({
+            const browserFetcher = new BrowserFetcher({
                 product: this.product,
                 path: this.puppeteer.defaultDownloadPath,
             });
             const localRevisions = browserFetcher.localRevisions();
             if (localRevisions[0]) {
-                this.actualBrowserRevision = localRevisions[0];
+                this.puppeteer.configuration.browserRevision = localRevisions[0];
             }
         }
         return this.resolveExecutablePath();

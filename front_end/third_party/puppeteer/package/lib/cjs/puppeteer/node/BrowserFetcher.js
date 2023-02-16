@@ -393,12 +393,6 @@ class BrowserFetcher {
             product: __classPrivateFieldGet(this, _BrowserFetcher_product, "f"),
         };
     }
-    /**
-     * @internal
-     */
-    getDownloadPath() {
-        return __classPrivateFieldGet(this, _BrowserFetcher_downloadPath, "f");
-    }
 }
 exports.BrowserFetcher = BrowserFetcher;
 _BrowserFetcher_product = new WeakMap(), _BrowserFetcher_downloadPath = new WeakMap(), _BrowserFetcher_downloadHost = new WeakMap(), _BrowserFetcher_platform = new WeakMap(), _BrowserFetcher_instances = new WeakSet(), _BrowserFetcher_getFolderPath = function _BrowserFetcher_getFolderPath(revision) {

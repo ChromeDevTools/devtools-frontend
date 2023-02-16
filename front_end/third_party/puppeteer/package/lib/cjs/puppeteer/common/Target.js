@@ -31,11 +31,6 @@ exports.Target = void 0;
 const WebWorker_js_1 = require("./WebWorker.js");
 const Page_js_1 = require("./Page.js");
 /**
- * Target represents a
- * {@link https://chromedevtools.github.io/devtools-protocol/tot/Target/ | CDP target}.
- * In CDP a target is something that can be debugged such a frame, a page or a
- * worker.
- *
  * @public
  */
 class Target {

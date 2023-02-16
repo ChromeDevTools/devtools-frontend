@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Protocol } from 'devtools-protocol';
-import { ElementHandle } from '../api/ElementHandle.js';
+import { ElementHandle } from './ElementHandle.js';
 /**
  * File choosers let you react to the page requesting for a file.
  *

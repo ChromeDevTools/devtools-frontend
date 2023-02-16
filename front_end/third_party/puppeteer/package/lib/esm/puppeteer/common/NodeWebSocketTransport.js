@@ -31,23 +31,6 @@ import { packageVersion } from '../generated/version.js';
  * @internal
  */
 export class NodeWebSocketTransport {
-    static create(url, headers) {
-        return new Promise((resolve, reject) => {
-            const ws = new NodeWebSocket(url, [], {
-                followRedirects: true,
-                perMessageDeflate: false,
-                maxPayload: 256 * 1024 * 1024,
-                headers: {
-                    'User-Agent': `Puppeteer ${packageVersion}`,
-                    ...headers,
-                },
-            });
-            ws.addEventListener('open', () => {
-                return resolve(new NodeWebSocketTransport(ws));
-            });
-            ws.addEventListener('error', reject);
-        });
-    }
     constructor(ws) {
         _NodeWebSocketTransport_ws.set(this, void 0);
         __classPrivateFieldSet(this, _NodeWebSocketTransport_ws, ws, "f");
@@ -63,6 +46,22 @@ export class NodeWebSocketTransport {
         });
         // Silently ignore all errors - we don't know what to do with them.
         __classPrivateFieldGet(this, _NodeWebSocketTransport_ws, "f").addEventListener('error', () => { });
+    }
+    static create(url) {
+        return new Promise((resolve, reject) => {
+            const ws = new NodeWebSocket(url, [], {
+                followRedirects: true,
+                perMessageDeflate: false,
+                maxPayload: 256 * 1024 * 1024,
+                headers: {
+                    'User-Agent': `Puppeteer ${packageVersion}`,
+                },
+            });
+            ws.addEventListener('open', () => {
+                return resolve(new NodeWebSocketTransport(ws));
+            });
+            ws.addEventListener('error', reject);
+        });
     }
     send(message) {
         __classPrivateFieldGet(this, _NodeWebSocketTransport_ws, "f").send(message);

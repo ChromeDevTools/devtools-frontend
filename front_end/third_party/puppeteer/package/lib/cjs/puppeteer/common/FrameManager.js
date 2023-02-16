@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var _FrameManager_instances, _FrameManager_page, _FrameManager_networkManager, _FrameManager_timeoutSettings, _FrameManager_contextIdToContext, _FrameManager_isolatedWorlds, _FrameManager_client, _FrameManager_frameNavigatedReceived, _FrameManager_onLifecycleEvent, _FrameManager_onFrameStartedLoading, _FrameManager_onFrameStoppedLoading, _FrameManager_handleFrameTree, _FrameManager_onFrameAttached, _FrameManager_onFrameNavigated, _FrameManager_createIsolatedWorld, _FrameManager_onFrameNavigatedWithinDocument, _FrameManager_onFrameDetached, _FrameManager_onExecutionContextCreated, _FrameManager_onExecutionContextDestroyed, _FrameManager_onExecutionContextsCleared, _FrameManager_removeFramesRecursively;
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _FrameManager_instances, _FrameManager_page, _FrameManager_networkManager, _FrameManager_timeoutSettings, _FrameManager_contextIdToContext, _FrameManager_isolatedWorlds, _FrameManager_client, _FrameManager_onLifecycleEvent, _FrameManager_onFrameStartedLoading, _FrameManager_onFrameStoppedLoading, _FrameManager_handleFrameTree, _FrameManager_onFrameAttached, _FrameManager_onFrameNavigated, _FrameManager_createIsolatedWorld, _FrameManager_onFrameNavigatedWithinDocument, _FrameManager_onFrameDetached, _FrameManager_onExecutionContextCreated, _FrameManager_onExecutionContextDestroyed, _FrameManager_onExecutionContextsCleared, _FrameManager_removeFramesRecursively;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FrameManager = exports.FrameManagerEmittedEvents = void 0;
 const assert_js_1 = require("../util/assert.js");
@@ -35,7 +35,7 @@ const EventEmitter_js_1 = require("./EventEmitter.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
 const Frame_js_1 = require("./Frame.js");
 const FrameTree_js_1 = require("./FrameTree.js");
-const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
+const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const NetworkManager_js_1 = require("./NetworkManager.js");
 const util_js_1 = require("./util.js");
 const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
@@ -61,15 +61,6 @@ exports.FrameManagerEmittedEvents = {
  * @internal
  */
 class FrameManager extends EventEmitter_js_1.EventEmitter {
-    get timeoutSettings() {
-        return __classPrivateFieldGet(this, _FrameManager_timeoutSettings, "f");
-    }
-    get networkManager() {
-        return __classPrivateFieldGet(this, _FrameManager_networkManager, "f");
-    }
-    get client() {
-        return __classPrivateFieldGet(this, _FrameManager_client, "f");
-    }
     constructor(client, page, ignoreHTTPSErrors, timeoutSettings) {
         super();
         _FrameManager_instances.add(this);
@@ -83,24 +74,26 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
          * @internal
          */
         this._frameTree = new FrameTree_js_1.FrameTree();
-        /**
-         * Set of frame IDs stored to indicate if a frame has received a
-         * frameNavigated event so that frame tree responses could be ignored as the
-         * frameNavigated event usually contains the latest information.
-         */
-        _FrameManager_frameNavigatedReceived.set(this, new Set());
         __classPrivateFieldSet(this, _FrameManager_client, client, "f");
         __classPrivateFieldSet(this, _FrameManager_page, page, "f");
         __classPrivateFieldSet(this, _FrameManager_networkManager, new NetworkManager_js_1.NetworkManager(client, ignoreHTTPSErrors, this), "f");
         __classPrivateFieldSet(this, _FrameManager_timeoutSettings, timeoutSettings, "f");
         this.setupEventListeners(__classPrivateFieldGet(this, _FrameManager_client, "f"));
     }
+    get timeoutSettings() {
+        return __classPrivateFieldGet(this, _FrameManager_timeoutSettings, "f");
+    }
+    get networkManager() {
+        return __classPrivateFieldGet(this, _FrameManager_networkManager, "f");
+    }
+    get client() {
+        return __classPrivateFieldGet(this, _FrameManager_client, "f");
+    }
     setupEventListeners(session) {
         session.on('Page.frameAttached', event => {
             __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameAttached).call(this, session, event.frameId, event.parentFrameId);
         });
         session.on('Page.frameNavigated', event => {
-            __classPrivateFieldGet(this, _FrameManager_frameNavigatedReceived, "f").add(event.frame.id);
             __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameNavigated).call(this, event.frame);
         });
         session.on('Page.navigatedWithinDocument', event => {
@@ -156,12 +149,10 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         }
     }
     executionContextById(contextId, session = __classPrivateFieldGet(this, _FrameManager_client, "f")) {
-        const context = this.getExecutionContextById(contextId, session);
+        const key = `${session.id()}:${contextId}`;
+        const context = __classPrivateFieldGet(this, _FrameManager_contextIdToContext, "f").get(key);
         (0, assert_js_1.assert)(context, 'INTERNAL ERROR: missing context with id = ' + contextId);
         return context;
-    }
-    getExecutionContextById(contextId, session = __classPrivateFieldGet(this, _FrameManager_client, "f")) {
-        return __classPrivateFieldGet(this, _FrameManager_contextIdToContext, "f").get(`${session.id()}:${contextId}`);
     }
     page() {
         return __classPrivateFieldGet(this, _FrameManager_page, "f");
@@ -188,9 +179,17 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         this.setupEventListeners(target._session());
         this.initialize(target._session());
     }
+    onDetachedFromTarget(target) {
+        const frame = this.frame(target._targetId);
+        if (frame && frame.isOOPFrame()) {
+            // When an OOP iframe is removed from the page, it
+            // will only get a Target.detachedFromTarget event.
+            __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_removeFramesRecursively).call(this, frame);
+        }
+    }
 }
 exports.FrameManager = FrameManager;
-_FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap(), _FrameManager_timeoutSettings = new WeakMap(), _FrameManager_contextIdToContext = new WeakMap(), _FrameManager_isolatedWorlds = new WeakMap(), _FrameManager_client = new WeakMap(), _FrameManager_frameNavigatedReceived = new WeakMap(), _FrameManager_instances = new WeakSet(), _FrameManager_onLifecycleEvent = function _FrameManager_onLifecycleEvent(event) {
+_FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap(), _FrameManager_timeoutSettings = new WeakMap(), _FrameManager_contextIdToContext = new WeakMap(), _FrameManager_isolatedWorlds = new WeakMap(), _FrameManager_client = new WeakMap(), _FrameManager_instances = new WeakSet(), _FrameManager_onLifecycleEvent = function _FrameManager_onLifecycleEvent(event) {
     const frame = this.frame(event.frameId);
     if (!frame) {
         return;
@@ -214,12 +213,7 @@ _FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap()
     if (frameTree.frame.parentId) {
         __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameAttached).call(this, session, frameTree.frame.id, frameTree.frame.parentId);
     }
-    if (!__classPrivateFieldGet(this, _FrameManager_frameNavigatedReceived, "f").has(frameTree.frame.id)) {
-        __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameNavigated).call(this, frameTree.frame);
-    }
-    else {
-        __classPrivateFieldGet(this, _FrameManager_frameNavigatedReceived, "f").delete(frameTree.frame.id);
-    }
+    __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameNavigated).call(this, frameTree.frame);
     if (!frameTree.childFrames) {
         return;
     }
@@ -322,15 +316,15 @@ _FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap()
         if (frame._client() !== session) {
             return;
         }
-        if (contextPayload.auxData && contextPayload.auxData['isDefault']) {
-            world = frame.worlds[IsolatedWorlds_js_1.MAIN_WORLD];
+        if (contextPayload.auxData && !!contextPayload.auxData['isDefault']) {
+            world = frame.worlds[IsolatedWorld_js_1.MAIN_WORLD];
         }
         else if (contextPayload.name === UTILITY_WORLD_NAME &&
-            !frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].hasContext()) {
+            !frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].hasContext()) {
             // In case of multiple sessions to the same target, there's a race between
             // connections so we might end up creating multiple isolated worlds.
             // We can use either.
-            world = frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD];
+            world = frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD];
         }
     }
     const context = new ExecutionContext_js_1.ExecutionContext((frame === null || frame === void 0 ? void 0 : frame._client()) || __classPrivateFieldGet(this, _FrameManager_client, "f"), contextPayload, world);

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 import { Protocol } from 'devtools-protocol';
-import { JSHandle } from '../api/JSHandle.js';
-import type PuppeteerUtil from '../injected/injected.js';
 import { CDPSession } from './Connection.js';
 import { IsolatedWorld } from './IsolatedWorld.js';
 import { EvaluateFunc, HandleFor } from './types.js';
@@ -62,12 +60,11 @@ export declare class ExecutionContext {
     /**
      * @internal
      */
-    _contextName?: string;
+    _contextName: string;
     /**
      * @internal
      */
     constructor(client: CDPSession, contextPayload: Protocol.Runtime.ExecutionContextDescription, world?: IsolatedWorld);
-    get puppeteerUtil(): Promise<JSHandle<PuppeteerUtil>>;
     /**
      * Evaluates the given function.
      *

@@ -25,81 +25,37 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Page_instances, _Page_connection, _Page_evaluate;
+var _Page_connection, _Page_contextId;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBidiHandle = exports.Page = void 0;
+exports.Page = void 0;
 const Page_js_1 = require("../../api/Page.js");
-const util_js_1 = require("../util.js");
-const Serializer_js_1 = require("./Serializer.js");
-const JSHandle_js_1 = require("./JSHandle.js");
-const Function_js_1 = require("../../util/Function.js");
 /**
  * @internal
  */
 class Page extends Page_js_1.Page {
     constructor(connection, contextId) {
         super();
-        _Page_instances.add(this);
         _Page_connection.set(this, void 0);
+        _Page_contextId.set(this, void 0);
         __classPrivateFieldSet(this, _Page_connection, connection, "f");
-        this._contextId = contextId;
+        __classPrivateFieldSet(this, _Page_contextId, contextId, "f");
     }
     async close() {
         await __classPrivateFieldGet(this, _Page_connection, "f").send('browsingContext.close', {
-            context: this._contextId,
+            context: __classPrivateFieldGet(this, _Page_contextId, "f"),
         });
     }
-    get connection() {
-        return __classPrivateFieldGet(this, _Page_connection, "f");
-    }
-    async evaluateHandle(pageFunction, ...args) {
-        return __classPrivateFieldGet(this, _Page_instances, "m", _Page_evaluate).call(this, false, pageFunction, ...args);
-    }
-    async evaluate(pageFunction, ...args) {
-        return __classPrivateFieldGet(this, _Page_instances, "m", _Page_evaluate).call(this, true, pageFunction, ...args);
+    async evaluate(pageFunction, ..._args) {
+        // TODO: re-use evaluate logic from Execution context.
+        const str = `(${pageFunction.toString()})()`;
+        const result = (await __classPrivateFieldGet(this, _Page_connection, "f").send('script.evaluate', {
+            expression: str,
+            target: { context: __classPrivateFieldGet(this, _Page_contextId, "f") },
+            awaitPromise: true,
+        }));
+        return result.result.value;
     }
 }
 exports.Page = Page;
-_Page_connection = new WeakMap(), _Page_instances = new WeakSet(), _Page_evaluate = async function _Page_evaluate(returnByValue, pageFunction, ...args) {
-    let responsePromise;
-    const resultOwnership = returnByValue ? 'none' : 'root';
-    if ((0, util_js_1.isString)(pageFunction)) {
-        responsePromise = __classPrivateFieldGet(this, _Page_connection, "f").send('script.evaluate', {
-            expression: pageFunction,
-            target: { context: this._contextId },
-            resultOwnership,
-            awaitPromise: true,
-        });
-    }
-    else {
-        responsePromise = __classPrivateFieldGet(this, _Page_connection, "f").send('script.callFunction', {
-            functionDeclaration: (0, Function_js_1.stringifyFunction)(pageFunction),
-            arguments: await Promise.all(args.map(arg => {
-                return Serializer_js_1.BidiSerializer.serialize(arg, this);
-            })),
-            target: { context: this._contextId },
-            resultOwnership,
-            awaitPromise: true,
-        });
-    }
-    const { result } = await responsePromise;
-    if ('type' in result && result.type === 'exception') {
-        throw new Error(result.exceptionDetails.text);
-    }
-    return returnByValue
-        ? Serializer_js_1.BidiSerializer.deserialize(result.result)
-        : getBidiHandle(this, result.result);
-};
-/**
- * @internal
- */
-function getBidiHandle(context, result) {
-    // TODO: | ElementHandle<Node>
-    if ((result.type === 'node' || result.type === 'window') &&
-        context._contextId) {
-        throw new Error('ElementHandle not implemented');
-    }
-    return new JSHandle_js_1.JSHandle(context, result);
-}
-exports.getBidiHandle = getBidiHandle;
+_Page_connection = new WeakMap(), _Page_contextId = new WeakMap();
 //# sourceMappingURL=Page.js.map

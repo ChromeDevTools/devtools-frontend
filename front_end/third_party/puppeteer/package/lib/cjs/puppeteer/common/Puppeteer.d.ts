@@ -16,7 +16,7 @@
 import { Browser } from '../api/Browser.js';
 import { BrowserConnectOptions } from './BrowserConnector.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
-import { CustomQueryHandler } from './CustomQueryHandler.js';
+import { CustomQueryHandler } from './QueryHandler.js';
 /**
  * Settings that are common to the Puppeteer class, regardless of environment.
  *
@@ -32,12 +32,6 @@ export interface ConnectOptions extends BrowserConnectOptions {
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;
-    /**
-     * Headers to use for the web socket connection.
-     * @remarks
-     * Only works in the Node.js environment.
-     */
-    headers?: Record<string, string>;
 }
 /**
  * The main Puppeteer class.
@@ -46,17 +40,9 @@ export interface ConnectOptions extends BrowserConnectOptions {
  * instance of {@link PuppeteerNode} when you import or require `puppeteer`.
  * That class extends `Puppeteer`, so has all the methods documented below as
  * well as all that are defined on {@link PuppeteerNode}.
- *
  * @public
  */
 export declare class Puppeteer {
-    /**
-     * Operations for {@link CustomQueryHandler | custom query handlers}. See
-     * {@link CustomQueryHandlerRegistry}.
-     *
-     * @internal
-     */
-    static customQueryHandlers: import("./CustomQueryHandler.js").CustomQueryHandlerRegistry;
     /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
      *

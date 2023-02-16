@@ -51,12 +51,11 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _Frame_url, _Frame_detached, _Frame_client;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Frame = void 0;
+const assert_js_1 = require("../util/assert.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
-const GetQueryHandler_js_1 = require("./GetQueryHandler.js");
 const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
-const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
-const LazyArg_js_1 = require("./LazyArg.js");
 const LifecycleWatcher_js_1 = require("./LifecycleWatcher.js");
+const QueryHandler_js_1 = require("./QueryHandler.js");
 const util_js_1 = require("./util.js");
 /**
  * Represents a DOM frame.
@@ -74,7 +73,7 @@ const util_js_1 = require("./util.js");
  * An example of dumping frame tree:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -145,8 +144,8 @@ class Frame {
     updateClient(client) {
         __classPrivateFieldSet(this, _Frame_client, client, "f");
         this.worlds = {
-            [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
-            [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
+            [IsolatedWorld_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
+            [IsolatedWorld_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
         };
     }
     /**
@@ -200,11 +199,11 @@ class Frame {
      * calling {@link HTTPResponse.status}.
      */
     async goto(url, options = {}) {
-        const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
+        const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
         let ensureNewDocumentNavigation = false;
         const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
         let error = await Promise.race([
-            navigate(__classPrivateFieldGet(this, _Frame_client, "f"), url, referer, referrerPolicy, this._id),
+            navigate(__classPrivateFieldGet(this, _Frame_client, "f"), url, referer, this._id),
             watcher.timeoutOrTerminationPromise(),
         ]);
         if (!error) {
@@ -224,18 +223,14 @@ class Frame {
         finally {
             watcher.dispose();
         }
-        async function navigate(client, url, referrer, referrerPolicy, frameId) {
+        async function navigate(client, url, referrer, frameId) {
             try {
                 const response = await client.send('Page.navigate', {
                     url,
                     referrer,
                     frameId,
-                    referrerPolicy,
                 });
                 ensureNewDocumentNavigation = !!response.loaderId;
-                if (response.errorText === 'net::ERR_HTTP_RESPONSE_CODE_FAILURE') {
-                    return null;
-                }
                 return response.errorText
                     ? new Error(`${response.errorText} at ${url}`)
                     : null;
@@ -299,7 +294,7 @@ class Frame {
      * @internal
      */
     executionContext() {
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].executionContext();
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].executionContext();
     }
     /**
      * Behaves identically to {@link Page.evaluateHandle} except it's run within
@@ -308,7 +303,7 @@ class Frame {
      * @see {@link Page.evaluateHandle} for details.
      */
     async evaluateHandle(pageFunction, ...args) {
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].evaluateHandle(pageFunction, ...args);
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].evaluateHandle(pageFunction, ...args);
     }
     /**
      * Behaves identically to {@link Page.evaluate} except it's run within the
@@ -317,7 +312,7 @@ class Frame {
      * @see {@link Page.evaluate} for details.
      */
     async evaluate(pageFunction, ...args) {
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].evaluate(pageFunction, ...args);
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].evaluate(pageFunction, ...args);
     }
     /**
      * Queries the frame for an element matching the given selector.
@@ -327,7 +322,7 @@ class Frame {
      * matching the given selector. Otherwise, `null`.
      */
     async $(selector) {
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].$(selector);
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].$(selector);
     }
     /**
      * Queries the frame for all elements matching the given selector.
@@ -337,7 +332,7 @@ class Frame {
      * elements matching the given selector.
      */
     async $$(selector) {
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].$$(selector);
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].$$(selector);
     }
     /**
      * Runs the given function on the first element matching the given selector in
@@ -360,7 +355,7 @@ class Frame {
      * @returns A promise to the result of the function.
      */
     async $eval(selector, pageFunction, ...args) {
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].$eval(selector, pageFunction, ...args);
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].$eval(selector, pageFunction, ...args);
     }
     /**
      * Runs the given function on an array of elements matching the given selector
@@ -383,7 +378,7 @@ class Frame {
      * @returns A promise to the result of the function.
      */
     async $$eval(selector, pageFunction, ...args) {
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].$$eval(selector, pageFunction, ...args);
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].$$eval(selector, pageFunction, ...args);
     }
     /**
      * @deprecated Use {@link Frame.$$} with the `xpath` prefix.
@@ -396,7 +391,7 @@ class Frame {
      * @param expression - the XPath expression to evaluate.
      */
     async $x(expression) {
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].$x(expression);
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].$x(expression);
     }
     /**
      * Waits for an element matching the given selector to appear in the frame.
@@ -406,7 +401,7 @@ class Frame {
      * @example
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -434,8 +429,9 @@ class Frame {
      * @throws Throws if an element matching the given selector doesn't appear.
      */
     async waitForSelector(selector, options = {}) {
-        const { updatedSelector, QueryHandler } = (0, GetQueryHandler_js_1.getQueryHandlerAndSelector)(selector);
-        return (await QueryHandler.waitFor(this, updatedSelector, options));
+        const { updatedSelector, queryHandler } = (0, QueryHandler_js_1.getQueryHandlerAndSelector)(selector);
+        (0, assert_js_1.assert)(queryHandler.waitFor, 'Query handler does not support waiting');
+        return (await queryHandler.waitFor(this, updatedSelector, options));
     }
     /**
      * @deprecated Use {@link Frame.waitForSelector} with the `xpath` prefix.
@@ -456,7 +452,7 @@ class Frame {
      * an XPath.
      *
      * @param xpath - the XPath expression to wait for.
-     * @param options - options to configure the visibility of the element and how
+     * @param options - options to configure the visiblity of the element and how
      * long to wait before timing out.
      */
     async waitForXPath(xpath, options = {}) {
@@ -470,7 +466,7 @@ class Frame {
      * The `waitForFunction` can be used to observe viewport size change:
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      * .  const browser = await puppeteer.launch();
@@ -499,13 +495,13 @@ class Frame {
      * @returns the promise which resolve when the `pageFunction` returns a truthy value.
      */
     waitForFunction(pageFunction, options = {}, ...args) {
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].waitForFunction(pageFunction, options, ...args);
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].waitForFunction(pageFunction, options, ...args);
     }
     /**
      * @returns The full HTML contents of the frame, including the DOCTYPE.
      */
     async content() {
-        return this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].content();
+        return this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].content();
     }
     /**
      * Set the content of the frame.
@@ -515,7 +511,7 @@ class Frame {
      * what point to consider the content setting successful.
      */
     async setContent(html, options = {}) {
-        return this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].setContent(html, options);
+        return this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].setContent(html, options);
     }
     /**
      * @returns The frame's `name` attribute as specified in the tag.
@@ -582,7 +578,7 @@ class Frame {
             content += `//# sourceURL=${path.replace(/\n/g, '')}`;
         }
         type = type !== null && type !== void 0 ? type : 'text/javascript';
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].transferHandle(await this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].evaluateHandle(async ({ createDeferredPromise }, { url, id, type, content }) => {
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].transferHandle(await this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].evaluateHandle(async ({ createDeferredPromise }, { url, id, type, content }) => {
             const promise = createDeferredPromise();
             const script = document.createElement('script');
             script.type = type;
@@ -606,9 +602,7 @@ class Frame {
             document.head.appendChild(script);
             await promise;
             return script;
-        }, LazyArg_js_1.LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }), { ...options, type, content }));
+        }, await this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].puppeteerUtil, { ...options, type, content }));
     }
     async addStyleTag(options) {
         let { content = '' } = options;
@@ -631,7 +625,7 @@ class Frame {
             content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
             options.content = content;
         }
-        return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].transferHandle(await this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].evaluateHandle(async ({ createDeferredPromise }, { url, content }) => {
+        return this.worlds[IsolatedWorld_js_1.MAIN_WORLD].transferHandle(await this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].evaluateHandle(async ({ createDeferredPromise }, { url, content }) => {
             const promise = createDeferredPromise();
             let element;
             if (!url) {
@@ -654,9 +648,7 @@ class Frame {
             document.head.appendChild(element);
             await promise;
             return element;
-        }, LazyArg_js_1.LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }), options));
+        }, await this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].puppeteerUtil, options));
     }
     /**
      * Clicks the first element found that matches `selector`.
@@ -677,7 +669,7 @@ class Frame {
      * @param selector - The selector to query for.
      */
     async click(selector, options = {}) {
-        return this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].click(selector, options);
+        return this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].click(selector, options);
     }
     /**
      * Focuses the first element that matches the `selector`.
@@ -686,7 +678,7 @@ class Frame {
      * @throws Throws if there's no element matching `selector`.
      */
     async focus(selector) {
-        return this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].focus(selector);
+        return this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].focus(selector);
     }
     /**
      * Hovers the pointer over the center of the first element that matches the
@@ -696,7 +688,7 @@ class Frame {
      * @throws Throws if there's no element matching `selector`.
      */
     async hover(selector) {
-        return this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].hover(selector);
+        return this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].hover(selector);
     }
     /**
      * Selects a set of value on the first `<select>` element that matches the
@@ -717,7 +709,7 @@ class Frame {
      * @throws Throws if there's no `<select>` matching `selector`.
      */
     select(selector, ...values) {
-        return this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].select(selector, ...values);
+        return this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].select(selector, ...values);
     }
     /**
      * Taps the first element that matches the `selector`.
@@ -726,7 +718,7 @@ class Frame {
      * @throws Throws if there's no element matching `selector`.
      */
     async tap(selector) {
-        return this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].tap(selector);
+        return this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].tap(selector);
     }
     /**
      * Sends a `keydown`, `keypress`/`input`, and `keyup` event for each character
@@ -750,7 +742,7 @@ class Frame {
      * between key presses in milliseconds. Defaults to `0`.
      */
     async type(selector, text, options) {
-        return this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].type(selector, text, options);
+        return this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].type(selector, text, options);
     }
     /**
      * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
@@ -781,7 +773,7 @@ class Frame {
      * @returns the frame's title.
      */
     async title() {
-        return this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].title();
+        return this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].title();
     }
     /**
      * @internal
@@ -824,8 +816,8 @@ class Frame {
      */
     _detach() {
         __classPrivateFieldSet(this, _Frame_detached, true, "f");
-        this.worlds[IsolatedWorlds_js_1.MAIN_WORLD]._detach();
-        this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD]._detach();
+        this.worlds[IsolatedWorld_js_1.MAIN_WORLD]._detach();
+        this.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD]._detach();
     }
 }
 exports.Frame = Frame;

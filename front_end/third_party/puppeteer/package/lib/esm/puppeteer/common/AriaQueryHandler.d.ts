@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ElementHandle } from '../api/ElementHandle.js';
-import { QueryHandler, QuerySelector } from './QueryHandler.js';
-import { AwaitableIterable } from './types.js';
+import { PuppeteerQueryHandler } from './QueryHandler.js';
 /**
  * @internal
  */
-export declare class ARIAQueryHandler extends QueryHandler {
-    static querySelector: QuerySelector;
-    static queryAll(element: ElementHandle<Node>, selector: string): AwaitableIterable<ElementHandle<Node>>;
-    static queryOne: (element: ElementHandle<Node>, selector: string) => Promise<ElementHandle<Node> | null>;
-}
+export declare const ariaHandler: PuppeteerQueryHandler;
 //# sourceMappingURL=AriaQueryHandler.d.ts.map

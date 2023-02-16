@@ -19,7 +19,7 @@ import { Product } from '../common/Product.js';
  *
  * @public
  */
-export type Platform = 'linux' | 'mac' | 'mac_arm' | 'win32' | 'win64';
+export declare type Platform = 'linux' | 'mac' | 'mac_arm' | 'win32' | 'win64';
 /**
  * @public
  */
@@ -161,9 +161,5 @@ export declare class BrowserFetcher {
      * @returns The revision info for the given revision.
      */
     revisionInfo(revision: string): BrowserFetcherRevisionInfo;
-    /**
-     * @internal
-     */
-    getDownloadPath(): string;
 }
 //# sourceMappingURL=BrowserFetcher.d.ts.map

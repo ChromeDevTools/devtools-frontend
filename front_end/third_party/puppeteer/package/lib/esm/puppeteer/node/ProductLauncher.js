@@ -28,6 +28,7 @@ var _ProductLauncher_product;
 import { existsSync } from 'fs';
 import os, { tmpdir } from 'os';
 import { join } from 'path';
+import { BrowserFetcher } from './BrowserFetcher.js';
 /**
  * Describes a launcher - a class that is able to create and launch a browser instance.
  *
@@ -55,14 +56,6 @@ export class ProductLauncher {
         throw new Error('Not implemented');
     }
     /**
-     * Set only for Firefox, after the launcher resolves the `latest` revision to
-     * the actual revision.
-     * @internal
-     */
-    getActualBrowserRevision() {
-        return this.actualBrowserRevision;
-    }
-    /**
      * @internal
      */
     getProfilePath() {
@@ -87,7 +80,7 @@ export class ProductLauncher {
             existsSync(ubuntuChromiumPath)) {
             return ubuntuChromiumPath;
         }
-        const browserFetcher = this.puppeteer.createBrowserFetcher({
+        const browserFetcher = new BrowserFetcher({
             product: this.product,
             path: this.puppeteer.defaultDownloadPath,
         });
@@ -98,15 +91,9 @@ export class ProductLauncher {
             }
             switch (this.product) {
                 case 'chrome':
-                    throw new Error(`Could not find Chromium (rev. ${this.puppeteer.browserRevision}). This can occur if either\n` +
-                        ' 1. you did not perform an installation before running the script (e.g. `npm install`) or\n' +
-                        ` 2. your cache path is incorrectly configured (which is: ${this.puppeteer.configuration.cacheDirectory}).\n` +
-                        'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
+                    throw new Error(`Run \`npm install\` to download the correct Chromium revision (${this.puppeteer.browserRevision}).`);
                 case 'firefox':
-                    throw new Error(`Could not find Firefox (rev. ${this.puppeteer.browserRevision}). This can occur if either\n` +
-                        ' 1. you did not perform an installation for Firefox before running the script (e.g. `PUPPETEER_PRODUCT=firefox npm install`) or\n' +
-                        ` 2. your cache path is incorrectly configured (which is: ${this.puppeteer.configuration.cacheDirectory}).\n` +
-                        'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
+                    throw new Error(`Run \`PUPPETEER_PRODUCT=firefox npm install\` to download a supported Firefox browser binary.`);
             }
         }
         return revisionInfo.executablePath;

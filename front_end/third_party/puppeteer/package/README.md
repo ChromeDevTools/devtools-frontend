@@ -127,7 +127,9 @@ and [examples](https://github.com/puppeteer/puppeteer/tree/main/examples).
 
 #### Example
 
-The following example searches [developer.chrome.com](https://developer.chrome.com/) for blog posts with text "automate beyond recorder", click on the first result and print the full title of the blog post.
+The following example searches
+[developers.google.com/web](https://developers.google.com/web) for articles
+tagged "Headless Chrome" and scrape results from the results page.
 
 ```ts
 import puppeteer from 'puppeteer';
@@ -136,27 +138,30 @@ import puppeteer from 'puppeteer';
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  await page.goto('https://developer.chrome.com/');
+  await page.goto('https://developers.google.com/web/');
 
-  // Set screen size
-  await page.setViewport({width: 1080, height: 1024});
+  // Type into search box.
+  await page.type('.devsite-search-field', 'Headless Chrome');
 
-  // Type into search box
-  await page.type('.search-box__input', 'automate beyond recorder');
+  // Wait for suggest overlay to appear and click "show all results".
+  const allResultsSelector = '.devsite-suggest-all-results';
+  await page.waitForSelector(allResultsSelector);
+  await page.click(allResultsSelector);
 
-  // Wait and click on first result
-  const searchResultSelector = '.search-box__link';
-  await page.waitForSelector(searchResultSelector);
-  await page.click(searchResultSelector);
+  // Wait for the results page to load and display the results.
+  const resultsSelector = '.gsc-results .gs-title';
+  await page.waitForSelector(resultsSelector);
 
-  // Locate the full title with a unique string
-  const textSelector = await page.waitForSelector(
-    'text/Customize and automate'
-  );
-  const fullTitle = await textSelector.evaluate(el => el.textContent);
+  // Extract the results from the page.
+  const links = await page.evaluate(resultsSelector => {
+    return [...document.querySelectorAll(resultsSelector)].map(anchor => {
+      const title = anchor.textContent.split('|')[0].trim();
+      return `${title} - ${anchor.href}`;
+    });
+  }, resultsSelector);
 
-  // Print the full title
-  console.log('The title of this blog post is "%s".', fullTitle);
+  // Print all the files.
+  console.log(links.join('\n'));
 
   await browser.close();
 })();

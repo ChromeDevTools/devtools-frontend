@@ -31,10 +31,22 @@ beforeEach(function() {
     // The test file path is always the coloned beginning part of a test's first title.
     const [describeTitle, ...otherParts] = this.currentTest.titlePath();
     const [testPath, ...title] = describeTitle.split(':');
+
+    // The test path is included for every describe statement, so let's clean them.
     currentTestTitle = [title.join(':'), ...otherParts.map(part => part.replaceAll(`${testPath}: `, ''))]
                            .map(part => part.trim())
                            .join(' ');
+
+    // The ITERATIONS environment variable suffixes tests after the first test,
+    // so we need to remove the suffix for snapshots to match.
+    const iterationSuffix = /( \(#[0-9]+\))$/;
+    const match = iterationSuffix.exec(currentTestTitle);
+    if (match) {
+      currentTestTitle = currentTestTitle.slice(0, -match[1].length);
+    }
+
     currentTestPath = testPath && normalize(testPath.trim());
+
     snapshotIndex = 0;
   }
 });

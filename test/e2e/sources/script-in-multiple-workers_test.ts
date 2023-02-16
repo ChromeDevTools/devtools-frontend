@@ -226,8 +226,7 @@ describe('Multi-Workers', async function() {
         });
       });
 
-      // Flakey on waterfall.
-      it.skip('[crbug.com/1407186] for pre-loaded workers', async () => {
+      it('for pre-loaded workers', async () => {
         const {target} = getBrowserAndPages();
         // Send message to a worker to trigger break
         await target.evaluate('workers[5].postMessage({});');

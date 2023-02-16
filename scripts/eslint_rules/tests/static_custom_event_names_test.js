@@ -28,6 +28,14 @@ ruleTester.run('static_custom_event_names', rule, {
       }`,
       filename: 'ui/some-component.ts',
     },
+    {
+      // Not using the built in Event type, but using a type that is defined in
+      // the same file that is called Event. We special case this because in
+      // the Performance Panel SDK we do define a custom Event class
+      code: `class Event {};
+export class ConstructedEvent extends Event {}`,
+      filename: 'ui/some-component.ts',
+    },
   ],
 
   invalid: [

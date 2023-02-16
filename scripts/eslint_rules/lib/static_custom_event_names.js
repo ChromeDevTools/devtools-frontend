@@ -89,8 +89,79 @@ module.exports = {
       return fixes;
     }
 
+    function lintClassNode(node) {
+      const bodyMembersOfClass = node.body.body;
+      // Look for the static readonly eventName line.
+      // We purposefully look at the first body node as it should be defined first
+      const firstBodyNode = bodyMembersOfClass[0];
+      if (!firstBodyNode || firstBodyNode.key.name !== 'eventName') {
+        context.report({
+          node,
+          messageId: 'missingEventName',
+          fix(fixer) {
+            return tryToAutoFixIfWeCan(fixer, node);
+          }
+        });
+        return;
+      }
+      if (!firstBodyNode.readonly) {
+        context.report({node, messageId: 'eventNameNotReadonly'});
+      }
+      if (!firstBodyNode.static) {
+        context.report({node, messageId: 'eventNameNotStatic'});
+        return;
+      }
+
+      // Now we know the static readonly eventName is defined, we check for
+      // the constructor and the super() call.
+      const {constructor, superExpression, firstArgumentToSuper} =
+          findConstructorAndSuperCallAndFirstArgumentToSuper(node);
+
+      if (!constructor) {
+        context.report({node, messageId: 'noConstructorFound'});
+        return;
+      }
+      if (!superExpression) {
+        context.report({node, messageId: 'noSuperCallFound'});
+        return;
+      }
+      if (!firstArgumentToSuper) {
+        context.report({node, messageId: 'superEventNameWrong'});
+        return;
+      }
+
+      const customEventClassName = node.id.name;
+      if (firstArgumentToSuper.type !== 'MemberExpression') {
+        context.report({
+          node,
+          messageId: 'superEventNameWrong',
+          fix(fixer) {
+            return tryToAutoFixIfWeCan(fixer, node);
+          }
+        });
+        return;
+      }
+      if (firstArgumentToSuper.object.name !== customEventClassName ||
+          firstArgumentToSuper.property.name !== 'eventName') {
+        context.report({node, messageId: 'superEventNameWrong'});
+        return;
+      }
+    }
+
+    let foundLocalEventClassDeclaration = false;
+    const classDeclarationsToLint = [];
+
     return {
       ClassDeclaration(node) {
+        // If we find a local class defined called Event, we do not apply this
+        // check, as we have some instances where a local Event class is used
+        // which is not the builtin Event class that represents DOM emitted
+        // events.
+        if (node.id.name === 'Event') {
+          foundLocalEventClassDeclaration = true;
+          return;
+        }
+
         if (!node.superClass) {
           return;
         }
@@ -98,63 +169,17 @@ module.exports = {
           return;
         }
 
-        const bodyMembersOfClass = node.body.body;
-        // Look for the static readonly eventName line.
-        // We purposefully look at the first body node as it should be defined first
-        const firstBodyNode = bodyMembersOfClass[0];
-        if (!firstBodyNode || firstBodyNode.key.name !== 'eventName') {
-          context.report({
-            node,
-            messageId: 'missingEventName',
-            fix(fixer) {
-              return tryToAutoFixIfWeCan(fixer, node);
-            }
-          });
-          return;
-        }
-        if (!firstBodyNode.readonly) {
-          context.report({node, messageId: 'eventNameNotReadonly'});
-        }
-        if (!firstBodyNode.static) {
-          context.report({node, messageId: 'eventNameNotStatic'});
+        classDeclarationsToLint.push(node);
+      },
+      'Program:exit'() {
+        if (foundLocalEventClassDeclaration) {
           return;
         }
 
-        // Now we know the static readonly eventName is defined, we check for
-        // the constructor and the super() call.
-        const {constructor, superExpression, firstArgumentToSuper} =
-            findConstructorAndSuperCallAndFirstArgumentToSuper(node);
-
-        if (!constructor) {
-          context.report({node, messageId: 'noConstructorFound'});
-          return;
-        }
-        if (!superExpression) {
-          context.report({node, messageId: 'noSuperCallFound'});
-          return;
-        }
-        if (!firstArgumentToSuper) {
-          context.report({node, messageId: 'superEventNameWrong'});
-          return;
-        }
-
-        const customEventClassName = node.id.name;
-        if (firstArgumentToSuper.type !== 'MemberExpression') {
-          context.report({
-            node,
-            messageId: 'superEventNameWrong',
-            fix(fixer) {
-              return tryToAutoFixIfWeCan(fixer, node);
-            }
-          });
-          return;
-        }
-        if (firstArgumentToSuper.object.name !== customEventClassName ||
-            firstArgumentToSuper.property.name !== 'eventName') {
-          context.report({node, messageId: 'superEventNameWrong'});
-          return;
-        }
-      }
+        classDeclarationsToLint.forEach(node => {
+          lintClassNode(node);
+        });
+      },
     };
   }
 };

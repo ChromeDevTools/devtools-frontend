@@ -116,8 +116,7 @@ describeWithMockConnection('StorageView', () => {
       await cacheAddedPromise;
       caches = [];
 
-      Resources.StorageView.StorageView.clear(
-          target, testOrigin, '', [Protocol.Storage.StorageType.Cache_storage], false);
+      Resources.StorageView.StorageView.clear(target, testOrigin, [Protocol.Storage.StorageType.Cache_storage], false);
 
       assert.isEmpty(cacheStorageModel.caches());
     });

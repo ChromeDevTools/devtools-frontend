@@ -209,6 +209,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     if (!this.model) {
       return;
     }
+    const showSystemNode = Root.Runtime.experiments.isEnabled('timelineDoNotSkipSystemNodesOfCpuProfile');
     const timelineModel = this.model.timelineModel();
     const quantSizePx = 4 * window.devicePixelRatio;
     const width = this.width();
@@ -267,7 +268,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         const index = categoryIndexStack.length ? categoryIndexStack[categoryIndexStack.length - 1] : idleIndex;
         quantizer.appendInterval(e.startTime, (index as number));
         const categoryIndex = categoryToIndex.get(TimelineUIUtils.eventStyle(e).category);
-        if (Root.Runtime.experiments.isEnabled('timelineDoNotSkipSystemNodesOfCpuProfile')) {
+        if (showSystemNode) {
           categoryIndexStack.push(categoryIndex !== undefined ? categoryIndex : otherIndex);
         } else {
           categoryIndexStack.push(categoryIndex || otherIndex);

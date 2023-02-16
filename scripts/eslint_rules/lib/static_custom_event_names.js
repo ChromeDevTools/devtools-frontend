@@ -75,7 +75,7 @@ module.exports = {
       const className = node.id.name;
 
       const {firstArgumentToSuper} = findConstructorAndSuperCallAndFirstArgumentToSuper(node);
-      if (firstArgumentToSuper.type !== 'Literal') {
+      if (!firstArgumentToSuper || firstArgumentToSuper.type !== 'Literal') {
         // Either it's OK, or it's some value that isn't a string literal, so we should bail.
         return [];
       }

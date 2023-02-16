@@ -630,8 +630,27 @@ export class Event {
   }
 }
 
+/**
+ * Represents a tracing event that is not directly linked to an individual
+ * object in the trace. We construct these events at times, particularly when
+ * building up the CPU profile data for JS Profiling.j
+ **/
 // eslint-disable-next-line rulesdir/enforce_custom_event_names, rulesdir/static_custom_event_names
-export class ObjectSnapshot extends Event {
+export class ConstructedEvent extends Event {}
+
+/**
+ * Represents a tracing event that has been created directly from an object in
+ * the trace file and therefore is guaranteed to have a payload associated with
+ * it. The only way to create these events is to use the static fromPayload
+ * method, which you must call with a payload.
+ **/
+// eslint-disable-next-line rulesdir/enforce_custom_event_names, rulesdir/static_custom_event_names
+export class PayloadEvent extends Event {
+  // TODO:(crbug.com/1416836) implement fromPayload() and remove fromPayload from the main Event class.
+}
+
+// eslint-disable-next-line rulesdir/enforce_custom_event_names, rulesdir/static_custom_event_names
+export class ObjectSnapshot extends PayloadEvent {
   #backingStorage: (() => Promise<string|null>)|null;
   #objectPromiseInternal: Promise<ObjectSnapshot|null>|null;
 
@@ -700,7 +719,7 @@ export class ObjectSnapshot extends Event {
 }
 
 // eslint-disable-next-line rulesdir/enforce_custom_event_names, rulesdir/static_custom_event_names
-export class AsyncEvent extends Event {
+export class AsyncEvent extends ConstructedEvent {
   steps: Event[];
   causedFrame: boolean;
 

@@ -118,8 +118,8 @@ describe('TimelineUIUtils', () => {
   });
 
   it('creates top frame location text for function calls', async () => {
-    const event =
-        new SDK.TracingModel.Event('devtools.timeline', 'FunctionCall', SDK.TracingModel.Phase.Complete, 10, thread);
+    const event = new SDK.TracingModel.ConstructedEvent(
+        'devtools.timeline', 'FunctionCall', SDK.TracingModel.Phase.Complete, 10, thread);
 
     event.addArgs({
       data: {
@@ -136,8 +136,8 @@ describe('TimelineUIUtils', () => {
 
   it('creates top frame location text as a fallback', async () => {
     // 'TimerInstall' is chosen such that we run into the 'default' case.
-    const event =
-        new SDK.TracingModel.Event('devtools.timeline', 'TimerInstall', SDK.TracingModel.Phase.Complete, 10, thread);
+    const event = new SDK.TracingModel.ConstructedEvent(
+        'devtools.timeline', 'TimerInstall', SDK.TracingModel.Phase.Complete, 10, thread);
 
     event.addArgs({
       data: {

@@ -71,9 +71,11 @@ async function editorTabHasPurpleDot(): Promise<boolean> {
   return await tabHeaderIcon?.evaluate(node => node.classList.contains('purple-dot'));
 }
 
-async function correspondingFileTreeEntryIconHasPurpleDot(): Promise<boolean> {
-  await clickOnContextMenu('.tabbed-pane-header-tab[aria-label=".headers"]', 'Reveal in sidebar');
-  const fileTreeIcon = await waitFor('.icon', await activeElement());
+async function fileTreeEntryIsSelectedAndHasPurpleDot(): Promise<boolean> {
+  const element = await activeElement();
+  const title = await element.evaluate(e => e.getAttribute('title')) || '';
+  assert.match(title, /\/test\/e2e\/resources\/network\/\.headers$/);
+  const fileTreeIcon = await waitFor('.icon', element);
   return await fileTreeIcon?.evaluate(node => node.classList.contains('largeicon-navigator-file-sync'));
 }
 
@@ -130,7 +132,7 @@ describe('The Overrides Panel', async function() {
     await waitFor('[title="Refresh the page/request for these changes to take effect"]');
     await click('[title="Reveal header override definitions"]');
     assert.isTrue(await editorTabHasPurpleDot());
-    assert.isTrue(await correspondingFileTreeEntryIconHasPurpleDot());
+    assert.isTrue(await fileTreeEntryIsSelectedAndHasPurpleDot());
 
     await navigateToNetworkTab('hello.html');
     await waitForSomeRequestsToAppear(1);
@@ -142,12 +144,11 @@ describe('The Overrides Panel', async function() {
     assert.deepStrictEqual(await getTextFromHeadersRow(row), ['foo:', 'bar']);
     await click('[title="Reveal header override definitions"]');
     assert.isTrue(await editorTabHasPurpleDot());
-    assert.isTrue(await correspondingFileTreeEntryIconHasPurpleDot());
+    assert.isTrue(await fileTreeEntryIsSelectedAndHasPurpleDot());
 
     await goToResource('pages/hello-world.html');
     await waitForFunction(async () => {
-      return (await editorTabHasPurpleDot()) === false &&
-          (await correspondingFileTreeEntryIconHasPurpleDot()) === false;
+      return (await editorTabHasPurpleDot()) === false && (await fileTreeEntryIsSelectedAndHasPurpleDot()) === false;
     });
   });
 });

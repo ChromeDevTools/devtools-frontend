@@ -289,6 +289,7 @@ export class RequestHeadersComponent extends HTMLElement {
       const uiSourceCode = this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl());
       if (uiSourceCode) {
         Sources.SourcesPanel.SourcesPanel.instance().showUISourceCode(uiSourceCode);
+        Sources.SourcesPanel.SourcesPanel.instance().revealInNavigator(uiSourceCode);
       }
     };
 

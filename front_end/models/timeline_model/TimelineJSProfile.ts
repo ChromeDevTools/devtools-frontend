@@ -57,19 +57,19 @@ export class TimelineJSProfileProcessor {
           }
         }
         if (node === jsProfileModel.idleNode) {
-          const jsIdleEvent = new SDK.TracingModel.Event(
+          const jsIdleEvent = new SDK.TracingModel.ConstructedEvent(
               SDK.TracingModel.DevToolsTimelineEventCategory, RecordType.JSIdleSample, SDK.TracingModel.Phase.Instant,
               timestamps[i], thread);
           jsIdleEvent.args['data'] = {stackTrace: callFrames};
           jsEvents.push(jsIdleEvent);
         } else if (node === jsProfileModel.programNode || node === jsProfileModel.gcNode) {
-          const jsSystemEvent = new SDK.TracingModel.Event(
+          const jsSystemEvent = new SDK.TracingModel.ConstructedEvent(
               SDK.TracingModel.DevToolsTimelineEventCategory, RecordType.JSSystemSample, SDK.TracingModel.Phase.Instant,
               timestamps[i], thread);
           jsSystemEvent.args['data'] = {stackTrace: callFrames};
           jsEvents.push(jsSystemEvent);
         } else {
-          const jsSampleEvent = new SDK.TracingModel.Event(
+          const jsSampleEvent = new SDK.TracingModel.ConstructedEvent(
               SDK.TracingModel.DevToolsTimelineEventCategory, RecordType.JSSample, SDK.TracingModel.Phase.Instant,
               timestamps[i], thread);
           jsSampleEvent.args['data'] = {stackTrace: callFrames};

@@ -114,7 +114,7 @@ LayersTestRunner.requestLayers = function() {
 };
 
 LayersTestRunner.dispatchMouseEvent = function(eventType, button, element, offsetX, offsetY) {
-  const totalOffset = element.totalOffset();
+  const totalOffset = element.getBoundingClientRect();
 
   const eventArguments = {
     bubbles: true,

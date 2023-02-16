@@ -187,19 +187,11 @@ Element.prototype.createChild = function(elementName: string, className?: string
 DocumentFragment.prototype.createChild = Element.prototype.createChild;
 
 Element.prototype.totalOffsetLeft = function(): number {
-  return this.totalOffset().left;
+  return this.getBoundingClientRect().left;
 };
 
 Element.prototype.totalOffsetTop = function(): number {
-  return this.totalOffset().top;
-};
-
-Element.prototype.totalOffset = function(): {
-  left: number,
-  top: number,
-} {
-  const rect = this.getBoundingClientRect();
-  return {left: rect.left, top: rect.top};
+  return this.getBoundingClientRect().top;
 };
 
 self.AnchorBox = class {

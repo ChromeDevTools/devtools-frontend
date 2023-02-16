@@ -253,10 +253,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private numPaletteRowsShown: number;
   private selectedColorPalette!: Common.Settings.Setting<string>;
   private customPaletteSetting!: Common.Settings.Setting<Palette>;
-  private colorOffset?: {
-    left: number,
-    top: number,
-  };
+  private colorOffset?: DOMRect;
   private closeButton?: UI.Toolbar.ToolbarButton;
   private paletteContainerMutable?: boolean;
   private eyeDropperExperimentEnabled?: boolean;
@@ -489,7 +486,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     function positionColor(this: Spectrum, event: Event): void {
       const hsva = this.hsv.slice() as Common.ColorUtils.Color4D;
       const colorPosition = getUpdatedColorPosition(this.colorDragElement, event);
-      this.colorOffset = this.colorElement.totalOffset();
+      this.colorOffset = this.colorElement.getBoundingClientRect();
       hsva[1] = Platform.NumberUtilities.clamp((colorPosition.x - this.colorOffset.left) / this.dragWidth, 0, 1);
       hsva[2] = Platform.NumberUtilities.clamp(1 - (colorPosition.y - this.colorOffset.top) / this.dragHeight, 0, 1);
       this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
@@ -542,7 +539,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private dragStart(this: Spectrum, callback: (arg0: Event) => void, event: Event): boolean {
-    this.colorOffset = this.colorElement.totalOffset();
+    this.colorOffset = this.colorElement.getBoundingClientRect();
     callback(event);
     return true;
   }
@@ -791,11 +788,11 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     const dragElementTransform =
         'translateX(' + (offsetX - this.dragHotSpotX) + 'px) translateY(' + (offsetY - this.dragHotSpotY) + 'px)';
     this.dragElement.style.transform = isDeleting ? dragElementTransform + ' scale(0.8)' : dragElementTransform;
-    const children = Array.prototype.slice.call(this.paletteContainer.children);
+    const children = [...this.paletteContainer.children];
     const index = children.indexOf(this.dragElement);
-    const swatchOffsets = new Map<Element, {left: number, top: number}>();
+    const swatchOffsets = new Map<Element, DOMRect>();
     for (const swatch of children) {
-      swatchOffsets.set(swatch, swatch.totalOffset());
+      swatchOffsets.set(swatch, swatch.getBoundingClientRect());
     }
 
     if (index !== newIndex) {
@@ -807,7 +804,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         continue;
       }
       const before = swatchOffsets.get(swatch);
-      const after = swatch.totalOffset();
+      const after = swatch.getBoundingClientRect();
       if (before && (before.left !== after.left || before.top !== after.top)) {
         swatch.animate(
             [

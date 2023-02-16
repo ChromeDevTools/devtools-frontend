@@ -71,8 +71,6 @@ interface Element {
   positionAt(x: (number|undefined), y: (number|undefined), relativeTo?: Element): void;
   removeChildren(): void;
   scrollIntoViewIfNeeded(center?: boolean): void;
-  totalOffsetTop(): number;
-  totalOffsetLeft(): number;
 }
 
 interface DocumentFragment {

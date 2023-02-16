@@ -307,7 +307,8 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.xySlider.focus();
     this.updateCanvas(true);
     this.canvasOrigin = new UI.Geometry.Point(
-        this.xySlider.totalOffsetLeft() + this.halfCanvasSize, this.xySlider.totalOffsetTop() + this.halfCanvasSize);
+        this.xySlider.getBoundingClientRect().left + this.halfCanvasSize,
+        this.xySlider.getBoundingClientRect().top + this.halfCanvasSize);
     const clickedPoint = new UI.Geometry.Point(event.x - this.canvasOrigin.x, event.y - this.canvasOrigin.y);
     const thumbPoint = this.sliderThumbPosition();
     if (clickedPoint.distanceTo(thumbPoint) >= sliderThumbRadius) {

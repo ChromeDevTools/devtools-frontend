@@ -817,7 +817,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
     // Seek to current mouse position.
     if (!this.#gridOffsetLeft) {
-      this.#gridOffsetLeft = this.#grid.totalOffsetLeft() + 10;
+      this.#gridOffsetLeft = this.#grid.getBoundingClientRect().left + 10;
     }
 
     const {x} = (event as any);  // eslint-disable-line @typescript-eslint/no-explicit-any

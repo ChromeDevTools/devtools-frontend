@@ -1383,7 +1383,7 @@ export class TreeElement {
     const paddingLeftValue = window.getComputedStyle(this.listItemNode).paddingLeft;
     console.assert(paddingLeftValue.endsWith('px'));
     const computedLeftPadding = parseFloat(paddingLeftValue);
-    const left = this.listItemNode.totalOffsetLeft() + computedLeftPadding;
+    const left = this.listItemNode.getBoundingClientRect().left + computedLeftPadding;
     return event.pageX >= left && event.pageX <= left + arrowToggleWidth && this.expandable;
   }
 

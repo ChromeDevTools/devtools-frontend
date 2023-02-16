@@ -1456,7 +1456,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     // Constrain the dragpoint to be within the containing div of the
     // datagrid.
-    let dragPoint: number = event.clientX - this.element.totalOffsetLeft();
+    let dragPoint: number = event.clientX - this.element.getBoundingClientRect().left;
     let leftEdgeOfPreviousColumn = 0;
     // Constrain the dragpoint to be within the space made up by the
     // column directly to the left and the column directly to the right.
@@ -2342,7 +2342,7 @@ export class DataGridNode<T> {
       return false;
     }
 
-    const left = cell.totalOffsetLeft() + this.leftPadding;
+    const left = cell.getBoundingClientRect().left + this.leftPadding;
     return event.pageX >= left && event.pageX <= left + this.disclosureToggleWidth;
   }
 

@@ -1701,8 +1701,9 @@ export class ConsoleViewFilter {
 
     const contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent, {
       useSoftMenu: true,
-      x: this.levelMenuButton.element.totalOffsetLeft(),
-      y: this.levelMenuButton.element.totalOffsetTop() + (this.levelMenuButton.element as HTMLElement).offsetHeight,
+      x: this.levelMenuButton.element.getBoundingClientRect().left,
+      y: this.levelMenuButton.element.getBoundingClientRect().top +
+          (this.levelMenuButton.element as HTMLElement).offsetHeight,
     });
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.default), () => setting.set(ConsoleFilter.defaultLevelsFilterValue()));

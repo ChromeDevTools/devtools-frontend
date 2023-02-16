@@ -223,8 +223,8 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
     const mouseEvent = event as WheelEvent;
     const scaleFactor = Math.pow(zoomFactor, -mouseEvent.deltaY * wheelZoomSpeed);
     this.onScale(
-        scaleFactor, mouseEvent.clientX - this.element.totalOffsetLeft(),
-        mouseEvent.clientY - this.element.totalOffsetTop());
+        scaleFactor, mouseEvent.clientX - this.element.getBoundingClientRect().left,
+        mouseEvent.clientY - this.element.getBoundingClientRect().top);
   }
 
   private onDrag(event: Event): void {

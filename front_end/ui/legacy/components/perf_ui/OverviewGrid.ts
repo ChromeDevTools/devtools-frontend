@@ -275,7 +275,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       return false;
     }
     const mouseEvent = (event as MouseEvent);
-    this.offsetLeft = this.parentElement.totalOffsetLeft();
+    this.offsetLeft = this.parentElement.getBoundingClientRect().left;
     const position = mouseEvent.x - this.offsetLeft;
     this.overviewWindowSelector = new WindowSelector(this.parentElement, position);
     return true;

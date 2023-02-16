@@ -841,8 +841,8 @@ export class ToolbarMenuButton extends ToolbarButton {
     }
     const contextMenu = new ContextMenu(event, {
       useSoftMenu: this.useSoftMenu,
-      x: this.element.totalOffsetLeft(),
-      y: this.element.totalOffsetTop() + this.element.offsetHeight,
+      x: this.element.getBoundingClientRect().left,
+      y: this.element.getBoundingClientRect().top + this.element.offsetHeight,
     });
     this.contextMenuHandler(contextMenu);
     void contextMenu.show();

@@ -228,7 +228,7 @@ export class CountersGraph extends UI.Widget.VBox {
   }
 
   private onClick(event: Event): void {
-    const x = (event as MouseEvent).x - this.canvasContainer.totalOffsetLeft();
+    const x = (event as MouseEvent).x - this.canvasContainer.getBoundingClientRect().left;
     let minDistance: number = Infinity;
     let bestTime;
     for (const counterUI of this.counterUI) {
@@ -259,7 +259,7 @@ export class CountersGraph extends UI.Widget.VBox {
   }
 
   private onMouseMove(event: Event): void {
-    const x = (event as MouseEvent).x - this.canvasContainer.totalOffsetLeft();
+    const x = (event as MouseEvent).x - this.canvasContainer.getBoundingClientRect().left;
     this.markerXPosition = x;
     this.refreshCurrentValues();
   }

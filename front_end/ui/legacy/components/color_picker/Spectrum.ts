@@ -743,8 +743,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
   private slotIndexForEvent(event: Event): number {
     const mouseEvent = event as MouseEvent;
-    const localX = mouseEvent.pageX - this.paletteContainer.totalOffsetLeft();
-    const localY = mouseEvent.pageY - this.paletteContainer.totalOffsetTop();
+    const localX = mouseEvent.pageX - this.paletteContainer.getBoundingClientRect().left;
+    const localY = mouseEvent.pageY - this.paletteContainer.getBoundingClientRect().top;
     const col = Math.min(localX / COLOR_CHIP_SIZE | 0, ITEMS_PER_PALETTE_ROW - 1);
     const row = (localY / COLOR_CHIP_SIZE) | 0;
     return Math.min(row * ITEMS_PER_PALETTE_ROW + col, this.customPaletteSetting.get().colors.length - 1);
@@ -752,7 +752,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
   private isDraggingToBin(event: Event): boolean {
     const mouseEvent = event as MouseEvent;
-    return mouseEvent.pageX > this.deleteIconToolbar.element.totalOffsetLeft();
+    return mouseEvent.pageX > this.deleteIconToolbar.element.getBoundingClientRect().left;
   }
 
   private paletteDragStart(event: Event): boolean {
@@ -771,8 +771,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
   private paletteDrag(event: Event): void {
     const mouseEvent = event as MouseEvent;
-    if (mouseEvent.pageX < this.paletteContainer.totalOffsetLeft() ||
-        mouseEvent.pageY < this.paletteContainer.totalOffsetTop()) {
+    if (mouseEvent.pageX < this.paletteContainer.getBoundingClientRect().left ||
+        mouseEvent.pageY < this.paletteContainer.getBoundingClientRect().top) {
       return;
     }
     if (!this.dragElement || this.dragHotSpotX === undefined || this.dragHotSpotY === undefined) {

@@ -660,8 +660,8 @@ export class DeviceModeToolbar {
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event.data, {
       useSoftMenu: false,
-      x: this.modeButton.element.totalOffsetLeft(),
-      y: this.modeButton.element.totalOffsetTop() + (this.modeButton.element as HTMLElement).offsetHeight,
+      x: this.modeButton.element.getBoundingClientRect().left,
+      y: this.modeButton.element.getBoundingClientRect().top + (this.modeButton.element as HTMLElement).offsetHeight,
     });
     addOrientation(EmulationModel.EmulatedDevices.Vertical, i18nString(UIStrings.portrait));
     addOrientation(EmulationModel.EmulatedDevices.Horizontal, i18nString(UIStrings.landscape));

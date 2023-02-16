@@ -186,14 +186,6 @@ Element.prototype.createChild = function(elementName: string, className?: string
 
 DocumentFragment.prototype.createChild = Element.prototype.createChild;
 
-Element.prototype.totalOffsetLeft = function(): number {
-  return this.getBoundingClientRect().left;
-};
-
-Element.prototype.totalOffsetTop = function(): number {
-  return this.getBoundingClientRect().top;
-};
-
 self.AnchorBox = class {
   constructor(x?: number, y?: number, width?: number, height?: number) {
     this.x = x || 0;
@@ -227,8 +219,8 @@ Element.prototype.boxInWindow = function(targetWindow?: Window|null): AnchorBox 
   let curElement: Element = this;
   let curWindow: Window|((Window & typeof globalThis) | null) = this.ownerDocument.defaultView;
   while (curWindow && curElement) {
-    anchorBox.x += curElement.totalOffsetLeft();
-    anchorBox.y += curElement.totalOffsetTop();
+    anchorBox.x += curElement.getBoundingClientRect().left;
+    anchorBox.y += curElement.getBoundingClientRect().top;
     if (curWindow === targetWindow) {
       break;
     }

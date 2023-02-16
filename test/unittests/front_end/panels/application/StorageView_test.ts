@@ -19,14 +19,12 @@ describeWithMockConnection('StorageView', () => {
     let target: SDK.Target.Target;
     let domStorageModel: Resources.DOMStorageModel.DOMStorageModel|null;
     let storageKeyManager: SDK.StorageKeyManager.StorageKeyManager|null;
-    let securityOriginManager: SDK.SecurityOriginManager.SecurityOriginManager|null;
 
     beforeEach(() => {
       target = targetFactory();
       domStorageModel = target.model(Resources.DOMStorageModel.DOMStorageModel);
       domStorageModel?.enable();
       storageKeyManager = target.model(SDK.StorageKeyManager.StorageKeyManager);
-      securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
     });
 
     it('emits correct events on clear', () => {
@@ -90,35 +88,6 @@ describeWithMockConnection('StorageView', () => {
 
       await databaseRemoved;
       assert.isEmpty(databaseModel.databases());
-    });
-
-    it('clears cache storage on clear (by origin)', async () => {
-      const cacheStorageModel = target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
-      assertNotNullOrUndefined(cacheStorageModel);
-      let caches = [
-        {
-          cacheId: 'id1' as Protocol.CacheStorage.CacheId,
-          securityOrigin: testOrigin,
-          storageKey: '',
-          cacheName: 'test-cache-1',
-        },
-        {
-          cacheId: 'id2' as Protocol.CacheStorage.CacheId,
-          securityOrigin: testOrigin,
-          storageKey: '',
-          cacheName: 'test-cache-2',
-        },
-      ];
-      sinon.stub(target.cacheStorageAgent(), 'invoke_requestCacheNames').resolves({caches, getError: () => undefined});
-      cacheStorageModel.enable();
-      const cacheAddedPromise = cacheStorageModel.once(SDK.ServiceWorkerCacheModel.Events.CacheAdded);
-      securityOriginManager?.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, testOrigin);
-      await cacheAddedPromise;
-      caches = [];
-
-      Resources.StorageView.StorageView.clear(target, testOrigin, [Protocol.Storage.StorageType.Cache_storage], false);
-
-      assert.isEmpty(cacheStorageModel.caches());
     });
 
     it('clears e.g. WebSQL on clear site data', async () => {

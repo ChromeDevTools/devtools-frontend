@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {
   $$,
   click,
+  enableExperiment,
   getBrowserAndPages,
   goToResource,
   step,
@@ -202,6 +203,7 @@ describe('Multi-Workers', async function() {
 
     describe(`hits breakpoints added to workers ${withOrWithout}`, () => {
       beforeEach(async () => {
+        await enableExperiment('instrumentationBreakpoints');
         const {frontend} = getBrowserAndPages();
         await waitForSourceFiles(
             SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
@@ -240,8 +242,7 @@ describe('Multi-Workers', async function() {
         await validateSourceTabs();
       });
 
-      // Flaky test.
-      it.skip('[crbug.com/1368493] for newly created workers', async () => {
+      it('for newly created workers', async () => {
         const {target} = getBrowserAndPages();
         // Launch new worker to hit breakpoint
         await target.evaluate(`new Worker('${scriptFile}').postMessage({});`);

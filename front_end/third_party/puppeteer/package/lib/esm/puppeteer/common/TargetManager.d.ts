@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Protocol from 'devtools-protocol';
+import { Protocol } from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
 import { Target } from './Target.js';
 /**
  * @internal
  */
-export declare type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CDPSession) => Target;
+export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CDPSession) => Target;
 /**
  * @internal
  */
-export declare type TargetInterceptor = (createdTarget: Target, parentTarget: Target | null) => Promise<void>;
+export type TargetInterceptor = (createdTarget: Target, parentTarget: Target | null) => void;
 /**
  * TargetManager encapsulates all interactions with CDP targets and is
  * responsible for coordinating the configuration of targets with the rest of

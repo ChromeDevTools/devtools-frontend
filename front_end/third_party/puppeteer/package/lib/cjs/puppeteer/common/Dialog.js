@@ -37,7 +37,7 @@ const assert_js_1 = require("../util/assert.js");
  * @example
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();

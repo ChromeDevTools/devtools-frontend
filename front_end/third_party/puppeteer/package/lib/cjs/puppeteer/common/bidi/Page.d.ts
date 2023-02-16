@@ -15,14 +15,23 @@
  */
 import { Page as PageBase } from '../../api/Page.js';
 import { Connection } from './Connection.js';
-import type { EvaluateFunc } from '..//types.js';
+import type { EvaluateFunc, HandleFor } from '../types.js';
+import { JSHandle } from './JSHandle.js';
+import { Reference } from './types.js';
 /**
  * @internal
  */
 export declare class Page extends PageBase {
     #private;
+    _contextId: string;
     constructor(connection: Connection, contextId: string);
     close(): Promise<void>;
-    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ..._args: Params): Promise<Awaited<ReturnType<Func>>>;
+    get connection(): Connection;
+    evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
 }
+/**
+ * @internal
+ */
+export declare function getBidiHandle(context: Page, result: Reference): JSHandle;
 //# sourceMappingURL=Page.d.ts.map

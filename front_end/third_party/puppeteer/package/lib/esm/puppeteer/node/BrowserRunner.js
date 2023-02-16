@@ -31,7 +31,6 @@ import * as path from 'path';
 import * as readline from 'readline';
 import removeFolder from 'rimraf';
 import { promisify } from 'util';
-import { Connection as BiDiConnection } from '../common/bidi/Connection.js';
 import { Connection } from '../common/Connection.js';
 import { debug } from '../common/Debug.js';
 import { TimeoutError } from '../common/Errors.js';
@@ -225,7 +224,9 @@ export class BrowserRunner {
         let browserWSEndpoint = await waitForWSEndpoint(this.proc, timeout, preferredRevision, /^WebDriver BiDi listening on (ws:\/\/.*)$/);
         browserWSEndpoint += '/session';
         const transport = await WebSocketTransport.create(browserWSEndpoint);
-        return new BiDiConnection(transport, slowMo);
+        const BiDi = await import(
+        /* webpackIgnore: true */ '../common/bidi/bidi.js');
+        return new BiDi.Connection(transport, slowMo);
     }
     async setupConnection(options) {
         assert(this.proc, 'BrowserRunner not started.');

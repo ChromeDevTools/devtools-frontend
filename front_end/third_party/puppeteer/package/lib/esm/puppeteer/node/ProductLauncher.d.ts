@@ -16,11 +16,21 @@ export declare class ProductLauncher {
     /**
      * @internal
      */
+    protected actualBrowserRevision?: string;
+    /**
+     * @internal
+     */
     constructor(puppeteer: PuppeteerNode, product: Product);
     get product(): Product;
     launch(object: PuppeteerNodeLaunchOptions): Promise<Browser>;
     executablePath(channel?: ChromeReleaseChannel): string;
     defaultArgs(object: BrowserLaunchArgumentOptions): string[];
+    /**
+     * Set only for Firefox, after the launcher resolves the `latest` revision to
+     * the actual revision.
+     * @internal
+     */
+    getActualBrowserRevision(): string | undefined;
     /**
      * @internal
      */

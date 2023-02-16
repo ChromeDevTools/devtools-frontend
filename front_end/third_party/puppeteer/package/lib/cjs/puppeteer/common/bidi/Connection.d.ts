@@ -15,9 +15,37 @@
  */
 import { ConnectionTransport } from '../ConnectionTransport.js';
 import { EventEmitter } from '../EventEmitter.js';
-interface CommandResponse {
-    id: number;
-    result: object;
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+/**
+ * @internal
+ */
+interface Commands {
+    'script.evaluate': {
+        params: Bidi.Script.EvaluateParameters;
+        returnType: Bidi.Script.EvaluateResult;
+    };
+    'script.callFunction': {
+        params: Bidi.Script.CallFunctionParameters;
+        returnType: Bidi.Script.CallFunctionResult;
+    };
+    'script.disown': {
+        params: Bidi.Script.DisownParameters;
+        returnType: Bidi.Script.DisownResult;
+    };
+    'browsingContext.create': {
+        params: Bidi.BrowsingContext.CreateParameters;
+        returnType: Bidi.BrowsingContext.CreateResult;
+    };
+    'browsingContext.close': {
+        params: Bidi.BrowsingContext.CloseParameters;
+        returnType: Bidi.BrowsingContext.CloseResult;
+    };
+    'session.status': {
+        params: {
+            context: string;
+        };
+        returnType: Bidi.Session.StatusResult;
+    };
 }
 /**
  * @internal
@@ -26,7 +54,7 @@ export declare class Connection extends EventEmitter {
     #private;
     constructor(transport: ConnectionTransport, delay?: number);
     get closed(): boolean;
-    send(method: string, params: object): Promise<CommandResponse['result']>;
+    send<T extends keyof Commands>(method: T, params: Commands[T]['params']): Promise<Commands[T]['returnType']>;
     /**
      * @internal
      */

@@ -59,4 +59,12 @@ export declare function importDebug(): Promise<typeof import('debug')>;
  * @internal
  */
 export declare const debug: (prefix: string) => (...args: unknown[]) => void;
+/**
+ * @internal
+ */
+export declare function setLogCapture(value: boolean): void;
+/**
+ * @internal
+ */
+export declare function getCapturedLogs(): string[];
 //# sourceMappingURL=Debug.d.ts.map

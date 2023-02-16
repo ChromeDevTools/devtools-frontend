@@ -1,0 +1,1 @@
+{"version":3,"file":"PSelectorParser.d.ts","sourceRoot":"","sources":["../../../../src/injected/PSelectorParser.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;GAcG;AAEH,KAAK,WAAW,GAAG,MAAM,CAAC;AAE1B,MAAM,MAAM,SAAS,GACjB;IACE,IAAI,EAAE,MAAM,CAAC;IACb,KAAK,EAAE,MAAM,CAAC;CACf,GACD,WAAW,CAAC;AAkIhB,wBAAgB,eAAe,CAAC,QAAQ,EAAE,MAAM,GAAG,SAAS,EAAE,EAAE,EAAE,CAIjE"}

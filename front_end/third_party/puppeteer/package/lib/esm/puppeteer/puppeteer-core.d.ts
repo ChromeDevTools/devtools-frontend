@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 export { Protocol } from 'devtools-protocol';
-export * from './common/Device.js';
-export * from './common/Errors.js';
-export * from './common/PredefinedNetworkConditions.js';
-export * from './common/Puppeteer.js';
+export * from './api/api.js';
+export * from './common/common.js';
+export * from './node/node.js';
+export * from './revisions.js';
+export * from './util/util.js';
 /**
  * @deprecated Use the query handler API defined on {@link Puppeteer}
  */
-export * from './common/QueryHandler.js';
-export * from './node/BrowserFetcher.js';
+export * from './common/CustomQueryHandler.js';
 import { PuppeteerNode } from './node/PuppeteerNode.js';
 /**
  * @public
  */
 declare const puppeteer: PuppeteerNode;
-export declare const connect: (options: import("./common/Puppeteer.js").ConnectOptions) => Promise<import("./types.js").Browser>, 
-/**
- * @deprecated Construct {@link BrowserFetcher} manually.
- *
- * @public
- */
-createBrowserFetcher: (options: Partial<import("./node/BrowserFetcher.js").BrowserFetcherOptions>) => import("./node/BrowserFetcher.js").BrowserFetcher, defaultArgs: (options?: import("./types.js").BrowserLaunchArgumentOptions) => string[], executablePath: (channel?: import("./types.js").ChromeReleaseChannel | undefined) => string, launch: (options?: import("./node/PuppeteerNode.js").PuppeteerLaunchOptions) => Promise<import("./types.js").Browser>;
+export declare const connect: (options: import("./common/Puppeteer.js").ConnectOptions) => Promise<import("./api/Browser.js").Browser>, createBrowserFetcher: (options?: Partial<import("./node/BrowserFetcher.js").BrowserFetcherOptions>) => import("./node/BrowserFetcher.js").BrowserFetcher, defaultArgs: (options?: import("./node/LaunchOptions.js").BrowserLaunchArgumentOptions) => string[], executablePath: (channel?: import("./node/LaunchOptions.js").ChromeReleaseChannel | undefined) => string, launch: (options?: import("./node/PuppeteerNode.js").PuppeteerLaunchOptions) => Promise<import("./api/Browser.js").Browser>;
 export default puppeteer;
 //# sourceMappingURL=puppeteer-core.d.ts.map

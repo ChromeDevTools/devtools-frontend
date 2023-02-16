@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 import { Protocol } from 'devtools-protocol';
+import { ElementHandle } from '../api/ElementHandle.js';
+import { Page } from '../api/Page.js';
 import { CDPSession } from './Connection.js';
-import { ElementHandle } from './ElementHandle.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { FrameManager } from './FrameManager.js';
 import { HTTPResponse } from './HTTPResponse.js';
 import { MouseButton } from './Input.js';
 import { IsolatedWorldChart, WaitForSelectorOptions } from './IsolatedWorld.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
-import { Page } from '../api/Page.js';
-import { EvaluateFunc, HandleFor, NodeFor } from './types.js';
+import { EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from './types.js';
 /**
  * @public
  */
@@ -113,7 +113,7 @@ export interface FrameAddStyleTagOptions {
  * An example of dumping frame tree:
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -240,6 +240,7 @@ export declare class Frame {
      */
     goto(url: string, options?: {
         referer?: string;
+        referrerPolicy?: string;
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<HTTPResponse | null>;
@@ -328,10 +329,7 @@ export declare class Frame {
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        ElementHandle<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<NodeFor<Selector>, Params> = EvaluateFuncWith<NodeFor<Selector>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * Runs the given function on an array of elements matching the given selector
      * in the frame.
@@ -352,10 +350,7 @@ export declare class Frame {
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        Array<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * @deprecated Use {@link Frame.$$} with the `xpath` prefix.
      *
@@ -375,7 +370,7 @@ export declare class Frame {
      * @example
      *
      * ```ts
-     * const puppeteer = require('puppeteer');
+     * import puppeteer from 'puppeteer';
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -422,7 +417,7 @@ export declare class Frame {
      * an XPath.
      *
      * @param xpath - the XPath expression to wait for.
-     * @param options - options to configure the visiblity of the element and how
+     * @param options - options to configure the visibility of the element and how
      * long to wait before timing out.
      */
     waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
@@ -431,7 +426,7 @@ export declare class Frame {
      * The `waitForFunction` can be used to observe viewport size change:
      *
      * ```ts
-     * const puppeteer = require('puppeteer');
+     * import puppeteer from 'puppeteer';
      *
      * (async () => {
      * .  const browser = await puppeteer.launch();

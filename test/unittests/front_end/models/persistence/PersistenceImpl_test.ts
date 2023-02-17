@@ -128,18 +128,7 @@ describeWithMockConnection('PersistenceImpl', () => {
 
     project.dispose();
 
-    // Disposing the file system copies the breakpoint back to the file system uiSourceCode.
-    await backend.responderToBreakpointByUrlRequest(fileSystemUiSourceCode.url(), breakpointLine)({
-      breakpointId: FILE_SYSTEM_BREAK_ID,
-      locations: [
-        {
-          scriptId: FILE_SYSTEM_SCRIPT_ID,
-          lineNumber: breakpointLine,
-          columnNumber: 0,
-        },
-      ],
-    });
-    assertBreakLocationUiSourceCodes([fileSystemUiSourceCode, networkUiSourceCode]);
+    assertBreakLocationUiSourceCodes([networkUiSourceCode]);
   });
 
   it('copies breakpoint from network uiSourceCode to the file system uiSourceCode when binding is removed ',

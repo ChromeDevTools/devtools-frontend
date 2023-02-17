@@ -121,11 +121,21 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   async copyBreakpoints(
       fromSourceCode: Workspace.UISourceCode.UISourceCode,
       toSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+    const toSourceCodeIsRemoved = toSourceCode.project().uiSourceCodeForURL(toSourceCode.url()) !== toSourceCode ||
+        this.#workspace.project(toSourceCode.project().id()) !== toSourceCode.project();
     const breakpointItems = this.storage.breakpointItems(fromSourceCode.url(), fromSourceCode.contentType().name());
     for (const item of breakpointItems) {
-      await this.setBreakpoint(
-          toSourceCode, item.lineNumber, item.columnNumber, item.condition, item.enabled, item.isLogpoint,
-          BreakpointOrigin.OTHER);
+      if (toSourceCodeIsRemoved) {
+        // If the target source code has been detached from the workspace, then no breakpoint should refer
+        // to that source code. Let us only update the storage, so that the breakpoints appear once
+        // the user binds the file system again.
+        this.storage.updateBreakpoint(
+            {...item, url: toSourceCode.url(), resourceTypeName: toSourceCode.contentType().name()});
+      } else {
+        await this.setBreakpoint(
+            toSourceCode, item.lineNumber, item.columnNumber, item.condition, item.enabled, item.isLogpoint,
+            BreakpointOrigin.OTHER);
+      }
     }
   }
 

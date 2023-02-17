@@ -1207,6 +1207,61 @@ describeWithMockConnection('BreakpointManager', () => {
     assert.isTrue(slidingBreakpoint.isRemoved);
   });
 
+  it('Breakpoint does not keep file system source code alive after file system removal', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+    const breakpointLine = 0;
+    const resolvedBreakpointLine = 1;
+
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const persistence =
+        Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
+        {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
+
+    // Create a file system project and source code.
+    const fileName = Common.ParsedURL.ParsedURL.extractName(scriptDescription.url);
+    const fileSystemPath = 'file://path/to/filesystem' as Platform.DevToolsPath.UrlString;
+    const fileSystemFileUrl = fileSystemPath + '/' + fileName as Platform.DevToolsPath.UrlString;
+    const {uiSourceCode: fileSystemUiSourceCode, project} = createFileSystemFileForPersistenceTests(
+        {fileSystemFileUrl, fileSystemPath}, scriptDescription.url, scriptDescription.content, target);
+
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    // Add the same script via the debugger protocol.
+    const bindingCreatedPromise = persistence.once(Persistence.Persistence.Events.BindingCreated);
+    const script = await backend.addScript(target, scriptDescription, null);
+    const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
+    await bindingCreatedPromise;
+    assertNotNullOrUndefined(uiSourceCode);
+
+    // Set the breakpoint on the (network) script.
+    void backend.responderToBreakpointByUrlRequest(URL, breakpointLine)({
+      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+      locations: [
+        {
+          scriptId: script.scriptId,
+          lineNumber: resolvedBreakpointLine,
+          columnNumber: 0,
+        },
+      ],
+    });
+    await breakpointManager.setBreakpoint(uiSourceCode, breakpointLine, 0, ...DEFAULT_BREAKPOINT);
+
+    // Remove the file system project.
+    const bindingRemovedPromise = persistence.once(Persistence.Persistence.Events.BindingRemoved);
+    project.dispose();
+    // Make sure the binding is removed.
+    await bindingRemovedPromise;
+
+    // After this, the breakpoint manager should not refer to the file system source code anymore, but
+    // the file system breakpoint location should be in the storage.
+    assert.isEmpty(breakpointManager.breakpointLocationsForUISourceCode(fileSystemUiSourceCode));
+    assert.strictEqual(breakpointManager.storage.breakpointItems(fileSystemUiSourceCode.url()).length, 1);
+
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+  });
+
   describe('can correctly set breakpoints for all pre-registered targets', () => {
     let mainUiSourceCode: Workspace.UISourceCode.UISourceCode;
     let workerUiSourceCode: Workspace.UISourceCode.UISourceCode;

@@ -46,7 +46,7 @@ describeWithMockConnection('CoveragePlugin', () => {
 
     it('shows stats', async () => {
       const coveragePlugin = new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode);
-      const toolbarItem = (await coveragePlugin.rightToolbarItems())[0];
+      const [toolbarItem] = coveragePlugin.rightToolbarItems();
       assert.strictEqual('Show Details', toolbarItem.element.title);
       assert.strictEqual(
           'Coverage: 32.1%', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);
@@ -54,7 +54,7 @@ describeWithMockConnection('CoveragePlugin', () => {
 
     it('updates stats', async () => {
       const coveragePlugin = new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode);
-      const toolbarItem = (await coveragePlugin.rightToolbarItems())[0];
+      const [toolbarItem] = coveragePlugin.rightToolbarItems();
       assert.strictEqual(
           'Coverage: 32.1%', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);
 
@@ -65,7 +65,7 @@ describeWithMockConnection('CoveragePlugin', () => {
 
     it('resets stats', async () => {
       const coveragePlugin = new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode);
-      const toolbarItem = (await coveragePlugin.rightToolbarItems())[0];
+      const [toolbarItem] = coveragePlugin.rightToolbarItems();
       assert.strictEqual(
           'Coverage: 32.1%', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);
 

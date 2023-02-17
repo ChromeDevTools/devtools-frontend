@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -31,10 +30,11 @@ export class ResourceOriginPlugin extends Plugin {
     return contentType.hasScripts() || contentType.isFromSourceMap();
   }
 
-  async rightToolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+
     // Handle source mapped scripts and stylesheets.
     if (this.uiSourceCode.contentType().isFromSourceMap()) {
-      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
       if (debuggerWorkspaceBinding.pluginManager) {
         for (const originScript of debuggerWorkspaceBinding.pluginManager.scriptsForUISourceCode(this.uiSourceCode)) {
           if (originScript.sourceURL) {
@@ -47,8 +47,7 @@ export class ResourceOriginPlugin extends Plugin {
       }
 
       const items = [];
-      for (const script of Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(
-               this.uiSourceCode)) {
+      for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(this.uiSourceCode)) {
         const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
         if (!uiSourceCode) {
           continue;
@@ -70,25 +69,14 @@ export class ResourceOriginPlugin extends Plugin {
     }
 
     // Handle anonymous scripts with an originStackTrace.
-    const script = await ResourceOriginPlugin.script(this.uiSourceCode);
-    if (!script || !script.originStackTrace) {
-      return [];
-    }
-    const link = linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
-    return [new UI.Toolbar.ToolbarItem(link)];
-  }
-
-  private static async script(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<SDK.Script.Script|null> {
-    const locations =
-        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
-            uiSourceCode, 0, 0);
-    for (const location of locations) {
-      const script = location.script();
-      if (script && script.originStackTrace) {
-        return script;
+    for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(this.uiSourceCode)) {
+      if (script.originStackTrace) {
+        const link = linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
+        return [new UI.Toolbar.ToolbarItem(link)];
       }
     }
-    return null;
+
+    return [];
   }
 }
 

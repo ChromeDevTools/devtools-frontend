@@ -21,7 +21,7 @@ export class Plugin {
   willHide(): void {
   }
 
-  async rightToolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
     return [];
   }
 

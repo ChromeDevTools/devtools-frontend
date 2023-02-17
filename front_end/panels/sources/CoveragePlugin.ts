@@ -110,7 +110,7 @@ export class CoveragePlugin extends Plugin {
     }
   }
 
-  async rightToolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
     return [this.infoInToolbar];
   }
 

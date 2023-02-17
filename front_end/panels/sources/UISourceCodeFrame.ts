@@ -449,7 +449,7 @@ export class UISourceCodeFrame extends
     const rightToolbarItems = [];
     for (const plugin of this.plugins) {
       leftToolbarItems.push(...plugin.leftToolbarItems());
-      rightToolbarItems.push(...await plugin.rightToolbarItems());
+      rightToolbarItems.push(...plugin.rightToolbarItems());
     }
 
     if (!rightToolbarItems.length) {

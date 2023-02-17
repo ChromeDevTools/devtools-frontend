@@ -30,7 +30,7 @@ export class SnippetsPlugin extends Plugin {
     return Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode);
   }
 
-  async rightToolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
     const runSnippet = UI.Toolbar.Toolbar.createActionButtonForId('debugger.run-snippet');
     runSnippet.setText(Host.Platform.isMac() ? i18nString(UIStrings.enter) : i18nString(UIStrings.ctrlenter));
 

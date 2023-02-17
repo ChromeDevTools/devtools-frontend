@@ -10,6 +10,8 @@ import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scop
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
+const resolveNamesTimeout = 500;
+
 export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private mainTargetInternal: SDK.Target.Target|null;
   private tracingModelInternal: SDK.TracingModel.TracingModel|null;
@@ -18,6 +20,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   private readonly frameModelInternal: TimelineModel.TimelineFrameModel.TimelineFrameModel;
   private filmStripModelInternal: SDK.FilmStripModel.FilmStripModel|null;
   private windowInternal: Window;
+  private willResolveNames = false;
   private readonly extensionTracingModels: {
     title: string,
     model: SDK.TracingModel.TracingModel,
@@ -143,12 +146,20 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     }
   }
 
-  async #onAttachedSourceMap(
-      event: Common.EventTarget.EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>):
-      Promise<void> {
-    if (!this.#cpuProfileNodes().some(node => node.scriptId === event.data.client.scriptId)) {
-      return;
+  async #onAttachedSourceMap(): Promise<void> {
+    if (!this.willResolveNames) {
+      this.willResolveNames = true;
+      // Resolving names triggers a repaint of the flame chart. Instead of attempting to resolve
+      // names every time a source map is attached, wait for some time once the first source map is
+      // attached. This way we allow for other source maps to be parsed before attempting a name
+      // resolving using the available source maps. Otherwise the UI is blocked when the number
+      // of source maps is particularly large.
+      setTimeout(this.resolveNamesAndUpdate.bind(this), resolveNamesTimeout);
     }
+  }
+
+  async resolveNamesAndUpdate(): Promise<void> {
+    this.willResolveNames = false;
     await this.#resolveNamesFromCPUProfile();
     this.dispatchEventToListeners(Events.NamesResolved);
   }

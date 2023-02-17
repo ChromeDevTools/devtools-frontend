@@ -70,4 +70,63 @@ describe('TracingModel', () => {
       assert.strictEqual(event.endTime, (firstRunTask.ts + firstRunTask.dur) / 1000);
     });
   });
+
+  describe('extractID', () => {
+    it('can extract the ID from the id field if it exists', async () => {
+      const fakePayload = {
+        id: '123',
+      } as unknown as SDK.TracingManager.EventPayload;
+      assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), '123');
+    });
+
+    it('prepends the scope to the id if it is present', async () => {
+      const fakePayload = {
+        id: '123',
+        scope: 'test-scope',
+      } as unknown as SDK.TracingManager.EventPayload;
+      assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), 'test-scope@123');
+    });
+
+    it('prioritises the id2 global field over id if they are both present', async () => {
+      const fakePayload = {
+        id: '123',
+        id2: {
+          global: 'global-id',
+        },
+        scope: 'test-scope',
+      } as unknown as SDK.TracingManager.EventPayload;
+      assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), ':test-scope:global-id');
+    });
+
+    it('prioritises the id2 local field over id if they are both present, and includes the PID of the event',
+       async () => {
+         const fakePayload = {
+           id: '123',
+           id2: {
+             local: 'local-id',
+           },
+           pid: 'test-pid',
+           scope: 'test-scope',
+         } as unknown as SDK.TracingManager.EventPayload;
+         assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), ':test-scope:test-pid:local-id');
+       });
+
+    it('logs an error and returns undefined if the id2 object has both global and local keys', async () => {
+      const fakePayload = {
+        id: '123',
+        id2: {
+          local: 'local-id',
+          global: 'global-id',
+        },
+        pid: 'test-pid',
+        scope: 'test-scope',
+        ts: 1000,
+      } as unknown as SDK.TracingManager.EventPayload;
+      const consoleErrorStub = sinon.stub(console, 'error');
+      assert.isUndefined(SDK.TracingModel.TracingModel.extractId(fakePayload));
+      assert(consoleErrorStub.calledWithExactly(
+          // The number 1 here is the timestamp divided by 1000.
+          'Unexpected id2 field at 1, one and only one of \'local\' and \'global\' should be present.'));
+    });
+  });
 });

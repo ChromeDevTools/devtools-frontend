@@ -436,6 +436,11 @@ describe('The Sources Tab', async function() {
       await openFileInEditor('sourcemap-origin.scss');
       await waitFor('.toolbar-item > .devtools-link[title$="sourcemap-origin.css"]');
     });
+
+    await step('Check origin of source-mapped JavaScript with URL clash', async () => {
+      await openFileInEditor('sourcemap-origin.clash.js');
+      await waitFor('.toolbar-item > .devtools-link[title$="sourcemap-origin.clash.js"]');
+    });
   });
 
   describe('can deal with code-splitting', () => {

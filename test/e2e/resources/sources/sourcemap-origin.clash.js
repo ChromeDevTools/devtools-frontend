@@ -1,0 +1,2 @@
+function bar(){}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNvdXJjZW1hcC1vcmlnaW4uY2xhc2guanMiXSwibmFtZXMiOlsiYmFyIl0sIm1hcHBpbmdzIjoiQUFBQSxTQUFTQSIsInNvdXJjZXNDb250ZW50IjpbImZ1bmN0aW9uIGJhcigpIHt9XG4iXX0=

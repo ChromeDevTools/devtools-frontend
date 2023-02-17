@@ -32,28 +32,41 @@ export class ResourceOriginPlugin extends Plugin {
   }
 
   async rightToolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    const originURLs = [
-      ...Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this.uiSourceCode),
-      ...Bindings.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(this.uiSourceCode),
-    ];
-    if (originURLs.length) {
-      return originURLs.map(originURL => {
-        const item = i18n.i18n.getFormatLocalizedString(
-            str_, UIStrings.sourceMappedFromS, {PH1: Components.Linkifier.Linkifier.linkifyURL(originURL)});
-        return new UI.Toolbar.ToolbarItem(item);
-      });
-    }
-
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager;
-    if (pluginManager) {
-      for (const originScript of pluginManager.scriptsForUISourceCode(this.uiSourceCode)) {
-        if (originScript.sourceURL) {
-          const item = i18n.i18n.getFormatLocalizedString(
-              str_, UIStrings.providedViaDebugInfoByS,
-              {PH1: Components.Linkifier.Linkifier.linkifyURL(originScript.sourceURL)});
-          return [new UI.Toolbar.ToolbarItem(item)];
+    // Handle source mapped scripts and stylesheets.
+    if (this.uiSourceCode.contentType().isFromSourceMap()) {
+      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+      if (debuggerWorkspaceBinding.pluginManager) {
+        for (const originScript of debuggerWorkspaceBinding.pluginManager.scriptsForUISourceCode(this.uiSourceCode)) {
+          if (originScript.sourceURL) {
+            const item = i18n.i18n.getFormatLocalizedString(
+                str_, UIStrings.providedViaDebugInfoByS,
+                {PH1: Components.Linkifier.Linkifier.linkifyURL(originScript.sourceURL)});
+            return [new UI.Toolbar.ToolbarItem(item)];
+          }
         }
       }
+
+      const items = [];
+      for (const script of Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(
+               this.uiSourceCode)) {
+        const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
+        if (!uiSourceCode) {
+          continue;
+        }
+        const url = uiSourceCode.url();
+        const text = Bindings.ResourceUtils.displayNameForURL(url);
+        const title = text !== url ? url : undefined;
+        const item = i18n.i18n.getFormatLocalizedString(
+            str_, UIStrings.sourceMappedFromS,
+            {PH1: Components.Linkifier.Linkifier.linkifyRevealable(uiSourceCode, text, url, title)});
+        items.push(new UI.Toolbar.ToolbarItem(item));
+      }
+      for (const originURL of Bindings.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(this.uiSourceCode)) {
+        const item = i18n.i18n.getFormatLocalizedString(
+            str_, UIStrings.sourceMappedFromS, {PH1: Components.Linkifier.Linkifier.linkifyURL(originURL)});
+        items.push(new UI.Toolbar.ToolbarItem(item));
+      }
+      return items;
     }
 
     // Handle anonymous scripts with an originStackTrace.

@@ -99,6 +99,7 @@ copy_to_gen("sources") {
     "sourcemap-minified.html",
     "sourcemap-minified.js",
     "sourcemap-minified.map",
+    "sourcemap-origin.clash.js",
     "sourcemap-origin.css",
     "sourcemap-origin.css.map",
     "sourcemap-origin.html",

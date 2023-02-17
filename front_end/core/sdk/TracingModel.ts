@@ -621,7 +621,6 @@ export class Event {
  * object in the trace. We construct these events at times, particularly when
  * building up the CPU profile data for JS Profiling.
  **/
-// eslint-disable-next-line rulesdir/enforce_custom_event_names
 export class ConstructedEvent extends Event {
   // Because the constructor of Event is marked as protected, but we want
   // people to be able to create constructed events, we override the

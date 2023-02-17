@@ -49,6 +49,18 @@ ruleTester.run('enforce_custom_event_names', rule, {
         }`,
       filename: 'front_end/common/Importing.js',
     },
+    {
+      // Not using the built in Event type, but using a type that is defined in
+      // the same file that is called Event. We special case this because in
+      // the Performance Panel SDK we do define a custom Event class
+      code: `class Event {};
+export class ConstructedEvent extends Event {
+  constructor(x:string) {
+    super(x)
+  }
+}`,
+      filename: 'ui/some-component.ts',
+    },
   ],
 
   invalid: [

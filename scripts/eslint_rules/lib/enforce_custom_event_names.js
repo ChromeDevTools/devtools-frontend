@@ -23,11 +23,11 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
-    return {
-      ClassDeclaration(node) {
-        if (!node.superClass || node.superClass.name !== 'Event') {
-          return;
-        }
+    let foundLocalEventClassDeclaration = false;
+    const classDeclarationsToLint = [];
+
+    function lintClassNode(node) {
+
         const constructor =
             node.body.body.find(node => node.type === 'MethodDefinition' && node.kind === 'constructor');
         if (!constructor) {
@@ -94,6 +94,33 @@ module.exports = {
         if (!valueOfEventName.match(VALID_EVENT_NAME_REGEX)) {
           context.report({node, messageId: 'invalidEventName'});
         }
+    }
+
+    return {
+      ClassDeclaration(node) {
+        // If we find a local class defined called Event, we do not apply this
+        // check, as we have some instances where a local Event class is used
+        // which is not the builtin Event class that represents DOM emitted
+        // events.
+        if (node.id.name === 'Event') {
+          foundLocalEventClassDeclaration = true;
+          return;
+        }
+
+        if (!node.superClass || node.superClass.name !== 'Event') {
+          return;
+        }
+
+        classDeclarationsToLint.push(node);
+      },
+      'Program:exit'() {
+        if (foundLocalEventClassDeclaration) {
+          return;
+        }
+
+        classDeclarationsToLint.forEach(node => {
+          lintClassNode(node);
+        });
       },
     };
   }

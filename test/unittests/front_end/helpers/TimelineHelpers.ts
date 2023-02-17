@@ -39,8 +39,8 @@ export interface EventWithStubbedThreadOptions {
  * event to test something. For anything more, you should use the helpers in
  * TraceHelpers.ts to load and parse a real trace to get real data.
  **/
-class StubbedThread {
-  static makeStubEvent(id: number): SDK.TracingModel.Thread {
+export class StubbedThread {
+  static make(id: number): SDK.TracingModel.Thread {
     const instance = new StubbedThread(id);
     return instance as unknown as SDK.TracingModel.Thread;
   }
@@ -59,7 +59,7 @@ class StubbedThread {
 }
 
 export function makeEventWithStubbedThread(options: EventWithStubbedThreadOptions): SDK.TracingModel.Event {
-  const thread = StubbedThread.makeStubEvent(options.threadId);
+  const thread = StubbedThread.make(options.threadId);
   // TODO(jacktfranklin): provide a helper that can construct a fake payload
   // and instantiate an Event with that. Ultimately in tests we need to be able
   // to generate constructed events and payload events.

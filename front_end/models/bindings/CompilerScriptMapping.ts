@@ -74,7 +74,6 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   constructor(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl,
       debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
-    compilerScriptMappings.add(this);
     this.#sourceMapManager = debuggerModel.sourceMapManager();
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
@@ -109,16 +108,6 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     if (uiSourceCode) {
       this.#stubProject.removeUISourceCode(uiSourceCode.url());
     }
-  }
-
-  static uiSourceCodeOrigin(uiSourceCode: Workspace.UISourceCode.UISourceCode): Platform.DevToolsPath.UrlString[] {
-    const compiledURLs = new Set<Platform.DevToolsPath.UrlString>();
-    for (const compilerScriptMapping of compilerScriptMappings) {
-      for (const sourceMap of compilerScriptMapping.#uiSourceCodeToSourceMaps.get(uiSourceCode)) {
-        compiledURLs.add(sourceMap.compiledURL());
-      }
-    }
-    return [...compiledURLs];
   }
 
   getLocationRangesForSameSourceLocation(rawLocation: SDK.DebuggerModel.Location): SDK.DebuggerModel.LocationRange[] {
@@ -493,7 +482,6 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
   }
 
   dispose(): void {
-    compilerScriptMappings.delete(this);
     Common.EventTarget.removeEventListeners(this.#eventListeners);
     for (const project of this.#projects.values()) {
       project.dispose();
@@ -501,7 +489,3 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     this.#stubProject.dispose();
   }
 }
-
-// TODO(bmeurer): Remove the static methods from CompilerScriptMapping
-// and get rid of this global table.
-const compilerScriptMappings = new Set<CompilerScriptMapping>();

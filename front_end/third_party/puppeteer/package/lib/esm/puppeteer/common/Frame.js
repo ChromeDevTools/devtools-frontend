@@ -25,12 +25,11 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Frame_url, _Frame_detached, _Frame_client;
+import { assert } from '../util/assert.js';
 import { isErrorLike } from '../util/ErrorLike.js';
-import { getQueryHandlerAndSelector } from './GetQueryHandler.js';
-import { IsolatedWorld, } from './IsolatedWorld.js';
-import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
-import { LazyArg } from './LazyArg.js';
+import { IsolatedWorld, MAIN_WORLD, PUPPETEER_WORLD, } from './IsolatedWorld.js';
 import { LifecycleWatcher } from './LifecycleWatcher.js';
+import { getQueryHandlerAndSelector } from './QueryHandler.js';
 import { importFS } from './util.js';
 /**
  * Represents a DOM frame.
@@ -48,7 +47,7 @@ import { importFS } from './util.js';
  * An example of dumping frame tree:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -174,11 +173,11 @@ export class Frame {
      * calling {@link HTTPResponse.status}.
      */
     async goto(url, options = {}) {
-        const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
+        const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
         let ensureNewDocumentNavigation = false;
         const watcher = new LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
         let error = await Promise.race([
-            navigate(__classPrivateFieldGet(this, _Frame_client, "f"), url, referer, referrerPolicy, this._id),
+            navigate(__classPrivateFieldGet(this, _Frame_client, "f"), url, referer, this._id),
             watcher.timeoutOrTerminationPromise(),
         ]);
         if (!error) {
@@ -198,18 +197,14 @@ export class Frame {
         finally {
             watcher.dispose();
         }
-        async function navigate(client, url, referrer, referrerPolicy, frameId) {
+        async function navigate(client, url, referrer, frameId) {
             try {
                 const response = await client.send('Page.navigate', {
                     url,
                     referrer,
                     frameId,
-                    referrerPolicy,
                 });
                 ensureNewDocumentNavigation = !!response.loaderId;
-                if (response.errorText === 'net::ERR_HTTP_RESPONSE_CODE_FAILURE') {
-                    return null;
-                }
                 return response.errorText
                     ? new Error(`${response.errorText} at ${url}`)
                     : null;
@@ -380,7 +375,7 @@ export class Frame {
      * @example
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -408,8 +403,9 @@ export class Frame {
      * @throws Throws if an element matching the given selector doesn't appear.
      */
     async waitForSelector(selector, options = {}) {
-        const { updatedSelector, QueryHandler } = getQueryHandlerAndSelector(selector);
-        return (await QueryHandler.waitFor(this, updatedSelector, options));
+        const { updatedSelector, queryHandler } = getQueryHandlerAndSelector(selector);
+        assert(queryHandler.waitFor, 'Query handler does not support waiting');
+        return (await queryHandler.waitFor(this, updatedSelector, options));
     }
     /**
      * @deprecated Use {@link Frame.waitForSelector} with the `xpath` prefix.
@@ -430,7 +426,7 @@ export class Frame {
      * an XPath.
      *
      * @param xpath - the XPath expression to wait for.
-     * @param options - options to configure the visibility of the element and how
+     * @param options - options to configure the visiblity of the element and how
      * long to wait before timing out.
      */
     async waitForXPath(xpath, options = {}) {
@@ -444,7 +440,7 @@ export class Frame {
      * The `waitForFunction` can be used to observe viewport size change:
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      * .  const browser = await puppeteer.launch();
@@ -580,9 +576,7 @@ export class Frame {
             document.head.appendChild(script);
             await promise;
             return script;
-        }, LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }), { ...options, type, content }));
+        }, await this.worlds[PUPPETEER_WORLD].puppeteerUtil, { ...options, type, content }));
     }
     async addStyleTag(options) {
         let { content = '' } = options;
@@ -628,9 +622,7 @@ export class Frame {
             document.head.appendChild(element);
             await promise;
             return element;
-        }, LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }), options));
+        }, await this.worlds[PUPPETEER_WORLD].puppeteerUtil, options));
     }
     /**
      * Clicks the first element found that matches `selector`.

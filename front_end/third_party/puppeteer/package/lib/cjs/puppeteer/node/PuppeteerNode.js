@@ -52,7 +52,7 @@ const FirefoxLauncher_js_1 = require("./FirefoxLauncher.js");
  * The following is a typical example of using Puppeteer to drive automation:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -165,8 +165,8 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * @internal
      */
     get browserRevision() {
-        var _a, _b, _c;
-        return ((_c = (_b = (_a = __classPrivateFieldGet(this, _PuppeteerNode__launcher, "f")) === null || _a === void 0 ? void 0 : _a.getActualBrowserRevision()) !== null && _b !== void 0 ? _b : this.configuration.browserRevision) !== null && _c !== void 0 ? _c : this.defaultBrowserRevision);
+        var _a;
+        return (_a = this.configuration.browserRevision) !== null && _a !== void 0 ? _a : this.defaultBrowserRevision;
     }
     /**
      * @returns The default download path for puppeteer. For puppeteer-core, this
@@ -222,33 +222,28 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
         return __classPrivateFieldGet(this, _PuppeteerNode_instances, "a", _PuppeteerNode_launcher_get).defaultArgs(options);
     }
     /**
+     * @deprecated If you are using `puppeteer-core`, do not use this method. Just
+     * construct {@link BrowserFetcher} manually.
+     *
      * @param options - Set of configurable options to specify the settings of the
      * BrowserFetcher.
      *
-     * @remarks
-     * If you are using `puppeteer-core`, do not use this method. Just
-     * construct {@link BrowserFetcher} manually.
-     *
      * @returns A new BrowserFetcher instance.
      */
-    createBrowserFetcher(options = {}) {
+    createBrowserFetcher(options) {
         var _a;
         const downloadPath = this.defaultDownloadPath;
-        if (!options.path && downloadPath) {
+        if (downloadPath) {
             options.path = downloadPath;
         }
         if (!options.path) {
             throw new Error('A `path` must be specified for `puppeteer-core`.');
         }
-        if (!('useMacOSARMBinary' in options) &&
-            ((_a = this.configuration.experiments) === null || _a === void 0 ? void 0 : _a.macArmChromiumEnabled)) {
+        if ((_a = this.configuration.experiments) === null || _a === void 0 ? void 0 : _a.macArmChromiumEnabled) {
             options.useMacOSARMBinary = true;
         }
-        if (!('host' in options) && this.configuration.downloadHost) {
+        if (this.configuration.downloadHost) {
             options.host = this.configuration.downloadHost;
-        }
-        if (!('product' in options) && this.configuration.defaultProduct) {
-            options.product = this.configuration.defaultProduct;
         }
         return new BrowserFetcher_js_1.BrowserFetcher(options);
     }

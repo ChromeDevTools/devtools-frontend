@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
@@ -37,9 +14,9 @@ const fs_1 = require("fs");
 const promises_1 = require("fs/promises");
 const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
+const Browser_js_1 = require("../common/Browser.js");
 const assert_js_1 = require("../util/assert.js");
 const BrowserRunner_js_1 = require("./BrowserRunner.js");
-const Browser_js_1 = require("../common/Browser.js");
 const ProductLauncher_js_1 = require("./ProductLauncher.js");
 /**
  * @internal
@@ -50,7 +27,7 @@ class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
         _ChromeLauncher_instances.add(this);
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, channel, executablePath, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, debuggingPort, protocol, } = options;
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, channel, executablePath, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, debuggingPort, } = options;
         const chromeArguments = [];
         if (!ignoreDefaultArgs) {
             chromeArguments.push(...this.defaultArgs(options));
@@ -110,23 +87,6 @@ class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
                 slowMo,
                 preferredRevision: this.puppeteer.browserRevision,
             });
-            if (protocol === 'webDriverBiDi') {
-                try {
-                    const BiDi = await Promise.resolve().then(() => __importStar(require(
-                    /* webpackIgnore: true */ '../common/bidi/bidi.js')));
-                    const bidiConnection = await BiDi.connectBidiOverCDP(connection);
-                    browser = await BiDi.Browser.create({
-                        connection: bidiConnection,
-                        closeCallback: runner.close.bind(runner),
-                        process: runner.proc,
-                    });
-                }
-                catch (error) {
-                    runner.kill();
-                    throw error;
-                }
-                return browser;
-            }
             browser = await Browser_js_1.CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
         catch (error) {
@@ -147,38 +107,38 @@ class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
         return browser;
     }
     defaultArgs(options = {}) {
-        // See https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
         const chromeArguments = [
             '--allow-pre-commit-input',
             '--disable-background-networking',
+            '--enable-features=NetworkServiceInProcess2',
             '--disable-background-timer-throttling',
             '--disable-backgrounding-occluded-windows',
             '--disable-breakpad',
             '--disable-client-side-phishing-detection',
             '--disable-component-extensions-with-background-pages',
-            '--disable-component-update',
             '--disable-default-apps',
             '--disable-dev-shm-usage',
             '--disable-extensions',
+            // TODO: remove AvoidUnnecessaryBeforeUnloadCheckSync below
+            // once crbug.com/1324138 is fixed and released.
             // AcceptCHFrame disabled because of crbug.com/1348106.
-            '--disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints',
+            '--disable-features=Translate,BackForwardCache,AcceptCHFrame,AvoidUnnecessaryBeforeUnloadCheckSync',
             '--disable-hang-monitor',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',
             '--disable-prompt-on-repost',
             '--disable-renderer-backgrounding',
             '--disable-sync',
-            '--enable-automation',
-            // TODO(sadym): remove '--enable-blink-features=IdleDetection' once
-            // IdleDetection is turned on by default.
-            '--enable-blink-features=IdleDetection',
-            '--enable-features=NetworkServiceInProcess2',
-            '--export-tagged-pdf',
             '--force-color-profile=srgb',
             '--metrics-recording-only',
             '--no-first-run',
+            '--enable-automation',
             '--password-store=basic',
             '--use-mock-keychain',
+            // TODO(sadym): remove '--enable-blink-features=IdleDetection'
+            // once IdleDetection is turned on by default.
+            '--enable-blink-features=IdleDetection',
+            '--export-tagged-pdf',
         ];
         const { devtools = false, headless = !devtools, args = [], userDataDir, } = options;
         if (userDataDir) {
@@ -188,7 +148,7 @@ class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
             chromeArguments.push('--auto-open-devtools-for-tabs');
         }
         if (headless) {
-            chromeArguments.push(headless === 'new' ? '--headless=new' : '--headless', '--hide-scrollbars', '--mute-audio');
+            chromeArguments.push(headless === 'chrome' ? '--headless=chrome' : '--headless', '--hide-scrollbars', '--mute-audio');
         }
         if (args.every(arg => {
             return arg.startsWith('-');

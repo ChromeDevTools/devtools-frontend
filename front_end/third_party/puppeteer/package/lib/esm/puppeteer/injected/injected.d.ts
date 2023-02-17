@@ -14,42 +14,30 @@
  * limitations under the License.
  */
 import { createDeferredPromise } from '../util/DeferredPromise.js';
-import * as CustomQuerySelectors from './CustomQuerySelector.js';
-import { IntervalPoller, MutationPoller, RAFPoller } from './Poller.js';
+import { RAFPoller, MutationPoller, IntervalPoller } from './Poller.js';
 /**
  * @internal
  */
 declare const PuppeteerUtil: Readonly<{
     createDeferredPromise: typeof createDeferredPromise;
-    createFunction: (functionValue: string) => (...args: unknown[]) => unknown;
     createTextContent: (root: Node) => import("./TextContent.js").TextContent;
     IntervalPoller: typeof IntervalPoller;
     isSuitableNodeForTextMatching: (node: Node) => boolean;
     MutationPoller: typeof MutationPoller;
     RAFPoller: typeof RAFPoller;
-    xpathQuerySelectorAll: (root: Node, selector: string) => Iterable<Node>;
-    deepChildren(root: Node): IterableIterator<Element | ShadowRoot>;
-    deepDescendents(root: Node): IterableIterator<Element | ShadowRoot>;
-    checkVisibility: (node: Node | null, visible?: boolean | undefined) => boolean | Node;
-    textQuerySelectorAll: (root: Node, selector: string) => Generator<Element, any, unknown>;
-    pQuerySelectorAll: (root: Node, selector: string) => import("../puppeteer-core.js").AwaitableIterable<Node>;
-    pQuerySelector: (root: Node, selector: string) => Promise<Node | null>;
     pierceQuerySelector: (root: Node, selector: string) => Element | null;
     pierceQuerySelectorAll: (element: Node, selector: string) => Element[];
-    customQuerySelectors: {
-        "__#46916@#selectors": Map<string, CustomQuerySelectors.CustomQuerySelector>;
-        register(name: string, handler: import("../puppeteer-core.js").CustomQueryHandler): void;
-        unregister(name: string): void;
-        get(name: string): CustomQuerySelectors.CustomQuerySelector | undefined;
-        clear(): void;
-    };
-    ariaQuerySelector: (root: Node, selector: string) => Promise<Node | null>;
-    ariaQuerySelectorAll: (root: Node, selector: string) => AsyncIterable<Node>;
+    xpathQuerySelector: (root: Node, selector: string) => Node | null;
+    xpathQuerySelectorAll: (root: Node, selector: string) => Node[];
+    textQuerySelector: (root: Node, selector: string) => Element | null;
+    textQuerySelectorAll: (root: Node, selector: string) => Element[];
+    createFunction: (functionValue: string) => (...args: unknown[]) => unknown;
+    checkVisibility: (node: Node | null, visible?: boolean | undefined) => boolean | Node;
 }>;
 /**
  * @internal
  */
-type PuppeteerUtil = typeof PuppeteerUtil;
+declare type PuppeteerUtil = typeof PuppeteerUtil;
 /**
  * @internal
  */

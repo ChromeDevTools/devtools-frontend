@@ -17,7 +17,7 @@
  * @internal
  */
 export declare const PUPPETEER_REVISIONS: Readonly<{
-    chromium: "1095492";
+    chromium: "1056772";
     firefox: "latest";
 }>;
 //# sourceMappingURL=revisions.d.ts.map

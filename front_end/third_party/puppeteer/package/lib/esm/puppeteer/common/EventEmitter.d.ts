@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { EventType, Handler } from '../../third_party/mitt/index.js';
 /**
  * @public
  */
-export type EventType = string | symbol;
-/**
- * @public
- */
-export type Handler<T = unknown> = (event: T) => void;
+export { EventType, Handler };
 /**
  * @public
  */
@@ -59,24 +56,24 @@ export declare class EventEmitter implements CommonEventEmitter {
      * @param handler - the function to be called when the event occurs.
      * @returns `this` to enable you to chain method calls.
      */
-    on(event: EventType, handler: Handler<any>): EventEmitter;
+    on(event: EventType, handler: Handler): EventEmitter;
     /**
      * Remove an event listener from firing.
      * @param event - the event type you'd like to stop listening to.
      * @param handler - the function that should be removed.
      * @returns `this` to enable you to chain method calls.
      */
-    off(event: EventType, handler: Handler<any>): EventEmitter;
+    off(event: EventType, handler: Handler): EventEmitter;
     /**
      * Remove an event listener.
      * @deprecated please use {@link EventEmitter.off} instead.
      */
-    removeListener(event: EventType, handler: Handler<any>): EventEmitter;
+    removeListener(event: EventType, handler: Handler): EventEmitter;
     /**
      * Add an event listener.
      * @deprecated please use {@link EventEmitter.on} instead.
      */
-    addListener(event: EventType, handler: Handler<any>): EventEmitter;
+    addListener(event: EventType, handler: Handler): EventEmitter;
     /**
      * Emit an event and call any associated listeners.
      *
@@ -91,7 +88,7 @@ export declare class EventEmitter implements CommonEventEmitter {
      * @param handler - the handler function to run when the event occurs
      * @returns `this` to enable you to chain method calls.
      */
-    once(event: EventType, handler: Handler<any>): EventEmitter;
+    once(event: EventType, handler: Handler): EventEmitter;
     /**
      * Gets the number of listeners for a given event.
      *

@@ -56,11 +56,11 @@ export declare class FrameManager extends EventEmitter {
     private setupEventListeners;
     initialize(client?: CDPSession): Promise<void>;
     executionContextById(contextId: number, session?: CDPSession): ExecutionContext;
-    getExecutionContextById(contextId: number, session?: CDPSession): ExecutionContext | undefined;
     page(): Page;
     mainFrame(): Frame;
     frames(): Frame[];
     frame(frameId: string): Frame | null;
     onAttachedToTarget(target: Target): void;
+    onDetachedFromTarget(target: Target): void;
 }
 //# sourceMappingURL=FrameManager.d.ts.map

@@ -14,29 +14,21 @@
  * limitations under the License.
  */
 import { createDeferredPromise } from '../util/DeferredPromise.js';
-import { createFunction } from '../util/Function.js';
-import * as ARIAQuerySelector from './ARIAQuerySelector.js';
-import * as CustomQuerySelectors from './CustomQuerySelector.js';
-import * as PierceQuerySelector from './PierceQuerySelector.js';
-import { IntervalPoller, MutationPoller, RAFPoller } from './Poller.js';
-import { createTextContent, isSuitableNodeForTextMatching, } from './TextContent.js';
+import { RAFPoller, MutationPoller, IntervalPoller } from './Poller.js';
+import { isSuitableNodeForTextMatching, createTextContent, } from './TextContent.js';
 import * as TextQuerySelector from './TextQuerySelector.js';
-import * as PQuerySelector from './PQuerySelector.js';
-import * as util from './util.js';
 import * as XPathQuerySelector from './XPathQuerySelector.js';
+import * as PierceQuerySelector from './PierceQuerySelector.js';
+import * as util from './util.js';
 /**
  * @internal
  */
 const PuppeteerUtil = Object.freeze({
-    ...ARIAQuerySelector,
-    ...CustomQuerySelectors,
-    ...PierceQuerySelector,
-    ...PQuerySelector,
-    ...TextQuerySelector,
     ...util,
+    ...TextQuerySelector,
     ...XPathQuerySelector,
+    ...PierceQuerySelector,
     createDeferredPromise,
-    createFunction,
     createTextContent,
     IntervalPoller,
     isSuitableNodeForTextMatching,

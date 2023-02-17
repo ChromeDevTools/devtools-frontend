@@ -52,7 +52,7 @@ export const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
  * An example of using a {@link Browser} to create a {@link Page}:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -66,7 +66,7 @@ export const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
  * An example of disconnecting from and reconnecting to a {@link Browser}:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();

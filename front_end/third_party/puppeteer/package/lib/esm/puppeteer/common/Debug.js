@@ -68,9 +68,6 @@ export async function importDebug() {
 export const debug = (prefix) => {
     if (isNode) {
         return async (...logArgs) => {
-            if (captureLogs) {
-                capturedLogs.push(prefix + logArgs);
-            }
             (await importDebug())(prefix)(logArgs);
         };
     }
@@ -96,25 +93,4 @@ export const debug = (prefix) => {
         console.log(`${prefix}:`, ...logArgs);
     };
 };
-/**
- * @internal
- */
-let capturedLogs = [];
-/**
- * @internal
- */
-let captureLogs = false;
-/**
- * @internal
- */
-export function setLogCapture(value) {
-    capturedLogs = [];
-    captureLogs = value;
-}
-/**
- * @internal
- */
-export function getCapturedLogs() {
-    return capturedLogs;
-}
 //# sourceMappingURL=Debug.js.map

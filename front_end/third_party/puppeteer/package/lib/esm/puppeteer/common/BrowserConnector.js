@@ -33,7 +33,7 @@ const getWebSocketTransportClass = async () => {
  * @internal
  */
 export async function _connectToCDPBrowser(options) {
-    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, headers = {}, slowMo = 0, targetFilter, _isPageTarget: isPageTarget, } = options;
+    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, targetFilter, _isPageTarget: isPageTarget, } = options;
     assert(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
         1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
     let connection;
@@ -42,7 +42,7 @@ export async function _connectToCDPBrowser(options) {
     }
     else if (browserWSEndpoint) {
         const WebSocketClass = await getWebSocketTransportClass();
-        const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers);
+        const connectionTransport = await WebSocketClass.create(browserWSEndpoint);
         connection = new Connection(browserWSEndpoint, connectionTransport, slowMo);
     }
     else if (browserURL) {

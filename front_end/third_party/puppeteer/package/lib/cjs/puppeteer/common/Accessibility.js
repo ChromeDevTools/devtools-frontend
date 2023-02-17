@@ -104,7 +104,7 @@ class Accessibility {
         let backendNodeId;
         if (root) {
             const { node } = await __classPrivateFieldGet(this, _Accessibility_client, "f").send('DOM.describeNode', {
-                objectId: root.id,
+                objectId: root.remoteObject().objectId,
             });
             backendNodeId = node.backendNodeId;
         }
@@ -393,10 +393,7 @@ class AXNode {
         }
         for (const node of nodeById.values()) {
             for (const childId of node.payload.childIds || []) {
-                const child = nodeById.get(childId);
-                if (child) {
-                    node.children.push(child);
-                }
+                node.children.push(nodeById.get(childId));
             }
         }
         return nodeById.values().next().value;

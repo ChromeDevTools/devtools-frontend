@@ -7,8 +7,6 @@ import type { Readable } from 'stream';
 
 declare const __JSHandleSymbol: unique symbol;
 
-declare const __JSHandleSymbol_2: unique symbol;
-
 /**
  * The Accessibility class provides methods for inspecting Chromium's
  * accessibility tree. The accessibility tree is used by assistive technology
@@ -85,31 +83,14 @@ export declare type ActionResult = 'continue' | 'abort' | 'respond';
 
 /* Excluded from this release type: addEventListener_2 */
 
-/* Excluded from this release type: addPageBinding */
-
-/* Excluded from this release type: ARIAQueryHandler */
+/* Excluded from this release type: ariaHandler */
 
 /* Excluded from this release type: assert */
-
-/* Excluded from this release type: AsyncIterableUtil */
 
 /**
  * @public
  */
 export declare type Awaitable<T> = T | PromiseLike<T>;
-
-/**
- * @public
- */
-export declare type AwaitableIterable<T> = Iterable<T> | AsyncIterable<T>;
-
-/* Excluded from this release type: AwaitableIterator */
-
-declare type BeginSubclassSelectorTokens = ['.', '#', '[', ':'];
-
-/* Excluded from this release type: Binding */
-
-/* Excluded from this release type: BindingPayload */
 
 /**
  * @public
@@ -150,7 +131,7 @@ export declare interface BoxModel {
  * An example of using a {@link Browser} to create a {@link Page}:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -164,7 +145,7 @@ export declare interface BoxModel {
  * An example of disconnecting from and reconnecting to a {@link Browser}:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -400,7 +381,7 @@ export declare class BrowserContext extends EventEmitter {
      * ```
      *
      * @param predicate - A function to be run for every target
-     * @param options - An object of options. Accepts a timeout,
+     * @param options - An object of options. Accepts a timout,
      * which is the maximum wait time in milliseconds.
      * Pass `0` to disable the timeout. Defaults to 30 seconds.
      * @returns Promise which resolves to the first target found
@@ -653,7 +634,6 @@ export declare class BrowserFetcher {
      * @returns The revision info for the given revision.
      */
     revisionInfo(revision: string): BrowserFetcherRevisionInfo;
-    /* Excluded from this release type: getDownloadPath */
 }
 
 /**
@@ -716,7 +696,7 @@ export declare interface BrowserLaunchArgumentOptions {
      * Whether to run the browser in headless mode.
      * @defaultValue true
      */
-    headless?: boolean | 'new';
+    headless?: boolean | 'chrome';
     /**
      * Path to a user data directory.
      * {@link https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/user_data_dir.md | see the Chromium docs}
@@ -746,10 +726,6 @@ export declare interface BrowserLaunchArgumentOptions {
 /* Excluded from this release type: CDPBrowser */
 
 /* Excluded from this release type: CDPBrowserContext */
-
-/* Excluded from this release type: CDPElementHandle */
-
-/* Excluded from this release type: CDPJSHandle */
 
 /* Excluded from this release type: CDPPage */
 
@@ -864,9 +840,10 @@ export declare interface ClickOptions {
     offset?: Offset;
 }
 
-declare type CombinatorTokens = [' ', '>', '+', '~', '|', '|'];
-
-/* Excluded from this release type: Commands */
+declare interface CommandResponse {
+    id: number;
+    result: object;
+}
 
 /**
  * @public
@@ -883,8 +860,6 @@ export declare interface CommonEventEmitter {
 }
 
 /* Excluded from this release type: CommonPuppeteerSettings */
-
-declare type CompoundSelectorsOfComplexSelector<ComplexSelector extends string> = SplitWithDelemiters<ComplexSelector, CombinatorTokens> extends infer IntermediateTokens ? IntermediateTokens extends readonly string[] ? Drop<IntermediateTokens, ''> : never : never;
 
 /**
  * Defines options to configure Puppeteer's behavior during installation and
@@ -1057,12 +1032,6 @@ export declare interface ConnectOptions extends BrowserConnectOptions {
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;
-    /**
-     * Headers to use for the web socket connection.
-     * @remarks
-     * Only works in the Node.js environment.
-     */
-    headers?: Record<string, string>;
 }
 
 /* Excluded from this release type: _connectToCDPBrowser */
@@ -1239,7 +1208,17 @@ export declare interface CoverageEntry {
     }>;
 }
 
-export declare const createBrowserFetcher: (options?: Partial<BrowserFetcherOptions>) => BrowserFetcher;
+/**
+ * @deprecated Construct {@link BrowserFetcher} manually.
+ *
+ * @public
+ */
+export declare const /**
+ * @deprecated Construct {@link BrowserFetcher} manually.
+ *
+ * @public
+ */
+createBrowserFetcher: (options: Partial<BrowserFetcherOptions>) => BrowserFetcher;
 
 /* Excluded from this release type: createDebuggableDeferredPromise */
 
@@ -1313,7 +1292,7 @@ export declare interface CustomQueryHandler {
     /**
      * @returns Some {@link Node}s matching the given `selector` from {@link node}.
      */
-    queryAll?: (node: Node, selector: string) => Iterable<Node>;
+    queryAll?: (node: Node, selector: string) => Node[];
 }
 
 /**
@@ -1323,35 +1302,6 @@ export declare interface CustomQueryHandler {
  * @public
  */
 export declare function customQueryHandlerNames(): string[];
-
-/* Excluded from this release type: CustomQueryHandlerRegistry */
-
-/* Excluded from this release type: customQueryHandlers */
-
-declare interface CustomQuerySelector {
-    querySelector(root: Node, selector: string): Awaitable<Node | null>;
-    querySelectorAll(root: Node, selector: string): AwaitableIterable<Node>;
-}
-
-/**
- * This class mimics the injected {@link CustomQuerySelectorRegistry}.
- */
-declare class CustomQuerySelectorRegistry {
-    #private;
-    register(name: string, handler: CustomQueryHandler): void;
-    unregister(name: string): void;
-    get(name: string): CustomQuerySelector | undefined;
-    clear(): void;
-}
-
-declare namespace CustomQuerySelectors {
-    export {
-        CustomQuerySelector,
-        customQuerySelectors
-    }
-}
-
-declare const customQuerySelectors: CustomQuerySelectorRegistry;
 
 /* Excluded from this release type: debug_2 */
 
@@ -1365,6 +1315,8 @@ declare const customQuerySelectors: CustomQuerySelectorRegistry;
 export declare const DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
 
 export declare const defaultArgs: (options?: BrowserLaunchArgumentOptions) => string[];
+
+/* Excluded from this release type: DEFERRED_PROMISE_DEBUG_TIMEOUT */
 
 /* Excluded from this release type: DeferredPromise */
 
@@ -1393,7 +1345,7 @@ export declare const devices: Readonly<Record<"Blackberry PlayBook" | "Blackberr
  * @example
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -1438,13 +1390,6 @@ export declare class Dialog {
     dismiss(): Promise<void>;
 }
 
-declare type Drop<Arr extends readonly unknown[], Remove, Acc extends unknown[] = []> = Arr extends [infer Head, ...infer Tail] ? Head extends Remove ? Drop<Tail, Remove> : Drop<Tail, Remove, [...Acc, Head]> : Acc;
-
-/**
- * @public
- */
-export declare type ElementFor<TagName extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap> = TagName extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[TagName] : TagName extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[TagName] : never;
-
 /**
  * ElementHandle represents an in-page DOM element.
  *
@@ -1452,7 +1397,7 @@ export declare type ElementFor<TagName extends keyof HTMLElementTagNameMap | key
  * ElementHandles can be created with the {@link Page.$} method.
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -1479,9 +1424,8 @@ export declare type ElementFor<TagName extends keyof HTMLElementTagNameMap | key
  * @public
  */
 export declare class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
+    #private;
     /* Excluded from this release type: __constructor */
-    /* Excluded from this release type: executionContext */
-    /* Excluded from this release type: client */
     get frame(): Frame;
     /**
      * Queries the current element for an element matching the given selector.
@@ -1525,7 +1469,10 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<NodeFor<Selector>, Params> = EvaluateFuncWith<NodeFor<Selector>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+    ElementHandle<NodeFor<Selector>>,
+    ...Params
+    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * Runs the given function on an array of elements matching the given selector
      * in the current element.
@@ -1559,7 +1506,10 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+    Array<NodeFor<Selector>>,
+    ...Params
+    ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * @deprecated Use {@link ElementHandle.$$} with the `xpath` prefix.
      *
@@ -1583,7 +1533,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @example
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -1630,7 +1580,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * This method works across navigation.
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      * (async () => {
      *   const browser = await puppeteer.launch();
      *   const page = await browser.newPage();
@@ -1655,7 +1605,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @param options - Optional waiting parameters
      * @returns Promise which resolves when element specified by xpath string is
      * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
-     * not found in DOM, otherwise resolves to `ElementHandle`.
+     * not found in DOM.
      * @remarks
      * The optional Argument `options` have properties:
      *
@@ -1677,26 +1627,6 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
         hidden?: boolean;
         timeout?: number;
     }): Promise<ElementHandle<Node> | null>;
-    /**
-     * Converts the current handle to the given element type.
-     *
-     * @example
-     *
-     * ```ts
-     * const element: ElementHandle<Element> = await page.$(
-     *   '.class-name-of-anchor'
-     * );
-     * // DO NOT DISPOSE `element`, this will be always be the same handle.
-     * const anchor: ElementHandle<HTMLAnchorElement> = await element.toElement(
-     *   'a'
-     * );
-     * ```
-     *
-     * @param tagName - The tag name of the desired element type.
-     * @throws An error if the handle does not match. **The handle will not be
-     * automatically disposed.**
-     */
-    toElement<K extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap>(tagName: K): Promise<HandleFor<ElementFor<K>>>;
     asElement(): ElementHandle<ElementType> | null;
     /**
      * Resolves to the content frame for element handles referencing
@@ -1775,9 +1705,6 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * If the element is detached from DOM, the method throws an error.
      */
     tap(this: ElementHandle<Element>): Promise<void>;
-    touchStart(this: ElementHandle<Element>): Promise<void>;
-    touchMove(this: ElementHandle<Element>): Promise<void>;
-    touchEnd(this: ElementHandle<Element>): Promise<void>;
     /**
      * Calls {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus | focus} on the element.
      */
@@ -1895,11 +1822,6 @@ export declare type EvaluateFunc<T extends unknown[]> = (...params: InnerParams<
 /**
  * @public
  */
-export declare type EvaluateFuncWith<V, T extends unknown[]> = (...params: [V, ...InnerParams<T>]) => Awaitable<unknown>;
-
-/**
- * @public
- */
 export declare const EVALUATION_SCRIPT_URL = "pptr://__puppeteer_evaluation_script__";
 
 /* Excluded from this release type: evaluationString */
@@ -1926,24 +1848,24 @@ export declare class EventEmitter implements CommonEventEmitter {
      * @param handler - the function to be called when the event occurs.
      * @returns `this` to enable you to chain method calls.
      */
-    on(event: EventType, handler: Handler<any>): EventEmitter;
+    on(event: EventType, handler: Handler): EventEmitter;
     /**
      * Remove an event listener from firing.
      * @param event - the event type you'd like to stop listening to.
      * @param handler - the function that should be removed.
      * @returns `this` to enable you to chain method calls.
      */
-    off(event: EventType, handler: Handler<any>): EventEmitter;
+    off(event: EventType, handler: Handler): EventEmitter;
     /**
      * Remove an event listener.
      * @deprecated please use {@link EventEmitter.off} instead.
      */
-    removeListener(event: EventType, handler: Handler<any>): EventEmitter;
+    removeListener(event: EventType, handler: Handler): EventEmitter;
     /**
      * Add an event listener.
      * @deprecated please use {@link EventEmitter.on} instead.
      */
-    addListener(event: EventType, handler: Handler<any>): EventEmitter;
+    addListener(event: EventType, handler: Handler): EventEmitter;
     /**
      * Emit an event and call any associated listeners.
      *
@@ -1958,7 +1880,7 @@ export declare class EventEmitter implements CommonEventEmitter {
      * @param handler - the handler function to run when the event occurs
      * @returns `this` to enable you to chain method calls.
      */
-    once(event: EventType, handler: Handler<any>): EventEmitter;
+    once(event: EventType, handler: Handler): EventEmitter;
     /**
      * Gets the number of listeners for a given event.
      *
@@ -1976,24 +1898,6 @@ export declare class EventEmitter implements CommonEventEmitter {
     private eventListenersCount;
 }
 
-/**
- * Copyright 2022 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * @public
- */
 export declare type EventType = string | symbol;
 
 /* Excluded from this release type: ExceptionThrownCallback */
@@ -2076,11 +1980,6 @@ export declare class FileChooser {
 
 /* Excluded from this release type: FirefoxTargetManager */
 
-declare type FlatmapSplitWithDelemiters<Inputs extends readonly string[], Delemiters extends readonly string[], Acc extends string[] = []> = Inputs extends [infer FirstInput, ...infer RestInputs] ? FirstInput extends string ? RestInputs extends readonly string[] ? FlatmapSplitWithDelemiters<RestInputs, Delemiters, [
-...Acc,
-...SplitWithDelemiters<FirstInput, Delemiters>
-]> : Acc : Acc : Acc;
-
 /**
  * @public
  */
@@ -2104,7 +2003,7 @@ export declare type FlattenHandle<T> = T extends HandleOr<infer U> ? U : never;
  * An example of dumping frame tree:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -2201,7 +2100,6 @@ export declare class Frame {
      */
     goto(url: string, options?: {
         referer?: string;
-        referrerPolicy?: string;
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<HTTPResponse | null>;
@@ -2284,7 +2182,10 @@ export declare class Frame {
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<NodeFor<Selector>, Params> = EvaluateFuncWith<NodeFor<Selector>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+    ElementHandle<NodeFor<Selector>>,
+    ...Params
+    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * Runs the given function on an array of elements matching the given selector
      * in the frame.
@@ -2305,7 +2206,10 @@ export declare class Frame {
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+    Array<NodeFor<Selector>>,
+    ...Params
+    ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * @deprecated Use {@link Frame.$$} with the `xpath` prefix.
      *
@@ -2325,7 +2229,7 @@ export declare class Frame {
      * @example
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -2372,7 +2276,7 @@ export declare class Frame {
      * an XPath.
      *
      * @param xpath - the XPath expression to wait for.
-     * @param options - options to configure the visibility of the element and how
+     * @param options - options to configure the visiblity of the element and how
      * long to wait before timing out.
      */
     waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
@@ -2381,7 +2285,7 @@ export declare class Frame {
      * The `waitForFunction` can be used to observe viewport size change:
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      * .  const browser = await puppeteer.launch();
@@ -2694,11 +2598,11 @@ export declare interface GeolocationOptions {
     accuracy?: number;
 }
 
-/* Excluded from this release type: getCapturedLogs */
-
 /* Excluded from this release type: getExceptionMessage */
 
 /* Excluded from this release type: getFetch */
+
+/* Excluded from this release type: getQueryHandlerAndSelector */
 
 /* Excluded from this release type: getReadableAsBuffer */
 
@@ -2714,10 +2618,7 @@ export declare type HandleFor<T> = T extends Node ? ElementHandle<T> : JSHandle<
  */
 export declare type HandleOr<T> = HandleFor<T> | JSHandle<T> | T;
 
-/**
- * @public
- */
-export declare type Handler<T = unknown> = (event: T) => void;
+export declare type Handler<T = any> = (event?: T) => void;
 
 /**
  * Represents an HTTP request sent by a page.
@@ -3110,13 +3011,15 @@ export declare class HTTPResponse {
         offline: boolean;
     }
 
-    /* Excluded from this release type: IntervalPoller */
+    /* Excluded from this release type: InternalQueryHandler */
 
-    /* Excluded from this release type: isDate */
+    /* Excluded from this release type: IntervalPoller */
 
     /* Excluded from this release type: isErrnoException */
 
     /* Excluded from this release type: isErrorLike */
+
+    /* Excluded from this release type: isNode */
 
     /* Excluded from this release type: isNumber */
 
@@ -3125,10 +3028,6 @@ export declare class HTTPResponse {
     /* Excluded from this release type: IsolatedWorldChart */
 
     /* Excluded from this release type: IsPageTargetCallback */
-
-    /* Excluded from this release type: isPlainObject */
-
-    /* Excluded from this release type: isRegExp */
 
     /* Excluded from this release type: isString */
 
@@ -3207,29 +3106,38 @@ export declare class HTTPResponse {
      * @public
      */
     export declare class JSHandle<T = unknown> {
+        #private;
         /**
          * Used for nominally typing {@link JSHandle}.
          */
         [__JSHandleSymbol]?: T;
-        /* Excluded from this release type: __constructor */
-        /* Excluded from this release type: disposed */
-        /* Excluded from this release type: executionContext */
         /* Excluded from this release type: client */
-        /**
-         * Evaluates the given function with the current handle as its first argument.
-         */
-        evaluate<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+        /* Excluded from this release type: disposed */
+        /* Excluded from this release type: __constructor */
+        /* Excluded from this release type: executionContext */
         /**
          * Evaluates the given function with the current handle as its first argument.
          *
+         * @see {@link ExecutionContext.evaluate} for more details.
          */
-        evaluateHandle<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+        evaluate<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
+        this,
+        ...Params
+        ]>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+        /**
+         * Evaluates the given function with the current handle as its first argument.
+         *
+         * @see {@link ExecutionContext.evaluateHandle} for more details.
+         */
+        evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
+        this,
+        ...Params
+        ]>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
         /**
          * Fetches a single property from the referenced object.
          */
         getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
         getProperty(propertyName: string): Promise<JSHandle<unknown>>;
-        getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
         /**
          * Gets a map of handles representing the properties of the current handle.
          *
@@ -3274,7 +3182,6 @@ export declare class HTTPResponse {
          * Useful during debugging.
          */
         toString(): string;
-        /* Excluded from this release type: id */
         /**
          * Provides access to the
          * [Protocol.Runtime.RemoteObject](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject)
@@ -3351,13 +3258,10 @@ export declare class HTTPResponse {
          * See {@link KeyInput} for a list of all key names.
          *
          * @param options - An object of options. Accepts text which, if specified,
-         * generates an input event with this text. Accepts commands which, if specified,
-         * is the commands of keyboard shortcuts,
-         * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
+         * generates an input event with this text.
          */
         down(key: KeyInput, options?: {
             text?: string;
-            commands?: string[];
         }): Promise<void>;
         /**
          * Dispatches a `keyup` event.
@@ -3429,14 +3333,11 @@ export declare class HTTPResponse {
          * @param options - An object of options. Accepts text which, if specified,
          * generates an input event with this text. Accepts delay which,
          * if specified, is the time to wait between `keydown` and `keyup` in milliseconds.
-         * Defaults to 0. Accepts commands which, if specified,
-         * is the commands of keyboard shortcuts,
-         * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
+         * Defaults to 0.
          */
         press(key: KeyInput, options?: {
             delay?: number;
             text?: string;
-            commands?: string[];
         }): Promise<void>;
     }
 
@@ -3474,11 +3375,6 @@ export declare class HTTPResponse {
      * @public
      */
     export declare const KnownDevices: Readonly<Record<"Blackberry PlayBook" | "Blackberry PlayBook landscape" | "BlackBerry Z30" | "BlackBerry Z30 landscape" | "Galaxy Note 3" | "Galaxy Note 3 landscape" | "Galaxy Note II" | "Galaxy Note II landscape" | "Galaxy S III" | "Galaxy S III landscape" | "Galaxy S5" | "Galaxy S5 landscape" | "Galaxy S8" | "Galaxy S8 landscape" | "Galaxy S9+" | "Galaxy S9+ landscape" | "Galaxy Tab S4" | "Galaxy Tab S4 landscape" | "iPad" | "iPad landscape" | "iPad (gen 6)" | "iPad (gen 6) landscape" | "iPad (gen 7)" | "iPad (gen 7) landscape" | "iPad Mini" | "iPad Mini landscape" | "iPad Pro" | "iPad Pro landscape" | "iPad Pro 11" | "iPad Pro 11 landscape" | "iPhone 4" | "iPhone 4 landscape" | "iPhone 5" | "iPhone 5 landscape" | "iPhone 6" | "iPhone 6 landscape" | "iPhone 6 Plus" | "iPhone 6 Plus landscape" | "iPhone 7" | "iPhone 7 landscape" | "iPhone 7 Plus" | "iPhone 7 Plus landscape" | "iPhone 8" | "iPhone 8 landscape" | "iPhone 8 Plus" | "iPhone 8 Plus landscape" | "iPhone SE" | "iPhone SE landscape" | "iPhone X" | "iPhone X landscape" | "iPhone XR" | "iPhone XR landscape" | "iPhone 11" | "iPhone 11 landscape" | "iPhone 11 Pro" | "iPhone 11 Pro landscape" | "iPhone 11 Pro Max" | "iPhone 11 Pro Max landscape" | "iPhone 12" | "iPhone 12 landscape" | "iPhone 12 Pro" | "iPhone 12 Pro landscape" | "iPhone 12 Pro Max" | "iPhone 12 Pro Max landscape" | "iPhone 12 Mini" | "iPhone 12 Mini landscape" | "iPhone 13" | "iPhone 13 landscape" | "iPhone 13 Pro" | "iPhone 13 Pro landscape" | "iPhone 13 Pro Max" | "iPhone 13 Pro Max landscape" | "iPhone 13 Mini" | "iPhone 13 Mini landscape" | "JioPhone 2" | "JioPhone 2 landscape" | "Kindle Fire HDX" | "Kindle Fire HDX landscape" | "LG Optimus L70" | "LG Optimus L70 landscape" | "Microsoft Lumia 550" | "Microsoft Lumia 950" | "Microsoft Lumia 950 landscape" | "Nexus 10" | "Nexus 10 landscape" | "Nexus 4" | "Nexus 4 landscape" | "Nexus 5" | "Nexus 5 landscape" | "Nexus 5X" | "Nexus 5X landscape" | "Nexus 6" | "Nexus 6 landscape" | "Nexus 6P" | "Nexus 6P landscape" | "Nexus 7" | "Nexus 7 landscape" | "Nokia Lumia 520" | "Nokia Lumia 520 landscape" | "Nokia N9" | "Nokia N9 landscape" | "Pixel 2" | "Pixel 2 landscape" | "Pixel 2 XL" | "Pixel 2 XL landscape" | "Pixel 3" | "Pixel 3 landscape" | "Pixel 4" | "Pixel 4 landscape" | "Pixel 4a (5G)" | "Pixel 4a (5G) landscape" | "Pixel 5" | "Pixel 5 landscape" | "Moto G4" | "Moto G4 landscape", Device>>;
-
-    declare type Last<Arr extends NonEmptyReadonlyArray<unknown>> = Arr extends [
-    infer Head,
-    ...infer Tail
-    ] ? Tail extends NonEmptyReadonlyArray<unknown> ? Last<Tail> : Head : never;
 
     export declare const launch: (options?: PuppeteerLaunchOptions) => Promise<Browser>;
 
@@ -3812,11 +3708,9 @@ export declare class HTTPResponse {
     /**
      * @public
      */
-    export declare type NodeFor<ComplexSelector extends string> = TypeSelectorOfComplexSelector<ComplexSelector> extends infer TypeSelector ? TypeSelector extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap ? ElementFor<TypeSelector> : Element : never;
+    export declare type NodeFor<Selector extends string> = Selector extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[Selector] : Selector extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[Selector] : Element;
 
     /* Excluded from this release type: NodeWebSocketTransport */
-
-    declare type NonEmptyReadonlyArray<T> = [T, ...(readonly T[])];
 
     /**
      * @public
@@ -3831,6 +3725,8 @@ export declare class HTTPResponse {
          */
         y: number;
     }
+
+    /* Excluded from this release type: packageVersion */
 
     /**
      * Page provides methods to interact with a single tab or
@@ -3847,7 +3743,7 @@ export declare class HTTPResponse {
      * This example creates a page, navigates it to a URL, and then saves a screenshot:
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -3994,6 +3890,8 @@ export declare class HTTPResponse {
          * Once request interception is enabled, every request will stall unless it's
          * continued, responded or aborted; or completed using the browser cache.
          *
+         * Enabling request interception disables page caching.
+         *
          * See the
          * {@link https://pptr.dev/next/guides/request-interception|Request interception guide}
          * for more details.
@@ -4002,7 +3900,7 @@ export declare class HTTPResponse {
          * An example of a naïve request interceptor that aborts all image requests:
          *
          * ```ts
-         * import puppeteer from 'puppeteer';
+         * const puppeteer = require('puppeteer');
          * (async () => {
          *   const browser = await puppeteer.launch();
          *   const page = await browser.newPage();
@@ -4118,7 +4016,7 @@ export declare class HTTPResponse {
          * `page.evaluateHandle` is that `evaluateHandle` will return the value
          * wrapped in an in-page object.
          *
-         * If the function passed to `page.evaluateHandle` returns a Promise, the
+         * If the function passed to `page.evaluteHandle` returns a Promise, the
          * function will wait for the promise to resolve and return its value.
          *
          * You can pass a string instead of a function (although functions are
@@ -4255,7 +4153,10 @@ export declare class HTTPResponse {
          * is wrapped in an {@link ElementHandle}, else the raw value itself is
          * returned.
          */
-        $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<NodeFor<Selector>, Params> = EvaluateFuncWith<NodeFor<Selector>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+        $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+        ElementHandle<NodeFor<Selector>>,
+        ...Params
+        ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
         /**
          * This method runs `Array.from(document.querySelectorAll(selector))` within
          * the page and passes the result as the first argument to the `pageFunction`.
@@ -4318,7 +4219,10 @@ export declare class HTTPResponse {
          * is wrapped in an {@link ElementHandle}, else the raw value itself is
          * returned.
          */
-        $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+        $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+        Array<NodeFor<Selector>>,
+        ...Params
+        ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
         /**
          * The method evaluates the XPath expression relative to the page document as
          * its context node. If there are no such elements, the method resolves to an
@@ -4387,8 +4291,8 @@ export declare class HTTPResponse {
          * An example of adding an `md5` function into the page:
          *
          * ```ts
-         * import puppeteer from 'puppeteer';
-         * import crypto from 'crypto';
+         * const puppeteer = require('puppeteer');
+         * const crypto = require('crypto');
          *
          * (async () => {
          *   const browser = await puppeteer.launch();
@@ -4411,8 +4315,8 @@ export declare class HTTPResponse {
          * An example of adding a `window.readfile` function into the page:
          *
          * ```ts
-         * import puppeteer from 'puppeteer';
-         * import fs from 'fs';
+         * const puppeteer = require('puppeteer');
+         * const fs = require('fs');
          *
          * (async () => {
          *   const browser = await puppeteer.launch();
@@ -4574,9 +4478,6 @@ export declare class HTTPResponse {
          *
          * - `referer` : Referer header value. If provided it will take preference
          *   over the referer header value set by
-         *   {@link Page.setExtraHTTPHeaders |page.setExtraHTTPHeaders()}.<br/>
-         * - `referrerPolicy` : ReferrerPolicy. If provided it will take preference
-         *   over the referer-policy header value set by
          *   {@link Page.setExtraHTTPHeaders |page.setExtraHTTPHeaders()}.
          *
          * `page.goto` will throw an error if:
@@ -4604,7 +4505,6 @@ export declare class HTTPResponse {
          */
         goto(url: string, options?: WaitForOptions & {
             referer?: string;
-            referrerPolicy?: string;
         }): Promise<HTTPResponse | null>;
         /**
          * @param options - Navigation parameters which might have the following
@@ -4981,7 +4881,7 @@ export declare class HTTPResponse {
          * @example
          *
          * ```ts
-         * import puppeteer from 'puppeteer';
+         * const puppeteer = require('puppeteer');
          *
          * (async () => {
          *   const browser = await puppeteer.launch();
@@ -5052,7 +4952,7 @@ export declare class HTTPResponse {
          *
          * - `height`: page's height in pixels
          *
-         * - `deviceScaleFactor`: Specify device scale factor (can be though of as
+         * - `deviceScalarFactor`: Specify device scale factor (can be though of as
          *   dpr). Defaults to `1`.
          *
          * - `isMobile`: Whether the meta viewport tag is taken into account. Defaults
@@ -5068,7 +4968,7 @@ export declare class HTTPResponse {
         /**
          * Evaluates a function in the page's context and returns the result.
          *
-         * If the function passed to `page.evaluateHandle` returns a Promise, the
+         * If the function passed to `page.evaluteHandle` returns a Promise, the
          * function will wait for the promise to resolve and return its value.
          *
          * @example
@@ -5202,12 +5102,6 @@ export declare class HTTPResponse {
          * @returns Promise which resolves to buffer or a base64 string (depending on
          * the value of `encoding`) with captured screenshot.
          */
-        screenshot(options: ScreenshotOptions & {
-            encoding: 'base64';
-        }): Promise<string>;
-        screenshot(options?: ScreenshotOptions & {
-            encoding?: 'binary';
-        }): Promise<Buffer>;
         screenshot(options?: ScreenshotOptions): Promise<Buffer | string>;
         /**
          * Generates a PDF of the page with the `print` CSS media type.
@@ -5400,7 +5294,7 @@ export declare class HTTPResponse {
          * This method works across navigations:
          *
          * ```ts
-         * import puppeteer from 'puppeteer';
+         * const puppeteer = require('puppeteer');
          * (async () => {
          *   const browser = await puppeteer.launch();
          *   const page = await browser.newPage();
@@ -5427,9 +5321,9 @@ export declare class HTTPResponse {
          * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
          * selector is not found in DOM.
          * @remarks
-         * The optional Parameter in Arguments `options` are:
+         * The optional Parameter in Arguments `options` are :
          *
-         * - `visible`: A boolean wait for element to be present in DOM and to be
+         * - `Visible`: A boolean wait for element to be present in DOM and to be
          *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
          *   properties. Defaults to `false`.
          *
@@ -5451,7 +5345,7 @@ export declare class HTTPResponse {
          * This method works across navigation
          *
          * ```ts
-         * import puppeteer from 'puppeteer';
+         * const puppeteer = require('puppeteer');
          * (async () => {
          *   const browser = await puppeteer.launch();
          *   const page = await browser.newPage();
@@ -5476,7 +5370,7 @@ export declare class HTTPResponse {
          * @param options - Optional waiting parameters
          * @returns Promise which resolves when element specified by xpath string is
          * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
-         * not found in DOM, otherwise resolves to `ElementHandle`.
+         * not found in DOM.
          * @remarks
          * The optional Argument `options` have properties:
          *
@@ -5492,7 +5386,11 @@ export declare class HTTPResponse {
          *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
          *   value can be changed by using the {@link Page.setDefaultTimeout} method.
          */
-        waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
+        waitForXPath(xpath: string, options?: {
+            visible?: boolean;
+            hidden?: boolean;
+            timeout?: number;
+        }): Promise<ElementHandle<Node> | null>;
         /**
          * Waits for a function to finish evaluating in the page's context.
          *
@@ -5500,7 +5398,7 @@ export declare class HTTPResponse {
          * The {@link Page.waitForFunction} can be used to observe viewport size change:
          *
          * ```ts
-         * import puppeteer from 'puppeteer';
+         * const puppeteer = require('puppeteer');
          * (async () => {
          *   const browser = await puppeteer.launch();
          *   const page = await browser.newPage();
@@ -5554,6 +5452,12 @@ export declare class HTTPResponse {
     }
 
     /* Excluded from this release type: PageBinding */
+
+    /* Excluded from this release type: pageBindingDeliverErrorString */
+
+    /* Excluded from this release type: pageBindingDeliverErrorValueString */
+
+    /* Excluded from this release type: pageBindingDeliverResultString */
 
     /* Excluded from this release type: pageBindingInitString */
 
@@ -5628,7 +5532,7 @@ export declare class HTTPResponse {
          * Contains an object with two properties:
          *
          * - `title`: the title passed to `console.timeStamp`
-         * - `metrics`: object containing metrics as key/value pairs. The values will
+         * - `metrics`: objec containing metrics as key/value pairs. The values will
          *   be `number`s.
          */
         Metrics = "metrics",
@@ -5896,7 +5800,7 @@ export declare class HTTPResponse {
          */
         omitBackground?: boolean;
         /**
-         * Timeout in milliseconds. Pass `0` to disable timeout.
+         * Timeout in milliseconds
          * @defaultValue 30000
          */
         timeout?: number;
@@ -5996,13 +5900,11 @@ export declare class HTTPResponse {
     export declare class ProductLauncher {
         #private;
         /* Excluded from this release type: puppeteer */
-        /* Excluded from this release type: actualBrowserRevision */
         /* Excluded from this release type: __constructor */
         get product(): Product;
         launch(object: PuppeteerNodeLaunchOptions): Promise<Browser>;
         executablePath(channel?: ChromeReleaseChannel): string;
         defaultArgs(object: BrowserLaunchArgumentOptions): string[];
-        /* Excluded from this release type: getActualBrowserRevision */
         /* Excluded from this release type: getProfilePath */
         /* Excluded from this release type: resolveExecutablePath */
     }
@@ -6048,11 +5950,9 @@ export declare class HTTPResponse {
      * instance of {@link PuppeteerNode} when you import or require `puppeteer`.
      * That class extends `Puppeteer`, so has all the methods documented below as
      * well as all that are defined on {@link PuppeteerNode}.
-     *
      * @public
      */
     export declare class Puppeteer {
-        /* Excluded from this release type: customQueryHandlers */
         /**
          * Registers a {@link CustomQueryHandler | custom query handler}.
          *
@@ -6102,12 +6002,6 @@ export declare class HTTPResponse {
         connect(options: ConnectOptions): Promise<Browser>;
     }
 
-    /**
-     * @public
-     */
-    declare const puppeteer: PuppeteerNode;
-    export default puppeteer;
-
     /* Excluded from this release type: PUPPETEER_REVISIONS */
 
     /* Excluded from this release type: PUPPETEER_WORLD */
@@ -6155,7 +6049,7 @@ export declare class HTTPResponse {
      * The following is a typical example of using Puppeteer to drive automation:
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -6265,16 +6159,15 @@ export declare class HTTPResponse {
          */
         defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
         /**
+         * @deprecated If you are using `puppeteer-core`, do not use this method. Just
+         * construct {@link BrowserFetcher} manually.
+         *
          * @param options - Set of configurable options to specify the settings of the
          * BrowserFetcher.
          *
-         * @remarks
-         * If you are using `puppeteer-core`, do not use this method. Just
-         * construct {@link BrowserFetcher} manually.
-         *
          * @returns A new BrowserFetcher instance.
          */
-        createBrowserFetcher(options?: Partial<BrowserFetcherOptions>): BrowserFetcher;
+        createBrowserFetcher(options: Partial<BrowserFetcherOptions>): BrowserFetcher;
     }
 
     /**
@@ -6284,13 +6177,9 @@ export declare class HTTPResponse {
      */
     export declare type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & LaunchOptions & BrowserConnectOptions;
 
+    /* Excluded from this release type: PuppeteerQueryHandler */
+
     /* Excluded from this release type: PuppeteerUtil */
-
-    /* Excluded from this release type: QueryHandler */
-
-    /* Excluded from this release type: QuerySelector */
-
-    /* Excluded from this release type: QuerySelectorAll */
 
     /* Excluded from this release type: QueuedEventGroup */
 
@@ -6514,8 +6403,6 @@ export declare class HTTPResponse {
              children?: SerializedAXNode[];
          }
 
-         /* Excluded from this release type: setLogCapture */
-
          /**
           * @public
           */
@@ -6532,18 +6419,11 @@ export declare class HTTPResponse {
              root?: ElementHandle<Node>;
          }
 
-         declare type Split<Input extends string, Delimiter extends string, Acc extends string[] = []> = Input extends `${infer Prefix}${Delimiter}${infer Suffix}` ? Split<Suffix, Delimiter, [...Acc, Prefix]> : [...Acc, Input];
-
-         declare type SplitWithDelemiters<Input extends string, Delemiters extends readonly string[]> = Delemiters extends [infer FirstDelemiter, ...infer RestDelemiters] ? FirstDelemiter extends string ? RestDelemiters extends readonly string[] ? FlatmapSplitWithDelemiters<Split<Input, FirstDelemiter>, RestDelemiters> : never : never : [Input];
+         /* Excluded from this release type: source */
 
          /* Excluded from this release type: supportedMetrics */
 
          /**
-          * Target represents a
-          * {@link https://chromedevtools.github.io/devtools-protocol/tot/Target/ | CDP target}.
-          * In CDP a target is something that can be debugged such a frame, a page or a
-          * worker.
-          *
           * @public
           */
          export declare class Target {
@@ -6642,22 +6522,6 @@ export declare class HTTPResponse {
               * @param y - Vertical position of the tap.
               */
              tap(x: number, y: number): Promise<void>;
-             /**
-              * Dispatches a `touchstart` event.
-              * @param x - Horizontal position of the tap.
-              * @param y - Vertical position of the tap.
-              */
-             touchStart(x: number, y: number): Promise<void>;
-             /**
-              * Dispatches a `touchMove` event.
-              * @param x - Horizontal position of the move.
-              * @param y - Vertical position of the move.
-              */
-             touchMove(x: number, y: number): Promise<void>;
-             /**
-              * Dispatches a `touchend` event.
-              */
-             touchEnd(): Promise<void>;
          }
 
          /**
@@ -6702,10 +6566,6 @@ export declare class HTTPResponse {
              screenshots?: boolean;
              categories?: string[];
          }
-
-         declare type TypeSelectorOfComplexSelector<ComplexSelector extends string> = CompoundSelectorsOfComplexSelector<ComplexSelector> extends infer CompoundSelectors ? CompoundSelectors extends NonEmptyReadonlyArray<string> ? Last<CompoundSelectors> extends infer LastCompoundSelector ? LastCompoundSelector extends string ? TypeSelectorOfCompoundSelector<LastCompoundSelector> : never : never : unknown : never;
-
-         declare type TypeSelectorOfCompoundSelector<CompoundSelector extends string> = SplitWithDelemiters<CompoundSelector, BeginSubclassSelectorTokens> extends infer CompoundSelectorTokens ? CompoundSelectorTokens extends [infer TypeSelector, ...any[]] ? TypeSelector extends '' ? unknown : TypeSelector : never : never;
 
          /* Excluded from this release type: unitToPixels */
 

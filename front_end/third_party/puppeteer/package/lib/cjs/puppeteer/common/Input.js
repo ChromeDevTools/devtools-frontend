@@ -108,14 +108,9 @@ class Keyboard {
      * See {@link KeyInput} for a list of all key names.
      *
      * @param options - An object of options. Accepts text which, if specified,
-     * generates an input event with this text. Accepts commands which, if specified,
-     * is the commands of keyboard shortcuts,
-     * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
+     * generates an input event with this text.
      */
-    async down(key, options = {
-        text: undefined,
-        commands: [],
-    }) {
+    async down(key, options = { text: undefined }) {
         const description = __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_keyDescriptionForString).call(this, key);
         const autoRepeat = __classPrivateFieldGet(this, _Keyboard_pressedKeys, "f").has(description.code);
         __classPrivateFieldGet(this, _Keyboard_pressedKeys, "f").add(description.code);
@@ -132,7 +127,6 @@ class Keyboard {
             autoRepeat,
             location: description.location,
             isKeypad: description.location === 3,
-            commands: options.commands,
         });
     }
     /**
@@ -234,9 +228,7 @@ class Keyboard {
      * @param options - An object of options. Accepts text which, if specified,
      * generates an input event with this text. Accepts delay which,
      * if specified, is the time to wait between `keydown` and `keyup` in milliseconds.
-     * Defaults to 0. Accepts commands which, if specified,
-     * is the commands of keyboard shortcuts,
-     * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
+     * Defaults to 0.
      */
     async press(key, options = {}) {
         const { delay = null } = options;
@@ -604,39 +596,12 @@ class Touchscreen {
      * @param y - Vertical position of the tap.
      */
     async tap(x, y) {
-        await this.touchStart(x, y);
-        await this.touchEnd();
-    }
-    /**
-     * Dispatches a `touchstart` event.
-     * @param x - Horizontal position of the tap.
-     * @param y - Vertical position of the tap.
-     */
-    async touchStart(x, y) {
         const touchPoints = [{ x: Math.round(x), y: Math.round(y) }];
         await __classPrivateFieldGet(this, _Touchscreen_client, "f").send('Input.dispatchTouchEvent', {
             type: 'touchStart',
             touchPoints,
             modifiers: __classPrivateFieldGet(this, _Touchscreen_keyboard, "f")._modifiers,
         });
-    }
-    /**
-     * Dispatches a `touchMove` event.
-     * @param x - Horizontal position of the move.
-     * @param y - Vertical position of the move.
-     */
-    async touchMove(x, y) {
-        const movePoints = [{ x: Math.round(x), y: Math.round(y) }];
-        await __classPrivateFieldGet(this, _Touchscreen_client, "f").send('Input.dispatchTouchEvent', {
-            type: 'touchMove',
-            touchPoints: movePoints,
-            modifiers: __classPrivateFieldGet(this, _Touchscreen_keyboard, "f")._modifiers,
-        });
-    }
-    /**
-     * Dispatches a `touchend` event.
-     */
-    async touchEnd() {
         await __classPrivateFieldGet(this, _Touchscreen_client, "f").send('Input.dispatchTouchEvent', {
             type: 'touchEnd',
             touchPoints: [],

@@ -92,7 +92,7 @@ class Connection extends EventEmitter_js_1.EventEmitter {
                     callback.reject(createProtocolError(callback.error, callback.method, object));
                 }
                 else {
-                    callback.resolve(object);
+                    callback.resolve(object.result);
                 }
             }
         }
@@ -123,9 +123,6 @@ function rewriteError(error, message, originalMessage) {
     error.originalMessage = originalMessage !== null && originalMessage !== void 0 ? originalMessage : error.originalMessage;
     return error;
 }
-/**
- * @internal
- */
 function createProtocolError(error, method, object) {
     let message = `Protocol error (${method}): ${object.error} ${object.message}`;
     if (object.stacktrace) {

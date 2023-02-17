@@ -60,7 +60,8 @@ const path = __importStar(require("path"));
 const readline = __importStar(require("readline"));
 const rimraf_1 = __importDefault(require("rimraf"));
 const util_1 = require("util");
-const Connection_js_1 = require("../common/Connection.js");
+const Connection_js_1 = require("../common/bidi/Connection.js");
+const Connection_js_2 = require("../common/Connection.js");
 const Debug_js_1 = require("../common/Debug.js");
 const Errors_js_1 = require("../common/Errors.js");
 const NodeWebSocketTransport_js_1 = require("../common/NodeWebSocketTransport.js");
@@ -253,9 +254,7 @@ class BrowserRunner {
         let browserWSEndpoint = await waitForWSEndpoint(this.proc, timeout, preferredRevision, /^WebDriver BiDi listening on (ws:\/\/.*)$/);
         browserWSEndpoint += '/session';
         const transport = await NodeWebSocketTransport_js_1.NodeWebSocketTransport.create(browserWSEndpoint);
-        const BiDi = await Promise.resolve().then(() => __importStar(require(
-        /* webpackIgnore: true */ '../common/bidi/bidi.js')));
-        return new BiDi.Connection(transport, slowMo);
+        return new Connection_js_1.Connection(transport, slowMo);
     }
     async setupConnection(options) {
         (0, assert_js_1.assert)(this.proc, 'BrowserRunner not started.');
@@ -263,14 +262,14 @@ class BrowserRunner {
         if (!usePipe) {
             const browserWSEndpoint = await waitForWSEndpoint(this.proc, timeout, preferredRevision);
             const transport = await NodeWebSocketTransport_js_1.NodeWebSocketTransport.create(browserWSEndpoint);
-            this.connection = new Connection_js_1.Connection(browserWSEndpoint, transport, slowMo);
+            this.connection = new Connection_js_2.Connection(browserWSEndpoint, transport, slowMo);
         }
         else {
             // stdio was assigned during start(), and the 'pipe' option there adds the
             // 4th and 5th items to stdio array
             const { 3: pipeWrite, 4: pipeRead } = this.proc.stdio;
             const transport = new PipeTransport_js_1.PipeTransport(pipeWrite, pipeRead);
-            this.connection = new Connection_js_1.Connection('', transport, slowMo);
+            this.connection = new Connection_js_2.Connection('', transport, slowMo);
         }
         return this.connection;
     }

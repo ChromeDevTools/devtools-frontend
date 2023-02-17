@@ -22,7 +22,7 @@ export declare const isSuitableNodeForTextMatching: (node: Node) => boolean;
 /**
  * @internal
  */
-export type TextContent = {
+export declare type TextContent = {
     full: string;
     immediate: string[];
 };

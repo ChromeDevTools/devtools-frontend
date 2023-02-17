@@ -12,7 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _WebWorker_executionContext, _WebWorker_client, _WebWorker_url;
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
-import { CDPJSHandle } from './JSHandle.js';
+import { JSHandle } from './JSHandle.js';
 import { debugError } from './util.js';
 import { createDeferredPromise } from '../util/DeferredPromise.js';
 /**
@@ -59,7 +59,7 @@ export class WebWorker extends EventEmitter {
         __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.consoleAPICalled', async (event) => {
             const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
             return consoleAPICalled(event.type, event.args.map((object) => {
-                return new CDPJSHandle(context, object);
+                return new JSHandle(context, object);
             }), event.stackTrace);
         });
         __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.exceptionThrown', exception => {

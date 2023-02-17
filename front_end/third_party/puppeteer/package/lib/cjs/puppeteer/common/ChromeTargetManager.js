@@ -196,7 +196,7 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
                     // present in #attachedTargetsBySessionId.
                     (0, assert_js_1.assert)(__classPrivateFieldGet(this, _ChromeTargetManager_attachedTargetsBySessionId, "f").has(parentSession.id()));
                 }
-                interceptor(target, parentSession instanceof Connection_js_1.Connection
+                await interceptor(target, parentSession instanceof Connection_js_1.Connection
                     ? null
                     : __classPrivateFieldGet(this, _ChromeTargetManager_attachedTargetsBySessionId, "f").get(parentSession.id()));
             }

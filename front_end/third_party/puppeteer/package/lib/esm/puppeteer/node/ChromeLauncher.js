@@ -8,9 +8,9 @@ import { accessSync } from 'fs';
 import { mkdtemp } from 'fs/promises';
 import os from 'os';
 import path from 'path';
+import { CDPBrowser } from '../common/Browser.js';
 import { assert } from '../util/assert.js';
 import { BrowserRunner } from './BrowserRunner.js';
-import { CDPBrowser } from '../common/Browser.js';
 import { ProductLauncher } from './ProductLauncher.js';
 /**
  * @internal
@@ -21,7 +21,7 @@ export class ChromeLauncher extends ProductLauncher {
         _ChromeLauncher_instances.add(this);
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, channel, executablePath, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, debuggingPort, protocol, } = options;
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, channel, executablePath, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, debuggingPort, } = options;
         const chromeArguments = [];
         if (!ignoreDefaultArgs) {
             chromeArguments.push(...this.defaultArgs(options));
@@ -81,23 +81,6 @@ export class ChromeLauncher extends ProductLauncher {
                 slowMo,
                 preferredRevision: this.puppeteer.browserRevision,
             });
-            if (protocol === 'webDriverBiDi') {
-                try {
-                    const BiDi = await import(
-                    /* webpackIgnore: true */ '../common/bidi/bidi.js');
-                    const bidiConnection = await BiDi.connectBidiOverCDP(connection);
-                    browser = await BiDi.Browser.create({
-                        connection: bidiConnection,
-                        closeCallback: runner.close.bind(runner),
-                        process: runner.proc,
-                    });
-                }
-                catch (error) {
-                    runner.kill();
-                    throw error;
-                }
-                return browser;
-            }
             browser = await CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
         catch (error) {
@@ -118,38 +101,38 @@ export class ChromeLauncher extends ProductLauncher {
         return browser;
     }
     defaultArgs(options = {}) {
-        // See https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
         const chromeArguments = [
             '--allow-pre-commit-input',
             '--disable-background-networking',
+            '--enable-features=NetworkServiceInProcess2',
             '--disable-background-timer-throttling',
             '--disable-backgrounding-occluded-windows',
             '--disable-breakpad',
             '--disable-client-side-phishing-detection',
             '--disable-component-extensions-with-background-pages',
-            '--disable-component-update',
             '--disable-default-apps',
             '--disable-dev-shm-usage',
             '--disable-extensions',
+            // TODO: remove AvoidUnnecessaryBeforeUnloadCheckSync below
+            // once crbug.com/1324138 is fixed and released.
             // AcceptCHFrame disabled because of crbug.com/1348106.
-            '--disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints',
+            '--disable-features=Translate,BackForwardCache,AcceptCHFrame,AvoidUnnecessaryBeforeUnloadCheckSync',
             '--disable-hang-monitor',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',
             '--disable-prompt-on-repost',
             '--disable-renderer-backgrounding',
             '--disable-sync',
-            '--enable-automation',
-            // TODO(sadym): remove '--enable-blink-features=IdleDetection' once
-            // IdleDetection is turned on by default.
-            '--enable-blink-features=IdleDetection',
-            '--enable-features=NetworkServiceInProcess2',
-            '--export-tagged-pdf',
             '--force-color-profile=srgb',
             '--metrics-recording-only',
             '--no-first-run',
+            '--enable-automation',
             '--password-store=basic',
             '--use-mock-keychain',
+            // TODO(sadym): remove '--enable-blink-features=IdleDetection'
+            // once IdleDetection is turned on by default.
+            '--enable-blink-features=IdleDetection',
+            '--export-tagged-pdf',
         ];
         const { devtools = false, headless = !devtools, args = [], userDataDir, } = options;
         if (userDataDir) {
@@ -159,7 +142,7 @@ export class ChromeLauncher extends ProductLauncher {
             chromeArguments.push('--auto-open-devtools-for-tabs');
         }
         if (headless) {
-            chromeArguments.push(headless === 'new' ? '--headless=new' : '--headless', '--hide-scrollbars', '--mute-audio');
+            chromeArguments.push(headless === 'chrome' ? '--headless=chrome' : '--headless', '--hide-scrollbars', '--mute-audio');
         }
         if (args.every(arg => {
             return arg.startsWith('-');

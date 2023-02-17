@@ -28,7 +28,7 @@ export type GenericEvents = {
 };
 
 export type EventPayloadToRestParameters<Events, T extends keyof Events> = Events[T] extends void ? [] : [Events[T]];
-export type EventListener<Events, T extends keyof Events> = (arg0: EventTargetEvent<Events[T]>) => void;
+export type EventListener<Events, T extends keyof Events> = (arg0: EventTargetEvent<Events[T], Events>) => void;
 
 export interface EventTarget<Events> {
   addEventListener<T extends keyof Events>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
@@ -47,6 +47,8 @@ export function fireEvent(name: string, detail: unknown = {}, target: HTMLElemen
   target.dispatchEvent(evt);
 }
 
-export interface EventTargetEvent<T> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface EventTargetEvent<T, Events = any> {
   data: T;
+  source?: EventTarget<Events>;
 }

@@ -65,6 +65,19 @@ describe('ObjectWrapper', () => {
       assert.strictEqual(count, 2);
     });
 
+    it('fires event listeners with source', done => {
+      const count = 0;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const callback = (evt: Common.EventTarget.EventTargetEvent<any, any>) => {
+        assert.strictEqual(evt.source, obj);
+        done();
+      };
+
+      obj.addEventListener('foo', callback);
+      obj.dispatchEventToListeners('foo');
+      assert.strictEqual(count, 2);
+    });
+
     it('handles removal of non-existent listener', () => {
       assert.doesNotThrow(() => {
         obj.removeEventListener('foo', () => {});

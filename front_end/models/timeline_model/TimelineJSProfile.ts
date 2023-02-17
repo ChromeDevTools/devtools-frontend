@@ -102,7 +102,7 @@ export class TimelineJSProfileProcessor {
             callFrames[j++] = (node as Protocol.Runtime.CallFrame);
           }
         }
-        const jsSampleEvent = new SDK.TracingModel.Event(
+        const jsSampleEvent = new SDK.TracingModel.ConstructedEvent(
             SDK.TracingModel.DevToolsTimelineEventCategory, RecordType.JSSample, SDK.TracingModel.Phase.Instant,
             timestamps[i], thread);
         jsSampleEvent.args['data'] = {stackTrace: callFrames};
@@ -274,7 +274,7 @@ export class TimelineJSProfileProcessor {
             jsFrameType = RecordType.JSSystemFrame;
             break;
         }
-        const jsFrameEvent = new SDK.TracingModel.Event(
+        const jsFrameEvent = new SDK.TracingModel.ConstructedEvent(
             SDK.TracingModel.DevToolsTimelineEventCategory, jsFrameType, SDK.TracingModel.Phase.Complete, e.startTime,
             e.thread);
         jsFrameEvent.ordinal = e.ordinal;

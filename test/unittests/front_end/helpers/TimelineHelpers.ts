@@ -60,7 +60,11 @@ class StubbedThread {
 
 export function makeEventWithStubbedThread(options: EventWithStubbedThreadOptions): SDK.TracingModel.Event {
   const thread = StubbedThread.makeStubEvent(options.threadId);
-  const event = new SDK.TracingModel.Event(options.categories, options.name, options.phase, options.startTime, thread);
+  // TODO(jacktfranklin): provide a helper that can construct a fake payload
+  // and instantiate an Event with that. Ultimately in tests we need to be able
+  // to generate constructed events and payload events.
+  const event =
+      new SDK.TracingModel.ConstructedEvent(options.categories, options.name, options.phase, options.startTime, thread);
   if (options.args) {
     event.args = options.args;
   }

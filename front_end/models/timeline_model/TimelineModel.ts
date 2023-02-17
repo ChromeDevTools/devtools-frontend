@@ -1949,7 +1949,7 @@ export class Track {
         this.syncEventsInternal = [];
         break;
       }
-      const syncEvent = new SDK.TracingModel.Event(
+      const syncEvent = new SDK.TracingModel.ConstructedEvent(
           event.categoriesString, event.name, SDK.TracingModel.Phase.Complete, startTime, event.thread);
       syncEvent.setEndTime(endTime);
       syncEvent.addArgs(event.args);

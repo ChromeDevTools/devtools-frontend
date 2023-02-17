@@ -231,7 +231,7 @@ export class TracingModel {
         const {isLoadingMainFrame, documentLoaderURL, navigationId, isOutermostMainFrame} = data;
         if ((isOutermostMainFrame ?? isLoadingMainFrame) && documentLoaderURL !== '') {
           const thread = process.threadById(payload.tid);
-          const navStartEvent = Event.fromPayload(payload, thread);
+          const navStartEvent = PayloadEvent.fromPayload(payload, thread);
           this.#mainFrameNavStartTimes.set(navigationId, navStartEvent);
         }
       }
@@ -544,7 +544,12 @@ export class Event {
   endTime?: number;
   duration?: number;
 
-  constructor(categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread) {
+  // The constructor is protected so that we ensure that only classes or
+  // subclasses can directly instantiate events. All other callers should
+  // either create ConstructedEvent instances, which have a public constructor,
+  // or use the static fromPayload method which can create an event instance
+  // from the trace payload.
+  protected constructor(categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread) {
     this.categoriesString = categories || '';
     this.#parsedCategories = thread.getModel().parsedCategoriesForString(this.categoriesString);
     this.name = name;
@@ -555,25 +560,6 @@ export class Event {
     this.ordinal = 0;
 
     this.selfTime = 0;
-  }
-
-  static fromPayload(payload: EventPayload, thread: Thread): Event {
-    const event = new Event(payload.cat, payload.name, (payload.ph as Phase), payload.ts / 1000, thread);
-    if (payload.args) {
-      event.addArgs(payload.args);
-    }
-    if (typeof payload.dur === 'number') {
-      event.setEndTime((payload.ts + payload.dur) / 1000);
-    }
-    const id = TracingModel.extractId(payload);
-    if (typeof id !== 'undefined') {
-      event.id = id;
-    }
-    if (payload.bind_id) {
-      event.bind_id = payload.bind_id;
-    }
-
-    return event;
   }
 
   static compareStartTime(a: Event|null, b: Event|null): number {
@@ -633,9 +619,18 @@ export class Event {
 /**
  * Represents a tracing event that is not directly linked to an individual
  * object in the trace. We construct these events at times, particularly when
- * building up the CPU profile data for JS Profiling.j
+ * building up the CPU profile data for JS Profiling.
  **/
-export class ConstructedEvent extends Event {}
+// eslint-disable-next-line rulesdir/enforce_custom_event_names
+export class ConstructedEvent extends Event {
+  // Because the constructor of Event is marked as protected, but we want
+  // people to be able to create constructed events, we override the
+  // constructor here, even though we are only calling super, in order to mark
+  // it as public.
+  constructor(categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread) {
+    super(categories, name, phase, startTime, thread);
+  }
+}
 
 /**
  * Represents a tracing event that has been created directly from an object in
@@ -644,7 +639,24 @@ export class ConstructedEvent extends Event {}
  * method, which you must call with a payload.
  **/
 export class PayloadEvent extends Event {
-  // TODO:(crbug.com/1416836) implement fromPayload() and remove fromPayload from the main Event class.
+  static fromPayload(payload: EventPayload, thread: Thread): Event {
+    const event = new PayloadEvent(payload.cat, payload.name, (payload.ph as Phase), payload.ts / 1000, thread);
+    if (payload.args) {
+      event.addArgs(payload.args);
+    }
+    if (typeof payload.dur === 'number') {
+      event.setEndTime((payload.ts + payload.dur) / 1000);
+    }
+    const id = TracingModel.extractId(payload);
+    if (typeof id !== 'undefined') {
+      event.id = id;
+    }
+    if (payload.bind_id) {
+      event.bind_id = payload.bind_id;
+    }
+
+    return event;
+  }
 }
 
 export class ObjectSnapshot extends PayloadEvent {
@@ -887,7 +899,7 @@ export class Thread extends NamedObject {
 
   addEvent(payload: EventPayload): Event|null {
     const event = payload.ph === Phase.SnapshotObject ? ObjectSnapshot.fromPayload(payload, this) :
-                                                        Event.fromPayload(payload, this);
+                                                        PayloadEvent.fromPayload(payload, this);
     if (TracingModel.isTopLevelEvent(event)) {
       // Discard nested "top-level" events.
       const lastTopLevelEvent = this.#lastTopLevelEvent;

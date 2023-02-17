@@ -355,6 +355,9 @@ export class DebuggerPlugin extends Plugin {
     if (this.missingDebugInfoBar) {
       this.attachInfobar(this.missingDebugInfoBar);
     }
+    if (this.sourceMapInfobar) {
+      this.attachInfobar(this.sourceMapInfobar);
+    }
     if (!this.muted) {
       void this.refreshBreakpoints();
     }

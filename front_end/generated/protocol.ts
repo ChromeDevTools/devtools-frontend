@@ -15356,6 +15356,46 @@ export namespace DeviceAccess {
   }
 }
 
+export namespace Preload {
+
+  /**
+   * Unique id
+   */
+  export type RuleSetId = OpaqueIdentifier<string, 'Protocol.Preload.RuleSetId'>;
+
+  /**
+   * Corresponds to SpeculationRuleSet
+   */
+  export interface RuleSet {
+    id: RuleSetId;
+    /**
+     * Identifies a document which the rule set is associated with.
+     */
+    loaderId: Network.LoaderId;
+    /**
+     * Source text of JSON representing the rule set. If it comes from
+     * <script> tag, it is the textContent of the node. Note that it is
+     * a JSON for valid case.
+     *
+     * See also:
+     * - https://wicg.github.io/nav-speculation/speculation-rules.html
+     * - https://github.com/WICG/nav-speculation/blob/main/triggers.md
+     */
+    sourceText: string;
+  }
+
+  /**
+   * Upsert. Currently, it is only emitted when a rule set added.
+   */
+  export interface RuleSetUpdatedEvent {
+    ruleSet: RuleSet;
+  }
+
+  export interface RuleSetRemovedEvent {
+    id: RuleSetId;
+  }
+}
+
 /**
  * Debugger domain exposes JavaScript debugging capabilities. It allows setting and removing
  * breakpoints, stepping through execution, exploring stack traces, etc.

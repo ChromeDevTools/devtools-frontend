@@ -100,6 +100,8 @@ declare namespace ProtocolProxyApi {
 
     DeviceAccess: DeviceAccessApi;
 
+    Preload: PreloadApi;
+
     Debugger: DebuggerApi;
 
     HeapProfiler: HeapProfilerApi;
@@ -194,6 +196,8 @@ declare namespace ProtocolProxyApi {
     Media: MediaDispatcher;
 
     DeviceAccess: DeviceAccessDispatcher;
+
+    Preload: PreloadDispatcher;
 
     Debugger: DebuggerDispatcher;
 
@@ -3609,6 +3613,22 @@ declare namespace ProtocolProxyApi {
      * selectPrompt or cancelPrompt command.
      */
     deviceRequestPrompted(params: Protocol.DeviceAccess.DeviceRequestPromptedEvent): void;
+
+  }
+
+  export interface PreloadApi {
+    invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+
+    invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
+
+  }
+  export interface PreloadDispatcher {
+    /**
+     * Upsert. Currently, it is only emitted when a rule set added.
+     */
+    ruleSetUpdated(params: Protocol.Preload.RuleSetUpdatedEvent): void;
+
+    ruleSetRemoved(params: Protocol.Preload.RuleSetRemovedEvent): void;
 
   }
 

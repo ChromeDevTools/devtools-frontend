@@ -22882,6 +22882,67 @@
             ]
         },
         {
+            "domain": "Preload",
+            "experimental": true,
+            "types": [
+                {
+                    "id": "RuleSetId",
+                    "description": "Unique id",
+                    "type": "string"
+                },
+                {
+                    "id": "RuleSet",
+                    "description": "Corresponds to SpeculationRuleSet",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "id",
+                            "$ref": "RuleSetId"
+                        },
+                        {
+                            "name": "loaderId",
+                            "description": "Identifies a document which the rule set is associated with.",
+                            "$ref": "Network.LoaderId"
+                        },
+                        {
+                            "name": "sourceText",
+                            "description": "Source text of JSON representing the rule set. If it comes from\n<script> tag, it is the textContent of the node. Note that it is\na JSON for valid case.\n\nSee also:\n- https://wicg.github.io/nav-speculation/speculation-rules.html\n- https://github.com/WICG/nav-speculation/blob/main/triggers.md",
+                            "type": "string"
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "enable"
+                },
+                {
+                    "name": "disable"
+                }
+            ],
+            "events": [
+                {
+                    "name": "ruleSetUpdated",
+                    "description": "Upsert. Currently, it is only emitted when a rule set added.",
+                    "parameters": [
+                        {
+                            "name": "ruleSet",
+                            "$ref": "RuleSet"
+                        }
+                    ]
+                },
+                {
+                    "name": "ruleSetRemoved",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "$ref": "RuleSetId"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "domain": "Console",
             "description": "This domain is deprecated - use Runtime or Log instead.",
             "deprecated": true,

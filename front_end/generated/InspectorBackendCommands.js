@@ -884,6 +884,12 @@ inspectorBackend.registerCommand("DeviceAccess.disable", [], []);
 inspectorBackend.registerCommand("DeviceAccess.selectPrompt", [{"name": "id", "type": "string", "optional": false}, {"name": "deviceId", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("DeviceAccess.cancelPrompt", [{"name": "id", "type": "string", "optional": false}], []);
 
+// Preload.
+inspectorBackend.registerEvent("Preload.ruleSetUpdated", ["ruleSet"]);
+inspectorBackend.registerEvent("Preload.ruleSetRemoved", ["id"]);
+inspectorBackend.registerCommand("Preload.enable", [], []);
+inspectorBackend.registerCommand("Preload.disable", [], []);
+
 // Debugger.
 inspectorBackend.registerEnum("Debugger.ScopeType", {Global: "global", Local: "local", With: "with", Closure: "closure", Catch: "catch", Block: "block", Script: "script", Eval: "eval", Module: "module", WasmExpressionStack: "wasm-expression-stack"});
 inspectorBackend.registerEnum("Debugger.BreakLocationType", {DebuggerStatement: "debuggerStatement", Call: "call", Return: "return"});

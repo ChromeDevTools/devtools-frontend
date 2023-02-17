@@ -635,6 +635,11 @@ export namespace ProtocolMapping {
      */
     'DeviceAccess.deviceRequestPrompted': [Protocol.DeviceAccess.DeviceRequestPromptedEvent];
     /**
+     * Upsert. Currently, it is only emitted when a rule set added.
+     */
+    'Preload.ruleSetUpdated': [Protocol.Preload.RuleSetUpdatedEvent];
+    'Preload.ruleSetRemoved': [Protocol.Preload.RuleSetRemovedEvent];
+    /**
      * Fired when breakpoint is resolved to an actual script and location.
      */
     'Debugger.breakpointResolved': [Protocol.Debugger.BreakpointResolvedEvent];
@@ -4068,6 +4073,14 @@ export namespace ProtocolMapping {
      */
     'DeviceAccess.cancelPrompt': {
       paramsType: [Protocol.DeviceAccess.CancelPromptRequest];
+      returnType: void;
+    };
+    'Preload.enable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'Preload.disable': {
+      paramsType: [];
       returnType: void;
     };
     /**

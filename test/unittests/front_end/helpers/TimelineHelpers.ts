@@ -19,17 +19,6 @@ export class FakeStorage extends SDK.TracingModel.BackingStorage {
   }
 }
 
-// The same set of arguments given to the constructor of
-// SDK.TracingModel.Event, without the Thread, as we stub that out.
-export interface EventWithStubbedThreadOptions {
-  categories: string|undefined;
-  name: string;
-  phase: SDK.TracingModel.Phase;
-  startTime: number;
-  threadId: number;
-  args?: Record<string, unknown>;
-}
-
 /**
  * Provides a stubbed SDK.TracingModel.Thread instance.
  * IMPORTANT: this is not designed to be a fully stubbed Thread, but one that is
@@ -58,16 +47,62 @@ export class StubbedThread {
   }
 }
 
-export function makeEventWithStubbedThread(options: EventWithStubbedThreadOptions): SDK.TracingModel.Event {
-  const thread = StubbedThread.make(options.threadId);
-  // TODO(jacktfranklin): provide a helper that can construct a fake payload
-  // and instantiate an Event with that. Ultimately in tests we need to be able
-  // to generate constructed events and payload events.
-  const event =
-      new SDK.TracingModel.ConstructedEvent(options.categories, options.name, options.phase, options.startTime, thread);
-  if (options.args) {
-    event.args = options.args;
-  }
+export const DevToolsTimelineCategory = 'disabled-by-default-devtools.timeline';
+
+export interface FakeEventPayload {
+  name: string;
+  categories: string[];
+  tid?: number;
+  ts: number;
+  pid?: number;
+  dur?: number;
+  ph: SDK.TracingModel.Phase;
+  // The type def of args in EventPayload is inaccurate. We will fix this as
+  // part of the migration but for now let's just tell TS to let us pass
+  // anything in here.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  args?: any;
+  id?: string;
+  scope?: string[];
+  // Allow any additional keys.
+  [x: string]: unknown;
+}
+/**
+ * Creates an object that represents an EventPayload - one that looks exactly
+ * like an event from a real trace could.
+ * You must provide some of the options, but the others will revert to sensible
+ * defaults. The goal here is not to use this to emulate an entire trace (you
+ * should use an actual trace file if you need that), but to allow the
+ * construction of single events to make testing utility methods easier.
+ **/
+export function makeFakeEventPayload(payload: FakeEventPayload): SDK.TracingManager.EventPayload {
+  const event: SDK.TracingManager.EventPayload = {
+    // Set defaults for these values, all of which can be overriden by passing
+    // them into the payload object.
+    args: {},
+    pid: 1,
+    tid: 1,
+    id: 'random-test-event-id',
+    dur: 0,
+    // TODO(jacktfranklin): remove after crrev.com/c/4271211 has landed
+    s: '',
+    ...payload,
+    cat: payload.categories.join(','),
+    scope: payload.scope ? payload.scope.join(',') : 'devtools.timeline',
+  };
+
   return event;
 }
-export const DevToolsTimelineCategory = 'disabled-by-default-devtools.timeline';
+
+/**
+ * Given an object representing a fake payload - see @FakeEventPayload - this
+ * function will create a fake SDK Event with a stubbed thread that tries to
+ * mimic the real thing. It is not designed to be used to emulate entire traces,
+ * but more to create single events that can be used in unit tests.
+ **/
+export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): SDK.TracingModel.PayloadEvent {
+  const payload = makeFakeEventPayload(payloadOptions);
+  const thread = StubbedThread.make(payload.tid);
+  const event = SDK.TracingModel.PayloadEvent.fromPayload(payload, thread);
+  return event;
+}

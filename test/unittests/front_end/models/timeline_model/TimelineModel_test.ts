@@ -10,7 +10,11 @@ import * as TimelineModel from '../../../../../front_end/models/timeline_model/t
 
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {loadTraceEventsLegacyEventPayload} from '../../helpers/TraceHelpers.js';
-import {DevToolsTimelineCategory, FakeStorage, makeEventWithStubbedThread} from '../../helpers/TimelineHelpers.js';
+import {
+  DevToolsTimelineCategory,
+  FakeStorage,
+  makeFakeSDKEventFromPayload,
+} from '../../helpers/TimelineHelpers.js';
 
 // Various events listing processes and threads used by all the tests.
 const preamble = [
@@ -368,23 +372,21 @@ describeWithEnvironment('TimelineModel', () => {
       // Note: exact trace does not matter here, but we need a real one so all the metadata is set correctly on the TimelineModel
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
 
-      const timestampEvent = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const timestampEvent = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.TimeStamp,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
       });
       assert.isTrue(timelineModel.isMarkerEvent(timestampEvent));
     });
     it('is true for a Mark First Paint event that is on the main frame', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markFirstPaintEventOnMainFrame = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markFirstPaintEventOnMainFrame = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFirstPaint,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           frame: timelineModel.mainFrameID(),
           data: {},
@@ -395,12 +397,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is true for a Mark FCP event that is on the main frame', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markFCPEventOnMainFrame = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markFCPEventOnMainFrame = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFCP,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           frame: timelineModel.mainFrameID(),
           data: {},
@@ -411,12 +412,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is false for a Mark FCP event that is not on the main frame', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markFCPEventOnOtherFrame = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markFCPEventOnOtherFrame = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFCP,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           frame: 'not-main-frame',
           data: {},
@@ -427,12 +427,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is false for a Mark First Paint event that is not on the main frame', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markFirstPaintEventOnOtherFrame = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markFirstPaintEventOnOtherFrame = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFirstPaint,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           frame: 'not-main-frame',
           data: {},
@@ -443,12 +442,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is true for a MarkDOMContent event is set to isMainFrame', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markDOMContentEvent = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markDOMContentEvent = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           data: {
             isMainFrame: true,
@@ -460,12 +458,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is true for a MarkDOMContent event that set to isOutermostMainFrame', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markDOMContentEvent = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markDOMContentEvent = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           data: {
             isOutermostMainFrame: true,
@@ -477,12 +474,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is false for a MarkDOMContent event that set to isOutermostMainFrame=false', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markDOMContentEvent = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markDOMContentEvent = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           data: {
             isOutermostMainFrame: false,
@@ -494,12 +490,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is false for a MarkDOMContent event that set to isMainFrame=false', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markDOMContentEvent = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markDOMContentEvent = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           data: {
             isMainFrame: false,
@@ -511,12 +506,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is true for a MarkLoad event that set to isMainFrame=true', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markLoadEvent = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markLoadEvent = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkLoad,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           data: {
             isMainFrame: true,
@@ -528,12 +522,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is true for a MarkLCPCandidate event that set to isOutermostMainFrame=true', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markLCPCandidateEvent = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markLCPCandidateEvent = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkLCPCandidate,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           data: {
             isOutermostMainFrame: true,
@@ -545,12 +538,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is true for a MarkLCPInvalidate event that set to isOutermostMainFrame=true', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const markLCPInvalidateEvent = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const markLCPInvalidateEvent = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkLCPInvalidate,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         args: {
           data: {
             isOutermostMainFrame: true,
@@ -562,11 +554,11 @@ describeWithEnvironment('TimelineModel', () => {
 
     it('is false for some unrelated event that is never a marker such as an animation', async () => {
       const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const animationEvent = makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      const animationEvent = makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.Animation,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
         threadId: 1,
       });
       assert.isFalse(timelineModel.isMarkerEvent(animationEvent));

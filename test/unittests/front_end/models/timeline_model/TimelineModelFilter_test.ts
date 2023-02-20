@@ -6,28 +6,29 @@ const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
-import {makeEventWithStubbedThread, DevToolsTimelineCategory} from '../../helpers/TimelineHelpers.js';
+import {
+  DevToolsTimelineCategory,
+  makeFakeSDKEventFromPayload,
+} from '../../helpers/TimelineHelpers.js';
 
-const consoleEvent = makeEventWithStubbedThread({
-  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console].join(','),
+const consoleEvent = makeFakeSDKEventFromPayload({
+  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console],
   name: TimelineModel.TimelineModel.RecordType.ConsoleTime,
-  phase: SDK.TracingModel.Phase.Complete,
-  startTime: 1,
-  threadId: 1,
+  ph: SDK.TracingModel.Phase.Complete,
+  ts: 1,
 });
-const latencyInfoEvent = makeEventWithStubbedThread({
-  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo].join(','),
+
+const latencyInfoEvent = makeFakeSDKEventFromPayload({
+  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo],
   name: TimelineModel.TimelineModel.RecordType.LatencyInfo,
-  phase: SDK.TracingModel.Phase.Complete,
-  startTime: 1,
-  threadId: 1,
+  ph: SDK.TracingModel.Phase.Complete,
+  ts: 1,
 });
-const userTimingEvent = makeEventWithStubbedThread({
-  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming].join(','),
+const userTimingEvent = makeFakeSDKEventFromPayload({
+  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming],
   name: TimelineModel.TimelineModel.RecordType.UserTiming,
-  phase: SDK.TracingModel.Phase.Complete,
-  startTime: 1,
-  threadId: 1,
+  ph: SDK.TracingModel.Phase.Complete,
+  ts: 1,
 });
 
 describe('TimelineModelFilter', () => {
@@ -62,13 +63,11 @@ describe('TimelineModelFilter', () => {
       });
 
       it('returns the event name if the event is any other category', () => {
-        const otherEvent = makeEventWithStubbedThread({
-          categories:
-              [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading].join(','),
+        const otherEvent = makeFakeSDKEventFromPayload({
+          categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading],
           name: 'other',
-          phase: SDK.TracingModel.Phase.Complete,
-          startTime: 1,
-          threadId: 1,
+          ph: SDK.TracingModel.Phase.Complete,
+          ts: 1,
         });
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(otherEvent), 'other');
@@ -95,12 +94,11 @@ describe('TimelineModelFilter', () => {
 
   describe('ExclusiveNameFilter', () => {
     function makeEventWithName(name: string): SDK.TracingModel.Event {
-      return makeEventWithStubbedThread({
-        categories: DevToolsTimelineCategory,
+      return makeFakeSDKEventFromPayload({
+        categories: [DevToolsTimelineCategory],
         name,
-        phase: SDK.TracingModel.Phase.Complete,
-        startTime: 1,
-        threadId: 1,
+        ph: SDK.TracingModel.Phase.Complete,
+        ts: 1,
       });
     }
     it('accepts events that do not match the provided set of names to exclude', () => {

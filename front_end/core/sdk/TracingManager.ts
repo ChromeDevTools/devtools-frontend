@@ -143,5 +143,4 @@ export interface EventPayload {
     local: (string|undefined),
   };
   scope: string;
-  s: string;
 }

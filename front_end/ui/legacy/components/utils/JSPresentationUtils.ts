@@ -35,7 +35,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as SDK from '../../../../core/sdk/sdk.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as UI from '../../legacy.js';
@@ -113,11 +113,15 @@ export function buildStackTraceRows(
       stackTraceRows.push(asyncRow);
     }
     let hiddenCallFrames = 0;
+    let previousStackFrameWasBreakpointCondition = false;
     for (const stackFrame of stackTrace.callFrames) {
       let ignoreListHide = false;
       const functionName = UI.UIUtils.beautifyFunctionName(stackFrame.functionName);
-      const link =
-          linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame, {tabStop: Boolean(tabStops), inlineFrameIndex: 0});
+      const link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame, {
+        tabStop: Boolean(tabStops),
+        inlineFrameIndex: 0,
+        revealBreakpoint: previousStackFrameWasBreakpointCondition,
+      });
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         // TODO(crbug.com/1183325): fix race condition with uiLocation still being null here
@@ -138,6 +142,10 @@ export function buildStackTraceRows(
         ++hiddenCallFrames;
       }
       stackTraceRows.push({functionName, link, ignoreListHide});
+      previousStackFrameWasBreakpointCondition = [
+        SDK.DebuggerModel.COND_BREAKPOINT_SOURCE_URL,
+        SDK.DebuggerModel.LOGPOINT_SOURCE_URL,
+      ].includes(stackFrame.url);
     }
     if (asyncRow && hiddenCallFrames > 0 && hiddenCallFrames === stackTrace.callFrames.length) {
       asyncRow.ignoreListHide = true;

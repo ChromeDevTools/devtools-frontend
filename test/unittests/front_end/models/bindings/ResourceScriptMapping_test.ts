@@ -91,4 +91,26 @@ describeWithMockConnection('ResourceScriptMapping', () => {
       assert.strictEqual(rawLocationRanges[0].end.columnNumber, 4);
     });
   });
+
+  it('does not create a mapping UISourceCode for conditional breakpoint scripts', async () => {
+    const content = 'x === 5\n\n//# sourceURL=debugger://breakpoint';
+    const script = await backend.addScript(
+        target, {content, url: SDK.DebuggerModel.COND_BREAKPOINT_SOURCE_URL, hasSourceURL: true}, null);
+    assert.isTrue(script.isBreakpointCondition);
+
+    const uiSourceCode = resourceScriptMapping.uiSourceCodeForScript(script);
+
+    assert.isNull(uiSourceCode);
+  });
+
+  it('does not create a mapping UISourceCode for logpoint scripts', async () => {
+    const content = 'console.log(x)\n\n//# sourceURL=debugger://logpoint';
+    const script = await backend.addScript(
+        target, {content, url: SDK.DebuggerModel.LOGPOINT_SOURCE_URL, hasSourceURL: true}, null);
+    assert.isTrue(script.isBreakpointCondition);
+
+    const uiSourceCode = resourceScriptMapping.uiSourceCodeForScript(script);
+
+    assert.isNull(uiSourceCode);
+  });
 });

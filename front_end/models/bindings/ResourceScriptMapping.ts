@@ -184,7 +184,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
 
   private addScript(script: SDK.Script.Script): void {
     // Ignore live edit scripts here.
-    if (script.isLiveEdit()) {
+    if (script.isLiveEdit() || script.isBreakpointCondition) {
       return;
     }
 

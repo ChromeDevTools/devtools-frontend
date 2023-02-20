@@ -33,7 +33,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
-import {Location, type DebuggerModel} from './DebuggerModel.js';
+import {Location, type DebuggerModel, COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL} from './DebuggerModel.js';
 import {type FrameAssociated} from './FrameAssociated.js';
 import {type PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
@@ -355,6 +355,13 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // @ts-expect-error
     return this[frameIdSymbol];
+  }
+
+  /**
+   * @returns true, iff this script originates from a breakpoint/logpoint condition
+   */
+  get isBreakpointCondition(): boolean {
+    return [COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL].includes(this.sourceURL);
   }
 
   createPageResourceLoadInitiator(): PageResourceLoadInitiator {

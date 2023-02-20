@@ -514,7 +514,8 @@ export class ZIndexValidator extends CSSRuleValidator {
     if (!position) {
       return;
     }
-    if (['absolute', 'relative', 'fixed', 'sticky'].includes(position) || isFlexContainer(parentComputedStyles)) {
+    if (['absolute', 'relative', 'fixed', 'sticky'].includes(position) || isFlexContainer(parentComputedStyles) ||
+        isGridContainer(parentComputedStyles)) {
       return;
     }
 

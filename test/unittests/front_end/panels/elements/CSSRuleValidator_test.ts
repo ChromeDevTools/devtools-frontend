@@ -322,6 +322,18 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       validator: () => new Elements.CSSRuleValidator.FlexItemValidator(),
       hintExpected: false,
     },
+    {
+      description: 'Does not show a hint for a grid item with a z-index',
+      computedStyles: new Map<string, string>([
+        ['z-index', '1'],
+      ]),
+      nodeName: 'div',
+      parentsComputedStyles: new Map<string, string>([
+        ['display', 'grid'],
+      ]),
+      validator: () => new Elements.CSSRuleValidator.ZIndexValidator(),
+      hintExpected: false,
+    },
   ];
 
   before(async () => {

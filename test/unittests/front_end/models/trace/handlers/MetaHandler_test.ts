@@ -8,17 +8,6 @@ const {assert} = chai;
 
 import {loadEventsFromTraceFile, defaultTraceEvent} from '../../../helpers/TraceHelpers.js';
 
-function removeEventWithName(events: readonly TraceModel.Types.TraceEvents.TraceEventData[], filteredName: string) {
-  return events.filter((event: TraceModel.Types.TraceEvents.TraceEventData) => {
-    const args = event.args as {name?: string};
-    if (!('name' in args)) {
-      return true;
-    }
-
-    return args.name !== filteredName;
-  });
-}
-
 describe('MetaHandler', () => {
   let baseEvents: TraceModel.Types.TraceEvents.TraceEventData[];
   beforeEach(async () => {
@@ -116,20 +105,6 @@ describe('MetaHandler', () => {
       assert.strictEqual(data.browserProcessId, TraceModel.Types.TraceEvents.ProcessID(8017));
     });
 
-    it('throws if the PID is not present', async () => {
-      // Remove the Browser Process event, which should trigger an error.
-      const filteredEvents = removeEventWithName(baseEvents, 'Browser');
-      for (const event of filteredEvents) {
-        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-      }
-      let thrown: Error|null = null;
-      try {
-        await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-      } catch (e) {
-        thrown = e as Error;
-      }
-      assert.strictEqual(thrown?.message, 'Unable to find browser process');
-    });
   });
 
   describe('browser thread ID', () => {
@@ -141,21 +116,6 @@ describe('MetaHandler', () => {
       await TraceModel.Handlers.ModelHandlers.Meta.finalize();
       const data = TraceModel.Handlers.ModelHandlers.Meta.data();
       assert.strictEqual(data.browserThreadId, TraceModel.Types.TraceEvents.ThreadID(775));
-    });
-
-    it('throws if the TID is not present', async () => {
-      // Remove the Browser Thread event, which should trigger an error.
-      const filteredEvents = removeEventWithName(baseEvents, 'CrBrowserMain');
-      for (const event of filteredEvents) {
-        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-      }
-      let thrown: Error|null = null;
-      try {
-        await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-      } catch (e) {
-        thrown = e as Error;
-      }
-      assert.strictEqual(thrown?.message, 'Unable to find browser thread');
     });
   });
 
@@ -169,29 +129,6 @@ describe('MetaHandler', () => {
       const data = TraceModel.Handlers.ModelHandlers.Meta.data();
       assert.strictEqual(data.topLevelRendererIds.size, 1);
       assert.deepStrictEqual([...data.topLevelRendererIds], [TraceModel.Types.TraceEvents.ProcessID(8051)]);
-    });
-
-    it('throws if the PID is not present', async () => {
-      let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
-      try {
-        traceEvents = await loadEventsFromTraceFile('missing-process-data.json.gz');
-      } catch (error) {
-        assert.fail(error);
-        return;
-      }
-
-      TraceModel.Handlers.ModelHandlers.Meta.reset();
-      TraceModel.Handlers.ModelHandlers.Meta.initialize();
-      for (const event of traceEvents) {
-        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-      }
-      let thrown: Error|null = null;
-      try {
-        await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-      } catch (e) {
-        thrown = e as Error;
-      }
-      assert.strictEqual(thrown?.message, 'Unable to find renderer processes');
     });
   });
 
@@ -467,25 +404,5 @@ describe('MetaHandler', () => {
         'ThreadPoolForegroundWorker',
       ],
     ]);
-  });
-
-  describe('Unsupported files', () => {
-    it('throws when TracingStartedInBrowser is missing', async () => {
-      const traceEvents = await loadEventsFromTraceFile('missing-tracing-start.json.gz');
-
-      TraceModel.Handlers.ModelHandlers.Meta.reset();
-      TraceModel.Handlers.ModelHandlers.Meta.initialize();
-      for (const event of traceEvents) {
-        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-      }
-
-      let thrown: Error|null = null;
-      try {
-        await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-      } catch (e) {
-        thrown = e as Error;
-      }
-      assert.strictEqual(thrown?.message, 'Error parsing trace data: no TracingStartedInBrowser event found.');
-    });
   });
 });

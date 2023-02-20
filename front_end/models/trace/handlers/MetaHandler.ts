@@ -248,33 +248,33 @@ export async function finalize(): Promise<void> {
   // If we haven't seen a TracingStartedInBrowser event then we don't
   // support this trace file. As such, we throw an error here.
   if (traceStartedTime === -1) {
-    throw new Error('Error parsing trace data: no TracingStartedInBrowser event found.');
+    console.error('Error parsing trace data: no TracingStartedInBrowser event found.');
   }
 
   traceBounds.min = traceStartedTime;
   traceBounds.range = Types.Timing.MicroSeconds(traceBounds.max - traceBounds.min);
 
   if (topLevelRendererIds.size === 0) {
-    throw new Error('Unable to find renderer processes');
+    console.error('Unable to find renderer processes');
   }
 
   if (browserProcessId === Types.TraceEvents.ProcessID(-1)) {
-    throw new Error('Unable to find browser process');
+    console.error('Unable to find browser process');
   }
 
   if (browserThreadId === Types.TraceEvents.ThreadID(-1)) {
-    throw new Error('Unable to find browser thread');
+    console.error('Unable to find browser thread');
   }
 
   if (gpuProcessId === Types.TraceEvents.ProcessID(-1)) {
-    throw new Error('Unable to find GPU process');
+    console.error('Unable to find GPU process');
   }
 
   // We purposefully don't check for a missing GPU Thread ID; it's possible
   // that a trace ran and did not use a GPU Thread.
 
   if (!mainFrameId) {
-    throw new Error('Unable to find main frame ID');
+    console.error('Unable to find main frame ID');
   }
 
   // If we go from foo.com to example.com we will get a new renderer, and

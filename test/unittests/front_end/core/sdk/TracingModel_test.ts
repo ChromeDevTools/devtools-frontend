@@ -55,6 +55,39 @@ describe('TracingModel', () => {
       assert.strictEqual(event.startTime, firstLCPEventPayload.ts / 1000);
     });
 
+    it('stores the event ID if it has one', async () => {
+      const rawEvents = await loadTraceEventsLegacyEventPayload('lcp-images.json.gz');
+      // Find an event to test with; pick the first LCP event so it is an event
+      // we understand and we get the same event each time.
+      const firstLCPEventPayload = rawEvents.find(event => {
+        return event.name === 'largestContentfulPaint::Candidate';
+      });
+      if (!firstLCPEventPayload) {
+        throw new Error('Could not find LCP event');
+      }
+      // Set an ID property to test the behaviour, even though LCP Candidate
+      // events do not have an ID field.
+      firstLCPEventPayload.id = 'test-id';
+      const fakeThread = StubbedThread.make(firstLCPEventPayload.tid);
+      const event = SDK.TracingModel.PayloadEvent.fromPayload(firstLCPEventPayload, fakeThread);
+      assert.deepEqual(event.id, firstLCPEventPayload.id);
+    });
+
+    it('stores the raw payload and you can retrieve it', async () => {
+      const rawEvents = await loadTraceEventsLegacyEventPayload('lcp-images.json.gz');
+      // Find an event to test with; pick the first LCP event so it is an event
+      // we understand and we get the same event each time.
+      const firstLCPEventPayload = rawEvents.find(event => {
+        return event.name === 'largestContentfulPaint::Candidate';
+      });
+      if (!firstLCPEventPayload) {
+        throw new Error('Could not find LCP event');
+      }
+      const fakeThread = StubbedThread.make(firstLCPEventPayload.tid);
+      const event = SDK.TracingModel.PayloadEvent.fromPayload(firstLCPEventPayload, fakeThread);
+      assert.strictEqual(event.rawPayload(), firstLCPEventPayload);
+    });
+
     it('sets the begin and end time correctly for an event with a duration', async () => {
       const rawEvents = await loadTraceEventsLegacyEventPayload('animation.json.gz');
       // Use a RunTask which will always have a ts (start) and dur.

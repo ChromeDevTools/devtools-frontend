@@ -635,8 +635,23 @@ export class ConstructedEvent extends Event {
  * method, which you must call with a payload.
  **/
 export class PayloadEvent extends Event {
-  static fromPayload(payload: EventPayload, thread: Thread): Event {
-    const event = new PayloadEvent(payload.cat, payload.name, (payload.ph as Phase), payload.ts / 1000, thread);
+  #rawPayload: EventPayload;
+
+  rawPayload(): EventPayload {
+    return this.#rawPayload;
+  }
+
+  protected constructor(
+      categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread,
+      rawPayload: EventPayload) {
+    super(categories, name, phase, startTime, thread);
+    this.#rawPayload = rawPayload;
+  }
+
+  static fromPayload(payload: EventPayload, thread: Thread): PayloadEvent {
+    const event =
+        new PayloadEvent(payload.cat, payload.name, (payload.ph as Phase), payload.ts / 1000, thread, payload);
+    event.#rawPayload = payload;
     if (payload.args) {
       event.addArgs(payload.args);
     }
@@ -656,14 +671,15 @@ export class ObjectSnapshot extends PayloadEvent {
   #backingStorage: (() => Promise<string|null>)|null;
   #objectPromiseInternal: Promise<ObjectSnapshot|null>|null;
 
-  constructor(category: string|undefined, name: string, startTime: number, thread: Thread) {
-    super(category, name, Phase.SnapshotObject, startTime, thread);
+  private constructor(
+      category: string|undefined, name: string, startTime: number, thread: Thread, rawPayload: EventPayload) {
+    super(category, name, Phase.SnapshotObject, startTime, thread, rawPayload);
     this.#backingStorage = null;
     this.#objectPromiseInternal = null;
   }
 
   static fromPayload(payload: EventPayload, thread: Thread): ObjectSnapshot {
-    const snapshot = new ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread);
+    const snapshot = new ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread, payload);
     const id = TracingModel.extractId(payload);
     if (typeof id !== 'undefined') {
       snapshot.id = id;

@@ -32,9 +32,10 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 
 import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
+
 export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
 
 import {CPUProfilerModel, Events as CPUProfilerModelEvents, type EventData} from './CPUProfilerModel.js';
@@ -64,6 +65,12 @@ const UIStrings = {
    */
   navigatedToS: 'Navigated to {PH1}',
   /**
+   *@description Text shown when the main frame (page) of the website was navigated to a different URL
+   * and the page was restored from back/forward cache (https://web.dev/bfcache/).
+   *@example {https://example.com} PH1
+   */
+  bfcacheNavigation: 'Navigation to {PH1} was restored from back/forward cache (see https://web.dev/bfcache/)',
+  /**
    *@description Text shown in the console when a performance profile (with the given name) was started.
    *@example {title} PH1
    */
@@ -85,6 +92,7 @@ let consoleModelInstance: ConsoleModel|null;
 
 export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements Observer {
   #messagesInternal: ConsoleMessage[];
+  readonly #messagesByTimestamp: Platform.MapUtilities.Multimap<number, ConsoleMessage>;
   readonly #messageByExceptionId: Map<RuntimeModel, Map<number, ConsoleMessage>>;
   #warningsInternal: number;
   #errorsInternal: number;
@@ -96,6 +104,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     super();
 
     this.#messagesInternal = [];
+    this.#messagesByTimestamp = new Platform.MapUtilities.Multimap();
     this.#messageByExceptionId = new Map();
     this.#warningsInternal = 0;
     this.#errorsInternal = 0;
@@ -223,6 +232,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
 
     this.#messagesInternal.push(msg);
+    this.#messagesByTimestamp.set(msg.timestamp, msg);
     const runtimeModel = msg.runtimeModel();
     const exceptionId = msg.getExceptionId();
     if (exceptionId && runtimeModel) {
@@ -299,6 +309,11 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     };
     const consoleMessage =
         new ConsoleMessage(runtimeModel, FrontendMessageSource.ConsoleAPI, level, (message as string), details);
+    for (const msg of this.#messagesByTimestamp.get(consoleMessage.timestamp).values()) {
+      if (consoleMessage.isEqual(msg)) {
+        return;
+      }
+    }
     this.addMessage(consoleMessage);
   }
 
@@ -324,7 +339,12 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   private mainFrameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
     if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
-      Common.Console.Console.instance().log(i18nString(UIStrings.navigatedToS, {PH1: event.data.url}));
+      const frame = event.data;
+      if (frame.backForwardCacheDetails.restoredFromCache) {
+        Common.Console.Console.instance().log(i18nString(UIStrings.bfcacheNavigation, {PH1: event.data.url}));
+      } else {
+        Common.Console.Console.instance().log(i18nString(UIStrings.navigatedToS, {PH1: event.data.url}));
+      }
     }
   }
 
@@ -390,6 +410,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   private clear(): void {
     this.#messagesInternal = [];
+    this.#messagesByTimestamp.clear();
     this.#messageByExceptionId.clear();
     this.#errorsInternal = 0;
     this.#warningsInternal = 0;

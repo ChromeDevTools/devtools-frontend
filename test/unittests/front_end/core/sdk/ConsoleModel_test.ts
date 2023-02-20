@@ -7,7 +7,7 @@ const {assert} = chai;
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import {
   createTarget,
@@ -125,6 +125,66 @@ describeWithMockConnection('ConsoleMessage', () => {
     navigateTarget(mainFrameWithoutTabTarget);
     assert.isTrue(consoleLog.calledTwice);
     assert.isTrue(consoleLog.secondCall.calledWith('Navigated to http://example.com/'));
+  });
+
+  it('logs a message on main frame navigation via bfcache', async () => {
+    Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').set(true);
+    const consoleLog = sinon.spy(Common.Console.Console.instance(), 'log');
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
+    const mainFrameWithoutTabTarget = createTarget({type: SDK.Target.Type.Frame});
+    const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
+    SDK.ConsoleModel.ConsoleModel.instance({forceNew: true});
+    const navigateTarget = (target: SDKModule.Target.Target) => {
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
+      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
+      const frame = {url: 'http://example.com/', backForwardCacheDetails: {restoredFromCache: true}} as
+          SDKModule.ResourceTreeModel.ResourceTreeFrame;
+      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.MainFrameNavigated, frame);
+    };
+    navigateTarget(subframeTarget);
+    assert.isTrue(consoleLog.notCalled);
+
+    navigateTarget(mainFrameUnderTabTarget);
+    assert.isTrue(consoleLog.calledOnce);
+    assert.isTrue(consoleLog.calledOnceWith(
+        'Navigation to http://example.com/ was restored from back/forward cache (see https://web.dev/bfcache/)'));
+
+    navigateTarget(mainFrameWithoutTabTarget);
+    assert.isTrue(consoleLog.calledTwice);
+    assert.isTrue(consoleLog.secondCall.calledWith(
+        'Navigation to http://example.com/ was restored from back/forward cache (see https://web.dev/bfcache/)'));
+  });
+
+  it('discards duplicate console messages with identical timestamps', async () => {
+    const target = createTarget({type: SDK.Target.Type.Frame});
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assertNotNullOrUndefined(runtimeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel);
+    const consoleModel = SDK.ConsoleModel.ConsoleModel.instance({forceNew: true});
+    const addMessage = sinon.spy(consoleModel, 'addMessage');
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
+
+    const consoleAPICall = {
+      type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+      args: [{type: Protocol.Runtime.RemoteObjectType.String, value: 'log me'}],
+      executionContextId: 1,
+      timestamp: 123456.789,
+    };
+
+    runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.ConsoleAPICalled, consoleAPICall);
+    assert.isTrue(addMessage.calledOnce);
+    assert.isTrue(addMessage.calledOnceWith(sinon.match({messageText: 'log me'})));
+
+    runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.ConsoleAPICalled, consoleAPICall);
+    assert.isTrue(addMessage.calledOnce);
+
+    runtimeModel.dispatchEventToListeners(
+        SDK.RuntimeModel.Events.ConsoleAPICalled, {...consoleAPICall, timestamp: 123457.000});
+    assert.isTrue(addMessage.calledTwice);
+    assert.isTrue(addMessage.secondCall.calledWith(sinon.match({messageText: 'log me'})));
   });
 
   it('clears when main frame global object cleared', async () => {

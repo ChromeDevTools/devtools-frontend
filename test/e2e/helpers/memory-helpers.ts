@@ -138,40 +138,18 @@ export async function waitForSearchResultNumber(results: number) {
   return await waitForFunction(findMatch);
 }
 
-/**
- * Waits for the next selected row in `grid` whose text content is different from `previousContent`.
- *
- * @param grid the grid root element
- * @param previousContent the previously selected text content
- */
-async function waitForNextSelectedRow(grid: puppeteer.ElementHandle<Element>, previousContent: string) {
-  const findMatch = async () => {
-    const currentMatch = await grid.$('.data-grid-data-grid-node.selected');
-    const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
-    if (currentMatch && currentTextContent !== previousContent) {
-      return currentMatch;
-    }
-    return undefined;
-  };
-  return await waitForFunction(findMatch);
-}
-
-export async function findSearchResult(p: (el: puppeteer.ElementHandle<Element>) => Promise<boolean>) {
-  const grid = await waitFor('#profile-views table.data');
-  const next = await waitFor('[aria-label="Search next"]');
-  let previousContent = '';
-  const findSearchResult = async () => {
-    const currentMatch = await waitForNextSelectedRow(grid, previousContent);
-    if (currentMatch && await p(currentMatch)) {
-      return currentMatch;
-    }
-    // Since `waitForNextSelectedRow` above waited for the new selection, we haven't found
-    // the right search result yet, so click on the button for the next search result.
-    previousContent = currentMatch && await currentMatch.evaluate(el => el.textContent) || '';
-    await next.click();
-    return undefined;
-  };
-  return await waitForFunction(findSearchResult);
+export async function findSearchResult(searchResult: string, pollIntrerval: number = 500) {
+  const match = await waitFor('#profile-views table.data');
+  await waitForFunction(async () => {
+    await click('[aria-label="Search next"]');
+    const result = Promise.race([
+      waitForElementWithTextContent(searchResult, match),
+      new Promise(resolve => {
+        setTimeout(resolve, pollIntrerval, false);
+      }),
+    ]);
+    return result;
+  });
 }
 
 const normalizRetainerName = (retainerName: string) => {
@@ -228,17 +206,35 @@ export async function waitUntilRetainerChainSatisfies(p: (retainerChain: Array<R
   await waitForFunction(assertRetainerChainSatisfies.bind(null, p));
 }
 
+export function appearsInOrder(targetArray: string[], inputArray: string[]) {
+  let i = 0;
+  let j = 0;
+
+  if (inputArray.length > targetArray.length) {
+    return false;
+  }
+
+  if (inputArray === targetArray) {
+    return true;
+  }
+
+  while (i < targetArray.length && j < inputArray.length) {
+    if (inputArray[j] === targetArray[i]) {
+      j++;
+    }
+    i++;
+  }
+
+  if (j === inputArray.length) {
+    return true;
+  }
+  return false;
+}
+
 export async function waitForRetainerChain(expectedRetainers: Array<string>) {
   await waitForFunction(assertRetainerChainSatisfies.bind(null, retainerChain => {
-    if (retainerChain.length !== expectedRetainers.length) {
-      return false;
-    }
-    for (let i = 0; i < expectedRetainers.length; ++i) {
-      if (retainerChain[i].retainerClassName !== expectedRetainers[i]) {
-        return false;
-      }
-    }
-    return true;
+    const actual = retainerChain.map(e => e.retainerClassName);
+    return appearsInOrder(actual, expectedRetainers);
   }));
 }
 

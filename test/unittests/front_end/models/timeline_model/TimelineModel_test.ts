@@ -287,7 +287,6 @@ describeWithEnvironment('TimelineModel', () => {
           pid: 1537729,  // the Renderer Thread
           tid: 1,        // CrRendererMain
           id: '1234',
-          bind_id: '1234',
           s: '',
           ts: 10,
           dur: 500,
@@ -312,7 +311,6 @@ describeWithEnvironment('TimelineModel', () => {
           pid: 1537729,  // the Renderer Thread
           tid: 1,        // CrRendererMain
           id: '1234',
-          bind_id: '1234',
           s: '',
           ts: 10,
           dur: 500,
@@ -337,7 +335,6 @@ describeWithEnvironment('TimelineModel', () => {
           pid: 1537729,  // the Renderer Thread
           tid: 1,        // CrRendererMain
           id: '1234',
-          bind_id: '1234',
           s: '',
           ts: 10,
           dur: 500,

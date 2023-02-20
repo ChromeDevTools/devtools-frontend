@@ -536,9 +536,6 @@ export class Event {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: any;
   id!: string|null;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  bind_id!: string|null;
   ordinal: number;
   selfTime: number;
   endTime?: number;
@@ -649,9 +646,6 @@ export class PayloadEvent extends Event {
     const id = TracingModel.extractId(payload);
     if (typeof id !== 'undefined') {
       event.id = id;
-    }
-    if (payload.bind_id) {
-      event.bind_id = payload.bind_id;
     }
 
     return event;

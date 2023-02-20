@@ -84,8 +84,6 @@ export function makeFakeEventPayload(payload: FakeEventPayload): SDK.TracingMana
     tid: 1,
     id: 'random-test-event-id',
     dur: 0,
-    // TODO(jacktfranklin): remove after crrev.com/c/4271211 has landed
-    s: '',
     ...payload,
     cat: payload.categories.join(','),
     scope: payload.scope ? payload.scope.join(',') : 'devtools.timeline',

@@ -42,6 +42,7 @@ import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {LiveLocationPool, type LiveLocation} from './LiveLocation.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
+import {NetworkProject} from './NetworkProject.js';
 
 let breakpointManagerInstance: BreakpointManager;
 
@@ -221,7 +222,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   // For inline scripts, this function translates the line-column coordinates into the coordinates
-  // of the ebedding document. For other scripts, it just returns unchanged line-column.
+  // of the embedding document. For other scripts, it just returns unchanged line-column.
   static breakpointLocationFromUiLocation(uiLocation: Workspace.UISourceCode.UILocation):
       {lineNumber: number, columnNumber: number|undefined} {
     const uiSourceCode = uiLocation.uiSourceCode;
@@ -309,17 +310,35 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   async setBreakpoint(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number|undefined,
       condition: UserCondition, enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin): Promise<Breakpoint> {
-    let uiLocation: Workspace.UISourceCode.UILocation =
-        new Workspace.UISourceCode.UILocation(uiSourceCode, lineNumber, columnNumber);
-    const normalizedLocation = await this.debuggerWorkspaceBinding.normalizeUILocation(uiLocation);
-    if (normalizedLocation.id() !== uiLocation.id()) {
-      void Common.Revealer.reveal(normalizedLocation);
-      uiLocation = normalizedLocation;
+    // As part of de-duplication, we always only show one uiSourceCode, but we may
+    // have several uiSourceCodes that correspond to the same
+    // file (but are attached to different targets), so set a breakpoint on all of them.
+    const compatibleUiSourceCodes = this.#workspace.findCompatibleUISourceCodes(uiSourceCode);
+    const primaryTarget = NetworkProject.targetForUISourceCode(uiSourceCode);
+    const uiSourceCodesToProcess =
+        compatibleUiSourceCodes.filter(other => NetworkProject.targetForUISourceCode(other) !== primaryTarget);
+    uiSourceCodesToProcess.unshift(uiSourceCode);
+
+    let primaryBreakpoint: Breakpoint|undefined;
+    for (const compatibleUiSourceCode of uiSourceCodesToProcess) {
+      const uiLocation = new Workspace.UISourceCode.UILocation(compatibleUiSourceCode, lineNumber, columnNumber);
+      const normalizedLocation = await this.debuggerWorkspaceBinding.normalizeUILocation(uiLocation);
+      const breakpointLocation = BreakpointManager.breakpointLocationFromUiLocation(uiLocation);
+
+      const breakpoint = this.innerSetBreakpoint(
+          normalizedLocation.uiSourceCode, breakpointLocation.lineNumber, breakpointLocation.columnNumber, condition,
+          enabled, isLogpoint, origin);
+
+      if (uiSourceCode === compatibleUiSourceCode) {
+        if (normalizedLocation.id() !== uiLocation.id()) {
+          // Only call this on the uiSourceCode that was initially selected for breakpoint setting.
+          void Common.Revealer.reveal(normalizedLocation);
+        }
+        primaryBreakpoint = breakpoint;
+      }
     }
-    const breakpointLocation = BreakpointManager.breakpointLocationFromUiLocation(uiLocation);
-    return this.innerSetBreakpoint(
-        uiLocation.uiSourceCode, breakpointLocation.lineNumber, breakpointLocation.columnNumber, condition, enabled,
-        isLogpoint, origin);
+    assertNotNullOrUndefined(primaryBreakpoint);
+    return primaryBreakpoint;
   }
 
   private innerSetBreakpoint(

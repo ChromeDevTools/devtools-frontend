@@ -1270,12 +1270,8 @@ describeWithMockConnection('BreakpointManager', () => {
     // TODO(crbug.com/1415258): Update outcomes as soon as the bug is fixed (see comments).
     it('if the target whose uiSourceCode was used for breakpoint setting is handled last', async () => {
       // Handle setting breakpoint on the worker first.
-      //
-      // Note: Capturing the status quo right now.
-      // We would normally expect the request for breakpoint to be set on the compiled file, not
-      // on the original source file. Change the request from 'ORIGINAL_SCRIPT_SOURCE_URL' to 'URL'.
       breakpoint.modelAdded(workerScript.debuggerModel);
-      await backend.responderToBreakpointByUrlRequest(ORIGINAL_SCRIPT_SOURCE_URL, 0)({
+      await backend.responderToBreakpointByUrlRequest(URL, 0)({
         breakpointId: 'WORKER_ID' as Protocol.Debugger.BreakpointId,
         locations: [
           {
@@ -1301,11 +1297,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       await waitForBreakpointLocationsAdded();
 
-      // Note: Capturing the status quo right now.
-      // We would normally expect both the worker's and the main target's
-      // uiSourceCode to appear here.
-      // Change '[mainUiSourceCode]' to '[mainUiSourceCode, workerUiSourceCode]'.
-      assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [mainUiSourceCode]);
+      assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [mainUiSourceCode, workerUiSourceCode]);
 
       const mainBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(mainUiSourceCode);
       assert.strictEqual(1, mainBoundLocations.length);
@@ -1344,11 +1336,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       await waitForBreakpointLocationsAdded();
 
-      // Note: Capturing the status quo right now.
-      // We would normally expect both the worker's and the main target's
-      // uiSourceCode to appear here.
-      // Change '[mainUiSourceCode]' to '[mainUiSourceCode, workerUiSourceCode]'.
-      assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [mainUiSourceCode]);
+      assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [mainUiSourceCode, workerUiSourceCode]);
 
       const mainBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(mainUiSourceCode);
       assert.strictEqual(1, mainBoundLocations.length);

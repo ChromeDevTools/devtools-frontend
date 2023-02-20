@@ -16,7 +16,7 @@ function makeCompleteEvent(name: string, ts: number, dur: number, cat: string = 
     args: {},
     cat,
     name,
-    ph: TraceModel.Types.TraceEvents.TraceEventPhase.COMPLETE,
+    ph: TraceModel.Types.TraceEvents.Phase.COMPLETE,
     pid: TraceModel.Types.TraceEvents.ProcessID(pid),
     tid: TraceModel.Types.TraceEvents.ThreadID(tid),
     ts: TraceModel.Types.Timing.MicroSeconds(ts),
@@ -33,7 +33,7 @@ function makeProfileChunkEvent(
   return {
     cat,
     name: 'ProfileChunk',
-    ph: TraceModel.Types.TraceEvents.TraceEventPhase.SAMPLE,
+    ph: TraceModel.Types.TraceEvents.Phase.SAMPLE,
     pid: TraceModel.Types.TraceEvents.ProcessID(pid),
     tid: TraceModel.Types.TraceEvents.ThreadID(tid),
     ts: TraceModel.Types.Timing.MicroSeconds(ts),

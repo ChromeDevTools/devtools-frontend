@@ -7,7 +7,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import {type MicroSeconds, type MilliSeconds, type Seconds} from './Timing.js';
 
 // Trace Events.
-export const enum TraceEventPhase {
+export const enum Phase {
   // Standard
   BEGIN = 'B',
   END = 'E',
@@ -57,7 +57,7 @@ export interface TraceEventData {
   args?: TraceEventArgs;
   cat: string;
   name: string;
-  ph: TraceEventPhase;
+  ph: Phase;
   pid: ProcessID;
   tid: ThreadID;
   tts?: MicroSeconds;
@@ -94,7 +94,7 @@ export interface TraceFrame {
 // Sample events.
 
 export interface TraceEventSample extends TraceEventData {
-  ph: TraceEventPhase.SAMPLE;
+  ph: Phase.SAMPLE;
 }
 
 export interface TraceEventProfile extends TraceEventSample {
@@ -132,7 +132,7 @@ export interface TraceEventPartialNode {
 // Complete events.
 
 export interface TraceEventComplete extends TraceEventData {
-  ph: TraceEventPhase.COMPLETE;
+  ph: Phase.COMPLETE;
   dur: MicroSeconds;
 }
 
@@ -146,7 +146,7 @@ export interface TraceEventDispatch extends TraceEventComplete {
 }
 
 export interface TraceEventEventTiming extends TraceEventData {
-  ph: TraceEventPhase.ASYNC_NESTABLE_START|TraceEventPhase.ASYNC_NESTABLE_END;
+  ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_END;
   args: TraceEventArgs&{
     frame: string,
     data?: TraceEventArgsData&{
@@ -223,7 +223,7 @@ export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
   };
   cat: 'loading';
   name: 'SyntheticNetworkRequest';
-  ph: TraceEventPhase.COMPLETE;
+  ph: Phase.COMPLETE;
   dur: MicroSeconds;
   tdur: MicroSeconds;
   ts: MicroSeconds;
@@ -240,7 +240,7 @@ export interface TraceEventSnapshot extends TraceEventData {
   };
   name: 'Screenshot';
   cat: 'disabled-by-default-devtools.screenshot';
-  ph: TraceEventPhase.OBJECT_SNAPSHOT;
+  ph: Phase.OBJECT_SNAPSHOT;
 }
 
 // Animation events.
@@ -264,7 +264,7 @@ export interface TraceEventAnimation extends TraceEventData {
 // Metadata events.
 
 export interface TraceEventMetadata extends TraceEventData {
-  ph: TraceEventPhase.METADATA;
+  ph: Phase.METADATA;
   args: TraceEventArgs&{
     name?: string,
     uptime?: string,
@@ -285,7 +285,7 @@ export interface TraceEventProcessName extends TraceEventMetadata {
 // Mark events.
 
 export interface TraceEventMark extends TraceEventData {
-  ph: TraceEventPhase.MARK;
+  ph: Phase.MARK;
 }
 
 export interface TraceEventNavigationStart extends TraceEventMark {
@@ -376,7 +376,7 @@ export interface TraceEventInteractiveTime extends TraceEventMark {
 // Instant events.
 
 export interface TraceEventInstant extends TraceEventData {
-  ph: TraceEventPhase.INSTANT;
+  ph: Phase.INSTANT;
   s: TraceEventScope;
 }
 
@@ -610,13 +610,13 @@ export type TraceEventAsyncUserTiming = TraceEventUserTimingBegin|TraceEventUser
 
 export interface TraceEventUserTimingBegin extends TraceEventData {
   cat: 'blink.user_timing';
-  ph: TraceEventPhase.ASYNC_NESTABLE_START;
+  ph: Phase.ASYNC_NESTABLE_START;
   id: string;
 }
 
 export interface TraceEventUserTimingEnd extends TraceEventData {
   cat: 'blink.user_timing';
-  ph: TraceEventPhase.ASYNC_NESTABLE_END;
+  ph: Phase.ASYNC_NESTABLE_END;
   id: string;
 }
 
@@ -671,7 +671,7 @@ export function ThreadID(value: number): ThreadID {
 }
 
 export function isTraceEventComplete(event: TraceEventData): event is TraceEventComplete {
-  return event.ph === TraceEventPhase.COMPLETE;
+  return event.ph === Phase.COMPLETE;
 }
 
 export function isTraceEventDispatch(event: TraceEventData): event is TraceEventDispatch {
@@ -679,7 +679,7 @@ export function isTraceEventDispatch(event: TraceEventData): event is TraceEvent
 }
 
 export function isTraceEventInstant(event: TraceEventData): event is TraceEventInstant {
-  return event.ph === TraceEventPhase.INSTANT;
+  return event.ph === Phase.INSTANT;
 }
 
 export function isTraceEventRendererEvent(event: TraceEventData): event is TraceEventRendererData {
@@ -855,7 +855,7 @@ export function isSyntheticUserTimingTraceEvent(traceEventData: TraceEventData):
 
 export function isTraceEventUserTimingsBeginOrEnd(traceEventData: TraceEventData):
     traceEventData is TraceEventUserTimingBegin|TraceEventUserTimingEnd {
-  const validPhases = new Set([TraceEventPhase.ASYNC_NESTABLE_START, TraceEventPhase.ASYNC_NESTABLE_END]);
+  const validPhases = new Set([Phase.ASYNC_NESTABLE_START, Phase.ASYNC_NESTABLE_END]);
 
   return validPhases.has(traceEventData.ph) && traceEventData.cat === 'blink.user_timing';
 }

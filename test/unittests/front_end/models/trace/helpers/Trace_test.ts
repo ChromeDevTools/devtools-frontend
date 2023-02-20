@@ -37,7 +37,7 @@ describe('TraceModel helpers', function() {
         pid,
         ts: TraceModel.Types.Timing.MicroSeconds(0),
         cat: 'test',
-        ph: TraceModel.Types.TraceEvents.TraceEventPhase.METADATA,
+        ph: TraceModel.Types.TraceEvents.Phase.METADATA,
       };
     }
 

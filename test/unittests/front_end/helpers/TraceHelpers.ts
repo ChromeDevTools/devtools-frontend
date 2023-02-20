@@ -148,7 +148,7 @@ export const defaultTraceEvent: TraceModel.Types.TraceEvents.TraceEventData = {
   pid: TraceModel.Types.TraceEvents.ProcessID(0),
   ts: TraceModel.Types.Timing.MicroSeconds(0),
   cat: 'test',
-  ph: TraceModel.Types.TraceEvents.TraceEventPhase.METADATA,
+  ph: TraceModel.Types.TraceEvents.Phase.METADATA,
 };
 
 /**
@@ -266,7 +266,7 @@ export function makeCompleteEvent(
     args: {},
     cat,
     name,
-    ph: TraceModel.Types.TraceEvents.TraceEventPhase.COMPLETE,
+    ph: TraceModel.Types.TraceEvents.Phase.COMPLETE,
     pid: TraceModel.Types.TraceEvents.ProcessID(pid),
     tid: TraceModel.Types.TraceEvents.ThreadID(tid),
     ts: TraceModel.Types.Timing.MicroSeconds(ts),
@@ -294,7 +294,7 @@ export function makeInstantEvent(
     args: {},
     cat,
     name,
-    ph: TraceModel.Types.TraceEvents.TraceEventPhase.INSTANT,
+    ph: TraceModel.Types.TraceEvents.Phase.INSTANT,
     pid: TraceModel.Types.TraceEvents.ProcessID(pid),
     tid: TraceModel.Types.TraceEvents.ThreadID(tid),
     ts: TraceModel.Types.Timing.MicroSeconds(ts),

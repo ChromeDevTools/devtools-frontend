@@ -18,7 +18,7 @@ describe('ScreenshotHandler', function() {
     ts: TraceModel.Types.Timing.MicroSeconds(0),
     args: {},
     cat: 'test',
-    ph: TraceModel.Types.TraceEvents.TraceEventPhase.OBJECT_SNAPSHOT,
+    ph: TraceModel.Types.TraceEvents.Phase.OBJECT_SNAPSHOT,
   };
 
   let baseEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];

@@ -52,10 +52,10 @@ const threadsInProcess =
 
 let traceStartedTime = Types.Timing.MicroSeconds(-1);
 const eventPhasesOfInterestForTraceBounds = new Set([
-  Types.TraceEvents.TraceEventPhase.BEGIN,
-  Types.TraceEvents.TraceEventPhase.END,
-  Types.TraceEvents.TraceEventPhase.COMPLETE,
-  Types.TraceEvents.TraceEventPhase.INSTANT,
+  Types.TraceEvents.Phase.BEGIN,
+  Types.TraceEvents.Phase.END,
+  Types.TraceEvents.Phase.COMPLETE,
+  Types.TraceEvents.Phase.INSTANT,
 ]);
 
 let handlerState = HandlerState.UNINITIALIZED;

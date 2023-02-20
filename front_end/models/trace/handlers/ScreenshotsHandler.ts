@@ -20,7 +20,7 @@ export function reset(): void {
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (event.ph !== Types.TraceEvents.TraceEventPhase.OBJECT_SNAPSHOT || event.name !== 'Screenshot') {
+  if (event.ph !== Types.TraceEvents.Phase.OBJECT_SNAPSHOT || event.name !== 'Screenshot') {
     return;
   }
 

@@ -323,7 +323,7 @@ export async function finalize(): Promise<void> {
       },
       cat: 'loading',
       name: 'SyntheticNetworkRequest',
-      ph: Types.TraceEvents.TraceEventPhase.COMPLETE,
+      ph: Types.TraceEvents.Phase.COMPLETE,
       dur: Types.Timing.MicroSeconds(endTime - startTime),
       tdur: Types.Timing.MicroSeconds(endTime - startTime),
       ts: Types.Timing.MicroSeconds(startTime),

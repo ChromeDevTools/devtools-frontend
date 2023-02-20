@@ -50,8 +50,8 @@ export async function finalize(): Promise<void> {
     const otherEventsWithID = Platform.MapUtilities.getWithDefault(matchedEvents, event.id, () => {
       return {begin: null, end: null};
     });
-    const isStartEvent = event.ph === Types.TraceEvents.TraceEventPhase.ASYNC_NESTABLE_START;
-    const isEndEvent = event.ph === Types.TraceEvents.TraceEventPhase.ASYNC_NESTABLE_END;
+    const isStartEvent = event.ph === Types.TraceEvents.Phase.ASYNC_NESTABLE_START;
+    const isEndEvent = event.ph === Types.TraceEvents.Phase.ASYNC_NESTABLE_END;
 
     if (isStartEvent) {
       otherEventsWithID.begin = event;

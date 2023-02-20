@@ -29,9 +29,8 @@ describe('UserTimingsHandler', () => {
     // ASYNC_NESTABLE_END.
     for (let i = 0; i < data.timings.length; i++) {
       assert.strictEqual(
-          data.timings[i].args.data.beginEvent.ph, TraceModel.Types.TraceEvents.TraceEventPhase.ASYNC_NESTABLE_START);
-      assert.strictEqual(
-          data.timings[i].args.data.endEvent.ph, TraceModel.Types.TraceEvents.TraceEventPhase.ASYNC_NESTABLE_END);
+          data.timings[i].args.data.beginEvent.ph, TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_START);
+      assert.strictEqual(data.timings[i].args.data.endEvent.ph, TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_END);
     }
   });
 

@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {
+  $$,
   click,
   clickElement,
   enableExperiment,
@@ -429,17 +430,23 @@ describe('The Sources Tab', async function() {
 
     await step('Check origin of source-mapped JavaScript', async () => {
       await openFileInEditor('sourcemap-origin.js');
-      await waitFor('.toolbar-item > .devtools-link[title$="sourcemap-origin.min.js"]');
+      const link = await waitFor('.toolbar-item .devtools-link');
+      const linkText = await link.evaluate(({textContent}) => textContent);
+      assert.strictEqual(linkText, 'sourcemap-origin.min.js');
     });
 
     await step('Check origin of source-mapped SASS', async () => {
       await openFileInEditor('sourcemap-origin.scss');
-      await waitFor('.toolbar-item > .devtools-link[title$="sourcemap-origin.css"]');
+      const link = await waitFor('.toolbar-item .devtools-link');
+      const linkText = await link.evaluate(({textContent}) => textContent);
+      assert.strictEqual(linkText, 'sourcemap-origin.css');
     });
 
     await step('Check origin of source-mapped JavaScript with URL clash', async () => {
       await openFileInEditor('sourcemap-origin.clash.js');
-      await waitFor('.toolbar-item > .devtools-link[title$="sourcemap-origin.clash.js"]');
+      const link = await waitFor('.toolbar-item .devtools-link');
+      const linkText = await link.evaluate(({textContent}) => textContent);
+      assert.strictEqual(linkText, 'sourcemap-origin.clash.js');
     });
   });
 
@@ -468,7 +475,15 @@ describe('The Sources Tab', async function() {
       await target.evaluate('addSecond();');
 
       // ...wait for the new origin to be listed...
-      await waitFor('.toolbar-item > .devtools-link[title$="codesplitting-second.js"]');
+      const linkTexts = await waitForFunction(async () => {
+        const links = await $$('.toolbar-item .devtools-link');
+        const linkTexts = await Promise.all(links.map(node => node.evaluate(({textContent}) => textContent)));
+        if (linkTexts.length === 1 && linkTexts[0] === 'codesplitting-first.js') {
+          return undefined;
+        }
+        return linkTexts;
+      });
+      assert.sameMembers(linkTexts, ['codesplitting-first.js', 'codesplitting-second.js']);
 
       // ...and eventually wait for the breakpoint to be restored in line 2.
       await waitForFunction(async () => await isBreakpointSet(2));

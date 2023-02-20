@@ -138,6 +138,9 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     if (this.skipContentScripts && isContentScript) {
       return true;
     }
+    if (uiSourceCode.isUnconditionallyIgnoreListed()) {
+      return true;
+    }
     const url = this.uiSourceCodeURL(uiSourceCode);
     return url ? this.isUserOrSourceMapIgnoreListedURL(url, uiSourceCode.isKnownThirdParty()) : false;
   }

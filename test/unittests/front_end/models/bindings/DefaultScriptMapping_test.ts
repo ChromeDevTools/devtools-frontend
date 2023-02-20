@@ -168,4 +168,24 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       assert.strictEqual(rawLocationRanges[0].end.columnNumber, 4);
     });
   });
+
+  it('marks conditional breakpoint scripts as ignored', async () => {
+    const content = 'x === 5\n\n//# sourceURL=debugger://breakpoint';
+    const script = await backend.addScript(
+        target, {content, url: SDK.DebuggerModel.COND_BREAKPOINT_SOURCE_URL, hasSourceURL: true}, null);
+    const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
+    assertNotNullOrUndefined(uiSourceCode);
+
+    assert.isTrue(uiSourceCode.isUnconditionallyIgnoreListed());
+  });
+
+  it('marks logpoint scripts as ignored', async () => {
+    const content = 'console.log(x)\n\n//# sourceURL=debugger://logpoint';
+    const script = await backend.addScript(
+        target, {content, url: SDK.DebuggerModel.LOGPOINT_SOURCE_URL, hasSourceURL: true}, null);
+    const uiSourceCode = defaultScriptMapping.uiSourceCodeForScript(script);
+    assertNotNullOrUndefined(uiSourceCode);
+
+    assert.isTrue(uiSourceCode.isUnconditionallyIgnoreListed());
+  });
 });

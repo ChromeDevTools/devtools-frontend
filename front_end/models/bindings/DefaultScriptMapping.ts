@@ -128,6 +128,9 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     const url = DefaultScriptMapping.createV8ScriptURL(script);
 
     const uiSourceCode = this.#project.createUISourceCode(url, Common.ResourceType.resourceTypes.Script);
+    if (script.isBreakpointCondition) {
+      uiSourceCode.markAsUnconditionallyIgnoreListed();
+    }
     this.#uiSourceCodeToScript.set(uiSourceCode, script);
     this.#scriptToUISourceCode.set(script, uiSourceCode);
     this.#project.addUISourceCodeWithProvider(uiSourceCode, script, null, 'text/javascript');

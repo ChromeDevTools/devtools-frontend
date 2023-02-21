@@ -100,7 +100,7 @@ const UIStrings = {
   /**
    *@description Title of a setting under the Console category in Settings
    */
-  evaluateTriggersUserActivation: 'Evaluate triggers user activation',
+  evaluateTriggersUserActivation: 'Evaluation triggers user activation',
   /**
    *@description Title of a setting under the Console category that can be invoked through the Command Menu
    */

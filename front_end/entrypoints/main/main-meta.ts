@@ -218,7 +218,7 @@ const UIStrings = {
    *@description Tooltip for the colorFormat setting to inform of its deprecation
    */
   colorFormatSettingDisabled:
-      'This setting is deprecated because it is incompatible with modern color spaces. To reenable it, you can disable the according experiment.',
+      'This setting is deprecated because it is incompatible with modern color spaces. To re-enable it, disable the corresponding experiment.',
   /**
    * @description A command available in the command menu to perform searches, for example in the
    * elements panel, as user types, rather than only when they press Enter.

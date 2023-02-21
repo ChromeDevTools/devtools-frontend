@@ -28,7 +28,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
     UI.Widget.Widget) {
   private addCompletionsFromHistory: boolean;
-  private historyInternal: ConsoleHistoryManager;
+  private historyInternal: TextEditor.AutocompleteHistory.AutocompleteHistory;
   private initialText: string;
   private editor: TextEditor.TextEditor.TextEditor;
   private readonly eagerPreviewElement: HTMLDivElement;
@@ -50,7 +50,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   constructor() {
     super();
     this.addCompletionsFromHistory = true;
-    this.historyInternal = new ConsoleHistoryManager();
+    this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory();
 
     this.initialText = '';
     this.eagerPreviewElement = document.createElement('div');
@@ -187,7 +187,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
   }
 
-  history(): ConsoleHistoryManager {
+  history(): TextEditor.AutocompleteHistory.AutocompleteHistory {
     return this.historyInternal;
   }
 
@@ -386,79 +386,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private editorSetForTest(): void {
-  }
-}
-
-export class ConsoleHistoryManager {
-  private data: string[];
-  private historyOffset: number;
-  private uncommittedIsTop?: boolean;
-  constructor() {
-    this.data = [];
-
-    /**
-     * 1-based entry in the history stack.
-     */
-    this.historyOffset = 1;
-  }
-
-  historyData(): string[] {
-    return this.data;
-  }
-
-  setHistoryData(data: string[]): void {
-    this.data = data.slice();
-    this.historyOffset = 1;
-  }
-
-  /**
-   * Pushes a committed text into the history.
-   */
-  pushHistoryItem(text: string): void {
-    if (this.uncommittedIsTop) {
-      this.data.pop();
-      delete this.uncommittedIsTop;
-    }
-
-    this.historyOffset = 1;
-    if (text === this.currentHistoryItem()) {
-      return;
-    }
-    this.data.push(text);
-  }
-
-  /**
-   * Pushes the current (uncommitted) text into the history.
-   */
-  private pushCurrentText(currentText: string): void {
-    if (this.uncommittedIsTop) {
-      this.data.pop();
-    }  // Throw away obsolete uncommitted text.
-    this.uncommittedIsTop = true;
-    this.data.push(currentText);
-  }
-
-  previous(currentText: string): string|undefined {
-    if (this.historyOffset > this.data.length) {
-      return undefined;
-    }
-    if (this.historyOffset === 1) {
-      this.pushCurrentText(currentText);
-    }
-    ++this.historyOffset;
-    return this.currentHistoryItem();
-  }
-
-  next(): string|undefined {
-    if (this.historyOffset === 1) {
-      return undefined;
-    }
-    --this.historyOffset;
-    return this.currentHistoryItem();
-  }
-
-  private currentHistoryItem(): string|undefined {
-    return this.data[this.data.length - this.historyOffset];
   }
 }
 

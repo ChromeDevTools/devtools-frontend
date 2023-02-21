@@ -8,6 +8,7 @@ import("../visibility.gni")
 
 devtools_module("text_editor") {
   sources = [
+    "AutocompleteHistory.ts",
     "TextEditor.ts",
     "config.ts",
     "cursor_tooltip.ts",

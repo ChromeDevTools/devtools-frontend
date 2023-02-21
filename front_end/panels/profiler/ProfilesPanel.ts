@@ -28,6 +28,7 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -81,6 +82,23 @@ const UIStrings = {
    *@description Text in Profiles Panel of a profiler tool
    */
   profiles: 'Profiles',
+  /**
+   *@description Text in the JS Profiler panel to show warning to user that JS profiler will be deprecated.
+   */
+  deprecationWarnMsg:
+      'This panel will be deprecated in the upcoming version. Use the Performance panel to record JavaScript CPU profiles.',
+  /**
+   *@description Text of a button in the JS Profiler panel to show more information about deprecation.
+   */
+  learnMore: 'Learn more',
+  /**
+   *@description Text of a button in the JS Profiler panel to let user give feedback.
+   */
+  feedback: 'Feedback',
+  /**
+   *@description Text of a button in the JS Profiler panel to let user go to Performance panel.
+   */
+  goToPerformancePanel: 'Go to Performance Panel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfilesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -680,6 +698,7 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
     const registry = instance;
     super('js_profiler', [registry.cpuProfileType], 'profiler.js-toggle-recording');
     this.splitWidget().mainWidget()?.setMinimumSize(350, 0);
+    this.#showDeprecationInfobar();
   }
 
   static instance(opts: {
@@ -691,6 +710,44 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
     }
     return jsProfilerPanelInstance;
   }
+
+  #showDeprecationInfobar(): void {
+    function openRFC(): void {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+          'https://github.com/ChromeDevTools/rfcs/discussions/2' as Platform.DevToolsPath.UrlString);
+    }
+
+    async function openPerformancePanel(): Promise<void> {
+      await UI.InspectorView.InspectorView.instance().showPanel('timeline');
+    }
+
+    const infobar = new UI.Infobar.Infobar(
+        UI.Infobar.Type.Warning, /* text */ i18nString(UIStrings.deprecationWarnMsg), /* actions? */
+        [
+          {
+            text: i18nString(UIStrings.learnMore),
+            highlight: false,
+            delegate: openRFC,
+            dismiss: false,
+          },
+          {
+            text: i18nString(UIStrings.feedback),
+            highlight: false,
+            delegate: openRFC,
+            dismiss: false,
+          },
+          {
+            text: i18nString(UIStrings.goToPerformancePanel),
+            highlight: true,
+            delegate: openPerformancePanel,
+            dismiss: false,
+          },
+        ],
+        /* disableSetting? */ undefined);
+    infobar.setParentView(this);
+    this.splitWidget().mainWidget()?.element.prepend(infobar.element);
+  }
+
   wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().setFlavor(JSProfilerPanel, this);

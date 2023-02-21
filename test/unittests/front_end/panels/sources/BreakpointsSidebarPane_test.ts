@@ -12,6 +12,7 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {createContentProviderUISourceCode, setupMockedUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
@@ -547,6 +548,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
 
     // Add one breakpoint and collapse the tree.
     const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
+    assertNotNullOrUndefined(b1);
     {
       controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
       const data = await controller.getUpdatedBreakpointViewData();
@@ -557,6 +559,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
 
     // Add a new breakpoint and check if it's expanded as expected.
     const b2 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 3, ...DEFAULT_BREAKPOINT);
+    assertNotNullOrUndefined(b2);
     {
       const data = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(data.groups, 1);
@@ -580,6 +583,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
 
     // Add one breakpoint and collapse the tree.
     const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
+    assertNotNullOrUndefined(b1);
     {
       controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
       const data = await controller.getUpdatedBreakpointViewData();
@@ -592,6 +596,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
     const b2 = await breakpointManager.setBreakpoint(
         uiSourceCode, 0, 3, Bindings.BreakpointManager.EMPTY_BREAKPOINT_CONDITION, true, false,
         Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+    assertNotNullOrUndefined(b2);
     {
       const data = await controller.getUpdatedBreakpointViewData();
       assert.lengthOf(data.groups, 1);
@@ -636,6 +641,7 @@ describeWithRealConnection('BreakpointsSidebarController', () => {
         uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, ...DEFAULT_BREAKPOINT);
     const controller = Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance(
         {forceNew: false, breakpointManager, settings: Common.Settings.Settings.instance()});
+    assertNotNullOrUndefined(b1);
     controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
 
     // Double check that the group is collapsed.

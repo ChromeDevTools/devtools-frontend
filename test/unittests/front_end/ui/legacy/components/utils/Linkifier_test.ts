@@ -318,6 +318,7 @@ describeWithMockConnection('Linkifier', async () => {
          const breakpoint = await breakpointManager.setBreakpoint(
              uiSourceCode, lineNumber, columnNumber, 'x' as BindingsModule.BreakpointManager.UserCondition,
              /* enabled */ true, /* isLogpoint */ true, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+         assertNotNullOrUndefined(breakpoint);
 
          // Create a link that matches exactly the breakpoint location.
          const anchor = linkifier.maybeLinkifyScriptLocation(

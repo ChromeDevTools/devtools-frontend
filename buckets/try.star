@@ -127,6 +127,22 @@ builder_coverage(
 )
 
 builder_coverage(
+    covered_oss = ["linux", "mac"],
+    builder_factory = try_builder,
+    builder_name_pattern = "devtools_frontend_parallel_%s_rel",
+    recipe_name = "devtools/devtools-frontend",
+    execution_timeout = default_timeout,
+)
+
+builder_coverage(
+    covered_oss = ["win64"],
+    builder_factory = try_builder,
+    builder_name_pattern = "devtools_frontend_parallel_%s_rel",
+    recipe_name = "devtools/devtools-frontend",
+    execution_timeout = default_timeout + 15 * time.minute,
+)
+
+builder_coverage(
     covered_oss = ["linux"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_%s_dbg",
@@ -141,6 +157,18 @@ builder_coverage(
     builder_name_pattern = "e2e_stressor_%s",
     recipe_name = "devtools/dtf-e2e-stress",
     execution_timeout = default_timeout,
+)
+
+builder_coverage(
+    covered_oss = ["linux", "win64", "mac"],
+    builder_factory = try_builder,
+    builder_name_pattern = "e2e_stressor_parallel_%s",
+    recipe_name = "devtools/devtools-frontend",
+    execution_timeout = default_timeout,
+    properties = {
+        "builder_config": "Debug",
+        "devtools_skip_typecheck": True,
+    },
 )
 
 luci.list_view(
@@ -165,6 +193,9 @@ cq_main = struct(
     experiment_builders = [
         # Quarantine a builder here
         # This will make them experiment 100%
+        "devtools_frontend_parallel_linux_rel",
+        "devtools_frontend_parallel_mac_rel",
+        "devtools_frontend_parallel_win64_rel",
     ],
     includable_only_builders = [
         "devtools_frontend_mac_rel",

@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 
 import {type EventPayload} from './TracingManager.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 
 type IgnoreListArgs = {
   [key: string]: string|number|ObjectSnapshot,
@@ -466,10 +467,14 @@ export class TracingModel {
   }
 }
 
+// If this enum looks half complete, that is because we are currently removing
+// it in favour of the enum in the new trace engine
+// (models/trace/types/TraceEvents.ts). crbug.com/1417587 is tracking this
+// work.
+//
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Phase {
-  Begin = 'B',
   End = 'E',
   Complete = 'X',
   Instant = 'I',
@@ -492,7 +497,7 @@ export enum Phase {
 }
 
 export const eventPhasesOfInterestForTraceBounds: Set<string> = new Set([
-  Phase.Begin,
+  TraceEngine.Types.TraceEvents.Phase.BEGIN,
   Phase.End,
   Phase.Complete,
   Phase.Instant,
@@ -857,39 +862,45 @@ export class Thread extends NamedObject {
     this.#lastTopLevelEvent = null;
   }
 
+  /**
+   * Whilst we are in the middle of migrating to the new Phase enum, we need to
+   * be able to compare events with the legacy phase to the new enum. This method
+   * does this by casting the event phase to a string, ensuring we can compare it
+   * against either enum. Once the migration is complete (crbug.com/1417587), we
+   * will be able to use === to compare with no TS errors and this method can be
+   * removed.
+   **/
+  #eventMatchesPhase(event: Event, phase: Phase|TraceEngine.Types.TraceEvents.Phase): boolean {
+    return (event.phase as string) === phase;
+  }
+
   tracingComplete(): void {
     this.#asyncEventsInternal.sort(Event.compareStartTime);
     this.#eventsInternal.sort(Event.compareStartTime);
-    const phases = Phase;
     const stack: Event[] = [];
     const toDelete = new Set<number>();
     for (let i = 0; i < this.#eventsInternal.length; ++i) {
       const e = this.#eventsInternal[i];
       e.ordinal = i;
-      switch (e.phase) {
-        case phases.End: {
-          toDelete.add(i);  // Mark for removal.
-          // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
-          if (!stack.length) {
-            continue;
-          }
-          const top = stack.pop();
-          if (!top) {
-            continue;
-          }
-          if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
-            console.error(
-                'B/E events mismatch at ' + top.startTime + ' (' + top.name + ') vs. ' + e.startTime + ' (' + e.name +
-                ')');
-          } else {
-            top.complete(e);
-          }
-          break;
+      if (this.#eventMatchesPhase(e, Phase.End)) {
+        toDelete.add(i);  // Mark for removal.
+        // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
+        if (!stack.length) {
+          continue;
         }
-        case phases.Begin: {
-          stack.push(e);
-          break;
+        const top = stack.pop();
+        if (!top) {
+          continue;
         }
+        if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
+          console.error(
+              'B/E events mismatch at ' + top.startTime + ' (' + top.name + ') vs. ' + e.startTime + ' (' + e.name +
+              ')');
+        } else {
+          top.complete(e);
+        }
+      } else if (this.#eventMatchesPhase(e, TraceEngine.Types.TraceEvents.Phase.BEGIN)) {
+        stack.push(e);
       }
     }
 
@@ -900,7 +911,7 @@ export class Thread extends NamedObject {
       if (event) {
         // Masquerade the event as Instant, so it's rendered to the user.
         // The ideal fix is resolving crbug.com/1021571, but handling that without a perfetto migration appears prohibitive
-        event.phase = phases.Instant;
+        event.phase = Phase.Instant;
       }
     }
     this.#eventsInternal = this.#eventsInternal.filter((_, idx) => !toDelete.has(idx));

@@ -1113,7 +1113,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     model.setFilters([TimelineUIUtils.visibleEventsFilter()]);
   }
 
-  private setModel(model: PerformanceModel|null): void {
+  private setModel(
+      model: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null = null): void {
     if (this.performanceModel) {
       this.performanceModel.removeEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
     }
@@ -1124,7 +1125,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     } else {
       this.searchableViewInternal.hideWidget();
     }
-    this.flameChart.setModel(model);
+    this.flameChart.setModel(model, newTraceEngineData);
 
     this.updateOverviewControls();
     this.overviewPane.reset();
@@ -1279,11 +1280,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     delete this.loader;
     this.setState(State.Idle);
 
-    if (this.statusPane) {
-      this.statusPane.remove();
-    }
-    this.statusPane = null;
-
     if (!tracingModel) {
       this.clear();
       return;
@@ -1293,26 +1289,48 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.performanceModel = new PerformanceModel();
     }
 
-    await this.performanceModel.setTracingModel(tracingModel);
-    this.setModel(this.performanceModel);
+    try {
+      // Run the new engine in parallel with the parsing done in the performanceModel
+      await Promise.all(
+          [this.performanceModel.setTracingModel(tracingModel), this.executeNewTraceEngine(tracingModel)]);
+      const traceParsedData = this.#traceEngineModel.traceParsedData();
+      this.setModel(this.performanceModel, traceParsedData);
 
-    if (!this.performanceModel.hasEventListeners(Events.NamesResolved)) {
-      this.performanceModel.addEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
+      if (this.statusPane) {
+        this.statusPane.remove();
+      }
+      this.statusPane = null;
+
+      if (!this.performanceModel.hasEventListeners(Events.NamesResolved)) {
+        this.performanceModel.addEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
+      }
+
+      this.historyManager.addRecording(this.performanceModel);
+
+      if (this.startCoverage.get()) {
+        void UI.ViewManager.ViewManager.instance()
+            .showView('coverage')
+            .then(() => this.getCoverageViewWidget())
+            .then(widget => widget.processBacklog())
+            .then(() => this.updateOverviewControls());
+      }
+    } catch (error) {
+      this.recordingFailed(error.message);
     }
+  }
 
-    this.historyManager.addRecording(this.performanceModel);
-
-    /**
-     * Call into the new Trace Engine to parse the data. We don't currently do
-     * anything with this data, but we are calling it here to ensure that all the
-     * pieces are connected together and we are able to parse data in the new engine
-     * from OPP.
-     *
-     * The trace engine model runs the parsing in a worker, so this should not
-     * impact the main thread, as we `void` it to ensure we don't want for the
-     * parsing to complete.
-     **/
-    void this.#traceEngineModel.parse(
+  /**
+   * Call into the new Trace Engine to parse the data. We don't currently do
+   * anything with this data, but we are calling it here to ensure that all the
+   * pieces are connected together and we are able to parse data in the new engine
+   * from OPP.
+   *
+   * The trace engine model runs the parsing in a worker, so this should not
+   * impact the main thread, as we `void` it to ensure we don't want for the
+   * parsing to complete.
+   **/
+  private async executeNewTraceEngine(tracingModel: SDK.TracingModel.TracingModel): Promise<void> {
+    return this.#traceEngineModel.parse(
         // OPP's data layer uses `EventPayload` as the type to represent raw JSON from the trace.
         // When we pass this into the new data engine, we need to tell TS to use the new TraceEventData type.
         tracingModel.allRawEvents() as unknown as TraceEngine.Types.TraceEvents.TraceEventData[],
@@ -1326,14 +1344,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // `false` otherwise.
         true,
     );
-
-    if (this.startCoverage.get()) {
-      void UI.ViewManager.ViewManager.instance()
-          .showView('coverage')
-          .then(() => this.getCoverageViewWidget())
-          .then(widget => widget.processBacklog())
-          .then(() => this.updateOverviewControls());
-    }
   }
 
   loadingCompleteForTest(): void {

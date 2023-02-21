@@ -133,7 +133,11 @@ export class Model extends EventTarget {
     });
   }
 
-  traceParsedData(index: number): Handlers.Types.TraceParseData|null {
+  /**
+   * Returns the parsed trace data indexed by the order in which it was stored.
+   * If no index is given, the last stored parsed data is returned.
+   */
+  traceParsedData(index: number = this.#traces.length - 1): Handlers.Types.TraceParseData|null {
     if (!this.#traces[index]) {
       return null;
     }

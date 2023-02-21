@@ -14,6 +14,9 @@ export const secondsToMilliseconds = (value: Types.Timing.Seconds): Types.Timing
 export const secondsToMicroseconds = (value: Types.Timing.Seconds): Types.Timing.MicroSeconds =>
     millisecondsToMicroseconds(secondsToMilliseconds(value));
 
+export const microSecondsToMilliseconds = (value: Types.Timing.MicroSeconds): Types.Timing.MilliSeconds =>
+    Types.Timing.MilliSeconds(value / 1000);
+
 export function detectBestTimeUnit(timeInMicroseconds: Types.Timing.MicroSeconds): Types.Timing.TimeUnit {
   if (timeInMicroseconds < 1000) {
     return Types.Timing.TimeUnit.MICROSECONDS;

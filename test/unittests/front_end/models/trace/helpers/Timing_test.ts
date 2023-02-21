@@ -33,6 +33,12 @@ describe('Timing helpers', () => {
       const expected = TraceModel.Types.Timing.MicroSeconds(1_000_000);
       assert.strictEqual(TraceModel.Helpers.Timing.secondsToMicroseconds(input), expected);
     });
+
+    it('can convert microSeconds milliseconds', () => {
+      const input = TraceModel.Types.Timing.MicroSeconds(1_000_000);
+      const expected = TraceModel.Types.Timing.MilliSeconds(1_000);
+      assert.strictEqual(TraceModel.Helpers.Timing.microSecondsToMilliseconds(input), expected);
+    });
   });
   describe('detectBestTimeUnit', () => {
     it('detects microseconds', () => {

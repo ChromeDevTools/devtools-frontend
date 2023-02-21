@@ -285,6 +285,7 @@ function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
       widget.element.addEventListener('mousedown', event => event.consume());
       return {
         dom,
+        resize: false,
         offset: {x: -8, y: 0},
         mount: (): void => {
           widget.focus();

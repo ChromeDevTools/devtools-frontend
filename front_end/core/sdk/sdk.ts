@@ -78,6 +78,7 @@ import * as SourceMapManager from './SourceMapManager.js';
 import * as StorageKeyManager from './StorageKeyManager.js';
 import * as Target from './Target.js';
 import * as TargetManager from './TargetManager.js';
+import * as TraceSDKServices from './TraceSDKServices.js';
 import * as TracingManager from './TracingManager.js';
 import * as TracingModel from './TracingModel.js';
 import * as WebAuthnModel from './WebAuthnModel.js';
@@ -151,6 +152,7 @@ export {
   StorageKeyManager,
   Target,
   TargetManager,
+  TraceSDKServices,
   TracingManager,
   TracingModel,
   WebAuthnModel,

@@ -38,6 +38,7 @@ ts_library("sdk") {
     "SourceMap_test.ts",
     "StorageKeyManager_test.ts",
     "Target_test.ts",
+    "TraceSDKServices_test.ts",
     "TracingModel_test.ts",
   ]
 
@@ -46,6 +47,7 @@ ts_library("sdk") {
     "../../../../../front_end/core/protocol_client:bundle",
     "../../../../../front_end/core/sdk:bundle",
     "../../../../../front_end/generated:protocol",
+    "../../../../../front_end/models/trace:bundle",
     "../../helpers",
   ]
 }

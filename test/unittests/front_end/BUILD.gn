@@ -34,7 +34,6 @@ group("front_end") {
     "models/trace",
     "models/trace/handlers",
     "models/trace/helpers",
-    "models/trace/sdk_services",
     "models/workspace",
     "models/workspace_diff",
     "panels/animation",

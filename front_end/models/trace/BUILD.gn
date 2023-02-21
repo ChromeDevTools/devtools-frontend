@@ -14,7 +14,6 @@ devtools_module("trace") {
     "../../core/platform:bundle",
     "handlers:bundle",
     "helpers:bundle",
-    "sdk_services:bundle",
     "types:bundle",
     "worker:worker_entrypoint",
   ]
@@ -27,8 +26,8 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/helpers/*",
-    "../../../test/unittests/front_end/models/trace/*",
+    "../../../test/unittests/front_end/*",
+    "../../core/sdk/*",
     "../../panels/timeline/*",
   ]
 

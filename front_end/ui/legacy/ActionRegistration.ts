@@ -151,6 +151,11 @@ export function registerActionExtension(registration: ActionRegistration): void 
   registeredActionExtensions.push(new Action(registration));
 }
 
+export function reset(): void {
+  actionIdSet.clear();
+  registeredActionExtensions.length = 0;
+}
+
 export function getRegisteredActionExtensions(): Array<Action> {
   return registeredActionExtensions
       .filter(

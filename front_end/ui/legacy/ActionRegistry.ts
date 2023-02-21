@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getRegisteredActionExtensions, type Action} from './ActionRegistration.js';
+import {getRegisteredActionExtensions, type Action, reset as resetActionRegistrations} from './ActionRegistration.js';
 import {Context} from './Context.js';
 
 let actionRegistryInstance: ActionRegistry|undefined;
@@ -27,6 +27,11 @@ export class ActionRegistry {
 
   static removeInstance(): void {
     actionRegistryInstance = undefined;
+  }
+
+  static reset(): void {
+    ActionRegistry.removeInstance();
+    resetActionRegistrations();
   }
 
   private registerActions(): void {

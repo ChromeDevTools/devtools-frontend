@@ -49,7 +49,7 @@ describeWithEnvironment('Action registration', () => {
 
   after(async () => {
     await deinitializeGlobalVars();
-    UI.ActionRegistry.ActionRegistry.removeInstance();
+    UI.ActionRegistry.ActionRegistry.reset();
     UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
     UI.Context.Context.instance().setFlavor(MockContextType, null);
   });

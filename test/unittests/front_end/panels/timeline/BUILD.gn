@@ -8,6 +8,7 @@ ts_library("timeline") {
   testonly = true
   sources = [
     "SourceMaps_test.ts",
+    "TimelineHistoryManager_test.ts",
     "TimelineUIUtils_test.ts",
   ]
 

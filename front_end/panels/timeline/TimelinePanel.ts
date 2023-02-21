@@ -728,16 +728,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async showHistory(): Promise<void> {
-    const model = await this.historyManager.showHistoryDropDown();
-    if (model && model !== this.performanceModel) {
-      this.setModel(model);
+    const recordingData = await this.historyManager.showHistoryDropDown();
+    if (recordingData && recordingData.legacyModel !== this.performanceModel) {
+      this.setModel(recordingData.legacyModel, recordingData.traceParseData);
     }
   }
 
   navigateHistory(direction: number): boolean {
-    const model = this.historyManager.navigate(direction);
-    if (model && model !== this.performanceModel) {
-      this.setModel(model);
+    const recordingData = this.historyManager.navigate(direction);
+    if (recordingData && recordingData.legacyModel !== this.performanceModel) {
+      this.setModel(recordingData.legacyModel, recordingData.traceParseData);
     }
     return true;
   }
@@ -1305,7 +1305,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.performanceModel.addEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
       }
 
-      this.historyManager.addRecording(this.performanceModel);
+      this.historyManager.addRecording(this.performanceModel, traceParsedData);
 
       if (this.startCoverage.get()) {
         void UI.ViewManager.ViewManager.instance()

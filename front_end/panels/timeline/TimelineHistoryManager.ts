@@ -9,6 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 
+import type * as TraceEngine from '../../models/trace/trace.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {
   TimelineEventOverviewCPUActivity,
@@ -61,8 +62,14 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineHistoryManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export type RecordingData = {
+  legacyModel: PerformanceModel,
+  traceParseData: TraceEngine.Handlers.Types.TraceParseData|null,
+};
+
 export class TimelineHistoryManager {
-  private recordings: PerformanceModel[];
+  private recordings: RecordingData[];
   private readonly action: UI.ActionRegistration.Action;
   private readonly nextNumberByDomain: Map<string, number>;
   private readonly buttonInternal: ToolbarButton;
@@ -93,9 +100,10 @@ export class TimelineHistoryManager {
     this.lastActiveModel = null;
   }
 
-  addRecording(performanceModel: PerformanceModel): void {
+  addRecording(performanceModel: PerformanceModel, traceParseData: TraceEngine.Handlers.Types.TraceParseData|null):
+      void {
     this.lastActiveModel = performanceModel;
-    this.recordings.unshift(performanceModel);
+    this.recordings.unshift({legacyModel: performanceModel, traceParseData});
     this.buildPreview(performanceModel);
     const modelTitle = this.title(performanceModel);
     this.buttonInternal.setText(modelTitle);
@@ -106,9 +114,10 @@ export class TimelineHistoryManager {
     if (this.recordings.length <= maxRecordings) {
       return;
     }
-    const lruModel = this.recordings.reduce((a, b) => lastUsedTime(a) < lastUsedTime(b) ? a : b);
-    this.recordings.splice(this.recordings.indexOf(lruModel), 1);
-    lruModel.dispose();
+    const modelUsedMoreTimeAgo =
+        this.recordings.reduce((a, b) => lastUsedTime(a.legacyModel) < lastUsedTime(b.legacyModel) ? a : b);
+    this.recordings.splice(this.recordings.indexOf(modelUsedMoreTimeAgo), 1);
+    modelUsedMoreTimeAgo.legacyModel.dispose();
 
     function lastUsedTime(model: PerformanceModel): number {
       const data = TimelineHistoryManager.dataForModel(model);
@@ -129,7 +138,7 @@ export class TimelineHistoryManager {
   }
 
   clear(): void {
-    this.recordings.forEach(model => model.dispose());
+    this.recordings.forEach(model => model.legacyModel.dispose());
     this.recordings = [];
     this.lastActiveModel = null;
     this.updateState();
@@ -137,42 +146,43 @@ export class TimelineHistoryManager {
     this.nextNumberByDomain.clear();
   }
 
-  async showHistoryDropDown(): Promise<PerformanceModel|null> {
+  async showHistoryDropDown(): Promise<RecordingData|null> {
     if (this.recordings.length < 2 || !this.enabled) {
       return null;
     }
 
     // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
-    const model =
-        await DropDown.show(this.recordings, (this.lastActiveModel as PerformanceModel), this.buttonInternal.element);
-    if (!model) {
+    const legacyModel = await DropDown.show(
+        this.recordings.map(recording => recording.legacyModel), (this.lastActiveModel as PerformanceModel),
+        this.buttonInternal.element);
+    if (!legacyModel) {
       return null;
     }
-    const index = this.recordings.indexOf(model);
+    const index = this.recordings.findIndex(recording => recording.legacyModel === legacyModel);
     if (index < 0) {
       console.assert(false, 'selected recording not found');
       return null;
     }
-    this.setCurrentModel(model);
-    return model;
+    this.setCurrentModel(legacyModel);
+    return this.recordings[index];
   }
 
   cancelIfShowing(): void {
     DropDown.cancelIfShowing();
   }
 
-  navigate(direction: number): PerformanceModel|null {
+  navigate(direction: number): RecordingData|null {
     if (!this.enabled || !this.lastActiveModel) {
       return null;
     }
-    const index = this.recordings.indexOf(this.lastActiveModel);
+    const index = this.recordings.findIndex(recording => recording.legacyModel === this.lastActiveModel);
     if (index < 0) {
       return null;
     }
     const newIndex = Platform.NumberUtilities.clamp(index + direction, 0, this.recordings.length - 1);
-    const model = this.recordings[newIndex];
-    this.setCurrentModel(model);
-    return model;
+    const legacyModel = this.recordings[newIndex].legacyModel;
+    this.setCurrentModel(legacyModel);
+    return this.recordings[newIndex];
   }
 
   private setCurrentModel(model: PerformanceModel): void {

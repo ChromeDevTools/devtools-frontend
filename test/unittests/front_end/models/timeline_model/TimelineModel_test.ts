@@ -10,11 +10,11 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {loadTraceEventsLegacyEventPayload} from '../../helpers/TraceHelpers.js';
 import {
   DevToolsTimelineCategory,
   FakeStorage,
   makeFakeSDKEventFromPayload,
+  traceModelFromTraceFile,
 } from '../../helpers/TimelineHelpers.js';
 
 // Various events listing processes and threads used by all the tests.
@@ -211,20 +211,6 @@ describeWithEnvironment('TimelineModel', () => {
     const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
     const timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
     tracingModel.addEvents((preamble as unknown as SDK.TracingManager.EventPayload[]).concat(events));
-    tracingModel.tracingComplete();
-    timelineModel.setEvents(tracingModel);
-    return {
-      tracingModel,
-      timelineModel,
-    };
-  }
-
-  async function traceModelFromTraceFile(file: string): Promise<
-      {tracingModel: SDK.TracingModel.TracingModel, timelineModel: TimelineModel.TimelineModel.TimelineModelImpl}> {
-    const events = await loadTraceEventsLegacyEventPayload(file);
-    const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
-    const timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
-    tracingModel.addEvents(events);
     tracingModel.tracingComplete();
     timelineModel.setEvents(tracingModel);
     return {

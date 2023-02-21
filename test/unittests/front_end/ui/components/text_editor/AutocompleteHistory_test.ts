@@ -2,19 +2,36 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../../../../../front_end/core/common/common.js';
 import * as TextEditor from '../../../../../../front_end/ui/components/text_editor/text_editor.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+
+import {createFakeSetting, describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
 describeWithEnvironment('AutocompleteHistory', () => {
+  let setting: Common.Settings.Setting<string[]>;
   let history: TextEditor.AutocompleteHistory.AutocompleteHistory;
 
   beforeEach(() => {
-    history = new TextEditor.AutocompleteHistory.AutocompleteHistory();
+    setting = createFakeSetting('history', []);
+    history = new TextEditor.AutocompleteHistory.AutocompleteHistory(setting);
   });
 
   describe('pushHistoryItem', () => {
+    it('stores the commited text in the setting', () => {
+      history.pushHistoryItem('sample input');
+
+      assert.deepEqual(setting.get(), ['sample input']);
+    });
+
+    it('ignores sub-sequent identical inputs', () => {
+      history.pushHistoryItem('entry x');
+      history.pushHistoryItem('entry x');
+
+      assert.deepEqual(setting.get(), ['entry x']);
+    });
+
     it('resets the history navigation back to the beginning', () => {
       history.pushHistoryItem('entry 1');
       history.pushHistoryItem('entry 2');
@@ -75,5 +92,12 @@ describeWithEnvironment('AutocompleteHistory', () => {
     assert.strictEqual(history.previous('incomplete user inp'), 'entry 2');
 
     assert.strictEqual(history.next(), 'incomplete user inp');
+  });
+
+  it('does not write the temporary user input to the setting', () => {
+    history.pushHistoryItem('entry 1');
+    assert.strictEqual(history.previous('incomplete user inp'), 'entry 1');
+
+    assert.deepEqual(setting.get(), ['entry 1']);
   });
 });

@@ -50,7 +50,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   constructor() {
     super();
     this.addCompletionsFromHistory = true;
-    this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory();
+    this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory(
+        Common.Settings.Settings.instance().createLocalSetting('consoleHistory', []));
 
     this.initialText = '';
     this.eagerPreviewElement = document.createElement('div');

@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 
@@ -1355,6 +1356,71 @@ describeWithEnvironment('TimelineModel', () => {
         'durationTimeTotal',
         'durationTime1',
         'durationTime2',
+      ]);
+    });
+  });
+
+  describe('style invalidations', () => {
+    /**
+     * This helper function is very confusing without context. It is designed
+     * to work on a trace generated from
+     * https://github.com/ChromeDevTools/performance-stories/tree/main/style-invalidations.
+     * Those examples are triggered by the user clicking on a button to initiate
+     * certain invalidations that we want to test. However, the act of clicking on
+     * the button also triggers an invalidation which we do not necessarily want to
+     * include in our results. So, instead we look for the invalidations triggered
+     * by the test function that was invoked when we clicked the button. Therefore,
+     * this function looks through the trace for all UpdateLayoutTree events, and
+     * looks for one where the function in the stack trace matches what's expected.
+     * We then return all invalidations for that main event.
+     **/
+    async function invalidationsFromTestFunction(
+        timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
+        testFunctionName: string): Promise<TimelineModel.TimelineModel.InvalidationTrackingEvent[]> {
+      let mainTrack: TimelineModel.TimelineModel.Track|null = null;
+      for (const track of timelineModel.tracks()) {
+        if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame) {
+          mainTrack = track;
+        }
+      }
+      assertNotNullOrUndefined(mainTrack);
+      const invalidationEventForClassNames = mainTrack.events.find(event => {
+        return event.name === TimelineModel.TimelineModel.RecordType.UpdateLayoutTree &&
+            event.args.beginData?.stackTrace?.[0].functionName === testFunctionName;
+      });
+      assertNotNullOrUndefined(invalidationEventForClassNames);
+      const invalidationsForEvent =
+          TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(invalidationEventForClassNames);
+      assertNotNullOrUndefined(invalidationsForEvent);
+      return invalidationsForEvent;
+    }
+
+    function invalidationToBasicObject(invalidation: TimelineModel.TimelineModel.InvalidationTrackingEvent) {
+      return {
+        reason: invalidation.cause.reason,
+        nodeName: invalidation.nodeName,
+      };
+    }
+
+    it('detects the correct invalidations for a class name being changed', async () => {
+      const {timelineModel} = await traceModelFromTraceFile('invalidate-style-class-name-change.json.gz');
+      const invalidations = await invalidationsFromTestFunction(timelineModel, 'testFuncs.changeClassNameAndDisplay');
+      // In this trace there are three nodes impacted by the class name change:
+      // the two test divs, and the button, which gains the :active pseudo
+      // class
+      assert.deepEqual(invalidations.map(invalidationToBasicObject), [
+        {
+          reason: 'PseudoClass',
+          nodeName: 'BUTTON id=\'changeClassNameAndDisplay\'',
+        },
+        {
+          reason: 'Element has pending invalidation list',
+          nodeName: 'DIV id=\'testElementOne\' class=\'red\'',
+        },
+        {
+          reason: 'Element has pending invalidation list',
+          nodeName: 'DIV id=\'testElementTwo\' class=\'red\'',
+        },
       ]);
     });
   });

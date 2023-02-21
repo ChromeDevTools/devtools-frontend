@@ -27,6 +27,7 @@ describeWithMockConnection('ExecutionContextSelector', () => {
     const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
     const mainFrameWithoutTabTarget = createTarget({type: SDK.Target.Type.Frame});
     const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
+    const prerenderTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget, subtype: 'prerender'});
 
     const contextSetFlavor = sinon.spy(UI.Context.Context.instance(), 'setFlavor');
 
@@ -62,5 +63,9 @@ describeWithMockConnection('ExecutionContextSelector', () => {
     contextSetFlavor.resetHistory();
     sentExecutionContextCreated(mainFrameWithoutTabTarget);
     assert.isTrue(contextSetFlavor.called);
+
+    contextSetFlavor.resetHistory();
+    sentExecutionContextCreated(prerenderTarget);
+    assert.isFalse(contextSetFlavor.called);
   });
 });

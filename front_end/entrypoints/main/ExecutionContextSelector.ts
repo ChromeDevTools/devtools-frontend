@@ -100,6 +100,9 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
   }
 
   #shouldSwitchToContext(executionContext: SDK.RuntimeModel.ExecutionContext): boolean {
+    if (executionContext.target().targetInfo()?.subtype) {
+      return false;
+    }
     if (this.#lastSelectedContextId && this.#lastSelectedContextId === this.#contextPersistentId(executionContext)) {
       return true;
     }

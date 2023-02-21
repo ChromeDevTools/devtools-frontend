@@ -39,6 +39,8 @@ export class InplaceEditor<T> {
     ARIAUtils.markAsTextBox(element);
     editingContext.oldRole = oldRole;
 
+    // Using element.getAttribute('tabIndex') instead of element.tabIndex so
+    // that we do not get a default value if the tabIndex attribute is not set.
     const oldTabIndex = element.getAttribute('tabIndex');
     if (typeof oldTabIndex !== 'number' || oldTabIndex < 0) {
       element.tabIndex = 0;

@@ -23,6 +23,7 @@
     "auto-debug-interactionstest": "npm run build && npm run debug-interactionstest --",
     "auto-debug-unittest": "DEBUG_TEST=1 npm run auto-unittest --",
     "auto-e2etest": "npm run build && npm run e2etest --",
+    "auto-e2etest-parallel": "npm run build && npm run e2etest -- --jobs=8",
     "auto-interactionstest": "npm run build && npm run interactionstest --",
     "auto-unittest": "vpython scripts/test/run_auto_unittests.py --no-text-coverage",
     "auto-unittest-coverage": "vpython scripts/test/run_auto_unittests.py --no-text-coverage --coverage",

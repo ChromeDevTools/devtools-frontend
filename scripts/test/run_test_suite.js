@@ -217,6 +217,9 @@ function executeTestSuite({
       log(`extra mocha flag: --${mochaKey}=${mochaValue}`);
     }
   }
+  if (jobs > 1) {
+    argumentsForNode.push(`--jobs=${jobs}`);
+  }
   const result = childProcess.spawnSync(nodePath(), argumentsForNode, {encoding: 'utf-8', stdio: 'inherit', cwd});
 
   if (result.error) {

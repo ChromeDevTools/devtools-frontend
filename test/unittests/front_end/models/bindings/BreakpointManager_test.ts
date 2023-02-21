@@ -205,6 +205,28 @@ describeWithMockConnection('BreakpointManager', () => {
       assert.isTrue(breakpoint.getIsRemoved());
       assert.isTrue(removedSpy.calledWith(true));
     });
+
+    it('are only set if the uiSourceCode is still valid (not removed)', async () => {
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assertNotNullOrUndefined(debuggerModel);
+
+      // Add a script.
+      const script = await backend.addScript(target, scriptDescription, null);
+      const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
+      assertNotNullOrUndefined(uiSourceCode);
+
+      // Remove the project (and thus the uiSourceCode).
+      Workspace.Workspace.WorkspaceImpl.instance().removeProject(uiSourceCode.project());
+
+      // Set the breakpoint.
+      const breakpoint =
+          await breakpointManager.setBreakpoint(uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, ...DEFAULT_BREAKPOINT);
+
+      // We should not expect any breakpoints to be set.
+      assert.isUndefined(breakpoint);
+      const breakLocations = breakpointManager.allBreakpointLocations();
+      assert.lengthOf(breakLocations, 0);
+    });
   });
 
   describe('Breakpoint#backendCondition()', () => {

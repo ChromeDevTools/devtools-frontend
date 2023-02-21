@@ -264,6 +264,11 @@ class ModelInfo {
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     console.assert(Boolean(cssModel));
     this.#cssModel = (cssModel as SDK.CSSModel.CSSModel);
+    for (const frame of resourceTreeModel.frames()) {
+      for (const resource of frame.getResourcesMap().values()) {
+        this.addResource(resource);
+      }
+    }
     this.#eventListeners = [
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this.resourceAdded, this),
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameWillNavigate, this.frameWillNavigate, this),
@@ -318,7 +323,10 @@ class ModelInfo {
   }
 
   private resourceAdded(event: Common.EventTarget.EventTargetEvent<SDK.Resource.Resource>): void {
-    const resource = event.data;
+    this.addResource(event.data);
+  }
+
+  private addResource(resource: SDK.Resource.Resource): void {
     if (!this.acceptsResource(resource)) {
       return;
     }

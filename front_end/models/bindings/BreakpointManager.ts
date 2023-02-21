@@ -333,7 +333,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     for (const compatibleUiSourceCode of uiSourceCodesToProcess) {
       const uiLocation = new Workspace.UISourceCode.UILocation(compatibleUiSourceCode, lineNumber, columnNumber);
       const normalizedLocation = await this.debuggerWorkspaceBinding.normalizeUILocation(uiLocation);
-      const breakpointLocation = BreakpointManager.breakpointLocationFromUiLocation(uiLocation);
+      const breakpointLocation = BreakpointManager.breakpointLocationFromUiLocation(normalizedLocation);
 
       const breakpoint = this.innerSetBreakpoint(
           normalizedLocation.uiSourceCode, breakpointLocation.lineNumber, breakpointLocation.columnNumber, condition,

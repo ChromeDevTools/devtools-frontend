@@ -1,5 +1,8 @@
-# 'Form' field without valid 'aria-labelledby' attribute or associated 'label'
+# An aria-labelledby attribute doesn't match any element id
 
-A `form` field has neither a valid `aria-labelledby` attribute nor an associated `label`. This might prevent the browser from autofilling the `form`.
+An `aria-labelledby` attribute doesn't match any element `id`. This might prevent
+the browser from correctly autofilling the form and accessibility tools from
+working correctly.
 
-To improve this, provide a `label` describing the purpose of the `form` field.
+To fix this issue, make sure that `aria-labelledby` is a space-separated list of
+element `id`s.

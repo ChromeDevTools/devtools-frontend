@@ -331,6 +331,11 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.ColorPickerOpenedFrom, type, ColorPickerOpenedFrom.MaxValue);
   }
+
+  cssPropertyDocumentation(type: CSSPropertyDocumentation): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.CSSPropertyDocumentation, type, CSSPropertyDocumentation.MaxValue);
+  }
 }
 
 /**
@@ -763,6 +768,13 @@ export const enum ColorPickerOpenedFrom {
   SourcesPanel = 0,
   StylesPane = 1,
   MaxValue = 2,
+}
+
+export const enum CSSPropertyDocumentation {
+  Shown = 0,
+  ToggledOn = 1,
+  ToggledOff = 2,
+  MaxValue = 3,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

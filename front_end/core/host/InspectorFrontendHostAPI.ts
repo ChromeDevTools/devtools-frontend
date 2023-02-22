@@ -386,4 +386,5 @@ export enum EnumeratedHistogram {
   LighthouseModeRun = 'DevTools.LighthouseModeRun',
   ColorConvertedFrom = 'DevTools.ColorConvertedFrom',
   ColorPickerOpenedFrom = 'DevTools.ColorPickerOpenedFrom',
+  CSSPropertyDocumentation = 'DevTools.CSSPropertyDocumentation',
 }

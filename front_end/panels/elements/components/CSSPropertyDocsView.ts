@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import CSSPropertyDocsViewStyles from './cssPropertyDocsView.css.js';
@@ -17,6 +19,10 @@ const UIStrings = {
    *@description Prefix for the syntax section of CSS property documentation.
    */
   syntax: 'Syntax',
+  /**
+   *@description Text for a checkbox to turn off the CSS property documentation.
+   */
+  dontShow: 'Don\'t show',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSPropertyDocsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -41,8 +47,13 @@ export class CSSPropertyDocsView extends HTMLElement {
   constructor(cssProperty: CSSProperty) {
     super();
     this.#cssProperty = cssProperty;
-    this.#shadow.adoptedStyleSheets = [CSSPropertyDocsViewStyles];
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, CSSPropertyDocsViewStyles];
     this.#render();
+  }
+
+  #dontShowChanged(e: Event): void {
+    const showDocumentation = !(e.target as HTMLInputElement).checked;
+    Common.Settings.Settings.instance().moduleSetting('showCSSPropertyDocumentationOnHover').set(showDocumentation);
   }
 
   #render(): void {
@@ -68,7 +79,7 @@ export class CSSPropertyDocsView extends HTMLElement {
           </div>
         ` : LitHtml.nothing}
         ${link ? html`
-          <div class="docs-popup-section">
+          <div class="docs-popup-section footer">
             <x-link
               id="learn-more"
               href=${link}
@@ -76,6 +87,10 @@ export class CSSPropertyDocsView extends HTMLElement {
             >
               ${i18nString(UIStrings.learnMore)}
             </x-link>
+            <label class="dont-show">
+              <input type="checkbox" @change=${this.#dontShowChanged} />
+              ${i18nString(UIStrings.dontShow)}
+            </label>
           </div>
         ` : LitHtml.nothing}
       </div>

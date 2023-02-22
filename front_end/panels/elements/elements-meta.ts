@@ -123,6 +123,11 @@ const UIStrings = {
    */
   showDetailedInspectTooltip: 'Show detailed inspect tooltip',
   /**
+   * @description Title of a setting under the Elements category in Settings. Turns on a mode where
+   * hovering over CSS properties in the Styles pane will display a popover with documentation.
+   */
+  showCSSPropertyDocumentationOnHover: 'Show CSS property documentation on hover',
+  /**
    *@description A context menu item (command) in the Elements panel that copy the styles of
    * the HTML element.
    */
@@ -506,6 +511,15 @@ Common.Settings.registerSettingExtension({
   settingName: 'adornerSettings',
   settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.Synced,
+  title: i18nLazyString(UIStrings.showCSSPropertyDocumentationOnHover),
+  settingName: 'showCSSPropertyDocumentationOnHover',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
 });
 
 UI.ContextMenu.registerProvider({

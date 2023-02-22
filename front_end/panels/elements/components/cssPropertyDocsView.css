@@ -29,3 +29,12 @@
 .unbreakable-text {
   white-space: nowrap;
 }
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dont-show input {
+  vertical-align: bottom;
+}

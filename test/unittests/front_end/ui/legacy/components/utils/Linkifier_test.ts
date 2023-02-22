@@ -8,8 +8,9 @@ import * as Platform from '../../../../../../../front_end/core/platform/platform
 import type * as SDKModule from '../../../../../../../front_end/core/sdk/sdk.js';
 import type * as WorkspaceModule from '../../../../../../../front_end/models/workspace/workspace.js';
 import type * as Protocol from '../../../../../../../front_end/generated/protocol.js';
+import * as UI from '../../../../../../../front_end/ui/legacy/legacy.js';
 
-import {createTarget} from '../../../../helpers/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../../../helpers/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import {MockProtocolBackend} from '../../../../helpers/MockScopeChain.js';
@@ -334,5 +335,35 @@ describeWithMockConnection('Linkifier', async () => {
          assertNotNullOrUndefined(linkInfo);
          assert.propertyVal(linkInfo.revealable, 'breakpoint', breakpoint);
        });
+  });
+});
+
+describeWithEnvironment('ContentProviderContextMenuProvider', async () => {
+  let Components: typeof ComponentsModule;
+
+  before(async () => {
+    Components = await import('../../../../../../../front_end/ui/legacy/components/utils/utils.js');
+  });
+
+  it('does not add \'Open in new tab\'-entry for file URLs', async () => {
+    const provider = Components.Linkifier.ContentProviderContextMenuProvider.instance();
+
+    let contextMenu = new UI.ContextMenu.ContextMenu({} as Event);
+    let uiSourceCode = {
+      contentURL: () => 'https://www.example.com/index.html',
+    } as WorkspaceModule.UISourceCode.UISourceCode;
+    provider.appendApplicableItems({} as Event, contextMenu, uiSourceCode);
+    let openInNewTabItem = contextMenu.revealSection().items.find(
+        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Open in new tab');
+    assertNotNullOrUndefined(openInNewTabItem);
+
+    contextMenu = new UI.ContextMenu.ContextMenu({} as Event);
+    uiSourceCode = {
+      contentURL: () => 'file://usr/local/example/index.html',
+    } as WorkspaceModule.UISourceCode.UISourceCode;
+    provider.appendApplicableItems({} as Event, contextMenu, uiSourceCode);
+    openInNewTabItem = contextMenu.revealSection().items.find(
+        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Open in new tab');
+    assert.isUndefined(openInNewTabItem);
   });
 });

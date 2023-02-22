@@ -941,12 +941,14 @@ export class ContentProviderContextMenuProvider implements UI.ContextMenu.Provid
       return;
     }
 
-    contextMenu.revealSection().appendItem(
-        UI.UIUtils.openLinkExternallyLabel(),
-        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-            contentUrl.endsWith(':formatted') ?
-                Common.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(':')) :
-                contentUrl));
+    if (!contentUrl.startsWith('file://')) {
+      contextMenu.revealSection().appendItem(
+          UI.UIUtils.openLinkExternallyLabel(),
+          () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+              contentUrl.endsWith(':formatted') ?
+                  Common.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(':')) :
+                  contentUrl));
+    }
     for (const title of linkHandlers.keys()) {
       const handler = linkHandlers.get(title);
       if (!handler) {

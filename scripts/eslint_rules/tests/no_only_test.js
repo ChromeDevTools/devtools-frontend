@@ -34,6 +34,9 @@ ruleTester.run('no_only', rule, {
       })`,
       filename: 'scripts/eslint_rules/tests/foo_test.js',
       errors: [{messageId: 'noOnly'}],
+      output: `describeWithEnvironment('ConsoleMessage', () => {
+        it('tests', () => {});
+      })`,
     },
     {
       code: `describeWithMockConnection.only('ConsoleMessage', () => {
@@ -41,6 +44,9 @@ ruleTester.run('no_only', rule, {
       })`,
       filename: 'scripts/eslint_rules/tests/foo_test.js',
       errors: [{messageId: 'noOnly'}],
+      output: `describeWithMockConnection('ConsoleMessage', () => {
+        it('tests', () => {});
+      })`,
     },
     {
       code: `it.only('ConsoleMessage', () => {
@@ -48,47 +54,43 @@ ruleTester.run('no_only', rule, {
       })`,
       filename: 'scripts/eslint_rules/tests/foo_test.js',
       errors: [{messageId: 'noOnly'}],
-    },
-    {
-      code: `it.only('ConsoleMessage', () => {
+      output: `it('ConsoleMessage', () => {
         it('tests', () => {});
       })`,
-      filename: 'scripts/eslint_rules/tests/foo_test.js',
-      errors: [{messageId: 'noOnly'}],
     },
     {
       code: 'describe.only("Some describe block", function() {});',
-      output: 'describe.only("Some describe block", function() {});',
+      output: 'describe("Some describe block", function() {});',
       errors: [{messageId: 'noOnly'}],
     },
     {
       code: 'it.only("Some assertion", function() {});',
-      output: 'it.only("Some assertion", function() {});',
+      output: 'it("Some assertion", function() {});',
       errors: [{messageId: 'noOnly'}],
     },
     {
       code: 'context.only("Some context", function() {});',
-      output: 'context.only("Some context", function() {});',
+      output: 'context("Some context", function() {});',
       errors: [{messageId: 'noOnly'}],
     },
     {
       code: 'test.only("Some test", function() {});',
-      output: 'test.only("Some test", function() {});',
+      output: 'test("Some test", function() {});',
       errors: [{messageId: 'noOnly'}],
     },
     {
       code: 'tape.only("A tape", function() {});',
-      output: 'tape.only("A tape", function() {});',
+      output: 'tape("A tape", function() {});',
       errors: [{messageId: 'noOnly'}],
     },
     {
       code: 'fixture.only("A fixture", function() {});',
-      output: 'fixture.only("A fixture", function() {});',
+      output: 'fixture("A fixture", function() {});',
       errors: [{messageId: 'noOnly'}],
     },
     {
       code: 'serial.only("A serial test", function() {});',
-      output: 'serial.only("A serial test", function() {});',
+      output: 'serial("A serial test", function() {});',
       errors: [{messageId: 'noOnly'}],
     },
   ]

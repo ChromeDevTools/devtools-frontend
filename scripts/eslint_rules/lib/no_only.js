@@ -19,7 +19,20 @@ module.exports = {
     return {
      MemberExpression(node) {
         if (node.property.name === 'only' && node.property.type === 'Identifier' && node.parent.type === 'CallExpression' && node.parent.callee === node) {
-          context.report({node, messageId: 'noOnly'});
+          context.report({
+            node,
+            messageId: 'noOnly',
+            fix(fixer) {
+              // The node.property range covers the 'only' call, but it does not
+              // include the '.' before it. So we remove the range of chars that
+              // covers the node, and the one character before it.
+              const rangeToRemove = [
+                node.property.range[0] - 1,
+                node.property.range[1],
+              ];
+              return fixer.removeRange(rangeToRemove);
+            }
+          });
         }
       }
     };

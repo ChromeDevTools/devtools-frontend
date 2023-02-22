@@ -11243,9 +11243,11 @@ export namespace Page {
   }
 
   /**
-   * List of Prefetch status, which refers to PreloadingTriggeringOutcome.
+   * Preloading status values, see also PreloadingTriggeringOutcome. This
+   * status is shared by prefetchStatusUpdated and prerenderStatusUpdated.
    */
-  export const enum PrefetchStatus {
+  export const enum PreloadingStatus {
+    Pending = 'Pending',
     Running = 'Running',
     Ready = 'Ready',
     Success = 'Success',
@@ -12295,7 +12297,20 @@ export namespace Page {
      */
     initiatingFrameId: FrameId;
     prefetchUrl: string;
-    status: PrefetchStatus;
+    status: PreloadingStatus;
+  }
+
+  /**
+   * TODO(crbug/1384419): Create a dedicated domain for preloading.
+   * Fired when a prerender attempt is updated.
+   */
+  export interface PrerenderStatusUpdatedEvent {
+    /**
+     * The frame id of the frame initiating prerender.
+     */
+    initiatingFrameId: FrameId;
+    prerenderingUrl: string;
+    status: PreloadingStatus;
   }
 
   export interface LoadEventFiredEvent {

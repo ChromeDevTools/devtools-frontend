@@ -2723,6 +2723,12 @@ declare namespace ProtocolProxyApi {
      */
     prefetchStatusUpdated(params: Protocol.Page.PrefetchStatusUpdatedEvent): void;
 
+    /**
+     * TODO(crbug/1384419): Create a dedicated domain for preloading.
+     * Fired when a prerender attempt is updated.
+     */
+    prerenderStatusUpdated(params: Protocol.Page.PrerenderStatusUpdatedEvent): void;
+
     loadEventFired(params: Protocol.Page.LoadEventFiredEvent): void;
 
     /**

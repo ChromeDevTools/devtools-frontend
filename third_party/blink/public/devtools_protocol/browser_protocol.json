@@ -16438,10 +16438,11 @@
                     ]
                 },
                 {
-                    "id": "PrefetchStatus",
-                    "description": "List of Prefetch status, which refers to PreloadingTriggeringOutcome.",
+                    "id": "PreloadingStatus",
+                    "description": "Preloading status values, see also PreloadingTriggeringOutcome. This\nstatus is shared by prefetchStatusUpdated and prerenderStatusUpdated.",
                     "type": "string",
                     "enum": [
+                        "Pending",
                         "Running",
                         "Ready",
                         "Success",
@@ -18064,7 +18065,27 @@
                         },
                         {
                             "name": "status",
-                            "$ref": "PrefetchStatus"
+                            "$ref": "PreloadingStatus"
+                        }
+                    ]
+                },
+                {
+                    "name": "prerenderStatusUpdated",
+                    "description": "TODO(crbug/1384419): Create a dedicated domain for preloading.\nFired when a prerender attempt is updated.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "initiatingFrameId",
+                            "description": "The frame id of the frame initiating prerender.",
+                            "$ref": "FrameId"
+                        },
+                        {
+                            "name": "prerenderingUrl",
+                            "type": "string"
+                        },
+                        {
+                            "name": "status",
+                            "$ref": "PreloadingStatus"
                         }
                     ]
                 },

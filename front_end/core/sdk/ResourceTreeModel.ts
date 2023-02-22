@@ -1196,6 +1196,9 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
 
   prefetchStatusUpdated({}: Protocol.Page.PrefetchStatusUpdatedEvent): void {
   }
+
+  prerenderStatusUpdated({}: Protocol.Page.PrerenderStatusUpdatedEvent): void {
+  }
 }
 
 SDKModel.register(ResourceTreeModel, {capabilities: Capability.DOM, autostart: true, early: true});

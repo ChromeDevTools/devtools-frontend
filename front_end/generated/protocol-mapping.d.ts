@@ -411,6 +411,11 @@ export namespace ProtocolMapping {
      * Fired when a prefetch attempt is updated.
      */
     'Page.prefetchStatusUpdated': [Protocol.Page.PrefetchStatusUpdatedEvent];
+    /**
+     * TODO(crbug/1384419): Create a dedicated domain for preloading.
+     * Fired when a prerender attempt is updated.
+     */
+    'Page.prerenderStatusUpdated': [Protocol.Page.PrerenderStatusUpdatedEvent];
     'Page.loadEventFired': [Protocol.Page.LoadEventFiredEvent];
     /**
      * Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.

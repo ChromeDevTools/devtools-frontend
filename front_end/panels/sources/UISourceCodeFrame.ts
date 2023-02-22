@@ -341,7 +341,7 @@ export class UISourceCodeFrame extends
   }
 
   private onTitleChanged(): void {
-    this.updateLanguageMode().then(() => this.reloadPlugins(), console.error);
+    this.updateLanguageMode('').then(() => this.reloadPlugins(), console.error);
   }
 
   private loadPlugins(): void {

@@ -662,8 +662,17 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.prettyToggle.setEnabled(true);
   }
 
-  protected async getLanguageSupport(): Promise<CodeMirror.Extension> {
-    const languageDesc = await CodeHighlighter.CodeHighlighter.languageFromMIME(this.contentType);
+  protected async getLanguageSupport(content: string|CodeMirror.Text): Promise<CodeMirror.Extension> {
+    // This is a pretty horrible work-around for webpack-based Vue2 setups. See
+    // https://crbug.com/1416562 for the full story behind this.
+    let {contentType} = this;
+    if (contentType === 'text/x.vue') {
+      content = typeof content === 'string' ? content : content.sliceString(0);
+      if (!content.trimStart().startsWith('<')) {
+        contentType = 'text/javascript';
+      }
+    }
+    const languageDesc = await CodeHighlighter.CodeHighlighter.languageFromMIME(contentType);
     if (!languageDesc) {
       return [];
     }
@@ -673,8 +682,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     ];
   }
 
-  async updateLanguageMode(): Promise<void> {
-    const langExtension = await this.getLanguageSupport();
+  async updateLanguageMode(content: string): Promise<void> {
+    const langExtension = await this.getLanguageSupport(content);
     this.textEditor.dispatch({effects: config.language.reconfigure(langExtension)});
   }
 
@@ -685,7 +694,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     const scrollTop = textEditor.editor.scrollDOM.scrollTop;
     this.loadedInternal = true;
 
-    const languageSupport = await this.getLanguageSupport();
+    const languageSupport = await this.getLanguageSupport(content);
     const editorState = CodeMirror.EditorState.create({
       doc: content,
       extensions: [

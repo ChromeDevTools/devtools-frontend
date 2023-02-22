@@ -452,8 +452,7 @@ export class TimelineModelImpl {
     for (const process of tracingModel.sortedProcesses()) {
       for (const thread of process.sortedThreads()) {
         this.processThreadEvents(
-            tracingModel, [{from: 0, to: Infinity}], thread, thread === browserMainThread, false, true,
-            WorkletType.NotWorklet, null);
+            tracingModel, thread, thread === browserMainThread, false, true, WorkletType.NotWorklet, null);
       }
     }
   }
@@ -493,15 +492,15 @@ export class TimelineModelImpl {
           workerUrl = workerMetaEvent.args['data']['url'] || Platform.DevToolsPath.EmptyUrlString;
         }
         this.processThreadEvents(
-            tracingModel, [{from: startTime, to: endTime}], thread, thread === metaEvent.thread, Boolean(workerUrl),
-            true, WorkletType.NotWorklet, workerUrl);
+            tracingModel, thread, thread === metaEvent.thread, Boolean(workerUrl), true, WorkletType.NotWorklet,
+            workerUrl);
       }
       startTime = endTime;
     }
   }
 
   private processThreadsForBrowserFrames(tracingModel: SDK.TracingModel.TracingModel): void {
-    const processData = new Map<number, {
+    const processDataByPid = new Map<number, {
       from: number,
       to: number,
       main: boolean,
@@ -511,10 +510,10 @@ export class TimelineModelImpl {
     for (const frame of this.pageFrames.values()) {
       for (let i = 0; i < frame.processes.length; i++) {
         const pid = frame.processes[i].processId;
-        let data = processData.get(pid);
+        let data = processDataByPid.get(pid);
         if (!data) {
           data = [];
-          processData.set(pid, data);
+          processDataByPid.set(pid, data);
         }
         const to = i === frame.processes.length - 1 ? (frame.deletedTime || Infinity) : frame.processes[i + 1].time;
         data.push({
@@ -528,10 +527,10 @@ export class TimelineModelImpl {
     }
     for (const auctionWorklet of this.auctionWorklets.values()) {
       const pid = auctionWorklet.processId;
-      let data = processData.get(pid);
+      let data = processDataByPid.get(pid);
       if (!data) {
         data = [];
-        processData.set(pid, data);
+        processDataByPid.set(pid, data);
       }
       data.push({
         from: auctionWorklet.startTime,
@@ -545,31 +544,35 @@ export class TimelineModelImpl {
     }
     const allMetadataEvents = tracingModel.devToolsMetadataEvents();
     for (const process of tracingModel.sortedProcesses()) {
-      const data = processData.get(process.id());
-      if (!data) {
+      const processData = processDataByPid.get(process.id());
+      if (!processData) {
         continue;
       }
-      data.sort((a, b) => a.from - b.from || a.to - b.to);
-      const ranges = [];
+      // Sort ascending by range starts, followed by range ends
+      processData.sort((a, b) => a.from - b.from || a.to - b.to);
+
       let lastUrl: Platform.DevToolsPath.UrlString|null = null;
       let lastMainUrl: Platform.DevToolsPath.UrlString|null = null;
       let hasMain = false;
-      let allWorklet = true;
 
+      let allWorklet = true;
       // false: not set, true: inconsistent.
       let workletUrl: Platform.DevToolsPath.UrlString|boolean = false;
       // NotWorklet used for not set.
       let workletType: WorkletType = WorkletType.NotWorklet;
-      for (const item of data) {
-        const last = ranges[ranges.length - 1];
-        if (!last || item.from > last.to) {
-          ranges.push({from: item.from, to: item.to});
-        } else {
-          last.to = item.to;
-        }
+
+      for (const item of processData) {
         if (item.main) {
           hasMain = true;
         }
+        if (item.url) {
+          if (item.main) {
+            lastMainUrl = item.url;
+          }
+          lastUrl = item.url;
+        }
+
+        // Worklet identification
         if (item.workletType === WorkletType.NotWorklet) {
           allWorklet = false;
         } else {
@@ -586,20 +589,13 @@ export class TimelineModelImpl {
             workletType = WorkletType.UnknownWorklet;
           }
         }
-
-        if (item.url) {
-          if (item.main) {
-            lastMainUrl = item.url;
-          }
-          lastUrl = item.url;
-        }
       }
 
       for (const thread of process.sortedThreads()) {
         if (thread.name() === TimelineModelImpl.RendererMainThreadName) {
           this.processThreadEvents(
-              tracingModel, ranges, thread, true /* isMainThread */, false /* isWorker */, hasMain,
-              WorkletType.NotWorklet, hasMain ? lastMainUrl : lastUrl);
+              tracingModel, thread, true /* isMainThread */, false /* isWorker */, hasMain, WorkletType.NotWorklet,
+              hasMain ? lastMainUrl : lastUrl);
         } else if (
             thread.name() === TimelineModelImpl.WorkerThreadName ||
             thread.name() === TimelineModelImpl.WorkerThreadNameLegacy) {
@@ -621,7 +617,7 @@ export class TimelineModelImpl {
           }
           this.workerIdByThread.set(thread, workerMetaEvent.args['data']['workerId'] || '');
           this.processThreadEvents(
-              tracingModel, ranges, thread, false /* isMainThread */, true /* isWorker */, false /* forMainFrame */,
+              tracingModel, thread, false /* isMainThread */, true /* isWorker */, false /* forMainFrame */,
               WorkletType.NotWorklet, workerMetaEvent.args['data']['url'] || Platform.DevToolsPath.EmptyUrlString);
         } else {
           let urlForOther: Platform.DevToolsPath.UrlString|null = null;
@@ -639,7 +635,7 @@ export class TimelineModelImpl {
             }
           }
           this.processThreadEvents(
-              tracingModel, ranges, thread, false /* isMainThread */, false /* isWorker */, false /* forMainFrame */,
+              tracingModel, thread, false /* isMainThread */, false /* isWorker */, false /* forMainFrame */,
               workletTypeForOther, urlForOther);
         }
       }
@@ -711,7 +707,7 @@ export class TimelineModelImpl {
   private processAsyncBrowserEvents(tracingModel: SDK.TracingModel.TracingModel): void {
     const browserMain = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
     if (browserMain) {
-      this.processAsyncEvents(browserMain, [{from: 0, to: Infinity}]);
+      this.processAsyncEvents(browserMain);
     }
   }
 
@@ -900,12 +896,9 @@ export class TimelineModelImpl {
   }
 
   private processThreadEvents(
-      tracingModel: SDK.TracingModel.TracingModel, ranges: {
-        from: number,
-        to: number,
-      }[],
-      thread: SDK.TracingModel.Thread, isMainThread: boolean, isWorker: boolean, forMainFrame: boolean,
-      workletType: WorkletType, url: Platform.DevToolsPath.UrlString|null): void {
+      tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread, isMainThread: boolean,
+      isWorker: boolean, forMainFrame: boolean, workletType: WorkletType,
+      url: Platform.DevToolsPath.UrlString|null): void {
     const track = new Track();
     track.name = thread.name() || i18nString(UIStrings.threadS, {PH1: thread.id()});
     track.type = TrackType.Other;
@@ -944,60 +937,55 @@ export class TimelineModelImpl {
       }
     }
 
-    for (const range of ranges) {
-      let i = Platform.ArrayUtilities.lowerBound(events, range.from, (time, event) => time - event.startTime);
-      for (; i < events.length; i++) {
-        const event = events[i];
-        if (event.startTime >= range.to) {
-          break;
-        }
+    for (let i = 0; i < events.length; i++) {
+      const event = events[i];
 
-        // There may be several TTI events, only take the first one.
-        if (this.isInteractiveTimeEvent(event) && this.totalBlockingTimeInternal === -1) {
-          this.totalBlockingTimeInternal = event.args['args']['total_blocking_time_ms'];
-        }
+      // There may be several TTI events, only take the first one.
+      if (this.isInteractiveTimeEvent(event) && this.totalBlockingTimeInternal === -1) {
+        this.totalBlockingTimeInternal = event.args['args']['total_blocking_time_ms'];
+      }
 
-        const isLongRunningTask = event.name === RecordType.Task && event.duration && event.duration > 50;
-        if (isMainThread && isLongRunningTask && event.duration) {
-          // We only track main thread events that are over 50ms, and the amount of time in the
-          // event (over 50ms) is what constitutes the blocking time. An event of 70ms, therefore,
-          // contributes 20ms to TBT.
-          this.estimatedTotalBlockingTime += event.duration - 50;
-        }
+      const isLongRunningTask = event.name === RecordType.Task && event.duration && event.duration > 50;
+      if (isMainThread && isLongRunningTask && event.duration) {
+        // We only track main thread events that are over 50ms, and the amount of time in the
+        // event (over 50ms) is what constitutes the blocking time. An event of 70ms, therefore,
+        // contributes 20ms to TBT.
+        this.estimatedTotalBlockingTime += event.duration - 50;
+      }
 
-        let last: SDK.TracingModel.Event = eventStack[eventStack.length - 1];
-        while (last && last.endTime !== undefined && last.endTime <= event.startTime) {
-          eventStack.pop();
-          last = eventStack[eventStack.length - 1];
-        }
-        if (!this.processEvent(event)) {
-          continue;
-        }
-        if (!SDK.TracingModel.TracingModel.isAsyncPhase(event.phase) && event.duration) {
-          if (eventStack.length) {
-            const parent = eventStack[eventStack.length - 1];
-            if (parent) {
-              parent.selfTime -= event.duration;
-              if (parent.selfTime < 0) {
-                this.fixNegativeDuration(parent, event);
-              }
+      let last: SDK.TracingModel.Event = eventStack[eventStack.length - 1];
+      while (last && last.endTime !== undefined && last.endTime <= event.startTime) {
+        eventStack.pop();
+        last = eventStack[eventStack.length - 1];
+      }
+      if (!this.processEvent(event)) {
+        continue;
+      }
+      if (!SDK.TracingModel.TracingModel.isAsyncPhase(event.phase) && event.duration) {
+        if (eventStack.length) {
+          const parent = eventStack[eventStack.length - 1];
+          if (parent) {
+            parent.selfTime -= event.duration;
+            if (parent.selfTime < 0) {
+              this.fixNegativeDuration(parent, event);
             }
           }
-          event.selfTime = event.duration;
-          if (!eventStack.length) {
-            track.tasks.push(event);
-          }
-          eventStack.push(event);
         }
-        if (this.isMarkerEvent(event)) {
-          this.timeMarkerEventsInternal.push(event);
+        event.selfTime = event.duration;
+        if (!eventStack.length) {
+          track.tasks.push(event);
         }
-
-        track.events.push(event);
-        this.inspectedTargetEventsInternal.push(event);
+        eventStack.push(event);
       }
+      if (this.isMarkerEvent(event)) {
+        this.timeMarkerEventsInternal.push(event);
+      }
+
+      track.events.push(event);
+      this.inspectedTargetEventsInternal.push(event);
     }
-    this.processAsyncEvents(thread, ranges);
+
+    this.processAsyncEvents(thread);
   }
 
   private fixNegativeDuration(event: SDK.TracingModel.Event, child: SDK.TracingModel.Event): void {
@@ -1010,10 +998,7 @@ export class TimelineModelImpl {
     event.selfTime = 0;
   }
 
-  private processAsyncEvents(thread: SDK.TracingModel.Thread, ranges: {
-    from: number,
-    to: number,
-  }[]): void {
+  private processAsyncEvents(thread: SDK.TracingModel.Thread): void {
     const asyncEvents = thread.asyncEvents();
     const groups = new Map<TrackType, SDK.TracingModel.AsyncEvent[]>();
 
@@ -1024,31 +1009,22 @@ export class TimelineModelImpl {
       return groups.get(type) as SDK.TracingModel.AsyncEvent[];
     }
 
-    for (const range of ranges) {
-      let i = Platform.ArrayUtilities.lowerBound(asyncEvents, range.from, function(time, asyncEvent) {
-        return time - asyncEvent.startTime;
-      });
+    for (let i = 0; i < asyncEvents.length; ++i) {
+      const asyncEvent = asyncEvents[i];
 
-      for (; i < asyncEvents.length; ++i) {
-        const asyncEvent = asyncEvents[i];
-        if (asyncEvent.startTime >= range.to) {
-          break;
-        }
+      if (asyncEvent.hasCategory(TimelineModelImpl.Category.Console)) {
+        group(TrackType.Console).push(asyncEvent);
+        continue;
+      }
 
-        if (asyncEvent.hasCategory(TimelineModelImpl.Category.Console)) {
-          group(TrackType.Console).push(asyncEvent);
-          continue;
-        }
+      if (asyncEvent.hasCategory(TimelineModelImpl.Category.UserTiming)) {
+        group(TrackType.Timings).push(asyncEvent);
+        continue;
+      }
 
-        if (asyncEvent.hasCategory(TimelineModelImpl.Category.UserTiming)) {
-          group(TrackType.Timings).push(asyncEvent);
-          continue;
-        }
-
-        if (asyncEvent.name === RecordType.Animation) {
-          group(TrackType.Animation).push(asyncEvent);
-          continue;
-        }
+      if (asyncEvent.name === RecordType.Animation) {
+        group(TrackType.Animation).push(asyncEvent);
+        continue;
       }
     }
 

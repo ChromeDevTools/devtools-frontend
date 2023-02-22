@@ -1128,17 +1128,6 @@ describeWithEnvironment('TimelineModel', () => {
         'tid': 1537480,
         'ts': 962633199669,
       },
-      // This last event is out of range.
-      {
-        'args': {},
-        'cat': 'disabled-by-default-devtools.timeline',
-        'dur': 10,
-        'name': 'RunTaskC',
-        'ph': 'X',
-        'pid': 1538739,
-        'tid': 7,
-        'ts': 962633199670,
-      },
     ] as unknown as SDK.TracingManager.EventPayload[]);
     const trackInfo = summarizeArray(timelineModel.tracks());
     assert.deepEqual(trackInfo, [
@@ -1189,7 +1178,12 @@ describeWithEnvironment('TimelineModel', () => {
       if (track.name !== 'Bidder Worklet — https://192.168.0.105') {
         continue;
       }
-      assert.deepEqual(track.events.map(event => event.name), ['RunTaskA', 'RunTaskB']);
+      assert.deepEqual(track.events.map(event => event.name), [
+        'thread_name',  // Metadata event for this worklet
+        // Tasks within this worklet
+        'RunTaskA',
+        'RunTaskB',
+      ]);
     }
   });
 

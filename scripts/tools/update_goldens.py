@@ -38,14 +38,14 @@ class ProjectConfig:
     def __init__(self,
                  name='devtools-frontend',
                  gs_root='gs://devtools-frontend-screenshots',
-                 builder_prefix='devtools_screenshot'):
+                 builder_prefix='devtools_screenshot',
+                 platforms=None):
         self.name = name
         self.gs_root = gs_root
         self.gs_folder = self.gs_root + '/screenshots'
         self.builder_prefix = builder_prefix
+        self.platforms = platforms or ['linux', 'mac', 'win']
 
-
-PLATFORMS = ['linux', 'win', 'mac']
 
 TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.normpath(os.path.join(TOOLS_DIR, '..', '..'))
@@ -178,7 +178,8 @@ def trigger_screenshots(project_config, verbose, builders=None):
     """Trigger screenshot builders for the current patch."""
     if not builders:
         builders = [
-            f'{project_config.builder_prefix}_{p}_rel' for p in PLATFORMS
+            f'{project_config.builder_prefix}_{p}_rel'
+            for p in project_config.platforms
         ]
     try_command = f'git cl try -B {project_config.name}/try ' + ' '.join(
         [f'-b {b}' for b in builders])
@@ -213,7 +214,7 @@ def apply_patch_to_local(project_config, patchset, wait_sec, ignore_failed,
     """Download and apply the patches from the builders."""
     results = screenshot_results(project_config, patchset)
     check_not_empty(results)
-    check_all_platforms(results)
+    check_all_platforms(project_config, results)
     retry, should_wait = check_all_success(results, wait_sec, ignore_failed,
                                            retry)
     if retry:
@@ -304,10 +305,10 @@ def check_not_empty(results):
     sys.exit(1)
 
 
-def check_all_platforms(results):
+def check_all_platforms(project_config, results):
     """Warn if any platform was not covered."""
     patchset = list(results.values())[0]['patch']
-    if len(results) < len(PLATFORMS):
+    if len(results) < len(project_config.platforms):
         print(WARNING_BUILDERS_MISSING %
               (patchset, '\n  '.join(results.keys())))
 
@@ -435,4 +436,4 @@ def gsutil_cmd(*args):
 
 
 if __name__ == '__main__':
-    main(ProjectConfig(), sys.argv[1:])
+    main(ProjectConfig(platforms=['linux', 'mac', 'win64']), sys.argv[1:])

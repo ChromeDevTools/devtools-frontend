@@ -2765,7 +2765,7 @@ export class TimelineUIUtils {
     return eventDivider;
   }
 
-  private static visibleTypes(): string[] {
+  static visibleTypes(): string[] {
     const eventStyles = TimelineUIUtils.initEventStyles();
     const result = [];
     for (const name in eventStyles) {

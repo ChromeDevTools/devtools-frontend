@@ -103,19 +103,17 @@ export function contrastRatio(fgRGBA: Color4D, bgRGBA: Color4D): number {
 // Constants for basic APCA version.
 // See https://github.com/Myndex/SAPC-APCA
 const mainTRC = 2.4;
-const normBgExp = 0.55;
-const normFgExp = 0.58;
-const revBgExp = 0.62;
-const revFgExp = 0.57;
-const blkThrs = 0.03;
-const blkClmp = 1.45;
-const scaleBoW = 1.25;
-const scaleWoB = 1.25;
+const normBgExp = 0.56;
+const normFgExp = 0.57;
+const revBgExp = 0.65;
+const revFgExp = 0.62;
+const blkThrs = 0.022;
+const blkClmp = 1.414;
+const scaleBoW = 1.14;
+const scaleWoB = 1.14;
+const loConOffset = 0.027;
+const loClip = 0.1;
 const deltaLuminanceMin = 0.0005;
-const loConThresh = 0.078;
-const loConFactor = 12.82051282051282;
-const loConOffset = 0.06;
-const loClip = 0.001;
 
 /**
  * Calculate relative luminance of a color.
@@ -150,17 +148,13 @@ export function contrastRatioByLuminanceAPCA(fgLuminance: number, bgLuminance: n
     return 0;
   }
   let result = 0;
-  if (bgLuminance >= fgLuminance) {  // Black text on white.
+  if (bgLuminance > fgLuminance) {  // Black text on white.
     result = (Math.pow(bgLuminance, normBgExp) - Math.pow(fgLuminance, normFgExp)) * scaleBoW;
-    result = result < loClip ?
-        0 :
-        (result < loConThresh ? result - result * loConFactor * loConOffset : result - loConOffset);
+    result = result < loClip ? 0 : result - loConOffset;
   } else {
     // White text on black.
     result = (Math.pow(bgLuminance, revBgExp) - Math.pow(fgLuminance, revFgExp)) * scaleWoB;
-    result = result > -loClip ?
-        0 :
-        (result > -loConThresh ? result - result * loConFactor * loConOffset : result + loConOffset);
+    result = result > -loClip ? 0 : result + loConOffset;
   }
   return result * 100;
 }

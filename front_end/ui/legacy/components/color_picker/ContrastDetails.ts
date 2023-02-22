@@ -288,6 +288,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       labelAPCA.addEventListener('click', (_event: Event) => ContrastDetails.showHelp());
       this.elementInternal.classList.toggle('contrast-fail', !passesAPCA);
       this.contrastValueBubble.classList.toggle('contrast-aa', passesAPCA);
+      this.bgColorSwatch.setColors(fgColor, bgColor);
       return;
     }
 

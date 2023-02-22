@@ -47,42 +47,42 @@ describe('ColorUtils', async () => {
       {
         fgColor: 'red',
         bgColor: 'blue',
-        expectedContrast: -21.22,
+        expectedContrast: -20.3,
       },
       {
         fgColor: '#333333',
         bgColor: '#444444',
-        expectedContrast: 2.142,
+        expectedContrast: 0.0,
       },
       {
         fgColor: '#888',
         bgColor: '#FFF',
-        expectedContrast: 66.89346308821438,
+        expectedContrast: 63.1,
       },
       {
         fgColor: '#aaa',
         bgColor: '#000',
-        expectedContrast: -60.438571788907524,
+        expectedContrast: -56.2,
       },
       {
         fgColor: '#def',
         bgColor: '#123',
-        expectedContrast: -98.44863435731266,
+        expectedContrast: -93.1,
       },
       {
         fgColor: '#123',
         bgColor: '#234',
-        expectedContrast: 1.276075977788573,
+        expectedContrast: 0.0,
       },
       {
         fgColor: 'rgb(158 158 158)',
         bgColor: 'white',
-        expectedContrast: 54.799,
+        expectedContrast: 52.1,
       },
       {
         fgColor: 'rgba(0 0 0 / 38%)',
         bgColor: 'white',
-        expectedContrast: 54.743,
+        expectedContrast: 52.1,
       },
     ];
     for (const test of tests) {
@@ -92,7 +92,7 @@ describe('ColorUtils', async () => {
         assert.fail(`Failed to parse foreground and/or background color: ${test.fgColor}, ${test.bgColor}`);
         return;
       }
-      assert.closeTo(Common.ColorUtils.contrastRatioAPCA(fg.rgba(), bg.rgba()), test.expectedContrast, 0.01);
+      assert.closeTo(Common.ColorUtils.contrastRatioAPCA(fg.rgba(), bg.rgba()), test.expectedContrast, 0.1);
     }
   });
 

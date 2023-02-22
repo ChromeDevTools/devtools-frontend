@@ -29,10 +29,6 @@ export class AutocompleteHistory {
     this.#data = this.#setting.get();
   }
 
-  historyData(): string[] {
-    return this.#data;
-  }
-
   clear(): void {
     this.#data = [];
     this.#setting.set([]);
@@ -83,6 +79,18 @@ export class AutocompleteHistory {
     }
     --this.#historyOffset;
     return this.#currentHistoryItem();
+  }
+
+  /** Returns a de-duplicated list of history entries that start with the specified prefix */
+  matchingEntries(prefix: string, limit = 50): Set<string> {
+    const result = new Set<string>();
+    for (let i = this.#data.length - 1; i >= 0 && result.size < limit; --i) {
+      const entry = this.#data[i];
+      if (entry.startsWith(prefix)) {
+        result.add(entry);
+      }
+    }
+    return result;
   }
 
   #currentHistoryItem(): string|undefined {

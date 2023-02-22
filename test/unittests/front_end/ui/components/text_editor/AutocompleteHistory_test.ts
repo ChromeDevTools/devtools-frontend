@@ -100,4 +100,26 @@ describeWithEnvironment('AutocompleteHistory', () => {
 
     assert.deepEqual(setting.get(), ['entry 1']);
   });
+
+  describe('matchingEntries', () => {
+    it('returns the appropriate matches', () => {
+      history.pushHistoryItem('x === 5');
+      history.pushHistoryItem('y < 42');
+      history.pushHistoryItem('x > 20');
+
+      const matches = history.matchingEntries('x ');
+
+      assert.deepEqual([...matches], ['x > 20', 'x === 5']);
+    });
+
+    it('respects the "limit" argument', () => {
+      for (let i = 0; i < 20; ++i) {
+        history.pushHistoryItem(`x === ${i}`);
+      }
+
+      const matches = history.matchingEntries('x ', 3);
+
+      assert.deepEqual([...matches], ['x === 19', 'x === 18', 'x === 17']);
+    });
+  });
 });

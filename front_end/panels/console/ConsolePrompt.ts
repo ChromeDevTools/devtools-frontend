@@ -360,26 +360,13 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (!this.addCompletionsFromHistory || !this.isCaretAtEndOfPrompt() || (!text.length && !context.explicit)) {
       return null;
     }
-    const result = [];
-    const set = new Set<string>();
-    const data = this.historyInternal.historyData();
-    for (let i = data.length - 1; i >= 0 && result.length < 50; --i) {
-      const item = data[i];
-      if (!item.startsWith(text)) {
-        continue;
-      }
-      if (set.has(item)) {
-        continue;
-      }
-      set.add(item);
-      result.push({label: item, type: 'secondary', boost: -1e5});
+
+    const matchingEntries = this.historyInternal.matchingEntries(text);
+    if (!matchingEntries.size) {
+      return null;
     }
-    return result.length ? {
-      from: 0,
-      to: text.length,
-      options: result,
-    } :
-                           null;
+    const options = [...matchingEntries].map(label => ({label, type: 'secondary', boost: -1e5}));
+    return {from: 0, to: text.length, options};
   }
 
   focus(): void {

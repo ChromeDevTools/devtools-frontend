@@ -1462,6 +1462,21 @@ describeWithEnvironment('TimelineModel', () => {
       ]);
     });
   });
+
+  describe('network events on the track', () => {
+    it('provides the expected set of events', async () => {
+      const {timelineModel} = await traceModelFromTraceFile('lcp-images.json.gz');
+      const requests = timelineModel.networkRequests();
+      const urls = requests.map(request => request.url);
+      assert.deepEqual(urls, [
+        'https://b2607f8b04800100000289cb1c0a82ba72253000000000000000001.proxy.googlers.com/lcp-large-image/',
+        'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800',
+        'https://b2607f8b04800100000289cb1c0a82ba72253000000000000000001.proxy.googlers.com/lcp-large-image/app.css',
+        'https://via.placeholder.com/50.jpg',
+        'https://via.placeholder.com/3000.jpg',
+      ]);
+    });
+  });
 });
 
 describe('groupLayoutShiftsIntoClusters', () => {

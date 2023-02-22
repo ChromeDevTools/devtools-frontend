@@ -15,6 +15,7 @@ ts_library("text_editor") {
 
   deps = [
     "../../../../../../front_end/core/common:bundle",
+    "../../../../../../front_end/core/platform:bundle",
     "../../../../../../front_end/third_party/codemirror.next:bundle",
     "../../../../../../front_end/ui/components/text_editor:bundle",
     "../../../helpers",

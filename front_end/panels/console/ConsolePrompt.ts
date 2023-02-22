@@ -94,7 +94,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       TextEditor.Config.autocompletion.instance(),
       CodeMirror.javascript.javascriptLanguage.data.of({
         autocomplete: (context: CodeMirror.CompletionContext): CodeMirror.CompletionResult | null =>
-            this.historyCompletions(context),
+            this.addCompletionsFromHistory ? this.#editorHistory.historyCompletions(context) : null,
       }),
       CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.consolePrompt)}),
       CodeMirror.EditorView.lineWrapping,
@@ -317,20 +317,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     } else if (update.selectionSet) {
       this.updatePromptIcon();
     }
-  }
-
-  private historyCompletions(context: CodeMirror.CompletionContext): CodeMirror.CompletionResult|null {
-    const text = this.text();
-    if (!this.addCompletionsFromHistory || !this.isCaretAtEndOfPrompt() || (!text.length && !context.explicit)) {
-      return null;
-    }
-
-    const matchingEntries = this.historyInternal.matchingEntries(text);
-    if (!matchingEntries.size) {
-      return null;
-    }
-    const options = [...matchingEntries].map(label => ({label, type: 'secondary', boost: -1e5}));
-    return {from: 0, to: text.length, options};
   }
 
   focus(): void {

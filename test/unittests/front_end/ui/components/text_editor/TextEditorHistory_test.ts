@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import * as CodeMirror from '../../../../../../front_end/third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../../../../../front_end/ui/components/text_editor/text_editor.js';
 import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
@@ -124,6 +125,48 @@ describeWithEnvironment('TextEditorHistory', () => {
       editorHistory.moveHistory(Direction.BACKWARD);
 
       assert.strictEqual(editor.state.selection.main.head, 10);
+    });
+  });
+
+  describe('historyCompletions', () => {
+    it('has no completions when there is no input and the user does not explicitly request completions', () => {
+      history.pushHistoryItem('x == 5');
+
+      const completions = editorHistory.historyCompletions(new CodeMirror.CompletionContext(editor.state, 0, false));
+
+      assert.isNull(completions);
+    });
+
+    it('has completions when there is no input but the user explicitly requests completions', () => {
+      history.pushHistoryItem('x == 5');
+
+      const completions = editorHistory.historyCompletions(new CodeMirror.CompletionContext(editor.state, 0, true));
+
+      assertNotNullOrUndefined(completions);
+      assert.lengthOf(completions.options, 1);
+    });
+
+    it('has no completions if the caret is not at the end of the input', () => {
+      history.pushHistoryItem('x === 5');
+      setCodeMirrorContent(editor, 'x =');
+
+      const completions = editorHistory.historyCompletions(new CodeMirror.CompletionContext(editor.state, 1, false));
+
+      assert.isNull(completions);
+    });
+
+    it('has matching completions', () => {
+      history.pushHistoryItem('x === 5');
+      history.pushHistoryItem('y < 42');
+      history.pushHistoryItem('x > 10');
+      setCodeMirrorContent(editor, 'x ');
+
+      const completions = editorHistory.historyCompletions(new CodeMirror.CompletionContext(editor.state, 2, false));
+
+      assertNotNullOrUndefined(completions);
+      assert.lengthOf(completions.options, 2);
+      assert.strictEqual(completions.options[0].label, 'x > 10');
+      assert.strictEqual(completions.options[1].label, 'x === 5');
     });
   });
 });

@@ -71,4 +71,20 @@ export class TextEditorHistory {
     }
     return true;
   }
+
+  historyCompletions(context: CodeMirror.CompletionContext): CodeMirror.CompletionResult|null {
+    const {explicit, pos, state} = context;
+    const text = state.doc.toString();
+    const caretIsAtEndOfPrompt = pos === text.length;
+    if (!caretIsAtEndOfPrompt || (!text.length && !explicit)) {
+      return null;
+    }
+
+    const matchingEntries = this.#history.matchingEntries(text);
+    if (!matchingEntries.size) {
+      return null;
+    }
+    const options = [...matchingEntries].map(label => ({label, type: 'secondary', boost: -1e5}));
+    return {from: 0, to: text.length, options};
+  }
 }

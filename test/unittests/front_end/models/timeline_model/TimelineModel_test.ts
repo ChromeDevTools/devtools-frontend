@@ -1423,6 +1423,37 @@ describeWithEnvironment('TimelineModel', () => {
         },
       ]);
     });
+
+    it('detects the correct invalidations for an attribute being changed', async () => {
+      const {timelineModel} = await traceModelFromTraceFile('style-invalidation-change-attribute.json.gz');
+      const invalidations = await invalidationsFromTestFunction(timelineModel, 'testFuncs.changeAttributeAndDisplay');
+      // In this trace there are three nodes impacted by the attribute change:
+      // the two test divs, and the button, which gains the :active pseudo
+      // class when clicked.
+      // However, the two test divs have two invalidations each: one for the attribute, and one for having a pending invalidation list
+      assert.deepEqual(invalidations.map(invalidationToBasicObject), [
+        {
+          reason: 'PseudoClass',
+          nodeName: 'BUTTON id=\'changeAttributeAndDisplay\'',
+        },
+        {
+          reason: 'Attribute',
+          nodeName: 'DIV id=\'testElementFour\'',
+        },
+        {
+          reason: 'Attribute',
+          nodeName: 'DIV id=\'testElementFive\'',
+        },
+        {
+          reason: 'Element has pending invalidation list',
+          nodeName: 'DIV id=\'testElementFour\'',
+        },
+        {
+          reason: 'Element has pending invalidation list',
+          nodeName: 'DIV id=\'testElementFive\'',
+        },
+      ]);
+    });
   });
 });
 

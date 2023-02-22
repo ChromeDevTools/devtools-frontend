@@ -34,6 +34,7 @@ copy_to_gen("traces") {
     "request-with-query-param.json.gz",
     "slow-interaction-button-click.json.gz",
     "slow-interaction-keydown.json.gz",
+    "style-invalidation-change-attribute.json.gz",
     "threejs-gpu.json.gz",
     "user-timings-complex.json.gz",
     "user-timings.json.gz",

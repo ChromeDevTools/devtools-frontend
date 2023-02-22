@@ -171,6 +171,14 @@ builder_coverage(
     },
 )
 
+builder_coverage(
+    covered_oss = ["linux", "mac", "win64"],
+    builder_factory = try_builder,
+    builder_name_pattern = "devtools_screenshot_%s_rel",
+    recipe_name = "devtools/dtf-screenshots",
+    execution_timeout = 2 * time.hour,
+)
+
 luci.list_view(
     name = "tryserver",
     title = "Tryserver",
@@ -199,6 +207,9 @@ cq_main = struct(
     ],
     includable_only_builders = [
         "devtools_frontend_mac_rel",
+        "devtools_screenshot_linux_rel",
+        "devtools_screenshot_mac_rel",
+        "devtools_screenshot_win64_rel",
     ],
 )
 

@@ -17,6 +17,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {ConsolePanel} from './ConsolePanel.js';
 import consolePromptStyles from './consolePrompt.css.js';
 
+const {Direction} = TextEditor.TextEditorHistory;
+
 const UIStrings = {
   /**
    *@description Text in Console Prompt of the Console panel
@@ -46,6 +48,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   // If they are, the escape key will clear them. However, if they aren't, then the
   // console drawer should be hidden as a whole.
   #argumentHintsState: CodeMirror.StateField<CodeMirror.Tooltip|null>;
+
+  #editorHistory: TextEditor.TextEditorHistory.TextEditorHistory;
 
   constructor() {
     super();
@@ -109,6 +113,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     });
     editorContainerElement.appendChild(this.editor);
+    this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.historyInternal);
 
     if (this.hasFocus()) {
       this.focus();
@@ -222,10 +227,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   private editorKeymap(): readonly CodeMirror.KeyBinding[] {
     return [
-      {key: 'ArrowUp', run: (): boolean => this.moveHistory(-1)},
-      {key: 'ArrowDown', run: (): boolean => this.moveHistory(1)},
-      {mac: 'Ctrl-p', run: (): boolean => this.moveHistory(-1, true)},
-      {mac: 'Ctrl-n', run: (): boolean => this.moveHistory(1, true)},
+      {key: 'ArrowUp', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD)},
+      {key: 'ArrowDown', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD)},
+      {mac: 'Ctrl-p', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
+      {mac: 'Ctrl-n', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
       {
         key: 'Escape',
         run: (): boolean => {
@@ -241,47 +246,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         shift: CodeMirror.insertNewlineAndIndent,
       },
     ];
-  }
-
-  private moveHistory(dir: -1|1, force = false): boolean {
-    const {editor} = this.editor, {main} = editor.state.selection;
-    if (!force) {
-      if (!main.empty) {
-        return false;
-      }
-      const cursorCoords = editor.coordsAtPos(main.head);
-      const endCoords = editor.coordsAtPos(dir < 0 ? 0 : editor.state.doc.length);
-      // Check if there are wrapped lines in this direction, and let
-      // the cursor move normally if there are.
-      if (cursorCoords && endCoords &&
-          (dir < 0 ? cursorCoords.top > endCoords.top + 5 : cursorCoords.bottom < endCoords.bottom - 5)) {
-        return false;
-      }
-    }
-
-    const history = this.historyInternal;
-    const newText = dir < 0 ? history.previous(this.text()) : history.next();
-    if (newText === undefined) {
-      return false;
-    }
-
-    // Change the prompt input to the history content, and scroll to the end to
-    // bring the full content (potentially multiple lines) into view.
-    const cursorPos = newText.length;
-    this.editor.dispatch({
-      changes: {from: 0, to: this.editor.state.doc.length, insert: newText},
-      selection: CodeMirror.EditorSelection.cursor(cursorPos),
-      scrollIntoView: true,
-    });
-    if (dir < 0) {
-      // If we are going back in history, put the cursor to the end of the first line
-      // so that the user can quickly go further back in history.
-      const firstLineBreak = newText.search(/\n|$/);
-      this.editor.dispatch({
-        selection: CodeMirror.EditorSelection.cursor(firstLineBreak),
-      });
-    }
-    return true;
   }
 
   private async enterWillEvaluate(): Promise<boolean> {

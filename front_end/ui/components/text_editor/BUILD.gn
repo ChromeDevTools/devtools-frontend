@@ -10,6 +10,7 @@ devtools_module("text_editor") {
   sources = [
     "AutocompleteHistory.ts",
     "TextEditor.ts",
+    "TextEditorHistory.ts",
     "config.ts",
     "cursor_tooltip.ts",
     "javascript.ts",

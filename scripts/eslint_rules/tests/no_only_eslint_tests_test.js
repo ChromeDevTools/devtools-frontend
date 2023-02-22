@@ -40,6 +40,33 @@ ruleTester.run('no_only_eslint_tests', rule, {
       })`,
       filename: 'scripts/eslint_rules/tests/foo_test.js',
       errors: [{messageId: 'noOnlyInESLintTest'}],
+      output: `ruleTester.run('my_eslint_rule', rule, {
+        valid: [{
+          code: 'foo',
+          filename: 'foo.ts',
+        }]
+      })`,
+    },
+    {
+      code: `ruleTester.run('my_eslint_rule', rule, {
+        valid: [{
+          code: 'foo',
+          filename: 'foo.ts',
+          only: true,
+        }]
+      })`,
+      filename: 'scripts/eslint_rules/tests/foo_test.js',
+      errors: [{messageId: 'noOnlyInESLintTest'}],
+      // The final closing bracket gets moved in one level when only: true is
+      // the last key in the object, and it is not entirely clear why. But
+      // because we run clang-format on these files, it is OK to leave the
+      // final formatting to be done by clang.
+      output: `ruleTester.run('my_eslint_rule', rule, {
+        valid: [{
+          code: 'foo',
+          filename: 'foo.ts',
+          }]
+      })`,
     },
     {
       code: `ruleTester.run('my_eslint_rule', rule, {
@@ -52,6 +79,13 @@ ruleTester.run('no_only_eslint_tests', rule, {
       })`,
       filename: 'scripts/eslint_rules/tests/foo_test.js',
       errors: [{messageId: 'noOnlyInESLintTest'}],
+      output: `ruleTester.run('my_eslint_rule', rule, {
+        invalid: [{
+          code: 'foo',
+          filename: 'foo.ts',
+          errors: [{ messagId: 'foo' }]
+        }]
+      })`,
     },
     {
       code: `ruleTester.run('my_eslint_rule', rule, {
@@ -69,6 +103,17 @@ ruleTester.run('no_only_eslint_tests', rule, {
       })`,
       filename: 'scripts/eslint_rules/tests/foo_test.js',
       errors: [{messageId: 'noOnlyInESLintTest'}, {messageId: 'noOnlyInESLintTest'}],
+      output: `ruleTester.run('my_eslint_rule', rule, {
+        valid: [{
+          code: 'foo',
+          filename: 'foo.ts',
+        }],
+        invalid: [{
+          code: 'foo',
+          filename: 'foo.ts',
+          errors: [{ messagId: 'foo' }]
+        }]
+      })`,
     },
     {
       code: `ruleTester.run('my_eslint_rule', rule, {
@@ -89,6 +134,20 @@ ruleTester.run('no_only_eslint_tests', rule, {
       })`,
       filename: 'scripts/eslint_rules/tests/foo_test.js',
       errors: [{messageId: 'noOnlyInESLintTest'}, {messageId: 'noOnlyInESLintTest'}],
+      output: `ruleTester.run('my_eslint_rule', rule, {
+        valid: [{
+          code: 'foo',
+          filename: 'foo.ts',
+        }, {
+          code: 'foo',
+          filename: 'foo.ts',
+        }],
+        invalid: [{
+          code: 'foo',
+          filename: 'foo.ts',
+          errors: [{ messagId: 'foo' }]
+        }]
+      })`,
     },
   ]
 });

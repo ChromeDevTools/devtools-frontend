@@ -5,6 +5,7 @@
 import * as Workspace from '../../../../../../front_end/models/workspace/workspace.js';
 import * as SourcesComponents from '../../../../../../front_end/panels/sources/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 import {
   assertElement,
   assertShadowRoot,
@@ -506,5 +507,13 @@ describe('HeadersView', async () => {
     dispatchPasteEvent(headerValue, {clipboardData: dt, bubbles: true});
     await coordinator.done();
     assert.deepEqual(getSingleRowContent(editor.shadowRoot, 2), 'access-control-allow-origin:foo bar');
+  });
+
+  it('shows context menu', async () => {
+    const editor = await renderEditor();
+    assertShadowRoot(editor.shadowRoot);
+    const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+    editor.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true}));
+    assert.isTrue(contextMenuShow.calledOnce);
   });
 });

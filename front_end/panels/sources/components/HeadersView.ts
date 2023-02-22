@@ -137,6 +137,7 @@ export class HeadersViewComponent extends HTMLElement {
     this.#shadow.addEventListener('input', this.#onInput.bind(this));
     this.#shadow.addEventListener('keydown', this.#onKeyDown.bind(this));
     this.#shadow.addEventListener('paste', this.#onPaste.bind(this));
+    this.addEventListener('contextmenu', this.#onContextMenu.bind(this));
   }
 
   connectedCallback(): void {
@@ -217,6 +218,15 @@ export class HeadersViewComponent extends HTMLElement {
     // clear selection
     const selection = window.getSelection();
     selection?.removeAllRanges();
+  }
+
+  #onContextMenu(event: Event): void {
+    if (!this.#uiSourceCode) {
+      return;
+    }
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.appendApplicableItems(this.#uiSourceCode);
+    void contextMenu.show();
   }
 
   #generateNextHeaderName(headers: Protocol.Fetch.HeaderEntry[]): string {

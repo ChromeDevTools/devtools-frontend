@@ -1002,7 +1002,7 @@ export abstract class HeapSnapshot {
     }
 
     if (sortedIndexes && (!key || !this.#aggregatesSortedFlags[key])) {
-      this.sortAggregateIndexes(aggregates.aggregatesByClassName);
+      this.sortAggregateIndexes(aggregatesByClassName);
       if (key) {
         this.#aggregatesSortedFlags[key] = sortedIndexes;
       }

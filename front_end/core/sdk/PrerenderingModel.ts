@@ -18,6 +18,8 @@ import * as TargetManager from './TargetManager.js';
 // Note: In first implementation of Preloading Status Panel, we utilize
 // TargetInfo to detect beginning of prerendering. See the discussion in
 // https://chromium-review.googlesource.com/c/chromium/src/+/3875947/comment/595dd0d3_bb2cb92f/
+//
+// TODO(https://crbug.com/1384419): Migrate this into PreloadingModel.
 export class PrerenderingModel extends SDKModel.SDKModel<EventTypes> implements
     TargetManager.SDKModelObserver<ResourceTreeModel.ResourceTreeModel> {
   private registry: PrerenderingRegistry = new PrerenderingRegistry();

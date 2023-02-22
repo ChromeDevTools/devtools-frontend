@@ -706,6 +706,10 @@ export class TargetBase {
     return this.getAgent('Page');
   }
 
+  preloadAgent(): ProtocolProxyApi.PreloadApi {
+    return this.getAgent('Preload');
+  }
+
   profilerAgent(): ProtocolProxyApi.ProfilerApi {
     return this.getAgent('Profiler');
   }
@@ -852,6 +856,10 @@ export class TargetBase {
 
   registerPageDispatcher(dispatcher: ProtocolProxyApi.PageDispatcher): void {
     this.registerDispatcher('Page', dispatcher);
+  }
+
+  registerPreloadDispatcher(dispatcher: ProtocolProxyApi.PreloadDispatcher): void {
+    this.registerDispatcher('Preload', dispatcher);
   }
 
   registerProfilerDispatcher(dispatcher: ProtocolProxyApi.ProfilerDispatcher): void {

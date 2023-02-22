@@ -1384,13 +1384,13 @@ describeWithEnvironment('TimelineModel', () => {
         }
       }
       assertNotNullOrUndefined(mainTrack);
-      const invalidationEventForClassNames = mainTrack.events.find(event => {
+      const rootLayoutUpdateEvent = mainTrack.events.find(event => {
         return event.name === TimelineModel.TimelineModel.RecordType.UpdateLayoutTree &&
             event.args.beginData?.stackTrace?.[0].functionName === testFunctionName;
       });
-      assertNotNullOrUndefined(invalidationEventForClassNames);
+      assertNotNullOrUndefined(rootLayoutUpdateEvent);
       const invalidationsForEvent =
-          TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(invalidationEventForClassNames);
+          TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(rootLayoutUpdateEvent);
       assertNotNullOrUndefined(invalidationsForEvent);
       return invalidationsForEvent;
     }
@@ -1443,6 +1443,27 @@ describeWithEnvironment('TimelineModel', () => {
         {
           reason: 'Attribute',
           nodeName: 'DIV id=\'testElementFive\'',
+        },
+        {
+          reason: 'Element has pending invalidation list',
+          nodeName: 'DIV id=\'testElementFour\'',
+        },
+        {
+          reason: 'Element has pending invalidation list',
+          nodeName: 'DIV id=\'testElementFive\'',
+        },
+      ]);
+    });
+    it('detects the correct invalidations for an ID being changed', async () => {
+      const {timelineModel} = await traceModelFromTraceFile('style-invalidation-change-id.json.gz');
+      const invalidations = await invalidationsFromTestFunction(timelineModel, 'testFuncs.changeIdAndDisplay');
+      // In this trace there are three nodes impacted by the ID change:
+      // the two test divs, and the button, which gains the :active pseudo
+      // class
+      assert.deepEqual(invalidations.map(invalidationToBasicObject), [
+        {
+          reason: 'PseudoClass',
+          nodeName: 'BUTTON id=\'changeIdAndDisplay\'',
         },
         {
           reason: 'Element has pending invalidation list',

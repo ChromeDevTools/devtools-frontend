@@ -404,7 +404,7 @@ export class CSSMatchedStyles {
       this: CSSMatchedStyles, node: DOMNode, rule: CSSStyleRule, matchingSelectorIndices: number[]): void {
     for (const matchingSelectorIndex of matchingSelectorIndices) {
       const selector = rule.selectors[matchingSelectorIndex];
-      this.setSelectorMatches(node, selector.text, true);
+      selector && this.setSelectorMatches(node, selector.text, true);
     }
   }
 

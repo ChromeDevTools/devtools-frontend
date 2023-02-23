@@ -22,7 +22,10 @@ ts_library("ts") {
 
 copy_to_gen("performance_panel") {
   testonly = true
-  sources = [ "basic.html" ]
+  sources = [
+    "basic.html",
+    "liviu.html",
+  ]
 
   deps = [ ":ts" ]
 }

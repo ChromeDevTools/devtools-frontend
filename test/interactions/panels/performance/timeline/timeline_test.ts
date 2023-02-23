@@ -15,4 +15,11 @@ describe('Performance panel', () => {
     const panel = await waitFor('body');
     await assertElementScreenshotUnchanged(panel, 'performance/timeline.png');
   });
+
+  // Disabled until screenshot tests infrastructure is available in DevTools bots.
+  itScreenshot.skip('[crbug.com/1407638] test screenshot for Liviu', async () => {
+    await loadComponentDocExample('performance_panel/liviu.html');
+    const container = await waitFor('#container');
+    await assertElementScreenshotUnchanged(container, 'performance/liviu-test.png', 0);
+  });
 });

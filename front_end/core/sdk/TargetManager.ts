@@ -8,26 +8,30 @@ import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {Type as TargetType} from './Target.js';
 import {Target} from './Target.js';
-import {type SDKModel} from './SDKModel.js';
+import {SDKModel} from './SDKModel.js';
 import * as Root from '../root/root.js';
 import * as Host from '../host/host.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 let targetManagerInstance: TargetManager|undefined;
+type ModelClass<T = SDKModel> = new (arg1: Target) => T;
 
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #targetsInternal: Set<Target>;
   readonly #observers: Set<Observer>;
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   #modelListeners: Platform.MapUtilities.Multimap<string|symbol|number, {
-    modelClass: new(arg1: Target) => SDKModel,
-    thisObject: (Object|undefined),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    modelClass: ModelClass,
+    thisObject: Object|undefined,
     listener: Common.EventTarget.EventListener<any, any>,
+    wrappedListener: Common.EventTarget.EventListener<any, any>,
   }>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly #modelObservers: Platform.MapUtilities.Multimap<new(arg1: Target) => SDKModel, SDKModelObserver<any>>;
+  readonly #modelObservers: Platform.MapUtilities.Multimap<ModelClass, SDKModelObserver<any>>;
+  #scopedObservers: WeakSet<Observer|SDKModelObserver<any>>;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   #isSuspended: boolean;
   #browserTargetInternal: Target|null;
+  #scopeTarget: Target|null;
 
   private constructor() {
     super();
@@ -37,6 +41,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#modelObservers = new Platform.MapUtilities.Multimap();
     this.#isSuspended = false;
     this.#browserTargetInternal = null;
+    this.#scopeTarget = null;
+    this.#scopedObservers = new WeakSet();
   }
 
   static instance({forceNew}: {
@@ -85,13 +91,17 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return this.#isSuspended;
   }
 
-  models<T extends SDKModel>(modelClass: new(arg1: Target) => T): T[] {
+  models<T extends SDKModel>(modelClass: ModelClass<T>, opts?: {scoped: boolean}): T[] {
     const result = [];
     for (const target of this.#targetsInternal) {
-      const model = target.model(modelClass);
-      if (model) {
-        result.push(model);
+      if (opts?.scoped && !this.isInScope(target)) {
+        continue;
       }
+      const model = target.model(modelClass);
+      if (!model) {
+        continue;
+      }
+      result.push(model);
     }
     return result;
   }
@@ -101,69 +111,91 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return mainTarget ? mainTarget.inspectedURL() : '';
   }
 
-  observeModels<T extends SDKModel>(modelClass: new(arg1: Target) => T, observer: SDKModelObserver<T>): void {
-    const models = this.models(modelClass);
+  observeModels<T extends SDKModel>(modelClass: ModelClass<T>, observer: SDKModelObserver<T>, opts?: {scoped: boolean}):
+      void {
+    const models = this.models(modelClass, opts);
     this.#modelObservers.set(modelClass, observer);
+    if (opts?.scoped) {
+      this.#scopedObservers.add(observer);
+    }
     for (const model of models) {
       observer.modelAdded(model);
     }
   }
 
-  unobserveModels<T extends SDKModel>(modelClass: new(arg1: Target) => SDKModel, observer: SDKModelObserver<T>): void {
+  unobserveModels<T extends SDKModel>(modelClass: ModelClass<T>, observer: SDKModelObserver<T>): void {
     this.#modelObservers.delete(modelClass, observer);
+    this.#scopedObservers.delete(observer);
   }
 
-  modelAdded(target: Target, modelClass: new(arg1: Target) => SDKModel, model: SDKModel): void {
+  modelAdded(target: Target, modelClass: ModelClass, model: SDKModel): void {
     for (const observer of this.#modelObservers.get(modelClass).values()) {
-      observer.modelAdded(model);
-    }
-  }
-
-  private modelRemoved(target: Target, modelClass: new(arg1: Target) => SDKModel, model: SDKModel): void {
-    for (const observer of this.#modelObservers.get(modelClass).values()) {
-      observer.modelRemoved(model);
-    }
-  }
-
-  addModelListener<Events, T extends keyof Events>(
-      modelClass: new(arg1: Target) => SDKModel<Events>, eventType: T,
-      listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object): void {
-    for (const model of this.models(modelClass)) {
-      model.addEventListener(eventType, listener, thisObject);
-    }
-    this.#modelListeners.set(eventType, {modelClass: modelClass, thisObject: thisObject, listener: listener});
-  }
-
-  removeModelListener<Events, T extends keyof Events>(
-      modelClass: new(arg1: Target) => SDKModel<Events>, eventType: T,
-      listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object): void {
-    if (!this.#modelListeners.has(eventType)) {
-      return;
-    }
-
-    for (const model of this.models(modelClass)) {
-      model.removeEventListener(eventType, listener, thisObject);
-    }
-
-    for (const info of this.#modelListeners.get(eventType)) {
-      if (info.modelClass === modelClass && info.listener === listener && info.thisObject === thisObject) {
-        this.#modelListeners.delete(eventType, info);
+      if (!this.#scopedObservers.has(observer) || this.isInScope(model)) {
+        observer.modelAdded(model);
       }
     }
   }
 
-  observeTargets(targetObserver: Observer): void {
+  private modelRemoved(target: Target, modelClass: ModelClass, model: SDKModel): void {
+    for (const observer of this.#modelObservers.get(modelClass).values()) {
+      if (!this.#scopedObservers.has(observer) || this.isInScope(model)) {
+        observer.modelRemoved(model);
+      }
+    }
+  }
+
+  addModelListener<Events, T extends keyof Events>(
+      modelClass: ModelClass<SDKModel<Events>>, eventType: T, listener: Common.EventTarget.EventListener<Events, T>,
+      thisObject?: Object, opts?: {scoped: boolean}): void {
+    const wrappedListener = (event: Common.EventTarget.EventTargetEvent<Events[T], Events>): void => {
+      if (!opts?.scoped || this.isInScope(event)) {
+        listener.call(thisObject, event);
+      }
+    };
+    for (const model of this.models(modelClass)) {
+      model.addEventListener(eventType, wrappedListener);
+    }
+    this.#modelListeners.set(eventType, {modelClass, thisObject, listener, wrappedListener});
+  }
+
+  removeModelListener<Events, T extends keyof Events>(
+      modelClass: ModelClass<SDKModel<Events>>, eventType: T, listener: Common.EventTarget.EventListener<Events, T>,
+      thisObject?: Object): void {
+    if (!this.#modelListeners.has(eventType)) {
+      return;
+    }
+    let wrappedListener = null;
+    for (const info of this.#modelListeners.get(eventType)) {
+      if (info.modelClass === modelClass && info.listener === listener && info.thisObject === thisObject) {
+        wrappedListener = info.wrappedListener;
+        this.#modelListeners.delete(eventType, info);
+      }
+    }
+    if (wrappedListener) {
+      for (const model of this.models(modelClass)) {
+        model.removeEventListener(eventType, wrappedListener);
+      }
+    }
+  }
+
+  observeTargets(targetObserver: Observer, opts?: {scoped: boolean}): void {
     if (this.#observers.has(targetObserver)) {
       throw new Error('Observer can only be registered once');
     }
+    if (opts?.scoped) {
+      this.#scopedObservers.add(targetObserver);
+    }
     for (const target of this.#targetsInternal) {
-      targetObserver.targetAdded(target);
+      if (!opts?.scoped || this.isInScope(target)) {
+        targetObserver.targetAdded(target);
+      }
     }
     this.#observers.add(targetObserver);
   }
 
   unobserveTargets(targetObserver: Observer): void {
     this.#observers.delete(targetObserver);
+    this.#scopedObservers.delete(targetObserver);
   }
 
   createTarget(
@@ -180,7 +212,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
     // Iterate over a copy. #observers might be modified during iteration.
     for (const observer of [...this.#observers]) {
-      observer.targetAdded(target);
+      if (!this.#scopedObservers.has(observer) || this.isInScope(target)) {
+        observer.targetAdded(target);
+      }
     }
 
     for (const [modelClass, model] of target.models().entries()) {
@@ -191,7 +225,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       for (const info of this.#modelListeners.get(key)) {
         const model = target.model(info.modelClass);
         if (model) {
-          model.addEventListener(key, info.listener, info.thisObject);
+          model.addEventListener(key, info.wrappedListener);
         }
       }
     }
@@ -206,20 +240,23 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
     this.#targetsInternal.delete(target);
     for (const modelClass of target.models().keys()) {
-      const model = (target.models().get(modelClass) as SDKModel);
+      const model = target.models().get(modelClass);
+      assertNotNullOrUndefined(model);
       this.modelRemoved(target, modelClass, model);
     }
 
     // Iterate over a copy. #observers might be modified during iteration.
     for (const observer of [...this.#observers]) {
-      observer.targetRemoved(target);
+      if (!this.#scopedObservers.has(observer) || this.isInScope(target)) {
+        observer.targetRemoved(target);
+      }
     }
 
     for (const key of this.#modelListeners.keysArray()) {
       for (const info of this.#modelListeners.get(key)) {
         const model = target.model(info.modelClass);
         if (model) {
-          model.removeEventListener(key, info.listener, info.thisObject);
+          model.removeEventListener(key, info.wrappedListener);
         }
       }
     }
@@ -278,6 +315,73 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   clearAllTargetsForTest(): void {
     this.#targetsInternal.clear();
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  isInScope(arg: SDKModel|Target|Common.EventTarget.EventTargetEvent<any, any>|null): boolean {
+    if (!arg) {
+      return false;
+    }
+    if (isSDKModelEvent(arg)) {
+      arg = arg.source as SDKModel;
+    }
+    if (arg instanceof SDKModel) {
+      arg = arg.target();
+    }
+    while (arg && arg !== this.#scopeTarget) {
+      arg = arg.parentTarget();
+    }
+    return Boolean(arg) && arg === this.#scopeTarget;
+  }
+
+  // Sets a root of a scope substree.
+  // TargetManager API invoked with `scoped: true` will behave as if targets
+  // outside of the scope subtree don't exist. Concretely this means that
+  // target observers, model observers and model listeners won't be invoked for targets outside of the
+  // scope tree. This method will invoke targetRemoved and modelRemoved for
+  // objects in the previous scope, as if they disappear and then will invoke
+  // targetAdded and modelAdded as if they just appeared.
+  // Note that scopeTarget could be null, which will effectively prevent scoped
+  // observes from getting any events.
+  setScopeTarget(scopeTarget: Target|null): void {
+    if (scopeTarget === this.#scopeTarget) {
+      return;
+    }
+    for (const target of this.targets()) {
+      if (!this.isInScope(target)) {
+        continue;
+      }
+      for (const modelClass of this.#modelObservers.keysArray()) {
+        const model = (target.models().get(modelClass) as SDKModel);
+        if (!model) {
+          continue;
+        }
+        for (const observer of [...this.#modelObservers.get(modelClass)].filter(o => this.#scopedObservers.has(o))) {
+          observer.modelRemoved(model);
+        }
+      }
+
+      // Iterate over a copy. #observers might be modified during iteration.
+      for (const observer of [...this.#observers].filter(o => this.#scopedObservers.has(o))) {
+        observer.targetRemoved(target);
+      }
+    }
+    this.#scopeTarget = scopeTarget;
+    for (const target of this.targets()) {
+      if (!this.isInScope(target)) {
+        continue;
+      }
+
+      for (const observer of [...this.#observers].filter(o => this.#scopedObservers.has(o))) {
+        observer.targetAdded(target);
+      }
+
+      for (const [modelClass, model] of target.models().entries()) {
+        for (const observer of [...this.#modelObservers.get(modelClass)].filter(o => this.#scopedObservers.has(o))) {
+          observer.modelAdded(model);
+        }
+      }
+    }
+  }
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -308,4 +412,9 @@ export class SDKModelObserver<T> {
   }
   modelRemoved(_model: T): void {
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isSDKModelEvent(arg: any): arg is Common.EventTarget.EventTargetEvent<any, any> {
+  return 'source' in arg && arg.source instanceof SDKModel;
 }

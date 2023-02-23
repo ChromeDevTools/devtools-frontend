@@ -411,7 +411,6 @@ export const resourceTypeByExtension = new Map([
   ['xsl', resourceTypes.Stylesheet],
 
   ['avif', resourceTypes.Image],
-  ['avifs', resourceTypes.Image],
   ['bmp', resourceTypes.Image],
   ['gif', resourceTypes.Image],
   ['ico', resourceTypes.Image],
@@ -536,7 +535,6 @@ export const mimeTypeByExtension = new Map([
 
   // Image
   ['avif', 'image/avif'],
-  ['avifs', 'image/avif-sequence'],
   ['bmp', 'image/bmp'],
   ['gif', 'image/gif'],
   ['ico', 'image/ico'],

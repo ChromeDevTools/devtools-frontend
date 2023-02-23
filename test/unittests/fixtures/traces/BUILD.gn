@@ -15,6 +15,7 @@ copy_to_gen("traces") {
     "cls-multiple-frames.json.gz",
     "cls-single-frame.json.gz",
     "forced-layouts-and-no-gpu.json.gz",
+    "generic-about-tracing-trace.json.gz",
     "interactive-time.json.gz",
     "invalidate-style-class-name-change.json.gz",
     "lcp-images.json.gz",

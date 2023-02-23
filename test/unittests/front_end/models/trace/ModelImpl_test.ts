@@ -40,6 +40,13 @@ describe('TraceModel', async function() {
     void loadEventsFromTraceFile('basic.json.gz').then(events => model.parse(events));
   });
 
+  it('supports parsing a generic trace that has no browser specific details', async () => {
+    const model = new TraceModel.TraceModel.Model();
+    const file1 = await loadEventsFromTraceFile('generic-about-tracing-trace.json.gz');
+    await model.parse(file1);
+    assert.strictEqual(model.size(), 1);
+  });
+
   it('supports parsing multiple traces', async () => {
     const model = new TraceModel.TraceModel.Model();
     const file1 = await loadEventsFromTraceFile('basic.json.gz');

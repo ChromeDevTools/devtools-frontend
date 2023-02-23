@@ -6,13 +6,15 @@ import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js'
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {traceModelFromTraceFile} from '../../helpers/TimelineHelpers.js';
-import {loadModelDataFromTraceFile} from '../../helpers/TraceHelpers.js';
+import {loadModelDataFromTraceFile, setTraceModelTimeout} from '../../helpers/TraceHelpers.js';
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('TimelineHistoryManager', () => {
+describeWithEnvironment('TimelineHistoryManager', function() {
+  setTraceModelTimeout(this);
+
   let historyManager: Timeline.TimelineHistoryManager.TimelineHistoryManager;
   beforeEach(() => {
     UI.ActionRegistration.registerActionExtension({

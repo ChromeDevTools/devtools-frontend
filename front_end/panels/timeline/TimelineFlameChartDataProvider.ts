@@ -160,8 +160,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const FONT = '11px ' + Host.Platform.fontFamily();
 
+// At the moment there are two types defined for trace events: TraceEventData and
+// SDK.TracingModel.Event. This is only for compatibility between the legacy system
+// and the new system proposed in go/rpp-flamechart-arch. In the future, once all
+// tracks have been migrated to the new system, all entries will be of the
+// TraceEventData type.
 export type TimelineFlameChartEntry =
-    (SDK.FilmStripModel.Frame|SDK.TracingModel.Event|TimelineModel.TimelineFrameModel.TimelineFrame);
+    (SDK.FilmStripModel.Frame|SDK.TracingModel.Event|TimelineModel.TimelineFrameModel.TimelineFrame|
+     TraceEngine.Types.TraceEvents.TraceEventData);
 export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.FlameChart.FlameChartDataProvider {
   private droppedFramePatternCanvas: HTMLCanvasElement;
@@ -339,6 +345,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     if (entryType === entryTypes.Screenshot) {
       return '';
+    }
+    if (entryType === entryTypes.TrackAppender) {
+      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.TimelineData);
+      const eventLevel = timelineData.entryLevels[entryIndex];
+      const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
+      return this.compatibilityTracksAppender?.titleForEvent(event, eventLevel) || null;
     }
     let title: Common.UIString.LocalizedString|string = this.entryIndexToTitle[entryIndex];
     if (!title) {
@@ -611,15 +623,42 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.timeSpan;
   }
 
+  /**
+   * Narrows an entry of type TimelineFlameChartEntry to the 2 types of
+   * simple trace events (legacy and new engine definitions).
+   */
+  isEntryRegularEvent(entry: TimelineFlameChartEntry): entry is(TraceEngine.Types.TraceEvents.TraceEventData|
+                                                                SDK.TracingModel.Event) {
+    return 'name' in entry;
+  }
+
   search(startTime: number, endTime: number, filter: TimelineModel.TimelineModelFilter.TimelineModelFilter): number[] {
     const result = [];
-    const entryTypes = EntryType;
     this.timelineData();
     for (let i = 0; i < this.entryData.length; ++i) {
-      if (this.entryType(i) !== entryTypes.Event) {
+      const entry = this.entryData[i];
+      if (!this.isEntryRegularEvent(entry)) {
         continue;
       }
-      const event = (this.entryData[i] as SDK.TracingModel.Event);
+      let event: SDK.TracingModel.Event|null;
+      // The search features are implemented for SDK Event types only. Until we haven't fully
+      // transitioned to use the types of the new engine, we need to use legacy representation
+      // for events coming from the new engine.
+      if (entry instanceof SDK.TracingModel.Event) {
+        event = entry;
+      } else {
+        if (!this.compatibilityTracksAppender) {
+          // This should not happen.
+          console.error('compatibilityTracksAppender was unexpectedly not set.');
+          continue;
+        }
+        event = this.compatibilityTracksAppender.getLegacyEvent(entry);
+      }
+
+      if (!event) {
+        continue;
+      }
+
       if (event.startTime > endTime) {
         continue;
       }
@@ -967,8 +1006,18 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let warning;
     let nameSpanTimelineInfoTime = 'timeline-info-time';
 
-    const type = this.entryType(entryIndex);
-    if (type === EntryType.Event) {
+    const entryType = this.entryType(entryIndex);
+    if (entryType === EntryType.TrackAppender) {
+      if (!this.compatibilityTracksAppender) {
+        return null;
+      }
+      const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
+      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.TimelineData);
+      const eventLevel = timelineData.entryLevels[entryIndex];
+      const highlightedEntryInfo = this.compatibilityTracksAppender.highlightedEntryInfo(event, eventLevel);
+      title = highlightedEntryInfo.title;
+      time = highlightedEntryInfo.formattedTime;
+    } else if (entryType === EntryType.Event) {
       const event = (this.entryData[entryIndex] as SDK.TracingModel.Event);
       const totalTime = event.duration;
       const selfTime = event.selfTime;
@@ -1002,7 +1051,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         title += ` - ${url} [${range}]`;
       }
 
-    } else if (type === EntryType.Frame) {
+    } else if (entryType === EntryType.Frame) {
       const frame = (this.entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame);
       time = i18n.TimeUtilities.preciseMillisToString(frame.duration, 1);
 
@@ -1062,8 +1111,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     const entryTypes = EntryType;
-    const type = this.entryType(entryIndex);
-    if (type === entryTypes.Event) {
+    const entryType = this.entryType(entryIndex);
+    if (entryType === entryTypes.Event) {
       const event = (this.entryData[entryIndex] as SDK.TracingModel.Event);
       if (this.legacyTimelineModel.isGenericTrace()) {
         return this.genericTraceEventColor(event);
@@ -1084,12 +1133,18 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const category = TimelineUIUtils.eventStyle(event).category;
       return patchColorAndCache(this.asyncColorByCategory, category, () => category.color);
     }
-    if (type === entryTypes.Frame) {
+    if (entryType === entryTypes.Frame) {
       return 'white';
     }
-    if (type === entryTypes.ExtensionEvent) {
+    if (entryType === entryTypes.ExtensionEvent) {
       const event = (this.entryData[entryIndex] as SDK.TracingModel.Event);
       return this.extensionColorGenerator.colorForID(event.name);
+    }
+    if (entryType === entryTypes.TrackAppender) {
+      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.TimelineData);
+      const eventLevel = timelineData.entryLevels[entryIndex];
+      const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
+      return this.compatibilityTracksAppender?.colorForEvent(event, eventLevel) || '';
     }
     return '';
   }
@@ -1213,20 +1268,20 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       entryIndex: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number,
       barWidth: number, barHeight: number, unclippedBarX: number, timeToPixels: number): boolean {
     const data = this.entryData[entryIndex];
-    const type = this.entryType(entryIndex);
+    const entryType = this.entryType(entryIndex);
     const entryTypes = EntryType;
 
-    if (type === entryTypes.Frame) {
+    if (entryType === entryTypes.Frame) {
       this.drawFrame(entryIndex, context, text, barX, barY, barWidth, barHeight);
       return true;
     }
 
-    if (type === entryTypes.Screenshot) {
+    if (entryType === entryTypes.Screenshot) {
       void this.drawScreenshot(entryIndex, context, barX, barY, barWidth, barHeight);
       return true;
     }
 
-    if (type === entryTypes.Event) {
+    if (entryType === entryTypes.Event) {
       const event = (data as SDK.TracingModel.Event);
       if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo)) {
         const timeWaitingForMainThread =
@@ -1262,15 +1317,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   forceDecoration(entryIndex: number): boolean {
     const entryTypes = EntryType;
-    const type = this.entryType(entryIndex);
-    if (type === entryTypes.Frame) {
+    const entryType = this.entryType(entryIndex);
+    if (entryType === entryTypes.Frame) {
       return true;
     }
-    if (type === entryTypes.Screenshot) {
+    if (entryType === entryTypes.Screenshot) {
       return true;
     }
 
-    if (type === entryTypes.Event) {
+    if (entryType === entryTypes.Event) {
       const event = (this.entryData[entryIndex] as SDK.TracingModel.Event);
       return Boolean(TimelineModel.TimelineModel.TimelineData.forEvent(event).warning);
     }
@@ -1356,11 +1411,17 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   createSelection(entryIndex: number): TimelineSelection|null {
-    const type = this.entryType(entryIndex);
+    const entryType = this.entryType(entryIndex);
     let timelineSelection: TimelineSelection|null = null;
-    if (type === EntryType.Event) {
-      timelineSelection = TimelineSelection.fromTraceEvent((this.entryData[entryIndex] as SDK.TracingModel.Event));
-    } else if (type === EntryType.Frame) {
+    const entry = this.entryData[entryIndex];
+    if (this.isEntryRegularEvent(entry)) {
+      const event =
+          entry instanceof SDK.TracingModel.Event ? entry : this.compatibilityTracksAppender?.getLegacyEvent(entry);
+      if (!event) {
+        return null;
+      }
+      timelineSelection = TimelineSelection.fromTraceEvent(event);
+    } else if (entryType === EntryType.Frame) {
       timelineSelection =
           TimelineSelection.fromFrame((this.entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame));
     }
@@ -1471,11 +1532,19 @@ export type EventTypes = {
   [Events.DataChanged]: void,
 };
 
+// an entry is a trace event, they are classified into "entry types"
+// because some events are rendered differently. For example, screenshot
+// events are rendered as images. Checks for entry types allow to have
+// different styles, names, etc. for events that look differently.
+// In the future we won't have this checks: instead we will forward
+// the event to the corresponding "track appender" and it will determine
+// how the event shall be rendered.
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum EntryType {
   Frame = 'Frame',
   Event = 'Event',
+  TrackAppender = 'TrackAppender',
   ExtensionEvent = 'ExtensionEvent',
   Screenshot = 'Screenshot',
 }

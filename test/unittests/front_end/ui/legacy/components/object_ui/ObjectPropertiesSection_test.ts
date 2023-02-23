@@ -22,7 +22,7 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
   async function setupTreeOutline(
       code: string, accessorPropertiesOnly: boolean, generatePreview: boolean, nonIndexedPropertiesOnly?: boolean) {
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    const target = targetManager.mainTarget();
+    const target = targetManager.rootTarget();
     assertNotNullOrUndefined(target);
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
     assertNotNullOrUndefined(runtimeModel);

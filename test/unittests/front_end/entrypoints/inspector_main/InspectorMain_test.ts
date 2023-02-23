@@ -52,35 +52,35 @@ describeWithMockConnection('InspectorMainImpl', () => {
   it('sets main target type to Node if v8only query param present', async () => {
     const inspectorMain = InspectorMain.InspectorMain.InspectorMainImpl.instance({forceNew: true});
     Root.Runtime.Runtime.setQueryParamForTesting('v8only', 'true');
-    assert.notExists(SDK.TargetManager.TargetManager.instance().mainTarget());
+    assert.notExists(SDK.TargetManager.TargetManager.instance().rootTarget());
     await inspectorMain.run();
 
-    assert.strictEqual(SDK.TargetManager.TargetManager.instance().mainTarget()?.type(), SDK.Target.Type.Node);
+    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.type(), SDK.Target.Type.Node);
     Root.Runtime.Runtime.setQueryParamForTesting('v8only', '');
   });
 
   it('sets main target type to Tab if targetType=tab query param present', async () => {
     const inspectorMain = InspectorMain.InspectorMain.InspectorMainImpl.instance({forceNew: true});
     Root.Runtime.Runtime.setQueryParamForTesting('targetType', 'tab');
-    assert.notExists(SDK.TargetManager.TargetManager.instance().mainTarget());
+    assert.notExists(SDK.TargetManager.TargetManager.instance().rootTarget());
     await inspectorMain.run();
 
-    assert.strictEqual(SDK.TargetManager.TargetManager.instance().mainTarget()?.type(), SDK.Target.Type.Tab);
+    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.type(), SDK.Target.Type.Tab);
     Root.Runtime.Runtime.setQueryParamForTesting('targetType', '');
   });
 
   it('sets main target type to Frame by default', async () => {
     const inspectorMain = InspectorMain.InspectorMain.InspectorMainImpl.instance({forceNew: true});
-    assert.notExists(SDK.TargetManager.TargetManager.instance().mainTarget());
+    assert.notExists(SDK.TargetManager.TargetManager.instance().rootTarget());
     await inspectorMain.run();
 
-    assert.strictEqual(SDK.TargetManager.TargetManager.instance().mainTarget()?.type(), SDK.Target.Type.Frame);
+    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.type(), SDK.Target.Type.Frame);
   });
 
   it('creates main target waiting for debugger if the main target is frame and panel is sources', async () => {
     const inspectorMain = InspectorMain.InspectorMain.InspectorMainImpl.instance({forceNew: true});
     Root.Runtime.Runtime.setQueryParamForTesting('panel', 'sources');
-    assert.notExists(SDK.TargetManager.TargetManager.instance().mainTarget());
+    assert.notExists(SDK.TargetManager.TargetManager.instance().rootTarget());
 
     const waitForDebugger = sinon.spy();
     const debuggerPause = sinon.spy();
@@ -97,7 +97,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
   it('wait for Debugger.enable before calling Debugger.pause', async () => {
     const inspectorMain = InspectorMain.InspectorMain.InspectorMainImpl.instance({forceNew: true});
     Root.Runtime.Runtime.setQueryParamForTesting('panel', 'sources');
-    assert.notExists(SDK.TargetManager.TargetManager.instance().mainTarget());
+    assert.notExists(SDK.TargetManager.TargetManager.instance().rootTarget());
 
     const debuggerPause = sinon.stub();
     setMockConnectionResponseHandler('Debugger.pause', debuggerPause);
@@ -108,7 +108,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
                                                           debuggerEnable = resolve;
                                                         }));
 
-    assert.notExists(SDK.TargetManager.TargetManager.instance().mainTarget());
+    assert.notExists(SDK.TargetManager.TargetManager.instance().rootTarget());
     const result = inspectorMain.run();
     assert.isFalse(debuggerPause.called);
     debuggerEnable({debuggerId: DEBUGGER_ID, getError: () => undefined});
@@ -150,7 +150,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
     const runIfWaitingForDebugger = sinon.spy();
     setMockConnectionResponseHandler('Runtime.runIfWaitingForDebugger', runIfWaitingForDebugger);
     await inspectorMain.run();
-    assert.strictEqual(SDK.TargetManager.TargetManager.instance().mainTarget()?.name(), 'Main');
+    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.name(), 'Main');
   });
 
   it('sets tab target to "tab"', async () => {
@@ -159,7 +159,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
     const runIfWaitingForDebugger = sinon.spy();
     setMockConnectionResponseHandler('Runtime.runIfWaitingForDebugger', runIfWaitingForDebugger);
     await inspectorMain.run();
-    assert.strictEqual(SDK.TargetManager.TargetManager.instance().mainTarget()?.name(), 'Tab');
+    assert.strictEqual(SDK.TargetManager.TargetManager.instance().rootTarget()?.name(), 'Tab');
     Root.Runtime.Runtime.setQueryParamForTesting('targetType', '');
   });
 
@@ -170,9 +170,9 @@ describeWithMockConnection('InspectorMainImpl', () => {
     setMockConnectionResponseHandler('Runtime.runIfWaitingForDebugger', runIfWaitingForDebugger);
     await inspectorMain.run();
     const prerenderTarget = createTarget(
-        {parentTarget: SDK.TargetManager.TargetManager.instance().mainTarget() || undefined, subtype: 'prerender'});
+        {parentTarget: SDK.TargetManager.TargetManager.instance().rootTarget() || undefined, subtype: 'prerender'});
     const mainFrameTarget =
-        createTarget({parentTarget: SDK.TargetManager.TargetManager.instance().mainTarget() || undefined});
+        createTarget({parentTarget: SDK.TargetManager.TargetManager.instance().rootTarget() || undefined});
     assert.notStrictEqual(prerenderTarget.name(), 'Main');
     assert.strictEqual(mainFrameTarget.name(), 'Main');
     Root.Runtime.Runtime.setQueryParamForTesting('targetType', '');

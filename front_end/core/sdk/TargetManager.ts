@@ -271,12 +271,12 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return this.targets().find(target => target.id() === id) || null;
   }
 
-  mainTarget(): Target|null {
+  rootTarget(): Target|null {
     return this.#targetsInternal.size ? this.#targetsInternal.values().next().value : null;
   }
 
   mainFrameTarget(): Target|null {
-    let target = this.mainTarget();
+    let target = this.rootTarget();
     if (target?.type() === TargetType.Tab) {
       target =
           this.targets().find(

@@ -110,7 +110,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
     this.list.element.tabIndex = 0;
     const item = new ListItem(isolate);
     const index = (item.model() as SDK.RuntimeModel.RuntimeModel).target() ===
-            SDK.TargetManager.TargetManager.instance().mainTarget() ?
+            SDK.TargetManager.TargetManager.instance().rootTarget() ?
         0 :
         this.items.length;
     this.items.insert(index, item);
@@ -273,7 +273,7 @@ export class ListItem {
     const modelCountByName = new Map<string, number>();
     for (const model of this.isolate.models()) {
       const target = model.target();
-      const name = SDK.TargetManager.TargetManager.instance().mainTarget() !== target ? target.name() : '';
+      const name = SDK.TargetManager.TargetManager.instance().rootTarget() !== target ? target.name() : '';
       const parsedURL = new Common.ParsedURL.ParsedURL(target.inspectedURL());
       const domain = parsedURL.isValid ? parsedURL.domain() : '';
       const title =

@@ -266,20 +266,20 @@ export class ParallelConnection implements ParallelConnectionInterface {
 }
 
 export async function initMainConnection(
-    createMainTarget: () => Promise<void>, websocketConnectionLost: () => void): Promise<void> {
+    createRootTarget: () => Promise<void>, websocketConnectionLost: () => void): Promise<void> {
   ProtocolClient.InspectorBackend.Connection.setFactory(createMainConnection.bind(null, websocketConnectionLost));
-  await createMainTarget();
+  await createRootTarget();
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-      Host.InspectorFrontendHostAPI.Events.ReattachMainTarget, () => {
-        const target = TargetManager.instance().mainTarget();
+      Host.InspectorFrontendHostAPI.Events.ReattachRootTarget, () => {
+        const target = TargetManager.instance().rootTarget();
         if (target) {
           const router = target.router();
           if (router) {
             void router.connection().disconnect();
           }
         }
-        void createMainTarget();
+        void createRootTarget();
       });
 }
 

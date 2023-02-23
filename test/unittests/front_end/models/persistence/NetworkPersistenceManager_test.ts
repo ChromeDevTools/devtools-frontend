@@ -599,7 +599,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
         createFileSystemUISourceCode({url: 'file:///tmp' as Platform.DevToolsPath.UrlString, mimeType: 'text/plain'});
     await networkPersistenceManager.setProject(project);
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    assert.isNull(targetManager.mainTarget());
+    assert.isNull(targetManager.rootTarget());
     assert.isFalse(networkPersistenceManager.active());
 
     const target = await createTarget();

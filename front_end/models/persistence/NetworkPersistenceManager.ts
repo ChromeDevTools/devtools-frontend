@@ -172,7 +172,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   private async updateActiveProject(): Promise<void> {
     const wasActive = this.activeInternal;
     this.activeInternal = Boolean(
-        this.enabledSetting.get() && SDK.TargetManager.TargetManager.instance().mainTarget() && this.projectInternal);
+        this.enabledSetting.get() && SDK.TargetManager.TargetManager.instance().rootTarget() && this.projectInternal);
     if (this.activeInternal === wasActive) {
       return;
     }

@@ -66,7 +66,7 @@ describeWithRealConnection('StylesSidebarPane', async () => {
     const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance();
     await stylesSidebarPane.trackURLForChanges(URL);
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    const target = targetManager.mainTarget();
+    const target = targetManager.rootTarget();
     assertNotNullOrUndefined(target);
 
     const resourceURL = () => URL;

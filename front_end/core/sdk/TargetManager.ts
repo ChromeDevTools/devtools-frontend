@@ -351,7 +351,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
         continue;
       }
       for (const modelClass of this.#modelObservers.keysArray()) {
-        const model = (target.models().get(modelClass) as SDKModel);
+        const model = target.models().get(modelClass);
         if (!model) {
           continue;
         }

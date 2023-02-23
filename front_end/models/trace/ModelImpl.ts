@@ -126,6 +126,11 @@ export class Model extends EventTarget {
             this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.TRACE, data: data}));
             break;
           }
+          case 'CONSOLE_DEBUG': {
+            // eslint-disable-next-line no-console
+            console[eventFromWorker.method]('[from TraceWorker]', ...eventFromWorker.args);
+            break;
+          }
           default:
             Platform.assertNever(eventFromWorker, `Unexpected event from the trace worker ${eventFromWorker}`);
         }

@@ -23,4 +23,8 @@ export type MessageFromWorker = {
 }|{
   message: 'PARSE_ERROR',
   error: Error,
+}|{
+  message: 'CONSOLE_DEBUG',
+  args: Transferable[],
+  method: 'log' | 'warn' | 'error',
 };

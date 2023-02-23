@@ -245,37 +245,8 @@ export async function finalize(): Promise<void> {
     throw new Error('Handler is not initialized');
   }
 
-  // If we haven't seen a TracingStartedInBrowser event then we don't
-  // support this trace file. As such, we throw an error here.
-  if (traceStartedTime === -1) {
-    console.error('Error parsing trace data: no TracingStartedInBrowser event found.');
-  }
-
   traceBounds.min = traceStartedTime;
   traceBounds.range = Types.Timing.MicroSeconds(traceBounds.max - traceBounds.min);
-
-  if (topLevelRendererIds.size === 0) {
-    console.error('Unable to find renderer processes');
-  }
-
-  if (browserProcessId === Types.TraceEvents.ProcessID(-1)) {
-    console.error('Unable to find browser process');
-  }
-
-  if (browserThreadId === Types.TraceEvents.ThreadID(-1)) {
-    console.error('Unable to find browser thread');
-  }
-
-  if (gpuProcessId === Types.TraceEvents.ProcessID(-1)) {
-    console.error('Unable to find GPU process');
-  }
-
-  // We purposefully don't check for a missing GPU Thread ID; it's possible
-  // that a trace ran and did not use a GPU Thread.
-
-  if (!mainFrameId) {
-    console.error('Unable to find main frame ID');
-  }
 
   // If we go from foo.com to example.com we will get a new renderer, and
   // therefore the "top level renderer" will have a different PID as it has

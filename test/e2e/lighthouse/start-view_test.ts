@@ -68,7 +68,8 @@ describe('The Lighthouse start view', async () => {
     assert.isTrue(disabled, 'The Generate Report button should be disabled');
   });
 
-  it('displays warning if important data may affect performance', async () => {
+  // Flaky on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1418624] displays warning if important data may affect performance', async () => {
     // e2e tests in application/ create websql and indexeddb items and don't clean up after themselves
     await clearSiteData();
 

@@ -584,7 +584,6 @@ export class Event {
     }
     const order = (a.phase === b.phase && a.phase === "E") ? -1 : 1;
     return a.startTime - b.startTime || order * (Number(b.name.startsWith("Coherent_")) - Number(a.name.startsWith("Coherent_")));
-    return a.startTime - b.startTime || order * (Number(a.name.startsWith("Coherent_")) - Number(b.name.startsWith("Coherent_")));
   }
   // COHERENT END
 
@@ -847,7 +846,7 @@ export class Process extends NamedObject {
     // COHERENT BEGIN
     // More info on the function
     // return Sorter.sort([...this.threads.values()]);
-    return NamedObject.sort([...this.threads.values()]); 
+    return NamedObject.sort([...this.threads.values()]);
     // COHERENT END
   }
 }

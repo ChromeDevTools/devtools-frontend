@@ -332,7 +332,7 @@ describe('ElementsBreadcrumbs', () => {
           dispatchClickEvent(rightButton);
           const scrollWrapper = shadowRoot.querySelector('.crumbs-window');
           assertElement(scrollWrapper, HTMLDivElement);
-          await waitForScrollLeft(scrollWrapper, 170);
+          await waitForScrollLeft(scrollWrapper, 100);
           await coordinator.done();
           assert.isTrue(rightButton.disabled);
         });

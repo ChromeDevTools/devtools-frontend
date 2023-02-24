@@ -156,8 +156,9 @@ devtools_svg_sources = [
   "trash_bin_icon.svg",
   "trash_bin_material_icon.svg",
   "treeoutlineTriangles.svg",
-  "triangle-collapsed.svg",
-  "triangle-expanded.svg",
+  "triangle-down.svg",
+  "triangle-left.svg",
+  "triangle-right.svg",
   "warning_icon.svg",
 ]
 

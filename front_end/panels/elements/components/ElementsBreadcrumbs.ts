@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -93,24 +94,37 @@ export class ElementsBreadcrumbs extends HTMLElement {
    * If either of these are true, we toggle the overflowing state accordingly and trigger a re-render.
    */
   async #checkForOverflowOnResize(): Promise<void> {
-    const wrappingElement = this.#shadow.querySelector('.crumbs');
-    const crumbs = this.#shadow.querySelector('.crumbs-scroll-container');
-    if (!wrappingElement || !crumbs) {
+    const crumbScrollContainer = this.#shadow.querySelector('.crumbs-scroll-container');
+    const crumbWindow = this.#shadow.querySelector('.crumbs-window');
+
+    if (!crumbScrollContainer || !crumbWindow) {
       return;
     }
 
-    const totalContainingWidth = await coordinator.read<number>(() => wrappingElement.clientWidth);
-    const totalCrumbsWidth = await coordinator.read<number>(() => crumbs.clientWidth);
+    const crumbWindowWidth = await coordinator.read<number>(() => {
+      return crumbWindow.clientWidth;
+    });
 
-    if (totalCrumbsWidth >= totalContainingWidth && this.#overflowing === false) {
-      this.#overflowing = true;
-      this.#userScrollPosition = 'start';
-      void this.#render();
-    } else if (totalCrumbsWidth < totalContainingWidth && this.#overflowing === true) {
-      this.#overflowing = false;
-      this.#userScrollPosition = 'start';
-      void this.#render();
+    const scrollContainerWidth = await coordinator.read<number>(() => {
+      return crumbScrollContainer.clientWidth;
+    });
+
+    if (this.#overflowing) {
+      // We currently have overflow buttons.
+      // If the content while displaying buttons still fits, then we can
+      // rerender without overflow.
+      if (scrollContainerWidth < crumbWindowWidth) {
+        this.#overflowing = false;
+      }
+    } else {
+      // We currently do not have overflow buttons.
+      // If the content won't fit anymore, then rerender with overflow.
+      if (scrollContainerWidth > crumbWindowWidth) {
+        this.#overflowing = true;
+      }
     }
+    void this.#ensureSelectedNodeIsVisible();
+    void this.#updateScrollState(crumbWindow);
   }
 
   #onCrumbMouseMove(node: DOMNode): () => void {
@@ -145,8 +159,8 @@ export class ElementsBreadcrumbs extends HTMLElement {
   }
 
   /**
-   * This method runs after render and checks if the crumbs are too large for
-   * their container and therefore we need to render the overflow buttons at
+   * This method runs after render or resize and checks if the crumbs are too large
+   * for their container and therefore we need to render the overflow buttons at
    * either end which the user can use to scroll back and forward through the crumbs.
    * If it finds that we are overflowing, it sets the instance variable and
    * triggers a re-render. If we are not overflowing, this method returns and
@@ -168,24 +182,21 @@ export class ElementsBreadcrumbs extends HTMLElement {
       return crumbScrollContainer.clientWidth;
     });
 
-    const paddingAllowance = 20;
-    const maxChildWidth = crumbWindowWidth - paddingAllowance;
-
-    if (scrollContainerWidth < maxChildWidth) {
-      if (this.#overflowing) {
-        // We were overflowing, but now we have enough room, so re-render with
-        // overflowing set to false so the overflow buttons get removed.
+    if (this.#overflowing) {
+      // We currently have overflow buttons.
+      // If the content while displaying buttons still fits, then we can
+      // rerender without overflow.
+      if (scrollContainerWidth < crumbWindowWidth) {
         this.#overflowing = false;
         void this.#render();
       }
-      return;
-    }
-
-    // We don't have enough room, so if we are not currently overflowing, mark
-    // as overflowing and re-render to update the UI.
-    if (!this.#overflowing) {
-      this.#overflowing = true;
-      void this.#render();
+    } else {
+      // We currently do not have overflow buttons.
+      // If the content won't fit anymore, then rerender with overflow.
+      if (scrollContainerWidth > crumbWindowWidth) {
+        this.#overflowing = true;
+        void this.#render();
+      }
     }
   }
 
@@ -257,20 +268,28 @@ export class ElementsBreadcrumbs extends HTMLElement {
     const buttonStyles = LitHtml.Directives.classMap({
       overflow: true,
       [direction]: true,
-      hidden: this.#overflowing === false,
+      hidden: !this.#overflowing,
     });
 
     const tooltipString = direction === 'left' ? i18nString(UIStrings.scrollLeft) : i18nString(UIStrings.scrollRight);
-
+    // clang-format off
     return LitHtml.html`
       <button
         class=${buttonStyles}
         @click=${this.#onOverflowClick(direction)}
         ?disabled=${disabled}
         aria-label=${tooltipString}
-        title=${tooltipString}
-      >&hellip;</button>
+        title=${tooltipString}>
+        <${IconButton.Icon.Icon.litTagName} .data=${{
+          iconName: 'triangle-' + direction,
+          color: 'var(--color-text-primary)',
+          width: '12px',
+          height: '10px',
+        } as IconButton.Icon.IconData}>
+        </${IconButton.Icon.Icon.litTagName}>
+      </button>
       `;
+    // clang-format on
   }
 
   #render(): void {

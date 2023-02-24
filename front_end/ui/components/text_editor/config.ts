@@ -158,7 +158,7 @@ export const bracketMatching = DynamicSetting.bool('textEditorBracketMatching', 
 export const codeFolding = DynamicSetting.bool('textEditorCodeFolding', [
   CM.foldGutter({
     markerDOM(open: boolean): HTMLElement {
-      const iconName = open ? 'triangle-expanded' : 'triangle-collapsed';
+      const iconName = open ? 'triangle-down' : 'triangle-right';
       const icon = new Icon.Icon.Icon();
       icon.setAttribute('class', open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
       icon.data = {

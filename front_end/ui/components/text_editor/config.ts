@@ -71,6 +71,8 @@ export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', [], 
   shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
 }]));
 
+const disableConservativeCompletion = CM.StateEffect.define();
+
 // When enabled, this suppresses the behavior of showCompletionHint
 // and accepting of completions with Enter until the user selects a
 // completion beyond the initially selected one. Used in the console.
@@ -82,7 +84,8 @@ export const conservativeCompletion = CM.StateField.define<boolean>({
     if (CM.completionStatus(tr.state) !== 'active') {
       return true;
     }
-    if ((CM.selectedCompletionIndex(tr.startState) ?? 0) !== (CM.selectedCompletionIndex(tr.state) ?? 0)) {
+    if ((CM.selectedCompletionIndex(tr.startState) ?? 0) !== (CM.selectedCompletionIndex(tr.state) ?? 0) ||
+        tr.effects.some(e => e.is(disableConservativeCompletion))) {
       return false;
     }
     return value;
@@ -110,12 +113,15 @@ function acceptCompletionIfAtEndOfLine(view: CM.EditorView): boolean {
 // This is a wrapper around CodeMirror's own moveCompletionSelection command, which
 // selects the first selection if the state of the selection is conservative, and
 // otherwise behaves as normal.
-function moveCompletionSelectionIfNotConversative(
+function moveCompletionSelectionIfNotConservative(
     forward: boolean, by: 'option'|'page' = 'option'): ((view: CM.EditorView) => boolean) {
   return view => {
+    if (CM.completionStatus(view.state) !== 'active') {
+      return false;
+    }
     if (view.state.field(conservativeCompletion, false)) {
-      // There's no CodeMirror API to select the first item, so we just go down and up here.
-      return CM.moveCompletionSelection(true, 'option')(view) && CM.moveCompletionSelection(false, 'option')(view);
+      view.dispatch({effects: disableConservativeCompletion.of(null)});
+      return true;
     }
     return CM.moveCompletionSelection(forward, by)(view);
   };
@@ -138,9 +144,9 @@ export const autocompletion = new DynamicSetting<boolean>(
            {key: 'ArrowRight', run: acceptCompletionIfAtEndOfLine},
            {key: 'Ctrl-Space', run: CM.startCompletion},
            {key: 'Escape', run: CM.closeCompletion},
-           {key: 'ArrowDown', run: moveCompletionSelectionIfNotConversative(true)},
+           {key: 'ArrowDown', run: moveCompletionSelectionIfNotConservative(true)},
            {key: 'ArrowUp', run: CM.moveCompletionSelection(false)},
-           {mac: 'Ctrl-n', run: moveCompletionSelectionIfNotConversative(true)},
+           {mac: 'Ctrl-n', run: moveCompletionSelectionIfNotConservative(true)},
            {mac: 'Ctrl-p', run: CM.moveCompletionSelection(false)},
            {key: 'PageDown', run: CM.moveCompletionSelection(true, 'page')},
            {key: 'PageUp', run: CM.moveCompletionSelection(false, 'page')},

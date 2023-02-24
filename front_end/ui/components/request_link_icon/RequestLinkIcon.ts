@@ -4,6 +4,7 @@
 
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Common from '../../../core/common/common.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
@@ -149,8 +150,11 @@ export class RequestLinkIcon extends HTMLElement {
           linkedRequest, this.#highlightHeader.section, this.#highlightHeader.name);
       void this.#reveal(requestLocation);
     } else {
-      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-          linkedRequest, this.#networkTab ?? NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
+      const headersTab = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES) ?
+          NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent :
+          NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
+      const requestLocation =
+          NetworkForward.UIRequestLocation.UIRequestLocation.tab(linkedRequest, this.#networkTab ?? headersTab);
       void this.#reveal(requestLocation);
     }
     this.#additionalOnClickAction?.();

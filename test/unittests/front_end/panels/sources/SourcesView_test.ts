@@ -22,7 +22,6 @@ import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js
 describe('SourcesView', () => {
   beforeEach(async () => {
     await initializeGlobalVars();
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();

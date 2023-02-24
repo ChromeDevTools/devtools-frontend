@@ -169,7 +169,6 @@ function isRowFocused(
 
 describeWithEnvironment('ResponseHeaderSection', () => {
   before(() => {
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
   });
 

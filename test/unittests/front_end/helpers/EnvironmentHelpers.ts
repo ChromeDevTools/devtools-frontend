@@ -101,6 +101,7 @@ const REGISTERED_EXPERIMENTS = [
   'timelineEventInitiators',
   'inputEventsOnTimelineOverview',
   'timelineAsConsoleProfileResultPanel',
+  'headerOverrides',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

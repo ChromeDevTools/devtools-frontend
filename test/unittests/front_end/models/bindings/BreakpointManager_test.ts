@@ -1178,8 +1178,6 @@ describeWithMockConnection('BreakpointManager', () => {
     });
 
     it('can move breakpoints to network files that are set in override files', async () => {
-      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '', true);
-
       const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
       Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});

@@ -29,7 +29,6 @@ function renderNetworkItemView(): Network.NetworkItemView.NetworkItemView {
 
 describeWithMockConnection('NetworkItemView', () => {
   beforeEach(() => {
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
     setUpEnvironment();
   });
 

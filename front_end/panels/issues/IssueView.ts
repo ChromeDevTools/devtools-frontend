@@ -15,6 +15,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Components from './components/components.js';
+import * as Root from '../../core/root/root.js';
 
 import {AffectedDirectivesView} from './AffectedDirectivesView.js';
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
@@ -92,7 +93,11 @@ class AffectedRequestsView extends AffectedResourcesView {
       const element = document.createElement('tr');
       element.classList.add('affected-resource-request');
       const category = this.issue.getCategory();
-      const tab = issueTypeToNetworkHeaderMap.get(category) || NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
+      let tab = issueTypeToNetworkHeaderMap.get(category) || NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
+      if (tab === NetworkForward.UIRequestLocation.UIRequestTabs.Headers &&
+          Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {
+        tab = NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent;
+      }
       element.appendChild(this.createRequestCell(affectedRequest, {
         networkTab: tab,
         additionalOnClickAction() {
@@ -170,8 +175,12 @@ class AffectedMixedContentView extends AffectedResourcesView {
     element.classList.add('affected-resource-mixed-content');
 
     if (mixedContent.request) {
-      const networkTab = issueTypeToNetworkHeaderMap.get(this.issue.getCategory()) ||
+      let networkTab = issueTypeToNetworkHeaderMap.get(this.issue.getCategory()) ||
           NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
+      if (networkTab === NetworkForward.UIRequestLocation.UIRequestTabs.Headers &&
+          Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {
+        networkTab = NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent;
+      }
       element.appendChild(this.createRequestCell(mixedContent.request, {
         networkTab,
         additionalOnClickAction() {

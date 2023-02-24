@@ -29,7 +29,6 @@ function renderHeadersView(request: SDK.NetworkRequest.NetworkRequest): Network.
 
 describeWithMockConnection('RequestHeadersView', () => {
   beforeEach(() => {
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
   });
   afterEach(async () => {

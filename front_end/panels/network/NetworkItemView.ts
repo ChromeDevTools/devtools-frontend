@@ -145,19 +145,18 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     this.requestInternal = request;
     this.element.classList.add('network-item-view');
 
-    this.resourceViewTabSetting = Common.Settings.Settings.instance().createSetting(
-        'resourceViewTab', NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
+    const headersTab = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES) ?
+        NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent :
+        NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
+    this.resourceViewTabSetting = Common.Settings.Settings.instance().createSetting('resourceViewTab', headersTab);
 
     this.headersView = new RequestHeadersView(request);
     this.headersViewComponent = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {
       this.appendTab(
-          NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent, i18nString(UIStrings.headers),
-          this.headersViewComponent, i18nString(UIStrings.headers));
+          headersTab, i18nString(UIStrings.headers), this.headersViewComponent, i18nString(UIStrings.headers));
     } else {
-      this.appendTab(
-          NetworkForward.UIRequestLocation.UIRequestTabs.Headers, i18nString(UIStrings.headers), this.headersView,
-          i18nString(UIStrings.headers));
+      this.appendTab(headersTab, i18nString(UIStrings.headers), this.headersView, i18nString(UIStrings.headers));
     }
 
     this.payloadView = null;

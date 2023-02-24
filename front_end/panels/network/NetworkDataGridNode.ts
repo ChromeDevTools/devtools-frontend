@@ -1193,9 +1193,12 @@ export class NetworkRequestNode extends NetworkNode {
       if (displayShowHeadersLink) {
         this.setTextAndTitleAsLink(
             cell, i18nString(UIStrings.blockeds, {PH1: reason}), i18nString(UIStrings.blockedTooltip), () => {
+              const tab = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES) ?
+                  NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent :
+                  NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
               this.parentView().dispatchEventToListeners(Events.RequestActivated, {
                 showPanel: true,
-                tab: NetworkForward.UIRequestLocation.UIRequestTabs.Headers,
+                tab,
               });
             });
       } else {

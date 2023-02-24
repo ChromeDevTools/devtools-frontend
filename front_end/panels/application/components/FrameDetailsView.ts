@@ -450,8 +450,10 @@ export class FrameDetailsReportView extends HTMLElement {
         const request = resource.request;
         return renderIconLink(
             'network_panel_icon', i18nString(UIStrings.clickToRevealInNetworkPanel), (): Promise<void> => {
-              const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-                  request, NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
+              const headersTab = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES) ?
+                  NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent :
+                  NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
+              const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(request, headersTab);
               return Common.Revealer.reveal(requestLocation);
             });
       }

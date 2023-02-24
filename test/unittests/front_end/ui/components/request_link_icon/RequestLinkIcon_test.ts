@@ -11,7 +11,9 @@ import * as IconButton from '../../../../../../front_end/ui/components/icon_butt
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment, describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
+import * as NetworkForward from '../../../../../../front_end/panels/network/forward/forward.js';
+import * as Root from '../../../../../../front_end/core/root/root.js';
 
 const {assert} = chai;
 
@@ -311,7 +313,7 @@ describeWithLocale('RequestLinkIcon', () => {
     });
   });
 
-  describe('handles clicks correctly', () => {
+  describeWithEnvironment('handles clicks correctly', () => {
     const mockRequest = {
       url() {
         return 'http://foo.bar/baz';
@@ -319,6 +321,7 @@ describeWithLocale('RequestLinkIcon', () => {
     };
 
     it('if the icon is clicked', async () => {
+      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
       const revealOverride = sinon.fake(Common.Revealer.reveal);
       const {shadowRoot} = await renderRequestLinkIcon({
         request: mockRequest as unknown as SDK.NetworkRequest.NetworkRequest,
@@ -331,9 +334,12 @@ describeWithLocale('RequestLinkIcon', () => {
       icon.click();
 
       assert.isTrue(revealOverride.called);
+      assert.isTrue(revealOverride.calledOnceWith(
+          sinon.match({tab: NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent})));
     });
 
     it('if the container is clicked', async () => {
+      Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
       const revealOverride = sinon.fake(Common.Revealer.reveal);
       const {shadowRoot} = await renderRequestLinkIcon({
         request: mockRequest as unknown as SDK.NetworkRequest.NetworkRequest,
@@ -346,6 +352,8 @@ describeWithLocale('RequestLinkIcon', () => {
       container.click();
 
       assert.isTrue(revealOverride.called);
+      assert.isTrue(
+          revealOverride.calledOnceWith(sinon.match({tab: NetworkForward.UIRequestLocation.UIRequestTabs.Headers})));
     });
 
     it('if the label is clicked', async () => {

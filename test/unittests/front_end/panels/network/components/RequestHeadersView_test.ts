@@ -107,7 +107,6 @@ describeWithMockConnection('RequestHeadersView', () => {
   let component: HTMLElement|null|undefined = null;
 
   beforeEach(() => {
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
     setUpEnvironment();
   });

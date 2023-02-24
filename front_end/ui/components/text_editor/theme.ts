@@ -146,6 +146,8 @@ export const editorTheme = CM.EditorView.theme({
     maxHeight: '25em',
     minWidth: '16em',
     '& > li': {
+      display: 'flex',
+      justifyContent: 'space-between',
       border: '1px solid var(--color-background)',
     },
     '& > li.cm-secondaryCompletion': {
@@ -169,6 +171,16 @@ export const editorTheme = CM.EditorView.theme({
       '&, &.cm-secondaryCompletion::before': {
         color: 'var(--color-selected-option)',
       },
+      '&::after': {
+        content: '"tab"',
+        color: 'var(--color-button-primary-text)',
+        border: '1px solid var(--color-selected-option-outline)',
+        borderRadius: '2px',
+        marginLeft: '5px',
+        padding: '1px 3px',
+        fontSize: '10px',
+        lineHeight: '10px',
+      },
     },
   },
 
@@ -177,6 +189,10 @@ export const editorTheme = CM.EditorView.theme({
     border: '1px dotted var(--color-text-primary)',
     '&, &.cm-secondaryCompletion::before': {
       color: 'var(--color-text-primary)',
+    },
+    '&::after': {
+      border: '1px solid var(--color-button-secondary-border)',
+      color: 'var(--color-text-secondary)',
     },
   },
 

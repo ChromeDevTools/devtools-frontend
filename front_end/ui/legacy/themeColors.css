@@ -173,6 +173,7 @@
   --color-trailing-whitespace: rgb(255 0 0 / 5%);
   --color-selected-option: #fff;
   --color-selected-option-background: #1a73e8;
+  --color-selected-option-outline: rgb(255 255 255 / 50%);
   --color-highlighted-line: rgb(255 255 0 / 50%);
   --color-completion-hover: rgb(56 121 217 / 10%);
   --color-search-match-border: rgb(128 128 128);
@@ -320,6 +321,7 @@
   --color-trailing-whitespace: rgb(255 0 0 / 5%);
   --color-selected-option: #fff;
   --color-selected-option-background: #0e639c;
+  --color-selected-option-outline: rgb(0 0 0 / 50%);
   --color-highlighted-line: hsl(133deg 100% 30% / 50%);
   --color-completion-hover: rgb(56 121 217 / 10%);
   --color-search-match-border: rgb(128 128 128);

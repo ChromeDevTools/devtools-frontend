@@ -27,7 +27,7 @@ import * as Types from '../types/types.js';
 // score to a running total across all of the renderers. We create a new "cluster"
 // and reset the running total when:
 //
-// 1. We observe a top frame navigation, or
+// 1. We observe a outermost frame navigation, or
 // 2. When there's a gap between records of > 1s, or
 // 3. When there's more than 5 seconds of continuous layout shifting.
 //

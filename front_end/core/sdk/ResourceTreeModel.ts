@@ -237,7 +237,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       this.processPendingEvents(frame);
       this.dispatchEventToListeners(Events.MainFrameNavigated, frame);
       const networkManager = this.target().model(NetworkManager);
-      if (networkManager && frame.isTopFrame()) {
+      if (networkManager && frame.isOutermostFrame()) {
         networkManager.clearRequests();
       }
     }
@@ -900,10 +900,10 @@ export class ResourceTreeFrame {
   }
 
   /**
-   * Returns true if this is the top frame of the main target, i.e. if this is the top-most frame in the inspected
+   * Returns true if this is the outermost frame of the main target, i.e. if this is the top-most frame in the inspected
    * tab.
    */
-  isTopFrame(): boolean {
+  isOutermostFrame(): boolean {
     return this.#model.target().parentTarget()?.type() !== Type.Frame && !this.#sameTargetParentFrameInternal &&
         !this.crossTargetParentFrameId;
   }
@@ -983,7 +983,7 @@ export class ResourceTreeFrame {
   }
 
   displayName(): string {
-    if (this.isTopFrame()) {
+    if (this.isOutermostFrame()) {
       return i18n.i18n.lockedString('top');
     }
     const subtitle = new Common.ParsedURL.ParsedURL(this.#urlInternal).displayName;
@@ -1009,7 +1009,7 @@ export class ResourceTreeFrame {
     if (deferredNode) {
       return deferredNode.resolvePromise();
     }
-    if (this.isTopFrame()) {
+    if (this.isOutermostFrame()) {
       return this.resourceTreeModel().domModel().requestDocument();
     }
     return null;
@@ -1037,7 +1037,7 @@ export class ResourceTreeFrame {
       }
     }
 
-    // For the top frame there is no owner node. Highlight the whole #document instead.
+    // For the outermost frame there is no owner node. Highlight the whole #document instead.
     const document = await this.resourceTreeModel().domModel().requestDocument();
     if (document) {
       this.resourceTreeModel().domModel().overlayModel().highlightInOverlay(

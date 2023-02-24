@@ -21,7 +21,7 @@ export class NetworkFrameGrouper implements GroupLookupInterface {
 
   groupNodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkGroupNode|null {
     const frame = SDK.ResourceTreeModel.ResourceTreeModel.frameForRequest(request);
-    if (!frame || frame.isTopFrame()) {
+    if (!frame || frame.isOutermostFrame()) {
       return null;
     }
     let groupNode = this.activeGroups.get(frame);

@@ -74,7 +74,7 @@ describeWithLocale('PageResourceLoader', () => {
 
     loader.onMainFrameNavigated({
       data: {
-        isTopFrame() {
+        isOutermostFrame() {
           return true;
         },
       } as SDK.ResourceTreeModel.ResourceTreeFrame,

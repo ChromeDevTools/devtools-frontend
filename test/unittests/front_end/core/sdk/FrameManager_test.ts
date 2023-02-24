@@ -41,7 +41,7 @@ class MockResourceTreeFrame {
   });
 
   isMainFrame = () => true;
-  isTopFrame = () => true;
+  isOutermostFrame = () => true;
   setCreationStackTrace = () => {};
   getAdScriptId = () => null;
   setAdScriptId = () => {};
@@ -292,10 +292,10 @@ describe('FrameManager', () => {
     }
   });
 
-  describe('getTopFrame', () => {
+  describe('getOutermostFrame', () => {
     it('returns null when no frames are attached', () => {
       const frameManager = new SDK.FrameManager.FrameManager();
-      assert.isNull(frameManager.getTopFrame());
+      assert.isNull(frameManager.getOutermostFrame());
     });
 
     it('returns the top main frame', () => {
@@ -304,7 +304,7 @@ describe('FrameManager', () => {
       const mockModel = attachMockModel(frameManager, targetId);
       addMockFrame(mockModel, frameId);
 
-      assert.strictEqual(frameManager.getTopFrame()?.id, frameId);
+      assert.strictEqual(frameManager.getOutermostFrame()?.id, frameId);
     });
   });
 });

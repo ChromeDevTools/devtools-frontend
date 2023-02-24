@@ -352,7 +352,7 @@ export class BackForwardCacheView extends HTMLElement {
     }
 
     const frameTreeData = this.#buildFrameTreeDataRecursive(explanationTree, {blankCount: 1});
-    // Override the icon for the top frame.
+    // Override the icon for the outermost frame.
     frameTreeData.node.treeNodeData.iconName = 'frame-icon';
     let title = '';
     // The translation pipeline does not support nested plurals. We avoid this

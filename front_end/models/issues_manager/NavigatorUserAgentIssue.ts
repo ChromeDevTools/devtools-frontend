@@ -68,8 +68,8 @@ export class NavigatorUserAgentIssue extends Issue<IssueCode> {
   }
 
   isCausedByThirdParty(): boolean {
-    const topFrame = SDK.FrameManager.FrameManager.instance().getTopFrame();
-    return isCausedByThirdParty(topFrame, this.#issueDetails.url);
+    const outermostFrame = SDK.FrameManager.FrameManager.instance().getOutermostFrame();
+    return isCausedByThirdParty(outermostFrame, this.#issueDetails.url);
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

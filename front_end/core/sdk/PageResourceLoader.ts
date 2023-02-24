@@ -117,7 +117,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
 
   onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
     const mainFrame = event.data;
-    if (!mainFrame.isTopFrame()) {
+    if (!mainFrame.isOutermostFrame()) {
       return;
     }
     for (const {reject} of this.#queuedLoads) {

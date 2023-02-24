@@ -169,7 +169,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #filteredIssues = new Map<string, Issue>();
   #issueCounts = new Map<IssueKind, number>();
   #hiddenIssueCount = new Map<IssueKind, number>();
-  #hasSeenTopFrameNavigated = false;
+  #hasSeenOutermostFrameNavigated = false;
   #issuesById: Map<string, Issue> = new Map();
 
   constructor(
@@ -179,7 +179,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     new SourceFrameIssuesManager(this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
     SDK.FrameManager.FrameManager.instance().addEventListener(
-        SDK.FrameManager.Events.TopFrameNavigated, this.#onTopFrameNavigated, this);
+        SDK.FrameManager.Events.OutermostFrameNavigated, this.#onOutermostFrameNavigated, this);
     SDK.FrameManager.FrameManager.instance().addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget, this.#onFrameAddedToTarget, this);
 
@@ -210,17 +210,17 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   /**
-   * Once we have seen at least one `TopFrameNavigated` event, we can be reasonably sure
+   * Once we have seen at least one `OutermostFrameNavigated` event, we can be reasonably sure
    * that we also collected issues that were reported during the navigation to the current
    * page. If we haven't seen a main frame navigated, we might have missed issues that arose
    * during navigation.
    */
   reloadForAccurateInformationRequired(): boolean {
-    return !this.#hasSeenTopFrameNavigated;
+    return !this.#hasSeenOutermostFrameNavigated;
   }
 
-  #onTopFrameNavigated(event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>):
-      void {
+  #onOutermostFrameNavigated(
+      event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>): void {
     const {frame} = event.data;
     const keptIssues = new Map<string, Issue>();
     for (const [key, issue] of this.#allIssues.entries()) {
@@ -229,18 +229,18 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       }
     }
     this.#allIssues = keptIssues;
-    this.#hasSeenTopFrameNavigated = true;
+    this.#hasSeenOutermostFrameNavigated = true;
     this.#updateFilteredIssues();
   }
 
   #onFrameAddedToTarget(event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>):
       void {
     const {frame} = event.data;
-    // Determining third-party status usually requires the registered domain of the top frame.
+    // Determining third-party status usually requires the registered domain of the outermost frame.
     // When DevTools is opened after navigation has completed, issues may be received
-    // before the top frame is available. Thus, we trigger a recalcuation of third-party-ness
-    // when we attach to the top frame.
-    if (frame.isTopFrame()) {
+    // before the outermost frame is available. Thus, we trigger a recalcuation of third-party-ness
+    // when we attach to the outermost frame.
+    if (frame.isOutermostFrame()) {
       this.#updateFilteredIssues();
     }
   }

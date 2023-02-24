@@ -78,7 +78,7 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     if (to && to.frameId) {
       const frame = SDK.FrameManager.FrameManager.instance().getFrame(to.frameId);
-      if (frame && !frame.isTopFrame()) {
+      if (frame && !frame.isOutermostFrame()) {
         void frame.highlight();
       }
     }
@@ -188,7 +188,7 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     if (!frame) {
       return false;
     }
-    return frame.isTopFrame();
+    return frame.isOutermostFrame();
   }
 
   private hasTopContext(): boolean {

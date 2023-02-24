@@ -278,9 +278,9 @@ describeWithMockConnection('ResourceTreeModel', () => {
 
     dispatchEvent(mainFrameTarget, 'Page.frameNavigated', frameNavigatedEvent());
     dispatchEvent(subframeTarget, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
-    assert.isTrue(getResourceTeeModel(mainFrameTarget).mainFrame?.isTopFrame());
+    assert.isTrue(getResourceTeeModel(mainFrameTarget).mainFrame?.isOutermostFrame());
     assertNotNullOrUndefined(getResourceTeeModel(subframeTarget));
-    assert.isFalse(getResourceTeeModel(subframeTarget).mainFrame?.isTopFrame());
+    assert.isFalse(getResourceTeeModel(subframeTarget).mainFrame?.isOutermostFrame());
   });
 
   it('identifies not top frame with tab target', async () => {
@@ -290,8 +290,8 @@ describeWithMockConnection('ResourceTreeModel', () => {
 
     dispatchEvent(mainFrameTarget, 'Page.frameNavigated', frameNavigatedEvent());
     dispatchEvent(subframeTarget, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
-    assert.isTrue(getResourceTeeModel(mainFrameTarget).mainFrame?.isTopFrame());
+    assert.isTrue(getResourceTeeModel(mainFrameTarget).mainFrame?.isOutermostFrame());
     assertNotNullOrUndefined(getResourceTeeModel(subframeTarget));
-    assert.isFalse(getResourceTeeModel(subframeTarget).mainFrame?.isTopFrame());
+    assert.isFalse(getResourceTeeModel(subframeTarget).mainFrame?.isOutermostFrame());
   });
 });

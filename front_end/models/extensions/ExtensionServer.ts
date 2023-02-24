@@ -1175,7 +1175,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
       return this.status.E_NOTFOUND(options.frameURL || '<top>');
     }
-    // We shouldn't get here if the top frame can't be inspected by an extension, but
+    // We shouldn't get here if the outermost frame can't be inspected by an extension, but
     // let's double check for subframes.
     if (!this.canInspectURL(frame.url)) {
       return this.status.E_FAILED('Permission denied');

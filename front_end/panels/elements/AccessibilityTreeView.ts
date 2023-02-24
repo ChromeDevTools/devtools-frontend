@@ -71,7 +71,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
 
   async refreshAccessibilityTree(): Promise<void> {
     if (!this.root) {
-      const frameId = SDK.FrameManager.FrameManager.instance().getTopFrame()?.id;
+      const frameId = SDK.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
       if (!frameId) {
         throw Error('No top frame');
       }
@@ -143,8 +143,8 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
       void this.renderTree();
       return;
     }
-    const topFrameId = SDK.FrameManager.FrameManager.instance().getTopFrame()?.id;
-    if (data.root?.getFrameId() !== topFrameId) {
+    const outermostFrameId = SDK.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+    if (data.root?.getFrameId() !== outermostFrameId) {
       void this.renderTree();
       return;
     }

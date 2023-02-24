@@ -658,7 +658,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   private frameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
     const frame = event.data;
 
-    if (frame.isTopFrame()) {
+    if (frame.isOutermostFrame()) {
       this.reset();
     }
     this.addCookieDocument(frame);
@@ -1974,7 +1974,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
 
   getIconTypeForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): 'mediumicon-frame-blocked'|'mediumicon-frame'|
       'mediumicon-frame-embedded-blocked'|'mediumicon-frame-embedded' {
-    if (frame.isTopFrame()) {
+    if (frame.isOutermostFrame()) {
       return frame.unreachableUrl() ? 'mediumicon-frame-blocked' : 'mediumicon-frame';
     }
     return frame.unreachableUrl() ? 'mediumicon-frame-embedded-blocked' : 'mediumicon-frame-embedded';
@@ -2010,10 +2010,10 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
       this.view = null;
     }
 
-    // Service Workers' parent is always the top frame. We need to reconstruct
+    // Service Workers' parent is always the outermost frame. We need to reconstruct
     // the service worker tree elements after those navigations which allow
     // the service workers to stay alive.
-    if (frame.isTopFrame()) {
+    if (frame.isOutermostFrame()) {
       const targets = SDK.TargetManager.TargetManager.instance().targets();
       for (const target of targets) {
         if (target.type() === SDK.Target.Type.ServiceWorker) {
@@ -2031,7 +2031,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     // This is used to persist over reloads/navigation which frame was selected.
     // A frame's title can change on DevTools refresh, so we resort to using
     // the URL instead (even though it is not guaranteed to be unique).
-    if (this.frame.isTopFrame()) {
+    if (this.frame.isOutermostFrame()) {
       return 'frame://' as Platform.DevToolsPath.UrlString;
     }
     return 'frame://' + encodeURI(this.frame.url) as Platform.DevToolsPath.UrlString;

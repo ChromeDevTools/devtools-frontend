@@ -81,7 +81,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
       isMainFrame(): boolean {
         return true;
       },
-      isTopFrame(): boolean {
+      isOutermostFrame(): boolean {
         return true;
       },
     } as SDK.ResourceTreeModel.ResourceTreeFrame;

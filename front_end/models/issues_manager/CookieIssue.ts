@@ -195,8 +195,8 @@ export class CookieIssue extends Issue {
   }
 
   isCausedByThirdParty(): boolean {
-    const topFrame = SDK.FrameManager.FrameManager.instance().getTopFrame();
-    return isCausedByThirdParty(topFrame, this.#issueDetails.cookieUrl);
+    const outermostFrame = SDK.FrameManager.FrameManager.instance().getOutermostFrame();
+    return isCausedByThirdParty(outermostFrame, this.#issueDetails.cookieUrl);
   }
 
   getKind(): IssueKind {
@@ -222,17 +222,17 @@ export class CookieIssue extends Issue {
  * Exported for unit test.
  */
 export function isCausedByThirdParty(
-    topFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null, cookieUrl?: string): boolean {
-  if (!topFrame) {
-    // The top frame is not yet available. Consider this issue as a third-party issue
-    // until the top frame is available. This will prevent the issue from being visible
+    outermostFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null, cookieUrl?: string): boolean {
+  if (!outermostFrame) {
+    // The outermost frame is not yet available. Consider this issue as a third-party issue
+    // until the outermost frame is available. This will prevent the issue from being visible
     // for only just a split second.
     return true;
   }
 
   // In the case of no domain and registry, we assume its an IP address or localhost
   // during development, in this case we classify the issue as first-party.
-  if (!cookieUrl || topFrame.domainAndRegistry() === '') {
+  if (!cookieUrl || outermostFrame.domainAndRegistry() === '') {
     return false;
   }
 
@@ -241,7 +241,7 @@ export function isCausedByThirdParty(
     return false;
   }
 
-  // For both operation types we compare the cookieUrl's domain  with the top frames
+  // For both operation types we compare the cookieUrl's domain  with the outermost frames
   // registered domain to determine first-party vs third-party. If they don't match
   // then we consider this issue a third-party issue.
   //
@@ -253,7 +253,7 @@ export function isCausedByThirdParty(
   //     third-party at some point, so we treat this as a third-party issue.
   //
   // TODO(crbug.com/1080589): Use "First-Party sets" instead of the sites registered domain.
-  return !isSubdomainOf(parsedCookieUrl.domain(), topFrame.domainAndRegistry());
+  return !isSubdomainOf(parsedCookieUrl.domain(), outermostFrame.domainAndRegistry());
 }
 
 function isSubdomainOf(subdomain: string, superdomain: string): boolean {

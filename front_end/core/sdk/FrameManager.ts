@@ -32,7 +32,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }>();
 
   readonly #framesForTarget = new Map<Protocol.Target.TargetID|'main', Set<Protocol.Page.FrameId>>();
-  #topFrame: ResourceTreeFrame|null = null;
+  #outermostFrame: ResourceTreeFrame|null = null;
   #transferringFramesDataCache = new Map<string, {
     creationStackTrace?: Protocol.Runtime.StackTrace,
     creationStackTraceTarget?: Target,
@@ -106,7 +106,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       this.#frames.set(frame.id, {frame, count: 1});
       this.#transferringFramesDataCache.delete(frame.id);
     }
-    this.resetTopFrame();
+    this.resetOutermostFrame();
 
     // Add the frameId to the the targetId's set of frameIds.
     const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
@@ -145,8 +145,8 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private frameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
     const frame = event.data;
     this.dispatchEventToListeners(Events.FrameNavigated, {frame});
-    if (frame.isTopFrame()) {
-      this.dispatchEventToListeners(Events.TopFrameNavigated, {frame});
+    if (frame.isOutermostFrame()) {
+      this.dispatchEventToListeners(Events.OutermostFrameNavigated, {frame});
     }
   }
 
@@ -159,7 +159,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     if (frameData) {
       if (frameData.count === 1) {
         this.#frames.delete(frameId);
-        this.resetTopFrame();
+        this.resetOutermostFrame();
         this.dispatchEventToListeners(Events.FrameRemoved, {frameId});
       } else {
         frameData.count--;
@@ -168,13 +168,13 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   /**
-   * Looks for the top frame in `#frames` and sets `#topFrame` accordingly.
+   * Looks for the outermost frame in `#frames` and sets `#outermostFrame` accordingly.
    *
    * Important: This method needs to be called everytime `#frames` is updated.
    */
-  private resetTopFrame(): void {
-    const topFrames = this.getAllFrames().filter(frame => frame.isTopFrame());
-    this.#topFrame = topFrames.length > 0 ? topFrames[0] : null;
+  private resetOutermostFrame(): void {
+    const outermostFrames = this.getAllFrames().filter(frame => frame.isOutermostFrame());
+    this.#outermostFrame = outermostFrames.length > 0 ? outermostFrames[0] : null;
   }
 
   /**
@@ -196,8 +196,8 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return Array.from(this.#frames.values(), frameData => frameData.frame);
   }
 
-  getTopFrame(): ResourceTreeFrame|null {
-    return this.#topFrame;
+  getOutermostFrame(): ResourceTreeFrame|null {
+    return this.#outermostFrame;
   }
 
   async getOrWaitForFrame(frameId: Protocol.Page.FrameId, notInTarget?: Target): Promise<ResourceTreeFrame> {
@@ -247,7 +247,7 @@ export enum Events {
   // all targets.
   FrameRemoved = 'FrameRemoved',
   ResourceAdded = 'ResourceAdded',
-  TopFrameNavigated = 'TopFrameNavigated',
+  OutermostFrameNavigated = 'OutermostFrameNavigated',
 }
 
 export type EventTypes = {
@@ -255,5 +255,5 @@ export type EventTypes = {
   [Events.FrameNavigated]: {frame: ResourceTreeFrame},
   [Events.FrameRemoved]: {frameId: Protocol.Page.FrameId},
   [Events.ResourceAdded]: {resource: Resource},
-  [Events.TopFrameNavigated]: {frame: ResourceTreeFrame},
+  [Events.OutermostFrameNavigated]: {frame: ResourceTreeFrame},
 };

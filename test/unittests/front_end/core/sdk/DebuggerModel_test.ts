@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Common from '../../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 
@@ -22,6 +24,98 @@ const SCRIPT_ID_ONE = '1' as Protocol.Runtime.ScriptId;
 const SCRIPT_ID_TWO = '2' as Protocol.Runtime.ScriptId;
 
 describeWithMockConnection('DebuggerModel', () => {
+  describe('breakpoint activation', () => {
+    beforeEach(() => {
+      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.BREAKPOINT_VIEW, '', true);
+
+      // Dummy handlers for unblocking target suspension.
+      setMockConnectionResponseHandler('Debugger.setAsyncCallStackDepth', () => ({}));
+      setMockConnectionResponseHandler('Debugger.disable', () => ({}));
+      setMockConnectionResponseHandler('DOM.disable', () => ({}));
+      setMockConnectionResponseHandler('CSS.disable', () => ({}));
+      setMockConnectionResponseHandler('Overlay.disable', () => ({}));
+      setMockConnectionResponseHandler('Overlay.setShowGridOverlays', () => ({}));
+      setMockConnectionResponseHandler('Overlay.setShowFlexOverlays', () => ({}));
+      setMockConnectionResponseHandler('Overlay.setShowScrollSnapOverlays', () => ({}));
+      setMockConnectionResponseHandler('Overlay.setShowContainerQueryOverlays', () => ({}));
+      setMockConnectionResponseHandler('Overlay.setShowIsolatedElements', () => ({}));
+      setMockConnectionResponseHandler('Overlay.setShowViewportSizeOnResize', () => ({}));
+      setMockConnectionResponseHandler('Target.setAutoAttach', () => ({}));
+
+      // Dummy handlers for unblocking target resumption.
+      setMockConnectionResponseHandler('Debugger.enable', () => ({}));
+      setMockConnectionResponseHandler('Debugger.setPauseOnExceptions', () => ({}));
+      setMockConnectionResponseHandler('DOM.enable', () => ({}));
+      setMockConnectionResponseHandler('Overlay.enable', () => ({}));
+      setMockConnectionResponseHandler('CSS.enable', () => ({}));
+    });
+
+    it('deactivates breakpoints on construction with inactive breakpoints', async () => {
+      let breakpointsDeactivated = false;
+      setMockConnectionResponseHandler('Debugger.setBreakpointsActive', request => {
+        if (request.active === false) {
+          breakpointsDeactivated = true;
+        }
+        return {};
+      });
+      Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(false);
+      createTarget();
+      assert.isTrue(breakpointsDeactivated);
+    });
+
+    it('deactivates breakpoints for suspended target', async () => {
+      let breakpointsDeactivated = false;
+      setMockConnectionResponseHandler('Debugger.setBreakpointsActive', request => {
+        if (request.active === false) {
+          breakpointsDeactivated = true;
+        }
+        return {};
+      });
+
+      const target = createTarget();
+
+      await target.suspend();
+
+      // Deactivate breakpoints while suspended.
+      Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(false);
+
+      // Verify that the backend received the message.
+      assert.isTrue(breakpointsDeactivated);
+
+      // Resume and verify that the setBreakpointsActive(false) is called again when the target resumes.
+      // This is only needed for older backends (before crbug.com/1357046 is fixed).
+      breakpointsDeactivated = false;
+      await target.resume();
+      assert.isTrue(breakpointsDeactivated);
+    });
+
+    it('activates breakpoints for suspended target', async () => {
+      let breakpointsDeactivated = false;
+      let breakpointsActivated = false;
+      setMockConnectionResponseHandler('Debugger.setBreakpointsActive', request => {
+        if (request.active) {
+          breakpointsActivated = true;
+        } else {
+          breakpointsDeactivated = true;
+        }
+        return {};
+      });
+
+      // Deactivate breakpoints befroe the target is created.
+      Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(false);
+      const target = createTarget();
+      assert.isTrue(breakpointsDeactivated);
+
+      await target.suspend();
+
+      // Activate breakpoints while suspended.
+      Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(true);
+
+      // Verify that the backend received the message.
+      assert.isTrue(breakpointsActivated);
+    });
+  });
+
   describe('createRawLocationFromURL', () => {
     it('yields correct location in the presence of multiple scripts with the same URL', async () => {
       const target = createTarget();

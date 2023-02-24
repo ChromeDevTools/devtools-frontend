@@ -47,6 +47,7 @@ group("front_end") {
     "panels/layers",
     "panels/lighthouse",
     "panels/media",
+    "panels/mobile_throttling",
     "panels/network",
     "panels/network/components",
     "panels/performance_monitor",

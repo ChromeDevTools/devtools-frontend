@@ -1,0 +1,16 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("mobile_throttling") {
+  testonly = true
+  sources = [ "ThrottlingManager_test.ts" ]
+
+  deps = [
+    "../../../../../front_end/core/sdk:bundle",
+    "../../../../../front_end/panels/mobile_throttling:bundle",
+    "../../helpers",
+  ]
+}

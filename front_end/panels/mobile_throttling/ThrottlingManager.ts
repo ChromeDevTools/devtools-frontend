@@ -188,24 +188,23 @@ export class ThrottlingManager {
         i18nString(UIStrings.offline), i18nString(UIStrings.forceDisconnectedFromNetwork), forceOffline.bind(this));
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
-    checkbox.setChecked(
-        SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions() ===
-        SDK.NetworkManager.OfflineConditions);
+    checkbox.setChecked(SDK.NetworkManager.MultitargetNetworkManager.instance().isOffline());
 
     function forceOffline(this: ThrottlingManager): void {
       if (checkbox.checked()) {
         SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
             SDK.NetworkManager.OfflineConditions);
       } else {
-        SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
-            this.lastNetworkThrottlingConditions);
+        const newConditions =
+            (!this.lastNetworkThrottlingConditions.download && !this.lastNetworkThrottlingConditions.upload) ?
+            SDK.NetworkManager.NoThrottlingConditions :
+            this.lastNetworkThrottlingConditions;
+        SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(newConditions);
       }
     }
 
     function networkConditionsChanged(): void {
-      checkbox.setChecked(
-          SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions() ===
-          SDK.NetworkManager.OfflineConditions);
+      checkbox.setChecked(SDK.NetworkManager.MultitargetNetworkManager.instance().isOffline());
     }
 
     return checkbox;

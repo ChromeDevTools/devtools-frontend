@@ -730,14 +730,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   async showHistory(): Promise<void> {
     const recordingData = await this.historyManager.showHistoryDropDown();
     if (recordingData && recordingData.legacyModel !== this.performanceModel) {
-      this.setModel(recordingData.legacyModel, recordingData.traceParseData);
+      this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseData);
     }
   }
 
   navigateHistory(direction: number): boolean {
     const recordingData = this.historyManager.navigate(direction);
     if (recordingData && recordingData.legacyModel !== this.performanceModel) {
-      this.setModel(recordingData.legacyModel, recordingData.traceParseData);
+      this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseData);
     }
     return true;
   }
@@ -1106,22 +1106,25 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.setModel(null);
   }
 
-  private applyFilters(model: PerformanceModel): void {
+  private applyFilters(
+      model: PerformanceModel,
+      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null): void {
     if (model.timelineModel().isGenericTrace() || Root.Runtime.experiments.isEnabled('timelineShowAllEvents')) {
       return;
     }
-    model.setFilters([TimelineUIUtils.visibleEventsFilter()]);
+    model.setFilters(exclusiveFilter ? [exclusiveFilter] : [TimelineUIUtils.visibleEventsFilter()]);
   }
 
   private setModel(
-      model: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null = null): void {
+      model: PerformanceModel|null, exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
+      newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null = null): void {
     if (this.performanceModel) {
       this.performanceModel.removeEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
     }
     this.performanceModel = model;
     if (model) {
       this.searchableViewInternal.showWidget();
-      this.applyFilters(model);
+      this.applyFilters(model, exclusiveFilter);
     } else {
       this.searchableViewInternal.hideWidget();
     }
@@ -1275,7 +1278,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.updateColorMapper();
   }
 
-  async loadingComplete(tracingModel: SDK.TracingModel.TracingModel|null): Promise<void> {
+  async loadingComplete(
+      tracingModel: SDK.TracingModel.TracingModel|null,
+      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null): Promise<void> {
     this.#traceEngineModel.reset();
     delete this.loader;
     this.setState(State.Idle);
@@ -1294,7 +1299,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       await Promise.all(
           [this.performanceModel.setTracingModel(tracingModel), this.executeNewTraceEngine(tracingModel)]);
       const traceParsedData = this.#traceEngineModel.traceParsedData();
-      this.setModel(this.performanceModel, traceParsedData);
+      this.setModel(this.performanceModel, exclusiveFilter, traceParsedData);
 
       if (this.statusPane) {
         this.statusPane.remove();

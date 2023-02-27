@@ -17,6 +17,7 @@ div {
   padding: 1px 0;
   border: none;
   background: none;
+  margin-right: 2px;
 }
 
 .arrow-icon {
@@ -27,7 +28,7 @@ div {
   background-color: var(--color-text-primary);
   margin-top: 2px;
   height: 12px;
-  width: 13px;
+  width: 10px;
 }
 
 .arrow-icon.expanded {

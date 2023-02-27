@@ -54,4 +54,17 @@ describeWithMockConnection('Target', () => {
     mainFrameTargetUnderTab.setInspectedURL('https://example.com/' as Platform.DevToolsPath.UrlString);
     assert.isTrue(inspectedURLChanged.calledTwice);
   });
+
+  it('determines outermost target', () => {
+    assert.isNull(tabTarget.outermostTarget());
+    assert.strictEqual(mainFrameTargetWithoutTab.outermostTarget(), mainFrameTargetWithoutTab);
+    assert.strictEqual(mainFrameTargetUnderTab.outermostTarget(), mainFrameTargetUnderTab);
+    assert.strictEqual(subframeTarget.outermostTarget(), mainFrameTargetUnderTab);
+    assert.strictEqual(
+        createTarget({type: SDK.Target.Type.Worker, parentTarget: subframeTarget}).outermostTarget(),
+        mainFrameTargetUnderTab);
+    assert.isNull(createTarget({type: SDK.Target.Type.Node}).outermostTarget());
+    assert.isNull(createTarget({type: SDK.Target.Type.Browser}).outermostTarget());
+    assert.isNull(createTarget({type: SDK.Target.Type.ServiceWorker, parentTarget: tabTarget}).outermostTarget());
+  });
 });

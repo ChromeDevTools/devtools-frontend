@@ -148,6 +148,19 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     return this.#parentTargetInternal;
   }
 
+  outermostTarget(): Target|null {
+    let lastFrameTarget: Target|null = null;
+    let currentTarget: Target|null = this;
+    do {
+      if (currentTarget.type() === Type.Frame) {
+        lastFrameTarget = currentTarget;
+      }
+      currentTarget = currentTarget.parentTarget();
+    } while (currentTarget);
+
+    return lastFrameTarget;
+  }
+
   dispose(reason: string): void {
     super.dispose(reason);
     this.#targetManagerInternal.removeTarget(this);

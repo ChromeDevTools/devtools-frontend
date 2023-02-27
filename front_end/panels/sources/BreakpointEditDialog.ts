@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Bindings from '../../models/bindings/bindings.js';
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -10,6 +11,8 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import breakpointEditDialogStyles from './breakpointEditDialog.css.js';
+
+const {Direction} = TextEditor.TextEditorHistory;
 
 const UIStrings = {
   /**
@@ -68,6 +71,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   private readonly typeSelector: UI.Toolbar.ToolbarComboBox;
   private placeholderCompartment: CodeMirror.Compartment;
 
+  #history: TextEditor.AutocompleteHistory.AutocompleteHistory;
+  #editorHistory: TextEditor.TextEditorHistory.TextEditorHistory;
+
   constructor(
       editorLineNumber: number, oldCondition: string, isLogpoint: boolean,
       onFinish: (result: BreakpointEditDialogResult) => void) {
@@ -80,6 +86,11 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       TextEditor.Config.autocompletion.instance(),
       CodeMirror.EditorView.lineWrapping,
       TextEditor.Config.showCompletionHint,
+      TextEditor.Config.conservativeCompletion,
+      CodeMirror.javascript.javascriptLanguage.data.of({
+        autocomplete: (context: CodeMirror.CompletionContext) => this.#editorHistory.historyCompletions(context),
+      }),
+      CodeMirror.autocompletion(),
       TextEditor.JavaScript.argumentHints(),
     ];
 
@@ -112,6 +123,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       return true;
     };
     const keymap = [
+      {key: 'ArrowUp', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD)},
+      {key: 'ArrowDown', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD)},
+      {mac: 'Ctrl-p', run: (): boolean => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
+      {mac: 'Ctrl-n', run: (): boolean => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
       {
         key: 'Mod-Enter',
         run: finishIfComplete,
@@ -148,6 +163,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       ],
     }));
     editorWrapper.appendChild(this.editor);
+    this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
+        Common.Settings.Settings.instance().createLocalSetting('breakpointConditionHistory', []));
+    this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
 
     const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href='https://goo.gle/devtools-loc'>${
                      i18nString(UIStrings.learnMoreOnBreakpointTypes)}</x-link>` as UI.XLink.XLink;
@@ -212,6 +230,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     }
     this.finished = true;
     this.editor.remove();
+    this.#history.pushHistoryItem(condition);
     const isLogpoint = this.breakpointType === BreakpointType.Logpoint;
     this.onFinish({committed, condition: condition as Bindings.BreakpointManager.UserCondition, isLogpoint});
   }

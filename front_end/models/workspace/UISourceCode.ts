@@ -215,13 +215,19 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.projectInternal;
   }
 
-  requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  requestContent({cachedWasmOnly}: {cachedWasmOnly?: boolean} = {}):
+      Promise<TextUtils.ContentProvider.DeferredContent> {
     if (this.requestContentPromise) {
       return this.requestContentPromise;
     }
 
     if (this.contentLoadedInternal) {
       return Promise.resolve(this.contentInternal as TextUtils.ContentProvider.DeferredContent);
+    }
+
+    if (cachedWasmOnly && this.mimeType() === 'application/wasm') {
+      return Promise.resolve(
+          {content: '', isEncoded: false, wasmDisassemblyInfo: new Common.WasmDisassembly.WasmDisassembly([], [], [])});
     }
 
     this.requestContentPromise = this.requestContentImpl();

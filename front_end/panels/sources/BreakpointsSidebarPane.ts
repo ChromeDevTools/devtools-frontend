@@ -261,7 +261,9 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       const locationText = uiLocation.lineAndColumnText(showColumn) as string;
 
       const text = content[idx];
-      const codeSnippet = text.lineAt(uiLocation.lineNumber);
+      const codeSnippet = text instanceof TextUtils.Text.Text ?
+          text.lineAt(uiLocation.lineNumber) :
+          text.lines[text.bytecodeOffsetToLineNumber(uiLocation.columnNumber ?? 0)] ?? '';
 
       if (isHit && this.#collapsedFiles.has(sourceURL)) {
         this.#collapsedFiles.delete(sourceURL);
@@ -434,7 +436,8 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     return status;
   }
 
-  #getContent(locations: Bindings.BreakpointManager.BreakpointLocation[][]): Promise<TextUtils.Text.Text[]> {
+  #getContent(locations: Bindings.BreakpointManager.BreakpointLocation[][]):
+      Promise<Array<TextUtils.Text.Text|Common.WasmDisassembly.WasmDisassembly>> {
     // Use a cache to share the Text objects between all breakpoints. This way
     // we share the cached line ending information that Text calculates. This
     // was very slow to calculate with a lot of breakpoints in the same very
@@ -442,19 +445,11 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     const contentToTextMap = new Map<string, TextUtils.Text.Text>();
 
     return Promise.all(locations.map(async ([{uiLocation: {uiSourceCode}}]) => {
-      if (uiSourceCode.mimeType() === 'application/wasm') {
-        // We could mirror the logic from `SourceFrame._ensureContentLoaded()` here
-        // (and if so, ideally share that code somewhere), but that's quite heavy
-        // logic just to display a single Wasm instruction. Also not really clear
-        // how much value this would add. So let's keep it simple for now and don't
-        // display anything additional for Wasm breakpoints, and if there's demand
-        // to display some text preview, we could look into selectively disassemb-
-        // ling the part of the text that we need here.
-        // Relevant crbug: https://crbug.com/1090256
-        return new TextUtils.Text.Text('');
+      const deferredContent = await uiSourceCode.requestContent({cachedWasmOnly: true});
+      if ('wasmDisassemblyInfo' in deferredContent && deferredContent.wasmDisassemblyInfo) {
+        return deferredContent.wasmDisassemblyInfo;
       }
-      const {content} = await uiSourceCode.requestContent();
-      const contentText = content || '';
+      const contentText = deferredContent.content || '';
       if (contentToTextMap.has(contentText)) {
         return contentToTextMap.get(contentText) as TextUtils.Text.Text;
       }

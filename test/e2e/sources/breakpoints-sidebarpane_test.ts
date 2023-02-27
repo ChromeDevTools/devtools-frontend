@@ -115,6 +115,23 @@ describe('The Breakpoints Sidebar', () => {
     });
   });
 
+  describe('for wasm files', () => {
+    it('shows the correct code snippets', async () => {
+      const {frontend} = getBrowserAndPages();
+      await openSourceCodeEditorForFile('memory.wasm', 'wasm/memory.html');
+      await addBreakpointForLine(frontend, '0x039');
+
+      const codeSnippetHandle = await waitFor(`${BREAKPOINT_ITEM_SELECTOR} ${CODE_SNIPPET_SELECTOR}`);
+      const actualCodeSnippet = await extractTextContentIfConnected(codeSnippetHandle);
+      assertNotNullOrUndefined(actualCodeSnippet);
+
+      const sourceContent = await retrieveCodeMirrorEditorContent();
+
+      const expectedCodeSnippet = sourceContent[4];
+      assert.deepStrictEqual(actualCodeSnippet, expectedCodeSnippet);
+    });
+  });
+
   it('will keep the focus on breakpoint items whose location has changed after disabling', async () => {
     await openSourceCodeEditorForFile('breakpoint-on-comment.js', 'breakpoint-on-comment.html');
 

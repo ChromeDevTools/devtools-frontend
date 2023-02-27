@@ -36,6 +36,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TraceEngine from '../trace/trace.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
@@ -286,9 +288,14 @@ export class TimelineModelImpl {
     return event.name === RecordType.ParseHTML;
   }
 
-  isLCPCandidateEvent(event: SDK.TracingModel.Event): boolean {
-    return event.name === RecordType.MarkLCPCandidate &&
-        Boolean(event.args['data']['isOutermostMainFrame'] ?? event.args['data']['isMainFrame']);
+  isLCPCandidateEvent(event: SDK.TracingModel.PayloadEvent): boolean {
+    const eventData = event.rawPayload();
+    const isLCPCandidateEvent = TraceEngine.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(eventData);
+    if (!isLCPCandidateEvent) {
+      return false;
+    }
+
+    return Boolean(eventData.args?.data?.isOutermostMainFrame || eventData.args?.data?.isMainFrame);
   }
 
   isLCPInvalidateEvent(event: SDK.TracingModel.Event): boolean {

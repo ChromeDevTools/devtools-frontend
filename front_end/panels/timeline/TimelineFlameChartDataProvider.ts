@@ -851,6 +851,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const timelineModel = this.legacyPerformanceModel.timelineModel();
     for (const track of this.legacyTimelineModel.tracks()) {
       for (const event of track.events) {
+        if (!SDK.TracingModel.eventHasPayload(event)) {
+          continue;
+        }
         if (!timelineModel.isMarkerEvent(event)) {
           continue;
         }
@@ -876,7 +879,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
 
       const latestCandidates = Array.from(lcpEventsByNavigationId.values());
-      const latestEvents = latestCandidates.filter(e => timelineModel.isLCPCandidateEvent(e));
+      const latestEvents =
+          latestCandidates.filter(e => SDK.TracingModel.eventHasPayload(e) && timelineModel.isLCPCandidateEvent(e));
 
       metricEvents.push(...latestEvents);
     }

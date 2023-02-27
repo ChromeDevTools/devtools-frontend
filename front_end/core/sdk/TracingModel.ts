@@ -529,6 +529,10 @@ export abstract class BackingStorage {
   }
 }
 
+export function eventHasPayload(event: Event): event is PayloadEvent {
+  return 'rawPayload' in event;
+}
+
 export class Event {
   categoriesString: string;
   readonly #parsedCategories: Set<string>;
@@ -641,8 +645,19 @@ export class ConstructedEvent extends Event {
 export class PayloadEvent extends Event {
   #rawPayload: EventPayload;
 
-  rawPayload(): EventPayload {
+  /**
+   * Returns the raw payload that was used to create this event instance.
+   **/
+  rawLegacyPayload(): EventPayload {
     return this.#rawPayload;
+  }
+
+  /**
+   * Returns the raw payload that was used to create this event instance, but
+   * returns it typed as the new engine's TraceEventArgs option.
+   **/
+  rawPayload(): TraceEngine.Types.TraceEvents.TraceEventData {
+    return this.#rawPayload as unknown as TraceEngine.Types.TraceEvents.TraceEventData;
   }
 
   protected constructor(

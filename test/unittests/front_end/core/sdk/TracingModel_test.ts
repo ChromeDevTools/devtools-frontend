@@ -85,7 +85,7 @@ describe('TracingModel', () => {
       }
       const fakeThread = StubbedThread.make(firstLCPEventPayload.tid);
       const event = SDK.TracingModel.PayloadEvent.fromPayload(firstLCPEventPayload, fakeThread);
-      assert.strictEqual(event.rawPayload(), firstLCPEventPayload);
+      assert.strictEqual(event.rawLegacyPayload(), firstLCPEventPayload);
     });
 
     it('sets the begin and end time correctly for an event with a duration', async () => {

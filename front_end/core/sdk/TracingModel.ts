@@ -475,7 +475,6 @@ export class TracingModel {
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Phase {
-  End = 'E',
   Complete = 'X',
   Instant = 'I',
   AsyncBegin = 'S',
@@ -498,7 +497,7 @@ export enum Phase {
 
 export const eventPhasesOfInterestForTraceBounds: Set<string> = new Set([
   TraceEngine.Types.TraceEvents.Phase.BEGIN,
-  Phase.End,
+  TraceEngine.Types.TraceEvents.Phase.END,
   Phase.Complete,
   Phase.Instant,
 ]);
@@ -882,7 +881,7 @@ export class Thread extends NamedObject {
     for (let i = 0; i < this.#eventsInternal.length; ++i) {
       const e = this.#eventsInternal[i];
       e.ordinal = i;
-      if (this.#eventMatchesPhase(e, Phase.End)) {
+      if (this.#eventMatchesPhase(e, TraceEngine.Types.TraceEvents.Phase.END)) {
         toDelete.add(i);  // Mark for removal.
         // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
         if (!stack.length) {

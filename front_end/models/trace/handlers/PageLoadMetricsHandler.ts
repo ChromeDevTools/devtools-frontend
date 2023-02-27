@@ -59,9 +59,20 @@ function storePageLoadMetricAgainstNavigationId(
   }
   const frameId = getFrameIdForPageLoadEvent(event);
   const {rendererProcessesByFrame} = metaHandlerData();
-  const processData = rendererProcessesByFrame.get(frameId)?.get(event.pid);
+
+  // If either of these pieces of data do not exist, the most likely
+  // explanation is that the page load metric we found is for a frame/process
+  // combo that the MetaHandler discarded. This typically happens if we get a
+  // navigation event with an empty URL. Therefore, we will silently return and
+  // drop this metric. If we didn't care about the navigation, we certainly do
+  // not need to care about metrics for that navigation.
+  const rendererProcessesInFrame = rendererProcessesByFrame.get(frameId);
+  if (!rendererProcessesInFrame) {
+    return;
+  }
+  const processData = rendererProcessesInFrame.get(event.pid);
   if (!processData) {
-    throw new Error('No processes found for page load event.');
+    return;
   }
 
   // We compare the timestamp of the event to determine if it happened during the

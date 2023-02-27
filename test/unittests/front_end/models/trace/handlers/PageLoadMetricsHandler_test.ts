@@ -279,4 +279,11 @@ describe('PageLoadMetricsHandler', function() {
       }
     });
   });
+
+  describe('FLEDGE fenced frames', () => {
+    it('is able to parse a trace containing fenced frames without erroring', async () => {
+      const {PageLoadMetrics} = await loadModelDataFromTraceFile('fenced-frame-fledge.json.gz');
+      assert.strictEqual(PageLoadMetrics.metricScoresByFrameId.size, 3);
+    });
+  });
 });

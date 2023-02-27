@@ -145,7 +145,7 @@ def builder_descriptor(
         name,
         recipe_name,
         dims = dimensions.default_ubuntu,
-        excluded_from = [],
+        consoles = [],
         notification_muted = False,
         properties = None,
         execution_timeout = default_timeout,
@@ -154,7 +154,7 @@ def builder_descriptor(
         name = name,
         recipe_name = recipe_name,
         dims = dims,
-        excluded_from = excluded_from,
+        consoles = consoles,
         notification_muted = notification_muted,
         properties = properties,
         execution_timeout = execution_timeout,
@@ -203,7 +203,7 @@ def generate_ci_configs(configurations, builders):
             builders_refs.append((kwargs["name"], category))
 
         for b in builders:
-            if c.name not in b.excluded_from:
+            if c.name in b.consoles:
                 ci_builder(
                     name = b.name + c.name_suffix,
                     recipe_name = b.recipe_name,

@@ -14,6 +14,8 @@ import type * as Resources from '../../../../../front_end/panels/application/app
 describeWithMockConnection('PreloadingTreeElement', () => {
   it('shows view even if initialization happens after selection', () => {
     const target = createTarget();
+    const model = target.model(SDK.PreloadingModel.PreloadingModel);
+    assertNotNullOrUndefined(model);
     const prerenderingModel = target.model(SDK.PrerenderingModel.PrerenderingModel);
     assertNotNullOrUndefined(prerenderingModel);
 
@@ -26,7 +28,7 @@ describeWithMockConnection('PreloadingTreeElement', () => {
     preloadingTreeElement.onselect(false);
     assert.isTrue(spy.notCalled);
 
-    preloadingTreeElement.initialize(prerenderingModel);
+    preloadingTreeElement.initialize(model, prerenderingModel);
     assert.isTrue(spy.calledOnce);
   });
 });

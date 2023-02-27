@@ -22,7 +22,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/PreloadingTreeEleme
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class PreloadingTreeElement extends ApplicationPanelTreeElement {
-  private model?: SDK.PrerenderingModel.PrerenderingModel;
+  private model?: SDK.PreloadingModel.PreloadingModel;
+  private prerenderingModel?: SDK.PrerenderingModel.PrerenderingModel;
   private view?: PreloadingView;
   #selectedInternal: boolean;
 
@@ -40,8 +41,11 @@ export class PreloadingTreeElement extends ApplicationPanelTreeElement {
     return 'preloading://' as Platform.DevToolsPath.UrlString;
   }
 
-  initialize(model: SDK.PrerenderingModel.PrerenderingModel): void {
+  initialize(model: SDK.PreloadingModel.PreloadingModel, prerenderingModel: SDK.PrerenderingModel.PrerenderingModel):
+      void {
     this.model = model;
+    this.prerenderingModel = prerenderingModel;
+
     // Show the view if the model was initialized after selection.
     if (this.#selectedInternal && !this.view) {
       this.onselect(false);
@@ -56,8 +60,12 @@ export class PreloadingTreeElement extends ApplicationPanelTreeElement {
       return false;
     }
 
+    if (!this.prerenderingModel) {
+      return false;
+    }
+
     if (!this.view) {
-      this.view = new PreloadingView(this.model);
+      this.view = new PreloadingView(this.model, this.prerenderingModel);
     }
 
     this.showView(this.view);

@@ -547,9 +547,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     // The condition is equivalent to
     // `Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL)`.
     if (this.preloadingTreeElement) {
+      const preloadingModel = this.target?.model(SDK.PreloadingModel.PreloadingModel);
       const prerenderingModel = this.target?.model(SDK.PrerenderingModel.PrerenderingModel);
-      if (prerenderingModel) {
-        this.preloadingTreeElement.initialize(prerenderingModel);
+      if (preloadingModel && prerenderingModel) {
+        this.preloadingTreeElement.initialize(preloadingModel, prerenderingModel);
       }
     }
   }

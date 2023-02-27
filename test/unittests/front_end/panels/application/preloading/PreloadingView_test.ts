@@ -24,76 +24,179 @@ const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
+function assertGridContents(gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) {
+  const controller = getElementWithinComponent(
+      gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
+  const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
+  assertShadowRoot(grid.shadowRoot);
+
+  const headerGot = Array.from(getHeaderCells(grid.shadowRoot), cell => {
+    assertNotNullOrUndefined(cell.textContent);
+    return cell.textContent.trim();
+  });
+  const rowsGot = getValuesOfAllBodyRows(grid.shadowRoot);
+
+  assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
+}
+
+let seqLast = 0;
+
+function dispatchEventsForNavigationWithSpeculationRules(target: SDK.Target.Target, speculationrules?: string) {
+  const seq = ++seqLast;
+  const loaderId = `loaderId:${seq}`;
+
+  dispatchEvent(target, 'Page.frameNavigated', {
+    frame: {
+      id: 'frameId:${seq}',
+      loaderId,
+      url: 'https://example.com/',
+      domainAndRegistry: 'example.com',
+      securityOrigin: 'https://example.com/',
+      mimeType: 'text/html',
+      secureContextType: Protocol.Page.SecureContextType.Secure,
+      crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
+      gatedAPIFeatures: [],
+    },
+  });
+
+  if (speculationrules === undefined) {
+    return;
+  }
+
+  let json;
+  try {
+    json = JSON.parse(speculationrules);
+  } catch (_) {
+  }
+
+  if (json === undefined) {
+    return;
+  }
+
+  // Currently, invalid rule set is not synced by `Preload.ruleSetUpdated`
+  //
+  // TODO(https://crbug.com/1384419): Include invalid ones.
+  dispatchEvent(target, 'Preload.ruleSetUpdated', {
+    ruleSet: {
+      id: `ruleSetId:${seq}`,
+      loaderId,
+      sourceText: speculationrules,
+    },
+  });
+
+  // For simplicity
+  assert.strictEqual(json['prerender'].length, 1);
+  assert.strictEqual(json['prerender'][0]['source'], 'list');
+  assert.strictEqual(json['prerender'][0]['urls'].length, 1);
+
+  dispatchEvent(target, 'Target.targetInfoChanged', {
+    targetInfo: {
+      targetId: `targetId:prerendered:${seq}`,
+      type: 'frame',
+      subtype: 'prerender',
+      url: 'https://example.com' + json['prerender'][0]['urls'][0],
+      title: '',
+      attached: true,
+      canAccessOpener: true,
+    },
+  });
+}
+
+function createView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingView {
+  const model = target.model(SDK.PreloadingModel.PreloadingModel);
+  assertNotNullOrUndefined(model);
+  const prerenderingModel = target.model(SDK.PrerenderingModel.PrerenderingModel);
+  assertNotNullOrUndefined(prerenderingModel);
+  const view = new Resources.PreloadingView.PreloadingView(model, prerenderingModel);
+  const container = new UI.Widget.VBox();
+  view.show(container.element);
+
+  return view;
+}
+
 describeWithMockConnection('PreloadingView', async () => {
   it('renders grid and details', async () => {
     const TIMESTAMP = 42;
     sinon.stub(Date, 'now').returns(TIMESTAMP);
 
     const target = createTarget();
-    const model = target.model(SDK.PrerenderingModel.PrerenderingModel);
-    assertNotNullOrUndefined(model);
-    const view = new Resources.PreloadingView.PreloadingView(model);
-    const container = new UI.Widget.VBox();
-    view.show(container.element);
+    const view = createView(target);
 
-    const prerenderedFrameId = '1';
-
-    dispatchEvent(target, 'Page.frameNavigated', {
-      frame: {
-        id: 'main',
-        loaderId: 'foo',
-        url: 'https://example.com/',
-        domainAndRegistry: 'example.com',
-        securityOrigin: 'https://example.com/',
-        mimeType: 'text/html',
-        secureContextType: Protocol.Page.SecureContextType.Secure,
-        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
-        gatedAPIFeatures: [],
-      },
-    });
-    dispatchEvent(target, 'Target.targetInfoChanged', {
-      targetInfo: {
-        targetId: prerenderedFrameId,
-        type: 'frame',
-        subtype: 'prerender',
-        url: 'https://example.com/prerendered.html',
-        title: '',
-        attached: true,
-        canAccessOpener: true,
-      },
-    });
+    dispatchEventsForNavigationWithSpeculationRules(target, `
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
 
     await coordinator.done();
 
+    const ruleSetGridComponent = view.getRuleSetsGridForTest();
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
     const gridComponent = view.getGridForTest();
     assertShadowRoot(gridComponent.shadowRoot);
     const detailsComponent = view.getDetailsForTest();
     assertShadowRoot(detailsComponent.shadowRoot);
 
-    const controller = getElementWithinComponent(
-        gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-    const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
-    assertShadowRoot(grid.shadowRoot);
+    assertGridContents(
+        ruleSetGridComponent,
+        ['Validity'],
+        [
+          ['Valid'],
+        ],
+    );
 
-    const header = Array.from(getHeaderCells(grid.shadowRoot), cell => {
-      assertNotNullOrUndefined(cell.textContent);
-      return cell.textContent.trim();
-    });
-    const rows = getValuesOfAllBodyRows(grid.shadowRoot);
-    assert.deepEqual([header, ...rows], [
-      ['Started at', 'Type', 'Trigger', 'URL', 'Status'],
-      [
-        new Date(TIMESTAMP).toLocaleString(),
-        'Prerendering',
-        'Opaque',
-        'https://example.com/prerendered.html',
-        'Prerendering',
-      ],
-    ]);
+    assertGridContents(
+        gridComponent,
+        ['Started at', 'Type', 'Trigger', 'URL', 'Status'],
+        [
+          [
+            new Date(TIMESTAMP).toLocaleString(),
+            'Prerendering',
+            'Opaque',
+            'https://example.com/prerendered.html',
+            'Prerendering',
+          ],
+        ],
+    );
 
     const placeholder = detailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
 
     assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+  });
+
+  it('clears SpeculationRules for previous pages', async () => {
+    const target = createTarget();
+    const view = createView(target);
+
+    dispatchEventsForNavigationWithSpeculationRules(target, `
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+    await coordinator.done();
+
+    dispatchEventsForNavigationWithSpeculationRules(target);
+
+    await coordinator.done();
+
+    const ruleSetGridComponent = view.getRuleSetsGridForTest();
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
+
+    assertGridContents(
+        ruleSetGridComponent,
+        ['Validity'],
+        [],
+    );
   });
 
   it('shows no warnings if holdback flags are disabled', async () => {
@@ -109,11 +212,7 @@ describeWithMockConnection('PreloadingView', async () => {
       return {featureEnabled} as Protocol.SystemInfo.GetFeatureStateResponse;
     });
 
-    const model = target.model(SDK.PrerenderingModel.PrerenderingModel);
-    assertNotNullOrUndefined(model);
-    const view = new Resources.PreloadingView.PreloadingView(model);
-    const container = new UI.Widget.VBox();
-    view.show(container.element);
+    const view = createView(target);
 
     await view.getFeatureFlagWarningsPromiseForTest();
     await coordinator.done();
@@ -135,11 +234,7 @@ describeWithMockConnection('PreloadingView', async () => {
       return {featureEnabled} as Protocol.SystemInfo.GetFeatureStateResponse;
     });
 
-    const model = target.model(SDK.PrerenderingModel.PrerenderingModel);
-    assertNotNullOrUndefined(model);
-    const view = new Resources.PreloadingView.PreloadingView(model);
-    const container = new UI.Widget.VBox();
-    view.show(container.element);
+    const view = createView(target);
 
     await view.getFeatureFlagWarningsPromiseForTest();
     await coordinator.done();
@@ -167,11 +262,7 @@ describeWithMockConnection('PreloadingView', async () => {
       return {featureEnabled} as Protocol.SystemInfo.GetFeatureStateResponse;
     });
 
-    const model = target.model(SDK.PrerenderingModel.PrerenderingModel);
-    assertNotNullOrUndefined(model);
-    const view = new Resources.PreloadingView.PreloadingView(model);
-    const container = new UI.Widget.VBox();
-    view.show(container.element);
+    const view = createView(target);
 
     await view.getFeatureFlagWarningsPromiseForTest();
     await coordinator.done();

@@ -3306,6 +3306,14 @@ export const generatedProperties = [
   "name": "text-underline-position"
  },
  {
+  "inherited": true,
+  "keywords": [
+   "wrap",
+   "balance"
+  ],
+  "name": "text-wrap"
+ },
+ {
   "longhands": [
    "toggle-root",
    "toggle-trigger"
@@ -3509,7 +3517,6 @@ export const generatedProperties = [
    "pre-wrap",
    "pre-line",
    "nowrap",
-   "-webkit-nowrap",
    "break-spaces"
   ],
   "name": "white-space"
@@ -5293,6 +5300,12 @@ export const generatedPropertyValues = {
    "right"
   ]
  },
+ "text-wrap": {
+  "values": [
+   "wrap",
+   "balance"
+  ]
+ },
  "toggle-group": {
   "values": [
    "none"
@@ -5429,7 +5442,6 @@ export const generatedPropertyValues = {
    "pre-wrap",
    "pre-line",
    "nowrap",
-   "-webkit-nowrap",
    "break-spaces"
   ]
  },

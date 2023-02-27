@@ -147,6 +147,10 @@ export const UIStrings = {
    */
   PrefixedRequestAnimationFrame: 'webkitRequestAnimationFrame is vendor-specific. Please use the standard requestAnimationFrame instead.',
   /**
+   * @description Warning displayed to developers when `window.webkitStorageInfo` is used to notify that the API is deprecated.
+   */
+  PrefixedStorageInfo: '`window.webkitStorageInfo` is deprecated. Please use standardized `navigator.storage` instead.',
+  /**
    * @description Standard message when one web API is deprecated in favor of another.
    */
   PrefixedVideoDisplayingFullscreen: 'HTMLVideoElement.webkitDisplayingFullscreen is deprecated. Please use Document.fullscreenElement instead.',
@@ -190,6 +194,10 @@ export const UIStrings = {
    * @description A deprecation warning shown in the DevTools Issues tab. It's shown when a video conferencing website uses a non-standard API for controlling the crypto method used, but is not having an effect because the desired behavior is already enabled-by-default.
    */
   RTCConstraintEnableDtlsSrtpTrue: 'The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `true` value for this constraint, which had no effect, but you can remove this constraint for tidiness.',
+  /**
+   * @description WebRTC is set of JavaScript APIs for sending and receiving data, audio and video. getStats() is a method used to obtain network and quality metrics. There are two versions of this method, one is being deprecated because it is non-standard.
+   */
+  RTCPeerConnectionGetStatsLegacyNonCompliant: 'The callback-based getStats() is deprecated and will be removed. Use the spec-compliant getStats() instead.',
   /**
    * @description A deprecation warning shown in the DevTools Issues tab. It's shown then a video conferencing website attempts to use the `RTCP MUX` policy.
    */
@@ -313,6 +321,10 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "RTCConstraintEnableDtlsSrtpTrue": {
     "milestone": 97
+  },
+  "RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "chromeStatusFeature": 4631626228695040,
+    "milestone": 117
   },
   "RequestedSubresourceWithEmbeddedCredentials": {
     "chromeStatusFeature": 5669008342777856

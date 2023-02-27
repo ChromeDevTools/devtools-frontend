@@ -1288,7 +1288,7 @@ export const NativeFunctions = [
   {
     name: 'delete',
     signatures: [['name']],
-    receivers: ['FormData','URLSearchParams','StorageBucketManager']
+    receivers: ['FormData','StorageBucketManager']
   },
   {
     name: 'delete',
@@ -1299,6 +1299,11 @@ export const NativeFunctions = [
     name: 'delete',
     signatures: [['query'],['key']],
     receivers: ['IDBObjectStore']
+  },
+  {
+    name: 'delete',
+    signatures: [['name','?ignored']],
+    receivers: ['URLSearchParams']
   },
   {
     name: 'delete',
@@ -1363,7 +1368,7 @@ export const NativeFunctions = [
   {
     name: 'has',
     signatures: [['name']],
-    receivers: ['FormData','URLSearchParams']
+    receivers: ['FormData']
   },
   {
     name: 'has',
@@ -1374,6 +1379,11 @@ export const NativeFunctions = [
     name: 'has',
     signatures: [['keyId']],
     receivers: ['MediaKeyStatusMap']
+  },
+  {
+    name: 'has',
+    signatures: [['name','?ignored']],
+    receivers: ['URLSearchParams']
   },
   {
     name: 'has',
@@ -5337,6 +5347,11 @@ export const NativeFunctions = [
     receivers: ['AbortSignal']
   },
   {
+    name: 'any',
+    signatures: [['signals','?init']],
+    receivers: ['TaskSignal']
+  },
+  {
     name: 'replaceAll',
     signatures: [['searchValue','replaceValue'],['searchValue','replacer']]
   },
@@ -6942,6 +6957,10 @@ export const NativeFunctions = [
     signatures: [['type','?eventInitDict']]
   },
   {
+    name: 'TCPServerSocket',
+    signatures: [['localAddress','?options']]
+  },
+  {
     name: 'TCPSocket',
     signatures: [['remoteAddress','remotePort','?options']]
   },
@@ -7265,12 +7284,22 @@ export const NativeFunctions = [
     signatures: [['constraint','message']]
   },
   {
-    name: 'MLModelLoader',
-    signatures: [['context']]
+    name: 'compute',
+    signatures: [['graph','inputs','outputs']],
+    receivers: ['MLContext']
   },
   {
     name: 'compute',
-    signatures: [['inputs']]
+    signatures: [['inputs']],
+    receivers: ['MLModel']
+  },
+  {
+    name: 'computeSync',
+    signatures: [['graph','inputs','outputs']]
+  },
+  {
+    name: 'MLModelLoader',
+    signatures: [['context']]
   },
   {
     name: 'createContext',
@@ -7329,12 +7358,12 @@ export const NativeFunctions = [
     signatures: [['input','?options']]
   },
   {
-    name: 'softmax',
-    signatures: [['input']]
-  },
-  {
     name: 'sigmoid',
     signatures: [['?input']]
+  },
+  {
+    name: 'softmax',
+    signatures: [['input']]
   },
   {
     name: 'build',
@@ -8093,6 +8122,10 @@ export const NativeFunctions = [
   {
     name: 'getBindGroupLayout',
     signatures: [['index']]
+  },
+  {
+    name: 'GPUPipelineError',
+    signatures: [['message','options']]
   },
   {
     name: 'setBindGroup',

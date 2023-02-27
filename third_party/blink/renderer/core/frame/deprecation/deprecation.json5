@@ -384,6 +384,14 @@
       ],
     },
     {
+      name: "PrefixedStorageInfo",
+      message: "`window.webkitStorageInfo` is deprecated. Please use standardized `navigator.storage` instead.",
+      translation_note: "Warning displayed to developers when `window.webkitStorageInfo` is used to notify that the API is deprecated.",
+      web_features: [
+        "kPrefixedStorageInfo",
+      ],
+    },
+    {
       name: "PrefixedVideoDisplayingFullscreen",
       message: "HTMLVideoElement.webkitDisplayingFullscreen is deprecated. Please use Document.fullscreenElement instead.",
       translation_note: "Standard message when one web API is deprecated in favor of another.",
@@ -473,6 +481,16 @@
         "kRTCConstraintEnableDtlsSrtpTrue",
       ],
       milestone: 97,
+    },
+    {
+      name: "RTCPeerConnectionGetStatsLegacyNonCompliant",
+      message: "The callback-based getStats() is deprecated and will be removed. Use the spec-compliant getStats() instead.",
+      translation_note: "WebRTC is set of JavaScript APIs for sending and receiving data, audio and video. getStats() is a method used to obtain network and quality metrics. There are two versions of this method, one is being deprecated because it is non-standard.",
+      web_features: [
+        "kRTCPeerConnectionGetStatsLegacyNonCompliant",
+      ],
+      chrome_status_feature: 4631626228695040,
+      milestone: 117,
     },
     {
       name: "RtcpMuxPolicyNegotiate",

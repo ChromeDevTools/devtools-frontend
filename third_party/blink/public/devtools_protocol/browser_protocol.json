@@ -1543,7 +1543,8 @@
                         "FormAriaLabelledByToNonExistingId",
                         "FormInputAssignedAutocompleteValueToIdOrNameAttributeError",
                         "FormLabelHasNeitherForNorNestedInput",
-                        "FormLabelForMatchesNonExistingIdError"
+                        "FormLabelForMatchesNonExistingIdError",
+                        "FormHasPasswordFieldWithoutUsernameFieldError"
                     ]
                 },
                 {

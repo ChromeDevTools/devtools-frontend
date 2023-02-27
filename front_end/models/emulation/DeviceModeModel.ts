@@ -414,7 +414,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   modelAdded(emulationModel: SDK.EmulationModel.EmulationModel): void {
-    if (emulationModel.target() === SDK.TargetManager.TargetManager.instance().mainFrameTarget() &&
+    if (emulationModel.target() === SDK.TargetManager.TargetManager.instance().primaryPageTarget() &&
         emulationModel.supportsDeviceEmulation()) {
       this.#emulationModel = emulationModel;
       if (this.#onModelAvailable) {

@@ -1501,7 +1501,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   async getCertificate(origin: string): Promise<string[]> {
-    const target = TargetManager.instance().mainFrameTarget();
+    const target = TargetManager.instance().primaryPageTarget();
     if (!target) {
       return [];
     }

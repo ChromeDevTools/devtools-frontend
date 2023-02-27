@@ -461,7 +461,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    if (target !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
 

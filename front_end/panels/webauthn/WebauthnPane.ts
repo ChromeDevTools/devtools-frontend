@@ -283,13 +283,13 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   }
 
   modelAdded(model: SDK.WebAuthnModel.WebAuthnModel): void {
-    if (model.target() === SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (model.target() === SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       this.#model = model;
     }
   }
 
   modelRemoved(model: SDK.WebAuthnModel.WebAuthnModel): void {
-    if (model.target() === SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (model.target() === SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       this.#model = undefined;
     }
   }

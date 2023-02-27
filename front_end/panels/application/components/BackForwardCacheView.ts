@@ -163,7 +163,7 @@ export class BackForwardCacheViewWrapper extends UI.ThrottledWidget.ThrottledWid
   }
 
   #getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     return mainTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel) || null;
   }
 
@@ -226,7 +226,7 @@ export class BackForwardCacheView extends HTMLElement {
   }
 
   async #waitAndGoBackInHistory(delay: number): Promise<void> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     const resourceTreeModel = mainTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const historyResults = await resourceTreeModel?.navigationHistory();
     if (!resourceTreeModel || !historyResults) {
@@ -249,7 +249,7 @@ export class BackForwardCacheView extends HTMLElement {
   async #navigateAwayAndBack(): Promise<void> {
     // Checking BFCache Compatibility
 
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     const resourceTreeModel = mainTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const historyResults = await resourceTreeModel?.navigationHistory();
     if (!resourceTreeModel || !historyResults) {

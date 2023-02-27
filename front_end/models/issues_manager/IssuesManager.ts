@@ -392,7 +392,7 @@ export type EventTypes = {
 
 // @ts-ignore
 globalThis.addIssueForTest = (issue: Protocol.Audits.InspectorIssue): void => {
-  const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+  const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
   const issuesModel = mainTarget?.model(SDK.IssuesModel.IssuesModel);
   issuesModel?.issueAdded({issue});
 };

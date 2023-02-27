@@ -72,7 +72,7 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
       const targetManager = SDK.TargetManager.TargetManager.instance();
       targetManager.observeTargets({
         targetAdded: (target: SDK.Target.Target) => {
-          if (target === targetManager.mainFrameTarget()) {
+          if (target === targetManager.primaryPageTarget()) {
             target.setName(i18nString(UIStrings.main));
           }
         },
@@ -155,7 +155,7 @@ export class FocusDebuggeeActionDelegate implements UI.ActionRegistration.Action
     return focusDebuggeeActionDelegateInstance;
   }
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
       return false;
     }

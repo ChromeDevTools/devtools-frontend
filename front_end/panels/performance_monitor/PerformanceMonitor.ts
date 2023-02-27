@@ -140,7 +140,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   }
 
   modelAdded(model: SDK.PerformanceMetricsModel.PerformanceMetricsModel): void {
-    if (model.target() !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (model.target() !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.model = model;

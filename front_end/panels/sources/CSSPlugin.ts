@@ -431,7 +431,7 @@ export class CSSPlugin extends Plugin implements SDK.TargetManager.SDKModelObser
   }
 
   modelAdded(cssModel: SDK.CSSModel.CSSModel): void {
-    if (cssModel.target() !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (cssModel.target() !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.#cssModel = cssModel;

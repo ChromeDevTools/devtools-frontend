@@ -307,7 +307,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     const mainRendererProcessId = mainFrame.processId;
     const mainProcess = this.tracingModel.getProcessById(mainRendererProcessId);
     if (mainProcess) {
-      const target = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       if (target) {
         targetIdToPid.set(target.id(), mainProcess.id());
       }

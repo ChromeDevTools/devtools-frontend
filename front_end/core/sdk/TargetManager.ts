@@ -107,7 +107,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   inspectedURL(): string {
-    const mainTarget = this.mainFrameTarget();
+    const mainTarget = this.primaryPageTarget();
     return mainTarget ? mainTarget.inspectedURL() : '';
   }
 
@@ -275,7 +275,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return this.#targetsInternal.size ? this.#targetsInternal.values().next().value : null;
   }
 
-  mainFrameTarget(): Target|null {
+  primaryPageTarget(): Target|null {
     let target = this.rootTarget();
     if (target?.type() === TargetType.Tab) {
       target =

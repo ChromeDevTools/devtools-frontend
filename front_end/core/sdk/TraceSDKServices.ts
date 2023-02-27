@@ -34,7 +34,7 @@ export async function domNodeForBackendNodeID(
     return fromCache;
   }
 
-  const target = TargetManager.instance().mainFrameTarget();
+  const target = TargetManager.instance().primaryPageTarget();
   const domModel = target?.model(DOMModel);
   if (!domModel) {
     return null;
@@ -61,7 +61,7 @@ export async function domNodesForMultipleBackendNodeIds(
   if (fromCache) {
     return fromCache;
   }
-  const target = TargetManager.instance().mainFrameTarget();
+  const target = TargetManager.instance().primaryPageTarget();
   const domModel = target?.model(DOMModel);
   if (!domModel) {
     return new Map();
@@ -157,7 +157,7 @@ export async function normalizedImpactedNodesForLayoutShift(
   }
 
   let viewportScale: number|null = null;
-  const target = TargetManager.instance().mainFrameTarget();
+  const target = TargetManager.instance().primaryPageTarget();
   // Get the CSS-to-physical pixel ratio of the device the inspected
   // target is running at.
   const evaluateResult = await target?.runtimeAgent().invoke_evaluate({expression: 'window.devicePixelRatio'});

@@ -351,7 +351,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       this.disableExtensions();
       return;
     }
-    if (event.data !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (event.data !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.requests = new Map();
@@ -1008,7 +1008,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private addExtension(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): boolean|undefined {
     const startPage = extensionInfo.startPage;
 
-    const inspectedURL = SDK.TargetManager.TargetManager.instance().mainFrameTarget()?.inspectedURL() ?? '';
+    const inspectedURL = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL() ?? '';
     if (inspectedURL !== '' && !this.canInspectURL(inspectedURL)) {
       this.disableExtensions();
     }
@@ -1163,7 +1163,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (options.frameURL) {
       frame = resolveURLToFrame(options.frameURL as Platform.DevToolsPath.UrlString);
     } else {
-      const target = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       frame = resourceTreeModel && resourceTreeModel.mainFrame;
     }

@@ -59,7 +59,7 @@ export class TrustTokensViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWi
   }
 
   protected async doUpdate(): Promise<void> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
       return;
     }

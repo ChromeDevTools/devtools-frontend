@@ -494,7 +494,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    if (target !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.target = target;

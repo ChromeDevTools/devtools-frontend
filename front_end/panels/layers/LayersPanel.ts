@@ -124,7 +124,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    if (target !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.model = target.model(LayerTreeModel);

@@ -727,7 +727,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
   }
 
   modelAdded(securityModel: SecurityModel): void {
-    if (securityModel.target() !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (securityModel.target() !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
 

@@ -62,7 +62,7 @@ describe('Puppeteer', () => {
         }
       }
 
-      const mainTarget = SDK.TargetManager.TargetManager.instance().mainFrameTarget();
+      const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       if (!mainTarget) {
         throw new Error('Could not find main target');
       }

@@ -61,7 +61,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    if (target !== SDK.TargetManager.TargetManager.instance().mainFrameTarget()) {
+    if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.#completedView.initializeModels(target);

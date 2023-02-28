@@ -433,7 +433,8 @@ export class HeaderSectionRow extends HTMLElement {
 
   #onHeaderValueEdit(event: Event): void {
     const editable = event.target as EditableSpan;
-    const isEdited = this.#header?.originalValue !== undefined && this.#header?.originalValue !== editable.value;
+    const isEdited =
+        this.#header?.originalValue !== undefined && (this.#header?.originalValue || '') !== editable.value;
     if (this.#isHeaderValueEdited !== isEdited) {
       this.#isHeaderValueEdited = isEdited;
       if (this.#header) {

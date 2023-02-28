@@ -399,6 +399,31 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assert.isFalse(component.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
   });
 
+  it('adds and removes `header-overridden` class correctly when editing unset headers', async () => {
+    const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
+      name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
+      value: null,
+      originalValue: null,
+      valueEditable: true,
+    };
+
+    const {component, valueEditable} = await renderHeaderSectionRow(headerData);
+    assertShadowRoot(component.shadowRoot);
+    assertElement(valueEditable, HTMLElement);
+    const row = component.shadowRoot.querySelector('.row');
+    assert.isFalse(row?.classList.contains('header-overridden'));
+
+    valueEditable.focus();
+    valueEditable.innerText = 'a';
+    dispatchInputEvent(valueEditable, {inputType: 'insertText', data: 'a', bubbles: true, composed: true});
+    await coordinator.done();
+    assert.isTrue(row?.classList.contains('header-overridden'));
+
+    dispatchKeyDownEvent(valueEditable, {key: 'Escape', bubbles: true, composed: true});
+    await coordinator.done();
+    assert.isFalse(component.shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
+  });
+
   it('shows error-icon when header name contains disallowed characters', async () => {
     const headerData: NetworkComponents.HeaderSectionRow.HeaderDescriptor = {
       name: Platform.StringUtilities.toLowerCaseString('some-header-name'),

@@ -409,6 +409,10 @@ export class MainImpl {
         // Adding the reload hint here because users getting here are likely coming from inside the settings UI, but the regular reminder bar is only shown after the UI is closed which they're not going to see.
         'Disable the deprecated `Color format` setting (requires reloading DevTools)', false);
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
+        'Enable background page selector (e.g. for prerendering debugging)', false);
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
       'cssTypeComponentLength',
@@ -545,6 +549,10 @@ export class MainImpl {
       forceNew: true,
       resourceMapping,
       targetManager: SDK.TargetManager.TargetManager.instance(),
+    });
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, ({data}) => {
+      const outermostTarget = data?.outermostTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(outermostTarget);
     });
     // @ts-ignore layout test global
     self.Bindings.breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance({

@@ -1103,7 +1103,7 @@ export function registerToolbarItem(registration: ToolbarItemRegistration): void
 
 function getRegisteredToolbarItems(): ToolbarItemRegistration[] {
   return registeredToolbarItems.filter(
-      item => Root.Runtime.Runtime.isDescriptorEnabled({experiment: undefined, condition: item.condition}));
+      item => Root.Runtime.Runtime.isDescriptorEnabled({experiment: item.experiment, condition: item.condition}));
 }
 
 export interface ToolbarItemRegistration {
@@ -1114,6 +1114,7 @@ export interface ToolbarItemRegistration {
   actionId?: string;
   condition?: string;
   loadItem?: (() => Promise<Provider>);
+  experiment?: string;
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

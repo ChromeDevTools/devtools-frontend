@@ -312,6 +312,7 @@ export enum ExperimentName {
   PRELOADING_STATUS_PANEL = 'preloadingStatusPanel',
   DISABLE_COLOR_FORMAT_SETTING = 'disableColorFormatSetting',
   TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL = 'timelineAsConsoleProfileResultPanel',
+  OUTERMOST_TARGET_SELECTOR = 'outermostTargetSelector',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

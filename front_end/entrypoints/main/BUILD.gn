@@ -4,12 +4,14 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
 
 devtools_module("main") {
   sources = [
     "ExecutionContextSelector.ts",
     "MainImpl.ts",
+    "OutermostTargetSelector.ts",
     "SimpleApp.ts",
   ]
 

@@ -737,8 +737,10 @@ export enum DevtoolsExperiments {
   'timelineAsConsoleProfileResultPanel' = 67,
   'preloadingStatusPanel' = 68,
   'disableColorFormatSetting' = 69,
+  'outermostTargetSelector' = 71,
+
   // Increment this when new experiments are added.
-  'MaxValue' = 71,
+  'MaxValue' = 72,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

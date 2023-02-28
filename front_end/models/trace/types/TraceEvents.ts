@@ -323,8 +323,18 @@ export interface TraceEventFirstContentfulPaint extends TraceEventMark {
   };
 }
 
+export interface TraceEventFirstPaint extends TraceEventMark {
+  name: 'firstPaint';
+  args: TraceEventArgs&{
+    frame: string,
+    data?: TraceEventArgsData&{
+      navigationId: string,
+    },
+  };
+}
+
 export type PageLoadEvent = TraceEventFirstContentfulPaint|TraceEventMarkDOMContent|TraceEventInteractiveTime|
-    TraceEventLargestContentfulPaintCandidate|TraceEventLayoutShift;
+    TraceEventLargestContentfulPaintCandidate|TraceEventLayoutShift|TraceEventFirstPaint|TraceEventMarkLoad;
 
 export interface TraceEventLargestContentfulPaintCandidate extends TraceEventMark {
   name: 'largestContentfulPaint::Candidate';
@@ -427,6 +437,17 @@ export interface TraceEventCommitLoad extends TraceEventInstant {
 
 export interface TraceEventMarkDOMContent extends TraceEventInstant {
   name: 'MarkDOMContent';
+  args: TraceEventArgs&{
+    data?: TraceEventArgsData & {
+      frame: string,
+      isMainFrame: boolean,
+      page: string,
+    },
+  };
+}
+
+export interface TraceEventMarkLoad extends TraceEventInstant {
+  name: 'MarkLoad';
   args: TraceEventArgs&{
     data?: TraceEventArgsData & {
       frame: string,
@@ -547,16 +568,6 @@ export interface TraceEventResourceReceiveResponse extends TraceEventInstant {
         workerReady: MilliSeconds,
         workerStart: MilliSeconds,
       },
-    },
-  };
-}
-export interface TraceEventMarkDOMContent extends TraceEventInstant {
-  name: 'MarkDOMContent';
-  args: TraceEventArgs&{
-    data?: TraceEventArgsData & {
-      frame: string,
-      isMainFrame: boolean,
-      page: string,
     },
   };
 }
@@ -762,6 +773,14 @@ export function isTraceEventLargestImagePaintCandidate(traceEventData: TraceEven
 export function isTraceEventLargestTextPaintCandidate(traceEventData: TraceEventData):
     traceEventData is TraceEventLargestTextPaintCandidate {
   return traceEventData.name === 'LargestTextPaint::Candidate';
+}
+
+export function isTraceEventMarkLoad(traceEventData: TraceEventData): traceEventData is TraceEventMarkLoad {
+  return traceEventData.name === 'MarkLoad';
+}
+
+export function isTraceEventFirstPaint(traceEventData: TraceEventData): traceEventData is TraceEventFirstPaint {
+  return traceEventData.name === 'firstPaint';
 }
 
 export function isTraceEventMarkDOMContent(traceEventData: TraceEventData): traceEventData is TraceEventMarkDOMContent {

@@ -13,27 +13,86 @@ import {HandlerState} from './types.js';
  * UserTimings and the trace events we parse currently.
  **/
 const syntheticEvents: Types.TraceEvents.TraceEventSyntheticUserTiming[] = [];
+const performanceMeasureEvents: (Types.TraceEvents.TraceEventUserTimingBegin|
+                                 Types.TraceEvents.TraceEventUserTimingEnd)[] = [];
+const performanceMarkEvents: Types.TraceEvents.TraceEventUserTimingMark[] = [];
 
-const timingEvents: (Types.TraceEvents.TraceEventUserTimingBegin|Types.TraceEvents.TraceEventUserTimingEnd)[] = [];
-
-interface UserTimingsData {
-  timings: readonly Types.TraceEvents.TraceEventSyntheticUserTiming[];
+export interface UserTimingsData {
+  performanceMeasures: readonly Types.TraceEvents.TraceEventSyntheticUserTiming[];
+  performanceMarks: readonly Types.TraceEvents.TraceEventUserTimingMark[];
 }
 let handlerState = HandlerState.UNINITIALIZED;
 
 export function reset(): void {
   syntheticEvents.length = 0;
-  timingEvents.length = 0;
+  performanceMeasureEvents.length = 0;
+  performanceMarkEvents.length = 0;
   handlerState = HandlerState.INITIALIZED;
 }
+
+const resourceTimingNames = [
+  'workerStart',
+  'redirectStart',
+  'redirectEnd',
+  'fetchStart',
+  'domainLookupStart',
+  'domainLookupEnd',
+  'connectStart',
+  'connectEnd',
+  'secureConnectionStart',
+  'requestStart',
+  'responseStart',
+  'responseEnd',
+];
+const navTimingNames = [
+  'navigationStart',
+  'unloadEventStart',
+  'unloadEventEnd',
+  'redirectStart',
+  'redirectEnd',
+  'fetchStart',
+  'commitNavigationEnd',
+  'domainLookupStart',
+  'domainLookupEnd',
+  'connectStart',
+  'connectEnd',
+  'secureConnectionStart',
+  'requestStart',
+  'responseStart',
+  'responseEnd',
+  'domLoading',
+  'domInteractive',
+  'domContentLoadedEventStart',
+  'domContentLoadedEventEnd',
+  'domComplete',
+  'loadEventStart',
+  'loadEventEnd',
+];
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('UserTimings handler is not initialized');
   }
 
-  if (Types.TraceEvents.isTraceEventUserTimingsBeginOrEnd(event)) {
-    timingEvents.push(event);
+  // These are events dispatched under the blink.user_timing category
+  // but that the user didn't add. Filter them out so that they do not
+  // Appear in the timings track (they still appear in the main thread
+  // flame chart).
+  if (!Types.TraceEvents.isTraceEventPerformanceMeasure(event) &&
+      !Types.TraceEvents.isTraceEventPerformanceMark(event)) {
+    return;
+  }
+  const ignoredNames = [...resourceTimingNames, ...navTimingNames];
+  if (ignoredNames.includes(event.name)) {
+    return;
+  }
+
+  if (Types.TraceEvents.isTraceEventPerformanceMeasure(event)) {
+    performanceMeasureEvents.push(event);
+    return;
+  }
+  if (Types.TraceEvents.isTraceEventPerformanceMark(event)) {
+    performanceMarkEvents.push(event);
   }
 }
 
@@ -46,7 +105,7 @@ export async function finalize(): Promise<void> {
     begin: Types.TraceEvents.TraceEventUserTimingBegin | null,
     end: Types.TraceEvents.TraceEventUserTimingEnd | null,
   }> = new Map();
-  for (const event of timingEvents) {
+  for (const event of performanceMeasureEvents) {
     const otherEventsWithID = Platform.MapUtilities.getWithDefault(matchedEvents, event.id, () => {
       return {begin: null, end: null};
     });
@@ -106,6 +165,7 @@ export function data(): UserTimingsData {
   }
 
   return {
-    timings: [...syntheticEvents],
+    performanceMeasures: [...syntheticEvents],
+    performanceMarks: [...performanceMarkEvents],
   };
 }

@@ -19,6 +19,10 @@ export const enum Phase {
   ASYNC_NESTABLE_START = 'b',
   ASYNC_NESTABLE_INSTANT = 'n',
   ASYNC_NESTABLE_END = 'e',
+  ASYNC_STEP_INTO = 'T',
+  ASYNC_BEGIN = 'S',
+  ASYNC_END = 'F',
+  ASYNC_STEP_PAST = 'p',
 
   // Flow
   FLOW_START = 's',
@@ -459,6 +463,11 @@ export interface TraceEventMarkLoad extends TraceEventInstant {
   };
 }
 
+export interface TraceEventAsync extends TraceEventData {
+  ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_INSTANT|Phase.ASYNC_NESTABLE_END|Phase.ASYNC_STEP_INTO|
+      Phase.ASYNC_BEGIN|Phase.ASYNC_END|Phase.ASYNC_STEP_PAST;
+}
+
 export type TraceRect = [number, number, number, number];
 export type TraceImpactedNode = {
   // These keys come from the trace data, so we have to use underscores.
@@ -630,6 +639,12 @@ export interface TraceEventUserTimingBegin extends TraceEventData {
 export interface TraceEventUserTimingEnd extends TraceEventData {
   cat: 'blink.user_timing';
   ph: Phase.ASYNC_NESTABLE_END;
+  id: string;
+}
+
+export interface TraceEventUserTimingMark extends TraceEventData {
+  cat: 'blink.user_timing';
+  ph: Phase.MARK;
   id: string;
 }
 
@@ -874,9 +889,30 @@ export function isSyntheticUserTimingTraceEvent(traceEventData: TraceEventData):
   return 'beginEvent' in data && 'endEvent' in data;
 }
 
-export function isTraceEventUserTimingsBeginOrEnd(traceEventData: TraceEventData):
+export function isTraceEventPerformanceMeasure(traceEventData: TraceEventData):
     traceEventData is TraceEventUserTimingBegin|TraceEventUserTimingEnd {
-  const validPhases = new Set([Phase.ASYNC_NESTABLE_START, Phase.ASYNC_NESTABLE_END]);
+  return isTraceEventAsyncPhase(traceEventData) && traceEventData.cat === 'blink.user_timing';
+}
 
-  return validPhases.has(traceEventData.ph) && traceEventData.cat === 'blink.user_timing';
+export function isTraceEventPerformanceMark(traceEventData: TraceEventData):
+    traceEventData is TraceEventUserTimingMark {
+  return traceEventData.ph === Phase.MARK && traceEventData.cat === 'blink.user_timing';
+}
+
+export interface TraceEventAsync extends TraceEventData {
+  ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_INSTANT|Phase.ASYNC_NESTABLE_END|Phase.ASYNC_STEP_INTO|
+      Phase.ASYNC_BEGIN|Phase.ASYNC_END|Phase.ASYNC_STEP_PAST;
+}
+
+export function isTraceEventAsyncPhase(traceEventData: TraceEventData): boolean {
+  const asyncPhases = new Set([
+    Phase.ASYNC_NESTABLE_START,
+    Phase.ASYNC_NESTABLE_INSTANT,
+    Phase.ASYNC_NESTABLE_END,
+    Phase.ASYNC_STEP_INTO,
+    Phase.ASYNC_BEGIN,
+    Phase.ASYNC_END,
+    Phase.ASYNC_STEP_PAST,
+  ]);
+  return asyncPhases.has(traceEventData.ph);
 }

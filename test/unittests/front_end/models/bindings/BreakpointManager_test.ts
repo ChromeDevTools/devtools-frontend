@@ -82,8 +82,6 @@ describeWithMockConnection('BreakpointManager', () => {
   let breakpointManager: Bindings.BreakpointManager.BreakpointManager;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
   beforeEach(async () => {
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.BREAKPOINT_VIEW, '', true);
-
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);

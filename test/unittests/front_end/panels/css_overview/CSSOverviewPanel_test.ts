@@ -5,7 +5,6 @@
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as CSSOverview from '../../../../../front_end/panels/css_overview/css_overview.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 
 import {
@@ -17,7 +16,6 @@ describeWithMockConnection('CSSOverviewPanel', () => {
     let target: SDK.Target.Target;
 
     beforeEach(async () => {
-      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.BREAKPOINT_VIEW, '');
       target = targetFactory();
     });
 

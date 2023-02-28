@@ -6,7 +6,6 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 
@@ -26,8 +25,6 @@ const SCRIPT_ID_TWO = '2' as Protocol.Runtime.ScriptId;
 describeWithMockConnection('DebuggerModel', () => {
   describe('breakpoint activation', () => {
     beforeEach(() => {
-      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.BREAKPOINT_VIEW, '', true);
-
       // Dummy handlers for unblocking target suspension.
       setMockConnectionResponseHandler('Debugger.setAsyncCallStackDepth', () => ({}));
       setMockConnectionResponseHandler('Debugger.disable', () => ({}));

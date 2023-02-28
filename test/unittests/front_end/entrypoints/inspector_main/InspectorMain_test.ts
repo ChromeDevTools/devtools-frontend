@@ -46,7 +46,6 @@ describeWithMockConnection('InspectorMainImpl', () => {
   beforeEach(() => {
     stubNoopSettings();
     sinon.stub(ProtocolClient.InspectorBackend.Connection, 'setFactory');
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.BREAKPOINT_VIEW, '', true);
   });
 
   it('sets main target type to Node if v8only query param present', async () => {

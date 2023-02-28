@@ -1281,7 +1281,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   async loadingComplete(
       tracingModel: SDK.TracingModel.TracingModel|null,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null): Promise<void> {
-    this.#traceEngineModel.reset();
+    // TODO: re-enable once we are executing the new trace engine
+    // this.#traceEngineModel.reset();
     delete this.loader;
     this.setState(State.Idle);
 

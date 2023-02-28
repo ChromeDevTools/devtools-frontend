@@ -104,6 +104,7 @@
   --icon-color: #fff;
 }
 
+.suggest-box-content-item.selected .suggestion-subtitle,
 .suggest-box-content-item.selected > span {
   color: var(--legacy-selection-fg-color);
 }

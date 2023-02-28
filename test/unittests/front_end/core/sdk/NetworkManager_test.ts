@@ -163,8 +163,7 @@ describe('NetworkDispatcher', () => {
 
       // ResponseReceived does overwrite response headers if request is marked as intercepted.
       SDK.NetworkManager.MultitargetNetworkManager.instance().dispatchEventToListeners(
-          SDK.NetworkManager.MultitargetNetworkManager.Events.RequestIntercepted,
-          'example.com' as Platform.DevToolsPath.UrlString);
+          SDK.NetworkManager.MultitargetNetworkManager.Events.RequestIntercepted, 'mockId');
       networkDispatcher.responseReceived(mockResponseReceivedEventWithHeaders({'test-header': 'third'}));
       assert.deepEqual(
           networkDispatcher.requestForId('mockId')?.responseHeaders, [{name: 'test-header', value: 'third'}]);
@@ -298,45 +297,46 @@ interface OverriddenResponse {
   responseHeaders: Protocol.Fetch.HeaderEntry[];
 }
 
-async function checkRequestOverride(
-    target: SDK.Target.Target, request: Protocol.Network.Request, requestId: Protocol.Fetch.RequestId,
-    responseStatusCode: number, responseHeaders: Protocol.Fetch.HeaderEntry[], responseBody: string,
-    expectedOverriddenResponse: OverriddenResponse, expectedSetCookieHeaders: Protocol.Fetch.HeaderEntry[] = []) {
-  const multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
-  const fetchAgent = target.fetchAgent();
-  const spy = sinon.spy(fetchAgent, 'invoke_fulfillRequest');
-
-  const fulfilledRequest = new Promise(resolve => {
-    multitargetNetworkManager.addEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.RequestFulfilled, resolve);
-  });
-  const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
-      requestId as unknown as Protocol.Network.RequestId, request.url as Platform.DevToolsPath.UrlString,
-      request.url as Platform.DevToolsPath.UrlString, null, null, null);
-
-  networkRequest.originalResponseHeaders = responseHeaders;
-
-  // The response headers passed to 'interceptedRequest' do not contain any
-  // 'set-cookie' headers, because they originate from CDP's 'Fetch.requestPaused'
-  // which receives its header information via mojo which in turn filters out
-  // 'set-cookie' headers.
-  const filteredResponseHeaders = responseHeaders.filter(header => header.name !== 'set-cookie');
-  const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
-      fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, networkRequest, responseStatusCode,
-      filteredResponseHeaders);
-  interceptedRequest.responseBody = async () => {
-    return {error: null, content: responseBody, encoded: false};
-  };
-
-  assert.isTrue(spy.notCalled);
-  await multitargetNetworkManager.requestIntercepted(interceptedRequest);
-  await fulfilledRequest;
-  assert.isTrue(spy.calledOnceWithExactly(expectedOverriddenResponse));
-  assert.deepEqual(networkRequest.setCookieHeaders, expectedSetCookieHeaders);
-}
-
 describeWithMockConnection('InterceptedRequest', () => {
   let target: SDK.Target.Target;
+  let fulfillRequestSpy: sinon.SinonSpy;
+
+  async function checkRequestOverride(
+      target: SDK.Target.Target, request: Protocol.Network.Request, requestId: Protocol.Fetch.RequestId,
+      responseStatusCode: number, responseHeaders: Protocol.Fetch.HeaderEntry[], responseBody: string,
+      expectedOverriddenResponse: OverriddenResponse, expectedSetCookieHeaders: Protocol.Fetch.HeaderEntry[] = []) {
+    const multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+    const fetchAgent = target.fetchAgent();
+
+    const fulfilledRequest = new Promise(resolve => {
+      multitargetNetworkManager.addEventListener(
+          SDK.NetworkManager.MultitargetNetworkManager.Events.RequestFulfilled, resolve);
+    });
+    const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
+        requestId as unknown as Protocol.Network.RequestId, request.url as Platform.DevToolsPath.UrlString,
+        request.url as Platform.DevToolsPath.UrlString, null, null, null);
+
+    networkRequest.originalResponseHeaders = responseHeaders;
+
+    // The response headers passed to 'interceptedRequest' do not contain any
+    // 'set-cookie' headers, because they originate from CDP's 'Fetch.requestPaused'
+    // which receives its header information via mojo which in turn filters out
+    // 'set-cookie' headers.
+    const filteredResponseHeaders = responseHeaders.filter(header => header.name !== 'set-cookie');
+    const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
+        fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, networkRequest, responseStatusCode,
+        filteredResponseHeaders);
+    interceptedRequest.responseBody = async () => {
+      return {error: null, content: responseBody, encoded: false};
+    };
+
+    assert.isTrue(fulfillRequestSpy.notCalled);
+    await multitargetNetworkManager.requestIntercepted(interceptedRequest);
+    await fulfilledRequest;
+    assert.isTrue(fulfillRequestSpy.calledOnceWithExactly(expectedOverriddenResponse));
+    assert.deepEqual(networkRequest.setCookieHeaders, expectedSetCookieHeaders);
+    fulfillRequestSpy.resetHistory();
+  }
 
   async function checkSetCookieOverride(
       url: string, headersFromServer: Protocol.Fetch.HeaderEntry[],
@@ -521,6 +521,7 @@ describeWithMockConnection('InterceptedRequest', () => {
           },
         ]);
     sinon.stub(target.fetchAgent(), 'invoke_enable');
+    fulfillRequestSpy = sinon.spy(target.fetchAgent(), 'invoke_fulfillRequest');
     await networkPersistenceManager.updateInterceptionPatternsForTests();
   });
 
@@ -552,7 +553,6 @@ describeWithMockConnection('InterceptedRequest', () => {
       url: 'https://www.example.com/styles.css',
     } as Protocol.Network.Request;
     const fetchAgent = target.fetchAgent();
-    const fulfillRequestSpy = sinon.spy(fetchAgent, 'invoke_fulfillRequest');
     const continueRequestSpy = sinon.spy(fetchAgent, 'invoke_continueRequest');
 
     const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
@@ -808,6 +808,45 @@ describeWithMockConnection('InterceptedRequest', () => {
     await checkSetCookieOverride(
         'https://www.example.com/withCookie.html', headersFromServer, expectedOverriddenHeaders,
         expectedPersistedSetCookieHeaders);
+  });
+
+  it('marks both requests as overridden when there are 2 requests with the same URL', async () => {
+    const responseCode = 200;
+    const requestId1 = 'request_id_1' as Protocol.Fetch.RequestId;
+    const requestId2 = 'request_id_2' as Protocol.Fetch.RequestId;
+    const body = 'interceptedRequest content';
+    const request = {
+      method: 'GET',
+      url: 'https://www.example.com/styles.css',
+    } as Protocol.Network.Request;
+    const originalResponseHeaders = [{name: 'content-type', value: 'text/html; charset=utf-8'}];
+    const responseHeaders = [
+      {name: 'css-only', value: 'only added to css files'},
+      {name: 'age', value: 'overridden'},
+      {name: 'content-type', value: 'text/html; charset=utf-8'},
+    ];
+
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    Platform.assertNotNullOrUndefined(networkManager);
+    networkManager.dispatcher.requestWillBeSent(
+        {requestId: requestId1 as string, request} as Protocol.Network.RequestWillBeSentEvent);
+    networkManager?.dispatcher.requestWillBeSent(
+        {requestId: requestId2 as string, request} as Protocol.Network.RequestWillBeSentEvent);
+
+    await checkRequestOverride(target, request, requestId1, responseCode, originalResponseHeaders, body, {
+      requestId: requestId1,
+      responseCode,
+      body,
+      responseHeaders,
+    });
+    await checkRequestOverride(target, request, requestId2, responseCode, originalResponseHeaders, body, {
+      requestId: requestId2,
+      responseCode,
+      body,
+      responseHeaders,
+    });
+    assert.isTrue(networkManager.dispatcher.requestForId(requestId1)?.wasIntercepted());
+    assert.isTrue(networkManager.dispatcher.requestForId(requestId2)?.wasIntercepted());
   });
 
   it('stores \'set-cookie\' headers on the request', async () => {

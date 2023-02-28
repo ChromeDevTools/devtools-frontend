@@ -440,8 +440,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
         MultitargetNetworkManager.Events.RequestIntercepted, this.#markAsIntercepted.bind(this));
   }
 
-  #markAsIntercepted(event: Common.EventTarget.EventTargetEvent<Platform.DevToolsPath.UrlString>): void {
-    const request = this.requestForURL(event.data);
+  #markAsIntercepted(event: Common.EventTarget.EventTargetEvent<string>): void {
+    const request = this.requestForId(event.data);
     if (request) {
       request.setWasIntercepted(true);
     }
@@ -1476,10 +1476,9 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   async requestIntercepted(interceptedRequest: InterceptedRequest): Promise<void> {
     for (const requestInterceptor of this.#urlsForRequestInterceptor.keysArray()) {
       await requestInterceptor(interceptedRequest);
-      if (interceptedRequest.hasResponded()) {
+      if (interceptedRequest.hasResponded() && interceptedRequest.networkRequest) {
         this.dispatchEventToListeners(
-            MultitargetNetworkManager.Events.RequestIntercepted,
-            interceptedRequest.request.url as Platform.DevToolsPath.UrlString);
+            MultitargetNetworkManager.Events.RequestIntercepted, interceptedRequest.networkRequest.requestId());
         return;
       }
     }
@@ -1559,7 +1558,7 @@ export namespace MultitargetNetworkManager {
     [Events.UserAgentChanged]: void,
     [Events.InterceptorsChanged]: void,
     [Events.AcceptedEncodingsChanged]: void,
-    [Events.RequestIntercepted]: Platform.DevToolsPath.UrlString,
+    [Events.RequestIntercepted]: string,
     [Events.RequestFulfilled]: Platform.DevToolsPath.UrlString,
   };
 }

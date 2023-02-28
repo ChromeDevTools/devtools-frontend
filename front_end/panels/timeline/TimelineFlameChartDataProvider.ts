@@ -183,6 +183,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private compatibilityTracksAppender: CompatibilityTracksAppender|null;
   private legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl|null;
   private traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
+  /**
+   * Raster threads are tracked and enumerated with this property. This is also
+   * used to group all raster threads together in the same track, instead of
+   * rendering a track for thread.
+   */
+  #rasterCount: number = 0;
 
   private minimumBoundaryInternal: number;
   private readonly maximumBoundary: number;
@@ -490,14 +496,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // and new tracks separately.
     const tracksAndAppenders = [...this.legacyTimelineModel.tracks(), ...trackAppenders].slice();
     tracksAndAppenders.sort((a, b) => weight(a) - weight(b));
-    const rasterCount = 0;
 
     // TODO(crbug.com/1386091) Remove interim state to use only new track
     // appenders.
     for (const trackOrAppender of tracksAndAppenders) {
       if ('type' in trackOrAppender) {
         // Legacy track
-        this.appendLegacyTrackData(trackOrAppender, rasterCount);
+        this.appendLegacyTrackData(trackOrAppender);
         continue;
       }
       // Track rendered with new engine data.
@@ -523,7 +528,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
   }
 
-  private appendLegacyTrackData(track: TimelineModel.TimelineModel.Track, rasterCount: number): void {
+  private appendLegacyTrackData(track: TimelineModel.TimelineModel.Track): void {
     const eventEntryType = EntryType.Event;
     switch (track.type) {
       case TimelineModel.TimelineModel.TrackType.UserInteractions: {
@@ -582,12 +587,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
 
       case TimelineModel.TimelineModel.TrackType.Raster: {
-        if (!rasterCount) {
+        if (!this.#rasterCount) {
           this.appendHeader(i18nString(UIStrings.raster), this.headerLevel1, false /* selectable */);
         }
-        ++rasterCount;
+        ++this.#rasterCount;
         this.appendSyncEvents(
-            track, track.events, i18nString(UIStrings.rasterizerThreadS, {PH1: rasterCount}), this.headerLevel2,
+            track, track.events, i18nString(UIStrings.rasterizerThreadS, {PH1: this.#rasterCount}), this.headerLevel2,
             eventEntryType, true /* selectable */);
         break;
       }

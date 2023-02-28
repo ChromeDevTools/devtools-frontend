@@ -484,15 +484,9 @@ export enum Phase {
   NestableAsyncBegin = 'b',
   NestableAsyncEnd = 'e',
   NestableAsyncInstant = 'n',
-  FlowBegin = 's',
-  FlowStep = 't',
-  FlowEnd = 'f',
   Metadata = 'M',
-  Counter = 'C',
   Sample = 'P',
-  CreateObject = 'N',
   SnapshotObject = 'O',
-  DeleteObject = 'D',
 }
 
 export const eventPhasesOfInterestForTraceBounds: Set<string> = new Set([

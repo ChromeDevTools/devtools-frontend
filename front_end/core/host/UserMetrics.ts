@@ -786,7 +786,8 @@ export enum IssueExpanded {
   HeavyAd = 3,
   ContentSecurityPolicy = 4,
   Other = 5,
-  MaxValue = 6,
+  Generic = 6,
+  MaxValue = 7,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -877,7 +878,18 @@ export enum IssueCreated {
   'ClientHintIssue::MetaTagAllowListInvalidOrigin' = 61,
   'ClientHintIssue::MetaTagModifiedHTML' = 62,
   'CorsIssue::PreflightAllowPrivateNetworkError' = 63,
-  MaxValue = 64,
+  'GenericIssue::CrossOriginPortalPostMessageError' = 64,
+  'GenericIssue::LabelForNameError' = 65,
+  'GenericIssue::DuplicateIdForInputError' = 66,
+  'GenericIssue::InputWithNoLabelError' = 67,
+  'GenericIssue::AutocompleteAttributeEmptyError' = 68,
+  'GenericIssue::EmptyIdAndNameAttributesForInputError' = 69,
+  'GenericIssue::AriaLabelledByToNonExistingId' = 70,
+  'GenericIssue::InputAssignedAutocompleteValueToIdOrNameAttributeError' = 71,
+  'GenericIssue::LabelHasNeitherForNorNestedInput' = 72,
+  'GenericIssue::LabelForMatchesNonExistingIdError' = 73,
+  'GenericIssue::HasPasswordFieldWithoutUsernameFieldError' = 74,
+  MaxValue = 75,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

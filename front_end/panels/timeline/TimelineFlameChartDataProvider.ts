@@ -191,7 +191,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   #rasterCount: number = 0;
 
   private minimumBoundaryInternal: number;
-  private readonly maximumBoundary: number;
   private timeSpan: number;
   private readonly consoleColorGenerator: Common.Color.Generator;
   private readonly extensionColorGenerator: Common.Color.Generator;
@@ -218,7 +217,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private asyncColorByCategory!: Map<TimelineCategory, string>;
   private lastInitiatorEntry!: number;
   private entryParent!: SDK.TracingModel.Event[];
-  private frameGroup?: PerfUI.FlameChart.Group;
   private lastSelection?: Selection;
   private colorForEvent?: ((arg0: SDK.TracingModel.Event) => string);
 
@@ -235,7 +233,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.compatibilityTracksAppender = null;
     this.traceEngineData = null;
     this.minimumBoundaryInternal = 0;
-    this.maximumBoundary = 0;
     this.timeSpan = 0;
 
     this.consoleColorGenerator = new Common.Color.Generator(
@@ -975,7 +972,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const hasFilmStrip = Boolean(screenshots.length);
     this.framesHeader.collapsible = hasFilmStrip;
     this.appendHeader(i18nString(UIStrings.frames), this.framesHeader, false /* selectable */);
-    this.frameGroup = this.timelineDataInternal.groups[this.timelineDataInternal.groups.length - 1];
 
     this.entryTypeByLevel[this.currentLevel] = EntryType.Frame;
     for (const frame of this.legacyPerformanceModel.frames()) {

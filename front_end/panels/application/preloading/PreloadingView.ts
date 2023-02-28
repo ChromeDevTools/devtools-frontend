@@ -21,10 +21,6 @@ type PrerenderingAttemptWithId = SDK.PrerenderingModel.PrerenderingAttemptWithId
 
 const UIStrings = {
   /**
-   *@description Text to clear content
-   */
-  clearNotOngoing: 'Clear not ongoing',
-  /**
    *@description Text in grid: Rule set is valid
    */
   validityValid: 'Valid',
@@ -101,7 +97,6 @@ export class PreloadingView extends UI.Widget.VBox {
   private focused: PreloadingId|null = null;
 
   private readonly infobarContainer: HTMLDivElement;
-  private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly hsplit: UI.SplitWidget.SplitWidget;
   private readonly vsplitRuleSets: UI.SplitWidget.SplitWidget;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
@@ -126,7 +121,6 @@ export class PreloadingView extends UI.Widget.VBox {
 
     // this (VBox)
     //   +- infobarContainer
-    //   +- toolbar (| [clear] |)
     //   +- hsplit
     //        +- vsplitRuleSets
     //             +- topContainer
@@ -148,14 +142,6 @@ export class PreloadingView extends UI.Widget.VBox {
     this.infobarContainer = document.createElement('div');
     this.infobarContainer.classList.add('flex-none');
     this.contentElement.insertBefore(this.infobarContainer, this.contentElement.firstChild);
-
-    this.toolbar = new UI.Toolbar.Toolbar('preloading-toolbar', this.contentElement);
-
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearNotOngoing), 'largeicon-clear');
-    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onClearNotOngoing, this);
-    this.toolbar.appendToolbarItem(clearButton);
-
-    this.toolbar.appendSeparator();
 
     this.ruleSetGrid.addEventListener('cellfocused', this.onRuleSetsGridCellFocused.bind(this));
     this.vsplitRuleSets = this.makeVsplit(this.ruleSetGrid, this.ruleSetDetails);
@@ -284,10 +270,6 @@ export class PreloadingView extends UI.Widget.VBox {
     const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
     this.focused = focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as PreloadingId;
     this.updateDetails();
-  }
-
-  private onClearNotOngoing(): void {
-    this.prerenderingModel.clearNotOngoing();
   }
 
   async getFeatureFlags(): Promise<FeatureFlags> {

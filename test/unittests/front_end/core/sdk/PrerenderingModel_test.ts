@@ -152,51 +152,6 @@ describe('PrerenderingRegistry', () => {
       },
     ]);
   });
-
-  it('clearNotOngoing works', () => {
-    const registry = new SDK.PrerenderingModel.PrerenderingRegistry();
-
-    assert.deepEqual(registry.getAll(), []);
-
-    const startedAt = Date.now();
-
-    registry.processEvent(makePrerenderingAttemptEventAddSpecRules(
-        '0' as PrerenderingAttemptId, 'https://example.com/0' as Platform.DevToolsPath.UrlString, startedAt));
-    registry.processEvent(makePrerenderingAttemptEventAddSpecRules(
-        '1' as PrerenderingAttemptId, 'https://example.com/1' as Platform.DevToolsPath.UrlString, startedAt));
-
-    const originalAttempt = registry.getById('PrerenderingAttempt:0');
-    assertNotNullOrUndefined(originalAttempt);
-    const attempt: PrerenderingAttempt = {
-      ...originalAttempt,
-      status: SDK.PrerenderingModel.PrerenderingStatus.Activated,
-    };
-    const event: PrerenderingAttemptEventUpdate = {
-      kind: 'PrerenderingAttemptEventUpdate',
-      update: attempt,
-    };
-    registry.processEvent(event);
-
-    registry.clearNotOngoing();
-
-    assert.deepEqual(registry.getAll(), [
-      {
-        id: 'PrerenderingAttempt:1',
-        attempt: {
-          prerenderingAttemptId: '1',
-          startedAt,
-          trigger: {
-            kind: 'PrerenderingTriggerSpecRules',
-            rule: {
-              'prerender': [{'source': 'list', 'urls': ['https://example.com/1']}],
-            },
-          },
-          url: 'https://example.com/1' as Platform.DevToolsPath.UrlString,
-          status: SDK.PrerenderingModel.PrerenderingStatus.Prerendering,
-        },
-      },
-    ]);
-  });
 });
 
 describeWithMockConnection('PrerenderingModel', () => {
@@ -351,60 +306,5 @@ describeWithMockConnection('PrerenderingModel', () => {
         },
       },
     ]);
-  });
-
-  it('clears not ongoing attempts', () => {
-    const target = createTarget({id: 'targetId' as Protocol.Target.TargetID});
-    const model = target.model(SDK.PrerenderingModel.PrerenderingModel);
-    assertNotNullOrUndefined(model);
-
-    const prerenderedFrameId = '1';
-
-    dispatchEvent(target, 'Page.frameNavigated', {
-      frame: {
-        id: 'main',
-        loaderId: 'foo',
-        url: 'https://example.com/',
-        domainAndRegistry: 'example.com',
-        securityOrigin: 'https://example.com/',
-        mimeType: 'text/html',
-        secureContextType: Protocol.Page.SecureContextType.Secure,
-        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
-        gatedAPIFeatures: [],
-      },
-    });
-    dispatchEvent(target, 'Target.targetInfoChanged', {
-      targetInfo: {
-        targetId: prerenderedFrameId,
-        type: 'frame',
-        subtype: 'prerender',
-        url: 'https://example.com/prerendered.html',
-        title: '',
-        attached: true,
-        canAccessOpener: true,
-      },
-    });
-
-    // Ongoing attempt is not cleared.
-    assert.strictEqual(model.getAll().length, 1);
-    assert.strictEqual(model.getAll()[0].attempt.status, SDK.PrerenderingModel.PrerenderingStatus.Prerendering);
-    model.clearNotOngoing();
-    assert.strictEqual(model.getAll().length, 1);
-
-    dispatchEvent(
-        target,
-        'Page.prerenderAttemptCompleted',
-        {
-          'initiatingFrameId': prerenderedFrameId,
-          'prerenderingUrl': 'https://example.com/prerendered.html',
-          'finalStatus': Protocol.Page.PrerenderFinalStatus.Activated,
-        },
-    );
-
-    // Activated attempt is cleared.
-    assert.strictEqual(model.getAll().length, 1);
-    assert.strictEqual(model.getAll()[0].attempt.status, SDK.PrerenderingModel.PrerenderingStatus.Activated);
-    model.clearNotOngoing();
-    assert.strictEqual(model.getAll().length, 0);
   });
 });

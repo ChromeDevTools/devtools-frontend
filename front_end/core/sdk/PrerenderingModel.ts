@@ -52,11 +52,6 @@ export class PrerenderingModel extends SDKModel.SDKModel<EventTypes> implements
     return this.registry.getAll();
   }
 
-  clearNotOngoing(): void {
-    this.registry.clearNotOngoing();
-    this.dispatchPrerenderingAttemptsRemoved();
-  }
-
   private dispatchPrerenderingAttemptStarted(): void {
     this.dispatchEventToListeners(Events.PrerenderingAttemptStarted);
   }
@@ -234,15 +229,6 @@ export class PrerenderingRegistry {
         }
 
         break;
-      }
-    }
-  }
-
-  // Clear not ongoing prerendering attempts.
-  clearNotOngoing(): void {
-    for (const [id, x] of this.entities.entries()) {
-      if (x.status !== PrerenderingStatus.Prerendering) {
-        this.entities.delete(id);
       }
     }
   }

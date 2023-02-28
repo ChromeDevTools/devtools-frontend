@@ -61,7 +61,6 @@ interface CSSBrowserData {
 export interface CSSProperty {
   name: string;
   description?: string;
-  syntax?: string;
   references?: Array<{
     name: string,
     url: string,

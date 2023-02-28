@@ -32,11 +32,9 @@ describeWithEnvironment('CSSPropertyDocsView', async () => {
     const shadowRoot = popupComponent.shadowRoot;
 
     const popupDescriptionRendered = shadowRoot.querySelector('#description') !== null;
-    const popupSyntaxRendered = shadowRoot.querySelector('#syntax') !== null;
     const popupLearnMoreRendered = shadowRoot.querySelector('#learn-more') !== null;
 
     assert.isTrue(popupDescriptionRendered);
-    assert.isTrue(popupSyntaxRendered);
     assert.isTrue(popupLearnMoreRendered);
   });
 });

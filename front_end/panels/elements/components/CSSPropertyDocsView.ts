@@ -16,10 +16,6 @@ const UIStrings = {
    */
   learnMore: 'Learn more',
   /**
-   *@description Prefix for the syntax section of CSS property documentation.
-   */
-  syntax: 'Syntax',
-  /**
    *@description Text for a checkbox to turn off the CSS property documentation.
    */
   dontShow: 'Don\'t show',
@@ -32,7 +28,6 @@ const {render, html} = LitHtml;
 interface CSSProperty {
   name: string;
   description?: string;
-  syntax?: string;
   references?: Array<{
     name: string,
     url: string,
@@ -58,7 +53,6 @@ export class CSSPropertyDocsView extends HTMLElement {
 
   #render(): void {
     const description = this.#cssProperty.description;
-    const syntax = this.#cssProperty.syntax;
     const link = this.#cssProperty.references?.[0].url;
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -68,14 +62,6 @@ export class CSSPropertyDocsView extends HTMLElement {
         ${description ? html`
           <div id="description">
             ${description}
-          </div>
-        ` : LitHtml.nothing}
-        ${syntax ? html`
-          <div
-            id="syntax"
-            class="docs-popup-section"
-          >
-            ${i18nString(UIStrings.syntax)}: <code>${syntax}</code>
           </div>
         ` : LitHtml.nothing}
         ${link ? html`

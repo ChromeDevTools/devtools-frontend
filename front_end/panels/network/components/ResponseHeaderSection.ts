@@ -265,6 +265,9 @@ export class ResponseHeaderSection extends HTMLElement {
 
     const actualHeaders = new Map<Platform.StringUtilities.LowerCaseString, string[]>();
     for (const header of this.#headerDetails) {
+      if (header.headerNotSet) {
+        continue;
+      }
       const headerValues = actualHeaders.get(header.name);
       if (headerValues) {
         headerValues.push(header.value || '');

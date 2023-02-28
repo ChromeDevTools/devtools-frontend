@@ -1205,4 +1205,37 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     expected[0].headers.push({name: 'set-cookie', value: 'bar=edited'});
     assert.isTrue(spy.getCall(-1).calledWith(JSON.stringify(expected, null, 2)));
   });
+
+  it('does not mark unset headers (which cause the request to be blocked) as overridden', async () => {
+    const request = {
+      sortedResponseHeaders: [
+        {name: 'abc', value: 'def'},
+      ],
+      blockedResponseCookies: () => [],
+      wasBlocked: () => true,
+      blockedReason: () => Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader,
+      originalResponseHeaders: [
+        {name: 'abc', value: 'def'},
+      ],
+      setCookieHeaders: [],
+      url: () => 'https://www.example.com/',
+      getAssociatedData: () => null,
+      setAssociatedData: () => {},
+    } as unknown as SDK.NetworkRequest.NetworkRequest;
+
+    const component = await renderResponseHeaderSection(request);
+    assertShadowRoot(component.shadowRoot);
+    const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+
+    const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isOverride: boolean): void => {
+      assert.deepEqual(getCleanTextContentFromElements(shadowRoot, '.header-name'), [headerName]);
+      assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
+      assert.strictEqual(shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), isOverride);
+    };
+
+    assertShadowRoot(rows[0].shadowRoot);
+    checkRow(rows[0].shadowRoot, 'abc:', 'def', false);
+    assertShadowRoot(rows[1].shadowRoot);
+    checkRow(rows[1].shadowRoot, 'not-setcross-origin-embedder-policy:', '', false);
+  });
 });

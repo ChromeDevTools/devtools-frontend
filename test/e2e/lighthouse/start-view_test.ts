@@ -15,7 +15,7 @@ import {
   waitForStorageUsage,
 } from '../helpers/lighthouse-helpers.js';
 
-describe('The Lighthouse start view', async () => {
+describe('The Lighthouse start view', async function() {
   it('shows a button to generate a new report', async () => {
     await navigateToLighthouseTab('empty.html');
 
@@ -68,8 +68,11 @@ describe('The Lighthouse start view', async () => {
     assert.isTrue(disabled, 'The Generate Report button should be disabled');
   });
 
-  // Flaky on mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1418624] displays warning if important data may affect performance', async () => {
+  it('displays warning if important data may affect performance', async () => {
+    if (this.timeout() !== 0) {
+      this.timeout(20_000);
+    }
+
     // e2e tests in application/ create websql and indexeddb items and don't clean up after themselves
     await clearSiteData();
 

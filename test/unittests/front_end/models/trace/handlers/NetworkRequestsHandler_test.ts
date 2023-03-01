@@ -11,11 +11,8 @@ type DataArgsMap = Map<keyof DataArgs, DataArgs[keyof DataArgs]>;
 
 async function parseAndFinalizeFile(traceFile: string) {
   const traceEvents = await loadEventsFromTraceFile(traceFile);
-  // The network handler makes use of frame data so we reset and initialize
-  // the meta handler here, and finalize it in the test itself.
-  TraceModel.Handlers.ModelHandlers.Meta.reset();
   TraceModel.Handlers.ModelHandlers.Meta.initialize();
-  TraceModel.Handlers.ModelHandlers.NetworkRequests.reset();
+  TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
   for (const event of traceEvents) {
     TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
     TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
@@ -26,15 +23,16 @@ async function parseAndFinalizeFile(traceFile: string) {
 }
 describe('NetworkRequestsHandler', function() {
   setTraceModelTimeout(this);
+
   describe('error handling', () => {
-    it('throws if handleEvent is called before reset', () => {
+    it('throws if handleEvent is called before it is initialized', () => {
       assert.throws(() => {
         TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(
             {} as TraceModel.Types.TraceEvents.TraceEventData);
       }, 'Network Request handler is not initialized');
     });
 
-    it('throws if finalize is called before reset', async () => {
+    it('throws if finalize is called before initialize', async () => {
       let thrown: Error|null = null;
       try {
         await TraceModel.Handlers.ModelHandlers.NetworkRequests.finalize();
@@ -55,11 +53,8 @@ describe('NetworkRequestsHandler', function() {
 
   describe('network requests calculations', () => {
     beforeEach(() => {
-      // The network handler makes use of frame data so we reset and initialize
-      // the meta handler here, and finalize it in the afterEach.
-      TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
-      TraceModel.Handlers.ModelHandlers.NetworkRequests.reset();
+      TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
 
     it('calculates network requests correctly', async () => {
@@ -210,11 +205,8 @@ describe('NetworkRequestsHandler', function() {
 
   describe('redirects', () => {
     beforeEach(() => {
-      // The network handler makes use of frame data so we reset and initialize
-      // the meta handler here, and finalize it in the test itself.
-      TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
-      TraceModel.Handlers.ModelHandlers.NetworkRequests.reset();
+      TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
 
     it('calculates redirects correctly (navigations)', async () => {

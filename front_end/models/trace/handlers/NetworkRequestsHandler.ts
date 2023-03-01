@@ -85,6 +85,10 @@ export function reset(): void {
   requestMap.clear();
   requestsByTime.length = 0;
 
+  handlerState = HandlerState.UNINITIALIZED;
+}
+
+export function initialize(): void {
   handlerState = HandlerState.INITIALIZED;
 }
 

@@ -10,13 +10,12 @@ import type * as Common from '../../../../front_end/core/common/common.js';
 import * as ThemeSupport from '../../../../front_end/ui/legacy/theme_support/theme_support.js';
 import {resetTestDOM} from '../helpers/DOMHelpers.js';
 import {markStaticTestsLoaded} from '../helpers/RealConnection.js';
+import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import {
   startTrackingAsyncActivity,
   stopTrackingAsyncActivity,
   checkForPendingActivity,
 } from '../helpers/TrackAsyncOperations.js';
-
-beforeEach(resetTestDOM);
 
 before(async function() {
   /* Larger than normal timeout because we've seen some slowness on the bots */
@@ -25,14 +24,13 @@ before(async function() {
   markStaticTestsLoaded({hasOnly: this.test.parent.hasOnly()});
 });
 
-afterEach(async () => {
-  await checkForPendingActivity();
-  sinon.restore();
-  stopTrackingAsyncActivity();
-  // Clear out any Sinon stubs or spies between individual tests.
-});
-
 beforeEach(() => {
+  resetTestDOM();
+  // Ensure that no trace data leaks between tests when testing the trace engine.
+  for (const handler of Object.values(TraceEngine.Handlers.ModelHandlers)) {
+    handler.reset();
+  }
+
   // Some unit tests exercise code that assumes a ThemeSupport instance is available.
   // Run this in a beforeEach in case an individual test overrides it.
   const setting = {
@@ -43,4 +41,11 @@ beforeEach(() => {
   ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
 
   startTrackingAsyncActivity();
+});
+
+afterEach(async () => {
+  await checkForPendingActivity();
+  sinon.restore();
+  stopTrackingAsyncActivity();
+  // Clear out any Sinon stubs or spies between individual tests.
 });

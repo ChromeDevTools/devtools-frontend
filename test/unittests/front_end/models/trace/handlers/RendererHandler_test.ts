@@ -26,10 +26,6 @@ const SUB_FRAME_PID_3 = 2236123;
 async function handleEventsFromTraceFile(
     file: string, handleSamples = false): Promise<TraceModel.Handlers.ModelHandlers.Renderer.RendererHandlerData> {
   const traceEvents = await loadEventsFromTraceFile(file);
-  TraceModel.Handlers.ModelHandlers.Meta.reset();
-  TraceModel.Handlers.ModelHandlers.Samples.reset();
-  TraceModel.Handlers.ModelHandlers.Renderer.reset();
-
   TraceModel.Handlers.ModelHandlers.Meta.initialize();
   TraceModel.Handlers.ModelHandlers.Samples.initialize();
   TraceModel.Handlers.ModelHandlers.Renderer.initialize();
@@ -1040,6 +1036,7 @@ describe('RendererHandler', function() {
   });
 
   it('can assign origins to processes', async () => {
+    await handleEventsFromTraceFile('multiple-navigations-with-iframes.json.gz');
     const metadata = TraceModel.Handlers.ModelHandlers.Meta.data();
     const processes:
         Map<TraceModel.Types.TraceEvents.ProcessID, TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess> =
@@ -1057,6 +1054,7 @@ describe('RendererHandler', function() {
   });
 
   it('can assign main frame flags to processes', async () => {
+    await handleEventsFromTraceFile('multiple-navigations-with-iframes.json.gz');
     const metadata = TraceModel.Handlers.ModelHandlers.Meta.data();
     const processes:
         Map<TraceModel.Types.TraceEvents.ProcessID, TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess> =
@@ -1074,6 +1072,7 @@ describe('RendererHandler', function() {
   });
 
   it('can assign thread names to threads in processes', async () => {
+    await handleEventsFromTraceFile('multiple-navigations-with-iframes.json.gz');
     const {mainFrameId, rendererProcessesByFrame, threadsInProcess} = TraceModel.Handlers.ModelHandlers.Meta.data();
     const processes:
         Map<TraceModel.Types.TraceEvents.ProcessID, TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess> =

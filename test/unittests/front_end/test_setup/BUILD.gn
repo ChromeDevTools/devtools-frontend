@@ -10,6 +10,7 @@ ts_library("test_setup") {
 
   deps = [
     "../../../../front_end/core/common:bundle",
+    "../../../../front_end/models/trace:bundle",
     "../../../../front_end/ui/components/helpers:bundle",
     "../../../../front_end/ui/legacy/theme_support:bundle",
     "../helpers",

@@ -8,15 +8,8 @@ import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
 
 describe('GPUHandler', () => {
   beforeEach(() => {
-    TraceModel.Handlers.ModelHandlers.Meta.reset();
     TraceModel.Handlers.ModelHandlers.Meta.initialize();
-    TraceModel.Handlers.ModelHandlers.GPU.reset();
     TraceModel.Handlers.ModelHandlers.GPU.initialize();
-  });
-
-  afterEach(() => {
-    TraceModel.Handlers.ModelHandlers.Meta.reset();
-    TraceModel.Handlers.ModelHandlers.GPU.reset();
   });
 
   it('finds all the GPU Tasks for the main GPU Thread', async () => {

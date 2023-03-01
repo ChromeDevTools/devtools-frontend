@@ -135,12 +135,12 @@ describeWithMockConnection('PreloadingView', async () => {
 
     await coordinator.done();
 
-    const ruleSetGridComponent = view.getRuleSetsGridForTest();
+    const ruleSetGridComponent = view.getRuleSetGridForTest();
     assertShadowRoot(ruleSetGridComponent.shadowRoot);
-    const gridComponent = view.getGridForTest();
-    assertShadowRoot(gridComponent.shadowRoot);
-    const detailsComponent = view.getDetailsForTest();
-    assertShadowRoot(detailsComponent.shadowRoot);
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
@@ -151,7 +151,7 @@ describeWithMockConnection('PreloadingView', async () => {
     );
 
     assertGridContents(
-        gridComponent,
+        preloadingGridComponent,
         ['Started at', 'Type', 'Trigger', 'URL', 'Status'],
         [
           [
@@ -164,7 +164,7 @@ describeWithMockConnection('PreloadingView', async () => {
         ],
     );
 
-    const placeholder = detailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
+    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
 
     assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
   });
@@ -189,7 +189,7 @@ describeWithMockConnection('PreloadingView', async () => {
 
     await coordinator.done();
 
-    const ruleSetGridComponent = view.getRuleSetsGridForTest();
+    const ruleSetGridComponent = view.getRuleSetGridForTest();
     assertShadowRoot(ruleSetGridComponent.shadowRoot);
 
     assertGridContents(

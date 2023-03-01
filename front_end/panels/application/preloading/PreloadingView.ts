@@ -94,15 +94,16 @@ export class PreloadingView extends UI.Widget.VBox {
   // TODO(https://crbug.com/1384419): Remove PrerenderingModel.
   private readonly prerenderingModel: SDK.PrerenderingModel.PrerenderingModel;
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
-  private focused: PreloadingId|null = null;
+  private focusedPreloadingAttemptId: PreloadingId|null = null;
 
   private readonly infobarContainer: HTMLDivElement;
   private readonly hsplit: UI.SplitWidget.SplitWidget;
   private readonly vsplitRuleSets: UI.SplitWidget.SplitWidget;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
-  private ruleSetDetails = new PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView();
-  private readonly grid = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
-  private details = new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
+  private readonly ruleSetDetails = new PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView();
+  private readonly preloadingGrid = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
+  private readonly preloadingDetails =
+      new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   private readonly featureFlagWarningsPromise: Promise<void>;
 
   constructor(model: SDK.PreloadingModel.PreloadingModel, prerenderingModel: SDK.PrerenderingModel.PrerenderingModel) {
@@ -146,8 +147,8 @@ export class PreloadingView extends UI.Widget.VBox {
     this.ruleSetGrid.addEventListener('cellfocused', this.onRuleSetsGridCellFocused.bind(this));
     this.vsplitRuleSets = this.makeVsplit(this.ruleSetGrid, this.ruleSetDetails);
 
-    this.grid.addEventListener('cellfocused', this.onCellFocused.bind(this));
-    const vsplitPreloadingAttempts = this.makeVsplit(this.grid, this.details);
+    this.preloadingGrid.addEventListener('cellfocused', this.onPreloadingGridCellFocused.bind(this));
+    const vsplitPreloadingAttempts = this.makeVsplit(this.preloadingGrid, this.preloadingDetails);
 
     this.hsplit = new UI.SplitWidget.SplitWidget(
         /* isVertical */ false,
@@ -218,8 +219,9 @@ export class PreloadingView extends UI.Widget.VBox {
     }
   }
 
-  private updateDetails(): void {
-    this.details.data = this.focused === null ? null : this.prerenderingModel.getById(this.focused);
+  private updatePreloadingDetails(): void {
+    const id = this.focusedPreloadingAttemptId;
+    this.preloadingDetails.data = id === null ? null : this.prerenderingModel.getById(id);
   }
 
   private onModelUpdated(): void {
@@ -227,18 +229,18 @@ export class PreloadingView extends UI.Widget.VBox {
     //
     // Currently, all rule sets that appear in DevTools are valid.
     // TODO(https://crbug.com/1384419): Add property `validity` to the CDP.
-    const ruleSetsRows = this.model.getAllRuleSets().map(
+    const ruleSetRows = this.model.getAllRuleSets().map(
         ({id}: WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>):
             PreloadingComponents.RuleSetGrid.RuleSetGridRow => ({
           id,
           validity: i18nString(UIStrings.validityValid),
         }));
-    this.ruleSetGrid.update(ruleSetsRows);
+    this.ruleSetGrid.update(ruleSetRows);
 
     this.updateRuleSetDetails();
 
-    // Update grid
-    const rows = this.prerenderingModel.getAll().map(
+    // Update preloaidng grid
+    const preloadingAttemptRows = this.prerenderingModel.getAll().map(
         ({id, attempt}: PrerenderingAttemptWithId): PreloadingComponents.PreloadingGrid.PreloadingGridRow => {
           return {
             id,
@@ -249,9 +251,9 @@ export class PreloadingView extends UI.Widget.VBox {
             status: PrerenderingUIUtils.status(attempt),
           };
         });
-    this.grid.update(rows);
+    this.preloadingGrid.update(preloadingAttemptRows);
 
-    this.updateDetails();
+    this.updatePreloadingDetails();
   }
 
   private onRuleSetsGridCellFocused(event: Event): void {
@@ -266,10 +268,11 @@ export class PreloadingView extends UI.Widget.VBox {
     this.updateRuleSetDetails();
   }
 
-  private onCellFocused(event: Event): void {
+  private onPreloadingGridCellFocused(event: Event): void {
     const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
-    this.focused = focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as PreloadingId;
-    this.updateDetails();
+    this.focusedPreloadingAttemptId =
+        focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as PreloadingId;
+    this.updatePreloadingDetails();
   }
 
   async getFeatureFlags(): Promise<FeatureFlags> {
@@ -312,16 +315,16 @@ export class PreloadingView extends UI.Widget.VBox {
     return this.infobarContainer;
   }
 
-  getRuleSetsGridForTest(): PreloadingComponents.RuleSetGrid.RuleSetGrid {
+  getRuleSetGridForTest(): PreloadingComponents.RuleSetGrid.RuleSetGrid {
     return this.ruleSetGrid;
   }
 
-  getGridForTest(): PreloadingComponents.PreloadingGrid.PreloadingGrid {
-    return this.grid;
+  getPreloadingGridForTest(): PreloadingComponents.PreloadingGrid.PreloadingGrid {
+    return this.preloadingGrid;
   }
 
-  getDetailsForTest(): PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView {
-    return this.details;
+  getPreloadingDetailsForTest(): PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView {
+    return this.preloadingDetails;
   }
 
   getFeatureFlagWarningsPromiseForTest(): Promise<void> {

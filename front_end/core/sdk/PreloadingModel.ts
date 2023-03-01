@@ -60,7 +60,7 @@ export class PreloadingModel extends SDKModel.SDKModel<EventTypes> {
     return this.ruleSets.getAll();
   }
 
-  onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeModel.ResourceTreeFrame>): void {
+  private onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeModel.ResourceTreeFrame>): void {
     const frame = event.data;
 
     // Note that at this timing ResourceTreeFrame.loaderId is ensured to

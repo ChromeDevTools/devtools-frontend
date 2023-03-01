@@ -138,56 +138,16 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     this.appendCheckbox(UIStrings.toggleContinuousRepaintTitle, UIStrings.toggleContinuousRepaintDesc,
                         Common.Settings.Settings.instance().moduleSetting('continuousRepaint'));
 
-    this.createButton(UIStrings.dumpDomTitle, UIStrings.dumpDomDesc, () => {
-      if (this.cohtmlDebugModel)
-      {
-        this.cohtmlDebugModel.dumpDOM();
-      }
-    });
-
-    this.createButton(UIStrings.dumpStackingContextTitle, UIStrings.dumpStackingContextDesc, () => {
-      if (this.cohtmlDebugModel)
-      {
-        this.cohtmlDebugModel.dumpStackingContext();
-      }
-    });
-
-    this.createButton(UIStrings.dumpUsedImagesTitle, UIStrings.dumpUsedImagesDesc, () => {
-      if (this.cohtmlDebugModel)
-      {
-        this.cohtmlDebugModel.dumpUsedImages();
-      }
-    });
-
-    this.createButton(UIStrings.captureBackendTitle, UIStrings.captureBackendDesc, () => {
-      if (this.cohtmlDebugModel)
-      {
-        this.cohtmlDebugModel.captureBackend();
-      }
-    });
-
-    this.createButton(UIStrings.captureRendTitle, UIStrings.captureRendDesc, () => {
-      if (this.cohtmlDebugModel)
-      {
-        this.cohtmlDebugModel.captureRend();
-      }
-    });
-
-    this.createButton(UIStrings.capturePageTitle, UIStrings.capturePageDesc, () => {
-      if (this.cohtmlDebugModel)
-      {
-        this.cohtmlDebugModel.capturePage();
-      }
-    });
+    this.createSimpleButton(UIStrings.dumpDomTitle, UIStrings.dumpDomDesc, 'dumpDOM');
+    this.createSimpleButton(UIStrings.dumpStackingContextTitle, UIStrings.dumpStackingContextDesc, 'dumpStackingContext');
+    this.createSimpleButton(UIStrings.dumpUsedImagesTitle, UIStrings.dumpUsedImagesDesc, 'dumpUsedImages');
+    this.createSimpleButton(UIStrings.captureBackendTitle, UIStrings.captureBackendDesc, 'captureBackend');
+    this.createSimpleButton(UIStrings.captureRendTitle, UIStrings.captureRendDesc, 'captureRend');
+    this.createSimpleButton(UIStrings.capturePageTitle, UIStrings.capturePageDesc, 'capturePage');
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    this.createButton(UIStrings.clearCachedUnusedImagesTitle, UIStrings.clearCachedUnusedImagesDesc, () => {
-      if (this.cohtmlDebugModel)
-      {
-        this.cohtmlDebugModel.clearCachedUnusedImages();
-      }
-    });
+    this.createSimpleButton(UIStrings.clearCachedUnusedImagesTitle, UIStrings.clearCachedUnusedImagesDesc, 'clearCachedUnusedImages');
 
     this.createButton(UIStrings.getSystemCacheTitle, UIStrings.getSystemCacheDesc, () => {
       if (this.cohtmlDebugModel)
@@ -209,6 +169,14 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     }
 
     return cohtmlPanelViewInstance;
+  }
+
+  private createSimpleButton(title: string, description: string, method: any) {
+    this.createButton(title, description, () => {
+      if (this.cohtmlDebugModel && (this.cohtmlDebugModel as any)[method]) {
+        (this.cohtmlDebugModel as any)[method]();
+      }
+    });
   }
 
   private createButton(label: string, desc: string, click : () => void) {
@@ -248,12 +216,11 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
   }
 
   modelAdded(cohtmlModel: SDK.CohtmlDebugModel.CohtmlDebugModel): void {
-    console.log('added!');
     this.cohtmlDebugModel = cohtmlModel;
   }
 
   modelRemoved(cohtmlModel: SDK.CohtmlDebugModel.CohtmlDebugModel): void {
-
+    this.cohtmlDebugModel = null;
   }
 
 }

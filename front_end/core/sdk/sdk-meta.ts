@@ -103,6 +103,8 @@ const UIStrings = {
   */
   hidePaintFlashingRectangles: 'Hide paint flashing rectangles',
 
+  // COHERENT_BEGIN
+
   showRedrawFlashingRectangles: 'Show elements redraw flashing rectangles',
 
   hideRedrawFlashingRectangles: 'Hide elements redraw flashing rectangles',
@@ -110,6 +112,8 @@ const UIStrings = {
   enableContinuousRepaint: 'Enable redrawing of the view each frame',
 
   disableContinuousRepaint: 'Disable redrawing of the view each frame',
+
+  // COHERENT_END
 
   /**
   *@description Title of a setting under the Rendering category that can be invoked through the Command Menu
@@ -531,6 +535,8 @@ Common.Settings.registerSettingExtension({
   defaultValue: false,
 });
 
+// COHERENT_BEGIN
+
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'showRedrawRects',
@@ -566,6 +572,8 @@ Common.Settings.registerSettingExtension({
   ],
   defaultValue: false,
 });
+
+// COHERENT_END
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

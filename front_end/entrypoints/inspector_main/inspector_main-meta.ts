@@ -16,6 +16,7 @@ const UIStrings = {
   */
   rendering: 'Rendering',
 
+  // COHERENT_BEGIN
   cohtml: 'Cohtml',
 
   /**
@@ -24,6 +25,7 @@ const UIStrings = {
   showRendering: 'Show Rendering',
 
   showCohtml: 'Show Cohtml View',
+  // COHERENT_END
 
   /**
   * @description Command Menu search query that points to the Rendering tool. This refers to the
@@ -144,6 +146,7 @@ UI.ViewManager.registerViewExtension({
   ],
 });
 
+// COHERENT_BEGIN
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'cohtml',
@@ -158,6 +161,7 @@ UI.ViewManager.registerViewExtension({
   tags: [
   ],
 });
+// COHERENT_END
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.NAVIGATION,

@@ -28,12 +28,14 @@
   margin-bottom: 16px;
 }
 
+/* COHERENT_BEGIN */
 .button-block {
   display: flex;
   flex-direction: row;
-  margin-bottom: 7px;;
+  margin-bottom: 7px;
 }
 
 .button-block span{
   margin-left: 11pt;
 }
+/* COHERENT_END */

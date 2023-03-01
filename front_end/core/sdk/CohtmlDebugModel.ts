@@ -14,13 +14,7 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
 
-const UIStrings = {
-
-};
-const str_ = i18n.i18n.registerUIStrings('core/sdk/CohtmlDebugModel.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-export class CohtmlDebugModel extends SDKModel<EventTypes> implements ProtocolProxyApi.CohtmlDebugDispatcher {
+export class CohtmlDebugModel extends SDKModel<void> implements ProtocolProxyApi.CohtmlDebugDispatcher {
   cohtmlDebugAgent: ProtocolProxyApi.CohtmlDebugApi;
   private registeredListeners: Common.EventTarget.EventDescriptor[];
 
@@ -46,7 +40,7 @@ export class CohtmlDebugModel extends SDKModel<EventTypes> implements ProtocolPr
     }
   }
 
-  private async wireAgentToSettings(): Promise<void> {
+  private wireAgentToSettings(): void {
     this.registeredListeners = [
       this.continuousRepaintSetting.addChangeListener(
         () => this.cohtmlDebugAgent.invoke_setContinuousRepaint({result: this.continuousRepaintSetting.get()})),
@@ -62,7 +56,8 @@ export class CohtmlDebugModel extends SDKModel<EventTypes> implements ProtocolPr
   }
 
   async resumeModel(): Promise<void> {
-    await Promise.all([this.cohtmlDebugAgent.invoke_enable(), this.wireAgentToSettings()]);
+    this.wireAgentToSettings()
+    await this.cohtmlDebugAgent.invoke_enable();
   }
 
   dumpDOM(): void {
@@ -101,15 +96,7 @@ export class CohtmlDebugModel extends SDKModel<EventTypes> implements ProtocolPr
 
     return response;
   }
-
-
 }
 // eslint-disable-next-line rulesdir/const_enum
-export enum Events {
-
-}
-
-export type EventTypes = {
-};
 
 SDKModel.register(CohtmlDebugModel, {capabilities: Capability.None, autostart: true});

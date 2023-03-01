@@ -242,6 +242,12 @@ autoninja -C out/Default content_shell
 third_party/blink/tools/run_web_tests.py -t Default http/tests/devtools
 ```
 
+To debug a failing layout test we can run
+```bash
+npm run debug-test -- http/tests/devtools/<path>/<to>/<test>.js
+```
+
+The script supports either default DevTools checkout inside the chromium tree or side-by-side checkouts of chromium and DevTools. Passing --custom-devtools-frontend is not supported currently, meaning in the side-by-side scenario the DevTools checkout inside the chromium tree will be used (if not symlinked).
 ## Creating a change
 
 Usual [steps](https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#creating-a-change) for creating a change work out of the box, when executed in the DevTools frontend repository.

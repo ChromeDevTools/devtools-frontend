@@ -2167,6 +2167,7 @@ declare namespace ProtocolProxyApi {
     invoke_setShowPaintRects(params: Protocol.Overlay.SetShowPaintRectsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * COHERENT_BEGIN
      * Requests that backend shows redraw rectangles for elements being redrawn
      */
     invoke_setShowRedrawRects(params: Protocol.Overlay.SetShowRedrawRectsRequest): Promise<Protocol.ProtocolResponseWithError>;
@@ -3375,11 +3376,11 @@ declare namespace ProtocolProxyApi {
 
     invoke_dumpUsedImages(): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_captureBackend(): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_captureBackendBuffers(): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_captureRend(): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_captureRendFile(): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_capturePage(): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_captureFullPage(): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
 

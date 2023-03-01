@@ -14143,7 +14143,7 @@
                 },
                 {
                     "name": "setShowRedrawRects",
-                    "description": "Requests that backend shows redraw rectangles for elements being redrawn",
+                    "description": "COHERENT_BEGIN\nRequests that backend shows redraw rectangles for elements being redrawn",
                     "parameters": [
                         {
                             "name": "result",
@@ -20755,7 +20755,7 @@
         },
         {
             "domain": "CohtmlDebug",
-            "description": "This domain exposes some Cohtml deubg functionality",
+            "description": "COHERENT_BEGIN\nThis domain exposes some Cohtml deubg functionality",
             "dependencies": [
                 "Runtime"
             ],
@@ -20840,13 +20840,13 @@
                     "name": "dumpUsedImages"
                 },
                 {
-                    "name": "captureBackend"
+                    "name": "captureBackendBuffers"
                 },
                 {
-                    "name": "captureRend"
+                    "name": "captureRendFile"
                 },
                 {
-                    "name": "capturePage"
+                    "name": "captureFullPage"
                 },
                 {
                     "name": "enable"

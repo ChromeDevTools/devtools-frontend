@@ -2721,6 +2721,7 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * COHERENT_BEGIN
      * Requests that backend shows redraw rectangles for elements being redrawn
      */
     'Overlay.setShowRedrawRects': {
@@ -3787,15 +3788,15 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: void;
     };
-    'CohtmlDebug.captureBackend': {
+    'CohtmlDebug.captureBackendBuffers': {
       paramsType: [];
       returnType: void;
     };
-    'CohtmlDebug.captureRend': {
+    'CohtmlDebug.captureRendFile': {
       paramsType: [];
       returnType: void;
     };
-    'CohtmlDebug.capturePage': {
+    'CohtmlDebug.captureFullPage': {
       paramsType: [];
       returnType: void;
     };

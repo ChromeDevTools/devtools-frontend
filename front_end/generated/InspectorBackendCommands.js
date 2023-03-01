@@ -830,9 +830,9 @@ inspectorBackend.registerCommand("CohtmlDebug.setContinuousRepaint", [{"name": "
 inspectorBackend.registerCommand("CohtmlDebug.dumpDOM", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.dumpStackingContext", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.dumpUsedImages", [], []);
-inspectorBackend.registerCommand("CohtmlDebug.captureBackend", [], []);
-inspectorBackend.registerCommand("CohtmlDebug.captureRend", [], []);
-inspectorBackend.registerCommand("CohtmlDebug.capturePage", [], []);
+inspectorBackend.registerCommand("CohtmlDebug.captureBackendBuffers", [], []);
+inspectorBackend.registerCommand("CohtmlDebug.captureRendFile", [], []);
+inspectorBackend.registerCommand("CohtmlDebug.captureFullPage", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.enable", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.disable", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.clearCachedUnusedImages", [], []);

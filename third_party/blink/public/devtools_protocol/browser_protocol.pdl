@@ -9725,11 +9725,11 @@ domain CohtmlDebug
 
   command dumpUsedImages
 
-  command captureBackend
+  command captureBackendBuffers
 
-  command captureRend
+  command captureRendFile
 
-  command capturePage
+  command captureFullPage
 
   command enable
 

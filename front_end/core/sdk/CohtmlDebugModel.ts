@@ -73,15 +73,15 @@ export class CohtmlDebugModel extends SDKModel<void> implements ProtocolProxyApi
   }
 
   captureBackend(): void {
-    this.cohtmlDebugAgent.invoke_captureBackend();
+    this.cohtmlDebugAgent.invoke_captureBackendBuffers();
   }
 
   captureRend(): void {
-    this.cohtmlDebugAgent.invoke_captureRend();
+    this.cohtmlDebugAgent.invoke_captureRendFile();
   }
 
   capturePage(): void {
-    this.cohtmlDebugAgent.invoke_capturePage();
+    this.cohtmlDebugAgent.invoke_captureFullPage();
   }
 
   clearCachedUnusedImages(): void {

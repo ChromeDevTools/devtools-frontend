@@ -13950,6 +13950,7 @@ declare namespace Protocol {
   }
 
   /**
+   * COHERENT_BEGIN
    * This domain exposes some Cohtml deubg functionality
    */
   export namespace CohtmlDebug {

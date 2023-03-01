@@ -4,6 +4,7 @@
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {FakeStorage} from '../../helpers/TimelineHelpers.js';
 
@@ -23,7 +24,7 @@ describe('TimelineUIUtils', () => {
 
   it('creates top frame location text for function calls', async () => {
     const event = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'FunctionCall', SDK.TracingModel.Phase.Complete, 10, thread);
+        'devtools.timeline', 'FunctionCall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
 
     event.addArgs({
       data: {
@@ -41,7 +42,7 @@ describe('TimelineUIUtils', () => {
   it('creates top frame location text as a fallback', async () => {
     // 'TimerInstall' is chosen such that we run into the 'default' case.
     const event = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'TimerInstall', SDK.TracingModel.Phase.Complete, 10, thread);
+        'devtools.timeline', 'TimerInstall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
 
     event.addArgs({
       data: {

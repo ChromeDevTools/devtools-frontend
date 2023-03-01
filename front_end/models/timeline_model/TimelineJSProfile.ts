@@ -7,6 +7,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as TraceEngine from '../trace/trace.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
@@ -236,8 +237,8 @@ export class TimelineJSProfileProcessor {
             break;
         }
         const jsFrameEvent = new SDK.TracingModel.ConstructedEvent(
-            SDK.TracingModel.DevToolsTimelineEventCategory, jsFrameType, SDK.TracingModel.Phase.Complete, e.startTime,
-            e.thread);
+            SDK.TracingModel.DevToolsTimelineEventCategory, jsFrameType, TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+            e.startTime, e.thread);
         jsFrameEvent.ordinal = e.ordinal;
         jsFrameEvent.addArgs({data: frame});
         jsFrameEvent.setEndTime(endTime);

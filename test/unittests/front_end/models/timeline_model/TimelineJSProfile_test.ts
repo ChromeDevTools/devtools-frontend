@@ -7,6 +7,7 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {FakeStorage} from '../../helpers/TimelineHelpers.js';
 
 describe('TimelineJSProfile', () => {
@@ -35,7 +36,7 @@ describe('TimelineJSProfile', () => {
 
   it('generateJSFrameEvents creates JS frame events with a top-level V8 invocation', () => {
     const callEvent = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'FunctionCall', SDK.TracingModel.Phase.Complete, 10, thread);
+        'devtools.timeline', 'FunctionCall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
     callEvent.setEndTime(20);
     const sampleEvent = new SDK.TracingModel.ConstructedEvent(
         'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 5, thread);
@@ -75,7 +76,7 @@ describe('TimelineJSProfile', () => {
         'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 7, thread);
     sampleEvent3.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const callEvent = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'FunctionCall', SDK.TracingModel.Phase.Complete, 8, thread);
+        'devtools.timeline', 'FunctionCall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 8, thread);
     callEvent.setEndTime(15);
     const sampleEvent4 = new SDK.TracingModel.ConstructedEvent(
         'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 9, thread);
@@ -101,11 +102,11 @@ describe('TimelineJSProfile', () => {
   // http://crbug.com/1384182
   it('generateJSFrameEvents creates JS frame events with v8.run trace event as parent', () => {
     const evaluateEvent = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'EvaluateScript', SDK.TracingModel.Phase.Complete, 5, thread);
+        'devtools.timeline', 'EvaluateScript', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 5, thread);
     evaluateEvent.setEndTime(25);
 
     const v8RunEvent =
-        new SDK.TracingModel.ConstructedEvent('v8', 'v8.run', SDK.TracingModel.Phase.Complete, 10, thread);
+        new SDK.TracingModel.ConstructedEvent('v8', 'v8.run', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
     v8RunEvent.addArgs({data: {fileName: 'bundle.js'}});
     v8RunEvent.setEndTime(20);
 
@@ -115,7 +116,7 @@ describe('TimelineJSProfile', () => {
 
     // The presence of this (unshown) event once incorrectedly triggered an early truncateJSStack
     const v8ParseFnEvent = new SDK.TracingModel.ConstructedEvent(
-        'disabled-by-default-v8.compile', 'V8.ParseFunction', SDK.TracingModel.Phase.Complete, 10, thread);
+        'disabled-by-default-v8.compile', 'V8.ParseFunction', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
     v8ParseFnEvent.setEndTime(11);
 
     const sampleEvent4 = new SDK.TracingModel.ConstructedEvent(

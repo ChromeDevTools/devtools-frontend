@@ -37,7 +37,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TraceEngine from '../trace/trace.js';
-
 import type * as Protocol from '../../generated/protocol.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
@@ -1933,7 +1932,7 @@ export class Track {
         break;
       }
       const syncEvent = new SDK.TracingModel.ConstructedEvent(
-          event.categoriesString, event.name, SDK.TracingModel.Phase.Complete, startTime, event.thread);
+          event.categoriesString, event.name, TraceEngine.Types.TraceEvents.Phase.COMPLETE, startTime, event.thread);
       syncEvent.setEndTime(endTime);
       syncEvent.addArgs(event.args);
       this.syncEventsInternal.push(syncEvent);

@@ -4,7 +4,8 @@
 
 const {assert} = chai;
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
+import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import {
   DevToolsTimelineCategory,
@@ -14,20 +15,20 @@ import {
 const consoleEvent = makeFakeSDKEventFromPayload({
   categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console],
   name: TimelineModel.TimelineModel.RecordType.ConsoleTime,
-  ph: SDK.TracingModel.Phase.Complete,
+  ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
   ts: 1,
 });
 
 const latencyInfoEvent = makeFakeSDKEventFromPayload({
   categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo],
   name: TimelineModel.TimelineModel.RecordType.LatencyInfo,
-  ph: SDK.TracingModel.Phase.Complete,
+  ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
   ts: 1,
 });
 const userTimingEvent = makeFakeSDKEventFromPayload({
   categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming],
   name: TimelineModel.TimelineModel.RecordType.UserTiming,
-  ph: SDK.TracingModel.Phase.Complete,
+  ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
   ts: 1,
 });
 
@@ -66,7 +67,7 @@ describe('TimelineModelFilter', () => {
         const otherEvent = makeFakeSDKEventFromPayload({
           categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading],
           name: 'other',
-          ph: SDK.TracingModel.Phase.Complete,
+          ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
           ts: 1,
         });
         assert.strictEqual(
@@ -97,7 +98,7 @@ describe('TimelineModelFilter', () => {
       return makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
       });
     }

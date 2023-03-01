@@ -475,7 +475,6 @@ export class TracingModel {
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Phase {
-  Complete = 'X',
   Instant = 'I',
   AsyncBegin = 'S',
   AsyncStepInto = 'T',
@@ -492,7 +491,7 @@ export enum Phase {
 export const eventPhasesOfInterestForTraceBounds: Set<string> = new Set([
   TraceEngine.Types.TraceEvents.Phase.BEGIN,
   TraceEngine.Types.TraceEvents.Phase.END,
-  Phase.Complete,
+  TraceEngine.Types.TraceEvents.Phase.COMPLETE,
   Phase.Instant,
 ]);
 
@@ -531,7 +530,7 @@ export class Event {
   categoriesString: string;
   readonly #parsedCategories: Set<string>;
   name: string;
-  phase: Phase;
+  phase: Phase|TraceEngine.Types.TraceEvents.Phase;
   startTime: number;
   thread: Thread;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -548,7 +547,9 @@ export class Event {
   // either create ConstructedEvent instances, which have a public constructor,
   // or use the static fromPayload method which can create an event instance
   // from the trace payload.
-  protected constructor(categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread) {
+  protected constructor(
+      categories: string|undefined, name: string, phase: Phase|TraceEngine.Types.TraceEvents.Phase, startTime: number,
+      thread: Thread) {
     this.categoriesString = categories || '';
     this.#parsedCategories = thread.getModel().parsedCategoriesForString(this.categoriesString);
     this.name = name;
@@ -625,7 +626,9 @@ export class ConstructedEvent extends Event {
   // people to be able to create constructed events, we override the
   // constructor here, even though we are only calling super, in order to mark
   // it as public.
-  constructor(categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread) {
+  constructor(
+      categories: string|undefined, name: string, phase: Phase|TraceEngine.Types.TraceEvents.Phase, startTime: number,
+      thread: Thread) {
     super(categories, name, phase, startTime, thread);
   }
 }
@@ -655,8 +658,8 @@ export class PayloadEvent extends Event {
   }
 
   protected constructor(
-      categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread,
-      rawPayload: EventPayload) {
+      categories: string|undefined, name: string, phase: Phase|TraceEngine.Types.TraceEvents.Phase, startTime: number,
+      thread: Thread, rawPayload: EventPayload) {
     super(categories, name, phase, startTime, thread);
     this.#rawPayload = rawPayload;
   }

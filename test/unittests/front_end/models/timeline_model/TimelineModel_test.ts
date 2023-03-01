@@ -8,6 +8,7 @@ import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {
@@ -359,7 +360,7 @@ describeWithEnvironment('TimelineModel', () => {
       const timestampEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.TimeStamp,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
       });
       assert.isTrue(timelineModel.isMarkerEvent(timestampEvent));
@@ -369,7 +370,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markFirstPaintEventOnMainFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFirstPaint,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           frame: timelineModel.mainFrameID(),
@@ -384,7 +385,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markFCPEventOnMainFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFCP,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           frame: timelineModel.mainFrameID(),
@@ -399,7 +400,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markFCPEventOnOtherFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFCP,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           frame: 'not-main-frame',
@@ -414,7 +415,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markFirstPaintEventOnOtherFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFirstPaint,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           frame: 'not-main-frame',
@@ -429,7 +430,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markDOMContentEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           data: {
@@ -445,7 +446,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markDOMContentEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           data: {
@@ -461,7 +462,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markDOMContentEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           data: {
@@ -477,7 +478,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markDOMContentEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           data: {
@@ -493,7 +494,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markLoadEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkLoad,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           data: {
@@ -509,7 +510,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markLCPCandidateEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkLCPCandidate,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           data: {
@@ -525,7 +526,7 @@ describeWithEnvironment('TimelineModel', () => {
       const markLCPInvalidateEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkLCPInvalidate,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
           data: {
@@ -541,7 +542,7 @@ describeWithEnvironment('TimelineModel', () => {
       const animationEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.Animation,
-        ph: SDK.TracingModel.Phase.Complete,
+        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         threadId: 1,
       });

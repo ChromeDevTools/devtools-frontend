@@ -14,6 +14,8 @@ ts_library("timeline") {
 
   deps = [
     "../../../../../front_end/core/sdk:bundle",
+    "../../../../../front_end/models/timeline_model:bundle",
+    "../../../../../front_end/models/trace:bundle",
     "../../../../../front_end/panels/timeline:bundle",
     "../../helpers",
   ]

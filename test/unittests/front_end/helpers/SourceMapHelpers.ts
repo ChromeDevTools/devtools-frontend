@@ -20,5 +20,5 @@ export function setupPageResourceLoaderForSourceMap(sourceMapContent: string) {
     };
   };
   SDK.PageResourceLoader.PageResourceLoader.instance(
-      {forceNew: true, loadOverride: loadSourceMap, maxConcurrentLoads: 1, loadTimeout: 2000});
+      {forceNew: true, loadOverride: loadSourceMap, maxConcurrentLoads: 1});
 }

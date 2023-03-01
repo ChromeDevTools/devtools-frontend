@@ -113,7 +113,6 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
         errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
       }),
       maxConcurrentLoads: 1,
-      loadTimeout: 500,
     });
     setMockConnectionResponseHandler('Debugger.getScriptSource', getScriptSourceHandler);
 

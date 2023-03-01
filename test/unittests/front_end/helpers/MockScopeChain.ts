@@ -52,7 +52,6 @@ export class MockProtocolBackend {
       forceNew: true,
       loadOverride: async (url: string) => this.#loadSourceMap(url),
       maxConcurrentLoads: 1,
-      loadTimeout: 2000,
     });
   }
 

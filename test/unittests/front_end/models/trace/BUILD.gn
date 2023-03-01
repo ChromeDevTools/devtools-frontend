@@ -13,7 +13,6 @@ ts_library("trace") {
 
   deps = [
     "../../../../../front_end/models/trace:bundle",
-    "../../../../../front_end/models/trace/worker:bundle",
     "../../helpers",
   ]
 }

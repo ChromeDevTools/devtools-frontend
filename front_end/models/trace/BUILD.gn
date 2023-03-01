@@ -7,15 +7,16 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../visibility.gni")
 
 devtools_module("trace") {
-  sources = [ "ModelImpl.ts" ]
+  sources = [
+    "ModelImpl.ts",
+    "Processor.ts",
+  ]
 
   deps = [
-    "../../core/common:bundle",
     "../../core/platform:bundle",
     "handlers:bundle",
     "helpers:bundle",
     "types:bundle",
-    "worker:worker_entrypoint",
   ]
 }
 

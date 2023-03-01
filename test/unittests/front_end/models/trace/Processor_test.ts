@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceModel from '../../../../../front_end/models/trace/trace.js';
-import * as Worker from '../../../../../front_end/models/trace/worker/worker.js';
+import * as TraceModel from '../../../../../front_end/models/trace/trace.js';
 
 const {assert} = chai;
 
@@ -12,7 +11,7 @@ import {loadEventsFromTraceFile, setTraceModelTimeout} from '../../helpers/Trace
 describe('TraceProcessor', async function() {
   setTraceModelTimeout(this);
   it('can use a trace processor', async () => {
-    const processor = Worker.Processor.TraceProcessor.create();
+    const processor = TraceModel.Processor.TraceProcessor.create();
     const file = await loadEventsFromTraceFile('basic.json.gz');
 
     // Check parsing after instantiation.
@@ -133,7 +132,7 @@ describe('TraceProcessor', async function() {
 
       const expectedOrder =
           ['Meta', 'GPU', 'LayoutShifts', 'NetworkRequests', 'Screenshots', 'Renderer', 'PageLoadMetrics'];
-      assert.deepEqual([...Worker.Processor.sortHandlers(handlers).keys()], expectedOrder);
+      assert.deepEqual([...TraceModel.Processor.sortHandlers(handlers).keys()], expectedOrder);
     });
     it('sorts handlers satisfying their dependencies 2', () => {
       const handlersDeps: {[key: string]: {deps ? () : TraceModel.Handlers.Types.TraceEventHandlerName[]}} = {
@@ -152,7 +151,7 @@ describe('TraceProcessor', async function() {
       const handlers = fillHandlers(handlersDeps);
 
       const expectedOrder = ['NetworkRequests', 'LayoutShifts', 'GPU'];
-      assert.deepEqual([...Worker.Processor.sortHandlers(handlers).keys()], expectedOrder);
+      assert.deepEqual([...TraceModel.Processor.sortHandlers(handlers).keys()], expectedOrder);
     });
     it('throws an error when a dependency cycle is present among handlers', () => {
       const handlersDeps: {[key: string]: {deps ? () : TraceModel.Handlers.Types.TraceEventHandlerName[]}} = {
@@ -181,7 +180,7 @@ describe('TraceProcessor', async function() {
       const handlers = fillHandlers(handlersDeps);
       const cyclePath = 'LayoutShifts->Renderer->NetworkRequests->LayoutShifts';
       assert.throws(
-          () => Worker.Processor.sortHandlers(handlers),
+          () => TraceModel.Processor.sortHandlers(handlers),
           `Found dependency cycle in trace event handlers: ${cyclePath}`);
     });
   });

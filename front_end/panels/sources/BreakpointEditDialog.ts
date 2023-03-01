@@ -167,14 +167,15 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
         Common.Settings.Settings.instance().createLocalSetting('breakpointConditionHistory', []));
     this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
 
+    const linkWrapper = this.contentElement.appendChild(document.createElement('div'));
+    linkWrapper.classList.add('link-wrapper');
     const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href='https://goo.gle/devtools-loc'>${
                      i18nString(UIStrings.learnMoreOnBreakpointTypes)}</x-link>` as UI.XLink.XLink;
     const linkIcon = new IconButton.Icon.Icon();
     linkIcon.data = {iconName: 'link_icon', color: 'var(--color-link)', width: '15px', height: '15px'};
     linkIcon.classList.add('link-icon');
     link.prepend(linkIcon);
-
-    this.contentElement.appendChild(link);
+    linkWrapper.appendChild(link);
 
     this.updateTooltip();
 

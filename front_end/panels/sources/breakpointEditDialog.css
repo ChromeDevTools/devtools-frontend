@@ -43,7 +43,11 @@
   margin: 0 3px;
 }
 
-devtools-icon.link-icon {
+:host-context(.sources-edit-breakpoint-dialog) devtools-icon.link-icon {
   vertical-align: sub;
   margin-right: 0.5ch;
+}
+
+:host-context(.sources-edit-breakpoint-dialog) .link-wrapper {
+  display: inline-flex;
 }

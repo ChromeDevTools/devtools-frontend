@@ -157,7 +157,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     const resourceTreeModel = target.model(ResourceTreeModel);
     if (resourceTreeModel && target.parentTarget()?.type() !== Type.Frame) {
       eventListeners.push(resourceTreeModel.addEventListener(
-          ResourceTreeModelEvents.MainFrameNavigated, this.mainFrameNavigated, this));
+          ResourceTreeModelEvents.PrimaryPageChanged, this.primaryPageChanged, this));
     }
 
     const runtimeModel = target.model(RuntimeModel);
@@ -337,7 +337,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     ++this.#pageLoadSequenceNumber;
   }
 
-  private mainFrameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
+  private primaryPageChanged(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
     if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
       const frame = event.data;
       if (frame.backForwardCacheDetails.restoredFromCache) {

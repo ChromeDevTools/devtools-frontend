@@ -51,7 +51,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (resourceTreeModel) {
       resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.MainFrameNavigated, this.onMainFrameNavigated, this);
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     }
     this.layerTreeInternal = null;
     this.throttler = new Common.Throttler.Throttler(20);
@@ -132,7 +132,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.LayerPainted, layer);
   }
 
-  private onMainFrameNavigated(): void {
+  private onPrimaryPageChanged(): void {
     this.layerTreeInternal = null;
     if (this.enabled) {
       void this.forceEnable();

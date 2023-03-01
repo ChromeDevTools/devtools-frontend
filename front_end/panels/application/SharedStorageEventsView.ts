@@ -56,7 +56,7 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
     this.#sharedStorageEventGrid.addEventListener('cellfocused', this.#onFocus.bind(this));
 
     this.#getMainFrameResourceTreeModel()?.addEventListener(
-        SDK.ResourceTreeModel.Events.MainFrameNavigated, this.clearEvents, this);
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.clearEvents, this);
 
     this.#noDisplayView.contentElement.classList.add('placeholder');
     const noDisplayDiv = this.#noDisplayView.contentElement.createChild('div');

@@ -86,7 +86,7 @@ describeWithMockConnection('BackForwardCacheViewWrapper', () => {
       assertNotNullOrUndefined(resourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel.mainFrame);
       resourceTreeModel.dispatchEventToListeners(
-          SDK.ResourceTreeModel.Events.MainFrameNavigated, resourceTreeModel.mainFrame);
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged, resourceTreeModel.mainFrame);
 
       const data = await new Promise(resolve => sinon.stub(view, 'data').set(resolve));
       assert.deepStrictEqual(data, {frame: resourceTreeModel.mainFrame});

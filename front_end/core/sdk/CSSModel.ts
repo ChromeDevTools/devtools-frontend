@@ -85,7 +85,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.#resourceTreeModel = target.model(ResourceTreeModel);
     if (this.#resourceTreeModel) {
       this.#resourceTreeModel.addEventListener(
-          ResourceTreeModelEvents.MainFrameNavigated, this.onMainFrameNavigated, this);
+          ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     }
     target.registerCSSDispatcher(new CSSDispatcher(this));
     if (!target.suspended()) {
@@ -681,7 +681,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
-  private async onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): Promise<void> {
+  private async onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): Promise<void> {
     // If the main frame was restored from the back-forward cache, the order of CDP
     // is different from the regular navigations. In this case, events about CSS
     // stylesheet has already been received and they are mixed with the previous page

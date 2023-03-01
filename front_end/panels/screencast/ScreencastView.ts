@@ -676,7 +676,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       this.navigationUrl.addEventListener('keyup', this.navigationUrlKeyUp.bind(this), true);
       void this.requestNavigationHistory();
       this.resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.MainFrameNavigated, this.requestNavigationHistoryEvent, this);
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.requestNavigationHistoryEvent, this);
       this.resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this.requestNavigationHistoryEvent, this);
     }
@@ -774,7 +774,7 @@ export class ProgressTracker {
     this.element = element;
     if (resourceTreeModel) {
       resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.MainFrameNavigated, this.onMainFrameNavigated, this);
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this);
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this.onLoad, this);
     }
     if (networkManager) {
@@ -787,7 +787,7 @@ export class ProgressTracker {
     this.maxDisplayedProgress = 0;
   }
 
-  private onMainFrameNavigated(): void {
+  private onPrimaryPageChanged(): void {
     this.requestIds = new Map();
     this.startedRequests = 0;
     this.finishedRequests = 0;

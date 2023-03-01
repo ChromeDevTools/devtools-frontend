@@ -314,7 +314,7 @@ describeWithMockConnection('NetworkLog', () => {
         unreachableUrl: () => Platform.DevToolsPath.EmptyUrlString,
         resourceTreeModel: () => resourceTreeModel,
       } as SDK.ResourceTreeModel.ResourceTreeFrame;
-      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.MainFrameNavigated, frame);
+      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, frame);
     };
 
     let networkLogResetEvents = 0;

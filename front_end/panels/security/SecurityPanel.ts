@@ -737,7 +737,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     this.eventListeners = [
       securityModel.addEventListener(Events.VisibleSecurityStateChanged, this.onVisibleSecurityStateChanged, this),
       resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.MainFrameNavigated, this.onMainFrameNavigated, this),
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this),
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.InterstitialShown, this.onInterstitialShown, this),
       resourceTreeModel.addEventListener(
@@ -760,7 +760,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     Common.EventTarget.removeEventListeners(this.eventListeners);
   }
 
-  private onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+  private onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
       void {
     const frame = event.data;
     const request = this.lastResponseReceivedForLoaderId.get(frame.loaderId);
@@ -776,7 +776,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
 
     // If we could not find a matching request (as in the case of clicking
     // through an interstitial, see https://crbug.com/669309), set the origin
-    // based upon the url data from the MainFrameNavigated event itself.
+    // based upon the url data from the PrimaryPageChanged event itself.
     const origin = Common.ParsedURL.ParsedURL.extractOrigin(request ? request.url() : frame.url);
     this.sidebarTree.setMainOrigin(origin);
 

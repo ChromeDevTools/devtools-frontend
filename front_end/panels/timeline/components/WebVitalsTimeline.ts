@@ -98,7 +98,7 @@ interface WebVitalsTimelineData {
   lcps?: WebVitalsLCPEvent[];
   layoutShifts?: WebVitalsLayoutShiftEvent[];
   longTasks?: WebVitalsTimelineTask[];
-  mainFrameNavigations?: number[];
+  primaryPageChanges?: number[];
   maxDuration?: number;
 }
 
@@ -139,7 +139,7 @@ export function assertInstanceOf<T>(instance: any, constructor: Constructor<T>):
 export class WebVitalsTimeline extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-timeline-webvitals`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #mainFrameNavigations: readonly number[] = [];
+  #primaryPageChanges: readonly number[] = [];
   #startTime = 0;
   #duration = 1000;
   #maxDuration = 1000;
@@ -193,7 +193,7 @@ export class WebVitalsTimeline extends HTMLElement {
     this.#startTime = data.startTime || this.#startTime;
     this.#duration = data.duration || this.#duration;
     this.#maxDuration = data.maxDuration || this.#maxDuration;
-    this.#mainFrameNavigations = data.mainFrameNavigations || this.#mainFrameNavigations;
+    this.#primaryPageChanges = data.primaryPageChanges || this.#primaryPageChanges;
 
     if (data.fcps) {
       this.#fcpLane.setEvents(data.fcps);
@@ -329,7 +329,7 @@ export class WebVitalsTimeline extends HTMLElement {
   }
 
   #getMarkerTypeForFCPEvent(event: WebVitalsFCPEvent): MarkerType {
-    const t = this.getTimeSinceLastMainFrameNavigation(event.timestamp);
+    const t = this.getTimeSinceLastPrimaryPageChange(event.timestamp);
     if (t <= FCP_GOOD_TIMING) {
       return MarkerType.Good;
     }
@@ -340,7 +340,7 @@ export class WebVitalsTimeline extends HTMLElement {
   }
 
   #getMarkerTypeForLCPEvent(event: WebVitalsLCPEvent): MarkerType {
-    const t = this.getTimeSinceLastMainFrameNavigation(event.timestamp);
+    const t = this.getTimeSinceLastPrimaryPageChange(event.timestamp);
     if (t <= LCP_GOOD_TIMING) {
       return MarkerType.Good;
     }
@@ -433,7 +433,7 @@ export class WebVitalsTimeline extends HTMLElement {
     `;
   }
 
-  #renderMainFrameNavigations(markers: readonly number[]): void {
+  #renderPrimaryPageChanges(markers: readonly number[]): void {
     this.#context.save();
     this.#context.strokeStyle = 'blue';
     this.#context.beginPath();
@@ -445,10 +445,10 @@ export class WebVitalsTimeline extends HTMLElement {
     this.#context.restore();
   }
 
-  getTimeSinceLastMainFrameNavigation(time: number): number {
+  getTimeSinceLastPrimaryPageChange(time: number): number {
     let i = 0, prev = 0;
-    while (i < this.#mainFrameNavigations.length && this.#mainFrameNavigations[i] <= time) {
-      prev = this.#mainFrameNavigations[i];
+    while (i < this.#primaryPageChanges.length && this.#primaryPageChanges[i] <= time) {
+      prev = this.#primaryPageChanges[i];
       i++;
     }
     return time - prev;
@@ -492,7 +492,7 @@ export class WebVitalsTimeline extends HTMLElement {
     this.#longTasksLane.render();
     this.#context.restore();
 
-    this.#renderMainFrameNavigations(this.#mainFrameNavigations);
+    this.#renderPrimaryPageChanges(this.#primaryPageChanges);
   }
 
   #scheduleRender(): void {

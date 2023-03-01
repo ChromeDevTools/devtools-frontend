@@ -34,7 +34,7 @@ export class PreloadingModel extends SDKModel.SDKModel<EventTypes> {
     void this.agent.invoke_enable();
 
     TargetManager.TargetManager.instance().addModelListener(
-        ResourceTreeModel.ResourceTreeModel, ResourceTreeModel.Events.MainFrameNavigated, this.onMainFrameNavigated,
+        ResourceTreeModel.ResourceTreeModel, ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged,
         this);
   }
 
@@ -42,7 +42,7 @@ export class PreloadingModel extends SDKModel.SDKModel<EventTypes> {
     super.dispose();
 
     TargetManager.TargetManager.instance().removeModelListener(
-        ResourceTreeModel.ResourceTreeModel, ResourceTreeModel.Events.MainFrameNavigated, this.onMainFrameNavigated,
+        ResourceTreeModel.ResourceTreeModel, ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged,
         this);
 
     void this.agent.invoke_disable();
@@ -60,14 +60,14 @@ export class PreloadingModel extends SDKModel.SDKModel<EventTypes> {
     return this.ruleSets.getAll();
   }
 
-  private onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeModel.ResourceTreeFrame>): void {
+  private onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<ResourceTreeModel.ResourceTreeFrame>): void {
     const frame = event.data;
 
     // Note that at this timing ResourceTreeFrame.loaderId is ensured to
     // be non empty and Protocol.Network.LoaderId because it is filled
     // by ResourceTreeFrame.navigate.
     const loaderId = frame.loaderId as Protocol.Network.LoaderId;
-    this.ruleSets.clearOnMainFrameNavigation(loaderId);
+    this.ruleSets.clearOnPrimaryPageChanged(loaderId);
     this.dispatchEventToListeners(Events.RuleSetsModified);
   }
 
@@ -150,7 +150,7 @@ class RuleSetRegistry {
   }
 
   // Clear all except for rule sets with given loader id (for race).
-  clearOnMainFrameNavigation(loaderId: Protocol.Network.LoaderId): void {
+  clearOnPrimaryPageChanged(loaderId: Protocol.Network.LoaderId): void {
     for (const ruleSet of this.map.values()) {
       if (ruleSet.loaderId !== loaderId) {
         this.map.delete(ruleSet.id);

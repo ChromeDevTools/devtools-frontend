@@ -150,7 +150,7 @@ export class BackForwardCacheViewWrapper extends UI.ThrottledWidget.ThrottledWid
     super(true, 1000);
     this.#bfcacheView = bfcacheView;
     this.#getMainResourceTreeModel()?.addEventListener(
-        SDK.ResourceTreeModel.Events.MainFrameNavigated, this.update, this);
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.update, this);
     this.#getMainResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.update, this);
     this.contentElement.classList.add('overflow-auto');

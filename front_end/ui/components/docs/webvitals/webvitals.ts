@@ -23,5 +23,5 @@ component.data = {
     {start: 300, duration: 400},
     {start: 850, duration: 50},
   ],
-  mainFrameNavigations: [500, 1500, 12000],
+  primaryPageChanges: [500, 1500, 12000],
 };

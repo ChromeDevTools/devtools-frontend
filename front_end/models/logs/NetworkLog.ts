@@ -110,7 +110,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       eventListeners.push(
           resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.WillReloadPage, this.willReloadPage, this));
       eventListeners.push(resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.MainFrameNavigated, this.onMainFrameNavigated, this));
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this));
       eventListeners.push(resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this.onLoad, this));
       eventListeners.push(resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.DOMContentLoaded, this.onDOMContentLoaded.bind(this, resourceTreeModel)));
@@ -327,7 +327,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     }
   }
 
-  private onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+  private onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
       void {
     const mainFrame = event.data;
     const manager = mainFrame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);

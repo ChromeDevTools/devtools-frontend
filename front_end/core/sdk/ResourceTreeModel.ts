@@ -235,7 +235,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 
     if (frame.isMainFrame()) {
       this.processPendingEvents(frame);
-      this.dispatchEventToListeners(Events.MainFrameNavigated, frame);
+      this.dispatchEventToListeners(Events.PrimaryPageChanged, frame);
       const networkManager = this.target().model(NetworkManager);
       if (networkManager && frame.isOutermostFrame()) {
         networkManager.clearRequests();
@@ -622,7 +622,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
         break;
       }
     }
-    // No need to dispatch events here as this method call is followed by a `MainFrameNavigated` event.
+    // No need to dispatch events here as this method call is followed by a `PrimaryPageChanged` event.
   }
 }
 
@@ -634,7 +634,9 @@ export enum Events {
   FrameDetached = 'FrameDetached',
   FrameResized = 'FrameResized',
   FrameWillNavigate = 'FrameWillNavigate',
-  MainFrameNavigated = 'MainFrameNavigated',
+  // Primary page changes can be either main frame navigations or activations of a background frame.
+  // TODO(crbug.com/1393057): Let frame activations trigger this event.
+  PrimaryPageChanged = 'PrimaryPageChanged',
   ResourceAdded = 'ResourceAdded',
   WillLoadCachedResources = 'WillLoadCachedResources',
   CachedResourcesLoaded = 'CachedResourcesLoaded',
@@ -657,7 +659,7 @@ export type EventTypes = {
   [Events.FrameDetached]: {frame: ResourceTreeFrame, isSwap: boolean},
   [Events.FrameResized]: void,
   [Events.FrameWillNavigate]: ResourceTreeFrame,
-  [Events.MainFrameNavigated]: ResourceTreeFrame,
+  [Events.PrimaryPageChanged]: ResourceTreeFrame,
   [Events.ResourceAdded]: Resource,
   [Events.WillLoadCachedResources]: void,
   [Events.CachedResourcesLoaded]: ResourceTreeModel,

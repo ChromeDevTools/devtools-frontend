@@ -68,7 +68,7 @@ class MainSplitWidget extends UI.SplitWidget.SplitWidget {
       lcps: undefined,
       layoutShifts: undefined,
       longTasks: undefined,
-      mainFrameNavigations: undefined,
+      primaryPageChanges: undefined,
       maxDuration: undefined,
     };
   }
@@ -123,7 +123,7 @@ class MainSplitWidget extends UI.SplitWidget.SplitWidget {
       lcps: latestLcpEvents.map(e => e.startTime).map(t => ({timestamp: t - minimumBoundary})),
       layoutShifts: prepareEvents(e => timelineModel.isLayoutShiftEvent(e)).map(t => ({timestamp: t})),
       longTasks,
-      mainFrameNavigations: prepareEvents(e => timelineModel.isMainFrameNavigationStartEvent(e)),
+      primaryPageChanges: prepareEvents(e => timelineModel.isPrimaryPageChangedStartEvent(e)),
     };
   }
 }

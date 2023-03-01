@@ -27,7 +27,7 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.playbackRate = 1;
     const resourceTreeModel =
         (target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this.reset, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.reset, this);
     const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
     if (screenCaptureModel) {
       this.#screenshotCapture = new ScreenshotCapture(this, screenCaptureModel);

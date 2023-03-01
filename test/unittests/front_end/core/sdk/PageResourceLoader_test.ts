@@ -72,7 +72,7 @@ describeWithLocale('PageResourceLoader', () => {
     ];
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 2, resources: 3});
 
-    loader.onMainFrameNavigated({
+    loader.onPrimaryPageChanged({
       data: {
         isOutermostFrame() {
           return true;

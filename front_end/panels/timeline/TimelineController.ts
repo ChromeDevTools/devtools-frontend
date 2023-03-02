@@ -355,7 +355,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
           const target = SDK.TargetManager.TargetManager.instance().targetById(pair[0]);
           const name = target && target.name();
           this.tracingModel.addEvents(
-              TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
+              TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
                   pair[1], ++tid, /* injectPageEvent */ tid === 1, name));
         }
       }

@@ -21,7 +21,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/timeline_model/TimelineJSProfile.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineJSProfileProcessor {
-  static generateTracingEventsFromCpuProfile(
+  static generateConstructedEventsFromCpuProfileDataModel(
       jsProfileModel: SDK.CPUProfileDataModel.CPUProfileDataModel,
       thread: SDK.TracingModel.Thread): SDK.TracingModel.Event[] {
     const samples = jsProfileModel.samples || [];
@@ -267,7 +267,7 @@ export class TimelineJSProfileProcessor {
     return null;
   }
 
-  static buildTraceProfileFromCpuProfile(profile: any, tid: number, injectPageEvent: boolean, name?: string|null):
+  static createFakeTraceFromCpuProfile(profile: any, tid: number, injectPageEvent: boolean, name?: string|null):
       SDK.TracingManager.EventPayload[] {
     const events: SDK.TracingManager.EventPayload[] = [];
 

@@ -92,7 +92,7 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
   beforeEach(async function() {
     target = createTarget();
     performanceModel = new Timeline.PerformanceModel.PerformanceModel();
-    const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
+    const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
         profile, 1, false, 'mock-name');
     tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
     tracingModel.addEvents(traceEvents);

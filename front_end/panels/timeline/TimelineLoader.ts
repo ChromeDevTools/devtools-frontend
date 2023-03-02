@@ -100,7 +100,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     const loader = new TimelineLoader(client, /* shouldSaveTraceEventsToFile= */ false, title);
 
     try {
-      const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
+      const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
           profile, /* tid */ 1, /* injectPageEvent */ true);
 
       loader.backingStorage.appendString(JSON.stringify(profile));
@@ -302,7 +302,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     let traceEvents;
     try {
       const profile = JSON.parse(text);
-      traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
+      traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
           profile, /* tid */ 1, /* injectPageEvent */ true);
     } catch (e) {
       this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedCpuProfileFormat));

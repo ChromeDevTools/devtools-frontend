@@ -635,7 +635,7 @@ SourcesTestRunner.queryScripts = function(filter) {
 
 SourcesTestRunner.createScriptMock = function(
     url, startLine, startColumn, isContentScript, source, target, preRegisterCallback) {
-  target = target || self.SDK.targetManager.mainFrameTarget();
+  target = target || self.SDK.targetManager.primaryPageTarget();
   const debuggerModel = target.model(SDK.DebuggerModel);
   const scriptId = String(++SourcesTestRunner.lastScriptId);
   const sourceLineEndings = TestRunner.findLineEndingIndexes(source);

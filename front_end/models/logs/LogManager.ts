@@ -59,6 +59,7 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
       NetworkLog.instance().associateConsoleMessageWithRequest(consoleMessage, entry.networkRequestId);
     }
 
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
     if (consoleMessage.source === Protocol.Log.LogEntrySource.Worker) {
       const workerId = consoleMessage.workerId || '';
       // We have a copy of worker messages reported through the page, so that
@@ -70,11 +71,11 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
       }
       window.setTimeout(() => {
         if (!SDK.TargetManager.TargetManager.instance().targetById(workerId)) {
-          SDK.ConsoleModel.ConsoleModel.instance().addMessage(consoleMessage);
+          consoleModel?.addMessage(consoleMessage);
         }
       }, 1000);
     } else {
-      SDK.ConsoleModel.ConsoleModel.instance().addMessage(consoleMessage);
+      consoleModel?.addMessage(consoleMessage);
     }
   }
 }

@@ -106,7 +106,6 @@ describeWithMockConnection('ConsoleMessage', () => {
     const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
     const mainFrameWithoutTabTarget = createTarget({type: SDK.Target.Type.Frame});
     const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
-    SDK.ConsoleModel.ConsoleModel.instance({forceNew: true});
     const navigateTarget = (target: SDKModule.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel);
@@ -136,7 +135,6 @@ describeWithMockConnection('ConsoleMessage', () => {
     const mainFrameUnderTabTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: tabTarget});
     const mainFrameWithoutTabTarget = createTarget({type: SDK.Target.Type.Frame});
     const subframeTarget = createTarget({type: SDK.Target.Type.Frame, parentTarget: mainFrameWithoutTabTarget});
-    SDK.ConsoleModel.ConsoleModel.instance({forceNew: true});
     const navigateTarget = (target: SDKModule.Target.Target) => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel);
@@ -167,7 +165,8 @@ describeWithMockConnection('ConsoleMessage', () => {
     assertNotNullOrUndefined(runtimeModel);
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assertNotNullOrUndefined(resourceTreeModel);
-    const consoleModel = SDK.ConsoleModel.ConsoleModel.instance({forceNew: true});
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assertNotNullOrUndefined(consoleModel);
     const addMessage = sinon.spy(consoleModel, 'addMessage');
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
 
@@ -207,17 +206,35 @@ describeWithMockConnection('ConsoleMessage', () => {
       debuggerModel.dispatchEventToListeners(SDK.DebuggerModel.Events.GlobalObjectCleared, debuggerModel);
     };
 
-    let consoleClearEvents = 0;
-    SDK.ConsoleModel.ConsoleModel.instance({forceNew: true})
-        .addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEvents);
+    let consoleClearEventsTabTarget = 0;
+    let consoleClearEventsMainFrameUnderTabTarget = 0;
+    let consoleClearEventsMainFrameWithoutTabTarget = 0;
+    let consoleClearEventsSubframeTarget = 0;
+    tabTarget.model(SDK.ConsoleModel.ConsoleModel)
+        ?.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEventsTabTarget);
+    mainFrameUnderTabTarget.model(SDK.ConsoleModel.ConsoleModel)
+        ?.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEventsMainFrameUnderTabTarget);
+    mainFrameWithoutTabTarget.model(SDK.ConsoleModel.ConsoleModel)
+        ?.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEventsMainFrameWithoutTabTarget);
+    subframeTarget.model(SDK.ConsoleModel.ConsoleModel)
+        ?.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, () => ++consoleClearEventsSubframeTarget);
 
     clearGlobalObjectOnTarget(subframeTarget);
-    assert.strictEqual(consoleClearEvents, 0);
+    assert.strictEqual(consoleClearEventsTabTarget, 0);
+    assert.strictEqual(consoleClearEventsMainFrameUnderTabTarget, 0);
+    assert.strictEqual(consoleClearEventsMainFrameWithoutTabTarget, 0);
+    assert.strictEqual(consoleClearEventsSubframeTarget, 0);
 
     clearGlobalObjectOnTarget(mainFrameUnderTabTarget);
-    assert.strictEqual(consoleClearEvents, 1);
+    assert.strictEqual(consoleClearEventsTabTarget, 0);
+    assert.strictEqual(consoleClearEventsMainFrameUnderTabTarget, 1);
+    assert.strictEqual(consoleClearEventsMainFrameWithoutTabTarget, 0);
+    assert.strictEqual(consoleClearEventsSubframeTarget, 0);
 
     clearGlobalObjectOnTarget(mainFrameWithoutTabTarget);
-    assert.strictEqual(consoleClearEvents, 2);
+    assert.strictEqual(consoleClearEventsTabTarget, 0);
+    assert.strictEqual(consoleClearEventsMainFrameUnderTabTarget, 1);
+    assert.strictEqual(consoleClearEventsMainFrameWithoutTabTarget, 1);
+    assert.strictEqual(consoleClearEventsSubframeTarget, 0);
   });
 });

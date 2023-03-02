@@ -513,8 +513,6 @@ export class MainImpl {
     IssuesManager.ContrastCheckTrigger.ContrastCheckTrigger.instance();
 
     // @ts-ignore layout test global
-    self.SDK.consoleModel = SDK.ConsoleModel.ConsoleModel.instance();
-    // @ts-ignore layout test global
     self.UI.dockController = UI.DockController.DockController.instance({forceNew: true, canDock});
     // @ts-ignore layout test global
     self.SDK.multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});

@@ -559,15 +559,15 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.messagesElement.addEventListener('touchend', this.updateStickToBottomOnPointerUp.bind(this), false);
     this.messagesElement.addEventListener('touchcancel', this.updateStickToBottomOnPointerUp.bind(this), false);
 
-    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
-        SDK.ConsoleModel.Events.ConsoleCleared, this.consoleCleared, this);
-    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
-        SDK.ConsoleModel.Events.MessageAdded, this.onConsoleMessageAdded, this);
-    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
-        SDK.ConsoleModel.Events.MessageUpdated, this.onConsoleMessageUpdated, this);
-    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
-        SDK.ConsoleModel.Events.CommandEvaluated, this.commandEvaluated, this);
-    SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this.addConsoleMessage, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, this.consoleCleared, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, this.onConsoleMessageAdded, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageUpdated, this.onConsoleMessageUpdated, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, this.commandEvaluated, this);
+    SDK.ConsoleModel.ConsoleModel.allMessagesUnordered().forEach(this.addConsoleMessage, this);
 
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.issueToolbarThrottle = new Common.Throttler.Throttler(100);
@@ -598,7 +598,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   static clearConsole(): void {
-    SDK.ConsoleModel.ConsoleModel.instance().requestClearMessages();
+    SDK.ConsoleModel.ConsoleModel.requestClearMessages();
   }
 
   private onFilterChanged(): void {
@@ -1336,7 +1336,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
           result.runtimeModel(), exceptionDetails, SDK.ConsoleModel.FrontendMessageType.Result, undefined, undefined);
     }
     message.setOriginatingMessage(originatingConsoleMessage);
-    SDK.ConsoleModel.ConsoleModel.instance().addMessage(message);
+    result.runtimeModel().target().model(SDK.ConsoleModel.ConsoleModel)?.addMessage(message);
   }
 
   private commandEvaluated(event: Common.EventTarget.EventTargetEvent<SDK.ConsoleModel.CommandEvaluatedEvent>): void {

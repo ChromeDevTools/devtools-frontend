@@ -153,6 +153,7 @@ export async function evaluateScriptSnippet(uiSourceCode: Workspace.UISourceCode
   }
 
   const runtimeModel = executionContext.runtimeModel;
+  const consoleModel = executionContext.target().model(SDK.ConsoleModel.ConsoleModel);
   await uiSourceCode.requestContent();
   uiSourceCode.commitWorkingCopy();
   const expression = uiSourceCode.workingCopy();
@@ -173,7 +174,7 @@ export async function evaluateScriptSnippet(uiSourceCode: Workspace.UISourceCode
       true, true);
 
   if ('exceptionDetails' in result && result.exceptionDetails) {
-    SDK.ConsoleModel.ConsoleModel.instance().addMessage(SDK.ConsoleModel.ConsoleMessage.fromException(
+    consoleModel?.addMessage(SDK.ConsoleModel.ConsoleMessage.fromException(
         runtimeModel, result.exceptionDetails, /* messageType */ undefined, /* timestamp */ undefined, url));
     return;
   }
@@ -193,7 +194,7 @@ export async function evaluateScriptSnippet(uiSourceCode: Workspace.UISourceCode
     executionContextId: executionContext.id,
     scriptId,
   };
-  SDK.ConsoleModel.ConsoleModel.instance().addMessage(new SDK.ConsoleModel.ConsoleMessage(
+  consoleModel?.addMessage(new SDK.ConsoleModel.ConsoleMessage(
       runtimeModel, Protocol.Log.LogEntrySource.Javascript, Protocol.Log.LogEntryLevel.Info, '', details));
 }
 

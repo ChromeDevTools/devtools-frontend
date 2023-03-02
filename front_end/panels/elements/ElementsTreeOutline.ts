@@ -805,7 +805,8 @@ export class ElementsTreeOutline extends
 
   private async saveNodeToTempVariable(node: SDK.DOMModel.DOMNode): Promise<void> {
     const remoteObjectForConsole = await node.resolveToObject();
-    await SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(
+    const consoleModel = remoteObjectForConsole?.runtimeModel().target()?.model(SDK.ConsoleModel.ConsoleModel);
+    await consoleModel?.saveToTempVariable(
         UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext), remoteObjectForConsole);
   }
 

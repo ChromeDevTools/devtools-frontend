@@ -58,8 +58,9 @@ import {
   type ExecutionContext,
   type QueryObjectRequestedEvent,
 } from './RuntimeModel.js';
-import {type Target, Type} from './Target.js';
-import {TargetManager, type Observer} from './TargetManager.js';
+import {Capability, type Target, Type} from './Target.js';
+import {TargetManager} from './TargetManager.js';
+import {SDKModel} from './SDKModel.js';
 
 import {COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL} from './DebuggerModel.js';
 
@@ -93,9 +94,8 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let consoleModelInstance: ConsoleModel|null;
 
-export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements Observer {
+export class ConsoleModel extends SDKModel<EventTypes> {
   #messagesInternal: ConsoleMessage[];
   readonly #messagesByTimestamp: Platform.MapUtilities.Multimap<number, ConsoleMessage>;
   readonly #messageByExceptionId: Map<RuntimeModel, Map<number, ConsoleMessage>>;
@@ -105,8 +105,8 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   #pageLoadSequenceNumber: number;
   readonly #targetListeners: WeakMap<Target, Common.EventTarget.EventDescriptor[]>;
 
-  private constructor() {
-    super();
+  constructor(target: Target) {
+    super(target);
 
     this.#messagesInternal = [];
     this.#messagesByTimestamp = new Platform.MapUtilities.Multimap();
@@ -117,25 +117,6 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     this.#pageLoadSequenceNumber = 0;
     this.#targetListeners = new WeakMap();
 
-    TargetManager.instance().observeTargets(this);
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ConsoleModel {
-    const {forceNew} = opts;
-    if (!consoleModelInstance || forceNew) {
-      consoleModelInstance = new ConsoleModel();
-    }
-
-    return consoleModelInstance;
-  }
-
-  static removeInstance(): void {
-    consoleModelInstance = null;
-  }
-
-  targetAdded(target: Target): void {
     const resourceTreeModel = target.model(ResourceTreeModel);
     if (!resourceTreeModel || resourceTreeModel.cachedResourcesLoaded()) {
       this.initTarget(target);
@@ -404,14 +385,26 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.#messagesInternal;
   }
 
-  requestClearMessages(): void {
+  // messages[] are not ordered by timestamp.
+  static allMessagesUnordered(): ConsoleMessage[] {
+    const messages = [];
+    for (const target of TargetManager.instance().targets()) {
+      const targetMessages = target.model(ConsoleModel)?.messages() || [];
+      messages.push(...targetMessages);
+    }
+    return messages;
+  }
+
+  static requestClearMessages(): void {
     for (const logModel of TargetManager.instance().models(LogModel)) {
       logModel.requestClear();
     }
     for (const runtimeModel of TargetManager.instance().models(RuntimeModel)) {
       runtimeModel.discardConsoleEntries();
     }
-    this.clear();
+    for (const target of TargetManager.instance().targets()) {
+      target.model(ConsoleModel)?.clear();
+    }
   }
 
   private clear(): void {
@@ -428,12 +421,36 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.#errorsInternal;
   }
 
+  static allErrors(): number {
+    let errors = 0;
+    for (const target of TargetManager.instance().targets()) {
+      errors += target.model(ConsoleModel)?.errors() || 0;
+    }
+    return errors;
+  }
+
   warnings(): number {
     return this.#warningsInternal;
   }
 
+  static allWarnings(): number {
+    let warnings = 0;
+    for (const target of TargetManager.instance().targets()) {
+      warnings += target.model(ConsoleModel)?.warnings() || 0;
+    }
+    return warnings;
+  }
+
   violations(): number {
     return this.#violationsInternal;
+  }
+
+  static allViolations(): number {
+    let violations = 0;
+    for (const target of TargetManager.instance().targets()) {
+      violations += target.model(ConsoleModel)?.violations() || 0;
+    }
+    return violations;
   }
 
   async saveToTempVariable(currentExecutionContext: ExecutionContext|null, remoteObject: RemoteObject|null):
@@ -801,6 +818,8 @@ export class ConsoleMessage {
     return {callFrame: callFrames[lastBreakpointFrameIndex + 1], type};
   }
 }
+
+SDKModel.register(ConsoleModel, {capabilities: Capability.JS, autostart: true});
 
 const enum BreakpointType {
   LOGPOINT = 'LOGPOINT',

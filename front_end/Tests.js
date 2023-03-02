@@ -486,21 +486,22 @@
   TestSuite.prototype.testConsoleOnNavigateBack = function() {
 
     function filteredMessages() {
-      return self.SDK.consoleModel.messages().filter(a => a.source !== Protocol.Log.LogEntrySource.Violation);
+      return SDK.ConsoleModel.allMessagesUnordered().filter(a => a.source !== Protocol.Log.LogEntrySource.Violation);
     }
 
     if (filteredMessages().length === 1) {
       firstConsoleMessageReceived.call(this, null);
     } else {
-      self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
+      self.SDK.targetManager.addModelListener(
+          SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
     }
 
     function firstConsoleMessageReceived(event) {
       if (event && event.data.source === Protocol.Log.LogEntrySource.Violation) {
         return;
       }
-      self.SDK.consoleModel.removeEventListener(
-          SDK.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
+      self.SDK.targetManager.removeModelListener(
+          SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
       this.evaluateInConsole_('clickLink();', didClickLink.bind(this));
     }
 
@@ -549,7 +550,8 @@
     function callback() {
       const debuggerModel = self.SDK.targetManager.models(SDK.DebuggerModel)[0];
       if (debuggerModel.isPaused()) {
-        self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+        self.SDK.targetManager.addModelListener(
+            SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
         debuggerModel.resume();
         return;
       }
@@ -690,9 +692,10 @@
 
     // It is possible for the ready console messagage to be already received but not handled
     // or received later. This ensures we can catch both cases.
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+    self.SDK.targetManager.addModelListener(
+        SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
 
-    const messages = self.SDK.consoleModel.messages();
+    const messages = SDK.ConsoleModel.allMessagesUnordered();
     if (messages.length) {
       const text = messages[0].messageText;
       this.assertEquals('ready', text);
@@ -867,12 +870,14 @@
 
         messages.splice(index, 1);
         if (!messages.length) {
-          self.SDK.consoleModel.removeEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+          self.SDK.targetManager.removeModelListener(
+              SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
           next();
         }
       }
 
-      self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+      self.SDK.targetManager.addModelListener(
+          SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
       self.SDK.multitargetNetworkManager.setNetworkConditions(preset);
     }
 
@@ -1030,15 +1035,16 @@
   TestSuite.prototype.testWindowInitializedOnNavigateBack = function() {
     const test = this;
     test.takeControl();
-    const messages = self.SDK.consoleModel.messages();
+    const messages = SDK.ConsoleModel.allMessagesUnordered();
     if (messages.length === 1) {
       checkMessages();
     } else {
-      self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, checkMessages.bind(this), this);
+      self.SDK.targetManager.addModelListener(
+          SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, checkMessages.bind(this), this);
     }
 
     function checkMessages() {
-      const messages = self.SDK.consoleModel.messages();
+      const messages = SDK.ConsoleModel.allMessagesUnordered();
       test.assertEquals(1, messages.length);
       test.assertTrue(messages[0].messageText.indexOf('Uncaught') === -1);
       test.releaseControl();
@@ -1108,14 +1114,14 @@
   };
 
   TestSuite.prototype.testDOMWarnings = function() {
-    const messages = self.SDK.consoleModel.messages();
+    const messages = SDK.ConsoleModel.allMessagesUnordered();
     this.assertEquals(1, messages.length);
     const expectedPrefix = '[DOM] Found 2 elements with non-unique id #dup:';
     this.assertTrue(messages[0].messageText.startsWith(expectedPrefix));
   };
 
   TestSuite.prototype.waitForTestResultsInConsole = function() {
-    const messages = self.SDK.consoleModel.messages();
+    const messages = SDK.ConsoleModel.allMessagesUnordered();
     for (let i = 0; i < messages.length; ++i) {
       const text = messages[i].messageText;
       if (text === 'PASS') {
@@ -1135,7 +1141,8 @@
       }
     }
 
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+    self.SDK.targetManager.addModelListener(
+        SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
     this.takeControl({slownessFactor: 10});
   };
 
@@ -1197,12 +1204,13 @@
         Array.prototype.slice.call(arguments, 1, -1).map(arg => JSON.stringify(arg)).join(',') + ',';
     this.evaluateInConsole_(
         `${functionName}(${argsString} function() { console.log('${doneMessage}'); });`, function() {});
-    self.SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
+    self.SDK.targetManager.addModelListener(SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
 
     function onConsoleMessage(event) {
       const text = event.data.messageText;
       if (text === doneMessage) {
-        self.SDK.consoleModel.removeEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
+        self.SDK.targetManager.removeModelListener(
+            SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
         callback();
       }
     }

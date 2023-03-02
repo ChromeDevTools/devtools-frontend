@@ -985,7 +985,9 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     contextMenu.debugSection().appendItem(
         i18nString(UIStrings.storeSAsGlobalVariable, {PH1: String(copyContextMenuTitle)}),
-        () => SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(executionContext, remoteObject));
+        () => executionContext?.target()
+                  .model(SDK.ConsoleModel.ConsoleModel)
+                  ?.saveToTempVariable(executionContext, remoteObject));
 
     const ctxMenuClipboardSection = contextMenu.clipboardSection();
     const inspectorFrontendHost = Host.InspectorFrontendHost.InspectorFrontendHostInstance;
@@ -1417,11 +1419,11 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
           const {state: editorState} = frame.textEditor;
           let text = editorState.sliceDoc(editorState.selection.main.from, editorState.selection.main.to);
           const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
-          if (executionContext) {
-            const message = SDK.ConsoleModel.ConsoleModel.instance().addCommandMessage(executionContext, text);
+          const consoleModel = executionContext?.target().model(SDK.ConsoleModel.ConsoleModel);
+          if (executionContext && consoleModel) {
+            const message = consoleModel.addCommandMessage(executionContext, text);
             text = ObjectUI.JavaScriptREPL.JavaScriptREPL.wrapObjectLiteral(text);
-            void SDK.ConsoleModel.ConsoleModel.instance().evaluateCommandInConsole(
-                executionContext, message, text, /* useCommandLineAPI */ true);
+            void consoleModel.evaluateCommandInConsole(executionContext, message, text, /* useCommandLineAPI */ true);
           }
         }
         return true;

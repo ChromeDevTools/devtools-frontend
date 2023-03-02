@@ -64,12 +64,14 @@ describeWithMockConnection('ConsoleView', () => {
 
   async function canSaveToFile(targetFactory: () => SDK.Target.Target) {
     const target = targetFactory();
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assertNotNullOrUndefined(consoleModel);
     const consoleView = Console.ConsoleView.ConsoleView.instance({forceNew: true});
-    SDK.ConsoleModel.ConsoleModel.instance().dispatchEventToListeners(
+    consoleModel.dispatchEventToListeners(
         SDK.ConsoleModel.Events.MessageAdded,
         new SDK.ConsoleModel.ConsoleMessage(
             target.model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Javascript, null, 'message 1'));
-    SDK.ConsoleModel.ConsoleModel.instance().dispatchEventToListeners(
+    consoleModel.dispatchEventToListeners(
         SDK.ConsoleModel.Events.MessageAdded,
         new SDK.ConsoleModel.ConsoleMessage(
             target.model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Javascript, null, 'message 2'));

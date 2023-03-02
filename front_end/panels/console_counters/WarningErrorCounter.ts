@@ -71,11 +71,12 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
 
     this.throttler = new Common.Throttler.Throttler(100);
 
-    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
-        SDK.ConsoleModel.Events.ConsoleCleared, this.update, this);
-    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(SDK.ConsoleModel.Events.MessageAdded, this.update, this);
-    SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
-        SDK.ConsoleModel.Events.MessageUpdated, this.update, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, this.update, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, this.update, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageUpdated, this.update, this);
 
     issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.update, this);
 
@@ -115,8 +116,8 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
   }
 
   private async updateThrottled(): Promise<void> {
-    const errors = SDK.ConsoleModel.ConsoleModel.instance().errors();
-    const warnings = SDK.ConsoleModel.ConsoleModel.instance().warnings();
+    const errors = SDK.ConsoleModel.ConsoleModel.allErrors();
+    const warnings = SDK.ConsoleModel.ConsoleModel.allWarnings();
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     const issues = issuesManager.numberOfIssues();
 

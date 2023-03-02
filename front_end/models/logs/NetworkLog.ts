@@ -541,7 +541,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
         networkManager.target().model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Network,
         warning ? Protocol.Log.LogEntryLevel.Warning : Protocol.Log.LogEntryLevel.Info, message);
     this.associateConsoleMessageWithRequest(consoleMessage, requestId);
-    SDK.ConsoleModel.ConsoleModel.instance().addMessage(consoleMessage);
+    networkManager.target().model(SDK.ConsoleModel.ConsoleModel)?.addMessage(consoleMessage);
   }
 
   associateConsoleMessageWithRequest(consoleMessage: SDK.ConsoleModel.ConsoleMessage, requestId: string): void {

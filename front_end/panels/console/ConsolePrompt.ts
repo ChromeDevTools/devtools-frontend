@@ -278,11 +278,14 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (currentExecutionContext) {
       const executionContext = currentExecutionContext;
-      const message = SDK.ConsoleModel.ConsoleModel.instance().addCommandMessage(executionContext, text);
-      const expression = ObjectUI.JavaScriptREPL.JavaScriptREPL.wrapObjectLiteral(text);
-      void this.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
-      if (ConsolePanel.instance().isShowing()) {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);
+      const consoleModel = executionContext.target().model(SDK.ConsoleModel.ConsoleModel);
+      if (consoleModel) {
+        const message = consoleModel.addCommandMessage(executionContext, text);
+        const expression = ObjectUI.JavaScriptREPL.JavaScriptREPL.wrapObjectLiteral(text);
+        void this.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
+        if (ConsolePanel.instance().isShowing()) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);
+        }
       }
     }
   }
@@ -298,8 +301,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     }
 
-    await SDK.ConsoleModel.ConsoleModel.instance().evaluateCommandInConsole(
-        executionContext, message, expression, useCommandLineAPI);
+    await executionContext.target()
+        .model(SDK.ConsoleModel.ConsoleModel)
+        ?.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
   }
 
   private async substituteNames(expression: string, mapping: Map<string, string>): Promise<string> {

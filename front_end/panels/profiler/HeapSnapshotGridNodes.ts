@@ -693,7 +693,8 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
         if (!remoteObject) {
           Common.Console.Console.instance().error(i18nString(UIStrings.previewIsNotAvailable));
         } else {
-          await SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(
+          const consoleModel = heapProfilerModel.target().model(SDK.ConsoleModel.ConsoleModel);
+          await consoleModel?.saveToTempVariable(
               UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext), remoteObject);
         }
       });

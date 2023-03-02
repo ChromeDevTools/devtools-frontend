@@ -99,7 +99,6 @@ const REGISTERED_EXPERIMENTS = [
   'instrumentationBreakpoints',
   'cssTypeComponentLength',
   'timelineEventInitiators',
-  'inputEventsOnTimelineOverview',
   'timelineAsConsoleProfileResultPanel',
   'headerOverrides',
   'breakpointView',

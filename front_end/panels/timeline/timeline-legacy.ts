@@ -60,9 +60,6 @@ Timeline.TimelineDetailsView.Tab = TimelineModule.TimelineDetailsView.Tab;
 Timeline.TimelineEventOverview = TimelineModule.TimelineEventOverview.TimelineEventOverview;
 
 /** @constructor */
-Timeline.TimelineEventOverviewInput = TimelineModule.TimelineEventOverview.TimelineEventOverviewInput;
-
-/** @constructor */
 Timeline.TimelineEventOverviewNetwork = TimelineModule.TimelineEventOverview.TimelineEventOverviewNetwork;
 
 /** @constructor */

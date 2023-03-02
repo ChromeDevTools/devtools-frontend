@@ -38,7 +38,7 @@ import * as Protocol from '../../generated/protocol.js';
 
 import {type PerformanceModel} from './PerformanceModel.js';
 
-import {TimelineUIUtils, type EventDispatchTypeDescriptor, type TimelineCategory} from './TimelineUIUtils.js';
+import {TimelineUIUtils, type TimelineCategory} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
@@ -84,58 +84,6 @@ export class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineO
     const ctx = this.context();
     ctx.fillStyle = color;
     ctx.fillRect(x, position, width, height);
-  }
-}
-
-export class TimelineEventOverviewInput extends TimelineEventOverview {
-  constructor() {
-    super('input', null);
-  }
-
-  update(): void {
-    super.update();
-    if (!this.model) {
-      return;
-    }
-    const height = this.height();
-    const descriptors = TimelineUIUtils.eventDispatchDesciptors();
-    const descriptorsByType = new Map<string, EventDispatchTypeDescriptor>();
-    let maxPriority = -1;
-    for (const descriptor of descriptors) {
-      for (const type of descriptor.eventTypes) {
-        descriptorsByType.set(type, descriptor);
-      }
-      maxPriority = Math.max(maxPriority, descriptor.priority);
-    }
-
-    const minWidth = 2 * window.devicePixelRatio;
-    const timeOffset = this.model.timelineModel().minimumRecordTime();
-    const timeSpan = this.model.timelineModel().maximumRecordTime() - timeOffset;
-    const canvasWidth = this.width();
-    const scale = canvasWidth / timeSpan;
-
-    for (let priority = 0; priority <= maxPriority; ++priority) {
-      for (const track of this.model.timelineModel().tracks()) {
-        for (let i = 0; i < track.events.length; ++i) {
-          const event = track.events[i];
-          if (event.name !== TimelineModel.TimelineModel.RecordType.EventDispatch) {
-            continue;
-          }
-          const descriptor = descriptorsByType.get(event.args['data']['type']);
-          if (!descriptor || descriptor.priority !== priority) {
-            continue;
-          }
-          if (event.endTime === undefined) {
-            continue;
-          }
-          const start =
-              Platform.NumberUtilities.clamp(Math.floor((event.startTime - timeOffset) * scale), 0, canvasWidth);
-          const end = Platform.NumberUtilities.clamp(Math.ceil((event.endTime - timeOffset) * scale), 0, canvasWidth);
-          const width = Math.max(end - start, minWidth);
-          this.renderBar(start, start + width, 0, height, descriptor.color);
-        }
-      }
-    }
   }
 }
 

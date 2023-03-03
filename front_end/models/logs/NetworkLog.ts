@@ -327,9 +327,10 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     }
   }
 
-  private onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
-      void {
-    const mainFrame = event.data;
+  private onPrimaryPageChanged(
+      event: Common.EventTarget.EventTargetEvent<
+          {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}>): void {
+    const mainFrame = event.data.frame;
     const manager = mainFrame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
     if (!manager || mainFrame.resourceTreeModel().target().parentTarget()?.type() === SDK.Target.Type.Frame) {
       return;

@@ -153,7 +153,9 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
 
       // Events are cleared on main frame navigation.
       assertNotNullOrUndefined(resourceTreeModel);
-      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, MOCK_MAIN_FRAME);
+      resourceTreeModel.dispatchEventToListeners(
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+          {frame: MOCK_MAIN_FRAME, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
       assert.deepEqual(view.getEventsForTesting(), []);
 
       panel.detach();

@@ -48,7 +48,12 @@ import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 
 import {DOMModel, type DOMNode} from './DOMModel.js';
 
-import {Events as ResourceTreeModelEvents, ResourceTreeModel, type ResourceTreeFrame} from './ResourceTreeModel.js';
+import {
+  Events as ResourceTreeModelEvents,
+  ResourceTreeModel,
+  type ResourceTreeFrame,
+  type PrimaryPageChangeType,
+} from './ResourceTreeModel.js';
 
 import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
@@ -681,14 +686,16 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
-  private async onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): Promise<void> {
+  private async onPrimaryPageChanged(
+      event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>):
+      Promise<void> {
     // If the main frame was restored from the back-forward cache, the order of CDP
     // is different from the regular navigations. In this case, events about CSS
     // stylesheet has already been received and they are mixed with the previous page
     // stylesheets. Therefore, we re-enable the CSS agent to get fresh events.
     // For the regular navigations, we can just clear the local data because events about
     // stylesheets will arrive later.
-    if (event.data.backForwardCacheDetails.restoredFromCache) {
+    if (event.data.frame.backForwardCacheDetails.restoredFromCache) {
       await this.suspendModel();
       await this.resumeModel();
     } else {

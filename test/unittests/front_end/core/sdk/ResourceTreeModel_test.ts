@@ -294,4 +294,41 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assertNotNullOrUndefined(getResourceTeeModel(subframeTarget));
     assert.isFalse(getResourceTeeModel(subframeTarget).mainFrame?.isOutermostFrame());
   });
+
+  it('emits PrimaryPageChanged event upon prerender activation', async () => {
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const childTargetManager = tabTarget.model(SDK.ChildTargetManager.ChildTargetManager);
+    assertNotNullOrUndefined(childTargetManager);
+
+    const targetId = 'target_id' as Protocol.Target.TargetID;
+    const targetInfo = {
+      targetId,
+      type: 'page',
+      title: 'title',
+      url: 'http://example.com/prerendered.html',
+      attached: true,
+      canAccessOpener: false,
+      subtype: 'prerender',
+    };
+    childTargetManager.targetCreated({targetInfo});
+    await childTargetManager.attachedToTarget(
+        {sessionId: 'session_id' as Protocol.Target.SessionID, targetInfo, waitingForDebugger: false});
+
+    const prerenderTarget = SDK.TargetManager.TargetManager.instance().targetById(targetId);
+    assertNotNullOrUndefined(prerenderTarget);
+    const resourceTreeModel = prerenderTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel);
+
+    const primaryPageChangedEvents:
+        {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}[] = [];
+    resourceTreeModel.addEventListener(
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged, event => primaryPageChangedEvents.push(event.data));
+
+    const frame = resourceTreeModel.frameAttached('frame_id' as Protocol.Page.FrameId, null);
+    childTargetManager.targetInfoChanged({targetInfo: {...targetInfo, subtype: undefined}});
+
+    assert.strictEqual(primaryPageChangedEvents.length, 1);
+    assert.strictEqual(primaryPageChangedEvents[0].frame, frame);
+    assert.strictEqual(primaryPageChangedEvents[0].type, SDK.ResourceTreeModel.PrimaryPageChangeType.Activation);
+  });
 });

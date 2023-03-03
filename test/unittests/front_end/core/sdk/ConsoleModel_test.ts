@@ -113,7 +113,9 @@ describeWithMockConnection('ConsoleMessage', () => {
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
       const frame = {url: 'http://example.com/', backForwardCacheDetails: {}} as
           SDKModule.ResourceTreeModel.ResourceTreeFrame;
-      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, frame);
+      resourceTreeModel.dispatchEventToListeners(
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
     };
     navigateTarget(subframeTarget);
     assert.isTrue(consoleLog.notCalled);
@@ -141,7 +143,9 @@ describeWithMockConnection('ConsoleMessage', () => {
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
       const frame = {url: 'http://example.com/', backForwardCacheDetails: {restoredFromCache: true}} as
           SDKModule.ResourceTreeModel.ResourceTreeFrame;
-      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, frame);
+      resourceTreeModel.dispatchEventToListeners(
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
     };
     navigateTarget(subframeTarget);
     assert.isTrue(consoleLog.notCalled);

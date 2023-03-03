@@ -74,10 +74,13 @@ describeWithLocale('PageResourceLoader', () => {
 
     loader.onPrimaryPageChanged({
       data: {
-        isOutermostFrame() {
-          return true;
-        },
-      } as SDK.ResourceTreeModel.ResourceTreeFrame,
+        frame: {
+          isOutermostFrame() {
+            return true;
+          },
+        } as SDK.ResourceTreeModel.ResourceTreeFrame,
+        type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation,
+      },
     });
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 0, resources: 0});
 

@@ -6,10 +6,15 @@ import type * as Common from '../common/common.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
-import * as SDKModel from './SDKModel.js';
-import * as Target from './Target.js';
-import * as TargetManager from './TargetManager.js';
-import * as ResourceTreeModel from './ResourceTreeModel.js';
+import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
+import {TargetManager} from './TargetManager.js';
+import {
+  Events as ResourceTreeModelEvents,
+  ResourceTreeModel,
+  type ResourceTreeFrame,
+  type PrimaryPageChangeType,
+} from './ResourceTreeModel.js';
 
 export interface WithId<I, V> {
   id: I;
@@ -21,11 +26,11 @@ export interface WithId<I, V> {
 // - SpeculationRule rule sets
 // - (TODO) Preloading attempts
 // - (TODO) Relationship between rule sets and preloading attempts
-export class PreloadingModel extends SDKModel.SDKModel<EventTypes> {
+export class PreloadingModel extends SDKModel<EventTypes> {
   private agent: ProtocolProxyApi.PreloadApi;
   private ruleSets: RuleSetRegistry = new RuleSetRegistry();
 
-  constructor(target: Target.Target) {
+  constructor(target: Target) {
     super(target);
 
     target.registerPreloadDispatcher(new PreloadDispatcher(this));
@@ -33,17 +38,15 @@ export class PreloadingModel extends SDKModel.SDKModel<EventTypes> {
     this.agent = target.preloadAgent();
     void this.agent.invoke_enable();
 
-    TargetManager.TargetManager.instance().addModelListener(
-        ResourceTreeModel.ResourceTreeModel, ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged,
-        this);
+    TargetManager.instance().addModelListener(
+        ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
   }
 
   dispose(): void {
     super.dispose();
 
-    TargetManager.TargetManager.instance().removeModelListener(
-        ResourceTreeModel.ResourceTreeModel, ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged,
-        this);
+    TargetManager.instance().removeModelListener(
+        ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
 
     void this.agent.invoke_disable();
   }
@@ -60,8 +63,9 @@ export class PreloadingModel extends SDKModel.SDKModel<EventTypes> {
     return this.ruleSets.getAll();
   }
 
-  private onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<ResourceTreeModel.ResourceTreeFrame>): void {
-    const frame = event.data;
+  private onPrimaryPageChanged(
+      event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
+    const {frame} = event.data;
 
     // Note that at this timing ResourceTreeFrame.loaderId is ensured to
     // be non empty and Protocol.Network.LoaderId because it is filled
@@ -93,7 +97,7 @@ export class PreloadingModel extends SDKModel.SDKModel<EventTypes> {
   }
 }
 
-SDKModel.SDKModel.register(PreloadingModel, {capabilities: Target.Capability.Target, autostart: false});
+SDKModel.register(PreloadingModel, {capabilities: Capability.Target, autostart: false});
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

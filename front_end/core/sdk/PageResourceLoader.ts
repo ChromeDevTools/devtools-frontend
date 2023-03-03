@@ -13,7 +13,12 @@ import {IOModel} from './IOModel.js';
 import {MultitargetNetworkManager} from './NetworkManager.js';
 import {NetworkManager} from './NetworkManager.js';
 
-import {Events as ResourceTreeModelEvents, ResourceTreeModel, type ResourceTreeFrame} from './ResourceTreeModel.js';
+import {
+  Events as ResourceTreeModelEvents,
+  ResourceTreeModel,
+  type ResourceTreeFrame,
+  type PrimaryPageChangeType,
+} from './ResourceTreeModel.js';
 import {type Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
@@ -107,8 +112,9 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     pageResourceLoader = null;
   }
 
-  onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
-    const mainFrame = event.data;
+  onPrimaryPageChanged(
+      event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
+    const mainFrame = event.data.frame;
     if (!mainFrame.isOutermostFrame()) {
       return;
     }

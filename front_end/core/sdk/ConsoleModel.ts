@@ -43,7 +43,12 @@ import {CPUProfilerModel, Events as CPUProfilerModelEvents, type EventData} from
 import {Events as DebuggerModelEvents, type Location} from './DebuggerModel.js';
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
-import {Events as ResourceTreeModelEvents, ResourceTreeModel, type ResourceTreeFrame} from './ResourceTreeModel.js';
+import {
+  Events as ResourceTreeModelEvents,
+  ResourceTreeModel,
+  type ResourceTreeFrame,
+  type PrimaryPageChangeType,
+} from './ResourceTreeModel.js';
 
 import {
   Events as RuntimeModelEvents,
@@ -337,13 +342,14 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     ++this.#pageLoadSequenceNumber;
   }
 
-  private primaryPageChanged(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
+  private primaryPageChanged(
+      event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
     if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
-      const frame = event.data;
+      const {frame} = event.data;
       if (frame.backForwardCacheDetails.restoredFromCache) {
-        Common.Console.Console.instance().log(i18nString(UIStrings.bfcacheNavigation, {PH1: event.data.url}));
+        Common.Console.Console.instance().log(i18nString(UIStrings.bfcacheNavigation, {PH1: frame.url}));
       } else {
-        Common.Console.Console.instance().log(i18nString(UIStrings.navigatedToS, {PH1: event.data.url}));
+        Common.Console.Console.instance().log(i18nString(UIStrings.navigatedToS, {PH1: frame.url}));
       }
     }
   }

@@ -234,12 +234,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.FrameNavigated, frame);
 
     if (frame.isMainFrame()) {
-      this.processPendingEvents(frame);
-      this.dispatchEventToListeners(Events.PrimaryPageChanged, frame);
-      const networkManager = this.target().model(NetworkManager);
-      if (networkManager && frame.isOutermostFrame()) {
-        networkManager.clearRequests();
-      }
+      this.primaryPageChanged(frame, PrimaryPageChangeType.Navigation);
     }
 
     // Fill frame with retained resources (the ones loaded using new loader).
@@ -253,6 +248,15 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
     this.updateSecurityOrigins();
     void this.updateStorageKeys();
+  }
+
+  primaryPageChanged(frame: ResourceTreeFrame, type: PrimaryPageChangeType): void {
+    this.processPendingEvents(frame);
+    this.dispatchEventToListeners(Events.PrimaryPageChanged, {frame, type});
+    const networkManager = this.target().model(NetworkManager);
+    if (networkManager && frame.isOutermostFrame()) {
+      networkManager.clearRequests();
+    }
   }
 
   documentOpened(framePayload: Protocol.Page.Frame): void {
@@ -659,7 +663,7 @@ export type EventTypes = {
   [Events.FrameDetached]: {frame: ResourceTreeFrame, isSwap: boolean},
   [Events.FrameResized]: void,
   [Events.FrameWillNavigate]: ResourceTreeFrame,
-  [Events.PrimaryPageChanged]: ResourceTreeFrame,
+  [Events.PrimaryPageChanged]: {frame: ResourceTreeFrame, type: PrimaryPageChangeType},
   [Events.ResourceAdded]: Resource,
   [Events.WillLoadCachedResources]: void,
   [Events.CachedResourcesLoaded]: ResourceTreeModel,
@@ -1213,4 +1217,9 @@ export interface SecurityOriginData {
 export interface StorageKeyData {
   storageKeys: Set<string>;
   mainStorageKey: string|null;
+}
+
+export const enum PrimaryPageChangeType {
+  Navigation = 'Navigation',
+  Activation = 'Activation',
 }

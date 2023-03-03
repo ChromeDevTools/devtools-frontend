@@ -74,7 +74,6 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendColumnTitle(header, i18nString(UIStrings.untrustworthyOrigin));
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
-      case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyNotDelegated:
         this.appendColumnTitle(header, i18nString(UIStrings.element));
         this.appendColumnTitle(header, i18nString(UIStrings.request));
         break;
@@ -120,7 +119,6 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
-      case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyNotDelegated:
         await this.#appendElementOrEmptyCell(element, issue);
         this.#appendRequestOrEmptyCell(element, details.request);
         break;

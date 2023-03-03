@@ -10,6 +10,7 @@ ts_library("elements") {
     "AccessibilityTreeView_test.ts",
     "CSSPropertyPrompt_test.ts",
     "CSSRuleValidator_test.ts",
+    "ClassesPaneWidget_test.ts",
     "ElementsPanel_test.ts",
     "LayoutSidebarPane_test.ts",
     "StylePropertyHighlighter_test.ts",

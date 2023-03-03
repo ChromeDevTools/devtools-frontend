@@ -82,4 +82,13 @@ describe('Quick Open menu', () => {
     const list = await readQuickOpenResults();
     assert.deepEqual(list, ['multi-workers.min.js', 'multi-workers-sourcemap.html']);
   });
+
+  it('lists both deployed and authored file', async () => {
+    await goToResource('sources/sourcemap-origin.html');
+    await openSourcesPanel();
+
+    await typeIntoQuickOpen('sourcemap-origin.clash.js');
+    const list = await readQuickOpenResults();
+    assert.deepEqual(list, ['sourcemap-origin.clash.js', 'sourcemap-origin.clash.js']);
+  });
 });

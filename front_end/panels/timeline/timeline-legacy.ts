@@ -153,9 +153,6 @@ Timeline.TimelinePanel = TimelineModule.TimelinePanel.TimelinePanel;
 /** @enum {symbol} */
 Timeline.TimelinePanel.State = TimelineModule.TimelinePanel.State;
 
-/** @enum {string} */
-Timeline.TimelinePanel.ViewMode = TimelineModule.TimelinePanel.ViewMode;
-
 Timeline.TimelinePanel.rowHeight = TimelineModule.TimelinePanel.rowHeight;
 Timeline.TimelinePanel.headerHeight = TimelineModule.TimelinePanel.headerHeight;
 

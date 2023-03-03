@@ -45,13 +45,11 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import timelinePanelStyles from './timelinePanel.css.js';
 import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
-
-import type * as Coverage from '../coverage/coverage.js';
-import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {Events, PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
 
@@ -276,9 +274,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private performanceModel: PerformanceModel|null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly viewModeSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private disableCaptureJSProfileSetting: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -340,8 +335,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.historyManager = new TimelineHistoryManager();
 
     this.performanceModel = null;
-
-    this.viewModeSetting = Common.Settings.Settings.instance().createSetting('timelineViewMode', ViewMode.FlameChart);
 
     this.disableCaptureJSProfileSetting =
         Common.Settings.Settings.instance().createSetting('timelineDisableJSSampling', false);
@@ -808,11 +801,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private setUIControlsEnabled(enabled: boolean): void {
     this.recordingOptionUIControls.forEach(control => control.setEnabled(enabled));
-  }
-
-  private async getCoverageViewWidget(): Promise<Coverage.CoverageView.CoverageView> {
-    const view = UI.ViewManager.ViewManager.instance().view('coverage');
-    return await view.widget() as Coverage.CoverageView.CoverageView;
   }
 
   async #evaluateInspectedURL(): Promise<Platform.DevToolsPath.UrlString> {
@@ -1475,15 +1463,6 @@ export enum State {
   StopPending = 'StopPending',
   Loading = 'Loading',
   RecordingFailed = 'RecordingFailed',
-}
-
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum ViewMode {
-  FlameChart = 'FlameChart',
-  BottomUp = 'BottomUp',
-  CallTree = 'CallTree',
-  EventLog = 'EventLog',
 }
 
 // Define row and header height, should be in sync with styles for timeline graphs.

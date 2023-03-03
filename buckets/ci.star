@@ -44,7 +44,7 @@ generate_ci_configs(
             branch = "refs/heads/main",
             view = "Parallel",
             name_suffix = "",
-            priority = 30,  # default
+            priority = 60,
         ),
         branch_section("beta"),
         branch_section("stable"),

@@ -205,7 +205,7 @@ export class TracingModel {
     // We do allow records for unrelated threads to arrive out-of-order,
     // so there's a chance we're getting records from the past.
     if (timestamp && timestamp < this.#minimumRecordTimeInternal &&
-        eventPhasesOfInterestForTraceBounds.has(payload.ph) &&
+        eventPhasesOfInterestForTraceBounds.has(payload.ph as TraceEngine.Types.TraceEvents.Phase) &&
         // UMA related events are ignored when calculating the minimumRecordTime because they might
         // be related to previous navigations that happened before the current trace started and
         // will currently not be displayed anyways.
@@ -238,7 +238,7 @@ export class TracingModel {
       }
     }
 
-    if (eventPhasesOfInterestForTraceBounds.has(payload.ph)) {
+    if (eventPhasesOfInterestForTraceBounds.has(payload.ph as TraceEngine.Types.TraceEvents.Phase)) {
       const endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
       this.#maximumRecordTimeInternal = Math.max(this.#maximumRecordTimeInternal, endTimeStamp);
     }
@@ -475,7 +475,6 @@ export class TracingModel {
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Phase {
-  Instant = 'I',
   AsyncBegin = 'S',
   AsyncStepInto = 'T',
   AsyncStepPast = 'p',
@@ -488,11 +487,11 @@ export enum Phase {
   SnapshotObject = 'O',
 }
 
-export const eventPhasesOfInterestForTraceBounds: Set<string> = new Set([
+export const eventPhasesOfInterestForTraceBounds: Set<TraceEngine.Types.TraceEvents.Phase> = new Set([
   TraceEngine.Types.TraceEvents.Phase.BEGIN,
   TraceEngine.Types.TraceEvents.Phase.END,
   TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-  Phase.Instant,
+  TraceEngine.Types.TraceEvents.Phase.INSTANT,
 ]);
 
 export const MetadataEvent = {
@@ -922,7 +921,7 @@ export class Thread extends NamedObject {
       if (event) {
         // Masquerade the event as Instant, so it's rendered to the user.
         // The ideal fix is resolving crbug.com/1021571, but handling that without a perfetto migration appears prohibitive
-        event.phase = Phase.Instant;
+        event.phase = TraceEngine.Types.TraceEvents.Phase.INSTANT;
       }
     }
     this.#eventsInternal = this.#eventsInternal.filter((_, idx) => !toDelete.has(idx));

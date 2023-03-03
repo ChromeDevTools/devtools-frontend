@@ -36,12 +36,12 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
-import {CompatibilityTracksAppender} from './CompatibilityTracksAppender.js';
 
+import {CompatibilityTracksAppender} from './CompatibilityTracksAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 
 import {type PerformanceModel} from './PerformanceModel.js';
@@ -739,7 +739,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             TimelineUIUtils.markerStyleForEvent(e)));
       }
       if (!SDK.TracingModel.TracingModel.isFlowPhase(e.phase)) {
-        if (!e.endTime && e.phase !== SDK.TracingModel.Phase.Instant) {
+        if (!e.endTime && e.phase !== TraceEngine.Types.TraceEvents.Phase.INSTANT) {
           continue;
         }
         if (SDK.TracingModel.TracingModel.isAsyncPhase(e.phase)) {

@@ -39,7 +39,7 @@ describe('TimelineJSProfile', () => {
         'devtools.timeline', 'FunctionCall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
     callEvent.setEndTime(20);
     const sampleEvent = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 5, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 5, thread);
     sampleEvent.addArgs({data: {stackTrace: [{callFrame: {}}]}});
     const events = [callEvent, sampleEvent];
 
@@ -53,7 +53,7 @@ describe('TimelineJSProfile', () => {
 
   it('generateJSFrameEvents creates JS frame events without a top-level V8 invocation', () => {
     const sampleEvent = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 5, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 5, thread);
     sampleEvent.addArgs({data: {stackTrace: [{callFrame: {}}]}});
     const events = [sampleEvent];
 
@@ -67,22 +67,22 @@ describe('TimelineJSProfile', () => {
 
   it('generateJSFrameEvents creates JS frame events for mixed with/without top-level events', () => {
     const sampleEvent1 = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 5, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 5, thread);
     sampleEvent1.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const sampleEvent2 = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 6, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 6, thread);
     sampleEvent2.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const sampleEvent3 = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 7, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 7, thread);
     sampleEvent3.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const callEvent = new SDK.TracingModel.ConstructedEvent(
         'devtools.timeline', 'FunctionCall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 8, thread);
     callEvent.setEndTime(15);
     const sampleEvent4 = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 9, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 9, thread);
     sampleEvent4.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const sampleEvent5 = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 10, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 10, thread);
     sampleEvent5.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const events = [sampleEvent1, sampleEvent2, sampleEvent3, callEvent, sampleEvent4, sampleEvent5];
 
@@ -111,7 +111,7 @@ describe('TimelineJSProfile', () => {
     v8RunEvent.setEndTime(20);
 
     const sampleEvent3 = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 12, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 12, thread);
     sampleEvent3.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
 
     // The presence of this (unshown) event once incorrectedly triggered an early truncateJSStack
@@ -120,10 +120,10 @@ describe('TimelineJSProfile', () => {
     v8ParseFnEvent.setEndTime(11);
 
     const sampleEvent4 = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 14, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 14, thread);
     sampleEvent4.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const sampleEvent5 = new SDK.TracingModel.ConstructedEvent(
-        'devtools.timeline', 'JSSample', SDK.TracingModel.Phase.Instant, 16, thread);
+        'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, 16, thread);
     sampleEvent5.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const events = [evaluateEvent, v8RunEvent, sampleEvent3, v8ParseFnEvent, sampleEvent4, sampleEvent5];
 

@@ -64,7 +64,8 @@ export class TimelineJSProfileProcessor {
                                                                                   RecordType.JSSample;
 
       const jsSampleEvent = new SDK.TracingModel.ConstructedEvent(
-          SDK.TracingModel.DevToolsTimelineEventCategory, name, SDK.TracingModel.Phase.Instant, timestamps[i], thread);
+          SDK.TracingModel.DevToolsTimelineEventCategory, name, TraceEngine.Types.TraceEvents.Phase.INSTANT,
+          timestamps[i], thread);
       jsSampleEvent.args['data'] = {stackTrace: callFrames};
       jsEvents.push(jsSampleEvent);
 

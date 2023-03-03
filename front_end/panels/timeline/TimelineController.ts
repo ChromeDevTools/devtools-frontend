@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {ExtensionTracingSession} from './ExtensionTracingSession.js';
@@ -258,7 +259,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     // any side effects.
     const cpuProfileEvent = ({
       cat: SDK.TracingModel.DevToolsMetadataEventCategory,
-      ph: SDK.TracingModel.Phase.Instant,
+      ph: TraceEngine.Types.TraceEvents.Phase.INSTANT,
       ts: this.tracingModel.maximumRecordTime() * 1000,
       pid: pid,
       tid: tid,

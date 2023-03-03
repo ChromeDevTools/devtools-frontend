@@ -70,6 +70,7 @@ export function stubNoopSettings() {
       setTitle: () => {},
       title: () => {},
       asRegExp: () => {},
+      type: () => Common.Settings.SettingType.BOOLEAN,
     }),
     moduleSetting: () => ({
       get: () => [],
@@ -80,6 +81,7 @@ export function stubNoopSettings() {
       setTitle: () => {},
       title: () => {},
       asRegExp: () => {},
+      type: () => Common.Settings.SettingType.BOOLEAN,
     }),
   } as unknown as Common.Settings.Settings);
 }

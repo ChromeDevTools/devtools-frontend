@@ -80,9 +80,6 @@ Timeline.TimelineEventOverviewMemory = TimelineModule.TimelineEventOverview.Time
 /** @constructor */
 Timeline.Quantizer = TimelineModule.TimelineEventOverview.Quantizer;
 
-/** @constructor */
-Timeline.TimelineEventOverviewCoverage = TimelineModule.TimelineEventOverview.TimelineEventOverviewCoverage;
-
 Timeline.TimelineFilters = {};
 
 /** @constructor */

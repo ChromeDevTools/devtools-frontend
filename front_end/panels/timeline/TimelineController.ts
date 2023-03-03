@@ -394,5 +394,4 @@ export interface RecordingOptions {
   enableJSSampling?: boolean;
   capturePictures?: boolean;
   captureFilmStrip?: boolean;
-  startCoverage?: boolean;
 }

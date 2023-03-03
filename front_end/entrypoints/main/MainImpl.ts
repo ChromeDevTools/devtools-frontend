@@ -288,8 +288,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'cspViolationsView', 'Show CSP Violations view', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-89/#csp');
-    Root.Runtime.experiments.register(
-        'recordCoverageWithPerformanceTracing', 'Record coverage while performance tracing');
     Root.Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
     Root.Runtime.experiments.register(
         'showOptionToExposeInternalsInHeapSnapshot', 'Show option to expose internals in heap snapshots');

@@ -58,7 +58,6 @@ import {Events, PerformanceModel, type WindowChangedEvent} from './PerformanceMo
 import {TimelineController, type Client} from './TimelineController.js';
 
 import {
-  TimelineEventOverviewCoverage,
   TimelineEventOverviewCPUActivity,
   TimelineEventOverviewInput,
   TimelineEventOverviewMemory,
@@ -93,10 +92,6 @@ const UIStrings = {
    */
   screenshots: 'Screenshots',
   /**
-   *@description Title of the 'Coverage' tool in the bottom drawer
-   */
-  coverage: 'Coverage',
-  /**
    *@description Text for the memory of the page
    */
   memory: 'Memory',
@@ -128,10 +123,6 @@ const UIStrings = {
    *@description Text in Timeline for the Web Vitals lane checkbox
    */
   showWebVitals: 'Show Web Vitals',
-  /**
-   *@description Text in Timeline Panel of the Performance panel
-   */
-  recordCoverageWithPerformance: 'Record coverage with performance trace',
   /**
    *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel
    */
@@ -298,9 +289,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private showScreenshotsSetting: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private startCoverage: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private showMemorySetting: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -327,7 +315,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private showScreenshotsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private showMemoryToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private showWebVitalsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
-  private startCoverageCheckbox?: UI.Toolbar.ToolbarItem;
   private networkThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
@@ -368,13 +355,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         Common.Settings.Settings.instance().createSetting('timelineShowScreenshots', isNode ? false : true);
     this.showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
     this.showScreenshotsSetting.addChangeListener(this.updateOverviewControls, this);
-
-    this.startCoverage = Common.Settings.Settings.instance().createSetting('timelineStartCoverage', false);
-    this.startCoverage.setTitle(i18nString(UIStrings.coverage));
-
-    if (!Root.Runtime.experiments.isEnabled('recordCoverageWithPerformanceTracing')) {
-      this.startCoverage.set(false);
-    }
 
     this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
@@ -564,12 +544,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.showWebVitalsToolbarCheckbox =
           this.createSettingCheckbox(this.showWebVitalsSetting, i18nString(UIStrings.showWebVitals));
       this.panelToolbar.appendToolbarItem(this.showWebVitalsToolbarCheckbox);
-    }
-
-    if (Root.Runtime.experiments.isEnabled('recordCoverageWithPerformanceTracing')) {
-      this.startCoverageCheckbox =
-          this.createSettingCheckbox(this.startCoverage, i18nString(UIStrings.recordCoverageWithPerformance));
-      this.panelToolbar.appendToolbarItem(this.startCoverageCheckbox);
     }
 
     // GC
@@ -780,9 +754,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (this.showMemorySetting.get()) {
       this.overviewControls.push(new TimelineEventOverviewMemory());
     }
-    if (this.startCoverage.get()) {
-      this.overviewControls.push(new TimelineEventOverviewCoverage());
-    }
     for (const control of this.overviewControls) {
       control.setModel(this.performanceModel);
     }
@@ -910,15 +881,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         enableJSSampling: !this.disableCaptureJSProfileSetting.get(),
         capturePictures: this.captureLayersAndPicturesSetting.get(),
         captureFilmStrip: this.showScreenshotsSetting.get(),
-        startCoverage: this.startCoverage.get(),
       };
-
-      if (recordingOptions.startCoverage) {
-        await UI.ViewManager.ViewManager.instance()
-            .showView('coverage')
-            .then(() => this.getCoverageViewWidget())
-            .then(widget => widget.ensureRecordingStarted());
-      }
 
       this.showRecordingStarted();
 
@@ -992,12 +955,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.statusPane.updateProgressBar(i18nString(UIStrings.received), 0);
     }
     this.setState(State.StopPending);
-    if (this.startCoverage.get()) {
-      await UI.ViewManager.ViewManager.instance()
-          .showView('coverage')
-          .then(() => this.getCoverageViewWidget())
-          .then(widget => widget.stopRecording());
-    }
     if (this.controller) {
       this.performanceModel = this.controller.getPerformanceModel();
       await this.controller.stopRecording();
@@ -1311,14 +1268,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
 
       this.historyManager.addRecording(this.performanceModel, traceParsedData);
-
-      if (this.startCoverage.get()) {
-        void UI.ViewManager.ViewManager.instance()
-            .showView('coverage')
-            .then(() => this.getCoverageViewWidget())
-            .then(widget => widget.processBacklog())
-            .then(() => this.updateOverviewControls());
-      }
     } catch (error) {
       this.recordingFailed(error.message);
     }

@@ -700,7 +700,6 @@ export enum DevtoolsExperiments {
   'liveHeapProfile' = 11,
   'protocolMonitor' = 13,
   'developerResourcesView' = 15,
-  'recordCoverageWithPerformanceTracing' = 16,
   'samplingHeapProfilerTimeline' = 17,
   'showOptionToExposeInternalsInHeapSnapshot' = 18,
   'sourceOrderViewer' = 20,

@@ -98,7 +98,6 @@ const REGISTERED_EXPERIMENTS = [
   'ignoreListJSFramesOnTimeline',
   'instrumentationBreakpoints',
   'cssTypeComponentLength',
-  'recordCoverageWithPerformanceTracing',
   'timelineEventInitiators',
   'inputEventsOnTimelineOverview',
   'timelineAsConsoleProfileResultPanel',

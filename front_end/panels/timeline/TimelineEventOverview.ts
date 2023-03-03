@@ -34,7 +34,6 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Coverage from '../coverage/coverage.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {type PerformanceModel} from './PerformanceModel.js';
@@ -60,10 +59,6 @@ const UIStrings = {
    *@example {30 MB} PH2
    */
   sSDash: '{PH1} – {PH2}',
-  /**
-   *@description Text in Timeline Event Overview of the Performance panel
-   */
-  coverage: 'COVERAGE',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineEventOverview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -636,158 +631,5 @@ export class Quantizer {
     this.counters[group] = interval;
     this.lastTime = time;
     this.remainder = this.quantDuration - interval;
-  }
-}
-
-export class TimelineEventOverviewCoverage extends TimelineEventOverview {
-  private heapSizeLabel: HTMLElement;
-  private coverageModel?: Coverage.CoverageModel.CoverageModel|null;
-  constructor() {
-    super('coverage', i18nString(UIStrings.coverage));
-    this.heapSizeLabel = this.element.createChild('div', 'timeline-overview-coverage-label');
-  }
-
-  resetHeapSizeLabels(): void {
-    this.heapSizeLabel.textContent = '';
-  }
-
-  setModel(model: PerformanceModel|null): void {
-    super.setModel(model);
-    if (model) {
-      const mainTarget = model.mainTarget();
-      if (mainTarget) {
-        this.coverageModel = mainTarget.model(Coverage.CoverageModel.CoverageModel);
-      }
-    }
-  }
-
-  update(): void {
-    super.update();
-    const ratio = window.devicePixelRatio;
-
-    if (!this.coverageModel) {
-      return;
-    }
-
-    let total = 0;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    let total_used = 0;
-    const usedByTimestamp = new Map<number, number>();
-    const totalByTimestamp = new Map<number, Set<Coverage.CoverageModel.CoverageInfo>>();
-    for (const urlInfo of this.coverageModel.entries()) {
-      for (const info of urlInfo.entries()) {
-        total += info.getSize();
-        for (const [stamp, used] of info.usedByTimestamp()) {
-          total_used += used;
-
-          let uniqueTimestamps = totalByTimestamp.get(stamp);
-
-          if (uniqueTimestamps === undefined) {
-            uniqueTimestamps = new Set();
-            totalByTimestamp.set(stamp, uniqueTimestamps);
-          }
-          uniqueTimestamps.add(info);
-
-          const previousCount = usedByTimestamp.get(stamp);
-
-          if (previousCount === undefined) {
-            usedByTimestamp.set(stamp, used);
-          } else {
-            usedByTimestamp.set(stamp, previousCount + used);
-          }
-        }
-      }
-    }
-
-    const seen = new Set<Coverage.CoverageModel.CoverageInfo>();
-    const coverageByTimestamp = new Map<number, number>();
-    let sumTotal = 0, sumUsed = 0;
-
-    const sortedByTimestamp = Array.from(totalByTimestamp.entries()).sort((a, b) => a[0] - b[0]);
-    for (const [stamp, infos] of sortedByTimestamp) {
-      for (const info of infos.values()) {
-        if (seen.has(info)) {
-          continue;
-        }
-
-        seen.add(info);
-        sumTotal += info.getSize();
-      }
-      sumUsed += usedByTimestamp.get(stamp) || 0;
-      coverageByTimestamp.set(stamp, sumUsed / sumTotal);
-    }
-
-    const percentUsed = total ? Math.round(100 * total_used / total) : 0;
-    const lowerOffset = 3 * ratio;
-
-    const millisecondsPerSecond = 1000;
-    if (!this.model) {
-      return;
-    }
-    const minTime = this.model.timelineModel().minimumRecordTime() / millisecondsPerSecond;
-    const maxTime = this.model.timelineModel().maximumRecordTime() / millisecondsPerSecond;
-
-    const lineWidth = 1;
-    const width = this.width();
-    const height = this.height() - lowerOffset;
-    const xFactor = width / (maxTime - minTime);
-    const yFactor = height - lineWidth;
-
-    let yOffset = 0;
-    const ctx = this.context();
-    const heightBeyondView = height + lowerOffset + lineWidth;
-    ctx.translate(0.5, 0.5);
-    ctx.beginPath();
-    ctx.moveTo(-lineWidth, heightBeyondView);
-
-    ctx.lineTo(-lineWidth, height - yOffset);
-
-    let previous: (number|null)|null = null;
-    for (const stamp of this.coverageModel.getCoverageUpdateTimes()) {
-      const coverage: number|null = coverageByTimestamp.get(stamp) || previous;
-      previous = coverage;
-      if (!coverage) {
-        continue;
-      }
-      if (stamp > maxTime) {
-        break;
-      }
-      const x = (stamp - minTime) * xFactor;
-      yOffset = coverage * yFactor;
-      ctx.lineTo(x, height - yOffset);
-    }
-
-    const white = 'hsl(0, 100%, 100%)';
-    const blue = 'hsl(220, 90%, 70%)';
-    const transparentBlue = 'hsla(220, 90%, 70%, 0.2)';
-
-    ctx.lineTo(width + lineWidth, height - yOffset);
-    ctx.lineTo(width + lineWidth, heightBeyondView);
-    ctx.closePath();
-    ctx.fillStyle = transparentBlue;
-    ctx.fill();
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = blue;
-    ctx.stroke();
-
-    previous = null;
-    for (const stamp of this.coverageModel.getCoverageUpdateTimes()) {
-      const coverage: number|null = coverageByTimestamp.get(stamp) || previous;
-      previous = coverage;
-      if (!coverage) {
-        continue;
-      }
-      ctx.beginPath();
-      const x = (stamp - minTime) * xFactor;
-      const y = height - coverage * yFactor;
-      ctx.arc(x, y, 2 * lineWidth, 0, 2 * Math.PI, false);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.fillStyle = coverageByTimestamp.has(stamp) ? blue : white;
-      ctx.fill();
-    }
-
-    this.heapSizeLabel.textContent = `${percentUsed}% used`;
   }
 }

@@ -410,11 +410,79 @@ export class TimelineModelImpl {
     this.inspectedTargetEventsInternal.sort(SDK.TracingModel.Event.compareStartTime);
     this.processAsyncBrowserEvents(tracingModel);
     this.buildGPUEvents(tracingModel);
+    this.buildTimings();
     this.buildLoadingEvents(tracingModel, layoutShiftEvents);
     this.collectInteractionEvents(tracingModel);
     this.resetProcessingState();
   }
 
+  /**
+   * This function pushes a copy of each performance.mark() event from the Main track
+   * into Timings so they can be appended to the performance UI.
+   * Performance.mark() are a part of the "blink.user_timing" category alongside
+   * Navigation and Resource Timing events, so we must filter them out before pushing.
+   */
+  private buildTimings(): void {
+    const timingsTrack = this.tracksInternal.find(track => track.type === TrackType.Timings);
+    if (!timingsTrack) {
+      return;
+    }
+    const ResourceTimingNames = [
+      'workerStart',
+      'redirectStart',
+      'redirectEnd',
+      'fetchStart',
+      'domainLookupStart',
+      'domainLookupEnd',
+      'connectStart',
+      'connectEnd',
+      'secureConnectionStart',
+      'requestStart',
+      'responseStart',
+      'responseEnd',
+    ];
+    const NavTimingNames = [
+      'navigationStart',
+      'commitNavigationEnd',
+      'unloadEventStart',
+      'unloadEventEnd',
+      'redirectStart',
+      'redirectEnd',
+      'fetchStart',
+      'domainLookupStart',
+      'domainLookupEnd',
+      'connectStart',
+      'connectEnd',
+      'secureConnectionStart',
+      'requestStart',
+      'responseStart',
+      'responseEnd',
+      'domLoading',
+      'domInteractive',
+      'domContentLoadedEventStart',
+      'domContentLoadedEventEnd',
+      'domComplete',
+      'loadEventStart',
+      'loadEventEnd',
+    ];
+    const IgnoreNames = [...ResourceTimingNames, ...NavTimingNames];
+    for (const track of this.tracks()) {
+      if (track.type === TrackType.MainThread) {
+        for (const event of track.events) {
+          if (this.isUserTimingEvent(event)) {
+            if (IgnoreNames.includes(event.name)) {
+              continue;
+            }
+            if (SDK.TracingModel.TracingModel.isAsyncPhase(event.phase)) {
+              continue;
+            }
+            event.setEndTime(event.startTime);
+            timingsTrack.events.push(event);
+          }
+        }
+      }
+    }
+  }
   private collectInteractionEvents(tracingModel: SDK.TracingModel.TracingModel): void {
     const interactionEvents: SDK.TracingModel.AsyncEvent[] = [];
     for (const process of tracingModel.sortedProcesses()) {

@@ -546,7 +546,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         const group = this.appendHeader(i18nString(UIStrings.timings), style, true /* selectable */);
         group.track = track;
         this.appendPageMetrics();
-        this.copyPerfMarkEvents(track);
+        // Leave some space in between page load marks and user timings.
+        this.currentLevel++;
         this.appendSyncEvents(track, track.events, null, null, eventEntryType, true /* selectable */);
         this.appendAsyncEventsGroup(track, null, track.asyncEvents, null, eventEntryType, true /* selectable */);
         break;
@@ -888,76 +889,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       for (const event of metricEvents) {
         this.appendEvent(event, this.currentLevel);
         totalTimes[totalTimes.length - 1] = Number.NaN;
-      }
-    }
-
-    ++this.currentLevel;
-  }
-
-  /**
-   * This function pushes a copy of each performance.mark() event from the Main track
-   * into Timings so they can be appended to the performance UI.
-   * Performance.mark() are a part of the "blink.user_timing" category alongside
-   * Navigation and Resource Timing events, so we must filter them out before pushing.
-   */
-  private copyPerfMarkEvents(timingTrack: TimelineModel.TimelineModel.Track|null): void {
-    this.entryTypeByLevel[this.currentLevel] = EntryType.Event;
-    if (!this.legacyPerformanceModel || !this.legacyTimelineModel || !timingTrack) {
-      return;
-    }
-    const timelineModel = this.legacyPerformanceModel.timelineModel();
-    const ResourceTimingNames = [
-      'workerStart',
-      'redirectStart',
-      'redirectEnd',
-      'fetchStart',
-      'domainLookupStart',
-      'domainLookupEnd',
-      'connectStart',
-      'connectEnd',
-      'secureConnectionStart',
-      'requestStart',
-      'responseStart',
-      'responseEnd',
-    ];
-    const NavTimingNames = [
-      'navigationStart',
-      'unloadEventStart',
-      'unloadEventEnd',
-      'redirectStart',
-      'redirectEnd',
-      'fetchStart',
-      'domainLookupStart',
-      'domainLookupEnd',
-      'connectStart',
-      'connectEnd',
-      'secureConnectionStart',
-      'requestStart',
-      'responseStart',
-      'responseEnd',
-      'domLoading',
-      'domInteractive',
-      'domContentLoadedEventStart',
-      'domContentLoadedEventEnd',
-      'domComplete',
-      'loadEventStart',
-      'loadEventEnd',
-    ];
-    const IgnoreNames = [...ResourceTimingNames, ...NavTimingNames];
-    for (const track of this.legacyTimelineModel.tracks()) {
-      if (track.type === TimelineModel.TimelineModel.TrackType.MainThread) {
-        for (const event of track.events) {
-          if (timelineModel.isUserTimingEvent(event)) {
-            if (IgnoreNames.includes(event.name)) {
-              continue;
-            }
-            if (SDK.TracingModel.TracingModel.isAsyncPhase(event.phase)) {
-              continue;
-            }
-            event.setEndTime(event.startTime);
-            timingTrack.events.push(event);
-          }
-        }
       }
     }
 

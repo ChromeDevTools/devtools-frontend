@@ -1309,12 +1309,26 @@ describeWithEnvironment('TimelineModel', () => {
           continue;
         }
         for (const event of track.syncEvents()) {
+          assert.strictEqual(event.phase, TraceEngine.Types.TraceEvents.Phase.MARK);
           userTimingPerformanceMarkNames.push(event.name);
         }
       }
       assert.deepEqual(
           userTimingPerformanceMarkNames,
-          ['nested-a', 'nested-b', 'nested-c', 'nested-d', 'durationTimeTotal', 'durationTime1', 'durationTime2'],
+          [
+            'nested-a-start',
+            'nested-b-start',
+            'nested-b-end',
+            'nested-c-start',
+            'nested-d-start',
+            'nested-d-end',
+            'nested-c-end',
+            'nested-a-end',
+            'startTime1',
+            'endTime1',
+            'startTime2',
+            'endTime2',
+          ],
       );
     });
 

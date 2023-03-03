@@ -1236,6 +1236,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null): Promise<void> {
     this.#traceEngineModel.reset();
     delete this.loader;
+
+    // If the user just recorded this trace via the record UI, the state will
+    // be StopPending. Whereas if it was an existing trace they loaded via a
+    // file, it will be State.Loading. This means we can tell the recording is
+    // fresh by checking the state value.
+    const recordingIsFresh = this.state === State.StopPending;
+
     this.setState(State.Idle);
 
     if (!tracingModel) {
@@ -1249,8 +1256,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     try {
       // Run the new engine in parallel with the parsing done in the performanceModel
-      await Promise.all(
-          [this.performanceModel.setTracingModel(tracingModel), this.executeNewTraceEngine(tracingModel)]);
+      await Promise.all([
+        this.performanceModel.setTracingModel(tracingModel),
+        this.#executeNewTraceEngine(tracingModel, recordingIsFresh),
+      ]);
       const traceParsedData = this.#traceEngineModel.traceParsedData();
       this.setModel(this.performanceModel, exclusiveFilter, traceParsedData);
 
@@ -1279,7 +1288,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * impact the main thread, as we `void` it to ensure we don't want for the
    * parsing to complete.
    **/
-  private async executeNewTraceEngine(tracingModel: SDK.TracingModel.TracingModel): Promise<void> {
+  #executeNewTraceEngine(tracingModel: SDK.TracingModel.TracingModel, isFreshRecording: boolean): Promise<void> {
     return this.#traceEngineModel.parse(
         // OPP's data layer uses `EventPayload` as the type to represent raw JSON from the trace.
         // When we pass this into the new data engine, we need to tell TS to use the new TraceEventData type.
@@ -1292,7 +1301,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // TODO(crbug.com/1406847): this value needs to be set to `true` if this
         // is a fresh recording (e.g. it hasn't been imported from a file), and
         // `false` otherwise.
-        true,
+        isFreshRecording,
     );
   }
 

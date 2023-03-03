@@ -50,8 +50,7 @@ describe('The Application Tab', async () => {
     });
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1369995] can delete selected items', async () => {
+  it('can delete selected items', async () => {
     const {target} = getBrowserAndPages();
 
     await navigateToApplicationTab(target, 'session-storage');

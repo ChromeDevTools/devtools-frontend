@@ -368,7 +368,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       treeOutline.setWordWrap(Common.Settings.Settings.instance().moduleSetting('domWordWrap').get());
       treeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, this.selectedNodeChanged, this);
       treeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, this.updateBreadcrumbIfNeeded, this);
-      new ElementsTreeElementHighlighter(treeOutline);
+      new ElementsTreeElementHighlighter(treeOutline, new Common.Throttler.Throttler(100));
       this.treeOutlines.add(treeOutline);
     }
     treeOutline.wireToDOMModel(domModel);

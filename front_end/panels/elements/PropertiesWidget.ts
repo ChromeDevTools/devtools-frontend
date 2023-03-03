@@ -85,20 +85,20 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   private readonly treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
   private readonly expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
   private lastRequestedNode?: SDK.DOMModel.DOMNode;
-  constructor() {
-    super(true /* isWebComponent */);
+  constructor(throttlingTimeout?: number) {
+    super(true /* isWebComponent */, throttlingTimeout);
 
     this.showAllPropertiesSetting = Common.Settings.Settings.instance().createSetting('showAllProperties', false);
     this.showAllPropertiesSetting.addChangeListener(this.filterList.bind(this));
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.onNodeChange, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this.onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this.onNodeChange, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this, {scoped: true});
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.setNode, this);
     this.node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
@@ -129,12 +129,12 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  static instance(opts: {
-    forceNew: boolean|null,
-  }|undefined = {forceNew: null}): PropertiesWidget {
-    const {forceNew} = opts;
-    if (!propertiesWidgetInstance || forceNew) {
-      propertiesWidgetInstance = new PropertiesWidget();
+  static instance(opts?: {
+    forceNew: boolean,
+    throttlingTimeout: number,
+  }): PropertiesWidget {
+    if (!propertiesWidgetInstance || opts?.forceNew) {
+      propertiesWidgetInstance = new PropertiesWidget(opts?.throttlingTimeout);
     }
 
     return propertiesWidgetInstance;
@@ -149,7 +149,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     let noMatches = true;
     for (const element of this.treeOutline.rootElement().children()) {
       const {property} = element as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
-      const hidden = !property.match({
+      const hidden = !property?.match({
         includeNullOrUndefinedValues: this.showAllPropertiesSetting.get(),
         regex: this.filterRegex,
       });

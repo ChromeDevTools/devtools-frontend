@@ -28,7 +28,11 @@ import './ClassesPaneWidget.js';
 import './ElementStatePaneWidget.js';
 import './ElementsTreeElementHighlighter.js';
 import './TopLayerContainer.js';
+import './AccessibilityTreeUtils.js';
+import './AccessibilityTreeView.js';
 
+import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
+import * as AccessibilityTreeView from './AccessibilityTreeView.js';
 import * as ClassesPaneWidget from './ClassesPaneWidget.js';
 import * as ColorSwatchPopoverIcon from './ColorSwatchPopoverIcon.js';
 import * as ComputedStyleModel from './ComputedStyleModel.js';
@@ -61,6 +65,8 @@ import * as TopLayerContainer from './TopLayerContainer.js';
 import * as WebCustomData from './WebCustomData.js';
 
 export {
+  AccessibilityTreeUtils,
+  AccessibilityTreeView,
   ClassesPaneWidget,
   ColorSwatchPopoverIcon,
   ComputedStyleModel,

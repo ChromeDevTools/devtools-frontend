@@ -45,8 +45,10 @@ import elementsPanelStyles from './elementsPanel.css.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
+import {type AXTreeNodeData} from './AccessibilityTreeUtils.js';
 import * as ElementsComponents from './components/components.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
 
@@ -258,7 +260,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     crumbsContainer.id = 'elements-crumbs';
     if (this.domTreeButton) {
-      this.accessibilityTreeView = new AccessibilityTreeView(this.domTreeButton);
+      this.accessibilityTreeView =
+          new AccessibilityTreeView(this.domTreeButton, new TreeOutline.TreeOutline.TreeOutline<AXTreeNodeData>());
     }
     this.breadcrumbs = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
     this.breadcrumbs.addEventListener('breadcrumbsnodeselected', event => {

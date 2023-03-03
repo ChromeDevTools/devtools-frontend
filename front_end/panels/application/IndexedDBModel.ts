@@ -403,6 +403,12 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
 
   sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void {
   }
+
+  storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void {
+  }
+
+  storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});

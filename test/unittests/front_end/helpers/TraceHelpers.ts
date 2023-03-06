@@ -1,9 +1,11 @@
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
+import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as TraceModel from '../../../../front_end/models/trace/trace.js';
-
+import type * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
+import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
+import {FakeStorage} from './TimelineHelpers.js';
 interface CompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
 interface DecompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
 declare const CompressionStream: {
@@ -138,6 +140,28 @@ export async function loadModelDataFromTraceFile(name: string): Promise<TraceMod
   }
 
   return trace;
+}
+
+export async function allModelsFromFile(file: string): Promise<{
+  tracingModel: SDK.TracingModel.TracingModel,
+  timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
+  performanceModel: Timeline.PerformanceModel.PerformanceModel,
+  traceParsedData: TraceModel.Handlers.Types.TraceParseData,
+}> {
+  const traceParsedData = await loadModelDataFromTraceFile(file);
+  const events = await loadTraceEventsLegacyEventPayload(file);
+  const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+  const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
+  tracingModel.addEvents(events);
+  tracingModel.tracingComplete();
+  await performanceModel.setTracingModel(tracingModel);
+  const timelineModel = performanceModel.timelineModel();
+  return {
+    tracingModel,
+    timelineModel,
+    performanceModel,
+    traceParsedData,
+  };
 }
 
 // We create here a cross-test base trace event. It is assumed that each

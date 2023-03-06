@@ -514,6 +514,16 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.selectSearchResult(selectedIndex);
   }
 
+  /**
+   * Returns the indexes of the elements that matched the most recent
+   * query. Elements are indexed by the data provider and correspond
+   * to their position in the data provider entry data array.
+   * Public only for tests.
+   */
+  getSearchResults(): number[]|undefined {
+    return this.searchResults;
+  }
+
   onSearchCanceled(): void {
     if (typeof this.selectedSearchResult !== 'undefined') {
       this.delegate.select(null);

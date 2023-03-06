@@ -13,7 +13,7 @@ import {
   waitForFunction,
 } from '../../shared/helper.js';
 
-import {waitForQuotaUsage} from './application-helpers.js';
+import {getQuotaUsage, waitForQuotaUsage} from './application-helpers.js';
 
 import {type ElementHandle} from 'puppeteer';
 import {assert} from 'chai';
@@ -148,8 +148,10 @@ export async function openStorageView() {
 export async function clearSiteData() {
   await goToResource('empty.html');
   await openStorageView();
-  await click('#storage-view-clear-button');
-  await waitForQuotaUsage(quota => quota === 0);
+  await waitForFunction(async () => {
+    await click('#storage-view-clear-button');
+    return (await getQuotaUsage()) === 0;
+  });
 }
 
 export async function waitForStorageUsage(p: (quota: number) => boolean) {

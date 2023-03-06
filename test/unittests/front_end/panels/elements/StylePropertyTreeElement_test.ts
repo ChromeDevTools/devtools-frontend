@@ -35,6 +35,7 @@ const mockMatchedStyles = {
       computedValue: mockVariableMap[param],
     };
   },
+  keyframes: () => [],
 } as unknown as SDK.CSSMatchedStyles.CSSMatchedStyles;
 
 const mockCssProperty = {} as unknown as SDK.CSSProperty.CSSProperty;
@@ -140,6 +141,35 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
            const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
            assert.isNull(colorMixSwatch);
          });
+    });
+
+    describe('animation-name swatch', () => {
+      it('should be rendered for animation-name declaration', () => {
+        const cssAnimationNameProperty = new SDK.CSSProperty.CSSProperty(
+            mockCssStyleDeclaration, 0, 'animation-name', 'first-keyframe', true, false, true, false, '', undefined);
+        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+            mockStylesSidebarPane, mockMatchedStyles, cssAnimationNameProperty, false, false, false, true);
+
+        stylePropertyTreeElement.updateTitle();
+
+        const animationNameSwatch =
+            stylePropertyTreeElement.valueElement?.querySelector('devtools-animation-name-swatch');
+        assert.isNotNull(animationNameSwatch);
+      });
+
+      it('should two swatches be rendered for animation-name declaration that contains two keyframe references', () => {
+        const cssAnimationNameProperty = new SDK.CSSProperty.CSSProperty(
+            mockCssStyleDeclaration, 0, 'animation-name', 'first-keyframe, second-keyframe', true, false, true, false,
+            '', undefined);
+        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+            mockStylesSidebarPane, mockMatchedStyles, cssAnimationNameProperty, false, false, false, true);
+
+        stylePropertyTreeElement.updateTitle();
+
+        const animationNameSwatches =
+            stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-animation-name-swatch');
+        assert.strictEqual(animationNameSwatches?.length, 2);
+      });
     });
   });
 

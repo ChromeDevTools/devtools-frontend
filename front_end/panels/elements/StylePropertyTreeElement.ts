@@ -286,13 +286,27 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return swatch;
   }
 
-  private processAnimationName(text: string): Node {
-    const swatch = new InlineEditor.LinkSwatch.AnimationNameSwatch();
-    UI.UIUtils.createTextChild(swatch, text);
-    const isDefined = Boolean(this.matchedStylesInternal.keyframes().find(kf => kf.name().text === text));
-    swatch.data = {text, isDefined, onLinkActivate: this.handleAnimationNameDefinitionActivate.bind(this)};
+  private processAnimationName(animationNamePropertyText: string): Node {
+    const animationNames = animationNamePropertyText.split(',').map(name => name.trim());
+    const contentChild = document.createElement('span');
+    for (let i = 0; i < animationNames.length; i++) {
+      const animationName = animationNames[i];
+      const swatch = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+      UI.UIUtils.createTextChild(swatch, animationName);
+      const isDefined = Boolean(this.matchedStylesInternal.keyframes().find(kf => kf.name().text === animationName));
+      swatch.data = {
+        text: animationName,
+        isDefined,
+        onLinkActivate: this.handleAnimationNameDefinitionActivate.bind(this),
+      };
+      contentChild.appendChild(swatch);
 
-    return swatch;
+      if (i !== animationNames.length - 1) {
+        contentChild.appendChild(document.createTextNode(', '));
+      }
+    }
+
+    return contentChild;
   }
 
   private processColor(text: string, valueChild?: Node|null): Node {

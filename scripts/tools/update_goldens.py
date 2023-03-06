@@ -28,6 +28,7 @@ provided you did not perform any additional changes in the code.
 import argparse
 import json
 import os
+import re
 import tempfile
 import time
 import subprocess
@@ -45,6 +46,8 @@ class ProjectConfig:
         self.gs_folder = self.gs_root + '/screenshots'
         self.builder_prefix = builder_prefix
         self.platforms = platforms or ['linux', 'mac', 'win']
+        platforms_re = "|".join(self.platforms)
+        self.builder_pattern = (f'{self.builder_prefix}_({platforms_re})_rel')
 
 
 TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -255,8 +258,10 @@ def read_try_results(patchset):
 def filter_screenshots(project_config, results):
     """Remove results comming from other builders."""
     sht_results = []
+
     for r in results:
-        if r['builder']['builder'].startswith(project_config.builder_prefix):
+        if re.fullmatch(project_config.builder_pattern,
+                        r['builder']['builder']):
             sht_results.append(r)
     return sht_results
 

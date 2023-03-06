@@ -39,21 +39,29 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
+const Function_js_1 = require("../util/Function.js");
+const ARIAQuerySelector = __importStar(require("./ARIAQuerySelector.js"));
+const CustomQuerySelectors = __importStar(require("./CustomQuerySelector.js"));
+const PierceQuerySelector = __importStar(require("./PierceQuerySelector.js"));
 const Poller_js_1 = require("./Poller.js");
+const PQuerySelector = __importStar(require("./PQuerySelector.js"));
 const TextContent_js_1 = require("./TextContent.js");
 const TextQuerySelector = __importStar(require("./TextQuerySelector.js"));
-const XPathQuerySelector = __importStar(require("./XPathQuerySelector.js"));
-const PierceQuerySelector = __importStar(require("./PierceQuerySelector.js"));
 const util = __importStar(require("./util.js"));
+const XPathQuerySelector = __importStar(require("./XPathQuerySelector.js"));
 /**
  * @internal
  */
 const PuppeteerUtil = Object.freeze({
-    ...util,
-    ...TextQuerySelector,
-    ...XPathQuerySelector,
+    ...ARIAQuerySelector,
+    ...CustomQuerySelectors,
     ...PierceQuerySelector,
+    ...PQuerySelector,
+    ...TextQuerySelector,
+    ...util,
+    ...XPathQuerySelector,
     createDeferredPromise: DeferredPromise_js_1.createDeferredPromise,
+    createFunction: Function_js_1.createFunction,
     createTextContent: TextContent_js_1.createTextContent,
     IntervalPoller: Poller_js_1.IntervalPoller,
     isSuitableNodeForTextMatching: TextContent_js_1.isSuitableNodeForTextMatching,

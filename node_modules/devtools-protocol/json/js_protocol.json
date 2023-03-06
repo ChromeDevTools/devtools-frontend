@@ -2948,6 +2948,13 @@
                             "type": "boolean"
                         },
                         {
+                            "name": "uniqueContextId",
+                            "description": "An alternative way to specify the execution context to call function on.\nCompared to contextId that may be reused across processes, this is guaranteed to be\nsystem-unique, so it can be used to prevent accidental function call\nin context different than intended (e.g. as a result of navigation across process\nboundaries).\nThis is mutually exclusive with `executionContextId`.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
                             "name": "generateWebDriverValue",
                             "description": "Whether the result should contain `webDriverValue`, serialized according to\nhttps://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but\nresulting `objectId` is still provided.",
                             "experimental": true,
@@ -3607,7 +3614,14 @@
                         {
                             "name": "executionContextId",
                             "description": "Id of the destroyed context",
+                            "deprecated": true,
                             "$ref": "ExecutionContextId"
+                        },
+                        {
+                            "name": "executionContextUniqueId",
+                            "description": "Unique Id of the destroyed context",
+                            "experimental": true,
+                            "type": "string"
                         }
                     ]
                 },

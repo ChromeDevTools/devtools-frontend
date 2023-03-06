@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import { EventEmitter } from '../common/EventEmitter.js';
-import { Page } from './Page.js';
 import { Target } from '../common/Target.js';
 import type { Permission, Browser } from './Browser.js';
+import { Page } from './Page.js';
 /**
  * BrowserContexts provide a way to operate multiple independent browser
  * sessions. When a browser is launched, it has a single BrowserContext used by

@@ -177,13 +177,13 @@ export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyA
   downloadProgress(): void {
   }
 
-  prerenderAttemptCompleted(_params: Protocol.Page.PrerenderAttemptCompletedEvent): void {
+  prerenderAttemptCompleted(_params: Protocol.Preload.PrerenderAttemptCompletedEvent): void {
   }
 
-  prefetchStatusUpdated(_params: Protocol.Page.PrefetchStatusUpdatedEvent): void {
+  prefetchStatusUpdated(_params: Protocol.Preload.PrefetchStatusUpdatedEvent): void {
   }
 
-  prerenderStatusUpdated(_params: Protocol.Page.PrerenderStatusUpdatedEvent): void {
+  prerenderStatusUpdated(_params: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
   }
 }
 

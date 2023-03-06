@@ -92,7 +92,7 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
       },
     ]),
     getPermissionsPolicyState: () => null,
-    prerenderFinalStatus: Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy,
+    prerenderFinalStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
     prerenderDisallowedApiMethod: 'device.mojom.GamepadMonitor',
   } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
   return newFrame;

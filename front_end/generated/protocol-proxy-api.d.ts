@@ -102,6 +102,8 @@ declare namespace ProtocolProxyApi {
 
     Preload: PreloadApi;
 
+    FedCm: FedCmApi;
+
     Debugger: DebuggerApi;
 
     HeapProfiler: HeapProfilerApi;
@@ -198,6 +200,8 @@ declare namespace ProtocolProxyApi {
     DeviceAccess: DeviceAccessDispatcher;
 
     Preload: PreloadDispatcher;
+
+    FedCm: FedCmDispatcher;
 
     Debugger: DebuggerDispatcher;
 
@@ -2712,23 +2716,6 @@ declare namespace ProtocolProxyApi {
      */
     backForwardCacheNotUsed(params: Protocol.Page.BackForwardCacheNotUsedEvent): void;
 
-    /**
-     * Fired when a prerender attempt is completed.
-     */
-    prerenderAttemptCompleted(params: Protocol.Page.PrerenderAttemptCompletedEvent): void;
-
-    /**
-     * TODO(crbug/1384419): Create a dedicated domain for preloading.
-     * Fired when a prefetch attempt is updated.
-     */
-    prefetchStatusUpdated(params: Protocol.Page.PrefetchStatusUpdatedEvent): void;
-
-    /**
-     * TODO(crbug/1384419): Create a dedicated domain for preloading.
-     * Fired when a prerender attempt is updated.
-     */
-    prerenderStatusUpdated(params: Protocol.Page.PrerenderStatusUpdatedEvent): void;
-
     loadEventFired(params: Protocol.Page.LoadEventFiredEvent): void;
 
     /**
@@ -3635,6 +3622,32 @@ declare namespace ProtocolProxyApi {
     ruleSetUpdated(params: Protocol.Preload.RuleSetUpdatedEvent): void;
 
     ruleSetRemoved(params: Protocol.Preload.RuleSetRemovedEvent): void;
+
+    /**
+     * Fired when a prerender attempt is completed.
+     */
+    prerenderAttemptCompleted(params: Protocol.Preload.PrerenderAttemptCompletedEvent): void;
+
+    /**
+     * Fired when a prefetch attempt is updated.
+     */
+    prefetchStatusUpdated(params: Protocol.Preload.PrefetchStatusUpdatedEvent): void;
+
+    /**
+     * Fired when a prerender attempt is updated.
+     */
+    prerenderStatusUpdated(params: Protocol.Preload.PrerenderStatusUpdatedEvent): void;
+
+  }
+
+  export interface FedCmApi {
+    invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+
+    invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
+
+  }
+  export interface FedCmDispatcher {
+    dialogShown(): void;
 
   }
 

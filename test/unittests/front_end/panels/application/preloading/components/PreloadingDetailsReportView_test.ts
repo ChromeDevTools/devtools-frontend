@@ -93,7 +93,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
       },
       url,
       status: SDK.PrerenderingModel.PrerenderingStatus.Discarded,
-      discardedReason: Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy,
+      discardedReason: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
     };
 
     const component = await renderPreloadingDetailsReportView(data);
@@ -106,7 +106,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
       ['Started at', startedAt.toLocaleString()],
       ['Trigger', 'Speculation Rules'],
       ['Status', 'Discarded'],
-      ['Discarded reason', Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy],
+      ['Discarded reason', Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy],
     ]);
   });
 });

@@ -123,6 +123,15 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
   ruleSetRemoved(event: Protocol.Preload.RuleSetRemovedEvent): void {
     this.model.onRuleSetRemoved(event);
   }
+
+  prerenderAttemptCompleted(_event: Protocol.Preload.PrerenderAttemptCompletedEvent): void {
+  }
+
+  prefetchStatusUpdated(_event: Protocol.Preload.PrefetchStatusUpdatedEvent): void {
+  }
+
+  prerenderStatusUpdated(_event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
+  }
 }
 
 class RuleSetRegistry {

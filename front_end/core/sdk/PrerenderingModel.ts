@@ -99,7 +99,7 @@ export class PrerenderingModel extends SDKModel.SDKModel<EventTypes> implements
   }
 
   private onPrerenderAttemptCompleted(
-      event: Common.EventTarget.EventTargetEvent<Protocol.Page.PrerenderAttemptCompletedEvent>): void {
+      event: Common.EventTarget.EventTargetEvent<Protocol.Preload.PrerenderAttemptCompletedEvent>): void {
     const inner = event.data;
 
     this.registry.updateOpaquePrerenderingAttempt(inner);
@@ -135,7 +135,7 @@ export interface PrerenderingAttempt {
   trigger: PrerenderingTrigger;
   url: Platform.DevToolsPath.UrlString;
   status: PrerenderingStatus;
-  discardedReason?: Protocol.Page.PrerenderFinalStatus|null|'Unknown';
+  discardedReason?: Protocol.Preload.PrerenderFinalStatus|null|'Unknown';
 }
 
 type PrerenderingTrigger =
@@ -265,7 +265,7 @@ export class PrerenderingRegistry {
     this.opaqueUrlToPreId.set(url, id);
   }
 
-  updateOpaquePrerenderingAttempt(event: Protocol.Page.PrerenderAttemptCompletedEvent): void {
+  updateOpaquePrerenderingAttempt(event: Protocol.Preload.PrerenderAttemptCompletedEvent): void {
     const id = this.opaqueUrlToPreId.get(event.prerenderingUrl as Platform.DevToolsPath.UrlString);
 
     if (id === undefined) {
@@ -278,8 +278,9 @@ export class PrerenderingRegistry {
       return;
     }
 
-    const status = (event.finalStatus === Protocol.Page.PrerenderFinalStatus.Activated) ? PrerenderingStatus.Activated :
-                                                                                          PrerenderingStatus.Discarded;
+    const status = (event.finalStatus === Protocol.Preload.PrerenderFinalStatus.Activated) ?
+        PrerenderingStatus.Activated :
+        PrerenderingStatus.Discarded;
     const eventInternal: PrerenderingAttemptEventUpdate = {
       kind: 'PrerenderingAttemptEventUpdate',
       update: {
@@ -294,12 +295,12 @@ export class PrerenderingRegistry {
     this.processEvent(eventInternal);
   }
 
-  private getDiscardedReason(event: Protocol.Page.PrerenderAttemptCompletedEvent): Protocol.Page.PrerenderFinalStatus
-      |null {
+  private getDiscardedReason(event: Protocol.Preload.PrerenderAttemptCompletedEvent):
+      Protocol.Preload.PrerenderFinalStatus|null {
     switch (event.finalStatus) {
-      case Protocol.Page.PrerenderFinalStatus.Activated:
+      case Protocol.Preload.PrerenderFinalStatus.Activated:
         return null;
-      case Protocol.Page.PrerenderFinalStatus.Destroyed:
+      case Protocol.Preload.PrerenderFinalStatus.Destroyed:
         return null;
       default:
         return event.finalStatus;

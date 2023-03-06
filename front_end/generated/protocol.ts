@@ -1021,7 +1021,6 @@ export namespace Audits {
     FormInputAssignedAutocompleteValueToIdOrNameAttributeError = 'FormInputAssignedAutocompleteValueToIdOrNameAttributeError',
     FormLabelHasNeitherForNorNestedInput = 'FormLabelHasNeitherForNorNestedInput',
     FormLabelForMatchesNonExistingIdError = 'FormLabelForMatchesNonExistingIdError',
-    FormHasPasswordFieldWithoutUsernameFieldError = 'FormHasPasswordFieldWithoutUsernameFieldError',
   }
 
   /**
@@ -11181,81 +11180,6 @@ export namespace Page {
     children: BackForwardCacheNotRestoredExplanationTree[];
   }
 
-  /**
-   * List of FinalStatus reasons for Prerender2.
-   */
-  export const enum PrerenderFinalStatus {
-    Activated = 'Activated',
-    Destroyed = 'Destroyed',
-    LowEndDevice = 'LowEndDevice',
-    InvalidSchemeRedirect = 'InvalidSchemeRedirect',
-    InvalidSchemeNavigation = 'InvalidSchemeNavigation',
-    InProgressNavigation = 'InProgressNavigation',
-    NavigationRequestBlockedByCsp = 'NavigationRequestBlockedByCsp',
-    MainFrameNavigation = 'MainFrameNavigation',
-    MojoBinderPolicy = 'MojoBinderPolicy',
-    RendererProcessCrashed = 'RendererProcessCrashed',
-    RendererProcessKilled = 'RendererProcessKilled',
-    Download = 'Download',
-    TriggerDestroyed = 'TriggerDestroyed',
-    NavigationNotCommitted = 'NavigationNotCommitted',
-    NavigationBadHttpStatus = 'NavigationBadHttpStatus',
-    ClientCertRequested = 'ClientCertRequested',
-    NavigationRequestNetworkError = 'NavigationRequestNetworkError',
-    MaxNumOfRunningPrerendersExceeded = 'MaxNumOfRunningPrerendersExceeded',
-    CancelAllHostsForTesting = 'CancelAllHostsForTesting',
-    DidFailLoad = 'DidFailLoad',
-    Stop = 'Stop',
-    SslCertificateError = 'SslCertificateError',
-    LoginAuthRequested = 'LoginAuthRequested',
-    UaChangeRequiresReload = 'UaChangeRequiresReload',
-    BlockedByClient = 'BlockedByClient',
-    AudioOutputDeviceRequested = 'AudioOutputDeviceRequested',
-    MixedContent = 'MixedContent',
-    TriggerBackgrounded = 'TriggerBackgrounded',
-    EmbedderTriggeredAndCrossOriginRedirected = 'EmbedderTriggeredAndCrossOriginRedirected',
-    MemoryLimitExceeded = 'MemoryLimitExceeded',
-    FailToGetMemoryUsage = 'FailToGetMemoryUsage',
-    DataSaverEnabled = 'DataSaverEnabled',
-    HasEffectiveUrl = 'HasEffectiveUrl',
-    ActivatedBeforeStarted = 'ActivatedBeforeStarted',
-    InactivePageRestriction = 'InactivePageRestriction',
-    StartFailed = 'StartFailed',
-    TimeoutBackgrounded = 'TimeoutBackgrounded',
-    CrossSiteRedirect = 'CrossSiteRedirect',
-    CrossSiteNavigation = 'CrossSiteNavigation',
-    SameSiteCrossOriginRedirect = 'SameSiteCrossOriginRedirect',
-    SameSiteCrossOriginNavigation = 'SameSiteCrossOriginNavigation',
-    SameSiteCrossOriginRedirectNotOptIn = 'SameSiteCrossOriginRedirectNotOptIn',
-    SameSiteCrossOriginNavigationNotOptIn = 'SameSiteCrossOriginNavigationNotOptIn',
-    ActivationNavigationParameterMismatch = 'ActivationNavigationParameterMismatch',
-    ActivatedInBackground = 'ActivatedInBackground',
-    EmbedderHostDisallowed = 'EmbedderHostDisallowed',
-    ActivationNavigationDestroyedBeforeSuccess = 'ActivationNavigationDestroyedBeforeSuccess',
-    TabClosedByUserGesture = 'TabClosedByUserGesture',
-    TabClosedWithoutUserGesture = 'TabClosedWithoutUserGesture',
-    PrimaryMainFrameRendererProcessCrashed = 'PrimaryMainFrameRendererProcessCrashed',
-    PrimaryMainFrameRendererProcessKilled = 'PrimaryMainFrameRendererProcessKilled',
-    ActivationFramePolicyNotCompatible = 'ActivationFramePolicyNotCompatible',
-    PreloadingDisabled = 'PreloadingDisabled',
-    BatterySaverEnabled = 'BatterySaverEnabled',
-    ActivatedDuringMainFrameNavigation = 'ActivatedDuringMainFrameNavigation',
-    PreloadingUnsupportedByWebContents = 'PreloadingUnsupportedByWebContents',
-  }
-
-  /**
-   * Preloading status values, see also PreloadingTriggeringOutcome. This
-   * status is shared by prefetchStatusUpdated and prerenderStatusUpdated.
-   */
-  export const enum PreloadingStatus {
-    Pending = 'Pending',
-    Running = 'Running',
-    Ready = 'Ready',
-    Success = 'Success',
-    Failure = 'Failure',
-    NotSupported = 'NotSupported',
-  }
-
   export interface AddScriptToEvaluateOnLoadRequest {
     scriptSource: string;
   }
@@ -12269,49 +12193,6 @@ export namespace Page {
      * Tree structure of reasons why the page could not be cached for each frame.
      */
     notRestoredExplanationsTree?: BackForwardCacheNotRestoredExplanationTree;
-  }
-
-  /**
-   * Fired when a prerender attempt is completed.
-   */
-  export interface PrerenderAttemptCompletedEvent {
-    /**
-     * The frame id of the frame initiating prerendering.
-     */
-    initiatingFrameId: FrameId;
-    prerenderingUrl: string;
-    finalStatus: PrerenderFinalStatus;
-    /**
-     * This is used to give users more information about the name of the API call
-     * that is incompatible with prerender and has caused the cancellation of the attempt
-     */
-    disallowedApiMethod?: string;
-  }
-
-  /**
-   * TODO(crbug/1384419): Create a dedicated domain for preloading.
-   * Fired when a prefetch attempt is updated.
-   */
-  export interface PrefetchStatusUpdatedEvent {
-    /**
-     * The frame id of the frame initiating prefetch.
-     */
-    initiatingFrameId: FrameId;
-    prefetchUrl: string;
-    status: PreloadingStatus;
-  }
-
-  /**
-   * TODO(crbug/1384419): Create a dedicated domain for preloading.
-   * Fired when a prerender attempt is updated.
-   */
-  export interface PrerenderStatusUpdatedEvent {
-    /**
-     * The frame id of the frame initiating prerender.
-     */
-    initiatingFrameId: FrameId;
-    prerenderingUrl: string;
-    status: PreloadingStatus;
   }
 
   export interface LoadEventFiredEvent {
@@ -15401,6 +15282,81 @@ export namespace Preload {
   }
 
   /**
+   * List of FinalStatus reasons for Prerender2.
+   */
+  export const enum PrerenderFinalStatus {
+    Activated = 'Activated',
+    Destroyed = 'Destroyed',
+    LowEndDevice = 'LowEndDevice',
+    InvalidSchemeRedirect = 'InvalidSchemeRedirect',
+    InvalidSchemeNavigation = 'InvalidSchemeNavigation',
+    InProgressNavigation = 'InProgressNavigation',
+    NavigationRequestBlockedByCsp = 'NavigationRequestBlockedByCsp',
+    MainFrameNavigation = 'MainFrameNavigation',
+    MojoBinderPolicy = 'MojoBinderPolicy',
+    RendererProcessCrashed = 'RendererProcessCrashed',
+    RendererProcessKilled = 'RendererProcessKilled',
+    Download = 'Download',
+    TriggerDestroyed = 'TriggerDestroyed',
+    NavigationNotCommitted = 'NavigationNotCommitted',
+    NavigationBadHttpStatus = 'NavigationBadHttpStatus',
+    ClientCertRequested = 'ClientCertRequested',
+    NavigationRequestNetworkError = 'NavigationRequestNetworkError',
+    MaxNumOfRunningPrerendersExceeded = 'MaxNumOfRunningPrerendersExceeded',
+    CancelAllHostsForTesting = 'CancelAllHostsForTesting',
+    DidFailLoad = 'DidFailLoad',
+    Stop = 'Stop',
+    SslCertificateError = 'SslCertificateError',
+    LoginAuthRequested = 'LoginAuthRequested',
+    UaChangeRequiresReload = 'UaChangeRequiresReload',
+    BlockedByClient = 'BlockedByClient',
+    AudioOutputDeviceRequested = 'AudioOutputDeviceRequested',
+    MixedContent = 'MixedContent',
+    TriggerBackgrounded = 'TriggerBackgrounded',
+    EmbedderTriggeredAndCrossOriginRedirected = 'EmbedderTriggeredAndCrossOriginRedirected',
+    MemoryLimitExceeded = 'MemoryLimitExceeded',
+    FailToGetMemoryUsage = 'FailToGetMemoryUsage',
+    DataSaverEnabled = 'DataSaverEnabled',
+    HasEffectiveUrl = 'HasEffectiveUrl',
+    ActivatedBeforeStarted = 'ActivatedBeforeStarted',
+    InactivePageRestriction = 'InactivePageRestriction',
+    StartFailed = 'StartFailed',
+    TimeoutBackgrounded = 'TimeoutBackgrounded',
+    CrossSiteRedirect = 'CrossSiteRedirect',
+    CrossSiteNavigation = 'CrossSiteNavigation',
+    SameSiteCrossOriginRedirect = 'SameSiteCrossOriginRedirect',
+    SameSiteCrossOriginNavigation = 'SameSiteCrossOriginNavigation',
+    SameSiteCrossOriginRedirectNotOptIn = 'SameSiteCrossOriginRedirectNotOptIn',
+    SameSiteCrossOriginNavigationNotOptIn = 'SameSiteCrossOriginNavigationNotOptIn',
+    ActivationNavigationParameterMismatch = 'ActivationNavigationParameterMismatch',
+    ActivatedInBackground = 'ActivatedInBackground',
+    EmbedderHostDisallowed = 'EmbedderHostDisallowed',
+    ActivationNavigationDestroyedBeforeSuccess = 'ActivationNavigationDestroyedBeforeSuccess',
+    TabClosedByUserGesture = 'TabClosedByUserGesture',
+    TabClosedWithoutUserGesture = 'TabClosedWithoutUserGesture',
+    PrimaryMainFrameRendererProcessCrashed = 'PrimaryMainFrameRendererProcessCrashed',
+    PrimaryMainFrameRendererProcessKilled = 'PrimaryMainFrameRendererProcessKilled',
+    ActivationFramePolicyNotCompatible = 'ActivationFramePolicyNotCompatible',
+    PreloadingDisabled = 'PreloadingDisabled',
+    BatterySaverEnabled = 'BatterySaverEnabled',
+    ActivatedDuringMainFrameNavigation = 'ActivatedDuringMainFrameNavigation',
+    PreloadingUnsupportedByWebContents = 'PreloadingUnsupportedByWebContents',
+  }
+
+  /**
+   * Preloading status values, see also PreloadingTriggeringOutcome. This
+   * status is shared by prefetchStatusUpdated and prerenderStatusUpdated.
+   */
+  export const enum PreloadingStatus {
+    Pending = 'Pending',
+    Running = 'Running',
+    Ready = 'Ready',
+    Success = 'Success',
+    Failure = 'Failure',
+    NotSupported = 'NotSupported',
+  }
+
+  /**
    * Upsert. Currently, it is only emitted when a rule set added.
    */
   export interface RuleSetUpdatedEvent {
@@ -15410,6 +15366,53 @@ export namespace Preload {
   export interface RuleSetRemovedEvent {
     id: RuleSetId;
   }
+
+  /**
+   * Fired when a prerender attempt is completed.
+   */
+  export interface PrerenderAttemptCompletedEvent {
+    /**
+     * The frame id of the frame initiating prerendering.
+     */
+    initiatingFrameId: Page.FrameId;
+    prerenderingUrl: string;
+    finalStatus: PrerenderFinalStatus;
+    /**
+     * This is used to give users more information about the name of the API call
+     * that is incompatible with prerender and has caused the cancellation of the attempt
+     */
+    disallowedApiMethod?: string;
+  }
+
+  /**
+   * Fired when a prefetch attempt is updated.
+   */
+  export interface PrefetchStatusUpdatedEvent {
+    /**
+     * The frame id of the frame initiating prefetch.
+     */
+    initiatingFrameId: Page.FrameId;
+    prefetchUrl: string;
+    status: PreloadingStatus;
+  }
+
+  /**
+   * Fired when a prerender attempt is updated.
+   */
+  export interface PrerenderStatusUpdatedEvent {
+    /**
+     * The frame id of the frame initiating prerender.
+     */
+    initiatingFrameId: Page.FrameId;
+    prerenderingUrl: string;
+    status: PreloadingStatus;
+  }
+}
+
+/**
+ * This domain allows interacting with the FedCM dialog.
+ */
+export namespace FedCm {
 }
 
 /**

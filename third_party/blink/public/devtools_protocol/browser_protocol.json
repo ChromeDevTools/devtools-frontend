@@ -1543,8 +1543,7 @@
                         "FormAriaLabelledByToNonExistingId",
                         "FormInputAssignedAutocompleteValueToIdOrNameAttributeError",
                         "FormLabelHasNeitherForNorNestedInput",
-                        "FormLabelForMatchesNonExistingIdError",
-                        "FormHasPasswordFieldWithoutUsernameFieldError"
+                        "FormLabelForMatchesNonExistingIdError"
                     ]
                 },
                 {
@@ -16374,82 +16373,6 @@
                             }
                         }
                     ]
-                },
-                {
-                    "id": "PrerenderFinalStatus",
-                    "description": "List of FinalStatus reasons for Prerender2.",
-                    "type": "string",
-                    "enum": [
-                        "Activated",
-                        "Destroyed",
-                        "LowEndDevice",
-                        "InvalidSchemeRedirect",
-                        "InvalidSchemeNavigation",
-                        "InProgressNavigation",
-                        "NavigationRequestBlockedByCsp",
-                        "MainFrameNavigation",
-                        "MojoBinderPolicy",
-                        "RendererProcessCrashed",
-                        "RendererProcessKilled",
-                        "Download",
-                        "TriggerDestroyed",
-                        "NavigationNotCommitted",
-                        "NavigationBadHttpStatus",
-                        "ClientCertRequested",
-                        "NavigationRequestNetworkError",
-                        "MaxNumOfRunningPrerendersExceeded",
-                        "CancelAllHostsForTesting",
-                        "DidFailLoad",
-                        "Stop",
-                        "SslCertificateError",
-                        "LoginAuthRequested",
-                        "UaChangeRequiresReload",
-                        "BlockedByClient",
-                        "AudioOutputDeviceRequested",
-                        "MixedContent",
-                        "TriggerBackgrounded",
-                        "EmbedderTriggeredAndCrossOriginRedirected",
-                        "MemoryLimitExceeded",
-                        "FailToGetMemoryUsage",
-                        "DataSaverEnabled",
-                        "HasEffectiveUrl",
-                        "ActivatedBeforeStarted",
-                        "InactivePageRestriction",
-                        "StartFailed",
-                        "TimeoutBackgrounded",
-                        "CrossSiteRedirect",
-                        "CrossSiteNavigation",
-                        "SameSiteCrossOriginRedirect",
-                        "SameSiteCrossOriginNavigation",
-                        "SameSiteCrossOriginRedirectNotOptIn",
-                        "SameSiteCrossOriginNavigationNotOptIn",
-                        "ActivationNavigationParameterMismatch",
-                        "ActivatedInBackground",
-                        "EmbedderHostDisallowed",
-                        "ActivationNavigationDestroyedBeforeSuccess",
-                        "TabClosedByUserGesture",
-                        "TabClosedWithoutUserGesture",
-                        "PrimaryMainFrameRendererProcessCrashed",
-                        "PrimaryMainFrameRendererProcessKilled",
-                        "ActivationFramePolicyNotCompatible",
-                        "PreloadingDisabled",
-                        "BatterySaverEnabled",
-                        "ActivatedDuringMainFrameNavigation",
-                        "PreloadingUnsupportedByWebContents"
-                    ]
-                },
-                {
-                    "id": "PreloadingStatus",
-                    "description": "Preloading status values, see also PreloadingTriggeringOutcome. This\nstatus is shared by prefetchStatusUpdated and prerenderStatusUpdated.",
-                    "type": "string",
-                    "enum": [
-                        "Pending",
-                        "Running",
-                        "Ready",
-                        "Success",
-                        "Failure",
-                        "NotSupported"
-                    ]
                 }
             ],
             "commands": [
@@ -18021,72 +17944,6 @@
                             "description": "Tree structure of reasons why the page could not be cached for each frame.",
                             "optional": true,
                             "$ref": "BackForwardCacheNotRestoredExplanationTree"
-                        }
-                    ]
-                },
-                {
-                    "name": "prerenderAttemptCompleted",
-                    "description": "Fired when a prerender attempt is completed.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "initiatingFrameId",
-                            "description": "The frame id of the frame initiating prerendering.",
-                            "$ref": "FrameId"
-                        },
-                        {
-                            "name": "prerenderingUrl",
-                            "type": "string"
-                        },
-                        {
-                            "name": "finalStatus",
-                            "$ref": "PrerenderFinalStatus"
-                        },
-                        {
-                            "name": "disallowedApiMethod",
-                            "description": "This is used to give users more information about the name of the API call\nthat is incompatible with prerender and has caused the cancellation of the attempt",
-                            "optional": true,
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "name": "prefetchStatusUpdated",
-                    "description": "TODO(crbug/1384419): Create a dedicated domain for preloading.\nFired when a prefetch attempt is updated.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "initiatingFrameId",
-                            "description": "The frame id of the frame initiating prefetch.",
-                            "$ref": "FrameId"
-                        },
-                        {
-                            "name": "prefetchUrl",
-                            "type": "string"
-                        },
-                        {
-                            "name": "status",
-                            "$ref": "PreloadingStatus"
-                        }
-                    ]
-                },
-                {
-                    "name": "prerenderStatusUpdated",
-                    "description": "TODO(crbug/1384419): Create a dedicated domain for preloading.\nFired when a prerender attempt is updated.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "initiatingFrameId",
-                            "description": "The frame id of the frame initiating prerender.",
-                            "$ref": "FrameId"
-                        },
-                        {
-                            "name": "prerenderingUrl",
-                            "type": "string"
-                        },
-                        {
-                            "name": "status",
-                            "$ref": "PreloadingStatus"
                         }
                     ]
                 },
@@ -22932,6 +22789,82 @@
                             "type": "string"
                         }
                     ]
+                },
+                {
+                    "id": "PrerenderFinalStatus",
+                    "description": "List of FinalStatus reasons for Prerender2.",
+                    "type": "string",
+                    "enum": [
+                        "Activated",
+                        "Destroyed",
+                        "LowEndDevice",
+                        "InvalidSchemeRedirect",
+                        "InvalidSchemeNavigation",
+                        "InProgressNavigation",
+                        "NavigationRequestBlockedByCsp",
+                        "MainFrameNavigation",
+                        "MojoBinderPolicy",
+                        "RendererProcessCrashed",
+                        "RendererProcessKilled",
+                        "Download",
+                        "TriggerDestroyed",
+                        "NavigationNotCommitted",
+                        "NavigationBadHttpStatus",
+                        "ClientCertRequested",
+                        "NavigationRequestNetworkError",
+                        "MaxNumOfRunningPrerendersExceeded",
+                        "CancelAllHostsForTesting",
+                        "DidFailLoad",
+                        "Stop",
+                        "SslCertificateError",
+                        "LoginAuthRequested",
+                        "UaChangeRequiresReload",
+                        "BlockedByClient",
+                        "AudioOutputDeviceRequested",
+                        "MixedContent",
+                        "TriggerBackgrounded",
+                        "EmbedderTriggeredAndCrossOriginRedirected",
+                        "MemoryLimitExceeded",
+                        "FailToGetMemoryUsage",
+                        "DataSaverEnabled",
+                        "HasEffectiveUrl",
+                        "ActivatedBeforeStarted",
+                        "InactivePageRestriction",
+                        "StartFailed",
+                        "TimeoutBackgrounded",
+                        "CrossSiteRedirect",
+                        "CrossSiteNavigation",
+                        "SameSiteCrossOriginRedirect",
+                        "SameSiteCrossOriginNavigation",
+                        "SameSiteCrossOriginRedirectNotOptIn",
+                        "SameSiteCrossOriginNavigationNotOptIn",
+                        "ActivationNavigationParameterMismatch",
+                        "ActivatedInBackground",
+                        "EmbedderHostDisallowed",
+                        "ActivationNavigationDestroyedBeforeSuccess",
+                        "TabClosedByUserGesture",
+                        "TabClosedWithoutUserGesture",
+                        "PrimaryMainFrameRendererProcessCrashed",
+                        "PrimaryMainFrameRendererProcessKilled",
+                        "ActivationFramePolicyNotCompatible",
+                        "PreloadingDisabled",
+                        "BatterySaverEnabled",
+                        "ActivatedDuringMainFrameNavigation",
+                        "PreloadingUnsupportedByWebContents"
+                    ]
+                },
+                {
+                    "id": "PreloadingStatus",
+                    "description": "Preloading status values, see also PreloadingTriggeringOutcome. This\nstatus is shared by prefetchStatusUpdated and prerenderStatusUpdated.",
+                    "type": "string",
+                    "enum": [
+                        "Pending",
+                        "Running",
+                        "Ready",
+                        "Success",
+                        "Failure",
+                        "NotSupported"
+                    ]
                 }
             ],
             "commands": [
@@ -22961,6 +22894,87 @@
                             "$ref": "RuleSetId"
                         }
                     ]
+                },
+                {
+                    "name": "prerenderAttemptCompleted",
+                    "description": "Fired when a prerender attempt is completed.",
+                    "parameters": [
+                        {
+                            "name": "initiatingFrameId",
+                            "description": "The frame id of the frame initiating prerendering.",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "prerenderingUrl",
+                            "type": "string"
+                        },
+                        {
+                            "name": "finalStatus",
+                            "$ref": "PrerenderFinalStatus"
+                        },
+                        {
+                            "name": "disallowedApiMethod",
+                            "description": "This is used to give users more information about the name of the API call\nthat is incompatible with prerender and has caused the cancellation of the attempt",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "prefetchStatusUpdated",
+                    "description": "Fired when a prefetch attempt is updated.",
+                    "parameters": [
+                        {
+                            "name": "initiatingFrameId",
+                            "description": "The frame id of the frame initiating prefetch.",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "prefetchUrl",
+                            "type": "string"
+                        },
+                        {
+                            "name": "status",
+                            "$ref": "PreloadingStatus"
+                        }
+                    ]
+                },
+                {
+                    "name": "prerenderStatusUpdated",
+                    "description": "Fired when a prerender attempt is updated.",
+                    "parameters": [
+                        {
+                            "name": "initiatingFrameId",
+                            "description": "The frame id of the frame initiating prerender.",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "prerenderingUrl",
+                            "type": "string"
+                        },
+                        {
+                            "name": "status",
+                            "$ref": "PreloadingStatus"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "domain": "FedCm",
+            "description": "This domain allows interacting with the FedCM dialog.",
+            "experimental": true,
+            "events": [
+                {
+                    "name": "dialogShown"
+                }
+            ],
+            "commands": [
+                {
+                    "name": "enable"
+                },
+                {
+                    "name": "disable"
                 }
             ]
         },

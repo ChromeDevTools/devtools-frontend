@@ -402,20 +402,6 @@ export namespace ProtocolMapping {
      * when bfcache navigation fails.
      */
     'Page.backForwardCacheNotUsed': [Protocol.Page.BackForwardCacheNotUsedEvent];
-    /**
-     * Fired when a prerender attempt is completed.
-     */
-    'Page.prerenderAttemptCompleted': [Protocol.Page.PrerenderAttemptCompletedEvent];
-    /**
-     * TODO(crbug/1384419): Create a dedicated domain for preloading.
-     * Fired when a prefetch attempt is updated.
-     */
-    'Page.prefetchStatusUpdated': [Protocol.Page.PrefetchStatusUpdatedEvent];
-    /**
-     * TODO(crbug/1384419): Create a dedicated domain for preloading.
-     * Fired when a prerender attempt is updated.
-     */
-    'Page.prerenderStatusUpdated': [Protocol.Page.PrerenderStatusUpdatedEvent];
     'Page.loadEventFired': [Protocol.Page.LoadEventFiredEvent];
     /**
      * Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.
@@ -644,6 +630,19 @@ export namespace ProtocolMapping {
      */
     'Preload.ruleSetUpdated': [Protocol.Preload.RuleSetUpdatedEvent];
     'Preload.ruleSetRemoved': [Protocol.Preload.RuleSetRemovedEvent];
+    /**
+     * Fired when a prerender attempt is completed.
+     */
+    'Preload.prerenderAttemptCompleted': [Protocol.Preload.PrerenderAttemptCompletedEvent];
+    /**
+     * Fired when a prefetch attempt is updated.
+     */
+    'Preload.prefetchStatusUpdated': [Protocol.Preload.PrefetchStatusUpdatedEvent];
+    /**
+     * Fired when a prerender attempt is updated.
+     */
+    'Preload.prerenderStatusUpdated': [Protocol.Preload.PrerenderStatusUpdatedEvent];
+    'FedCm.dialogShown': [];
     /**
      * Fired when breakpoint is resolved to an actual script and location.
      */
@@ -4085,6 +4084,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     'Preload.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'FedCm.enable': {
+      paramsType: [];
+      returnType: void;
+    };
+    'FedCm.disable': {
       paramsType: [];
       returnType: void;
     };

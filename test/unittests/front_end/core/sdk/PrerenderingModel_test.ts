@@ -209,11 +209,11 @@ describeWithMockConnection('PrerenderingModel', () => {
     ]);
     dispatchEvent(
         target,
-        'Page.prerenderAttemptCompleted',
+        'Preload.prerenderAttemptCompleted',
         {
           'initiatingFrameId': prerenderedFrameId,
           'prerenderingUrl': 'https://example.com/prerendered.html',
-          'finalStatus': Protocol.Page.PrerenderFinalStatus.Activated,
+          'finalStatus': Protocol.Preload.PrerenderFinalStatus.Activated,
         },
     );
     assert.deepEqual(model.getAll(), [
@@ -283,11 +283,11 @@ describeWithMockConnection('PrerenderingModel', () => {
     ]);
     dispatchEvent(
         target,
-        'Page.prerenderAttemptCompleted',
+        'Preload.prerenderAttemptCompleted',
         {
           'initiatingFrameId': prerenderedFrameId,
           'prerenderingUrl': 'https://example.com/prerendered.html',
-          'finalStatus': Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy,
+          'finalStatus': Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
           'disallowedApiMethod': 'device.mojom.GamepadMonitor',
         },
     );
@@ -302,7 +302,7 @@ describeWithMockConnection('PrerenderingModel', () => {
           },
           url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
           status: SDK.PrerenderingModel.PrerenderingStatus.Discarded,
-          discardedReason: Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy,
+          discardedReason: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
         },
       },
     ]);

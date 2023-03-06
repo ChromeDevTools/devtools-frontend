@@ -102,31 +102,31 @@ describeWithMockConnection('ResourceTreeModel', () => {
     dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent());
     dispatchEvent(
         target,
-        'Page.prerenderAttemptCompleted',
+        'Preload.prerenderAttemptCompleted',
         {
           'initiatingFrameId': 'main',
           'prerenderingUrl': 'http://example.com/page.html',
-          'finalStatus': Protocol.Page.PrerenderFinalStatus.TriggerDestroyed,
+          'finalStatus': Protocol.Preload.PrerenderFinalStatus.TriggerDestroyed,
         },
     );
     dispatchEvent(
         target,
-        'Page.prerenderAttemptCompleted',
+        'Preload.prerenderAttemptCompleted',
         {
           'initiatingFrameId': 'next',
           'prerenderingUrl': 'http://example.com/page.html',
-          'finalStatus': Protocol.Page.PrerenderFinalStatus.ClientCertRequested,
+          'finalStatus': Protocol.Preload.PrerenderFinalStatus.ClientCertRequested,
         },
     );
     assertNotNullOrUndefined(resourceTreeModel);
     assertNotNullOrUndefined(resourceTreeModel.mainFrame);
     assert.strictEqual(
-        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.TriggerDestroyed);
+        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Preload.PrerenderFinalStatus.TriggerDestroyed);
     dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent(undefined, 'next'));
     assertNotNullOrUndefined(resourceTreeModel);
     assertNotNullOrUndefined(resourceTreeModel.mainFrame);
     assert.strictEqual(
-        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.ClientCertRequested);
+        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Preload.PrerenderFinalStatus.ClientCertRequested);
   });
   describe('prerender event before getResourceTree', () => {
     let resolveGetResourceTree: () => void;
@@ -141,11 +141,11 @@ describeWithMockConnection('ResourceTreeModel', () => {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       dispatchEvent(
           target,
-          'Page.prerenderAttemptCompleted',
+          'Preload.prerenderAttemptCompleted',
           {
             'initiatingFrameId': 'main',
             'prerenderingUrl': 'http://example.com/page.html',
-            'finalStatus': Protocol.Page.PrerenderFinalStatus.TriggerDestroyed,
+            'finalStatus': Protocol.Preload.PrerenderFinalStatus.TriggerDestroyed,
           },
       );
       assertNotNullOrUndefined(resourceTreeModel);
@@ -156,7 +156,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
       });
       assertNotNullOrUndefined(resourceTreeModel.mainFrame);
       assert.strictEqual(
-          resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.TriggerDestroyed);
+          resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Preload.PrerenderFinalStatus.TriggerDestroyed);
     });
   });
 
@@ -178,11 +178,11 @@ describeWithMockConnection('ResourceTreeModel', () => {
     });
     dispatchEvent(
         target,
-        'Page.prerenderAttemptCompleted',
+        'Preload.prerenderAttemptCompleted',
         {
           'initiatingFrameId': 'main',
           'prerenderingUrl': 'http://example.com/page.html',
-          'finalStatus': Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy,
+          'finalStatus': Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
           'disallowedApiMethod': 'device.mojom.GamepadMonitor',
         },
     );
@@ -190,7 +190,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assertNotNullOrUndefined(resourceTreeModel);
     assertNotNullOrUndefined(resourceTreeModel.mainFrame);
     assert.strictEqual(
-        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.MojoBinderPolicy);
+        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy);
     assert.strictEqual(resourceTreeModel.mainFrame.prerenderDisallowedApiMethod, 'device.mojom.GamepadMonitor');
   });
 

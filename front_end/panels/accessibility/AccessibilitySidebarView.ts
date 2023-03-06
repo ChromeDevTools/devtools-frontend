@@ -24,8 +24,8 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   private readonly ariaSubPane: ARIAAttributesPane;
   private readonly axNodeSubPane: AXNodeSubPane;
   private readonly sourceOrderSubPane: SourceOrderPane|undefined;
-  private constructor() {
-    super();
+  private constructor(throttlingTimeout?: number) {
+    super(false /* isWebComponent */, throttlingTimeout);
     this.sourceOrderViewerExperimentEnabled = Root.Runtime.experiments.isEnabled('sourceOrderViewer');
     this.nodeInternal = null;
     this.axNodeInternal = null;
@@ -46,9 +46,12 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.pullNode();
   }
 
-  static instance(): AccessibilitySidebarView {
-    if (!accessibilitySidebarViewInstance) {
-      accessibilitySidebarViewInstance = new AccessibilitySidebarView();
+  static instance(opts?: {
+    forceNew: boolean,
+    throttlingTimeout: number,
+  }): AccessibilitySidebarView {
+    if (!accessibilitySidebarViewInstance || opts?.forceNew) {
+      accessibilitySidebarViewInstance = new AccessibilitySidebarView(opts?.throttlingTimeout);
     }
     return accessibilitySidebarViewInstance;
   }
@@ -119,20 +122,20 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     void this.doUpdate();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onAttrChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.onAttrChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.onNodeChange, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this.onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this.onNodeChange, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this, {scoped: true});
   }
 
   willHide(): void {
     SDK.TargetManager.TargetManager.instance().removeModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onAttrChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.onAttrChange, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.onNodeChange, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this.onNodeChange, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(
@@ -147,22 +150,13 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.setNode(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
   }
 
-  private onAttrChange(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void {
+  private onNodeChange(event: Common.EventTarget
+                           .EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}|SDK.DOMModel.DOMNode>): void {
     if (!this.node()) {
       return;
     }
-    const node = event.data.node;
-    if (this.node() !== node) {
-      return;
-    }
-    this.update();
-  }
-
-  private onNodeChange(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
-    if (!this.node()) {
-      return;
-    }
-    const node = event.data;
+    const data = event.data;
+    const node = (data instanceof SDK.DOMModel.DOMNode ? data : data.node as SDK.DOMModel.DOMNode);
     if (this.node() !== node) {
       return;
     }

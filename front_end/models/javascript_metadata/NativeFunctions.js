@@ -6388,6 +6388,10 @@ export const NativeFunctions = [
     signatures: [['url']]
   },
   {
+    name: 'setSharedStorageContext',
+    signatures: [['contextString']]
+  },
+  {
     name: 'FormDataEvent',
     signatures: [['type','eventInitDict']]
   },
@@ -7579,23 +7583,11 @@ export const NativeFunctions = [
   },
   {
     name: 'queryUsageAndQuota',
-    signatures: [['storageType','?usageCallback','?errorCallback']],
-    receivers: ['DeprecatedStorageInfo']
-  },
-  {
-    name: 'queryUsageAndQuota',
-    signatures: [['usageCallback','?errorCallback']],
-    receivers: ['DeprecatedStorageQuota']
+    signatures: [['usageCallback','?errorCallback']]
   },
   {
     name: 'requestQuota',
-    signatures: [['storageType','newQuotaInBytes','?quotaCallback','?errorCallback']],
-    receivers: ['DeprecatedStorageInfo']
-  },
-  {
-    name: 'requestQuota',
-    signatures: [['newQuotaInBytes','?quotaCallback','?errorCallback']],
-    receivers: ['DeprecatedStorageQuota']
+    signatures: [['newQuotaInBytes','?quotaCallback','?errorCallback']]
   },
   {
     name: 'DOMError',

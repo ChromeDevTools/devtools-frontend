@@ -266,13 +266,13 @@
     },
     {
       name: "NonStandardDeclarativeShadowDOM",
-      message: "The older, non-standardized `shadowroot` attribute is deprecated. Please use the new, standardized `shadowrootmode` attribute instead.",
+      message: "The older, non-standardized `shadowroot` attribute is deprecated, and will *no longer function* in M119. Please use the new, standardized `shadowrootmode` attribute instead.",
       translation_note: "This warning is displayed when a site contains a `<template>` element with the `shadowroot` attribute.",
       web_features: [
         "kDeclarativeShadowRoot",
       ],
       chrome_status_feature: 6239658726391808,
-      milestone: 112,
+      milestone: 119,
     },
     {
       name: "NoSysexWebMIDIWithoutPermission",
@@ -381,14 +381,6 @@
       translation_note: "Warning displayed to developers when the vendor-prefixed method (webkitRequestAnimationFrame) is used rather than the equivalent unprefixed method (requestAnimationFrame).",
       web_features: [
         "kPrefixedRequestAnimationFrame",
-      ],
-    },
-    {
-      name: "PrefixedStorageInfo",
-      message: "`window.webkitStorageInfo` is deprecated. Please use standardized `navigator.storage` instead.",
-      translation_note: "Warning displayed to developers when `window.webkitStorageInfo` is used to notify that the API is deprecated.",
-      web_features: [
-        "kPrefixedStorageInfo",
       ],
     },
     {
@@ -529,6 +521,26 @@
         "kV8SharedArrayBufferConstructedInExtensionWithoutIsolation",
       ],
       milestone: 96,
+    },
+    {
+      name: "WindowPlacementPermissionDescriptorUsed",
+      message: "The permission descriptor `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename.",
+      translation_note: "A deprecation warning shown in the DevTools Issues tab. 'window-placement' and 'window-management' are the name of the javascript descriptors (do not translate). The warning is shown when web pages attempt to use 'window-placement' in permission APIs (e.g. navigator.permissions.query(...))",
+      web_features: [
+        "kWindowPlacementPermissionDescriptorUsed",
+      ],
+      milestone: 112,
+      chrome_status_feature: 5137018030391296,
+    },
+    {
+      name: "WindowPlacementPermissionPolicyParsed",
+      message: "The permission policy `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename.",
+      translation_note: "A deprecation warning shown in the DevTools Issues tab. 'window-placement' and 'window-management' are the name of the policy descriptors (do not translate). The warning is shown when web pages attempt to use 'window-placement' as a permission policy (parsed in iframe or header).",
+      web_features: [
+        "kWindowPlacementPermissionPolicyParsed",
+      ],
+      milestone: 112,
+      chrome_status_feature: 5137018030391296,
     },
     {
       name: "XHRJSONEncodingDetection",

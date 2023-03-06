@@ -97,7 +97,7 @@ export const UIStrings = {
   /**
    * @description This warning is displayed when a site contains a `<template>` element with the `shadowroot` attribute.
    */
-  NonStandardDeclarativeShadowDOM: 'The older, non-standardized `shadowroot` attribute is deprecated. Please use the new, standardized `shadowrootmode` attribute instead.',
+  NonStandardDeclarativeShadowDOM: 'The older, non-standardized `shadowroot` attribute is deprecated, and will *no longer function* in M119. Please use the new, standardized `shadowrootmode` attribute instead.',
   /**
    * @description This warning occurs when the browser requests Web MIDI access as sysex (system exclusive messages) can be allowed via prompt even if the browser did not specifically request it.
    */
@@ -146,10 +146,6 @@ export const UIStrings = {
    * @description Warning displayed to developers when the vendor-prefixed method (webkitRequestAnimationFrame) is used rather than the equivalent unprefixed method (requestAnimationFrame).
    */
   PrefixedRequestAnimationFrame: 'webkitRequestAnimationFrame is vendor-specific. Please use the standard requestAnimationFrame instead.',
-  /**
-   * @description Warning displayed to developers when `window.webkitStorageInfo` is used to notify that the API is deprecated.
-   */
-  PrefixedStorageInfo: '`window.webkitStorageInfo` is deprecated. Please use standardized `navigator.storage` instead.',
   /**
    * @description Standard message when one web API is deprecated in favor of another.
    */
@@ -214,6 +210,14 @@ export const UIStrings = {
    * @description A deprecation warning shown in the DevTools Issues tab. The placeholder is always the noun 'SharedArrayBuffer' which refers to a JavaScript construct. 'Extensions' refers to Chrome extensions. The warning is shown when Chrome Extensions attempt to use 'SharedArrayBuffer's under insecure circumstances.
    */
   V8SharedArrayBufferConstructedInExtensionWithoutIsolation: 'Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.',
+  /**
+   * @description A deprecation warning shown in the DevTools Issues tab. 'window-placement' and 'window-management' are the name of the javascript descriptors (do not translate). The warning is shown when web pages attempt to use 'window-placement' in permission APIs (e.g. navigator.permissions.query(...))
+   */
+  WindowPlacementPermissionDescriptorUsed: 'The permission descriptor `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename.',
+  /**
+   * @description A deprecation warning shown in the DevTools Issues tab. 'window-placement' and 'window-management' are the name of the policy descriptors (do not translate). The warning is shown when web pages attempt to use 'window-placement' as a permission policy (parsed in iframe or header).
+   */
+  WindowPlacementPermissionPolicyParsed: 'The permission policy `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename.',
   /**
    * @description Warning displayed to developers that they are using `XMLHttpRequest` API in a way that they expect an unsupported character encoding `UTF-16` could be used in the server reply.
    */
@@ -291,7 +295,7 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "NonStandardDeclarativeShadowDOM": {
     "chromeStatusFeature": 6239658726391808,
-    "milestone": 112
+    "milestone": 119
   },
   "NotificationPermissionRequestedIframe": {
     "chromeStatusFeature": 6451284559265792
@@ -342,6 +346,14 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "milestone": 96
+  },
+  "WindowPlacementPermissionDescriptorUsed": {
+    "chromeStatusFeature": 5137018030391296,
+    "milestone": 112
+  },
+  "WindowPlacementPermissionPolicyParsed": {
+    "chromeStatusFeature": 5137018030391296,
+    "milestone": 112
   },
   "XHRJSONEncodingDetection": {
     "milestone": 93

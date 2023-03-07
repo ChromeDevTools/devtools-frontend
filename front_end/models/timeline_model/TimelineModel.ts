@@ -421,6 +421,11 @@ export class TimelineModelImpl {
    * into Timings so they can be appended to the performance UI.
    * Performance.mark() are a part of the "blink.user_timing" category alongside
    * Navigation and Resource Timing events, so we must filter them out before pushing.
+   *
+   * Note: Although this looks like a duplicate of the timings appending at the
+   * TimingsTrackAppender, this is still necessary for compatibility with features
+   * outside the flame chart that rely on the definition and construction of the legacy
+   * TimelineModel.Track version of the timings track (f.e. the details pane).
    */
   private buildTimings(): void {
     const timingsTrack = this.tracksInternal.find(track => track.type === TrackType.Timings);

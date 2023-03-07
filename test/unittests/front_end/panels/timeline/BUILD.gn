@@ -19,5 +19,6 @@ ts_library("timeline") {
     "../../../../../front_end/models/trace:bundle",
     "../../../../../front_end/panels/timeline:bundle",
     "../../helpers",
+    "./track_appenders",
   ]
 }

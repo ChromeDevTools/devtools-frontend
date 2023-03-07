@@ -1124,22 +1124,22 @@ describeWithEnvironment('ResponseHeaderSection', () => {
         'https://www.example.com/index.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
         null, null, null);
     request.responseHeaders = [
-      {name: 'cache-control', value: 'max-age=600'},
-      {name: 'z-header', value: 'zzz'},
+      {name: 'Cache-Control', value: 'max-age=600'},
+      {name: 'Z-Header', value: 'zzz'},
     ];
     request.originalResponseHeaders = [
-      {name: 'set-cookie', value: 'bar=original'},
-      {name: 'set-cookie', value: 'foo=original'},
-      {name: 'set-cookie', value: 'malformed'},
-      {name: 'cache-control', value: 'max-age=600'},
-      {name: 'z-header', value: 'zzz'},
+      {name: 'Set-Cookie', value: 'bar=original'},
+      {name: 'Set-Cookie', value: 'foo=original'},
+      {name: 'Set-Cookie', value: 'malformed'},
+      {name: 'Cache-Control', value: 'max-age=600'},
+      {name: 'Z-header', value: 'zzz'},
     ];
     request.setCookieHeaders = [
-      {name: 'set-cookie', value: 'bar=original'},
-      {name: 'set-cookie', value: 'foo=overridden'},
-      {name: 'set-cookie', value: 'user=12345'},
-      {name: 'set-cookie', value: 'malformed'},
-      {name: 'set-cookie', value: 'wrong format'},
+      {name: 'Set-Cookie', value: 'bar=original'},
+      {name: 'Set-Cookie', value: 'foo=overridden'},
+      {name: 'Set-Cookie', value: 'user=12345'},
+      {name: 'Set-Cookie', value: 'malformed'},
+      {name: 'Set-Cookie', value: 'wrong format'},
     ];
 
     const headerOverridesFileContent = `[
@@ -1204,6 +1204,32 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     editHeaderRow(component, 1, HeaderAttribute.HeaderValue, 'bar=edited');
     expected[0].headers.push({name: 'set-cookie', value: 'bar=edited'});
     assert.isTrue(spy.getCall(-1).calledWith(JSON.stringify(expected, null, 2)));
+  });
+
+  it('ignores capitalisation of the `set-cookie` header when marking as overridden', async () => {
+    const request = {
+      sortedResponseHeaders: [
+        {name: 'set-cookie', value: 'user=123'},
+      ],
+      blockedResponseCookies: () => [],
+      wasBlocked: () => false,
+      originalResponseHeaders: [
+        {name: 'Set-Cookie', value: 'user=123'},
+      ],
+      setCookieHeaders: [],
+      url: () => 'https://www.example.com/',
+      getAssociatedData: () => null,
+      setAssociatedData: () => {},
+    } as unknown as SDK.NetworkRequest.NetworkRequest;
+
+    const component = await renderResponseHeaderSection(request);
+    assertShadowRoot(component.shadowRoot);
+    const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
+
+    assertShadowRoot(rows[0].shadowRoot);
+    assert.strictEqual(rows[0].shadowRoot.querySelector('.header-name')?.textContent?.trim(), 'set-cookie:');
+    assert.strictEqual(rows[0].shadowRoot.querySelector('.header-value')?.textContent?.trim(), 'user=123');
+    assert.strictEqual(rows[0].shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), false);
   });
 
   it('does not mark unset headers (which cause the request to be blocked) as overridden', async () => {

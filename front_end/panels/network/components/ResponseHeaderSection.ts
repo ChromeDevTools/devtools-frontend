@@ -309,7 +309,7 @@ export class ResponseHeaderSection extends HTMLElement {
     // and don't treat all 'set-cookie' headers as a single unit.
     this.#headerEditors.filter(header => header.name === 'set-cookie').forEach(header => {
       if (this.#request?.originalResponseHeaders.find(
-              originalHeader => originalHeader.name === 'set-cookie' &&
+              originalHeader => Platform.StringUtilities.toLowerCaseString(originalHeader.name) === 'set-cookie' &&
                   compareHeaders(originalHeader.value, header.value)) === undefined) {
         header.isOverride = true;
       }

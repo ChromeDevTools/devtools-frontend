@@ -1537,7 +1537,7 @@ export interface TimelineModeViewDelegate {
 
 export class StatusPane extends UI.Widget.VBox {
   private status: HTMLElement;
-  private time!: Element;
+  private time: Element|undefined;
   private progressLabel!: Element;
   private progressBar!: Element;
   private readonly description: HTMLElement|undefined;
@@ -1641,7 +1641,7 @@ export class StatusPane extends UI.Widget.VBox {
 
   private updateTimer(precise?: boolean): void {
     this.arrangeDialog((this.element.parentNode as HTMLElement));
-    if (!this.timeUpdateTimer) {
+    if (!this.timeUpdateTimer || !this.time) {
       return;
     }
     const elapsed = (Date.now() - this.startTime) / 1000;

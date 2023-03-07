@@ -132,6 +132,7 @@ builder_coverage(
     builder_name_pattern = "devtools_frontend_parallel_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
+    priority = 50,
 )
 
 builder_coverage(
@@ -140,6 +141,7 @@ builder_coverage(
     builder_name_pattern = "devtools_frontend_parallel_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout + 15 * time.minute,
+    priority = 50,
 )
 
 builder_coverage(
@@ -157,6 +159,7 @@ builder_coverage(
     builder_name_pattern = "e2e_stressor_%s",
     recipe_name = "devtools/dtf-e2e-stress",
     execution_timeout = default_timeout,
+    priority = 50,
 )
 
 builder_coverage(
@@ -169,6 +172,7 @@ builder_coverage(
         "builder_config": "Debug",
         "devtools_skip_typecheck": True,
     },
+    priority = 50,
 )
 
 builder_coverage(

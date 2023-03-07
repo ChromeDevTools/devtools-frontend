@@ -1380,7 +1380,6 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/TimelinePanel.js",
   "front_end/panels/timeline/TimelineTreeView.js",
   "front_end/panels/timeline/TimelineUIUtils.js",
-  "front_end/panels/timeline/TimingsTrackAppender.js",
   "front_end/panels/timeline/UIDevtoolsController.js",
   "front_end/panels/timeline/UIDevtoolsUtils.js",
   "front_end/panels/timeline/WebVitalsTimelineUtils.js",

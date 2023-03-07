@@ -41,7 +41,6 @@ devtools_module("timeline") {
     "TimelinePanel.ts",
     "TimelineTreeView.ts",
     "TimelineUIUtils.ts",
-    "TimingsTrackAppender.ts",
     "UIDevtoolsController.ts",
     "UIDevtoolsUtils.ts",
     "WebVitalsTimelineUtils.ts",

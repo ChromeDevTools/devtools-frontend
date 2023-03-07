@@ -39,7 +39,6 @@ copy_to_gen("traces") {
     "style-invalidation-change-attribute.json.gz",
     "style-invalidation-change-id.json.gz",
     "threejs-gpu.json.gz",
-    "timings-track.json.gz",
     "user-timings-complex.json.gz",
     "user-timings.json.gz",
     "web-dev.json.gz",

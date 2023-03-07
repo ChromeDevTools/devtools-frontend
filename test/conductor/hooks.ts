@@ -23,7 +23,11 @@ import {
   DevToolsFrontendTab,
   type DevToolsFrontendReloadOptions,
 } from './frontend_tab.js';
-import {dumpCollectedErrors, installPageErrorHandlers, setupBrowserProcessIO} from './events.js';
+import {
+  dumpCollectedErrors,
+  installPageErrorHandlers,
+  setupBrowserProcessIO,
+} from './events.js';
 import {TargetTab} from './target_tab.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
@@ -47,6 +51,9 @@ const windowHeight = viewportHeight + 200;
 const headless = !process.env['DEBUG_TEST'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
+const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?
+    ['true', ''].includes(process.env['LATE_PROMISES'].toLowerCase()) ? 10 : Number(process.env['LATE_PROMISES']) :
+    0;
 
 const TEST_SERVER_TYPE = getTestRunnerConfigSetting<string>('test-server-type', 'hosted-mode');
 
@@ -115,7 +122,11 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
     /**
      * In hosted mode we run the DevTools and test against it.
      */
-    frontendTab = await DevToolsFrontendTab.create({browser, testServerPort, targetId: targetTab.targetId()});
+    frontendTab = await DevToolsFrontendTab.create({
+      browser,
+      testServerPort,
+      targetId: targetTab.targetId(),
+    });
     frontend = frontendTab.page;
   } else if (TEST_SERVER_TYPE === 'component-docs') {
     /**
@@ -135,27 +146,43 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
 export async function resetPages() {
   await targetTab.reset();
 
-  // Under stress conditions throttle the CPU down.
-  await throttleCPUIfRequired();
+  const {frontend} = getBrowserAndPages();
+  await throttleCPUIfRequired(frontend);
+  await delayPromisesIfRequired(frontend);
 
   if (TEST_SERVER_TYPE === 'hosted-mode') {
     await frontendTab.reset();
   } else if (TEST_SERVER_TYPE === 'component-docs') {
     // Reset the frontend back to an empty page for the component docs server.
-    const {frontend} = getBrowserAndPages();
     await loadEmptyPageAndWaitForContent(frontend);
   }
 }
 
-async function throttleCPUIfRequired(): Promise<void> {
-  const {frontend} = getBrowserAndPages();
-  // Under stress conditions throttle the CPU down.
-  if (envThrottleRate !== 1) {
-    console.log(`Throttling CPU: ${envThrottleRate}x slowdown`);
-
-    const client = await frontend.target().createCDPSession();
-    await client.send('Emulation.setCPUThrottlingRate', {rate: envThrottleRate});
+async function delayPromisesIfRequired(page: puppeteer.Page): Promise<void> {
+  if (envLatePromises === 0) {
+    return;
   }
+  console.log(`Delaying promises by ${envLatePromises}ms`);
+  await page.evaluate(delay => {
+    globalThis.Promise = class<T> extends Promise<T>{
+      constructor(executor: (resolve: (value: T|PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void) {
+        super((resolve, reject) => {
+          executor(value => setTimeout(() => resolve(value), delay), reason => setTimeout(() => reject(reason), delay));
+        });
+      }
+    };
+  }, envLatePromises);
+}
+
+async function throttleCPUIfRequired(page: puppeteer.Page): Promise<void> {
+  if (envThrottleRate === 1) {
+    return;
+  }
+  console.log(`Throttling CPU: ${envThrottleRate}x slowdown`);
+  const client = await page.target().createCDPSession();
+  await client.send('Emulation.setCPUThrottlingRate', {
+    rate: envThrottleRate,
+  });
 }
 
 export async function reloadDevTools(options?: DevToolsFrontendReloadOptions) {

@@ -48,10 +48,19 @@ def build_parser():
                         action='store_true',
                         help='Show more debugging info')
 
+    #Deprecated options. These are no longer used, but are kept here
+    #to avoid breaking existing scripts."""
+    parser.add_argument('--patchset',
+                        help='Deprecated. Not used by this tool.')
+    parser.add_argument('--ignore-failed',
+                        help='Deprecated. Not used by this tool.')
+    parser.add_argument('--retry', help='Deprecated. Not used by this tool.')
+
     return parser
 
 
 if __name__ == '__main__':
     main(
-        ProjectConfig(platforms=['linux', 'win64'],
-                      builder_prefix='devtools_frontend'), sys.argv[1:])
+        ProjectConfig(platforms=['linux', 'mac', 'win64'],
+                      builder_prefix='devtools_frontend',
+                      ignore_failed_builders=True), sys.argv[1:])

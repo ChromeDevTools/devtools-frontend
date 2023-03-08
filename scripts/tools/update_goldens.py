@@ -40,7 +40,8 @@ class ProjectConfig:
                  name='devtools-frontend',
                  gs_root='gs://devtools-frontend-screenshots',
                  builder_prefix='devtools_screenshot',
-                 platforms=None):
+                 platforms=None,
+                 ignore_failed_builders=False):
         self.name = name
         self.gs_root = gs_root
         self.gs_folder = self.gs_root + '/screenshots'
@@ -48,6 +49,7 @@ class ProjectConfig:
         self.platforms = platforms or ['linux', 'mac', 'win']
         platforms_re = "|".join(self.platforms)
         self.builder_pattern = (f'{self.builder_prefix}_({platforms_re})_rel')
+        self.ignore_failed_builders = ignore_failed_builders
 
 
 TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -218,8 +220,8 @@ def apply_patch_to_local(project_config, patchset, wait_sec, ignore_failed,
     results = screenshot_results(project_config, patchset)
     check_not_empty(results)
     check_all_platforms(project_config, results)
-    retry, should_wait = check_all_success(results, wait_sec, ignore_failed,
-                                           retry)
+    retry, should_wait = check_all_success(project_config, results, wait_sec,
+                                           ignore_failed, retry)
     if retry:
         # Avoiding to force the user to run a 'trigger' command
         trigger_screenshots(project_config, retry)
@@ -318,7 +320,7 @@ def check_all_platforms(project_config, results):
               (patchset, '\n  '.join(results.keys())))
 
 
-def check_all_success(results, wait_sec, ignore_failed, retry):
+def check_all_success(project_config, results, wait_sec, ignore_failed, retry):
     """Verify and react to the presence of in progress or failed builds.
     Returns tuple (list of failed builders, boolean whether to wait)
     The list might be used to re-trigger if --retry options is set.
@@ -330,7 +332,7 @@ def check_all_success(results, wait_sec, ignore_failed, retry):
         warn_on_exceptions(results, in_progress,
                            WARNING_BUILDERS_STILL_RUNNING)
         return builders_in_progress(wait_sec)
-    if failed:
+    if failed and not project_config.ignore_failed_builders:
         warn_on_exceptions(results, failed, WARNING_BUILDERS_FAILED)
         return builders_failed(results, failed, ignore_failed, retry)
     return ([], False)

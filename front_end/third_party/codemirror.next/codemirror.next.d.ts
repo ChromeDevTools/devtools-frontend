@@ -2885,6 +2885,11 @@ declare class EditorView {
     */
     static inputHandler: Facet<(view: EditorView, from: number, to: number, text: string) => boolean, readonly ((view: EditorView, from: number, to: number, text: string) => boolean)[]>;
     /**
+    This facet can be used to provide functions that create effects
+    to be dispatched when the editor's focus state changes.
+    */
+    static focusChangeEffect: Facet<(state: EditorState, focusing: boolean) => StateEffect<any> | null, readonly ((state: EditorState, focusing: boolean) => StateEffect<any> | null)[]>;
+    /**
     By default, the editor assumes all its content has the same
     [text direction](https://codemirror.net/6/docs/ref/#view.Direction). Configure this with a `true`
     value to make it read the text direction of every (rendered)
@@ -5483,7 +5488,7 @@ property changed to `mac`.)
 declare const standardKeymap: readonly KeyBinding[];
 
 /**
-CSS property and value keyword completion source.
+CSS property, variable, and value keyword completion source.
 */
 declare const cssCompletionSource: CompletionSource;
 

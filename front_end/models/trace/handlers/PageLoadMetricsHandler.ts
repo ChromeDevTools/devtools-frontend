@@ -587,17 +587,20 @@ export const enum ScoreClassification {
 }
 
 export const enum MetricName {
+  // First Contentful Paint
   FCP = 'FCP',
   // First Paint
   FP = 'FP',
   // MarkLoad
   L = 'L',
   LCP = 'LCP',
+  // Mark DOM Content
   DCL = 'DCL',
   // Time To Interactive
   TTI = 'TTI',
   // Total Blocking Time
   TBT = 'TBT',
+  // Cumulative Layout Shift
   CLS = 'CLS',
 }
 

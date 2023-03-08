@@ -41,11 +41,13 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {CompatibilityTracksAppender} from './CompatibilityTracksAppender.js';
+import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
+
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 
 import {type PerformanceModel} from './PerformanceModel.js';
-import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFlameChartView.js';
+
+import {FlameChartStyle, Selection, type TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
 
 import {TimelineUIUtils, type TimelineCategory} from './TimelineUIUtils.js';
@@ -63,10 +65,6 @@ const UIStrings = {
    *@description Text that refers to the interactions on the page shown in the timeline
    */
   userInteractions: 'Interactions',
-  /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-   */
-  timings: 'Timings',
   /**
    *@description Title of the Console tool
    */
@@ -337,9 +335,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (eventToDisallowRoot.get(event)) {
         return i18nString(UIStrings.onIgnoreList);
       }
-      if (this.legacyPerformanceModel && this.legacyPerformanceModel.timelineModel().isMarkerEvent(event)) {
-        return TimelineUIUtils.markerShortTitle(event);
-      }
       return TimelineUIUtils.eventTitle(event);
     }
     if (entryType === entryTypes.ExtensionEvent) {
@@ -406,8 +401,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.legacyTimelineModel.maximumRecordTime() - this.minimumBoundaryInternal;
     this.currentLevel = 0;
 
-    if (this.traceEngineData && this.timelineDataInternal) {
-      this.compatibilityTracksAppender = new CompatibilityTracksAppender(this.legacyTimelineModel);
+    if (this.traceEngineData) {
+      this.compatibilityTracksAppender = new CompatibilityTracksAppender(
+          this.timelineDataInternal, this.traceEngineData, this.entryData, this.entryTypeByLevel,
+          this.legacyTimelineModel);
     }
     if (this.legacyTimelineModel.isGenericTrace()) {
       this.processGenericTrace();
@@ -455,15 +452,19 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private processInspectorTrace(): void {
     this.appendFrames();
 
-    const weight = (track: {type?: string, forMainFrame?: boolean, weight?: number}): number => {
-      if (track.weight !== undefined) {
-        return track.weight;
+    const weight = (track: {type?: string, forMainFrame?: boolean, appenderName?: TrackAppenderName}): number => {
+      if (track.appenderName !== undefined) {
+        switch (track.appenderName) {
+          case 'Timings':
+            return 1;
+          default:
+            return -1;
+        }
       }
+
       switch (track.type) {
         case TimelineModel.TimelineModel.TrackType.Animation:
           return 0;
-        case TimelineModel.TimelineModel.TrackType.Timings:
-          return 1;
         case TimelineModel.TimelineModel.TrackType.UserInteractions:
           return 2;
         case TimelineModel.TimelineModel.TrackType.Console:
@@ -506,8 +507,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (!this.traceEngineData) {
         continue;
       }
-      this.currentLevel =
-          trackOrAppender.appendTrackAtLevel(this.currentLevel, this.timelineData(), this.traceEngineData);
+      this.currentLevel = trackOrAppender.appendTrackAtLevel(this.currentLevel);
     }
     if (this.timelineDataInternal && this.timelineDataInternal.selectedGroup) {
       this.timelineDataInternal.selectedGroup.expanded = true;
@@ -518,11 +518,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     this.flowEventIndexById.clear();
-
-    this.markers.sort((a, b) => a.startTime() - b.startTime());
-    if (this.timelineDataInternal) {
-      this.timelineDataInternal.markers = this.markers;
-    }
   }
 
   private appendLegacyTrackData(track: TimelineModel.TimelineModel.Track): void {
@@ -538,18 +533,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.appendAsyncEventsGroup(
             track, i18nString(UIStrings.animation), track.asyncEvents, this.animationsHeader, eventEntryType,
             false /* selectable */);
-        break;
-      }
-
-      case TimelineModel.TimelineModel.TrackType.Timings: {
-        const style = track.asyncEvents.length > 0 ? this.collapsibleTimingsHeader : this.timingsHeader;
-        const group = this.appendHeader(i18nString(UIStrings.timings), style, true /* selectable */);
-        group.track = track;
-        this.appendPageMetrics();
-        // Leave some space in between page load marks and user timings.
-        this.currentLevel++;
-        this.appendSyncEvents(track, track.events, null, null, eventEntryType, true /* selectable */);
-        this.appendAsyncEventsGroup(track, null, track.asyncEvents, null, eventEntryType, true /* selectable */);
         break;
       }
 
@@ -672,9 +655,23 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         result.push(i);
       }
     }
-    result.sort(
-        (a, b) => SDK.TracingModel.Event.compareStartTime(
-            (this.entryData[a] as SDK.TracingModel.Event), (this.entryData[b] as SDK.TracingModel.Event)));
+    result.sort((a, b) => {
+      let firstEvent: TimelineFlameChartEntry|null = this.entryData[a];
+      let secondEvent: TimelineFlameChartEntry|null = this.entryData[b];
+      if (!this.isEntryRegularEvent(firstEvent) || !this.isEntryRegularEvent(secondEvent)) {
+        return 0;
+      }
+      firstEvent = firstEvent instanceof SDK.TracingModel.Event ?
+          firstEvent :
+          (this.compatibilityTracksAppender?.getLegacyEvent(firstEvent) || null);
+      secondEvent = secondEvent instanceof SDK.TracingModel.Event ?
+          secondEvent :
+          (this.compatibilityTracksAppender?.getLegacyEvent(secondEvent) || null);
+      if (!firstEvent || !secondEvent) {
+        return 0;
+      }
+      return SDK.TracingModel.Event.compareStartTime(firstEvent, secondEvent);
+    });
     return result;
   }
 
@@ -732,12 +729,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           e.setEndTime(frame.endTime);
         }
       }
-
-      if (!isExtension && this.legacyPerformanceModel.timelineModel().isMarkerEvent(e)) {
-        this.markers.push(new TimelineFlameChartMarker(
-            e.startTime, e.startTime - this.legacyTimelineModel.minimumRecordTime(),
-            TimelineUIUtils.markerStyleForEvent(e)));
-      }
       if (!SDK.TracingModel.TracingModel.isFlowPhase(e.phase)) {
         if (!e.endTime && e.phase !== TraceEngine.Types.TraceEvents.Phase.INSTANT) {
           continue;
@@ -775,10 +766,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const index = this.appendEvent(e, level);
       if (openEvents.length) {
         this.entryParent[index] = (openEvents[openEvents.length - 1] as SDK.TracingModel.Event);
-      }
-      if (!isExtension && this.legacyPerformanceModel.timelineModel().isMarkerEvent(e)) {
-        // @ts-ignore This is invalid code, but we should keep it for now
-        this.timelineDataInternal.entryTotalTimes[this.entryData.length] = undefined;
       }
 
       maxStackDepth = Math.max(maxStackDepth, openEvents.length + 1);
@@ -835,64 +822,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.entryTypeByLevel.fill(entryType, this.currentLevel);
     this.currentLevel += lastUsedTimeByLevel.length;
     return group;
-  }
-
-  private appendPageMetrics(): void {
-    this.entryTypeByLevel[this.currentLevel] = EntryType.Event;
-
-    if (!this.legacyPerformanceModel || !this.legacyTimelineModel) {
-      return;
-    }
-
-    const metricEvents: SDK.TracingModel.Event[] = [];
-    const lcpEvents = [];
-    const timelineModel = this.legacyPerformanceModel.timelineModel();
-    for (const track of this.legacyTimelineModel.tracks()) {
-      for (const event of track.events) {
-        if (!SDK.TracingModel.eventHasPayload(event)) {
-          continue;
-        }
-        if (!timelineModel.isMarkerEvent(event)) {
-          continue;
-        }
-        if (timelineModel.isLCPCandidateEvent(event) || timelineModel.isLCPInvalidateEvent(event)) {
-          lcpEvents.push(event);
-        } else {
-          metricEvents.push(event);
-        }
-      }
-    }
-
-    // Only the LCP event with the largest candidate index is relevant.
-    // Do not record an LCP event if it is an invalidate event.
-    if (lcpEvents.length > 0) {
-      const lcpEventsByNavigationId = new Map<string, SDK.TracingModel.Event>();
-      for (const e of lcpEvents) {
-        const key = e.args['data']['navigationId'];
-        const previousLastEvent = lcpEventsByNavigationId.get(key);
-
-        if (!previousLastEvent || previousLastEvent.args['data']['candidateIndex'] < e.args['data']['candidateIndex']) {
-          lcpEventsByNavigationId.set(key, e);
-        }
-      }
-
-      const latestCandidates = Array.from(lcpEventsByNavigationId.values());
-      const latestEvents =
-          latestCandidates.filter(e => SDK.TracingModel.eventHasPayload(e) && timelineModel.isLCPCandidateEvent(e));
-
-      metricEvents.push(...latestEvents);
-    }
-
-    metricEvents.sort(SDK.TracingModel.Event.compareStartTime);
-    if (this.timelineDataInternal) {
-      const totalTimes = this.timelineDataInternal.entryTotalTimes;
-      for (const event of metricEvents) {
-        this.appendEvent(event, this.currentLevel);
-        totalTimes[totalTimes.length - 1] = Number.NaN;
-      }
-    }
-
-    ++this.currentLevel;
   }
 
   private appendFrames(): void {
@@ -1062,8 +991,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (this.legacyTimelineModel.isEventTimingInteractionEvent(event)) {
         return this.consoleColorGenerator.colorForID(event.args.data.type + ':' + event.args.data.interactionId);
       }
-      if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
-          event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
+      if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
         return this.consoleColorGenerator.colorForID(event.name);
       }
       const category = TimelineUIUtils.eventStyle(event).category;

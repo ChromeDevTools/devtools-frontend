@@ -331,13 +331,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   /**
    * Builds the flame chart data using the track appenders
    */
-  buildFromTrackAppenders(): void {
+  buildFromTrackAppenders(expandedTracks?: Set<TrackAppenderName>): void {
     if (!this.compatibilityTracksAppender) {
       return;
     }
     const appenders = this.compatibilityTracksAppender.allVisibleTrackAppenders();
     for (const appender of appenders) {
-      this.currentLevel = appender.appendTrackAtLevel(this.currentLevel);
+      const expanded = expandedTracks?.has(appender.appenderName);
+      this.currentLevel = appender.appendTrackAtLevel(this.currentLevel, expanded);
     }
   }
 

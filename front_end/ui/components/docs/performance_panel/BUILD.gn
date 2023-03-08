@@ -7,7 +7,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
   testonly = true
-  sources = [ "basic.ts" ]
+  sources = [
+    "basic.ts",
+    "timings_track.ts",
+  ]
   deps = [
     "../../../../../test/unittests/front_end/helpers",
     "../../../../core/common:bundle",
@@ -25,6 +28,7 @@ copy_to_gen("performance_panel") {
   sources = [
     "basic.html",
     "liviu.html",
+    "timings_track.html",
   ]
 
   deps = [ ":ts" ]

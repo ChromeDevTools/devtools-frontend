@@ -81,11 +81,12 @@ export class TimingsTrackAppender implements TrackAppender {
    * timings track.
    * @param level the horizontal level of the flame chart events where
    * the track's events will start being appended.
+   * @param expanded wether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
-  appendTrackAtLevel(currentLevel: number): number {
-    this.#appendTrackHeaderAtLevel(currentLevel);
+  appendTrackAtLevel(currentLevel: number, expanded?: boolean): number {
+    this.#appendTrackHeaderAtLevel(currentLevel, expanded);
     const newLevel = this.#appendMarkersAtLevel(currentLevel);
     // Add some vertical space between page load markers and user
     // timings by appending timings 2 levels after the markers' level.
@@ -101,7 +102,7 @@ export class TimingsTrackAppender implements TrackAppender {
    * @param currentLevel the flame chart level at which the header is
    * appended.
    */
-  #appendTrackHeaderAtLevel(currentLevel: number): void {
+  #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#traceParsedData.UserTimings.performanceMeasures.length > 0;
 
     const style: PerfUI.FlameChart.GroupStyle = {
@@ -116,7 +117,7 @@ export class TimingsTrackAppender implements TrackAppender {
       useFirstLineForOverview: true,
     };
     const group =
-        ({startLevel: currentLevel, name: i18nString(UIStrings.timings), style: style, selectable: true} as
+        ({startLevel: currentLevel, name: i18nString(UIStrings.timings), style: style, selectable: true, expanded} as
          PerfUI.FlameChart.Group);
     this.#flameChartData.groups.push(group);
     group.track = this.#legacyTrack;

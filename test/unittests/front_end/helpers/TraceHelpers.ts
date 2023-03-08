@@ -166,8 +166,10 @@ class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDelegate {
 }
 
 export async function getMainFlameChartWithTracks(
-    traceFileName: string, trackAppenderNames: Set<Timeline.CompatibilityTracksAppender.TrackAppenderName>):
-    Promise<PerfUI.FlameChart.FlameChart> {
+    traceFileName: string, trackAppenderNames: Set<Timeline.CompatibilityTracksAppender.TrackAppenderName>): Promise<{
+  flameChart: PerfUI.FlameChart.FlameChart,
+  dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
+}> {
   await initializeGlobalVars();
 
   const {traceParsedData, performanceModel} = await allModelsFromFile(traceFileName);
@@ -178,7 +180,7 @@ export async function getMainFlameChartWithTracks(
   dataProvider.setModel(performanceModel, traceParsedData);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
-  dataProvider.buildFromTrackAppenders();
+  dataProvider.buildFromTrackAppenders(trackAppenderNames);
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   const minTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
@@ -186,7 +188,7 @@ export async function getMainFlameChartWithTracks(
   flameChart.setWindowTimes(minTime, maxTime);
   flameChart.markAsRoot();
   flameChart.update();
-  return flameChart;
+  return {flameChart, dataProvider};
 }
 
 export async function allModelsFromFile(file: string): Promise<{

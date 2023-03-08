@@ -1913,7 +1913,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return Platform.NumberUtilities.clamp(this.chartViewport.timeToPosition(time), 0, this.offsetWidth);
   }
 
-  private levelToOffset(level: number): number {
+  /**
+   * Returns the amount of pixels a level is vertically offset in the.
+   * flame chart.
+   */
+  levelToOffset(level: number): number {
     if (!this.visibleLevelOffsets) {
       throw new Error('No visible level offsets');
     }
@@ -2088,19 +2092,7 @@ export interface Group {
   startLevel: number;
   expanded?: boolean;
   selectable?: boolean;
-  style: {
-    height: number,
-    padding: number,
-    collapsible: boolean,
-    font: string,
-    color: string,
-    backgroundColor: string,
-    nestingLevel: number,
-    itemsHeight?: number,
-    shareHeaderLine?: boolean,
-    useFirstLineForOverview?: boolean,
-    useDecoratorsForOverview?: boolean,
-  };
+  style: GroupStyle;
   track?: TimelineModel.TimelineModel.Track|null;
 }
 export interface GroupStyle {

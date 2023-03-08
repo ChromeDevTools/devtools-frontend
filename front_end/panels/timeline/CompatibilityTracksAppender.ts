@@ -46,10 +46,11 @@ export interface TrackAppender {
    * Appends into the flame chart data the data corresponding to a track.
    * @param level the horizontal level of the flame chart events where the
    * track's events will start being appended.
+   * @param expanded wether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
-  appendTrackAtLevel(level: number): number;
+  appendTrackAtLevel(level: number, expanded?: boolean): number;
   /**
    * Returns the color an event is shown with in the timeline.
    */

@@ -5,7 +5,10 @@
 import("../../../../../third_party/typescript/typescript.gni")
 
 node_ts_library("timeline") {
-  sources = [ "timeline_test.ts" ]
+  sources = [
+    "timeline_test.ts",
+    "timings_track_test.ts",
+  ]
 
   deps = [
     "../../../../shared",

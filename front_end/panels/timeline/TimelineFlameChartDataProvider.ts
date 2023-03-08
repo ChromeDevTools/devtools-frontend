@@ -307,6 +307,40 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.traceEngineData = newTraceEngineData;
   }
 
+  /**
+   * Instances and caches a CompatibilityTracksAppender using the
+   * internal flame chart data and the trace parsed data coming from the
+   * trace engine.
+   * The model data must have been set to the data provider instance before
+   * attempting to instance the CompatibilityTracksAppender.
+   */
+  compatibilityTracksAppenderInstance(forceNew = false): CompatibilityTracksAppender {
+    if (!this.compatibilityTracksAppender || forceNew) {
+      if (!this.traceEngineData || !this.legacyTimelineModel) {
+        throw new Error(
+            'Attempted to instantiate a CompatibilityTracksAppender without having set the trace parse data first.');
+      }
+      this.timelineDataInternal = this.timelineDataInternal || new PerfUI.FlameChart.TimelineData([], [], [], []);
+      this.compatibilityTracksAppender = new CompatibilityTracksAppender(
+          this.timelineDataInternal, this.traceEngineData, this.entryData, this.entryTypeByLevel,
+          this.legacyTimelineModel);
+    }
+    return this.compatibilityTracksAppender;
+  }
+
+  /**
+   * Builds the flame chart data using the track appenders
+   */
+  buildFromTrackAppenders(): void {
+    if (!this.compatibilityTracksAppender) {
+      return;
+    }
+    const appenders = this.compatibilityTracksAppender.allVisibleTrackAppenders();
+    for (const appender of appenders) {
+      this.currentLevel = appender.appendTrackAtLevel(this.currentLevel);
+    }
+  }
+
   groupTrack(group: PerfUI.FlameChart.Group): TimelineModel.TimelineModel.Track|null {
     return group.track || null;
   }
@@ -384,8 +418,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.currentLevel;
   }
 
+  /**
+   * Builds the flame chart data using the tracks appender (which use
+   * the new trace engine) and the legacy code paths present in this
+   * file. The result built data is cached and returned.
+   */
   timelineData(): PerfUI.FlameChart.TimelineData {
-    if (this.timelineDataInternal) {
+    if (this.timelineDataInternal && this.timelineDataInternal.entryLevels.length !== 0) {
+      // The flame chart data is built already, so return the cached
+      // data.
       return this.timelineDataInternal;
     }
 
@@ -402,9 +443,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.currentLevel = 0;
 
     if (this.traceEngineData) {
-      this.compatibilityTracksAppender = new CompatibilityTracksAppender(
-          this.timelineDataInternal, this.traceEngineData, this.entryData, this.entryTypeByLevel,
-          this.legacyTimelineModel);
+      this.compatibilityTracksAppender = this.compatibilityTracksAppenderInstance();
     }
     if (this.legacyTimelineModel.isGenericTrace()) {
       this.processGenericTrace();
@@ -489,7 +528,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!this.legacyTimelineModel) {
       return;
     }
-    const trackAppenders = this.compatibilityTracksAppender ? this.compatibilityTracksAppender.allTrackAppenders() : [];
+    const trackAppenders =
+        this.compatibilityTracksAppender ? this.compatibilityTracksAppender.allVisibleTrackAppenders() : [];
     // Due to tracks having a predefined order, we cannot render legacy
     // and new tracks separately.
     const tracksAndAppenders = [...this.legacyTimelineModel.tracks(), ...trackAppenders].slice();

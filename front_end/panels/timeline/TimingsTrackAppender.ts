@@ -42,7 +42,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimingsTrackAppender.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class TimingsTrackAppender implements TrackAppender {
-  readonly appenderName: TrackAppenderName;
+  readonly appenderName: TrackAppenderName = 'Timings';
 
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
@@ -58,11 +58,9 @@ export class TimingsTrackAppender implements TrackAppender {
   #legacyTrack: TimelineModel.TimelineModel.Track|null;
 
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, appenderName: TrackAppenderName,
-      flameChartData: PerfUI.FlameChart.TimelineData, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[],
-      legacyTrack?: TimelineModel.TimelineModel.Track) {
-    this.appenderName = appenderName;
+      compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.TimelineData,
+      traceParsedData: TraceEngine.Handlers.Types.TraceParseData, entryData: TimelineFlameChartEntry[],
+      legacyEntryTypeByLevel: EntryType[], legacyTrack?: TimelineModel.TimelineModel.Track) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = new Common.Color.Generator(
         {

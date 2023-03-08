@@ -38,9 +38,8 @@ export type HighlightedEntryInfo = {
 
 export interface TrackAppender {
   /**
-   * The position relative to other tracks that an appender's track should
-   * be rendered on.
-   **/
+   * The unique name given to the track appender.
+   */
   appenderName: TrackAppenderName;
 
   /**
@@ -73,6 +72,9 @@ export class CompatibilityTracksAppender {
   #flameChartData: PerfUI.FlameChart.TimelineData;
   #traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
   #entryData: TimelineFlameChartEntry[];
+  #allTrackAppenders: TrackAppender[] = [];
+  #visibleTrackNames: Set<TrackAppenderName> = new Set([...TrackNames]);
+
   // TODO(crbug.com/1416533)
   // These are used only for compatibility with the legacy flame chart
   // architecture of the panel. Once all tracks have been migrated to
@@ -107,8 +109,8 @@ export class CompatibilityTracksAppender {
     const timings =
         this.#legacyTimelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.Timings);
     this.#timingsTrackAppender = new TimingsTrackAppender(
-        this, 'Timings', this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel,
-        timings);
+        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel, timings);
+    this.#allTrackAppenders.push(this.#timingsTrackAppender);
   }
 
   /**
@@ -128,14 +130,37 @@ export class CompatibilityTracksAppender {
     return this.#timingsTrackAppender;
   }
 
+  /**
+   * Caches the track appender that owns a level. An appender takes
+   * ownership of a level when it appends data to it.
+   * The cache is useful to determine what appender should handle a
+   * query from the flame chart renderer when an event's feature (like
+   * style, title, etc.) is needed.
+   */
   registerTrackForLevel(level: number, appender: TrackAppender): void {
     this.#trackForLevel.set(level, appender);
   }
 
-  allTrackAppenders(): TrackAppender[] {
-    // TODO(crbug.com/1409044) Return appenders for all tracks
-    return [this.#timingsTrackAppender];
+  /**
+   * Gets the all track appenders that have been set to be visible.
+   */
+  allVisibleTrackAppenders(): TrackAppender[] {
+    return this.#allTrackAppenders.filter(track => this.#visibleTrackNames.has(track.appenderName));
   }
+
+  /**
+   * Sets the visible tracks internally
+   * @param visibleTracks set with the names of the visible track
+   * appenders. If undefined, all tracks are set to be visible.
+   */
+  setVisibleTracks(visibleTracks?: Set<TrackAppenderName>): void {
+    if (!visibleTracks) {
+      this.#visibleTrackNames = new Set([...TrackNames]);
+      return;
+    }
+    this.#visibleTrackNames = visibleTracks;
+  }
+
   /**
    * Returns the color an event is shown with in the timeline.
    */

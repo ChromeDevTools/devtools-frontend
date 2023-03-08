@@ -415,7 +415,7 @@ export class TracingModel {
     const key = event.categoriesString + '.' + event.name + '.' + event.id;
     let asyncEvent = this.#openAsyncEvents.get(key);
 
-    if (event.phase === phase.AsyncBegin) {
+    if (event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_BEGIN) {
       if (asyncEvent) {
         console.error(`Event ${event.name} has already been started`);
         return;
@@ -436,7 +436,8 @@ export class TracingModel {
     }
     if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
       const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1];
-      if (lastStep && lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
+      if (lastStep && lastStep.phase !== TraceEngine.Types.TraceEvents.Phase.ASYNC_BEGIN &&
+          lastStep.phase !== event.phase) {
         console.assert(
             false,
             'Async event step phase mismatch: ' + lastStep.phase + ' at ' + lastStep.startTime + ' vs. ' + event.phase +
@@ -475,7 +476,6 @@ export class TracingModel {
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Phase {
-  AsyncBegin = 'S',
   AsyncStepInto = 'T',
   AsyncStepPast = 'p',
   AsyncEnd = 'F',

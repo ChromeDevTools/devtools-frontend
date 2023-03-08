@@ -578,7 +578,7 @@ export async function clickOnContextMenu(selector: string, label: string) {
   await click(selector, {clickOptions: {button: 'right'}});
 
   // Wait for the context menu option, and click it.
-  const labelSelector = `[aria-label="${label}"]`;
+  const labelSelector = `.soft-context-menu > [aria-label="${label}"]`;
   await waitFor(labelSelector);
   await click(labelSelector);
 }

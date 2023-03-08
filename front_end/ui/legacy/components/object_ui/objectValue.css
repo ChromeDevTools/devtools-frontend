@@ -52,14 +52,6 @@
   white-space: nowrap;
 }
 
-.object-value-with-memory-icon {
-  display: inline-flex;
-}
-
-.object-value-with-memory-icon > devtools-icon {
-  cursor: pointer;
-}
-
 .object-value-null,
 .object-value-undefined {
   color: var(--color-text-disabled);

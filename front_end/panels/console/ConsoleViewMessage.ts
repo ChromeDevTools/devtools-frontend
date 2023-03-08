@@ -708,6 +708,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     if (includePreview && obj.preview) {
       titleElement.classList.add('console-object-preview');
       this.previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);
+      ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
     } else if (obj.type === 'function') {
       const functionElement = titleElement.createChild('span');
       void ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.formatObjectAsFunction(obj, functionElement, false);

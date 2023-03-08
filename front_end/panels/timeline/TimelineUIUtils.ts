@@ -437,10 +437,6 @@ const UIStrings = {
    */
   gpu: 'GPU',
   /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  inputLatency: 'Input Latency',
-  /**
    *@description Event category in the Performance panel for time spent to perform Garbage Collection for the Document Object Model
    */
   domGc: 'DOM GC',
@@ -801,10 +797,6 @@ const UIStrings = {
    *@description Label for Cumulative Layout records, indicating where they moved to
    */
   movedTo: 'Moved to',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  timeWaitingForMainThread: 'Time Waiting for Main Thread',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
@@ -1285,7 +1277,6 @@ export class TimelineUIUtils {
     eventStyles[type.DecodeImage] = new TimelineRecordStyle(i18nString(UIStrings.imageDecode), painting);
     eventStyles[type.ResizeImage] = new TimelineRecordStyle(i18nString(UIStrings.imageResize), painting);
     eventStyles[type.GPUTask] = new TimelineRecordStyle(i18nString(UIStrings.gpu), categories['gpu']);
-    eventStyles[type.LatencyInfo] = new TimelineRecordStyle(i18nString(UIStrings.inputLatency), scripting);
 
     eventStyles[type.GCCollectGarbage] = new TimelineRecordStyle(i18nString(UIStrings.domGc), scripting);
 
@@ -1381,6 +1372,7 @@ export class TimelineUIUtils {
     }
 
     let result: TimelineRecordStyle = eventStyles[event.name];
+    // If there's no defined RecordStyle for this event, define as other & hidden.
     if (!result) {
       result = new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['other'], true);
       eventStyles[event.name] = result;
@@ -2223,12 +2215,6 @@ export class TimelineUIUtils {
         }
         break;
       }
-    }
-
-    if (timelineData.timeWaitingForMainThread) {
-      contentHelper.appendTextRow(
-          i18nString(UIStrings.timeWaitingForMainThread),
-          i18n.TimeUtilities.millisToString(timelineData.timeWaitingForMainThread, true));
     }
 
     for (let i = 0; i < timelineData.backendNodeIds.length; ++i) {

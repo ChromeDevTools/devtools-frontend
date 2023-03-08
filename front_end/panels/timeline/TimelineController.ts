@@ -100,7 +100,6 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
       disabledByDefault('devtools.timeline.stack'),
       disabledByDefault('v8.compile'),
       disabledByDefault('v8.cpu_profiler.hires'),
-      TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo,
       TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading,
       disabledByDefault('lighthouse'),
       'v8.execute',

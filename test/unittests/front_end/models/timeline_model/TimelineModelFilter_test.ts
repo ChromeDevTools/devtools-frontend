@@ -19,12 +19,6 @@ const consoleEvent = makeFakeSDKEventFromPayload({
   ts: 1,
 });
 
-const latencyInfoEvent = makeFakeSDKEventFromPayload({
-  categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo],
-  name: TimelineModel.TimelineModel.RecordType.LatencyInfo,
-  ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-  ts: 1,
-});
 const userTimingEvent = makeFakeSDKEventFromPayload({
   categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming],
   name: TimelineModel.TimelineModel.RecordType.UserTiming,
@@ -41,7 +35,6 @@ describe('TimelineModelFilter', () => {
       ]);
 
       assert.isTrue(visibleFilter.accept(consoleEvent));
-      assert.isFalse(visibleFilter.accept(latencyInfoEvent));
     });
 
     describe('eventType', () => {
@@ -55,12 +48,6 @@ describe('TimelineModelFilter', () => {
         assert.strictEqual(
             TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(userTimingEvent),
             TimelineModel.TimelineModel.RecordType.UserTiming);
-      });
-
-      it('returns LatencyInfo if the event has the LatencyInfo category', () => {
-        assert.strictEqual(
-            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(latencyInfoEvent),
-            TimelineModel.TimelineModel.RecordType.LatencyInfo);
       });
 
       it('returns the event name if the event is any other category', () => {

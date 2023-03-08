@@ -28,9 +28,6 @@ export class TimelineVisibleEventsFilter extends TimelineModelFilter {
     if (event.hasCategory(TimelineModelImpl.Category.UserTiming)) {
       return RecordType.UserTiming;
     }
-    if (event.hasCategory(TimelineModelImpl.Category.LatencyInfo)) {
-      return RecordType.LatencyInfo;
-    }
     return event.name as RecordType;
   }
 }

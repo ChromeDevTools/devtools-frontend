@@ -1872,8 +1872,6 @@ export enum RecordType {
   LayerTreeHostImplSnapshot = 'cc::LayerTreeHostImpl',
   PictureSnapshot = 'cc::Picture',
   DisplayItemListSnapshot = 'cc::DisplayItemList',
-  LatencyInfo = 'LatencyInfo',
-  LatencyInfoFlow = 'LatencyInfo.Flow',
   InputLatencyMouseMove = 'InputLatency::MouseMove',
   InputLatencyMouseWheel = 'InputLatency::MouseWheel',
   ImplSideFling = 'InputHandlerProxy::HandleGestureFling::started',
@@ -1902,7 +1900,6 @@ export namespace TimelineModelImpl {
   export const Category = {
     Console: 'blink.console',
     UserTiming: 'blink.user_timing',
-    LatencyInfo: 'latencyInfo',
     Loading: 'loading',
   };
 

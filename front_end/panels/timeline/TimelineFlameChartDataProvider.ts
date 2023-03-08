@@ -1171,7 +1171,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   decorateEntry(
       entryIndex: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number,
-      barWidth: number, barHeight: number, unclippedBarX: number, timeToPixels: number): boolean {
+      barWidth: number, barHeight: number, _unclippedBarX: number, _timeToPixels: number): boolean {
     const data = this.entryData[entryIndex];
     const entryType = this.entryType(entryIndex);
     const entryTypes = EntryType;
@@ -1188,15 +1188,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     if (entryType === entryTypes.Event) {
       const event = (data as SDK.TracingModel.Event);
-      if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo)) {
-        const timeWaitingForMainThread =
-            TimelineModel.TimelineModel.TimelineData.forEvent(event).timeWaitingForMainThread;
-        if (timeWaitingForMainThread) {
-          context.fillStyle = 'hsla(0, 70%, 60%, 1)';
-          const width = Math.floor(unclippedBarX - barX + timeWaitingForMainThread * timeToPixels);
-          context.fillRect(barX, barY + barHeight - 3, width, 2);
-        }
-      }
       if (TimelineModel.TimelineModel.TimelineData.forEvent(event).warning) {
         paintWarningDecoration(barX, barWidth - 1.5);
       }

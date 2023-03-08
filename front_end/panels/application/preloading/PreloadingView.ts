@@ -110,7 +110,7 @@ export class PreloadingView extends UI.Widget.VBox {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
 
     this.model = model;
-    this.model.addEventListener(SDK.PreloadingModel.Events.RuleSetsModified, this.onModelUpdated, this);
+    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.onModelUpdated, this);
 
     this.prerenderingModel = prerenderingModel;
     this.prerenderingModel.addEventListener(

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
@@ -51,6 +52,11 @@ describeWithMockConnection('PreloadingModel', async () => {
 `,
       },
     });
+    dispatchEvent(target, 'Preload.prefetchStatusUpdated', {
+      initiatingFrameId: 'frameId:1',
+      prefetchUrl: 'https://example.com/subresource.js',
+      status: Protocol.Preload.PreloadingStatus.Running,
+    });
 
     assert.deepEqual(model.getAllRuleSets(), [
       {
@@ -68,6 +74,20 @@ describeWithMockConnection('PreloadingModel', async () => {
   ]
 }
 `,
+        },
+      },
+    ]);
+    assert.deepEqual(model.getAllPreloadingAttempts(), [
+      {
+        id: 'fakeLoaderId:Prefetch:https://example.com/subresource.js:null',
+        value: {
+          key: {
+            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
+            action: SDK.PreloadingModel.SpeculationAction.Prefetch,
+            url: 'https://example.com/subresource.js' as Platform.DevToolsPath.UrlString,
+            targetHint: null,
+          },
+          status: Protocol.Preload.PreloadingStatus.Running,
         },
       },
     ]);
@@ -88,6 +108,11 @@ describeWithMockConnection('PreloadingModel', async () => {
 `,
       },
     });
+    dispatchEvent(target, 'Preload.prerenderStatusUpdated', {
+      initiatingFrameId: 'frameId:1',
+      prerenderingUrl: 'https://example.com/page.html',
+      status: Protocol.Preload.PreloadingStatus.Running,
+    });
 
     assert.deepEqual(model.getAllRuleSets(), [
       {
@@ -126,9 +151,40 @@ describeWithMockConnection('PreloadingModel', async () => {
         },
       },
     ]);
+    assert.deepEqual(model.getAllPreloadingAttempts(), [
+      {
+        id: 'fakeLoaderId:Prefetch:https://example.com/subresource.js:null',
+        value: {
+          key: {
+            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
+            action: SDK.PreloadingModel.SpeculationAction.Prefetch,
+            url: 'https://example.com/subresource.js' as Platform.DevToolsPath.UrlString,
+            targetHint: null,
+          },
+          status: Protocol.Preload.PreloadingStatus.Running,
+        },
+      },
+      {
+        id: 'fakeLoaderId:Prerender:https://example.com/page.html:null',
+        value: {
+          key: {
+            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
+            action: SDK.PreloadingModel.SpeculationAction.Prerender,
+            url: 'https://example.com/page.html' as Platform.DevToolsPath.UrlString,
+            targetHint: null,
+          },
+          status: Protocol.Preload.PreloadingStatus.Running,
+        },
+      },
+    ]);
 
     dispatchEvent(target, 'Preload.ruleSetRemoved', {
       id: 'ruleSetId:1',
+    });
+    dispatchEvent(target, 'Preload.prefetchStatusUpdated', {
+      initiatingFrameId: 'frameId:1',
+      prefetchUrl: 'https://example.com/subresource.js',
+      status: Protocol.Preload.PreloadingStatus.Failure,
     });
 
     assert.deepEqual(model.getAllRuleSets(), [
@@ -150,8 +206,39 @@ describeWithMockConnection('PreloadingModel', async () => {
         },
       },
     ]);
+    assert.deepEqual(model.getAllPreloadingAttempts(), [
+      {
+        id: 'fakeLoaderId:Prefetch:https://example.com/subresource.js:null',
+        value: {
+          key: {
+            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
+            action: SDK.PreloadingModel.SpeculationAction.Prefetch,
+            url: 'https://example.com/subresource.js' as Platform.DevToolsPath.UrlString,
+            targetHint: null,
+          },
+          status: Protocol.Preload.PreloadingStatus.Failure,
+        },
+      },
+      {
+        id: 'fakeLoaderId:Prerender:https://example.com/page.html:null',
+        value: {
+          key: {
+            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
+            action: SDK.PreloadingModel.SpeculationAction.Prerender,
+            url: 'https://example.com/page.html' as Platform.DevToolsPath.UrlString,
+            targetHint: null,
+          },
+          status: Protocol.Preload.PreloadingStatus.Running,
+        },
+      },
+    ]);
   });
 
+  // In this test, we only check rule sets and don't emit
+  // prefetch/prerenderStatusUpdated.
+  //
+  // TODO(https://crbug.com/1384419): Check it once loaderId is added to
+  // these event.
   it('clears SpeculationRules for previous pages', async () => {
     const target = createTarget();
     const model = target.model(SDK.PreloadingModel.PreloadingModel);

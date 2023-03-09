@@ -331,4 +331,31 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assert.strictEqual(primaryPageChangedEvents[0].frame, frame);
     assert.strictEqual(primaryPageChangedEvents[0].type, SDK.ResourceTreeModel.PrimaryPageChangeType.Activation);
   });
+
+  it('emits PrimaryPageChanged event only upon navigation of the primary frame', async () => {
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const mainFrameTarget = createTarget({parentTarget: tabTarget});
+    const subframeTarget = createTarget({parentTarget: mainFrameTarget});
+    const prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+
+    const primaryPageChangedEvents:
+        {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}[] = [];
+
+    [getResourceTeeModel(mainFrameTarget), getResourceTeeModel(subframeTarget), getResourceTeeModel(prerenderTarget)]
+        .forEach(resourceTreeModel => {
+          resourceTreeModel.addEventListener(
+              SDK.ResourceTreeModel.Events.PrimaryPageChanged, event => primaryPageChangedEvents.push(event.data));
+        });
+
+    dispatchEvent(mainFrameTarget, 'Page.frameNavigated', frameNavigatedEvent());
+    assert.strictEqual(primaryPageChangedEvents.length, 1);
+    assert.strictEqual(primaryPageChangedEvents[0].frame.id, 'main');
+    assert.strictEqual(primaryPageChangedEvents[0].type, SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation);
+
+    dispatchEvent(subframeTarget, 'Page.frameNavigated', frameNavigatedEvent('main', 'child'));
+    assert.strictEqual(primaryPageChangedEvents.length, 1);
+
+    dispatchEvent(prerenderTarget, 'Page.frameNavigated', frameNavigatedEvent());
+    assert.strictEqual(primaryPageChangedEvents.length, 1);
+  });
 });

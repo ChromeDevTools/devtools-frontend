@@ -234,7 +234,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
     this.dispatchEventToListeners(Events.FrameNavigated, frame);
 
-    if (frame.isMainFrame()) {
+    if (frame.isPrimaryFrame()) {
       this.primaryPageChanged(frame, PrimaryPageChangeType.Navigation);
     }
 
@@ -899,20 +899,32 @@ export class ResourceTreeFrame {
   }
 
   /**
-   * Returns true if this is the main frame of its target. For example, this returns true for the main frame
-   * of an out-of-process iframe (OOPIF).
+   * Returns true if this is the main frame of its target. A main frame is the root of the frame tree i.e. a frame without
+   * a parent, but the whole frame tree could be embedded in another frame tree (e.g. OOPIFs, fenced frames, portals).
+   * https://chromium.googlesource.com/chromium/src/+/HEAD/docs/frame_trees.md
    */
   isMainFrame(): boolean {
     return !this.#sameTargetParentFrameInternal;
   }
 
   /**
-   * Returns true if this is the outermost frame of the main target, i.e. if this is the top-most frame in the inspected
-   * tab.
+   * Returns true if this is a main frame which is not embedded in another frame tree. With MPArch features such as
+   * back/forward cache or prerender there can be multiple outermost frames.
+   * https://chromium.googlesource.com/chromium/src/+/HEAD/docs/frame_trees.md
    */
   isOutermostFrame(): boolean {
     return this.#model.target().parentTarget()?.type() !== Type.Frame && !this.#sameTargetParentFrameInternal &&
         !this.crossTargetParentFrameId;
+  }
+
+  /**
+   * Returns true is this is the primary frame of the browser tab. There can only be one primary frame for each
+   * browser tab. It is the outermost frame being actively displayed in the browser tab.
+   * https://chromium.googlesource.com/chromium/src/+/HEAD/docs/frame_trees.md
+   */
+  isPrimaryFrame(): boolean {
+    return !this.#sameTargetParentFrameInternal &&
+        this.#model.target() === TargetManager.instance().primaryPageTarget();
   }
 
   removeChildFrame(frame: ResourceTreeFrame, isSwap: boolean): void {

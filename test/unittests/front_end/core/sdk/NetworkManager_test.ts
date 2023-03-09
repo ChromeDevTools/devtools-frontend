@@ -45,7 +45,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     SDK.ChildTargetManager.ChildTargetManager.install();
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     const mainFrameTarget = createTarget({parentTarget: tabTarget});
-    const prerenderTarget = createTarget({parentTarget: mainFrameTarget, subtype: 'prerender'});
+    const prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     const subframeTarget = createTarget({parentTarget: mainFrameTarget, subtype: ''});
 
     const unexpectedCalls =

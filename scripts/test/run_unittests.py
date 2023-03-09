@@ -154,6 +154,10 @@ def main():
     parser.add_argument('--mocha-fgrep',
                         dest='mocha_fgrep',
                         help='Run only tests that match this string.')
+    parser.add_argument('--invert',
+                        dest='invert',
+                        default=False,
+                        help='Invert the match specified by mocha-fgrep.')
     parser.add_argument(
         '--log-level',
         dest='log_level',

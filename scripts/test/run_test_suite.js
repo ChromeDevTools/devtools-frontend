@@ -50,7 +50,13 @@ const yargsObject =
         .option('mocha-fgrep', {
           type: 'string',
           desc:
-              'Mocha\'s fgrep option [https://mochajs.org/#-fgrep-string-f-string] which only runs teses whose titles contain the provided string',
+              'Mocha\'s fgrep option [https://mochajs.org/#-fgrep-string-f-string] which only runs tests whose titles contain the provided string',
+        })
+        .option('invert', {
+          type: 'boolean',
+          desc:
+              'Mocha\'s invert option [https://mochajs.org/#-invert] which inverts the match specified by mocha-fgrep',
+          default: false,
         })
         .option('mocha-reporter', {
           type: 'string',
@@ -302,6 +308,7 @@ function main() {
       cwd: configurationFlags['cwd'],
       mochaOptions: {
         fgrep: configurationFlags['mocha-fgrep'],
+        invert: configurationFlags['invert'],
         reporter: configurationFlags['mocha-reporter'],
         'reporter-option': configurationFlags['mocha-reporter-option'],
       }

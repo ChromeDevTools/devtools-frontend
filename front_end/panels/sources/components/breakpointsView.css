@@ -248,10 +248,15 @@ input:disabled + span {
   margin-left: 6px;
 }
 
+.pause-on-caught-exceptions > .checkbox-label > span,
+.pause-on-uncaught-exceptions > .checkbox-label > span {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .pause-on-uncaught-exceptions,
 .pause-on-caught-exceptions {
-  display: flex;
-  align-items: center;
   line-height: 13px;
   height: 18px;
   padding-right: 8px;

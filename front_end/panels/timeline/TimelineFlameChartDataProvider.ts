@@ -413,6 +413,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.asyncColorByCategory = new Map();
     this.extensionInfo = [];
     this.screenshotImageCache = new Map();
+    this.compatibilityTracksAppender = null;
   }
 
   maxStackDepth(): number {

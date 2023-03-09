@@ -366,12 +366,11 @@ export class TracingModel {
   }
 
   private addNestableAsyncEvent(event: Event): void {
-    const phase = Phase;
     const key = event.categoriesString + '.' + event.id;
     let openEventsStack = this.#openNestableAsyncEvents.get(key);
 
     switch (event.phase) {
-      case phase.NestableAsyncBegin: {
+      case TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START: {
         if (!openEventsStack) {
           openEventsStack = [];
           this.#openNestableAsyncEvents.set(key, openEventsStack);
@@ -382,7 +381,7 @@ export class TracingModel {
         break;
       }
 
-      case phase.NestableAsyncInstant: {
+      case TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_INSTANT: {
         if (openEventsStack && openEventsStack.length) {
           const event = openEventsStack[openEventsStack.length - 1];
           if (event) {
@@ -392,7 +391,7 @@ export class TracingModel {
         break;
       }
 
-      case phase.NestableAsyncEnd: {
+      case TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_END: {
         if (!openEventsStack || !openEventsStack.length) {
           break;
         }
@@ -411,7 +410,6 @@ export class TracingModel {
   }
 
   private addAsyncEvent(event: Event): void {
-    const phase = Phase;
     const key = event.categoriesString + '.' + event.name + '.' + event.id;
     let asyncEvent = this.#openAsyncEvents.get(key);
 
@@ -429,12 +427,13 @@ export class TracingModel {
       // Quietly ignore stray async events, we're probably too late for the start.
       return;
     }
-    if (event.phase === phase.AsyncEnd) {
+    if (event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_END) {
       asyncEvent.addStep(event);
       this.#openAsyncEvents.delete(key);
       return;
     }
-    if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
+    if (event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_INTO ||
+        event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_PAST) {
       const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1];
       if (lastStep && lastStep.phase !== TraceEngine.Types.TraceEvents.Phase.ASYNC_BEGIN &&
           lastStep.phase !== event.phase) {
@@ -476,12 +475,6 @@ export class TracingModel {
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Phase {
-  AsyncStepInto = 'T',
-  AsyncStepPast = 'p',
-  AsyncEnd = 'F',
-  NestableAsyncBegin = 'b',
-  NestableAsyncEnd = 'e',
-  NestableAsyncInstant = 'n',
   Metadata = 'M',
   Sample = 'P',
   SnapshotObject = 'O',
@@ -764,7 +757,8 @@ export class AsyncEvent extends ConstructedEvent {
 
   addStep(event: Event): void {
     this.steps.push(event);
-    if (event.phase === Phase.AsyncEnd || event.phase === Phase.NestableAsyncEnd) {
+    if (event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_END ||
+        event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_END) {
       this.setEndTime(event.startTime);
       // FIXME: ideally, we shouldn't do this, but this makes the logic of converting
       // async console events to sync ones much simpler.

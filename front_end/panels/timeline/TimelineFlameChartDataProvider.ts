@@ -363,8 +363,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const entryType = this.entryType(entryIndex);
     if (entryType === entryTypes.Event) {
       const event = (this.entryData[entryIndex] as SDK.TracingModel.Event);
-      if (event.phase === SDK.TracingModel.Phase.AsyncStepInto ||
-          event.phase === SDK.TracingModel.Phase.AsyncStepPast) {
+      if (event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_INTO ||
+          event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_PAST) {
         return event.name + ':' + event.args['step'];
       }
       if (eventToDisallowRoot.get(event)) {
@@ -1283,7 +1283,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private appendAsyncEvent(asyncEvent: SDK.TracingModel.AsyncEvent, level: number): void {
     const steps = asyncEvent.steps;
     // If we have past steps, put the end event for each range rather than start one.
-    const eventOffset = steps.length > 1 && steps[1].phase === SDK.TracingModel.Phase.AsyncStepPast ? 1 : 0;
+    const eventOffset =
+        steps.length > 1 && steps[1].phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_PAST ? 1 : 0;
     for (let i = 0; i < steps.length - 1; ++i) {
       const index = this.entryData.length;
       this.entryData.push(steps[i + eventOffset]);

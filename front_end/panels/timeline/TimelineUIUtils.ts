@@ -39,9 +39,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 import invalidationsTreeStyles from './invalidationsTree.css.js';
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -2105,7 +2107,7 @@ export class TimelineUIUtils {
       }
 
       case recordTypes.Animation: {
-        if (event.phase === SDK.TracingModel.Phase.NestableAsyncInstant) {
+        if (event.phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_INSTANT) {
           contentHelper.appendTextRow(i18nString(UIStrings.state), eventData['state']);
         }
         break;

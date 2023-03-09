@@ -309,6 +309,42 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return contentChild;
   }
 
+  private processAnimation(animationPropertyValue: string): Node {
+    const animationNameProperty =
+        this.property.getLonghandProperties().find(longhand => longhand.name === 'animation-name');
+    if (!animationNameProperty) {
+      return document.createTextNode(animationPropertyValue);
+    }
+
+    const animationNames = animationNameProperty.value.split(',').map(name => name.trim());
+    const cssAnimationModel =
+        InlineEditor.CSSAnimationModel.CSSAnimationModel.parse(animationPropertyValue, animationNames);
+    const contentChild = document.createElement('span');
+    for (let i = 0; i < cssAnimationModel.parts.length; i++) {
+      const part = cssAnimationModel.parts[i];
+      switch (part.type) {
+        case InlineEditor.CSSAnimationModel.PartType.Text:
+          contentChild.appendChild(document.createTextNode(part.value));
+          break;
+        case InlineEditor.CSSAnimationModel.PartType.EasingFunction:
+          contentChild.appendChild(this.processBezier(part.value));
+          break;
+        case InlineEditor.CSSAnimationModel.PartType.AnimationName:
+          contentChild.appendChild(this.processAnimationName(part.value));
+          break;
+        case InlineEditor.CSSAnimationModel.PartType.Variable:
+          contentChild.appendChild(this.processVar(part.value));
+          break;
+      }
+
+      if (cssAnimationModel.parts[i + 1]?.value !== ',' && i !== cssAnimationModel.parts.length - 1) {
+        contentChild.appendChild(document.createTextNode(' '));
+      }
+    }
+
+    return contentChild;
+  }
+
   private processColor(text: string, valueChild?: Node|null): Node {
     return this.renderColorSwatch(text, valueChild);
   }
@@ -827,6 +863,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (this.property.parsedOk) {
       propertyRenderer.setVarHandler(this.processVar.bind(this));
       propertyRenderer.setAnimationNameHandler(this.processAnimationName.bind(this));
+      propertyRenderer.setAnimationHandler(this.processAnimation.bind(this));
       propertyRenderer.setColorHandler(this.processColor.bind(this));
       propertyRenderer.setColorMixHandler(this.processColorMix.bind(this));
       propertyRenderer.setBezierHandler(this.processBezier.bind(this));

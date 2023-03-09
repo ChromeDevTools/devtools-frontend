@@ -1703,6 +1703,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/inline_editor/CSSAngleEditor.js",
   "front_end/ui/legacy/components/inline_editor/CSSAngleSwatch.js",
   "front_end/ui/legacy/components/inline_editor/CSSAngleUtils.js",
+  "front_end/ui/legacy/components/inline_editor/CSSAnimationModel.js",
   "front_end/ui/legacy/components/inline_editor/CSSLength.js",
   "front_end/ui/legacy/components/inline_editor/CSSLengthUtils.js",
   "front_end/ui/legacy/components/inline_editor/CSSShadowEditor.js",

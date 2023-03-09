@@ -9,6 +9,7 @@ import * as ColorMixSwatch from './ColorMixSwatch.js';
 import * as ColorSwatch from './ColorSwatch.js';
 import * as CSSAngle from './CSSAngle.js';
 import * as CSSAngleUtils from './CSSAngleUtils.js';
+import * as CSSAnimationModel from './CSSAnimationModel.js';
 import * as CSSLength from './CSSLength.js';
 import * as CSSLengthUtils from './CSSLengthUtils.js';
 import * as CSSShadowEditor from './CSSShadowEditor.js';
@@ -29,6 +30,7 @@ export {
   ColorSwatch,
   CSSAngle,
   CSSAngleUtils,
+  CSSAnimationModel,
   CSSLength,
   CSSLengthUtils,
   CSSShadowEditor,

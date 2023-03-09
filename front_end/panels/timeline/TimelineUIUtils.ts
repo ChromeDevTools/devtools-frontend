@@ -1334,20 +1334,20 @@ export class TimelineUIUtils {
     appendObjectProperties(traceEvent.args, 2);
     return regExp.test(tokens.join('|'));
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function appendObjectProperties(object: any, depth: number): void {
+    interface ContentObject {
+      [x: string]: number|string|ContentObject;
+    }
+    function appendObjectProperties(object: ContentObject, depth: number): void {
       if (!depth) {
         return;
       }
       for (const key in object) {
         const value = object[key];
-        const type = typeof value;
-        if (type === 'string') {
+        if (typeof value === 'string') {
           tokens.push(value);
-        } else if (type === 'number') {
+        } else if (typeof value === 'number') {
           tokens.push(String(value));
-        } else if (type === 'object') {
+        } else if (typeof value === 'object' && value !== null) {
           appendObjectProperties(value, depth - 1);
         }
       }
@@ -1756,16 +1756,19 @@ export class TimelineUIUtils {
     return UI.Fragment.html`<div>${UI.XLink.XLink.create(link, i18nString(UIStrings.learnMore))} about ${name}.</div>`;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static buildConsumeCacheDetails(eventData: any, contentHelper: TimelineDetailsContentHelper): void {
-    if ('consumedCacheSize' in eventData) {
+  static buildConsumeCacheDetails(
+      eventData: {
+        consumedCacheSize?: number,
+        cacheRejected?: boolean,
+      },
+      contentHelper: TimelineDetailsContentHelper): void {
+    if (typeof eventData.consumedCacheSize === 'number') {
       contentHelper.appendTextRow(
           i18nString(UIStrings.compilationCacheStatus), i18nString(UIStrings.scriptLoadedFromCache));
       contentHelper.appendTextRow(
           i18nString(UIStrings.compilationCacheSize),
-          Platform.NumberUtilities.bytesToString(eventData['consumedCacheSize']));
-    } else if (eventData && 'cacheRejected' in eventData && eventData['cacheRejected']) {
+          Platform.NumberUtilities.bytesToString(eventData.consumedCacheSize));
+    } else if ('cacheRejected' in eventData && eventData['cacheRejected']) {
       // Version mismatch or similar.
       contentHelper.appendTextRow(
           i18nString(UIStrings.compilationCacheStatus), i18nString(UIStrings.failedToLoadScriptFromCache));

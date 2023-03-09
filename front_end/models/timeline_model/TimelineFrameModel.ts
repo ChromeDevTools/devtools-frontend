@@ -39,6 +39,9 @@ import type {TracingLayerPayload, TracingLayerTile} from './TracingLayerTree.js'
 import {TracingLayerTree} from './TracingLayerTree.js';
 
 export class TimelineFrameModel {
+  // COHERENT BEGIN
+  private readonly initCohEventStyles?: (event: SDK.TracingModel.Event) => void;
+  // COHERENT END
   private readonly categoryMapper: (arg0: SDK.TracingModel.Event) => string;
   private frames!: TimelineFrame[];
   private frameById!: {
@@ -62,9 +65,14 @@ export class TimelineFrameModel {
   private layerTreeId?: number|null;
   private currentProcessMainThread?: SDK.TracingModel.Thread|null;
 
-  constructor(categoryMapper: (arg0: SDK.TracingModel.Event) => string) {
+  constructor(
+    categoryMapper: (arg0: SDK.TracingModel.Event) => string,
+    // COHERENT BEGIN
+    initCohEventStyles?: (event: SDK.TracingModel.Event) => void,
+    // COHERENT END
+  ) {
     this.categoryMapper = categoryMapper;
-
+    this.initCohEventStyles = initCohEventStyles;
     this.reset();
   }
 
@@ -264,6 +272,12 @@ export class TimelineFrameModel {
   }
 
   private addTraceEvent(event: SDK.TracingModel.Event): void {
+    // COHERENT BEGIN
+    if (this.initCohEventStyles) {
+      this.initCohEventStyles(event);
+    }
+    // COHERENT END
+
     if (event.startTime && event.startTime < this.minimumRecordTime) {
       this.minimumRecordTime = event.startTime;
     }

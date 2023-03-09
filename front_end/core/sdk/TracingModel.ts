@@ -523,6 +523,7 @@ export class Event {
   selfTime: number;
   endTime?: number;
   duration?: number;
+  category?: string;
 
   constructor(categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread) {
     this.categoriesString = categories || '';
@@ -533,6 +534,9 @@ export class Event {
     this.thread = thread;
     this.args = {};
     this.ordinal = 0;
+    // COHERENT BEGIN
+    this.category = '';
+    // COHERENT END
 
     this.selfTime = 0;
   }
@@ -582,8 +586,8 @@ export class Event {
     if (!a || !b) {
       return 0;
     }
-    const order = (a.phase === b.phase && a.phase === "E") ? -1 : 1;
-    return a.startTime - b.startTime || order * (Number(b.name.startsWith("Coherent_")) - Number(a.name.startsWith("Coherent_")));
+    const order = (a.phase === b.phase && a.phase === 'E') ? -1 : 1;
+    return a.startTime - b.startTime || order * (Number(b.name.startsWith('Coherent_')) - Number(a.name.startsWith('Coherent_')));
   }
   // COHERENT END
 
@@ -603,11 +607,11 @@ export class Event {
   }
 
   // COHERENT BEGIN
-  isContainedIn(other: Event) {
+  isContainedIn(other: Event): boolean {
     return other.endTime !== undefined && this.endTime !== undefined && other.startTime < this.startTime && this.endTime < other.endTime;
   }
 
-  isBefore(other: Event) {
+  isBefore(other: Event): boolean {
     return this.endTime !== undefined && !(other.startTime < this.endTime);
   }
   // COHERENT END
@@ -871,7 +875,7 @@ export class Thread extends NamedObject {
     this.eventsInternal.sort(Event.compareStartTimeForMixedCohtmlAndV8Events);
     // COHERENT END
     const phases = Phase;
-    const stack = [];
+    const stack: Event[] = [];
     const toDelete = new Set<number>();
     for (let i = 0; i < this.eventsInternal.length; ++i) {
       const e = this.eventsInternal[i];
@@ -927,6 +931,9 @@ export class Thread extends NamedObject {
       }
       this.lastTopLevelEvent = event;
     }
+    // COHERENT BEGIN
+    event.category = payload.category || event.category;
+    // COHERENT END
     this.eventsInternal.push(event);
     return event;
   }

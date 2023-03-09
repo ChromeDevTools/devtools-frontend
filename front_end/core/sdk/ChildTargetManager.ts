@@ -162,7 +162,12 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     if (ChildTargetManager.attachCallback) {
       await ChildTargetManager.attachCallback({target, waitingForDebugger});
     }
-    void target.runtimeAgent().invoke_runIfWaitingForDebugger();
+
+    // [crbug/1423096] Invoking this on a worker session that is not waiting for the debugger can force the worker
+    // to resume even if there is another session waiting for the debugger.
+    if (waitingForDebugger) {
+      void target.runtimeAgent().invoke_runIfWaitingForDebugger();
+    }
   }
 
   detachedFromTarget({sessionId}: Protocol.Target.DetachedFromTargetEvent): void {

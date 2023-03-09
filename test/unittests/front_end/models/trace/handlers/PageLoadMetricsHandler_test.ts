@@ -339,5 +339,14 @@ describe('PageLoadMetricsHandler', function() {
         assert.isTrue(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.isTraceEventMarkerEvent(marker));
       }
     });
+
+    it('only stores the largest contentful paint with the highest candidate index', async () => {
+      const {PageLoadMetrics} = await loadModelDataFromTraceFile('multiple-lcp-main-frame.json.gz');
+      const pageLoadMarkers = PageLoadMetrics.allMarkerEvents;
+      const largestContentfulPaints =
+          pageLoadMarkers.filter(TraceModel.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate);
+      assert.strictEqual(largestContentfulPaints.length, 1);
+      assert.strictEqual(largestContentfulPaints[0].args.data?.candidateIndex, 2);
+    });
   });
 });

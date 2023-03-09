@@ -29,7 +29,8 @@ import {data as rendererHandlerData} from './RendererHandler.js';
  * The metric scores include the event related to the metric as well as the data regarding
  * the score itself.
  */
-const metricScoresByFrameId = new Map<string, Map<string, Map<MetricName, MetricScore>>>();
+const metricScoresByFrameId =
+    new Map</* Frame id */ string, Map</* navigation id */ string, Map<MetricName, MetricScore>>>();
 
 /**
  * Page load events with no associated duration that happened in the
@@ -37,13 +38,10 @@ const metricScoresByFrameId = new Map<string, Map<string, Map<MetricName, Metric
  */
 let allMarkerEvents: Types.TraceEvents.PageLoadEvent[] = [];
 
-let allFinalLCPEvents: Types.TraceEvents.PageLoadEvent[] = [];
-
 export function reset(): void {
   metricScoresByFrameId.clear();
   pageLoadEventsArray = [];
   allMarkerEvents = [];
-  allFinalLCPEvents = [];
   selectedLCPCandidateEvents.clear();
 }
 
@@ -276,9 +274,6 @@ function storeMetricScore(frameId: string, navigationId: string, metricScore: Me
   // are ordered in ASC manner by timestamp.
   metrics.delete(metricScore.metricName);
   metrics.set(metricScore.metricName, metricScore);
-  if (metricScore.metricName === MetricName.LCP && metricScore.event) {
-    allFinalLCPEvents.push(metricScore.event);
-  }
 }
 
 export function getFrameIdForPageLoadEvent(event: Types.TraceEvents.PageLoadEvent): string {
@@ -530,6 +525,26 @@ export function scoreClassificationForTotalBlockingTime(tbtTimeInMicroseconds: T
   return scoreClassification;
 }
 
+/**
+ * Gets all the Largest Contentful Paint scores of all the frames in the
+ * trace.
+ */
+function gatherFinalLCPEvents(): Types.TraceEvents.PageLoadEvent[] {
+  const allFinalLCPEvents: Types.TraceEvents.PageLoadEvent[] = [];
+  const dataForAllFrames = [...metricScoresByFrameId.values()];
+  const dataForAllNavigations = dataForAllFrames.flatMap(frameData => [...frameData.values()]);
+  for (let i = 0; i < dataForAllNavigations.length; i++) {
+    const navigationData = dataForAllNavigations[i];
+    const lcpInNavigation = navigationData.get(MetricName.LCP);
+    if (!lcpInNavigation || !lcpInNavigation.event) {
+      continue;
+    }
+
+    allFinalLCPEvents.push(lcpInNavigation.event);
+  }
+  return allFinalLCPEvents;
+}
+
 export async function finalize(): Promise<void> {
   pageLoadEventsArray.sort((a, b) => a.ts - b.ts);
 
@@ -541,6 +556,7 @@ export async function finalize(): Promise<void> {
     }
   }
   estimateTotalBlockingTimes();
+  const allFinalLCPEvents = gatherFinalLCPEvents();
   const mainFrame = metaHandlerData().mainFrameId;
   // Filter out LCP candidates to use only definitive LCP values
   const allEventsButLCP =

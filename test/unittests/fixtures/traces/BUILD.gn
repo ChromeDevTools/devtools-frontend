@@ -24,6 +24,7 @@ copy_to_gen("traces") {
     "load-simple.json.gz",
     "missing-process-data.json.gz",
     "missing-tracing-start.json.gz",
+    "multiple-lcp-main-frame.json.gz",
     "multiple-navigations-with-iframes.json.gz",
     "multiple-navigations.json.gz",
     "multiple-top-level-renderers.json.gz",

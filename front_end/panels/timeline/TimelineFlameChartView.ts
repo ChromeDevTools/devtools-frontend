@@ -158,7 +158,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly detailsView: TimelineDetailsView;
   private readonly onMainEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly onNetworkEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
-  private nextExtensionIndex: number;
   private readonly boundRefresh: () => void;
   private selectedTrack: TimelineModel.TimelineModel.Track|null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -244,7 +243,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this.onNetworkEntrySelected, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onNetworkEntrySelected, this);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this.onEntryHighlighted, this);
-    this.nextExtensionIndex = 0;
 
     this.boundRefresh = this.refresh.bind(this);
     this.selectedTrack = null;
@@ -315,7 +313,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (this.model) {
       this.eventListeners = [
         this.model.addEventListener(PerformanceModelEvents.WindowChanged, this.onWindowChanged, this),
-        this.model.addEventListener(PerformanceModelEvents.ExtensionDataAdded, this.appendExtensionData, this),
       ];
       const window = this.model.window();
       this.mainFlameChart.setWindowTimes(window.left, window.right);
@@ -326,8 +323,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
     this.updateColorMapper();
     this.updateTrack();
-    this.nextExtensionIndex = 0;
-    this.appendExtensionData();
     this.refresh();
   }
 
@@ -348,17 +343,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.reset();
     this.networkFlameChart.reset();
     this.updateSearchResults(false, false);
-  }
-
-  private appendExtensionData(): void {
-    if (!this.model) {
-      return;
-    }
-    const extensions = this.model.extensionInfo();
-    while (this.nextExtensionIndex < extensions.length) {
-      this.mainDataProvider.appendExtensionEvents(extensions[this.nextExtensionIndex++]);
-    }
-    this.mainFlameChart.scheduleUpdate();
   }
 
   private onEntryHighlighted(commonEvent: Common.EventTarget.EventTargetEvent<number>): void {

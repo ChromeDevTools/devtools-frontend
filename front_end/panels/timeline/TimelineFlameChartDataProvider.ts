@@ -47,7 +47,7 @@ import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js'
 
 import {type PerformanceModel} from './PerformanceModel.js';
 
-import {FlameChartStyle, Selection, type TimelineFlameChartMarker} from './TimelineFlameChartView.js';
+import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
 
 import {TimelineUIUtils, type TimelineCategory} from './TimelineUIUtils.js';
@@ -145,20 +145,13 @@ const UIStrings = {
    *@description Warning text content in Timeline Flame Chart Data Provider of the Performance panel
    */
   longFrame: 'Long frame',
-  /**
-   * @description Text for the name of a thread of the page. Used when there are multiple threads but
-   * a more specific name for this thread is not available. The placeholder is a number that uniquely
-   * identifies this thread.
-   * @example {1} PH1
-   */
-  threadS: 'Thread {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const FONT = '11px ' + Host.Platform.fontFamily();
 
-// At the moment there are two types defined for trace events: TraceEventData and
+// at the moment there are two types defined for trace events: traceeventdata and
 // SDK.TracingModel.Event. This is only for compatibility between the legacy system
 // and the new system proposed in go/rpp-flamechart-arch. In the future, once all
 // tracks have been migrated to the new system, all entries will be of the
@@ -191,7 +184,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private minimumBoundaryInternal: number;
   private timeSpan: number;
   private readonly consoleColorGenerator: Common.Color.Generator;
-  private readonly extensionColorGenerator: Common.Color.Generator;
   private readonly headerLevel1: PerfUI.FlameChart.GroupStyle;
   private readonly headerLevel2: PerfUI.FlameChart.GroupStyle;
   private readonly staticHeader: PerfUI.FlameChart.GroupStyle;
@@ -205,12 +197,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private readonly flowEventIndexById: Map<string, number>;
   private entryData!: TimelineFlameChartEntry[];
   private entryTypeByLevel!: EntryType[];
-  private markers!: TimelineFlameChartMarker[];
   private screenshotImageCache!: Map<SDK.FilmStripModel.Frame, HTMLImageElement|null>;
-  private extensionInfo!: {
-    title: string,
-    model: SDK.TracingModel.TracingModel,
-  }[];
   private entryIndexToTitle!: string[];
   private asyncColorByCategory!: Map<TimelineCategory, string>;
   private lastInitiatorEntry!: number;
@@ -240,14 +227,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           count: undefined,
         },
         {min: 70, max: 100, count: 6}, 50, 0.7);
-    this.extensionColorGenerator = new Common.Color.Generator(
-        {
-          min: 210,
-          max: 300,
-          count: undefined,
-        },
-        {min: 70, max: 100, count: 6}, 70, 0.7);
-
     this.headerLevel1 = this.buildGroupStyle({shareHeaderLine: false});
     this.headerLevel2 = this.buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
     this.staticHeader = this.buildGroupStyle({collapsible: false});
@@ -368,10 +347,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
       return TimelineUIUtils.eventTitle(event);
     }
-    if (entryType === entryTypes.ExtensionEvent) {
-      const event = (this.entryData[entryIndex] as SDK.TracingModel.Event);
-      return event.name;
-    }
     if (entryType === entryTypes.Screenshot) {
       return '';
     }
@@ -405,9 +380,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.entryParent = [];
     this.entryTypeByLevel = [];
     this.entryIndexToTitle = [];
-    this.markers = [];
     this.asyncColorByCategory = new Map();
-    this.extensionInfo = [];
     this.screenshotImageCache = new Map();
     this.compatibilityTracksAppender = null;
   }
@@ -549,10 +522,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     if (this.timelineDataInternal && this.timelineDataInternal.selectedGroup) {
       this.timelineDataInternal.selectedGroup.expanded = true;
-    }
-
-    for (let extensionIndex = 0; extensionIndex < this.extensionInfo.length; extensionIndex++) {
-      this.innerAppendExtensionEvents(extensionIndex);
     }
 
     this.flowEventIndexById.clear();
@@ -723,9 +692,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!this.legacyPerformanceModel || !this.legacyTimelineModel) {
       return null;
     }
-    const isExtension = entryType === EntryType.ExtensionEvent;
     const openEvents = [];
-    const ignoreListingEnabled = !isExtension && Root.Runtime.experiments.isEnabled('ignoreListJSFramesOnTimeline');
+    const ignoreListingEnabled = Root.Runtime.experiments.isEnabled('ignoreListJSFramesOnTimeline');
     let maxStackDepth = 0;
     let group: PerfUI.FlameChart.Group|null = null;
     if (track && track.type === TimelineModel.TimelineModel.TrackType.MainThread) {
@@ -774,7 +742,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         if (SDK.TracingModel.TracingModel.isAsyncPhase(e.phase)) {
           continue;
         }
-        if (!isExtension && !this.legacyPerformanceModel.isVisible(e)) {
+        if (!this.legacyPerformanceModel.isVisible(e)) {
           continue;
         }
       }
@@ -1038,10 +1006,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (entryType === entryTypes.Frame) {
       return 'white';
     }
-    if (entryType === entryTypes.ExtensionEvent) {
-      const event = (this.entryData[entryIndex] as SDK.TracingModel.Event);
-      return this.extensionColorGenerator.colorForID(event.name);
-    }
     if (entryType === entryTypes.TrackAppender) {
       const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.TimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
@@ -1223,38 +1187,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return Boolean(TimelineModel.TimelineModel.TimelineData.forEvent(event).warning);
     }
     return false;
-  }
-
-  appendExtensionEvents(entry: {
-    title: string,
-    model: SDK.TracingModel.TracingModel,
-  }): void {
-    this.extensionInfo.push(entry);
-    if (this.timelineDataInternal) {
-      this.innerAppendExtensionEvents(this.extensionInfo.length - 1);
-    }
-  }
-
-  private innerAppendExtensionEvents(index: number): void {
-    const entry = this.extensionInfo[index];
-    const entryType = EntryType.ExtensionEvent;
-    const allThreads = [...entry.model.sortedProcesses().map(process => process.sortedThreads())].flat();
-    if (!allThreads.length) {
-      return;
-    }
-
-    const singleTrack =
-        allThreads.length === 1 && (!allThreads[0].events().length || !allThreads[0].asyncEvents().length);
-    if (!singleTrack) {
-      this.appendHeader(entry.title, this.headerLevel1, false /* selectable */);
-    }
-    const style = singleTrack ? this.headerLevel2 : this.headerLevel1;
-    let threadIndex = 0;
-    for (const thread of allThreads) {
-      const title = singleTrack ? entry.title : thread.name() || i18nString(UIStrings.threadS, {PH1: ++threadIndex});
-      this.appendAsyncEventsGroup(null, title, thread.asyncEvents(), style, entryType, false /* selectable */);
-      this.appendSyncEvents(null, thread.events(), title, style, entryType, false /* selectable */);
-    }
   }
 
   private appendHeader(title: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean):
@@ -1439,6 +1371,5 @@ export enum EntryType {
   Frame = 'Frame',
   Event = 'Event',
   TrackAppender = 'TrackAppender',
-  ExtensionEvent = 'ExtensionEvent',
   Screenshot = 'Screenshot',
 }

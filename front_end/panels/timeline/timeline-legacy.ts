@@ -36,9 +36,6 @@ Timeline.EventsTimelineTreeView = TimelineModule.EventsTimelineTreeView.EventsTi
 Timeline.EventsTimelineTreeView.Filters = TimelineModule.EventsTimelineTreeView.Filters;
 
 /** @constructor */
-Timeline.ExtensionTracingSession = TimelineModule.ExtensionTracingSession.ExtensionTracingSession;
-
-/** @constructor */
 Timeline.PerformanceModel = TimelineModule.PerformanceModel.PerformanceModel;
 
 /** @enum {symbol} */

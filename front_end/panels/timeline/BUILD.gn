@@ -25,7 +25,6 @@ devtools_module("timeline") {
     "CompatibilityTracksAppender.ts",
     "CountersGraph.ts",
     "EventsTimelineTreeView.ts",
-    "ExtensionTracingSession.ts",
     "PerformanceModel.ts",
     "TimelineController.ts",
     "TimelineDetailsView.ts",

@@ -50,7 +50,6 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
 
-import {ExtensionTraceProvider, type TracingSession} from './ExtensionTraceProvider.js';
 import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
 import {RecorderExtensionEndpoint} from './RecorderExtensionEndpoint.js';
 import {PrivateAPI} from './ExtensionAPI.js';
@@ -88,8 +87,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }>;
   private status: ExtensionStatus;
   private readonly sidebarPanesInternal: ExtensionSidebarPane[];
-  private readonly traceProvidersInternal: ExtensionTraceProvider[];
-  private readonly traceSessions: Map<string, TracingSession>;
   private extensionsEnabled: boolean;
   private inspectedTabId?: string;
   private readonly extensionAPITestHook?: (server: unknown, api: unknown) => unknown;
@@ -109,15 +106,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registeredExtensions = new Map();
     this.status = new ExtensionStatus();
     this.sidebarPanesInternal = [];
-    this.traceProvidersInternal = [];
-    this.traceSessions = new Map();
     // TODO(caseq): properly unload extensions when we disable them.
     this.extensionsEnabled = true;
 
     this.registerHandler(PrivateAPI.Commands.AddRequestHeaders, this.onAddRequestHeaders.bind(this));
-    this.registerHandler(PrivateAPI.Commands.AddTraceProvider, this.onAddTraceProvider.bind(this));
     this.registerHandler(PrivateAPI.Commands.ApplyStyleSheet, this.onApplyStyleSheet.bind(this));
-    this.registerHandler(PrivateAPI.Commands.CompleteTraceSession, this.onCompleteTraceSession.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreatePanel, this.onCreatePanel.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreateSidebarPane, this.onCreateSidebarPane.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreateToolbarButton, this.onCreateToolbarButton.bind(this));
@@ -359,15 +352,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.postNotification(PrivateAPI.Events.InspectedURLChanged, url);
   }
 
-  startTraceRecording(providerId: string, sessionId: string, session: TracingSession): void {
-    this.traceSessions.set(sessionId, session);
-    this.postNotification('trace-recording-started-' + providerId, sessionId);
-  }
-
-  stopTraceRecording(providerId: string): void {
-    this.postNotification('trace-recording-stopped-' + providerId);
-  }
-
   hasSubscribers(type: string): boolean {
     return this.subscribers.has(type);
   }
@@ -558,19 +542,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     button.update(resourcePath, message.tooltip, message.disabled);
     return this.status.OK();
-  }
-
-  private onCompleteTraceSession(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.CompleteTraceSession) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.CompleteTraceSession}`);
-    }
-    const session = this.traceSessions.get(message.id);
-    if (!session) {
-      return this.status.E_NOTFOUND(message.id);
-    }
-    this.traceSessions.delete(message.id);
-    session.complete(message.url, message.timeOffset);
-    return undefined;
   }
 
   private onCreateSidebarPane(message: PrivateAPI.ExtensionServerRequestMessage): Record {
@@ -868,22 +839,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private requestById(id: number): TextUtils.ContentProvider.ContentProvider|undefined {
     return this.requests.get(id);
-  }
-
-  private onAddTraceProvider(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.AddTraceProvider) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.AddTraceProvider}`);
-    }
-    const provider = new ExtensionTraceProvider(
-        this.getExtensionOrigin(port), message.id, message.categoryName, message.categoryTooltip);
-    this.clientObjects.set(message.id, provider);
-    this.traceProvidersInternal.push(provider);
-    this.dispatchEventToListeners(Events.TraceProviderAdded, provider);
-    return undefined;
-  }
-
-  traceProviders(): ExtensionTraceProvider[] {
-    return this.traceProvidersInternal;
   }
 
   private onForwardKeyboardEvent(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
@@ -1282,7 +1237,6 @@ export enum Events {
 
 export type EventTypes = {
   [Events.SidebarPaneAdded]: ExtensionSidebarPane,
-  [Events.TraceProviderAdded]: ExtensionTraceProvider,
 };
 
 class ExtensionServerPanelView extends UI.View.SimpleView {

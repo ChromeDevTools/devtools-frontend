@@ -12,7 +12,6 @@ devtools_module("extensions") {
     "ExtensionEndpoint.ts",
     "ExtensionPanel.ts",
     "ExtensionServer.ts",
-    "ExtensionTraceProvider.ts",
     "ExtensionView.ts",
     "LanguageExtensionEndpoint.ts",
     "RecorderExtensionEndpoint.ts",

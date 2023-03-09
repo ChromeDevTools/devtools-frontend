@@ -21,11 +21,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   private filmStripModelInternal: SDK.FilmStripModel.FilmStripModel|null;
   private windowInternal: Window;
   private willResolveNames = false;
-  private readonly extensionTracingModels: {
-    title: string,
-    model: SDK.TracingModel.TracingModel,
-    timeOffset: number,
-  }[];
   private recordStartTimeInternal?: number;
 
   constructor() {
@@ -41,7 +36,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
     this.windowInternal = {left: 0, right: Infinity};
 
-    this.extensionTracingModels = [];
     this.recordStartTimeInternal = undefined;
   }
 
@@ -89,11 +83,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.frameModelInternal.addTraceEvents(
         this.mainTargetInternal, this.timelineModelInternal.inspectedTargetEvents(), threadData);
 
-    for (const entry of this.extensionTracingModels) {
-      entry.model.adjustTime(
-          this.tracingModelInternal.minimumRecordTime() + (entry.timeOffset / 1000) -
-          (this.recordStartTimeInternal as number));
-    }
     this.autoWindowTimes();
   }
 
@@ -164,16 +153,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.dispatchEventToListeners(Events.NamesResolved);
   }
 
-  addExtensionEvents(title: string, model: SDK.TracingModel.TracingModel, timeOffset: number): void {
-    this.extensionTracingModels.push({model: model, title: title, timeOffset: timeOffset});
-    if (!this.tracingModelInternal) {
-      return;
-    }
-    model.adjustTime(
-        this.tracingModelInternal.minimumRecordTime() + (timeOffset / 1000) - (this.recordStartTimeInternal as number));
-    this.dispatchEventToListeners(Events.ExtensionDataAdded);
-  }
-
   tracingModel(): SDK.TracingModel.TracingModel {
     if (!this.tracingModelInternal) {
       throw 'call setTracingModel before accessing PerformanceModel';
@@ -204,19 +183,9 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.frameModelInternal;
   }
 
-  extensionInfo(): {
-    title: string,
-    model: SDK.TracingModel.TracingModel,
-  }[] {
-    return this.extensionTracingModels;
-  }
-
   dispose(): void {
     if (this.tracingModelInternal) {
       this.tracingModelInternal.dispose();
-    }
-    for (const extensionEntry of this.extensionTracingModels) {
-      extensionEntry.model.dispose();
     }
   }
 
@@ -298,7 +267,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
-  ExtensionDataAdded = 'ExtensionDataAdded',
   WindowChanged = 'WindowChanged',
   NamesResolved = 'NamesResolved',
 }
@@ -308,7 +276,6 @@ export interface WindowChangedEvent {
 }
 
 export type EventTypes = {
-  [Events.ExtensionDataAdded]: void,
   [Events.WindowChanged]: WindowChangedEvent,
   [Events.NamesResolved]: void,
 };

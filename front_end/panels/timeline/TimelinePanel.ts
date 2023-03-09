@@ -40,7 +40,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import * as Extensions from '../../models/extensions/extensions.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -398,8 +397,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showLandingPage();
     this.updateTimelineControls();
 
-    Extensions.ExtensionServer.ExtensionServer.instance().addEventListener(
-        Extensions.ExtensionServer.Events.TraceProviderAdded, this.appendExtensionsToToolbar, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.onSuspendStateChanged, this);
     if (Root.Runtime.experiments.isEnabled('timelineAsConsoleProfileResultPanel')) {
@@ -605,26 +602,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();
-  }
-
-  private appendExtensionsToToolbar(
-      event: Common.EventTarget.EventTargetEvent<Extensions.ExtensionTraceProvider.ExtensionTraceProvider>): void {
-    const provider = event.data;
-    const setting = TimelinePanel.settingForTraceProvider(provider);
-    const checkbox = this.createSettingCheckbox(setting, provider.longDisplayName());
-    this.panelToolbar.appendToolbarItem(checkbox);
-  }
-
-  private static settingForTraceProvider(traceProvider: Extensions.ExtensionTraceProvider.ExtensionTraceProvider):
-      Common.Settings.Setting<boolean> {
-    let setting = traceProviderToSetting.get(traceProvider);
-    if (!setting) {
-      const providerId = traceProvider.persistentIdentifier();
-      setting = Common.Settings.Settings.instance().createSetting(providerId, false);
-      setting.setTitle(traceProvider.shortDisplayName());
-      traceProviderToSetting.set(traceProvider, setting);
-    }
-    return setting;
   }
 
   private createNetworkConditionsSelect(): UI.Toolbar.ToolbarComboBox {
@@ -869,9 +846,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
       this.showRecordingStarted();
 
-      const enabledTraceProviders = Extensions.ExtensionServer.ExtensionServer.instance().traceProviders().filter(
-          provider => TimelinePanel.settingForTraceProvider(provider).get());
-
       const mainTarget = (SDK.TargetManager.TargetManager.instance().primaryPageTarget() as SDK.Target.Target);
       if (UIDevtoolsUtils.isUiDevTools()) {
         this.controller = new UIDevtoolsController(mainTarget, this);
@@ -896,7 +870,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           await this.#navigateToAboutBlank();
         }
         // Order is important here: we tell the controller to start recording, which enables tracing.
-        const response = await this.controller.startRecording(recordingOptions, enabledTraceProviders);
+        const response = await this.controller.startRecording(recordingOptions);
         if (response.getError()) {
           throw new Error(response.getError());
         }
@@ -1694,7 +1668,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     return actionDelegateInstance;
   }
 
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     const panel = (UI.Context.Context.instance().flavor(TimelinePanel) as TimelinePanel);
     console.assert(panel && panel instanceof TimelinePanel);
     switch (actionId) {
@@ -1729,6 +1703,3 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     return false;
   }
 }
-
-const traceProviderToSetting =
-    new WeakMap<Extensions.ExtensionTraceProvider.ExtensionTraceProvider, Common.Settings.Setting<boolean>>();

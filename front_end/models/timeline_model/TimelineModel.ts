@@ -363,7 +363,7 @@ export class TimelineModelImpl {
     return workerId ? SDK.TargetManager.TargetManager.instance().targetById(workerId) : primaryPageTarget;
   }
 
-  navStartTimes(): Map<string, SDK.TracingModel.Event> {
+  navStartTimes(): Map<string, SDK.TracingModel.PayloadEvent> {
     if (!this.tracingModelInternal) {
       return new Map();
     }

@@ -26,7 +26,7 @@ export class TracingModel {
   readonly #openNestableAsyncEvents: Map<string, AsyncEvent[]>;
   readonly #profileGroups: Map<string, ProfileEventsGroup>;
   readonly #parsedCategories: Map<string, Set<string>>;
-  readonly #mainFrameNavStartTimes: Map<string, Event>;
+  readonly #mainFrameNavStartTimes: Map<string, PayloadEvent>;
   readonly #allEventsPayload: EventPayload[] = [];
 
   constructor(backingStorage: BackingStorage, shouldSaveToFile = true, title?: string) {
@@ -307,7 +307,7 @@ export class TracingModel {
     return this.#maximumRecordTimeInternal;
   }
 
-  navStartTimes(): Map<string, Event> {
+  navStartTimes(): Map<string, PayloadEvent> {
     return this.#mainFrameNavStartTimes;
   }
 

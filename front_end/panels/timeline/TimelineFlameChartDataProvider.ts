@@ -346,11 +346,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return group.track || null;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  navStartTimes(): Map<any, any> {
+  navStartTimes(): Map<string, SDK.TracingModel.PayloadEvent> {
     if (!this.legacyTimelineModel) {
       return new Map();
     }

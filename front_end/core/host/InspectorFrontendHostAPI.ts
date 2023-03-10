@@ -370,6 +370,7 @@ export enum EnumeratedHistogram {
   LinearMemoryInspectorTarget = 'DevTools.LinearMemoryInspector.Target',
   Language = 'DevTools.Language',
   SyncSetting = 'DevTools.SyncSetting',
+  RecordingAssertion = 'DevTools.RecordingAssertion',
   RecordingCodeToggled = 'DevTools.RecordingCodeToggled',
   RecordingCopiedToClipboard = 'DevTools.RecordingCopiedToClipboard',
   RecordingEdited = 'DevTools.RecordingEdited',

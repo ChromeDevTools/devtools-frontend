@@ -1000,9 +1000,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           localName?.toLowerCase(), fontFaces);
       if (hint) {
         Host.userMetrics.cssHintShown(validator.getMetricType());
+        const wrapper = document.createElement('span');
+        wrapper.classList.add('hint-wrapper');
         const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
+        wrapper.append(hintIcon);
         activeHints.set(hintIcon, hint);
-        this.listItemElement.append(hintIcon);
+        this.listItemElement.append(wrapper);
         this.listItemElement.classList.add('inactive-property');
         break;
       }

@@ -158,14 +158,24 @@ ol.expanded {
   transform: scale(0.9);
 }
 
-.hint {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: auto auto auto 3px;
+.hint-wrapper {
+  align-items: center;
   display: inline-block;
+  margin-left: 3px;
+  max-height: 13px;
+  max-width: 13px;
+  vertical-align: middle;
+}
+
+.hint {
   cursor: pointer;
-  transform: scale(0.9);
+  display: block;
+  position: relative;
+  left: -1.5px;
+  top: -1.5px;
+  /* Scale down to 14px instead of 16px. The line height is 13px but we make the icon a bit larger. */
+  /* TODO: scale here messes up popup positioning by 2px but I found no solution so far. Maybe once an SVG icon is used here. */
+  transform: scale(0.875);
 }
 
 .has-ignorable-error {

@@ -275,7 +275,7 @@ describeWithEnvironment('TimelineModel', () => {
       const {timelineModel} = traceWithEvents([
         {
           cat: 'devtools.timeline',
-          ph: 'b',
+          ph: TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
           pid: 1537729,  // the Renderer Thread
           tid: 1,        // CrRendererMain
           id: '1234',
@@ -298,7 +298,7 @@ describeWithEnvironment('TimelineModel', () => {
         // Has an interactionId of 0, so should NOT be included.
         {
           cat: 'devtools.timeline',
-          ph: 'b',
+          ph: TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
           pid: 1537729,  // the Renderer Thread
           tid: 1,        // CrRendererMain
           id: '1234',
@@ -321,7 +321,7 @@ describeWithEnvironment('TimelineModel', () => {
         // Has an duration of 0, so should NOT be included.
         {
           cat: 'devtools.timeline',
-          ph: 'b',
+          ph: TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
           pid: 1537729,  // the Renderer Thread
           tid: 1,        // CrRendererMain
           id: '1234',

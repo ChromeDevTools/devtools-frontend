@@ -7,27 +7,26 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {loadTraceEventsLegacyEventPayload} from '../../helpers/TraceHelpers.js';
 import {FakeStorage, StubbedThread} from '../../helpers/TimelineHelpers.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 
 describe('TracingModel', () => {
+  const {Phase} = TraceEngine.Types.TraceEvents;
   it('is able to determine if a phase is a nestable async phase', () => {
     assert.isTrue(
-        SDK.TracingModel.TracingModel.isNestableAsyncPhase('b'), '\'b\' should be considered a nestable async phase');
+        SDK.TracingModel.TracingModel.isNestableAsyncPhase(Phase.ASYNC_NESTABLE_START),
+        '\'b\' should be considered a nestable async phase');
     assert.isTrue(
-        SDK.TracingModel.TracingModel.isNestableAsyncPhase('e'), '\'e\' should be considered a nestable async phase');
+        SDK.TracingModel.TracingModel.isNestableAsyncPhase(Phase.ASYNC_NESTABLE_END),
+        '\'e\' should be considered a nestable async phase');
     assert.isTrue(
-        SDK.TracingModel.TracingModel.isNestableAsyncPhase('n'), '\'n\' should be considered a nestable async phase');
+        SDK.TracingModel.TracingModel.isNestableAsyncPhase(Phase.ASYNC_NESTABLE_INSTANT),
+        '\'n\' should be considered a nestable async phase');
   });
 
   it('is able to determine if a phase is not a nestable async phase', () => {
-    assert.isFalse(
-        SDK.TracingModel.TracingModel.isNestableAsyncPhase('a'),
-        '\'a\' should not be considered a nestable async phase');
-    assert.isFalse(
-        SDK.TracingModel.TracingModel.isNestableAsyncPhase('f'),
-        '\'f\' should not be considered a nestable async phase');
-    assert.isFalse(
-        SDK.TracingModel.TracingModel.isNestableAsyncPhase('m'),
-        '\'m\' should not be considered a nestable async phase');
+    assert.isFalse(SDK.TracingModel.TracingModel.isNestableAsyncPhase(Phase.BEGIN));
+    assert.isFalse(SDK.TracingModel.TracingModel.isNestableAsyncPhase(Phase.END));
+    assert.isFalse(SDK.TracingModel.TracingModel.isNestableAsyncPhase(Phase.ASYNC_BEGIN));
   });
 
   it('can create events from an EventPayload[] and finds the correct number of processes', async () => {

@@ -60,7 +60,7 @@ export interface FakeEventPayload {
   ts: number;
   pid?: number;
   dur?: number;
-  ph: SDK.TracingModel.Phase|TraceEngine.Types.TraceEvents.Phase;
+  ph: TraceEngine.Types.TraceEvents.Phase;
   // The type def of args in EventPayload is inaccurate. We will fix this as
   // part of the migration but for now let's just tell TS to let us pass
   // anything in here.

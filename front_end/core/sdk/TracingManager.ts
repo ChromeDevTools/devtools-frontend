@@ -8,6 +8,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {type ObjectSnapshot} from './TracingModel.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 export class TracingManager extends SDKModel<void> {
   readonly #tracingAgent: ProtocolProxyApi.TracingApi;
@@ -126,7 +127,7 @@ export interface EventPayload {
   pid: number;
   tid: number;
   ts: number;
-  ph: string;
+  ph: TraceEngine.Types.TraceEvents.Phase;
   name: string;
   args: {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

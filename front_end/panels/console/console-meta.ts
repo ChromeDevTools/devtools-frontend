@@ -98,9 +98,9 @@ const UIStrings = {
    */
   doNotEagerlyEvaluateConsole: 'Do not eagerly evaluate console prompt text',
   /**
-   *@description Title of a setting under the Console category in Settings
+   *@description Allows code that is executed in the console to do things that usually are only allowed if triggered by a user action
    */
-  evaluateTriggersUserActivation: 'Evaluation triggers user activation',
+  evaluateTriggersUserActivation: 'Treat evaluated code as triggered by a user action',
   /**
    *@description Title of a setting under the Console category that can be invoked through the Command Menu
    */

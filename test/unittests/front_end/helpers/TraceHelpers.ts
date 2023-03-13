@@ -106,7 +106,7 @@ async function generateModelDataForTraceFile(name: string, emulateFreshRecording
   const traceEvents = await loadEventsFromTraceFile(name);
 
   return new Promise((resolve, reject) => {
-    const model = new TraceModel.TraceModel.Model();
+    const model = TraceModel.TraceModel.Model.createWithAllHandlers();
     model.addEventListener(TraceModel.TraceModel.ModelUpdateEvent.eventName, (event: Event) => {
       const {data} = event as TraceModel.TraceModel.ModelUpdateEvent;
 
@@ -128,7 +128,7 @@ async function generateModelDataForTraceFile(name: string, emulateFreshRecording
       }
     });
 
-    void model.parse(traceEvents, {}, emulateFreshRecording).catch(e => console.error(e));
+    void model.parse(traceEvents, {metadata: {}, isFreshRecording: emulateFreshRecording}).catch(e => console.error(e));
   });
 }
 

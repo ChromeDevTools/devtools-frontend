@@ -23,23 +23,67 @@ export type TraceParseEventProgressData = {
   total: number,
 };
 
-export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types.TraceEventHandler}> extends
+export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handlers.Types.TraceEventHandler}> extends
     EventTarget {
-  readonly #traceHandlers: {[key: string]: Handlers.Types.TraceEventHandler};
+  // We force the Meta handler to be enabled, so the TraceHandlers type here is
+  // the model handlers the user passes in and the Meta handler.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly #traceHandlers: Handlers.Types.EnabledHandlersWithMeta<EnabledModelHandlers>;
   #pauseDuration: number;
   #pauseFrequencyMs: number;
   #status = Status.IDLE;
 
-  static create(): TraceProcessor<typeof Handlers.ModelHandlers> {
+  static createWithAllHandlers(): TraceProcessor<typeof Handlers.ModelHandlers> {
     return new TraceProcessor(Handlers.ModelHandlers);
   }
 
-  private constructor(traceHandlers: ModelHandlers, {pauseDuration = 20, pauseFrequencyMs = 100} = {}) {
+  constructor(traceHandlers: EnabledModelHandlers, {pauseDuration = 20, pauseFrequencyMs = 100} = {}) {
     super();
 
-    this.#traceHandlers = traceHandlers;
+    this.#verifyHandlers(traceHandlers);
+    this.#traceHandlers = {
+      Meta: Handlers.ModelHandlers.Meta,
+      ...traceHandlers,
+    };
     this.#pauseDuration = pauseDuration;
     this.#pauseFrequencyMs = pauseFrequencyMs;
+  }
+
+  /**
+   * When the user passes in a set of handlers, we want to ensure that we have all
+   * the required handlers. Handlers can depend on other handlers, so if the user
+   * passes in FooHandler which depends on BarHandler, they must also pass in
+   * BarHandler too. This method verifies that all dependencies are met, and
+   * throws if not.
+   **/
+  #verifyHandlers(providedHandlers: EnabledModelHandlers): void {
+    // Tiny optimisation: if the amount of provided handlers matches the amount
+    // of handlers in the Handlers.ModelHandlers object, that means that the
+    // user has passed in every handler we have. So therefore they cannot have
+    // missed any, and there is no need to iterate through the handlers and
+    // check the dependencies.
+    if (Object.keys(providedHandlers).length === Object.keys(Handlers.ModelHandlers).length) {
+      return;
+    }
+    const requiredHandlerKeys: Set<Handlers.Types.TraceEventHandlerName> = new Set();
+    for (const [handlerName, handler] of Object.entries(providedHandlers)) {
+      requiredHandlerKeys.add(handlerName as Handlers.Types.TraceEventHandlerName);
+      for (const depName of (handler.deps?.() || [])) {
+        requiredHandlerKeys.add(depName);
+      }
+    }
+
+    const providedHandlerKeys = new Set(Object.keys(providedHandlers));
+    // We always force the Meta handler to be enabled when creating the
+    // Processor, so if it is missing from the set the user gave us that is OK,
+    // as we will have enabled it anyway.
+    requiredHandlerKeys.delete('Meta');
+
+    for (const requiredKey of requiredHandlerKeys) {
+      if (!providedHandlerKeys.has(requiredKey)) {
+        throw new Error(`Required handler ${requiredKey} not provided.`);
+      }
+    }
   }
 
   reset(): void {
@@ -105,7 +149,7 @@ export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types
     }
   }
 
-  get data(): Handlers.Types.HandlerData<ModelHandlers>|null {
+  get data(): Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>|null {
     if (this.#status !== Status.FINISHED_PARSING) {
       return null;
     }
@@ -115,7 +159,7 @@ export class TraceProcessor<ModelHandlers extends {[key: string]: Handlers.Types
       Object.assign(data, {[name]: handler.data()});
     }
 
-    return data as Handlers.Types.HandlerData<ModelHandlers>;
+    return data as Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>;
   }
 }
 

@@ -16,7 +16,7 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 
-import {KnownEventName, type TraceEventHandlerName, type HandlerData, type Handlers} from './types.js';
+import {KnownEventName, type TraceEventHandlerName, type EnabledHandlerDataWithMeta, type Handlers} from './types.js';
 
 import * as Types from '../types/types.js';
 
@@ -417,7 +417,8 @@ function estimateTotalBlockingTimes(): void {
 * for the user.  This function takes the model data, and returns either the
 * timestamp of the first FCP event, or null if it couldn't find one.
  */
-export function getFirstFCPTimestampFromModelData(model: HandlerData<Handlers>): Types.Timing.MicroSeconds|null {
+export function getFirstFCPTimestampFromModelData(model: EnabledHandlerDataWithMeta<Handlers>):
+    Types.Timing.MicroSeconds|null {
   const mainFrameID = model.Meta.mainFrameId;
   const metricsForMainFrameByNavigationID = model.PageLoadMetrics.metricScoresByFrameId.get(mainFrameID);
   if (!metricsForMainFrameByNavigationID) {

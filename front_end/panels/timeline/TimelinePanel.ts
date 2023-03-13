@@ -312,10 +312,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
   private selection?: TimelineSelection|null;
-  #traceEngineModel: TraceEngine.TraceModel.Model;
+  #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.Handlers.ModelHandlers>;
   constructor() {
     super('timeline');
-    this.#traceEngineModel = new TraceEngine.TraceModel.Model();
+    this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithAllHandlers();
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],
@@ -1256,15 +1256,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // OPP's data layer uses `EventPayload` as the type to represent raw JSON from the trace.
         // When we pass this into the new data engine, we need to tell TS to use the new TraceEventData type.
         tracingModel.allRawEvents() as unknown as TraceEngine.Types.TraceEvents.TraceEventData[],
-        // TODO(crbug.com/1406847): This object represents metadata, which can be stored by the
-        // Performance Panel in a trace file. If the user imports a file that has
-        // it, we can pass it in here. If we don't have it, we should fetch &
-        // store it.
-        {},
-        // TODO(crbug.com/1406847): this value needs to be set to `true` if this
-        // is a fresh recording (e.g. it hasn't been imported from a file), and
-        // `false` otherwise.
-        isFreshRecording,
+        {
+          // TODO(crbug.com/1406847): This object represents metadata, which can be stored by the
+          // Performance Panel in a trace file. If the user imports a file that has
+          // it, we can pass it in here. If we don't have it, we should fetch &
+          // store it.
+          metadata: {},
+          isFreshRecording,
+        },
     );
   }
 

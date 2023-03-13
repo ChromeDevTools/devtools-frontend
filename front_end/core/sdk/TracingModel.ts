@@ -49,23 +49,26 @@ export class TracingModel {
   }
 
   static isNestableAsyncPhase(phase: TraceEngine.Types.TraceEvents.Phase): boolean {
-    return phase === 'b' || phase === 'e' || phase === 'n';
-  }
-
-  static isAsyncBeginPhase(phase: string): boolean {
-    return phase === 'S' || phase === 'b';
+    return phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START ||
+        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_END ||
+        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_INSTANT;
   }
 
   static isAsyncPhase(phase: TraceEngine.Types.TraceEvents.Phase): boolean {
-    return TracingModel.isNestableAsyncPhase(phase) || phase === 'S' || phase === 'T' || phase === 'F' || phase === 'p';
+    return TracingModel.isNestableAsyncPhase(phase) || phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_BEGIN ||
+        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_INTO ||
+        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_END ||
+        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_PAST;
   }
 
-  static isFlowPhase(phase: string): boolean {
-    return phase === 's' || phase === 't' || phase === 'f';
+  static isFlowPhase(phase: TraceEngine.Types.TraceEvents.Phase): boolean {
+    return phase === TraceEngine.Types.TraceEvents.Phase.FLOW_START ||
+        phase === TraceEngine.Types.TraceEvents.Phase.FLOW_STEP ||
+        phase === TraceEngine.Types.TraceEvents.Phase.FLOW_END;
   }
 
-  static isCompletePhase(phase: string): boolean {
-    return phase === 'X';
+  static isCompletePhase(phase: TraceEngine.Types.TraceEvents.Phase): boolean {
+    return phase === TraceEngine.Types.TraceEvents.Phase.COMPLETE;
   }
 
   static isTopLevelEvent(event: Event): boolean {

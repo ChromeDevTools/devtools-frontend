@@ -47,4 +47,43 @@ describe('NetworkRequest', () => {
     expectCookie(request.responseCookies[0], {name: 'foo', value: 'bar', partitionKey: 'partitionKey', size: 8});
     expectCookie(request.responseCookies[1], {name: 'baz', value: 'qux', partitionKey: 'partitionKey', size: 7});
   });
+
+  it('determines whether the response headers have been overridden', () => {
+    const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+        'requestId', 'url' as Platform.DevToolsPath.UrlString, 'documentURL' as Platform.DevToolsPath.UrlString, null);
+    request.responseHeaders = [{name: 'foo', value: 'bar'}];
+
+    request.originalResponseHeaders = [{name: 'foo', value: 'baz'}];
+    assert.isTrue(request.hasOverriddenHeaders());
+
+    request.originalResponseHeaders = [];
+    assert.isFalse(request.hasOverriddenHeaders());
+
+    request.originalResponseHeaders = [{name: 'Foo', value: 'bar'}];
+    assert.isFalse(request.hasOverriddenHeaders());
+
+    request.originalResponseHeaders = [{name: 'Foo', value: 'Bar'}];
+    assert.isTrue(request.hasOverriddenHeaders());
+
+    request.responseHeaders = [{name: 'one', value: 'first'}, {name: 'two', value: 'second'}];
+    request.originalResponseHeaders = [{name: 'ONE', value: 'first'}, {name: 'Two', value: 'second'}];
+    assert.isFalse(request.hasOverriddenHeaders());
+
+    request.originalResponseHeaders = [{name: 'one', value: 'first'}];
+    assert.isTrue(request.hasOverriddenHeaders());
+
+    request.originalResponseHeaders = [{name: 'two', value: 'second'}, {name: 'one', value: 'first'}];
+    assert.isFalse(request.hasOverriddenHeaders());
+
+    request.originalResponseHeaders = [{name: 'one', value: 'second'}, {name: 'two', value: 'first'}];
+    assert.isTrue(request.hasOverriddenHeaders());
+
+    request.originalResponseHeaders =
+        [{name: 'one', value: 'first'}, {name: 'two', value: 'second'}, {name: 'two', value: 'second'}];
+    assert.isTrue(request.hasOverriddenHeaders());
+
+    request.responseHeaders = [{name: 'duplicate', value: 'first'}, {name: 'duplicate', value: 'second'}];
+    request.originalResponseHeaders = [{name: 'duplicate', value: 'second'}, {name: 'Duplicate', value: 'first'}];
+    assert.isFalse(request.hasOverriddenHeaders());
+  });
 });

@@ -385,6 +385,16 @@
   margin-right: 4px;
 }
 
+.network-override-marker {
+  /* Color matches the purple dot in the mediumicon-file-sync icon. */
+  background: rgb(175 75 246); /* stylelint-disable-line plugin/use_theme_colors */
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  margin-right: 3px;
+}
+
 @media (forced-colors: active) {
   .network-status-pane > .recording-hint {
     color: canvastext;

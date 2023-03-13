@@ -273,6 +273,11 @@ const UIStrings = {
    */
   dnsAlpnH3JobWonRace:
       '`Chrome` used a `HTTP/3` connection due to the `DNS record` indicating `HTTP/3` support, which won a race against establishing a connection using a different `HTTP` version.',
+  /**
+   *@description Tooltip text for a small circular icon which signifies that (some) response headers of this request have been overridden
+   */
+  hasOverriddenHeaders: 'Request has overridden headers',
+
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1209,6 +1214,12 @@ export class NetworkRequestNode extends NetworkNode {
           cell, i18nString(UIStrings.corsError),
           i18nString(UIStrings.crossoriginResourceSharingErrorS, {PH1: corsErrorStatus.corsError}));
     } else if (this.requestInternal.statusCode) {
+      if (this.requestInternal.hasOverriddenHeaders()) {
+        const markerDiv = document.createElement('div');
+        markerDiv.classList.add('network-override-marker');
+        markerDiv.title = i18nString(UIStrings.hasOverriddenHeaders);
+        cell.appendChild(markerDiv);
+      }
       UI.UIUtils.createTextChild(cell, String(this.requestInternal.statusCode));
       this.appendSubtitle(cell, this.requestInternal.statusText);
       UI.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + ' ' + this.requestInternal.statusText);

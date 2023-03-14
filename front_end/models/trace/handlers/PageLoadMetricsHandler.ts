@@ -16,12 +16,11 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 
-import {KnownEventName, type TraceEventHandlerName, type EnabledHandlerDataWithMeta, type Handlers} from './types.js';
+import {type TraceEventHandlerName, type EnabledHandlerDataWithMeta, type Handlers} from './types.js';
 
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
-import {data as rendererHandlerData} from './RendererHandler.js';
 
 /**
  * This represents the metric scores for all navigations, for all frames in a trace.
@@ -322,94 +321,6 @@ function getNavigationForPageLoadEvent(event: Types.TraceEvents.PageLoadEvent):
   return Platform.assertNever(event, `Unexpected event type: ${event}`);
 }
 
-/**
- * This methods calculates the Total Blocking Time for navigations for which
- * an InteractiveTime event wasn't recorded, that is, navigations without a
- * TBT reported by the backend. This could happen for example if the user
- * stops the recording before the page has settled. Although TBT is officially
- * the sum of the blocking portion of all long tasks between FCP and TTI, we
- * can still report the blocking time between FCP and the instant the recording
- * was stopped, in case TTI wasn't reached.
- */
-function estimateTotalBlockingTimes(): void {
-  const {processes} = rendererHandlerData();
-  const LONG_TASK_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(50));
-  for (const [frameId, metricsByNavigation] of metricScoresByFrameId) {
-    for (const [navigationId, metrics] of metricsByNavigation) {
-      const navigationTBT = metrics.get(MetricName.TBT);
-      const navigationFCP = metrics.get(MetricName.FCP);
-      if (navigationTBT || !navigationFCP) {
-        // Either a TBT record was reported for this navigation so we don't
-        // need to estimate its value, or FCP wasn't reached so we can't
-        // estimate it.
-        continue;
-      }
-      if (!navigationFCP.event) {
-        continue;
-      }
-
-      // Get Main Thread information
-      const renderer = processes.get(navigationFCP.event.pid);
-      if (!renderer) {
-        // This can happen if the navigation was on a process that had no
-        // origin, or an origin we discard, such as about:blank. In this case
-        // we can discard the navigation as it's not relevant and we don't need
-        // to use it to calculate TBT.
-        continue;
-      }
-      const mainThread = [...renderer.threads.values()].find(thread => thread.name === 'CrRendererMain');
-      const mainThreadTree = mainThread?.tree;
-      if (!mainThread || !mainThreadTree) {
-        throw new Error('Main thread not found.');
-      }
-      const mainThreadEvents = mainThread.events;
-      const mainThreadNodes = mainThreadTree.nodes;
-      const fcpTs = navigationFCP.event.ts;
-      // Calulate TBT from Main Thread tasks.
-      let tbt = 0;
-      for (const rootId of mainThreadTree.roots) {
-        const node = mainThreadNodes.get(rootId);
-        if (node === undefined) {
-          throw new Error(`Node not found for id: ${rootId}`);
-        }
-        if (mainThreadEvents[node.eventIndex] === undefined) {
-          throw new Error(`Event not found for index: ${node.eventIndex}`);
-        }
-        const task = mainThreadEvents[node.eventIndex];
-        if (task.name !== KnownEventName.RunTask || Types.TraceEvents.isTraceEventInstant(task)) {
-          continue;
-        }
-
-        // Discard event if it ended before FCP.
-        if (task.ts + task.dur < fcpTs) {
-          continue;
-        }
-
-        // Following Lighthouse guidance, get the portion of the task occured after FCP
-        // before calculating its blocking portion (because tasks before FCP are
-        // unimportant, we consider only the blocking time after FCP).
-        const timeAfterFCP = task.ts < fcpTs ? fcpTs - task.ts : 0;
-        const clippedTaskDuration = task.dur - timeAfterFCP;
-        tbt += clippedTaskDuration > LONG_TASK_THRESHOLD ? clippedTaskDuration - LONG_TASK_THRESHOLD : 0;
-      }
-
-      const tbtValue = Types.Timing.MicroSeconds(tbt);
-      const tbtScore = Helpers.Timing.formatMicrosecondsTime(tbtValue, {
-        format: Types.Timing.TimeUnit.MILLISECONDS,
-        maximumFractionDigits: 2,
-      });
-      const tbtMetric = {
-        score: tbtScore,
-        estimated: true,
-        metricName: MetricName.TBT,
-        classification: scoreClassificationForTotalBlockingTime(tbtValue),
-        navigation: navigationFCP.navigation,
-      };
-      storeMetricScore(frameId, navigationId, tbtMetric);
-    }
-  }
-}
-
 /*
  * When we first load a new trace, rather than position the playhead at time 0,
 * we want to position it such that the thumbnail likely shows something rather
@@ -556,7 +467,8 @@ export async function finalize(): Promise<void> {
       storePageLoadMetricAgainstNavigationId(navigation, pageLoadEvent);
     }
   }
-  estimateTotalBlockingTimes();
+  // NOTE: if you are looking for the TBT calculation, it has temporarily been
+  // removed. See crbug.com/1424335 for details.
   const allFinalLCPEvents = gatherFinalLCPEvents();
   const mainFrame = metaHandlerData().mainFrameId;
   // Filter out LCP candidates to use only definitive LCP values
@@ -592,7 +504,7 @@ export function data(): PageLoadMetricsData {
 }
 
 export function deps(): TraceEventHandlerName[] {
-  return ['Meta', 'Renderer'];
+  return ['Meta'];
 }
 
 export const enum ScoreClassification {

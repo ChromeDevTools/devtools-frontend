@@ -122,54 +122,6 @@ describe('PageLoadMetricsHandler', function() {
     });
   });
 
-  describe('Time To Interactive', () => {
-    it('extracts TBT from InteractiveTime events correctly', async () => {
-      const {Meta, PageLoadMetrics} = await loadModelDataFromTraceFile('interactive-time.json.gz');
-      const {mainFrameId} = Meta;
-      const pageLoadEventsForMainFrame = PageLoadMetrics.metricScoresByFrameId.get(mainFrameId);
-      if (!pageLoadEventsForMainFrame) {
-        assert.fail('Page load events for main frame were unexpectedly null.');
-        return;
-      }
-      const navigationId = pageLoadEventsForMainFrame.keys().next().value;
-      const metrics = pageLoadEventsForMainFrame.get(navigationId);
-
-      // TTI should exist, compare its values.
-      const tti = metrics?.get(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.TTI);
-      assert.strictEqual(tti?.score, '0.19s');
-      assert.strictEqual(
-          tti?.classification, TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD);
-
-      const totalBlockingTime = metrics?.get(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.TBT);
-      assert.strictEqual(totalBlockingTime?.score, '4.33ms');
-      assert.strictEqual(
-          totalBlockingTime?.classification,
-          TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD);
-    });
-    it('estimates correctly the TBT for a trace without InteractiveTime', async () => {
-      const {Meta, PageLoadMetrics} = await loadModelDataFromTraceFile('reload-no-tti.json.gz');
-      const {mainFrameId} = Meta;
-      const pageLoadEventsForMainFrame = PageLoadMetrics.metricScoresByFrameId.get(mainFrameId);
-      if (!pageLoadEventsForMainFrame) {
-        assert.fail('Page load events for main frame were unexpectedly null.');
-        return;
-      }
-      const navigationId = pageLoadEventsForMainFrame.keys().next().value;
-      const metrics = pageLoadEventsForMainFrame.get(navigationId);
-
-      // TTI should not exist.
-      const tti = metrics?.get(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.TTI);
-      assert.isUndefined(tti);
-
-      const totalBlockingTime = metrics?.get(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.TBT);
-      assert.isTrue(totalBlockingTime?.estimated);
-      assert.strictEqual(totalBlockingTime?.score, '7.33ms');
-      assert.strictEqual(
-          totalBlockingTime?.classification,
-          TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD);
-    });
-  });
-
   describe('metric scores', () => {
     let allMetricScores: TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricScore[];
 
@@ -206,21 +158,6 @@ describe('PageLoadMetricsHandler', function() {
           domContentLoadedMetrics[1].classification,
           TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.UNCLASSIFIED);
       assertMetricNavigationId(domContentLoadedMetrics[1], secondNavigationId);
-    });
-
-    it('calculates Total Blocking Time correctly', () => {
-      const totalBlockingTimes = getMetricsByName(TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.TBT);
-      assert.strictEqual(totalBlockingTimes[0].score, '0ms');
-      assert.strictEqual(
-          totalBlockingTimes[0].classification,
-          TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD);
-      assertMetricNavigationId(totalBlockingTimes[0], firstNavigationId);
-
-      assert.strictEqual(totalBlockingTimes[1].score, '0ms');
-      assert.strictEqual(
-          totalBlockingTimes[1].classification,
-          TraceModel.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD);
-      assertMetricNavigationId(totalBlockingTimes[1], secondNavigationId);
     });
 
     it('extracts First Contentful Paint correctly', () => {

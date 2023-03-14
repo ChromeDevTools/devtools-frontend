@@ -285,6 +285,22 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.legacyPerformanceModel = performanceModel;
     this.legacyTimelineModel = performanceModel && performanceModel.timelineModel();
     this.traceEngineData = newTraceEngineData;
+    if (!this.traceEngineData) {
+      return;
+    }
+    this.setTimingBoundsData(this.traceEngineData);
+  }
+
+  /**
+   * Sets the minimum time and total time span of a trace using the
+   * new engine data.
+   */
+  setTimingBoundsData(newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration): void {
+    const {traceBounds} = newTraceEngineData.Meta;
+    const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
+    const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
+    this.minimumBoundaryInternal = minTime;
+    this.timeSpan = minTime === maxTime ? 1000 : maxTime - this.minimumBoundaryInternal;
   }
 
   /**
@@ -300,7 +316,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         throw new Error(
             'Attempted to instantiate a CompatibilityTracksAppender without having set the trace parse data first.');
       }
-      this.timelineDataInternal = this.timelineDataInternal || new PerfUI.FlameChart.TimelineData([], [], [], []);
+      this.timelineDataInternal = this.#instantiateTimelineData();
       this.compatibilityTracksAppender = new CompatibilityTracksAppender(
           this.timelineDataInternal, this.traceEngineData, this.entryData, this.entryTypeByLevel,
           this.legacyTimelineModel);
@@ -308,6 +324,17 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.compatibilityTracksAppender;
   }
 
+  /**
+   * Returns the instance of the timeline flame chart data, without
+   * adding data to it. In case the timeline data hasn't been instanced
+   * creates a new instance and returns it.
+   */
+  #instantiateTimelineData(): PerfUI.FlameChart.TimelineData {
+    if (!this.timelineDataInternal) {
+      this.timelineDataInternal = new PerfUI.FlameChart.TimelineData([], [], [], []);
+    }
+    return this.timelineDataInternal;
+  }
   /**
    * Builds the flame chart data using the track appenders
    */
@@ -408,10 +435,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     this.flowEventIndexById.clear();
-    this.minimumBoundaryInternal = this.legacyTimelineModel.minimumRecordTime();
-    this.timeSpan = this.legacyTimelineModel.isEmpty() ?
-        1000 :
-        this.legacyTimelineModel.maximumRecordTime() - this.minimumBoundaryInternal;
     this.currentLevel = 0;
 
     if (this.traceEngineData) {
@@ -528,26 +551,27 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.flowEventIndexById.clear();
   }
 
-  private appendLegacyTrackData(track: TimelineModel.TimelineModel.Track): void {
+  appendLegacyTrackData(track: TimelineModel.TimelineModel.Track, expanded?: boolean): void {
+    this.#instantiateTimelineData();
     const eventEntryType = EntryType.Event;
     switch (track.type) {
       case TimelineModel.TimelineModel.TrackType.UserInteractions: {
         this.appendAsyncEventsGroup(
             track, i18nString(UIStrings.userInteractions), track.asyncEvents, this.userInteractionsHeader,
-            eventEntryType, false);
+            eventEntryType, false /* selectable */, expanded);
         break;
       }
       case TimelineModel.TimelineModel.TrackType.Animation: {
         this.appendAsyncEventsGroup(
             track, i18nString(UIStrings.animation), track.asyncEvents, this.animationsHeader, eventEntryType,
-            false /* selectable */);
+            false /* selectable */, expanded);
         break;
       }
 
       case TimelineModel.TimelineModel.TrackType.Console: {
         this.appendAsyncEventsGroup(
             track, i18nString(UIStrings.console), track.asyncEvents, this.headerLevel1, eventEntryType,
-            true /* selectable */);
+            true /* selectable */, expanded);
         break;
       }
 
@@ -556,7 +580,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           const group = this.appendSyncEvents(
               track, track.events,
               track.url ? i18nString(UIStrings.mainS, {PH1: track.url}) : i18nString(UIStrings.main), this.headerLevel1,
-              eventEntryType, true /* selectable */);
+              eventEntryType, true /* selectable */, expanded);
           if (group && this.timelineDataInternal) {
             this.timelineDataInternal.selectedGroup = group;
           }
@@ -564,47 +588,48 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           this.appendSyncEvents(
               track, track.events,
               track.url ? i18nString(UIStrings.frameS, {PH1: track.url}) : i18nString(UIStrings.subframe),
-              this.headerLevel1, eventEntryType, true /* selectable */);
+              this.headerLevel1, eventEntryType, true /* selectable */, expanded);
         }
         break;
       }
 
       case TimelineModel.TimelineModel.TrackType.Worker: {
         this.appendSyncEvents(
-            track, track.events, track.name, this.headerLevel1, eventEntryType, true /* selectable */);
+            track, track.events, track.name, this.headerLevel1, eventEntryType, true /* selectable */, expanded);
         break;
       }
 
       case TimelineModel.TimelineModel.TrackType.Raster: {
         if (!this.#rasterCount) {
-          this.appendHeader(i18nString(UIStrings.raster), this.headerLevel1, false /* selectable */);
+          this.appendHeader(i18nString(UIStrings.raster), this.headerLevel1, false /* selectable */, expanded);
         }
         ++this.#rasterCount;
         this.appendSyncEvents(
             track, track.events, i18nString(UIStrings.rasterizerThreadS, {PH1: this.#rasterCount}), this.headerLevel2,
-            eventEntryType, true /* selectable */);
+            eventEntryType, true /* selectable */, expanded);
         break;
       }
 
       case TimelineModel.TimelineModel.TrackType.GPU: {
         this.appendSyncEvents(
-            track, track.events, i18nString(UIStrings.gpu), this.headerLevel1, eventEntryType, true /* selectable */);
+            track, track.events, i18nString(UIStrings.gpu), this.headerLevel1, eventEntryType, true /* selectable */,
+            expanded);
         break;
       }
 
       case TimelineModel.TimelineModel.TrackType.Other: {
         this.appendSyncEvents(
             track, track.events, track.name || i18nString(UIStrings.thread), this.headerLevel1, eventEntryType,
-            true /* selectable */);
+            true /* selectable */, expanded);
         this.appendAsyncEventsGroup(
-            track, track.name, track.asyncEvents, this.headerLevel1, eventEntryType, true /* selectable */);
+            track, track.name, track.asyncEvents, this.headerLevel1, eventEntryType, true /* selectable */, expanded);
         break;
       }
 
       case TimelineModel.TimelineModel.TrackType.Experience: {
         this.appendSyncEvents(
             track, track.events, i18nString(UIStrings.experience), this.experienceHeader, eventEntryType,
-            true /* selectable */);
+            true /* selectable */, expanded);
         break;
       }
     }
@@ -685,8 +710,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   private appendSyncEvents(
       track: TimelineModel.TimelineModel.Track|null, events: SDK.TracingModel.Event[], title: string|null,
-      style: PerfUI.FlameChart.GroupStyle|null, entryType: EntryType, selectable: boolean): PerfUI.FlameChart.Group
-      |null {
+      style: PerfUI.FlameChart.GroupStyle|null, entryType: EntryType, selectable: boolean,
+      expanded?: boolean): PerfUI.FlameChart.Group|null {
     if (!events.length) {
       return null;
     }
@@ -698,7 +723,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let maxStackDepth = 0;
     let group: PerfUI.FlameChart.Group|null = null;
     if (track && track.type === TimelineModel.TimelineModel.TrackType.MainThread) {
-      group = this.appendHeader((title as string), (style as PerfUI.FlameChart.GroupStyle), selectable);
+      group = this.appendHeader((title as string), (style as PerfUI.FlameChart.GroupStyle), selectable, expanded);
       group.track = track;
     }
     for (let i = 0; i < events.length; ++i) {
@@ -763,7 +788,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         eventToDisallowRoot.set(e, true);
       }
       if (!group && title) {
-        group = this.appendHeader(title, (style as PerfUI.FlameChart.GroupStyle), selectable);
+        group = this.appendHeader(title, (style as PerfUI.FlameChart.GroupStyle), selectable, expanded);
         if (selectable) {
           group.track = track;
         }
@@ -800,8 +825,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   private appendAsyncEventsGroup(
       track: TimelineModel.TimelineModel.Track|null, title: string|null, events: SDK.TracingModel.AsyncEvent[],
-      style: PerfUI.FlameChart.GroupStyle|null, entryType: EntryType, selectable: boolean): PerfUI.FlameChart.Group
-      |null {
+      style: PerfUI.FlameChart.GroupStyle|null, entryType: EntryType, selectable: boolean,
+      expanded?: boolean): PerfUI.FlameChart.Group|null {
     if (!events.length) {
       return null;
     }
@@ -813,7 +838,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         continue;
       }
       if (!group && title) {
-        group = this.appendHeader(title, (style as PerfUI.FlameChart.GroupStyle), selectable);
+        group = this.appendHeader(title, (style as PerfUI.FlameChart.GroupStyle), selectable, expanded);
         if (selectable) {
           group.track = track;
         }
@@ -1190,10 +1215,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return false;
   }
 
-  private appendHeader(title: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean):
+  private appendHeader(title: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean):
       PerfUI.FlameChart.Group {
     const group =
-        ({startLevel: this.currentLevel, name: title, style: style, selectable: selectable} as PerfUI.FlameChart.Group);
+        ({startLevel: this.currentLevel, name: title, style: style, selectable: selectable, expanded} as
+         PerfUI.FlameChart.Group);
     (this.timelineDataInternal as PerfUI.FlameChart.TimelineData).groups.push(group);
     return group;
   }

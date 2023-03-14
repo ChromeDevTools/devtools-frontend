@@ -8,10 +8,10 @@ import {assertElementScreenshotUnchanged, itScreenshot} from '../../../../shared
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
 describe('Timings track', () => {
-  preloadForCodeCoverage('performance_panel/timings_track.html');
+  preloadForCodeCoverage('performance_panel/track_example.html');
 
   itScreenshot('renders the timings track correctly', async () => {
-    await loadComponentDocExample('performance_panel/timings_track.html');
+    await loadComponentDocExample('performance_panel/track_example.html?track=Timings&fileName=timings-track');
     const flameChart = await waitFor('.flame-chart-main-pane');
     await assertElementScreenshotUnchanged(flameChart, 'performance/timings_track.png', 3);
   });

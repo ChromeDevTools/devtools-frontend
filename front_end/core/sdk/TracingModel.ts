@@ -158,27 +158,6 @@ export class TracingModel {
     }
   }
 
-  adjustTime(offset: number): void {
-    this.#minimumRecordTimeInternal += offset;
-    this.#maximumRecordTimeInternal += offset;
-    for (const process of this.#processById.values()) {
-      for (const thread of process.threads.values()) {
-        for (const event of thread.events()) {
-          event.startTime += offset;
-          if (typeof event.endTime === 'number') {
-            event.endTime += offset;
-          }
-        }
-        for (const event of thread.asyncEvents()) {
-          event.startTime += offset;
-          if (typeof event.endTime === 'number') {
-            event.endTime += offset;
-          }
-        }
-      }
-    }
-  }
-
   private addEvent(payload: EventPayload): void {
     this.#allEventsPayload.push(payload);
     let process = this.#processById.get(payload.pid);

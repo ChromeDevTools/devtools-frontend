@@ -165,6 +165,18 @@ class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDelegate {
   }
 }
 
+/**
+ * Draws a set of tracks track in the flame chart using the new system.
+ * For this to work, every track that will be rendered must have a
+ * corresponding track appender registered in the
+ * CompatibilityTracksAppender.
+ *
+ * @param traceFileName The name of the trace file to be loaded into the
+ * flame chart.
+ * @param trackAppenderNames A Set with the names of the tracks to be
+ * rendered. For example, Set("Timings").
+ * @returns a flame chart element and its corresponding data provider.
+ */
 export async function getMainFlameChartWithTracks(
     traceFileName: string, trackAppenderNames: Set<Timeline.CompatibilityTracksAppender.TrackAppenderName>): Promise<{
   flameChart: PerfUI.FlameChart.FlameChart,
@@ -181,6 +193,44 @@ export async function getMainFlameChartWithTracks(
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
   dataProvider.buildFromTrackAppenders(trackAppenderNames);
+  const delegate = new MockFlameChartDelegate();
+  const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
+  const minTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
+  const maxTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
+  flameChart.setWindowTimes(minTime, maxTime);
+  flameChart.markAsRoot();
+  flameChart.update();
+  return {flameChart, dataProvider};
+}
+/**
+ * Draws a track in the flame chart using the legacy system. For this to work,
+ * a codepath to append the track must be available in the implementation of
+ * TimelineFlameChartDataProvider.appendLegacyTrackData.
+ *
+ * @param traceFileName The name of the trace file to be loaded to the flame
+ * chart.
+ * @param trackType the legacy "type" of the track to be rendered. For
+ * example: "GPU"
+ * @returns a flame chart element and its corresponding data provider.
+ */
+export async function getMainFlameChartWithLegacyTrack(
+    traceFileName: string, trackType: TimelineModel.TimelineModel.TrackType): Promise<{
+  flameChart: PerfUI.FlameChart.FlameChart,
+  dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
+}> {
+  await initializeGlobalVars();
+
+  const {traceParsedData, performanceModel, timelineModel} = await allModelsFromFile(traceFileName);
+
+  const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+  // The data provider still needs a reference to the legacy model to
+  // work properly.
+  dataProvider.setModel(performanceModel, traceParsedData);
+  const track = timelineModel.tracks().find(track => track.type === trackType);
+  if (!track) {
+    throw new Error(`Legacy track with of type ${trackType} not found in timeline model.`);
+  }
+  dataProvider.appendLegacyTrackData(track, /* expanded */ true);
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   const minTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);

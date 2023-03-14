@@ -109,8 +109,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
   it('dispatches event on cacheStorageContentUpdated', () => {
     const dispatcherSpy = sinon.spy(cacheStorageModel, 'dispatchEventToListeners');
 
-    cacheStorageModel.cacheStorageContentUpdated(
-        {origin: '', storageKey: testKey, bucketId: 0, cacheName: 'test-cache'});
+    cacheStorageModel.cacheStorageContentUpdated({origin: '', storageKey: testKey, cacheName: 'test-cache'});
 
     assert.isTrue(dispatcherSpy.calledOnceWithExactly(
         SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated as unknown as sinon.SinonMatcher,
@@ -122,7 +121,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
     cacheStorageModel.enable();
     manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
 
-    cacheStorageModel.cacheStorageListUpdated({origin: '', storageKey: testKey, bucketId: 0});
+    cacheStorageModel.cacheStorageListUpdated({origin: '', storageKey: testKey});
 
     assert.isTrue(requestCacheNamesSpy.calledWithExactly({storageKey: testKey}));
   });

@@ -476,8 +476,6 @@ export namespace ProtocolMapping {
      * The following parameters are included in all events.
      */
     'Storage.sharedStorageAccessed': [Protocol.Storage.SharedStorageAccessedEvent];
-    'Storage.storageBucketCreatedOrUpdated': [Protocol.Storage.StorageBucketCreatedOrUpdatedEvent];
-    'Storage.storageBucketDeleted': [Protocol.Storage.StorageBucketDeletedEvent];
     /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
@@ -3638,27 +3636,6 @@ export namespace ProtocolMapping {
      */
     'Storage.setSharedStorageTracking': {
       paramsType: [Protocol.Storage.SetSharedStorageTrackingRequest];
-      returnType: void;
-    };
-    /**
-     * Get list of storage bucket names.
-     */
-    'Storage.getStorageBucketList': {
-      paramsType: [Protocol.Storage.GetStorageBucketListRequest];
-      returnType: Protocol.Storage.GetStorageBucketListResponse;
-    };
-    /**
-     * Set tracking for a storage key's buckets.
-     */
-    'Storage.setStorageBucketTracking': {
-      paramsType: [Protocol.Storage.SetStorageBucketTrackingRequest];
-      returnType: void;
-    };
-    /**
-     * Deletes the Storage Bucket with the given storage key and bucket name.
-     */
-    'Storage.deleteStorageBucket': {
-      paramsType: [Protocol.Storage.DeleteStorageBucketRequest];
       returnType: void;
     };
     /**

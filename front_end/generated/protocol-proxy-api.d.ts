@@ -3019,21 +3019,6 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setSharedStorageTracking(params: Protocol.Storage.SetSharedStorageTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    /**
-     * Get list of storage bucket names.
-     */
-    invoke_getStorageBucketList(params: Protocol.Storage.GetStorageBucketListRequest): Promise<Protocol.Storage.GetStorageBucketListResponse>;
-
-    /**
-     * Set tracking for a storage key's buckets.
-     */
-    invoke_setStorageBucketTracking(params: Protocol.Storage.SetStorageBucketTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Deletes the Storage Bucket with the given storage key and bucket name.
-     */
-    invoke_deleteStorageBucket(params: Protocol.Storage.DeleteStorageBucketRequest): Promise<Protocol.ProtocolResponseWithError>;
-
   }
   export interface StorageDispatcher {
     /**
@@ -3066,10 +3051,6 @@ declare namespace ProtocolProxyApi {
      * The following parameters are included in all events.
      */
     sharedStorageAccessed(params: Protocol.Storage.SharedStorageAccessedEvent): void;
-
-    storageBucketCreatedOrUpdated(params: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
-
-    storageBucketDeleted(params: Protocol.Storage.StorageBucketDeletedEvent): void;
 
   }
 

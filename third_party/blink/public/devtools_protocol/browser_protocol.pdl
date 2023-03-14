@@ -1984,7 +1984,6 @@ experimental domain CSS
       StyleSheetId styleSheetId
 
 experimental domain CacheStorage
-  depends on Storage
 
   # Unique identifier of the Cache object.
   type CacheId extends string
@@ -2028,8 +2027,6 @@ experimental domain CacheStorage
       string securityOrigin
       # Storage key of the cache.
       string storageKey
-      # Storage bucket of the cache.
-      optional number storageBucketId
       # The name of the cache.
       string cacheName
 
@@ -2061,13 +2058,11 @@ experimental domain CacheStorage
   # Requests cache names.
   command requestCacheNames
     parameters
-      # At least and at most one of securityOrigin, storageKey, storageBucket must be specified.
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
       optional string securityOrigin
       # Storage key.
       optional string storageKey
-      # Storage bucket. If not specified, it uses the default bucket.
-      optional Storage.StorageBucketInfo storageBucket
     returns
       # Caches for the security origin.
       array of Cache caches
@@ -3986,7 +3981,6 @@ domain IO
 
 experimental domain IndexedDB
   depends on Runtime
-  depends on Storage
 
   # Database with an array of object stores.
   type DatabaseWithObjectStores extends object
@@ -4079,13 +4073,11 @@ experimental domain IndexedDB
   # Clears all entries from an object store.
   command clearObjectStore
     parameters
-      # At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
       optional string securityOrigin
       # Storage key.
       optional string storageKey
-      # Storage bucket. If not specified, it uses the default bucket.
-      optional Storage.StorageBucketInfo storageBucket
       # Database name.
       string databaseName
       # Object store name.
@@ -4094,26 +4086,22 @@ experimental domain IndexedDB
   # Deletes a database.
   command deleteDatabase
     parameters
-      # At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
       optional string securityOrigin
       # Storage key.
       optional string storageKey
-      # Storage bucket. If not specified, it uses the default bucket.
-      optional Storage.StorageBucketInfo storageBucket
       # Database name.
       string databaseName
 
   # Delete a range of entries from an object store
   command deleteObjectStoreEntries
     parameters
-      # At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
       optional string securityOrigin
       # Storage key.
       optional string storageKey
-      # Storage bucket. If not specified, it uses the default bucket.
-      optional Storage.StorageBucketInfo storageBucket
       string databaseName
       string objectStoreName
       # Range of entry keys to delete
@@ -4128,13 +4116,11 @@ experimental domain IndexedDB
   # Requests data from object store or index.
   command requestData
     parameters
-      # At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
       optional string securityOrigin
       # Storage key.
       optional string storageKey
-      # Storage bucket. If not specified, it uses the default bucket.
-      optional Storage.StorageBucketInfo storageBucket
       # Database name.
       string databaseName
       # Object store name.
@@ -4156,13 +4142,11 @@ experimental domain IndexedDB
   # Gets metadata of an object store.
   command getMetadata
     parameters
-      # At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
       optional string securityOrigin
       # Storage key.
       optional string storageKey
-      # Storage bucket. If not specified, it uses the default bucket.
-      optional Storage.StorageBucketInfo storageBucket
       # Database name.
       string databaseName
       # Object store name.
@@ -4178,13 +4162,11 @@ experimental domain IndexedDB
   # Requests database with given name in given frame.
   command requestDatabase
     parameters
-      # At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
       optional string securityOrigin
       # Storage key.
       optional string storageKey
-      # Storage bucket. If not specified, it uses the default bucket.
-      optional Storage.StorageBucketInfo storageBucket
       # Database name.
       string databaseName
     returns
@@ -4194,13 +4176,11 @@ experimental domain IndexedDB
   # Requests database names for given security origin.
   command requestDatabaseNames
     parameters
-      # At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
       optional string securityOrigin
       # Storage key.
       optional string storageKey
-      # Storage bucket. If not specified, it uses the default bucket.
-      optional Storage.StorageBucketInfo storageBucket
     returns
       # Database names for origin.
       array of string databaseNames
@@ -8997,7 +8977,6 @@ experimental domain Storage
       cache_storage
       interest_groups
       shared_storage
-      storage_buckets
       all
       other
 
@@ -9132,27 +9111,6 @@ experimental domain Storage
       # Present only for SharedStorageAccessType.documentSet and
       # SharedStorageAccessType.workletSet.
       optional boolean ignoreIfPresent
-
-  type StorageBucketsDurability extends string
-    enum
-      relaxed
-      strict
-
-  type StorageBucketInfo extends object
-    properties
-      SerializedStorageKey storageKey
-      number id
-      string name
-      boolean isDefault
-      Network.TimeSinceEpoch expiration
-      number quota
-      boolean persistent
-      StorageBucketsDurability durability
-
-  type StorageBucketLocator extends object
-    properties
-      SerializedStorageKey storageKey
-      number id
 
   # Returns a storage key given a frame id.
   command getStorageKeyForFrame
@@ -9350,25 +9308,6 @@ experimental domain Storage
     parameters
       boolean enable
 
-  # Get list of storage bucket names.
-  experimental command getStorageBucketList
-    parameters
-      string storageKey
-    returns
-      array of StorageBucketInfo storageBuckets
-
-  # Set tracking for a storage key's buckets.
-  experimental command setStorageBucketTracking
-    parameters
-      string storageKey
-      boolean enable
-
-  # Deletes the Storage Bucket with the given storage key and bucket name.
-  experimental command deleteStorageBucket
-    parameters
-      string storageKey
-      string bucketName
-
   # A cache's contents have been modified.
   event cacheStorageContentUpdated
     parameters
@@ -9376,8 +9315,6 @@ experimental domain Storage
       string origin
       # Storage key to update.
       string storageKey
-      # Storage bucket to update.
-      number bucketId
       # Name of cache in origin.
       string cacheName
 
@@ -9388,8 +9325,6 @@ experimental domain Storage
       string origin
       # Storage key to update.
       string storageKey
-      # Storage bucket to update.
-      number bucketId
 
   # The origin's IndexedDB object store has been modified.
   event indexedDBContentUpdated
@@ -9398,8 +9333,6 @@ experimental domain Storage
       string origin
       # Storage key to update.
       string storageKey
-      # Storage bucket to update.
-      number bucketId
       # Database to update.
       string databaseName
       # ObjectStore to update.
@@ -9412,8 +9345,6 @@ experimental domain Storage
       string origin
       # Storage key to update.
       string storageKey
-      # Storage bucket to update.
-      number bucketId
 
   # One of the interest groups was accessed by the associated page.
   event interestGroupAccessed
@@ -9438,14 +9369,6 @@ experimental domain Storage
       # The sub-parameters warapped by `params` are all optional and their
       # presence/absence depends on `type`.
       SharedStorageAccessParams params
-
-  event storageBucketCreatedOrUpdated
-    parameters
-      StorageBucketInfo bucket
-
-  event storageBucketDeleted
-    parameters
-      StorageBucketLocator bucketLocator
 
 # The SystemInfo domain defines methods and events for querying low-level system information.
 experimental domain SystemInfo

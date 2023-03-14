@@ -153,7 +153,7 @@ inspectorBackend.registerCommand("CSS.setLocalFontsEnabled", [{"name": "enabled"
 inspectorBackend.registerEnum("CacheStorage.CachedResponseType", {Basic: "basic", Cors: "cors", Default: "default", Error: "error", OpaqueResponse: "opaqueResponse", OpaqueRedirect: "opaqueRedirect"});
 inspectorBackend.registerCommand("CacheStorage.deleteCache", [{"name": "cacheId", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("CacheStorage.deleteEntry", [{"name": "cacheId", "type": "string", "optional": false}, {"name": "request", "type": "string", "optional": false}], []);
-inspectorBackend.registerCommand("CacheStorage.requestCacheNames", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "storageBucket", "type": "object", "optional": true}], ["caches"]);
+inspectorBackend.registerCommand("CacheStorage.requestCacheNames", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}], ["caches"]);
 inspectorBackend.registerCommand("CacheStorage.requestCachedResponse", [{"name": "cacheId", "type": "string", "optional": false}, {"name": "requestURL", "type": "string", "optional": false}, {"name": "requestHeaders", "type": "object", "optional": false}], ["response"]);
 inspectorBackend.registerCommand("CacheStorage.requestEntries", [{"name": "cacheId", "type": "string", "optional": false}, {"name": "skipCount", "type": "number", "optional": true}, {"name": "pageSize", "type": "number", "optional": true}, {"name": "pathFilter", "type": "string", "optional": true}], ["cacheDataEntries", "returnCount"]);
 
@@ -338,15 +338,15 @@ inspectorBackend.registerCommand("IO.resolveBlob", [{"name": "objectId", "type":
 // IndexedDB.
 inspectorBackend.registerEnum("IndexedDB.KeyType", {Number: "number", String: "string", Date: "date", Array: "array"});
 inspectorBackend.registerEnum("IndexedDB.KeyPathType", {Null: "null", String: "string", Array: "array"});
-inspectorBackend.registerCommand("IndexedDB.clearObjectStore", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "storageBucket", "type": "object", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}, {"name": "objectStoreName", "type": "string", "optional": false}], []);
-inspectorBackend.registerCommand("IndexedDB.deleteDatabase", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "storageBucket", "type": "object", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}], []);
-inspectorBackend.registerCommand("IndexedDB.deleteObjectStoreEntries", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "storageBucket", "type": "object", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}, {"name": "objectStoreName", "type": "string", "optional": false}, {"name": "keyRange", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("IndexedDB.clearObjectStore", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}, {"name": "objectStoreName", "type": "string", "optional": false}], []);
+inspectorBackend.registerCommand("IndexedDB.deleteDatabase", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}], []);
+inspectorBackend.registerCommand("IndexedDB.deleteObjectStoreEntries", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}, {"name": "objectStoreName", "type": "string", "optional": false}, {"name": "keyRange", "type": "object", "optional": false}], []);
 inspectorBackend.registerCommand("IndexedDB.disable", [], []);
 inspectorBackend.registerCommand("IndexedDB.enable", [], []);
-inspectorBackend.registerCommand("IndexedDB.requestData", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "storageBucket", "type": "object", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}, {"name": "objectStoreName", "type": "string", "optional": false}, {"name": "indexName", "type": "string", "optional": false}, {"name": "skipCount", "type": "number", "optional": false}, {"name": "pageSize", "type": "number", "optional": false}, {"name": "keyRange", "type": "object", "optional": true}], ["objectStoreDataEntries", "hasMore"]);
-inspectorBackend.registerCommand("IndexedDB.getMetadata", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "storageBucket", "type": "object", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}, {"name": "objectStoreName", "type": "string", "optional": false}], ["entriesCount", "keyGeneratorValue"]);
-inspectorBackend.registerCommand("IndexedDB.requestDatabase", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "storageBucket", "type": "object", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}], ["databaseWithObjectStores"]);
-inspectorBackend.registerCommand("IndexedDB.requestDatabaseNames", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "storageBucket", "type": "object", "optional": true}], ["databaseNames"]);
+inspectorBackend.registerCommand("IndexedDB.requestData", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}, {"name": "objectStoreName", "type": "string", "optional": false}, {"name": "indexName", "type": "string", "optional": false}, {"name": "skipCount", "type": "number", "optional": false}, {"name": "pageSize", "type": "number", "optional": false}, {"name": "keyRange", "type": "object", "optional": true}], ["objectStoreDataEntries", "hasMore"]);
+inspectorBackend.registerCommand("IndexedDB.getMetadata", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}, {"name": "objectStoreName", "type": "string", "optional": false}], ["entriesCount", "keyGeneratorValue"]);
+inspectorBackend.registerCommand("IndexedDB.requestDatabase", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "databaseName", "type": "string", "optional": false}], ["databaseWithObjectStores"]);
+inspectorBackend.registerCommand("IndexedDB.requestDatabaseNames", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}], ["databaseNames"]);
 
 // Input.
 inspectorBackend.registerEnum("Input.GestureSourceType", {Default: "default", Touch: "touch", Mouse: "mouse"});
@@ -714,18 +714,15 @@ inspectorBackend.registerCommand("ServiceWorker.unregister", [{"name": "scopeURL
 inspectorBackend.registerCommand("ServiceWorker.updateRegistration", [{"name": "scopeURL", "type": "string", "optional": false}], []);
 
 // Storage.
-inspectorBackend.registerEnum("Storage.StorageType", {Appcache: "appcache", Cookies: "cookies", File_systems: "file_systems", Indexeddb: "indexeddb", Local_storage: "local_storage", Shader_cache: "shader_cache", Websql: "websql", Service_workers: "service_workers", Cache_storage: "cache_storage", Interest_groups: "interest_groups", Shared_storage: "shared_storage", Storage_buckets: "storage_buckets", All: "all", Other: "other"});
+inspectorBackend.registerEnum("Storage.StorageType", {Appcache: "appcache", Cookies: "cookies", File_systems: "file_systems", Indexeddb: "indexeddb", Local_storage: "local_storage", Shader_cache: "shader_cache", Websql: "websql", Service_workers: "service_workers", Cache_storage: "cache_storage", Interest_groups: "interest_groups", Shared_storage: "shared_storage", All: "all", Other: "other"});
 inspectorBackend.registerEnum("Storage.InterestGroupAccessType", {Join: "join", Leave: "leave", Update: "update", Loaded: "loaded", Bid: "bid", Win: "win"});
 inspectorBackend.registerEnum("Storage.SharedStorageAccessType", {DocumentAddModule: "documentAddModule", DocumentSelectURL: "documentSelectURL", DocumentRun: "documentRun", DocumentSet: "documentSet", DocumentAppend: "documentAppend", DocumentDelete: "documentDelete", DocumentClear: "documentClear", WorkletSet: "workletSet", WorkletAppend: "workletAppend", WorkletDelete: "workletDelete", WorkletClear: "workletClear", WorkletGet: "workletGet", WorkletKeys: "workletKeys", WorkletEntries: "workletEntries", WorkletLength: "workletLength", WorkletRemainingBudget: "workletRemainingBudget"});
-inspectorBackend.registerEnum("Storage.StorageBucketsDurability", {Relaxed: "relaxed", Strict: "strict"});
-inspectorBackend.registerEvent("Storage.cacheStorageContentUpdated", ["origin", "storageKey", "bucketId", "cacheName"]);
-inspectorBackend.registerEvent("Storage.cacheStorageListUpdated", ["origin", "storageKey", "bucketId"]);
-inspectorBackend.registerEvent("Storage.indexedDBContentUpdated", ["origin", "storageKey", "bucketId", "databaseName", "objectStoreName"]);
-inspectorBackend.registerEvent("Storage.indexedDBListUpdated", ["origin", "storageKey", "bucketId"]);
+inspectorBackend.registerEvent("Storage.cacheStorageContentUpdated", ["origin", "storageKey", "cacheName"]);
+inspectorBackend.registerEvent("Storage.cacheStorageListUpdated", ["origin", "storageKey"]);
+inspectorBackend.registerEvent("Storage.indexedDBContentUpdated", ["origin", "storageKey", "databaseName", "objectStoreName"]);
+inspectorBackend.registerEvent("Storage.indexedDBListUpdated", ["origin", "storageKey"]);
 inspectorBackend.registerEvent("Storage.interestGroupAccessed", ["accessTime", "type", "ownerOrigin", "name"]);
 inspectorBackend.registerEvent("Storage.sharedStorageAccessed", ["accessTime", "type", "mainFrameId", "ownerOrigin", "params"]);
-inspectorBackend.registerEvent("Storage.storageBucketCreatedOrUpdated", ["bucket"]);
-inspectorBackend.registerEvent("Storage.storageBucketDeleted", ["bucketLocator"]);
 inspectorBackend.registerCommand("Storage.getStorageKeyForFrame", [{"name": "frameId", "type": "string", "optional": false}], ["storageKey"]);
 inspectorBackend.registerCommand("Storage.clearDataForOrigin", [{"name": "origin", "type": "string", "optional": false}, {"name": "storageTypes", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Storage.clearDataForStorageKey", [{"name": "storageKey", "type": "string", "optional": false}, {"name": "storageTypes", "type": "string", "optional": false}], []);
@@ -753,9 +750,6 @@ inspectorBackend.registerCommand("Storage.deleteSharedStorageEntry", [{"name": "
 inspectorBackend.registerCommand("Storage.clearSharedStorageEntries", [{"name": "ownerOrigin", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Storage.resetSharedStorageBudget", [{"name": "ownerOrigin", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Storage.setSharedStorageTracking", [{"name": "enable", "type": "boolean", "optional": false}], []);
-inspectorBackend.registerCommand("Storage.getStorageBucketList", [{"name": "storageKey", "type": "string", "optional": false}], ["storageBuckets"]);
-inspectorBackend.registerCommand("Storage.setStorageBucketTracking", [{"name": "storageKey", "type": "string", "optional": false}, {"name": "enable", "type": "boolean", "optional": false}], []);
-inspectorBackend.registerCommand("Storage.deleteStorageBucket", [{"name": "storageKey", "type": "string", "optional": false}, {"name": "bucketName", "type": "string", "optional": false}], []);
 
 // SystemInfo.
 inspectorBackend.registerEnum("SystemInfo.SubsamplingFormat", {Yuv420: "yuv420", Yuv422: "yuv422", Yuv444: "yuv444"});

@@ -821,3 +821,7 @@ export async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> 
   return await editor.evaluate(
       node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
 }
+
+export async function waitForLines(lineCount: number): Promise<void> {
+  await waitFor(new Array(lineCount).fill('.cm-line').join(' ~ '));
+}

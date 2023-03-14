@@ -9,23 +9,33 @@ import {
   click,
   enableExperiment,
   getBrowserAndPages,
+  getPendingEvents,
   goToResource,
+  installEventListener,
+  pressKey,
   step,
   timeout,
+  typeText,
   waitFor,
   waitForFunction,
+  waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {openCommandMenu} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,
   BREAKPOINT_ITEM_SELECTOR,
   createSelectorsForWorkerFile,
+  DEBUGGER_PAUSED_EVENT,
+  executionLineHighlighted,
   getBreakpointDecorators,
   getOpenSources,
   openNestedWorkerFile,
+  PAUSE_INDICATOR_SELECTOR,
   RESUME_BUTTON,
   retrieveTopCallFrameWithoutResuming,
   SourceFileEvents,
+  waitForLines,
   waitForSourceFiles,
 } from '../helpers/sources-helpers.js';
 
@@ -60,9 +70,74 @@ describe('Multi-Workers', async function() {
     }
 
     async function validateBreakpoints() {
+      await waitForLines(12);
+      // Wait for breakpoints to be present
+      await waitFor('.cm-gutterElement ~ .cm-breakpoint ~ .cm-breakpoint');
       assert.deepEqual(await getBreakpointDecorators(), [6, 12]);
       assert.deepEqual(await getBreakpointDecorators(true), [6]);
     }
+
+    describe(`loads scripts exactly once ${withOrWithout}`, () => {
+      it('but still distinguishes between the workers', async () => {
+        // Have the target load the page.
+        await goToResource(targetPage);
+
+        await step('Open sources panel', async () => {
+          await click('#tab-sources');
+        });
+
+        await validateNavigationTree();
+
+        const {target, frontend} = getBrowserAndPages();
+        installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+
+        await step('Enable reveal in sidebar', async () => {
+          await openCommandMenu();
+          await typeText('reveal files');
+          await waitFor('.filtered-list-widget-title');
+          await pressKey('Enter');
+          await waitForNone('.filtered-list-widget-title');
+        });
+
+        await step('Send message to a worker to trigger break', async () => {
+          await target.evaluate('workers[3].postMessage({command:"break"});');
+        });
+
+        await step('Validate that we are fully paused', async () => {
+          await waitFor(RESUME_BUTTON);
+          await waitFor(PAUSE_INDICATOR_SELECTOR);
+          await waitForFunction(async () => await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+          await executionLineHighlighted();
+        });
+
+        // Look at source tabs
+        await validateSourceTabs();
+
+        const selectedFile = workerFileSelectors(1).fileSelector + '[aria-selected="true"]';
+        const expandedWorker = workerFileSelectors(1).rootSelector + '[aria-expanded="true"]';
+
+        await step('Wait for first worker to be expanded', async () => {
+          await waitFor(selectedFile);
+          const workers = await $$(expandedWorker);
+          assert.strictEqual(workers.length, 1);
+        });
+
+        await step('Break in and switch to a different worker', async () => {
+          // Send message to a worker to a different worker to cause a different file to be
+          // selected in the page tree
+          await target.evaluate('workers[5].postMessage({command:"break"});');
+
+          // This typically happens too quickly to cause DevTools to switch to the other thread, so
+          // click on the other paused thread.
+          await click('.thread-item:has( .thread-item-paused-state:not(:empty)):not(.selected)');
+        });
+
+        // Now two workers are expanded
+        await waitFor(expandedWorker + ' ~ ' + expandedWorker);
+        // And still only one source tab
+        await validateSourceTabs();
+      });
+    });
 
     describe(`loads scripts exactly once ${withOrWithout}`, () => {
       beforeEach(async () => {

@@ -342,14 +342,21 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   workingCopy(): string {
+    return this.workingCopyContent().content || '';
+  }
+
+  workingCopyContent(): TextUtils.ContentProvider.DeferredContent {
     if (this.workingCopyGetter) {
       this.workingCopyInternal = this.workingCopyGetter();
       this.workingCopyGetter = null;
     }
     if (this.isDirty()) {
-      return this.workingCopyInternal as string;
+      return {content: this.workingCopyInternal as string, isEncoded: false};
     }
-    return this.contentInternal?.content || '';
+    if (this.contentInternal) {
+      return this.contentInternal;
+    }
+    return {content: '', isEncoded: false};
   }
 
   resetWorkingCopy(): void {

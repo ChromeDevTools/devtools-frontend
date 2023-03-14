@@ -28,7 +28,7 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
   // We force the Meta handler to be enabled, so the TraceHandlers type here is
   // the model handlers the user passes in and the Meta handler.
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly #traceHandlers: Handlers.Types.EnabledHandlersWithMeta<EnabledModelHandlers>;
+  readonly #traceHandlers: Handlers.Types.HandlersWithMeta<EnabledModelHandlers>;
   #pauseDuration: number;
   #pauseFrequencyMs: number;
   #status = Status.IDLE;

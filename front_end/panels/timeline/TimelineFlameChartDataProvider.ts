@@ -173,7 +173,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private legacyPerformanceModel: PerformanceModel|null;
   private compatibilityTracksAppender: CompatibilityTracksAppender|null;
   private legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl|null;
-  private traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
+  private traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null;
   /**
    * Raster threads are tracked and enumerated with this property. This is also
    * used to group all raster threads together in the same track, instead of
@@ -278,8 +278,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return Object.assign(defaultGroupStyle, extra);
   }
 
-  setModel(performanceModel: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null):
-      void {
+  setModel(
+      performanceModel: PerformanceModel|null,
+      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null): void {
     this.reset();
     this.legacyPerformanceModel = performanceModel;
     this.legacyTimelineModel = performanceModel && performanceModel.timelineModel();

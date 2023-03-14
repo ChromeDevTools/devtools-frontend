@@ -19,6 +19,16 @@ export interface ParseConfig {
   isFreshRecording?: boolean;
 }
 
+// As we migrate the data engine we are incrementally enabling the new handlers
+// one by one, so we do not waste effort parsing data that we do not use. This
+// object should be updated when we add a new handler to enable it.
+export const ENABLED_TRACE_HANDLERS = {
+  UserTimings: Handlers.ModelHandlers.UserTimings,
+  PageLoadMetrics: Handlers.ModelHandlers.PageLoadMetrics,
+};
+export type PartialTraceParseDataDuringMigration =
+    Readonly<Handlers.Types.EnabledHandlerDataWithMeta<typeof ENABLED_TRACE_HANDLERS>>;
+
 /**
  * The new trace engine model we are migrating to. The Model is responsible for
  * parsing arrays of raw trace events and storing the resulting data. It can
@@ -38,10 +48,19 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
 
   readonly #recordingsAvailable: string[] = [];
   #lastRecordingIndex = 0;
-  #processor: TraceProcessor<Handlers.Types.EnabledHandlersWithMeta<EnabledModelHandlers>>;
+  #processor: TraceProcessor<Handlers.Types.HandlersWithMeta<EnabledModelHandlers>>;
 
   static createWithAllHandlers(): Model<typeof Handlers.ModelHandlers> {
     return new Model(Handlers.ModelHandlers);
+  }
+
+  static createWithRequiredHandlersForMigration(): Model<{
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    UserTimings: typeof Handlers.ModelHandlers.UserTimings,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    PageLoadMetrics: typeof Handlers.ModelHandlers.PageLoadMetrics,
+  }> {
+    return new Model(ENABLED_TRACE_HANDLERS);
   }
 
   constructor(handlers: EnabledModelHandlers) {

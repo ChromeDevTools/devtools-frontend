@@ -312,10 +312,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
   private selection?: TimelineSelection|null;
-  #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.Handlers.ModelHandlers>;
+  #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.TraceModel.ENABLED_TRACE_HANDLERS>;
   constructor() {
     super('timeline');
-    this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithAllHandlers();
+    this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithRequiredHandlersForMigration();
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],
@@ -1032,7 +1032,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private setModel(
       model: PerformanceModel|null, exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
-      newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null = null): void {
+      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null): void {
     if (this.performanceModel) {
       this.performanceModel.removeEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
     }

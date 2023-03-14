@@ -47,7 +47,7 @@ export class TimingsTrackAppender implements TrackAppender {
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
   #flameChartData: PerfUI.FlameChart.TimelineData;
-  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
+  #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
   #entryData: TimelineFlameChartEntry[];
   // TODO(crbug.com/1416533)
   // These are used only for compatibility with the legacy flame chart
@@ -59,8 +59,9 @@ export class TimingsTrackAppender implements TrackAppender {
 
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.TimelineData,
-      traceParsedData: TraceEngine.Handlers.Types.TraceParseData, entryData: TimelineFlameChartEntry[],
-      legacyEntryTypeByLevel: EntryType[], legacyTrack?: TimelineModel.TimelineModel.Track) {
+      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
+      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[],
+      legacyTrack?: TimelineModel.TimelineModel.Track) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = new Common.Color.Generator(
         {

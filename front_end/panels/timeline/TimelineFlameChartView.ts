@@ -301,7 +301,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.updateTrack();
   }
 
-  setModel(model: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null): void {
+  setModel(
+      model: PerformanceModel|null,
+      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null): void {
     if (model === this.model) {
       return;
     }

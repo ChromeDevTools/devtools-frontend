@@ -65,7 +65,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type RecordingData = {
   legacyModel: PerformanceModel,
-  traceParseData: TraceEngine.Handlers.Types.TraceParseData|null,
+  traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
 };
 
 export class TimelineHistoryManager {
@@ -100,8 +100,9 @@ export class TimelineHistoryManager {
     this.lastActiveModel = null;
   }
 
-  addRecording(performanceModel: PerformanceModel, traceParseData: TraceEngine.Handlers.Types.TraceParseData|null):
-      void {
+  addRecording(
+      performanceModel: PerformanceModel,
+      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null): void {
     this.lastActiveModel = performanceModel;
     this.recordings.unshift({legacyModel: performanceModel, traceParseData});
     this.buildPreview(performanceModel);

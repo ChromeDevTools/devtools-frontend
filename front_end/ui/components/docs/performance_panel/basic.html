@@ -14,6 +14,11 @@
 
     <div id="container">
       <p>To use, append <code>?trace=foo</code>, where <code>foo</code> is represents <code>foo.json.gz</code> from the traces folder within the unit tests. This will cause the panel to load and render with that trace file.</p>
+
+      <form method="get" action="">
+        <input type="text" name="trace" placeholder="animation" />
+        <input type="submit" value="reload"/>
+      </form>
     </div>
 
     <script type="module" src="./basic.js"></script>

@@ -71,7 +71,7 @@ export type TrackAppenderName = typeof TrackNames[number];
 export class CompatibilityTracksAppender {
   #trackForLevel = new Map<number, TrackAppender>();
   #flameChartData: PerfUI.FlameChart.TimelineData;
-  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
+  #traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration;
   #entryData: TimelineFlameChartEntry[];
   #allTrackAppenders: TrackAppender[] = [];
   #visibleTrackNames: Set<TrackAppenderName> = new Set([...TrackNames]);
@@ -99,7 +99,8 @@ export class CompatibilityTracksAppender {
    * system.
    */
   constructor(
-      flameChartData: PerfUI.FlameChart.TimelineData, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+      flameChartData: PerfUI.FlameChart.TimelineData,
+      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
       entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[],
       legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl) {
     this.#flameChartData = flameChartData;

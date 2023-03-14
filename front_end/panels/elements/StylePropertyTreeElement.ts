@@ -44,16 +44,6 @@ const UIStrings = {
    */
   openColorPickerS: 'Open color picker. {PH1}',
   /**
-   *@description The warning text shown in Elements panel when font-variation-settings don't match allowed values
-   *@example {wdth} PH1
-   *@example {100} PH2
-   *@example {10} PH3
-   *@example {20} PH4
-   *@example {Arial} PH5
-   */
-  valueForSettingSSIsOutsideThe:
-      'Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”.',
-  /**
    *@description Context menu item for style property in edit mode
    */
   togglePropertyAndContinueEditing: 'Toggle property and continue editing',
@@ -929,7 +919,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     if (this.property.parsedOk) {
-      void this.updateFontVariationSettingsWarning();
       this.updateAuthoringHint();
     } else {
       // Avoid having longhands under an invalid shorthand.
@@ -994,11 +983,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
+    const cssModel = this.parentPaneInternal.cssModel();
+    const fontFaces = cssModel?.fontFaces() || [];
+
     const localName = this.node()?.localName();
     for (const validator of cssRuleValidatorsMap.get(propertyName) || []) {
       const hint = validator.getHint(
           propertyName, this.computedStyles || undefined, this.parentsComputedStyles || undefined,
-          localName?.toLowerCase());
+          localName?.toLowerCase(), fontFaces);
       if (hint) {
         Host.userMetrics.cssHintShown(validator.getMetricType());
         const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
@@ -1008,54 +1000,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         break;
       }
     }
-  }
-
-  private async updateFontVariationSettingsWarning(): Promise<void> {
-    if (this.property.name !== 'font-variation-settings') {
-      return;
-    }
-    const value = this.property.value;
-    const cssModel = this.parentPaneInternal.cssModel();
-    if (!cssModel) {
-      return;
-    }
-    const computedStyleModel = this.parentPaneInternal.computedStyleModel();
-    const styles = await computedStyleModel.fetchComputedStyle();
-    if (!styles) {
-      return;
-    }
-    const fontFamily = styles.computedStyle.get('font-family');
-    if (!fontFamily) {
-      return;
-    }
-    const fontFamilies = new Set<string>(SDK.CSSPropertyParser.parseFontFamily(fontFamily));
-    const matchingFontFaces = cssModel.fontFaces().filter(f => fontFamilies.has(f.getFontFamily()));
-    const variationSettings = SDK.CSSPropertyParser.parseFontVariationSettings(value);
-    const warnings = [];
-    for (const elementSetting of variationSettings) {
-      for (const font of matchingFontFaces) {
-        const fontSetting = font.getVariationAxisByTag(elementSetting.tag);
-        if (!fontSetting) {
-          continue;
-        }
-        if (elementSetting.value < fontSetting.minValue || elementSetting.value > fontSetting.maxValue) {
-          warnings.push(i18nString(UIStrings.valueForSettingSSIsOutsideThe, {
-            PH1: elementSetting.tag,
-            PH2: elementSetting.value,
-            PH3: fontSetting.minValue,
-            PH4: fontSetting.maxValue,
-            PH5: font.getFontFamily(),
-          }));
-        }
-      }
-    }
-
-    if (!warnings.length) {
-      return;
-    }
-    this.listItemElement.classList.add('has-warning');
-    this.listItemElement.insertBefore(
-        StylesSidebarPane.createExclamationMark(this.property, warnings.join(' ')), this.listItemElement.firstChild);
   }
 
   private mouseUp(event: MouseEvent): void {

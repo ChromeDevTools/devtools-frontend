@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
@@ -334,6 +335,62 @@ describeWithEnvironment('CSSRuleValidator', async () => {
       validator: () => new Elements.CSSRuleValidator.ZIndexValidator(),
       hintExpected: false,
     },
+    {
+      description: 'Reports a hint for invalid font variation settings',
+      computedStyles: new Map<string, string>([
+        ['font-variation-settings', '"wght" 251, "wdth" 59'],
+        ['font-family', 'Family'],
+      ]),
+      fontFaces: [new SDK.CSSFontFace.CSSFontFace({
+        fontFamily: 'Family',
+        fontStyle: 'string',
+        fontVariant: 'string',
+        fontWeight: 'string',
+        fontStretch: 'string',
+        fontDisplay: 'string',
+        unicodeRange: 'string',
+        src: 'string',
+        platformFontFamily: 'Family',
+        fontVariationAxes: [{
+          tag: 'wght',
+          name: 'Weight',
+          minValue: 10,
+          maxValue: 20,
+          defaultValue: 15,
+        }],
+      })],
+      nodeName: 'div',
+      validator: () => new Elements.CSSRuleValidator.FontVariationSettingsValidator(),
+      hintExpected: true,
+    },
+    {
+      description: 'Does not report a hint for valid font variation settings',
+      computedStyles: new Map<string, string>([
+        ['font-variation-settings', '"wght" 15, "wdth" 59'],
+        ['font-family', 'Family'],
+      ]),
+      fontFaces: [new SDK.CSSFontFace.CSSFontFace({
+        fontFamily: 'Family',
+        fontStyle: 'string',
+        fontVariant: 'string',
+        fontWeight: 'string',
+        fontStretch: 'string',
+        fontDisplay: 'string',
+        unicodeRange: 'string',
+        src: 'string',
+        platformFontFamily: 'Family',
+        fontVariationAxes: [{
+          tag: 'wght',
+          name: 'Weight',
+          minValue: 10,
+          maxValue: 20,
+          defaultValue: 15,
+        }],
+      })],
+      nodeName: 'div',
+      validator: () => new Elements.CSSRuleValidator.FontVariationSettingsValidator(),
+      hintExpected: false,
+    },
   ];
 
   before(async () => {
@@ -343,8 +400,8 @@ describeWithEnvironment('CSSRuleValidator', async () => {
   for (const test of tests) {
     it(test.description, () => {
       const actualResult = test.validator().getHint(
-          test.validator().getApplicableProperties()[0], test.computedStyles, test.parentsComputedStyles,
-          test.nodeName);
+          test.validator().getApplicableProperties()[0], test.computedStyles, test.parentsComputedStyles, test.nodeName,
+          test.fontFaces);
       if (test.hintExpected) {
         assert.isDefined(actualResult);
       } else {

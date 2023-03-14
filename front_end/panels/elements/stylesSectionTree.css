@@ -8,7 +8,6 @@
   padding: 0;
 }
 
-.tree-outline li.has-warning,
 .tree-outline li.not-parsed-ok {
   margin-left: 0;
 }
@@ -17,7 +16,6 @@
   background-color: var(--color-match-highlight);
 }
 
-.tree-outline li.has-warning .exclamation-mark,
 .tree-outline li.not-parsed-ok .exclamation-mark {
   display: inline-block;
   position: relative;

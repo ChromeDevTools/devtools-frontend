@@ -1177,7 +1177,8 @@ export enum CSSHintType {
   ZIndex = 10,
   Sizing = 11,
   FlexOrGridItem = 12,
-  MaxValue = 13,
+  FontVariationSettings = 13,
+  MaxValue = 14,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

@@ -1231,6 +1231,9 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
 
   prerenderStatusUpdated(_event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
   }
+
+  preloadingAttemptSourcesUpdated(): void {
+  }
 }
 
 SDKModel.register(ResourceTreeModel, {capabilities: Capability.DOM, autostart: true, early: true});

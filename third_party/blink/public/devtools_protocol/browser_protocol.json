@@ -1449,7 +1449,6 @@
                     "type": "string",
                     "enum": [
                         "PermissionPolicyDisabled",
-                        "PermissionPolicyNotDelegated",
                         "UntrustworthyReportingOrigin",
                         "InsecureContext",
                         "InvalidHeader",
@@ -1458,7 +1457,12 @@
                         "TooManyConcurrentRequests",
                         "SourceAndTriggerHeaders",
                         "SourceIgnored",
-                        "TriggerIgnored"
+                        "TriggerIgnored",
+                        "OsSourceIgnored",
+                        "OsTriggerIgnored",
+                        "InvalidRegisterOsSourceHeader",
+                        "InvalidRegisterOsTriggerHeader",
+                        "WebAndOsHeaders"
                     ]
                 },
                 {
@@ -22791,6 +22795,73 @@
                     ]
                 },
                 {
+                    "id": "SpeculationAction",
+                    "description": "The type of preloading attempted. It corresponds to\nmojom::SpeculationAction (although PrefetchWithSubresources is omitted as it\nisn't being used by clients).",
+                    "type": "string",
+                    "enum": [
+                        "Prefetch",
+                        "Prerender"
+                    ]
+                },
+                {
+                    "id": "SpeculationTargetHint",
+                    "description": "Corresponds to mojom::SpeculationTargetHint.\nSee https://github.com/WICG/nav-speculation/blob/main/triggers.md#window-name-targeting-hints",
+                    "type": "string",
+                    "enum": [
+                        "Blank",
+                        "Self"
+                    ]
+                },
+                {
+                    "id": "PreloadingAttemptKey",
+                    "description": "A key that identifies a preloading attempt.\n\nThe url used is the url specified by the trigger (i.e. the initial URL), and\nnot the final url that is navigated to. For example, prerendering allows\nsame-origin main frame navigations during the attempt, but the attempt is\nstill keyed with the initial URL.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "loaderId",
+                            "$ref": "Network.LoaderId"
+                        },
+                        {
+                            "name": "action",
+                            "$ref": "SpeculationAction"
+                        },
+                        {
+                            "name": "url",
+                            "type": "string"
+                        },
+                        {
+                            "name": "targetHint",
+                            "optional": true,
+                            "$ref": "SpeculationTargetHint"
+                        }
+                    ]
+                },
+                {
+                    "id": "PreloadingAttemptSource",
+                    "description": "Lists sources for a preloading attempt, specifically the ids of rule sets\nthat had a speculation rule that triggered the attempt, and the\nBackendNodeIds of <a href> or <area href> elements that triggered the\nattempt (in the case of attempts triggered by a document rule). It is\npossible for mulitple rule sets and links to trigger a single attempt.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "key",
+                            "$ref": "PreloadingAttemptKey"
+                        },
+                        {
+                            "name": "ruleSetIds",
+                            "type": "array",
+                            "items": {
+                                "$ref": "RuleSetId"
+                            }
+                        },
+                        {
+                            "name": "nodeIds",
+                            "type": "array",
+                            "items": {
+                                "$ref": "DOM.BackendNodeId"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "PrerenderFinalStatus",
                     "description": "List of FinalStatus reasons for Prerender2.",
                     "type": "string",
@@ -22835,7 +22906,6 @@
                         "CrossSiteRedirect",
                         "CrossSiteNavigation",
                         "SameSiteCrossOriginRedirect",
-                        "SameSiteCrossOriginNavigation",
                         "SameSiteCrossOriginRedirectNotOptIn",
                         "SameSiteCrossOriginNavigationNotOptIn",
                         "ActivationNavigationParameterMismatch",
@@ -22957,6 +23027,19 @@
                             "$ref": "PreloadingStatus"
                         }
                     ]
+                },
+                {
+                    "name": "preloadingAttemptSourcesUpdated",
+                    "description": "Send a list of sources for all preloading attempts.",
+                    "parameters": [
+                        {
+                            "name": "preloadingAttemptSources",
+                            "type": "array",
+                            "items": {
+                                "$ref": "PreloadingAttemptSource"
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -22964,9 +23047,83 @@
             "domain": "FedCm",
             "description": "This domain allows interacting with the FedCM dialog.",
             "experimental": true,
+            "types": [
+                {
+                    "id": "LoginState",
+                    "description": "Whether this is a sign-up or sign-in action for this account, i.e.\nwhether this account has ever been used to sign in to this RP before.",
+                    "type": "string",
+                    "enum": [
+                        "SignIn",
+                        "SignUp"
+                    ]
+                },
+                {
+                    "id": "Account",
+                    "description": "Corresponds to IdentityRequestAccount",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "accountId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "email",
+                            "type": "string"
+                        },
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "givenName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "pictureUrl",
+                            "type": "string"
+                        },
+                        {
+                            "name": "idpConfigUrl",
+                            "type": "string"
+                        },
+                        {
+                            "name": "idpSigninUrl",
+                            "type": "string"
+                        },
+                        {
+                            "name": "loginState",
+                            "$ref": "LoginState"
+                        },
+                        {
+                            "name": "termsOfServiceUrl",
+                            "description": "These two are only set if the loginState is signUp",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "privacyPolicyUrl",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                }
+            ],
             "events": [
                 {
-                    "name": "dialogShown"
+                    "name": "dialogShown",
+                    "parameters": [
+                        {
+                            "name": "dialogId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "accounts",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Account"
+                            }
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -22975,6 +23132,28 @@
                 },
                 {
                     "name": "disable"
+                },
+                {
+                    "name": "selectAccount",
+                    "parameters": [
+                        {
+                            "name": "dialogId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "accountIndex",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "dismissDialog",
+                    "parameters": [
+                        {
+                            "name": "dialogId",
+                            "type": "string"
+                        }
+                    ]
                 }
             ]
         },

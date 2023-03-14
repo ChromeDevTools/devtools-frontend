@@ -966,7 +966,6 @@ export namespace Audits {
 
   export const enum AttributionReportingIssueType {
     PermissionPolicyDisabled = 'PermissionPolicyDisabled',
-    PermissionPolicyNotDelegated = 'PermissionPolicyNotDelegated',
     UntrustworthyReportingOrigin = 'UntrustworthyReportingOrigin',
     InsecureContext = 'InsecureContext',
     InvalidHeader = 'InvalidHeader',
@@ -976,6 +975,11 @@ export namespace Audits {
     SourceAndTriggerHeaders = 'SourceAndTriggerHeaders',
     SourceIgnored = 'SourceIgnored',
     TriggerIgnored = 'TriggerIgnored',
+    OsSourceIgnored = 'OsSourceIgnored',
+    OsTriggerIgnored = 'OsTriggerIgnored',
+    InvalidRegisterOsSourceHeader = 'InvalidRegisterOsSourceHeader',
+    InvalidRegisterOsTriggerHeader = 'InvalidRegisterOsTriggerHeader',
+    WebAndOsHeaders = 'WebAndOsHeaders',
   }
 
   /**
@@ -15282,6 +15286,53 @@ export namespace Preload {
   }
 
   /**
+   * The type of preloading attempted. It corresponds to
+   * mojom::SpeculationAction (although PrefetchWithSubresources is omitted as it
+   * isn't being used by clients).
+   */
+  export const enum SpeculationAction {
+    Prefetch = 'Prefetch',
+    Prerender = 'Prerender',
+  }
+
+  /**
+   * Corresponds to mojom::SpeculationTargetHint.
+   * See https://github.com/WICG/nav-speculation/blob/main/triggers.md#window-name-targeting-hints
+   */
+  export const enum SpeculationTargetHint {
+    Blank = 'Blank',
+    Self = 'Self',
+  }
+
+  /**
+   * A key that identifies a preloading attempt.
+   *
+   * The url used is the url specified by the trigger (i.e. the initial URL), and
+   * not the final url that is navigated to. For example, prerendering allows
+   * same-origin main frame navigations during the attempt, but the attempt is
+   * still keyed with the initial URL.
+   */
+  export interface PreloadingAttemptKey {
+    loaderId: Network.LoaderId;
+    action: SpeculationAction;
+    url: string;
+    targetHint?: SpeculationTargetHint;
+  }
+
+  /**
+   * Lists sources for a preloading attempt, specifically the ids of rule sets
+   * that had a speculation rule that triggered the attempt, and the
+   * BackendNodeIds of <a href> or <area href> elements that triggered the
+   * attempt (in the case of attempts triggered by a document rule). It is
+   * possible for mulitple rule sets and links to trigger a single attempt.
+   */
+  export interface PreloadingAttemptSource {
+    key: PreloadingAttemptKey;
+    ruleSetIds: RuleSetId[];
+    nodeIds: DOM.BackendNodeId[];
+  }
+
+  /**
    * List of FinalStatus reasons for Prerender2.
    */
   export const enum PrerenderFinalStatus {
@@ -15325,7 +15376,6 @@ export namespace Preload {
     CrossSiteRedirect = 'CrossSiteRedirect',
     CrossSiteNavigation = 'CrossSiteNavigation',
     SameSiteCrossOriginRedirect = 'SameSiteCrossOriginRedirect',
-    SameSiteCrossOriginNavigation = 'SameSiteCrossOriginNavigation',
     SameSiteCrossOriginRedirectNotOptIn = 'SameSiteCrossOriginRedirectNotOptIn',
     SameSiteCrossOriginNavigationNotOptIn = 'SameSiteCrossOriginNavigationNotOptIn',
     ActivationNavigationParameterMismatch = 'ActivationNavigationParameterMismatch',
@@ -15407,12 +15457,61 @@ export namespace Preload {
     prerenderingUrl: string;
     status: PreloadingStatus;
   }
+
+  /**
+   * Send a list of sources for all preloading attempts.
+   */
+  export interface PreloadingAttemptSourcesUpdatedEvent {
+    preloadingAttemptSources: PreloadingAttemptSource[];
+  }
 }
 
 /**
  * This domain allows interacting with the FedCM dialog.
  */
 export namespace FedCm {
+
+  /**
+   * Whether this is a sign-up or sign-in action for this account, i.e.
+   * whether this account has ever been used to sign in to this RP before.
+   */
+  export const enum LoginState {
+    SignIn = 'SignIn',
+    SignUp = 'SignUp',
+  }
+
+  /**
+   * Corresponds to IdentityRequestAccount
+   */
+  export interface Account {
+    accountId: string;
+    email: string;
+    name: string;
+    givenName: string;
+    pictureUrl: string;
+    idpConfigUrl: string;
+    idpSigninUrl: string;
+    loginState: LoginState;
+    /**
+     * These two are only set if the loginState is signUp
+     */
+    termsOfServiceUrl?: string;
+    privacyPolicyUrl?: string;
+  }
+
+  export interface SelectAccountRequest {
+    dialogId: string;
+    accountIndex: integer;
+  }
+
+  export interface DismissDialogRequest {
+    dialogId: string;
+  }
+
+  export interface DialogShownEvent {
+    dialogId: string;
+    accounts: Account[];
+  }
 }
 
 /**

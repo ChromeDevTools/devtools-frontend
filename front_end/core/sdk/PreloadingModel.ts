@@ -184,6 +184,9 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
   prerenderStatusUpdated(event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
     this.model.onPrerenderStatusUpdated(event);
   }
+
+  preloadingAttemptSourcesUpdated(): void {
+  }
 }
 
 class RuleSetRegistry {

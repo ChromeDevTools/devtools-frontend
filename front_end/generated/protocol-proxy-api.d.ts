@@ -3638,6 +3638,11 @@ declare namespace ProtocolProxyApi {
      */
     prerenderStatusUpdated(params: Protocol.Preload.PrerenderStatusUpdatedEvent): void;
 
+    /**
+     * Send a list of sources for all preloading attempts.
+     */
+    preloadingAttemptSourcesUpdated(params: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void;
+
   }
 
   export interface FedCmApi {
@@ -3645,9 +3650,13 @@ declare namespace ProtocolProxyApi {
 
     invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
 
+    invoke_selectAccount(params: Protocol.FedCm.SelectAccountRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    invoke_dismissDialog(params: Protocol.FedCm.DismissDialogRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface FedCmDispatcher {
-    dialogShown(): void;
+    dialogShown(params: Protocol.FedCm.DialogShownEvent): void;
 
   }
 

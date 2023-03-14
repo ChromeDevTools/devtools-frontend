@@ -83,6 +83,10 @@ export const UIStrings = {
    */
   InsecurePrivateNetworkSubresourceRequest: 'The website requested a subresource from a network that it could only access because of its users\' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them.',
   /**
+   * @description This is a deprecated warning to developers that a field in a structure has been renamed.
+   */
+  InterestGroupDailyUpdateUrl: 'The `dailyUpdateUrl` field of `InterestGroups` passed to `joinAdInterestGroup()` has been renamed to `updateUrl`, to more accurately reflect its behavior.',
+  /**
    * @description This warning occurs when a stylesheet loaded from a local file directive does not end in the file type `.css`.
    */
   LocalCSSFileExtensionRejected: 'CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension.',

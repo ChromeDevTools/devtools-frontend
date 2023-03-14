@@ -642,7 +642,11 @@ export namespace ProtocolMapping {
      * Fired when a prerender attempt is updated.
      */
     'Preload.prerenderStatusUpdated': [Protocol.Preload.PrerenderStatusUpdatedEvent];
-    'FedCm.dialogShown': [];
+    /**
+     * Send a list of sources for all preloading attempts.
+     */
+    'Preload.preloadingAttemptSourcesUpdated': [Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent];
+    'FedCm.dialogShown': [Protocol.FedCm.DialogShownEvent];
     /**
      * Fired when breakpoint is resolved to an actual script and location.
      */
@@ -4093,6 +4097,14 @@ export namespace ProtocolMapping {
     };
     'FedCm.disable': {
       paramsType: [];
+      returnType: void;
+    };
+    'FedCm.selectAccount': {
+      paramsType: [Protocol.FedCm.SelectAccountRequest];
+      returnType: void;
+    };
+    'FedCm.dismissDialog': {
+      paramsType: [Protocol.FedCm.DismissDialogRequest];
       returnType: void;
     };
     /**

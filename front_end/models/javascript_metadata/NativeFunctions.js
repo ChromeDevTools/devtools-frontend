@@ -339,6 +339,11 @@ export const NativeFunctions = [
     receivers: ['ReadonlyArray','Array']
   },
   {
+    name: 'concat',
+    signatures: [['inputs','axis']],
+    receivers: ['MLGraphBuilder']
+  },
+  {
     name: 'indexOf',
     signatures: [['searchString','?position']],
     receivers: ['String']
@@ -6708,8 +6713,8 @@ export const NativeFunctions = [
     signatures: [['scriptURL','?options']]
   },
   {
-    name: 'setTrustToken',
-    signatures: [['trustToken']]
+    name: 'setPrivateToken',
+    signatures: [['privateToken']]
   },
   {
     name: 'joinAdInterestGroup',
@@ -7285,7 +7290,7 @@ export const NativeFunctions = [
   },
   {
     name: 'OverconstrainedError',
-    signatures: [['constraint','message']]
+    signatures: [['constraint','?message']]
   },
   {
     name: 'compute',
@@ -7364,6 +7369,10 @@ export const NativeFunctions = [
   {
     name: 'sigmoid',
     signatures: [['?input']]
+  },
+  {
+    name: 'transpose',
+    signatures: [['input','?options']]
   },
   {
     name: 'softmax',
@@ -7538,8 +7547,8 @@ export const NativeFunctions = [
     signatures: [['track']]
   },
   {
-    name: 'setOfferedRtpHeaderExtensions',
-    signatures: [['headerExtensionsToOffer']]
+    name: 'setHeaderExtensionsToNegotiate',
+    signatures: [['extensions']]
   },
   {
     name: 'RTCSessionDescription',

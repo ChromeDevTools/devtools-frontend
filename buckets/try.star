@@ -166,12 +166,8 @@ builder_coverage(
     covered_oss = ["linux", "win64", "mac"],
     builder_factory = try_builder,
     builder_name_pattern = "e2e_stressor_parallel_%s",
-    recipe_name = "devtools/devtools-frontend",
+    recipe_name = "devtools/dtf-e2e-stress",
     execution_timeout = default_timeout,
-    properties = {
-        "builder_config": "Debug",
-        "devtools_skip_typecheck": True,
-    },
     priority = 50,
 )
 

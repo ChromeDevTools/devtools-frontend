@@ -11,7 +11,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {WebVitalsEventLane, WebVitalsTimeboxLane} from './WebVitalsLane.js';
-import {type WebVitalsTooltip} from './WebVitalsTooltip.js';
+import {WebVitalsTooltip} from './WebVitalsTooltip.js';
 
 const UIStrings = {
   /**
@@ -182,7 +182,8 @@ export class WebVitalsTimeline extends HTMLElement {
     this.#layoutShiftsLane = new WebVitalsEventLane(this, i18nString(UIStrings.ls), _ => MarkerType.Bad);
     this.#longTasksLane = new WebVitalsTimeboxLane(this, i18nString(UIStrings.longTasks), this.#getLongTaskOverlay);
 
-    this.#overlay = document.createElement('devtools-timeline-webvitals-tooltip');
+    // Refer to the component by its static tag name to ensure the import is not dropped at compilation time.
+    this.#overlay = document.createElement(WebVitalsTooltip.litTagName.value as 'devtools-timeline-webvitals-tooltip');
     this.#overlay.style.position = 'absolute';
     this.#overlay.style.visibility = 'hidden';
 

@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
@@ -149,8 +148,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export const FONT = '11px ' + Host.Platform.fontFamily();
-
 // at the moment there are two types defined for trace events: traceeventdata and
 // SDK.TracingModel.Event. This is only for compatibility between the legacy system
 // and the new system proposed in go/rpp-flamechart-arch. In the future, once all
@@ -204,10 +201,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private entryParent!: SDK.TracingModel.Event[];
   private lastSelection?: Selection;
   private colorForEvent?: ((arg0: SDK.TracingModel.Event) => string);
+  #font: string;
 
   constructor() {
     super();
     this.reset();
+    this.#font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
     this.droppedFramePatternCanvas = document.createElement('canvas');
     this.partialFramePatternCanvas = document.createElement('canvas');
     this.preparePatternCanvas();
@@ -271,7 +270,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       collapsible: true,
       color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
       backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
-      font: FONT,
       nestingLevel: 0,
       shareHeaderLine: true,
     };
@@ -398,7 +396,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   entryFont(_index: number): string|null {
-    return FONT;
+    return this.#font;
   }
 
   reset(): void {

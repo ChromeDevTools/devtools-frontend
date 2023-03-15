@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../../../../core/common/common.js';
-import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
@@ -41,6 +40,7 @@ import {ChartViewport, type ChartViewportDelegate} from './ChartViewport.js';
 
 import {TimelineGrid, type Calculator} from './TimelineGrid.js';
 import flameChartStyles from './flameChart.css.legacy.js';
+import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
 
 const UIStrings = {
   /**
@@ -134,11 +134,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private entryColorsCache?: string[]|null;
   private visibleLevelHeights?: Uint32Array;
   private totalTime?: number;
+  #font: string;
 
   constructor(
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
       groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>) {
     super(true);
+    this.#font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
     this.registerRequiredCSS(flameChartStyles);
     this.contentElement.classList.add('flame-chart-main-pane');
     this.groupExpansionSetting = groupExpansionSetting;
@@ -932,7 +934,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
     context.save();
-    context.font = groups[group].style.font;
+    context.font = this.#font;
     const right = this.headerLeftPadding + this.labelWidthForGroup(context, groups[group]);
     context.restore();
     if (x > right) {
@@ -972,8 +974,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.fillStyle = 'rgba(0, 0, 0, 0)';
     context.fillRect(0, 0, width, height);
     context.translate(0, -top);
-    const defaultFont = '11px ' + Host.Platform.fontFamily();
-    context.font = defaultFont;
+    context.font = this.#font;
 
     const {markerIndices, colorBuckets, titleIndices} = this.getDrawableData(context, timelineData);
 
@@ -994,7 +995,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.drawMarkers(context, timelineData, markerIndices);
 
-    this.drawEventTitles(context, timelineData, titleIndices, defaultFont, width);
+    this.drawEventTitles(context, timelineData, titleIndices, width);
     context.restore();
 
     this.drawGroupHeaders(width, height);
@@ -1243,8 +1244,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.save();
     context.scale(ratio, ratio);
     context.translate(0, -top);
-    const defaultFont = '11px ' + Host.Platform.fontFamily();
-    context.font = defaultFont;
+    context.font = this.#font;
 
     context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
     this.forEachGroupInViewport((offset, index, group) => {
@@ -1290,7 +1290,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     context.save();
     this.forEachGroupInViewport((offset, index, group) => {
-      context.font = group.style.font;
+      context.font = this.#font;
       if (this.isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
         const width = this.labelWidthForGroup(context, group) + 2;
         if (this.isGroupFocused(index)) {
@@ -1408,8 +1408,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * in the Performance Panel timeline).
    */
   private drawEventTitles(
-      context: CanvasRenderingContext2D, timelineData: TimelineData, titleIndices: number[], defaultFont: string,
-      width: number): void {
+      context: CanvasRenderingContext2D, timelineData: TimelineData, titleIndices: number[], width: number): void {
     const timeToPixel = this.chartViewport.timeToPixel();
     const textPadding = this.textPadding;
     context.save();
@@ -1425,7 +1424,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const barY = this.levelToOffset(barLevel);
       let text = this.dataProvider.entryTitle(entryIndex);
       if (text && text.length) {
-        context.font = this.dataProvider.entryFont(entryIndex) || defaultFont;
+        context.font = this.#font;
         text = UI.UIUtils.trimTextMiddle(context, text, barWidth - 2 * textPadding);
       }
       const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
@@ -2099,7 +2098,6 @@ export interface GroupStyle {
   height: number;
   padding: number;
   collapsible: boolean;
-  font: string;
   color: string;
   backgroundColor: string;
   nestingLevel: number;

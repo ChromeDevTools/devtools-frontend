@@ -1741,6 +1741,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/perf_ui/ChartViewport.js",
   "front_end/ui/legacy/components/perf_ui/FilmStripView.js",
   "front_end/ui/legacy/components/perf_ui/FlameChart.js",
+  "front_end/ui/legacy/components/perf_ui/Font.js",
   "front_end/ui/legacy/components/perf_ui/GCActionDelegate.js",
   "front_end/ui/legacy/components/perf_ui/LineLevelProfile.js",
   "front_end/ui/legacy/components/perf_ui/LiveHeapProfile.js",

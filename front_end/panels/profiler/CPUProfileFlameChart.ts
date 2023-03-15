@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -44,7 +43,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   // eslint-disable-next-line @typescript-eslint/naming-convention
   timelineData_: PerfUI.FlameChart.TimelineData|null;
   entryNodes: SDK.ProfileTreeModel.ProfileNode[];
-  font?: string;
+  #font: string;
   boldFont?: string;
 
   constructor() {
@@ -52,6 +51,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
     this.maxStackDepthInternal = 0;
     this.timelineData_ = null;
     this.entryNodes = [];
+    this.#font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
   }
 
   static colorGenerator(): Common.Color.Generator {
@@ -104,11 +104,8 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 
   entryFont(entryIndex: number): string|null {
-    if (!this.font) {
-      this.font = '11px ' + Host.Platform.fontFamily();
-      this.boldFont = 'bold ' + this.font;
-    }
-    return this.entryHasDeoptReason(entryIndex) ? this.boldFont as string : this.font;
+    const boldFont = 'bold ' + this.#font;
+    return this.entryHasDeoptReason(entryIndex) ? boldFont : this.#font;
   }
 
   entryHasDeoptReason(_entryIndex: number): boolean {

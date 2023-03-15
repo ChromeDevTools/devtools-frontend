@@ -31,6 +31,7 @@ devtools_module("perf_ui") {
     "ChartViewport.ts",
     "FilmStripView.ts",
     "FlameChart.ts",
+    "Font.ts",
     "GCActionDelegate.ts",
     "LineLevelProfile.ts",
     "LiveHeapProfile.ts",

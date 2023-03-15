@@ -5,7 +5,6 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {
-  FONT,
   EntryType,
   InstantEventVisibleDurationMs,
   type TimelineFlameChartEntry,
@@ -112,7 +111,6 @@ export class TimingsTrackAppender implements TrackAppender {
       collapsible: trackIsCollapsible,
       color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
       backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
-      font: FONT,
       nestingLevel: 0,
       shareHeaderLine: true,
       useFirstLineForOverview: true,

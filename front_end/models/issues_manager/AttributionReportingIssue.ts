@@ -19,6 +19,11 @@ export const enum IssueCode {
   SourceAndTriggerHeaders = 'AttributionReportingIssue::SourceAndTriggerHeaders',
   SourceIgnored = 'AttributionReportingIssue::SourceIgnored',
   TriggerIgnored = 'AttributionReportingIssue::TriggerIgnored',
+  OsSourceIgnored = 'AttributionReportingIssue::OsSourceIgnored',
+  OsTriggerIgnored = 'AttributionReportingIssue::OsTriggerIgnored',
+  InvalidRegisterOsSourceHeader = 'AttributionReportingIssue::InvalidRegisterOsSourceHeader',
+  InvalidRegisterOsTriggerHeader = 'AttributionReportingIssue::InvalidRegisterOsTriggerHeader',
+  WebAndOsHeaders = 'AttributionReportingIssue::WebAndOsHeaders',
   // TODO(apaseltiner): Remove this once old issue types are removed from
   // protocol.
   Unknown = 'AttributionReportingIssue::Unknown',
@@ -46,6 +51,16 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.SourceIgnored;
     case Protocol.Audits.AttributionReportingIssueType.TriggerIgnored:
       return IssueCode.TriggerIgnored;
+    case Protocol.Audits.AttributionReportingIssueType.OsSourceIgnored:
+      return IssueCode.OsSourceIgnored;
+    case Protocol.Audits.AttributionReportingIssueType.OsTriggerIgnored:
+      return IssueCode.OsTriggerIgnored;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidRegisterOsSourceHeader:
+      return IssueCode.InvalidRegisterOsSourceHeader;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidRegisterOsTriggerHeader:
+      return IssueCode.InvalidRegisterOsTriggerHeader;
+    case Protocol.Audits.AttributionReportingIssueType.WebAndOsHeaders:
+      return IssueCode.WebAndOsHeaders;
     default:
       return IssueCode.Unknown;
   }
@@ -110,6 +125,16 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           file: 'arInvalidRegisterTriggerHeader.md',
           links: [this.getHeaderValidatorLink('trigger')],
         };
+      case IssueCode.InvalidRegisterOsSourceHeader:
+        return {
+          file: 'arInvalidRegisterOsSourceHeader.md',
+          links: [this.getHeaderValidatorLink('os-source')],
+        };
+      case IssueCode.InvalidRegisterOsTriggerHeader:
+        return {
+          file: 'arInvalidRegisterOsTriggerHeader.md',
+          links: [this.getHeaderValidatorLink('os-trigger')],
+        };
       case IssueCode.InvalidEligibleHeader:
         return {
           file: 'arInvalidEligibleHeader.md',
@@ -128,6 +153,11 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           file: 'arSourceAndTriggerHeaders.md',
           links: [],
         };
+      case IssueCode.WebAndOsHeaders:
+        return {
+          file: 'arWebAndOsHeaders.md',
+          links: [],
+        };
       case IssueCode.SourceIgnored:
         return {
           file: 'arSourceIgnored.md',
@@ -136,6 +166,16 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.TriggerIgnored:
         return {
           file: 'arTriggerIgnored.md',
+          links: [structuredHeaderLink],
+        };
+      case IssueCode.OsSourceIgnored:
+        return {
+          file: 'arOsSourceIgnored.md',
+          links: [structuredHeaderLink],
+        };
+      case IssueCode.OsTriggerIgnored:
+        return {
+          file: 'arOsTriggerIgnored.md',
           links: [structuredHeaderLink],
         };
       case IssueCode.Unknown:
@@ -154,11 +194,16 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.InsecureContext:
       case IssueCode.InvalidRegisterSourceHeader:
       case IssueCode.InvalidRegisterTriggerHeader:
+      case IssueCode.InvalidRegisterOsSourceHeader:
+      case IssueCode.InvalidRegisterOsTriggerHeader:
       case IssueCode.InvalidEligibleHeader:
       case IssueCode.TooManyConcurrentRequests:
       case IssueCode.SourceAndTriggerHeaders:
+      case IssueCode.WebAndOsHeaders:
       case IssueCode.SourceIgnored:
       case IssueCode.TriggerIgnored:
+      case IssueCode.OsSourceIgnored:
+      case IssueCode.OsTriggerIgnored:
       case IssueCode.Unknown:
         return IssueKind.PageError;
     }

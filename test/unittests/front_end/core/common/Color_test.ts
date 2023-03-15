@@ -243,6 +243,15 @@ describe('Color', () => {
     assertNotNullOrUndefined(colorOne);
     deepCloseTo(colorOne.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
 
+    const colorTwo = parseAndAssertNotNull('color(srgb 100% 100% 100%/50%)');
+    deepCloseTo(colorTwo?.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
+
+    const colorThree = parseAndAssertNotNull('color(srgb 100% 100% 100%/ 50%)');
+    deepCloseTo(colorThree?.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
+
+    const colorFour = parseAndAssertNotNull('color(srgb 100% 100% 100% /50%)');
+    deepCloseTo(colorFour?.rgba(), [1, 1, 1, 0.5], colorSpaceConversionTolerance);
+
     // Does not parse invalid syntax
     const invalidSyntaxes = [
       // Not known color space

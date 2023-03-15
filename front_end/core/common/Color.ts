@@ -1449,7 +1449,8 @@ export class ColorFunction implements Color {
    * @param parametersText Inside of the `color()` function. ex, `display-p3 0.1 0.2 0.3 / 0%`
    * @returns `Color` object
    */
-  static fromSpec(authoredText: string, parametersText: string): ColorFunction|null {
+  static fromSpec(authoredText: string, parametersWithAlphaText: string): ColorFunction|null {
+    const [parametersText, alphaText] = parametersWithAlphaText.split('/', 2);
     const parameters = parametersText.trim().split(/\s+/);
     const [colorSpaceText, ...remainingParams] = parameters;
     const colorSpace = getColorSpace(colorSpaceText);
@@ -1459,53 +1460,34 @@ export class ColorFunction implements Color {
     }
 
     // `color(<color-space>)` is a valid syntax
-    if (remainingParams.length === 0) {
+    if (remainingParams.length === 0 && alphaText === undefined) {
       return new ColorFunction(colorSpace, 0, 0, 0, null, authoredText);
     }
 
     // Check if it contains `/ <alpha>` part, if so, it should be at the end
-    const alphaSeparatorIndex = remainingParams.indexOf('/');
-    const containsAlpha = alphaSeparatorIndex !== -1;
-    if (containsAlpha && alphaSeparatorIndex !== remainingParams.length - 2) {
+    if (remainingParams.length === 0 && alphaText !== undefined && alphaText.trim().split(/\s+/).length > 1) {
       // Invalid syntax: like `color(<space> / <alpha> <number>)`
       return null;
     }
 
-    if (containsAlpha) {
-      // Since we know that the last value is <alpha>
-      // we can safely remove the alpha separator
-      // and only leave the numbers (if given correctly)
-      remainingParams.splice(alphaSeparatorIndex, 1);
-    }
-
-    // `color` cannot contain more than 4 parameters when there is alpha
-    // and cannot contain more than 3 parameters when there isn't alpha
-    const maxLength = containsAlpha ? 4 : 3;
-    if (remainingParams.length > maxLength) {
+    // `color` cannot contain more than 3 parameters without alpha
+    if (remainingParams.length > 3) {
       return null;
     }
 
     // Replace `none`s with 0s
-    const nonesReplacesParams = remainingParams.map(param => param === 'none' ? '0' : param);
+    const nonesReplacedParams = remainingParams.map(param => param === 'none' ? '0' : param);
 
     // At this point, we know that all the values are there so we can
     // safely try to parse all the values as number or percentage
-    const values = nonesReplacesParams.map(param => parsePercentOrNumber(param, [0, 1]));
+    const values = nonesReplacedParams.map(param => parsePercentOrNumber(param, [0, 1]));
     const containsNull = values.includes(null);
     // At least one value is malformatted (not a number or percentage)
     if (containsNull) {
       return null;
     }
 
-    let alphaValue = 1;
-    if (containsAlpha) {
-      // We know that `alphaValue` exists at this point.
-      // See the above lines for deciding on `containsAlpha`.
-      alphaValue = values[values.length - 1] as number;
-      // We get rid of the `alpha` from the list
-      // so that all the values map to `r, g, b` from the start
-      values.pop();
-    }
+    const alphaValue = alphaText ? parsePercentOrNumber(alphaText, [0, 1]) ?? 1 : 1;
 
     // Depending on the color space
     // this either reflects `rgb` parameters in that color space

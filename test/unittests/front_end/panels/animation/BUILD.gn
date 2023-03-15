@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("animation") {
   testonly = true
-  sources = [ "AnimationModel_test.ts" ]
+  sources = [
+    "AnimationModel_test.ts",
+    "AnimationTimeline_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/panels/animation:bundle",

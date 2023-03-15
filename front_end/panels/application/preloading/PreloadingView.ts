@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../../generated/protocol.js';
 import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import * as Protocol from '../../../generated/protocol.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 
 import * as PreloadingComponents from './components/components.js';
@@ -14,28 +14,31 @@ import * as PreloadingComponents from './components/components.js';
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
 import preloadingViewStyles from './preloadingView.css.js';
 
-type WithId<I, V> = SDK.PreloadingModel.WithId<I, V>;
-type PreloadingId = SDK.PrerenderingModel.PreloadingId;
-type PrerenderingAttempt = SDK.PrerenderingModel.PrerenderingAttempt;
-type PrerenderingAttemptWithId = SDK.PrerenderingModel.PrerenderingAttemptWithId;
-
 const UIStrings = {
   /**
    *@description Text in grid: Rule set is valid
    */
   validityValid: 'Valid',
   /**
-   *@description Text in grid and details
+   *@description Text in grid and details: Preloading attempt is eligible but pending.
    */
-  statusPrerendering: 'Prerendering',
+  statusPending: 'Pending',
   /**
-   *@description Text in grid and details
+   *@description Text in grid and details: Preloading is running.
    */
-  statusActivated: 'Activated',
+  statusRunning: 'Running',
   /**
-   *@description Text in grid and details
+   *@description Text in grid and details: Preloading finished and the result is ready for the next navigation.
    */
-  statusDiscarded: 'Discarded',
+  statusReady: 'Ready',
+  /**
+   *@description Text in grid and details: Ready, then used.
+   */
+  statusSuccess: 'Success',
+  /**
+   *@description Text in grid and details: Preloading failed.
+   */
+  statusFailure: 'Failure',
   /**
    *@description Title in infobar
    */
@@ -58,28 +61,37 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/PreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-class PrerenderingUIUtils {
-  static trigger(x: PrerenderingAttempt): string {
-    switch (x.trigger.kind) {
-      case 'PrerenderingTriggerSpecRules':
-        return i18n.i18n.lockedString('Speculation Rules');
-      case 'PrerenderingTriggerDUI':
-        return i18n.i18n.lockedString('Direct User Input');
-      case 'PrerenderingTriggerDSE':
-        return i18n.i18n.lockedString('Default Search Engine');
-      case 'PrerenderingTriggerOpaque':
-        return i18n.i18n.lockedString('Opaque');
+class PreloadingUIUtils {
+  static action({key}: SDK.PreloadingModel.PreloadingAttempt): string {
+    // Use "prefetch"/"prerender" as is in SpeculationRules.
+    switch (key.action) {
+      case SDK.PreloadingModel.SpeculationAction.Prefetch:
+        return i18n.i18n.lockedString('prefetch');
+      case SDK.PreloadingModel.SpeculationAction.Prerender:
+        return i18n.i18n.lockedString('prerender');
     }
   }
 
-  static status(x: PrerenderingAttempt): string {
-    switch (x.status) {
-      case SDK.PrerenderingModel.PrerenderingStatus.Prerendering:
-        return i18nString(UIStrings.statusPrerendering);
-      case SDK.PrerenderingModel.PrerenderingStatus.Activated:
-        return i18nString(UIStrings.statusActivated);
-      case SDK.PrerenderingModel.PrerenderingStatus.Discarded:
-        return i18nString(UIStrings.statusDiscarded);
+  static status({status}: SDK.PreloadingModel.PreloadingAttempt): string {
+    // See content/public/browser/preloading.h PreloadingAttemptOutcome.
+    switch (status) {
+      case Protocol.Preload.PreloadingStatus.Pending:
+        return i18nString(UIStrings.statusPending);
+      case Protocol.Preload.PreloadingStatus.Running:
+        return i18nString(UIStrings.statusRunning);
+      case Protocol.Preload.PreloadingStatus.Ready:
+        return i18nString(UIStrings.statusReady);
+      case Protocol.Preload.PreloadingStatus.Success:
+        return i18nString(UIStrings.statusSuccess);
+      case Protocol.Preload.PreloadingStatus.Failure:
+        return i18nString(UIStrings.statusFailure);
+      // NotSupported is used to handle unreachable case. For example,
+      // there is no code path for
+      // PreloadingTriggeringOutcome::kTriggeredButPending in prefetch,
+      // which is mapped to NotSupported. So, we regard it as an
+      // internal error.
+      case Protocol.Preload.PreloadingStatus.NotSupported:
+        return i18n.i18n.lockedString('Internal error');
     }
   }
 }
@@ -94,7 +106,7 @@ export class PreloadingView extends UI.Widget.VBox {
   // TODO(https://crbug.com/1384419): Remove PrerenderingModel.
   private readonly prerenderingModel: SDK.PrerenderingModel.PrerenderingModel;
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
-  private focusedPreloadingAttemptId: PreloadingId|null = null;
+  private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
 
   private readonly infobarContainer: HTMLDivElement;
   private readonly hsplit: UI.SplitWidget.SplitWidget;
@@ -221,7 +233,7 @@ export class PreloadingView extends UI.Widget.VBox {
 
   private updatePreloadingDetails(): void {
     const id = this.focusedPreloadingAttemptId;
-    this.preloadingDetails.data = id === null ? null : this.prerenderingModel.getById(id);
+    this.preloadingDetails.data = id === null ? null : this.model.getPreloadingAttemptById(id);
   }
 
   private onModelUpdated(): void {
@@ -229,28 +241,21 @@ export class PreloadingView extends UI.Widget.VBox {
     //
     // Currently, all rule sets that appear in DevTools are valid.
     // TODO(https://crbug.com/1384419): Add property `validity` to the CDP.
-    const ruleSetRows = this.model.getAllRuleSets().map(
-        ({id}: WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>):
-            PreloadingComponents.RuleSetGrid.RuleSetGridRow => ({
-          id,
-          validity: i18nString(UIStrings.validityValid),
-        }));
+    const ruleSetRows = this.model.getAllRuleSets().map(({id}) => ({
+                                                          id,
+                                                          validity: i18nString(UIStrings.validityValid),
+                                                        }));
     this.ruleSetGrid.update(ruleSetRows);
 
     this.updateRuleSetDetails();
 
     // Update preloaidng grid
-    const preloadingAttemptRows = this.prerenderingModel.getAll().map(
-        ({id, attempt}: PrerenderingAttemptWithId): PreloadingComponents.PreloadingGrid.PreloadingGridRow => {
-          return {
-            id,
-            startedAt: new Date(attempt.startedAt).toLocaleString(),
-            type: i18n.i18n.lockedString('Prerendering'),
-            trigger: PrerenderingUIUtils.trigger(attempt),
-            url: attempt.url,
-            status: PrerenderingUIUtils.status(attempt),
-          };
-        });
+    const preloadingAttemptRows = this.model.getAllPreloadingAttempts().map(({id, value}) => ({
+                                                                              id,
+                                                                              action: PreloadingUIUtils.action(value),
+                                                                              url: value.key.url,
+                                                                              status: PreloadingUIUtils.status(value),
+                                                                            }));
     this.preloadingGrid.update(preloadingAttemptRows);
 
     this.updatePreloadingDetails();
@@ -270,8 +275,8 @@ export class PreloadingView extends UI.Widget.VBox {
 
   private onPreloadingGridCellFocused(event: Event): void {
     const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
-    this.focusedPreloadingAttemptId =
-        focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as PreloadingId;
+    this.focusedPreloadingAttemptId = focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as
+        SDK.PreloadingModel.PreloadingAttemptId;
     this.updatePreloadingDetails();
   }
 

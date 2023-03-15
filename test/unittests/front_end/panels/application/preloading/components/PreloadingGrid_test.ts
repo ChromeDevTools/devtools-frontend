@@ -14,54 +14,41 @@ const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-const renderPreloadingGrid =
-    async(rows: PreloadingComponents.PreloadingGrid.PreloadingGridRow[]): Promise<HTMLElement> => {
-  const component = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
-  component.update(rows);
-  renderElementIntoDOM(component);
-  assertShadowRoot(component.shadowRoot);
-  await coordinator.done();
-
+function assertGridContents(gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) {
   const controller = getElementWithinComponent(
-      component, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-  assertShadowRoot(controller.shadowRoot);
-  const datagrid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
-  assertShadowRoot(datagrid.shadowRoot);
+      gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
+  const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
+  assertShadowRoot(grid.shadowRoot);
 
-  return datagrid;
-};
+  const headerGot = Array.from(getHeaderCells(grid.shadowRoot), cell => {
+    assertNotNullOrUndefined(cell.textContent);
+    return cell.textContent.trim();
+  });
+  const rowsGot = getValuesOfAllBodyRows(grid.shadowRoot);
+
+  assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
+}
 
 describeWithEnvironment('PreloadingGrid', async () => {
-  it('renders header', async () => {
-    const dataGrid = await renderPreloadingGrid([]);
-    assertShadowRoot(dataGrid.shadowRoot);
-
-    const header = Array.from(getHeaderCells(dataGrid.shadowRoot), cell => {
-      assertNotNullOrUndefined(cell.textContent);
-      return cell.textContent.trim();
-    });
-    assert.deepEqual(header, ['Started at', 'Type', 'Trigger', 'URL', 'Status']);
-  });
-
-  it('renders grid with content', async () => {
+  it('renders grid', async () => {
     const rows = [{
       id: 'id',
-      startedAt: '2006-01-02T15:04:05Z',
-      type: 'Prerendering',
-      trigger: 'SpeculationRules',
+      action: 'prerender',
       url: 'https://example.com/prerendered.html',
-      status: 'Prerendering',
+      status: 'Running',
     }];
 
-    const dataGrid = await renderPreloadingGrid(rows);
-    assertShadowRoot(dataGrid.shadowRoot);
+    const component = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
+    component.update(rows);
+    renderElementIntoDOM(component);
+    await coordinator.done();
 
-    const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
-    assert.strictEqual(rowValues.length, 1);
-    assert.strictEqual(rowValues[0][0], '2006-01-02T15:04:05Z');
-    assert.strictEqual(rowValues[0][1], 'Prerendering');
-    assert.strictEqual(rowValues[0][2], 'SpeculationRules');
-    assert.strictEqual(rowValues[0][3], 'https://example.com/prerendered.html');
-    assert.strictEqual(rowValues[0][4], 'Prerendering');
+    assertGridContents(
+        component,
+        ['URL', 'Action', 'Status'],
+        [
+          ['https://example.com/prerendered.html', 'prerender', 'Running'],
+        ],
+    );
   });
 });

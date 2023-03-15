@@ -43,11 +43,12 @@ let seqLast = 0;
 
 function dispatchEventsForNavigationWithSpeculationRules(target: SDK.Target.Target, speculationrules?: string) {
   const seq = ++seqLast;
+  const frameId = `frameId:${seq}`;
   const loaderId = `loaderId:${seq}`;
 
   dispatchEvent(target, 'Page.frameNavigated', {
     frame: {
-      id: 'frameId:${seq}',
+      id: frameId,
       loaderId,
       url: 'https://example.com/',
       domainAndRegistry: 'example.com',
@@ -89,12 +90,20 @@ function dispatchEventsForNavigationWithSpeculationRules(target: SDK.Target.Targ
   assert.strictEqual(json['prerender'][0]['source'], 'list');
   assert.strictEqual(json['prerender'][0]['urls'].length, 1);
 
+  const url = 'https://example.com' + json['prerender'][0]['urls'][0];
+
+  dispatchEvent(target, 'Preload.prerenderStatusUpdated', {
+    initiatingFrameId: frameId,
+    prerenderingUrl: url,
+    status: Protocol.Preload.PreloadingStatus.Running,
+  });
+
   dispatchEvent(target, 'Target.targetInfoChanged', {
     targetInfo: {
       targetId: `targetId:prerendered:${seq}`,
       type: 'frame',
       subtype: 'prerender',
-      url: 'https://example.com' + json['prerender'][0]['urls'][0],
+      url,
       title: '',
       attached: true,
       canAccessOpener: true,
@@ -152,14 +161,12 @@ describeWithMockConnection('PreloadingView', async () => {
 
     assertGridContents(
         preloadingGridComponent,
-        ['Started at', 'Type', 'Trigger', 'URL', 'Status'],
+        ['URL', 'Action', 'Status'],
         [
           [
-            new Date(TIMESTAMP).toLocaleString(),
-            'Prerendering',
-            'Opaque',
             'https://example.com/prerendered.html',
-            'Prerendering',
+            'prerender',
+            'Running',
           ],
         ],
     );
@@ -169,6 +176,9 @@ describeWithMockConnection('PreloadingView', async () => {
     assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
   });
 
+  // TODO(https://crbug.com/1384419): Check that preloading attempts for
+  // the previous page vanish once loaderId is added to events
+  // prefetch/prerenderAttemptUpdated.
   it('clears SpeculationRules for previous pages', async () => {
     const target = createTarget();
     const view = createView(target);

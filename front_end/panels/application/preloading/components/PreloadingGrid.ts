@@ -11,19 +11,11 @@ import preloadingGridStyles from './preloadingGrid.css.js';
 
 const UIStrings = {
   /**
-   *@description Column header for a table displaying prerendering attempt.
+   *@description Column header: Action of preloading (prefetch/prerender)
    */
-  startedAt: 'Started at',
+  action: 'Action',
   /**
-   *@description Column header for a table displaying prerendering attempt.
-   */
-  type: 'Type',
-  /**
-   *@description Column header for a table displaying prerendering attempt.
-   */
-  trigger: 'Trigger',
-  /**
-   *@description Column header for a table displaying prerendering attempt.
+   *@description Column header: Status of preloading attempt
    */
   status: 'Status',
 };
@@ -34,9 +26,7 @@ const {render, html} = LitHtml;
 
 export interface PreloadingGridRow {
   id: string;
-  startedAt: string;
-  type: string;
-  trigger: string;
+  action: string;
   url: string;
   status: string;
 }
@@ -62,30 +52,16 @@ export class PreloadingGrid extends HTMLElement {
     const reportsGridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
-          id: 'startedAt',
-          title: i18nString(UIStrings.startedAt),
-          widthWeighting: 20,
-          hideable: false,
-          visible: true,
-        },
-        {
-          id: 'type',
-          title: i18nString(UIStrings.type),
-          widthWeighting: 10,
-          hideable: false,
-          visible: true,
-        },
-        {
-          id: 'trigger',
-          title: i18nString(UIStrings.trigger),
-          widthWeighting: 10,
-          hideable: false,
-          visible: true,
-        },
-        {
           id: 'url',
           title: i18n.i18n.lockedString('URL'),
           widthWeighting: 40,
+          hideable: false,
+          visible: true,
+        },
+        {
+          id: 'action',
+          title: i18nString(UIStrings.action),
+          widthWeighting: 10,
           hideable: false,
           visible: true,
         },
@@ -116,10 +92,8 @@ export class PreloadingGrid extends HTMLElement {
     return this.#rows.map(row => ({
                             cells: [
                               {columnId: 'id', value: row.id},
-                              {columnId: 'type', value: row.type},
-                              {columnId: 'startedAt', value: row.startedAt},
-                              {columnId: 'trigger', value: row.trigger},
                               {columnId: 'url', value: row.url},
+                              {columnId: 'action', value: row.action},
                               {columnId: 'status', value: row.status},
                             ],
                           }));

@@ -18,8 +18,6 @@ import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js
 
 const {assert} = chai;
 
-type PrerenderingAttempt = SDK.PrerenderingModel.PrerenderingAttempt;
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
@@ -51,19 +49,15 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
   });
 
   it('renders prerendering details', async () => {
-    const startedAt = new Date('2006-01-02T15:04:05Z');
     const url = 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString;
-    const data: PrerenderingAttempt = {
-      prerenderingAttemptId: 'id',
-      startedAt: startedAt.getTime(),
-      trigger: {
-        kind: 'PrerenderingTriggerSpecRules',
-        rule: {
-          'prerender': [{'source': 'list', 'urls': [url]}],
-        },
+    const data: SDK.PreloadingModel.PreloadingAttempt = {
+      key: {
+        loaderId: 'loaderId' as Protocol.Network.LoaderId,
+        action: SDK.PreloadingModel.SpeculationAction.Prerender,
+        url,
+        targetHint: null,
       },
-      url,
-      status: SDK.PrerenderingModel.PrerenderingStatus.Prerendering,
+      status: Protocol.Preload.PreloadingStatus.Running,
     };
 
     const component = await renderPreloadingDetailsReportView(data);
@@ -73,27 +67,23 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
-      ['Started at', startedAt.toLocaleString()],
-      ['Trigger', 'Speculation Rules'],
-      ['Status', 'Prerendering'],
+      ['Action', 'prerender'],
+      ['Status', 'Preloading is running.'],
     ]);
   });
 
+  // TODO(https://crbug.com/1317959): Add cancelled reason once
+  // finalStatus and disallowedApiMethod added to prerenderStatusUpdated.
   it('renders prerendering details with cancelled reason', async () => {
-    const startedAt = new Date('2006-01-02T15:04:05Z');
     const url = 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString;
-    const data: PrerenderingAttempt = {
-      prerenderingAttemptId: 'id',
-      startedAt: startedAt.getTime(),
-      trigger: {
-        kind: 'PrerenderingTriggerSpecRules',
-        rule: {
-          'prerender': [{'source': 'list', 'urls': [url]}],
-        },
+    const data: SDK.PreloadingModel.PreloadingAttempt = {
+      key: {
+        loaderId: 'loaderId' as Protocol.Network.LoaderId,
+        action: SDK.PreloadingModel.SpeculationAction.Prerender,
+        url,
+        targetHint: null,
       },
-      url,
-      status: SDK.PrerenderingModel.PrerenderingStatus.Discarded,
-      discardedReason: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
+      status: Protocol.Preload.PreloadingStatus.Failure,
     };
 
     const component = await renderPreloadingDetailsReportView(data);
@@ -103,10 +93,8 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
-      ['Started at', startedAt.toLocaleString()],
-      ['Trigger', 'Speculation Rules'],
-      ['Status', 'Discarded'],
-      ['Discarded reason', Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy],
+      ['Action', 'prerender'],
+      ['Status', 'Preloading failed.'],
     ]);
   });
 });

@@ -108,6 +108,35 @@ describe('TraceProcessor', async function() {
     }, /Required handler Samples not provided/);
   });
 
+  it('emits periodic trace updates', async () => {
+    const processor = new TraceModel.Processor.TraceProcessor(
+        {
+          Renderer: TraceModel.Handlers.ModelHandlers.Renderer,
+          Samples: TraceModel.Handlers.ModelHandlers.Samples,
+        },
+        {
+          // These numbers are much lower than in production, which means we expect
+          // updates more frequently. Otherwise, wiith the fact that most of our
+          // trace files are quite small, we couldn't guarantee that we do get a
+          // status update.
+          pauseFrequencyMs: 10,
+          pauseDuration: 1,
+        });
+
+    let updateEventCount = 0;
+
+    processor.addEventListener(TraceModel.Processor.TraceParseProgressEvent.eventName, () => {
+      updateEventCount++;
+    });
+
+    const rawEvents = await loadEventsFromTraceFile('web-dev.json.gz');
+    await processor.parse(rawEvents).then(() => {
+      // Ensure we saw at least one update. We cannot set a specific number as
+      // it can change depending on the machine that it is being run on.
+      assert.isAtLeast(updateEventCount, 1);
+    });
+  });
+
   describe('handler sorting', () => {
     const baseHandler = {
       data() {},

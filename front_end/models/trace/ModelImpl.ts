@@ -8,7 +8,7 @@ import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
 
 import type * as Types from './types/types.js';
-import {TraceProcessor} from './Processor.js';
+import {TraceProcessor, TraceParseProgressEvent} from './Processor.js';
 
 // Note: this model is implemented in a way that can support multiple trace
 // processors. Currently there is only one implemented, but you will see
@@ -100,11 +100,11 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     // During parsing, periodically update any listeners on each processors'
     // progress (if they have any updates).
     const onTraceUpdate = (event: Event): void => {
-      const {data} = event as TraceParseEvent;
-      this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.TRACE, data: data}));
+      const {data} = event as TraceParseProgressEvent;
+      this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.PROGRESS_UPDATE, data: data}));
     };
 
-    this.#processor.addEventListener(TraceParseEvent.eventName, onTraceUpdate);
+    this.#processor.addEventListener(TraceParseProgressEvent.eventName, onTraceUpdate);
 
     // Create a parsed trace file.  It will be populated with data from the processor.
     const file: ParsedTraceFile<EnabledModelHandlers> = {
@@ -117,7 +117,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
       // Wait for all outstanding promises before finishing the async execution,
       // but perform all tasks in parallel.
       await this.#processor.parse(traceEvents, isFreshRecording);
-      this.#parsingComplete(file, this.#processor.data);
+      this.#storeParsedFileData(file, this.#processor.data);
       // We only push the file onto this.#traces here once we know it's valid
       // and there's been no errors in the parsing.
       this.#traces.push(file);
@@ -125,13 +125,13 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
       throw e;
     } finally {
       // All processors have finished parsing, no more updates are expected.
-      this.#processor.removeEventListener(TraceParseEvent.eventName, onTraceUpdate);
+      this.#processor.removeEventListener(TraceParseProgressEvent.eventName, onTraceUpdate);
       // Finally, update any listeners that all processors are 'done'.
-      this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.GLOBAL, data: 'done'}));
+      this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.COMPLETE, data: 'done'}));
     }
   }
 
-  #parsingComplete(
+  #storeParsedFileData(
       file: ParsedTraceFile<EnabledModelHandlers>,
       data: Handlers.Types.EnabledHandlerDataWithMeta<EnabledModelHandlers>|null): void {
     file.traceParsedData = data;
@@ -147,7 +147,6 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
       }
     }
     this.#recordingsAvailable.push(recordingName);
-    this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.TRACE, data: 'done'}));
   }
 
   /**
@@ -207,31 +206,20 @@ export type ParsedTraceFile<Handlers extends {[key: string]: Handlers.Types.Trac
 };
 
 export const enum ModelUpdateType {
-  GLOBAL = 0,
-  TRACE = 1,
-  LIGHTHOUSE = 2,
+  COMPLETE = 'COMPLETE',
+  PROGRESS_UPDATE = 'PROGRESS_UPDATE',
 }
 
-export type ModelUpdateEventData = ModelUpdateEventGlobalData|ModelUpdateEventTraceData|ModelUpdateEventLighthouseData;
+export type ModelUpdateEventData = ModelUpdateEventComplete|ModelUpdateEventProgress;
 
-export type ModelUpdateEventGlobalData = {
-  type: ModelUpdateType.GLOBAL,
-  data: GlobalParseEventData,
+export type ModelUpdateEventComplete = {
+  type: ModelUpdateType.COMPLETE,
+  data: 'done',
 };
-
-export type ModelUpdateEventTraceData = {
-  type: ModelUpdateType.TRACE,
-  data: TraceParseEventData,
+export type ModelUpdateEventProgress = {
+  type: ModelUpdateType.PROGRESS_UPDATE,
+  data: TraceParseEventProgressData,
 };
-
-export type ModelUpdateEventLighthouseData = {
-  type: ModelUpdateType.LIGHTHOUSE,
-  data: LighthouseParseEventData,
-};
-
-export type GlobalParseEventData = 'done';
-export type TraceParseEventData = TraceParseEventProgressData|'done';
-export type LighthouseParseEventData = 'done';
 
 export type TraceParseEventProgressData = {
   index: number,
@@ -245,19 +233,18 @@ export class ModelUpdateEvent extends Event {
   }
 }
 
-export function isModelUpdateEventDataGlobal(object: ModelUpdateEventData): object is ModelUpdateEventGlobalData {
-  return object.type === ModelUpdateType.GLOBAL;
-}
-
-export function isModelUpdateEventDataTrace(object: ModelUpdateEventData): object is ModelUpdateEventTraceData {
-  return object.type === ModelUpdateType.TRACE;
-}
-
-export class TraceParseEvent extends Event {
-  static readonly eventName = 'traceparse';
-  constructor(public data: TraceParseEventData, init: EventInit = {bubbles: true}) {
-    super(TraceParseEvent.eventName, init);
+declare global {
+  interface HTMLElementEventMap {
+    [ModelUpdateEvent.eventName]: ModelUpdateEvent;
   }
+}
+
+export function isModelUpdateDataComplete(eventData: ModelUpdateEventData): eventData is ModelUpdateEventComplete {
+  return eventData.type === ModelUpdateType.COMPLETE;
+}
+
+export function isModelUpdateDataProgress(eventData: ModelUpdateEventData): eventData is ModelUpdateEventProgress {
+  return eventData.type === ModelUpdateType.PROGRESS_UPDATE;
 }
 
 export type TraceFile = {
@@ -277,9 +264,3 @@ export interface TraceFileMetaData {
 }
 
 export type TraceFileContents = TraceFile|Types.TraceEvents.TraceEventData[];
-
-declare global {
-  interface HTMLElementEventMap {
-    [TraceParseEvent.eventName]: TraceParseEvent;
-  }
-}

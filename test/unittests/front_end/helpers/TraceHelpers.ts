@@ -112,7 +112,7 @@ async function generateModelDataForTraceFile(name: string, emulateFreshRecording
 
       // When we receive the final update from the model, update the recording
       // state back to waiting.
-      if (TraceModel.TraceModel.isModelUpdateEventDataGlobal(data) && data.data === 'done') {
+      if (TraceModel.TraceModel.isModelUpdateDataComplete(data)) {
         const metadata = model.metadata(0);
         const traceParsedData = model.traceParsedData(0);
         if (metadata && traceParsedData) {

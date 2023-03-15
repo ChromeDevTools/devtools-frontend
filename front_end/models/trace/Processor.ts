@@ -11,17 +11,22 @@ const enum Status {
   ERRORED_WHILE_PARSING = 'ERRORED_WHILE_PARSING',
 }
 
-export class TraceParseProgressEvent extends Event {
-  static readonly eventName = 'traceparse';
-  constructor(public data: TraceParseEventProgressData, init: EventInit = {bubbles: true}) {
-    super(TraceParseProgressEvent.eventName, init);
-  }
-}
-
 export type TraceParseEventProgressData = {
   index: number,
   total: number,
 };
+
+export class TraceParseProgressEvent extends Event {
+  static readonly eventName = 'traceparseprogress';
+  constructor(public data: TraceParseEventProgressData, init: EventInit = {bubbles: true}) {
+    super(TraceParseProgressEvent.eventName, init);
+  }
+}
+declare global {
+  interface HTMLElementEventMap {
+    [TraceParseProgressEvent.eventName]: TraceParseProgressEvent;
+  }
+}
 
 export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handlers.Types.TraceEventHandler}> extends
     EventTarget {
@@ -235,8 +240,9 @@ class TraceEventIterator {
   async * [Symbol.asyncIterator](): AsyncGenerator<IteratorItem, void, void> {
     for (let i = 0, length = this.traceEvents.length; i < length; i++) {
       // Every so often we take a break just to render.
-      if (performance.now() - this.#time > this.pauseFrequencyMs) {
-        this.#time = performance.now();
+      const now = performance.now();
+      if (now - this.#time > this.pauseFrequencyMs) {
+        this.#time = now;
         // Take the opportunity to provide status update events.
         yield {kind: IteratorItemType.STATUS_UPDATE, data: {index: i, total: length}};
         // Wait for rendering before resuming.

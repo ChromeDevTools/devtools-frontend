@@ -2695,7 +2695,7 @@ export class TimelineUIUtils {
         total[categoryName] = (total[categoryName] || 0) + nextEvent.selfTime;
       }
     }
-    if (SDK.TracingModel.TracingModel.isAsyncPhase(event.phase)) {
+    if (TraceEngine.Types.TraceEvents.isAsyncPhase(event.phase)) {
       if (event.endTime) {
         let aggregatedTotal = 0;
         for (const categoryName in total) {

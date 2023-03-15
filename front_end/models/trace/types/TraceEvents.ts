@@ -51,6 +51,20 @@ export const enum Phase {
   CLOCK_SYNC = 'c',
 }
 
+export function isNestableAsyncPhase(phase: Phase): boolean {
+  return phase === Phase.ASYNC_NESTABLE_START || phase === Phase.ASYNC_NESTABLE_END ||
+      phase === Phase.ASYNC_NESTABLE_INSTANT;
+}
+
+export function isAsyncPhase(phase: Phase): boolean {
+  return isNestableAsyncPhase(phase) || phase === Phase.ASYNC_BEGIN || phase === Phase.ASYNC_STEP_INTO ||
+      phase === Phase.ASYNC_END || phase === Phase.ASYNC_STEP_PAST;
+}
+
+export function isFlowPhase(phase: Phase): boolean {
+  return phase === Phase.FLOW_START || phase === Phase.FLOW_STEP || phase === Phase.FLOW_END;
+}
+
 export const enum TraceEventScope {
   THREAD = 't',
   PROCESS = 'p',

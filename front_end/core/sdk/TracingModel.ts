@@ -48,29 +48,6 @@ export class TracingModel {
     this.#mainFrameNavStartTimes = new Map();
   }
 
-  static isNestableAsyncPhase(phase: TraceEngine.Types.TraceEvents.Phase): boolean {
-    return phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START ||
-        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_END ||
-        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_INSTANT;
-  }
-
-  static isAsyncPhase(phase: TraceEngine.Types.TraceEvents.Phase): boolean {
-    return TracingModel.isNestableAsyncPhase(phase) || phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_BEGIN ||
-        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_INTO ||
-        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_END ||
-        phase === TraceEngine.Types.TraceEvents.Phase.ASYNC_STEP_PAST;
-  }
-
-  static isFlowPhase(phase: TraceEngine.Types.TraceEvents.Phase): boolean {
-    return phase === TraceEngine.Types.TraceEvents.Phase.FLOW_START ||
-        phase === TraceEngine.Types.TraceEvents.Phase.FLOW_STEP ||
-        phase === TraceEngine.Types.TraceEvents.Phase.FLOW_END;
-  }
-
-  static isCompletePhase(phase: TraceEngine.Types.TraceEvents.Phase): boolean {
-    return phase === TraceEngine.Types.TraceEvents.Phase.COMPLETE;
-  }
-
   static isTopLevelEvent(event: Event): boolean {
     return event.hasCategory(DevToolsTimelineEventCategory) && event.name === 'RunTask' ||
         event.hasCategory(LegacyTopLevelEventCategory) ||
@@ -233,7 +210,7 @@ export class TracingModel {
     // Build async event when we've got events from all threads & processes, so we can sort them and process in the
     // chronological order. However, also add individual async events to the thread flow (above), so we can easily
     // display them on the same chart as other events, should we choose so.
-    if (TracingModel.isAsyncPhase(payload.ph)) {
+    if (TraceEngine.Types.TraceEvents.isAsyncPhase(payload.ph)) {
       this.#asyncEvents.push((event as AsyncEvent));
     }
     event.setBackingStorage(backingStorage);
@@ -314,7 +291,7 @@ export class TracingModel {
     this.#asyncEvents.sort(Event.compareStartTime);
     for (let i = 0; i < this.#asyncEvents.length; ++i) {
       const event = this.#asyncEvents[i];
-      if (TracingModel.isNestableAsyncPhase(event.phase)) {
+      if (TraceEngine.Types.TraceEvents.isNestableAsyncPhase(event.phase)) {
         this.addNestableAsyncEvent(event);
       } else {
         this.addAsyncEvent(event);

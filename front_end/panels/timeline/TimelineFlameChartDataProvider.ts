@@ -759,11 +759,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           e.setEndTime(frame.endTime);
         }
       }
-      if (!SDK.TracingModel.TracingModel.isFlowPhase(e.phase)) {
+      if (!TraceEngine.Types.TraceEvents.isFlowPhase(e.phase)) {
         if (!e.endTime && e.phase !== TraceEngine.Types.TraceEvents.Phase.INSTANT) {
           continue;
         }
-        if (SDK.TracingModel.TracingModel.isAsyncPhase(e.phase)) {
+        if (TraceEngine.Types.TraceEvents.isAsyncPhase(e.phase)) {
           continue;
         }
         if (!this.legacyPerformanceModel.isVisible(e)) {
@@ -1015,7 +1015,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (this.legacyPerformanceModel.timelineModel().isMarkerEvent(event)) {
         return TimelineUIUtils.markerStyleForEvent(event).color;
       }
-      if (!SDK.TracingModel.TracingModel.isAsyncPhase(event.phase) && this.colorForEvent) {
+      if (!TraceEngine.Types.TraceEvents.isAsyncPhase(event.phase) && this.colorForEvent) {
         return this.colorForEvent(event);
       }
       if (this.legacyTimelineModel.isEventTimingInteractionEvent(event)) {

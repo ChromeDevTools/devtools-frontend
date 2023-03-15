@@ -9,9 +9,9 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
 
 import {CountersGraph} from './CountersGraph.js';
 
@@ -107,7 +107,8 @@ class MainSplitWidget extends UI.SplitWidget.SplitWidget {
         e => SDK.TracingModel.eventHasPayload(e) && timelineModel.isLCPCandidateEvent(e));
 
     const longTasks =
-        events.filter(e => SDK.TracingModel.TracingModel.isCompletePhase(e.phase) && timelineModel.isLongRunningTask(e))
+        events
+            .filter(e => e.phase === TraceEngine.Types.TraceEvents.Phase.COMPLETE && timelineModel.isLongRunningTask(e))
             .map(e => ({start: e.startTime - minimumBoundary, duration: e.duration || 0}));
 
     this.webVitals.chartViewport.setBoundaries(left, right - left);

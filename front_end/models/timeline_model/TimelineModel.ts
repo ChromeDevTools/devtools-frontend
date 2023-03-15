@@ -186,7 +186,7 @@ export class TimelineModelImpl {
       if (e.startTime >= endTime) {
         break;
       }
-      if (SDK.TracingModel.TracingModel.isAsyncPhase(e.phase) || SDK.TracingModel.TracingModel.isFlowPhase(e.phase)) {
+      if (TraceEngine.Types.TraceEvents.isAsyncPhase(e.phase) || TraceEngine.Types.TraceEvents.isFlowPhase(e.phase)) {
         continue;
       }
       let last: SDK.TracingModel.Event = stack[stack.length - 1];
@@ -478,7 +478,7 @@ export class TimelineModelImpl {
             if (IgnoreNames.includes(event.name)) {
               continue;
             }
-            if (SDK.TracingModel.TracingModel.isAsyncPhase(event.phase)) {
+            if (TraceEngine.Types.TraceEvents.isAsyncPhase(event.phase)) {
               continue;
             }
             event.setEndTime(event.startTime);
@@ -1041,7 +1041,7 @@ export class TimelineModelImpl {
       if (!this.processEvent(event)) {
         continue;
       }
-      if (!SDK.TracingModel.TracingModel.isAsyncPhase(event.phase) && event.duration) {
+      if (!TraceEngine.Types.TraceEvents.isAsyncPhase(event.phase) && event.duration) {
         if (eventStack.length) {
           const parent = eventStack[eventStack.length - 1];
           if (parent) {

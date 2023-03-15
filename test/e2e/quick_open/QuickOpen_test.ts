@@ -72,6 +72,16 @@ describe('Quick Open menu', () => {
     assert.deepEqual(list, ['multi-workers.js', 'multi-workers.min.js', 'multi-workers-sourcemap.html']);
   });
 
+  it('sorts ignore listed below unignored', async () => {
+    await setIgnoreListPattern('mycode');
+    await goToResource('sources/multi-files.html');
+    await openSourcesPanel();
+
+    await typeIntoQuickOpen('mult');
+    const list = await readQuickOpenResults();
+    assert.deepEqual(list, ['multi-files-thirdparty.js', 'multi-files.html', 'multi-files-mycode.js']);
+  });
+
   it('Does not list ignore-listed files', async () => {
     await enableExperiment('justMyCode');
     await setIgnoreListPattern('workers.js');

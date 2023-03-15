@@ -92,6 +92,10 @@ devtools-text-prompt {
   flex: auto;
 }
 
+.filtered-list-widget-item.is-ignore-listed {
+  opacity: 50%;
+}
+
 .filtered-list-widget-item.two-rows span.highlight {
   color: var(--color-primary);
 }

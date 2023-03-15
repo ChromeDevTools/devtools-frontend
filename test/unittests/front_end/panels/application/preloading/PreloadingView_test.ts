@@ -114,9 +114,7 @@ function dispatchEventsForNavigationWithSpeculationRules(target: SDK.Target.Targ
 function createView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingView {
   const model = target.model(SDK.PreloadingModel.PreloadingModel);
   assertNotNullOrUndefined(model);
-  const prerenderingModel = target.model(SDK.PrerenderingModel.PrerenderingModel);
-  assertNotNullOrUndefined(prerenderingModel);
-  const view = new Resources.PreloadingView.PreloadingView(model, prerenderingModel);
+  const view = new Resources.PreloadingView.PreloadingView(model);
   const container = new UI.Widget.VBox();
   view.show(container.element);
 

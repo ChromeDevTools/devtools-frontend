@@ -16,8 +16,6 @@ describeWithMockConnection('PreloadingTreeElement', () => {
     const target = createTarget();
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assertNotNullOrUndefined(model);
-    const prerenderingModel = target.model(SDK.PrerenderingModel.PrerenderingModel);
-    assertNotNullOrUndefined(prerenderingModel);
 
     const spy = sinon.spy();
     const panel = {
@@ -28,7 +26,7 @@ describeWithMockConnection('PreloadingTreeElement', () => {
     preloadingTreeElement.onselect(false);
     assert.isTrue(spy.notCalled);
 
-    preloadingTreeElement.initialize(model, prerenderingModel);
+    preloadingTreeElement.initialize(model);
     assert.isTrue(spy.calledOnce);
   });
 });

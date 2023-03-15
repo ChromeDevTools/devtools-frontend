@@ -59,7 +59,6 @@ devtools_module("sdk") {
     "PaintProfiler.ts",
     "PerformanceMetricsModel.ts",
     "PreloadingModel.ts",
-    "PrerenderingModel.ts",
     "ProfileTreeModel.ts",
     "RemoteObject.ts",
     "Resource.ts",

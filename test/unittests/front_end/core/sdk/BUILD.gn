@@ -29,7 +29,6 @@ ts_library("sdk") {
     "OverlayPersistentHighlighter_test.ts",
     "PageResourceLoader_test.ts",
     "PreloadingModel_test.ts",
-    "PrerenderingModel_test.ts",
     "RemoteObject_test.ts",
     "ResourceTreeModel_test.ts",
     "RuntimeModel_test.ts",

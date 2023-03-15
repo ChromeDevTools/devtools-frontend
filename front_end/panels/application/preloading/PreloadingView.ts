@@ -103,8 +103,6 @@ interface FeatureFlags {
 
 export class PreloadingView extends UI.Widget.VBox {
   private readonly model: SDK.PreloadingModel.PreloadingModel;
-  // TODO(https://crbug.com/1384419): Remove PrerenderingModel.
-  private readonly prerenderingModel: SDK.PrerenderingModel.PrerenderingModel;
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
   private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
 
@@ -118,19 +116,11 @@ export class PreloadingView extends UI.Widget.VBox {
       new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   private readonly featureFlagWarningsPromise: Promise<void>;
 
-  constructor(model: SDK.PreloadingModel.PreloadingModel, prerenderingModel: SDK.PrerenderingModel.PrerenderingModel) {
+  constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
 
     this.model = model;
     this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.onModelUpdated, this);
-
-    this.prerenderingModel = prerenderingModel;
-    this.prerenderingModel.addEventListener(
-        SDK.PrerenderingModel.Events.PrerenderingAttemptStarted, this.onModelUpdated, this);
-    this.prerenderingModel.addEventListener(
-        SDK.PrerenderingModel.Events.PrerenderingAttemptUpdated, this.onModelUpdated, this);
-    this.prerenderingModel.addEventListener(
-        SDK.PrerenderingModel.Events.PrerenderingAttemptsRemoved, this.onModelUpdated, this);
 
     // this (VBox)
     //   +- infobarContainer

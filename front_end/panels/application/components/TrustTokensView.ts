@@ -23,20 +23,24 @@ const UIStrings = {
    */
   storedTokenCount: 'Stored token count',
   /**
-   *@description Hover text for an info icon in the Trust Token panel
+   *@description Hover text for an info icon in the Private State Token panel
    */
-  allStoredTrustTokensAvailableIn: 'All stored Trust Tokens available in this browser instance.',
+  allStoredTrustTokensAvailableIn: 'All stored Private State Tokens available in this browser instance.',
   /**
    * @description Text shown instead of a table when the table would be empty.
    */
-  noTrustTokensStored: 'No Trust Tokens are currently stored.',
+  noTrustTokensStored: 'No Private State Tokens are currently stored.',
   /**
-   * @description Each row in the Trust Token table has a delete button. This is the text shown
+   * @description Each row in the Private State Token table has a delete button. This is the text shown
    * when hovering over this button. The placeholder is a normal URL, indicating the site which
-   * provided the Trust Tokens that will be deleted when the button is clicked.
+   * provided the Private State Tokens that will be deleted when the button is clicked.
    * @example {https://google.com} PH1
    */
-  deleteTrustTokens: 'Delete all stored Trust Tokens issued by {PH1}.',
+  deleteTrustTokens: 'Delete all stored Private State Tokens issued by {PH1}.',
+  /**
+   * @description Heading label for a view. Previously known as 'Trust Tokens'.
+   */
+  trustTokens: 'Private State Tokens',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/TrustTokensView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -109,7 +113,7 @@ export class TrustTokensView extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div>
-        <span class="heading">Trust Tokens</span>
+        <span class="heading">${i18nString(UIStrings.trustTokens)}</span>
         <${IconButton.Icon.Icon.litTagName} class="info-icon" title=${
             i18nString(UIStrings.allStoredTrustTokensAvailableIn)}
           .data=${

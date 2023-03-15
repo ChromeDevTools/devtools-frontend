@@ -8,6 +8,7 @@ import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import type * as Workspace from '../workspace/workspace.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Platform from '../../core/platform/platform.js';
 
 interface CachedScopeMap {
   sourceMap: SDK.SourceMap.SourceMap|undefined;
@@ -475,8 +476,37 @@ export const resolveExpression = async(
   if (textRanges.length !== 1) {
     return '';
   }
-  const subjectText = text.extract(textRanges[0]);
+  const [compiledRange] = textRanges;
+  const subjectText = text.extract(compiledRange);
   if (!subjectText) {
+    return '';
+  }
+  // Map `subjectText` back to the authored code and check that the source map spits out
+  // `originalText` again modulo some whitespace/punctuation.
+  const authoredText = await getTextFor(uiSourceCode);
+  if (!authoredText) {
+    return '';
+  }
+
+  // Take the "start point" and the "end point - 1" of the compiled range and map them
+  // with the source map. Note that for "end point - 1" we need the line endings array to potentially
+  // move to the end of the previous line.
+  const startRange = sourceMap.findEntryRanges(compiledRange.startLine, compiledRange.startColumn);
+  const endLine = compiledRange.endColumn === 0 ? compiledRange.endLine - 1 : compiledRange.endLine;
+  const endColumn = compiledRange.endColumn === 0 ? text.lineEndings()[endLine] : compiledRange.endColumn - 1;
+  const endRange = sourceMap.findEntryRanges(endLine, endColumn);
+  if (!startRange || !endRange) {
+    return '';
+  }
+
+  // Merge `startRange` with `endRange`. This might not be 100% correct if there are interleaved ranges inbetween.
+  const mappedAuthoredText = authoredText.extract(new TextUtils.TextRange.TextRange(
+      startRange.sourceRange.startLine, startRange.sourceRange.startColumn, endRange.sourceRange.endLine,
+      endRange.sourceRange.endColumn));
+
+  // Check that what we found after applying the source map roughly matches `originalText`.
+  const originalTextRegex = new RegExp(`^[\\s,;]*${Platform.StringUtilities.escapeForRegExp(originalText)}`, 'g');
+  if (!originalTextRegex.test(mappedAuthoredText)) {
     return '';
   }
   return await Formatter.FormatterWorkerPool.formatterWorkerPool().evaluatableJavaScriptSubstring(subjectText);

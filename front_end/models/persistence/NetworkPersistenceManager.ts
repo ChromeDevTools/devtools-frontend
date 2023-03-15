@@ -771,6 +771,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private async onProjectRemoved(project: Workspace.Workspace.Project): Promise<void> {
+    for (const uiSourceCode of project.uiSourceCodes()) {
+      await this.networkUISourceCodeRemoved(uiSourceCode);
+    }
     if (project === this.projectInternal) {
       await this.setProject(null);
     }

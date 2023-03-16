@@ -32,9 +32,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Host from '../../../../core/host/host.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
+import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
 import timelineGridStyles from './timelineGrid.css.legacy.js';
 
 const labelMap = new Map<HTMLDivElement|HTMLElement, HTMLDivElement>();
@@ -136,7 +136,7 @@ export class TimelineGrid {
 
     context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
     context.textBaseline = 'hanging';
-    context.font = '11px ' + Host.Platform.fontFamily();
+    context.font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
 
     const paddingRight = 4;
     for (const offsetInfo of dividersData.offsets) {

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 
@@ -57,7 +56,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   private lastSelection?: Selection;
   private priorityToValue?: Map<string, number>;
   constructor() {
-    this.font = '11px ' + Host.Platform.fontFamily();
+    this.font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
     this.setModel(null);
     this.style = {
       padding: 4,

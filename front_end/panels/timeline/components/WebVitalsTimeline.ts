@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -474,7 +474,7 @@ export class WebVitalsTimeline extends HTMLElement {
 
     // Render the WebVitals label.
     this.#context.save();
-    this.#context.font = '11px ' + Host.Platform.fontFamily();
+    this.#context.font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
     const text = this.#context.measureText('Web Vitals');
     const height = text.actualBoundingBoxAscent - text.actualBoundingBoxDescent;
     this.#context.fillStyle = '#202124';

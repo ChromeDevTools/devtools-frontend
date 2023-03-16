@@ -546,6 +546,8 @@ export class MainImpl {
       resourceMapping,
       targetManager: SDK.TargetManager.TargetManager.instance(),
     });
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(
+        SDK.TargetManager.TargetManager.instance().primaryPageTarget());
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, ({data}) => {
       const outermostTarget = data?.outermostTarget();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(outermostTarget);

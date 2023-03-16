@@ -47,7 +47,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
   beforeEach(async () => {
     Elements = await import('../../../../../front_end/panels/elements/elements.js');
 
-    mockStylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance();
+    mockStylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
   });
 
   describe('updateTitle', () => {
@@ -240,7 +240,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
 
     beforeEach(async () => {
       Elements = await import('../../../../../front_end/panels/elements/elements.js');
-      mockStylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance();
+      mockStylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
     });
 
     it('should create a hint for inline elements', () => {

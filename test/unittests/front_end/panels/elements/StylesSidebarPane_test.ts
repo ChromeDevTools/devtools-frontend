@@ -63,7 +63,7 @@ describeWithRealConnection('StylesSidebarPane', async () => {
 
     uiSourceCode.setWorkingCopy('.rule{display:block}');
 
-    const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance();
+    const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
     await stylesSidebarPane.trackURLForChanges(URL);
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const target = targetManager.rootTarget();

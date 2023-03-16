@@ -238,8 +238,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #updateAbortController?: AbortController;
   #updateComputedStylesAbortController?: AbortController;
 
-  static instance(): StylesSidebarPane {
-    if (!stylesSidebarPaneInstance) {
+  static instance(opts?: {forceNew: boolean}): StylesSidebarPane {
+    if (!stylesSidebarPaneInstance || opts?.forceNew) {
       stylesSidebarPaneInstance = new StylesSidebarPane();
     }
     return stylesSidebarPaneInstance;

@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1}초"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: CPU 프로필 파서가 누락된 샘플 {PH1}개를 수정하고 있습니다."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "프로필 {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} 콘텐츠를 로드할 수 없음({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "{PH1}으로의 이동이 뒤로-앞으로 캐시에서 복원되었습니다(https://web.dev/bfcache/ 참고)."
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "임시 변수에 저장하지 못했습니다."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "디버거에서 일시중지됨"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "로드 시간 초과로 인해 로드 취소됨"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "검사된 페이지의 새로고침으로 인해 로드가 취소됨"
   },
@@ -618,7 +615,7 @@
     "message": "중지 중"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "색맹"
+    "message": "색맹(전색맹)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "흐릿한 시야"
@@ -627,7 +624,7 @@
     "message": "비동기 스택 트레이스 캡처"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "녹색맹"
+    "message": "제2색맹(녹색맹)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "비동기 스택 트레이스 사용 중지"
@@ -690,7 +687,7 @@
     "message": "포커스된 페이지 에뮬레이션"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "색맹 에뮬레이션"
+    "message": "색맹(전색맹) 에뮬레이션"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "자동 어두운 모드 에뮬레이션"
@@ -714,13 +711,16 @@
     "message": "CSS 화면 미디어 유형 에뮬레이션"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "제2색맹 에뮬레이션"
+    "message": "제2색맹(녹색맹) 에뮬레이션"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "적색맹 에뮬레이션"
+    "message": "제1색맹(적색맹) 에뮬레이션"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "대비 감소 에뮬레이션"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "청황색맹 에뮬레이션"
+    "message": "제3색맹(청색맹) 에뮬레이션"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "색맹 에뮬레이션"
@@ -789,10 +789,13 @@
     "message": "인쇄"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "적색맹"
+    "message": "제1색맹(적색맹)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "검색어"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "대비 감소"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "화면"
@@ -840,7 +843,7 @@
     "message": "트랙 크기 표시"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "청황색맹"
+    "message": "제3색맹(청색맹)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "자바스크립트 사용 중지됨"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "별도의 창으로 고정 해제"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "페이지: 선택되지 않음"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "페이지: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "작성된 대로"
   },
@@ -1062,7 +1071,7 @@
     "message": "색상 형식:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "이 설정은 현대적인 색 공간과 호환되지 않으므로 지원이 중단됩니다. 다시 사용 설정하려면 해당 실험을 사용 중지하면 됩니다."
+    "message": "이 설정은 현대적인 색 공간과 호환되지 않으므로 지원이 중단됩니다. 다시 사용 설정하려면 해당 실험을 중지하세요."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "어둡게"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "기본"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "CORS Access-Control-Allow-Headers 처리 시 와일드 카드 기호(*)를 사용하면 승인되지 않습니다."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "기본 Cast 통합을 사용 중지하려면 -internal-media-controls-overlay-cast-button 선택기 대신 disableRemotePlayback 속성을 사용해야 합니다."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "삭제된 공백 \\(n|r|t)자 및 글자수 제한(<)이 URL에 포함된 리소스 요청이 차단되었습니다. 이러한 리소스를 로드하려면 엘리먼트 속성 값과 같은 위치에서 줄바꿈을 삭제하고 글자수 제한을 인코딩하세요."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes()는 지원 중단되었습니다. 대신 표준화된 API인 Navigation Timing 2를 사용하세요."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes()는 사용 중지되었습니다. 대신 표준화된 API인 Paint Timing을 사용하세요."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes()는 지원 중단되었습니다. 대신 nextHopProtocol이 추가된 표준화된 API인 Navigation Timing 2를 사용하세요."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "\\(0|r|n)자를 포함하는 쿠키는 잘리는 대신 거부됩니다."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "document.domain 설정을 통한 동일 출처 정책의 해제는 지원 중단되었으며 기본적으로 사용 중지될 예정입니다. 이 지원 중단 경고는 document.domain 설정에 의해 사용 설정된 교차 출처 액세스에 적용됩니다."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "교차 출처 iframe에서의 window.alert 트리거는 지원 중단되었으며 앞으로 삭제될 예정입니다."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "교차 출처 iframe에서의 window.confirm 트리거는 지원 중단되었으며 앞으로 삭제될 예정입니다."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "document.domain 설정을 통한 동일 출처 정책의 해제는 지원 중단되었으며 기본적으로 사용 중지될 예정입니다. 이 기능을 계속 사용하려면 문서 및 프레임의 HTTP 응답과 함께 Origin-Agent-Cluster: ?0 헤더를 전송하여 오리진 키 에이전트 클러스터를 선택 해제하세요. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/blog/immutable-document-domain/"
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path는 지원 중단되었으며 삭제될 예정입니다. 대신 Event.composedPath()를 사용하세요."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Expect-CT 헤더는 지원 중단되었으며 삭제될 예정입니다. Chrome에서는 2018년 4월 30일 후 발행되었으며 공개적으로 신뢰할 수 있는 모든 인증서에 대해 인증서 투명성을 요구합니다."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() 및 watchPosition()은 더 이상 안전하지 않은 출처에서 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "안전하지 않은 출처의 getCurrentPosition() 및 watchPosition()은 지원 중단되었습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia()는 더 이상 안전하지 않은 출처에서 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate는 지원 중단되었습니다. 대신 RTCPeerConnectionIceErrorEvent.address 또는 RTCPeerConnectionIceErrorEvent.port를 사용하세요."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "canmakepayment 서비스 워커 이벤트의 판매자 원본 및 임의 데이터인 topOrigin, paymentRequestOrigin, methodData, modifiers가 지원 중단되었으며 삭제될 예정입니다."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "웹사이트에서 사용자 권한이 지정된 네트워크 위치로 인해 해당 웹사이트만 액세스 가능한 네트워크의 하위 리소스를 요청했습니다. 이러한 요청은 비공개 기기 및 서버를 인터넷에 노출시켜 크로스 사이트 요청 위조(CSRF) 공격 또는 정보 유출의 위험을 높입니다. 위험을 완화하기 위해 Chrome은 안전하지 않은 컨텍스트에서 시작된 비공개 하위 리소스에 대한 요청을 사용 중지하고 차단하기 시작합니다."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": ".css 파일 확장자로 끝나지 않는 CSS는 file: URL에서 로드할 수 없습니다."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "사양 변경으로 인해 SourceBuffer.abort()를 사용하여 remove() 비동기 범위 삭제를 취소하는 기능의 지원이 중단됩니다. 지원은 향후 삭제될 예정입니다. 대신 updateend 이벤트를 수신 대기해야 합니다. abort()는 비동기 미디어 추가 항목을 취소하거나 파서 상태를 초기화하는 데만 사용하도록 만들어졌습니다."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "사양 변경으로 인해, MediaSource.duration을 버퍼링된 코드 프레임의 최고 타임스탬프보다 낮게 설정하는 기능이 지원 중단되었습니다. 버퍼링된 미디어의 잘린 부분을 암시적으로 삭제하는 기능에 대한 지원은 앞으로 삭제될 예정입니다. newDuration < oldDuration의 경우 대신 모든 sourceBuffers에서 명시적 remove(newDuration, oldDuration)을 수행해야 합니다."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "SysEx가 MIDIOptions에 지정되어 있지 않은 경우에도 사용할 수 있도록 웹 MIDI가 권한을 요청합니다."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "표준화되지 않은 이전 shadowroot 속성은 지원 중단되었습니다. 대신 새로운 표준화된 shadowrootmode 속성을 사용하세요."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "안전하지 않은 출처의 Notification API는 더 이상 사용할 수 없습니다. 애플리케이션을 HTTPS와 같이 안전한 출처로 전환해 보세요. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "더 이상 교차 출처 iframe에서 Notification API 권한을 요청할 수 없습니다. 최상위 프레임에서 권한을 요청하거나 대신 새로운 창을 여는 방법을 고려해야 합니다."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap의 imageOrientation: 'none' 옵션은 지원 중단됩니다. 대신 {imageOrientation: 'from-image'}옵션으로 createImageBitmap을 사용하세요."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "파트너가 지원 중단된 (D)TLS 버전을 협상합니다. 파트너에게 확인하여 이를 해결하세요."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "img, video, canvas 태그에 overflow: visible을(를) 지정하면 요소 경계 외부에 시각적 콘텐츠가 생성될 수 있습니다. 다음을 참고하세요. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments 지원이 중단됩니다. 대신 결제 핸들러에 적시 설치를 사용하세요."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "PaymentRequest 호출이 콘텐츠 보안 정책(CSP) connect-src 지시어를 우회했습니다. 이 우회 지원이 중단됩니다. PaymentRequest API(supportedMethods 입력란)의 결제 수단 식별자를 CSP connect-src 지시어에 추가하세요."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent은(는) 지원 중단되었습니다. 대신 표준화된 navigator.storage을(를) 사용하세요."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<picture> 상위 요소를 지닌 <source src>가 잘못되었으므로 무시됩니다. 대신 <source srcset>를 사용하세요."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame은 공급업체별로 다릅니다. 표준 cancelAnimationFrame을 대신 사용하시기 바랍니다."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame은 공급업체별로 다릅니다. 표준 requestAnimationFrame을 대신 사용하시기 바랍니다."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen은 지원 중단되었습니다. 대신 Document.fullscreenElement를 사용하세요."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen()은 지원 중단되었습니다. Element.requestFullscreen()을 대신 사용하시기 바랍니다."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen()은 지원 중단되었습니다. Element.requestFullscreen()을 대신 사용하시기 바랍니다."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen()은 지원 중단되었습니다. Document.exitFullscreen()을 대신 사용하시기 바랍니다."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen()은 지원 중단되었습니다. Document.exitFullscreen()을 대신 사용하시기 바랍니다."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen은 지원 중단되었습니다. 대신 Document.fullscreenEnabled를 사용하세요."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "chrome.privacy.websites.privacySandboxEnabled API는 지원 중단되지만 M113 버전이 출시될 때까지 이전 버전과의 호환성을 위해 활성 상태로 유지됩니다. 대신 chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled, chrome.privacy.websites.adMeasurementEnabled API를 사용하세요. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "DtlsSrtpKeyAgreement 제약 조건은 삭제되었습니다. 이 제약 조건에 false 값을 지정했으며 이는 삭제된 SDES key negotiation 메서드를 사용하기 위한 시도로 해석될 수 있습니다. 해당 기능은 삭제되었습니다. 대신 DTLS key negotiation을 지원하는 서비스를 사용하세요."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "DtlsSrtpKeyAgreement 제약 조건은 삭제되었습니다. 이 제약 조건에 true 값을 지정했으며 이는 아무런 영향을 미치지 않습니다. 정돈을 위해 이 제약 조건을 삭제할 수 있습니다."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "콜백 기반 getStats()는 지원 중단되었으며 삭제될 예정입니다. 대신 사양을 준수하는 getStats()를 사용하세요."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand()는 지원 중단되었습니다. Selection.modify()를 대신 사용하시기 바랍니다."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "삽입된 사용자 인증 정보(예: https://user:pass@host/)가 URL에 포함된 하위 리소스 요청이 차단되었습니다."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "rtcpMuxPolicy 옵션은 지원 중단되었으며 삭제될 예정입니다."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer에서는 교차 출처 분리를 요구합니다. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/blog/enabling-shared-array-buffer/"
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "사용자 활성화를 포함하지 않은 speechSynthesis.speak()는 지원 중단되었으며 삭제될 예정입니다."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "SharedArrayBuffer를 계속 사용하려면 확장 프로그램에서 교차 출처 분리를 사용해야 합니다. 다음 페이지를 참고하세요. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "UTF-16은 XMLHttpRequest의 response.json에서 지원되지 않습니다."
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "최종 사용자 환경에 부정적인 영향을 미치므로 기본 스레드의 동기식 XMLHttpRequest이(가) 지원 중단되었습니다. 추가 지원이 필요한 경우 다음 페이지를 참고하세요. https://xhr.spec.whatwg.org/"
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession()은 지원 중단되었습니다. 대신 isSessionSupported()를 사용하고 결정된 불리언 값을 확인하세요."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "알 수 없는 파일 로드 오류"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site 및 Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "CORS Access-Control-Allow-Headers 처리 시 와일드 카드 기호(*)를 사용하면 승인되지 않습니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "삭제된 공백 \\(n|r|t)자 및 글자수 제한(<)이 URL에 포함된 리소스 요청이 차단되었습니다. 이러한 리소스를 로드하려면 엘리먼트 속성 값과 같은 위치에서 줄바꿈을 삭제하고 글자수 제한을 인코딩하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes()는 지원 중단되었습니다. 대신 표준화된 API인 Navigation Timing 2를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes()는 사용 중지되었습니다. 대신 표준화된 API인 Paint Timing을 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes()는 지원 중단되었습니다. 대신 nextHopProtocol이 추가된 표준화된 API인 Navigation Timing 2를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "\\(0|r|n)자를 포함하는 쿠키는 잘리는 대신 거부됩니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "document.domain 설정을 통한 동일 출처 정책의 해제는 지원 중단되었으며 기본적으로 사용 중지될 예정입니다. 이 지원 중단 경고는 document.domain 설정에 의해 사용 설정된 교차 출처 액세스에 적용됩니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "교차 출처 iframe에서의 {PH1} 트리거는 지원 중단되었으며 앞으로 삭제될 예정입니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "기본 Cast 통합을 사용 중지하려면 -internal-media-controls-overlay-cast-button 선택기 대신 disableRemotePlayback 속성을 사용해야 합니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1}은 지원 중단되었습니다. 대신 {PH2}를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "지원 중단 문제 메시지의 예시 번역문입니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "document.domain 설정을 통한 동일 출처 정책의 해제는 지원 중단되었으며 기본적으로 사용 중지될 예정입니다. 이 기능을 계속 사용하려면 문서 및 프레임의 HTTP 응답과 함께 Origin-Agent-Cluster: ?0 헤더를 전송하여 오리진 키 에이전트 클러스터를 선택 해제하세요. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/blog/immutable-document-domain/"
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path는 지원 중단되었으며 삭제될 예정입니다. 대신 Event.composedPath()를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Expect-CT 헤더는 지원 중단되었으며 삭제될 예정입니다. Chrome에서는 2018년 4월 30일 후 발행되었으며 공개적으로 신뢰할 수 있는 모든 인증서에 대해 인증서 투명성을 요구합니다."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "자세한 내용은 기능 상태 페이지에서 확인하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() 및 watchPosition()은 더 이상 안전하지 않은 출처에서 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "안전하지 않은 출처의 getCurrentPosition() 및 watchPosition()은 지원 중단되었습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia()는 더 이상 안전하지 않은 출처에서 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate는 지원 중단되었습니다. 대신 RTCPeerConnectionIceErrorEvent.address 또는 RTCPeerConnectionIceErrorEvent.port를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "canmakepayment 서비스 워커 이벤트의 판매자 원본 및 임의 데이터인 topOrigin, paymentRequestOrigin, methodData, modifiers가 지원 중단되었으며 삭제될 예정입니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "웹사이트에서 사용자 권한이 지정된 네트워크 위치로 인해 해당 웹사이트만 액세스 가능한 네트워크의 하위 리소스를 요청했습니다. 이러한 요청은 비공개 기기 및 서버를 인터넷에 노출시켜 크로스 사이트 요청 위조(CSRF) 공격 또는 정보 유출의 위험을 높입니다. 위험을 완화하기 위해 Chrome은 안전하지 않은 컨텍스트에서 시작된 비공개 하위 리소스에 대한 요청을 사용 중지하고 차단하기 시작합니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": ".css 파일 확장자로 끝나지 않는 CSS는 file: URL에서 로드할 수 없습니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "사양 변경으로 인해 SourceBuffer.abort()를 사용하여 remove() 비동기 범위 삭제를 취소하는 기능의 지원이 중단됩니다. 지원은 향후 삭제될 예정입니다. 대신 updateend 이벤트를 수신 대기해야 합니다. abort()는 비동기 미디어 추가 항목을 취소하거나 파서 상태를 초기화하는 데만 사용하도록 만들어졌습니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "사양 변경으로 인해, MediaSource.duration을 버퍼링된 코드 프레임의 최고 타임스탬프보다 낮게 설정하는 기능이 지원 중단되었습니다. 버퍼링된 미디어의 잘린 부분을 암시적으로 삭제하는 기능에 대한 지원은 앞으로 삭제될 예정입니다. newDuration < oldDuration의 경우 대신 모든 sourceBuffers에서 명시적 remove(newDuration, oldDuration)을 수행해야 합니다."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "이 변경사항은 주 버전 번호 {milestone}에 적용됩니다."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "SysEx가 MIDIOptions에 지정되어 있지 않은 경우에도 사용할 수 있도록 웹 MIDI가 권한을 요청합니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "안전하지 않은 출처의 Notification API는 더 이상 사용할 수 없습니다. 애플리케이션을 HTTPS와 같이 안전한 출처로 전환해 보세요. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "더 이상 교차 출처 iframe에서 Notification API 권한을 요청할 수 없습니다. 최상위 프레임에서 권한을 요청하거나 대신 새로운 창을 여는 방법을 고려해야 합니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "createImageBitmap의 imageOrientation: \"none\" 옵션은 지원 중단됩니다. 대신 {imageOrientation: \"from-image\"} 옵션으로 createImageBitmap을 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "파트너가 지원 중단된 (D)TLS 버전을 협상합니다. 파트너에게 확인하여 이를 해결하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "비보안 컨텍스트의 WebSQL은 지원 중단되었으며 곧 삭제됩니다. 웹 스토리지 또는 색인이 생성된 데이터베이스를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "img, video, canvas 태그에 overflow: visible을(를) 지정하면 요소 경계 외부에 시각적 콘텐츠가 생성될 수 있습니다. 다음을 참고하세요. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments 지원이 중단됩니다. 대신 결제 핸들러에 적시 설치를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "PaymentRequest 호출이 콘텐츠 보안 정책(CSP) connect-src 지시어를 우회했습니다. 이 우회 지원이 중단됩니다. PaymentRequest API(supportedMethods 입력란)의 결제 수단 식별자를 CSP connect-src 지시어에 추가하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent은(는) 지원 중단되었습니다. 대신 표준화된 navigator.storage을(를) 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<picture> 상위 요소를 지닌 <source src>가 잘못되었으므로 무시됩니다. 대신 <source srcset>를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo은(는) 지원 중단되었습니다. 대신 표준화된 navigator.storage을(를) 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "chrome.privacy.websites.privacySandboxEnabled API는 지원 중단되지만 M113 버전이 출시될 때까지 이전 버전과의 호환성을 위해 활성 상태로 유지됩니다. 대신 chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled, chrome.privacy.websites.adMeasurementEnabled API를 사용하세요. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "삽입된 사용자 인증 정보(예: https://user:pass@host/)가 URL에 포함된 하위 리소스 요청이 차단되었습니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "DtlsSrtpKeyAgreement 제약 조건은 삭제되었습니다. 이 제약 조건에 false 값을 지정했으며 이는 삭제된 SDES key negotiation 메서드를 사용하기 위한 시도로 해석될 수 있습니다. 해당 기능은 삭제되었습니다. 대신 DTLS key negotiation을 지원하는 서비스를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "DtlsSrtpKeyAgreement 제약 조건은 삭제되었습니다. 이 제약 조건에 true 값을 지정했으며 이는 아무런 영향을 미치지 않습니다. 정돈을 위해 이 제약 조건을 삭제할 수 있습니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP가 감지되었습니다. 이 Session Description Protocol 버전은 더 이상 지원되지 않습니다. 대신 Unified Plan SDP를 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "{sdpSemantics:'plan-b'}로 RTCPeerConnection을 구성할 때 사용되는 Plan B SDP semantics는 Session Description Protocol의 기존 비표준 버전으로, 웹 플랫폼에서 완전히 삭제되었습니다. IS_FUCHSIA로 빌드할 때는 여전히 사용 가능하지만 최대한 빨리 삭제할 예정입니다. 사용을 중지해 주시기 바랍니다. 상태는 https://crbug.com/1302249 페이지에서 확인하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "rtcpMuxPolicy 옵션은 지원 중단되었으며 삭제될 예정입니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer에서는 교차 출처 분리를 요구합니다. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/blog/enabling-shared-array-buffer/"
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "사용자 활성화를 포함하지 않은 speechSynthesis.speak()는 지원 중단되었으며 삭제될 예정입니다."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "지원 중단된 기능이 사용됨"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "SharedArrayBuffer를 계속 사용하려면 확장 프로그램에서 교차 출처 분리를 사용해야 합니다. 다음 페이지를 참고하세요. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1}은 공급업체마다 다릅니다. 대신 표준 {PH2}을 사용하세요."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16은 XMLHttpRequest의 response.json에서 지원되지 않습니다."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "최종 사용자 환경에 부정적인 영향을 미치므로 기본 스레드의 동기식 XMLHttpRequest가 지원 중단되었습니다. 추가 지원이 필요한 경우 다음 페이지를 참고하세요. https://xhr.spec.whatwg.org/"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession()은 지원 중단되었습니다. 대신 isSessionSupported()를 사용하고 결정된 불리언 값을 확인하세요."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "HTML 속성: 자동 완성"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "포털 - 동일 출처 커뮤니케이션 채널"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "자동 완성은 어떤 방식으로 작동하나요?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "양식 입력 요소"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "라벨 요소"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "과도한 광고 개입 처리"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "프레젠테이션"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Chrome에서 사용하는 기본 아이콘"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "{PH1}의 기본 매니페스트 아이콘"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "프로토콜 핸들러"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "테마 색상"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "미리 가져오기 및 사전 렌더링"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "앱 매니페스트"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "예"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "미리 가져오기 및 사전 렌더링"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "아무 보고서나 클릭하여 본문 표시"
@@ -3333,10 +3363,10 @@
     "message": "사용 불가능한 API가 사용되었습니다."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "확장 프로그램에 의해 자바스크립트가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+    "message": "확장 프로그램에 의해 JavaScript가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "확장 프로그램에 의해 스타일시트가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+    "message": "확장 프로그램에 의해 StyleSheet이(가) 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "내부 오류입니다."
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "저장된 토큰 수"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "진행 중이지 않은 항목 지우기"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "활성화됨"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "삭제됨"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "사전 렌더링"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "유효함"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "DevTools가 열려 있으므로 미리 로드가 강제로 사용 설정됩니다. 이 브라우저 세션은 성능 비교에 사용되는 보류 그룹에 속해 있으므로 DevTools가 닫히면 사전 렌더링이 사용 중지됩니다."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "사전 렌더링이 사용 중지되어 있었으나 이제 강제로 사용 설정됨"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "기본 정보"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "시작 시간:"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "상태"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "실행"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "요소를 선택하여 세부정보 확인하기"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "활성화됨"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "삭제됨"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "사전 렌더링"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "시작 시간:"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "상태"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "실행"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "자세한 정보"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "유형"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "소스"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "유효성"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "유효함"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "유효성"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "중단점 도달"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "{PH1}이(가) 포함된 모든 메시지 삭제"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "조건부 중단점"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "콘솔"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "로그 지점"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{#회 반복됨}other{#회 반복됨}}"
@@ -4575,7 +4590,7 @@
     "message": "콘솔 기록 삭제"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "기본적으로 메시지 console.trace()개 접기"
+    "message": "console.trace() 메시지를 자동으로 펼치지 않음"
   },
   "panels/console/console-meta.ts | console": {
     "message": "콘솔"
@@ -4605,10 +4620,10 @@
     "message": "콘솔 메시지 텍스트 적극 평가"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "사용자 활성화 트리거 평가"
+    "message": "평가로 사용자 활성화 트리거"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "기본적으로 메시지 console.trace()개 펼치기"
+    "message": "console.trace() 메시지 자동 펼치기"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "콘솔에서 유사한 메시지 그룹화"
@@ -4761,7 +4776,7 @@
     "message": "URL 필터"
   },
   "panels/coverage/coverage-meta.ts | coverage": {
-    "message": "커버리지"
+    "message": "범위"
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "계측 범위"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "문자열, 선택기 또는 XPath로 찾기"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "프레임"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "계산된 스타일 사이드바 숨기기"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "속성 전환하여 계속 편집"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "설정 \"{PH1}\" {PH2} 값이 글꼴 모음 \"{PH5}\"에 지원되는 범위[{PH3}, {PH4}]를 벗어났습니다."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "계산된 값 보기"
   },
@@ -5454,6 +5463,12 @@
     "message": "배지 표시"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "자세히 알아보기"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "표시 안함"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "자세히 알아보기"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "검사할 페이지 요소 선택"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "CSS 문서 도움말 표시"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "계산된 스타일 표시"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "모든 프로필 지우기"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "이 패널은 다음 버전에서 지원 중단될 예정입니다. 성능 패널을 사용하여 JavaScript CPU 프로필을 기록하세요."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "의견"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "성능 패널로 이동"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "자세히 알아보기"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "로드…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "문서"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "경과 시간"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "필터"
@@ -9981,7 +10014,7 @@
     "message": "업데이트"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "개인정보 보호가 개선되어 더 구조화된 방식으로 브라우저와 기기를 식별하는 사용자 에이전트 클라이언트 힌트가 사용자 에이전트 문자열을 대체합니다. 버튼을 클릭하여 자세히 알아보세요."
+    "message": "개인 정보 보호가 개선되어 더 구조화된 방식으로 브라우저와 기기를 식별하는 사용자 에이전트 클라이언트 힌트가 사용자 에이전트 문자열을 대체합니다. 버튼을 클릭하여 자세히 알아보세요."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "사용자 에이전트(Sec-CH-UA)"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1}(소스 맵에서)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1}(무시 목록)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "모든 파일에서 검색"
   },
@@ -10403,8 +10439,8 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "밀리초"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1}에서 디버그 정보를 통해 제공됨)"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "({PH1} 제공)"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
     "message": "({PH1}에서 매핑된 소스)"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "총 차단 시간: {PH1}밀리초{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "커버리지"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "스레드"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "스레드 {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "소요 시간"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "상호작용"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "닫기"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "커버리지"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "수신됨"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "성능 트레이스로 커버리지 기록"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "기록 실패"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "시작점"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "입력 지연 시간"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "타이머 설치"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS 프레임"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "JS 비활성 프레임"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "JS 루트"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "JS 시스템 프레임"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "콘텐츠가 포함된 최대 페인트"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "생성된 캐시 크기"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "프로파일링 오버헤드"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "범위"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "렌더링 소요 시간"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "기본 스레드 대기 시간"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "시간 초과"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "정렬 필터를 적용하려면 Enter를 누르세요"
+    "message": "열 정렬 상태: {PH1}. 정렬 필터를 적용하려면 Enter를 누르세요"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "헤더 옵션"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "열 재설정"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "오름차순"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "정렬 기준"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "내림차순"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "없음"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} 열이 오름차순으로 정렬됨"

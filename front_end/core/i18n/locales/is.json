@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: Prófílþáttari CPU lagfærir {PH1} sýnishorn sem vantar."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Snið {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Ekki var hægt að hlaða efni fyrir {PH1} ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "Fletting á {PH1} var endurheimt úr skyndiminni til baka/áfram (sjá https://web.dev/bfcache/)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "Ekki tókst að vista tímabundna breytu."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Sett í hlé við villuleit"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "Hætt var við hleðslu vegna þess að hleðsla rann út á tíma"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Hætt var við hleðslu vegna endurhleðslu síðu í skoðun"
   },
@@ -618,7 +615,7 @@
     "message": "stöðvar"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "Allitblinda"
+    "message": "Achromatopsia-litblinda (enginn litur)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Óskýr sjón"
@@ -627,7 +624,7 @@
     "message": "Sækja ósamstilltar staflaraðir"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "Litblinda"
+    "message": "Deuteranopia-litblinda (ekkert grænt)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "Gera ósamstilltar staflaraðir óvirkar"
@@ -690,7 +687,7 @@
     "message": "Líkja eftir síðu í fókus"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "Líkja eftir allitblindu"
+    "message": "Achromatopsia-litblinduhermir (enginn litur)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "Herma eftir sjálfvirkri dökkri stillingu"
@@ -714,13 +711,16 @@
     "message": "Líkja eftir efnisgerð CSS-skjás"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "Líkja eftir litblindu"
+    "message": "Deuteranopia-litblinduhermir (ekkert grænt)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "Líkja eftir rauðblindu"
+    "message": "Protanopia-litblinduhermir (ekkert rautt)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "Líkja eftir minni birtuskilum"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "Líkja eftir litblindu"
+    "message": "Tritanopia-litblinduhermir (ekkert blátt)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "Líkja eftir sjónskerðingu"
@@ -789,10 +789,13 @@
     "message": "prenta"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "Litblinda"
+    "message": "Protanopia-litblinda (ekkert rautt)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "fyrirspurn"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "Minni birtuskil"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "skjár"
@@ -840,7 +843,7 @@
     "message": "Sýna stærð brautar"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "Litblinda"
+    "message": "Deuteranopia-litblinda (ekkert blátt)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript er óvirkt"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Losa í aðskilinn glugga"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Síða: Ekki valin"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "Síða: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Eins og upprunalega"
   },
@@ -1062,7 +1071,7 @@
     "message": "Litasnið:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "Þessi stilling er úrelt vegna þess að hún er ekki samhæf nútímalitrýmum. Til að kveikja aftur á henni geturðu slökkt á samsvarandi tilraun."
+    "message": "Þessi stilling er úrelt vegna þess að hún er ekki samhæf nútímalitrýmum. Til að kveikja aftur á henni skal slökkva á samsvarandi tilraun."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Dökkt"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Aðal"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() er úrelt, nota skal stöðluð forritaskil í staðinn: nextHopProtocol í tímasetningu flettingar 2."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Úrelt er að slaka á reglu fyrir sama uppruna með því að stilla document.domain og slökkt verður á þessu sjálfkrafa. Þessi úreldingarviðvörun er fyrir aðgang þvert á uppruna sem kveikt var á með því að stilla document.domain."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "Virkjun window.alert frá iframe þvert á uppruna er úrelt og verður fjarlægð í framtíðinni."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "Virkjun window.confirm frá iframe þvert á uppruna er úrelt og verður fjarlægð í framtíðinni."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Úrelt er að slaka á reglu fyrir sama uppruna með því að stilla document.domain og slökkt verður á þessu sjálfkrafa. Til að halda áfram að nota þennan eiginleika skaltu afþakka fulltrúaklasa með upprunalykla með því að senda Origin-Agent-Cluster: ?0-haus með HTTP-svarinu fyrir skjalið og rammana. Sjá nánar á https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path er úrelt og verður fjarlægt. Nota skal Event.composedPath() í staðinn."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Expect-CT-hausinn er úreltur og verður fjarlægður. Chrome krefst gagnsæis vottorða fyrir öll vottorð sem teljast almennt traust og eru gefin út eftir 30. apríl 2018."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() og watchPosition() virka ekki lengur á ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() og watchPosition() eru úrelt í ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia() virkar ekki lengur á ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate er úrelt. Nota skal RTCPeerConnectionIceErrorEvent.address eða RTCPeerConnectionIceErrorEvent.port í staðinn."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "Uppruna- og handahófsgögn söluaðila úr canmakepayment tilviki þjónustuskriftu eru úrelt og verða fjarlægð: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "Notkun SourceBuffer.abort() til að hætta við fjarlægingu á ósamstilltu sviði remove() er úrelt vegna breytingar tæknilýsingar. Stuðningur verður fjarlægður síðar meir. Þú ættir að hlusta á updateend tilvikið í staðinn. abort() er aðeins ætlað að hætta við ósamstillta efnisviðbót eða endurstilla þáttunarstöðu."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "Eldri, óstaðlaða eigindin shadowroot er úrelt. Nota skal nýju, stöðluðu eigindina shadowrootmode í staðinn."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "Ekki má lengur nota forritaskil tilkynninga frá ótraustum uppruna. Íhugaðu að færa forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "Óvíst er að beðið verði um heimild fyrir forritaskilum tilkynninga frá iframe þvert á uppruna. Íhugaðu að biðja um heimild frá ramma á efsta stigi eða opna nýjan glugga í staðinn."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Valkosturinn imageOrientation: 'none' í createImageBitmap er úreltur. Nota skal createImageBitmap með valkostinum {imageOrientation: 'from-image'} í staðinn."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "Þegar overflow: visible er tilgreint fyrir merkin „img, video og canvas“ búa þau hugsanlega til myndefni utan marka einingarinnar. Sjá https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments er úrelt. Notaðu JIT-uppsetningu (Just In Time) fyrir greiðslumiðlara í staðinn."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "Kallið PaymentRequest sneiddi hjá connect-src-tilskipun efnisöryggisstefnunnar (CSP). Þessi hjásneiðing er úrelt. Bættu auðkenni greiðslumáta úr forritaskilunum PaymentRequest (í supportedMethods-reitnum) við connect-src-tilskipun efnisöryggisstefnunnar (CSP)."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent er úrelt. Nota skal staðlað navigator.storage í staðinn."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<source src> með <picture> yfireiningu er ógilt og því hunsað. Nota skal <source srcset> í staðinn."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame er sértækt fyrir söluaðila. Nota skal staðlað cancelAnimationFrame í staðinn."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame er sértækt fyrir söluaðila. Nota skal staðlað requestAnimationFrame í staðinn."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen er úrelt. Nota skal Document.fullscreenElement í staðinn."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() er úrelt. Nota skal Element.requestFullscreen() í staðinn."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() er úrelt. Nota skal Element.requestFullscreen() í staðinn."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() er úrelt. Nota skal Document.exitFullscreen() í staðinn."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() er úrelt. Nota skal Document.exitFullscreen() í staðinn."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen er úrelt. Nota skal Document.fullscreenEnabled í staðinn."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "Við úreldum forritaskilin chrome.privacy.websites.privacySandboxEnabled en þau verða áfram virk til að viðhalda samhæfi við eldri útgáfur fram að útgáfu M113. Nota skal chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled og chrome.privacy.websites.adMeasurementEnabled í staðinn. Sjá https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Takmörkunin DtlsSrtpKeyAgreement var fjarlægð. Þú tilgreindir false gildi fyrir þessa takmörkun sem er túlkað sem tilraun til að nota aðferðina SDES key negotiation sem var fjarlægð. Þessi eiginleiki var fjarlægður. Nota skal þjónustu sem styður DTLS key negotiation í staðinn."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Takmörkunin DtlsSrtpKeyAgreement var fjarlægð. Þú tilgreindir true gildi fyrir þessa takmörkun sem hafði engin áhrif en þú getur fjarlægt þessa takmörkun til að hreinsa til."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "getStats() sem byggist á svarhringingu er úrelt og verður fjarlægt. Nota skal getStats() sem samræmist tæknilýsingu í staðinn."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() er úrelt. Nota skal Selection.modify() í staðinn."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "Valkosturinn rtcpMuxPolicy er úreltur og verður fjarlægður."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "speechSynthesis.speak() án virkjunar notanda er úrelt og verður fjarlægt."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Samstilling XMLHttpRequest í aðalþræði er úrelt vegna skaðlegra áhrifa á upplifun notenda. Frekari aðstoð má finna á https://xhr.spec.whatwg.org/."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() er úrelt. Notaðu isSessionSupported() og athugaðu leysta Boole-gildið í staðinn."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Óþekkt villa kom upp við að hlaða skránni"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "„Same-Site“ og „Same-Origin“"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() er úrelt, nota skal stöðluð forritaskil í staðinn: nextHopProtocol í tímasetningu flettingar 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Úrelt er að slaka á reglu fyrir sama uppruna með því að stilla document.domain og slökkt verður á þessu sjálfkrafa. Þessi úreldingarviðvörun er fyrir aðgang þvert á uppruna sem kveikt var á með því að stilla document.domain."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Virkjun {PH1} frá iframe þvert á uppruna er úrelt og verður fjarlægð í framtíðinni."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} er úrelt. Nota skal {PH2} í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "Þetta er dæmi um þýdd skilaboð um vandamál tengt úreldingu."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Úrelt er að slaka á reglu fyrir sama uppruna með því að stilla document.domain og slökkt verður á þessu sjálfkrafa. Til að halda áfram að nota þennan eiginleika skaltu afþakka fulltrúaklasa með upprunalykla með því að senda Origin-Agent-Cluster: ?0-haus með HTTP-svarinu fyrir skjalið og rammana. Sjá nánar á https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path er úrelt og verður fjarlægt. Nota skal Event.composedPath() í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Expect-CT-hausinn er úreltur og verður fjarlægður. Chrome krefst gagnsæis vottorða fyrir öll vottorð sem teljast almennt traust og eru gefin út eftir 30. apríl 2018."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Fáðu frekari upplýsingar á stöðusíðu eiginleikans."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() og watchPosition() virka ekki lengur á ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() og watchPosition() eru úrelt í ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() virkar ekki lengur á ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate er úrelt. Nota skal RTCPeerConnectionIceErrorEvent.address eða RTCPeerConnectionIceErrorEvent.port í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "Uppruna- og handahófsgögn söluaðila úr canmakepayment tilviki þjónustuskriftu eru úrelt og verða fjarlægð: topOrigin, paymentRequestOrigin, methodData, modifiers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Notkun SourceBuffer.abort() til að hætta við fjarlægingu á ósamstilltu sviði remove() er úrelt vegna breytingar tæknilýsingar. Stuðningur verður fjarlægður síðar meir. Þú ættir að hlusta á updateend tilvikið í staðinn. abort() er aðeins ætlað að hætta við ósamstillta efnisviðbót eða endurstilla þáttunarstöðu."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Þessi breyting verður virk í áfanga {milestone}."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "Ekki má lengur nota forritaskil tilkynninga frá ótraustum uppruna. Íhugaðu að færa forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Óvíst er að beðið verði um heimild fyrir forritaskilum tilkynninga frá iframe þvert á uppruna. Íhugaðu að biðja um heimild frá ramma á efsta stigi eða opna nýjan glugga í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "Valkosturinn imageOrientation: \"none\" í createImageBitmap er úreltur. Nota skal createImageBitmap með valkostinum {imageOrientation: \"from-image\"} í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL í ótraustu samhengi er úrelt og verður fjarlægt fljótlega. Notaðu vefgeymslu eða niðurskiptan gagnagrunn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "Þegar overflow: visible er tilgreint fyrir merkin „img, video og canvas“ búa þau hugsanlega til myndefni utan marka einingarinnar. Sjá https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments er úrelt. Notaðu JIT-uppsetningu (Just In Time) fyrir greiðslumiðlara í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "Kallið PaymentRequest sneiddi hjá connect-src-tilskipun efnisöryggisstefnunnar (CSP). Þessi hjásneiðing er úrelt. Bættu auðkenni greiðslumáta úr forritaskilunum PaymentRequest (í supportedMethods-reitnum) við connect-src-tilskipun efnisöryggisstefnunnar (CSP)."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent er úrelt. Nota skal staðlað navigator.storage í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> með <picture> yfireiningu er ógilt og því hunsað. Nota skal <source srcset> í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo er úrelt. Nota skal staðlað navigator.storage í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "Við úreldum forritaskilin chrome.privacy.websites.privacySandboxEnabled en þau verða áfram virk til að viðhalda samhæfi við eldri útgáfur fram að útgáfu M113. Nota skal chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled og chrome.privacy.websites.adMeasurementEnabled í staðinn. Sjá https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Takmörkunin DtlsSrtpKeyAgreement var fjarlægð. Þú tilgreindir false gildi fyrir þessa takmörkun sem er túlkað sem tilraun til að nota aðferðina SDES key negotiation sem var fjarlægð. Þessi eiginleiki var fjarlægður. Nota skal þjónustu sem styður DTLS key negotiation í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Takmörkunin DtlsSrtpKeyAgreement var fjarlægð. Þú tilgreindir true gildi fyrir þessa takmörkun sem hafði engin áhrif en þú getur fjarlægt þessa takmörkun til að hreinsa til."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP greint. Mállýska Session Description Protocol er ekki lengur studd. Nota skal Unified Plan SDP í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, sem er notað þegar RTCPeerConnection er smíðað með {sdpSemantics:'plan-b'}, er óstöðluð, eldri útgáfa af Session Description Protocol sem hefur verð eytt varanalega úr vefkerfinu. Það er enn tiltækt þegar IS_FUCHSIA er notað við smíði en áætlað er að eyða því við fyrsta tækifæri. Ekki reiða þig á það framar. Stöðuna má finna á https://crbug.com/1302249."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "Valkosturinn rtcpMuxPolicy er úreltur og verður fjarlægður."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() án virkjunar notanda er úrelt og verður fjarlægt."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Úreltur eiginleiki notaður"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} er sértækt fyrir söluaðila. Nota skal staðlað {PH2} í staðinn."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() er úrelt. Notaðu isSessionSupported() og athugaðu leysta Boole-gildið í staðinn."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Forritaskil stjórnunar Federated Credential"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "HTML-eigind: Sjálfvirk útfylling"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Gáttir – samskiptarásir af sama uppruna"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "Hvernig virkar sjálfvirk útfylling?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "Eining útfyllingar eyðublaðs"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "Einingar merkis"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Meðferð mikilla inngripa auglýsinga"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Útlit"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Aðaltákn sem Chrome notar"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "Aðaltákn úr upplýsingaskrá frá {PH1}"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "Hjálparforrit fyrir samskiptareglur"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Þemalitur"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "Forhleðsla"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Upplýsingaskrá forrits"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Já"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "Forhleðsla"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Smelltu á hvaða skýrslu sem er til að skoða meginmál hennar"
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Fjöldi vistaðra lykla"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "Hreinsun er ekki í gangi"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "Kveikt"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "Fleygt"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "Forhleðsla"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "Gilt"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Þvingað er að hafa kveikt á forhleðslu vegna þessa að DevTools eru opin. Þegar DevTools er lokað verður slökkt á forhleðslu því þessi vafralota tilheyrir útilokunarhópi sem er notaður við afkastasamanburð."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Slökkt var á forhleðslu en nú hefur verið kveikt á henni með þvingun"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "Grunnupplýsingar"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "Hófst"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Staða"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "Kveikja"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Veldu einingu til að fá frekari upplýsingar"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "Kveikt"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "Fleygt"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "Forhleðsla"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "Hófst"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Staða"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "Kveikja"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "Ítarlegar upplýsingar"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "Tegund"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "Uppruni"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "Gildi"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "Gilt"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "Gildi"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "stopppunkti náð"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "Hreinsa öll skilaboð með {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "Skilyrtur stopppunktur"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "Stjórnborð"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "Innskráningarpunktur"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{Endurtekið # sinni}one{Endurtekið # sinni}other{Endurtekið # sinnum}}"
@@ -4575,7 +4590,7 @@
     "message": "Hreinsa feril stjórnborðs"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "Minnka console.trace()-skilaboð sjálfkrafa"
+    "message": "Ekki stækka console.trace() skilaboð sjálfkrafa"
   },
   "panels/console/console-meta.ts | console": {
     "message": "Stjórnborð"
@@ -4605,10 +4620,10 @@
     "message": "Hlýða strax skipunum sem slegnar eru inn á stjórnborði"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "Keyrsla leiðir af sér virkjun frá notanda"
+    "message": "Mat virkjar notendavirkjun"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "Stækka console.trace()-skilaboð sjálfkrafa"
+    "message": "Stækka console.trace() skilaboð sjálfkrafa"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Flokka svipuð skilaboð saman á stjórnborði"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "Leita eftir streng, vali eða XPath"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "Rammi"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "Fela hliðarstiku reiknaðra stíla"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "Opna/loka eiginleika og halda áfram að gera breytingar"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "Gildi stillingar „{PH1}“ {PH2} er utan studdra marka [{PH3}, {PH4}] fyrir leturhóp „{PH5}“."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Skoða reiknað gildi"
   },
@@ -5455,6 +5464,12 @@
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Frekari upplýsingar"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "Ekki sýna"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
+    "message": "Nánar"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM trjáslóð"
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Veldu einingu á síðunni til að skoða hana"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "Sýna ábendingu um CSS-skjöl"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Sýna reiknaða stíla"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "Hreinsa öll vöktunarsnið"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "Þetta svæði verður úrelt í væntanlegri útgáfu. Notaðu afkastasvæðið til að skrá JavaScript-örgjörvaprófíla."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "Ábending"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "Opna afkastasvæði"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "Nánar"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "Hlaða…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Upplýsingaefni"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "Liðinn tími"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Sía"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (úr kóðavörpun)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (á hunsunarlista)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Leita í öllum skrám"
   },
@@ -10403,11 +10439,11 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "msek."
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(látið í té með villuleitarupplýsingum af {PH1})"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "(Frá {PH1})"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(uppruna varpað frá {PH1})"
+    "message": "(Uppruna varpað frá {PH1})"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Lokun"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "Útilokunartími samtals: {PH1}ms{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "KÓÐANOTKUN"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "Örgjörvi"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Þráður"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "Þráður {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "Tímasetningar"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "Samskipti"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Loka"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "Kóðanotkun"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "Örgjörvi:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "Móttekið"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "Skrá umfang með afkastarakningu"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "Upptaka mistókst"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Hefjandi"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "Biðtími innsláttar"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Setja upp teljara"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS-rammi"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "JS aðgerðalaus rammi"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "JS-rót"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "JS-kerfisrammi"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Efnismesta málunin"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Framkölluð stærð skyndiminnis"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "Tími sem fór í vöktunarþjónustu"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Svið"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Tími sem fór í teiknun"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "Biðtími eftir aðalþræði"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Tímamörk"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "Ýttu á „Enter“ til að nota flokkunarsíu"
+    "message": "Flokkunarstaða dálks: {PH1}. Ýttu á „Enter“ til að nota flokkunarsíu"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Valkostir hauss"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "Endurstilla dálka"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "hækkandi"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Raða eftir"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "lækkandi"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "ekkert"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} raðað í hækkandi röð"

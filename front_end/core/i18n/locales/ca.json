@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: l'analitzador del perfil de CPU està corregint {PH1} mostres que falten."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Perfil {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "No s'ha pogut carregar el contingut per a {PH1} ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "La navegació fins a {PH1} s'ha restaurat de la memòria cau endavant/enrere (consulta https://web.dev/bfcache/)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "No s'ha pogut desar a la variable temporal."
@@ -309,7 +309,7 @@
     "message": "Analitza"
   },
   "core/sdk/DOMDebuggerModel.ts | pictureinpicture": {
-    "message": "Pantalla en pantalla"
+    "message": "Imatge sobre imatge"
   },
   "core/sdk/DOMDebuggerModel.ts | pointer": {
     "message": "Punter"
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "En pausa al depurador"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "S'ha cancel·lat la càrrega perquè s'ha esgotat el temps d'espera de la càrrega"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "La càrrega s'ha cancel·lat perquè la pàgina inspeccionada s'ha tornat a carregar"
   },
@@ -618,7 +615,7 @@
     "message": "s'està aturant"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "Acromatòpsia"
+    "message": "Acromatòpsia (sense color)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Visió borrosa"
@@ -627,7 +624,7 @@
     "message": "Captura les traces de la pila asíncrona"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "Deuteranopia"
+    "message": "Deuteranopia (sense verd)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "Desactiva les traces de la pila asíncrona"
@@ -690,7 +687,7 @@
     "message": "Emula una pàgina en què s'hagi posat el focus"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "Emula l'acromatòpsia"
+    "message": "Emula l'acromatòpsia (sense color)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "Emula el mode fosc automàtic"
@@ -714,13 +711,16 @@
     "message": "Emula el tipus multimèdia de la pantalla de CSS"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "Emula la deuteranopia"
+    "message": "Emula la deuteranopia (sense verd)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "Emula la protanopia"
+    "message": "Emula la protanopia (sense vermell)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "Emula el contrast reduït"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "Emula la tritanopia"
+    "message": "Emula la tritanopia (sense blau)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "Emula deficiències de visió"
@@ -789,10 +789,13 @@
     "message": "imprimeix"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "Protanopia"
+    "message": "Protanopia (sense vermell)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "consulta"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "Contrast reduït"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "pantalla"
@@ -840,7 +843,7 @@
     "message": "Mostra les mides de la pista"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "Tritanopia"
+    "message": "Tritanopia (sense blau)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript està desactivat"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Desacobla en una altra finestra"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Pàgina: no seleccionada"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "Pàgina: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Tal com s'ha escrit originalment"
   },
@@ -1062,7 +1071,7 @@
     "message": "Format de color:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "Aquesta opció de configuració està obsoleta perquè és incompatible amb els espais de color moderns. Per tornar a activar-la, pots desactivar l'experiment corresponent."
+    "message": "Aquesta opció de configuració està obsoleta perquè és incompatible amb els espais de color moderns. Per tornar-la a activar, desactiva l'experiment corresponent."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Fosc"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Principal"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "El símbol del comodí (*) no cobrirà l'autorització a la gestió de la capçalera Access-Control-Allow-Headers a CORS."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "S'ha d'utilitzar l'atribut disableRemotePlayback per desactivar la integració de Cast predeterminada en lloc de fer servir el selector -internal-media-controls-overlay-cast-button."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "Les sol·licituds de recursos amb URL que contenien tant caràcters d'espai en blanc (\\(n|r|t)) com caràcters d'\"inferior a\" (<) suprimits estan bloquejades. Suprimeix les línies noves i codifica els caràcters d'\"inferior a\" de llocs com els valors d'atribut d'element per carregar aquests recursos."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() està obsoleta. Substitueix-la per l'API estandarditzada: Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() està obsoleta. Substitueix-la per l'API estandarditzada: Paint Timing."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() està obsoleta. Substitueix-la per l'API estandarditzada: nextHopProtocol a Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "Les galetes que continguin un caràcter \\(0|r|n) es rebutjaran en lloc de truncar-se."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "El relaxament de la política del mateix origen establint document.domain està obsolet i es desactivarà de manera predeterminada. Aquest advertiment de discontinuació és per a un accés d'altres orígens activat establint document.domain."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "L'opció d'activar window.alert des d'iframes d'altres orígens està obsoleta i se suprimirà en el futur."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "L'opció d'activar window.confirm des d'iframes d'altres orígens està obsoleta i se suprimirà en el futur."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "El relaxament de la política del mateix origen establint document.domain està obsolet i es desactivarà de manera predeterminada. Per continuar utilitzant aquesta funció, cancel·la els clústers d'agent amb clau d'origen enviant una capçalera Origin-Agent-Cluster: ?0 junt amb la resposta HTTP per al document i els marcs. Consulta https://developer.chrome.com/blog/immutable-document-domain/ per obtenir més informació."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path està obsoleta i se suprimirà. Substitueix-la per Event.composedPath()."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "La capçalera Expect-CT està obsoleta i se suprimirà. Chrome requereix Transparència de certificats per a tots els certificats considerats de confiança públicament que s'hagin emès després del 30 d'abril de 2018."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() i watchPosition() ja no funcionen en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() i watchPosition() estan obsoletes en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia() ja no funciona en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate està obsoleta. Substitueix-la per RTCPeerConnectionIceErrorEvent.address o RTCPeerConnectionIceErrorEvent.port."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "L'origen del comerciant i les dades arbitràries de l'esdeveniment canmakepayment del Service Worker estan obsolets i se suprimiran: topOrigin, paymentRequestOrigin, methodData i modifiers."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "El lloc web ha sol·licitat un subrecurs des d'una xarxa a la qual només ha pogut accedir gràcies a la posició privilegiada a la xarxa dels seus usuaris. Aquestes sol·licituds exposen els dispositius i els servidors que no són públics a Internet, amb la qual cosa augmenta el risc de patir una fuita d'informació o un atac de falsificació de sol·licituds entre llocs web (CSRF). Per reduir aquests riscos, Chrome discontinua les sol·licituds a subrecursos que no són públics quan s'inicien des de contexts no segurs i comença a bloquejar-los."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "El CSS no es pot carregar des dels URL file:, tret que acabin amb l'extensió de fitxer .css."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "L'opció d'utilitzar SourceBuffer.abort() per anul·lar la supressió de l'interval asíncron duta a terme per remove() s'ha discontinuat a causa del canvi d'especificació. Es deixarà d'admetre en el futur. Hauràs d'escoltar l'esdeveniment updateend. abort() s'ha dissenyat només per anul·lar l'addició d'un mitjà asíncron o per restablir l'estat de l'analitzador."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "En configurar MediaSource.duration per sota de la marca de temps de presentació més alta de qualsevol marc amb codi emmagatzemat a la memòria intermèdia està obsoleta a causa del canvi d'especificació. La supressió implícita de mitjans truncats emmagatzemats a la memòria intermèdia es deixarà d'admetre en el futur. En lloc seu, hauràs d'executar el codi remove(newDuration, oldDuration) explícit en totes les instàncies de sourceBuffers en què newDuration < oldDuration."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI demanarà permís d'ús fins i tot si el missatge exclusiu del sistema no s'especifica a MIDIOptions."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "L'atribut shadowroot anterior no estandarditzat està obsolet. Substitueix-lo pel nou atribut shadowrootmode estandarditzat."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "Pot ser que l'API de notificacions ja no es pugui utilitzar des d'orígens no segurs. Planteja't canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "Pot ser que el permís per a l'API Notification ja no se sol·liciti des d'un iframe d'altres orígens. T'hauries de plantejar sol·licitar permís des d'un marc de nivell superior o bé obrir una finestra nova."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "L'opció imageOrientation: 'none' de createImageBitmap està obsoleta. Substitueix-la per createImageBitmap amb l'opció {imageOrientation: \"from-image\"}."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "El teu partner està negociant una versió de (D)TLS obsoleta. Demana al teu partner que ho corregeixi."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "Si s'especifica \"overflow: visible\" en les etiquetes img, video i canvas, pot ser que produeixin contingut visual fora dels límits de l'element. Consulta https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments està obsoleta. Utilitza la instal·lació Just-In-Time per als gestors de pagaments."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "La crida a PaymentRequest ha omès la directiva connect-src de la política de seguretat del contingut (CSP). Aquesta omissió està obsoleta. Afegeix l'identificador de la forma de pagament de l'API PaymentRequest (al camp supportedMethods) a la directiva connect-src de la CSP."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent està obsolet. Substitueix-lo per navigator.storage estandarditzat."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<source src> amb un atribut superior <picture> no és vàlid i s'ignorarà. Substitueix-lo per <source srcset>."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "El mètode webkitCancelAnimationFrame és específic de cada proveïdor. Substitueix-lo per l'estàndard cancelAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "El mètode webkitRequestAnimationFrame és específic de cada proveïdor. Substitueix-lo per l'estàndard requestAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitDisplayingFullscreen està obsoleta. Substitueix-la per Document.fullscreenElement."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "L'API HTMLVideoElement.webkitEnterFullScreen() està obsoleta. Substitueix-la per Element.requestFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitEnterFullscreen() està obsoleta. Substitueix-la per Element.requestFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "L'API HTMLVideoElement.webkitExitFullScreen() està obsoleta. Substitueix-la per Document.exitFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitExitFullscreen() està obsoleta. Substitueix-la per Document.exitFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitSupportsFullscreen està obsoleta. Substitueix-la per Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "L'API chrome.privacy.websites.privacySandboxEnabled deixarà d'estar disponible, tot i que continuarà activa per a la retrocompatibilitat fins que es publiqui la versió M113. Substitueix-la per chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled i chrome.privacy.websites.adMeasurementEnabled. Consulta https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "La restricció DtlsSrtpKeyAgreement s'ha suprimit. Has especificat un valor false per a aquesta restricció, la qual cosa s'interpreta com un intent d'utilitzar el mètode SDES key negotiation suprimit. Aquesta funcionalitat s'ha suprimit; substitueix-la per un servei que admeti DTLS key negotiation."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "La restricció DtlsSrtpKeyAgreement s'ha suprimit. Has especificat un valor true per a aquesta restricció, la qual cosa no ha tingut cap efecte, però pots suprimir aquesta restricció per organitzar-te millor."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "El mètode getStats() basat en crida de retorn està obsolet i se suprimirà. Utilitza un getStats() que compleixi les especificacions."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "L'API Range.expand() està obsoleta. Substitueix-la per Selection.modify()."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Les sol·licituds de subrecursos amb URL que contenen credencials inserides (per exemple, https://user:pass@host/) estan bloquejades."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "L'opció rtcpMuxPolicy està obsoleta i se suprimirà."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer requerirà l'aïllament d'altres orígens. Consulta https://developer.chrome.com/blog/enabling-shared-array-buffer/ per obtenir més detalls."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "speechSynthesis.speak() sense l'activació de l'usuari està obsoleta i se suprimirà."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Les extensions han d'activar l'aïllament d'altres orígens per continuar utilitzant SharedArrayBuffer. Consulta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "La resposta JSON no admet UTF-16 a XMLHttpRequest"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "L'API XMLHttpRequest síncrona al fil principal està obsoleta a causa dels seus efectes perjudicials en l'experiència de l'usuari final. Per obtenir més ajuda, consulta https://xhr.spec.whatwg.org/."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() està obsolet. Substitueix-lo per isSessionSupported() i comprova el valor booleà resolt."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Error desconegut en carregar el fitxer"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site i Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "El símbol del comodí (*) no cobrirà l'autorització a la gestió de la capçalera Access-Control-Allow-Headers a CORS."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Les sol·licituds de recursos amb URL que contenien tant caràcters d'espai en blanc (\\(n|r|t)) com caràcters d'\"inferior a\" (<) suprimits estan bloquejades. Suprimeix les línies noves i codifica els caràcters d'\"inferior a\" de llocs com els valors d'atribut d'element per carregar aquests recursos."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() està obsoleta. Substitueix-la per l'API estandarditzada: Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() està obsoleta. Substitueix-la per l'API estandarditzada: Paint Timing."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() està obsoleta. Substitueix-la per l'API estandarditzada: nextHopProtocol a Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Les galetes que continguin un caràcter \\(0|r|n) es rebutjaran en lloc de truncar-se."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "El relaxament de la política del mateix origen establint document.domain està obsolet i es desactivarà de manera predeterminada. Aquest advertiment de discontinuació és per a un accés d'altres orígens activat establint document.domain."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "L'opció d'activar {PH1} des d'iframes d'altres orígens està obsoleta i se suprimirà en el futur."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "S'ha d'utilitzar l'atribut disableRemotePlayback per desactivar la integració de Cast predeterminada en lloc de fer servir el selector -internal-media-controls-overlay-cast-button."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} està obsoleta. Substitueix-la per {PH2}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "Això és un exemple d'un missatge traduït d'un problema de discontinuació."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "El relaxament de la política del mateix origen establint document.domain està obsolet i es desactivarà de manera predeterminada. Per continuar utilitzant aquesta funció, cancel·la els clústers d'agent amb clau d'origen enviant una capçalera Origin-Agent-Cluster: ?0 junt amb la resposta HTTP per al document i els marcs. Consulta https://developer.chrome.com/blog/immutable-document-domain/ per obtenir més informació."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path està obsoleta i se suprimirà. Substitueix-la per Event.composedPath()."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "La capçalera Expect-CT està obsoleta i se suprimirà. Chrome requereix Transparència de certificats per a tots els certificats considerats de confiança públicament que s'hagin emès després del 30 d'abril de 2018."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Consulta la pàgina d'estat de la funció per obtenir informació més detallada."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() i watchPosition() ja no funcionen en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() i watchPosition() estan obsoletes en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() ja no funciona en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate està obsoleta. Substitueix-la per RTCPeerConnectionIceErrorEvent.address o RTCPeerConnectionIceErrorEvent.port."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "L'origen del comerciant i les dades arbitràries de l'esdeveniment canmakepayment del Service Worker estan obsolets i se suprimiran: topOrigin, paymentRequestOrigin, methodData i modifiers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "El lloc web ha sol·licitat un subrecurs des d'una xarxa a la qual només ha pogut accedir gràcies a la posició privilegiada a la xarxa dels seus usuaris. Aquestes sol·licituds exposen els dispositius i els servidors que no són públics a Internet, amb la qual cosa augmenta el risc de patir una fuita d'informació o un atac de falsificació de sol·licituds entre llocs web (CSRF). Per reduir aquests riscos, Chrome discontinua les sol·licituds a subrecursos que no són públics quan s'inicien des de contexts no segurs i comença a bloquejar-los."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "El CSS no es pot carregar des dels URL file:, tret que acabin amb l'extensió de fitxer .css."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "L'opció d'utilitzar SourceBuffer.abort() per anul·lar la supressió de l'interval asíncron duta a terme per remove() s'ha discontinuat a causa del canvi d'especificació. Es deixarà d'admetre en el futur. Hauràs d'escoltar l'esdeveniment updateend. abort() s'ha dissenyat només per anul·lar l'addició d'un mitjà asíncron o per restablir l'estat de l'analitzador."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "En configurar MediaSource.duration per sota de la marca de temps de presentació més alta de qualsevol marc amb codi emmagatzemat a la memòria intermèdia està obsoleta a causa del canvi d'especificació. La supressió implícita de mitjans truncats emmagatzemats a la memòria intermèdia es deixarà d'admetre en el futur. En lloc seu, hauràs d'executar el codi remove(newDuration, oldDuration) explícit en totes les instàncies de sourceBuffers en què newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Aquest canvi es farà efectiu quan s'arribi a {milestone}."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI demanarà permís d'ús fins i tot si el missatge exclusiu del sistema no s'especifica a MIDIOptions."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "Pot ser que l'API de notificacions ja no es pugui utilitzar des d'orígens no segurs. Planteja't canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Pot ser que el permís per a l'API Notification ja no se sol·liciti des d'un iframe d'altres orígens. T'hauries de plantejar sol·licitar permís des d'un marc de nivell superior o bé obrir una finestra nova."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "L'opció imageOrientation: \"none\" de createImageBitmap està obsoleta. Substitueix-la per createImageBitmap amb l'opció {imageOrientation: \"from-image\"}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "El teu partner està negociant una versió de (D)TLS obsoleta. Demana al teu partner que ho corregeixi."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL està obsolet en contextos no segurs i se suprimirà aviat. Utilitza Web Storage o Indexed Database."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "Si s'especifica \"overflow: visible\" en les etiquetes img, video i canvas, pot ser que produeixin contingut visual fora dels límits de l'element. Consulta https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments està obsoleta. Utilitza la instal·lació Just-In-Time per als gestors de pagaments."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "La crida a PaymentRequest ha omès la directiva connect-src de la política de seguretat del contingut (CSP). Aquesta omissió està obsoleta. Afegeix l'identificador de la forma de pagament de l'API PaymentRequest (al camp supportedMethods) a la directiva connect-src de la CSP."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent està obsolet. Substitueix-lo per navigator.storage estandarditzat."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> amb un atribut superior <picture> no és vàlid i s'ignorarà. Substitueix-lo per <source srcset>."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo està obsoleta. Substitueix-la per l'API navigator.storage estandarditzada."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "L'API chrome.privacy.websites.privacySandboxEnabled deixarà d'estar disponible, tot i que continuarà activa per a la retrocompatibilitat fins que es publiqui la versió M113. Substitueix-la per chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled i chrome.privacy.websites.adMeasurementEnabled. Consulta https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Les sol·licituds de subrecursos amb URL que contenen credencials inserides (per exemple, https://user:pass@host/) estan bloquejades."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "La restricció DtlsSrtpKeyAgreement s'ha suprimit. Has especificat un valor false per a aquesta restricció, la qual cosa s'interpreta com un intent d'utilitzar el mètode SDES key negotiation suprimit. Aquesta funcionalitat s'ha suprimit; substitueix-la per un servei que admeti DTLS key negotiation."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "La restricció DtlsSrtpKeyAgreement s'ha suprimit. Has especificat un valor true per a aquesta restricció, la qual cosa no ha tingut cap efecte, però pots suprimir aquesta restricció per organitzar-te millor."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "S'ha detectat Complex Plan B SDP. Aquest dialecte de Session Description Protocol ja no s'admet. Substitueix-lo per Unified Plan SDP."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "El protocol Plan B SDP semantics, utilitzat per construir una interfície RTCPeerConnection amb el format {sdpSemantics:'plan-b'}, és una versió no estàndard heretada del protocol Session Description Protocol que s'ha suprimit permanentment de la plataforma web. Continuarà estant disponible en compilar amb IS_FUCHSIA, però tenim previst suprimir-lo al més aviat possible. Deixa de dependre'n. Per veure'n l'estat, consulta https://crbug.com/1302249."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "L'opció rtcpMuxPolicy està obsoleta i se suprimirà."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer requerirà l'aïllament d'altres orígens. Consulta https://developer.chrome.com/blog/enabling-shared-array-buffer/ per obtenir més detalls."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() sense l'activació de l'usuari està obsoleta i se suprimirà."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "S'ha utilitzat una funció obsoleta"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Les extensions han d'activar l'aïllament d'altres orígens per continuar utilitzant SharedArrayBuffer. Consulta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} és específica de cada proveïdor. Substitueix-la per l'estàndard: {PH2}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "La resposta JSON no admet UTF-16 a XMLHttpRequest"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "XMLHttpRequest síncron al fil principal està obsolet a causa dels seus efectes perjudicials en l'experiència de l'usuari final. Per obtenir més ajuda, consulta https://xhr.spec.whatwg.org/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() està obsolet. Substitueix-lo per isSessionSupported() i comprova el valor booleà resolt."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Federated Credential Management"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "Atribut HTML: compleció automàtica"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portals: canals de comunicació amb el mateix origen"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "Com funciona Emplenament automàtic?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "Element d'entrada del formulari"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "Elements de l'etiqueta"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Gestió de les intervencions d'anuncis pesats"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Presentació"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Icona principal tal com la utilitza Chrome"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "Icona del fitxer de manifest principal de {PH1}"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "Gestors de protocols"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Color del tema"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "Recollida i renderització prèvies"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Manifest de l'aplicació"
@@ -2837,6 +2864,9 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Sí"
   },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "Recollida i renderització prèvies"
+  },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Fes clic a qualsevol informe per mostrar el seu cos"
   },
@@ -3171,7 +3201,7 @@
     "message": "Atura la gravació d'esdeveniments"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Només les pàgines carregades mitjançant una sol·licitud GET són aptes per a la memòria cau back-forward."
+    "message": "Només les pàgines carregades mitjançant una sol·licitud GET són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
     "message": "Només es poden desar a la memòria cau les pàgines amb un codi d'estat 2XX."
@@ -3180,31 +3210,31 @@
     "message": "Chrome ha detectat un intent d'executar JavaScript a la memòria cau."
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Actualment, les pàgines que han sol·licitat un AppBanner no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han sol·licitat un AppBanner no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "La memòria cau back-forward està desactivada a causa d'una sol·licitud de keepalive."
+    "message": "La memòria cau endavant/enrere està desactivada a causa d'una sol·licitud de keepalive."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "chrome://flags ha desactivat la memòria cau back-forward. Visita chrome://flags/#back-forward-cache per activar-la de manera local en aquest dispositiu."
+    "message": "chrome://flags ha desactivat la memòria cau endavant/enrere. Visita chrome://flags/#back-forward-cache per activar-la de manera local en aquest dispositiu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "La línia d'ordres ha desactivat la memòria cau back-forward."
+    "message": "La línia d'ordres ha desactivat la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "La memòria cau back-forward està desactivada perquè no hi ha prou memòria."
+    "message": "La memòria cau endavant/enrere està desactivada perquè no hi ha prou memòria."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "El delegat no admet la memòria cau back-forward."
+    "message": "El delegat no admet la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "El prerenderitzador ha desactivat la memòria cau back-forward."
+    "message": "El prerenderitzador ha desactivat la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
     "message": "La pàgina no es pot desar a la memòria cau perquè té una instància BroadcastChannel amb detectors registrats."
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Les pàgines amb una capçalera cache-control:no-store no poden accedir a la memòria cau back-forward."
+    "message": "Les pàgines amb una capçalera cache-control:no-store no poden accedir a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
     "message": "La memòria cau s'ha esborrat intencionadament."
@@ -3213,46 +3243,46 @@
     "message": "La pàgina s'ha tret de la memòria cau perquè s'hi pugui desar una altra pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Actualment, les pàgines que contenen connectors no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que contenen connectors no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Les pàgines que utilitzen l'API FileChooser no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen l'API FileChooser no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Les pàgines que utilitzen l'API File System Access no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen l'API File System Access no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Les pàgines que utilitzen Media Device Dispatcher no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen Media Device Dispatcher no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
     "message": "Un reproductor multimèdia estava reproduint contingut en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Les pàgines que utilitzen l'API MediaSession i tenen configurat un estat de reproducció no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen l'API MediaSession i tenen configurat un estat de reproducció no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Les pàgines que utilitzen l'API MediaSession i tenen configurats gestors d'acció no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen l'API MediaSession i tenen configurats gestors d'acció no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "La memòria cau back-forward està desactivada a causa d'un lector de pantalla."
+    "message": "La memòria cau endavant/enrere està desactivada a causa d'un lector de pantalla."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Les pàgines que utilitzen SecurityHandler no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen SecurityHandler no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Les pàgines que utilitzen l'API Serial no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen l'API Serial no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Les pàgines que utilitzen l'API WebAuthentication no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen l'API WebAuthentication no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Les pàgines que utilitzen l'API WebBluetooth no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen l'API WebBluetooth no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Les pàgines que utilitzen l'API WebUSB no són aptes per a la memòria cau back-forward."
+    "message": "Les pàgines que utilitzen l'API WebUSB no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Actualment, les pàgines que utilitzen un Service Worker o un worklet exclusius no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen un Service Worker o un worklet exclusius no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
     "message": "El document no s'ha acabat de carregar abans de sortir-ne."
@@ -3270,16 +3300,16 @@
     "message": "Hi havia el lector de DOM Distiller en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "La memòria cau back-forward està desactivada perquè hi ha extensions que utilitzen l'API de missatges."
+    "message": "La memòria cau endavant/enrere està desactivada perquè hi ha extensions que utilitzen l'API de missatges."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Les extensions amb una connexió de llarga durada haurien de tancar la connexió abans d'entrar a la memòria cau back-forward."
+    "message": "Les extensions amb una connexió de llarga durada haurien de tancar la connexió abans d'entrar a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Les extensions amb una connexió de llarga durada provaven d'enviar missatges a marcs de la memòria cau back-forward."
+    "message": "Les extensions amb una connexió de llarga durada provaven d'enviar missatges a marcs de la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "La memòria cau back-forward està desactivada a causa de les extensions."
+    "message": "La memòria cau endavant/enrere està desactivada a causa de les extensions."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
     "message": "S'ha mostrat un quadre de diàleg modal (per exemple, de reenviament d'un formulari o d'autenticació HTTP) en sortir de la pàgina."
@@ -3288,7 +3318,7 @@
     "message": "Es mostrava la pàgina corresponent a dispositius sense connexió en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Hi havia la barra d'intervenció per falta de memòria en sortir de la pàgina."
+    "message": "Hi havia la barra d'intervenció de memòria insuficient en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
     "message": "Hi havia sol·licituds de permisos en sortir de la pàgina."
@@ -3303,10 +3333,10 @@
     "message": "Navegació segura ha considerat que aquesta pàgina era abusiva i ha bloquejat la finestra emergent."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "S'ha activat un Service Worker mentre la pàgina era a la memòria cau back-forward."
+    "message": "S'ha activat un Service Worker mentre la pàgina era a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
-    "message": "La memòria cau back-forward està desactivada a causa d'un error del document."
+    "message": "La memòria cau endavant/enrere està desactivada a causa d'un error del document."
   },
   "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
     "message": "Les pàgines que fan servir FencedFrames no es poden emmagatzemar a bfcache."
@@ -3315,166 +3345,166 @@
     "message": "La pàgina s'ha tret de la memòria cau perquè s'hi pugui desar una altra pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Actualment, les pàgines que han donat accés a la transmissió de contingut multimèdia no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han donat accés a la transmissió de contingut multimèdia no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Actualment, les pàgines que utilitzen portals no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen portals no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Actualment, les pàgines que utilitzen IdleManager no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen IdleManager no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Actualment, les pàgines que tenen una connexió IndexedDB oberta no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que tenen una connexió IndexedDB oberta no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
-    "message": "La memòria cau back-forward està desactivada a causa d'un esdeveniment IndexedDB."
+    "message": "La memòria cau endavant/enrere està desactivada a causa d'un esdeveniment IndexedDB."
   },
   "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
     "message": "S'han utilitzat API no aptes."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Actualment, les pàgines que s'estan injectant a JavaScript mitjançant extensions no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines en què s'injecta JavaScript mitjançant extensions no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Actualment, les pàgines que s'estan injectant a StyleSheet mitjançant extensions no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines en què s'injecta StyleSheet mitjançant extensions no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Error intern."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "La memòria cau back-forward està desactivada a causa d'una sol·licitud de keepalive."
+    "message": "La memòria cau endavant/enrere està desactivada a causa d'una sol·licitud de keepalive."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Actualment, les pàgines que utilitzen el bloqueig de teclat no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen el bloqueig de teclat no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | loading": {
     "message": "La pàgina no s'ha acabat de carregar abans de sortir-ne."
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Les pàgines el recurs principal de les quals té cache-control:no-cache no poden accedir a la memòria cau back-forward."
+    "message": "Les pàgines el recurs principal de les quals té cache-control:no-cache no poden accedir a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Les pàgines el recurs principal de les quals té cache-control:no-store no poden accedir a la memòria cau back-forward."
+    "message": "Les pàgines el recurs principal de les quals té cache-control:no-store no poden accedir a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "La navegació s'ha cancel·lat abans que la pàgina es pogués restaurar de la memòria cau back-forward."
+    "message": "La navegació s'ha cancel·lat abans que la pàgina es pogués restaurar de la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
     "message": "La pàgina s'ha tret de la memòria cau perquè una connexió a la xarxa activa ha rebut massa dades. Chrome limita la quantitat de dades que pot rebre una pàgina mentre està desada a la memòria cau."
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Actualment, les pàgines que tenen un fetch() o un XHR en trànsit no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que tenen un fetch() o un XHR en trànsit no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "La pàgina s'ha tret de la memòria cau back-forward perquè una sol·licitud a la xarxa activa incloïa una redirecció."
+    "message": "La pàgina s'ha tret de la memòria cau endavant/enrere perquè una sol·licitud a la xarxa activa incloïa una redirecció."
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
     "message": "La pàgina s'ha tret de la memòria cau perquè una connexió a la xarxa ha estat oberta massa temps. Chrome limita la quantitat de temps durant el qual una pàgina pot rebre dades mentre està desada a la memòria cau."
   },
   "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Les pàgines que no tenen una capçalera de resposta vàlida no poden accedir a la memòria cau back-forward."
+    "message": "Les pàgines que no tenen una capçalera de resposta vàlida no poden accedir a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "La navegació ha tingut lloc en un marc diferent del marc principal."
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Actualment, les pàgines amb transaccions de base de dades indexades en curs no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines amb transaccions de base de dades indexades en curs no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Actualment, les pàgines amb una sol·licitud de xarxa en trànsit no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines amb una sol·licitud de xarxa en trànsit no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Actualment, les pàgines amb una sol·licitud de xarxa de recollida en trànsit no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines amb una sol·licitud de xarxa de recollida en trànsit no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Actualment, les pàgines amb una sol·licitud de xarxa en trànsit no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines amb una sol·licitud de xarxa en trànsit no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Actualment, les pàgines amb una sol·licitud de xarxa XHR en trànsit no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines amb una sol·licitud de xarxa XHR en trànsit no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Actualment, les pàgines que utilitzen PaymentManager no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen PaymentManager no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Actualment, les pàgines que utilitzen pantalla en pantalla no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen imatge sobre imatge no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | portal": {
-    "message": "Actualment, les pàgines que utilitzen portals no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen portals no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | printing": {
-    "message": "Actualment, les pàgines que mostren la IU d'impressió no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que mostren la IU d'impressió no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
     "message": "La pàgina s'ha obert amb \"window.open()\" i una altra pestanya hi té una referència o la pàgina ha obert una finestra."
   },
   "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "El procés renderitzador de la pàgina a la memòria cau back-forward ha fallat."
+    "message": "El procés renderitzador de la pàgina a la memòria cau endavant/enrere ha fallat."
   },
   "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "El procés renderitzador de la pàgina s'ha cancel·lat a la memòria cau back-forward."
+    "message": "El procés renderitzador de la pàgina s'ha cancel·lat a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de gravació d'àudio no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han sol·licitat permisos de gravació d'àudio no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de sensor no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han sol·licitat permisos de sensor no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de recollida o sincronització en segon pla no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han sol·licitat permisos de recollida o sincronització en segon pla no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos MIDI no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han sol·licitat permisos MIDI no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de notificacions no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han sol·licitat permisos de notificacions no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Actualment, les pàgines que han sol·licitat accés d'emmagatzematge no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han sol·licitat accés d'emmagatzematge no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de gravació de vídeos no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han sol·licitat permisos de gravació de vídeos no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
     "message": "Només es poden desar a la memòria cau les pàgines amb un esquema d'URL HTTP o HTTPS."
   },
   "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Un Service Worker ha reclamat la pàgina mentre era a la memòria cau back-forward."
+    "message": "Un Service Worker ha reclamat la pàgina mentre era a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Un Service Worker ha provat d'enviar un MessageEvent a la pàgina que era a la memòria cau back-forward."
+    "message": "Un Service Worker ha provat d'enviar un MessageEvent a la pàgina que era a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Service Worker s'ha donat de baixa mentre una pàgina era a la memòria cau back-forward."
+    "message": "Service Worker s'ha donat de baixa mentre una pàgina era a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "La pàgina s'ha tret de la memòria cau back-forward per l'activació d'un Service Worker."
+    "message": "La pàgina s'ha tret de la memòria cau endavant/enrere per l'activació d'un Service Worker."
   },
   "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "S'ha reiniciat Chrome i s'han esborrat les entrades de la memòria cau back-forward."
+    "message": "S'ha reiniciat Chrome i s'han esborrat les entrades de la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Actualment, les pàgines que utilitzen SharedWorker no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen SharedWorker no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Actualment, les pàgines que utilitzen SpeechRecognizer no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen SpeechRecognizer no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Actualment, les pàgines que utilitzen SpeechSynthesis no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen SpeechSynthesis no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
     "message": "Un iframe de la pàgina ha començat una navegació que no s'ha completat."
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Les pàgines el subrecurs de les quals té cache-control:no-store no poden accedir a la memòria cau back-forward."
+    "message": "Les pàgines el subrecurs de les quals té cache-control:no-store no poden accedir a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Les pàgines el subrecurs de les quals té cache-control:no-store no poden accedir a la memòria cau back-forward."
+    "message": "Les pàgines el subrecurs de les quals té cache-control:no-store no poden accedir a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | timeout": {
-    "message": "La pàgina ha excedit el temps màxim a la memòria cau back-forward i ha caducat."
+    "message": "La pàgina ha excedit el temps màxim a la memòria cau endavant/enrere i ha caducat."
   },
   "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "La pàgina ha esgotat el temps d'espera en accedir a la memòria cau back-forward (probablement a causa de gestors que amaguen la pàgina de llarga durada)."
+    "message": "La pàgina ha esgotat el temps d'espera en accedir a la memòria cau endavant/enrere (probablement a causa de gestors que amaguen la pàgina de llarga durada)."
   },
   "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
     "message": "La pàgina té un gestor d'unload en el marc principal."
@@ -3486,37 +3516,37 @@
     "message": "El navegador ha canviat la capçalera de substitució de l'agent d'usuari."
   },
   "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Actualment, les pàgines que han donat accés a la gravació de vídeo o àudio no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que han donat accés a la gravació de vídeo o àudio no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Actualment, les pàgines que utilitzen WebDatabase no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen WebDatabase no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webHID": {
-    "message": "Actualment, les pàgines que utilitzen WebHID no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen WebHID no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Actualment, les pàgines que utilitzen WebLocks no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen WebLocks no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Actualment, les pàgines que utilitzen WebNfc no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen WebNfc no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Actualment, les pàgines que utilitzen WebOTPService no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen WebOTPService no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Les pàgines amb WebRTC no poden accedir a la memòria cau back-forward."
+    "message": "Les pàgines amb WebRTC no poden accedir a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
-    "message": "Actualment, les pàgines que utilitzen WebShare no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen WebShare no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Les pàgines amb WebSocket no poden accedir a la memòria cau back-forward."
+    "message": "Les pàgines amb WebSocket no poden accedir a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Les pàgines amb WebTransport no poden accedir a la memòria cau back-forward."
+    "message": "Les pàgines amb WebTransport no poden accedir a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
-    "message": "Actualment, les pàgines que utilitzen WebXR no són aptes per a la memòria cau back-forward."
+    "message": "Actualment, les pàgines que utilitzen WebXR no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Memòria cau back-forward"
@@ -3546,7 +3576,7 @@
     "message": "{n,plural, =1{S'ha trobat # problema en 1 marc.}other{S'han trobat # problemes en 1 marc.}}"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
-    "message": "Obtén més informació: idoneïtat de la memòria cau back-forward"
+    "message": "Obtén més informació: idoneïtat de la memòria cau endavant/enrere"
   },
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "Marc principal"
@@ -3555,19 +3585,19 @@
     "message": "Més informació: no utilitzis mai el gestor de cancel·lació de les càrregues"
   },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
-    "message": "No s'ha difós des de la memòria cau back-forward: per activar la memòria cau back-forward, utilitza els botons enrere/endavant de Chrome o bé el botó Prova que hi ha més avall per navegar automàticament endavant i endarrere."
+    "message": "No s'ha difós des de la memòria cau endavant/enrere: per activar la memòria cau endavant/enrere, utilitza els botons enrere/endavant de Chrome o bé el botó Prova que hi ha més avall per navegar automàticament endavant i endarrere."
   },
   "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "Accions possibles"
   },
   "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Aquests motius són accionables, és a dir, es poden esborrar per fer que la pàgina sigui apta per a la memòria cau back-forward."
+    "message": "Aquests motius són accionables, és a dir, es poden esborrar per fer que la pàgina sigui apta per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "S'ha difós correctament des de la memòria cau back-forward."
+    "message": "S'ha difós correctament des de la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheView.ts | runTest": {
-    "message": "Prova la memòria cau back-forward"
+    "message": "Prova la memòria cau endavant/enrere"
   },
   "panels/application/components/BackForwardCacheView.ts | runningTest": {
     "message": "S'està executant la prova"
@@ -3576,7 +3606,7 @@
     "message": "Assistència pendent"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "La compatibilitat de Chrome per aquests motius està pendent, és a dir, no s'impedirà que la pàgina sigui apta per a la memòria cau back-forward en una futura versió de Chrome"
+    "message": "La compatibilitat de Chrome per aquests motius està pendent, és a dir, no s'impedirà que la pàgina sigui apta per a la memòria cau endavant/enrere en una futura versió de Chrome"
   },
   "panels/application/components/BackForwardCacheView.ts | unavailable": {
     "message": "no disponible"
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Nombre de testimonis emmagatzemats"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "Esborrament no en curs"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "S'ha activat"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "S'ha descartat"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "Renderització prèvia"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "Vàlid"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "La precàrrega s'ha activat de manera forçada perquè DevTools està obert. Quan es tanqui, la renderització prèvia es desactivarà perquè aquesta sessió del navegador forma part d'un grup de retenció utilitzat per a les comparacions de rendiment."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "La renderització prèvia estava desactivada, però ara s'ha activat de manera forçada"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "Informació bàsica"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "Inici"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Estat"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "Activador"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Selecciona un element per obtenir més informació"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "S'ha activat"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "S'ha descartat"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "Renderització prèvia"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "Inici"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Estat"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "Activador"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "Informació detallada"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "Tipus"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "Font"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "Validesa"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "Vàlid"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "Validesa"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "petició del punt de ruptura"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "Esborra tots els missatges amb {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "Punt de ruptura condicional"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "Consola"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "Punt de registre"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{S'ha repetit # vegada}other{S'ha repetit # vegades}}"
@@ -4575,7 +4590,7 @@
     "message": "Esborra l'historial de la consola"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "Replega els missatges de console.trace() de manera predeterminada"
+    "message": "No despleguis automàticament console.trace() missatges"
   },
   "panels/console/console-meta.ts | console": {
     "message": "Consola"
@@ -4605,10 +4620,10 @@
     "message": "Avalua amb atenció el text de la sol·licitud de la consola"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "Avaluació activa l'activació de l'usuari"
+    "message": "L'avaluació activa l'activació de l'usuari"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "Desplega els missatges de console.trace() de manera predeterminada"
+    "message": "Desplega automàticament console.trace() missatges"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Agrupa els missatges semblants a la consola"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "Cerca per cadena, selector o XPath"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "Marc"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "Amaga la barra lateral d'estils calculats"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "Commuta la propietat i continua editant"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "El valor de l'opció de configuració \"{PH1}\" {PH2} queda fora de l'interval admès [{PH3}, {PH4}] per a la família de tipus de lletra \"{PH5}\"."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Mostra el valor calculat"
   },
@@ -5454,6 +5463,12 @@
     "message": "Mostra les insígnies"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Més informació"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "No mostris"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "Més informació"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Selecciona un element de la pàgina per inspeccionar-lo"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "Mostra la descripció emergent de la documentació de CSS"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Mostra els estils calculats"
@@ -7704,7 +7722,7 @@
     "message": "Galetes de resposta"
   },
   "panels/network/RequestCookiesView.ts | showFilteredOutRequestCookies": {
-    "message": "mostra les galetes de sol·licitud filtrades"
+    "message": "mostra les galetes de sol·licitud excloses"
   },
   "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
     "message": "Aquest lloc web té galetes en una altra partició que no s'han enviat amb aquesta sol·licitud. {PH1}."
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "Esborra tots els perfils"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "Aquest tauler estarà obsolet a la propera versió. Utilitza el tauler de rendiment per registrar els perfils de la CPU a JavaScript."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "Comentaris"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "Ves al tauler de rendiment"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "Més informació"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "Carrega…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentació"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "Temps transcorregut"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtra"
@@ -10137,7 +10170,7 @@
     "message": "supressió del node"
   },
   "panels/sources/DebuggerPausedMessage.ts | pausedBeforePotentialOutofmemory": {
-    "message": "S'ha posat en pausa abans que es produís un possible bloqueig per falta de memòria"
+    "message": "S'ha posat en pausa abans d'un possible bloqueig per memòria insuficient"
   },
   "panels/sources/DebuggerPausedMessage.ts | pausedOnAssertion": {
     "message": "En pausa a l'asserció"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (del mapa d'origen)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (a la llista d'elements ignorats)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Cerca en tots els fitxers"
   },
@@ -10403,11 +10439,11 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(proporcionat a través de la informació de depuració de {PH1})"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "(De: {PH1})"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(font assignada des de: {PH1})"
+    "message": "(Font mapada des de: {PH1})"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Tancament"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "Temps de bloqueig total: {PH1} ms {PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "COBERTURA"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Fil"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "Fil {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "Temps"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "Interaccions"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Tanca"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "Cobertura"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "Rebut"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "Grava la cobertura amb la traça de rendiment"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "No s'ha pogut gravar"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Iniciador"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "Latència d'entrada"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instal·la un temporitzador"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "Marc de JavaScript"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "Marc inactiu de JavaScript"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "Arrel de JavaScript"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "Marc de sistema de JavaScript"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Renderització de l'element més gran amb contingut"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Mida de la memòria cau produïda"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "Temps d'elaboració de perfils"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Interval"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Temps dedicat a la renderització"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "Temps d'espera per al fil principal"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Temps d'espera"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "Prem Retorn per aplicar el filtre d'ordenació"
+    "message": "Estat d'ordenació de les columnes: {PH1}. Prem Retorn per aplicar el filtre d'ordenació."
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Opcions de la capçalera"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "Restableix les columnes"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "ascendent"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Ordena per"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "descendent"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "cap"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} es mostra en ordre ascendent"

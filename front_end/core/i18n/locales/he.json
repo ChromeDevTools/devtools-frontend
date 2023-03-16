@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} שנ'"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: מנתח הכלי לניתוח ביצועי ה-CPU מתקן {PH1} דגימות חסרות."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "פרופיל {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "לא ניתן היה לטעון את התוכן עבור {PH1} ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "הניווט אל {PH1} שוחזר מהמטמון לדף הקודם/הבא (פרטים בכתובת https://web.dev/bfcache/‎)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "שמירת הווריאנט הזמני נכשלה."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "בוצעה השהיה בכלי לניפוי באגים"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "הטעינה בוטלה כי הזמן שהקוצב לטעינה פג"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "הטעינה בוטלה עקב טעינה מחדש של הדף שנבדק"
   },
@@ -618,7 +615,7 @@
     "message": "מופסק"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "אכרומטופסיה"
+    "message": "עיוורון צבעים מוחלט (ללא אף צבע)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "ראייה מטושטשת"
@@ -627,7 +624,7 @@
     "message": "תיעוד דוחות של קריסות באופן אסינכרוני"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "עיוורון לירוק"
+    "message": "עיוורון לירוק (ללא ירוק)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "השבתת דוח הקריסות האסינכרוני"
@@ -690,7 +687,7 @@
     "message": "יצירת אמולציה של דף במיקוד"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "יצירת אמולציה של אכרומטופסיה"
+    "message": "אמולציה של עיוורון צבעים מוחלט (ללא אף צבע)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "אמולציה של מצב כהה אוטומטי"
@@ -714,13 +711,16 @@
     "message": "יצירת אמולציה לסוג מדיה של מסך CSS"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "יצירת אמולציה לעיוורון לירוק"
+    "message": "אמולציה של עיוורון לירוק (ללא ירוק)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "אמולציה של עיוורון לאדום"
+    "message": "אמולציה של עיוורון לאדום (ללא אדום)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "אמולציה של ירידה ברגישות לניגודיות"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "יצירת אמולציה לעיוורון לכחול"
+    "message": "אמולציה של עיוורון לכחול (ללא כחול)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "אמולציה של לקויות ראייה"
@@ -789,10 +789,13 @@
     "message": "הדפסה"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "עיוורון לאדום"
+    "message": "עיוורון לאדום (ללא אדום)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "שאילתה"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "ירידה ברגישות לניגודיות"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "מסך"
@@ -840,7 +843,7 @@
     "message": "הצגת גדלים של קהל יעד מצומצם"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "עיוורון לכחול"
+    "message": "עיוורון לכחול (ללא כחול)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript מושבת"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ביטול ההצמדה ופתיחת חלון נפרד"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "דף: לא נבחר"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "דף: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "כפי שנוצר"
   },
@@ -1062,7 +1071,7 @@
     "message": "פורמט הצבע:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "ההגדרה הזו הוצאה משימוש כי היא לא תואמת לסביבות צבע מודרניות. כדי להפעיל אותה מחדש, אפשר להשבית את הניסוי המתאים."
+    "message": "ההגדרה הזו הוצאה משימוש כי היא לא תואמת לסביבות צבע מודרניות. כדי להפעיל אותה מחדש, צריך להשבית את הניסוי המתאים."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "כהה"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "ראשי"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "ההרשאה לא תיכלל עם השימוש בסמל של התו הכללי לחיפוש (*) בהגדרות לטיפול ב-Access-Control-Allow-Headers של CORS."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "יש להשתמש במאפיין disableRemotePlayback כדי להשבית את שילוב ההעברה (cast) המוגדר כברירת מחדל במקום להשתמש בבורר -internal-media-controls-overlay-cast-button."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "בקשות למשאבים שכתובות ה-URL שלהן מכילות גם תווי \\(n|r|t) של רווח לבן מחוק וגם תווי 'פחות מ-' (<) חסומות. כדי לטעון את המשאבים האלה, יש להסיר תווי 'פחות מ-' מקודדים ושורות חדשות ממקומות כמו ערכי מאפיינים של רכיבים."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "האפשרות chrome.loadTimes() הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: תזמון ניווט 2."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "האפשרות chrome.loadTimes() הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: תזמון המרת תמונה וקטורית למפת סיביות."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "האפשרות chrome.loadTimes() הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: nextHopProtocol בתזמון ניווט 2."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "קובצי cookie המכילים תו \\(0|r|n) יידחו במקום להיחתך."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "האפשרות למתן את מדיניות המקור הזהה על ידי הגדרת document.domain הוצאה משימוש, ותושבת כברירת מחדל. האזהרה הזו על הוצאה משימוש מתייחסת לגישה ממקורות שונים שהופעלה על ידי הגדרת document.domain."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "האפשרות להפעיל את הפונקציה window.alert דרך רכיבי iframe ממקורות שונים הוצאה משימוש ותוסר בעתיד."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "האפשרות להפעיל את הפונקציה window.confirm דרך רכיבי iframe ממקורות שונים הוצאה משימוש ותוסר בעתיד."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "האפשרות למתן את מדיניות המקור הזהה על ידי הגדרת document.domain הוצאה משימוש, ותושבת כברירת מחדל. כדי להמשיך להשתמש בתכונה הזו, יש לבטל את ההסכמה לאשכולות סוכנים המשויכים למקור על ידי שליחת כותרת Origin-Agent-Cluster: ?0 עם תגובת HTTP למסמך ולמסגרות. פרטים נוספים זמינים בכתובת https://developer.chrome.com/blog/immutable-document-domain/‎."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "הממשק Event.path הוצא משימוש ויוסר. במקומו יש להשתמש בממשק Event.composedPath()."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "הכותרת Expect-CT הוצאה משימוש ותוסר. ב-Chrome נדרשת שקיפות לגבי כל האישורים הציבוריים המהימנים שהונפקו אחרי 30 באפריל 2018."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "האפשרויות getCurrentPosition() ו-watchPosition() לא פועלות יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "האפשרויות getCurrentPosition() ו-watchPosition() הוצאו משימוש במקורות שאינם מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "האפשרות getUserMedia() לא פועלת יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "האפשרות RTCPeerConnectionIceErrorEvent.hostCandidate הוצאה משימוש. במקומה יש להשתמש באפשרות RTCPeerConnectionIceErrorEvent.address או באפשרות RTCPeerConnectionIceErrorEvent.port."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "המקור של המוכר ונתונים שרירותיים מאירוע של קובץ השירות (service worker)‏ canmakepayment הוצאו משימוש ויוסרו: topOrigin‏, paymentRequestOrigin‏, methodData‏, modifiers."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "האתר שלח בקשה למשאב משנה מרשת שיש לו גישה אליה רק בגלל שלמשתמשים שלו יש הרשאות למיקום הרשת. הבקשות האלה חושפות שרתים ומכשירים שלא גלויים לכולם לאינטרנט, ומגבירות את הסיכון למתקפת זיוף של בקשה בין אתרים (CSRF) או לדליפת מידע. כדי להפחית את הסיכונים האלה, מערכת Chrome מוציאה משימוש בקשות למשאבי משנה שאינם גלויים לכולם כשהן מגיעות מהקשרים לא מאובטחים, ובקרוב המערכת תתחיל לחסום אותן."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "לא ניתן לטעון CSS מכתובות URL של file: אלא אם הן מסתיימות בסיומת הקובץ .css."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "האפשרות לבטל את הסרת הטווח האסינכרוני של remove() באמצעות SourceBuffer.abort() הוצאה משימוש עקב שינוי במפרט. התמיכה באפשרות הזו תוסר בעתיד. במקום זאת, כדאי להאזין לאירוע של updateend. ניתן להשתמש ב-abort() רק כדי לבטל צירוף מדיה אסינכרוני או לאפס מצב מנתח."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "האפשרות להגדיר את MediaSource.duration מתחת לערך הגבוה ביותר של חותמת הזמן להצגה של כל המסגרות המקודדות השמורות במאגר נתונים זמני הוצאה משימוש עקב שינוי במפרט. בעתיד תוסר התמיכה בהסרה מרומזת של מדיה חתוכה ששמורה במאגר נתונים זמני. במקום זאת, יש להשתמש באפשרות remove(newDuration, oldDuration) מפורשת בכל sourceBuffers, ולהגדיר newDuration < oldDuration."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "תתקבל מ-Web MIDI בקשת הרשאה לשימוש גם אם לא צוין sysex ב-MIDIOptions."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "המאפיין shadowroot שהוא ישן יותר ולא סטנדרטי הוצא משימוש. במקומו צריך להשתמש במאפיין shadowrootmode שהוא חדש וסטנדרטי."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "אי אפשר יותר להשתמש ב-Notification API ממקורות לא מאובטחים. כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "לא ניתן יותר לבקש הרשאה ל-Notification API מ-iframe ממקורות שונים. במקום זאת, כדאי לבקש הרשאה ממסגרת ברמה עליונה או לפתוח חלון חדש."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "האפשרות imageOrientation: 'none' ב-createImageBitmap הוצאה משימוש. במקומה צריך להשתמש ב-createImageBitmap ולהוסיף את האפשרות {imageOrientation: 'from-image'‎}."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "השותף שלך מנהל משא ומתן על גרסת ‎(D)TLS מיושנת. עליך לפנות לשותף שלך כדי לתקן זאת."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "ציון של 'overflow: visible' בתגי img,‏ video ו-canvas עלול לגרום להופעת תוכן חזותי מחוץ לגבולות הרכיבים. פרטים נוספים זמינים בכתובת https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "הממשק paymentManager.instruments הוצא משימוש. במקום זאת, אפשר להשתמש בהתקנה בזמן ריצה עבור רכיבי handler של תשלומים."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "הקריאה PaymentRequest עקפה את ההוראה connect-src של Content-Security-Policy ‏(CSP). המעקף הזה הוצא משימוש. יש להוסיף את מזהה אמצעי התשלום מ-API‎ PaymentRequest (בשדה supportedMethods) להנחיה connect-src של CSP."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "האפשרות StorageType.persistent הוצאה משימוש. במקומה יש להשתמש באפשרות navigator.storage רגילה."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "רכיב <source src> עם הורה מסוג <picture> נחשב ללא תקין, והמערכת מתעלמת ממנו. במקומו יש להשתמש במאפיין <source srcset>."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "הפונקציה webkitCancelAnimationFrame היא ספציפית לספק. במקומה צריך להשתמש בפונקציה הסטנדרטית cancelAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "הפוקנציה webkitRequestAnimationFrame היא ספציפית לספק. במקומה צריך להשתמש בפונקציה הסטנדרטית requestAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitDisplayingFullscreen הוצא משימוש. במקומו צריך להשתמש ב-Document.fullscreenElement."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitEnterFullScreen()‎ הוצא משימוש. במקומו צריך להשתמש ב-Element.requestFullscreen()‎."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitEnterFullscreen()‎ הוצא משימוש. במקומו צריך להשתמש ב-Element.requestFullscreen()‎."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitExitFullScreen()‎ הוצא משימוש. במקומו צריך להשתמש ב-Document.exitFullscreen()‎."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitExitFullscreen()‎ הוצא משימוש. במקומו צריך להשתמש ב-Document.exitFullscreen()‎."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitSupportsFullscreen הוצא משימוש. במקומו צריך להשתמש ב-Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "אנחנו מוציאים משימוש את ה-API‏ chrome.privacy.websites.privacySandboxEnabled, אבל הוא ימשיך לפעול לצורך תאימות לאחור עד גרסה M113. במקומו צריך להשתמש ב-chrome.privacy.websites.topicsEnabled, ב-chrome.privacy.websites.fledgeEnabled וב-chrome.privacy.websites.adMeasurementEnabled. פרטים נוספים זמינים בכתובת https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "המגבלה DtlsSrtpKeyAgreement הוסרה. ציינת ערך false למגבלה הזו, והוא מפורש כניסיון להשתמש בשיטה SDES key negotiation שהוסרה. הפונקציונליות הזו הוסרה. במקומה יש להשתמש בשירות שתומך ב-DTLS key negotiation."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "המגבלה DtlsSrtpKeyAgreement הוסרה. ציינת ערך true למגבלה הזו, ואין לו השפעה, אבל אפשר להסיר את המגבלה הזו כדי לשמור על סדר."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "הפונקציה getStats()‎ שמבוססת על קריאה חוזרת (callback) הוצאה משימוש ותוסר. במקומה אפשר להשתמש בפונקציה getStats()‎ שתואמת למפרט."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "ה-API‏ Range.expand()‎ הוצא משימוש. במקומו צריך להשתמש ב-Selection.modify()‎."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "בקשות למשאבי משנה שכתובות ה-URL שלהן מכילות פרטי כניסה מוטמעים (למשל https://user:pass@host/) חסומות."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "האפשרות rtcpMuxPolicy הוצאה משימוש ותוסר."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "תידרש חסימה לגישה מדומיינים אחרים עבור SharedArrayBuffer. פרטים נוספים זמינים בכתובת https://developer.chrome.com/blog/enabling-shared-array-buffer/‎."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "האפשרות של speechSynthesis.speak() ללא הפעלת משתמש הוצאה משימוש ותוסר."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "כדי להמשיך להשתמש ב-SharedArrayBuffer, צריך לאשר חסימה לגישה מדומיינים אחרים בתוספים. הסבר זמין בכתובת https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "אין תמיכה ב-UTF-16 ב-JSON של התגובה ב-XMLHttpRequest"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "האפשרות הסינכרונית XMLHttpRequest ב-thread הראשי הוצאה משימוש כי היא משפיעה לרעה על החוויה של משתמשי הקצה. ניתן לקבל עוד עזרה בכתובת https://xhr.spec.whatwg.org/‎."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "האפשרות supportsSession() הוצאה משימוש. במקומה, יש להשתמש באפשרות isSessionSupported() ולסמן את הערך הבוליאני שהתקבל בהתאמת הנתונים."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "אירעה שגיאה לא מזוהה בזמן טעינת הקובץ"
   },
@@ -1272,10 +1443,10 @@
     "message": "הוספת כל הסקריפטים של התוכן כדי להתעלם מהרשימה"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
-    "message": "Add all third-party scripts to ignore list"
+    "message": "הוספת כל הסקריפטים של צדדים שלישיים לרשימת הפריטים להתעלמות"
   },
   "models/bindings/IgnoreListManager.ts | addDirectoryToIgnoreList": {
-    "message": "Add directory to ignore list"
+    "message": "הוספת ספרייה לרשימת הפריטים שהמערכת תתעלם מהם"
   },
   "models/bindings/IgnoreListManager.ts | addScriptToIgnoreList": {
     "message": "הוספה של סקריפט לרשימת הפריטים להתעלמות"
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "אותו אתר ואותו מקור"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "ההרשאה לא תיכלל עם השימוש בסמל של התו הכללי לחיפוש (*) בהגדרות לטיפול ב-Access-Control-Allow-Headers של CORS."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "בקשות למשאבים שכתובות ה-URL שלהן מכילות גם תווי \\(n|r|t) של רווח לבן מחוק וגם תווי 'פחות מ-' (<) חסומות. כדי לטעון את המשאבים האלה, יש להסיר תווי 'פחות מ-' מקודדים ושורות חדשות ממקומות כמו ערכי מאפיינים של רכיבים."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "האפשרות chrome.loadTimes() הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: תזמון ניווט 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "האפשרות chrome.loadTimes() הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: תזמון המרת תמונה וקטורית למפת סיביות."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "האפשרות chrome.loadTimes() הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: nextHopProtocol בתזמון ניווט 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "קובצי cookie המכילים תו \\(0|r|n) יידחו במקום להיחתך."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "האפשרות למתן את מדיניות המקור הזהה על ידי הגדרת document.domain הוצאה משימוש, ותושבת כברירת מחדל. האזהרה הזו על הוצאה משימוש מתייחסת לגישה ממקורות שונים שהופעלה על ידי הגדרת document.domain."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "האפשרות להפעיל {PH1} דרך רכיבי iframe ממקורות שונים הוצאה משימוש ותוסר בעתיד."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "יש להשתמש במאפיין disableRemotePlayback כדי להשבית את שילוב ההעברה (cast) המוגדר כברירת מחדל במקום להשתמש בבורר -internal-media-controls-overlay-cast-button."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "המדיניות {PH1} הוצאה משימוש. במקומה יש להשתמש במדיניות {PH2}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "זוהי דוגמה להודעה מתורגמת על בעיה שקשורה להוצאה משימוש"
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "האפשרות למתן את מדיניות המקור הזהה על ידי הגדרת document.domain הוצאה משימוש, ותושבת כברירת מחדל. כדי להמשיך להשתמש בתכונה הזו, יש לבטל את ההסכמה לאשכולות סוכנים המשויכים למקור על ידי שליחת כותרת Origin-Agent-Cluster: ?0 עם תגובת HTTP למסמך ולמסגרות. פרטים נוספים זמינים בכתובת https://developer.chrome.com/blog/immutable-document-domain/‎."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "הממשק Event.path הוצא משימוש ויוסר. במקומו יש להשתמש בממשק Event.composedPath()."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "הכותרת Expect-CT הוצאה משימוש ותוסר. ב-Chrome נדרשת שקיפות לגבי כל האישורים הציבוריים המהימנים שהונפקו אחרי 30 באפריל 2018."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "פרטים נוספים זמינים בדף סטטוס התכונה."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "האפשרויות getCurrentPosition() ו-watchPosition() לא פועלות יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "האפשרויות getCurrentPosition() ו-watchPosition() הוצאו משימוש במקורות שאינם מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "האפשרות getUserMedia() לא פועלת יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "האפשרות RTCPeerConnectionIceErrorEvent.hostCandidate הוצאה משימוש. במקומה יש להשתמש באפשרות RTCPeerConnectionIceErrorEvent.address או באפשרות RTCPeerConnectionIceErrorEvent.port."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "המקור של המוכר ונתונים שרירותיים מאירוע של קובץ השירות (service worker)‏ canmakepayment הוצאו משימוש ויוסרו: topOrigin‏, paymentRequestOrigin‏, methodData‏, modifiers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "האתר שלח בקשה למשאב משנה מרשת שיש לו גישה אליה רק בגלל שלמשתמשים שלו יש הרשאות למיקום הרשת. הבקשות האלה חושפות שרתים ומכשירים שלא גלויים לכולם לאינטרנט, ומגבירות את הסיכון למתקפת זיוף של בקשה בין אתרים (CSRF) או לדליפת מידע. כדי להפחית את הסיכונים האלה, מערכת Chrome מוציאה משימוש בקשות למשאבי משנה שאינם גלויים לכולם כשהן מגיעות מהקשרים לא מאובטחים, ובקרוב המערכת תתחיל לחסום אותן."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "לא ניתן לטעון CSS מכתובות URL של file: אלא אם הן מסתיימות בסיומת הקובץ .css."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "האפשרות לבטל את הסרת הטווח האסינכרוני של remove() באמצעות SourceBuffer.abort() הוצאה משימוש עקב שינוי במפרט. התמיכה באפשרות הזו תוסר בעתיד. במקום זאת, כדאי להאזין לאירוע של updateend. ניתן להשתמש ב-abort() רק כדי לבטל צירוף מדיה אסינכרוני או לאפס מצב מנתח."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "האפשרות להגדיר את MediaSource.duration מתחת לערך הגבוה ביותר של חותמת הזמן להצגה של כל המסגרות המקודדות השמורות במאגר נתונים זמני הוצאה משימוש עקב שינוי במפרט. בעתיד תוסר התמיכה בהסרה מרומזת של מדיה חתוכה ששמורה במאגר נתונים זמני. במקום זאת, יש להשתמש באפשרות remove(newDuration, oldDuration) מפורשת בכל sourceBuffers, ולהגדיר newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "השינוי הזה ייכנס לתוקף בגרסה {milestone}."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "תתקבל מ-Web MIDI בקשת הרשאה לשימוש גם אם לא צוין sysex ב-MIDIOptions."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "אי אפשר יותר להשתמש ב-Notification API ממקורות לא מאובטחים. כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "לא ניתן יותר לבקש הרשאה ל-Notification API מ-iframe ממקורות שונים. במקום זאת, כדאי לבקש הרשאה ממסגרת ברמה עליונה או לפתוח חלון חדש."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "Option imageOrientation: \"none\" in createImageBitmap is deprecated. Please use createImageBitmap with option {imageOrientation: \"from-image\"} instead."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "השותף שלך מנהל משא ומתן על גרסת ‎(D)TLS מיושנת. עליך לפנות לשותף שלך כדי לתקן זאת."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL בהקשרים לא מאובטחים הוצא משימוש ויוסר בקרוב. יש להשתמש ב-Web Storage או ב-Indexed Database."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "ציון של 'overflow: visible' בתגי img,‏ video ו-canvas עלול לגרום להופעת תוכן חזותי מחוץ לגבולות הרכיבים. פרטים נוספים זמינים בכתובת https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "הממשק paymentManager.instruments הוצא משימוש. במקום זאת, אפשר להשתמש בהתקנה בזמן ריצה עבור רכיבי handler של תשלומים."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "הקריאה PaymentRequest עקפה את ההוראה connect-src של Content-Security-Policy ‏(CSP). המעקף הזה הוצא משימוש. יש להוסיף את מזהה אמצעי התשלום מ-API‎ PaymentRequest (בשדה supportedMethods) להנחיה connect-src של CSP."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "האפשרות StorageType.persistent הוצאה משימוש. במקומה יש להשתמש באפשרות navigator.storage רגילה."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "רכיב <source src> עם הורה מסוג <picture> נחשב ללא תקין, והמערכת מתעלמת ממנו. במקומו יש להשתמש במאפיין <source srcset>."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "האפשרות window.webkitStorageInfo הוצאה משימוש. במקומה יש להשתמש באפשרות navigator.storage רגילה."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "We’re deprecating the API chrome.privacy.websites.privacySandboxEnabled, though it will remain active for backward compatibility until release M113. Instead, please use chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled and chrome.privacy.websites.adMeasurementEnabled. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "בקשות למשאבי משנה שכתובות ה-URL שלהן מכילות פרטי כניסה מוטמעים (למשל https://user:pass@host/) חסומות."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "המגבלה DtlsSrtpKeyAgreement הוסרה. ציינת ערך false למגבלה הזו, והוא מפורש כניסיון להשתמש בשיטה SDES key negotiation שהוסרה. הפונקציונליות הזו הוסרה. במקומה יש להשתמש בשירות שתומך ב-DTLS key negotiation."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "המגבלה DtlsSrtpKeyAgreement הוסרה. ציינת ערך true למגבלה הזו, ואין לו השפעה, אבל אפשר להסיר את המגבלה הזו כדי לשמור על סדר."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "זוהה הפרוטוקול Complex Plan B SDP. אין יותר תמיכה בגרסה הזו של Session Description Protocol. במקומה יש להשתמש בפרוטוקול Unified Plan SDP."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "הפרוטוקול Plan B SDP semantics, המשמש לביצוע RTCPeerConnection עם {sdpSemantics:'plan-b'}, הוא גרסה לא רגילה מדור קודם של Session Description Protocol, שנמחקה באופן סופי מפלטפורמת האינטרנט. היא עדיין זמינה בפיתוח באמצעות IS_FUCHSIA, אבל בכוונתנו למחוק אותה מוקדם ככל האפשר. עליך להפסיק להסתמך עליה. ניתן להתעדכן בנוגע לסטטוס בכתובת https://crbug.com/1302249."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "האפשרות rtcpMuxPolicy הוצאה משימוש ותוסר."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "תידרש חסימה לגישה מדומיינים אחרים עבור SharedArrayBuffer. פרטים נוספים זמינים בכתובת https://developer.chrome.com/blog/enabling-shared-array-buffer/‎."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "האפשרות של speechSynthesis.speak() ללא הפעלת משתמש הוצאה משימוש ותוסר."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "נעשה שימוש בתכונה שהוצאה משימוש"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "כדי להמשיך להשתמש ב-SharedArrayBuffer, צריך לאשר חסימה לגישה מדומיינים אחרים בתוספים. הסבר זמין בכתובת https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "הפונקציה {PH1} ספציפית לספק. במקומה יש להשתמש בפונקציה {PH2} הרגילה."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "אין תמיכה ב-UTF-16 ב-JSON של התגובה ב-XMLHttpRequest"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "האפשרות XMLHttpRequest הסינכרונית בפרוטוקול Thread הראשי הוצאה משימוש כי יש לה השפעה מזיקה על החוויה של משתמש הקצה. ניתן לקבל עוד עזרה בכתובת https://xhr.spec.whatwg.org/‎."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "האפשרות supportsSession() הוצאה משימוש. במקומה, יש להשתמש באפשרות isSessionSupported() ולסמן את הערך הבוליאני שהתקבל בהתאמת הנתונים."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Management API של פרטי הכניסה המשותפים"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "מאפיין HTML: השלמה אוטומטית"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "פורטלים – ערוצי תקשורת מאותו מקור"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "איך פועל המילוי האוטומטי?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "רכיב הקלט בטופס"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "רכיבי התווית"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "איך לטפל בבעיות של מודעות כבדות"
@@ -2319,7 +2355,7 @@
     "message": "קובץ המניפסט אינו מכיל את השדות 'name' או 'short_name'"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the 'sizes' attribute must be set, and the 'purpose' attribute, if set, must include 'any'."
+    "message": "אין בקובץ המניפסט סמל מתאים. חובה להשתמש בפורמט PNG,‏ SVG או WebP ברזולוציה של {PH1} פיקסלים לפחות, וצריך להגדיר את המאפיין 'sizes'. אם הוגדר המאפיין 'purpose', 'any' חייב להיות בהגדרה שלו."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "המניפסט מציין 'prefer_related_applications:‏ true'"
@@ -2343,7 +2379,7 @@
     "message": "לא סופק מזהה חנות Play"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG or WebP format, with the purpose attribute unset or set to 'any'."
+    "message": "לא סיפקת סמל ריבועי באורך/רוחב של {PH1} פיקסלים לפחות, בפורמט PNG, SVG או WebP עם מאפיין מטרה לא מוגדר או מוגדר לערך 'any'."
   },
   "panels/application/AppManifestView.ts | note": {
     "message": "הערה:"
@@ -2374,12 +2410,6 @@
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "מצגת"
-  },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "סמל ראשי, כפי שהוא מופיע ב-Chrome"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "סמל של מניפסט ראשי מ-{PH1}"
   },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "רכיבי handler של פרוטוקול"
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "צבע עיצוב"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "שליפה מראש (prefetch) ועיבוד מראש"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "קובץ מניפסט של אפליקציה"
@@ -2837,6 +2864,9 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "כן"
   },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "שליפה מראש (prefetch) ועיבוד מראש"
+  },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "כדי לראות תוכן של דוח, צריך ללחוץ עליו"
   },
@@ -3012,7 +3042,7 @@
     "message": "לוחצים על אירוע כלשהו של נפח אחסון משותף כדי להציג את הפרמטרים של האירוע."
   },
   "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Key"
+    "message": "מפתח"
   },
   "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
     "message": "בחירה של ערך לצפייה בתצוגה מקדימה"
@@ -3333,10 +3363,10 @@
     "message": "נעשה שימוש בממשקי API לא מתאימים."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "בשלב זה, IPages ש-JavaScript מוחדר אליהם באמצעות תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+    "message": "בשלב זה, דפים שמחדירים אליהם JavaScript באמצעות תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "בשלב זה, דפים שאליהם מוחדר גיליון סגנונות על ידי תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+    "message": "בשלב זה, דפים שמחדירים אליהם StyleSheet באמצעות תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "שגיאה פנימית."
@@ -4041,7 +4071,7 @@
     "message": "מקור"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
-    "message": "Reset Budget"
+    "message": "איפוס התקציב"
   },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
     "message": "נפח אחסון משותף"
@@ -4067,65 +4097,44 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "ספירת האסימונים המאוחסנים"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "הניקוי לא מתמשך"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "מופעל"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "נמחק"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "עיבוד מראש"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "בתוקף"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Preloading is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons."
+    "message": "הטעינה מראש הופעלה באילוץ כי כלי הפיתוח פתוחים. אחרי הסגירה של כלי הפיתוח, העיבוד מראש יושבת כי הסשן בדפדפן שייך לקבוצת ניסוי להשוואות ביצועים."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Prerendering is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons."
+    "message": "העיבוד מראש הופעל באילוץ כי כלי הפיתוח פתוחים. אחרי הסגירה של כלי הפיתוח, העיבוד מראש יושבת כי הסשן בדפדפן שייך לקבוצת ניסוי להשוואות ביצועים."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Preloading was disabled, but is force-enabled now"
+    "message": "הטעינה מראש הושבתה, אבל עכשיו היא מופעלת באילוץ"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Prerendering was disabled, but is force-enabled now"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "מידע בסיסי"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "זמן ההתחלה"
+    "message": "העיבוד מראש הושבת, אבל עכשיו הוא מופעל באילוץ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "סטטוס"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "הפעלה"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "לפרטים נוספים, יש לבחור רכיב"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "מופעל"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "נמחק"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "עיבוד מראש"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "זמן ההתחלה"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "סטטוס"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "הפעלה"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "מידע מפורט"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "סוג"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "מקור"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "תוקף"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "בתוקף"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "תוקף"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "הגעה לנקודת עצירה"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "מחיקה של כל ההודעות בהקשת {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "נקודת עצירה (breakpoint) מותנית"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "מסוף"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "נקודת רישום (logpoint)"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{חזרה פעם אחת}one{חזרה # פעמים}two{חזרה # פעמים}other{חזרה # פעמים}}"
@@ -4575,7 +4590,7 @@
     "message": "ניקוי של היסטוריית המסוף"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "כיווץ הודעות מסוג console.trace() כברירת מחדל"
+    "message": "אין להרחיב הודעות console.trace() באופן אוטומטי"
   },
   "panels/console/console-meta.ts | console": {
     "message": "מסוף"
@@ -4605,10 +4620,10 @@
     "message": "הערכה נלהבת של טקסט הבקשה של המסוף"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "הפעלת משתמש של טריגרים מסוג Evaluate"
+    "message": "כשמבצעים הערכה מופעל התיעוד של פעילות המשתמשים"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "הרחבת הודעות מסוג console.trace() כברירת מחדל"
+    "message": "הרחבת הודעות console.trace() באופן אוטומטי"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "קיבוץ הודעות דומות בקונסולה"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "חיפוש לפי מחרוזת, סלקטור, או XPath"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "מסגרת"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "הסתרה של סרגל הצד עם הסגנונות המחושבים"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "החלפת מצב הנכס והמשך העריכה"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "הערך עבור הגדרת “{PH1}” {PH2} נמצא מחוץ לטווח הנתמך [{PH3}, {PH4}] למשפחת הגופנים “{PH5}”."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "צפייה בערך המחושב"
   },
@@ -5454,6 +5463,12 @@
     "message": "הצגת התגים"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "מידע נוסף"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "לא להציג"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "מידע נוסף"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "יש לבחור רכיב בדף כדי לבדוק אותו"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "הצגת הסבר קצר על מסמכי התיעוד של CSS"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "הצגת הסגנונות המחושבים"
@@ -8151,7 +8169,7 @@
     "message": "שינוי הכותרת"
   },
   "panels/network/components/HeaderSectionRow.ts | headerNamesOnlyLetters": {
-    "message": "Header names should contain only letters, digits, hyphens or underscores"
+    "message": "שמות של כותרות צריכים להכיל רק אותיות, ספרות, מקפים או קווים תחתונים"
   },
   "panels/network/components/HeaderSectionRow.ts | learnMore": {
     "message": "מידע נוסף"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "ניקוי כל הפרופילים"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "החלונית הזו תוצא משימוש בגרסה הקרובה. אפשר להשתמש בחלונית הביצועים כדי לתעד פרופילים של המעבד (CPU) ב-JavaScript."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "משוב"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "מעבר לחלונית הביצועים"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "מידע נוסף"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "טעינה…"
   },
@@ -9047,6 +9077,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "תיעוד"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "הזמן שחלף"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "סינון"
   },
@@ -9072,7 +9105,7 @@
     "message": "שמירה"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
-    "message": "Select a target"
+    "message": "יש לבחור יעד"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "שליחת פקודת RAW מסוג CDP"
@@ -9909,7 +9942,7 @@
     "message": "שורת המותג נוספה"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Architecture (Sec-CH-UA-Arch)"
+    "message": "ארכיטקטורה (Sec-CH-UA-Arch)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ארכיטקטורה (לדוגמה: x86)"
@@ -9924,13 +9957,13 @@
     "message": "מותג: {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "User agent properties"
+    "message": "המאפיינים של סוכן המשתמש"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "גרסה {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
-    "message": "Version (e.g. 87.0.4280.88)"
+    "message": "גרסה (לדוגמה, 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "מחיקה"
@@ -9939,19 +9972,19 @@
     "message": "שורת המותג נמחקה"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Device model (Sec-CH-UA-Model)"
+    "message": "דגם המכשיר (Sec-CH-UA-Model)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
     "message": "מאפייני המכשיר"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Full browser version (Sec-CH-UA-Full-Browser-Version)"
+    "message": "גרסת דפדפן מלאה (Sec-CH-UA-Full-Browser-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
     "message": "גרסת דפדפן מלאה (לדוגמה: 87.0.4280.88)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
-    "message": "Full version list (Sec-CH-UA-Full-Version-List)"
+    "message": "רשימת גרסאות מלאות (Sec-CH-UA-Full-Version-List)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "נייד"
@@ -9960,7 +9993,7 @@
     "message": "לא ניתן לייצוג כמחרוזת כותרות מובנית."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platform (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)"
+    "message": "פלטפורמה (Sec-CH-UA-Platform או Sec-CH-UA-Platform-Version)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "פלטפורמה (לדוגמה: Android)"
@@ -9972,7 +10005,7 @@
     "message": "גרסת הפלטפורמה"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | significantBrandVersionPlaceholder": {
-    "message": "Significant version (e.g. 87)"
+    "message": "גרסה למותגי הדפדפנים המרכזיים (לדוגמה, 87)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
     "message": "רמזים על הלקוח (Client Hints) לגבי הסוכן המשתמש"
@@ -9984,7 +10017,7 @@
     "message": "עצות ללקוח של סוכן משתמש הן חלופה למחרוזת של סוכן משתמש. הן מזהות את הדפדפן והמכשיר באופן מובנה יותר ועם ניהול פרטיות טוב יותר. יש ללחוץ על הלחצן למידע נוסף."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
-    "message": "User agent (Sec-CH-UA)"
+    "message": "סוכן משתמש (Sec-CH-UA)"
   },
   "panels/settings/emulation/emulation-meta.ts | devices": {
     "message": "מכשירים"
@@ -10059,7 +10092,7 @@
     "message": "ביטוי לבדיקה לפני השהיה, לדוגמה, x > 5"
   },
   "panels/sources/BreakpointEditDialog.ts | learnMoreOnBreakpointTypes": {
-    "message": "Learn more: Breakpoint Types"
+    "message": "מידע נוסף: סוגי נקודות עצירה"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
     "message": "הוספת הודעה למסוף, ללא הפסקה"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (ממפת המקור)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (מופיע ברשימת קטעי הקוד להתעלמות)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "חיפוש בכל הקבצים"
   },
@@ -10403,8 +10439,8 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "אלפית השנייה"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(סופק באמצעות מידע על תוצאות ניפוי הבאגים מ-{PH1})"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "(מ-{PH1})"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
     "message": "(מיפוי מקור מ-{PH1})"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "זמן חסימה כולל: {PH1}ms{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "כיסוי"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "פרוטוקול Thread"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "פרוטוקול Thread {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "הזמנים"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "אינטראקציות"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "סגירה"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "כיסוי"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": ":CPU"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "התקבל"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "הקלטת תיעוד עם עקבות ביצועים"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "ההקלטה נכשלה"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "מאתחל"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "זמן האחזור של הקלט"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "התקנת טיימר"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "מסגרת JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "מסגרת ללא פעילות של JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "הרמה הבסיסית (root) של JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "מסגרת מערכת של JS"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Largest Contentful Paint ‏(LCP)"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "גודל המטמון שנוצר"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "תקורה של ניתוח ביצועים"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "טווח"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "משך זמן הרינדור"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "משך ההמתנה לפרוטוקול Thread הראשי"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "זמן קצוב לתפוגה"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "Press enter to apply sorting filter"
+    "message": "מצב מיון העמודה: {PH1}. צריך להקיש על Enter כדי להחיל את מסנן המיון."
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "אפשרויות של כותרות"
@@ -12359,17 +12386,26 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "איפוס העמודות"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "סדר עולה"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "מיון לפי"
   },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "סדר יורד"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "ללא"
+  },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
-    "message": "{PH1} sorted in ascending order"
+    "message": "העמודה {PH1} ממוינת בסדר עולה"
   },
   "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
-    "message": "{PH1} sorted in descending order"
+    "message": "העמודה {PH1} ממוינת בסדר יורד"
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
-    "message": "{PH1} sorting canceled"
+    "message": "מיון העמודה {PH1} בוטל"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … מתבצע דילוג על {PH1} שורות תואמות … )"
@@ -12798,7 +12834,7 @@
     "message": "שימוש בצבע המוצע {PH1}לתיקון יחס הניגודיות הנמוך"
   },
   "ui/legacy/components/color_picker/FormatPickerContextMenu.ts | colorClippedTooltipText": {
-    "message": "This color was clipped to match the format's gamut. The actual result was {PH1}"
+    "message": "ערכי הקוד של הצבע מונמכים כדי להתאים ללוח הצבעים של הפורמט. התוצאה בפועל הייתה {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | addToPalette": {
     "message": "הוספה ללוח התצוגות"

@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} с"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: CPU профилінің талдау құралы {PH1} жоғалған үлгілерді реттеуде."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Профиль ({PH1})"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} ({PH2}) үшін контент жүктелмеді."
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "{PH1} навигациясы алға/артқа өту кэшінен қалпына келтірілді (https://web.dev/bfcache/ көріңіз)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "Уақытша айнымалыға сақталмады."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Түзеткіште кідіртілді."
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "Жүктеме таймаутына байланысты жүктеу процесінен бас тартылды."
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Тексерілген беттің қайта жүктелуіне байланысты жүктеу процесінен бас тартылды."
   },
@@ -618,7 +615,7 @@
     "message": "тоқтатылуда"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "Ахроматопсия"
+    "message": "Ахроматопсия (түссіз)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Бұлдыр көрініс"
@@ -627,7 +624,7 @@
     "message": "Асинхронды трассирленген стэктерді түсіру"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "Дейтеранопия"
+    "message": "Дейтеранопия (жасыл түссіз)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "Асинхронды трассирленген стэктерді өшіру"
@@ -690,7 +687,7 @@
     "message": "Ерекшеленген бетті эмуляциялау"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "Ахроматопсияны эмуляциялау"
+    "message": "Ахроматопсия эмуляциясы (түссіз)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "Автоматты қараңғы режимді эмуляциялау"
@@ -714,13 +711,16 @@
     "message": "CSS экран мультимедиа түрін эмуляциялау"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "Дейтеранопияны эмуляциялау"
+    "message": "Дейтеранопия эмуляциясы (жасыл түссіз)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "Протанопияны эмуляциялау"
+    "message": "Протанопия эмуляциясы (қызыл түссіз)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "Азайтылған контраст эмуляциясы"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "Тританопияны эмуляциялау"
+    "message": "Тританопия эмуляциясы (көк түссіз)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "Нашар көруді эмуляциялау"
@@ -789,10 +789,13 @@
     "message": "басып шығару"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "Протанопия"
+    "message": "Протанопия (қызыл түссіз)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "сұрау"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "Азайтылған контраст"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "экран"
@@ -840,7 +843,7 @@
     "message": "Із өлшемдерін көрсету"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "Тританопия"
+    "message": "Тританопия (көк түссіз)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript өшірулі."
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Бөлек терезеге алып тастау"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Бет: таңдалмаған"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "Бет: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Әзірленгендей"
   },
@@ -1062,7 +1071,7 @@
     "message": "Түс форматы:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "Бұл параметр ескірген, себебі ол заманауи түс кеңістіктерімен үйлеспейді. Оны қайта қосу үшін тиісті экспериментті өшіруге болады."
+    "message": "Бұл параметр ескірген, себебі ол заманауи түс кеңістіктерімен үйлеспейді. Оны қайта қосу үшін тиісті тәжірибені өшіріңіз."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Қараңғы"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Негізгі"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "CORS Access-Control-Allow-Headers өңдеуі кезінде авторизация процесі алмастырғыш таңбамен (*) қорғалмайды."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Әдепкі Cast интеграциясын өшіру үшін -internal-media-controls-overlay-cast-button таңдау құралын емес, disableRemotePlayback төлсипатын пайдалану керек."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "URL мекенжайларында \\(n|r|t) өшірілген бос орын таңбаларынан тұратын ресурс сұраулары да, кіші таңбалар (<) да бөгеледі. Бұл ресурстарды жүктеу үшін элемент төлсипатының мәндері сияқты кіші таңбаларды кодтап, жаңа жолдарды өшіріңіз."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() қолданыстан шығарылды, оның орнына стандартталған API-ды пайдаланыңыз: навигация уақыты 2."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() қолданыстан шығарылды, оның орнына стандартталған API-ды пайдаланыңыз: сурет салу уақыты."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() қолданыстан шығарылды, оның орнына стандартталған API-ды пайдаланыңыз: nextHopProtocol (навигация уақыты 2)."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "\\(0|r|n) таңбасынан тұратын cookie файлдарынан бас тартылады, бірақ олар алынып тасталмайды."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "document.domain мәнін тағайындау арқылы бірдей дереккөз саясатын өңдеу процесі қолданыстан шығарылды және әдепкісінше өшіріледі. Бұл қолданыстан шығару туралы хабарландыру document.domain параметрі арқылы қосылған дереккөзаралық рұқсатқа арналған."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "Дереккөзаралық iframe кадрларынан window.alert іске қосу функциясы қолданыстан шығарылды және келешекте өшіріледі."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "Дереккөзаралық iframe кадрларынан window.confirm іске қосу функциясы қолданыстан шығарылды және келешекте өшіріледі."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "document.domain мәнін тағайындау арқылы бірдей дереккөз саясатын өңдеу процесі қолданыстан шығарылды және әдепкісінше өшіріледі. Бұл функцияны одан әрі пайдалану үшін, құжат немесе кадрлар бойынша HTTP жауабымен бірге Origin-Agent-Cluster: ?0 тақырыбын жіберу арқылы түпнұсқа кілтті агент кластерлерінен бас тартыңыз. Толығырақ мәлімет алу үшін https://developer.chrome.com/blog/immutable-document-domain/ бетін қараңыз."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path қолданыстан шығарылды және өшіріледі. Оның орнына Event.composedPath() пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Expect-CT тақырыбы қолданыстан шығарылды және өшіріледі. Chrome браузері 2018 жылдың 30 сәуірінен кейін шығарылған баршаға ашық сертификаттар үшін сертификат шынайылығын растауды талап етеді."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() және watchPosition() бұдан былай қауіпті дереккөздерде қолданылмайды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() және watchPosition() элементтері қауіпті дереккөздерде қолданыстан шығарылды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia() бұдан былай қауіпті дереккөздерде қолданылмайды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate қолданыстан шығарылды. Оның орнына RTCPeerConnectionIceErrorEvent.address немесе RTCPeerConnectionIceErrorEvent.port пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "canmakepayment қызметі жұмысшысының оқиғасынан алынған сатушы тегі мен арбитраж деректері қолданыстан шығарылған, сондықтан topOrigin, paymentRequestOrigin, methodData, modifiers нұсқаларында болмайды."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Веб-сайт оны пайдаланушылардың артықшылықты желі позициясына байланысты рұқсат берілуі мүмкін жалғыз желіден қосалқы ресурсты сұрады. Мұндай сұраулар жария емес құрылғылар мен серверлерді интернетке жария етеді, осылайша жасанды сайтаралық сұраумен (CSRF) шабуылдау және/немесе ақпараттың жылыстау қаупін арттырады. Бұл қауіптерді азайту үшін Chrome браузері қауіпті контекстерден бағытталған жария емес қосалқы ресурстарды сұрау функциясын қолданыстан шығарды және оларды бөгейтін болады."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": ".css файл кеңейтімімен аяқталмайтын file: URL мекенжайларынан CSS-ті жүктеу мүмкін емес."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "Cпецификация өзгерісіне байланысты remove() әдісінің асинхронды аралықты өшіруін тоқтату үшін бұрынғыдайSourceBuffer.abort() опциясын пайдалана алмайсыз. Келешекте ол өшіріледі. updateend сигналын күтіңіз. abort() әдісі асинхронды медиақұралды қосуды тоқтатуға немесе талдау құралын бастапқы күйге қайтаруға ғана арналған."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "MediaSource.duration параметріне буферленген, кодталған кадрлардың ең жоғарғы презентациялық уақыт белгісінен төмен мән тағайындау функциясы қолданыстан шығарылды. Қиылған, буферленген медиамазмұнды бүркемелеп өшіру функциясы келешекте қолжетімсіз болады. Оның орнына sourceBuffers буферлерінің барлығында цензураланбаған remove(newDuration, oldDuration) шартын (newDuration < oldDuration негізінде) орындау қажет."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "MIDIOptions нұсқасында sysex көрсетілмесе, Web MIDI пайдалану рұқсатын сұрайды."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "Ескі, стандартталмаған shadowroot төлсипаты ескірген. Оның орнына жаңа, стандартталған shadowrootmode төлсипатын пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "Хабарландыру API-ын бұдан былай қауіпті дереккөздерден пайдалануға болмайды. Қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "Хабарландыру API-ы бойынша рұқсатты бұдан былай дереккөзаралық iframe кадрынан сұрау мүмкін емес. Оның орнына жоғары деңгейлі кадрдан рұқсат сұрау немесе жаңа терезеде ашу нұсқаларын қарастырып көріңіз."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap ішіндегі imageOrientation: 'none' опциясы ескірген. Оның орнына {imageOrientation: \"from-image\"} опциясымен createImageBitmap пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "Серіктес ескірген (D)TLS нұсқасын қарастыруда. Мәселені шешу үшін серіктеске жүгініңіз."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "img, video және canvas тэгтерінде overflow: visible мәні көрсетілсе, олар көрнекі контентті элементтің шектерінен тыс беруі мүмкін. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md бетін қараңыз."
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments қолданыстан шығарылды. Орнына төлем өңдегіштері үшін \"дәл уақытында\" (JIT) орнату параметрін қолданыңыз."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "PaymentRequest қоңырауы Контент қауіпсіздігі саясатының connect-src директивасын айналып өтті. Бұл айналып өту жолы қолданыстан шығарылды. PaymentRequest API интерфейсінің (supportedMethods өрісінде) төлеу әдісі идентификаторын Контент қауіпсіздігі саясатының connect-src директивасына қосыңыз."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent қолданыстан шығарылды. Оның орнына стандартты navigator.storage пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<picture> басты элементінен тұратын <source src> элемент жарамсыз болуы себепті еленбеді. Оның орнына <source srcset> пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame белгілі бір жеткізушіге арналған. Оның орнына стандартты cancelAnimationFrame пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame белгілі бір жеткізушіге арналған. Оның орнына стандартты requestAnimationFrame пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen ескірген. Оның орнына Document.fullscreenElement пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() ескірген. Оның орнына Element.requestFullscreen() пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() ескірген. Оның орнына Element.requestFullscreen() пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() ескірген. Оның орнына Document.exitFullscreen() пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() ескірген. Оның орнына Document.exitFullscreen() пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen ескірген. Оның орнына Document.fullscreenEnabled пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "M113 шығарылымына дейін кері үйлесімдік үшін қосулы болып қалатынымен, API chrome.privacy.websites.privacySandboxEnabled интерфейсін қолданыстан шығарып жатырмыз. Оның орнына chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled және chrome.privacy.websites.adMeasurementEnabled пайдаланыңыз. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled бетін көріңіз."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "DtlsSrtpKeyAgreement шектеуі өшірілді. Бұл шектеу үшін false мәнін көрсеттіңіз, ол өшірілген SDES key negotiation әдісін пайдалану әрекеті ретінде қарастырылған. Бұл функция өшірілді, оның орнына DTLS key negotiation элементін қолдайтын қызметті пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "DtlsSrtpKeyAgreement шектеуі өшірілді. Бұл шектеу үшін true мәнін көрсеттіңіз, оның әсері болмады. Жүйелілікті қамтамасыз ету үшін мұндай шектеуді өшіруіңізге болады."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Кері қоңырау шалуға негізделген getStats() ескірген және жойылады. Оның орнына сипаттамаға сәйкес getStats() пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() ескірген. Оның орнына Selection.modify() пайдаланыңыз."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "URL мекенжайларында ендірілген тіркелу деректері (мысалы, https://user:pass@host/) бар қосалқы ресурс сұраулары бөгеледі."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "rtcpMuxPolicy опциясы қолданыстан шығарылды және өшіріледі."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer элементі дереккөзаралық оқшаулауды талап етеді. Толығырақ мәлімет алу үшін https://developer.chrome.com/blog/enabling-shared-array-buffer/ бетін қараңыз."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Пайдаланушыны белсендірместен speechSynthesis.speak() саясатын шақыру мүмкіндігі қолданыстан шығарылды және өшіріледі."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "SharedArrayBuffer элементін одан әрі пайдалану үшін кеңейтімдерде дереккөзаралық оқшаулау нұсқасы таңдалуы керек. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ бетін қараңыз."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "XMLHttpRequest сұрауының json жауабы бойынша UTF-16 қолжетімсіз."
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Түпкі пайдаланушының жұмысына кері әсерін тигізетіндіктен, негізгі тізбектегі XMLHttpRequest синхронды элементі қолданыстан шығарылды. Анықтама алу үшін https://xhr.spec.whatwg.org/ бетін қараңыз."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() қолданыстан шығарылды. Орнына isSessionSupported() саясатын пайдаланып, рұқсат етілген логикалық мәнді тексеріңіз."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Файлды жүктеу кезінде белгісіз қате шықты."
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Бір сайт және бір дереккөз"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "CORS Access-Control-Allow-Headers өңдеуі кезінде авторизация процесі алмастырғыш таңбамен (*) қорғалмайды."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "URL мекенжайларында \\(n|r|t) өшірілген бос орын таңбаларынан тұратын ресурс сұраулары да, кіші таңбалар (<) да бөгеледі. Бұл ресурстарды жүктеу үшін элемент төлсипатының мәндері сияқты кіші таңбаларды кодтап, жаңа жолдарды өшіріңіз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() қолданыстан шығарылды, оның орнына стандартталған API-ды пайдаланыңыз: навигация уақыты 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() қолданыстан шығарылды, оның орнына стандартталған API-ды пайдаланыңыз: сурет салу уақыты."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() қолданыстан шығарылды, оның орнына стандартталған API-ды пайдаланыңыз: nextHopProtocol (навигация уақыты 2)."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "\\(0|r|n) таңбасынан тұратын cookie файлдарынан бас тартылады, бірақ олар алынып тасталмайды."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "document.domain мәнін тағайындау арқылы бірдей дереккөз саясатын өңдеу процесі қолданыстан шығарылды және әдепкісінше өшіріледі. Бұл қолданыстан шығару туралы хабарландыру document.domain параметрі арқылы қосылған дереккөзаралық рұқсатқа арналған."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Дереккөзаралық iframe кадрларынан {PH1} іске қосу функциясы қолданыстан шығарылды және келешекте өшіріледі."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Әдепкі Cast интеграциясын өшіру үшін -internal-media-controls-overlay-cast-button таңдау құралын емес, disableRemotePlayback төлсипатын пайдалану керек."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} қолданыстан шығарылды. Оның орнына {PH2} пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "Қолданыстан шығару мәселесі бойынша жазылатын хат мысалы (аударылған нұсқасы)."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "document.domain мәнін тағайындау арқылы бірдей дереккөз саясатын өңдеу процесі қолданыстан шығарылды және әдепкісінше өшіріледі. Бұл функцияны одан әрі пайдалану үшін, құжат немесе кадрлар бойынша HTTP жауабымен бірге Origin-Agent-Cluster: ?0 тақырыбын жіберу арқылы түпнұсқа кілтті агент кластерлерінен бас тартыңыз. Толығырақ мәлімет алу үшін https://developer.chrome.com/blog/immutable-document-domain/ бетін қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path қолданыстан шығарылды және өшіріледі. Оның орнына Event.composedPath() пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Expect-CT тақырыбы қолданыстан шығарылды және өшіріледі. Chrome браузері 2018 жылдың 30 сәуірінен кейін шығарылған баршаға ашық сертификаттар үшін сертификат шынайылығын растауды талап етеді."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Толығырақ мәлімет алу үшін функцияның күйі көрсетілетін бетті қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() және watchPosition() бұдан былай қауіпті дереккөздерде қолданылмайды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() және watchPosition() элементтері қауіпті дереккөздерде қолданыстан шығарылды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() бұдан былай қауіпті дереккөздерде қолданылмайды. Бұл функцияны пайдалану үшін қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate қолданыстан шығарылды. Оның орнына RTCPeerConnectionIceErrorEvent.address немесе RTCPeerConnectionIceErrorEvent.port пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "canmakepayment қызметі жұмысшысының оқиғасынан алынған сатушы тегі мен арбитраж деректері қолданыстан шығарылған, сондықтан topOrigin, paymentRequestOrigin, methodData, modifiers нұсқаларында болмайды."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Веб-сайт оны пайдаланушылардың артықшылықты желі позициясына байланысты рұқсат берілуі мүмкін жалғыз желіден қосалқы ресурсты сұрады. Мұндай сұраулар жария емес құрылғылар мен серверлерді интернетке жария етеді, осылайша жасанды сайтаралық сұраумен (CSRF) шабуылдау және/немесе ақпараттың жылыстау қаупін арттырады. Бұл қауіптерді азайту үшін Chrome браузері қауіпті контекстерден бағытталған жария емес қосалқы ресурстарды сұрау функциясын қолданыстан шығарды және оларды бөгейтін болады."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": ".css файл кеңейтімімен аяқталмайтын file: URL мекенжайларынан CSS-ті жүктеу мүмкін емес."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Cпецификация өзгерісіне байланысты remove() әдісінің асинхронды аралықты өшіруін тоқтату үшін бұрынғыдайSourceBuffer.abort() опциясын пайдалана алмайсыз. Келешекте ол өшіріледі. updateend сигналын күтіңіз. abort() әдісі асинхронды медиақұралды қосуды тоқтатуға немесе талдау құралын бастапқы күйге қайтаруға ғана арналған."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "MediaSource.duration параметріне буферленген, кодталған кадрлардың ең жоғарғы презентациялық уақыт белгісінен төмен мән тағайындау функциясы қолданыстан шығарылды. Қиылған, буферленген медиамазмұнды бүркемелеп өшіру функциясы келешекте қолжетімсіз болады. Оның орнына sourceBuffers буферлерінің барлығында цензураланбаған remove(newDuration, oldDuration) шартын (newDuration < oldDuration негізінде) орындау қажет."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Бұл өзгеріс {milestone} нұсқасында күшіне енеді."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "MIDIOptions нұсқасында sysex көрсетілмесе, Web MIDI пайдалану рұқсатын сұрайды."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "Хабарландыру API-ын бұдан былай қауіпті дереккөздерден пайдалануға болмайды. Қолданбаны HTTPS сияқты қауіпсіз дереккөзге ауыстырып көріңіз. Толығырақ мәлімет алу үшін https://goo.gle/chrome-insecure-origins бетін қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Хабарландыру API-ы бойынша рұқсатты бұдан былай дереккөзаралық iframe кадрынан сұрау мүмкін емес. Оның орнына жоғары деңгейлі кадрдан рұқсат сұрау немесе жаңа терезеде ашу нұсқаларын қарастырып көріңіз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "createImageBitmap ішіндегі imageOrientation: \"none\" опциясы ескірген. Оның орнына {imageOrientation: \"from-image\"} опциясы бар createImageBitmap пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Серіктес ескірген (D)TLS нұсқасын қарастыруда. Мәселені шешу үшін серіктеске жүгініңіз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Қорғалмаған контекстердегі WebSQL дерекқоры қолданыстан шығарылды және жақын арада жойылады. Веб жадын не индекстелген дерекқорды пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "img, video және canvas тэгтерінде overflow: visible мәні көрсетілсе, олар көрнекі контентті элементтің шектерінен тыс беруі мүмкін. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md бетін қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments қолданыстан шығарылды. Орнына төлем өңдегіштері үшін \"дәл уақытында\" (JIT) орнату параметрін қолданыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "PaymentRequest қоңырауы Контент қауіпсіздігі саясатының connect-src директивасын айналып өтті. Бұл айналып өту жолы қолданыстан шығарылды. PaymentRequest API интерфейсінің (supportedMethods өрісінде) төлеу әдісі идентификаторын Контент қауіпсіздігі саясатының connect-src директивасына қосыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent қолданыстан шығарылды. Оның орнына стандартты navigator.storage пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<picture> басты элементінен тұратын <source src> элемент жарамсыз болуы себепті еленбеді. Оның орнына <source srcset> пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo қолданыстан шығарылды. Оның орнына стандартты navigator.storage пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "M113 шығарылымына дейін кері үйлесімділік үшін белсенді болып қалатынымен, API chrome.privacy.websites.privacySandboxEnabled интерфейсін қолданыстан шығарып жатырмыз. Оның орнына chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled және chrome.privacy.websites.adMeasurementEnabled пайдаланыңыз. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled бетін көріңіз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "URL мекенжайларында ендірілген тіркелу деректері (мысалы, https://user:pass@host/) бар қосалқы ресурс сұраулары бөгеледі."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "DtlsSrtpKeyAgreement шектеуі өшірілді. Бұл шектеу үшін false мәнін көрсеттіңіз, ол өшірілген SDES key negotiation әдісін пайдалану әрекеті ретінде қарастырылған. Бұл функция өшірілді, оның орнына DTLS key negotiation элементін қолдайтын қызметті пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "DtlsSrtpKeyAgreement шектеуі өшірілді. Бұл шектеу үшін true мәнін көрсеттіңіз, оның әсері болмады. Жүйелілікті қамтамасыз ету үшін мұндай шектеуді өшіруіңізге болады."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP анықталды. Session Description Protocol диалектісі бұдан былай қолжетімсіз. Оның орнына Unified Plan SDP пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "{sdpSemantics:'plan-b'} арқылы RTCPeerConnection құрастыру кезінде пайдаланылатын Plan B SDP semantics семантикасы – веб-платформадан біржола жойылған Session Description Protocol протоколының бұрынғы, стандарт емес нұсқасы. Мұны IS_FUCHSIA арқылы құрастыру жұмыстары кезінде әлі де пайдалануға болады, бірақ оны мүмкіндігінше тезірек жоюға ниеттіміз. Онымен ғана шектеліп қалмаңыз. Элемент күйін https://crbug.com/1302249 бетінен қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "rtcpMuxPolicy опциясы қолданыстан шығарылды және өшіріледі."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer элементі дереккөзаралық оқшаулауды талап етеді. Толығырақ мәлімет алу үшін https://developer.chrome.com/blog/enabling-shared-array-buffer/ бетін қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "Пайдаланушыны белсендірместен speechSynthesis.speak() саясатын шақыру мүмкіндігі қолданыстан шығарылды және өшіріледі."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Қолданыстан шығару функциясы пайдаланылды"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "SharedArrayBuffer элементін одан әрі пайдалану үшін кеңейтімдерде дереккөзаралық оқшаулау нұсқасы таңдалуы керек. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ бетін қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} кадры жеткізушіге тәуелді. Оның орнына {PH2} стандартын пайдаланыңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "XMLHttpRequest сұрауының json жауабы бойынша UTF-16 қолжетімсіз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Түпкі пайдаланушының жұмысына кері әсерін тигізетіндіктен, негізгі тізбектегі XMLHttpRequest синхронды элементі қолданыстан шығарылды. Анықтама алу үшін https://xhr.spec.whatwg.org/ бетін қараңыз."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() қолданыстан шығарылды. Орнына isSessionSupported() саясатын пайдаланып, рұқсат етілген логикалық мәнді тексеріңіз."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "HTML төлсипаты: автотолтыру"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Порталдар – түбірі бір байланыс арналары"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "Автотолтыру қалай жұмыс істейді?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "Үлгіні енгізу элементі"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "Белгі элементтері"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ауыр жарнама үзілістерін түзету"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Презентация"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Chrome арқылы қолданылған негізгі белгіше"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "Негізгі манифест мына жерден алынды: {PH1}"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "Протокол өңдегіштері"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Тақырып түсі"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "Алдын ала таңдау және алдын ала бейнелеу"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Қолданба манифесі"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Иә"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "Алдын ала таңдау және алдын ала бейнелеу"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Есеп мәтінін көрсету үшін оған басыңыз."
@@ -3333,10 +3363,10 @@
     "message": "Жарамсыз API-лар пайдаланылды."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Кеңейтімдер арқылы JavaScript бағдарламасы ендірілген IPages беттері қазір алға-артқа өту кэшіне жарамайды."
+    "message": "Кеңейтімдер арқылы JavaScript ендірілген беттер қазір алға-артқа өту кэші үшін жарамайды."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Кеңейтімдер арқылы StyleSheet интерфейсі ендірілген беттер қазір алға-артқа өту кэші жарамайды."
+    "message": "Кеңейтімдер арқылы StyleSheet ендірілген беттер қазір алға-артқа өту кэші үшін жарамайды."
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Ішкі қате шықты."
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Сақталған токен саны"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "Өшіру орындалмайды"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "Белсендірілген"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "Бас тартылған"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "Алдын ала бейнелеу"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "Жарамды"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Алдын ала жүктеу күштеп қосулы, себебі әзірлеуші құралдары ашық. Әзірлеуші құралдары жабылған кезде, алдын ала бейнелеу өшіріледі, себебі бұл браузер сеансы – өнімділікті салыстыру жұмыстары үшін пайдаланылатын ұстап қалу тобының бөлігі."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Алдын ала бейнелеу өшірулі, бірақ қазір күштеп қосулы"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "Негізгі ақпарат"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "Іске қосылған уақыты:"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Күйі"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "Tриггер"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Қосымша мәліметтер алу үшін элементті таңдаңыз"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "Белсендірілген"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "Бас тартылған"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "Алдын ала бейнелеу"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "Іске қосылған уақыты:"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Күйі"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "Tриггер"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "Толық ақпарат"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "Tүрі"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "Дереккөз"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "Жарамдылығы"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "Жарамды"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "Жарамдылығы"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "үзілу нүктесін басу"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "Құрамында {PH1} бар хабарлардың барлығын өшіру"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "Шартты тоқтату нүктесі"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "Консоль"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "Тіркеу нүктесі"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{# рет қайталанды}other{# рет қайталанды}}"
@@ -4575,7 +4590,7 @@
     "message": "Консоль тарихын өшіру"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "console.trace() хабарларын әдепкісінше жию"
+    "message": "console.trace() хабарларын автоматты түрде жаймау"
   },
   "panels/console/console-meta.ts | console": {
     "message": "Консоль"
@@ -4605,10 +4620,10 @@
     "message": "Консольдің хабар мәтінін бағалау"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "Бағалау пайдаланушы активациясын іске қосады"
+    "message": "Бағалау пайдаланушыны белсендіру процесін іске қосады"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "console.trace() хабарларын әдепкісінше жаю"
+    "message": "console.trace() хабарларын автоматты түрде жаю"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Консольда ұқсас хабарларды топтау"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "Жол, селектор немесе XPath арқылы табу"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "Кадр"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "Есептелген стильдердің жылжыту жолағын жасыру"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "Сипатты ауыстыру және өңдеуді жалғастыру"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "“{PH1}” {PH2} параметріне арналған мән “{PH5}” қаріптер тобы үшін [{PH3}, {PH4}] ауқымынан тыс."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Есептелген мәнді көру"
   },
@@ -5454,6 +5463,12 @@
     "message": "Танымбелгілерді көрсету"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Толық ақпарат"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "Көрсетпеу"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "Толық ақпарат"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Тексеру үшін беттегі элементті таңдау"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "CSS құжаттамасының қалқыма көмегін көрсету"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Есептелген стильдерді көрсету"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "Барлық профильді өшіру"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "Бұл панель алдағы нұсқада ескіреді. JavaScript CPU профильдерін жазу үшін өнімділік панелін пайдаланыңыз."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "Пікір"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "Өнімділік панеліне өту"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "Толық ақпарат"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "Жүктеу…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Құжаттама"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "Өткен уақыт"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Сүзгі"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (бастапқы картадан)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (тізімдегіні елемеу)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Барлық файдан іздеу"
   },
@@ -10403,11 +10439,11 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "мс"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} бетінің түзету туралы ақпараты арқылы ұсынылды)"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "({PH1} көзінен)"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(дереккөз {PH1} ішінен түрлендірілді)"
+    "message": "(Дереккөз {PH1} мәнінен түрлендірілді)"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Жабылуы"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "Жалпы бөгеу уақыты: {PH1}мс{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "ҚОЛДАНУ АЙМАҒЫ"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "Орталық процессор"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Тізбек"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "{PH1} тізбек"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "Уақыт белгілері"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "Өзара әрекеттестік"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Жабу"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "Қолдану аймағы"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "Орталық процессор:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "Қабылданды"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "Қамтылған деректерді жұмыс ізімен жазу"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "Жазу сәтсіз аяқталды"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Бастаған"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "Кідірісті енгізу"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Таймер орнату"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS кадры"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "Әрекетсіз JS кадры"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "JS көзі"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "JS жүйесінің жақтауы"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Ең үлкен контентті бояу"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Шығарылған кэш өлшемі"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "Профильдеу кезіндегі уақыт шығыны"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Аралық"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Рендерингіге жұмсалған уақыт"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "Негізгі тізбек үшін күту уақыты"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Күту уақыты"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "Сұрыптау сүзгісін қолдану үшін Enter пернесін басыңыз"
+    "message": "Бағанды сұрыптау күйі: {PH1}. Сұрыптау сүзгісін қолдану үшін Enter пернесін басыңыз."
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Тақырып опциялары"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "Бағандарды бастапқы күйіне қайтару"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "арту ретімен"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Сұрыптау шарты"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "кему ретімен"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "жоқ"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} арту ретімен сұрыпталды"

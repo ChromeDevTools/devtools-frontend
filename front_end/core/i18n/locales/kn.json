@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} ಸೆ"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: ತಪ್ಪಿಹೋಗಿರುವ {PH1} ಸ್ಯಾಂಪಲ್‌ಗಳನ್ನು CPU ಪ್ರೊಫೈಲ್ ವಿಶ್ಲೇಷಕವು ಸರಿಪಡಿಸುತ್ತಿದೆ."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "ಪ್ರೊಫೈಲ್ {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} ಗಾಗಿ ಕಂಟೆಂಟ್ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "{PH1} ಗೆ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ (https://web.dev/bfcache/ ಅನ್ನು ನೋಡಿ)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "ತಾತ್ಕಾಲಿಕ ವೇರಿಯಬಲ್ ಅನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "ಡೀಬಗರ್‌ನಲ್ಲಿ ವಿರಾಮಗೊಳಿಸಲಾಗಿದೆ"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "ಲೋಡ್ ಅವಧಿ ಮೀರಿದ ಕಾರಣ ಲೋಡ್ ಅನ್ನು ರದ್ದುಪಡಿಸಲಾಗಿದೆ"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "ತಪಾಸಣೆ ಮಾಡಲಾದ ಪುಟವನ್ನು ಮತ್ತೊಮ್ಮೆ ಲೋಡ್ ಮಾಡಿದ ಕಾರಣ ಲೋಡ್ ಮಾಡುವಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ."
   },
@@ -618,7 +615,7 @@
     "message": "ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "ಅಕ್ರೋಮಟೋಪ್ಸಿಯ"
+    "message": "ಅಕ್ರೋಮಟೋಪ್ಸಿಯ (ಯಾವುದೇ ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "ಮಸುಕಾದ ದೃಷ್ಟಿ"
@@ -627,7 +624,7 @@
     "message": "ಅಸಿಂಕ್ರೋನಸ್ ಸ್ಟ್ಯಾಕ್ ಟ್ರೇಸ್‌ಗಳನ್ನು ಕ್ಯಾಪ್ಚರ್ ಮಾಡಿ"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "ಡ್ಯುಟೆರನೋಪಿಯ"
+    "message": "ಡ್ಯುಟೆರನೋಪಿಯ (ಹಸಿರು ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "ಅಸಿಂಕ್ರೋನಸ್ ಸ್ಟ್ಯಾಕ್ ಟ್ರೇಸ್‌ಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
@@ -690,7 +687,7 @@
     "message": "ಫೋಕಸ್ ಮಾಡಿದ ಪುಟವನ್ನು ಅನುಕರಿಸಿ"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "ಅಕ್ರೋಮಟೋಪ್ಸಿಯವನ್ನು ಅನುಕರಿಸಿ"
+    "message": "ಅಕ್ರೋಮಟೋಪ್ಸಿಯವನ್ನು ಅನುಕರಿಸಿ (ಯಾವುದೇ ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "ಸ್ವಯಂ ಕತ್ತಲೆ ಮೋಡ್ ಅನುಕರಿಸಿ"
@@ -714,13 +711,16 @@
     "message": "CSS ಸ್ಕ್ರೀನ್ ಮಾಧ್ಯಮ ಪ್ರಕಾರವನ್ನು ಅನುಕರಿಸಿ"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "ಡ್ಯುಟೆರನೋಪಿಯವನ್ನು ಅನುಕರಿಸಿ"
+    "message": "ಡ್ಯುಟೆರನೋಪಿಯವನ್ನು ಅನುಕರಿಸಿ (ಹಸಿರು ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "ಪ್ರೋಟನೋಪಿಯವನ್ನು ಅನುಕರಿಸಿ"
+    "message": "ಪ್ರೋಟನೋಪಿಯವನ್ನು ಅನುಕರಿಸಿ (ಕೆಂಪು ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "ಕಡಿಮೆಗೊಳಿಸಿದ ಕಾಂಟ್ರಾಸ್ಟ್ ಅನ್ನು ಅನುಕರಿಸಿ"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "ಟ್ರಿಟನೋಪಿಯ ಅನುಕರಿಸಿ"
+    "message": "ಟ್ರಿಟನೋಪಿಯವನ್ನು ಅನುಕರಿಸಿ (ನೀಲಿ ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "ದೃಷ್ಟಿ ನ್ಯೂನತೆಗಳನ್ನು ಅನುಕರಿಸಿ"
@@ -789,10 +789,13 @@
     "message": "ಪ್ರಿಂಟ್"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "ಪ್ರೊಟನೋಪಿಯ"
+    "message": "ಪ್ರೊಟನೋಪಿಯ (ಕೆಂಪು ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "ಪ್ರಶ್ನೆ"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "ಕಡಿಮೆಗೊಳಿಸಿದ ಕಾಂಟ್ರಾಸ್ಟ್"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "ಸ್ಕ್ರೀನ್‌"
@@ -840,7 +843,7 @@
     "message": "ಟ್ರ್ಯಾಕ್ ಗಾತ್ರಗಳನ್ನು ತೋರಿಸಿ"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "ಟ್ರಿಟನೋಪಿಯ"
+    "message": "ಟ್ರಿಟನೋಪಿಯ (ನೀಲಿ ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ಪ್ರತ್ಯೇಕ ವಿಂಡೋದಲ್ಲಿ ಅನ್‌ಡಾಕ್ ಮಾಡಿ"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "ಪುಟ: ಆಯ್ಕೆಮಾಡಲಾಗಿಲ್ಲ"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "ಪುಟ: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ನಿಗದಿಪಡಿಸಿದ ಹಾಗೆ"
   },
@@ -1062,7 +1071,7 @@
     "message": "ಬಣ್ಣದ ಫಾರ್ಮ್ಯಾಟ್:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "ಈ ಸೆಟ್ಟಿಂಗ್ ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ, ಏಕೆಂದರೆ ಇದು ಆಧುನಿಕ ಬಣ್ಣದ ಸ್ಪೇಸ್‌ಗಳ ಜೊತೆಗೆ ಹೊಂದಿಕೆಯಾಗುವುದಿಲ್ಲ. ಅದನ್ನು ಮರುಸಕ್ರಿಯಗೊಳಿಸಲು, ನೀವು ಅದಕ್ಕನುಗುಣವಾದ ಪ್ರಯೋಗವನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಬಹುದು."
+    "message": "ಆಧುನಿಕ ಬಣ್ಣದ ಸ್ಪೇಸ್‌ಗಳ ಜೊತೆಗೆ ಹೊಂದಾಣಿಕೆಯಾಗದಿರುವ ಕಾರಣ ಈ ಸೆಟ್ಟಿಂಗ್ ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಅದನ್ನು ಮರು-ಸಕ್ರಿಯಗೊಳಿಸಲು, ಸಂಬಂಧಿತ ಪ್ರಯೋಗವನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "ಡಾರ್ಕ್"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "ಪ್ರಧಾನ"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "CORS Access-Control-Allow-Headers ನಿರ್ವಹಣೆಯಲ್ಲಿ ವೈಲ್ಡ್‌ಕಾರ್ಡ್ ಚಿಹ್ನೆಯು (*) ದೃಢೀಕರಣವನ್ನು ಒಳಗೊಂಡಿರುವುದಿಲ್ಲ."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "-internal-media-controls-overlay-cast-button ಸೆಲೆಕ್ಟರ್ ಅನ್ನು ಬಳಸುವ ಬದಲು, ಡೀಫಾಲ್ಟ್ ಕ್ಯಾಸ್ಟ್ ಏಕೀಕರಣವನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು disableRemotePlayback ಗುಣಲಕ್ಷಣವನ್ನು ಬಳಸಬೇಕು."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "ತೆಗೆದುಹಾಕಲಾದ ವೈಟ್‌ಸ್ಪೇಸ್ \\(n|r|t) ಅಕ್ಷರಗಳು ಮತ್ತು ಕಡಿಮೆ ಅಕ್ಷರಗಳೆರಡನ್ನು (<) ಹೊಂದಿರುವ URL ಗಳ ರಿಸೋರ್ಸ್ ವಿನಂತಿಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ. ಈ ರಿಸೋರ್ಸ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಹೊಸ ಸಾಲುಗಳನ್ನು ತೆಗೆದುಹಾಕಿ ಮತ್ತು ಅಂಶ ಗುಣಲಕ್ಷಣದ ಮೌಲ್ಯಗಳಂತಹ ಸ್ಥಳಗಳಿಂದ ಕಡಿಮೆ ಅಕ್ಷರಗಳನ್ನು ಎನ್‌ಕೋಡ್ ಮಾಡಿ."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ, ಬದಲಿಗೆ ಸ್ಟ್ಯಾಂಡರ್ಡ್ API ಬಳಸಿ: ನ್ಯಾವಿಗೇಶನ್ ಟೈಮಿಂಗ್ 2."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ, ಬದಲಿಗೆ ಸ್ಟ್ಯಾಂಡರ್ಡ್ API ಬಳಸಿ: ಪೇಂಟ್ ಟೈಮಿಂಗ್."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ, ಬದಲಿಗೆ ಸ್ಟ್ಯಾಂಡರ್ಡ್ API ಬಳಸಿ: ನ್ಯಾವಿಗೇಶನ್ ಟೈಮಿಂಗ್ 2 ನಲ್ಲಿನ nextHopProtocol."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "\\(0|r|n) ಅಕ್ಷರವನ್ನು ಹೊಂದಿರುವ ಕುಕೀಗಳನ್ನು ಮೊಟಕುಗೊಳಿಸುವ ಬದಲು ತಿರಸ್ಕರಿಸಲಾಗುತ್ತದೆ."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "document.domain ಸೆಟ್ ಮಾಡುವ ಮೂಲಕ ಒಂದೇ ಮೂಲದ ನೀತಿ ಸಡಿಲಗೊಳಿಸುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಡೀಫಾಲ್ಟ್ ಆಗಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ. ಈ ತಡೆಹಿಡಿಯುವಿಕೆ ಎಚ್ಚರಿಕೆಯು, document.domain ಅನ್ನು ಸೆಟ್ ಮಾಡುವ ಮೂಲಕ ಸಕ್ರಿಯಗೊಳಿಸಲಾದ ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಪ್ರವೇಶಕ್ಕೆ ಸಂಬಂಧಿಸಿದೆ."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "ಕ್ರಾಸ್ ಒರಿಜಿನ್ iframes ನಿಂದ window.alert ಅನ್ನು ಟ್ರಿಗರ್ ಮಾಡುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಭವಿಷ್ಯದಲ್ಲಿ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "ಕ್ರಾಸ್ ಒರಿಜಿನ್ iframes ನಿಂದ window.confirm ಟ್ರಿಗರ್ ಮಾಡುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಭವಿಷ್ಯದಲ್ಲಿ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "document.domain ಸೆಟ್ ಮಾಡುವ ಮೂಲಕ ಒಂದೇ ಮೂಲದ ನೀತಿ ಸಡಿಲಗೊಳಿಸುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಡೀಫಾಲ್ಟ್ ಆಗಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ. ಈ ವೈಶಿಷ್ಟ್ಯದ ಬಳಕೆಯನ್ನು ಮುಂದುವರಿಸಲು, ಡಾಕ್ಯುಮೆಂಟ್ ಮತ್ತು ಫ್ರೇಮ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದಂತೆ HTTP ಪ್ರತಿಕ್ರಿಯೆಯೊಂದಿಗೆ Origin-Agent-Cluster: ?0 ಹೆಡರ್ ಅನ್ನು ಕಳುಹಿಸುವ ಮೂಲಕ, ಒರಿಜಿನ್-ಕೀ ಇರುವ ಏಜೆಂಟ್ ಕ್ಲಸ್ಟರ್‌ಗಳಿಂದ ಹೊರಗುಳಿಯಿರಿ. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://developer.chrome.com/blog/immutable-document-domain/ ನೋಡಿ."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ Event.composedPath() ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Expect-CT ಶಿರೋಲೇಖವನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. 30 ಏಪ್ರಿಲ್, 2018 ರ ನಂತರ ನೀಡಲಾದ ಎಲ್ಲಾ ಸಾರ್ವಜನಿಕ ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಮಾಣಪತ್ರಗಳಿಗಾಗಿ Chrome ಗೆ ಪ್ರಮಾಣಪತ್ರ ಪಾರದರ್ಶಕತೆಯ ಅಗತ್ಯವಿದೆ."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() ಮತ್ತು watchPosition(), ಇನ್ನು ಮುಂದೆ ಅಸುರಕ್ಷಿತ ಮೂಲಗಳಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ. ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು, ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() ಮತ್ತು watchPosition() ಅನ್ನು ಅಸುರಕ್ಷಿತ ಮೂಲಗಳಲ್ಲಿ ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು, ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia(), ಇನ್ನು ಮುಂದೆ ಅಸುರಕ್ಷಿತ ಮೂಲಗಳಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ. ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು, ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ RTCPeerConnectionIceErrorEvent.address ಅಥವಾ RTCPeerConnectionIceErrorEvent.port ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "canmakepayment ಸೇವಾ ಪೂರೈಕೆದಾರರ ಈವೆಂಟ್‌ನಿಂದ ವ್ಯಾಪಾರಿ ಮೂಲ ಹಾಗೂ ಅನಿಯಂತ್ರಿತ ಡೇಟಾವನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "ವೆಬ್‌ಸೈಟ್ ತನ್ನ ಬಳಕೆದಾರರ ವಿಶೇಷ ನೆಟ್‌ವರ್ಕ್ ಸ್ಥಾನದ ಕಾರಣದಿಂದ ಮಾತ್ರ ಪ್ರವೇಶಿಸಬಹುದಾದ ನೆಟ್‌ವರ್ಕ್‌ನಿಂದ ಸಬ್‌ರಿಸೋರ್ಸ್ ಅನ್ನು ವಿನಂತಿಸಿದೆ. ಈ ವಿನಂತಿಗಳು ಸಾರ್ವಜನಿಕವಲ್ಲದ ಸಾಧನಗಳು ಮತ್ತು ಸರ್ವರ್‌ಗಳನ್ನು ಇಂಟರ್ನೆಟ್‌ಗೆ ಬಹಿರಂಗಪಡಿಸುತ್ತವೆ, ಕ್ರಾಸ್-ಸೈಟ್ ವಿನಂತಿಯ ಫೋರ್ಜರಿ (CSRF) ದಾಳಿಯ ಮತ್ತು/ಅಥವಾ ಮಾಹಿತಿ ಸೋರಿಕೆಯ ಅಪಾಯವನ್ನು ಹೆಚ್ಚಿಸುತ್ತವೆ. ಈ ಅಪಾಯಗಳನ್ನು ತಗ್ಗಿಸಲು, ಸುರಕ್ಷಿತವಲ್ಲದ ಕಾಂಟೆಕ್ಸ್ಟ್‌ಗಳಿಂದ ಪ್ರಾರಂಭಿಸಿದಾಗ ಸಾರ್ವಜನಿಕವಲ್ಲದ ಸಬ್‌ರಿಸೋರ್ಸ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ವಿನಂತಿಗಳನ್ನು Chrome ತಡೆಹಿಡಿಯುತ್ತದೆ ಮತ್ತು ಅವುಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲು ಪ್ರಾರಂಭಿಸುತ್ತದೆ."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "file: URL ಗಳು .css ಫೈಲ್ ವಿಸ್ತರಣೆಯಲ್ಲಿ ಕೊನೆಗೊಳ್ಳದ ಹೊರತು ಅವುಗಳಿಂದ CSS ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "ವಿವರಣೆಯ ಬದಲಾವಣೆಯಿಂದಾಗಿ, remove() ನ ಅಸಮಕಾಲಿಕ ಶ್ರೇಣಿಯ ತೆಗೆದುಹಾಕುವಿಕೆಯನ್ನು ಸ್ಥಗಿತಗೊಳಿಸಲು SourceBuffer.abort() ಬಳಸುವಿಕೆಯನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಭವಿಷ್ಯದಲ್ಲಿ ಬೆಂಬಲವನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ ನೀವು updateend ಈವೆಂಟ್ ಅನ್ನು ಕೇಳಬೇಕು. abort() ಅನ್ನು ಅಸಮಕಾಲಿಕ ಮಾಧ್ಯಮದ ಅನುಬಂಧ ಅಥವಾ ಪಾರ್ಸರ್ ಸ್ಥಿತಿಯನ್ನು ರೀಸೆಟ್ ಮಾಡಲು ಮಾತ್ರ ಉದ್ದೇಶಿಸಲಾಗಿದೆ."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "ವಿವರಣೆಯ ಬದಲಾವಣೆಯಿಂದಾಗಿ, ಯಾವುದೇ ಬಫರ್ ಮಾಡಲಾದ ಕೋಡೆಡ್ ಫ್ರೇಮ್‌ಗಳ ಅತ್ಯಧಿಕ ಪ್ರಸ್ತುತಿ ಟೈಮ್‌ಸ್ಟ್ಯಾಂಪ್‌ನ ಕೆಳಗೆ MediaSource.duration ಅನ್ನು ಸೆಟ್ ಮಾಡುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಮೊಟಕುಗೊಳಿಸಿದ ಬಫರ್ ಮಾಧ್ಯಮವನ್ನು ಸೂಚ್ಯವಾಗಿ ತೆಗೆದುಹಾಕುವ ಬೆಂಬಲವನ್ನು ಭವಿಷ್ಯದಲ್ಲಿ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ, ಎಲ್ಲಾ sourceBuffers ನಲ್ಲಿ ನೀವು ಸ್ಪಷ್ಟವಾಗಿ remove(newDuration, oldDuration) ನಿರ್ವಹಿಸಬೇಕು, ಅಲ್ಲಿ newDuration < oldDuration."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "MIDIOptions ನಲ್ಲಿ ಸಿಸ್ಎಕ್ಸ್ ಅನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸದಿದ್ದರೂ ವೆಬ್ MIDI ಅನ್ನು ಬಳಸುವುದಕ್ಕೆ ಅನುಮತಿಯನ್ನು ಕೇಳುತ್ತದೆ."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "ಹಳೆಯದಾದ, ಪ್ರಮಾಣಿತವಲ್ಲದ shadowroot ಗುಣಲಕ್ಷಣವನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಹೊಸದಾದ, ಪ್ರಮಾಣಿತ shadowrootmode ಗುಣಲಕ್ಷಣವನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "ಅಸುರಕ್ಷಿತ ಮೂಲಗಳ Notification API ಅನ್ನು ಇನ್ನು ಮುಂದೆ ಬಳಸಲಾಗುವುದಿಲ್ಲ. ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "Notification API ಗಾಗಿ ಅನುಮತಿಯನ್ನು ಇನ್ನು ಮುಂದೆ ಕ್ರಾಸ್-ಒರಿಜಿನ್ iframe ನಿಂದ ವಿನಂತಿಸಲಾಗುವುದಿಲ್ಲ. ನೀವು ಉನ್ನತ ಮಟ್ಟದ ಫ್ರೇಮ್‌ನಿಂದ ಅನುಮತಿಯನ್ನು ವಿನಂತಿಸಬೇಕು ಅಥವಾ ಬದಲಿಗೆ ಹೊಸ ವಿಂಡೋವನ್ನು ತೆರೆಯಬೇಕು."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap ನಲ್ಲಿನ imageOrientation: 'none' ಆಯ್ಕೆಯನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ {imageOrientation: 'from-image'} ಆಯ್ಕೆಯನ್ನು ಹೊಂದಿರುವ createImageBitmap ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "ನಿಮ್ಮ ಪಾಲುದಾರರು ಬಳಕೆಯಲ್ಲಿಲ್ಲದ (D)TLS ಆವೃತ್ತಿಯ ಕುರಿತು ಮಾತುಕತೆ ನಡೆಸುತ್ತಿದ್ದಾರೆ. ಇದನ್ನು ಸರಿಪಡಿಸಲು ನಿಮ್ಮ ಪಾಲುದಾರರನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "ಚಿತ್ರ, ವೀಡಿಯೊ ಮತ್ತು ಕ್ಯಾನ್ವಾಸ್ ಟ್ಯಾಗ್‌ಗಳಲ್ಲಿ overflow: visible ಅನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸುವುದರಿಂದ ಅಂಶದ ಮಿತಿಯ ಹೊರಗೆ ದೃಶ್ಯ ವಿಷಯವನ್ನು ರಚಿಸಬಹುದು. ಇದನ್ನು ನೋಡಿ: https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪಾವತಿ ಹ್ಯಾಂಡಲರ್‌ಗಳಿಗಾಗಿ ಜಸ್ಟ್-ಇನ್-ಟೈಮ್ ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಅನ್ನು ಬಳಸಿ"
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "ನಿಮ್ಮ PaymentRequest ಕರೆಯು ವಿಷಯ-ಭದ್ರತೆ-ನೀತಿ (CSP) connect-src ನಿರ್ದೇಶನವನ್ನು ಬೈಪಾಸ್ ಮಾಡಿದೆ. ಈ ಬೈಪಾಸ್ ಅನ್ನು ಅಸಮ್ಮತಿಸಲಾಗಿದೆ. ಪಾವತಿ ವಿಧಾನದ ಗುರುತಿಸುವಿಕೆಯನ್ನು PaymentRequest API ನಿಂದ (supportedMethods ಕ್ಷೇತ್ರದಲ್ಲಿ) CSP connect-src ನಿರ್ದೇಶನಕ್ಕೆ ಸೇರಿಸಿ."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪ್ರಮಾಣಿತ navigator.storage ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<picture> ಪೇರೆಂಟ್ ಜೊತೆಗಿನ <source src> ಅಮಾನ್ಯವಾಗಿದೆ ಮತ್ತು ಆದ್ದರಿಂದ ನಿರ್ಲಕ್ಷಿಸಲಾಗಿದೆ. ಬದಲಿಗೆ <source srcset> ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame ವೆಂಡರ್ ನಿರ್ದಿಷ್ಟವಾಗಿದೆ. ಬದಲಿಗೆ ಪ್ರಮಾಣಿತ cancelAnimationFrame ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame ವೆಂಡರ್ ನಿರ್ದಿಷ್ಟವಾಗಿದೆ. ಬದಲಿಗೆ ಪ್ರಮಾಣಿತ requestAnimationFrame ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ Document.fullscreenElement ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ Element.requestFullscreen() ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ Element.requestFullscreen() ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ Document.exitFullscreen() ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ Document.exitFullscreen() ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ Document.fullscreenEnabled ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "ನಾವು API chrome.privacy.websites.privacySandboxEnabled ಅನ್ನು ತಡೆಹಿಡಿಯುತ್ತಿದ್ದೇವೆ, ಆದರೂ ಇದು M113 ಆವೃತ್ತಿ ಬಿಡುಗಡೆಯಾಗುವವರೆಗೂ ಬ್ಯಾಕ್‌ವರ್ಡ್ ಅನುಸರಣೆಗೆ ಸಕ್ರಿಯವಾಗಿರುತ್ತದೆ. ಬದಲಿಗೆ, chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled ಮತ್ತು chrome.privacy.websites.adMeasurementEnabled ಅನ್ನು ಬಳಸಿ. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled ಅನ್ನು ನೋಡಿ."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "ನಿರ್ಬಂಧ DtlsSrtpKeyAgreement ಅನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ಈ ನಿರ್ಬಂಧಕ್ಕಾಗಿ ನೀವು false ಮೌಲ್ಯವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಿದ್ದೀರಿ, ಇದನ್ನು ತೆಗೆದುಹಾಕಲಾದ SDES key negotiation ವಿಧಾನವನ್ನು ಬಳಸುವ ಪ್ರಯತ್ನವೆಂದು ಅರ್ಥೈಸಲಾಗುತ್ತದೆ. ಈ ಕಾರ್ಯವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ; ಬದಲಿಗೆ DTLS key negotiation ಬೆಂಬಲಿಸುವ ಸೇವೆಯನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "ನಿರ್ಬಂಧ DtlsSrtpKeyAgreement ಅನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ಈ ನಿರ್ಬಂಧಕ್ಕೆ ನೀವು true ಮೌಲ್ಯವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಿದ್ದೀರಿ, ಅದು ಯಾವುದೇ ಪರಿಣಾಮವನ್ನು ಹೊಂದಿಲ್ಲ, ಆದರೆ ನೀವು ಈ ನಿರ್ಬಂಧವನ್ನು ಅಚ್ಚುಕಟ್ಟಾಗಿ ತೆಗೆದುಹಾಕಬಹುದು."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "ಕಾಲ್‌ಬ್ಯಾಕ್ ಆಧಾರಿತ getStats() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ ನಿರ್ದಿಷ್ಟತೆ ಅನುಸರಣೆಯ getStats() ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ Selection.modify() ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "ಎಂಬೆಡ್ ಮಾಡಿದ ರುಜುವಾತುಗಳನ್ನು (ಉದಾ. https://user:pass@host/) ಹೊಂದಿರುವ URL ಗಳ ಸಬ್‌ರಿಸೋರ್ಸ್ ವಿನಂತಿಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "rtcpMuxPolicy ಆಯ್ಕೆಯನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer ಗೆ ಕ್ರಾಸ್ ಒರಿಜಿನ್ ಐಸೋಲೇಶನ್‌ನ ಅಗತ್ಯವಿರುತ್ತದೆ. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://developer.chrome.com/blog/enabling-shared-array-buffer/ ನೋಡಿ."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "ಬಳಕೆದಾರರ ಸಕ್ರಿಯಗೊಳಿಸುವಿಕೆ ಇಲ್ಲದೆ speechSynthesis.speak() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "SharedArrayBuffer ಬಳಕೆಯನ್ನು ಮುಂದುವರಿಸಲು ವಿಸ್ತರಣೆಗಳು ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಐಸೋಲೇಶನ್ ಅನ್ನು ಆರಿಸಿಕೊಳ್ಳಬೇಕು. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ ನೋಡಿ."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "UTF-16 ಅನ್ನು XMLHttpRequest ನಲ್ಲಿನ ಪ್ರತಿಕ್ರಿಯೆ json ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "ಅಂತಿಮ ಬಳಕೆದಾರರ ಅನುಭವಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಹಾನಿಕಾರಕ ಪರಿಣಾಮಗಳ ಕಾರಣ ಮುಖ್ಯ ಥ್ರೆಡ್‌ನಲ್ಲಿರುವ ಸಿಂಕ್ರೊನಸ್ XMLHttpRequest ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಹೆಚ್ಚಿನ ಸಹಾಯಕ್ಕಾಗಿ, https://xhr.spec.whatwg.org/ ಅನ್ನು ನೋಡಿ."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. isSessionSupported() ಬಳಸಿ ಮತ್ತು ಬದಲಿಗೆ ಪರಿಹರಿಸಲಾದ ಬೂಲಿಯನ್ ಮೌಲ್ಯವನ್ನು ಪರಿಶೀಲಿಸಿ."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ಫೈಲ್ ಲೋಡ್ ಮಾಡುವಾಗ ಅಪರಿಚಿತ ದೋಷ ಸಂಭವಿಸಿದೆ"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site ಮತ್ತು Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "CORS Access-Control-Allow-Headers ನಿರ್ವಹಣೆಯಲ್ಲಿ ವೈಲ್ಡ್‌ಕಾರ್ಡ್ ಚಿಹ್ನೆಯು (*) ದೃಢೀಕರಣವನ್ನು ಒಳಗೊಂಡಿರುವುದಿಲ್ಲ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "ತೆಗೆದುಹಾಕಲಾದ ವೈಟ್‌ಸ್ಪೇಸ್ \\(n|r|t) ಅಕ್ಷರಗಳು ಮತ್ತು ಕಡಿಮೆ ಅಕ್ಷರಗಳೆರಡನ್ನು (<) ಹೊಂದಿರುವ URL ಗಳ ರಿಸೋರ್ಸ್ ವಿನಂತಿಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ. ಈ ರಿಸೋರ್ಸ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಹೊಸ ಸಾಲುಗಳನ್ನು ತೆಗೆದುಹಾಕಿ ಮತ್ತು ಅಂಶ ಗುಣಲಕ್ಷಣದ ಮೌಲ್ಯಗಳಂತಹ ಸ್ಥಳಗಳಿಂದ ಕಡಿಮೆ ಅಕ್ಷರಗಳನ್ನು ಎನ್‌ಕೋಡ್ ಮಾಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ, ಬದಲಿಗೆ ಸ್ಟ್ಯಾಂಡರ್ಡ್ API ಬಳಸಿ: ನ್ಯಾವಿಗೇಶನ್ ಟೈಮಿಂಗ್ 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ, ಬದಲಿಗೆ ಸ್ಟ್ಯಾಂಡರ್ಡ್ API ಬಳಸಿ: ಪೇಂಟ್ ಟೈಮಿಂಗ್."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ, ಬದಲಿಗೆ ಸ್ಟ್ಯಾಂಡರ್ಡ್ API ಬಳಸಿ: ನ್ಯಾವಿಗೇಶನ್ ಟೈಮಿಂಗ್ 2 ನಲ್ಲಿನ nextHopProtocol."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "\\(0|r|n) ಅಕ್ಷರವನ್ನು ಹೊಂದಿರುವ ಕುಕೀಗಳನ್ನು ಮೊಟಕುಗೊಳಿಸುವ ಬದಲು ತಿರಸ್ಕರಿಸಲಾಗುತ್ತದೆ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "document.domain ಸೆಟ್ ಮಾಡುವ ಮೂಲಕ ಒಂದೇ ಮೂಲದ ನೀತಿ ಸಡಿಲಗೊಳಿಸುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಡೀಫಾಲ್ಟ್ ಆಗಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ. ಈ ತಡೆಹಿಡಿಯುವಿಕೆ ಎಚ್ಚರಿಕೆಯು, document.domain ಅನ್ನು ಸೆಟ್ ಮಾಡುವ ಮೂಲಕ ಸಕ್ರಿಯಗೊಳಿಸಲಾದ ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಪ್ರವೇಶಕ್ಕೆ ಸಂಬಂಧಿಸಿದೆ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "ಕ್ರಾಸ್ ಒರಿಜಿನ್ iframes ನಿಂದ {PH1} ಟ್ರಿಗ್ಗರ್ ಮಾಡುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಭವಿಷ್ಯದಲ್ಲಿ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "-internal-media-controls-overlay-cast-button ಸೆಲೆಕ್ಟರ್ ಅನ್ನು ಬಳಸುವ ಬದಲು, ಡೀಫಾಲ್ಟ್ ಕ್ಯಾಸ್ಟ್ ಏಕೀಕರಣವನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು disableRemotePlayback ಗುಣಲಕ್ಷಣವನ್ನು ಬಳಸಬೇಕು."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ {PH2} ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "ಇದು ಅನುವಾದಿತ ತಡೆಹಿಡಿಯುವಿಕೆ ಸಮಸ್ಯೆಯ ಸಂದೇಶದ ಉದಾಹರಣೆಯಾಗಿದೆ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "document.domain ಸೆಟ್ ಮಾಡುವ ಮೂಲಕ ಒಂದೇ ಮೂಲದ ನೀತಿ ಸಡಿಲಗೊಳಿಸುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಡೀಫಾಲ್ಟ್ ಆಗಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ. ಈ ವೈಶಿಷ್ಟ್ಯದ ಬಳಕೆಯನ್ನು ಮುಂದುವರಿಸಲು, ಡಾಕ್ಯುಮೆಂಟ್ ಮತ್ತು ಫ್ರೇಮ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದಂತೆ HTTP ಪ್ರತಿಕ್ರಿಯೆಯೊಂದಿಗೆ Origin-Agent-Cluster: ?0 ಹೆಡರ್ ಅನ್ನು ಕಳುಹಿಸುವ ಮೂಲಕ, ಒರಿಜಿನ್-ಕೀ ಇರುವ ಏಜೆಂಟ್ ಕ್ಲಸ್ಟರ್‌ಗಳಿಂದ ಹೊರಗುಳಿಯಿರಿ. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://developer.chrome.com/blog/immutable-document-domain/ ನೋಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ Event.composedPath() ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Expect-CT ಶಿರೋಲೇಖವನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. 30 ಏಪ್ರಿಲ್, 2018 ರ ನಂತರ ನೀಡಲಾದ ಎಲ್ಲಾ ಸಾರ್ವಜನಿಕ ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಮಾಣಪತ್ರಗಳಿಗಾಗಿ Chrome ಗೆ ಪ್ರಮಾಣಪತ್ರ ಪಾರದರ್ಶಕತೆಯ ಅಗತ್ಯವಿದೆ."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ ವೈಶಿಷ್ಟ್ಯದ ಸ್ಥಿತಿ ಪುಟವನ್ನು ಪರಿಶೀಲಿಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() ಮತ್ತು watchPosition(), ಇನ್ನು ಮುಂದೆ ಅಸುರಕ್ಷಿತ ಮೂಲಗಳಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ. ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು, ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() ಮತ್ತು watchPosition() ಅನ್ನು ಅಸುರಕ್ಷಿತ ಮೂಲಗಳಲ್ಲಿ ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು, ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia(), ಇನ್ನು ಮುಂದೆ ಅಸುರಕ್ಷಿತ ಮೂಲಗಳಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ. ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು, ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ RTCPeerConnectionIceErrorEvent.address ಅಥವಾ RTCPeerConnectionIceErrorEvent.port ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "canmakepayment ಸೇವಾ ಪೂರೈಕೆದಾರರ ಈವೆಂಟ್‌ನಿಂದ ವ್ಯಾಪಾರಿ ಮೂಲ ಹಾಗೂ ಅನಿಯಂತ್ರಿತ ಡೇಟಾವನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ: topOrigin, paymentRequestOrigin, methodData, modifiers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "ವೆಬ್‌ಸೈಟ್ ತನ್ನ ಬಳಕೆದಾರರ ವಿಶೇಷ ನೆಟ್‌ವರ್ಕ್ ಸ್ಥಾನದ ಕಾರಣದಿಂದ ಮಾತ್ರ ಪ್ರವೇಶಿಸಬಹುದಾದ ನೆಟ್‌ವರ್ಕ್‌ನಿಂದ ಸಬ್‌ರಿಸೋರ್ಸ್ ಅನ್ನು ವಿನಂತಿಸಿದೆ. ಈ ವಿನಂತಿಗಳು ಸಾರ್ವಜನಿಕವಲ್ಲದ ಸಾಧನಗಳು ಮತ್ತು ಸರ್ವರ್‌ಗಳನ್ನು ಇಂಟರ್ನೆಟ್‌ಗೆ ಬಹಿರಂಗಪಡಿಸುತ್ತವೆ, ಕ್ರಾಸ್-ಸೈಟ್ ವಿನಂತಿಯ ಫೋರ್ಜರಿ (CSRF) ದಾಳಿಯ ಮತ್ತು/ಅಥವಾ ಮಾಹಿತಿ ಸೋರಿಕೆಯ ಅಪಾಯವನ್ನು ಹೆಚ್ಚಿಸುತ್ತವೆ. ಈ ಅಪಾಯಗಳನ್ನು ತಗ್ಗಿಸಲು, ಸುರಕ್ಷಿತವಲ್ಲದ ಕಾಂಟೆಕ್ಸ್ಟ್‌ಗಳಿಂದ ಪ್ರಾರಂಭಿಸಿದಾಗ ಸಾರ್ವಜನಿಕವಲ್ಲದ ಸಬ್‌ರಿಸೋರ್ಸ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ವಿನಂತಿಗಳನ್ನು Chrome ತಡೆಹಿಡಿಯುತ್ತದೆ ಮತ್ತು ಅವುಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲು ಪ್ರಾರಂಭಿಸುತ್ತದೆ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "file: URL ಗಳು .css ಫೈಲ್ ವಿಸ್ತರಣೆಯಲ್ಲಿ ಕೊನೆಗೊಳ್ಳದ ಹೊರತು ಅವುಗಳಿಂದ CSS ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "ವಿವರಣೆಯ ಬದಲಾವಣೆಯಿಂದಾಗಿ, remove() ನ ಅಸಮಕಾಲಿಕ ಶ್ರೇಣಿಯ ತೆಗೆದುಹಾಕುವಿಕೆಯನ್ನು ಸ್ಥಗಿತಗೊಳಿಸಲು SourceBuffer.abort() ಬಳಸುವಿಕೆಯನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಭವಿಷ್ಯದಲ್ಲಿ ಬೆಂಬಲವನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ ನೀವು updateend ಈವೆಂಟ್ ಅನ್ನು ಕೇಳಬೇಕು. abort() ಅನ್ನು ಅಸಮಕಾಲಿಕ ಮಾಧ್ಯಮದ ಅನುಬಂಧ ಅಥವಾ ಪಾರ್ಸರ್ ಸ್ಥಿತಿಯನ್ನು ರೀಸೆಟ್ ಮಾಡಲು ಮಾತ್ರ ಉದ್ದೇಶಿಸಲಾಗಿದೆ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "ವಿವರಣೆಯ ಬದಲಾವಣೆಯಿಂದಾಗಿ, ಯಾವುದೇ ಬಫರ್ ಮಾಡಲಾದ ಕೋಡೆಡ್ ಫ್ರೇಮ್‌ಗಳ ಅತ್ಯಧಿಕ ಪ್ರಸ್ತುತಿ ಟೈಮ್‌ಸ್ಟ್ಯಾಂಪ್‌ನ ಕೆಳಗೆ MediaSource.duration ಅನ್ನು ಸೆಟ್ ಮಾಡುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಮೊಟಕುಗೊಳಿಸಿದ ಬಫರ್ ಮಾಧ್ಯಮವನ್ನು ಸೂಚ್ಯವಾಗಿ ತೆಗೆದುಹಾಕುವ ಬೆಂಬಲವನ್ನು ಭವಿಷ್ಯದಲ್ಲಿ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ, ಎಲ್ಲಾ sourceBuffers ನಲ್ಲಿ ನೀವು ಸ್ಪಷ್ಟವಾಗಿ remove(newDuration, oldDuration) ನಿರ್ವಹಿಸಬೇಕು, ಅಲ್ಲಿ newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "ಈ ಬದಲಾವಣೆಯು ಮೈಲ್‌ಸ್ಟೋನ್ {milestone} ಮೂಲಕ ಜಾರಿಗೆ ಬರಲಿದೆ."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "MIDIOptions ನಲ್ಲಿ ಸಿಸ್ಎಕ್ಸ್ ಅನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸದಿದ್ದರೂ ವೆಬ್ MIDI ಅನ್ನು ಬಳಸುವುದಕ್ಕೆ ಅನುಮತಿಯನ್ನು ಕೇಳುತ್ತದೆ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "ಅಸುರಕ್ಷಿತ ಮೂಲಗಳ Notification API ಅನ್ನು ಇನ್ನು ಮುಂದೆ ಬಳಸಲಾಗುವುದಿಲ್ಲ. ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Notification API ಗಾಗಿ ಅನುಮತಿಯನ್ನು ಇನ್ನು ಮುಂದೆ ಕ್ರಾಸ್-ಒರಿಜಿನ್ iframe ನಿಂದ ವಿನಂತಿಸಲಾಗುವುದಿಲ್ಲ. ನೀವು ಉನ್ನತ ಮಟ್ಟದ ಫ್ರೇಮ್‌ನಿಂದ ಅನುಮತಿಯನ್ನು ವಿನಂತಿಸಬೇಕು ಅಥವಾ ಬದಲಿಗೆ ಹೊಸ ವಿಂಡೋವನ್ನು ತೆರೆಯಬೇಕು."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "createImageBitmap ನಲ್ಲಿ imageOrientation: \"none\" ಆಯ್ಕೆಯನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಾಗಿ {imageOrientation: \"from-image\"} ಆಯ್ಕೆಯೊಂದಿಗೆ createImageBitmap ಅನ್ನು ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "ನಿಮ್ಮ ಪಾಲುದಾರರು ಬಳಕೆಯಲ್ಲಿಲ್ಲದ (D)TLS ಆವೃತ್ತಿಯ ಕುರಿತು ಮಾತುಕತೆ ನಡೆಸುತ್ತಿದ್ದಾರೆ. ಇದನ್ನು ಸರಿಪಡಿಸಲು ನಿಮ್ಮ ಪಾಲುದಾರರನ್ನು ಸಂಪರ್ಕಿಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "ಸುರಕ್ಷಿತವಲ್ಲದ ಸನ್ನಿವೇಶಗಳಲ್ಲಿನ WebSQL ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಅದನ್ನು ಶೀಘ್ರದಲ್ಲೇ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ವೆಬ್ ಸಂಗ್ರಹಣೆ ಅಥವಾ ಇಂಡೆಕ್ಸ್ ಮಾಡಲಾದ ಡೇಟಾಬೇಸ್ ಅನ್ನು ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "ಚಿತ್ರ, ವೀಡಿಯೊ ಮತ್ತು ಕ್ಯಾನ್ವಾಸ್ ಟ್ಯಾಗ್‌ಗಳಲ್ಲಿ overflow: visible ಅನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸುವುದರಿಂದ ಅಂಶದ ಮಿತಿಯ ಹೊರಗೆ ದೃಶ್ಯ ವಿಷಯವನ್ನು ರಚಿಸಬಹುದು. ಇದನ್ನು ನೋಡಿ: https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪಾವತಿ ಹ್ಯಾಂಡಲರ್‌ಗಳಿಗಾಗಿ ಜಸ್ಟ್-ಇನ್-ಟೈಮ್ ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಅನ್ನು ಬಳಸಿ"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "ನಿಮ್ಮ PaymentRequest ಕರೆಯು ವಿಷಯ-ಭದ್ರತೆ-ನೀತಿ (CSP) connect-src ನಿರ್ದೇಶನವನ್ನು ಬೈಪಾಸ್ ಮಾಡಿದೆ. ಈ ಬೈಪಾಸ್ ಅನ್ನು ಅಸಮ್ಮತಿಸಲಾಗಿದೆ. ಪಾವತಿ ವಿಧಾನದ ಗುರುತಿಸುವಿಕೆಯನ್ನು PaymentRequest API ನಿಂದ (supportedMethods ಕ್ಷೇತ್ರದಲ್ಲಿ) CSP connect-src ನಿರ್ದೇಶನಕ್ಕೆ ಸೇರಿಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪ್ರಮಾಣಿತ navigator.storage ಅನ್ನು ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<picture> ಪೇರೆಂಟ್ ಜೊತೆಗಿನ <source src> ಅಮಾನ್ಯವಾಗಿದೆ ಮತ್ತು ಆದ್ದರಿಂದ ನಿರ್ಲಕ್ಷಿಸಲಾಗಿದೆ. ಬದಲಿಗೆ <source srcset> ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪ್ರಮಾಣಿತ navigator.storage ಅನ್ನು ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "ನಾವು API chrome.privacy.websites.privacySandboxEnabled ಅನ್ನು ತಡೆಹಿಡಿದಿದ್ದೇವೆ, ಆದರೂ ಇದು M113 ಬಿಡುಗಡೆಯವರೆಗೂ ಹಿಂದುಳಿದ ಹೊಂದಾಣಿಕೆಗಾಗಿ ಸಕ್ರಿಯವಾಗಿರುತ್ತದೆ. ಬದಲಾಗಿ, chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled ಮತ್ತು chrome.privacy.websites.adMeasurementEnabled ಅನ್ನು ಬಳಸಿ. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled ಅನ್ನು ನೋಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "ಎಂಬೆಡ್ ಮಾಡಿದ ರುಜುವಾತುಗಳನ್ನು (ಉದಾ. https://user:pass@host/) ಹೊಂದಿರುವ URL ಗಳ ಸಬ್‌ರಿಸೋರ್ಸ್ ವಿನಂತಿಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "ನಿರ್ಬಂಧ DtlsSrtpKeyAgreement ಅನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ಈ ನಿರ್ಬಂಧಕ್ಕಾಗಿ ನೀವು false ಮೌಲ್ಯವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಿದ್ದೀರಿ, ಇದನ್ನು ತೆಗೆದುಹಾಕಲಾದ SDES key negotiation ವಿಧಾನವನ್ನು ಬಳಸುವ ಪ್ರಯತ್ನವೆಂದು ಅರ್ಥೈಸಲಾಗುತ್ತದೆ. ಈ ಕಾರ್ಯವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ; ಬದಲಿಗೆ DTLS key negotiation ಬೆಂಬಲಿಸುವ ಸೇವೆಯನ್ನು ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "ನಿರ್ಬಂಧ DtlsSrtpKeyAgreement ಅನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ಈ ನಿರ್ಬಂಧಕ್ಕೆ ನೀವು true ಮೌಲ್ಯವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಿದ್ದೀರಿ, ಅದು ಯಾವುದೇ ಪರಿಣಾಮವನ್ನು ಹೊಂದಿಲ್ಲ, ಆದರೆ ನೀವು ಈ ನಿರ್ಬಂಧವನ್ನು ಅಚ್ಚುಕಟ್ಟಾಗಿ ತೆಗೆದುಹಾಕಬಹುದು."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP ಪತ್ತೆಹಚ್ಚಲಾಗಿದೆ. Session Description Protocol ನ ಈ ಉಪಭಾಷೆ ಇನ್ನು ಮುಂದೆ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ. ಬದಲಿಗೆ Unified Plan SDP ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "{sdpSemantics:'plan-b'} ಮೂಲಕ RTCPeerConnection ನಿರ್ಮಿಸುವಾಗ Plan B SDP semantics ಅನ್ನು ಬಳಸಲಾಗುತ್ತದೆ, ಇದು ವೆಬ್ ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್‌ನಿಂದ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾದ Session Description Protocol ನ ಪಾರಂಪರಿಕ ಸ್ಟ್ಯಾಂಡರ್ಡ್ ಅಲ್ಲದ ಆವೃತ್ತಿಯಾಗಿದೆ. IS_FUCHSIA ಮೂಲಕ ನಿರ್ಮಿಸುವಾಗಲೂ ಇದು ಲಭ್ಯವಿದೆ, ಆದರೆ ಸಾಧ್ಯವಾದಷ್ಟು ಬೇಗ ಅದನ್ನು ಅಳಿಸಲು ನಾವು ಉದ್ದೇಶಿಸಿದ್ದೇವೆ. ಅದರ ಮೇಲಿನ ಅವಲಂಬನೆಯನ್ನು ನಿಲ್ಲಿಸಿ. ಸ್ಥಿತಿಗಾಗಿ https://crbug.com/1302249 ನೋಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "rtcpMuxPolicy ಆಯ್ಕೆಯನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer ಗೆ ಕ್ರಾಸ್ ಒರಿಜಿನ್ ಐಸೋಲೇಶನ್‌ನ ಅಗತ್ಯವಿರುತ್ತದೆ. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://developer.chrome.com/blog/enabling-shared-array-buffer/ ನೋಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "ಬಳಕೆದಾರರ ಸಕ್ರಿಯಗೊಳಿಸುವಿಕೆ ಇಲ್ಲದೆ speechSynthesis.speak() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ತಡೆಹಿಡಿಯುವಿಕೆ ಫೀಚರ್ ಬಳಸಲಾಗಿದೆ"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "SharedArrayBuffer ಬಳಕೆಯನ್ನು ಮುಂದುವರಿಸಲು ವಿಸ್ತರಣೆಗಳು ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಐಸೋಲೇಶನ್ ಅನ್ನು ಆರಿಸಿಕೊಳ್ಳಬೇಕು. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ ನೋಡಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} ವೆಂಡರ್ ನಿರ್ದಿಷ್ಟವಾಗಿದೆ. ಬದಲಿಗೆ ಸ್ಟ್ಯಾಂಡರ್ಡ್ {PH2} ಬಳಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 ಅನ್ನು XMLHttpRequest ನಲ್ಲಿನ ಪ್ರತಿಕ್ರಿಯೆ json ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "ಅಂತಿಮ ಬಳಕೆದಾರರ ಅನುಭವಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಹಾನಿಕಾರಕ ಪರಿಣಾಮಗಳ ಕಾರಣ ಮುಖ್ಯ ಥ್ರೆಡ್‌ನಲ್ಲಿರುವ ಸಿಂಕ್ರೊನಸ್ XMLHttpRequest ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಹೆಚ್ಚಿನ ಸಹಾಯಕ್ಕಾಗಿ, https://xhr.spec.whatwg.org/ ಪರಿಶೀಲಿಸಿ."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. isSessionSupported() ಬಳಸಿ ಮತ್ತು ಬದಲಿಗೆ ಪರಿಹರಿಸಲಾದ ಬೂಲಿಯನ್ ಮೌಲ್ಯವನ್ನು ಪರಿಶೀಲಿಸಿ."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "HTML ಗುಣಲಕ್ಷಣ: ಆಟೋಕಂಪ್ಲೀಟ್"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "ಪೋರ್ಟಲ್‌ಗಳು - ಅದೇ-ಮೂಲದ ಸಂವಹನ ಚಾನಲ್‌ಗಳು"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "ಆಟೋಫಿಲ್ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "ಫಾರ್ಮ್ ಇನ್‌ಪುಟ್ ಎಲಿಮೆಂಟ್"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "ಲೇಬಲ್ ಎಲಿಮೆಂಟ್‌ಗಳು"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ಅತಿಯಾದ ಜಾಹೀರಾತು ಅಡಚಣೆಗಳನ್ನು ನಿಭಾಯಿಸುವುದು"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "ಪ್ರಸ್ತುತಿ"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Chrome ಬಳಸುತ್ತಿರುವ ಪ್ರಾಥಮಿಕ ಐಕಾನ್"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "{PH1} ನಲ್ಲಿನ ಪ್ರಾಥಮಿಕ ಮ್ಯಾನಿಫೆಸ್ಟ್ ಐಕಾನ್"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "ಪ್ರೊಟೊಕಾಲ್ ಹ್ಯಾಂಡ್‌ಲರ್‌ಗಳು"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "ಥೀಮ್ ಬಣ್ಣ"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "ಮುಂಚಿತವಾಗಿ ಪಡೆಯುವಿಕೆ ಮತ್ತು ಪ್ರೀರೆಂಡರಿಂಗ್"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "ಆ್ಯಪ್ ಮ್ಯಾನಿಫೆಸ್ಟ್"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ಹೌದು"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "ಮುಂಚಿತವಾಗಿ ಪಡೆಯುವಿಕೆ ಮತ್ತು ಪ್ರೀರೆಂಡರಿಂಗ್"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "ಅದರ ಮುಖ್ಯ ಭಾಗವನ್ನು ಡಿಸ್‌ಪ್ಲೇ ಮಾಡಲು ಯಾವುದಾದರೂ ವರದಿಯ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡಿ"
@@ -3333,10 +3363,10 @@
     "message": "ಅನರ್ಹ API ಗಳನ್ನು ಬಳಸಲಾಗಿದೆ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "ವಿಸ್ತರಣೆಗಳ ಮೂಲಕ JavaScript ನೊಂದಿಗೆ ಇಂಜೆಕ್ಟ್ ಮಾಡಲಾದ IPages ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+    "message": "ವಿಸ್ತರಣೆಗಳ ಮೂಲಕ ಪುಟಗಳಿಗೆ ಸೇರಿಸಲಾದ JavaScript ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "ವಿಸ್ತರಣೆಗಳ ಮೂಲಕ StyleSheet ಇಂಜೆಕ್ಟ್ ಮಾಡಲಾದ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+    "message": "ವಿಸ್ತರಣೆಗಳ ಮೂಲಕ ಪುಟಗಳಿಗೆ ಸೇರಿಸಲಾದ StyleSheet ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "ಆಂತರಿಕ ದೋಷ."
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "ಸಂಗ್ರಹಿಸಿದ ಟೋಕನ್ ಕೌಂಟ್"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳದ ವಿಷಯವನ್ನು ತೆರವುಗೊಳಿಸಿ"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "ತ್ಯಜಿಸಲಾಗಿದೆ"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "ಮಾನ್ಯವಾಗಿದೆ"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "DevTools ತೆರೆದಿರುವ ಕಾರಣ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. DevTools ಅನ್ನು ಮುಚ್ಚಿದಾಗ, ಈ ಬ್ರೌಸರ್ ಸೆಶನ್ ಕಾರ್ಯಕ್ಷಮತೆಯನ್ನು ಹೋಲಿಸಲು ಬಳಸಲಾಗುವ ಹೋಲ್ಡ್‌ಬ್ಯಾಕ್ ಗುಂಪಿನ ಭಾಗವಾಗಿರುವುದರಿಂದ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ, ಆದರೆ ಈಗ ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "ಮೂಲ ಮಾಹಿತಿ"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "ಈ ಸಮಯಕ್ಕೆ ಪ್ರಾರಂಭವಾಗಿದೆ"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ಸ್ಥಿತಿ"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "ಟ್ರಿಗ್ಗರ್"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ ಘಟಕವೊಂದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "ತ್ಯಜಿಸಲಾಗಿದೆ"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "ಈ ಸಮಯಕ್ಕೆ ಪ್ರಾರಂಭವಾಗಿದೆ"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ಸ್ಥಿತಿ"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "ಟ್ರಿಗ್ಗರ್"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "ವಿವರವಾದ ಮಾಹಿತಿ"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "ಪ್ರಕಾರ"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "ಮೂಲ"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "ವಾಯಿದೆ"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "ಮಾನ್ಯವಾಗಿದೆ"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "ವಾಯಿದೆ"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್ ಹಿಟ್"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "{PH1} ಹೊಂದಿರುವ ಎಲ್ಲಾ ಸಂದೇಶಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "ಷರತ್ತುಬದ್ಧ ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "ಕನ್ಸೋಲ್"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "ಲಾಗ್‌ಪಾಯಿಂಟ್"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{# ಬಾರಿ ಪುನರಾವರ್ತನೆಯಾಗಿದೆ}one{# ಬಾರಿ ಪುನರಾವರ್ತನೆಯಾಗಿದೆ}other{# ಬಾರಿ ಪುನರಾವರ್ತನೆಯಾಗಿದೆ}}"
@@ -4575,7 +4590,7 @@
     "message": "ಕನ್ಸೋಲ್ ಇತಿಹಾಸವನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "ಡಿಫಾಲ್ಟ್ ಆಗಿ console.trace() ಸಂದೇಶಗಳನ್ನು ಕುಗ್ಗಿಸಿ"
+    "message": "console.trace() ಸಂದೇಶಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ವಿಸ್ತರಿಸಬೇಡಿ"
   },
   "panels/console/console-meta.ts | console": {
     "message": "ಕನ್ಸೋಲ್"
@@ -4605,10 +4620,10 @@
     "message": "ಕನ್ಸೋಲ್ ಪ್ರಾಂಪ್ಟ್ ಪಠ್ಯವನ್ನು ಕುತೂಹಲದಿಂದ ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "ಮೌಲ್ಯಮಾಪನವು ಬಳಕೆದಾರ ಸಕ್ರಿಯಗೊಳಿಸುವಿಕೆಯನ್ನು ಟ್ರಿಗರ್ ಮಾಡುತ್ತದೆ"
+    "message": "ಮೌಲ್ಯಮಾಪನವು ಬಳಕೆದಾರರ ಸಕ್ರಿಯಗೊಳಿಸುವಿಕೆಯನ್ನು ಟ್ರಿಗರ್ ಮಾಡುತ್ತದೆ"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "ಡಿಫಾಲ್ಟ್ ಆಗಿ console.trace() ಸಂದೇಶಗಳನ್ನು ವಿಸ್ತೃತಗೊಳಿಸಿ"
+    "message": "console.trace() ಸಂದೇಶಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ವಿಸ್ತರಿಸಿ"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "ಇದೇ ರೀತಿಯ ಸಂದೇಶಗಳನ್ನು ಕನ್ಸೋಲ್‌ನಲ್ಲಿ ಗುಂಪು ಮಾಡಿ"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "ಸ್ಟ್ರಿಂಗ್, ಸೆಲೆಕ್ಟರ್ ಅಥವಾ XPath ಪ್ರಕಾರ ಹುಡುಕಿ"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "ಫ್ರೇಮ್"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "ಲೆಕ್ಕಾಚಾರ ಮಾಡಲಾದ ಶೈಲಿಗಳ ಸೈಡ್‌ಬಾರ್ ಅನ್ನು ಮರೆಮಾಡಿ"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "ಪ್ರಾಪರ್ಟಿಯನ್ನು ಟಾಗಲ್ ಮಾಡಿ ಮತ್ತು ಎಡಿಟಿಂಗ್ ಮುಂದುವರಿಸಿ"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "ಸೆಟ್ಟಿಂಗ್ “{PH1}” {PH2} ನ ಮೌಲ್ಯವು “{PH5}” ಫಾಂಟ್ ಕುಟುಂಬಕ್ಕಾಗಿ ಬೆಂಬಲಿತ ವ್ಯಾಪ್ತಿಯಿಂದ [{PH3}, {PH4}] ಹೊರಗಿದೆ ."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ಕಂಪ್ಯೂಟೆಡ್ ಮೌಲ್ಯದ ವೀಕ್ಷಣೆ"
   },
@@ -5454,6 +5463,12 @@
     "message": "ಬ್ಯಾಡ್ಜ್‌ಗಳನ್ನು ತೋರಿಸಿ"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "ತೋರಿಸಬೇಡಿ"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "ಪುಟದಲ್ಲಿರುವ ಘಟಕವೊಂದನ್ನು ತಪಾಸಣೆ ಮಾಡಲು ಅದನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "CSS ಡಾಕ್ಯುಮೆಂಟೇಶನ್ ಟೂಲ್‌ಟಿಪ್ ಅನ್ನು ತೋರಿಸಿ"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "ಕಂಪ್ಯೂಟೆಡ್ ಶೈಲಿಗಳನ್ನು ತೋರಿಸಿ"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "ಎಲ್ಲಾ ಪ್ರೊಫೈಲ್‌ಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "ಮುಂಬರುವ ಆವೃತ್ತಿಯಲ್ಲಿ ಈ ಪ್ಯಾನೆಲ್ ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗುತ್ತದೆ. JavaScript CPU ಪ್ರೊಫೈಲ್‌ಗಳನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲು ಪರ್ಫಾರ್ಮೆನ್ಸ್ ಪ್ಯಾನೆಲ್ ಅನ್ನು ಬಳಸಿ."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "ಪ್ರತಿಕ್ರಿಯೆ"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "ಪರ್ಫಾರ್ಮೆನ್ಸ್ ಪ್ಯಾನೆಲ್‌ಗೆ ಹೋಗಿ"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "ಲೋಡ್ ಮಾಡಿ…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ಡಾಕ್ಯುಮೆಂಟೇಶನ್"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "ತೆಗೆದುಕೊಂಡ ಸಮಯ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "ಫಿಲ್ಟರ್"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (ಸೋರ್ಸ್-ಮ್ಯಾಪ್‌ನಿಂದ)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (ನಿರ್ಲಕ್ಷಿಸಬೇಕಾದವುಗಳ ಪಟ್ಟಿ)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "ಎಲ್ಲಾ ಫೈಲ್‌ಗಳಲ್ಲಿ ಹುಡುಕಿ"
   },
@@ -10403,8 +10439,8 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ಮಿ.ಸೆ"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} ನಿಂದ ಡೀಬಗ್ ಮಾಹಿತಿಯ ಮೂಲಕ ಒದಗಿಸಲಾಗಿದೆ)"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "({PH1} ನಿಂದ)"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
     "message": "({PH1} ನಿಂದ ಸೋರ್ಸ್-ಮ್ಯಾಪ್ ಮಾಡಲಾಗಿದೆ)"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "ಒಟ್ಟು ನಿರ್ಬಂಧಿಸುವಿಕೆ ಸಮಯ: {PH1}ಮಿ.ಸೆ{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "ಕವರೇಜ್"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "ಥ್ರೆಡ್"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "ಥ್ರೆಡ್ {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "ಸಮಯಗಳು"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "ಸಂವಹನಗಳು"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "ಮುಚ್ಚಿ"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "ಕವರೇಜ್"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "ಸ್ವೀಕರಿಸಲಾಗಿದೆ"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "ಕಾರ್ಯಕ್ಷಮತೆಯ ಟ್ರೇಸ್ ಬಳಸಿ ಕವರೇಜ್ ರೆಕಾರ್ಡ್ ಮಾಡಿ"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "ರೆಕಾರ್ಡಿಂಗ್ ವಿಫಲವಾಗಿದೆ"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "ಇನಿಶಿಯೇಟರ್"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "ಇನ್‌ಪುಟ್ ವಿಳಂಬ"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ಟೈಮರ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS ಫ್ರೇಮ್"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "JS ನಿಷ್ಕ್ರಿಯ ಫ್ರೇಮ್"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "JS ರೂಟ್"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "JS ಸಿಸ್ಟಮ್ ಫ್ರೇಮ್"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "ಅತಿ ದೊಡ್ಡ ಕಂಟೆಂಟ್‌ಫುಲ್ ಪೇಂಟ್"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "ಉತ್ಪಾದಿಸಲಾದ ಕ್ಯಾಷ್ ಗಾತ್ರ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "ಪ್ರೊಫೈಲಿಂಗ್ ಓವರ್‌ಹೆಡ್"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "ವ್ಯಾಪ್ತಿ"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "ರೆಂಡರ್ ಮಾಡಲು ವ್ಯಯಿಸಿದ ಸಮಯ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "ಮುಖ್ಯ ಥ್ರೆಡ್‌ಗಾಗಿ ಕಾಯುತ್ತಿರುವ ಸಮಯ"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "ಅವಧಿ ಮೀರಿದೆ"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "ವಿಂಗಡಣೆ ಫಿಲ್ಟರ್ ಅನ್ನು ಅನ್ವಯಿಸಲು Enter ಬಟನ್ ಒತ್ತಿರಿ"
+    "message": "ಕಾಲಮ್ ವಿಂಗಡಣೆಯ ಸ್ಥಿತಿ: {PH1}. ವಿಂಗಡಣೆಯ ಫಿಲ್ಟರ್ ಅನ್ನು ಅನ್ವಯಿಸಲು Enter ಕೀ ಒತ್ತಿರಿ"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ಶಿರೋಲೇಖದ ಆಯ್ಕೆಗಳು"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "ಕಾಲಮ್‌ಗಳನ್ನು ರೀಸೆಟ್ ಮಾಡಿ"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "ಆರೋಹಣ"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ಈ ಪ್ರಕಾರ ವಿಂಗಡಿಸಿ"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "ಅವರೋಹಣ"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "ಯಾವುದೂ ಇಲ್ಲ"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} ಅನ್ನು ಏರಿಕೆ ಕ್ರಮದಲ್ಲಿ ವಿಂಗಡಿಸಲಾಗಿದೆ"

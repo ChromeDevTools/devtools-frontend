@@ -112,10 +112,14 @@ ol.expanded {
   display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.overloaded:not(.has-ignorable-error),
-.inactive,
+.overloaded:not(.has-ignorable-error, .invalid-property-value),
+.inactive:not(.invalid-property-value),
 .disabled,
-.not-parsed-ok:not(.has-ignorable-error) {
+.not-parsed-ok:not(.has-ignorable-error, .invalid-property-value) {
+  text-decoration: line-through;
+}
+
+.not-parsed-ok.invalid-property-value .value {
   text-decoration: line-through;
 }
 

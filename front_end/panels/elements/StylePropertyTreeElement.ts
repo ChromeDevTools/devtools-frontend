@@ -927,6 +927,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       // Add a separate exclamation mark IMG element with a tooltip.
       this.listItemElement.insertBefore(
           StylesSidebarPane.createExclamationMark(this.property, null), this.listItemElement.firstChild);
+
+      // When the property is valid but the property value is invalid,
+      // add line-through only to the property value.
+      const invalidPropertyValue = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(this.property.name);
+      if (invalidPropertyValue) {
+        this.listItemElement.classList.add('invalid-property-value');
+      }
     }
 
     if (!this.property.activeInStyle()) {
